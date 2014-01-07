@@ -1,22 +1,22 @@
 /********************  HEADERS  *********************/
 #include <cassert>
 #include <cstdlib>
-#include "SimpleTracer.h"
+#include "SimpleStackTracer.h"
 
 /*******************  FUNCTION  *********************/
-SimpleTracer::SimpleTracer(void )
+SimpleStackTracer::SimpleStackTracer(void )
 {
 
 }
 
 /*******************  FUNCTION  *********************/
-SimpleTracer::~SimpleTracer(void )
+SimpleStackTracer::~SimpleStackTracer(void )
 {
 
 }
 
 /*******************  FUNCTION  *********************/
-SimpleCallStack& SimpleTracer::getBacktraceInfo(void** callStack, int size)
+SimpleCallStack& SimpleStackTracer::getBacktraceInfo(void** callStack, int size)
 {
 	//errors
 	assert(callStack != NULL);
@@ -46,7 +46,7 @@ SimpleCallStack& SimpleTracer::getBacktraceInfo(void** callStack, int size)
 }
 
 /*******************  FUNCTION  *********************/
-std::ostream& operator<<(std::ostream& out, const SimpleTracer& tracer)
+std::ostream& operator<<(std::ostream& out, const SimpleStackTracer& tracer)
 {
 	for (SimpleBacktraceVectorMap::const_iterator itMap = tracer.callmaps.begin() ; itMap != tracer.callmaps.end() ; ++itMap)
 	{
@@ -59,7 +59,7 @@ std::ostream& operator<<(std::ostream& out, const SimpleTracer& tracer)
 }
 
 /*******************  FUNCTION  *********************/
-void SimpleTracer::resolveSymbols(FuncNameDic& dic) const
+void SimpleStackTracer::resolveSymbols(FuncNameDic& dic) const
 {
 	for (SimpleBacktraceVectorMap::const_iterator itMap = callmaps.begin() ; itMap != callmaps.end() ; ++itMap)
 	{
@@ -70,7 +70,7 @@ void SimpleTracer::resolveSymbols(FuncNameDic& dic) const
 }
 
 /*******************  FUNCTION  *********************/
-void typeToJson(htopml::JsonState& json, std::ostream& stream, const SimpleTracer& value)
+void typeToJson(htopml::JsonState& json, std::ostream& stream, const SimpleStackTracer& value)
 {
 	FuncNameDic dic;
 	value.resolveSymbols(dic);

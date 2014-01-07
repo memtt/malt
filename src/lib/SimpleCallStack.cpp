@@ -1,7 +1,7 @@
 /********************  HEADERS  *********************/
+#include <cstdio>
 #include <cassert>
 #include <cstring>
-#include <cstdio>
 #include "SimpleCallStack.h"
 
 /*******************  FUNCTION  *********************/
@@ -15,9 +15,6 @@ SimpleCallStack::SimpleCallStack(void** callStack, int size)
 	this->calls = new void*[size];
 	this->size = size;
 	memcpy(this->calls,callStack,size * sizeof(void*));
-
-	//default infos
-	this->cnt = 0;
 }
 
 /*******************  FUNCTION  *********************/
@@ -30,12 +27,6 @@ int SimpleCallStack::getSize(void ) const
 SimpleBacktraceHash SimpleCallStack::getSimpleHash(void ) const
 {
 	return getSimpleHash(calls,size);
-}
-
-/*******************  FUNCTION  *********************/
-void SimpleCallStack::incrCnt(void )
-{
-	cnt++;
 }
 
 /*******************  FUNCTION  *********************/
@@ -84,7 +75,7 @@ std::ostream& operator<<(std::ostream& out, const SimpleCallStack& tracer)
 	out << "[";
 	for (int i = 0 ; i < tracer.size ; i++)
 		out << tracer.calls[i] << " ";
-	out << "]  (cnt = " << tracer.cnt << ")";
+	out << "]  (" << tracer.info << ")";
 	return out;
 }
 
@@ -99,7 +90,7 @@ void SimpleCallStack::resolveSymbols(FuncNameDic& dic) const
 void typeToJson(htopml::JsonState& json, std::ostream& stream, const SimpleCallStack& value)
 {
 	json.openStruct();
-	json.printField("cnt",value.cnt);
+	json.printField("infos",value.info);
 	json.openFieldArray("callStack");
 // 	json.printFieldArray("callStack",value.calls,value.size);
 	for (int i = 0 ; i < value.size ; i++)

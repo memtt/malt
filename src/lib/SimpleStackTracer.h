@@ -5,8 +5,8 @@
 #include <map>
 #include <vector>
 #include <ostream>
-#include "SimpleCallStack.h"
 #include "FuncNameDic.h"
+#include "SimpleCallStack.h"
 #include <json/TypeToJson.h>
 
 /*******************  FUNCTION  *********************/
@@ -14,16 +14,16 @@ typedef std::vector<SimpleCallStack*> SimpleBacktraceVector;
 typedef std::map<SimpleBacktraceHash,SimpleBacktraceVector> SimpleBacktraceVectorMap;
 
 /*********************  CLASS  **********************/
-class SimpleTracer
+class SimpleStackTracer
 {
 	public:
-		SimpleTracer(void);
-		~SimpleTracer(void);
+		SimpleStackTracer(void);
+		~SimpleStackTracer(void);
 		SimpleCallStack & getBacktraceInfo(void ** callStack,int size);
 		void resolveSymbols(FuncNameDic & dic) const;
 	public:
-		friend std::ostream & operator << (std::ostream & out,const SimpleTracer & tracer);
-		friend void typeToJson(htopml::JsonState & json,std::ostream& stream, const SimpleTracer & value);
+		friend std::ostream & operator << (std::ostream & out,const SimpleStackTracer & tracer);
+		friend void typeToJson(htopml::JsonState & json,std::ostream& stream, const SimpleStackTracer & value);
 	private:
 		SimpleBacktraceVectorMap callmaps;
 };

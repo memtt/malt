@@ -5,7 +5,7 @@
 #include <cstdlib>
 #include <dlfcn.h>
 #include "json/TypeToJson.h"
-#include "lib/SimpleTracer.h"
+#include "lib/SimpleStackTracer.h"
 
 /*******************  FUNCTION  *********************/
 void funcC(void)

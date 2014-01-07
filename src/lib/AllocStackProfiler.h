@@ -1,8 +1,10 @@
 #ifndef ALLOC_STATCK_PROFILER_H
 #define ALLOC_STATCK_PROFILER_H
 
-#include "SimpleTracer.h"
+/********************  HEADERS  *********************/
+#include "SimpleStackTracer.h"
 
+/*********************  CLASS  **********************/
 class AllocStackProfiler
 {
 	public:
@@ -16,7 +18,7 @@ class AllocStackProfiler
 	private:
 		void countCalls(int skipDepth);
 	private:
-		SimpleTracer * tracer;
+		SimpleStackTracer * tracer;
 };
 
 #endif //ALLOC_STATCK_PROFILER_H
