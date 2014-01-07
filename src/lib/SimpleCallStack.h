@@ -5,7 +5,7 @@
 #include <ostream>
 #include <stdint.h>
 #include "FuncNameDic.h"
-#include "json/JsonState.h"
+#include <json/JsonState.h>
 
 /*******************  FUNCTION  *********************/
 typedef uint64_t SimpleBacktraceHash;

@@ -24,26 +24,26 @@ void countCalls(void)
 
 /*******************  FUNCTION  *********************/
 //trace malloc
-void * malloc(size_t size)
-{
-	static MallocFuncPtr oldMalloc = NULL;
-	static bool inMalloc = false;
-
-	//check old symbol
-	if (oldMalloc == NULL)
-		oldMalloc = (MallocFuncPtr)dlsym(RTLD_NEXT,"malloc");
-
-	//count
-	if (!inMalloc)
-	{
-		inMalloc = true;
-		countCalls();
-		inMalloc = false;
-	}
-
-	//do alloc
-	return oldMalloc(size);
-}
+// void * malloc(size_t size)
+// {
+// 	static MallocFuncPtr oldMalloc = NULL;
+// 	static bool inMalloc = false;
+// 
+// 	//check old symbol
+// 	if (oldMalloc == NULL)
+// 		oldMalloc = (MallocFuncPtr)dlsym(RTLD_NEXT,"malloc");
+// 
+// 	//count
+// 	if (!inMalloc)
+// 	{
+// 		inMalloc = true;
+// 		countCalls();
+// 		inMalloc = false;
+// 	}
+// 
+// 	//do alloc
+// 	return oldMalloc(size);
+// }
 
 /*******************  FUNCTION  *********************/
 void funcC(void)
@@ -71,6 +71,8 @@ int main(int argc, char **argv)
 	for (int i = 0 ; i < 4 ; i++)
 		funcA();
 	funcB();
+
+	std::cout << tracer;
 
 	htopml::typeToJson(std::cout,tracer);
 	return 0;

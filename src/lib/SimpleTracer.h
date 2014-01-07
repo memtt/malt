@@ -7,7 +7,7 @@
 #include <ostream>
 #include "SimpleCallStack.h"
 #include "FuncNameDic.h"
-#include "json/TypeToJson.h"
+#include <json/TypeToJson.h>
 
 /*******************  FUNCTION  *********************/
 typedef std::vector<SimpleCallStack*> SimpleBacktraceVector;

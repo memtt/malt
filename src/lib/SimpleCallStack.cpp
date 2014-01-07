@@ -1,6 +1,7 @@
 /********************  HEADERS  *********************/
 #include <cassert>
 #include <cstring>
+#include <cstdio>
 #include "SimpleCallStack.h"
 
 /*******************  FUNCTION  *********************/
@@ -99,6 +100,20 @@ void typeToJson(htopml::JsonState& json, std::ostream& stream, const SimpleCallS
 {
 	json.openStruct();
 	json.printField("cnt",value.cnt);
-	json.printFieldArray("callStack",value.calls,value.size);
+	json.openFieldArray("callStack");
+// 	json.printFieldArray("callStack",value.calls,value.size);
+	for (int i = 0 ; i < value.size ; i++)
+	{
+		char buffer[64];
+		sprintf(buffer,"%p",value.calls[i]);
+		json.printValue(buffer);
+	}
+	json.closeFieldArray("callStack");
 	json.closeStruct();
+}
+
+/*******************  FUNCTION  *********************/
+void typeToJson(htopml::JsonState& json, std::ostream& stream, const void * value)
+{
+	
 }
