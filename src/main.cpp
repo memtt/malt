@@ -5,7 +5,7 @@
 #include <cstdlib>
 #include <dlfcn.h>
 #include "json/TypeToJson.h"
-#include "SimpleTracer.h"
+#include "lib/SimpleTracer.h"
 
 /********************  GLOBALS  **********************/
 SimpleTracer tracer;
