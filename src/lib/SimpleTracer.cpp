@@ -76,7 +76,7 @@ void typeToJson(htopml::JsonState& json, std::ostream& stream, const SimpleTrace
 	value.resolveSymbols(dic);
 
 	json.openStruct();
-	json.printField("funcs",dic);
+	json.printField("sites",dic);
 	json.openFieldArray("stats");
 	for (SimpleBacktraceVectorMap::const_iterator itMap = value.callmaps.begin() ; itMap != value.callmaps.end() ; ++itMap)
 	{

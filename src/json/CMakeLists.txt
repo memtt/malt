@@ -11,7 +11,7 @@ set(JSON_SOURCES JsonState.cpp TypeToJson.cpp)
 set(JSON_HEADERS JsonState.h TypeToJson.h JsonState_impl.h TypeToJson_impl.h)
 
 ######################################################
-add_library(htopml-json ${JSON_SOURCES})
+add_library(htopml-json STATIC ${JSON_SOURCES})
 SET_TARGET_PROPERTIES(htopml-json PROPERTIES COMPILE_FLAGS -fPIC)
 
 ######################################################

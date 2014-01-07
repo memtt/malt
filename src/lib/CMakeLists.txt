@@ -7,8 +7,8 @@
 ######################################################
 
 ######################################################
-set(CST_SOURCES FuncNameDic.cpp SimpleCallStack.cpp SimpleTracer.cpp)
+set(CST_SOURCES FuncNameDic.cpp SimpleCallStack.cpp SimpleTracer.cpp AllocWrapper.cpp AllocStackProfiler.cpp)
 
 ######################################################
-add_library(callstacktrace ${CST_SOURCES})
+add_library(callstacktrace STATIC ${CST_SOURCES})
 SET_TARGET_PROPERTIES(callstacktrace PROPERTIES COMPILE_FLAGS -fPIC)
