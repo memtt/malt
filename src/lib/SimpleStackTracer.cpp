@@ -33,12 +33,9 @@ SimpleCallStackNode& SimpleStackTracer::getBacktraceInfo(const SimpleCallStack &
 
 	//loop in vector to find the good one
 	SimpleBacktraceVector::iterator resIt = vec.end();
-	if (vec.size() == 1)
-		resIt = vec.begin();
-	else
-		for (SimpleBacktraceVector::iterator it = vec.begin() ; it != vec.end() ; ++it)
-			if ((*it)->getCallStack() == stack)
-				resIt = it;
+	for (SimpleBacktraceVector::iterator it = vec.begin() ; it != vec.end() ; ++it)
+		if ((*it)->getCallStack() == stack)
+			resIt = it;
 
 	//if not found create and add
 	if (resIt == vec.end())

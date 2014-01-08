@@ -13,4 +13,4 @@ include_directories(${GTEST_INCLUDE_DIRS} ${GMOCK_INCLUDE_DIRS})
 # ENDFOREACH(test_name)
 
 add_executable(bench benchmark.cpp)
-target_link_libraries(bench callstacktracebase htopml-json dl)
+target_link_libraries(bench cstbase dl)
