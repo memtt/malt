@@ -16,7 +16,7 @@ class AllocStackProfiler
 		void onFree(void * ptr);
 		void onExit(void);
 	private:
-		void countCalls(int skipDepth);
+		void countCalls(int skipDepth,ssize_t delta);
 	private:
 		SimpleStackTracer * tracer;
 };

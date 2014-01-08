@@ -18,7 +18,7 @@ void AllocStackProfiler::onMalloc(void* ptr, size_t size)
 	if (tracer == NULL)
 		return;
 
-	countCalls(3);
+	countCalls(3,size);
 }
 
 /*******************  FUNCTION  *********************/
@@ -28,7 +28,7 @@ void AllocStackProfiler::onCalloc(void* ptr, size_t nmemb, size_t size)
 	if (tracer == NULL)
 		return;
 
-	countCalls(3);
+	countCalls(3,size);
 }
 
 /*******************  FUNCTION  *********************/
@@ -38,7 +38,7 @@ void AllocStackProfiler::onFree(void* ptr)
 	if (tracer == NULL)
 		return;
 
-	countCalls(3);
+	countCalls(3,0);
 }
 
 /*******************  FUNCTION  *********************/
@@ -54,16 +54,16 @@ void AllocStackProfiler::onRealloc(void* oldPtr, void* ptr, size_t newSize)
 	if (tracer == NULL)
 		return;
 
-	countCalls(3);
+	countCalls(3,newSize);
 }
 
 /*******************  FUNCTION  *********************/
-void AllocStackProfiler::countCalls(int skipDepth)
+void AllocStackProfiler::countCalls(int skipDepth,ssize_t delta)
 {
 	void * buffer[1024];
 	int size = backtrace(buffer,sizeof(buffer)/sizeof(void*));
 	assert(size > 0);
-	tracer->getBacktraceInfo(buffer+skipDepth,size-skipDepth).getInfo().incrCnt();
+	tracer->getBacktraceInfo(buffer+skipDepth,size-skipDepth).getInfo().addEvent(delta);
 }
 
 /*******************  FUNCTION  *********************/
