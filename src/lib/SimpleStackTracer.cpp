@@ -12,32 +12,38 @@ SimpleStackTracer::SimpleStackTracer(void )
 /*******************  FUNCTION  *********************/
 SimpleStackTracer::~SimpleStackTracer(void )
 {
-
+	for (SimpleBacktraceVectorMap::const_iterator itMap = callmaps.begin() ; itMap != callmaps.end() ; ++itMap)
+	{
+		const SimpleBacktraceVector & vec = itMap->second;
+		for (SimpleBacktraceVector::const_iterator it = vec.begin() ; it != vec.end() ; ++it)
+			delete *it;
+	}
 }
 
 /*******************  FUNCTION  *********************/
-SimpleCallStackNode& SimpleStackTracer::getBacktraceInfo(void** callStack, int size)
+SimpleCallStackNode& SimpleStackTracer::getBacktraceInfo(const SimpleCallStack & stack)
 {
-	//errors
-	assert(callStack != NULL);
-	assert(size > 0);
-
+	assert(stack.isValid());
+	
 	//calc current hash
-	SimpleBacktraceHash hash = SimpleCallStack::getSimpleHash(callStack,size);
+	SimpleBacktraceHash hash = stack.getSimpleHash();
 
 	//search in current vector
 	SimpleBacktraceVector & vec = callmaps[hash];
 
 	//loop in vector to find the good one
 	SimpleBacktraceVector::iterator resIt = vec.end();
-	for (SimpleBacktraceVector::iterator it = vec.begin() ; it != vec.end() ; ++it)
-		if ((*it)->getCallStack().equal(callStack,size))
-			resIt = it;
+	if (vec.size() == 1)
+		resIt = vec.begin();
+	else
+		for (SimpleBacktraceVector::iterator it = vec.begin() ; it != vec.end() ; ++it)
+			if ((*it)->getCallStack() == stack)
+				resIt = it;
 
 	//if not found create and add
 	if (resIt == vec.end())
 	{
-		SimpleCallStackNode * newEntry = new SimpleCallStackNode(callStack,size);
+		SimpleCallStackNode * newEntry = new SimpleCallStackNode(stack);
 		vec.push_back(newEntry);
 		return *newEntry;
 	}else {

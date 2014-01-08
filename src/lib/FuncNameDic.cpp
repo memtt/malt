@@ -3,6 +3,7 @@
 #include <dlfcn.h>
 #include <cstdlib>
 #include <execinfo.h>
+#include <cstring>
 #include <cstdio>
 #include "FuncNameDic.h"
 
@@ -15,8 +16,8 @@ FuncNameDic::FuncNameDic(void )
 /*******************  FUNCTION  *********************/
 FuncNameDic::~FuncNameDic(void )
 {
-// 	for (FuncNameDicMap::const_iterator it = nameMap.begin() ; it != nameMap.end() ; ++it)
-// 		free((void*)it->second);
+	for (FuncNameDicMap::const_iterator it = nameMap.begin() ; it != nameMap.end() ; ++it)
+		free((void*)it->second);
 }
 
 /*******************  FUNCTION  *********************/
@@ -49,9 +50,11 @@ const char* FuncNameDic::setupNewEntry(void* callSite)
 	assert(tmp != NULL);
 	assert(tmp[0] != NULL);
 
-	nameMap[callSite] = tmp[0];
+	char * res = strdup(tmp[0]);
+	nameMap[callSite] = res;
+	free(tmp);
 
-	return tmp[0];
+	return res;
 }
 
 /*******************  FUNCTION  *********************/

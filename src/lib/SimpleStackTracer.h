@@ -22,7 +22,7 @@ class SimpleStackTracer
 	public:
 		SimpleStackTracer(void);
 		~SimpleStackTracer(void);
-		  SimpleCallStackNode& getBacktraceInfo(void** callStack, int size);
+		  SimpleCallStackNode& getBacktraceInfo(const SimpleCallStack & stack);
 		void resolveSymbols(FuncNameDic & dic) const;
 	public:
 		friend std::ostream & operator << (std::ostream & out,const SimpleStackTracer & tracer);

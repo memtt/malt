@@ -8,6 +8,7 @@
 class AllocStackProfiler
 {
 	public:
+		AllocStackProfiler(void);
 		void init(void);
 		void onMalloc(void * ptr,size_t size);
 		void onCalloc(void * ptr,size_t nmemb,size_t size);
@@ -19,6 +20,7 @@ class AllocStackProfiler
 		void countCalls(int skipDepth,ssize_t delta);
 	private:
 		SimpleStackTracer * tracer;
+		SimpleCallStack stack;
 };
 
 #endif //ALLOC_STATCK_PROFILER_H

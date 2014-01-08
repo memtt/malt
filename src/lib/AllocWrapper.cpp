@@ -18,7 +18,8 @@ enum RealAllocatorState
 	REAL_ALLOC_INIT_SYM,
 	REAL_ALLOC_INIT_PROFILER,
 	REAL_ALLOC_READY,
-	REAL_ALLOC_INUSE
+	REAL_ALLOC_INUSE,
+	REAL_ALLOC_FINISH,
 };
 
 /*********************  STRUCT  *********************/
@@ -72,6 +73,7 @@ void RealAllocator::init(void )
 /*******************  FUNCTION  *********************/
 void RealAllocator::onExit(int status,void * arg)
 {
+	gblRealAlloc.state = REAL_ALLOC_FINISH;
 	gblRealAlloc.profiler.onExit();
 }
 

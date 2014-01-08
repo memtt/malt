@@ -6,6 +6,11 @@
 #include "AllocStackProfiler.h"
 
 /*******************  FUNCTION  *********************/
+AllocStackProfiler::AllocStackProfiler(void)
+{
+}
+
+/*******************  FUNCTION  *********************/
 void AllocStackProfiler::init(void )
 {
 	this->tracer = new SimpleStackTracer();
@@ -60,17 +65,21 @@ void AllocStackProfiler::onRealloc(void* oldPtr, void* ptr, size_t newSize)
 /*******************  FUNCTION  *********************/
 void AllocStackProfiler::countCalls(int skipDepth,ssize_t delta)
 {
-	void * buffer[1024];
-	int size = backtrace(buffer,sizeof(buffer)/sizeof(void*));
-	assert(size > 0);
-	tracer->getBacktraceInfo(buffer+skipDepth,size-skipDepth).getInfo().addEvent(delta);
+	stack.loadCurrentStack();
+	tracer->getBacktraceInfo(stack).getInfo().addEvent(delta);
 }
 
 /*******************  FUNCTION  *********************/
 void AllocStackProfiler::onExit(void )
 {
-	SimpleStackTracer * oldTracer = tracer;
-	tracer = NULL;
-	puts("Print on exit ========================");
-	htopml::typeToJson(std::cout,*oldTracer);
+	if (tracer != NULL)
+	{
+		SimpleStackTracer * oldTracer = tracer;
+		tracer = NULL;
+		puts("Print on exit ========================");
+		htopml::typeToJson(std::cout,*oldTracer);
+		delete oldTracer;
+	} else {
+		puts("Get NULL tracer");
+	}
 }

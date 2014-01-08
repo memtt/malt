@@ -15,6 +15,9 @@
 /**********************  USING  *********************/
 using namespace std;
 
+//Caution we use \n for better performances, on iostream std::endl will flush io for each line.
+#define LINE_BREAK "\n"
+
 /********************  NAMESPACE  *******************/
 namespace htopml
 {
@@ -88,7 +91,7 @@ void JsonState::openField(const string& name)
 
 	//print name
 	if (!isFirst())
-		*out << "," << endl;
+		*out << "," << LINE_BREAK;
 
 	//setup state
 	pushState(JSON_STATE_FIELD);
@@ -165,7 +168,7 @@ void JsonState::openStruct(void )
 
 	//print name
 	indent++;
-	*out << "{" << endl;
+	*out << "{" << LINE_BREAK;
 }
 
 /*******************  FUNCTION  *********************/
@@ -179,7 +182,7 @@ void JsonState::closeStruct(void )
 
 	//print name
 	indent--;
-	*out << endl;
+	*out << LINE_BREAK;
 	putPadding();
 	*out << "}";
 }

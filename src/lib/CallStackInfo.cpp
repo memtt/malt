@@ -29,18 +29,6 @@ void SimpleQuantityHistory::addEvent(ssize_t value)
 }
 
 /*******************  FUNCTION  *********************/
-CallStackInfo::CallStackInfo(void )
-{
-	this->cntZeros = 0;
-}
-
-/*******************  FUNCTION  *********************/
-CallStackInfo::~CallStackInfo(void )
-{
-
-}
-
-/*******************  FUNCTION  *********************/
 void CallStackInfo::addEvent(ssize_t value)
 {
 	if (value == 0)
@@ -51,6 +39,18 @@ void CallStackInfo::addEvent(ssize_t value)
 	} else {
 		this->free.addEvent(value);
 	}
+}
+
+/*******************  FUNCTION  *********************/
+CallStackInfo::CallStackInfo(void )
+{
+	this->cntZeros = 0;
+}
+
+/*******************  FUNCTION  *********************/
+CallStackInfo::~CallStackInfo(void )
+{
+
 }
 
 /*******************  FUNCTION  *********************/

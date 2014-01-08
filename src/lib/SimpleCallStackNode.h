@@ -9,7 +9,7 @@
 class SimpleCallStackNode
 {
 	public:
-		SimpleCallStackNode(void ** callStack,int size);
+		SimpleCallStackNode(const SimpleCallStack & stack);
 		CallStackInfo & getInfo(void) {return info;};
 		SimpleCallStack & getCallStack(void) { return callStack;};
 	public:

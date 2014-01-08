@@ -2,8 +2,8 @@
 #include "SimpleCallStackNode.h"
 
 /*******************  FUNCTION  *********************/
-SimpleCallStackNode::SimpleCallStackNode(void** callStack, int size)
-	:callStack(callStack,size)
+SimpleCallStackNode::SimpleCallStackNode(const SimpleCallStack& stack)
+	:callStack(stack)
 {
 
 }
