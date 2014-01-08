@@ -3,6 +3,7 @@
 
 /*******************  FUNCTION  *********************/
 #include <ostream>
+#include <cstdlib>
 #include <json/JsonState.h>
 
 /*********************  CLASS  **********************/

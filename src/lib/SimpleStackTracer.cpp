@@ -16,7 +16,7 @@ SimpleStackTracer::~SimpleStackTracer(void )
 }
 
 /*******************  FUNCTION  *********************/
-SimpleCallStack& SimpleStackTracer::getBacktraceInfo(void** callStack, int size)
+SimpleCallStackNode& SimpleStackTracer::getBacktraceInfo(void** callStack, int size)
 {
 	//errors
 	assert(callStack != NULL);
@@ -31,13 +31,13 @@ SimpleCallStack& SimpleStackTracer::getBacktraceInfo(void** callStack, int size)
 	//loop in vector to find the good one
 	SimpleBacktraceVector::iterator resIt = vec.end();
 	for (SimpleBacktraceVector::iterator it = vec.begin() ; it != vec.end() ; ++it)
-		if ((*it)->equal(callStack,size))
+		if ((*it)->getCallStack().equal(callStack,size))
 			resIt = it;
 
 	//if not found create and add
 	if (resIt == vec.end())
 	{
-		SimpleCallStack * newEntry = new SimpleCallStack(callStack,size);
+		SimpleCallStackNode * newEntry = new SimpleCallStackNode(callStack,size);
 		vec.push_back(newEntry);
 		return *newEntry;
 	}else {
@@ -65,7 +65,7 @@ void SimpleStackTracer::resolveSymbols(FuncNameDic& dic) const
 	{
 		const SimpleBacktraceVector & vec = itMap->second;
 		for (SimpleBacktraceVector::const_iterator it = vec.begin() ; it != vec.end() ; ++it)
-			(*it)->resolveSymbols(dic);
+			(*it)->getCallStack().resolveSymbols(dic);
 	}
 }
 

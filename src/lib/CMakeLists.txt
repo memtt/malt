@@ -7,7 +7,7 @@
 ######################################################
 
 ######################################################
-set(CST_SOURCES FuncNameDic.cpp SimpleCallStack.cpp SimpleStackTracer.cpp AllocWrapper.cpp AllocStackProfiler.cpp CallStackInfo.cpp)
+set(CST_SOURCES FuncNameDic.cpp SimpleCallStack.cpp SimpleStackTracer.cpp AllocWrapper.cpp AllocStackProfiler.cpp CallStackInfo.cpp SimpleCallStackNode.cpp)
 
 ######################################################
 add_library(callstacktrace STATIC ${CST_SOURCES})

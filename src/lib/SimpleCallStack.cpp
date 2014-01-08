@@ -72,10 +72,8 @@ bool SimpleCallStack::equal(void** callStack, int size) const
 /*******************  FUNCTION  *********************/
 std::ostream& operator<<(std::ostream& out, const SimpleCallStack& tracer)
 {
-	out << "[";
 	for (int i = 0 ; i < tracer.size ; i++)
 		out << tracer.calls[i] << " ";
-	out << "]  (" << tracer.info << ")";
 	return out;
 }
 
@@ -89,18 +87,14 @@ void SimpleCallStack::resolveSymbols(FuncNameDic& dic) const
 /*******************  FUNCTION  *********************/
 void typeToJson(htopml::JsonState& json, std::ostream& stream, const SimpleCallStack& value)
 {
-	json.openStruct();
-	json.printField("infos",value.info);
-	json.openFieldArray("callStack");
-// 	json.printFieldArray("callStack",value.calls,value.size);
+	json.openArray();
 	for (int i = 0 ; i < value.size ; i++)
 	{
 		char buffer[64];
 		sprintf(buffer,"%p",value.calls[i]);
 		json.printValue(buffer);
 	}
-	json.closeFieldArray("callStack");
-	json.closeStruct();
+	json.closeArray();
 }
 
 /*******************  FUNCTION  *********************/
