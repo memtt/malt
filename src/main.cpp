@@ -4,13 +4,14 @@
 #include <cassert>
 #include <cstdlib>
 #include <dlfcn.h>
+#include "common/CodeTiming.h"
 #include "json/TypeToJson.h"
 #include "lib/SimpleStackTracer.h"
 
 /*******************  FUNCTION  *********************/
 void funcC(void)
 {
-	free(malloc(16));
+	CODE_TIMING("loadCurrentStack",free(malloc(16)));
 }
 
 /*******************  FUNCTION  *********************/

@@ -4,6 +4,7 @@
 #include <execinfo.h>
 #include <json/TypeToJson.h>
 #include "AllocStackProfiler.h"
+#include <common/CodeTiming.h>
 
 /*******************  FUNCTION  *********************/
 AllocStackProfiler::AllocStackProfiler(void)
@@ -65,8 +66,8 @@ void AllocStackProfiler::onRealloc(void* oldPtr, void* ptr, size_t newSize)
 /*******************  FUNCTION  *********************/
 void AllocStackProfiler::countCalls(int skipDepth,ssize_t delta)
 {
-	stack.loadCurrentStack();
-	tracer->getBacktraceInfo(stack).getInfo().addEvent(delta);
+	CODE_TIMING("loadCurrentStack",stack.loadCurrentStack());
+	CODE_TIMING("updateInfo",tracer->getBacktraceInfo(stack).getInfo().addEvent(delta));
 }
 
 /*******************  FUNCTION  *********************/
