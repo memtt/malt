@@ -1,12 +1,48 @@
 #ifndef CODE_TIMING_H
 #define CODE_TIMING_H
 
-#include <cycle.h>
+/********************  HEADERS  *********************/
 #include <string>
 #include <cstdlib>
+#include <cycle.h>
 
-#define CODE_TIMING(name,code) do { static CodeTiming __code_timing_local__(name);  __code_timing_local__.start();do {code;} while(0);__code_timing_local__.end(); } while(0)
+/********************  MACROS  **********************/
+/**
+ * A short macro to quicly profile some code lines. 
+\code{.cpp}
+void yourFunc(void)
+{
+	CODE_TIMING( "rand" , int r = rand() );
+}
+\endcode
+**/
+#define CODE_TIMING(name,code) \
+	do {  \
+		static CodeTiming __code_timing_local__(name);   \
+		__code_timing_local__.start(); \
+		do {code;} while(0); \
+		__code_timing_local__.end();  \
+	} while(0)
 
+/*********************  CLASS  **********************/
+/**
+ * @brief Short code to profile functions.
+ * 
+ * Provide some basic mecanism to help optimization by measuring execution time of some codes.
+ * Objects of this class may be declared static of globals to get the same lifecycle than the process.
+ * The basic usage might be :
+\code{.cpp}
+void yourFun(void)
+{
+	static CodeTiming timing( "youFunc" );
+	timing.start();
+	//your job
+	timing.stop();
+}
+\endcode
+ *
+ * \b CAUTION, it didn't support recursion.
+**/
 class CodeTiming
 {
 	public:
@@ -17,12 +53,19 @@ class CodeTiming
 	private:
 		void printValue(double value, const char * unit = "");
 	private:
+		/** Name of the code section to profile, only used for display. **/
 		std::string name;
+		/** Cumulativ execution time spent in the profiled code. **/
 		ticks sum;
+		/** Minimum execution time of the profiled code. **/
 		ticks min;
+		/** Maximum execution time of the profiled code. **/
 		ticks max;
-		ticks lastStart;
+		/** Number of calls. **/
 		size_t count;
+		/** Remember the starting time of current measurement. **/
+		ticks lastStart;
+		/** Remember the time at initialization of this object. **/
 		ticks globalStart;
 };
 
