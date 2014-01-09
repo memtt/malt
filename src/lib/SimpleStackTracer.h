@@ -9,7 +9,7 @@
 #include <json/TypeToJson.h>
 //locals
 #include "FuncNameDic.h"
-#include "SimpleCallStack.h"
+#include "BacktraceCallStack.h"
 #include "SimpleCallStackNode.h"
 
 /*******************  FUNCTION  *********************/

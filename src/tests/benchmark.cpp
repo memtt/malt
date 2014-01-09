@@ -1,5 +1,5 @@
 #include <cycle.h>
-#include <lib/SimpleCallStack.h>
+#include <lib/BacktraceCallStack.h>
 #include <lib/AllocStackProfiler.h>
 #include <cstdlib>
 #include <ostream>
@@ -142,7 +142,7 @@ int getRand(int min,int max)
 	return min + (rand() % (max-min));
 }
 
-void initAsRandomStack(SimpleCallStack & stack)
+void initAsRandomStack(BacktraceCallStack & stack)
 {
 	//vars
 	void * buffer[MAX_STACK_SIZE];
@@ -158,13 +158,13 @@ void initAsRandomStack(SimpleCallStack & stack)
 	stack.set(buffer,size,STACK_ORDER_ASC);
 }
 
-void runTest(BenchTiming & timing,SimpleStackTracer & tracer,SimpleCallStack * stacks, const char * name,int duration)
+void runTest(BenchTiming & timing,SimpleStackTracer & tracer,BacktraceCallStack * stacks, const char * name,int duration)
 {
 	timing.start(name,duration);
 	while(timing.needRun())
 	{
 		//choose random stack
-		SimpleCallStack & stack = stacks[getRand(0,MAX_STACKS)];
+		BacktraceCallStack & stack = stacks[getRand(0,MAX_STACKS)];
 		int reuse = getRand(1,MAX_LOCAL_REUSE);
 		
 		//if stack not valid, build it
@@ -192,7 +192,7 @@ int main(void)
 	srand(time(NULL));
 	
 	//store random stacks to reuse	
-	SimpleCallStack * stacks = new SimpleCallStack[MAX_STACKS];
+	BacktraceCallStack * stacks = new BacktraceCallStack[MAX_STACKS];
 	
 	runTest(timing,tracer,stacks,"testEmpty",5);
 	runTest(timing,tracer,stacks,"testFull",5);

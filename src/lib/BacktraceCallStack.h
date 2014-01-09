@@ -1,5 +1,5 @@
-#ifndef SIMPLE_BACKTRACE_H
-#define SIMPLE_BACKTRACE_H
+#ifndef BACKTRACE_BACKTRACE_H
+#define BACKTRACE_BACKTRACE_H
 
 /********************  HEADERS  *********************/
 #include "Stack.h"
@@ -7,11 +7,11 @@
 #include "CallStackInfo.h"
 
 /*********************  CLASS  **********************/
-class SimpleCallStack : public Stack
+class BacktraceCallStack : public Stack
 {
 	public:
-		SimpleCallStack(void);
+		BacktraceCallStack(void);
 		void loadCurrentStack(void);
 };
 
-#endif //SIMPLE_BACKTRACE_H
+#endif //BACKTRACE_BACKTRACE_H
