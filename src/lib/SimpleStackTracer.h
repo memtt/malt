@@ -14,7 +14,7 @@
 
 /*******************  FUNCTION  *********************/
 typedef std::vector<SimpleCallStackNode*> SimpleBacktraceVector;
-typedef std::map<SimpleBacktraceHash,SimpleBacktraceVector> SimpleBacktraceVectorMap;
+typedef std::map<StackHash,SimpleBacktraceVector> SimpleBacktraceVectorMap;
 
 /*********************  CLASS  **********************/
 class SimpleStackTracer
@@ -22,7 +22,8 @@ class SimpleStackTracer
 	public:
 		SimpleStackTracer(void);
 		~SimpleStackTracer(void);
-		  SimpleCallStackNode& getBacktraceInfo(const SimpleCallStack & stack);
+		SimpleCallStackNode& getBacktraceInfo(void);
+		SimpleCallStackNode& getBacktraceInfo(const Stack & stack);
 		void resolveSymbols(FuncNameDic & dic) const;
 	public:
 		friend std::ostream & operator << (std::ostream & out,const SimpleStackTracer & tracer);

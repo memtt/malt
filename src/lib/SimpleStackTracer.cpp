@@ -1,6 +1,7 @@
 /********************  HEADERS  *********************/
 #include <cassert>
 #include <cstdlib>
+#include <common/CodeTiming.h>
 #include "SimpleStackTracer.h"
 
 /*******************  FUNCTION  *********************/
@@ -21,12 +22,12 @@ SimpleStackTracer::~SimpleStackTracer(void )
 }
 
 /*******************  FUNCTION  *********************/
-SimpleCallStackNode& SimpleStackTracer::getBacktraceInfo(const SimpleCallStack & stack)
+SimpleCallStackNode& SimpleStackTracer::getBacktraceInfo( const Stack& stack )
 {
 	assert(stack.isValid());
 	
 	//calc current hash
-	SimpleBacktraceHash hash = stack.getSimpleHash();
+	StackHash hash = stack.hash();
 
 	//search in current vector
 	SimpleBacktraceVector & vec = callmaps[hash];

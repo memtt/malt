@@ -9,41 +9,25 @@
 /*******************  FUNCTION  *********************/
 AllocStackProfiler::AllocStackProfiler(void)
 {
-}
-
-/*******************  FUNCTION  *********************/
-void AllocStackProfiler::init(void )
-{
-	this->tracer = new SimpleStackTracer();
+	stack.loadCurrentStack();
+	exStack.enterFunction((void*)0x1);
 }
 
 /*******************  FUNCTION  *********************/
 void AllocStackProfiler::onMalloc(void* ptr, size_t size)
 {
-	//trace finished
-	if (tracer == NULL)
-		return;
-
 	countCalls(3,size);
 }
 
 /*******************  FUNCTION  *********************/
 void AllocStackProfiler::onCalloc(void* ptr, size_t nmemb, size_t size)
 {
-	//trace finished
-	if (tracer == NULL)
-		return;
-
 	countCalls(3,size);
 }
 
 /*******************  FUNCTION  *********************/
 void AllocStackProfiler::onFree(void* ptr)
 {
-	//trace finished
-	if (tracer == NULL)
-		return;
-
 	countCalls(3,0);
 }
 
@@ -56,31 +40,32 @@ void AllocStackProfiler::onPrepareRealloc(void* oldPtr)
 /*******************  FUNCTION  *********************/
 void AllocStackProfiler::onRealloc(void* oldPtr, void* ptr, size_t newSize)
 {
-	//trace finished
-	if (tracer == NULL)
-		return;
-
 	countCalls(3,newSize);
 }
 
 /*******************  FUNCTION  *********************/
 void AllocStackProfiler::countCalls(int skipDepth,ssize_t delta)
 {
-	CODE_TIMING("loadCurrentStack",stack.loadCurrentStack());
-	CODE_TIMING("updateInfo",tracer->getBacktraceInfo(stack).getInfo().addEvent(delta));
+// 	CODE_TIMING("loadCurrentStack",stack.loadCurrentStack());
+// 	CODE_TIMING("updateInfo",tracer.getBacktraceInfo(stack).getInfo().addEvent(delta));
+	CODE_TIMING("updateInfoEx",tracer.getBacktraceInfo(exStack).getInfo().addEvent(delta));
 }
 
 /*******************  FUNCTION  *********************/
 void AllocStackProfiler::onExit(void )
 {
-	if (tracer != NULL)
-	{
-		SimpleStackTracer * oldTracer = tracer;
-		tracer = NULL;
-		puts("Print on exit ========================");
-		htopml::typeToJson(std::cout,*oldTracer);
-		delete oldTracer;
-	} else {
-		puts("Get NULL tracer");
-	}
+	puts("======================== Print on exit ========================");
+	htopml::typeToJson(std::cout,tracer);
+}
+
+/*******************  FUNCTION  *********************/
+void AllocStackProfiler::onEnterFunction ( void* funcAddr )
+{
+	this->exStack.enterFunction(funcAddr);
+}
+
+/*******************  FUNCTION  *********************/
+void AllocStackProfiler::onExitFunction ( void* funcAddr )
+{
+	this->exStack.exitFunction(funcAddr);
 }

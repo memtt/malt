@@ -3,20 +3,20 @@
 
 /********************  HEADERS  *********************/
 #include "CallStackInfo.h"
-#include "SimpleCallStack.h"
+#include "Stack.h"
 
 /*********************  CLASS  **********************/
 class SimpleCallStackNode
 {
 	public:
-		SimpleCallStackNode(const SimpleCallStack & stack);
+		SimpleCallStackNode(const Stack & stack);
 		CallStackInfo & getInfo(void) {return info;};
-		SimpleCallStack & getCallStack(void) { return callStack;};
+		Stack & getCallStack(void) { return callStack;};
 	public:
 		friend std::ostream & operator << (std::ostream & out,const SimpleCallStackNode & tracer);
 		friend void typeToJson(htopml::JsonState & json,std::ostream& stream, const SimpleCallStackNode & value);
 	private:
-		SimpleCallStack callStack;
+		Stack callStack;
 		CallStackInfo info;
 };
 

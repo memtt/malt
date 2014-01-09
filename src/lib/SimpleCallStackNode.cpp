@@ -2,7 +2,7 @@
 #include "SimpleCallStackNode.h"
 
 /*******************  FUNCTION  *********************/
-SimpleCallStackNode::SimpleCallStackNode(const SimpleCallStack& stack)
+SimpleCallStackNode::SimpleCallStackNode(const Stack& stack)
 	:callStack(stack)
 {
 

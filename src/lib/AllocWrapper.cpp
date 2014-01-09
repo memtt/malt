@@ -33,7 +33,7 @@ struct RealAllocator
 	CallocFuncPtr calloc;
 	ReallocFuncPtr realloc;
 	//profiler
-	AllocStackProfiler profiler;
+	AllocStackProfiler * profiler;
 	//init function
 	void init(void);
 	static void onExit(int status,void * arg);
@@ -60,7 +60,7 @@ void RealAllocator::init(void )
 
 		//init profiler
 		gblRealAlloc.state = REAL_ALLOC_INIT_PROFILER;
-		gblRealAlloc.profiler.init();
+		gblRealAlloc.profiler = new AllocStackProfiler();
 
 		//register on exit
 		on_exit(RealAllocator::onExit,NULL);
@@ -73,8 +73,14 @@ void RealAllocator::init(void )
 /*******************  FUNCTION  *********************/
 void RealAllocator::onExit(int status,void * arg)
 {
-	gblRealAlloc.state = REAL_ALLOC_FINISH;
-	gblRealAlloc.profiler.onExit();
+	if (gblRealAlloc.state == REAL_ALLOC_READY)
+	{
+		gblRealAlloc.profiler->onExit();
+		gblRealAlloc.state = REAL_ALLOC_FINISH;
+		delete gblRealAlloc.profiler;
+	} else {
+		gblRealAlloc.state = REAL_ALLOC_FINISH;
+	}
 }
 
 /*******************  FUNCTION  *********************/
@@ -92,7 +98,7 @@ void * malloc(size_t size)
 	if (gblRealAlloc.state == REAL_ALLOC_READY)
 	{
 		gblRealAlloc.state = REAL_ALLOC_INUSE;
-		gblRealAlloc.profiler.onMalloc(res,size);
+		gblRealAlloc.profiler->onMalloc(res,size);
 		gblRealAlloc.state = REAL_ALLOC_READY;
 	}
 
@@ -111,7 +117,7 @@ void free(void * ptr)
 	if (gblRealAlloc.state == REAL_ALLOC_READY)
 	{
 		gblRealAlloc.state = REAL_ALLOC_INUSE;
-		gblRealAlloc.profiler.onFree(ptr);
+		gblRealAlloc.profiler->onFree(ptr);
 		gblRealAlloc.state = REAL_ALLOC_READY;
 	}
 
@@ -143,7 +149,7 @@ void * calloc(size_t nmemb,size_t size)
 	if (gblRealAlloc.state == REAL_ALLOC_READY)
 	{
 		gblRealAlloc.state = REAL_ALLOC_INUSE;
-		gblRealAlloc.profiler.onCalloc(res,nmemb,size);
+		gblRealAlloc.profiler->onCalloc(res,nmemb,size);
 		gblRealAlloc.state = REAL_ALLOC_READY;
 	}
 
@@ -161,4 +167,31 @@ void * realloc(void * ptr, size_t size)
 	//run the default function
 	assert(gblRealAlloc.state > REAL_ALLOC_INIT_SYM);
 	return gblRealAlloc.realloc(ptr,size);
+}
+
+/*********************  STRUCT  *********************/
+extern "C" 
+{
+	void __cyg_profile_func_enter (void *this_fn,void *call_site);
+	void __cyg_profile_func_exit  (void *this_fn,void *call_site);
+}
+
+/*********************  STRUCT  *********************/
+void __cyg_profile_func_enter (void *this_fn,void *call_site)
+{
+	//check init
+	if (gblRealAlloc.state == REAL_ALLOC_NOT_READY)
+		gblRealAlloc.init();
+	
+	gblRealAlloc.profiler->onEnterFunction(this_fn);
+}
+
+/*********************  STRUCT  *********************/
+void __cyg_profile_func_exit  (void *this_fn,void *call_site)
+{
+	//check init
+	if (gblRealAlloc.state == REAL_ALLOC_NOT_READY)
+		gblRealAlloc.init();
+	
+	gblRealAlloc.profiler->onExitFunction(this_fn);
 }

@@ -7,7 +7,7 @@
 ######################################################
 
 ######################################################
-set(CST_SOURCES FuncNameDic.cpp SimpleCallStack.cpp SimpleStackTracer.cpp AllocStackProfiler.cpp CallStackInfo.cpp SimpleCallStackNode.cpp)
+set(CST_SOURCES FuncNameDic.cpp SimpleCallStack.cpp SimpleStackTracer.cpp AllocStackProfiler.cpp CallStackInfo.cpp SimpleCallStackNode.cpp EnterExitCallStack.cpp Stack.cpp)
 
 ######################################################
 add_library(libcst OBJECT ${CST_SOURCES})

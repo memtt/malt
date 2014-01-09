@@ -12,6 +12,7 @@ target_link_libraries(AllocStackProfiler dl)
 ######################################################
 add_executable(basictest main.cpp)
 target_link_libraries(basictest AllocStackProfiler)
+set_target_properties(basictest PROPERTIES COMPILE_FLAGS -finstrument-functions)
 
 ######################################################
 add_subdirectory(lib)

@@ -155,7 +155,7 @@ void initAsRandomStack(SimpleCallStack & stack)
 	for (int i = 0 ; i < size ; i++)
 		buffer[i] = (void*)(unsigned long)rand();
 	
-	stack.set(buffer,size);
+	stack.set(buffer,size,STACK_ORDER_ASC);
 }
 
 void runTest(BenchTiming & timing,SimpleStackTracer & tracer,SimpleCallStack * stacks, const char * name,int duration)
@@ -172,9 +172,12 @@ void runTest(BenchTiming & timing,SimpleStackTracer & tracer,SimpleCallStack * s
 			initAsRandomStack(stack);
 		
 		//measure
-		timing.eventStart();
-		tracer.getBacktraceInfo(stack).getInfo().addEvent(16);
-		timing.eventEnd();
+		for (int i = 0 ; i < reuse ; i++)
+		{
+			timing.eventStart();
+			tracer.getBacktraceInfo(stack).getInfo().addEvent(16);
+			timing.eventEnd();
+		}
 	}
 	timing.end(cout);
 }
