@@ -1,4 +1,5 @@
 /********************  HEADERS  *********************/
+#include <json/JsonState.h>
 #include "SimpleCallStackNode.h"
 
 /*******************  FUNCTION  *********************/

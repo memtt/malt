@@ -4,7 +4,12 @@
 /*******************  FUNCTION  *********************/
 #include <ostream>
 #include <cstdlib>
-#include <json/JsonState.h>
+
+/*******************  FUNCTION  *********************/
+namespace htopml
+{
+	class JsonState;
+};
 
 /*********************  CLASS  **********************/
 class SimpleQuantityHistory

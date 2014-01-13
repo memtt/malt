@@ -5,11 +5,18 @@
 #include "SimpleStackTracer.h"
 #include "EnterExitCallStack.h"
 
+/********************  ENUM  ************************/
+enum StackMode
+{
+	STACK_MODE_BACKTRACE,
+	STACK_MODE_ENTER_EXIT_FUNC,
+};
+
 /*********************  CLASS  **********************/
 class AllocStackProfiler
 {
 	public:
-		AllocStackProfiler(void);
+		AllocStackProfiler(StackMode mode = STACK_MODE_BACKTRACE);
 		void onMalloc(void * ptr,size_t size);
 		void onCalloc(void * ptr,size_t nmemb,size_t size);
 		void onPrepareRealloc(void * oldPtr);
@@ -24,6 +31,7 @@ class AllocStackProfiler
 		SimpleStackTracer tracer;
 		BacktraceCallStack stack;
 		EnterExitCallStack exStack;
+		StackMode mode;
 };
 
 #endif //ALLOC_STATCK_PROFILER_H

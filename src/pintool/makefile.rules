@@ -1,0 +1,14 @@
+TOOL_ROOTS := mallocprof
+
+CST_SRC=/home/sebv/Projects/CallStackTrace/
+CST_BUILD=/home/sebv/Projects/CallStackTrace/build_optim
+CST_CFLAGS=-I$(CST_SRC)/src -DNDEBUG
+CST_LSFLAGS=-Wl,-rpath=$(CST_BUILD)/src $(CST_BUILD)/src/libcstbase.so
+
+# Build the intermediate object file.
+$(OBJDIR)mallocprof$(OBJ_SUFFIX): mallocprof.cpp
+	$(CXX) $(TOOL_CXXFLAGS_NOOPT) $(COMP_OBJ)$@ $< $(CST_CFLAGS)
+
+# Build the tool as a dll (shared object).
+$(OBJDIR)mallocprof$(PINTOOL_SUFFIX): $(OBJDIR)mallocprof$(OBJ_SUFFIX)
+	$(LINKER) $(TOOL_LDFLAGS_NOOPT) $(LINK_EXE)$@ $< $(TOOL_LPATHS) $(TOOL_LIBS) $(CST_LSFLAGS)

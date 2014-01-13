@@ -1,6 +1,7 @@
 /********************  HEADERS  *********************/
 #include <cassert>
 #include <cstdlib>
+#include <json/JsonState.h>
 #include <common/CodeTiming.h>
 #include "SimpleStackTracer.h"
 

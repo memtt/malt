@@ -3,6 +3,8 @@
 #include <cstdio>
 #include <cstring>
 #include <cstdlib>
+#include <cassert>
+#include <json/JsonState.h>
 //locals
 #include "Stack.h"
 

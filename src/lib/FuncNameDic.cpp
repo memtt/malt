@@ -6,6 +6,7 @@
 #include <cstring>
 #include <cstdio>
 #include "FuncNameDic.h"
+#include <json/JsonState.h>
 
 /*******************  FUNCTION  *********************/
 FuncNameDic::FuncNameDic(void )

@@ -7,10 +7,20 @@
 #include <common/CodeTiming.h>
 
 /*******************  FUNCTION  *********************/
-AllocStackProfiler::AllocStackProfiler(void)
+AllocStackProfiler::AllocStackProfiler(StackMode mode)
 {
-	stack.loadCurrentStack();
-	exStack.enterFunction((void*)0x1);
+	this->mode = mode;
+	switch(mode)
+	{
+		case STACK_MODE_BACKTRACE:
+			stack.loadCurrentStack();
+			break;
+		case STACK_MODE_ENTER_EXIT_FUNC:
+			exStack.enterFunction((void*)0x1);
+			break;
+		default:
+			assert(false);
+	}
 }
 
 /*******************  FUNCTION  *********************/
@@ -46,9 +56,16 @@ void AllocStackProfiler::onRealloc(void* oldPtr, void* ptr, size_t newSize)
 /*******************  FUNCTION  *********************/
 void AllocStackProfiler::countCalls(int skipDepth,ssize_t delta)
 {
-// 	CODE_TIMING("loadCurrentStack",stack.loadCurrentStack());
-// 	CODE_TIMING("updateInfo",tracer.getBacktraceInfo(stack).getInfo().addEvent(delta));
-	CODE_TIMING("updateInfoEx",tracer.getBacktraceInfo(exStack).getInfo().addEvent(delta));
+	switch(mode)
+	{
+		case STACK_MODE_BACKTRACE:
+			CODE_TIMING("loadCurrentStack",stack.loadCurrentStack());
+			CODE_TIMING("updateInfo",tracer.getBacktraceInfo(stack).getInfo().addEvent(delta));
+			break;
+		case STACK_MODE_ENTER_EXIT_FUNC:
+			CODE_TIMING("updateInfoEx",tracer.getBacktraceInfo(exStack).getInfo().addEvent(delta));
+			break;
+	}
 }
 
 /*******************  FUNCTION  *********************/
@@ -61,11 +78,13 @@ void AllocStackProfiler::onExit(void )
 /*******************  FUNCTION  *********************/
 void AllocStackProfiler::onEnterFunction ( void* funcAddr )
 {
+	assert(mode == STACK_MODE_ENTER_EXIT_FUNC);
 	this->exStack.enterFunction(funcAddr);
 }
 
 /*******************  FUNCTION  *********************/
 void AllocStackProfiler::onExitFunction ( void* funcAddr )
 {
+	assert(mode == STACK_MODE_ENTER_EXIT_FUNC);
 	this->exStack.exitFunction(funcAddr);
 }

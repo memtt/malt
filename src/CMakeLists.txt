@@ -3,7 +3,7 @@ include_directories(.)
 include_directories(../extern-deps/from-fftw)
 
 ######################################################
-add_library(cstbase $<TARGET_OBJECTS:htopml-json> $<TARGET_OBJECTS:libcst> $<TARGET_OBJECTS:common>)
+add_library(cstbase SHARED $<TARGET_OBJECTS:htopml-json> $<TARGET_OBJECTS:libcst> $<TARGET_OBJECTS:common>)
 
 ######################################################
 add_library(AllocStackProfiler SHARED $<TARGET_OBJECTS:libcst> $<TARGET_OBJECTS:htopml-json> $<TARGET_OBJECTS:common> $<TARGET_OBJECTS:allocwrapper>)

@@ -1,5 +1,6 @@
 /********************  HEADERS  *********************/
 #include <cstdlib>
+#include <json/JsonState.h>
 #include "CallStackInfo.h"
 
 /*******************  FUNCTION  *********************/
