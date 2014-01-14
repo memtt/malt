@@ -9,9 +9,11 @@ using namespace std;
 /********************  GLOBALS  **********************/
 #if defined(TARGET_MAC)
 #define MALLOC "_malloc"
+#define CALLOC "_calloc"
 #define FREE "_free"
 #else
 #define MALLOC "malloc"
+#define CALLOC "calloc"
 #define FREE "free"
 #endif
 
@@ -41,7 +43,19 @@ static VOID afterMalloc(ADDRINT ret,ADDRINT size)
 	if (!gblState.inUse)
 	{
 		gblState.inUse = !gblState.inUse;
+		fprintf(stderr,"%p = malloc(%lu)\n",(void*)ret,size);
 		gblState.profiler.onMalloc((void*)ret,size);
+		gblState.inUse = !gblState.inUse;
+	}
+}
+
+/*******************  FUNCTION  *********************/
+static VOID afterCalloc(ADDRINT ret,ADDRINT nmemb,ADDRINT size)
+{
+	if (!gblState.inUse)
+	{
+		gblState.inUse = !gblState.inUse;
+		gblState.profiler.onCalloc((void*)ret,nmemb,size);
 		gblState.inUse = !gblState.inUse;
 	}
 }
@@ -71,10 +85,32 @@ static VOID instrImageMalloc(IMG img)
 		
 		// Instrument malloc() to print the input argument value and the return value.
 		RTN_InsertCall(mallocRtn, IPOINT_AFTER, (AFUNPTR)afterMalloc,
+					   IARG_FUNCRET_EXITPOINT_VALUE,
                        IARG_FUNCARG_ENTRYPOINT_VALUE, 0,
-		               IARG_FUNCRET_EXITPOINT_VALUE,
 		               IARG_END);
 		RTN_Close(mallocRtn);
+    }
+}
+
+/*******************  FUNCTION  *********************/
+static VOID instrImageCalloc(IMG img)
+{
+	// Instrument the malloc() and free() functions.  Print the input argument
+	// of each malloc() or free(), and the return value of malloc().
+	//
+	//  Find the malloc() function.
+	RTN callocRtn = RTN_FindByName(img, CALLOC);
+	if (RTN_Valid(callocRtn))
+    {
+		RTN_Open(callocRtn);
+
+		// Instrument malloc() to print the input argument value and the return value.
+		RTN_InsertCall(callocRtn, IPOINT_AFTER, (AFUNPTR)afterCalloc,
+					   IARG_FUNCRET_EXITPOINT_VALUE,
+                       IARG_FUNCARG_ENTRYPOINT_VALUE, 0,
+		               IARG_FUNCARG_ENTRYPOINT_VALUE, 1,
+		               IARG_END);
+		RTN_Close(callocRtn);
     }
 }
 
@@ -129,6 +165,7 @@ VOID instrFunctions(RTN rtn, VOID *v)
 static VOID instrImage(IMG img, VOID *v)
 {
 	instrImageMalloc(img);
+	instrImageCalloc(img);
 	instrImageFree(img);
 }
 
