@@ -5,8 +5,9 @@
 #include <execinfo.h>
 #include "BacktraceCallStack.h"
 
-#define CALL_STACK_DEFAULT_SIZE 32
-#define CALL_STACK_GROW_THRESHOLD 1024
+#define CALL_STACK_DEFAULT_SIZE 16
+#define CALL_STACK_GROW_THRESHOLD 64
+#define CALL_STACK_MAX 256
 
 /*******************  FUNCTION  *********************/
 BacktraceCallStack::BacktraceCallStack(void)
@@ -29,8 +30,13 @@ void BacktraceCallStack::loadCurrentStack(void)
 		assert(loadedSize > 0);
 
 		//miss some entries, need to grow the buffer
-		if (loadedSize == this->memSize)
+		if (loadedSize == CALL_STACK_MAX)
 		{
+			static bool once = false;
+			if (!once)
+				puts("Caution, need to cut some call stacks !");
+			break;
+		} else if (loadedSize == this->memSize) {
 			this->grow();
 			retry = true;
 		} else {

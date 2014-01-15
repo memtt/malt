@@ -9,6 +9,7 @@
 /*******************  FUNCTION  *********************/
 AllocStackProfiler::AllocStackProfiler(StackMode mode)
 {
+	exStack.enterFunction((void*)0x1);
 	this->mode = mode;
 	switch(mode)
 	{

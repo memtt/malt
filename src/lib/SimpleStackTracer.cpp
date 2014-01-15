@@ -8,7 +8,7 @@
 /*******************  FUNCTION  *********************/
 SimpleStackTracer::SimpleStackTracer(void )
 {
-
+	this->count = 0;
 }
 
 /*******************  FUNCTION  *********************/
@@ -38,6 +38,8 @@ SimpleCallStackNode& SimpleStackTracer::getBacktraceInfo( const Stack& stack )
 	for (SimpleBacktraceVector::iterator it = vec.begin() ; it != vec.end() ; ++it)
 		if ((*it)->getCallStack() == stack)
 			resIt = it;
+		
+	count++;
 
 	//if not found create and add
 	if (resIt == vec.end())
@@ -90,5 +92,6 @@ void typeToJson(htopml::JsonState& json, std::ostream& stream, const SimpleStack
 			json.printValue(**it);
 	}
 	json.closeFieldArray("stats");
+	json.printField("count",value.count);
 	json.closeStruct();
 }

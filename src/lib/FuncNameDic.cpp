@@ -80,3 +80,20 @@ void typeToJson(htopml::JsonState& json, std::ostream& stream, const FuncNameDic
 
 	json.closeStruct();
 }
+
+/*******************  FUNCTION  *********************/
+const char* FuncNameDic::setupNewEntry(void* callSite, const std::string& name)
+{
+	//search in map
+	FuncNameDicMap::const_iterator it = this->nameMap.find(callSite);
+
+	//if not found, build new entry
+	if (it == nameMap.end())
+	{
+		char * tmp = strdup(name.c_str());
+		nameMap[callSite] = tmp;
+		return tmp;
+	} else {
+		return it->second;
+	}
+}

@@ -1,7 +1,7 @@
 TOOL_ROOTS := mallocprof
 
-CST_SRC=/home/sebv/Projects/CallStackTrace/
-CST_BUILD=/home/sebv/Projects/CallStackTrace/build_optim
+CST_SRC=../..
+CST_BUILD=$(CST_SRC)/build_optim
 CST_CFLAGS=-I$(CST_SRC)/src -DNDEBUG
 CST_LSFLAGS=-Wl,-rpath=$(CST_BUILD)/src $(CST_BUILD)/src/libcstbase.so
 

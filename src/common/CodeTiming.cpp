@@ -53,6 +53,7 @@ void CodeTiming::start(void)
 	this->lastStart = getticks();
 }
 
+/*******************  FUNCTION  *********************/
 /** End measurement of the current call to your code. **/
 void CodeTiming::end(void)
 {

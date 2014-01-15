@@ -30,6 +30,7 @@ class SimpleStackTracer
 		friend void typeToJson(htopml::JsonState & json,std::ostream& stream, const SimpleStackTracer & value);
 	private:
 		SimpleBacktraceVectorMap callmaps;
+		size_t count;
 };
 
 #endif //SIMPLE_BACKTRACE_STORAGE_H

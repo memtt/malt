@@ -23,6 +23,7 @@ class FuncNameDic
 		~FuncNameDic(void);
 		const char * getName(void * callSite);
 		const char* setupNewEntry(void* callSite);
+		const char * setupNewEntry(void * callSite,const std::string & name);
 	public:
 		friend std::ostream & operator << (std::ostream & out,const FuncNameDic & dic);
 		friend void typeToJson(htopml::JsonState & json,std::ostream& stream, const FuncNameDic & value);
