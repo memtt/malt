@@ -80,12 +80,14 @@ void AllocStackProfiler::onExit(void )
 void AllocStackProfiler::onEnterFunction ( void* funcAddr )
 {
 	assert(mode == STACK_MODE_ENTER_EXIT_FUNC);
-	this->exStack.enterFunction(funcAddr);
+	if (mode == STACK_MODE_ENTER_EXIT_FUNC)
+		this->exStack.enterFunction(funcAddr);
 }
 
 /*******************  FUNCTION  *********************/
 void AllocStackProfiler::onExitFunction ( void* funcAddr )
 {
 	assert(mode == STACK_MODE_ENTER_EXIT_FUNC);
-	this->exStack.exitFunction(funcAddr);
+	if (mode == STACK_MODE_ENTER_EXIT_FUNC)
+		this->exStack.exitFunction(funcAddr);
 }

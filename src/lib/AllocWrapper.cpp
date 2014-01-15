@@ -3,6 +3,7 @@
 #include <cstdio>
 #include <cassert>
 #include <dlfcn.h>
+#include <cstring>
 #include "AllocStackProfiler.h"
 
 /*******************  FUNCTION  *********************/
@@ -44,6 +45,23 @@ static RealAllocator gblRealAlloc = {REAL_ALLOC_NOT_READY};
 static char gblCallocIniBuffer[4096];
 
 /*******************  FUNCTION  *********************/
+static StackMode getStackMode(void)
+{
+	char * mode = getenv("STACK_MODE");
+	if (mode == NULL)
+	{
+		return STACK_MODE_BACKTRACE;
+	} else if (strcmp(mode,"backtrace") == 0 || strcmp(mode,"") == 0) {
+		return STACK_MODE_BACKTRACE;
+	} else if (strcmp(mode,"enter-exit") == 0) {
+		return STACK_MODE_ENTER_EXIT_FUNC;
+	} else {
+		fprintf(stderr,"Invalid mode in STACK_MODE environnement variable : '%s'! Supportted : backtrace | enter-exit.",mode);
+		abort();
+	}
+}
+
+/*******************  FUNCTION  *********************/
 //TODO need lock
 void RealAllocator::init(void )
 {
@@ -60,7 +78,7 @@ void RealAllocator::init(void )
 
 		//init profiler
 		gblRealAlloc.state = REAL_ALLOC_INIT_PROFILER;
-		gblRealAlloc.profiler = new AllocStackProfiler();
+		gblRealAlloc.profiler = new AllocStackProfiler(getStackMode());
 
 		//register on exit
 		on_exit(RealAllocator::onExit,NULL);
