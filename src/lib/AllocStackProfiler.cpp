@@ -7,10 +7,11 @@
 #include <common/CodeTiming.h>
 
 /*******************  FUNCTION  *********************/
-AllocStackProfiler::AllocStackProfiler(StackMode mode)
+AllocStackProfiler::AllocStackProfiler(StackMode mode,bool threadSafe)
 {
-	exStack.enterFunction((void*)0x1);
 	this->mode = mode;
+	this->threadSafe = threadSafe;
+
 	switch(mode)
 	{
 		case STACK_MODE_BACKTRACE:
@@ -19,52 +20,64 @@ AllocStackProfiler::AllocStackProfiler(StackMode mode)
 		case STACK_MODE_ENTER_EXIT_FUNC:
 			exStack.enterFunction((void*)0x1);
 			break;
-		default:
-			assert(false);
+		case STACK_MODE_USER:
+			break;
 	}
 }
 
 /*******************  FUNCTION  *********************/
-void AllocStackProfiler::onMalloc(void* ptr, size_t size)
+void AllocStackProfiler::onMalloc(void* ptr, size_t size,Stack * userStack)
 {
-	countCalls(3,size);
+	countCalls(3,size,userStack);
 }
 
 /*******************  FUNCTION  *********************/
-void AllocStackProfiler::onCalloc(void* ptr, size_t nmemb, size_t size)
+void AllocStackProfiler::onCalloc(void* ptr, size_t nmemb, size_t size,Stack * userStack)
 {
-	countCalls(3,size);
+	countCalls(3,size,userStack);
 }
 
 /*******************  FUNCTION  *********************/
-void AllocStackProfiler::onFree(void* ptr)
+void AllocStackProfiler::onFree(void* ptr,Stack * userStack)
 {
-	countCalls(3,0);
+	countCalls(3,0,userStack);
 }
 
 /*******************  FUNCTION  *********************/
-void AllocStackProfiler::onPrepareRealloc(void* oldPtr)
+void AllocStackProfiler::onPrepareRealloc(void* oldPtr,Stack * userStack)
 {
 	//nothing to unregister, skip
 }
 
 /*******************  FUNCTION  *********************/
-void AllocStackProfiler::onRealloc(void* oldPtr, void* ptr, size_t newSize)
+void AllocStackProfiler::onRealloc(void* oldPtr, void* ptr, size_t newSize,Stack * userStack)
 {
-	countCalls(3,newSize);
+	countCalls(3,newSize,userStack);
 }
 
 /*******************  FUNCTION  *********************/
-void AllocStackProfiler::countCalls(int skipDepth,ssize_t delta)
+void AllocStackProfiler::countCalls(int skipDepth,ssize_t delta,Stack * userStack)
 {
 	switch(mode)
 	{
 		case STACK_MODE_BACKTRACE:
 			CODE_TIMING("loadCurrentStack",stack.loadCurrentStack());
-			CODE_TIMING("updateInfo",tracer.getBacktraceInfo(stack).getInfo().addEvent(delta));
+			OPTIONAL_CRITICAL(lock,threadSafe)
+				CODE_TIMING("updateInfo",tracer.getBacktraceInfo(stack).getInfo().addEvent(delta));
+			END_CRITICAL
 			break;
 		case STACK_MODE_ENTER_EXIT_FUNC:
-			CODE_TIMING("updateInfoEx",tracer.getBacktraceInfo(exStack).getInfo().addEvent(delta));
+			OPTIONAL_CRITICAL(lock,threadSafe)
+				CODE_TIMING("updateInfoEx",tracer.getBacktraceInfo(exStack).getInfo().addEvent(delta));
+			END_CRITICAL
+			break;
+		case STACK_MODE_USER:
+			if (userStack != NULL)
+			{
+				OPTIONAL_CRITICAL(lock,threadSafe)
+					CODE_TIMING("updateInfoEx",tracer.getBacktraceInfo(*userStack).getInfo().addEvent(delta));
+				END_CRITICAL
+			}
 			break;
 	}
 }
@@ -73,13 +86,16 @@ void AllocStackProfiler::countCalls(int skipDepth,ssize_t delta)
 void AllocStackProfiler::onExit(void )
 {
 	puts("======================== Print on exit ========================");
-	htopml::typeToJson(std::cout,tracer);
+	OPTIONAL_CRITICAL(lock,threadSafe)
+		htopml::typeToJson(std::cout,tracer);
+	END_CRITICAL
 }
 
 /*******************  FUNCTION  *********************/
 void AllocStackProfiler::onEnterFunction ( void* funcAddr )
 {
 	assert(mode == STACK_MODE_ENTER_EXIT_FUNC);
+	assert(!threadSafe);
 	if (mode == STACK_MODE_ENTER_EXIT_FUNC)
 		this->exStack.enterFunction(funcAddr);
 }
@@ -88,6 +104,7 @@ void AllocStackProfiler::onEnterFunction ( void* funcAddr )
 void AllocStackProfiler::onExitFunction ( void* funcAddr )
 {
 	assert(mode == STACK_MODE_ENTER_EXIT_FUNC);
+	assert(!threadSafe);
 	if (mode == STACK_MODE_ENTER_EXIT_FUNC)
 		this->exStack.exitFunction(funcAddr);
 }

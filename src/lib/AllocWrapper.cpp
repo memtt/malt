@@ -4,6 +4,7 @@
 #include <cassert>
 #include <dlfcn.h>
 #include <cstring>
+#include <portability/Mutex.h>
 #include "AllocStackProfiler.h"
 
 /*******************  FUNCTION  *********************/
@@ -24,10 +25,11 @@ enum RealAllocatorState
 };
 
 /*********************  STRUCT  *********************/
-struct RealAllocator
+struct GlobalState
 {
-	//init state
+	//init state CAUTION, MUST LET state,lock in same order at first due to static pre-initialization.
 	RealAllocatorState state;
+	StaticMutex lock;
 	//real allocator functions
 	MallocFuncPtr malloc;
 	FreeFuncPtr free;
@@ -40,9 +42,18 @@ struct RealAllocator
 	static void onExit(int status,void * arg);
 };
 
+/********************  STRUCT  **********************/
+struct ThreadLocalState
+{
+	EnterExitCallStack * enterExitStack;
+	bool inUse;
+	bool init;
+};
+
 /********************  GLOBALS  **********************/
-static RealAllocator gblRealAlloc = {REAL_ALLOC_NOT_READY};
+static GlobalState gblState = {REAL_ALLOC_NOT_READY,STATIC_MUTEX_INIT,NULL,NULL,NULL,NULL};
 static char gblCallocIniBuffer[4096];
+static __thread ThreadLocalState tlsState = {NULL,false,false};
 
 /*******************  FUNCTION  *********************/
 static StackMode getStackMode(void)
@@ -54,7 +65,7 @@ static StackMode getStackMode(void)
 	} else if (strcmp(mode,"backtrace") == 0 || strcmp(mode,"") == 0) {
 		return STACK_MODE_BACKTRACE;
 	} else if (strcmp(mode,"enter-exit") == 0) {
-		return STACK_MODE_ENTER_EXIT_FUNC;
+		return STACK_MODE_USER;
 	} else {
 		fprintf(stderr,"Invalid mode in STACK_MODE environnement variable : '%s'! Supportted : backtrace | enter-exit.",mode);
 		abort();
@@ -63,61 +74,89 @@ static StackMode getStackMode(void)
 
 /*******************  FUNCTION  *********************/
 //TODO need lock
-void RealAllocator::init(void )
+void GlobalState::init(void )
 {
-	if (gblRealAlloc.state == REAL_ALLOC_NOT_READY)
+	//secure in case of first call in threads
+	gblState.lock.lock();
+
+	if (gblState.state == REAL_ALLOC_NOT_READY)
 	{
 		//update state
-		gblRealAlloc.state = REAL_ALLOC_INIT_SYM;
+		gblState.state = REAL_ALLOC_INIT_SYM;
 		
 		//search addresses
-		gblRealAlloc.malloc = (MallocFuncPtr)dlsym(RTLD_NEXT,"malloc");
-		gblRealAlloc.free = (FreeFuncPtr)dlsym(RTLD_NEXT,"free");
-		gblRealAlloc.calloc = (CallocFuncPtr)dlsym(RTLD_NEXT,"calloc");
-		gblRealAlloc.realloc = (ReallocFuncPtr)dlsym(RTLD_NEXT,"realloc");
+		gblState.malloc = (MallocFuncPtr)dlsym(RTLD_NEXT,"malloc");
+		gblState.free = (FreeFuncPtr)dlsym(RTLD_NEXT,"free");
+		gblState.calloc = (CallocFuncPtr)dlsym(RTLD_NEXT,"calloc");
+		gblState.realloc = (ReallocFuncPtr)dlsym(RTLD_NEXT,"realloc");
 
 		//init profiler
-		gblRealAlloc.state = REAL_ALLOC_INIT_PROFILER;
-		gblRealAlloc.profiler = new AllocStackProfiler(getStackMode());
+		gblState.state = REAL_ALLOC_INIT_PROFILER;
+		gblState.profiler = new AllocStackProfiler(getStackMode());
 
 		//register on exit
-		on_exit(RealAllocator::onExit,NULL);
+		on_exit(GlobalState::onExit,NULL);
 
 		//final state
-		gblRealAlloc.state = REAL_ALLOC_READY;
+		gblState.state = REAL_ALLOC_READY;
+	}
+	
+	//secure in case of first call in threads
+	gblState.lock.unlock();
+}
+
+/*******************  FUNCTION  *********************/
+void GlobalState::onExit(int status,void * arg)
+{
+	if (gblState.state == REAL_ALLOC_READY)
+	{
+		gblState.profiler->onExit();
+		gblState.state = REAL_ALLOC_FINISH;
+		delete gblState.profiler;
+	} else {
+		gblState.state = REAL_ALLOC_FINISH;
 	}
 }
 
 /*******************  FUNCTION  *********************/
-void RealAllocator::onExit(int status,void * arg)
+static EnterExitCallStack * initTls(void)
 {
-	if (gblRealAlloc.state == REAL_ALLOC_READY)
-	{
-		gblRealAlloc.profiler->onExit();
-		gblRealAlloc.state = REAL_ALLOC_FINISH;
-		delete gblRealAlloc.profiler;
-	} else {
-		gblRealAlloc.state = REAL_ALLOC_FINISH;
-	}
+	assert(tlsState.enterExitStack == NULL);
+	//check init
+	if (gblState.state == REAL_ALLOC_NOT_READY)
+		gblState.init();
+	
+	//create the local chain
+	EnterExitCallStack * res = new EnterExitCallStack();
+	res->enterFunction((void*)0x1);
+	
+	//update TLS
+	tlsState.enterExitStack = res;
+	tlsState.init = true;
+	
+	return res;
 }
 
 /*******************  FUNCTION  *********************/
 void * malloc(size_t size)
 {
+	//get addr localy to avoid to read the TLS every time
+	ThreadLocalState & localState = tlsState;
+	
 	//check init
-	if (gblRealAlloc.state == REAL_ALLOC_NOT_READY)
-		gblRealAlloc.init();
+	if ( ! localState.init )
+		initTls();
 
 	//run the default function
-	assert(gblRealAlloc.state > REAL_ALLOC_INIT_SYM);
-	void * res = gblRealAlloc.malloc(size);
+	assert(gblState.state > REAL_ALLOC_INIT_SYM);
+	void * res = gblState.malloc(size);
 
 	//profile
-	if (gblRealAlloc.state == REAL_ALLOC_READY)
+	if (!localState.inUse && gblState.state == REAL_ALLOC_READY)
 	{
-		gblRealAlloc.state = REAL_ALLOC_INUSE;
-		gblRealAlloc.profiler->onMalloc(res,size);
-		gblRealAlloc.state = REAL_ALLOC_READY;
+		localState.inUse = true;
+		gblState.profiler->onMalloc(res,size,localState.enterExitStack);
+		localState.inUse = false;
 	}
 
 	//return segment to user
@@ -127,48 +166,54 @@ void * malloc(size_t size)
 /*******************  FUNCTION  *********************/
 void free(void * ptr)
 {
+	//get addr localy to avoid to read the TLS every time
+	ThreadLocalState & localState = tlsState;
+	
 	//check init
-	if (gblRealAlloc.state == REAL_ALLOC_NOT_READY)
-		gblRealAlloc.init();
+	if ( ! localState.init )
+		initTls();
 
 	//profile
-	if (gblRealAlloc.state == REAL_ALLOC_READY)
+	if (!localState.inUse && gblState.state == REAL_ALLOC_READY)
 	{
-		gblRealAlloc.state = REAL_ALLOC_INUSE;
-		gblRealAlloc.profiler->onFree(ptr);
-		gblRealAlloc.state = REAL_ALLOC_READY;
+		localState.inUse = true;
+		gblState.profiler->onFree(ptr,localState.enterExitStack);
+		localState.inUse = false;
 	}
 
 	//run the default function
-	assert(gblRealAlloc.state > REAL_ALLOC_INIT_SYM);
-	gblRealAlloc.free(ptr);
+	assert(gblState.state > REAL_ALLOC_INIT_SYM);
+	gblState.free(ptr);
 }
 
 /*******************  FUNCTION  *********************/
 void * calloc(size_t nmemb,size_t size)
 {
+	//get addr localy to avoid to read the TLS every time
+	ThreadLocalState & localState = tlsState;
+	
 	//check init
-	if (gblRealAlloc.state == REAL_ALLOC_NOT_READY)
-		gblRealAlloc.init();
+	if ( ! localState.init )
+		initTls();
 
 	//calloc need a special trick for first use due to usage in dlsym
 	//this way it avoid to create infinite loop
-	if (gblRealAlloc.state == REAL_ALLOC_INIT_SYM)
+	if (gblState.state == REAL_ALLOC_INIT_SYM)
 	{
 		assert(sizeof(gblCallocIniBuffer) >= size);
 		return gblCallocIniBuffer;
 	}
 	
 	//run the default function
-	assert(gblRealAlloc.state > REAL_ALLOC_INIT_SYM);
-	void * res = gblRealAlloc.calloc(nmemb,size);
+	assert(gblState.state > REAL_ALLOC_INIT_SYM);
+	void * res = gblState.calloc(nmemb,size);
 
 	//profile
-	if (gblRealAlloc.state == REAL_ALLOC_READY)
+	if (!localState.inUse && gblState.state == REAL_ALLOC_READY)
 	{
-		gblRealAlloc.state = REAL_ALLOC_INUSE;
-		gblRealAlloc.profiler->onCalloc(res,nmemb,size);
-		gblRealAlloc.state = REAL_ALLOC_READY;
+		localState.inUse = true;
+		gblState.profiler->onCalloc(res,nmemb,size,localState.enterExitStack);
+		localState.inUse = false;
 	}
 
 	//return result to user
@@ -178,13 +223,16 @@ void * calloc(size_t nmemb,size_t size)
 /*******************  FUNCTION  *********************/
 void * realloc(void * ptr, size_t size)
 {
+	//get addr localy to avoid to read the TLS every time
+	ThreadLocalState & localState = tlsState;
+	
 	//check init
-	if (gblRealAlloc.state == REAL_ALLOC_NOT_READY)
-		gblRealAlloc.init();
+	if ( ! localState.init )
+		initTls();
 
 	//run the default function
-	assert(gblRealAlloc.state > REAL_ALLOC_INIT_SYM);
-	return gblRealAlloc.realloc(ptr,size);
+	assert(gblState.state > REAL_ALLOC_INIT_SYM);
+	return gblState.realloc(ptr,size);
 }
 
 /*********************  STRUCT  *********************/
@@ -197,19 +245,21 @@ extern "C"
 /*********************  STRUCT  *********************/
 void __cyg_profile_func_enter (void *this_fn,void *call_site)
 {
-	//check init
-	if (gblRealAlloc.state == REAL_ALLOC_NOT_READY)
-		gblRealAlloc.init();
+	//get the local stack
+	EnterExitCallStack * stack = tlsState.enterExitStack;
+	if (stack == NULL)
+		stack = initTls();
 	
-	gblRealAlloc.profiler->onEnterFunction(this_fn);
+	stack->enterFunction(this_fn);
 }
 
 /*********************  STRUCT  *********************/
 void __cyg_profile_func_exit  (void *this_fn,void *call_site)
 {
-	//check init
-	if (gblRealAlloc.state == REAL_ALLOC_NOT_READY)
-		gblRealAlloc.init();
+	//get the local stack
+	EnterExitCallStack * stack = tlsState.enterExitStack;
+	if (stack == NULL)
+		stack = initTls();
 	
-	gblRealAlloc.profiler->onExitFunction(this_fn);
+	stack->exitFunction(this_fn);
 }
