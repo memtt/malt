@@ -8,54 +8,110 @@
 #include "AllocStackProfiler.h"
 
 /*******************  FUNCTION  *********************/
+/** Prototype of malloc function to get it into function pointer. **/
 typedef void * (*MallocFuncPtr) (size_t size);
+/** Prototype of free function to get it into function pointer. **/
 typedef void   (*FreeFuncPtr)   (void * ptr);
+/** Prototype of calloc function to get it into function pointer. **/
 typedef void * (*CallocFuncPtr) (size_t nmemb,size_t size);
+/** Prototype of realloc function to get it into function pointer. **/
 typedef void * (*ReallocFuncPtr)(void * ptr,size_t size);
 
 /********************  ENUM  ************************/
-enum RealAllocatorState
+/**
+ * Follow the current state of GlobalState structure. By default it start as not initialized
+ * (ALLOC_WRAP_NOT_READY) and go to larger values up to ALLOC_WRAP_FINISH).
+**/
+enum AllocWrapperGlobalStatus
 {
-	REAL_ALLOC_NOT_READY,
-	REAL_ALLOC_INIT_SYM,
-	REAL_ALLOC_INIT_PROFILER,
-	REAL_ALLOC_READY,
-	REAL_ALLOC_INUSE,
-	REAL_ALLOC_FINISH,
+	/** 
+	 *  Initial state setup by compiler. It geneate lazy init on fist usage (needed to to use of 
+	 * GlobalState before entering into main() function). 
+	**/
+	ALLOC_WRAP_NOT_READY,
+	/** Intermediate state used to take care of first calloc() answer due to usage into dlsym() function. **/
+	ALLOC_WRAP_INIT_SYM,
+	/** Intermediate state when initilazing profiler object. **/
+	ALLOC_WRAP_INIT_PROFILER,
+	/** Ready for use. **/
+	ALLOC_WRAP_READY,
+	/** Now finish, ignore future calls to not instrument them after call of atexit(). **/
+	ALLOC_WRAP_FINISH,
 };
 
 /*********************  STRUCT  *********************/
-struct GlobalState
+/**
+ * Store the global state of alloc wrapper, mainly used to maintain access to the profiling object and
+ * keep track of the old (glibc) malloc/calloc... symbols to forward the requests after registration of
+ * the event.
+ * 
+ * CAUTION : the 'state' and 'lock' bariables really need to stay on the top of the structure due to
+ * static initialization of global 'gblState' variable.
+**/
+struct AllocWrapperGlobal
 {
-	//init state CAUTION, MUST LET state,lock in same order at first due to static pre-initialization.
-	RealAllocatorState state;
+	/** Current state in life cycle of the structure. CAUTION, need to stay at first position. **/
+	AllocWrapperGlobalStatus status;
+	/** 
+	 * Mutex to protect the structure in multi-thread mode, only used to protect the init state. 
+	 * CAUTION, need to star at second position. 
+	**/
 	StaticMutex lock;
-	//real allocator functions
+	/** Pointer to the old (glibc) malloc symbol. **/
 	MallocFuncPtr malloc;
+	/** Pointer to the old (glibc) free symbol. **/
 	FreeFuncPtr free;
+	/** Pointer to the old (glibc) calloc symbol. **/
 	CallocFuncPtr calloc;
+	/** Pointer to the old (glibc) realloc symbol. **/
 	ReallocFuncPtr realloc;
-	//profiler
+	/** Pointer to the profiler (use pointer due to use before main, only way to ensure init before first malloc usage). **/
 	AllocStackProfiler * profiler;
-	//init function
+	/** Function used to init the structure on first use. **/
 	void init(void);
+	/** Function to cleanup the structure at exit. **/
 	static void onExit(int status,void * arg);
 };
 
 /********************  STRUCT  **********************/
+/**
+ * Manage the local data attached to each threads. 
+ * The content use lazy initialization on first access thanks to the default 'false' 
+ * value of then 'init' field.
+**/
 struct ThreadLocalState
 {
+	/** Object used to follow the local stack for the enter/exit mode. **/
 	EnterExitCallStack * enterExitStack;
+	/** 
+	 * Avoid to instrument inner allocations, marked at 'true' when entering in first level malloc/free.... 
+	 * It permit to use dynamic allocation inside instrumentation functions.
+	 **/
 	bool inUse;
-	bool init;
+	/**
+	 * Remember the default init state to manage lazy initialization.**/
+	bool initialized;
+	
+	/** Function used to init the structure on first use. **/
+	void init(void);
 };
 
 /********************  GLOBALS  **********************/
-static GlobalState gblState = {REAL_ALLOC_NOT_READY,STATIC_MUTEX_INIT,NULL,NULL,NULL,NULL};
-static char gblCallocIniBuffer[4096];
+/** Store the global state of allocator wrapper. **/
+static AllocWrapperGlobal gblState = {ALLOC_WRAP_NOT_READY,STATIC_MUTEX_INIT,NULL,NULL,NULL,NULL};
+/** Store the per-thread state of allocator wrapper. **/
 static __thread ThreadLocalState tlsState = {NULL,false,false};
+/** Temporary buffer to return on first realloc used by dlsym and split infinit call loops. **/
+static char gblCallocIniBuffer[4096];
 
 /*******************  FUNCTION  *********************/
+/**
+ * Check the stack mode to use by reading STACK_MODE environnement variable.
+ * Expected values are :
+ *    - 'backtrace'  : use backtrace in malloc/calloc... calls to get the call stack.
+ *    - 'enter-exit' : follow the call of each function to continuously follow the stack status 
+ *                     thanks to -finstrument-function flag of GCC/CLANG/ICC.
+**/
 static StackMode getStackMode(void)
 {
 	char * mode = getenv("STACK_MODE");
@@ -73,16 +129,19 @@ static StackMode getStackMode(void)
 }
 
 /*******************  FUNCTION  *********************/
-//TODO need lock
-void GlobalState::init(void )
+/**
+ * Function in charge of the lazy initialization of the global state.
+ * It take care of multiple and parallel calls in case of use in multi-thread context.
+**/
+void AllocWrapperGlobal::init(void )
 {
 	//secure in case of first call in threads
 	gblState.lock.lock();
 
-	if (gblState.state == REAL_ALLOC_NOT_READY)
+	if (gblState.status == ALLOC_WRAP_NOT_READY)
 	{
 		//update state
-		gblState.state = REAL_ALLOC_INIT_SYM;
+		gblState.status = ALLOC_WRAP_INIT_SYM;
 		
 		//search addresses
 		gblState.malloc = (MallocFuncPtr)dlsym(RTLD_NEXT,"malloc");
@@ -91,14 +150,14 @@ void GlobalState::init(void )
 		gblState.realloc = (ReallocFuncPtr)dlsym(RTLD_NEXT,"realloc");
 
 		//init profiler
-		gblState.state = REAL_ALLOC_INIT_PROFILER;
+		gblState.status = ALLOC_WRAP_INIT_PROFILER;
 		gblState.profiler = new AllocStackProfiler(getStackMode());
 
 		//register on exit
-		on_exit(GlobalState::onExit,NULL);
+		on_exit(AllocWrapperGlobal::onExit,NULL);
 
 		//final state
-		gblState.state = REAL_ALLOC_READY;
+		gblState.status = ALLOC_WRAP_READY;
 	}
 	
 	//secure in case of first call in threads
@@ -106,53 +165,70 @@ void GlobalState::init(void )
 }
 
 /*******************  FUNCTION  *********************/
-void GlobalState::onExit(int status,void * arg)
+/**
+ * Function to register into on_exit() one. It permit to cleanup memory and to flush
+ * the extracted profile at the end of the execution.
+ *
+ * @param status Exit status of the application (return value of main()).
+ * @param arg Unused argument, will be NULL.
+**/
+void AllocWrapperGlobal::onExit(int status,void * arg)
 {
-	if (gblState.state == REAL_ALLOC_READY)
+	if (gblState.status == ALLOC_WRAP_READY)
 	{
 		gblState.profiler->onExit();
-		gblState.state = REAL_ALLOC_FINISH;
+		gblState.status = ALLOC_WRAP_FINISH;
 		delete gblState.profiler;
 	} else {
-		gblState.state = REAL_ALLOC_FINISH;
+		gblState.status = ALLOC_WRAP_FINISH;
 	}
 }
 
 /*******************  FUNCTION  *********************/
-static EnterExitCallStack * initTls(void)
+/**
+ * Function used on lazy init of the TLS variable, it will be called on first use of the struct.
+**/
+void ThreadLocalState::init(void)
 {
+	//check errors
 	assert(tlsState.enterExitStack == NULL);
+
 	//check init
-	if (gblState.state == REAL_ALLOC_NOT_READY)
+	if (gblState.status == ALLOC_WRAP_NOT_READY)
 		gblState.init();
 	
 	//create the local chain
-	EnterExitCallStack * res = new EnterExitCallStack();
-	res->enterFunction((void*)0x1);
+	EnterExitCallStack * stack = new EnterExitCallStack();
+	stack->enterFunction((void*)0x1);
 	
 	//update TLS
-	tlsState.enterExitStack = res;
-	tlsState.init = true;
-	
-	return res;
+	tlsState.enterExitStack = stack;
+	tlsState.initialized = true;
 }
 
 /*******************  FUNCTION  *********************/
+/**
+ * Wrapper of the malloc function to capture allocations. The original symbol will be
+ * search by dlsym() in AllocWrapperGlobal::init() .
+ * 
+ * @param size Size of the element to allocate.
+ * @return Pointer to the allocated memory, NULL in case of error.
+**/
 void * malloc(size_t size)
 {
 	//get addr localy to avoid to read the TLS every time
 	ThreadLocalState & localState = tlsState;
 	
 	//check init
-	if ( ! localState.init )
-		initTls();
+	if ( ! localState.initialized )
+		localState.init();
 
 	//run the default function
-	assert(gblState.state > REAL_ALLOC_INIT_SYM);
+	assert(gblState.status > ALLOC_WRAP_INIT_SYM);
 	void * res = gblState.malloc(size);
 
 	//profile
-	if (!localState.inUse && gblState.state == REAL_ALLOC_READY)
+	if (!localState.inUse && gblState.status == ALLOC_WRAP_READY)
 	{
 		localState.inUse = true;
 		gblState.profiler->onMalloc(res,size,localState.enterExitStack);
@@ -164,17 +240,23 @@ void * malloc(size_t size)
 }
 
 /*******************  FUNCTION  *********************/
+/**
+ * Wrapper of the free function to capture deallocations. The original symbol will be
+ * search by dlsym() in AllocWrapperGlobal::init() .
+ * 
+ * @param ptr Pointer to the memory segment to released.
+**/
 void free(void * ptr)
 {
 	//get addr localy to avoid to read the TLS every time
 	ThreadLocalState & localState = tlsState;
 	
 	//check init
-	if ( ! localState.init )
-		initTls();
+	if ( ! localState.initialized )
+		localState.init();
 
 	//profile
-	if (!localState.inUse && gblState.state == REAL_ALLOC_READY)
+	if (!localState.inUse && gblState.status == ALLOC_WRAP_READY)
 	{
 		localState.inUse = true;
 		gblState.profiler->onFree(ptr,localState.enterExitStack);
@@ -182,34 +264,42 @@ void free(void * ptr)
 	}
 
 	//run the default function
-	assert(gblState.state > REAL_ALLOC_INIT_SYM);
+	assert(gblState.status > ALLOC_WRAP_INIT_SYM);
 	gblState.free(ptr);
 }
 
 /*******************  FUNCTION  *********************/
+/**
+ * Wrapper of the calloc function to capture allocations. The original symbol will be
+ * search by dlsym() in AllocWrapperGlobal::init() .
+ * 
+ * @param nmemb Number of element to allocate.
+ * @param size Size of the element to allocate.
+ * @return Pointer to the allocated memory, NULL in case of error.
+**/
 void * calloc(size_t nmemb,size_t size)
 {
 	//get addr localy to avoid to read the TLS every time
 	ThreadLocalState & localState = tlsState;
 	
 	//check init
-	if ( ! localState.init )
-		initTls();
+	if ( ! localState.initialized )
+		localState.init();
 
 	//calloc need a special trick for first use due to usage in dlsym
 	//this way it avoid to create infinite loop
-	if (gblState.state == REAL_ALLOC_INIT_SYM)
+	if (gblState.status == ALLOC_WRAP_INIT_SYM)
 	{
 		assert(sizeof(gblCallocIniBuffer) >= size);
 		return gblCallocIniBuffer;
 	}
 	
 	//run the default function
-	assert(gblState.state > REAL_ALLOC_INIT_SYM);
+	assert(gblState.status > ALLOC_WRAP_INIT_SYM);
 	void * res = gblState.calloc(nmemb,size);
 
 	//profile
-	if (!localState.inUse && gblState.state == REAL_ALLOC_READY)
+	if (!localState.inUse && gblState.status == ALLOC_WRAP_READY)
 	{
 		localState.inUse = true;
 		gblState.profiler->onCalloc(res,nmemb,size,localState.enterExitStack);
@@ -221,21 +311,30 @@ void * calloc(size_t nmemb,size_t size)
 }
 
 /*******************  FUNCTION  *********************/
+/**
+ * Wrapper of the realloc function to capture allocations. The original symbol will be
+ * search by dlsym() in AllocWrapperGlobal::init() .
+ * 
+ * @param ptr Address of the old segment to resize, NULL to allocate a new one.
+ * @param size New requested size, 0 to free the given segment.
+ * @return Pointer to the allocated memory, NULL in case of error.
+**/
 void * realloc(void * ptr, size_t size)
 {
 	//get addr localy to avoid to read the TLS every time
 	ThreadLocalState & localState = tlsState;
 	
 	//check init
-	if ( ! localState.init )
-		initTls();
+	if ( ! localState.initialized )
+		localState.init();
 
 	//run the default function
-	assert(gblState.state > REAL_ALLOC_INIT_SYM);
+	assert(gblState.status > ALLOC_WRAP_INIT_SYM);
 	return gblState.realloc(ptr,size);
 }
 
 /*********************  STRUCT  *********************/
+//Juste to be sure of the C symbol naming.
 extern "C" 
 {
 	void __cyg_profile_func_enter (void *this_fn,void *call_site);
@@ -243,23 +342,49 @@ extern "C"
 }
 
 /*********************  STRUCT  *********************/
+/**
+ * Symbol used to capture entering in function when working with GCC/CLANG/ICC 
+ * -finstrument-function CFLAG.
+ *
+ * It need to enable STACK_MODE_USER on profiler object to be usefull. This flag
+ * is enabled by setting environnement variable STACK_MODE to "enter-exit" before
+ * loading the instrumentation library.
+ *
+ * @param this_fn Define the name of the current function to exit.
+ * @param call_site Define the address which made the call and on which to return.
+**/
 void __cyg_profile_func_enter (void *this_fn,void *call_site)
 {
-	//get the local stack
-	EnterExitCallStack * stack = tlsState.enterExitStack;
-	if (stack == NULL)
-		stack = initTls();
+	//get addr localy to avoid to read the TLS every time
+	ThreadLocalState & localState = tlsState;
 	
-	stack->enterFunction(this_fn);
+	//check init
+	if ( ! localState.initialized )
+		localState.init();
+	
+	localState.enterExitStack->enterFunction(this_fn);
 }
 
 /*********************  STRUCT  *********************/
+/**
+ * Symbol used to capture exit of function when working with GCC/CLANG/ICC 
+ * -finstrument-function CFLAG. 
+ * 
+ * It need to enable STACK_MODE_USER on profiler object to be usefull. This flag
+ * is enabled by setting environnement variable STACK_MODE to "enter-exit" before
+ * loading the instrumentation library.
+ *
+ * @param this_fn Define the name of the current function to exit.
+ * @param call_site Define the address which made the call and on which to return.
+**/
 void __cyg_profile_func_exit  (void *this_fn,void *call_site)
 {
-	//get the local stack
-	EnterExitCallStack * stack = tlsState.enterExitStack;
-	if (stack == NULL)
-		stack = initTls();
+	//get addr localy to avoid to read the TLS every time
+	ThreadLocalState & localState = tlsState;
 	
-	stack->exitFunction(this_fn);
+	//check init
+	if ( ! localState.initialized )
+		localState.init();
+	
+	localState.enterExitStack->exitFunction(this_fn);
 }
