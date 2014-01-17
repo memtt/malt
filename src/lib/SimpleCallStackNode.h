@@ -16,6 +16,10 @@ class SimpleCallStackNode
 		friend std::ostream & operator << (std::ostream & out,const SimpleCallStackNode & tracer);
 		friend void typeToJson(htopml::JsonState & json,std::ostream& stream, const SimpleCallStackNode & value);
 	private:
+		//ensure to never copy as private
+		SimpleCallStackNode(const SimpleCallStackNode & orig);
+		SimpleCallStackNode & operator = (const SimpleCallStackNode & orig);
+	private:
 		Stack callStack;
 		CallStackInfo info;
 };

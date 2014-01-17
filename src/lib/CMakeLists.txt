@@ -1,5 +1,5 @@
 ######################################################
-set(CST_SOURCES FuncNameDic.cpp BacktraceCallStack.cpp SimpleStackTracer.cpp AllocStackProfiler.cpp CallStackInfo.cpp SimpleCallStackNode.cpp EnterExitCallStack.cpp Stack.cpp)
+set(CST_SOURCES FuncNameDic.cpp BacktraceCallStack.cpp SimpleStackTracer.cpp AllocStackProfiler.cpp CallStackInfo.cpp SimpleCallStackNode.cpp EnterExitCallStack.cpp Stack.cpp SegmentTracker.cpp)
 
 ######################################################
 add_library(libcst OBJECT ${CST_SOURCES})
