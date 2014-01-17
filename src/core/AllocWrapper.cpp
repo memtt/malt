@@ -5,10 +5,11 @@
 #include <dlfcn.h>
 #include <cstring>
 #include <portability/Mutex.h>
-#include <common/CodeTiming.h>
-#include "AllocStackProfiler.h"
+#include <common/CodeTiming.hpp>
+#include "AllocStackProfiler.hpp"
 
-// #define CODE_TIMING(x,y) do{y;} while(0)
+/***************** USING NAMESPACE ******************/
+using namespace ATT;
 
 /*******************  FUNCTION  *********************/
 /** Prototype of malloc function to get it into function pointer. **/
@@ -59,7 +60,7 @@ struct AllocWrapperGlobal
 	 * Mutex to protect the structure in multi-thread mode, only used to protect the init state. 
 	 * CAUTION, need to star at second position. 
 	**/
-	StaticMutex lock;
+	ATT::StaticMutex lock;
 	/** Pointer to the old (glibc) malloc symbol. **/
 	MallocFuncPtr malloc;
 	/** Pointer to the old (glibc) free symbol. **/

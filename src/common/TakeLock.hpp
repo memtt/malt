@@ -1,5 +1,5 @@
-#ifndef TAKE_LOCK_H
-#define TAKE_LOCK_H
+#ifndef ATT_TAKE_LOCK_HPP
+#define ATT_TAKE_LOCK_HPP
 
 /********************  HEADERS  *********************/
 #include <cassert>
@@ -23,7 +23,7 @@ END_CRITICAL
  * @param lock Define the lock to take. A lock object just has to provide lock() and unlock() methods.
  * @param takeLock Take the lock if true otherwise consider a sequential use and do not take the lock.
 **/
-#define OPTIONAL_CRITICAL(lock,takeLock) do { TakeLock<typeof(lock)> _local_take_lock__(&(lock),(takeLock));
+#define ATT_OPTIONAL_CRITICAL(lock,takeLock) do { ATT::TakeLock<typeof(lock)> _local_take_lock__(&(lock),(takeLock));
 
 /********************  MACROS  **********************/
 /**
@@ -43,11 +43,15 @@ END_CRITICAL
  * 
  * @param lock Define the lock to take. A lock object just has to provide lock() and unlock() methods.
 **/
-#define START_CRITICAL(lock) { TakeLock<typeof(lock)> _local_take_lock__(&(lock));
+#define ATT_START_CRITICAL(lock) { ATT::TakeLock<typeof(lock)> _local_take_lock__(&(lock));
 
 /********************  MACROS  **********************/
 /** Close a critical region defined by START_CRITICAL of OPTIONAL_CRITICAL. **/
-#define END_CRITICAL }while(0);
+#define ATT_END_CRITICAL }while(0);
+
+/*******************  NAMESPACE  ********************/
+namespace ATT
+{
 
 /*********************  CLASS  **********************/
 /**
@@ -126,4 +130,7 @@ inline void TakeLock<T>::unlock(void )
 	}
 }
 
-#endif //TAKE_LOCK_H
+};
+
+#endif //ATT_TAKE_LOCK_HPP
+

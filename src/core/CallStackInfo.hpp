@@ -1,5 +1,5 @@
-#ifndef CALL_STACK_INFO_H
-#define CALL_STACK_INFO_H
+#ifndef ATT_CALL_STACK_INFO_HPP
+#define ATT_CALL_STACK_INFO_HPP
 
 /*******************  FUNCTION  *********************/
 #include <ostream>
@@ -10,6 +10,10 @@ namespace htopml
 {
 	class JsonState;
 };
+
+/*******************  NAMESPACE  ********************/
+namespace ATT
+{
 
 /*********************  CLASS  **********************/
 class SimpleQuantityHistory
@@ -42,4 +46,6 @@ class CallStackInfo
 		ssize_t cntZeros;
 };
 
-#endif //CALL_STACK_INFO_H
+}
+
+#endif //ATT_CALL_STACK_INFO_HPP

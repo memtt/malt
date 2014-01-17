@@ -1,7 +1,7 @@
 /********************  HEADERS  *********************/
 #include <gtest/gtest.h>
-#include <lib/SegmentTracker.h>
-#include <lib/Stack.h>
+#include <core/SegmentTracker.h>
+#include <core/Stack.h>
 
 /********************* GLOBALS **********************/
 static void * CST_STACK_1_CONTENT[] = {(void*)0x1,(void*)0x2,(void*)0x3};

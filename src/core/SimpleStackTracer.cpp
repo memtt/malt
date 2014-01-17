@@ -3,8 +3,10 @@
 #include <cstdlib>
 #include <cstdio>
 #include <json/JsonState.h>
-#include <common/CodeTiming.h>
+#include <common/CodeTiming.hpp>
 #include "SimpleStackTracer.h"
+
+using namespace ATT;
 
 /*******************  FUNCTION  *********************/
 SimpleStackTracer::SimpleStackTracer(void )

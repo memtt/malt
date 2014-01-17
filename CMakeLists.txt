@@ -1,7 +1,7 @@
 ######################################################
 #Usage of OBJECT keyword in add_library require 2.8.3 (or something like that, need to check)
 cmake_minimum_required(VERSION 2.8.3)
-project(callstacktrace)
+project(AllocTracerTool)
 
 ######################################################
 #global setup

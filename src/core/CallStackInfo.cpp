@@ -1,7 +1,11 @@
 /********************  HEADERS  *********************/
 #include <cstdlib>
 #include <json/JsonState.h>
-#include "CallStackInfo.h"
+#include "CallStackInfo.hpp"
+
+/*******************  NAMESPACE  ********************/
+namespace ATT
+{
 
 /*******************  FUNCTION  *********************/
 SimpleQuantityHistory::SimpleQuantityHistory(void )
@@ -80,4 +84,6 @@ void typeToJson(htopml::JsonState& json, std::ostream& stream, const SimpleQuant
 	json.printField("max",value.max);
 	json.printField("sum",value.sum);
 	json.closeStruct();
+}
+
 }

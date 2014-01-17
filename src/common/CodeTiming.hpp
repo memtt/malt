@@ -18,11 +18,15 @@ void yourFunc(void)
 **/
 #define CODE_TIMING(name,code) \
 	do {  \
-		static CodeTiming __code_timing_local__(name);   \
+		static ATT::CodeTiming __code_timing_local__(name);   \
 		__code_timing_local__.start(); \
 		do {code;} while(0); \
 		__code_timing_local__.end();  \
 	} while(0)
+
+/*******************  NAMESPACE  ********************/
+namespace ATT
+{
 
 /*********************  CLASS  **********************/
 /**
@@ -96,5 +100,7 @@ inline void CodeTiming::end(void)
 	count++;
 	sum += t;
 }
+
+};
 
 #endif //CODE_TIMING_H

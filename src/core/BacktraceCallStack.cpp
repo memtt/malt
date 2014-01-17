@@ -3,11 +3,16 @@
 #include <cassert>
 #include <cstring>
 #include <execinfo.h>
-#include "BacktraceCallStack.h"
+#include "BacktraceCallStack.hpp"
 
-#define CALL_STACK_DEFAULT_SIZE 16
-#define CALL_STACK_GROW_THRESHOLD 64
-#define CALL_STACK_MAX 256
+/********************  MACROS  **********************/
+#define ATT_CALL_STACK_DEFAULT_SIZE 16
+#define ATT_CALL_STACK_GROW_THRESHOLD 64
+#define ATT_CALL_STACK_MAX 256
+
+/*******************  NAMESPACE  ********************/
+namespace ATT 
+{
 
 /*******************  FUNCTION  *********************/
 BacktraceCallStack::BacktraceCallStack(void)
@@ -30,7 +35,7 @@ void BacktraceCallStack::loadCurrentStack(void)
 		assert(loadedSize > 0);
 
 		//miss some entries, need to grow the buffer
-		if (loadedSize == CALL_STACK_MAX)
+		if (loadedSize == ATT_CALL_STACK_MAX)
 		{
 			static bool once = false;
 			if (!once)
@@ -44,4 +49,6 @@ void BacktraceCallStack::loadCurrentStack(void)
 			retry = false;
 		}
 	} while(retry);
+}
+
 }

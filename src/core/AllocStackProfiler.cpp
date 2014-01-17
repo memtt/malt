@@ -3,8 +3,12 @@
 #include <iostream>
 #include <execinfo.h>
 #include <json/TypeToJson.h>
-#include "AllocStackProfiler.h"
-#include <common/CodeTiming.h>
+#include "AllocStackProfiler.hpp"
+#include <common/CodeTiming.hpp>
+
+/*******************  NAMESPACE  ********************/
+namespace ATT
+{
 
 /*******************  FUNCTION  *********************/
 AllocStackProfiler::AllocStackProfiler(StackMode mode,bool threadSafe)
@@ -53,7 +57,7 @@ void AllocStackProfiler::onPrepareRealloc(void* oldPtr,Stack * userStack)
 /*******************  FUNCTION  *********************/
 void AllocStackProfiler::onRealloc(void* oldPtr, void* ptr, size_t newSize,Stack * userStack)
 {
-	OPTIONAL_CRITICAL(lock,threadSafe)
+	ATT_OPTIONAL_CRITICAL(lock,threadSafe)
 		//to avoid to search it 2 times
 		SimpleCallStackNode * callStackNode = NULL;
 		
@@ -64,13 +68,13 @@ void AllocStackProfiler::onRealloc(void* oldPtr, void* ptr, size_t newSize,Stack
 		//alloc part
 		if (newSize > 0)
 			callStackNode = onAllocEvent(ptr,newSize,3,userStack,callStackNode,false);
-	END_CRITICAL
+	ATT_END_CRITICAL
 }
 
 /*******************  FUNCTION  *********************/
 SimpleCallStackNode * AllocStackProfiler::onAllocEvent(void* ptr, size_t size,int skipDepth, Stack* userStack,SimpleCallStackNode * callStackNode,bool doLock)
 {
-	OPTIONAL_CRITICAL(lock,threadSafe && doLock)
+	ATT_OPTIONAL_CRITICAL(lock,threadSafe && doLock)
 		//search if not provided
 		if (callStackNode == NULL)
 			callStackNode = getStackNode(skipDepth,size,userStack);
@@ -81,7 +85,7 @@ SimpleCallStackNode * AllocStackProfiler::onAllocEvent(void* ptr, size_t size,in
 		//register for segment history tracking
 		if (ptr != NULL)
 			CODE_TIMING("segTracerAdd",segTracer.add(ptr,size,callStackNode));
-	END_CRITICAL
+	ATT_END_CRITICAL
 	
 	return callStackNode;
 }
@@ -89,7 +93,7 @@ SimpleCallStackNode * AllocStackProfiler::onAllocEvent(void* ptr, size_t size,in
 /*******************  FUNCTION  *********************/
 SimpleCallStackNode * AllocStackProfiler::onFreeEvent(void* ptr,int skipDepth, Stack* userStack,SimpleCallStackNode * callStackNode,bool doLock)
 {
-	OPTIONAL_CRITICAL(lock,threadSafe && doLock)
+	ATT_OPTIONAL_CRITICAL(lock,threadSafe && doLock)
 		//search segment info to link with previous history
 		SegmentInfo * segInfo = NULL;
 		CODE_TIMING("segTracerGet",segInfo = segTracer.get(ptr));
@@ -112,7 +116,7 @@ SimpleCallStackNode * AllocStackProfiler::onFreeEvent(void* ptr,int skipDepth, S
 		
 		//remove tracking info
 		CODE_TIMING("segTracerRemove",segTracer.remove(ptr));
-	END_CRITICAL
+	ATT_END_CRITICAL
 	
 	return callStackNode;
 }
@@ -145,9 +149,9 @@ SimpleCallStackNode* AllocStackProfiler::getStackNode(int skipDepth, ssize_t del
 void AllocStackProfiler::onExit(void )
 {
 	puts("======================== Print on exit ========================");
-	OPTIONAL_CRITICAL(lock,threadSafe)
+	ATT_OPTIONAL_CRITICAL(lock,threadSafe)
 // 		CODE_TIMING("output",htopml::typeToJson(std::cout,stackTracer));
-	END_CRITICAL
+	ATT_END_CRITICAL
 }
 
 /*******************  FUNCTION  *********************/
@@ -166,4 +170,6 @@ void AllocStackProfiler::onExitFunction ( void* funcAddr )
 	assert(!threadSafe);
 	if (mode == STACK_MODE_ENTER_EXIT_FUNC)
 		this->exStack.exitFunction(funcAddr);
+}
+
 }

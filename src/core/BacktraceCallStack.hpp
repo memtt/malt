@@ -1,10 +1,14 @@
-#ifndef BACKTRACE_BACKTRACE_H
-#define BACKTRACE_BACKTRACE_H
+#ifndef ATT_BACKTRACE_BACKTRACE_HPP
+#define ATT_BACKTRACE_BACKTRACE_HPP
 
 /********************  HEADERS  *********************/
 #include "Stack.h"
 #include "FuncNameDic.h"
-#include "CallStackInfo.h"
+#include "CallStackInfo.hpp"
+
+/*******************  NAMESPACE  ********************/
+namespace ATT
+{
 
 /*********************  CLASS  **********************/
 class BacktraceCallStack : public Stack
@@ -14,4 +18,6 @@ class BacktraceCallStack : public Stack
 		void loadCurrentStack(void);
 };
 
-#endif //BACKTRACE_BACKTRACE_H
+};
+
+#endif //ATT_BACKTRACE_BACKTRACE_HPP

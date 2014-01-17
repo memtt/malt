@@ -1,5 +1,5 @@
-#ifndef ALLOC_STATCK_PROFILER_H
-#define ALLOC_STATCK_PROFILER_H
+#ifndef ATT_ALLOC_STACK_PROGILER_HPP
+#define ATT_ALLOC_STACK_PROGILER_HPP
 
 /********************  HEADERS  *********************/
 #include <cstdlib>
@@ -7,6 +7,10 @@
 #include "SegmentTracker.h"
 #include "SimpleStackTracer.h"
 #include "EnterExitCallStack.h"
+
+/*******************  NAMESPACE  ********************/
+namespace ATT
+{
 
 /********************  ENUM  ************************/
 enum StackMode
@@ -39,8 +43,10 @@ class AllocStackProfiler
 		BacktraceCallStack stack;
 		EnterExitCallStack exStack;
 		StackMode mode;
-		Mutex lock;
+		ATT::Mutex lock;
 		bool threadSafe;
 };
 
-#endif //ALLOC_STATCK_PROFILER_H
+};
+
+#endif //ATT_ALLOC_STACK_PROGILER_HPP

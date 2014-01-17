@@ -1,6 +1,6 @@
 #include <cycle.h>
-#include <lib/BacktraceCallStack.h>
-#include <lib/AllocStackProfiler.h>
+#include <core/BacktraceCallStack.hpp>
+#include <core/AllocStackProfiler.hpp>
 #include <cstdlib>
 #include <ostream>
 #include <string>
@@ -11,6 +11,7 @@
 #include <cstdio>
 
 using namespace std;
+using namespace ATT;
 
 #define MAX_STACKS 10000
 #define MAX_LOCAL_REUSE 5

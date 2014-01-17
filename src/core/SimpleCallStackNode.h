@@ -2,7 +2,7 @@
 #define SIMPLE_CALL_STACK_NODE_H
 
 /********************  HEADERS  *********************/
-#include "CallStackInfo.h"
+#include "CallStackInfo.hpp"
 #include "Stack.h"
 
 /*********************  CLASS  **********************/
@@ -10,7 +10,7 @@ class SimpleCallStackNode
 {
 	public:
 		SimpleCallStackNode(const Stack & stack);
-		CallStackInfo & getInfo(void) {return info;};
+		ATT::CallStackInfo & getInfo(void) {return info;};
 		Stack & getCallStack(void) { return callStack;};
 	public:
 		friend std::ostream & operator << (std::ostream & out,const SimpleCallStackNode & tracer);
@@ -21,7 +21,7 @@ class SimpleCallStackNode
 		SimpleCallStackNode & operator = (const SimpleCallStackNode & orig);
 	private:
 		Stack callStack;
-		CallStackInfo info;
+		ATT::CallStackInfo info;
 };
 
 #endif //SIMPLE_CALL_STACK_NODE_H

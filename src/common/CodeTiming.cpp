@@ -4,10 +4,14 @@
 #include <iomanip>
 #include <iostream>
 //locals
-#include "CodeTiming.h"
+#include "CodeTiming.hpp"
 
 /***************** USING NAMESPACE ******************/
 using namespace std;
+
+/*******************  NAMESPACE  ********************/
+namespace ATT
+{
 
 /********************** CONSTS **********************/
 /** Strings for unit printing. **/
@@ -68,3 +72,5 @@ void CodeTiming::printValue(double value, const char* unit)
 	//print
 	cerr << setw(5) << setprecision(2) << std::right << value << " " << setw(1) << cstUnits[depth] << unit;
 }
+
+};
