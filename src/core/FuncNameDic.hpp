@@ -1,5 +1,5 @@
-#ifndef FUNC_NAME_DIC_H
-#define FUNC_NAME_DIC_H
+#ifndef ATT_FUNC_NAME_DIC_HPP
+#define ATT_FUNC_NAME_DIC_HPP
 
 /********************  HEADERS  *********************/
 #include <map>
@@ -9,11 +9,15 @@
 /*******************  FUNCTION  *********************/
 typedef std::map<void *,const char*> FuncNameDicMap;
 
-/*******************  FUNCTION  *********************/
+/*********************  TYPES  **********************/
 namespace htopml
 {
 	class JsonState;
 };
+
+/*******************  NAMESPACE  ********************/
+namespace ATT
+{
 
 /*********************  CLASS  **********************/
 class FuncNameDic
@@ -31,4 +35,6 @@ class FuncNameDic
 		FuncNameDicMap nameMap;
 };
 
-#endif //FUNC_NAME_DIC_H
+}
+
+#endif //ATT_FUNC_NAME_DIC_HPP

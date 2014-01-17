@@ -4,7 +4,7 @@ set(PORTABILITY_MUTEX "PTHREAD" CACHE STRING "Select mutex implementation to use
 
 ######################################################
 #select portability definitions
-set(PORTABILITY_MUTEX_${PORTABILITY_MUTEX} yes)
+set(ATT_PORTABILITY_MUTEX_${PORTABILITY_MUTEX} yes)
 
 ######################################################
 #gen config.h

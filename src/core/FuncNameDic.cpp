@@ -5,8 +5,12 @@
 #include <execinfo.h>
 #include <cstring>
 #include <cstdio>
-#include "FuncNameDic.h"
+#include "FuncNameDic.hpp"
 #include <json/JsonState.h>
+
+/*******************  NAMESPACE  ********************/
+namespace ATT
+{
 
 /*******************  FUNCTION  *********************/
 FuncNameDic::FuncNameDic(void )
@@ -96,4 +100,6 @@ const char* FuncNameDic::setupNewEntry(void* callSite, const std::string& name)
 	} else {
 		return it->second;
 	}
+}
+
 }

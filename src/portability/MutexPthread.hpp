@@ -1,8 +1,12 @@
-#ifndef MUTEX_PTHREAD_H
-#define MUTEX_PTHREAD_H
+#ifndef ATT_MUTEX_PTHREAD_HPP
+#define ATT_MUTEX_PTHREAD_HPP
 
 /********************  HEADERS  *********************/
 #include "pthread.h"
+
+/*******************  NAMESPACE  ********************/
+namespace ATT
+{
 
 /********************  STRUCT  **********************/
 struct StaticMutexPthread
@@ -81,4 +85,6 @@ inline bool MutexPthread::tryLock(void )
 	return pthread_mutex_trylock(&mutex);
 }
 
-#endif //MUTEX_PTHREAD_H
+}
+
+#endif //ATT_MUTEX_PTHREAD_HPP

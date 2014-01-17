@@ -12,6 +12,10 @@
 #define CALL_STACK_DEFAULT_SIZE   32
 #define CALL_STACK_GROW_THRESHOLD 1024
 
+/*******************  NAMESPACE  ********************/
+namespace ATT
+{
+
 /*******************  FUNCTION  *********************/
 Stack::Stack ( StackOrder order )
 {
@@ -220,4 +224,6 @@ void Stack::resolveSymbols ( FuncNameDic& dic ) const
 {
 	for (int i = 0 ; i < size ; i++)
 		dic.getName(stack[i]);
+}
+
 }

@@ -1,6 +1,10 @@
 /********************  HEADERS  *********************/
 #include <cassert>
-#include "SegmentTracker.h"
+#include "SegmentTracker.hpp"
+
+/*******************  NAMESPACE  ********************/
+namespace ATT
+{
 
 /*******************  FUNCTION  *********************/
 SegmentInfo::SegmentInfo(void)
@@ -60,4 +64,6 @@ SegmentInfo* SegmentTracker::get(void* ptr)
 void SegmentTracker::remove(void* ptr)
 {
 	map.erase(ptr);
+}
+
 }

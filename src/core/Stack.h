@@ -1,10 +1,10 @@
-#ifndef STACK_H
-#define STACK_H
+#ifndef ATT_STACK_H
+#define ATT_STACK_H
 
 /********************  HEADERS  *********************/
 #include <ostream>
 #include <stdint.h>
-#include "FuncNameDic.h"
+#include "FuncNameDic.hpp"
 // #include <json/JsonState.h>
 
 /*******************  FUNCTION  *********************/
@@ -15,6 +15,10 @@ namespace htopml
 {
 	class JsonState;
 };
+
+/*******************  NAMESPACE  ********************/
+namespace ATT
+{
 
 /*********************  ENUM  ***********************/
 enum StackOrder
@@ -52,4 +56,6 @@ class Stack
 		StackOrder order;
 };
 
-#endif //STACK_H
+}
+
+#endif //ATT_STACK_H

@@ -1,5 +1,5 @@
-#ifndef ENTER_EXIT_CALL_STACK_H
-#define ENTER_EXIT_CALL_STACK_H
+#ifndef ATT_ENTER_EXIT_CALL_STACK_HPP
+#define ATT_ENTER_EXIT_CALL_STACK_HPP
 
 /********************  HEADERS  *********************/
 #include <ostream>
@@ -13,6 +13,10 @@ namespace htopml
 	class JsonState;
 };
 
+/*******************  NAMESPACE  ********************/
+namespace ATT
+{
+
 /*********************  CLASS  **********************/
 class EnterExitCallStack : public Stack
 {
@@ -24,4 +28,6 @@ class EnterExitCallStack : public Stack
 		size_t realSize;
 };
 
-#endif //ENTER_EXIT_CALL_STACK_H
+}
+
+#endif //ATT_ENTER_EXIT_CALL_STACK_HPP

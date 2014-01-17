@@ -3,7 +3,7 @@
 
 /********************  HEADERS  *********************/
 #include "Stack.h"
-#include "FuncNameDic.h"
+#include "FuncNameDic.hpp"
 #include "CallStackInfo.hpp"
 
 /*******************  NAMESPACE  ********************/

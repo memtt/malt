@@ -1,17 +1,17 @@
-#ifndef MUTEX_H
-#define MUTEX_H
+#ifndef ATT_MUTEX_HPP
+#define ATT_MUTEX_HPP
 
 /********************  HEADERS  *********************/
 #include <common/TakeLock.hpp>
 #include <config.h>
 
 /*********************  TYPES  **********************/
-#if defined(PORTABILITY_MUTEX_PTHREAD)
+#if defined(ATT_PORTABILITY_MUTEX_PTHREAD)
 	//pthread mode
-	#include "MutexPthread.h"
+	#include "MutexPthread.hpp"
 	
 	//map macros to generic names
-	#define STATIC_MUTEX_INIT {PTHREAD_MUTEX_INITIALIZER}
+	#define ATT_STATIC_MUTEX_INIT {PTHREAD_MUTEX_INITIALIZER}
 
 	//map types to generic names
 	namespace ATT
@@ -25,4 +25,4 @@
 	#error "No available implementation for mutex, please check definition of one of PORTABILITY_MUTEX_* macro in config.h or PORTABILITY_MUTEX given to cmake."
 #endif
 
-#endif //MUTEX_H
+#endif //ATT_MUTEX_HPP

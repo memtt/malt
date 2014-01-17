@@ -1,9 +1,13 @@
-#ifndef SIMPLE_CALL_STACK_NODE_H
-#define SIMPLE_CALL_STACK_NODE_H
+#ifndef ATT_SIMPLE_CALL_STACK_NODE_HPP
+#define ATT_SIMPLE_CALL_STACK_NODE_HPP
 
 /********************  HEADERS  *********************/
 #include "CallStackInfo.hpp"
 #include "Stack.h"
+
+/*******************  NAMESPACE  ********************/
+namespace ATT
+{
 
 /*********************  CLASS  **********************/
 class SimpleCallStackNode
@@ -24,4 +28,6 @@ class SimpleCallStackNode
 		ATT::CallStackInfo info;
 };
 
-#endif //SIMPLE_CALL_STACK_NODE_H
+}
+
+#endif //ATT_SIMPLE_CALL_STACK_NODE_HPP

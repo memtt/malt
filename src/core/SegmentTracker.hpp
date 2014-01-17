@@ -1,9 +1,13 @@
-#ifndef SEGMENT_FOLLOWER_H
-#define SEGMENT_FOLLOWER_H
+#ifndef ATT_SEGMENT_FOLLOWER_HPP
+#define ATT_SEGMENT_FOLLOWER_HPP
 
 /********************  HEADERS  *********************/
 #include <map>
-#include "SimpleCallStackNode.h"
+#include "SimpleCallStackNode.hpp"
+
+/*******************  NAMESPACE  ********************/
+namespace ATT
+{
 
 /*********************  CLASS  **********************/
 struct SegmentInfo
@@ -30,4 +34,6 @@ class SegmentTracker
 		SegmentInfoMap map;
 };
 
-#endif //SEGMENT_FOLLOWER_H
+}
+
+#endif //ATT_SEGMENT_FOLLOWER_HPP

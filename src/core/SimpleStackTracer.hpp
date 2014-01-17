@@ -1,5 +1,5 @@
-#ifndef SIMPLE_BACKTRACE_STORAGE_H
-#define SIMPLE_BACKTRACE_STORAGE_H
+#ifndef ATT_SIMPLE_BACKTRACE_STORAGE_HPP
+#define ATT_SIMPLE_BACKTRACE_STORAGE_HPP
 
 /********************  HEADERS  *********************/
 //extern
@@ -8,9 +8,13 @@
 #include <ostream>
 // #include <json/TypeToJson.h>
 //locals
-#include "FuncNameDic.h"
+#include "FuncNameDic.hpp"
 #include "BacktraceCallStack.hpp"
-#include "SimpleCallStackNode.h"
+#include "SimpleCallStackNode.hpp"
+
+/*******************  NAMESPACE  ********************/
+namespace ATT
+{
 
 /*******************  FUNCTION  *********************/
 typedef std::vector<SimpleCallStackNode*> SimpleBacktraceVector;
@@ -33,4 +37,6 @@ class SimpleStackTracer
 		size_t count;
 };
 
-#endif //SIMPLE_BACKTRACE_STORAGE_H
+}
+
+#endif //ATT_SIMPLE_BACKTRACE_STORAGE_HPP

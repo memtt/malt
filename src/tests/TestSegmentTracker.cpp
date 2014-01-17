@@ -1,7 +1,10 @@
 /********************  HEADERS  *********************/
 #include <gtest/gtest.h>
-#include <core/SegmentTracker.h>
+#include <core/SegmentTracker.hpp>
 #include <core/Stack.h>
+
+/***************** USING NAMESPACE ******************/
+using namespace ATT;
 
 /********************* GLOBALS **********************/
 static void * CST_STACK_1_CONTENT[] = {(void*)0x1,(void*)0x2,(void*)0x3};

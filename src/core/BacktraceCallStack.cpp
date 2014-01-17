@@ -6,9 +6,9 @@
 #include "BacktraceCallStack.hpp"
 
 /********************  MACROS  **********************/
-#define ATT_CALL_STACK_DEFAULT_SIZE 16
-#define ATT_CALL_STACK_GROW_THRESHOLD 64
-#define ATT_CALL_STACK_MAX 256
+#define CALL_STACK_DEFAULT_SIZE 16
+#define CALL_STACK_GROW_THRESHOLD 64
+#define CALL_STACK_MAX 256
 
 /*******************  NAMESPACE  ********************/
 namespace ATT 
@@ -35,7 +35,7 @@ void BacktraceCallStack::loadCurrentStack(void)
 		assert(loadedSize > 0);
 
 		//miss some entries, need to grow the buffer
-		if (loadedSize == ATT_CALL_STACK_MAX)
+		if (loadedSize == CALL_STACK_MAX)
 		{
 			static bool once = false;
 			if (!once)

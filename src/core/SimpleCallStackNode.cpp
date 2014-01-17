@@ -1,6 +1,10 @@
 /********************  HEADERS  *********************/
 #include <json/JsonState.h>
-#include "SimpleCallStackNode.h"
+#include "SimpleCallStackNode.hpp"
+
+/*******************  NAMESPACE  ********************/
+namespace ATT
+{
 
 /*******************  FUNCTION  *********************/
 SimpleCallStackNode::SimpleCallStackNode(const Stack& stack)
@@ -23,4 +27,6 @@ void typeToJson(htopml::JsonState& json, std::ostream& stream, const SimpleCallS
 	json.printField("stack",value.callStack);
 	json.printField("infos",value.info);
 	json.closeStruct();
+}
+
 }

@@ -1,10 +1,15 @@
 /********************  HEADERS  *********************/
-#include "EnterExitCallStack.h"
 #include <cstring>
 #include <cstdio>
 #include <json/JsonState.h>
+#include "EnterExitCallStack.hpp"
 
+/********************  MACROS  **********************/
 #define MAX_SIZE 256
+
+/*******************  NAMESPACE  ********************/
+namespace ATT
+{
 
 /*******************  FUNCTION  *********************/
 EnterExitCallStack::EnterExitCallStack ( void )
@@ -49,4 +54,6 @@ void EnterExitCallStack::exitFunction ( void* funcAddr )
 		size--;
 
 	assert(funcAddr == stack[size]);
+}
+
 }

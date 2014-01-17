@@ -4,7 +4,7 @@
 #include <cassert>
 #include <dlfcn.h>
 #include <cstring>
-#include <portability/Mutex.h>
+#include <portability/Mutex.hpp>
 #include <common/CodeTiming.hpp>
 #include "AllocStackProfiler.hpp"
 
@@ -102,7 +102,7 @@ struct ThreadLocalState
 
 /********************  GLOBALS  **********************/
 /** Store the global state of allocator wrapper. **/
-static AllocWrapperGlobal gblState = {ALLOC_WRAP_NOT_READY,STATIC_MUTEX_INIT,NULL,NULL,NULL,NULL};
+static AllocWrapperGlobal gblState = {ALLOC_WRAP_NOT_READY,ATT_STATIC_MUTEX_INIT,NULL,NULL,NULL,NULL};
 /** Store the per-thread state of allocator wrapper. **/
 static __thread ThreadLocalState tlsState = {NULL,false,false};
 /** Temporary buffer to return on first realloc used by dlsym and split infinit call loops. **/

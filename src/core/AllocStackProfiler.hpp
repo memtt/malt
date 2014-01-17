@@ -3,10 +3,10 @@
 
 /********************  HEADERS  *********************/
 #include <cstdlib>
-#include <portability/Mutex.h>
-#include "SegmentTracker.h"
-#include "SimpleStackTracer.h"
-#include "EnterExitCallStack.h"
+#include <portability/Mutex.hpp>
+#include "SegmentTracker.hpp"
+#include "SimpleStackTracer.hpp"
+#include "EnterExitCallStack.hpp"
 
 /*******************  NAMESPACE  ********************/
 namespace ATT

@@ -4,9 +4,11 @@
 #include <cstdio>
 #include <json/JsonState.h>
 #include <common/CodeTiming.hpp>
-#include "SimpleStackTracer.h"
+#include "SimpleStackTracer.hpp"
 
-using namespace ATT;
+/*******************  NAMESPACE  ********************/
+namespace ATT
+{
 
 /*******************  FUNCTION  *********************/
 SimpleStackTracer::SimpleStackTracer(void )
@@ -106,4 +108,6 @@ void typeToJson(htopml::JsonState& json, std::ostream& stream, const SimpleStack
 	json.closeFieldArray("stats");
 	json.printField("count",value.count);
 	json.closeStruct();
+}
+
 }
