@@ -48,6 +48,18 @@ void testRealloc(void)
 }
 
 /*******************  FUNCTION  *********************/
+void testMaxAlive(void)
+{
+	for (int i = 0 ; i < 100 ; i++)
+	{
+		void * ptr1 = malloc(64);
+		void * ptr2 = malloc(64);
+		free(ptr1);
+		free(ptr2);
+	}
+}
+
+/*******************  FUNCTION  *********************/
 int main(void)
 {
 	//first is calloc
@@ -64,6 +76,7 @@ int main(void)
 		recurseA(15);
 	}
 	testRealloc();
+	testMaxAlive();
 
 	return 0;
 }

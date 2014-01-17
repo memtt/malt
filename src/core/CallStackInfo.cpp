@@ -44,6 +44,18 @@ void CallStackInfo::addEvent(ssize_t value)
 	} else {
 		this->free.addEvent(-value);
 	}
+	
+	//update alive memory
+	this->alive+=value;
+	if (this->alive > this->maxAlive)
+		this->maxAlive = this->alive;
+}
+
+/*******************  FUNCTION  *********************/
+void CallStackInfo::onFreeLinkedMemory(ssize_t value)
+{
+	assert(alive <= 0);
+	this->alive += value;
 }
 
 /*******************  FUNCTION  *********************/
@@ -63,6 +75,7 @@ void typeToJson(htopml::JsonState& json, std::ostream& stream, const CallStackIn
 {
 	json.openStruct();
 	json.printField("countZeros",value.cntZeros);
+	json.printField("maxAlive",value.maxAlive);
 	json.printField("alloc",value.alloc);
 	json.printField("free",value.free);
 	json.closeStruct();

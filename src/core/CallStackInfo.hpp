@@ -37,6 +37,7 @@ class CallStackInfo
 		CallStackInfo(void);
 		~CallStackInfo(void);
 		void addEvent(ssize_t value);
+		void onFreeLinkedMemory(ssize_t value);
 	public:
 		friend std::ostream & operator << (std::ostream & out,const CallStackInfo & info);
 		friend void typeToJson(htopml::JsonState& json, std::ostream& stream, const CallStackInfo& value);
@@ -44,6 +45,8 @@ class CallStackInfo
 		SimpleQuantityHistory alloc;
 		SimpleQuantityHistory free;
 		ssize_t cntZeros;
+		ssize_t alive;
+		ssize_t maxAlive;
 };
 
 }

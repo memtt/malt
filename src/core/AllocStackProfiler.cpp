@@ -150,7 +150,7 @@ void AllocStackProfiler::onExit(void )
 {
 	puts("======================== Print on exit ========================");
 	ATT_OPTIONAL_CRITICAL(lock,threadSafe)
-// 		CODE_TIMING("output",htopml::typeToJson(std::cout,stackTracer));
+		CODE_TIMING("output",htopml::typeToJson(std::cout,stackTracer));
 	ATT_END_CRITICAL
 }
 
