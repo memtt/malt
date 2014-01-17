@@ -69,4 +69,32 @@ class CodeTiming
 		ticks globalStart;
 };
 
+/*******************  FUNCTION  *********************/
+/** Start measurement of a new call to your code. **/
+inline void CodeTiming::start(void)
+{
+	this->lastStart = getticks();
+}
+
+/*******************  FUNCTION  *********************/
+/** End measurement of the current call to your code. **/
+inline void CodeTiming::end(void)
+{
+	//get time
+	ticks t =getticks() - lastStart;
+	
+	//update min/max
+	if (count == 0)
+	{
+		min = max = t;
+	} else {
+		if (t < min) min = t;
+		if (t > max) max = t;
+	}
+	
+	//update global sums
+	count++;
+	sum += t;
+}
+
 #endif //CODE_TIMING_H

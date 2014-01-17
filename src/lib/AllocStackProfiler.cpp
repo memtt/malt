@@ -28,19 +28,20 @@ AllocStackProfiler::AllocStackProfiler(StackMode mode,bool threadSafe)
 /*******************  FUNCTION  *********************/
 void AllocStackProfiler::onMalloc(void* ptr, size_t size,Stack * userStack)
 {
-	countCalls(3,size,userStack);
+	onAllocEvent(ptr,size,3,userStack);
 }
 
 /*******************  FUNCTION  *********************/
 void AllocStackProfiler::onCalloc(void* ptr, size_t nmemb, size_t size,Stack * userStack)
 {
-	countCalls(3,size,userStack);
+	onAllocEvent(ptr,size * nmemb,3,userStack);
 }
 
 /*******************  FUNCTION  *********************/
 void AllocStackProfiler::onFree(void* ptr,Stack * userStack)
 {
-	countCalls(3,0,userStack);
+	if (ptr != NULL)
+		onFreeEvent(ptr,3,userStack);
 }
 
 /*******************  FUNCTION  *********************/
@@ -52,34 +53,92 @@ void AllocStackProfiler::onPrepareRealloc(void* oldPtr,Stack * userStack)
 /*******************  FUNCTION  *********************/
 void AllocStackProfiler::onRealloc(void* oldPtr, void* ptr, size_t newSize,Stack * userStack)
 {
-	countCalls(3,newSize,userStack);
+	OPTIONAL_CRITICAL(lock,threadSafe)
+		//to avoid to search it 2 times
+		SimpleCallStackNode * callStackNode = NULL;
+		
+		//free part
+		if (ptr != NULL)
+			callStackNode = onFreeEvent(oldPtr,3,userStack,callStackNode,false);
+		
+		//alloc part
+		if (newSize > 0)
+			callStackNode = onAllocEvent(ptr,newSize,3,userStack,callStackNode,false);
+	END_CRITICAL
 }
 
 /*******************  FUNCTION  *********************/
-void AllocStackProfiler::countCalls(int skipDepth,ssize_t delta,Stack * userStack)
+SimpleCallStackNode * AllocStackProfiler::onAllocEvent(void* ptr, size_t size,int skipDepth, Stack* userStack,SimpleCallStackNode * callStackNode,bool doLock)
 {
+	OPTIONAL_CRITICAL(lock,threadSafe && doLock)
+		//search if not provided
+		if (callStackNode == NULL)
+			callStackNode = getStackNode(skipDepth,size,userStack);
+		
+		//count events
+		CODE_TIMING("updateInfoAlloc",callStackNode->getInfo().addEvent(size));
+		
+		//register for segment history tracking
+		if (ptr != NULL)
+			CODE_TIMING("segTracerAdd",segTracer.add(ptr,size,callStackNode));
+	END_CRITICAL
+	
+	return callStackNode;
+}
+
+/*******************  FUNCTION  *********************/
+SimpleCallStackNode * AllocStackProfiler::onFreeEvent(void* ptr,int skipDepth, Stack* userStack,SimpleCallStackNode * callStackNode,bool doLock)
+{
+	OPTIONAL_CRITICAL(lock,threadSafe && doLock)
+		//search segment info to link with previous history
+		SegmentInfo * segInfo = NULL;
+		CODE_TIMING("segTracerGet",segInfo = segTracer.get(ptr));
+		
+		//check unknown
+		if (segInfo == NULL)
+		{
+			//fprintf(stderr,"Caution, get unknown free segment : %p, ingore it.\n",ptr);
+			return NULL;
+		}
+			
+		ssize_t size = -segInfo->size;
+		
+		//search call stack info if not provided
+		if (callStackNode == NULL)
+			callStackNode = getStackNode(skipDepth,size,userStack);
+		
+		//count events
+		CODE_TIMING("updateInfoFree",callStackNode->getInfo().addEvent(size));
+		
+		//remove tracking info
+		CODE_TIMING("segTracerRemove",segTracer.remove(ptr));
+	END_CRITICAL
+	
+	return callStackNode;
+}
+
+/*******************  FUNCTION  *********************/
+SimpleCallStackNode* AllocStackProfiler::getStackNode(int skipDepth, ssize_t delta, Stack* userStack)
+{
+	SimpleCallStackNode * res = NULL;
+
+	//search with selected mode
 	switch(mode)
 	{
 		case STACK_MODE_BACKTRACE:
 			CODE_TIMING("loadCurrentStack",stack.loadCurrentStack());
-			OPTIONAL_CRITICAL(lock,threadSafe)
-				CODE_TIMING("updateInfo",tracer.getBacktraceInfo(stack).getInfo().addEvent(delta));
-			END_CRITICAL
+			CODE_TIMING("searchInfo",res = &stackTracer.getBacktraceInfo(stack));
 			break;
 		case STACK_MODE_ENTER_EXIT_FUNC:
-			OPTIONAL_CRITICAL(lock,threadSafe)
-				CODE_TIMING("updateInfoEx",tracer.getBacktraceInfo(exStack).getInfo().addEvent(delta));
-			END_CRITICAL
+			CODE_TIMING("searchInfoEx",res = &stackTracer.getBacktraceInfo(exStack));
 			break;
 		case STACK_MODE_USER:
 			if (userStack != NULL)
-			{
-				OPTIONAL_CRITICAL(lock,threadSafe)
-					CODE_TIMING("updateInfoEx",tracer.getBacktraceInfo(*userStack).getInfo().addEvent(delta));
-				END_CRITICAL
-			}
+				CODE_TIMING("searchInfoUser",res = &stackTracer.getBacktraceInfo(*userStack));
 			break;
 	}
+
+	return res;
 }
 
 /*******************  FUNCTION  *********************/
@@ -87,7 +146,7 @@ void AllocStackProfiler::onExit(void )
 {
 	puts("======================== Print on exit ========================");
 	OPTIONAL_CRITICAL(lock,threadSafe)
-		htopml::typeToJson(std::cout,tracer);
+// 		CODE_TIMING("output",htopml::typeToJson(std::cout,stackTracer));
 	END_CRITICAL
 }
 

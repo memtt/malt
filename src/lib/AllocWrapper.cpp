@@ -5,7 +5,10 @@
 #include <dlfcn.h>
 #include <cstring>
 #include <portability/Mutex.h>
+#include <common/CodeTiming.h>
 #include "AllocStackProfiler.h"
+
+// #define CODE_TIMING(x,y) do{y;} while(0)
 
 /*******************  FUNCTION  *********************/
 /** Prototype of malloc function to get it into function pointer. **/
@@ -151,7 +154,7 @@ void AllocWrapperGlobal::init(void )
 
 		//init profiler
 		gblState.status = ALLOC_WRAP_INIT_PROFILER;
-		gblState.profiler = new AllocStackProfiler(getStackMode());
+		gblState.profiler = new AllocStackProfiler(getStackMode(),true);
 
 		//register on exit
 		on_exit(AllocWrapperGlobal::onExit,NULL);
@@ -192,6 +195,10 @@ void ThreadLocalState::init(void)
 {
 	//check errors
 	assert(tlsState.enterExitStack == NULL);
+	
+	//mark as init to authorize but in use to authorise malloc without intrum and cut infinit call loops
+	tlsState.initialized = true;
+	tlsState.inUse = true;
 
 	//check init
 	if (gblState.status == ALLOC_WRAP_NOT_READY)
@@ -201,9 +208,9 @@ void ThreadLocalState::init(void)
 	EnterExitCallStack * stack = new EnterExitCallStack();
 	stack->enterFunction((void*)0x1);
 	
-	//update TLS
+	//ok mark no in use, ready for instr
 	tlsState.enterExitStack = stack;
-	tlsState.initialized = true;
+	tlsState.inUse = false;
 }
 
 /*******************  FUNCTION  *********************/
@@ -231,7 +238,7 @@ void * malloc(size_t size)
 	if (!localState.inUse && gblState.status == ALLOC_WRAP_READY)
 	{
 		localState.inUse = true;
-		gblState.profiler->onMalloc(res,size,localState.enterExitStack);
+		CODE_TIMING("mallocProf",gblState.profiler->onMalloc(res,size,localState.enterExitStack));
 		localState.inUse = false;
 	}
 
@@ -259,7 +266,7 @@ void free(void * ptr)
 	if (!localState.inUse && gblState.status == ALLOC_WRAP_READY)
 	{
 		localState.inUse = true;
-		gblState.profiler->onFree(ptr,localState.enterExitStack);
+		CODE_TIMING("freeProf",gblState.profiler->onFree(ptr,localState.enterExitStack));
 		localState.inUse = false;
 	}
 
@@ -330,7 +337,17 @@ void * realloc(void * ptr, size_t size)
 
 	//run the default function
 	assert(gblState.status > ALLOC_WRAP_INIT_SYM);
-	return gblState.realloc(ptr,size);
+	void * res = gblState.realloc(ptr,size);
+	
+	//profile
+	if (!localState.inUse && gblState.status == ALLOC_WRAP_READY)
+	{
+		localState.inUse = true;
+		CODE_TIMING("rellocProf",gblState.profiler->onRealloc(ptr,res,size,localState.enterExitStack));
+		localState.inUse = false;
+	}
+	
+	return res;
 }
 
 /*********************  STRUCT  *********************/

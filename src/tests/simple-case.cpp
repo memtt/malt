@@ -38,8 +38,21 @@ void recurseA(int depth)
 }
 
 /*******************  FUNCTION  *********************/
+void testRealloc(void)
+{
+	void * ptr = realloc(NULL,16);
+	ptr = realloc(ptr,32);
+	ptr = realloc(ptr,0);
+	
+	free(malloc(44));
+}
+
+/*******************  FUNCTION  *********************/
 int main(void)
 {
+	//first is calloc
+	free(calloc(16,16));
+	
 	funcA();
 	for (int i = 0 ; i < 10 ; ++i)
 	{
@@ -50,4 +63,7 @@ int main(void)
 	{
 		recurseA(15);
 	}
+	testRealloc();
+
+	return 0;
 }

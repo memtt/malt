@@ -2,9 +2,11 @@
 #define ALLOC_STATCK_PROFILER_H
 
 /********************  HEADERS  *********************/
+#include <cstdlib>
+#include <portability/Mutex.h>
+#include "SegmentTracker.h"
 #include "SimpleStackTracer.h"
 #include "EnterExitCallStack.h"
-#include <portability/Mutex.h>
 
 /********************  ENUM  ************************/
 enum StackMode
@@ -28,9 +30,12 @@ class AllocStackProfiler
 		void onEnterFunction(void * funcAddr);
 		void onExitFunction(void * funcAddr);
 	private:
-		void countCalls(int skipDepth,ssize_t delta,Stack * userStack = NULL);
+		SimpleCallStackNode * getStackNode(int skipDepth,ssize_t delta,Stack * userStack = NULL);
+		SimpleCallStackNode * onAllocEvent(void * ptr,size_t size, int skipDepth,Stack * userStack = NULL,SimpleCallStackNode * callStackNode = NULL,bool doLock = true);
+		SimpleCallStackNode * onFreeEvent(void* ptr, int skipDepth, Stack* userStack = NULL, SimpleCallStackNode* callStackNode = NULL, bool doLock = true);
 	private:
-		SimpleStackTracer tracer;
+		SimpleStackTracer stackTracer;
+		SegmentTracker segTracer;
 		BacktraceCallStack stack;
 		EnterExitCallStack exStack;
 		StackMode mode;

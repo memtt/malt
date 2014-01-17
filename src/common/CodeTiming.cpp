@@ -43,35 +43,7 @@ CodeTiming::~CodeTiming(void)
 	printValue(count);
 	cerr << " , time : ";
 	printValue(sum);
-	cerr << " , " << "radio : ~ " << std::setprecision( 2 ) << ratio << "% )" << endl;
-}
-
-/*******************  FUNCTION  *********************/
-/** Start measurement of a new call to your code. **/
-void CodeTiming::start(void)
-{
-	this->lastStart = getticks();
-}
-
-/*******************  FUNCTION  *********************/
-/** End measurement of the current call to your code. **/
-void CodeTiming::end(void)
-{
-	//get time
-	ticks t =getticks() - lastStart;
-	
-	//update min/max
-	if (count == 0)
-	{
-		min = max = t;
-	} else {
-		if (t < min) min = t;
-		if (t > max) max = t;
-	}
-	
-	//update global sums
-	count++;
-	sum += t;
+	cerr << " , " << "radio : ~ " << std::setprecision( 2 ) << setw(8) << std::left << ratio << "% )" << endl;
 }
 
 /*******************  FUNCTION  *********************/
@@ -94,5 +66,5 @@ void CodeTiming::printValue(double value, const char* unit)
 	}
 	
 	//print
-	cerr << value << " " << cstUnits[depth] << unit;
+	cerr << setw(5) << setprecision(2) << std::right << value << " " << setw(1) << cstUnits[depth] << unit;
 }

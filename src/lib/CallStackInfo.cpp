@@ -38,7 +38,7 @@ void CallStackInfo::addEvent(ssize_t value)
 	} else if (value > 0) {
 		this->alloc.addEvent(value);
 	} else {
-		this->free.addEvent(value);
+		this->free.addEvent(-value);
 	}
 }
 

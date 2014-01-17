@@ -3,17 +3,15 @@
 
 /********************  HEADERS  *********************/
 #include <map>
-#include "CallStackInfo.h"
+#include "SimpleCallStackNode.h"
 
 /*********************  CLASS  **********************/
-class SegmentInfo
+struct SegmentInfo
 {
-	public:
-		SegmentInfo(CallStackInfo * callStack);
-		~SegmentInfo(void);
-		CallStackInfo * getCallStack(void);
-	private:
-		CallStackInfo * callStack;
+	SegmentInfo(void);
+	~SegmentInfo(void);
+	SimpleCallStackNode * callStack;
+	size_t size;
 };
 
 /*********************  TYPES  **********************/
@@ -25,7 +23,7 @@ class SegmentTracker
 	public:
 		SegmentTracker(void);
 		~SegmentTracker(void);
-		SegmentInfo * add(void * ptr,size_t size,CallStackInfo * callStack);
+		SegmentInfo * add(void* ptr, size_t size, SimpleCallStackNode* callStack);
 		SegmentInfo * get(void * ptr);
 		void remove(void * ptr);
 	private:

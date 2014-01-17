@@ -28,6 +28,7 @@ class Stack
 {
 	public:
 		Stack(StackOrder order);
+		Stack(void ** stack,int size,StackOrder order);
 		Stack(const Stack & orig);
 		virtual ~Stack(void);
 		StackHash hash(void) const;
@@ -38,6 +39,7 @@ class Stack
 		int getSize(void) const;
 		void set(void ** stack, int size,StackOrder order);
 		void set(const Stack & orig);
+		void * getCaller(void) const;
 	public:
 		friend std::ostream & operator << (std::ostream & out,const Stack & tracer);
 		friend void typeToJson(htopml::JsonState & json,std::ostream& stream, const Stack & value);

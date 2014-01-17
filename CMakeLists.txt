@@ -22,3 +22,4 @@ setup_internal_gmock_and_gtest()
 ######################################################
 #build subdirs
 add_subdirectory(src)
+add_subdirectory(extern-deps)

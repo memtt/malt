@@ -1,6 +1,7 @@
 /********************  HEADERS  *********************/
 #include <cassert>
 #include <cstdlib>
+#include <cstdio>
 #include <json/JsonState.h>
 #include <common/CodeTiming.h>
 #include "SimpleStackTracer.h"
@@ -28,24 +29,33 @@ SimpleCallStackNode& SimpleStackTracer::getBacktraceInfo( const Stack& stack )
 	assert(stack.isValid());
 	
 	//calc current hash
-	StackHash hash = stack.hash();
+	StackHash hash;
+	CODE_TIMING("stackHash",hash = stack.hash());
 
 	//search in current vector
+	static CodeTiming tmap("searchInMap");
+	tmap.start();
 	SimpleBacktraceVector & vec = callmaps[hash];
+	tmap.end();
 
 	//loop in vector to find the good one
+	static CodeTiming tvec("searchInSubVect");
+	tvec.start();
 	SimpleBacktraceVector::iterator resIt = vec.end();
 	for (SimpleBacktraceVector::iterator it = vec.begin() ; it != vec.end() ; ++it)
 		if ((*it)->getCallStack() == stack)
 			resIt = it;
-		
+	tvec.end();
+
 	count++;
 
 	//if not found create and add
 	if (resIt == vec.end())
 	{
 		SimpleCallStackNode * newEntry = new SimpleCallStackNode(stack);
-		vec.push_back(newEntry);
+		CODE_TIMING("insertInVec",vec.push_back(newEntry));
+// 		if (vec.size()> 1)
+// 			fprintf(stderr,"get multiple : %lu\n",vec.size());
 		return *newEntry;
 	}else {
 		return **resIt;
@@ -80,7 +90,7 @@ void SimpleStackTracer::resolveSymbols(FuncNameDic& dic) const
 void typeToJson(htopml::JsonState& json, std::ostream& stream, const SimpleStackTracer& value)
 {
 	FuncNameDic dic;
-	value.resolveSymbols(dic);
+// 	CODE_TIMING("resolveSymbols",value.resolveSymbols(dic));
 
 	json.openStruct();
 	json.printField("sites",dic);

@@ -86,6 +86,7 @@ TakeLock<T>::TakeLock(T* lock, bool takeLock)
 	{
 		assert(lock != NULL);
 		lock->lock();
+		this->lock = lock;
 	} else {
 		this->lock = NULL;
 	}

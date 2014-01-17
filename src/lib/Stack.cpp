@@ -22,6 +22,16 @@ Stack::Stack ( StackOrder order )
 }
 
 /*******************  FUNCTION  *********************/
+Stack::Stack(void** stack, int size,StackOrder order)
+{
+	this->order   = order;
+	this->stack   = NULL;
+	this->size    = 0;
+	this->memSize = 0;
+	this->set(stack,size,order);
+}
+
+/*******************  FUNCTION  *********************/
 Stack::Stack ( const Stack& orig )
 {
 	this->order   = orig.order;
@@ -89,15 +99,17 @@ StackHash Stack::hash ( void** stack, int size )
 	StackHash res = 0;
 	
 	//trunk size to hash only the N last elements
-	int hashSize = 4;
+	int hashSize = 16;
 	if (size < hashSize)
 		hashSize = size;
 
 	//calc hash by doing xor on each call addresses
 	for (int i = 0 ; i < hashSize ; i++)
 	{
-		assert(stack[i] != NULL);
-		res ^= (StackHash)stack[i];
+		StackHash cur = (StackHash)stack[i];
+		assert(cur != 0);
+		res ^= (StackHash)(cur+i+size);
+		res ^= (StackHash)(cur-i+size) << 32;
 	}
 
 	return res;
@@ -133,8 +145,8 @@ bool operator== ( const Stack& v1, const Stack& v2 )
 	//trivial
 	if (v1.size != v2.size || v1.order != v2.order)
 		return false;
-
-	//check content
+	
+	//check content starting by
 	for (int i = 0 ; i < v1.size ; i++)
 		if (v1.stack[i] != v2.stack[i])
 			return false;

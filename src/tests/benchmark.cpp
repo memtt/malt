@@ -13,8 +13,8 @@
 using namespace std;
 
 #define MAX_STACKS 10000
-#define MAX_LOCAL_REUSE 100
-#define MAX_STACK_SIZE 256
+#define MAX_LOCAL_REUSE 5
+#define MAX_STACK_SIZE 1024
 
 class BenchTiming
 {
@@ -194,7 +194,7 @@ int main(void)
 	//store random stacks to reuse	
 	BacktraceCallStack * stacks = new BacktraceCallStack[MAX_STACKS];
 	
-	runTest(timing,tracer,stacks,"testEmpty",5);
-	runTest(timing,tracer,stacks,"testFull",5);
+	runTest(timing,tracer,stacks,"testEmpty",20);
+	runTest(timing,tracer,stacks,"testFull",20);
 	return 0;
 }
