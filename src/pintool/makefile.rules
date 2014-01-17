@@ -2,7 +2,7 @@ TOOL_ROOTS := mallocprof
 
 CST_SRC=../..
 CST_BUILD=$(CST_SRC)/build_optim
-CST_CFLAGS=-I$(CST_SRC)/src -DNDEBUG
+CST_CFLAGS=-I$(CST_SRC)/src -I$(CST_BUILD)/src -DNDEBUG
 CST_LSFLAGS=-Wl,-rpath=$(CST_BUILD)/src $(CST_BUILD)/src/libcstbase.so
 
 # Build the intermediate object file.

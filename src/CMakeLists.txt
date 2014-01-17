@@ -4,11 +4,16 @@ set(PORTABILITY_MUTEX "PTHREAD" CACHE STRING "Select mutex implementation to use
 
 ######################################################
 #select portability definitions
-add_definitions(-DPORTABILITY_MUTEX_${PORTABILITY_MUTEX})
+set(PORTABILITY_MUTEX_${PORTABILITY_MUTEX} yes)
+
+######################################################
+#gen config.h
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config.h.in ${CMAKE_CURRENT_BINARY_DIR}/config.h)
 
 ######################################################
 include_directories(.)
 include_directories(../extern-deps/from-fftw)
+include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
 ######################################################
 add_library(cstbase SHARED $<TARGET_OBJECTS:htopml-json> $<TARGET_OBJECTS:libcst> $<TARGET_OBJECTS:common>)
