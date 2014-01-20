@@ -3,6 +3,7 @@
 
 /********************  HEADERS  *********************/
 #include <map>
+#include <cycle.h>
 #include "SimpleCallStackNode.hpp"
 
 /*******************  NAMESPACE  ********************/
@@ -12,10 +13,15 @@ namespace ATT
 /*********************  CLASS  **********************/
 struct SegmentInfo
 {
+	//funcs
 	SegmentInfo(void);
 	~SegmentInfo(void);
+	ticks getLifetime(void) const;
+
+	//vars
 	SimpleCallStackNode * callStack;
 	size_t size;
+	ticks allocTime;
 };
 
 /*********************  TYPES  **********************/

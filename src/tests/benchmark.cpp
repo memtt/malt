@@ -176,7 +176,7 @@ void runTest(BenchTiming & timing,SimpleStackTracer & tracer,BacktraceCallStack 
 		for (int i = 0 ; i < reuse ; i++)
 		{
 			timing.eventStart();
-			tracer.getBacktraceInfo(stack).getInfo().addEvent(16);
+			tracer.getBacktraceInfo(stack).getInfo().addEvent(16,0);
 			timing.eventEnd();
 		}
 	}

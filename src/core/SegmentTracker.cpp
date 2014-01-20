@@ -11,6 +11,7 @@ SegmentInfo::SegmentInfo(void)
 {
 	this->size = 0;
 	this->callStack = NULL;
+	this->allocTime = getticks();
 }
 
 /*******************  FUNCTION  *********************/
@@ -64,6 +65,12 @@ SegmentInfo* SegmentTracker::get(void* ptr)
 void SegmentTracker::remove(void* ptr)
 {
 	map.erase(ptr);
+}
+
+/*******************  FUNCTION  *********************/
+ticks SegmentInfo::getLifetime(void ) const
+{
+	return getticks() - allocTime;
 }
 
 }

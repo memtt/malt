@@ -80,7 +80,7 @@ SimpleCallStackNode * AllocStackProfiler::onAllocEvent(void* ptr, size_t size,in
 			callStackNode = getStackNode(skipDepth,size,userStack);
 		
 		//count events
-		CODE_TIMING("updateInfoAlloc",callStackNode->getInfo().addEvent(size));
+		CODE_TIMING("updateInfoAlloc",callStackNode->getInfo().addEvent(size,0));
 		
 		//register for segment history tracking
 		if (ptr != NULL)
@@ -112,7 +112,7 @@ SimpleCallStackNode * AllocStackProfiler::onFreeEvent(void* ptr,int skipDepth, S
 			callStackNode = getStackNode(skipDepth,size,userStack);
 		
 		//count events
-		CODE_TIMING("updateInfoFree",callStackNode->getInfo().addEvent(size));
+		CODE_TIMING("updateInfoFree",callStackNode->getInfo().addEvent(size,segInfo->getLifetime()));
 		
 		//remove tracking info
 		CODE_TIMING("segTracerRemove",segTracer.remove(ptr));

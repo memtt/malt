@@ -34,7 +34,7 @@ void SimpleQuantityHistory::addEvent(ssize_t value)
 }
 
 /*******************  FUNCTION  *********************/
-void CallStackInfo::addEvent(ssize_t value)
+void CallStackInfo::addEvent(ssize_t value, ticks lifetime)
 {
 	if (value == 0)
 	{
@@ -45,6 +45,9 @@ void CallStackInfo::addEvent(ssize_t value)
 		this->free.addEvent(-value);
 	}
 	
+	if (value < 0 && lifetime != 0)
+		this->lifetime.addEvent(lifetime);
+	
 	//update alive memory
 	this->alive+=value;
 	if (this->alive > this->maxAlive)
@@ -52,10 +55,12 @@ void CallStackInfo::addEvent(ssize_t value)
 }
 
 /*******************  FUNCTION  *********************/
-void CallStackInfo::onFreeLinkedMemory(ssize_t value)
+void CallStackInfo::onFreeLinkedMemory(ssize_t value, ticks lifetime)
 {
 	assert(alive <= 0);
 	this->alive += value;
+	if (lifetime != 0)
+		this->lifetime.addEvent(lifetime);
 }
 
 /*******************  FUNCTION  *********************/
@@ -78,6 +83,7 @@ void typeToJson(htopml::JsonState& json, std::ostream& stream, const CallStackIn
 	json.printField("maxAlive",value.maxAlive);
 	json.printField("alloc",value.alloc);
 	json.printField("free",value.free);
+	json.printField("lifetime",value.lifetime);
 	json.closeStruct();
 }
 

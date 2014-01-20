@@ -4,6 +4,7 @@
 /*******************  FUNCTION  *********************/
 #include <ostream>
 #include <cstdlib>
+#include <cycle.h>
 
 /*******************  FUNCTION  *********************/
 namespace htopml
@@ -36,14 +37,15 @@ class CallStackInfo
 	public:
 		CallStackInfo(void);
 		~CallStackInfo(void);
-		void addEvent(ssize_t value);
-		void onFreeLinkedMemory(ssize_t value);
+		void addEvent(ssize_t value, ticks lifetime);
+		void onFreeLinkedMemory(ssize_t value,ticks lifetime);
 	public:
 		friend std::ostream & operator << (std::ostream & out,const CallStackInfo & info);
 		friend void typeToJson(htopml::JsonState& json, std::ostream& stream, const CallStackInfo& value);
 	private:
 		SimpleQuantityHistory alloc;
 		SimpleQuantityHistory free;
+		SimpleQuantityHistory lifetime;
 		ssize_t cntZeros;
 		ssize_t alive;
 		ssize_t maxAlive;
