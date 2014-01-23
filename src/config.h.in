@@ -1,0 +1,7 @@
+#ifndef CONFIG_H
+#define CONFIG_H
+
+//select one of the mutex mode
+#cmakedefine ATT_PORTABILITY_MUTEX_PTHREAD
+
+#endif //CONFIG_H

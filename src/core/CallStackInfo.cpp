@@ -124,4 +124,10 @@ void typeToJson(htopml::JsonState& json, std::ostream& stream, const SimpleQuant
 	json.closeStruct();
 }
 
+/*******************  FUNCTION  *********************/
+void CallStackInfo::writeAsCallgrindEntry(int line, std::ostream& out) const
+{
+	out << line << " " << maxAlive << " " << alloc.sum << " "<< alloc.count;
+}
+
 }

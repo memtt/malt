@@ -151,6 +151,9 @@ void AllocStackProfiler::onExit(void )
 	puts("======================== Print on exit ========================");
 	ATT_OPTIONAL_CRITICAL(lock,threadSafe)
 		CODE_TIMING("output",htopml::typeToJson(std::cout,stackTracer));
+		ValgrindOutput vout;
+		stackTracer.fillValgrindOut(vout);
+		vout.writeAsCallgrind("mycallgrind.callgrind");
 	ATT_END_CRITICAL
 }
 

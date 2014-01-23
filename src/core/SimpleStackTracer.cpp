@@ -110,4 +110,15 @@ void typeToJson(htopml::JsonState& json, std::ostream& stream, const SimpleStack
 	json.closeStruct();
 }
 
+/*******************  FUNCTION  *********************/
+void SimpleStackTracer::fillValgrindOut(ValgrindOutput& out) const
+{
+	for (SimpleBacktraceVectorMap::const_iterator itMap = callmaps.begin() ; itMap != callmaps.end() ; ++itMap)
+	{
+		const SimpleBacktraceVector & vec = itMap->second;
+		for (SimpleBacktraceVector::const_iterator it = vec.begin() ; it != vec.end() ; ++it)
+			out.pushStackInfo(**it);
+	}
+}
+
 }

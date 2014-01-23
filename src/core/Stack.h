@@ -36,7 +36,7 @@ class Stack
 		Stack(const Stack & orig);
 		virtual ~Stack(void);
 		StackHash hash(void) const;
-		static StackHash hash(void ** calls,int size);
+		static StackHash hash(void** stack, int size, ATT::StackOrder order);
 		void resolveSymbols(FuncNameDic & dic) const;
 		void grow(void);
 		bool isValid(void) const;
@@ -45,6 +45,7 @@ class Stack
 		void set(const Stack & orig);
 		void * getCaller(void) const;
 		void * getCallee(void) const;
+		void * operator[] (int idx);
 	public:
 		friend std::ostream & operator << (std::ostream & out,const Stack & tracer);
 		friend void typeToJson(htopml::JsonState & json,std::ostream& stream, const Stack & value);

@@ -1,6 +1,7 @@
 /********************  HEADERS  *********************/
 #include <cstring>
 #include <fstream>
+#include <iostream>
 #include "ValgrindOutput.hpp"
 //TODO move into postability
 #include <sys/types.h>
@@ -17,16 +18,20 @@ void ValgrindOutput::pushStackInfo(SimpleCallStackNode& stackNode)
 	//get addresses
 	Stack & stack = stackNode.getCallStack();
 	CallStackInfo & stackInfo = stackNode.getInfo();
-	void * calleePtr = stack.getCallee();
+	void * leafCalleePtr = stack.getCallee();
 	
 	//search function info in caller map and reduce data
-	ValgrindCaller & funcInfo = callers[calleePtr];
+	ValgrindCaller & funcInfo = callers[leafCalleePtr];
 	funcInfo.info.push(stackInfo);
 	
 	//if as caller/callee, register inclusive costs
-	if (stack.getSize() > 1)
+	for (int i = 1 ; i < stack.getSize() ; i++)
 	{
-		void * callerPtr = stack.getCaller();
+		//extrace callee/caller
+		void * callerPtr = stack[i];
+		void * calleePtr = stack[i-1];
+		
+		cout << callerPtr << " => " << calleePtr << endl;
 
 		//search info in map
 		ValgrindCaller & callerInfo = callers[callerPtr];
@@ -65,8 +70,9 @@ void ValgrindOutput::writeAsCallgrind(std::ostream& out)
 	out << endl;
 	out << "desc: Trigger: Program termination" << endl;
 	out << endl;
-	out << "position: line" << endl;
-	out << "event: MaxAliveMemory";
+	out << "positions: line" << endl;
+	out << "events: MaxAliveMemory AllocSum Count" << endl;
+	out << endl;
 	
 	//loop on data
 	for (ValgrindCallerMap::const_iterator it = callers.begin() ; it != callers.end() ; ++it)
@@ -74,13 +80,16 @@ void ValgrindOutput::writeAsCallgrind(std::ostream& out)
 		out << "ob=unknown" << endl;
 		out << "fn=" << it->first << endl;
 		it->second.info.writeAsCallgrindEntry(0,out);
-		for (ValgrindCallerMap::const_iterator itChild = it->second.callees.begin() ; itChild != it->second.callees.end() ; ++itChild)
+		out << endl;
+		for (ValgrindCalleeMap::const_iterator itChild = it->second.callees.begin() ; itChild != it->second.callees.end() ; ++itChild)
 		{
-			out << "fn=" << itChild->first;
-			out << "calls=1 " << itChild->second.info. << endl;
+			out << "cfn=" << itChild->first << endl;
+			out << "calls=1 0" << endl;
+			itChild->second.writeAsCallgrindEntry(0,out);
+			out << endl;
 		}
+		out << endl;
 	}
 }
-
 
 };

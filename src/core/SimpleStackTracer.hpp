@@ -11,6 +11,7 @@
 #include "FuncNameDic.hpp"
 #include "BacktraceCallStack.hpp"
 #include "SimpleCallStackNode.hpp"
+#include "ValgrindOutput.hpp"
 
 /*******************  NAMESPACE  ********************/
 namespace ATT
@@ -29,6 +30,7 @@ class SimpleStackTracer
 		SimpleCallStackNode& getBacktraceInfo(void);
 		SimpleCallStackNode& getBacktraceInfo(const Stack & stack);
 		void resolveSymbols(FuncNameDic & dic) const;
+		void fillValgrindOut(ValgrindOutput & out) const;
 	public:
 		friend std::ostream & operator << (std::ostream & out,const SimpleStackTracer & tracer);
 		friend void typeToJson(htopml::JsonState & json,std::ostream& stream, const SimpleStackTracer & value);

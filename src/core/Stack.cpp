@@ -89,11 +89,11 @@ void Stack::set ( void** stack, int size, StackOrder order )
 /*******************  FUNCTION  *********************/
 StackHash Stack::hash ( void ) const
 {
-	return hash(stack,size);
+	return hash(stack,size,order);
 }
 
 /*******************  FUNCTION  *********************/
-StackHash Stack::hash ( void** stack, int size )
+StackHash Stack::hash ( void** stack, int size ,StackOrder order)
 {
 	//errors
 	assert(stack != NULL);
@@ -107,16 +107,51 @@ StackHash Stack::hash ( void** stack, int size )
 	if (size < hashSize)
 		hashSize = size;
 
-	//calc hash by doing xor on each call addresses
-	for (int i = 0 ; i < hashSize ; i++)
+	switch(order)
 	{
-		StackHash cur = (StackHash)stack[i];
-		assert(cur != 0);
-		res ^= (StackHash)(cur+i+size);
-		res ^= (StackHash)(cur-i+size) << 32;
-	}
+		case STACK_ORDER_ASC:
+			//calc hash by doing xor on each call addresses
+			for (int i = 0 ; i < hashSize ; i++)
+			{
+				StackHash cur = (StackHash)stack[i];
+				assert(cur != 0);
+				res ^= (StackHash)(cur+i+size);
+				res ^= (StackHash)(cur-i+size) << 32;
+			}
+			break;
+		case STACK_ORDER_DESC:
+			//calc hash by doing xor on each call addresses
+			for (int i = size - 1 ; i >= size - hashSize ; i--)
+			{
+				StackHash cur = (StackHash)stack[i];
+				assert(cur != 0);
+				res ^= (StackHash)(cur+i+size);
+				res ^= (StackHash)(cur-i+size) << 32;
+			}
+			break;
+	};
 
 	return res;
+}
+
+/*******************  FUNCTION  *********************/
+void* Stack::operator[](int idx)
+{
+	//errors
+	assert(idx >= 0);
+	
+	//trivial
+	if (idx < 0 || idx >= size || stack == NULL)
+		return NULL;
+
+	//depend on order
+	switch(order)
+	{
+		case STACK_ORDER_ASC:
+			return stack[idx];
+		case STACK_ORDER_DESC:
+			return stack[size - idx - 1];
+	}
 }
 
 /*******************  FUNCTION  *********************/
