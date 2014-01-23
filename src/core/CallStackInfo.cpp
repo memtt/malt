@@ -34,6 +34,15 @@ void SimpleQuantityHistory::addEvent(ssize_t value)
 }
 
 /*******************  FUNCTION  *********************/
+void SimpleQuantityHistory::push(SimpleQuantityHistory& value)
+{
+	this->count += value.count;
+	this->max += value.max;
+	this->min += value.min;
+	this->sum += value.sum;
+}
+
+/*******************  FUNCTION  *********************/
 void CallStackInfo::addEvent(ssize_t value, ticks lifetime)
 {
 	if (value == 0)
@@ -72,7 +81,17 @@ CallStackInfo::CallStackInfo(void )
 /*******************  FUNCTION  *********************/
 CallStackInfo::~CallStackInfo(void )
 {
+}
 
+/*******************  FUNCTION  *********************/
+void CallStackInfo::push(CallStackInfo& info)
+{
+	this->alive += info.alive;
+	this->maxAlive += info.maxAlive;
+	this->cntZeros += info.cntZeros;
+	this->alloc.push(info.alloc);
+	this->free.push(info.free);
+	this->lifetime.push(info.lifetime);
 }
 
 /*******************  FUNCTION  *********************/

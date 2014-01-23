@@ -226,4 +226,28 @@ void Stack::resolveSymbols ( FuncNameDic& dic ) const
 		dic.getName(stack[i]);
 }
 
+/*******************  FUNCTION  *********************/
+void* Stack::getCallee(void ) const
+{
+	switch(order)
+	{
+		case STACK_ORDER_ASC:
+			return stack[0];
+		case STACK_ORDER_DESC:
+			return stack[size-1];
+	}
+}
+
+/*******************  FUNCTION  *********************/
+void* Stack::getCaller(void ) const
+{
+	switch(order)
+	{
+		case STACK_ORDER_ASC:
+			return stack[1];
+		case STACK_ORDER_DESC:
+			return stack[size-2];
+	}
+}
+
 }

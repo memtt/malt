@@ -14,7 +14,7 @@ class SimpleCallStackNode
 {
 	public:
 		SimpleCallStackNode(const Stack & stack);
-		ATT::CallStackInfo & getInfo(void) {return info;};
+		CallStackInfo & getInfo(void) {return info;};
 		Stack & getCallStack(void) { return callStack;};
 	public:
 		friend std::ostream & operator << (std::ostream & out,const SimpleCallStackNode & tracer);
@@ -25,7 +25,7 @@ class SimpleCallStackNode
 		SimpleCallStackNode & operator = (const SimpleCallStackNode & orig);
 	private:
 		Stack callStack;
-		ATT::CallStackInfo info;
+		CallStackInfo info;
 };
 
 }

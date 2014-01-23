@@ -17,32 +17,31 @@ namespace ATT
 {
 
 /*********************  CLASS  **********************/
-class SimpleQuantityHistory
+struct SimpleQuantityHistory
 {
-	public:
-		SimpleQuantityHistory(void);
-		void addEvent(ssize_t value);
-	public:
-		friend void typeToJson(htopml::JsonState& json, std::ostream& stream, const SimpleQuantityHistory& value);
-	private:
-		size_t count;
-		ssize_t min;
-		ssize_t max;
-		ssize_t sum;
+	SimpleQuantityHistory(void);
+	void addEvent(ssize_t value);
+	void push(SimpleQuantityHistory & value);
+	size_t count;
+	ssize_t min;
+	ssize_t max;
+	ssize_t sum;
 };
 
+void typeToJson(htopml::JsonState& json, std::ostream& stream, const SimpleQuantityHistory& value);
+
 /*********************  CLASS  **********************/
-class CallStackInfo
+struct CallStackInfo
 {
-	public:
+// 	public:
 		CallStackInfo(void);
 		~CallStackInfo(void);
 		void addEvent(ssize_t value, ticks lifetime);
 		void onFreeLinkedMemory(ssize_t value,ticks lifetime);
-	public:
-		friend std::ostream & operator << (std::ostream & out,const CallStackInfo & info);
-		friend void typeToJson(htopml::JsonState& json, std::ostream& stream, const CallStackInfo& value);
-	private:
+		void push(CallStackInfo & info);
+// 	public:
+		
+// 	private:
 		SimpleQuantityHistory alloc;
 		SimpleQuantityHistory free;
 		SimpleQuantityHistory lifetime;
@@ -50,6 +49,9 @@ class CallStackInfo
 		ssize_t alive;
 		ssize_t maxAlive;
 };
+
+std::ostream & operator << (std::ostream & out,const CallStackInfo & info);
+void typeToJson(htopml::JsonState& json, std::ostream& stream, const CallStackInfo& value);
 
 }
 
