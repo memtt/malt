@@ -30,8 +30,6 @@ void ValgrindOutput::pushStackInfo(SimpleCallStackNode& stackNode)
 		//extrace callee/caller
 		void * callerPtr = stack[i];
 		void * calleePtr = stack[i-1];
-		
-		cout << callerPtr << " => " << calleePtr << endl;
 
 		//search info in map
 		ValgrindCaller & callerInfo = callers[callerPtr];
@@ -74,16 +72,19 @@ void ValgrindOutput::writeAsCallgrind(std::ostream& out)
 	out << "events: MaxAliveMemory AllocSum Count" << endl;
 	out << endl;
 	
+	//try to extract functions names bases on addresses
+	FuncNameDic names;
+	
 	//loop on data
 	for (ValgrindCallerMap::const_iterator it = callers.begin() ; it != callers.end() ; ++it)
 	{
 		out << "ob=unknown" << endl;
-		out << "fn=" << it->first << endl;
+		out << "fn=" << names.getName(it->first) << endl;
 		it->second.info.writeAsCallgrindEntry(0,out);
 		out << endl;
 		for (ValgrindCalleeMap::const_iterator itChild = it->second.callees.begin() ; itChild != it->second.callees.end() ; ++itChild)
 		{
-			out << "cfn=" << itChild->first << endl;
+			out << "cfn=" << names.getName(itChild->first) << endl;
 			out << "calls=1 0" << endl;
 			itChild->second.writeAsCallgrindEntry(0,out);
 			out << endl;
