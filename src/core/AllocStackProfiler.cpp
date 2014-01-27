@@ -1,6 +1,7 @@
 /********************  HEADERS  *********************/
 #include <cstdio>
 #include <iostream>
+#include <fstream>
 #include <execinfo.h>
 #include <json/TypeToJson.h>
 #include "AllocStackProfiler.hpp"
@@ -11,10 +12,12 @@ namespace ATT
 {
 
 /*******************  FUNCTION  *********************/
-AllocStackProfiler::AllocStackProfiler(StackMode mode,bool threadSafe)
+AllocStackProfiler::AllocStackProfiler(const Options & options,StackMode mode,bool threadSafe)
+	:requestedMem(options.timeProfilePoints,options.timeProfileLinear)
 {
 	this->mode = mode;
 	this->threadSafe = threadSafe;
+	this->options = options;
 
 	switch(mode)
 	{
@@ -75,16 +78,20 @@ void AllocStackProfiler::onRealloc(void* oldPtr, void* ptr, size_t newSize,Stack
 SimpleCallStackNode * AllocStackProfiler::onAllocEvent(void* ptr, size_t size,int skipDepth, Stack* userStack,SimpleCallStackNode * callStackNode,bool doLock)
 {
 	ATT_OPTIONAL_CRITICAL(lock,threadSafe && doLock)
-		//search if not provided
-		if (callStackNode == NULL)
-			callStackNode = getStackNode(skipDepth,size,userStack);
-		
 		//update mem usage
-		requestedMem.onDeltaEvent(size);
-		
-		//count events
-		CODE_TIMING("updateInfoAlloc",callStackNode->getInfo().addEvent(size,0));
-		
+		if (options.doTimeProfile)
+			requestedMem.onDeltaEvent(size);
+	
+		if (options.doStackProfile)
+		{
+			//search if not provided
+			if (callStackNode == NULL)
+				callStackNode = getStackNode(skipDepth,size,userStack);
+			
+			//count events
+			CODE_TIMING("updateInfoAlloc",callStackNode->getInfo().addEvent(size,0));
+		}
+
 		//register for segment history tracking
 		if (ptr != NULL)
 			CODE_TIMING("segTracerAdd",segTracer.add(ptr,size,callStackNode));
@@ -99,7 +106,8 @@ SimpleCallStackNode * AllocStackProfiler::onFreeEvent(void* ptr,int skipDepth, S
 	ATT_OPTIONAL_CRITICAL(lock,threadSafe && doLock)
 		//search segment info to link with previous history
 		SegmentInfo * segInfo = NULL;
-		CODE_TIMING("segTracerGet",segInfo = segTracer.get(ptr));
+		if (options.doTimeProfile || options.doStackProfile)
+			CODE_TIMING("segTracerGet",segInfo = segTracer.get(ptr));
 		
 		//check unknown
 		if (segInfo == NULL)
@@ -110,14 +118,18 @@ SimpleCallStackNode * AllocStackProfiler::onFreeEvent(void* ptr,int skipDepth, S
 			
 		//update mem usage
 		ssize_t size = -segInfo->size;
-		requestedMem.onDeltaEvent(size);
+		if (options.doTimeProfile)
+			requestedMem.onDeltaEvent(size);
 		
-		//search call stack info if not provided
-		if (callStackNode == NULL)
-			callStackNode = getStackNode(skipDepth,size,userStack);
-		
-		//count events
-		CODE_TIMING("updateInfoFree",callStackNode->getInfo().addEvent(size,segInfo->getLifetime()));
+		if (options.doStackProfile)
+		{
+			//search call stack info if not provided
+			if (callStackNode == NULL)
+				callStackNode = getStackNode(skipDepth,size,userStack);
+			
+			//count events
+			CODE_TIMING("updateInfoFree",callStackNode->getInfo().addEvent(size,segInfo->getLifetime()));
+		}
 		
 		//remove tracking info
 		CODE_TIMING("segTracerRemove",segTracer.remove(ptr));
@@ -155,10 +167,19 @@ void AllocStackProfiler::onExit(void )
 {
 	puts("======================== Print on exit ========================");
 	ATT_OPTIONAL_CRITICAL(lock,threadSafe)
-		CODE_TIMING("output",htopml::typeToJson(std::cout,*this));
+		//open output file
+		//TODO manage errors
+		std::ofstream out;
+		out.open(options.outputFile.c_str());
+
+		//convert json
+		CODE_TIMING("output",htopml::typeToJson(out,*this));
+		out.close();
+
+		//valgrind out
 		ValgrindOutput vout;
 		stackTracer.fillValgrindOut(vout);
-		vout.writeAsCallgrind("mycallgrind.callgrind");
+		vout.writeAsCallgrind(options.valgrindFile.c_str());
 	ATT_END_CRITICAL
 }
 
@@ -184,8 +205,10 @@ void AllocStackProfiler::onExitFunction ( void* funcAddr )
 void typeToJson(htopml::JsonState& json, std::ostream& stream, const AllocStackProfiler& value)
 {
 	json.openStruct();
-	json.printField("stackInfo",value.stackTracer);
-	json.printField("requestedMem",value.requestedMem);
+	if (value.options.doStackProfile)
+		json.printField("stackInfo",value.stackTracer);
+	if (value.options.doTimeProfile)
+		json.printField("requestedMem",value.requestedMem);
 	json.closeStruct();
 }
 

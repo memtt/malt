@@ -155,7 +155,7 @@ void AllocWrapperGlobal::init(void )
 
 		//init profiler
 		gblState.status = ALLOC_WRAP_INIT_PROFILER;
-		gblState.profiler = new AllocStackProfiler(getStackMode(),true);
+		gblState.profiler = new AllocStackProfiler(Options(),getStackMode(),true);
 
 		//register on exit
 		on_exit(AllocWrapperGlobal::onExit,NULL);

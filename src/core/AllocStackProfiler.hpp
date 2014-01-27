@@ -8,6 +8,7 @@
 #include "SimpleStackTracer.hpp"
 #include "EnterExitCallStack.hpp"
 #include "ProfiledValue.hpp"
+#include <common/Options.hpp>
 
 /*******************  NAMESPACE  ********************/
 namespace ATT
@@ -25,7 +26,7 @@ enum StackMode
 class AllocStackProfiler
 {
 	public:
-		AllocStackProfiler(StackMode mode = STACK_MODE_BACKTRACE,bool threadSafe = false);
+		AllocStackProfiler(const Options & option, StackMode mode = STACK_MODE_BACKTRACE,bool threadSafe = false);
 		void onMalloc(void * ptr,size_t size,Stack * userStack = NULL);
 		void onCalloc(void * ptr,size_t nmemb,size_t size,Stack * userStack = NULL);
 		void onPrepareRealloc(void * oldPtr,Stack * userStack = NULL);
@@ -49,6 +50,7 @@ class AllocStackProfiler
 		StackMode mode;
 		ATT::Mutex lock;
 		bool threadSafe;
+		Options options;
 };
 
 };
