@@ -69,6 +69,12 @@ template <class T> std::ostream& typeToJson(std::ostream& out,const T * value)
 	return out;
 }
 
+/*******************  FUNCTION  *********************/
+template <class T> void typeToJson(JsonState & json,std::ostream & out,const T & value)
+{
+	out << value;
+}
+
 }
 
 #endif //TYPE_TO_JSON_H

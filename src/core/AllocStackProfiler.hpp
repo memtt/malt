@@ -7,6 +7,7 @@
 #include "SegmentTracker.hpp"
 #include "SimpleStackTracer.hpp"
 #include "EnterExitCallStack.hpp"
+#include "ProfiledValue.hpp"
 
 /*******************  NAMESPACE  ********************/
 namespace ATT
@@ -33,6 +34,8 @@ class AllocStackProfiler
 		void onExit(void);
 		void onEnterFunction(void * funcAddr);
 		void onExitFunction(void * funcAddr);
+	public:
+		friend void typeToJson(htopml::JsonState& json, std::ostream& stream, const AllocStackProfiler& value);
 	private:
 		SimpleCallStackNode * getStackNode(int skipDepth,ssize_t delta,Stack * userStack = NULL);
 		SimpleCallStackNode * onAllocEvent(void * ptr,size_t size, int skipDepth,Stack * userStack = NULL,SimpleCallStackNode * callStackNode = NULL,bool doLock = true);
@@ -42,6 +45,7 @@ class AllocStackProfiler
 		SegmentTracker segTracer;
 		BacktraceCallStack stack;
 		EnterExitCallStack exStack;
+		ProfiledValue requestedMem;
 		StackMode mode;
 		ATT::Mutex lock;
 		bool threadSafe;

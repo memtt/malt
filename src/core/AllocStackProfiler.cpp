@@ -79,6 +79,9 @@ SimpleCallStackNode * AllocStackProfiler::onAllocEvent(void* ptr, size_t size,in
 		if (callStackNode == NULL)
 			callStackNode = getStackNode(skipDepth,size,userStack);
 		
+		//update mem usage
+		requestedMem.onDeltaEvent(size);
+		
 		//count events
 		CODE_TIMING("updateInfoAlloc",callStackNode->getInfo().addEvent(size,0));
 		
@@ -105,7 +108,9 @@ SimpleCallStackNode * AllocStackProfiler::onFreeEvent(void* ptr,int skipDepth, S
 			return NULL;
 		}
 			
+		//update mem usage
 		ssize_t size = -segInfo->size;
+		requestedMem.onDeltaEvent(size);
 		
 		//search call stack info if not provided
 		if (callStackNode == NULL)
@@ -150,7 +155,7 @@ void AllocStackProfiler::onExit(void )
 {
 	puts("======================== Print on exit ========================");
 	ATT_OPTIONAL_CRITICAL(lock,threadSafe)
-		CODE_TIMING("output",htopml::typeToJson(std::cout,stackTracer));
+		CODE_TIMING("output",htopml::typeToJson(std::cout,*this));
 		ValgrindOutput vout;
 		stackTracer.fillValgrindOut(vout);
 		vout.writeAsCallgrind("mycallgrind.callgrind");
@@ -173,6 +178,15 @@ void AllocStackProfiler::onExitFunction ( void* funcAddr )
 	assert(!threadSafe);
 	if (mode == STACK_MODE_ENTER_EXIT_FUNC)
 		this->exStack.exitFunction(funcAddr);
+}
+
+/*******************  FUNCTION  *********************/
+void typeToJson(htopml::JsonState& json, std::ostream& stream, const AllocStackProfiler& value)
+{
+	json.openStruct();
+	json.printField("stackInfo",value.stackTracer);
+	json.printField("requestedMem",value.requestedMem);
+	json.closeStruct();
 }
 
 }

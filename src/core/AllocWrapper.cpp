@@ -180,8 +180,8 @@ void AllocWrapperGlobal::onExit(int status,void * arg)
 {
 	if (gblState.status == ALLOC_WRAP_READY)
 	{
-		gblState.profiler->onExit();
 		gblState.status = ALLOC_WRAP_FINISH;
+		gblState.profiler->onExit();
 		delete gblState.profiler;
 	} else {
 		gblState.status = ALLOC_WRAP_FINISH;

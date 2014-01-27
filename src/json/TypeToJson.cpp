@@ -38,23 +38,6 @@ void typeToJson(JsonState & json,std::ostream& stream, const char* value)
 }
 
 /*******************  FUNCTION  *********************/
-void typeToJson(JsonState & json,std::ostream& stream, unsigned long value)
-{
-	stream << value;
-}
-
-/*******************  FUNCTION  *********************/
-void typeToJson(JsonState & json,std::ostream& stream, long value)
-{
-	stream << value;
-}
-
-/*******************  FUNCTION  *********************/
-void typeToJson(JsonState & json,std::ostream& stream, double value)
-{
-	stream << value;
-}
-
 void typeToJson(JsonState & json,std::ostream& stream, bool value)
 {
 	if (value)

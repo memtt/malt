@@ -16,10 +16,13 @@ include_directories(../extern-deps/from-fftw)
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
 ######################################################
-add_library(cstbase SHARED $<TARGET_OBJECTS:htopml-json> $<TARGET_OBJECTS:att-core> $<TARGET_OBJECTS:att-common>)
+set(COMMON_OBJS $<TARGET_OBJECTS:htopml-json> $<TARGET_OBJECTS:att-core> $<TARGET_OBJECTS:att-common>)
 
 ######################################################
-add_library(AllocStackProfiler SHARED $<TARGET_OBJECTS:att-core> $<TARGET_OBJECTS:htopml-json> $<TARGET_OBJECTS:att-common> $<TARGET_OBJECTS:att-libc-wrapper>)
+add_library(cstbase SHARED ${COMMON_OBJS})
+
+######################################################
+add_library(AllocStackProfiler SHARED ${COMMON_OBJS} $<TARGET_OBJECTS:att-libc-wrapper>)
 target_link_libraries(AllocStackProfiler dl)
 
 ######################################################

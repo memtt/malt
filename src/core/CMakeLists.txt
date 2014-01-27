@@ -1,5 +1,15 @@
 ######################################################
-set(ATT_LIB_SRC FuncNameDic.cpp BacktraceCallStack.cpp SimpleStackTracer.cpp AllocStackProfiler.cpp CallStackInfo.cpp SimpleCallStackNode.cpp EnterExitCallStack.cpp Stack.cpp SegmentTracker.cpp ValgrindOutput.cpp)
+set(ATT_LIB_SRC Stack.cpp 
+                FuncNameDic.cpp 
+                CallStackInfo.cpp 
+                ProfiledValue.cpp
+                SegmentTracker.cpp 
+                ValgrindOutput.cpp 
+                SimpleStackTracer.cpp 
+                EnterExitCallStack.cpp 
+                BacktraceCallStack.cpp 
+                AllocStackProfiler.cpp 
+                SimpleCallStackNode.cpp)
 
 ######################################################
 add_library(att-core OBJECT ${ATT_LIB_SRC})
