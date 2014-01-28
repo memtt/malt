@@ -1,3 +1,11 @@
+/*****************************************************
+             PROJECT  : MATT
+             VERSION  : 0.1.0-dev
+             DATE     : 01/2014
+             AUTHOR   : Valat Sébastien
+             LICENSE  : CeCILL-C
+*****************************************************/
+
 #ifndef MATT_CODE_TIMING_H
 #define MATT_CODE_TIMING_H
 

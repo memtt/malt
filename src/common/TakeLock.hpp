@@ -1,3 +1,11 @@
+/*****************************************************
+             PROJECT  : MATT
+             VERSION  : 0.1.0-dev
+             DATE     : 01/2014
+             AUTHOR   : Valat Sébastien
+             LICENSE  : CeCILL-C
+*****************************************************/
+
 #ifndef MATT_TAKE_LOCK_HPP
 #define MATT_TAKE_LOCK_HPP
 
