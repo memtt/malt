@@ -8,7 +8,7 @@
 
 ######################################################
 #select portability mode
-set(PORTABILITY_MUTEX "PTHREAD" CACHE STRING "Select mutex implementation to use. Currently support : 'PTHREAD'.")
+set(PORTABILITY_MUTEX "PTHREAD" CACHE STRING "Select mutex implementation to use. Currently support : 'PTHREAD', 'DUMMY'.")
 
 ######################################################
 #select portability definitions
@@ -28,11 +28,11 @@ include_directories(${CMAKE_CURRENT_BINARY_DIR})
 set(COMMON_OBJS $<TARGET_OBJECTS:htopml-json> $<TARGET_OBJECTS:matt-core> $<TARGET_OBJECTS:matt-common>)
 
 ######################################################
-add_library(cstbase SHARED ${COMMON_OBJS})
+add_library(matt-base SHARED ${COMMON_OBJS})
 
 ######################################################
-add_library(AllocStackProfiler SHARED ${COMMON_OBJS} $<TARGET_OBJECTS:matt-libc-wrapper>)
-target_link_libraries(AllocStackProfiler dl)
+add_library(matt SHARED ${COMMON_OBJS} $<TARGET_OBJECTS:matt-libc-wrapper>)
+target_link_libraries(matt dl)
 
 ######################################################
 add_subdirectory(core)

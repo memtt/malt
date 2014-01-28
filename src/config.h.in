@@ -3,5 +3,6 @@
 
 //select one of the mutex mode
 #cmakedefine MATT_PORTABILITY_MUTEX_PTHREAD
+#cmakedefine MATT_PORTABILITY_MUTEX_DUMMY
 
 #endif //CONFIG_H

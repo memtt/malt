@@ -16,12 +16,12 @@ set(TEST_NAMES TestSegmentTracker TestProfiledValue TestFormattedMessage)
 ######################################################
 FOREACH(test_name ${TEST_NAMES})
 	add_executable(${test_name} ${test_name}.cpp)
-	target_link_libraries(${test_name} ${GTEST_BOTH_LIBRARIES} ${GMOCK_BOTH_LIBRARIES} cstbase)
+	target_link_libraries(${test_name} ${GTEST_BOTH_LIBRARIES} ${GMOCK_BOTH_LIBRARIES} matt-base)
 	add_test(${test_name} ${test_name})
 ENDFOREACH(test_name)
 
 add_executable(bench benchmark.cpp)
-target_link_libraries(bench cstbase dl)
+target_link_libraries(bench matt-base dl)
 
 ######################################################
 add_executable(simple-case-no-finstr simple-case.cpp)
