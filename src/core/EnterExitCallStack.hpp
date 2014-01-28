@@ -1,10 +1,19 @@
-#ifndef ATT_ENTER_EXIT_CALL_STACK_HPP
-#define ATT_ENTER_EXIT_CALL_STACK_HPP
+/*****************************************************
+             PROJECT  : MATT
+             VERSION  : 0.1.0-dev
+             DATE     : 01/2014
+             AUTHOR   : Valat Sébastien
+             LICENSE  : CeCILL-C
+*****************************************************/
+
+#ifndef MATT_ENTER_EXIT_CALL_STACK_HPP
+#define MATT_ENTER_EXIT_CALL_STACK_HPP
 
 /********************  HEADERS  *********************/
+//standard
 #include <ostream>
 #include <cstdlib>
-// #include <json/JsonState.h>
+//internals
 #include "Stack.h"
 
 /*******************  FUNCTION  *********************/
@@ -14,7 +23,7 @@ namespace htopml
 };
 
 /*******************  NAMESPACE  ********************/
-namespace ATT
+namespace MATT
 {
 
 /*********************  CLASS  **********************/
@@ -30,4 +39,4 @@ class EnterExitCallStack : public Stack
 
 }
 
-#endif //ATT_ENTER_EXIT_CALL_STACK_HPP
+#endif //MATT_ENTER_EXIT_CALL_STACK_HPP

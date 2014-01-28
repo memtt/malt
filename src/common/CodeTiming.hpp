@@ -1,9 +1,11 @@
-#ifndef CODE_TIMING_H
-#define CODE_TIMING_H
+#ifndef MATT_CODE_TIMING_H
+#define MATT_CODE_TIMING_H
 
 /********************  HEADERS  *********************/
+//standards
 #include <string>
 #include <cstdlib>
+//from fftw (copied into extern-deps)
 #include <cycle.h>
 
 /********************  MACROS  **********************/
@@ -18,14 +20,14 @@ void yourFunc(void)
 **/
 #define CODE_TIMING(name,code) \
 	do {  \
-		static ATT::CodeTiming __code_timing_local__(name);   \
+		static MATT::CodeTiming __code_timing_local__(name);   \
 		__code_timing_local__.start(); \
 		do {code;} while(0); \
 		__code_timing_local__.end();  \
 	} while(0)
 
 /*******************  NAMESPACE  ********************/
-namespace ATT
+namespace MATT
 {
 
 /*********************  CLASS  **********************/
@@ -106,4 +108,4 @@ ticks ticksPerSecond(void);
 
 };
 
-#endif //CODE_TIMING_H
+#endif //MATT_CODE_TIMING_H

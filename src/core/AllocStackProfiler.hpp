@@ -1,17 +1,27 @@
-#ifndef ATT_ALLOC_STACK_PROGILER_HPP
-#define ATT_ALLOC_STACK_PROGILER_HPP
+/*****************************************************
+             PROJECT  : MATT
+             VERSION  : 0.1.0-dev
+             DATE     : 01/2014
+             AUTHOR   : Valat Sébastien
+             LICENSE  : CeCILL-C
+*****************************************************/
+
+#ifndef MATT_ALLOC_STACK_PROGILER_HPP
+#define MATT_ALLOC_STACK_PROGILER_HPP
 
 /********************  HEADERS  *********************/
+//standard
 #include <cstdlib>
+//intenrals
+#include <common/Options.hpp>
 #include <portability/Mutex.hpp>
 #include "SegmentTracker.hpp"
 #include "SimpleStackTracer.hpp"
 #include "EnterExitCallStack.hpp"
 #include "ProfiledValue.hpp"
-#include <common/Options.hpp>
 
 /*******************  NAMESPACE  ********************/
-namespace ATT
+namespace MATT
 {
 
 /********************  ENUM  ************************/
@@ -36,7 +46,7 @@ class AllocStackProfiler
 		void onEnterFunction(void * funcAddr);
 		void onExitFunction(void * funcAddr);
 	public:
-		friend void typeToJson(htopml::JsonState& json, std::ostream& stream, const AllocStackProfiler& value);
+		friend void convertToJson(htopml::JsonState& json, const AllocStackProfiler& value);
 	private:
 		SimpleCallStackNode * getStackNode(int skipDepth,ssize_t delta,Stack * userStack = NULL);
 		SimpleCallStackNode * onAllocEvent(void * ptr,size_t size, int skipDepth,Stack * userStack = NULL,SimpleCallStackNode * callStackNode = NULL,bool doLock = true);
@@ -55,4 +65,4 @@ class AllocStackProfiler
 
 };
 
-#endif //ATT_ALLOC_STACK_PROGILER_HPP
+#endif //MATT_ALLOC_STACK_PROGILER_HPP

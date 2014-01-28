@@ -1,10 +1,10 @@
-#ifndef ATT_OPTIONS_HPP
-#define ATT_OPTIONS_HPP
+#ifndef MATT_OPTIONS_HPP
+#define MATT_OPTIONS_HPP
 
 /********************  HEADERS  *********************/
 #include <string>
 
-namespace ATT
+namespace MATT
 {
 
 /********************  STRUCT  **********************/
@@ -33,4 +33,4 @@ inline Options::Options(void)
 
 };
 
-#endif //ATT_OPTIONS_HPP
+#endif //MATT_OPTIONS_HPP

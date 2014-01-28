@@ -1,10 +1,18 @@
+/*****************************************************
+             PROJECT  : MATT
+             VERSION  : 0.1.0-dev
+             DATE     : 01/2014
+             AUTHOR   : Valat Sébastien
+             LICENSE  : CeCILL-C
+*****************************************************/
+
 /********************  HEADERS  *********************/
 #include <gtest/gtest.h>
 #include <core/SegmentTracker.hpp>
 #include <core/Stack.h>
 
 /***************** USING NAMESPACE ******************/
-using namespace ATT;
+using namespace MATT;
 
 /********************* GLOBALS **********************/
 static void * CST_STACK_1_CONTENT[] = {(void*)0x1,(void*)0x2,(void*)0x3};

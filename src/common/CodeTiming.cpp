@@ -13,7 +13,7 @@
 using namespace std;
 
 /*******************  NAMESPACE  ********************/
-namespace ATT
+namespace MATT
 {
 
 /********************** CONSTS **********************/

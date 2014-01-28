@@ -1,3 +1,11 @@
+/*****************************************************
+             PROJECT  : MATT
+             VERSION  : 0.1.0-dev
+             DATE     : 01/2014
+             AUTHOR   : Valat Sébastien
+             LICENSE  : CeCILL-C
+*****************************************************/
+
 /********************  HEADERS  *********************/
 //extern
 #include <cstdio>
@@ -13,7 +21,7 @@
 #define CALL_STACK_GROW_THRESHOLD 1024
 
 /*******************  NAMESPACE  ********************/
-namespace ATT
+namespace MATT
 {
 
 /*******************  FUNCTION  *********************/
@@ -195,7 +203,7 @@ bool operator== ( const Stack& v1, const Stack& v2 )
 }
 
 /*******************  FUNCTION  *********************/
-void typeToJson ( htopml::JsonState& json, std::ostream& stream, const Stack& obj )
+void convertToJson ( htopml::JsonState& json, const Stack& obj )
 {
 	//select running mode
 	json.openArray();

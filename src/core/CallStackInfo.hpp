@@ -1,9 +1,19 @@
-#ifndef ATT_CALL_STACK_INFO_HPP
-#define ATT_CALL_STACK_INFO_HPP
+/*****************************************************
+             PROJECT  : MATT
+             VERSION  : 0.1.0-dev
+             DATE     : 01/2014
+             AUTHOR   : Valat Sébastien
+             LICENSE  : CeCILL-C
+*****************************************************/
+
+#ifndef MATT_CALL_STACK_INFO_HPP
+#define MATT_CALL_STACK_INFO_HPP
 
 /*******************  FUNCTION  *********************/
+//standard
 #include <ostream>
 #include <cstdlib>
+//from fftw (copied in extern-deps)
 #include <cycle.h>
 
 /*******************  FUNCTION  *********************/
@@ -13,7 +23,7 @@ namespace htopml
 };
 
 /*******************  NAMESPACE  ********************/
-namespace ATT
+namespace MATT
 {
 
 /*********************  CLASS  **********************/
@@ -28,7 +38,7 @@ struct SimpleQuantityHistory
 	ssize_t sum;
 };
 
-void typeToJson(htopml::JsonState& json, std::ostream& stream, const SimpleQuantityHistory& value);
+void convertToJson(htopml::JsonState& json, const SimpleQuantityHistory& value);
 
 /*********************  CLASS  **********************/
 struct CallStackInfo
@@ -52,7 +62,7 @@ struct CallStackInfo
 };
 
 std::ostream & operator << (std::ostream & out,const CallStackInfo & info);
-void typeToJson(htopml::JsonState& json, std::ostream& stream, const CallStackInfo& value);
+void convertToJson(htopml::JsonState& json, const CallStackInfo& value);
 
 }
 

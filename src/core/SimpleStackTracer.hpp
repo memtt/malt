@@ -1,5 +1,13 @@
-#ifndef ATT_SIMPLE_BACKTRACE_STORAGE_HPP
-#define ATT_SIMPLE_BACKTRACE_STORAGE_HPP
+/*****************************************************
+             PROJECT  : MATT
+             VERSION  : 0.1.0-dev
+             DATE     : 01/2014
+             AUTHOR   : Valat Sébastien
+             LICENSE  : CeCILL-C
+*****************************************************/
+
+#ifndef MATT_SIMPLE_BACKTRACE_STORAGE_HPP
+#define MATT_SIMPLE_BACKTRACE_STORAGE_HPP
 
 /********************  HEADERS  *********************/
 //extern
@@ -14,7 +22,7 @@
 #include "ValgrindOutput.hpp"
 
 /*******************  NAMESPACE  ********************/
-namespace ATT
+namespace MATT
 {
 
 /*******************  FUNCTION  *********************/
@@ -33,7 +41,7 @@ class SimpleStackTracer
 		void fillValgrindOut(ValgrindOutput & out) const;
 	public:
 		friend std::ostream & operator << (std::ostream & out,const SimpleStackTracer & tracer);
-		friend void typeToJson(htopml::JsonState & json,std::ostream& stream, const SimpleStackTracer & value);
+		friend void convertToJson(htopml::JsonState & json, const SimpleStackTracer & value);
 	private:
 		SimpleBacktraceVectorMap callmaps;
 		size_t count;
@@ -41,4 +49,4 @@ class SimpleStackTracer
 
 }
 
-#endif //ATT_SIMPLE_BACKTRACE_STORAGE_HPP
+#endif //MATT_SIMPLE_BACKTRACE_STORAGE_HPP

@@ -1,20 +1,28 @@
-#ifndef ATT_MUTEX_HPP
-#define ATT_MUTEX_HPP
+/*****************************************************
+             PROJECT  : MATT
+             VERSION  : 0.1.0-dev
+             DATE     : 01/2014
+             AUTHOR   : Valat Sébastien
+             LICENSE  : CeCILL-C
+*****************************************************/
+
+#ifndef MATT_MUTEX_HPP
+#define MATT_MUTEX_HPP
 
 /********************  HEADERS  *********************/
 #include <common/TakeLock.hpp>
 #include <config.h>
 
 /*********************  TYPES  **********************/
-#if defined(ATT_PORTABILITY_MUTEX_PTHREAD)
+#if defined(MATT_PORTABILITY_MUTEX_PTHREAD)
 	//pthread mode
 	#include "MutexPthread.hpp"
 	
 	//map macros to generic names
-	#define ATT_STATIC_MUTEX_INIT {PTHREAD_MUTEX_INITIALIZER}
+	#define MATT_STATIC_MUTEX_INIT {PTHREAD_MUTEX_INITIALIZER}
 
 	//map types to generic names
-	namespace ATT
+	namespace MATT
 	{
 		typedef StaticMutexPthread StaticMutex;
 		typedef MutexPthread Mutex;
@@ -22,7 +30,7 @@
 	};
 #else
 	//not found, fail to compile
-	#error "No available implementation for mutex, please check definition of one of PORTABILITY_MUTEX_* macro in config.h or PORTABILITY_MUTEX given to cmake."
+	#error "No available implementation for mutex, please check definition of one of MATT_PORTABILITY_MUTEX_* macro in config.h or PORTABILITY_MUTEX given to cmake."
 #endif
 
-#endif //ATT_MUTEX_HPP
+#endif //MATT_MUTEX_HPP

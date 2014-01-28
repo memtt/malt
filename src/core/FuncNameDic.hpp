@@ -1,5 +1,13 @@
-#ifndef ATT_FUNC_NAME_DIC_HPP
-#define ATT_FUNC_NAME_DIC_HPP
+/*****************************************************
+             PROJECT  : MATT
+             VERSION  : 0.1.0-dev
+             DATE     : 01/2014
+             AUTHOR   : Valat Sébastien
+             LICENSE  : CeCILL-C
+*****************************************************/
+
+#ifndef MATT_FUNC_NAME_DIC_HPP
+#define MATT_FUNC_NAME_DIC_HPP
 
 /********************  HEADERS  *********************/
 #include <map>
@@ -16,7 +24,7 @@ namespace htopml
 };
 
 /*******************  NAMESPACE  ********************/
-namespace ATT
+namespace MATT
 {
 
 /*********************  CLASS  **********************/
@@ -30,11 +38,11 @@ class FuncNameDic
 		const char * setupNewEntry(void * callSite,const std::string & name);
 	public:
 		friend std::ostream & operator << (std::ostream & out,const FuncNameDic & dic);
-		friend void typeToJson(htopml::JsonState & json,std::ostream& stream, const FuncNameDic & value);
+		friend void convertToJson(htopml::JsonState & json, const FuncNameDic & value);
 	private:
 		FuncNameDicMap nameMap;
 };
 
 }
 
-#endif //ATT_FUNC_NAME_DIC_HPP
+#endif //MATT_FUNC_NAME_DIC_HPP

@@ -1,7 +1,15 @@
+/*****************************************************
+             PROJECT  : MATT
+             VERSION  : 0.1.0-dev
+             DATE     : 01/2014
+             AUTHOR   : Valat Sébastien
+             LICENSE  : CeCILL-C
+*****************************************************/
+
 /********************  HEADERS  *********************/
 #include <iostream>
 #include <cstdio>
-#include <json/TypeToJson.h>
+#include <json/ConvertToJson.h>
 #include "pin.H"
 #include "lib/AllocStackProfiler.h"
 
@@ -279,7 +287,7 @@ static VOID instrImage(IMG img, VOID *v)
 static VOID onExit(INT32 code, VOID *v)
 {
 	gblState.profiler.onExit();
-// 	htopml::typeToJson(std::cout,gblState.names);
+// 	htopml::convertToJson(std::cout,gblState.names);
 }
 
 /*******************  FUNCTION  *********************/

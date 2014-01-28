@@ -1,11 +1,19 @@
-#ifndef ATT_MUTEX_PTHREAD_HPP
-#define ATT_MUTEX_PTHREAD_HPP
+/*****************************************************
+             PROJECT  : MATT
+             VERSION  : 0.1.0-dev
+             DATE     : 01/2014
+             AUTHOR   : Valat Sébastien
+             LICENSE  : CeCILL-C
+*****************************************************/
+
+#ifndef MATT_MUTEX_PTHREAD_HPP
+#define MATT_MUTEX_PTHREAD_HPP
 
 /********************  HEADERS  *********************/
 #include "pthread.h"
 
 /*******************  NAMESPACE  ********************/
-namespace ATT
+namespace MATT
 {
 
 /********************  STRUCT  **********************/
@@ -87,4 +95,4 @@ inline bool MutexPthread::tryLock(void )
 
 }
 
-#endif //ATT_MUTEX_PTHREAD_HPP
+#endif //MATT_MUTEX_PTHREAD_HPP

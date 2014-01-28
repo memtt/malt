@@ -1,15 +1,20 @@
+
+
 /********************  HEADERS  *********************/
+//standard
 #include <cstdlib>
 #include <cstdio>
 #include <cassert>
-#include <dlfcn.h>
 #include <cstring>
+//libc POSIX.1, here we use GNU specific RTLD_NEXT (need _GNU_SOURCE)
+#include <dlfcn.h>
+//intenrals
 #include <portability/Mutex.hpp>
 #include <common/CodeTiming.hpp>
 #include "AllocStackProfiler.hpp"
 
 /***************** USING NAMESPACE ******************/
-using namespace ATT;
+using namespace MATT;
 
 /*******************  FUNCTION  *********************/
 /** Prototype of malloc function to get it into function pointer. **/
@@ -60,7 +65,7 @@ struct AllocWrapperGlobal
 	 * Mutex to protect the structure in multi-thread mode, only used to protect the init state. 
 	 * CAUTION, need to star at second position. 
 	**/
-	ATT::StaticMutex lock;
+	MATT::StaticMutex lock;
 	/** Pointer to the old (glibc) malloc symbol. **/
 	MallocFuncPtr malloc;
 	/** Pointer to the old (glibc) free symbol. **/
@@ -102,7 +107,7 @@ struct ThreadLocalState
 
 /********************  GLOBALS  **********************/
 /** Store the global state of allocator wrapper. **/
-static AllocWrapperGlobal gblState = {ALLOC_WRAP_NOT_READY,ATT_STATIC_MUTEX_INIT,NULL,NULL,NULL,NULL};
+static AllocWrapperGlobal gblState = {ALLOC_WRAP_NOT_READY,MATT_STATIC_MUTEX_INIT,NULL,NULL,NULL,NULL};
 /** Store the per-thread state of allocator wrapper. **/
 static __thread ThreadLocalState tlsState = {NULL,false,false};
 /** Temporary buffer to return on first realloc used by dlsym and split infinit call loops. **/

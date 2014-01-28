@@ -1,12 +1,20 @@
-#ifndef ATT_SIMPLE_CALL_STACK_NODE_HPP
-#define ATT_SIMPLE_CALL_STACK_NODE_HPP
+/*****************************************************
+             PROJECT  : MATT
+             VERSION  : 0.1.0-dev
+             DATE     : 01/2014
+             AUTHOR   : Valat Sébastien
+             LICENSE  : CeCILL-C
+*****************************************************/
+
+#ifndef MATT_SIMPLE_CALL_STACK_NODE_HPP
+#define MATT_SIMPLE_CALL_STACK_NODE_HPP
 
 /********************  HEADERS  *********************/
 #include "CallStackInfo.hpp"
 #include "Stack.h"
 
 /*******************  NAMESPACE  ********************/
-namespace ATT
+namespace MATT
 {
 
 /*********************  CLASS  **********************/
@@ -18,7 +26,7 @@ class SimpleCallStackNode
 		Stack & getCallStack(void) { return callStack;};
 	public:
 		friend std::ostream & operator << (std::ostream & out,const SimpleCallStackNode & tracer);
-		friend void typeToJson(htopml::JsonState & json,std::ostream& stream, const SimpleCallStackNode & value);
+		friend void convertToJson(htopml::JsonState & json, const SimpleCallStackNode & value);
 	private:
 		//ensure to never copy as private
 		SimpleCallStackNode(const SimpleCallStackNode & orig);
@@ -30,4 +38,4 @@ class SimpleCallStackNode
 
 }
 
-#endif //ATT_SIMPLE_CALL_STACK_NODE_HPP
+#endif //MATT_SIMPLE_CALL_STACK_NODE_HPP

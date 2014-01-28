@@ -1,9 +1,17 @@
-#ifndef ATT_TREE_CALL_TRACK_HPP
-#define ATT_TREE_CALL_TRACK_HPP
+/*****************************************************
+             PROJECT  : MATT
+             VERSION  : 0.1.0-dev
+             DATE     : 01/2014
+             AUTHOR   : Valat Sébastien
+             LICENSE  : CeCILL-C
+*****************************************************/
+
+#ifndef MATT_TREE_CALL_TRACK_HPP
+#define MATT_TREE_CALL_TRACK_HPP
 
 /********************  HEADERS  *********************/
 #include <map>
-#include <json/TypeToJson.h>
+#include <json/ConvertToJson.h>
 #include "TreeStackTracerEntry.hpp"
 
 /*********************  CLASS  **********************/
@@ -25,7 +33,7 @@ class TreeStackTracer
 	public:
 		Node & getEntry(TreeStackTracerEntry * parent,void * addr);
 	public:
-		friend void typeToJson(htopml::JsonState & json,std::ostream& stream, const TreeStackTracer<T> & value);
+		friend void convertToJson(htopml::JsonState & json, const TreeStackTracer<T> & value);
 	private:
 		TreeStackTracerEntryMap entries;
 };
@@ -47,10 +55,10 @@ TreeStackTracer<T>::Node& TreeStackTracer<T>::getEntry(TreeStackTracerEntry* par
 
 /*******************  FUNCTION  *********************/
 template <class T>
-void TreeStackTracer<T>::typeToJson(htopml::JsonState& json, std::ostream& stream, const TreeStackTracer< T >& value)
+void TreeStackTracer<T>::convertToJson(htopml::JsonState& json, const TreeStackTracer< T >& value)
 {
 	json.openStruct();
 	json.closeStruct();
 }
 
-#endif //ATT_TREE_CALL_TRACK_HPP
+#endif //MATT_TREE_CALL_TRACK_HPP

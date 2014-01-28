@@ -1,5 +1,13 @@
-#ifndef ATT_BACKTRACE_BACKTRACE_HPP
-#define ATT_BACKTRACE_BACKTRACE_HPP
+/*****************************************************
+             PROJECT  : MATT
+             VERSION  : 0.1.0-dev
+             DATE     : 01/2014
+             AUTHOR   : Valat Sébastien
+             LICENSE  : CeCILL-C
+*****************************************************/
+
+#ifndef MATT_BACKTRACE_BACKTRACE_HPP
+#define MATT_BACKTRACE_BACKTRACE_HPP
 
 /********************  HEADERS  *********************/
 #include "Stack.h"
@@ -7,7 +15,7 @@
 #include "CallStackInfo.hpp"
 
 /*******************  NAMESPACE  ********************/
-namespace ATT
+namespace MATT
 {
 
 /*********************  CLASS  **********************/
@@ -20,4 +28,4 @@ class BacktraceCallStack : public Stack
 
 };
 
-#endif //ATT_BACKTRACE_BACKTRACE_HPP
+#endif //MATT_BACKTRACE_BACKTRACE_HPP

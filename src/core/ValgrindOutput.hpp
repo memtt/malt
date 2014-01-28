@@ -1,5 +1,13 @@
-#ifndef ATT_VALGRIND_OUTPUT_HPP
-#define ATT_VALGRIND_OUTPUT_HPP
+/*****************************************************
+             PROJECT  : MATT
+             VERSION  : 0.1.0-dev
+             DATE     : 01/2014
+             AUTHOR   : Valat Sébastien
+             LICENSE  : CeCILL-C
+*****************************************************/
+
+#ifndef MATT_VALGRIND_OUTPUT_HPP
+#define MATT_VALGRIND_OUTPUT_HPP
 
 /********************  HEADERS  *********************/
 #include <cstdlib>
@@ -7,7 +15,7 @@
 #include <string>
 #include "SimpleCallStackNode.hpp"
 
-namespace ATT
+namespace MATT
 {
 
 /*********************  TYPES  **********************/
@@ -37,4 +45,4 @@ class ValgrindOutput
 
 };
 
-#endif //ATT_VALGRIND_OUTPUT_HPP
+#endif //MATT_VALGRIND_OUTPUT_HPP

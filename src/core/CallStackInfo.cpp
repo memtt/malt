@@ -1,10 +1,21 @@
+/*****************************************************
+             PROJECT  : MATT
+             VERSION  : 0.1.0-dev
+             DATE     : 01/2014
+             AUTHOR   : Valat Sébastien
+             LICENSE  : CeCILL-C
+*****************************************************/
+
 /********************  HEADERS  *********************/
+//standard
 #include <cstdlib>
+//htopml
 #include <json/JsonState.h>
+//internals
 #include "CallStackInfo.hpp"
 
 /*******************  NAMESPACE  ********************/
-namespace ATT
+namespace MATT
 {
 
 /*******************  FUNCTION  *********************/
@@ -95,7 +106,7 @@ void CallStackInfo::push(CallStackInfo& info)
 }
 
 /*******************  FUNCTION  *********************/
-void typeToJson(htopml::JsonState& json, std::ostream& stream, const CallStackInfo& value)
+void convertToJson(htopml::JsonState& json, const CallStackInfo& value)
 {
 	json.openStruct();
 	json.printField("countZeros",value.cntZeros);
@@ -114,7 +125,7 @@ std::ostream& operator<<(std::ostream& out, const CallStackInfo& info)
 }
 
 /*******************  FUNCTION  *********************/
-void typeToJson(htopml::JsonState& json, std::ostream& stream, const SimpleQuantityHistory& value)
+void convertToJson(htopml::JsonState& json, const SimpleQuantityHistory& value)
 {
 	json.openStruct();
 	json.printField("count",value.count);

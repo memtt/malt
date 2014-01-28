@@ -1,5 +1,13 @@
-#ifndef ATT_TREE_STACK_TRACER_ENTRY_HPP
-#define ATT_TREE_STACK_TRACER_ENTRY_HPP
+/*****************************************************
+             PROJECT  : MATT
+             VERSION  : 0.1.0-dev
+             DATE     : 01/2014
+             AUTHOR   : Valat Sébastien
+             LICENSE  : CeCILL-C
+*****************************************************/
+
+#ifndef MATT_TREE_STACK_TRACER_ENTRY_HPP
+#define MATT_TREE_STACK_TRACER_ENTRY_HPP
 
 /********************  HEADERS  *********************/
 
@@ -37,4 +45,4 @@ inline bool TreeStackTracerEntry::operator==(const TreeStackTracerEntry& v1, con
 	return (v1.parent == v2.parent) && (v1.codeAddr && v2.codeAddr);
 }
 
-#endif //ATT_TREE_STACK_TRACER_ENTRY_HPP
+#endif //MATT_TREE_STACK_TRACER_ENTRY_HPP

@@ -1,4 +1,12 @@
 ######################################################
+#            PROJECT  : MATT                         #
+#            VERSION  : 0.1.0-dev                    #
+#            DATE     : 01/2014                      #
+#            AUTHOR   : Valat Sébastien              #
+#            LICENSE  : CeCILL-C                     #
+######################################################
+
+######################################################
 #Use gtest
 include_directories(${GTEST_INCLUDE_DIRS} ${GMOCK_INCLUDE_DIRS})
 

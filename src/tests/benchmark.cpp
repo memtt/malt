@@ -1,3 +1,11 @@
+/*****************************************************
+             PROJECT  : MATT
+             VERSION  : 0.1.0-dev
+             DATE     : 01/2014
+             AUTHOR   : Valat Sébastien
+             LICENSE  : CeCILL-C
+*****************************************************/
+
 #include <cycle.h>
 #include <core/BacktraceCallStack.hpp>
 #include <core/AllocStackProfiler.hpp>
@@ -11,7 +19,7 @@
 #include <cstdio>
 
 using namespace std;
-using namespace ATT;
+using namespace MATT;
 
 #define MAX_STACKS 10000
 #define MAX_LOCAL_REUSE 5

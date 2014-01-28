@@ -1,14 +1,26 @@
+/*****************************************************
+             PROJECT  : MATT
+             VERSION  : 0.1.0-dev
+             DATE     : 01/2014
+             AUTHOR   : Valat Sébastien
+             LICENSE  : CeCILL-C
+*****************************************************/
+
 /********************  HEADERS  *********************/
+//standard
 #include <cstdio>
-#include <iostream>
 #include <fstream>
+#include <iostream>
+//extension GNU
 #include <execinfo.h>
-#include <json/TypeToJson.h>
-#include "AllocStackProfiler.hpp"
+//from htopml
+#include <json/ConvertToJson.h>
+//internals
 #include <common/CodeTiming.hpp>
+#include "AllocStackProfiler.hpp"
 
 /*******************  NAMESPACE  ********************/
-namespace ATT
+namespace MATT
 {
 
 /*******************  FUNCTION  *********************/
@@ -60,7 +72,7 @@ void AllocStackProfiler::onPrepareRealloc(void* oldPtr,Stack * userStack)
 /*******************  FUNCTION  *********************/
 void AllocStackProfiler::onRealloc(void* oldPtr, void* ptr, size_t newSize,Stack * userStack)
 {
-	ATT_OPTIONAL_CRITICAL(lock,threadSafe)
+	MATT_OPTIONAL_CRITICAL(lock,threadSafe)
 		//to avoid to search it 2 times
 		SimpleCallStackNode * callStackNode = NULL;
 		
@@ -71,13 +83,13 @@ void AllocStackProfiler::onRealloc(void* oldPtr, void* ptr, size_t newSize,Stack
 		//alloc part
 		if (newSize > 0)
 			callStackNode = onAllocEvent(ptr,newSize,3,userStack,callStackNode,false);
-	ATT_END_CRITICAL
+	MATT_END_CRITICAL
 }
 
 /*******************  FUNCTION  *********************/
 SimpleCallStackNode * AllocStackProfiler::onAllocEvent(void* ptr, size_t size,int skipDepth, Stack* userStack,SimpleCallStackNode * callStackNode,bool doLock)
 {
-	ATT_OPTIONAL_CRITICAL(lock,threadSafe && doLock)
+	MATT_OPTIONAL_CRITICAL(lock,threadSafe && doLock)
 		//update mem usage
 		if (options.doTimeProfile)
 			requestedMem.onDeltaEvent(size);
@@ -95,7 +107,7 @@ SimpleCallStackNode * AllocStackProfiler::onAllocEvent(void* ptr, size_t size,in
 		//register for segment history tracking
 		if (ptr != NULL)
 			CODE_TIMING("segTracerAdd",segTracer.add(ptr,size,callStackNode));
-	ATT_END_CRITICAL
+	MATT_END_CRITICAL
 	
 	return callStackNode;
 }
@@ -103,7 +115,7 @@ SimpleCallStackNode * AllocStackProfiler::onAllocEvent(void* ptr, size_t size,in
 /*******************  FUNCTION  *********************/
 SimpleCallStackNode * AllocStackProfiler::onFreeEvent(void* ptr,int skipDepth, Stack* userStack,SimpleCallStackNode * callStackNode,bool doLock)
 {
-	ATT_OPTIONAL_CRITICAL(lock,threadSafe && doLock)
+	MATT_OPTIONAL_CRITICAL(lock,threadSafe && doLock)
 		//search segment info to link with previous history
 		SegmentInfo * segInfo = NULL;
 		if (options.doTimeProfile || options.doStackProfile)
@@ -133,7 +145,7 @@ SimpleCallStackNode * AllocStackProfiler::onFreeEvent(void* ptr,int skipDepth, S
 		
 		//remove tracking info
 		CODE_TIMING("segTracerRemove",segTracer.remove(ptr));
-	ATT_END_CRITICAL
+	MATT_END_CRITICAL
 	
 	return callStackNode;
 }
@@ -166,21 +178,21 @@ SimpleCallStackNode* AllocStackProfiler::getStackNode(int skipDepth, ssize_t del
 void AllocStackProfiler::onExit(void )
 {
 	puts("======================== Print on exit ========================");
-	ATT_OPTIONAL_CRITICAL(lock,threadSafe)
+	MATT_OPTIONAL_CRITICAL(lock,threadSafe)
 		//open output file
 		//TODO manage errors
 		std::ofstream out;
 		out.open(options.outputFile.c_str());
 
 		//convert json
-		CODE_TIMING("output",htopml::typeToJson(out,*this));
+		CODE_TIMING("output",htopml::convertToJson(out,*this));
 		out.close();
 
 		//valgrind out
 		ValgrindOutput vout;
 		stackTracer.fillValgrindOut(vout);
 		vout.writeAsCallgrind(options.valgrindFile.c_str());
-	ATT_END_CRITICAL
+	MATT_END_CRITICAL
 }
 
 /*******************  FUNCTION  *********************/
@@ -202,7 +214,7 @@ void AllocStackProfiler::onExitFunction ( void* funcAddr )
 }
 
 /*******************  FUNCTION  *********************/
-void typeToJson(htopml::JsonState& json, std::ostream& stream, const AllocStackProfiler& value)
+void convertToJson(htopml::JsonState& json, const AllocStackProfiler& value)
 {
 	json.openStruct();
 	if (value.options.doStackProfile)

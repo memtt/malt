@@ -1,9 +1,17 @@
+/*****************************************************
+             PROJECT  : MATT
+             VERSION  : 0.1.0-dev
+             DATE     : 01/2014
+             AUTHOR   : Valat Sébastien
+             LICENSE  : CeCILL-C
+*****************************************************/
+
 /********************  HEADERS  *********************/
 #include <json/JsonState.h>
 #include "SimpleCallStackNode.hpp"
 
 /*******************  NAMESPACE  ********************/
-namespace ATT
+namespace MATT
 {
 
 /*******************  FUNCTION  *********************/
@@ -21,7 +29,7 @@ std::ostream& operator<<(std::ostream& out, const SimpleCallStackNode& tracer)
 }
 
 /*******************  FUNCTION  *********************/
-void typeToJson(htopml::JsonState& json, std::ostream& stream, const SimpleCallStackNode& value)
+void convertToJson(htopml::JsonState& json, const SimpleCallStackNode& value)
 {
 	json.openStruct();
 	json.printField("stack",value.callStack);

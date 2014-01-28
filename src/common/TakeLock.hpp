@@ -1,8 +1,14 @@
-#ifndef ATT_TAKE_LOCK_HPP
-#define ATT_TAKE_LOCK_HPP
+#ifndef MATT_TAKE_LOCK_HPP
+#define MATT_TAKE_LOCK_HPP
 
 /********************  HEADERS  *********************/
 #include <cassert>
+
+/********************  INFO   ***********************/
+/**
+ * This file orginally came from MPC_Allocator_CPP project
+ * written under CeCILL-C licence by Sébastien Valat.
+**/
 
 /********************  MACRO  ***********************/
 /**
@@ -12,18 +18,18 @@
  * 
  * @code{c++}
 Mutex mylock;
-OPTIONAL_CRITICAL(mylock,isParallel)
+MATT_OPTIONAL_CRITICAL(mylock,isParallel)
 	//to your stuff
 	if (error)
 		return -1;
 	//final stiff
-END_CRITICAL
+MATT_END_CRITICAL
  * @endcode
  * 
  * @param lock Define the lock to take. A lock object just has to provide lock() and unlock() methods.
  * @param takeLock Take the lock if true otherwise consider a sequential use and do not take the lock.
 **/
-#define ATT_OPTIONAL_CRITICAL(lock,takeLock) do { ATT::TakeLock<typeof(lock)> _local_take_lock__(&(lock),(takeLock));
+#define MATT_OPTIONAL_CRITICAL(lock,takeLock) do { MATT::TakeLock<typeof(lock)> _local_take_lock__(&(lock),(takeLock));
 
 /********************  MACROS  **********************/
 /**
@@ -33,24 +39,24 @@ END_CRITICAL
  * 
  * @code{c++}
 Mutex mylock;
-START_CRITICAL(mylock)
+MATT_START_CRITICAL(mylock)
 	//to your stuff
 	if (error)
 		return -1;
 	//final stiff
-END_CRITICAL
+MATT_END_CRITICAL
  * @endcode
  * 
  * @param lock Define the lock to take. A lock object just has to provide lock() and unlock() methods.
 **/
-#define ATT_START_CRITICAL(lock) { ATT::TakeLock<typeof(lock)> _local_take_lock__(&(lock));
+#define MATT_START_CRITICAL(lock) { MATT::TakeLock<typeof(lock)> _local_take_lock__(&(lock));
 
 /********************  MACROS  **********************/
 /** Close a critical region defined by START_CRITICAL of OPTIONAL_CRITICAL. **/
-#define ATT_END_CRITICAL }while(0);
+#define MATT_END_CRITICAL }while(0);
 
 /*******************  NAMESPACE  ********************/
-namespace ATT
+namespace MATT
 {
 
 /*********************  CLASS  **********************/
@@ -58,11 +64,21 @@ namespace ATT
  * Simple class used to manage locking/unlocking of a lock on a region bases by supported
  * exceptions and return inside it.
  * 
- * This is the concept of XXXXX (put the ref) which use the capability of an object to be
+ * This is the concept of RAII which use the capability of an object to be
  * automatically destroyed when going out of its declaration scope. This way exceptions
  * and return are automatically support.
  * 
  * To be supported the lock classes must profive a lock() and unlock() method.
+ * 
+ * @code{c++}
+//... Your non locked code here ...
+{
+	TakeLock<Mutex> safeAccess(&this->mutex);
+	// .... Your locked code here ....
+	// Can use safetly use return/throw here, it will unlock automatically.
+}
+//... You non locked code here...
+ * @endcode
 **/
 template <class T>
 class TakeLock
@@ -132,5 +148,5 @@ inline void TakeLock<T>::unlock(void )
 
 };
 
-#endif //ATT_TAKE_LOCK_HPP
+#endif //MATT_TAKE_LOCK_HPP
 

@@ -1,5 +1,13 @@
-#ifndef ATT_STACK_H
-#define ATT_STACK_H
+/*****************************************************
+             PROJECT  : MATT
+             VERSION  : 0.1.0-dev
+             DATE     : 01/2014
+             AUTHOR   : Valat Sébastien
+             LICENSE  : CeCILL-C
+*****************************************************/
+
+#ifndef MATT_STACK_H
+#define MATT_STACK_H
 
 /********************  HEADERS  *********************/
 #include <ostream>
@@ -17,7 +25,7 @@ namespace htopml
 };
 
 /*******************  NAMESPACE  ********************/
-namespace ATT
+namespace MATT
 {
 
 /*********************  ENUM  ***********************/
@@ -36,7 +44,7 @@ class Stack
 		Stack(const Stack & orig);
 		virtual ~Stack(void);
 		StackHash hash(void) const;
-		static StackHash hash(void** stack, int size, ATT::StackOrder order);
+		static StackHash hash(void** stack, int size, MATT::StackOrder order);
 		void resolveSymbols(FuncNameDic & dic) const;
 		void grow(void);
 		bool isValid(void) const;
@@ -48,7 +56,7 @@ class Stack
 		void * operator[] (int idx);
 	public:
 		friend std::ostream & operator << (std::ostream & out,const Stack & tracer);
-		friend void typeToJson(htopml::JsonState & json,std::ostream& stream, const Stack & value);
+		friend void convertToJson(htopml::JsonState & json, const Stack & value);
 		friend bool operator == (const Stack & v1,const Stack & v2);
 	protected:
 		void ** stack;
@@ -60,4 +68,4 @@ class Stack
 
 }
 
-#endif //ATT_STACK_H
+#endif //MATT_STACK_H

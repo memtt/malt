@@ -1,7 +1,15 @@
 ######################################################
+#            PROJECT  : MATT                         #
+#            VERSION  : 0.1.0-dev                    #
+#            DATE     : 01/2014                      #
+#            AUTHOR   : Valat Sébastien              #
+#            LICENSE  : CeCILL-C                     #
+######################################################
+
+######################################################
 #Usage of OBJECT keyword in add_library require 2.8.3 (or something like that, need to check)
 cmake_minimum_required(VERSION 2.8.3)
-project(AllocTracerTool)
+project(MATT)
 
 ######################################################
 #global setup

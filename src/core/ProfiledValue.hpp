@@ -1,16 +1,24 @@
-#ifndef ATT_MEMORY_TIMELINE_HPP
-#define ATT_MEMORY_TIMELINE_HPP
+/*****************************************************
+             PROJECT  : MATT
+             VERSION  : 0.1.0-dev
+             DATE     : 01/2014
+             AUTHOR   : Valat Sébastien
+             LICENSE  : CeCILL-C
+*****************************************************/
+
+#ifndef MATT_MEMORY_TIMELINE_HPP
+#define MATT_MEMORY_TIMELINE_HPP
 
 /********************  HEADERS  *********************/
 #include <cstdlib>
 #include <cycle.h>
-#include <json/TypeToJson.h>
+#include <json/ConvertToJson.h>
 
-namespace ATT
+namespace MATT
 {
 
 /********************  MACROS  **********************/
-#define ATT_PROFILED_VALUE_DEFAULT_STEPS 1024
+#define MATT_PROFILED_VALUE_DEFAULT_STEPS 1024
 
 /********************  STRUCT  **********************/
 struct PorfiledValueEntry
@@ -30,11 +38,11 @@ struct PorfiledValueEntry
 class ProfiledValue
 {
 	public:
-		ProfiledValue(size_t steps = ATT_PROFILED_VALUE_DEFAULT_STEPS, bool useLinearIndex = false);
+		ProfiledValue(size_t steps = MATT_PROFILED_VALUE_DEFAULT_STEPS, bool useLinearIndex = false);
 		void onDeltaEvent(ssize_t delta);
 		void onUpdateValue(size_t value);
 	public:
-		friend void typeToJson(htopml::JsonState& json, std::ostream& stream, const ProfiledValue& value);
+		friend void convertToJson(htopml::JsonState& json, const ProfiledValue& value);
 	private:
 		void updateCurrentMinMax(ticks t);
 		void flush(void);
@@ -56,4 +64,4 @@ class ProfiledValue
 
 };
 
-#endif //ATT_MEMORY_TIMELINE_HPP
+#endif //MATT_MEMORY_TIMELINE_HPP

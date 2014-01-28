@@ -1,3 +1,11 @@
+/*****************************************************
+             PROJECT  : MATT
+             VERSION  : 0.1.0-dev
+             DATE     : 01/2014
+             AUTHOR   : Valat Sébastien
+             LICENSE  : CeCILL-C
+*****************************************************/
+
 /********************  HEADERS  *********************/
 #include <cassert>
 #include <dlfcn.h>
@@ -9,7 +17,7 @@
 #include <json/JsonState.h>
 
 /*******************  NAMESPACE  ********************/
-namespace ATT
+namespace MATT
 {
 
 /*******************  FUNCTION  *********************/
@@ -71,7 +79,7 @@ std::ostream& operator<<(std::ostream& out, const FuncNameDic& dic)
 }
 
 /*******************  FUNCTION  *********************/
-void typeToJson(htopml::JsonState& json, std::ostream& stream, const FuncNameDic& value)
+void convertToJson(htopml::JsonState& json, const FuncNameDic& value)
 {
 	json.openStruct();
 

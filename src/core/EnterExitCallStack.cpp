@@ -1,14 +1,25 @@
+/*****************************************************
+             PROJECT  : MATT
+             VERSION  : 0.1.0-dev
+             DATE     : 01/2014
+             AUTHOR   : Valat Sébastien
+             LICENSE  : CeCILL-C
+*****************************************************/
+
 /********************  HEADERS  *********************/
+//standard
 #include <cstring>
 #include <cstdio>
+//from htopml
 #include <json/JsonState.h>
+//internals
 #include "EnterExitCallStack.hpp"
 
 /********************  MACROS  **********************/
 #define MAX_SIZE 256
 
 /*******************  NAMESPACE  ********************/
-namespace ATT
+namespace MATT
 {
 
 /*******************  FUNCTION  *********************/

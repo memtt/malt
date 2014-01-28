@@ -1,5 +1,13 @@
-#ifndef ATT_SEGMENT_FOLLOWER_HPP
-#define ATT_SEGMENT_FOLLOWER_HPP
+/*****************************************************
+             PROJECT  : MATT
+             VERSION  : 0.1.0-dev
+             DATE     : 01/2014
+             AUTHOR   : Valat Sébastien
+             LICENSE  : CeCILL-C
+*****************************************************/
+
+#ifndef MATT_SEGMENT_FOLLOWER_HPP
+#define MATT_SEGMENT_FOLLOWER_HPP
 
 /********************  HEADERS  *********************/
 #include <map>
@@ -7,7 +15,7 @@
 #include "SimpleCallStackNode.hpp"
 
 /*******************  NAMESPACE  ********************/
-namespace ATT
+namespace MATT
 {
 
 /*********************  CLASS  **********************/
@@ -42,4 +50,4 @@ class SegmentTracker
 
 }
 
-#endif //ATT_SEGMENT_FOLLOWER_HPP
+#endif //MATT_SEGMENT_FOLLOWER_HPP

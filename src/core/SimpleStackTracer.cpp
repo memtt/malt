@@ -1,3 +1,11 @@
+/*****************************************************
+             PROJECT  : MATT
+             VERSION  : 0.1.0-dev
+             DATE     : 01/2014
+             AUTHOR   : Valat Sébastien
+             LICENSE  : CeCILL-C
+*****************************************************/
+
 /********************  HEADERS  *********************/
 #include <cassert>
 #include <cstdlib>
@@ -7,7 +15,7 @@
 #include "SimpleStackTracer.hpp"
 
 /*******************  NAMESPACE  ********************/
-namespace ATT
+namespace MATT
 {
 
 /*******************  FUNCTION  *********************/
@@ -91,7 +99,7 @@ void SimpleStackTracer::resolveSymbols(FuncNameDic& dic) const
 }
 
 /*******************  FUNCTION  *********************/
-void typeToJson(htopml::JsonState& json, std::ostream& stream, const SimpleStackTracer& value)
+void convertToJson(htopml::JsonState& json, const SimpleStackTracer& value)
 {
 	FuncNameDic dic;
 // 	CODE_TIMING("resolveSymbols",value.resolveSymbols(dic));
