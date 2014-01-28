@@ -101,6 +101,9 @@ inline void CodeTiming::end(void)
 	sum += t;
 }
 
+/*******************  FUNCTION  *********************/
+ticks ticksPerSecond(void);
+
 };
 
 #endif //CODE_TIMING_H

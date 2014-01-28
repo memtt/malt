@@ -12,5 +12,4 @@ t=att['requestedMem']['timestamp']
 size=len(att['requestedMem']['min'])
 
 for i in range(size):
-	print (t[i], min[i], max[i])
-
+	print (t[i],t[i]/att['ticksPerSecond'], min[i], max[i])

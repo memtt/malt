@@ -178,6 +178,8 @@ void typeToJson(htopml::JsonState& json, std::ostream& stream, const ProfiledVal
 	json.printField("peakMemory",value.peak.max);
 	assert(value.peak.timestamp > value.startTime);
 	json.printField("peakTimesteamp",value.peak.timestamp - value.startTime);
+	
+	json.printField("linearIndex",value.useLinearIndex?"true":"false");
 	json.closeStruct();
 }
 

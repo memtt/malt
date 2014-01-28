@@ -48,7 +48,7 @@ class AllocStackProfiler
 		EnterExitCallStack exStack;
 		ProfiledValue requestedMem;
 		StackMode mode;
-		ATT::Mutex lock;
+		Mutex lock;
 		bool threadSafe;
 		Options options;
 };

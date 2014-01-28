@@ -209,6 +209,7 @@ void typeToJson(htopml::JsonState& json, std::ostream& stream, const AllocStackP
 		json.printField("stackInfo",value.stackTracer);
 	if (value.options.doTimeProfile)
 		json.printField("requestedMem",value.requestedMem);
+	json.printField("ticksPerSecond",ticksPerSecond());
 	json.closeStruct();
 }
 

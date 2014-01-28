@@ -23,7 +23,7 @@ struct Options
 /*******************  FUNCTION  *********************/
 inline Options::Options(void)
 {
-	this->timeProfilePoints  = 4096;
+	this->timeProfilePoints  = 1024;
 	this->outputFile         = "att.json";
 	this->valgrindFile       = "att.callgrind";
 	this->doStackProfile     = true;

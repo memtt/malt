@@ -3,6 +3,9 @@
 #include <cassert>
 #include <iomanip>
 #include <iostream>
+//os specific (TODO move)
+#include <sys/time.h>
+#include <unistd.h>
 //locals
 #include "CodeTiming.hpp"
 
@@ -71,6 +74,38 @@ void CodeTiming::printValue(double value, const char* unit)
 	
 	//print
 	cerr << setw(5) << setprecision(2) << std::right << value << " " << setw(1) << cstUnits[depth] << unit;
+}
+
+/*******************  FUNCTION  *********************/
+/**
+ * @return Return the number of ticks per seconds on the current CPU.
+ * The measurement is done by mixing informations from getticks and gettimeofday.
+**/
+ticks ticksPerSecond(void)
+{
+	//remember the value to not measure it every time
+	static ticks alreadyMeasured = 0;
+	
+	//measure if required
+	if (alreadyMeasured == 0)
+	{
+		//measure
+		timeval ts0,ts1;
+		ticks t0,t1;
+		gettimeofday(&ts0,NULL);
+		t0 = getticks();
+		sleep(1);
+		t1 = getticks();
+		gettimeofday(&ts1,NULL);
+		
+		//compute delta and store
+		timeval delta;
+		timersub(&ts1,&ts0,&delta);
+		alreadyMeasured = (double)(t1-t0)/((double)delta.tv_sec + (double)delta.tv_usec/(double)1000000.0);
+	}
+	
+	//final return
+	return alreadyMeasured;
 }
 
 };
