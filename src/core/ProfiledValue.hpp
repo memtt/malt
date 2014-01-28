@@ -41,13 +41,14 @@ class ProfiledValue
 		ProfiledValue(size_t steps = MATT_PROFILED_VALUE_DEFAULT_STEPS, bool useLinearIndex = false);
 		void onDeltaEvent(ssize_t delta);
 		void onUpdateValue(size_t value);
+		bool isNextPoint(void) const;
 	public:
 		friend void convertToJson(htopml::JsonState& json, const ProfiledValue& value);
 	private:
 		void updateCurrentMinMax(ticks t);
 		void flush(void);
 		void resize(void);
-		ticks getticks();
+		ticks getticks() const;
 	private:
 		size_t steps;
 		ticks startTime;

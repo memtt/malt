@@ -211,19 +211,11 @@ void convertToJson ( htopml::JsonState& json, const Stack& obj )
 	{
 		case STACK_ORDER_ASC:
 			for (int i = 0 ; i < obj.size ; i++)
-			{
-				char buffer[64];
-				sprintf(buffer,"%p",obj.stack[i]);
-				json.printValue(buffer);
-			}
+				json.printValue(obj.stack[i]);
 			break;
 		case STACK_ORDER_DESC:
 			for (int i = obj.size - 1 ; i >= 0 ; i--)
-			{
-				char buffer[64];
-				sprintf(buffer,"%p",obj.stack[i]);
-				json.printValue(buffer);
-			}
+				json.printValue(obj.stack[i]);
 			break;
 	}
 	json.closeArray();

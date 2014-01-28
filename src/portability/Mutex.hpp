@@ -26,7 +26,6 @@
 	{
 		typedef StaticMutexPthread StaticMutex;
 		typedef MutexPthread Mutex;
-		typedef TakeLock<Mutex> TakeMutexLock;
 	};
 #elif defined(MATT_PORTABILITY_MUTEX_DUMMY)
 	//dummy mode (not thread safe, only for quik portability)
@@ -45,7 +44,6 @@
 	{
 		typedef MutexDummy StaticMutex;
 		typedef MutexDummy Mutex;
-		typedef TakeLock<Mutex> TakeMutexLock;
 	};
 #else
 	//not found, fail to compile

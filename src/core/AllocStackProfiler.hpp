@@ -57,6 +57,8 @@ class AllocStackProfiler
 		BacktraceCallStack stack;
 		EnterExitCallStack exStack;
 		ProfiledValue requestedMem;
+		ProfiledValue physicalMem;
+		ProfiledValue virtualMem;
 		StackMode mode;
 		Mutex lock;
 		bool threadSafe;

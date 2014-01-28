@@ -5,4 +5,7 @@
 #cmakedefine MATT_PORTABILITY_MUTEX_PTHREAD
 #cmakedefine MATT_PORTABILITY_MUTEX_DUMMY
 
+//select one of the OS mode
+#cmakedefine MATT_PORTABILITY_OS_UNIX
+
 #endif //CONFIG_H

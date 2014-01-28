@@ -11,9 +11,7 @@
 #include <fstream>
 #include <iostream>
 #include "ValgrindOutput.hpp"
-//TODO move into postability
-#include <sys/types.h>
-#include <unistd.h>
+#include <portability/OS.hpp>
 
 using namespace std;
 
@@ -66,8 +64,8 @@ void ValgrindOutput::writeAsCallgrind(std::ostream& out)
 	//header
 	out << "version: 1" << endl;
 	out << "creator: ATT-0.0.0" << endl;
-	out << "pid: " << getpid() << endl;
-	out << "cmd: TODO" << endl;
+	out << "pid: " << OS::getPID() << endl;
+	out << "cmd: " << OS::getExeName() << endl;
 	out << "part: 1" << endl;
 	out << endl;
 	out << "desc: I1 cache: " << endl;

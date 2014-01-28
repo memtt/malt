@@ -46,7 +46,8 @@ struct CallStackInfo
 // 	public:
 		CallStackInfo(void);
 		~CallStackInfo(void);
-		void addEvent(ssize_t value, ticks lifetime);
+		void onAllocEvent(size_t value);
+		void onFreeEvent(size_t value,ticks lifetime);
 		void onFreeLinkedMemory(ssize_t value,ticks lifetime);
 		void push(CallStackInfo & info);
 		void writeAsCallgrindEntry(int line, std::ostream & out) const;

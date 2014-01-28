@@ -79,4 +79,10 @@ void convertToJson(JsonState & json, bool value)
 		json.getStream() << "false";
 }
 
+/*******************  FUNCTION  *********************/
+void convertToJson(JsonState& json, void * ptr)
+{
+	json.getStream() << '"' << ptr << '"';
+}
+
 }

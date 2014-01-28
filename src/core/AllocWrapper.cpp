@@ -6,11 +6,14 @@
 #include <cstdio>
 #include <cassert>
 #include <cstring>
+#include <iostream>
 //libc POSIX.1, here we use GNU specific RTLD_NEXT (need _GNU_SOURCE)
 #include <dlfcn.h>
 //intenrals
 #include <portability/Mutex.hpp>
+#include <portability/OS.hpp>
 #include <common/CodeTiming.hpp>
+#include <common/FormattedMessage.hpp>
 #include "AllocStackProfiler.hpp"
 
 /***************** USING NAMESPACE ******************/
@@ -157,6 +160,9 @@ void AllocWrapperGlobal::init(void )
 		gblState.free = (FreeFuncPtr)dlsym(RTLD_NEXT,"free");
 		gblState.calloc = (CallocFuncPtr)dlsym(RTLD_NEXT,"calloc");
 		gblState.realloc = (ReallocFuncPtr)dlsym(RTLD_NEXT,"realloc");
+		
+		//print info
+		fprintf(stderr,"Start memory instrumentation of %s - %d by library override.\n",OS::getExeName().c_str(),OS::getPID());
 
 		//init profiler
 		gblState.status = ALLOC_WRAP_INIT_PROFILER;

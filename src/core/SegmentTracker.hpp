@@ -6,8 +6,8 @@
              LICENSE  : CeCILL-C
 *****************************************************/
 
-#ifndef MATT_SEGMENT_FOLLOWER_HPP
-#define MATT_SEGMENT_FOLLOWER_HPP
+#ifndef MATT_SEGMENT_TRACKER_HPP
+#define MATT_SEGMENT_TRACKER_HPP
 
 /********************  HEADERS  *********************/
 #include <map>
@@ -50,4 +50,4 @@ class SegmentTracker
 
 }
 
-#endif //MATT_SEGMENT_FOLLOWER_HPP
+#endif //MATT_SEGMENT_TRACKER_HPP

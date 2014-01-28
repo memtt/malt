@@ -15,8 +15,10 @@
 #include <execinfo.h>
 //from htopml
 #include <json/ConvertToJson.h>
+#include <portability/OS.hpp>
 //internals
 #include <common/CodeTiming.hpp>
+#include <common/FormattedMessage.hpp>
 #include "AllocStackProfiler.hpp"
 
 /*******************  NAMESPACE  ********************/
@@ -92,7 +94,15 @@ SimpleCallStackNode * AllocStackProfiler::onAllocEvent(void* ptr, size_t size,in
 	MATT_OPTIONAL_CRITICAL(lock,threadSafe && doLock)
 		//update mem usage
 		if (options.doTimeProfile)
+		{
 			requestedMem.onDeltaEvent(size);
+			if (virtualMem.isNextPoint())
+			{
+				OSMemUsage mem = OS::getMemoryUsage();
+				virtualMem.onUpdateValue(mem.virtualMemory);
+				physicalMem.onUpdateValue(mem.physicalMemory);
+			}
+		}
 	
 		if (options.doStackProfile)
 		{
@@ -101,7 +111,7 @@ SimpleCallStackNode * AllocStackProfiler::onAllocEvent(void* ptr, size_t size,in
 				callStackNode = getStackNode(skipDepth,size,userStack);
 			
 			//count events
-			CODE_TIMING("updateInfoAlloc",callStackNode->getInfo().addEvent(size,0));
+			CODE_TIMING("updateInfoAlloc",callStackNode->getInfo().onAllocEvent(size));
 		}
 
 		//register for segment history tracking
@@ -116,6 +126,14 @@ SimpleCallStackNode * AllocStackProfiler::onAllocEvent(void* ptr, size_t size,in
 SimpleCallStackNode * AllocStackProfiler::onFreeEvent(void* ptr,int skipDepth, Stack* userStack,SimpleCallStackNode * callStackNode,bool doLock)
 {
 	MATT_OPTIONAL_CRITICAL(lock,threadSafe && doLock)
+		//update memory usage
+		if (options.doTimeProfile && virtualMem.isNextPoint())
+		{
+			OSMemUsage mem = OS::getMemoryUsage();
+			virtualMem.onUpdateValue(mem.virtualMemory);
+			physicalMem.onUpdateValue(mem.physicalMemory);
+		}
+
 		//search segment info to link with previous history
 		SegmentInfo * segInfo = NULL;
 		if (options.doTimeProfile || options.doStackProfile)
@@ -140,7 +158,7 @@ SimpleCallStackNode * AllocStackProfiler::onFreeEvent(void* ptr,int skipDepth, S
 				callStackNode = getStackNode(skipDepth,size,userStack);
 			
 			//count events
-			CODE_TIMING("updateInfoFree",callStackNode->getInfo().addEvent(size,segInfo->getLifetime()));
+			CODE_TIMING("updateInfoFree",callStackNode->getInfo().onFreeEvent(size,segInfo->getLifetime()));
 		}
 		
 		//remove tracking info
@@ -182,7 +200,7 @@ void AllocStackProfiler::onExit(void )
 		//open output file
 		//TODO manage errors
 		std::ofstream out;
-		out.open(options.outputFile.c_str());
+		out.open(FormattedMessage(options.outputFile).arg(OS::getExeName()).arg(OS::getPID()).toString().c_str());
 
 		//convert json
 		CODE_TIMING("output",htopml::convertToJson(out,*this));
@@ -191,7 +209,7 @@ void AllocStackProfiler::onExit(void )
 		//valgrind out
 		ValgrindOutput vout;
 		stackTracer.fillValgrindOut(vout);
-		vout.writeAsCallgrind(options.valgrindFile.c_str());
+		vout.writeAsCallgrind(FormattedMessage(options.valgrindFile).arg(OS::getExeName()).arg(OS::getPID()).toString());
 	MATT_END_CRITICAL
 }
 
@@ -220,7 +238,11 @@ void convertToJson(htopml::JsonState& json, const AllocStackProfiler& value)
 	if (value.options.doStackProfile)
 		json.printField("stackInfo",value.stackTracer);
 	if (value.options.doTimeProfile)
+	{
 		json.printField("requestedMem",value.requestedMem);
+		json.printField("physicalMem",value.physicalMem);
+		json.printField("virtualMem",value.virtualMem);
+	}
 	json.printField("ticksPerSecond",ticksPerSecond());
 	json.closeStruct();
 }

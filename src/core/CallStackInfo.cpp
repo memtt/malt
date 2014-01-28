@@ -54,19 +54,32 @@ void SimpleQuantityHistory::push(SimpleQuantityHistory& value)
 }
 
 /*******************  FUNCTION  *********************/
-void CallStackInfo::addEvent(ssize_t value, ticks lifetime)
+void CallStackInfo::onFreeEvent(size_t value, ticks lifetime)
 {
 	if (value == 0)
 	{
 		cntZeros++;
-	} else if (value > 0) {
-		this->alloc.addEvent(value);
 	} else {
 		this->free.addEvent(-value);
 	}
 	
-	if (value < 0 && lifetime != 0)
+	if (lifetime != 0)
 		this->lifetime.addEvent(lifetime);
+	
+	//update alive memory
+	this->alive+=value;
+	if (this->alive > this->maxAlive)
+		this->maxAlive = this->alive;
+}
+
+/*******************  FUNCTION  *********************/
+void CallStackInfo::onAllocEvent(size_t value)
+{
+	//update alloc counters
+	if (value == 0)
+		cntZeros++;
+	else
+		this->alloc.addEvent(value);
 	
 	//update alive memory
 	this->alive+=value;

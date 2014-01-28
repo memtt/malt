@@ -32,8 +32,8 @@ struct Options
 inline Options::Options(void)
 {
 	this->timeProfilePoints  = 1024;
-	this->outputFile         = "att.json";
-	this->valgrindFile       = "att.callgrind";
+	this->outputFile         = "matt-%1-%2.json";
+	this->valgrindFile       = "matt-%1-%2.callgrind";
 	this->doStackProfile     = true;
 	this->doTimeProfile      = true;
 	this->timeProfileLinear  = false;

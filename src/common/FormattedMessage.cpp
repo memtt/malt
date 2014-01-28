@@ -11,6 +11,8 @@
 #include <cstdio>
 #include <cassert>
 #include <cstdlib>
+#include <cstring>
+#include <cerrno>
 //internals
 #include "FormattedMessage.hpp"
 
@@ -162,6 +164,13 @@ std::ostream& operator<<(std::ostream& out, const FormattedMessage& message)
 {
 	message.toStream(out);
 	return out;
+}
+
+/*******************  FUNCTION  *********************/
+FormattedMessage & FormattedMessage::argStrErrno(void)
+{
+	this->arg(strerror(errno));
+	return *this;
 }
 
 }

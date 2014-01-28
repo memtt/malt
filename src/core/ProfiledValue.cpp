@@ -113,6 +113,12 @@ void ProfiledValue::updateCurrentMinMax(ticks t )
 }
 
 /*******************  FUNCTION  *********************/
+bool ProfiledValue::isNextPoint(void) const
+{
+	return getticks() > nextT;
+}
+
+/*******************  FUNCTION  *********************/
 void ProfiledValue::flush(void )
 {
 	//check if current if empty
@@ -192,7 +198,7 @@ void convertToJson(htopml::JsonState& json, const ProfiledValue& value)
 }
 
 /*******************  FUNCTION  *********************/
-ticks ProfiledValue::getticks()
+ticks ProfiledValue::getticks() const
 {
 	if (useLinearIndex)
 		return linearIndex;

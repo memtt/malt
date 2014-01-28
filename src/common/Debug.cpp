@@ -9,7 +9,7 @@
 /********************  HEADERS  *********************/
 #include <cstdlib>
 #include <iostream>
-#include "Debug.h"
+#include "Debug.hpp"
 
 /*******************  NAMESPACE  ********************/
 namespace MATT
@@ -40,6 +40,7 @@ void Debug::end(void)
 {
 	switch(level)
 	{
+		case MESSAGE_INFO:
 		case MESSAGE_NORMAL:
 			if (line != 0)
 				std::cout << cstLevelPrefix[level] << "At " <<  file << ':' << line << " : \n";

@@ -42,6 +42,7 @@ class FormattedMessage
 		template <class T> FormattedMessage & arg(const T & value);
 		FormattedMessage & arg(const std::string & value);
 		FormattedMessage & arg(const char * value);
+		FormattedMessage & argStrErrno(void);
 		std::string toString(void) const;
 		void toStream(std::ostream & out) const;
 		virtual void end(void);

@@ -9,7 +9,7 @@
 /********************  HEADERS  *********************/
 #include <gtest/gtest.h>
 #include <common/FormattedMessage.hpp>
-#include <common/Debug.h>
+#include <common/Debug.hpp>
 
 /***************** USING NAMESPACE ******************/
 using namespace MATT;
