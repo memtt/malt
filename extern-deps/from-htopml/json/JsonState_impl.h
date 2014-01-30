@@ -6,6 +6,9 @@
              LICENSE  : CeCILL-C
 *****************************************************/
 
+/**********************  INFO  **********************/
+/* Imported from htopml project under CeCILL-C licence */
+
 #ifndef HTOPML_JSON_STATE_IMPL_H
 #define HTOPML_JSON_STATE_IMPL_H
 
@@ -24,7 +27,7 @@ namespace htopml
  * @param value Value to affecto the field.
 **/
 template <class T>
-void JsonState::printField(const std::string & name,const T & value)
+void JsonState::printField(const char * name,const T & value)
 {
 	//print
 	openField(name);

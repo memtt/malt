@@ -6,6 +6,9 @@
              LICENSE  : CeCILL-C
 *****************************************************/
 
+/**********************  INFO  **********************/
+/* Imported from htopml project under CeCILL-C licence */
+
 #ifndef HTOPML_TYPE_TO_JSON_H
 #define HTOPML_TYPE_TO_JSON_H
 
@@ -49,7 +52,7 @@ class IJsonConvertible
  * @param out Define the output stream into which to print the json output.
  * @param value Reference to the object to convert.
 **/
-template <class T> std::ostream& convertToJson(std::ostream& out,const T & value);
+template <class T> std::ostream& convertToJson(std::ostream& out,const T & value, bool indent = true);
 /**
  * Generic implementation for the final user to convert an object to json document.
  * To be supported, each object of you tree need to provide standard output stream operator
@@ -57,7 +60,11 @@ template <class T> std::ostream& convertToJson(std::ostream& out,const T & value
  * @param out Define the output stream into which to print the json output.
  * @param value Pointer to the object to convert.
 **/
-template <class T> std::ostream& convertToJson(std::ostream& out,const T * value);
+template <class T> std::ostream& convertToJson(std::ostream& out,const T * value, bool indent = true);
+
+/*******************  FUNCTION  *********************/
+template <class T> std::ostream& convertToLua(std::ostream& out,const T & value, bool indent = true);
+template <class T> std::ostream& convertToLua(std::ostream& out,const T * value, bool indent = true);
 
 /*******************  FUNCTION  *********************/
 //specific implementations for some known types

@@ -23,20 +23,20 @@ struct Options
 	bool doStackProfile;
 	bool doTimeProfile;
 	std::string outputFile;
-	std::string valgrindFile;
 	int timeProfilePoints;
 	bool timeProfileLinear;
+	bool indent;
 };
 
 /*******************  FUNCTION  *********************/
 inline Options::Options(void)
 {
 	this->timeProfilePoints  = 1024;
-	this->outputFile         = "matt-%1-%2.json";
-	this->valgrindFile       = "matt-%1-%2.callgrind";
+	this->outputFile         = "matt-%1-%2.%3";
 	this->doStackProfile     = true;
 	this->doTimeProfile      = true;
 	this->timeProfileLinear  = false;
+	this->indent             = true;
 }
 
 };

@@ -6,6 +6,9 @@
              LICENSE  : CeCILL-C
 *****************************************************/
 
+/**********************  INFO  **********************/
+/* Imported from htopml project under CeCILL-C licence */
+
 /********************  HEADERS  *********************/
 #include "ConvertToJson.h"
 
@@ -82,7 +85,10 @@ void convertToJson(JsonState & json, bool value)
 /*******************  FUNCTION  *********************/
 void convertToJson(JsonState& json, void * ptr)
 {
-	json.getStream() << '"' << ptr << '"';
+	if (json.isLua())
+		json.getStream() << '\"' << ptr << '\"';
+	else
+		json.getStream() << '"' << ptr << '"';
 }
 
 }

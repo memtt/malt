@@ -17,8 +17,6 @@
 #include "BacktraceCallStack.hpp"
 
 /********************  MACROS  **********************/
-#define CALL_STACK_DEFAULT_SIZE 16
-#define CALL_STACK_GROW_THRESHOLD 64
 #define CALL_STACK_MAX 256
 
 /*******************  NAMESPACE  ********************/
@@ -46,11 +44,14 @@ void BacktraceCallStack::loadCurrentStack(void)
 		assert(loadedSize > 0);
 
 		//miss some entries, need to grow the buffer
-		if (loadedSize == CALL_STACK_MAX)
+		if (loadedSize >= CALL_STACK_MAX)
 		{
 			static bool once = false;
 			if (!once)
+			{
+				once = true;
 				puts("Caution, need to cut some call stacks !");
+			}
 			break;
 		} else if (loadedSize == this->memSize) {
 			this->grow();

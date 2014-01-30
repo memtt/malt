@@ -26,13 +26,14 @@ void yourFunc(void)
 }
 \endcode
 **/
-#define CODE_TIMING(name,code) \
-	do {  \
-		static MATT::CodeTiming __code_timing_local__(name);   \
-		__code_timing_local__.start(); \
-		do {code;} while(0); \
-		__code_timing_local__.end();  \
-	} while(0)
+#define CODE_TIMING(name,code) do{code;}while(0)
+// #define CODE_TIMING(name,code) \
+// 	do {  \
+// 		static MATT::CodeTiming __code_timing_local__(name);   \
+// 		__code_timing_local__.start(); \
+// 		do {code;} while(0); \
+// 		__code_timing_local__.end();  \
+// 	} while(0)
 
 /*******************  NAMESPACE  ********************/
 namespace MATT

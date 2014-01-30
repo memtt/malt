@@ -15,6 +15,9 @@
 
 using namespace std;
 
+/********************  MACROS  **********************/
+#define LINE_BREAK "\n"
+
 namespace MATT
 {
 
@@ -62,21 +65,21 @@ void ValgrindOutput::writeAsCallgrind(const std::string& filename)
 void ValgrindOutput::writeAsCallgrind(std::ostream& out)
 {
 	//header
-	out << "version: 1" << endl;
-	out << "creator: ATT-0.0.0" << endl;
-	out << "pid: " << OS::getPID() << endl;
-	out << "cmd: " << OS::getExeName() << endl;
-	out << "part: 1" << endl;
-	out << endl;
-	out << "desc: I1 cache: " << endl;
-	out << "desc: D1 cache: " << endl;
-	out << "desc: LL cache: " << endl;
-	out << endl;
-	out << "desc: Trigger: Program termination" << endl;
-	out << endl;
-	out << "positions: line" << endl;
-	out << "events: MaxAliveMemory AllocSum Count" << endl;
-	out << endl;
+	out << "version: 1" << LINE_BREAK;
+	out << "creator: ATT-0.0.0" << LINE_BREAK;
+	out << "pid: " << OS::getPID() << LINE_BREAK;
+	out << "cmd: " << OS::getExeName() << LINE_BREAK;
+	out << "part: 1" << LINE_BREAK;
+	out << LINE_BREAK;
+	out << "desc: I1 cache: " << LINE_BREAK;
+	out << "desc: D1 cache: " << LINE_BREAK;
+	out << "desc: LL cache: " << LINE_BREAK;
+	out << LINE_BREAK;
+	out << "desc: Trigger: Program termination" << LINE_BREAK;
+	out << LINE_BREAK;
+	out << "positions: line" << LINE_BREAK;
+	out << "events: MaxAliveMemory AllocSum Count" << LINE_BREAK;
+	out << LINE_BREAK;
 	
 	//try to extract functions names bases on addresses
 	FuncNameDic names;
@@ -84,18 +87,18 @@ void ValgrindOutput::writeAsCallgrind(std::ostream& out)
 	//loop on data
 	for (ValgrindCallerMap::const_iterator it = callers.begin() ; it != callers.end() ; ++it)
 	{
-		out << "ob=unknown" << endl;
-		out << "fn=" << names.getName(it->first) << endl;
+		out << "ob=unknown" << LINE_BREAK;
+		out << "fn=" << names.getName(it->first) << LINE_BREAK;
 		it->second.info.writeAsCallgrindEntry(0,out);
-		out << endl;
+		out << LINE_BREAK;
 		for (ValgrindCalleeMap::const_iterator itChild = it->second.callees.begin() ; itChild != it->second.callees.end() ; ++itChild)
 		{
-			out << "cfn=" << names.getName(itChild->first) << endl;
-			out << "calls=1 0" << endl;
+			out << "cfn=" << names.getName(itChild->first) << LINE_BREAK;
+			out << "calls=1 0" << LINE_BREAK;
 			itChild->second.writeAsCallgrindEntry(0,out);
-			out << endl;
+			out << LINE_BREAK;
 		}
-		out << endl;
+		out << LINE_BREAK;
 	}
 }
 

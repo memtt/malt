@@ -6,6 +6,9 @@
              LICENSE  : CeCILL-C
 *****************************************************/
 
+/**********************  INFO  **********************/
+/* Imported from htopml project under CeCILL-C licence */
+
 /********************  HEADERS  *********************/
 //extern standard headers
 #include <cstdio>
@@ -40,14 +43,16 @@ namespace htopml
  * @param useIndent If true, indent the output json code with tabulations, produce 
  * compact json code.
 **/
-JsonState::JsonState(std::ostream* out, bool useIndent)
+JsonState::JsonState(ostream* out, bool useIndent, bool lua)
 {
 	//errors
 	assert(out != NULL);
 	
 	//setup
+	this->lua = lua;
 	this->out = out;
 	this->indent = 0;
+	this->useIndent = useIndent;
 	pushState(JSON_STATE_ROOT);
 }
 
@@ -58,8 +63,23 @@ JsonState::JsonState(std::ostream* out, bool useIndent)
 **/
 void JsonState::putPadding()
 {
-	for (int i = 0 ; i < indent ; i++)
-		*out << '\t';
+	if (useIndent)
+	{
+		if (indent < 256)
+		{
+			//faster buffered version
+			char buffer[256];
+			assert(indent < 256);
+			for (int i = 0 ; i < indent ; i++)
+				buffer[i] = '\t';
+			buffer[indent] = '\0';
+			*out << buffer;
+		} else {
+			//slow unbuffered version
+			for (int i = 0 ; i < indent ; i++)
+				*out << '\t';
+		}
+	}
 }
 
 /*******************  FUNCTION  *********************/
@@ -132,14 +152,19 @@ void JsonState::printFormattedValue(const char* format, ... )
  * Internal function to start a new field.
  * @param name Name of the field to declare.
 **/
-void JsonState::openField(const string& name)
+void JsonState::openField(const char * name)
 {
 	//check where we are
 	assert(getState() & (JSON_STATE_ROOT | JSON_STATE_STRUCT));
 
 	//print name
 	if (!isFirst())
-		*out << "," << LINE_BREAK;
+	{
+		if (useIndent)
+			*out << "," LINE_BREAK;
+		else
+			*out << ",";
+	}
 
 	//setup state
 	pushState(JSON_STATE_FIELD);
@@ -148,7 +173,10 @@ void JsonState::openField(const string& name)
 	putPadding();
 
 	//print name
-	*out << "\"" << name << "\"" << ": ";
+	if (lua)
+		*out << name << "=";
+	else
+		*out << "\"" << name << "\"" << ":";
 }
 
 /*******************  FUNCTION  *********************/
@@ -156,7 +184,7 @@ void JsonState::openField(const string& name)
  * Internal function to close the current field.
  * @param name Name of the field to close (for checking).
 **/
-void JsonState::closeField(const string& name)
+void JsonState::closeField(const char * name)
 {
 	//check where we are
 	assert(getState() == JSON_STATE_FIELD);
@@ -206,7 +234,10 @@ void JsonState::openArray(void)
 	pushState(JSON_STATE_ARRAY);
 
 	//print name
-	*out << "[ ";
+	if (lua)
+		*out << "{";
+	else
+		*out << "[";
 }
 
 /*******************  FUNCTION  *********************/
@@ -222,7 +253,10 @@ void JsonState::closeArray(void)
 	popState(JSON_STATE_ARRAY);
 
 	//print name
-	*out << "]";
+	if (lua)
+		*out << "}";
+	else
+		*out << "]";
 }
 
 /*******************  FUNCTION  *********************/
@@ -239,7 +273,9 @@ void JsonState::openStruct(void )
 
 	//print name
 	indent++;
-	*out << "{" << LINE_BREAK;
+	*out << "{";
+	if (useIndent)
+		*out << LINE_BREAK;
 }
 
 /*******************  FUNCTION  *********************/
@@ -256,7 +292,8 @@ void JsonState::closeStruct(void )
 
 	//print name
 	indent--;
-	*out << LINE_BREAK;
+	if (useIndent)
+		*out << LINE_BREAK;
 	putPadding();
 	*out << "}";
 }

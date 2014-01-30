@@ -6,6 +6,9 @@
              LICENSE  : CeCILL-C
 *****************************************************/
 
+/**********************  INFO  **********************/
+/* Imported from htopml project under CeCILL-C licence */
+
 #ifndef HTOPML_JSON_STATE_H
 #define HTOPML_JSON_STATE_H
 
@@ -67,8 +70,8 @@ typedef std::stack<JsonStateStruct> JsonStateStructStack;
 class JsonState
 {
 	public:
-		JsonState(std::ostream * out, bool useIndent = true);
-		template <class T> void printField(const std::string & name,const T & value);
+		JsonState(std::ostream * out, bool useIndent = true, bool lua = false);
+		template <class T> void printField(const char* name, const T& value);
 		template <class T> void printValue(const T & value);
 		template <class T> void printFieldArray(const char * name,const T * value,int size);
 		template <class T> void printArray(const T * value,int size);
@@ -82,12 +85,13 @@ class JsonState
 		void closeStruct(void);
 		JsonStateEnum getState(void) const;
 		std::ostream & getStream(void);
+		bool isLua(void) {return lua;};
 	private:
 		/** Copy constructor is forbidden. **/
 		JsonState(const JsonState & state);
 	private:
-		void openField(const std::string & name);
-		void closeField(const std::string & name);
+		void openField(const char* name);
+		void closeField(const char* name);
 		void pushState(JsonStateEnum state);
 		void popState(JsonStateEnum state);
 		bool isFirst(void) const;
@@ -102,6 +106,8 @@ class JsonState
 		JsonStateStructStack stateStack;
 		/** Enable or disable indentation. **/
 		bool useIndent;
+		/** Generate LUA instead of json (need to cleanup this integration). **/
+		bool lua;
 };
 
 }

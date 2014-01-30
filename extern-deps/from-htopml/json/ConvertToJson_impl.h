@@ -6,6 +6,9 @@
              LICENSE  : CeCILL-C
 *****************************************************/
 
+/**********************  INFO  **********************/
+/* Imported from htopml project under CeCILL-C licence */
+
 #ifndef HTOPML_TYPE_TO_JSON_IMPL_H
 #define HTOPML_TYPE_TO_JSON_IMPL_H
 
@@ -57,21 +60,30 @@ template <class T> void convertToJson(JsonState & json, const T & value)
 }
 
 /*******************  FUNCTION  *********************/
-template <class T> std::ostream& convertToJson(std::ostream& out,const T & value)
+template <class T> std::ostream& convertToJson(std::ostream& out,const T & value, bool indent)
 {
-	JsonState state(&out);
+	JsonState state(&out,indent);
 	state.printValue(value);
 	return out;
 }
 
 /*******************  FUNCTION  *********************/
-template <class T> std::ostream& convertToJson(std::ostream& out,const T * value)
+template <class T> std::ostream& convertToJson(std::ostream& out,const T * value,bool indent)
 {
-	JsonState state(&out);
+	JsonState state(&out,indent);
 	if (value == NULL)
 		state.printFormattedValue("null");
 	else
 		state.printValue(*value);
+	return out;
+}
+
+/*******************  FUNCTION  *********************/
+template <class T> std::ostream& convertToLua(std::ostream& out,const T & value, bool indent)
+{
+	out << "mattProfile=";
+	JsonState state(&out,indent,true);
+	state.printValue(value);
 	return out;
 }
 
