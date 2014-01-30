@@ -88,24 +88,23 @@ std::ostream& operator<<(std::ostream& out, const SimpleStackTracer& tracer)
 }
 
 /*******************  FUNCTION  *********************/
-void SimpleStackTracer::resolveSymbols(FuncNameDic& dic) const
+void SimpleStackTracer::resolveSymbols(void)
 {
+	dic.loadProcMap();
 	for (SimpleBacktraceVectorMap::const_iterator itMap = callmaps.begin() ; itMap != callmaps.end() ; ++itMap)
 	{
 		const SimpleBacktraceVector & vec = itMap->second;
 		for (SimpleBacktraceVector::const_iterator it = vec.begin() ; it != vec.end() ; ++it)
 			(*it)->getCallStack().resolveSymbols(dic);
 	}
+	dic.resolveNames();
 }
 
 /*******************  FUNCTION  *********************/
 void convertToJson(htopml::JsonState& json, const SimpleStackTracer& value)
 {
-	FuncNameDic dic;
-// 	CODE_TIMING("resolveSymbols",value.resolveSymbols(dic));
-
 	json.openStruct();
-	json.printField("sites",dic);
+	json.printField("sites",value.dic);
 	json.openFieldArray("stats");
 	for (SimpleBacktraceVectorMap::const_iterator itMap = value.callmaps.begin() ; itMap != value.callmaps.end() ; ++itMap)
 	{

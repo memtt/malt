@@ -13,8 +13,10 @@
 #include <execinfo.h>
 #include <cstring>
 #include <cstdio>
+#include <iostream>
 #include "FuncNameDic.hpp"
 #include <json/JsonState.h>
+#include <common/Debug.hpp>
 
 /*******************  NAMESPACE  ********************/
 namespace MATT
@@ -52,6 +54,21 @@ const char* FuncNameDic::getName(void* callSite)
 }
 
 /*******************  FUNCTION  *********************/
+void FuncNameDic::registerAddress(void* callSite)
+{
+	//check if present, if true, nothing to do
+	CallSiteMap::const_iterator it = callSiteMap.find(callSite);
+	if (it != callSiteMap.end())
+		return;
+
+	//search procmap entry
+	LinuxProcMapEntry * procMapEntry = getMapEntry(callSite);
+	
+	//insert
+	callSiteMap[callSite].mapEntry = procMapEntry;
+}
+
+/*******************  FUNCTION  *********************/
 const char* FuncNameDic::setupNewEntry(void* callSite)
 {
 	//errors
@@ -83,12 +100,11 @@ void convertToJson(htopml::JsonState& json, const FuncNameDic& value)
 {
 	json.openStruct();
 
-	for (FuncNameDicMap::const_iterator it = value.nameMap.begin() ; it != value.nameMap.end() ; ++it)
-	{
-		char buffer[64];
-		sprintf(buffer,"%p",it->first);
-		json.printField(buffer,it->second);
-	}
+// 	json.printField("entries",value.nameMap);
+	
+	json.printField("map",value.procMap);
+	json.printField("strings",value.strings);
+	json.printField("instr",value.callSiteMap);
 
 	json.closeStruct();
 }
@@ -108,6 +124,211 @@ const char* FuncNameDic::setupNewEntry(void* callSite, const std::string& name)
 	} else {
 		return it->second;
 	}
+}
+
+/*******************  FUNCTION  *********************/
+void FuncNameDic::loadProcMap(void)
+{
+	//errors
+	assert(procMap.empty());
+	
+	//open proc map
+	FILE * fp = fopen("/proc/self/maps","r");
+	assumeArg(fp != NULL,"Failed to read segment mapping in %1 : %2.").arg("/proc/self/map").argStrErrno().end();
+	
+	//loop on entries
+	char buffer[4096];
+	char ignored[4096];
+	char fileName[4096];
+	size_t ignored2;
+	LinuxProcMapEntry entry;
+
+	//loop on lines
+	while (!feof(fp))
+	{
+		//load buffer
+		fgets(buffer,sizeof(buffer),fp);
+		
+		//if ok, parse line
+		if (!feof(fp))
+		{
+			//parse
+			int cnt = sscanf(buffer,"%p-%p %s %p %s %lu %s\n",&(entry.lower),&(entry.upper),ignored,&(entry.offset),ignored,&ignored2,fileName);
+			
+			//check args
+			if (cnt == 7)
+				entry.file = fileName;
+			else if (cnt == 6)
+				entry.file.clear();
+			else
+				MATT_FATAL_ARG("Invalid readline of proc/map entry : %1.").arg(buffer).end();
+			
+			//ok push
+			procMap.push_back(entry);
+		}
+	}
+	
+	//close
+	fclose(fp);
+}
+
+/*******************  FUNCTION  *********************/
+void convertToJson(htopml::JsonState& json, const LinuxProcMapEntry& value)
+{
+	json.openStruct();
+	json.printField("lower",value.lower);
+	json.printField("upper",value.upper);
+	json.printField("offset",value.offset);
+	json.printField("file",value.file);
+	json.closeStruct();
+}
+
+/*******************  FUNCTION  *********************/
+CallSite::CallSite(LinuxProcMapEntry* mapEntry)
+{
+	this->mapEntry = mapEntry;
+	this->line = 0;
+	this->function = NULL;
+	this->file = NULL;
+}
+
+/*******************  FUNCTION  *********************/
+LinuxProcMapEntry* FuncNameDic::getMapEntry(void* callSite)
+{
+	//search in map by checking intervals
+	for (LinuxProcMap::iterator it = procMap.begin() ; it != procMap.end() ; ++it)
+		if (callSite >= it->lower && callSite < it->upper)
+			return &(*it);
+
+	//check errors
+	MATT_WARNING_ARG("Caution, call site is not found in procMap : %1.").arg(callSite).end();
+	return NULL;
+}
+
+/*******************  FUNCTION  *********************/
+void FuncNameDic::resolveNames(void)
+{
+	//loop on assemblies to extract names
+	for (LinuxProcMap::iterator it = procMap.begin() ; it != procMap.end() ; ++it)
+	{
+		if (!(it->file.empty() || it->file[0] == '['))
+			resolveNames(&(*it));
+	}
+}
+
+/*******************  FUNCTION  *********************/
+/*
+ * Some links :
+ * man proc & man addr2line
+ * http://stackoverflow.com/a/7557756/257568
+ * ​http://libglim.googlecode.com/svn/trunk/exception.hpp
+ * ​http://stackoverflow.com/questions/10452847/backtrace-function-inside-shared-libraries 
+*/
+void FuncNameDic::resolveNames(LinuxProcMapEntry * procMapEntry)
+{
+	//prepare command
+	bool hasEntries = false;
+	std::stringstream addr2lineCmd;
+	addr2lineCmd << "addr2line -C -f -e " << procMapEntry->file;
+	std::vector<CallSite*> lst;
+	bool isSharedLib = false;
+	
+	//check if shared lib or exe
+	if (procMapEntry->file.substr(procMapEntry->file.size()-3) == ".so")
+		isSharedLib = true;
+	
+	//preate addr2line args
+	for (CallSiteMap::iterator it = callSiteMap.begin() ; it != callSiteMap.end() ; ++it)
+	{
+		if (it->second.mapEntry == procMapEntry)
+		{
+			hasEntries = true;
+			if (isSharedLib)
+				addr2lineCmd << ' '  << (void*)((size_t)it->first - (size_t)procMapEntry->lower);
+			else
+				addr2lineCmd << ' '  << it->first;
+			lst.push_back(&it->second);
+		}
+	}
+	
+	//if no extry, exit
+	if (!hasEntries)
+		return;
+	
+	//run command
+	//std::cerr << addr2lineCmd.str() << std::endl;
+	FILE * fp = popen(addr2lineCmd.str().c_str(),"r");
+	
+	//check error, skip resolution
+	if (fp == NULL)
+	{
+		MATT_ERROR_ARG("Fail to use addr2line on %1 to load symbols : %2.").arg(procMapEntry->file).argStrErrno().end();
+		return;
+	}
+	
+	//read all entries
+	char bufferFunc[3*4096];
+	char bufferFile[2*4096];
+	int i = 0;
+	while (!feof(fp))
+	{
+		//read the two lines
+		fgets(bufferFunc,sizeof(bufferFunc),fp);
+		fgets(bufferFile,sizeof(bufferFile),fp);
+		
+		if (feof(fp))
+			break;
+		
+		//std::cerr << bufferFunc;
+		//std::cerr << bufferFile;
+
+		//search ':' separator at end of "file:line" string
+		char * sep = strrchr(bufferFile,':');
+		if (sep == NULL)
+		{
+			MATT_WARNING_ARG("Fail to split source location on ':' : %1").arg(bufferFile).end();
+		} else {
+			*sep='\0';
+			
+			//extract line
+			lst[i]->line = atoi(sep+1);
+			
+			//get filename and function name address
+			lst[i]->file = getString(bufferFile);
+			lst[i]->function = getString(bufferFunc);
+		}
+
+		//move next
+		i++;
+		//std::cerr<< std::endl;
+	}
+	
+	//error
+	assumeArg(i == lst.size(),"Some entries are missing from addr2line, get %1, but expect %2. (%3)").arg(i).arg(lst.size()).arg(procMapEntry->file).end();
+	
+	//close
+	pclose(fp);
+}
+
+/*******************  FUNCTION  *********************/
+std::string* FuncNameDic::getString(const char * value)
+{
+	for (std::vector<std::string>::iterator it = strings.begin() ; it != strings.end() ; ++it)
+		if (*it == value)
+			return &(*it);
+	strings.push_back(value);
+	return &strings.back();
+}
+
+/*******************  FUNCTION  *********************/
+void convertToJson(htopml::JsonState& json, const CallSite& value)
+{
+	json.openStruct();
+	json.printField("file",value.file);
+	json.printField("function",value.function);
+	json.printField("line",value.line);
+	json.printField("assembly",value.mapEntry);
+	json.closeStruct();
 }
 
 }

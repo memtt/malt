@@ -17,17 +17,17 @@
 /*******************  NAMESPACE  ********************/
 namespace MATT
 {
-	
+
 /*********************  STRUCT  *********************/
 struct LinuxInternalStatm
 {
-        size_t size;
-        size_t resident;
-        size_t share;
-        size_t text;
-        size_t lib;
-        size_t data;
-        size_t dirty;
+	size_t size;
+	size_t resident;
+	size_t share;
+	size_t text;
+	size_t lib;
+	size_t data;
+	size_t dirty;
 };
 
 /********************  STRUCT  **********************/

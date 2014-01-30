@@ -196,6 +196,9 @@ SimpleCallStackNode* AllocStackProfiler::getStackNode(int skipDepth, ssize_t del
 void AllocStackProfiler::onExit(void )
 {
 	MATT_OPTIONAL_CRITICAL(lock,threadSafe)
+		//resolve symbols
+		CODE_TIMING("resolveSymbols",this->stackTracer.resolveSymbols());
+	
 		//open output file
 		//TODO manage errors
 		std::ofstream out;

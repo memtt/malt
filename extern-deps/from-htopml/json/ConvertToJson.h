@@ -68,6 +68,8 @@ template <class T> std::ostream& convertToLua(std::ostream& out,const T * value,
 
 /*******************  FUNCTION  *********************/
 //specific implementations for some known types
+void convertToJson(JsonState & json, const char * value);
+void convertToJson(JsonState & json, const std::string& value);
 void convertToJson(JsonState & json, bool value);
 void convertToJson(JsonState & json, void * ptr);
 void convertToJson(JsonState & json, IJsonConvertible & object);

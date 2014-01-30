@@ -11,8 +11,11 @@
 
 /********************  HEADERS  *********************/
 #include <map>
+#include <set>
+#include <vector>
 #include <ostream>
-// #include <json/JsonState.h>
+#include <cstdio>
+#include <json/JsonState.h>
 
 /*******************  FUNCTION  *********************/
 typedef std::map<void *,const char*> FuncNameDicMap;
@@ -27,6 +30,29 @@ namespace htopml
 namespace MATT
 {
 
+/********************  STRUCT  **********************/
+struct LinuxProcMapEntry
+{
+	void * lower;
+	void * upper;
+	void * offset;
+	std::string file;
+};
+
+/********************  STRUCT  **********************/
+struct CallSite
+{
+	CallSite(LinuxProcMapEntry * mapEntry = NULL);
+	int line;
+	std::string * file;
+	std::string * function;
+	LinuxProcMapEntry * mapEntry;
+};
+
+/*********************  TYPES  **********************/
+typedef std::vector<LinuxProcMapEntry> LinuxProcMap;
+typedef std::map<void*,CallSite> CallSiteMap;
+
 /*********************  CLASS  **********************/
 class FuncNameDic
 {
@@ -34,14 +60,43 @@ class FuncNameDic
 		FuncNameDic(void);
 		~FuncNameDic(void);
 		const char * getName(void * callSite);
+		void registerAddress(void * callSite);
 		const char* setupNewEntry(void* callSite);
 		const char * setupNewEntry(void * callSite,const std::string & name);
+		void loadProcMap(void);
+		void resolveNames(void);
 	public:
 		friend std::ostream & operator << (std::ostream & out,const FuncNameDic & dic);
 		friend void convertToJson(htopml::JsonState & json, const FuncNameDic & value);
 	private:
+		LinuxProcMapEntry * getMapEntry(void * callSite);
+		void resolveNames(LinuxProcMapEntry * procMapEntry);
+		std::string * getString(const char * value);
+	private:
 		FuncNameDicMap nameMap;
+		LinuxProcMap procMap;
+		CallSiteMap callSiteMap;
+		std::vector<std::string> strings;
 };
+
+/*******************  FUNCTION  *********************/
+void convertToJson(htopml::JsonState & state,const LinuxProcMapEntry & entry);
+void convertToJson(htopml::JsonState & state,const CallSite & entry);
+
+/*******************  FUNCTION  *********************/
+template <class T> void convertToJson(htopml::JsonState & json, const std::map<void*,T> & iterable)
+{
+	json.openStruct();
+
+	for (typename std::map<void*,T>::const_iterator it = iterable.begin() ; it != iterable.end() ; ++it)
+	{
+		char buffer[64];
+		sprintf(buffer,"%p",it->first);
+		json.printField(buffer,it->second);
+	}
+
+	json.closeStruct();
+}
 
 }
 

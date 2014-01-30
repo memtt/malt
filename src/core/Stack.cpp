@@ -258,7 +258,7 @@ int Stack::getSize ( void ) const
 void Stack::resolveSymbols ( FuncNameDic& dic ) const
 {
 	for (int i = 0 ; i < size ; i++)
-		dic.getName(stack[i]);
+		dic.registerAddress(stack[i]);
 }
 
 /*******************  FUNCTION  *********************/
