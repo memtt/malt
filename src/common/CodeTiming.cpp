@@ -8,6 +8,8 @@
 
 /********************  HEADERS  *********************/
 //extern
+#include <cstdlib>
+#include <cstring>
 #include <cassert>
 #include <iomanip>
 #include <iostream>
@@ -27,9 +29,50 @@ namespace MATT
 /********************** CONSTS **********************/
 /** Strings for unit printing. **/
 static const char * cstUnits[] = {"","K","M","G","T","P"};
+ticks CodeTiming::globalStart = 0;
+int CodeTiming::globalCntTimers = 0;
+int CodeTiming::globalCntTimersFinished = 0;
+CodeTiming * CodeTiming::globalTimers[64];
 
-/********************* GLOBALS **********************/
-static ticks gblStartTime = 0;
+/*******************  FUNCTION  *********************/
+void CodeTiming::registerTimer(CodeTiming* timer)
+{
+	assert(timer != NULL);
+	if (globalStart == 0)
+		globalStart = getticks();
+	assert(globalCntTimers < sizeof(globalTimers)/sizeof(globalTimers[0]));
+	globalTimers[globalCntTimers++] = timer;
+}
+
+/*******************  FUNCTION  *********************/
+void CodeTiming::timerFinish(CodeTiming* timer)
+{
+	globalCntTimersFinished++;
+}
+
+/*******************  FUNCTION  *********************/
+int CodeTiming::compare(const void* a, const void* b)
+{
+	ticks sa = (*(const CodeTiming**)a)->sum;
+	ticks sb = (*(const CodeTiming**)b)->sum;
+	
+	if (sa == sb)
+		return 0;
+	else if (sa < sb)
+		return 1;
+	else
+		return -1;
+}
+
+/*******************  FUNCTION  *********************/
+void CodeTiming::printAll(void)
+{
+	qsort(globalTimers,globalCntTimers,sizeof(globalTimers[0]),CodeTiming::compare);
+	for (int i = 0 ; i < globalCntTimers ; i++)
+	{	
+		globalTimers[i]->finalPrint();
+	}
+}
 
 /*******************  FUNCTION  *********************/
 CodeTiming::CodeTiming(const char* name)
@@ -39,8 +82,7 @@ CodeTiming::CodeTiming(const char* name)
 	this->max = 0;
 	this->min = 0;
 	this->sum = 0;
-	if (gblStartTime == 0)
-		gblStartTime = getticks();
+	registerTimer(this);
 }
 
 /*******************  FUNCTION  *********************/
@@ -49,9 +91,15 @@ CodeTiming::CodeTiming(const char* name)
 **/
 CodeTiming::~CodeTiming(void)
 {
-	ticks wholeExec = getticks() - gblStartTime;
+	timerFinish(this);
+}
+
+/*******************  FUNCTION  *********************/
+void CodeTiming::finalPrint(void) const
+{
+	ticks wholeExec = getticks() - globalStart;
 	double ratio = (double)(100*sum) / (double)wholeExec;
-	cerr << "TIMING OF " << std::setw(32) << std::left << name << " => [ ";
+	cerr << "TIMING OF " << std::setw(32) << std::left << this->name << " => [ ";
 	printValue(min);
 	cerr << " , ";
 	printValue((double)sum / (double)count);
@@ -70,7 +118,7 @@ CodeTiming::~CodeTiming(void)
  * @param value The value to print.
  * @param unit The name of the unit to use (cycles, seconds...). Empty for none.
 **/
-void CodeTiming::printValue(double value, const char* unit)
+void CodeTiming::printValue(double value, const char* unit) const
 {
 	//errors
 	assert(unit != NULL);

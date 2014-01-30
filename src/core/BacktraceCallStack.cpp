@@ -17,7 +17,7 @@
 #include "BacktraceCallStack.hpp"
 
 /********************  MACROS  **********************/
-#define CALL_STACK_MAX 256
+#define CALL_STACK_MAX 128
 
 /*******************  NAMESPACE  ********************/
 namespace MATT 

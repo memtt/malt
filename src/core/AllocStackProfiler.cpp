@@ -215,6 +215,9 @@ void AllocStackProfiler::onExit(void )
 		ValgrindOutput vout;
 		stackTracer.fillValgrindOut(vout);
 		CODE_TIMING("outputCallgrind",vout.writeAsCallgrind(FormattedMessage(options.outputFile).arg(OS::getExeName()).arg(OS::getPID()).arg("callgrind").toString()));
+		
+		//print timings
+		CodeTiming::printAll();
 	MATT_END_CRITICAL
 }
 

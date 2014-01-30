@@ -65,11 +65,17 @@ class CodeTiming
 		~CodeTiming(void);
 		ticks start(void);
 		void end(ticks value);
+		void finalPrint(void) const;
+		const char * getName(void) const {return name;};
+		static void printAll(void);
 	private:
-		void printValue(double value, const char * unit = "");
+		static int compare(const void * a,const void * b);
+		static void registerTimer(CodeTiming * timer);
+		static void timerFinish(CodeTiming * timer);
+		void printValue(double value, const char * unit = "") const;
 	private:
 		/** Name of the code section to profile, only used for display. **/
-		std::string name;
+		const char * name;
 		/** Cumulativ execution time spent in the profiled code. **/
 		ticks sum;
 		/** Minimum execution time of the profiled code. **/
@@ -78,6 +84,11 @@ class CodeTiming
 		ticks max;
 		/** Number of calls. **/
 		size_t count;
+		/** Store the global reference time to compute global cost ratios. **/
+		static ticks globalStart;
+		static int globalCntTimers;
+		static int globalCntTimersFinished;
+		static CodeTiming * globalTimers[64];
 };
 
 /*******************  FUNCTION  *********************/
