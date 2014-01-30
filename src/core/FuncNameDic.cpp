@@ -208,6 +208,9 @@ LinuxProcMapEntry* FuncNameDic::getMapEntry(void* callSite)
 /*******************  FUNCTION  *********************/
 void FuncNameDic::resolveNames(void)
 {
+	//avoid to LD_PRELOAD otherwise we will create fork bomb
+	setenv("LD_PRELOAD","",1);
+	
 	//loop on assemblies to extract names
 	for (LinuxProcMap::iterator it = procMap.begin() ; it != procMap.end() ; ++it)
 	{
@@ -281,6 +284,8 @@ void FuncNameDic::resolveNames(LinuxProcMapEntry * procMapEntry)
 		
 		//std::cerr << bufferFunc;
 		//std::cerr << bufferFile;
+		
+		assume(i < lst.size(),"Overpass lst size.");
 
 		//search ':' separator at end of "file:line" string
 		char * sep = strrchr(bufferFile,':');
@@ -303,11 +308,16 @@ void FuncNameDic::resolveNames(LinuxProcMapEntry * procMapEntry)
 		//std::cerr<< std::endl;
 	}
 	
+	//close
+	int res = pclose(fp);
+	if (res != 0)
+	{
+		MATT_ERROR_ARG("Get error while using addr2line on %1 to load symbols : %2.").arg(procMapEntry->file).argStrErrno().end();
+		return;
+	}
+
 	//error
 	assumeArg(i == lst.size(),"Some entries are missing from addr2line, get %1, but expect %2. (%3)").arg(i).arg(lst.size()).arg(procMapEntry->file).end();
-	
-	//close
-	pclose(fp);
 }
 
 /*******************  FUNCTION  *********************/
@@ -317,18 +327,24 @@ std::string* FuncNameDic::getString(const char * value)
 		if (*it == value)
 			return &(*it);
 	strings.push_back(value);
-	return &strings.back();
+	return &(*strings.rbegin());
 }
 
 /*******************  FUNCTION  *********************/
 void convertToJson(htopml::JsonState& json, const CallSite& value)
 {
-	json.openStruct();
-	json.printField("file",value.file);
-	json.printField("function",value.function);
-	json.printField("line",value.line);
-	json.printField("assembly",value.mapEntry);
-	json.closeStruct();
+	if (value.mapEntry != NULL)
+	{
+		json.openStruct();
+		if (value.file != NULL)// && *value.file != "??")
+			json.printField("file",value.file);
+		if (value.function != NULL)// && *value.function != "??")
+			json.printField("function",value.function);
+		if (value.line != 0)
+			json.printField("line",value.line);
+		json.printField("assembly",value.mapEntry);
+		json.closeStruct();
+	}
 }
 
 }
