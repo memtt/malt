@@ -15,6 +15,8 @@
 #include <cstdlib>
 //from fftw (copied into extern-deps)
 #include <cycle.h>
+//internal
+#include <config.h>
 
 /********************  MACROS  **********************/
 /**
@@ -26,15 +28,19 @@ void yourFunc(void)
 }
 \endcode
 **/
-// #define CODE_TIMING(name,code) do{code;}while(0)
-#define CODE_TIMING(name,code) \
-	do {  \
-		static MATT::CodeTiming __code_timing_local##__LINE__##__(name);   \
-		ticks __code_timing_start##__line__##__ = __code_timing_local##__LINE__##__.start(); \
-		do {code;} while(0); \
-		__code_timing_local##__LINE__##__.end(__code_timing_start##__line__##__);  \
-	} while(0)
-
+#ifdef MATT_ENABLE_CODE_TIMING
+	#define CODE_TIMING(name,code) \
+		do {  \
+			static MATT::CodeTiming __code_timing_local##__LINE__##__(name);   \
+			ticks __code_timing_start##__line__##__ = __code_timing_local##__LINE__##__.start(); \
+			do {code;} while(0); \
+			__code_timing_local##__LINE__##__.end(__code_timing_start##__line__##__);  \
+		} while(0)
+#else
+	#define CODE_TIMING(name,code) do{code;}while(0)
+#endif
+	
+	
 /*******************  NAMESPACE  ********************/
 namespace MATT
 {
@@ -95,28 +101,32 @@ class CodeTiming
 /** Start measurement of a new call to your code. **/
 inline ticks CodeTiming::start(void)
 {
-	return getticks();
+	#ifdef MATT_ENABLE_CODE_TIMING
+		return getticks();
+	#endif
 }
 
 /*******************  FUNCTION  *********************/
 /** End measurement of the current call to your code. **/
 inline void CodeTiming::end(ticks start)
 {
-	//get time
-	ticks t =getticks() - start;
-	
-	//update min/max
-	if (count == 0)
-	{
-		min = max = t;
-	} else {
-		if (t < min) min = t;
-		if (t > max) max = t;
-	}
-	
-	//update global sums
-	count++;
-	sum += t;
+	#ifdef MATT_ENABLE_CODE_TIMING
+		//get time
+		ticks t =getticks() - start;
+		
+		//update min/max
+		if (count == 0)
+		{
+			min = max = t;
+		} else {
+			if (t < min) min = t;
+			if (t > max) max = t;
+		}
+		
+		//update global sums
+		count++;
+		sum += t;
+	#endif
 }
 
 /*******************  FUNCTION  *********************/

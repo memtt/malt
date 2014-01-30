@@ -67,22 +67,28 @@ int CodeTiming::compare(const void* a, const void* b)
 /*******************  FUNCTION  *********************/
 void CodeTiming::printAll(void)
 {
-	qsort(globalTimers,globalCntTimers,sizeof(globalTimers[0]),CodeTiming::compare);
-	for (int i = 0 ; i < globalCntTimers ; i++)
-	{	
-		globalTimers[i]->finalPrint();
-	}
+	#ifdef MATT_ENABLE_CODE_TIMING
+		cerr << "=============================================================== MATT TIMINGS ====================================================================" << endl;
+		qsort(globalTimers,globalCntTimers,sizeof(globalTimers[0]),CodeTiming::compare);
+		for (int i = 0 ; i < globalCntTimers ; i++)
+		{	
+			globalTimers[i]->finalPrint();
+		}
+		cerr << "=================================================================================================================================================" << endl;
+	#endif
 }
 
 /*******************  FUNCTION  *********************/
 CodeTiming::CodeTiming(const char* name)
 {
-	this->name = name;
-	this->count = 0;
-	this->max = 0;
-	this->min = 0;
-	this->sum = 0;
-	registerTimer(this);
+	#ifdef MATT_ENABLE_CODE_TIMING
+		this->name = name;
+		this->count = 0;
+		this->max = 0;
+		this->min = 0;
+		this->sum = 0;
+		registerTimer(this);
+	#endif
 }
 
 /*******************  FUNCTION  *********************/
@@ -91,25 +97,29 @@ CodeTiming::CodeTiming(const char* name)
 **/
 CodeTiming::~CodeTiming(void)
 {
-	timerFinish(this);
+	#ifdef MATT_ENABLE_CODE_TIMING
+		timerFinish(this);
+	#endif
 }
 
 /*******************  FUNCTION  *********************/
 void CodeTiming::finalPrint(void) const
 {
-	ticks wholeExec = getticks() - globalStart;
-	double ratio = (double)(100*sum) / (double)wholeExec;
-	cerr << "TIMING OF " << std::setw(32) << std::left << this->name << " => [ ";
-	printValue(min);
-	cerr << " , ";
-	printValue((double)sum / (double)count);
-	cerr << " , ";
-	printValue(max);
-	cerr << " ] => TOTAL ( calls : ";
-	printValue(count);
-	cerr << " , time : ";
-	printValue(sum);
-	cerr << " , " << "radio : ~ " << std::setprecision( 2 ) << setw(8) << std::left << ratio << "% )" << endl;
+	#ifdef MATT_ENABLE_CODE_TIMING
+		ticks wholeExec = getticks() - globalStart;
+		double ratio = (double)(100*sum) / (double)wholeExec;
+		cerr << "TIMING OF " << std::setw(32) << std::left << this->name << " => [ ";
+		printValue(min);
+		cerr << " , ";
+		printValue((double)sum / (double)count);
+		cerr << " , ";
+		printValue(max);
+		cerr << " ] => TOTAL ( calls : ";
+		printValue(count);
+		cerr << " , time : ";
+		printValue(sum);
+		cerr << " , " << "radio : ~ " << std::setprecision( 2 ) << setw(8) << std::left << ratio << "% )" << endl;
+	#endif
 }
 
 /*******************  FUNCTION  *********************/

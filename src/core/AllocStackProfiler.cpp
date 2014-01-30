@@ -195,7 +195,6 @@ SimpleCallStackNode* AllocStackProfiler::getStackNode(int skipDepth, ssize_t del
 /*******************  FUNCTION  *********************/
 void AllocStackProfiler::onExit(void )
 {
-	puts("======================== Print on exit ========================");
 	MATT_OPTIONAL_CRITICAL(lock,threadSafe)
 		//open output file
 		//TODO manage errors
@@ -251,7 +250,7 @@ void convertToJson(htopml::JsonState& json, const AllocStackProfiler& value)
 		json.printField("physicalMem",value.physicalMem);
 		json.printField("virtualMem",value.virtualMem);
 	}
-	json.printField("ticksPerSecond",ticksPerSecond());
+	CODE_TIMING("ticksPerSecond",json.printField("ticksPerSecond",ticksPerSecond()));
 	json.closeStruct();
 }
 

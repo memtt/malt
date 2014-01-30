@@ -7,14 +7,20 @@
 ######################################################
 
 ######################################################
+#Code options
+set(ENABLE_CODE_TIMING "no"      CACHE BOOL   "Enable some tricks to quickly check timings of hostspots of MATT internal code.")
 #select portability mode
-set(PORTABILITY_MUTEX "PTHREAD" CACHE STRING "Select mutex implementation to use. Currently support : 'PTHREAD', 'DUMMY'.")
-set(PORTABILITY_OS    "UNIX"    CACHE STRING "Select OS implementation to use. Currently support : 'UNIX'.")
+set(PORTABILITY_MUTEX  "PTHREAD" CACHE STRING "Select mutex implementation to use. Currently support : 'PTHREAD', 'DUMMY'.")
+set(PORTABILITY_OS     "UNIX"    CACHE STRING "Select OS implementation to use. Currently support : 'UNIX'.")
 
 ######################################################
 #select portability definitions
 set(MATT_PORTABILITY_MUTEX_${PORTABILITY_MUTEX} yes)
 set(MATT_PORTABILITY_OS_${PORTABILITY_OS} yes)
+#enabling features
+if (ENABLE_CODE_TIMING)
+	set(MATT_ENABLE_CODE_TIMING yes)
+endif(ENABLE_CODE_TIMING)
 
 ######################################################
 #gen config.h
