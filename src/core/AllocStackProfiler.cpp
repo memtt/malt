@@ -116,7 +116,7 @@ SimpleCallStackNode * AllocStackProfiler::onAllocEvent(void* ptr, size_t size,in
 
 		//register for segment history tracking
 		if (ptr != NULL)
-			CODE_TIMING("segTracerAdd",segTracer.add(ptr,size,callStackNode));
+			CODE_TIMING("segTracerAdd",segTracker.add(ptr,size,callStackNode));
 	MATT_END_CRITICAL
 	
 	return callStackNode;
@@ -137,7 +137,7 @@ SimpleCallStackNode * AllocStackProfiler::onFreeEvent(void* ptr,int skipDepth, S
 		//search segment info to link with previous history
 		SegmentInfo * segInfo = NULL;
 		if (options.doTimeProfile || options.doStackProfile)
-			CODE_TIMING("segTracerGet",segInfo = segTracer.get(ptr));
+			CODE_TIMING("segTracerGet",segInfo = segTracker.get(ptr));
 		
 		//check unknown
 		if (segInfo == NULL)
@@ -162,7 +162,7 @@ SimpleCallStackNode * AllocStackProfiler::onFreeEvent(void* ptr,int skipDepth, S
 		}
 		
 		//remove tracking info
-		CODE_TIMING("segTracerRemove",segTracer.remove(ptr));
+		CODE_TIMING("segTracerRemove",segTracker.remove(ptr));
 	MATT_END_CRITICAL
 	
 	return callStackNode;
@@ -253,6 +253,7 @@ void convertToJson(htopml::JsonState& json, const AllocStackProfiler& value)
 		json.printField("physicalMem",value.physicalMem);
 		json.printField("virtualMem",value.virtualMem);
 	}
+	json.printField("leaks",value.segTracker);
 	CODE_TIMING("ticksPerSecond",json.printField("ticksPerSecond",ticksPerSecond()));
 	json.closeStruct();
 }

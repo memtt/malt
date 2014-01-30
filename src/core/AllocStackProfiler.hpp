@@ -53,7 +53,7 @@ class AllocStackProfiler
 		SimpleCallStackNode * onFreeEvent(void* ptr, int skipDepth, Stack* userStack = NULL, SimpleCallStackNode* callStackNode = NULL, bool doLock = true);
 	private:
 		SimpleStackTracer stackTracer;
-		SegmentTracker segTracer;
+		SegmentTracker segTracker;
 		BacktraceCallStack stack;
 		EnterExitCallStack exStack;
 		ProfiledValue requestedMem;

@@ -8,6 +8,7 @@
 
 /********************  HEADERS  *********************/
 #include <cassert>
+#include <cstdio>
 #include "SegmentTracker.hpp"
 
 /*******************  NAMESPACE  ********************/
@@ -79,6 +80,19 @@ void SegmentTracker::remove(void* ptr)
 ticks SegmentInfo::getLifetime(void ) const
 {
 	return getticks() - allocTime;
+}
+
+/*******************  FUNCTION  *********************/
+void convertToJson(htopml::JsonState& json, const SegmentTracker& value)
+{
+	json.openStruct();
+	for(SegmentInfoMap::const_iterator it = value.map.begin() ; it != value.map.end() ; ++it)
+	{
+		char buffer[64];
+		sprintf(buffer,"%p",it->first);
+		json.printField(buffer,it->second.callStack->getCallStack());
+	}
+	json.closeStruct();
 }
 
 }

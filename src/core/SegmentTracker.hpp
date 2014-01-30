@@ -44,6 +44,8 @@ class SegmentTracker
 		SegmentInfo * add(void* ptr, size_t size, SimpleCallStackNode* callStack);
 		SegmentInfo * get(void * ptr);
 		void remove(void * ptr);
+	public:
+		friend void convertToJson(htopml::JsonState & json,const SegmentTracker & value);
 	private:
 		SegmentInfoMap map;
 };
