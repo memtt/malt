@@ -200,21 +200,21 @@ void AllocStackProfiler::onExit(void )
 		//open output file
 		//TODO manage errors
 		std::ofstream out;
-
-		//json
-		out.open(FormattedMessage(options.outputFile).arg(OS::getExeName()).arg(OS::getPID()).arg("json").toString().c_str());
-		CODE_TIMING("outputJson",htopml::convertToJson(out,*this,options.indent));
-		out.close();
 		
 		//lua
 		out.open(FormattedMessage(options.outputFile).arg(OS::getExeName()).arg(OS::getPID()).arg("lua").toString().c_str());
 		CODE_TIMING("outputLua",htopml::convertToLua(out,*this,options.indent));
 		out.close();
 
+		//json
+		out.open(FormattedMessage(options.outputFile).arg(OS::getExeName()).arg(OS::getPID()).arg("json").toString().c_str());
+		CODE_TIMING("outputJson",htopml::convertToJson(out,*this,options.indent));
+		out.close();
+
 		//valgrind out
 		ValgrindOutput vout;
 		stackTracer.fillValgrindOut(vout);
-		vout.writeAsCallgrind(FormattedMessage(options.outputFile).arg(OS::getExeName()).arg(OS::getPID()).arg("callgrind").toString());
+		CODE_TIMING("outputCallgrind",vout.writeAsCallgrind(FormattedMessage(options.outputFile).arg(OS::getExeName()).arg(OS::getPID()).arg("callgrind").toString()));
 	MATT_END_CRITICAL
 }
 

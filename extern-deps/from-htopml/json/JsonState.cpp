@@ -44,6 +44,7 @@ namespace htopml
  * compact json code.
 **/
 JsonState::JsonState(ostream* out, bool useIndent, bool lua)
+	:bufferdStream(out,8*4096)
 {
 	//errors
 	assert(out != NULL);
@@ -65,7 +66,7 @@ void JsonState::putPadding()
 {
 	if (useIndent)
 	{
-		if (indent < 256)
+		/*if (indent < 256)
 		{
 			//faster buffered version
 			char buffer[256];
@@ -73,12 +74,12 @@ void JsonState::putPadding()
 			for (int i = 0 ; i < indent ; i++)
 				buffer[i] = '\t';
 			buffer[indent] = '\0';
-			*out << buffer;
-		} else {
-			//slow unbuffered version
+			bufferdStream << buffer;
+		} else {*/
+			//slow unbuffered version, but not for FastBufferedStream
 			for (int i = 0 ; i < indent ; i++)
-				*out << '\t';
-		}
+				bufferdStream << '\t';
+		//}
 	}
 }
 
@@ -112,7 +113,7 @@ void JsonState::printFormattedField(const char * name, const char* format, ... )
 
 	//print
 	openField(name);
-	*out << buffer;
+	bufferdStream << buffer;
 	closeField(name);
 }
 
@@ -131,7 +132,7 @@ void JsonState::printFormattedValue(const char* format, ... )
 
 	//separator
 	if (getState() == JSON_STATE_ARRAY && !isFirst())
-		*out << ", ";
+		bufferdStream << ',';
 
 	//format the chain
 	va_list param;
@@ -143,7 +144,7 @@ void JsonState::printFormattedValue(const char* format, ... )
 	assert(size <= SPRINTF_BUFFER_SIZE);
 
 	//print
-	*out << buffer;
+	bufferdStream << buffer;
 	firstIsDone();
 }
 
@@ -161,9 +162,9 @@ void JsonState::openField(const char * name)
 	if (!isFirst())
 	{
 		if (useIndent)
-			*out << "," LINE_BREAK;
+			bufferdStream << ',' << LINE_BREAK;
 		else
-			*out << ",";
+			bufferdStream << ',';
 	}
 
 	//setup state
@@ -174,9 +175,9 @@ void JsonState::openField(const char * name)
 
 	//print name
 	if (lua)
-		*out << name << "=";
+		bufferdStream << name << '=';
 	else
-		*out << "\"" << name << "\"" << ":";
+		bufferdStream << '"' << name << '"' << ':';
 }
 
 /*******************  FUNCTION  *********************/
@@ -235,9 +236,9 @@ void JsonState::openArray(void)
 
 	//print name
 	if (lua)
-		*out << "{";
+		bufferdStream << '{';
 	else
-		*out << "[";
+		bufferdStream << '[';
 }
 
 /*******************  FUNCTION  *********************/
@@ -254,9 +255,9 @@ void JsonState::closeArray(void)
 
 	//print name
 	if (lua)
-		*out << "}";
+		bufferdStream << '}';
 	else
-		*out << "]";
+		bufferdStream << ']';
 }
 
 /*******************  FUNCTION  *********************/
@@ -273,9 +274,9 @@ void JsonState::openStruct(void )
 
 	//print name
 	indent++;
-	*out << "{";
+	bufferdStream << '{';
 	if (useIndent)
-		*out << LINE_BREAK;
+		bufferdStream << LINE_BREAK;
 }
 
 /*******************  FUNCTION  *********************/
@@ -293,9 +294,9 @@ void JsonState::closeStruct(void )
 	//print name
 	indent--;
 	if (useIndent)
-		*out << LINE_BREAK;
+		bufferdStream << LINE_BREAK;
 	putPadding();
-	*out << "}";
+	bufferdStream << '}';
 }
 
 /*******************  FUNCTION  *********************/
@@ -338,21 +339,6 @@ void JsonState::popState(JsonStateEnum state)
 {
 	assert(stateStack.top().state == state);
 	stateStack.pop();
-}
-
-/*******************  FUNCTION  *********************/
-/**
- * Return the current output stream used by JsonState. It can be use for specials tricks
- * to generate outputs from stange objects, but caution, you may produce invalid
- * output if you dont check the current state.
-**/
-ostream& JsonState::getStream ( void )
-{
-	//check errors
-	assert(out != NULL);
-	
-	//return
-	return *out;
 }
 
 }

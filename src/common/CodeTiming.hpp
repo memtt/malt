@@ -26,14 +26,14 @@ void yourFunc(void)
 }
 \endcode
 **/
-#define CODE_TIMING(name,code) do{code;}while(0)
-// #define CODE_TIMING(name,code) \
-// 	do {  \
-// 		static MATT::CodeTiming __code_timing_local__(name);   \
-// 		__code_timing_local__.start(); \
-// 		do {code;} while(0); \
-// 		__code_timing_local__.end();  \
-// 	} while(0)
+// #define CODE_TIMING(name,code) do{code;}while(0)
+#define CODE_TIMING(name,code) \
+	do {  \
+		static MATT::CodeTiming __code_timing_local##__LINE__##__(name);   \
+		ticks __code_timing_start##__line__##__ = __code_timing_local##__LINE__##__.start(); \
+		do {code;} while(0); \
+		__code_timing_local##__LINE__##__.end(__code_timing_start##__line__##__);  \
+	} while(0)
 
 /*******************  NAMESPACE  ********************/
 namespace MATT
@@ -63,8 +63,8 @@ class CodeTiming
 	public:
 		CodeTiming(const char * name);
 		~CodeTiming(void);
-		void start(void);
-		void end(void);
+		ticks start(void);
+		void end(ticks value);
 	private:
 		void printValue(double value, const char * unit = "");
 	private:
@@ -78,25 +78,21 @@ class CodeTiming
 		ticks max;
 		/** Number of calls. **/
 		size_t count;
-		/** Remember the starting time of current measurement. **/
-		ticks lastStart;
-		/** Remember the time at initialization of this object. **/
-		ticks globalStart;
 };
 
 /*******************  FUNCTION  *********************/
 /** Start measurement of a new call to your code. **/
-inline void CodeTiming::start(void)
+inline ticks CodeTiming::start(void)
 {
-	this->lastStart = getticks();
+	return getticks();
 }
 
 /*******************  FUNCTION  *********************/
 /** End measurement of the current call to your code. **/
-inline void CodeTiming::end(void)
+inline void CodeTiming::end(ticks start)
 {
 	//get time
-	ticks t =getticks() - lastStart;
+	ticks t =getticks() - start;
 	
 	//update min/max
 	if (count == 0)

@@ -17,6 +17,7 @@
 #include <stack>
 #include <ostream>
 #include <cassert>
+#include "FastBufferdStream.hpp"
 
 /********************  NAMESPACE  *******************/
 namespace htopml
@@ -85,6 +86,7 @@ class JsonState
 		void closeStruct(void);
 		JsonStateEnum getState(void) const;
 		std::ostream & getStream(void);
+		FastBufferedStream & getFastStream(void);
 		bool isLua(void) {return lua;};
 	private:
 		/** Copy constructor is forbidden. **/
@@ -108,6 +110,7 @@ class JsonState
 		bool useIndent;
 		/** Generate LUA instead of json (need to cleanup this integration). **/
 		bool lua;
+		FastBufferedStream bufferdStream;
 };
 
 }

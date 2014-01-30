@@ -46,18 +46,18 @@ SimpleCallStackNode& SimpleStackTracer::getBacktraceInfo( const Stack& stack )
 
 	//search in current vector
 	static CodeTiming tmap("searchInMap");
-	tmap.start();
+	ticks start = tmap.start();
 	SimpleBacktraceVector & vec = callmaps[hash];
-	tmap.end();
+	tmap.end(start);
 
 	//loop in vector to find the good one
 	static CodeTiming tvec("searchInSubVect");
-	tvec.start();
+	start = tvec.start();
 	SimpleBacktraceVector::iterator resIt = vec.end();
 	for (SimpleBacktraceVector::iterator it = vec.begin() ; it != vec.end() ; ++it)
 		if ((*it)->getCallStack() == stack)
 			resIt = it;
-	tvec.end();
+	tvec.end(start);
 
 	count++;
 

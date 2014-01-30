@@ -1,5 +1,5 @@
 /*****************************************************
-             PROJECT  : MATT
+             PROJECT  : htopml
              VERSION  : 0.1.0-dev
              DATE     : 01/2014
              AUTHOR   : Valat Sébastien
@@ -17,7 +17,7 @@
 #include <cassert>
 #include <cstring>
 
-namespace MATT
+namespace htopml
 {
 
 /*********************  CLASS  **********************/
@@ -31,8 +31,10 @@ class FastBufferedStream
 	public:
 		friend FastBufferedStream & operator << (FastBufferedStream & out,char value);
 		friend FastBufferedStream & operator << (FastBufferedStream & out,const char * value);
+		friend FastBufferedStream & operator << (FastBufferedStream & out,char * value);
 		friend FastBufferedStream & operator << (FastBufferedStream & out,const std::string & value);
 		friend FastBufferedStream & operator << (FastBufferedStream & out,int value);
+		friend FastBufferedStream & operator << (FastBufferedStream & out,long value);
 		friend FastBufferedStream & operator << (FastBufferedStream & out,unsigned long value);
 		friend FastBufferedStream & operator << (FastBufferedStream & out,unsigned long long value);
 		friend FastBufferedStream & operator << (FastBufferedStream & out,void * value);
@@ -49,10 +51,13 @@ class FastBufferedStream
 /*******************  FUNCTION  *********************/
 inline FastBufferedStream::FastBufferedStream(std::ostream* stream, size_t bufferSize)
 {
+	//check errors
 	assert(stream != NULL);
+	assert(bufferSize > 256);
+
 	this->stream = stream;
 	this->bufferSize = bufferSize;
-	this->buffer = malloc(bufferSize);
+	this->buffer = new char[bufferSize];
 	this->position = 0;
 }
 
@@ -60,7 +65,7 @@ inline FastBufferedStream::FastBufferedStream(std::ostream* stream, size_t buffe
 inline FastBufferedStream::~FastBufferedStream(void)
 {
 	flush();
-	free(buffer);
+	delete [] buffer;
 }
 
 /*******************  FUNCTION  *********************/
@@ -87,6 +92,13 @@ inline FastBufferedStream& operator<<(FastBufferedStream& out, char value)
 }
 
 /*******************  FUNCTION  *********************/
+inline FastBufferedStream& operator<<(FastBufferedStream& out, char * value)
+{
+	out << (const char*)value;
+	return out;
+}
+
+/*******************  FUNCTION  *********************/
 inline FastBufferedStream& operator<<(FastBufferedStream& out, const char * value)
 {
 	size_t position = out.position;
@@ -100,6 +112,7 @@ inline FastBufferedStream& operator<<(FastBufferedStream& out, const char * valu
 		{
 			out.position = position;
 			out.flush();
+			position = out.position;
 		}
 		buffer[position++] = *value;
 		value++;
@@ -123,7 +136,7 @@ inline FastBufferedStream& operator<<(FastBufferedStream& out, const std::string
 	
 	if (availSize > value.size())
 	{
-		memcpy(out.buffer,value.c_str(),value.size());
+		memcpy(out.buffer+out.position,value.c_str(),value.size());
 		out.position += value.size();
 	} else {
 		out.flush();
@@ -133,7 +146,7 @@ inline FastBufferedStream& operator<<(FastBufferedStream& out, const std::string
 }
 
 /*******************  FUNCTION  *********************/
-inline FastBufferedStream& FastBufferedStream::operator<<(FastBufferedStream& out, int value)
+inline FastBufferedStream& operator<<(FastBufferedStream& out, int value)
 {
 	assert(out.bufferSize >= 256);
 
@@ -145,7 +158,19 @@ inline FastBufferedStream& FastBufferedStream::operator<<(FastBufferedStream& ou
 }
 
 /*******************  FUNCTION  *********************/
-inline FastBufferedStream& FastBufferedStream::operator<<(FastBufferedStream& out, unsigned long value)
+inline FastBufferedStream& operator<<(FastBufferedStream& out, long value)
+{
+	assert(out.bufferSize >= 256);
+
+	if (out.availSize() < 256)
+		out.flush();
+	int size = snprintf(out.buffer+out.position,out.availSize(),"%ld",value);
+	out.position += size;
+	return out;
+}
+
+/*******************  FUNCTION  *********************/
+inline FastBufferedStream& operator<<(FastBufferedStream& out, unsigned long value)
 {
 	assert(out.bufferSize >= 256);
 
@@ -157,7 +182,7 @@ inline FastBufferedStream& FastBufferedStream::operator<<(FastBufferedStream& ou
 }
 
 /*******************  FUNCTION  *********************/
-inline FastBufferedStream& FastBufferedStream::operator<<(FastBufferedStream& out, unsigned long long value)
+inline FastBufferedStream& operator<<(FastBufferedStream& out, unsigned long long value)
 {
 	assert(out.bufferSize >= 256);
 
@@ -170,49 +195,47 @@ inline FastBufferedStream& FastBufferedStream::operator<<(FastBufferedStream& ou
 
 
 /*******************  FUNCTION  *********************/
-inline FastBufferedStream& FastBufferedStream::operator<<(FastBufferedStream& out, float value)
+inline FastBufferedStream& operator<<(FastBufferedStream& out, float value)
 {
 	assert(out.bufferSize >= 256);
 
 	if (out.availSize() < 256)
 		out.flush();
-	int size = snprintf(out.buffer+out.position,out.availSize(),"%f",value);
+	int size = snprintf(out.buffer+out.position,out.availSize(),"%g",value);
 	out.position += size;
 	return out;
 }
 
 /*******************  FUNCTION  *********************/
-inline FastBufferedStream& FastBufferedStream::operator<<(FastBufferedStream& out, double value)
+inline FastBufferedStream& operator<<(FastBufferedStream& out, double value)
 {
 	assert(out.bufferSize >= 256);
 
 	if (out.availSize() < 256)
 		out.flush();
-	int size = snprintf(out.buffer+out.position,out.availSize(),"%f",value);
+	int size = snprintf(out.buffer+out.position,out.availSize(),"%lg",value);
 	out.position += size;
 	return out;
 }
 
 /*******************  FUNCTION  *********************/
-inline FastBufferedStream& FastBufferedStream::operator<<(FastBufferedStream& out, void * value)
+inline FastBufferedStream& operator<<(FastBufferedStream& out, void * value)
 {
 	assert(out.bufferSize >= 32);
 
 	if (out.availSize() < 32)
 		out.flush();
-	int size = snprintf(out.buffer+out.position,out.availSize(),"%lp",value);
+	int size = snprintf(out.buffer+out.position,out.availSize(),"%p",value);
 	out.position += size;
 	return out;
 }
 
 /*******************  FUNCTION  *********************/
 template <class T>
-inline FastBufferedStream& FastBufferedStream::operator<<(FastBufferedStream& out, const T & value)
+inline FastBufferedStream& operator<<(FastBufferedStream& out, const T & value)
 {
-	std::stringstream buffer;
-	buffer << value;
-	flush();
-	out.stream << buffer;
+	out.flush();
+	*out.stream << value;
 	return out;
 }
 

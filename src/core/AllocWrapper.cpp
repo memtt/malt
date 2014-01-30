@@ -1,4 +1,10 @@
-
+/*****************************************************
+             PROJECT  : MATT
+             VERSION  : 0.1.0-dev
+             DATE     : 01/2014
+             AUTHOR   : Valat Sébastien
+             LICENSE  : CeCILL-C
+*****************************************************/
 
 /********************  HEADERS  *********************/
 //standard
@@ -160,13 +166,13 @@ void AllocWrapperGlobal::init(void )
 		gblState.free = (FreeFuncPtr)dlsym(RTLD_NEXT,"free");
 		gblState.calloc = (CallocFuncPtr)dlsym(RTLD_NEXT,"calloc");
 		gblState.realloc = (ReallocFuncPtr)dlsym(RTLD_NEXT,"realloc");
-		
-		//print info
-		fprintf(stderr,"Start memory instrumentation of %s - %d by library override.\n",OS::getExeName().c_str(),OS::getPID());
 
 		//init profiler
 		gblState.status = ALLOC_WRAP_INIT_PROFILER;
 		gblState.profiler = new AllocStackProfiler(Options(),getStackMode(),true);
+		
+		//print info
+		fprintf(stderr,"Start memory instrumentation of %s - %d by library override.\n",OS::getExeName().c_str(),OS::getPID());
 
 		//register on exit
 		on_exit(AllocWrapperGlobal::onExit,NULL);

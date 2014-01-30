@@ -13,6 +13,7 @@
 #define HTOPML_TYPE_TO_JSON_IMPL_H
 
 /********************  HEADERS  *********************/
+#include <cassert>
 #include "ConvertToJson.h"
 #include "JsonState.h"
 
@@ -56,7 +57,7 @@ template <class T,class U> void convertToJson(JsonState & json, const std::map<T
 /*******************  FUNCTION  *********************/
 template <class T> void convertToJson(JsonState & json, const T & value)
 {
-	json.getStream() << value;
+	json.getFastStream() << value;
 }
 
 /*******************  FUNCTION  *********************/
@@ -91,6 +92,41 @@ template <class T> std::ostream& convertToLua(std::ostream& out,const T & value,
 inline void convertToJson ( JsonState& json, IJsonConvertible& object )
 {
 	object.toJson(json);
+}
+
+/*******************  FUNCTION  *********************/
+/**
+ * Return the current output stream used by JsonState. It can be use for specials tricks
+ * to generate outputs from stange objects, but caution, you may produce invalid
+ * output if you dont check the current state.
+ * Caution, it will flush the fast stream into lowlevel stream.
+ * Do not reuse this reference after calls to the others member.
+**/
+inline std::ostream& JsonState::getStream ( void )
+{
+	//check errors
+	assert(out != NULL);
+	
+	//flush fast
+	bufferdStream.flush();
+	
+	//return
+	return *out;
+}
+
+/*******************  FUNCTION  *********************/
+/**
+ * Return the current output stream used by JsonState. It can be use for specials tricks
+ * to generate outputs from stange objects, but caution, you may produce invalid
+ * output if you dont check the current state.
+**/
+inline FastBufferedStream & JsonState::getFastStream ( void )
+{
+	//check errors
+	assert(out != NULL);
+	
+	//return
+	return bufferdStream;
 }
 
 }

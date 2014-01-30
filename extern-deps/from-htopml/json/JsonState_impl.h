@@ -49,7 +49,7 @@ void JsonState::printValue(const T & value)
 
 	//separator
 	if (getState() == JSON_STATE_ARRAY && !isFirst())
-		*out << ", ";
+		bufferdStream << ", ";
 
 	//print
 	convertToJson(*this,value);

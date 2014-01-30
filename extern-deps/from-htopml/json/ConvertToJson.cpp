@@ -38,7 +38,7 @@ void convertToJson(JsonState & json, const std::string& value)
 **/
 void convertToJson(JsonState & json, const char* value)
 {
-	std::ostream & out = json.getStream();
+	FastBufferedStream & out = json.getFastStream();
 	out << '\"';
 	while (value != NULL && *value != '\0')
 	{
@@ -54,19 +54,19 @@ void convertToJson(JsonState & json, const char* value)
 /*******************  FUNCTION  *********************/
 void convertToJson(JsonState & json, unsigned long value)
 {
-	json.getStream() << value;
+	json.getFastStream() << value;
 }
 
 /*******************  FUNCTION  *********************/
 void convertToJson(JsonState & json, long value)
 {
-	json.getStream() << value;
+	json.getFastStream() << value;
 }
 
 /*******************  FUNCTION  *********************/
 void convertToJson(JsonState & json, double value)
 {
-	json.getStream() << value;
+	json.getFastStream() << value;
 }
 
 /*******************  FUNCTION  *********************/
@@ -77,18 +77,18 @@ void convertToJson(JsonState & json, double value)
 void convertToJson(JsonState & json, bool value)
 {
 	if (value)
-		json.getStream() << "true";
+		json.getFastStream() << "true";
 	else
-		json.getStream() << "false";
+		json.getFastStream() << "false";
 }
 
 /*******************  FUNCTION  *********************/
 void convertToJson(JsonState& json, void * ptr)
 {
 	if (json.isLua())
-		json.getStream() << '\"' << ptr << '\"';
+		json.getFastStream() << '\"' << ptr << '\"';
 	else
-		json.getStream() << '"' << ptr << '"';
+		json.getFastStream() << '"' << ptr << '"';
 }
 
 }

@@ -28,6 +28,9 @@ namespace MATT
 /** Strings for unit printing. **/
 static const char * cstUnits[] = {"","K","M","G","T","P"};
 
+/********************* GLOBALS **********************/
+static ticks gblStartTime = 0;
+
 /*******************  FUNCTION  *********************/
 CodeTiming::CodeTiming(const char* name)
 {
@@ -36,8 +39,8 @@ CodeTiming::CodeTiming(const char* name)
 	this->max = 0;
 	this->min = 0;
 	this->sum = 0;
-	this->lastStart = 0;
-	this->globalStart = getticks();
+	if (gblStartTime == 0)
+		gblStartTime = getticks();
 }
 
 /*******************  FUNCTION  *********************/
@@ -46,7 +49,7 @@ CodeTiming::CodeTiming(const char* name)
 **/
 CodeTiming::~CodeTiming(void)
 {
-	ticks wholeExec = getticks() - globalStart;
+	ticks wholeExec = getticks() - gblStartTime;
 	double ratio = (double)(100*sum) / (double)wholeExec;
 	cerr << "TIMING OF " << std::setw(32) << std::left << name << " => [ ";
 	printValue(min);
