@@ -39,6 +39,7 @@ class SimpleStackTracer
 		SimpleCallStackNode& getBacktraceInfo(const Stack & stack);
 		void resolveSymbols(void);
 		void fillValgrindOut(ValgrindOutput & out) const;
+		const FuncNameDic & getNameDic(void) const;
 	public:
 		friend std::ostream & operator << (std::ostream & out,const SimpleStackTracer & tracer);
 		friend void convertToJson(htopml::JsonState & json, const SimpleStackTracer & value);

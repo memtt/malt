@@ -68,6 +68,16 @@ void testMaxAlive(void)
 }
 
 /*******************  FUNCTION  *********************/
+void testThreads(void)
+{
+	#pragma omp parallel for
+	for (int i = 0 ; i < 10000 ; i++)
+	{
+		free(malloc(64));
+	}
+}
+
+/*******************  FUNCTION  *********************/
 int main(void)
 {
 	//first is calloc
@@ -85,6 +95,7 @@ int main(void)
 	}
 	testRealloc();
 	testMaxAlive();
+	testThreads();
 
 	return 0;
 }

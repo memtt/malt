@@ -53,16 +53,42 @@ void ValgrindOutput::pushStackInfo(SimpleCallStackNode& stackNode)
 }
 
 /*******************  FUNCTION  *********************/
-void ValgrindOutput::writeAsCallgrind(const std::string& filename)
+void ValgrindOutput::writeAsCallgrind(const std::string& filename, const FuncNameDic & dic)
 {
 	ofstream out;
 	out.open(filename.c_str());
-	writeAsCallgrind(out);
+	writeAsCallgrind(out,dic);
 	out.close();
 }
 
 /*******************  FUNCTION  *********************/
-void ValgrindOutput::writeAsCallgrind(std::ostream& out)
+void ValgrindOutput::writeLocation(ostream& out, const FuncNameDic& dic, const CallSite * site, void * addr, bool call)
+{
+	const char * callPrefix = "";
+	if (call)
+		callPrefix = "c";
+	
+	//object
+	if (site == NULL || site->mapEntry == NULL)
+		out << callPrefix << "ob=unknown" << LINE_BREAK;
+	else
+		out << callPrefix << "ob=" << site->mapEntry->file << LINE_BREAK;
+	
+	//file
+	if (site == NULL || site->file == -1)
+		out << callPrefix << "fi=unknown" << LINE_BREAK;
+	else
+		out << callPrefix << "fl=" << dic.getString(site->file) << LINE_BREAK;
+	
+	//function
+	if (site == NULL || site->function == -1)
+		out << callPrefix << "fn=" << addr << LINE_BREAK;
+	else
+		out << callPrefix << "fn=" << dic.getString(site->function) << LINE_BREAK;
+}
+
+/*******************  FUNCTION  *********************/
+void ValgrindOutput::writeAsCallgrind(ostream& out, const FuncNameDic& dic)
 {
 	//header
 	out << "version: 1" << LINE_BREAK;
@@ -81,20 +107,28 @@ void ValgrindOutput::writeAsCallgrind(std::ostream& out)
 	out << "events: MaxAliveMemory AllocSum Count" << LINE_BREAK;
 	out << LINE_BREAK;
 	
-	//try to extract functions names bases on addresses
-	FuncNameDic names;
-	
+
 	//loop on data
 	for (ValgrindCallerMap::const_iterator it = callers.begin() ; it != callers.end() ; ++it)
 	{
-		out << "ob=unknown" << LINE_BREAK;
-		out << "fn=" << names.getName(it->first) << LINE_BREAK;
-		it->second.info.writeAsCallgrindEntry(0,out);
+		//serch call site info
+		const CallSite * info = dic.getCallSiteInfo(it->first);
+		
+		//location
+		writeLocation(out,dic,info,it->first,false);
+		if (info == NULL || info->line == -1)
+			it->second.info.writeAsCallgrindEntry(0,out);
+		else
+			it->second.info.writeAsCallgrindEntry(info->line,out);
 		out << LINE_BREAK;
 		for (ValgrindCalleeMap::const_iterator itChild = it->second.callees.begin() ; itChild != it->second.callees.end() ; ++itChild)
 		{
-			out << "cfn=" << names.getName(itChild->first) << LINE_BREAK;
-			out << "calls=1 0" << LINE_BREAK;
+			const CallSite * infoChild = dic.getCallSiteInfo(itChild->first);
+			writeLocation(out,dic,infoChild,itChild->first,true);
+			if (infoChild == NULL || infoChild->line == -1)
+				out << "calls=" << itChild->second.free.count + itChild->second.alloc.count + itChild->second.cntZeros << " 0" << LINE_BREAK;
+			else
+				out << "calls=" << itChild->second.free.count + itChild->second.alloc.count + itChild->second.cntZeros << ' ' << infoChild->line << LINE_BREAK;
 			itChild->second.writeAsCallgrindEntry(0,out);
 			out << LINE_BREAK;
 		}

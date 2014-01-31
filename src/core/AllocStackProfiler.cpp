@@ -49,20 +49,20 @@ AllocStackProfiler::AllocStackProfiler(const Options & options,StackMode mode,bo
 /*******************  FUNCTION  *********************/
 void AllocStackProfiler::onMalloc(void* ptr, size_t size,Stack * userStack)
 {
-	onAllocEvent(ptr,size,3,userStack);
+	onAllocEvent(ptr,size,2,userStack);
 }
 
 /*******************  FUNCTION  *********************/
 void AllocStackProfiler::onCalloc(void* ptr, size_t nmemb, size_t size,Stack * userStack)
 {
-	onAllocEvent(ptr,size * nmemb,3,userStack);
+	onAllocEvent(ptr,size * nmemb,2,userStack);
 }
 
 /*******************  FUNCTION  *********************/
 void AllocStackProfiler::onFree(void* ptr,Stack * userStack)
 {
 	if (ptr != NULL)
-		onFreeEvent(ptr,3,userStack);
+		onFreeEvent(ptr,2,userStack);
 }
 
 /*******************  FUNCTION  *********************/
@@ -80,11 +80,11 @@ void AllocStackProfiler::onRealloc(void* oldPtr, void* ptr, size_t newSize,Stack
 		
 		//free part
 		if (ptr != NULL)
-			callStackNode = onFreeEvent(oldPtr,3,userStack,callStackNode,false);
+			callStackNode = onFreeEvent(oldPtr,2,userStack,callStackNode,false);
 		
 		//alloc part
 		if (newSize > 0)
-			callStackNode = onAllocEvent(ptr,newSize,3,userStack,callStackNode,false);
+			callStackNode = onAllocEvent(ptr,newSize,2,userStack,callStackNode,false);
 	MATT_END_CRITICAL
 }
 
@@ -216,7 +216,7 @@ void AllocStackProfiler::onExit(void )
 		//valgrind out
 		ValgrindOutput vout;
 		stackTracer.fillValgrindOut(vout);
-		CODE_TIMING("outputCallgrind",vout.writeAsCallgrind(FormattedMessage(options.outputFile).arg(OS::getExeName()).arg(OS::getPID()).arg("callgrind").toString()));
+		CODE_TIMING("outputCallgrind",vout.writeAsCallgrind(FormattedMessage(options.outputFile).arg(OS::getExeName()).arg(OS::getPID()).arg("callgrind").toString(),stackTracer.getNameDic()));
 		
 		//print timings
 		CodeTiming::printAll();

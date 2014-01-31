@@ -36,9 +36,10 @@ class ValgrindOutput
 {
 	public:
 		void pushStackInfo(SimpleCallStackNode & stackNode);
-		void writeAsCallgrind(const std::string & filename);
+		void writeAsCallgrind(const std::string & filename,const FuncNameDic& dic);
 	protected:
-		void writeAsCallgrind(std::ostream & out);
+		void writeAsCallgrind(std::ostream & out, const FuncNameDic& dic);
+		void writeLocation(std::ostream& out, const FuncNameDic& dic, const CallSite * site, void * addr, bool call);
 	private:
 		ValgrindCallerMap callers;
 };

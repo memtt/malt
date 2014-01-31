@@ -188,8 +188,8 @@ CallSite::CallSite(LinuxProcMapEntry* mapEntry)
 {
 	this->mapEntry = mapEntry;
 	this->line = 0;
-	this->function = NULL;
-	this->file = NULL;
+	this->function = -1;
+	this->file = 1;
 }
 
 /*******************  FUNCTION  *********************/
@@ -270,8 +270,8 @@ void FuncNameDic::resolveNames(LinuxProcMapEntry * procMapEntry)
 	}
 	
 	//read all entries
-	char bufferFunc[3*4096];
-	char bufferFile[2*4096];
+	char bufferFunc[2*4096];
+	char bufferFile[4096];
 	int i = 0;
 	while (!feof(fp))
 	{
@@ -281,10 +281,16 @@ void FuncNameDic::resolveNames(LinuxProcMapEntry * procMapEntry)
 		
 		if (feof(fp))
 			break;
-		
+
 		//std::cerr << bufferFunc;
 		//std::cerr << bufferFile;
-		
+
+		//check end of line and remove it
+		int endLine = strlen(bufferFunc);
+		assumeArg(bufferFunc[endLine-1] == '\n',"Missing \\n at end of line for the function or symbol name read from addr2line : %1.").arg(bufferFile).end();
+		bufferFunc[endLine-1] = '\0';
+
+		//check errors
 		assume(i < lst.size(),"Overpass lst size.");
 
 		//search ':' separator at end of "file:line" string
@@ -321,13 +327,17 @@ void FuncNameDic::resolveNames(LinuxProcMapEntry * procMapEntry)
 }
 
 /*******************  FUNCTION  *********************/
-std::string* FuncNameDic::getString(const char * value)
+int FuncNameDic::getString(const char * value)
 {
+	int id = 0;
 	for (std::vector<std::string>::iterator it = strings.begin() ; it != strings.end() ; ++it)
+	{
 		if (*it == value)
-			return &(*it);
+			return id;
+		id++;
+	}
 	strings.push_back(value);
-	return &(*strings.rbegin());
+	return strings.size()-1;
 }
 
 /*******************  FUNCTION  *********************/
@@ -336,15 +346,33 @@ void convertToJson(htopml::JsonState& json, const CallSite& value)
 	if (value.mapEntry != NULL)
 	{
 		json.openStruct();
-		if (value.file != NULL)// && *value.file != "??")
+		if (value.file != -1)// && *value.file != "??")
 			json.printField("file",value.file);
-		if (value.function != NULL)// && *value.function != "??")
+		if (value.function != -1)// && *value.function != "??")
 			json.printField("function",value.function);
 		if (value.line != 0)
 			json.printField("line",value.line);
-		json.printField("assembly",value.mapEntry);
+		json.printField("binary",value.mapEntry);
 		json.closeStruct();
 	}
 }
+
+/*******************  FUNCTION  *********************/
+const CallSite* FuncNameDic::getCallSiteInfo(void* site) const
+{
+	CallSiteMap::const_iterator it = callSiteMap.find(site);
+	if (it == callSiteMap.end())
+		return NULL;
+	else
+		return &it->second;
+}
+
+/*******************  FUNCTION  *********************/
+const std::string& FuncNameDic::getString(int id) const
+{
+	assert(id < strings.size());
+	return strings[id];
+}
+
 
 }

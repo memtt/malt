@@ -128,4 +128,10 @@ void SimpleStackTracer::fillValgrindOut(ValgrindOutput& out) const
 	}
 }
 
+/*******************  FUNCTION  *********************/
+const FuncNameDic& SimpleStackTracer::getNameDic(void) const
+{
+	return dic;
+}
+
 }

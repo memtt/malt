@@ -44,8 +44,8 @@ struct CallSite
 {
 	CallSite(LinuxProcMapEntry * mapEntry = NULL);
 	int line;
-	std::string * file;
-	std::string * function;
+	int file;
+	int function;
 	LinuxProcMapEntry * mapEntry;
 };
 
@@ -65,13 +65,15 @@ class FuncNameDic
 		const char * setupNewEntry(void * callSite,const std::string & name);
 		void loadProcMap(void);
 		void resolveNames(void);
+		const CallSite * getCallSiteInfo(void * site) const;
+		const std::string & getString(int id) const;
 	public:
 		friend std::ostream & operator << (std::ostream & out,const FuncNameDic & dic);
 		friend void convertToJson(htopml::JsonState & json, const FuncNameDic & value);
 	private:
 		LinuxProcMapEntry * getMapEntry(void * callSite);
 		void resolveNames(LinuxProcMapEntry * procMapEntry);
-		std::string * getString(const char * value);
+		  int getString(const char* value);
 	private:
 		FuncNameDicMap nameMap;
 		LinuxProcMap procMap;
