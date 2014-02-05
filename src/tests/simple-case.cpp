@@ -7,7 +7,9 @@
 *****************************************************/
 
 /********************  HEADERS  *********************/
+#include <cstdio>
 #include <cstdlib>
+#include <unistd.h>
 #include <iostream>
 
 /**
@@ -26,21 +28,27 @@ void funcC()
 /*******************  FUNCTION  *********************/
 void funcB()
 {
-	free(malloc(32));
+	void * ptr = malloc(32);
+	*(char*)ptr='c';//required otherwise new compilers will remove malloc/free
+	free(ptr);
 	funcC();
 }
 
 /*******************  FUNCTION  *********************/
 void funcA()
 {
-	free(malloc(16));
+	void * ptr = malloc(16);
+	*(char*)ptr='c';//required otherwise new compilers will remove malloc/free
+	free(ptr);
 	funcB();
 }
 
 /*******************  FUNCTION  *********************/
 void recurseA(int depth)
 {
-	free(malloc(64));
+	void * ptr = malloc(64);
+	*(char*)ptr='c';//required otherwise new compilers will remove malloc/free
+	free(ptr);
 	if (depth > 0)
 		recurseA(depth-1);
 }
@@ -62,6 +70,8 @@ void testMaxAlive(void)
 	{
 		void * ptr1 = malloc(64);
 		void * ptr2 = malloc(64);
+		*(char*)ptr1='c';//required otherwise new compilers will remove malloc/free
+		*(char*)ptr2='c';//required otherwise new compilers will remove malloc/free
 		free(ptr1);
 		free(ptr2);
 	}
@@ -73,7 +83,9 @@ void testThreads(void)
 	#pragma omp parallel for
 	for (int i = 0 ; i < 10000 ; i++)
 	{
-		free(malloc(64));
+		void * ptr = malloc(64);
+		*(char*)ptr='c';
+		free(ptr);
 	}
 }
 
@@ -81,7 +93,9 @@ void testThreads(void)
 int main(void)
 {
 	//first is calloc
-	free(calloc(16,16));
+	void * ptr = calloc(16,16);
+	*(char*)ptr='c';//required otherwise new compilers will remove malloc/free
+	free(ptr);
 	
 	funcA();
 	for (int i = 0 ; i < 10 ; ++i)
