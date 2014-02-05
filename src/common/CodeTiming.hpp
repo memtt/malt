@@ -103,6 +103,8 @@ inline ticks CodeTiming::start(void)
 {
 	#ifdef MATT_ENABLE_CODE_TIMING
 		return getticks();
+	#else
+		return 0;
 	#endif
 }
 

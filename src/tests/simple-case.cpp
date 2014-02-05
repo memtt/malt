@@ -109,7 +109,7 @@ int main(void)
 	}
 	testRealloc();
 	testMaxAlive();
-	testThreads();
+	//testThreads();
 
 	return 0;
 }

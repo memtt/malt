@@ -81,12 +81,12 @@ void CodeTiming::printAll(void)
 /*******************  FUNCTION  *********************/
 CodeTiming::CodeTiming(const char* name)
 {
+	this->name = name;
+	this->count = 0;
+	this->max = 0;
+	this->min = 0;
+	this->sum = 0;
 	#ifdef MATT_ENABLE_CODE_TIMING
-		this->name = name;
-		this->count = 0;
-		this->max = 0;
-		this->min = 0;
-		this->sum = 0;
 		registerTimer(this);
 	#endif
 }
