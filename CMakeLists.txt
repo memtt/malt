@@ -22,6 +22,7 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_SOURCE_DIR}/cmake/)
 ######################################################
 #Delegate some cmake scripts
 include(${CMAKE_SOURCE_DIR}/cmake/macros.cmake)
+include(${CMAKE_SOURCE_DIR}/cmake/unittest-macros.cmake)
 
 ######################################################
 #Some global setup
