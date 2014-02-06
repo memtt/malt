@@ -126,7 +126,15 @@ void Stack::set ( void** stack, int size, StackOrder order )
 /*******************  FUNCTION  *********************/
 StackHash Stack::hash ( int skipDepth ) const
 {
-	return hash(stack,size,order);
+	assert(skipDepth < size);
+	assert(skipDepth >= 0);
+	switch(order)
+	{
+		case STACK_ORDER_ASC:
+			return hash(stack+skipDepth,size - skipDepth,order);
+		case STACK_ORDER_DESC:
+			return hash(stack,size - skipDepth,order);
+	}
 }
 
 /*******************  FUNCTION  *********************/
@@ -253,24 +261,17 @@ bool Stack::partialCompare(const Stack& stack1, int skip1, const Stack& stack2, 
 	void ** s1 = stack1.stack;
 	void ** s2 = stack2.stack;
 	
-	//check content starting by
-	switch(stack1.order)
+	//skip start for ASC mode
+	if (stack1.order == STACK_ORDER_ASC)
 	{
-		case STACK_ORDER_ASC:
-			for (int i = 0 ; i < size1 ; i++)
-				if (s1[i] != s2[i])
-					return false;
-			break;
-		case STACK_ORDER_DESC:
-			//skip start
-			s1 += skip1;
-			s2 += skip2;
-			//loop
-			for (int i = 0 ; i < size1 ; i++)
-				if (s1[i] != s2[i])
-					return false;
-			break;
+		s1 += skip1;
+		s2 += skip2;
 	}
+
+	//check content
+	for (int i = 0 ; i < size1 ; i++)
+		if (s1[i] != s2[i])
+			return false;
 
 	//ok this is good
 	return true;

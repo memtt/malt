@@ -105,8 +105,8 @@ TEST(Stack,partialCompareDesc2)
 
 	EXPECT_FALSE(Stack::partialCompare(stack1,0,stack2,0));
 	EXPECT_FALSE(Stack::partialCompare(stack1,1,stack2,1));
-	EXPECT_FALSE(Stack::partialCompare(stack1,0,stack2,1));
-	EXPECT_TRUE(Stack::partialCompare(stack3,0,stack2,1));
+	EXPECT_TRUE(Stack::partialCompare(stack1,0,stack2,1));
+	EXPECT_FALSE(Stack::partialCompare(stack3,0,stack2,1));
 }
 
 /*******************  FUNCTION  *********************/
@@ -129,8 +129,8 @@ TEST(Stack,partialCompareAsc2)
 
 	EXPECT_FALSE(Stack::partialCompare(stack1,0,stack2,0));
 	EXPECT_FALSE(Stack::partialCompare(stack1,1,stack2,1));
-	EXPECT_TRUE(Stack::partialCompare(stack1,0,stack2,1));
-	EXPECT_FALSE(Stack::partialCompare(stack3,0,stack2,1));
+	EXPECT_FALSE(Stack::partialCompare(stack1,0,stack2,1));
+	EXPECT_TRUE(Stack::partialCompare(stack3,0,stack2,1));
 }
 
 /*******************  FUNCTION  *********************/

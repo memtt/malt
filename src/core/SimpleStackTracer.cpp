@@ -42,7 +42,7 @@ SimpleCallStackNode& SimpleStackTracer::getBacktraceInfo( const Stack& stack , i
 	
 	//calc current hash
 	StackHash hash;
-	CODE_TIMING("stackHash",hash = stack.hash());
+	CODE_TIMING("stackHash",hash = stack.hash(skipDepth));
 
 	//search in current vector
 	static CodeTiming tmap("searchInMap");

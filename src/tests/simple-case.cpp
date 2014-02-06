@@ -10,7 +10,9 @@
 #include <cstdio>
 #include <cstdlib>
 #include <unistd.h>
+#include <malloc.h>
 #include <iostream>
+#include <cassert>
 
 /**
  * This is a simple test case to valid usage. It can be used in all modes.
@@ -112,6 +114,54 @@ void testRecuseIntervedB(int depth)
 }
 
 /*******************  FUNCTION  *********************/
+void testAllFuncs(void)
+{
+	void * ptr;
+	
+	//malloc
+	ptr = malloc(16);
+	*(char*)ptr = 'c';
+	free(ptr);
+	
+	//calloc
+	ptr = calloc(1,16);
+	*(char*)ptr = 'c';
+	free(ptr);
+	
+	//realloc
+	ptr = realloc(NULL,16);
+	*(char*)ptr = 'c';
+	free(ptr);
+	
+	//posix_memalign
+	int res = posix_memalign(&ptr,16,16);
+	*(int*)ptr = res;
+	free(ptr);
+	
+	//posix_memalign
+	ptr = aligned_alloc(16,16);
+	*(int*)ptr = res;
+	free(ptr);
+	
+	//posix_memalign
+	ptr = memalign(16,16);
+	*(int*)ptr = res;
+	free(ptr);
+	
+	//posix_memalign
+	ptr = valloc(16);
+	assert(ptr != NULL);
+	*(int*)ptr = res;
+	free(ptr);
+	
+	//posix_memalign
+	ptr = pvalloc(16);
+	assert(ptr != NULL);
+	*(int*)ptr = res;
+	free(ptr);
+}
+
+/*******************  FUNCTION  *********************/
 int main(void)
 {
 	//first is calloc
@@ -132,7 +182,8 @@ int main(void)
 	testRealloc();
 	testMaxAlive();
 	testRecuseIntervedA(2);
-	//testThreads();
+	testThreads();
+	testAllFuncs();
 
 	return 0;
 }

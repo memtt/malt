@@ -15,6 +15,8 @@
 #include <iostream>
 //libc POSIX.1, here we use GNU specific RTLD_NEXT (need _GNU_SOURCE)
 #include <dlfcn.h>
+//glibc
+#include <malloc.h>
 //intenrals
 #include <portability/Mutex.hpp>
 #include <portability/OS.hpp>
@@ -34,6 +36,16 @@ typedef void   (*FreeFuncPtr)   (void * ptr);
 typedef void * (*CallocFuncPtr) (size_t nmemb,size_t size);
 /** Prototype of realloc function to get it into function pointer. **/
 typedef void * (*ReallocFuncPtr)(void * ptr,size_t size);
+/** Prototype of posix_memalign functino to get it into function pointer. **/
+typedef int (*PosixMemalignFuncPtr)(void **memptr, size_t alignment, size_t size);
+/** Prototype of aligned_alloc functino to get it into function pointer. **/
+typedef void *(*AlignedAllocFuncPtr)(size_t alignment, size_t size);
+/** Prototype of valloc functino to get it into function pointer. **/
+typedef void *(*VallocFuncPtr)(size_t size);
+/** Prototype of memalign functino to get it into function pointer. **/
+typedef void *(*MemalignFuncPtr)(size_t alignment, size_t size);
+/** Prototype of pvalloc functino to get it into function pointer. **/
+typedef void *(*PVallocFuncPtr)(size_t size);
 
 /********************  ENUM  ************************/
 /**
@@ -83,6 +95,16 @@ struct AllocWrapperGlobal
 	CallocFuncPtr calloc;
 	/** Pointer to the old (glibc) realloc symbol. **/
 	ReallocFuncPtr realloc;
+	/** Pointer to the old (libc) posix_memalign symbol. **/
+	PosixMemalignFuncPtr posix_memalign;
+	/** Pointer to the old (libc) aligned_alloc symbol. **/
+	AlignedAllocFuncPtr aligned_alloc;
+	/** Pointer to the old (libc) valloc symbol. **/
+	VallocFuncPtr valloc;
+	/** Pointer to the old (libc) pvalloc symbol. **/
+	PVallocFuncPtr pvalloc;
+	/** Pointer to the old (libc) memalign symbol. **/
+	MemalignFuncPtr memalign;
 	/** Pointer to the profiler (use pointer due to use before main, only way to ensure init before first malloc usage). **/
 	AllocStackProfiler * profiler;
 	/** Function used to init the structure on first use. **/
@@ -178,6 +200,11 @@ void AllocWrapperGlobal::init(void )
 		gblState.free = (FreeFuncPtr)dlsym(RTLD_NEXT,"free");
 		gblState.calloc = (CallocFuncPtr)dlsym(RTLD_NEXT,"calloc");
 		gblState.realloc = (ReallocFuncPtr)dlsym(RTLD_NEXT,"realloc");
+		gblState.posix_memalign = (PosixMemalignFuncPtr)dlsym(RTLD_NEXT,"posix_memalign");
+		gblState.aligned_alloc = (AlignedAllocFuncPtr)dlsym(RTLD_NEXT,"aligned_alloc");
+		gblState.valloc = (VallocFuncPtr)dlsym(RTLD_NEXT,"valloc");
+		gblState.memalign = (MemalignFuncPtr)dlsym(RTLD_NEXT,"memalign");
+		gblState.pvalloc = (PVallocFuncPtr)dlsym(RTLD_NEXT,"pvalloc");
 
 		//init profiler
 		gblState.status = ALLOC_WRAP_INIT_PROFILER;
@@ -386,6 +413,156 @@ void * realloc(void * ptr, size_t size)
 		localState.inUse = false;
 	}
 	
+	return res;
+}
+
+/*******************  FUNCTION  *********************/
+/**
+ * Wrapper of the posix_memalign function to capture allocations. The original symbol will be
+ * search by dlsym() in AllocWrapperGlobal::init() .
+**/
+int posix_memalign(void ** memptr,size_t align, size_t size)
+{
+	//get addr localy to avoid to read the TLS every time
+	ThreadLocalState & localState = tlsState;
+	
+	//check init
+	if ( ! localState.initialized )
+		localState.init();
+
+	//run the default function
+	assert(gblState.status > ALLOC_WRAP_INIT_SYM);
+	int res = gblState.posix_memalign(memptr,align,size);
+
+	//profile
+	if (!localState.inUse && gblState.status == ALLOC_WRAP_READY && memptr != NULL)
+	{
+		localState.inUse = true;
+		CODE_TIMING("posixMemAlignProf",gblState.profiler->onMalloc(*memptr,size,localState.enterExitStack));
+		localState.inUse = false;
+	}
+
+	//return segment to user
+	return res;
+}
+
+/*******************  FUNCTION  *********************/
+/**
+ * Wrapper of the aligned_alloc function to capture allocations. The original symbol will be
+ * search by dlsym() in AllocWrapperGlobal::init() .
+**/
+void *aligned_alloc(size_t alignment, size_t size)
+{
+	//get addr localy to avoid to read the TLS every time
+	ThreadLocalState & localState = tlsState;
+	
+	//check init
+	if ( ! localState.initialized )
+		localState.init();
+
+	//run the default function
+	assert(gblState.status > ALLOC_WRAP_INIT_SYM);
+	void * res = gblState.aligned_alloc(alignment,size);
+
+	//profile
+	if (!localState.inUse && gblState.status == ALLOC_WRAP_READY)
+	{
+		localState.inUse = true;
+		CODE_TIMING("posixMemAlignProf",gblState.profiler->onMalloc(res,size,localState.enterExitStack));
+		localState.inUse = false;
+	}
+
+	//return segment to user
+	return res;
+}
+
+/*******************  FUNCTION  *********************/
+/**
+ * Wrapper of the memalign function to capture allocations. The original symbol will be
+ * search by dlsym() in AllocWrapperGlobal::init() .
+**/
+void *memalign(size_t alignment, size_t size)
+{
+	//get addr localy to avoid to read the TLS every time
+	ThreadLocalState & localState = tlsState;
+	
+	//check init
+	if ( ! localState.initialized )
+		localState.init();
+
+	//run the default function
+	assert(gblState.status > ALLOC_WRAP_INIT_SYM);
+	void * res = gblState.memalign(alignment,size);
+
+	//profile
+	if (!localState.inUse && gblState.status == ALLOC_WRAP_READY)
+	{
+		localState.inUse = true;
+		CODE_TIMING("posixMemAlignProf",gblState.profiler->onMalloc(res,size,localState.enterExitStack));
+		localState.inUse = false;
+	}
+
+	//return segment to user
+	return res;
+}
+
+/*******************  FUNCTION  *********************/
+/**
+ * Wrapper of the valloc function to capture allocations. The original symbol will be
+ * search by dlsym() in AllocWrapperGlobal::init() .
+**/
+void *valloc(size_t size)
+{
+	//get addr localy to avoid to read the TLS every time
+	ThreadLocalState & localState = tlsState;
+	
+	//check init
+	if ( ! localState.initialized )
+		localState.init();
+
+	//run the default function
+	assert(gblState.status > ALLOC_WRAP_INIT_SYM);
+	void * res = gblState.valloc(size);
+
+	//profile
+	if (!localState.inUse && gblState.status == ALLOC_WRAP_READY)
+	{
+		localState.inUse = true;
+		CODE_TIMING("posixMemAlignProf",gblState.profiler->onMalloc(res,size,localState.enterExitStack));
+		localState.inUse = false;
+	}
+
+	//return segment to user
+	return res;
+}
+
+/*******************  FUNCTION  *********************/
+/**
+ * Wrapper of the pvalloc function to capture allocations. The original symbol will be
+ * search by dlsym() in AllocWrapperGlobal::init() .
+**/
+void *pvalloc(size_t size)
+{
+	//get addr localy to avoid to read the TLS every time
+	ThreadLocalState & localState = tlsState;
+	
+	//check init
+	if ( ! localState.initialized )
+		localState.init();
+
+	//run the default function
+	assert(gblState.status > ALLOC_WRAP_INIT_SYM);
+	void * res = gblState.pvalloc(size);
+
+	//profile
+	if (!localState.inUse && gblState.status == ALLOC_WRAP_READY)
+	{
+		localState.inUse = true;
+		CODE_TIMING("posixMemAlignProf",gblState.profiler->onMalloc(res,size,localState.enterExitStack));
+		localState.inUse = false;
+	}
+
+	//return segment to user
 	return res;
 }
 
