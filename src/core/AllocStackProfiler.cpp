@@ -49,20 +49,20 @@ AllocStackProfiler::AllocStackProfiler(const Options & options,StackMode mode,bo
 /*******************  FUNCTION  *********************/
 void AllocStackProfiler::onMalloc(void* ptr, size_t size,Stack * userStack)
 {
-	onAllocEvent(ptr,size,2,userStack);
+	onAllocEvent(ptr,size,3,userStack);
 }
 
 /*******************  FUNCTION  *********************/
 void AllocStackProfiler::onCalloc(void* ptr, size_t nmemb, size_t size,Stack * userStack)
 {
-	onAllocEvent(ptr,size * nmemb,2,userStack);
+	onAllocEvent(ptr,size * nmemb,3,userStack);
 }
 
 /*******************  FUNCTION  *********************/
 void AllocStackProfiler::onFree(void* ptr,Stack * userStack)
 {
 	if (ptr != NULL)
-		onFreeEvent(ptr,2,userStack);
+		onFreeEvent(ptr,3,userStack);
 }
 
 /*******************  FUNCTION  *********************/
@@ -80,11 +80,11 @@ void AllocStackProfiler::onRealloc(void* oldPtr, void* ptr, size_t newSize,Stack
 		
 		//free part
 		if (ptr != NULL)
-			callStackNode = onFreeEvent(oldPtr,2,userStack,callStackNode,false);
+			callStackNode = onFreeEvent(oldPtr,3,userStack,callStackNode,false);
 		
 		//alloc part
 		if (newSize > 0)
-			callStackNode = onAllocEvent(ptr,newSize,2,userStack,callStackNode,false);
+			callStackNode = onAllocEvent(ptr,newSize,3,userStack,callStackNode,false);
 	MATT_END_CRITICAL
 }
 
@@ -93,7 +93,7 @@ SimpleCallStackNode * AllocStackProfiler::onAllocEvent(void* ptr, size_t size,in
 {
 	MATT_OPTIONAL_CRITICAL(lock,threadSafe && doLock)
 		//update mem usage
-		if (options.doTimeProfile)
+		if (options.timeProfileEnabled)
 		{
 			requestedMem.onDeltaEvent(size);
 			if (virtualMem.isNextPoint())
@@ -104,7 +104,7 @@ SimpleCallStackNode * AllocStackProfiler::onAllocEvent(void* ptr, size_t size,in
 			}
 		}
 	
-		if (options.doStackProfile)
+		if (options.stackProfileEnabled)
 		{
 			//search if not provided
 			if (callStackNode == NULL)
@@ -127,7 +127,7 @@ SimpleCallStackNode * AllocStackProfiler::onFreeEvent(void* ptr,int skipDepth, S
 {
 	MATT_OPTIONAL_CRITICAL(lock,threadSafe && doLock)
 		//update memory usage
-		if (options.doTimeProfile && virtualMem.isNextPoint())
+		if (options.timeProfileEnabled && virtualMem.isNextPoint())
 		{
 			OSMemUsage mem = OS::getMemoryUsage();
 			virtualMem.onUpdateValue(mem.virtualMemory);
@@ -136,7 +136,7 @@ SimpleCallStackNode * AllocStackProfiler::onFreeEvent(void* ptr,int skipDepth, S
 
 		//search segment info to link with previous history
 		SegmentInfo * segInfo = NULL;
-		if (options.doTimeProfile || options.doStackProfile)
+		if (options.timeProfileEnabled || options.stackProfileEnabled)
 			CODE_TIMING("segTracerGet",segInfo = segTracker.get(ptr));
 		
 		//check unknown
@@ -148,10 +148,10 @@ SimpleCallStackNode * AllocStackProfiler::onFreeEvent(void* ptr,int skipDepth, S
 			
 		//update mem usage
 		ssize_t size = -segInfo->size;
-		if (options.doTimeProfile)
+		if (options.timeProfileEnabled)
 			requestedMem.onDeltaEvent(size);
 		
-		if (options.doStackProfile)
+		if (options.stackProfileEnabled)
 		{
 			//search call stack info if not provided
 			if (callStackNode == NULL)
@@ -203,20 +203,35 @@ void AllocStackProfiler::onExit(void )
 		//TODO manage errors
 		std::ofstream out;
 		
+		//config
+		if (options.outputDumpConfig)
+		{
+			options.dumpConfig(FormattedMessage(options.outputName).arg(OS::getExeName()).arg(OS::getPID()).arg("ini").toString().c_str());
+		}
+		
 		//lua
-		out.open(FormattedMessage(options.outputFile).arg(OS::getExeName()).arg(OS::getPID()).arg("lua").toString().c_str());
-		CODE_TIMING("outputLua",htopml::convertToLua(out,*this,options.indent));
-		out.close();
+		if (options.outputLua)
+		{
+			out.open(FormattedMessage(options.outputName).arg(OS::getExeName()).arg(OS::getPID()).arg("lua").toString().c_str());
+			CODE_TIMING("outputLua",htopml::convertToLua(out,*this,options.outputIndent));
+			out.close();
+		}
 
 		//json
-		out.open(FormattedMessage(options.outputFile).arg(OS::getExeName()).arg(OS::getPID()).arg("json").toString().c_str());
-		CODE_TIMING("outputJson",htopml::convertToJson(out,*this,options.indent));
-		out.close();
+		if (options.outputJson)
+		{
+			out.open(FormattedMessage(options.outputName).arg(OS::getExeName()).arg(OS::getPID()).arg("json").toString().c_str());
+			CODE_TIMING("outputJson",htopml::convertToJson(out,*this,options.outputIndent));
+			out.close();
+		}
 
 		//valgrind out
-		ValgrindOutput vout;
-		stackTracer.fillValgrindOut(vout);
-		CODE_TIMING("outputCallgrind",vout.writeAsCallgrind(FormattedMessage(options.outputFile).arg(OS::getExeName()).arg(OS::getPID()).arg("callgrind").toString(),stackTracer.getNameDic()));
+		if (options.outputCallgrind)
+		{
+			ValgrindOutput vout;
+			stackTracer.fillValgrindOut(vout);
+			CODE_TIMING("outputCallgrind",vout.writeAsCallgrind(FormattedMessage(options.outputName).arg(OS::getExeName()).arg(OS::getPID()).arg("callgrind").toString(),stackTracer.getNameDic()));
+		}
 		
 		//print timings
 		CodeTiming::printAll();
@@ -245,9 +260,9 @@ void AllocStackProfiler::onExitFunction ( void* funcAddr )
 void convertToJson(htopml::JsonState& json, const AllocStackProfiler& value)
 {
 	json.openStruct();
-	if (value.options.doStackProfile)
+	if (value.options.stackProfileEnabled)
 		json.printField("stackInfo",value.stackTracer);
-	if (value.options.doTimeProfile)
+	if (value.options.timeProfileEnabled)
 	{
 		json.printField("requestedMem",value.requestedMem);
 		json.printField("physicalMem",value.physicalMem);

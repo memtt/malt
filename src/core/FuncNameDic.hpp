@@ -73,7 +73,8 @@ class FuncNameDic
 	private:
 		LinuxProcMapEntry * getMapEntry(void * callSite);
 		void resolveNames(LinuxProcMapEntry * procMapEntry);
-		  int getString(const char* value);
+		int getString(const char* value);
+		void resolveMissings(void);
 	private:
 		FuncNameDicMap nameMap;
 		LinuxProcMap procMap;

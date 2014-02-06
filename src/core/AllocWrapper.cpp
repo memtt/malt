@@ -19,7 +19,7 @@
 #include <portability/Mutex.hpp>
 #include <portability/OS.hpp>
 #include <common/CodeTiming.hpp>
-#include <common/FormattedMessage.hpp>
+#include <common/Debug.hpp>
 #include "AllocStackProfiler.hpp"
 
 /***************** USING NAMESPACE ******************/
@@ -124,26 +124,38 @@ static char gblCallocIniBuffer[4096];
 
 /*******************  FUNCTION  *********************/
 /**
- * Check the stack mode to use by reading STACK_MODE environnement variable.
+ * Check the stack mode to use by reading MATT_STACK environnement variable.
+ * If MATT_STACK does not exist it use the value from config file (stack:mode).
+ * 
  * Expected values are :
  *    - 'backtrace'  : use backtrace in malloc/calloc... calls to get the call stack.
  *    - 'enter-exit' : follow the call of each function to continuously follow the stack status 
  *                     thanks to -finstrument-function flag of GCC/CLANG/ICC.
 **/
-static StackMode getStackMode(void)
+static StackMode getStackMode(Options & options)
 {
-	char * mode = getenv("STACK_MODE");
+	//default values
+	const char * mode = getenv("MATT_STACK");
+	StackMode ret = MATT::STACK_MODE_BACKTRACE;
+	
+	//if not env use config file
+	if (mode == NULL)
+		mode = options.stackMode.c_str();
+
+	//switches
 	if (mode == NULL)
 	{
-		return STACK_MODE_BACKTRACE;
+		ret = STACK_MODE_BACKTRACE;
 	} else if (strcmp(mode,"backtrace") == 0 || strcmp(mode,"") == 0) {
-		return STACK_MODE_BACKTRACE;
+		ret = STACK_MODE_BACKTRACE;
 	} else if (strcmp(mode,"enter-exit") == 0) {
-		return STACK_MODE_USER;
+		ret = STACK_MODE_USER;
 	} else {
-		fprintf(stderr,"Invalid mode in STACK_MODE environnement variable : '%s'! Supportted : backtrace | enter-exit.",mode);
-		abort();
+		MATT_FATAL_ARG("Invalid mode in MATT_STACK environnement variable : '%1'! Supportted : backtrace | enter-exit.").arg(mode).end();
 	}
+	
+	//ok done
+	return ret;
 }
 
 /*******************  FUNCTION  *********************/
@@ -169,7 +181,15 @@ void AllocWrapperGlobal::init(void )
 
 		//init profiler
 		gblState.status = ALLOC_WRAP_INIT_PROFILER;
-		gblState.profiler = new AllocStackProfiler(Options(),getStackMode(),true);
+		
+		//load options
+		Options options;
+		const char * configFile = getenv("MATT_CONFIG");
+		if (configFile != NULL)
+			options.loadFromFile(configFile);
+		
+		//ok do it
+		gblState.profiler = new AllocStackProfiler(options,getStackMode(options),true);
 		
 		//print info
 		fprintf(stderr,"Start memory instrumentation of %s - %d by library override.\n",OS::getExeName().c_str(),OS::getPID());

@@ -30,11 +30,12 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config.h.in ${CMAKE_CURRENT_BINARY_DI
 ######################################################
 include_directories(.)
 include_directories(../extern-deps/from-fftw)
+include_directories(../extern-deps/iniparser)
 include_directories(../extern-deps/from-htopml)
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
 ######################################################
-set(COMMON_OBJS $<TARGET_OBJECTS:htopml-json> $<TARGET_OBJECTS:matt-core> $<TARGET_OBJECTS:matt-common> $<TARGET_OBJECTS:matt-port>)
+set(COMMON_OBJS $<TARGET_OBJECTS:htopml-json> $<TARGET_OBJECTS:matt-core> $<TARGET_OBJECTS:matt-common> $<TARGET_OBJECTS:matt-port> $<TARGET_OBJECTS:iniparser>)
 
 ######################################################
 add_library(matt-base SHARED ${COMMON_OBJS})

@@ -17,6 +17,7 @@
 #include "FuncNameDic.hpp"
 #include <json/JsonState.h>
 #include <common/Debug.hpp>
+#include <common/Array.h>
 
 /*******************  NAMESPACE  ********************/
 namespace MATT
@@ -217,6 +218,9 @@ void FuncNameDic::resolveNames(void)
 		if (!(it->file.empty() || it->file[0] == '['))
 			resolveNames(&(*it));
 	}
+	
+	//final check for not found
+	//resolveMissings();
 }
 
 /*******************  FUNCTION  *********************/
@@ -306,6 +310,9 @@ void FuncNameDic::resolveNames(LinuxProcMapEntry * procMapEntry)
 			
 			//get filename and function name address
 			lst[i]->file = getString(bufferFile);
+			//if (strcmp(bufferFunc,"??") == 0)
+			//	lst[i]->function = -1;
+			//else
 			lst[i]->function = getString(bufferFunc);
 		}
 
@@ -374,5 +381,34 @@ const std::string& FuncNameDic::getString(int id) const
 	return strings[id];
 }
 
+/*******************  FUNCTION  *********************/
+/**
+ * Function to use after loading symbols with resolveNames(). It search all '??' values
+ * and try a resolution of symbol names with backtrace_symbols() from glibc.
+**/
+void FuncNameDic::resolveMissings(void)
+{
+	//store symbols not resolved
+	Array<void*> toResolve(16,1024,false);
+
+	//search
+	for (CallSiteMap::const_iterator it = callSiteMap.begin() ; it != callSiteMap.end() ; ++it)
+		if (it->second.function == -1)
+			toResolve.push_back(it->first);
+		
+	//nothing to do
+	if (toResolve.getSize() == 0)
+		return;
+	
+	char ** res = backtrace_symbols(toResolve.getBuffer(),toResolve.getSize());
+	if (res != NULL)
+	{
+		int i = 0;
+		for (CallSiteMap::iterator it = callSiteMap.begin() ; it != callSiteMap.end() ; ++it)
+			if (it->second.function == -1)
+				it->second.function = getString(res[i]);
+		free(res);
+	}
+}
 
 }

@@ -7,5 +7,5 @@
 ######################################################
 
 ######################################################
-add_library(matt-common OBJECT CodeTiming.cpp FormattedMessage.cpp Debug.cpp)
+add_library(matt-common OBJECT CodeTiming.cpp FormattedMessage.cpp Debug.cpp Options.cpp)
 SET_TARGET_PROPERTIES(matt-common PROPERTIES COMPILE_FLAGS -fPIC)

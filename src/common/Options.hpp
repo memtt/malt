@@ -11,7 +11,12 @@
 
 /********************  HEADERS  *********************/
 #include <string>
+//iniparser
+extern "C" {
+#include <iniparser.h>
+}
 
+/*******************  NAMESPACE  ********************/
 namespace MATT
 {
 
@@ -19,25 +24,32 @@ namespace MATT
 struct Options
 {
 	Options(void);
-	//vars
-	bool doStackProfile;
-	bool doTimeProfile;
-	std::string outputFile;
+	void loadFromFile(const char * fname);
+	void dumpConfig(const char * fname);
+	//vars for stack profilinf
+	bool stackProfileEnabled;
+	std::string stackMode;
+	//vars for time profiging
+	bool timeProfileEnabled;
 	int timeProfilePoints;
 	bool timeProfileLinear;
-	bool indent;
+	//output
+	std::string outputName;
+	bool outputIndent;
+	bool outputLua;
+	bool outputJson;
+	bool outputCallgrind;
+	bool outputDumpConfig;
 };
 
 /*******************  FUNCTION  *********************/
-inline Options::Options(void)
+struct IniParserHelper
 {
-	this->timeProfilePoints  = 1024;
-	this->outputFile         = "matt-%1-%2.%3";
-	this->doStackProfile     = true;
-	this->doTimeProfile      = true;
-	this->timeProfileLinear  = false;
-	this->indent             = true;
-}
+	static std::string extractSectionName ( const char * key );
+	static void setEntry (dictionary * dic, const char * key, const char* value );
+	static void setEntry (dictionary * dic, const char * key, bool value);
+	static void setEntry (dictionary * dic, const char * key, int value);
+};
 
 };
 
