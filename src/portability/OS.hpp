@@ -21,7 +21,7 @@
 	namespace MATT
 	{
 		typedef OSUnix OS;
-	};
+	}
 #else
 	//not found, fail to compile
 	#error "No available implementation for OS, please check definition of one of MATT_PORTABILITY_OS_* macro in config.h or PORTABILITY_OS given to cmake."

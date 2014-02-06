@@ -63,6 +63,6 @@ class ProfiledValue
 		bool useLinearIndex;
 };
 
-};
+}
 
 #endif //MATT_MEMORY_TIMELINE_HPP

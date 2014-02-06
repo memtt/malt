@@ -22,7 +22,7 @@ typedef uint64_t StackHash;
 namespace htopml
 {
 	class JsonState;
-};
+}
 
 /*******************  NAMESPACE  ********************/
 namespace MATT
@@ -32,7 +32,7 @@ namespace MATT
 enum StackOrder
 {
 	STACK_ORDER_ASC,
-	STACK_ORDER_DESC,
+	STACK_ORDER_DESC
 };
 
 /*********************  CLASS  **********************/

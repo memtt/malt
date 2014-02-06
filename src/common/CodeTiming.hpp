@@ -134,6 +134,6 @@ inline void CodeTiming::end(ticks start)
 /*******************  FUNCTION  *********************/
 ticks ticksPerSecond(void);
 
-};
+}
 
 #endif //MATT_CODE_TIMING_H

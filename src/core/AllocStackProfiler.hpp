@@ -29,7 +29,7 @@ enum StackMode
 {
 	STACK_MODE_BACKTRACE,
 	STACK_MODE_ENTER_EXIT_FUNC,
-	STACK_MODE_USER,
+	STACK_MODE_USER
 };
 
 /*********************  CLASS  **********************/
@@ -65,6 +65,6 @@ class AllocStackProfiler
 		Options options;
 };
 
-};
+}
 
 #endif //MATT_ALLOC_STACK_PROGILER_HPP

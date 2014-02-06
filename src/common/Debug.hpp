@@ -46,10 +46,10 @@ class Debug : public FormattedMessage
 #define MATT_CODE_LOCATION __FILE__,__LINE__
 
 /*******************  FUNCTION  *********************/
-inline Debug debug(const char * format)   {return Debug(format,MESSAGE_DEBUG);  };
-inline Debug warning(const char * format) {return Debug(format,MESSAGE_WARNING);};
-inline Debug error(const char * format)   {return Debug(format,MESSAGE_ERROR);  };
-inline Debug fatal(const char * format)   {return Debug(format,MESSAGE_FATAL);  };
+inline Debug debug(const char * format)   {return Debug(format,MESSAGE_DEBUG);  }
+inline Debug warning(const char * format) {return Debug(format,MESSAGE_WARNING);}
+inline Debug error(const char * format)   {return Debug(format,MESSAGE_ERROR);  }
+inline Debug fatal(const char * format)   {return Debug(format,MESSAGE_FATAL);  }
 
 /********************  MACROS  **********************/
 #define MATT_FATAL(x)   MATT_FATAL_ARG(x).end()

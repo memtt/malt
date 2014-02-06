@@ -177,4 +177,4 @@ ticks ticksPerSecond(void)
 	return alreadyMeasured;
 }
 
-};
+}

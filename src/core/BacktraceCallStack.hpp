@@ -26,6 +26,6 @@ class BacktraceCallStack : public Stack
 		void loadCurrentStack(void);
 };
 
-};
+}
 
 #endif //MATT_BACKTRACE_BACKTRACE_HPP

@@ -51,6 +51,6 @@ struct IniParserHelper
 	static void setEntry (dictionary * dic, const char * key, int value);
 };
 
-};
+}
 
 #endif //MATT_OPTIONS_HPP

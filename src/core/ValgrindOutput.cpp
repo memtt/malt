@@ -136,4 +136,4 @@ void ValgrindOutput::writeAsCallgrind(ostream& out, const FuncNameDic& dic)
 	}
 }
 
-};
+}

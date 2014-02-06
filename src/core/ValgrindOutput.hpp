@@ -44,6 +44,6 @@ class ValgrindOutput
 		ValgrindCallerMap callers;
 };
 
-};
+}
 
 #endif //MATT_VALGRIND_OUTPUT_HPP

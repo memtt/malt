@@ -20,7 +20,7 @@
 namespace htopml
 {
 	class JsonState;
-};
+}
 
 /*******************  NAMESPACE  ********************/
 namespace MATT

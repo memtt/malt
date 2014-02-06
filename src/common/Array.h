@@ -127,6 +127,6 @@ void Array<T>::updateSize(ssize_t delta)
 	}
 }
 
-};
+}
 
 #endif //MATT_ARRAY_H

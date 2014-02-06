@@ -24,7 +24,7 @@ typedef std::map<void *,const char*> FuncNameDicMap;
 namespace htopml
 {
 	class JsonState;
-};
+}
 
 /*******************  NAMESPACE  ********************/
 namespace MATT

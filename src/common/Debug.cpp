@@ -66,4 +66,4 @@ void Debug::end(void)
 	}
 }
 
-};
+}

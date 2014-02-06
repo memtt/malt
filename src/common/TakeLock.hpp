@@ -154,7 +154,7 @@ inline void TakeLock<T>::unlock(void )
 	}
 }
 
-};
+}
 
 #endif //MATT_TAKE_LOCK_HPP
 

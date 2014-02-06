@@ -54,7 +54,7 @@ enum AllocWrapperGlobalStatus
 	/** Ready for use. **/
 	ALLOC_WRAP_READY,
 	/** Now finish, ignore future calls to not instrument them after call of atexit(). **/
-	ALLOC_WRAP_FINISH,
+	ALLOC_WRAP_FINISH
 };
 
 /*********************  STRUCT  *********************/

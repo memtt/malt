@@ -239,6 +239,6 @@ inline FastBufferedStream& operator<<(FastBufferedStream& out, const T & value)
 	return out;
 }
 
-};
+}
 
 #endif //MATT_FAST_BUFFERED_STREAM_HPP
