@@ -193,7 +193,7 @@ void convertToJson(htopml::JsonState& json, const ProfiledValue& value)
 	assert(value.peak.timestamp > value.startTime);
 	json.printField("peakTimesteamp",value.peak.timestamp - value.startTime);
 	
-	json.printField("linearIndex",value.useLinearIndex?"true":"false");
+	json.printField("linearIndex",value.useLinearIndex);
 	json.closeStruct();
 }
 
