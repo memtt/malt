@@ -148,10 +148,10 @@ void SymbolResolver::loadProcMap(void)
 	while (!feof(fp))
 	{
 		//load buffer
-		fgets(buffer,sizeof(buffer),fp);
+		char * res = fgets(buffer,sizeof(buffer),fp);
 		
 		//if ok, parse line
-		if (!feof(fp))
+		if (res == buffer)
 		{
 			//parse
 			int cnt = sscanf(buffer,"%p-%p %s %p %s %lu %s\n",&(entry.lower),&(entry.upper),ignored,&(entry.offset),ignored,&ignored2,fileName);
@@ -280,10 +280,10 @@ void SymbolResolver::resolveNames(LinuxProcMapEntry * procMapEntry)
 	while (!feof(fp))
 	{
 		//read the two lines
-		fgets(bufferFunc,sizeof(bufferFunc),fp);
-		fgets(bufferFile,sizeof(bufferFile),fp);
+		char * funcRes = fgets(bufferFunc,sizeof(bufferFunc),fp);
+		char * fileRes = fgets(bufferFile,sizeof(bufferFile),fp);
 		
-		if (feof(fp))
+		if (funcRes != bufferFunc || fileRes != bufferFile)
 			break;
 
 		//std::cerr << bufferFunc;

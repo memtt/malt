@@ -35,10 +35,10 @@ TEST(Stack,constructorArg)
 TEST(Stack,isValid)
 {
 	Stack stack(STACK_ORDER_ASC);
-	EXPECT_EQ(false,stack.isValid());
+	EXPECT_FALSE(stack.isValid());
 	stack.set(CST_STACK_1,4,STACK_ORDER_ASC);
 	EXPECT_EQ(4,stack.getSize());
-	EXPECT_EQ(true,stack.isValid());
+	EXPECT_TRUE(stack.isValid());
 }
 
 /*******************  FUNCTION  *********************/
@@ -91,9 +91,9 @@ TEST(Stack,partialCompareDesc1)
 	Stack stack1(CST_STACK_1,4,STACK_ORDER_DESC);
 	Stack stack2(CST_STACK_1,4,STACK_ORDER_DESC);
 
-	EXPECT_EQ(true,Stack::partialCompare(stack1,0,stack2,0));
-	EXPECT_EQ(true,Stack::partialCompare(stack1,1,stack2,1));
-	EXPECT_EQ(false,Stack::partialCompare(stack1,0,stack2,1));
+	EXPECT_TRUE(Stack::partialCompare(stack1,0,stack2,0));
+	EXPECT_TRUE(Stack::partialCompare(stack1,1,stack2,1));
+	EXPECT_FALSE(Stack::partialCompare(stack1,0,stack2,1));
 }
 
 /*******************  FUNCTION  *********************/
@@ -103,10 +103,10 @@ TEST(Stack,partialCompareDesc2)
 	Stack stack2(CST_STACK_1,4,STACK_ORDER_DESC);
 	Stack stack3(CST_STACK_1+1,3,STACK_ORDER_DESC);
 
-	EXPECT_EQ(false,Stack::partialCompare(stack1,0,stack2,0));
-	EXPECT_EQ(false,Stack::partialCompare(stack1,1,stack2,1));
-	EXPECT_EQ(false,Stack::partialCompare(stack1,0,stack2,1));
-	EXPECT_EQ(true,Stack::partialCompare(stack3,0,stack2,1));
+	EXPECT_FALSE(Stack::partialCompare(stack1,0,stack2,0));
+	EXPECT_FALSE(Stack::partialCompare(stack1,1,stack2,1));
+	EXPECT_FALSE(Stack::partialCompare(stack1,0,stack2,1));
+	EXPECT_TRUE(Stack::partialCompare(stack3,0,stack2,1));
 }
 
 /*******************  FUNCTION  *********************/
@@ -115,9 +115,9 @@ TEST(Stack,partialCompareAsc1)
 	Stack stack1(CST_STACK_1,4,STACK_ORDER_ASC);
 	Stack stack2(CST_STACK_1,4,STACK_ORDER_ASC);
 
-	EXPECT_EQ(true,Stack::partialCompare(stack1,0,stack2,0));
-	EXPECT_EQ(true,Stack::partialCompare(stack1,1,stack2,1));
-	EXPECT_EQ(false,Stack::partialCompare(stack1,0,stack2,1));
+	EXPECT_TRUE(Stack::partialCompare(stack1,0,stack2,0));
+	EXPECT_TRUE(Stack::partialCompare(stack1,1,stack2,1));
+	EXPECT_FALSE(Stack::partialCompare(stack1,0,stack2,1));
 }
 
 /*******************  FUNCTION  *********************/
@@ -127,10 +127,10 @@ TEST(Stack,partialCompareAsc2)
 	Stack stack2(CST_STACK_1,4,STACK_ORDER_ASC);
 	Stack stack3(CST_STACK_1+1,3,STACK_ORDER_ASC);
 
-	EXPECT_EQ(false,Stack::partialCompare(stack1,0,stack2,0));
-	EXPECT_EQ(false,Stack::partialCompare(stack1,1,stack2,1));
-	EXPECT_EQ(true,Stack::partialCompare(stack1,0,stack2,1));
-	EXPECT_EQ(false,Stack::partialCompare(stack3,0,stack2,1));
+	EXPECT_FALSE(Stack::partialCompare(stack1,0,stack2,0));
+	EXPECT_FALSE(Stack::partialCompare(stack1,1,stack2,1));
+	EXPECT_TRUE(Stack::partialCompare(stack1,0,stack2,1));
+	EXPECT_FALSE(Stack::partialCompare(stack3,0,stack2,1));
 }
 
 /*******************  FUNCTION  *********************/
