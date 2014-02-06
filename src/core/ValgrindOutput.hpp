@@ -35,11 +35,11 @@ typedef std::map<void*,ValgrindCaller> ValgrindCallerMap;
 class ValgrindOutput
 {
 	public:
-		void pushStackInfo(SimpleCallStackNode & stackNode);
-		void writeAsCallgrind(const std::string & filename,const FuncNameDic& dic);
+		void pushStackInfo(MATT::SimpleCallStackNode& stackNode, const MATT::SymbolResolver& symbols);
+		void writeAsCallgrind(const std::string & filename,const SymbolResolver& dic);
 	protected:
-		void writeAsCallgrind(std::ostream & out, const FuncNameDic& dic);
-		void writeLocation(std::ostream& out, const FuncNameDic& dic, const CallSite * site, void * addr, bool call);
+		void writeAsCallgrind(std::ostream & out, const SymbolResolver& dic);
+		void writeLocation(std::ostream& out, const SymbolResolver& dic, const CallSite * site, void * addr, bool call);
 	private:
 		ValgrindCallerMap callers;
 };

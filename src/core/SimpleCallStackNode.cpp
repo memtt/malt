@@ -15,8 +15,8 @@ namespace MATT
 {
 
 /*******************  FUNCTION  *********************/
-SimpleCallStackNode::SimpleCallStackNode(const Stack& stack)
-	:callStack(stack)
+SimpleCallStackNode::SimpleCallStackNode(const Stack& stack,int skipDepth)
+	:callStack(stack,skipDepth)
 {
 
 }

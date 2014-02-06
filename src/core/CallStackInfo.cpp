@@ -151,7 +151,7 @@ void convertToJson(htopml::JsonState& json, const SimpleQuantityHistory& value)
 /*******************  FUNCTION  *********************/
 void CallStackInfo::writeAsCallgrindEntry(int line, std::ostream& out) const
 {
-	out << line << " " << maxAlive << " " << alloc.sum << " "<< alloc.count;
+	out << line << " " << maxAlive << " " << alloc.sum << " "<< alloc.count + free.count + cntZeros;
 }
 
 }

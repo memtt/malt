@@ -54,11 +54,11 @@ typedef std::vector<LinuxProcMapEntry> LinuxProcMap;
 typedef std::map<void*,CallSite> CallSiteMap;
 
 /*********************  CLASS  **********************/
-class FuncNameDic
+class SymbolResolver
 {
 	public:
-		FuncNameDic(void);
-		~FuncNameDic(void);
+		SymbolResolver(void);
+		~SymbolResolver(void);
 		const char * getName(void * callSite);
 		void registerAddress(void * callSite);
 		const char* setupNewEntry(void* callSite);
@@ -68,8 +68,8 @@ class FuncNameDic
 		const CallSite * getCallSiteInfo(void * site) const;
 		const std::string & getString(int id) const;
 	public:
-		friend std::ostream & operator << (std::ostream & out,const FuncNameDic & dic);
-		friend void convertToJson(htopml::JsonState & json, const FuncNameDic & value);
+		friend std::ostream & operator << (std::ostream & out,const SymbolResolver & dic);
+		friend void convertToJson(htopml::JsonState & json, const SymbolResolver & value);
 	private:
 		LinuxProcMapEntry * getMapEntry(void * callSite);
 		void resolveNames(LinuxProcMapEntry * procMapEntry);

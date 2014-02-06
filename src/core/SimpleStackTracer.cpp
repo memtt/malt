@@ -36,7 +36,7 @@ SimpleStackTracer::~SimpleStackTracer(void )
 }
 
 /*******************  FUNCTION  *********************/
-SimpleCallStackNode& SimpleStackTracer::getBacktraceInfo( const Stack& stack )
+SimpleCallStackNode& SimpleStackTracer::getBacktraceInfo( const Stack& stack , int skipDepth )
 {
 	assert(stack.isValid());
 	
@@ -55,7 +55,7 @@ SimpleCallStackNode& SimpleStackTracer::getBacktraceInfo( const Stack& stack )
 	start = tvec.start();
 	SimpleBacktraceVector::iterator resIt = vec.end();
 	for (SimpleBacktraceVector::iterator it = vec.begin() ; it != vec.end() ; ++it)
-		if ((*it)->getCallStack() == stack)
+		if (Stack::partialCompare((*it)->getCallStack(),0,stack,skipDepth))
 			resIt = it;
 	tvec.end(start);
 
@@ -64,7 +64,7 @@ SimpleCallStackNode& SimpleStackTracer::getBacktraceInfo( const Stack& stack )
 	//if not found create and add
 	if (resIt == vec.end())
 	{
-		SimpleCallStackNode * newEntry = new SimpleCallStackNode(stack);
+		SimpleCallStackNode * newEntry = new SimpleCallStackNode(stack,skipDepth);
 		CODE_TIMING("insertInVec",vec.push_back(newEntry));
 		if (vec.size() > 100)
 			fprintf(stderr,"warning get too much multiple in map sub-array, it may hust performances : %lu\n",vec.size());
@@ -124,12 +124,12 @@ void SimpleStackTracer::fillValgrindOut(ValgrindOutput& out) const
 	{
 		const SimpleBacktraceVector & vec = itMap->second;
 		for (SimpleBacktraceVector::const_iterator it = vec.begin() ; it != vec.end() ; ++it)
-			out.pushStackInfo(**it);
+			out.pushStackInfo(**it,dic);
 	}
 }
 
 /*******************  FUNCTION  *********************/
-const FuncNameDic& SimpleStackTracer::getNameDic(void) const
+const SymbolResolver& SimpleStackTracer::getNameDic(void) const
 {
 	return dic;
 }

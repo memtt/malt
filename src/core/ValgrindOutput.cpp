@@ -22,7 +22,7 @@ namespace MATT
 {
 
 /*******************  FUNCTION  *********************/
-void ValgrindOutput::pushStackInfo(SimpleCallStackNode& stackNode)
+void ValgrindOutput::pushStackInfo(SimpleCallStackNode& stackNode,const SymbolResolver & symbols)
 {
 	//get addresses
 	Stack & stack = stackNode.getCallStack();
@@ -39,21 +39,36 @@ void ValgrindOutput::pushStackInfo(SimpleCallStackNode& stackNode)
 		//extrace callee/caller
 		void * callerPtr = stack[i];
 		void * calleePtr = stack[i-1];
+		
+		//check if already done to avoid accounting multipl times on recursive calls
+		bool alreadySeen = false;
+// 		for (int j = 0 ; j < i ; j++)
+// 		{
+// 			if (callerPtr == stack[j])
+// 			{
+// 				alreadySeen = true;
+// 				break;
+// 			}
+// 		}
 
-		//search info in map
-		ValgrindCaller & callerInfo = callers[callerPtr];
+		//if new entry, register
+		if (!alreadySeen)
+		{
+			//search info in map
+			ValgrindCaller & callerInfo = callers[callerPtr];
 
-		//reduce on caller
-		callerInfo.info.push(stackNode.getInfo());
+			//reduce on caller
+			callerInfo.info.push(stackInfo);
 
-		//cumulate on callee
-		CallStackInfo & calleeInfo = callerInfo.callees[calleePtr];
-		calleeInfo.push(stackInfo);
+			//cumulate on callee
+			CallStackInfo & calleeInfo = callerInfo.callees[calleePtr];
+			calleeInfo.push(stackInfo);
+		}
 	}
 }
 
 /*******************  FUNCTION  *********************/
-void ValgrindOutput::writeAsCallgrind(const std::string& filename, const FuncNameDic & dic)
+void ValgrindOutput::writeAsCallgrind(const std::string& filename, const SymbolResolver & dic)
 {
 	ofstream out;
 	out.open(filename.c_str());
@@ -62,7 +77,7 @@ void ValgrindOutput::writeAsCallgrind(const std::string& filename, const FuncNam
 }
 
 /*******************  FUNCTION  *********************/
-void ValgrindOutput::writeLocation(ostream& out, const FuncNameDic& dic, const CallSite * site, void * addr, bool call)
+void ValgrindOutput::writeLocation(ostream& out, const SymbolResolver& dic, const CallSite * site, void * addr, bool call)
 {
 	const char * callPrefix = "";
 	if (call)
@@ -88,7 +103,7 @@ void ValgrindOutput::writeLocation(ostream& out, const FuncNameDic& dic, const C
 }
 
 /*******************  FUNCTION  *********************/
-void ValgrindOutput::writeAsCallgrind(ostream& out, const FuncNameDic& dic)
+void ValgrindOutput::writeAsCallgrind(ostream& out, const SymbolResolver& dic)
 {
 	//header
 	out << "version: 1" << LINE_BREAK;

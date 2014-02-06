@@ -46,11 +46,13 @@ void funcA()
 /*******************  FUNCTION  *********************/
 void recurseA(int depth)
 {
-	void * ptr = malloc(64);
-	*(char*)ptr='c';//required otherwise new compilers will remove malloc/free
-	free(ptr);
 	if (depth > 0)
+	{
+		void * ptr = malloc(64);
+		*(char*)ptr='c';//required otherwise new compilers will remove malloc/free
+		free(ptr);
 		recurseA(depth-1);
+	}
 }
 
 /*******************  FUNCTION  *********************/
@@ -90,6 +92,26 @@ void testThreads(void)
 }
 
 /*******************  FUNCTION  *********************/
+void testRecuseIntervedB(int depth);
+void testRecuseIntervedA(int depth)
+{
+	void * ptr = malloc(64);
+	*(char*)ptr='c';
+	free(ptr);
+	testRecuseIntervedB(depth);
+}
+
+/*******************  FUNCTION  *********************/
+void testRecuseIntervedB(int depth)
+{
+	void * ptr = malloc(64);
+	*(char*)ptr='c';
+	free(ptr);
+	if (depth > 0)
+		testRecuseIntervedA(depth-1);
+}
+
+/*******************  FUNCTION  *********************/
 int main(void)
 {
 	//first is calloc
@@ -105,10 +127,11 @@ int main(void)
 	recurseA(10);
 	for (int i = 0 ; i < 10 ; ++i)
 	{
-		recurseA(15);
+		recurseA(10);
 	}
 	testRealloc();
 	testMaxAlive();
+	testRecuseIntervedA(2);
 	//testThreads();
 
 	return 0;

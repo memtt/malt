@@ -245,6 +245,7 @@ void ThreadLocalState::init(void)
 	//create the local chain
 	EnterExitCallStack * stack = new EnterExitCallStack();
 	stack->enterFunction((void*)0x1);
+	stack->exitFunction((void*)0x1);
 	
 	//ok mark no in use, ready for instr
 	tlsState.enterExitStack = stack;

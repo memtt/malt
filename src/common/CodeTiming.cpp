@@ -29,12 +29,20 @@ namespace MATT
 /********************** CONSTS **********************/
 /** Strings for unit printing. **/
 static const char * cstUnits[] = {"","K","M","G","T","P"};
+//Init static values of CodeTiming
 ticks CodeTiming::globalStart = 0;
 int CodeTiming::globalCntTimers = 0;
 int CodeTiming::globalCntTimersFinished = 0;
 CodeTiming * CodeTiming::globalTimers[64];
 
 /*******************  FUNCTION  *********************/
+/**
+ * Used to register the timers (called from their constructor). All registered
+ * timers will be print by the static function CodeTiming::printAll().
+ * Timers must be allocated static or global to stay alive until usage of printAll().
+ * 
+ * @param timer Pointer to the timer to register.
+**/
 void CodeTiming::registerTimer(CodeTiming* timer)
 {
 	assert(timer != NULL);
@@ -45,12 +53,23 @@ void CodeTiming::registerTimer(CodeTiming* timer)
 }
 
 /*******************  FUNCTION  *********************/
+/**
+ * Just follow the status of registered timers. This functions might be called
+ * from CodeTiming destructor.
+ * @param timer Pointer to the finshed timer.
+**/
 void CodeTiming::timerFinish(CodeTiming* timer)
 {
+	assert(timer != NULL);
 	globalCntTimersFinished++;
 }
 
 /*******************  FUNCTION  *********************/
+/**
+ * Compare function to be used into sort() to order timers before printing.
+ * @param a Pointer to first timer (need to be CodeTiming).
+ * @param b Pointer to second timer (need to be CodeTiming).
+**/
 int CodeTiming::compare(const void* a, const void* b)
 {
 	ticks sa = (*(const CodeTiming**)a)->sum;
@@ -65,6 +84,11 @@ int CodeTiming::compare(const void* a, const void* b)
 }
 
 /*******************  FUNCTION  *********************/
+/**
+ * Static function to print final restults of all registered timers. This function
+ * will order the results on asc order based on the total cost (sum).
+ * It will print on std::cerr.
+**/
 void CodeTiming::printAll(void)
 {
 	#ifdef MATT_ENABLE_CODE_TIMING
@@ -79,6 +103,11 @@ void CodeTiming::printAll(void)
 }
 
 /*******************  FUNCTION  *********************/
+/**
+ * Constructor of CodeTiming class. Only setup default parameters and register the object
+ * into global registry.
+ * @param name Define the name of the current timer.
+**/
 CodeTiming::CodeTiming(const char* name)
 {
 	this->name = name;

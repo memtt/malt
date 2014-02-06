@@ -16,7 +16,7 @@
 #include <ostream>
 // #include <json/TypeToJson.h>
 //locals
-#include "FuncNameDic.hpp"
+#include "SymbolResolver.hpp"
 #include "BacktraceCallStack.hpp"
 #include "SimpleCallStackNode.hpp"
 #include "ValgrindOutput.hpp"
@@ -35,17 +35,16 @@ class SimpleStackTracer
 	public:
 		SimpleStackTracer(void);
 		~SimpleStackTracer(void);
-		SimpleCallStackNode& getBacktraceInfo(void);
-		SimpleCallStackNode& getBacktraceInfo(const Stack & stack);
+		SimpleCallStackNode& getBacktraceInfo(const Stack& stack, int skipDepth = 0);
 		void resolveSymbols(void);
 		void fillValgrindOut(ValgrindOutput & out) const;
-		const FuncNameDic & getNameDic(void) const;
+		const SymbolResolver & getNameDic(void) const;
 	public:
 		friend std::ostream & operator << (std::ostream & out,const SimpleStackTracer & tracer);
 		friend void convertToJson(htopml::JsonState & json, const SimpleStackTracer & value);
 	private:
 		SimpleBacktraceVectorMap callmaps;
-		FuncNameDic dic;
+		SymbolResolver dic;
 		size_t count;
 };
 

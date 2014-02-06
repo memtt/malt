@@ -8,7 +8,7 @@
 
 ######################################################
 set(MATT_LIB_SRC Stack.cpp 
-                 FuncNameDic.cpp 
+                 SymbolResolver.cpp 
                  CallStackInfo.cpp 
                  ProfiledValue.cpp
                  SegmentTracker.cpp 

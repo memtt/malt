@@ -46,11 +46,40 @@ Stack::Stack(void** stack, int size,StackOrder order)
 /*******************  FUNCTION  *********************/
 Stack::Stack ( const Stack& orig )
 {
+	//default
 	this->order   = orig.order;
 	this->stack   = NULL;
 	this->size    = 0;
 	this->memSize = 0;
+	
+	//import
 	this->set(orig.stack,orig.size,orig.order);
+}
+
+/*******************  FUNCTION  *********************/
+Stack::Stack ( const Stack& orig , int skipDepth)
+{
+	//errors
+	assert(skipDepth >= 0);
+	assert(skipDepth <= orig.size);
+
+	//default
+	this->order   = orig.order;
+	this->stack   = NULL;
+	this->size    = 0;
+	this->memSize = 0;
+	
+	//import
+	switch (order)
+	{
+		case STACK_ORDER_ASC:
+			this->set(orig.stack+skipDepth,orig.size-skipDepth,orig.order);
+			break;
+		case STACK_ORDER_DESC:
+			this->set(orig.stack,orig.size-skipDepth,orig.order);
+			break;
+	}
+	
 }
 
 /*******************  FUNCTION  *********************/
@@ -95,7 +124,7 @@ void Stack::set ( void** stack, int size, StackOrder order )
 }
 
 /*******************  FUNCTION  *********************/
-StackHash Stack::hash ( void ) const
+StackHash Stack::hash ( int skipDepth ) const
 {
 	return hash(stack,size,order);
 }
@@ -203,6 +232,51 @@ bool operator== ( const Stack& v1, const Stack& v2 )
 }
 
 /*******************  FUNCTION  *********************/
+bool Stack::partialCompare(const Stack& stack1, int skip1, const Stack& stack2, int skip2)
+{
+	//errors
+	assert(stack1.stack != NULL);
+	assert(stack2.stack != NULL);
+	assert(stack1.order == stack2.order);
+
+	//compute local sizes
+	int size1 = stack1.size - skip1;
+	int size2 = stack2.size - skip2;
+	assert(size1 > 0);
+	assert(size2 > 0);
+
+	//trivial
+	if (size1 != size2 || stack1.order != stack2.order)
+		return false;
+	
+	//localy get the pointers
+	void ** s1 = stack1.stack;
+	void ** s2 = stack2.stack;
+	
+	//check content starting by
+	switch(stack1.order)
+	{
+		case STACK_ORDER_ASC:
+			for (int i = 0 ; i < size1 ; i++)
+				if (s1[i] != s2[i])
+					return false;
+			break;
+		case STACK_ORDER_DESC:
+			//skip start
+			s1 += skip1;
+			s2 += skip2;
+			//loop
+			for (int i = 0 ; i < size1 ; i++)
+				if (s1[i] != s2[i])
+					return false;
+			break;
+	}
+
+	//ok this is good
+	return true;
+}
+
+/*******************  FUNCTION  *********************/
 void convertToJson ( htopml::JsonState& json, const Stack& obj )
 {
 	//select running mode
@@ -255,8 +329,9 @@ int Stack::getSize ( void ) const
 }
 
 /*******************  FUNCTION  *********************/
-void Stack::resolveSymbols ( FuncNameDic& dic ) const
+void Stack::resolveSymbols ( SymbolResolver& dic ) const
 {
+	assert(stack != NULL);
 	for (int i = 0 ; i < size ; i++)
 		dic.registerAddress(stack[i]);
 }
@@ -264,6 +339,7 @@ void Stack::resolveSymbols ( FuncNameDic& dic ) const
 /*******************  FUNCTION  *********************/
 void* Stack::getCallee(void ) const
 {
+	assert(size >= 1);
 	switch(order)
 	{
 		case STACK_ORDER_ASC:
@@ -276,6 +352,7 @@ void* Stack::getCallee(void ) const
 /*******************  FUNCTION  *********************/
 void* Stack::getCaller(void ) const
 {
+	assert(size >= 2);
 	switch(order)
 	{
 		case STACK_ORDER_ASC:

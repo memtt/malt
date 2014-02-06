@@ -11,7 +11,7 @@
 
 /********************  HEADERS  *********************/
 #include "Stack.h"
-#include "FuncNameDic.hpp"
+#include "SymbolResolver.hpp"
 #include "CallStackInfo.hpp"
 
 /*******************  NAMESPACE  ********************/

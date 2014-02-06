@@ -21,7 +21,7 @@ namespace MATT
 class SimpleCallStackNode
 {
 	public:
-		SimpleCallStackNode(const Stack & stack);
+		SimpleCallStackNode(const Stack & stack, int skipDepth = 0);
 		CallStackInfo & getInfo(void) {return info;};
 		Stack & getCallStack(void) { return callStack;};
 	public:

@@ -12,7 +12,7 @@
 /********************  HEADERS  *********************/
 #include <ostream>
 #include <stdint.h>
-#include "FuncNameDic.hpp"
+#include "SymbolResolver.hpp"
 // #include <json/JsonState.h>
 
 /*******************  FUNCTION  *********************/
@@ -42,10 +42,11 @@ class Stack
 		Stack(StackOrder order);
 		Stack(void ** stack,int size,StackOrder order);
 		Stack(const Stack & orig);
+		Stack(const Stack & orig,int skipDepth);
 		virtual ~Stack(void);
-		StackHash hash(void) const;
+		StackHash hash(int skipDepth = 0) const;
 		static StackHash hash(void** stack, int size, MATT::StackOrder order);
-		void resolveSymbols(FuncNameDic & dic) const;
+		void resolveSymbols(SymbolResolver & dic) const;
 		void grow(void);
 		bool isValid(void) const;
 		int getSize(void) const;
@@ -54,6 +55,7 @@ class Stack
 		void * getCaller(void) const;
 		void * getCallee(void) const;
 		void * operator[] (int idx);
+		static bool partialCompare(const Stack & stack1,int skip1,const Stack & stack2,int skip2);
 	public:
 		friend std::ostream & operator << (std::ostream & out,const Stack & tracer);
 		friend void convertToJson(htopml::JsonState & json, const Stack & value);
