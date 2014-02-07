@@ -23,6 +23,7 @@ Options::Options(void)
 {
 	//stack
 	this->stackProfileEnabled     = true;
+	this->stackResolve            = false;
 	this->stackMode               = "backtrace";
 	//time
 	this->timeProfileEnabled      = true;
@@ -55,6 +56,7 @@ void Options::loadFromFile(const char* fname)
 	this->timeProfileLinear   = iniparser_getboolean(iniDic,"time:linear_index",this->timeProfileLinear);
 	
 	//load values for stack profiling
+	this->stackResolve        = iniparser_getboolean(iniDic,"stack:resolve",this->stackResolve);
 	this->stackProfileEnabled = iniparser_getboolean(iniDic,"stack:enabled",this->stackProfileEnabled);
 	this->stackMode           = iniparser_getstring(iniDic,"stack:mode",(char*)this->stackMode.c_str());
 	
@@ -85,6 +87,7 @@ void Options::dumpConfig(const char* fname)
 	//stack
 	IniParserHelper::setEntry(dic,"stack:enabled",this->timeProfileEnabled);
 	IniParserHelper::setEntry(dic,"stack:mode",this->stackMode.c_str());
+	IniParserHelper::setEntry(dic,"stack:resolve",this->stackResolve);
 	
 	//output
 	IniParserHelper::setEntry(dic,"output:name",this->outputName.c_str());

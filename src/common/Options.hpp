@@ -28,6 +28,7 @@ struct Options
 	void dumpConfig(const char * fname);
 	//vars for stack profilinf
 	bool stackProfileEnabled;
+	bool stackResolve;
 	std::string stackMode;
 	//vars for time profiging
 	bool timeProfileEnabled;

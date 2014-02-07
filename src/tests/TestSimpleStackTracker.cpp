@@ -18,7 +18,7 @@ void * CST_STACK_1[] = {(void*)0x1,(void*)0x2,(void*)0x3,(void*)0x4,(void*)0x5,(
                         (void*)0x9,(void*)0xa,(void*)0xb,(void*)0xc,(void*)0xd,(void*)0xe,(void*)0xf,(void*)0x4,
                         (void*)0x1,(void*)0x2,(void*)0x3,(void*)0x4,(void*)0x1,(void*)0x2,(void*)0x3,(void*)0x4,
                         (void*)0x1,(void*)0x2,(void*)0x3,(void*)0x4,(void*)0x1,(void*)0x2,(void*)0x3,(void*)0x4};
-int CST_STACK_1_SIZE = 64;
+int CST_STACK_1_SIZE = 32;
 
 /*******************  FUNCTION  *********************/
 TEST(SimpleStackTracer,constructor)
