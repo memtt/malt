@@ -43,6 +43,25 @@ format.
 
 	MATT_CONFIG="myconfig.ini" LD_PRELOAD=libmatt.so {YOUR_PROGRAM} [OPTIONS]
 
+Example of config file :
+
+	[time]
+	enabled=true          ; enable time profiles
+	points=1000           ; keep 1000 points
+	linar_index=false     ; use action ID instead of time
+
+	[stack]
+	enabled=true          ; enable stack profiles
+	mode=backtrace        ; select stack tracing mode (backtrace|enter-exit)
+
+	[output]
+	name=matt-%1-%2.%3    ; base name for output, %1 = exe, %2 = PID, %3 = extension
+	indent=true           ; indent the output
+	lua=true              ; enable LUA output
+	json=true             ; enable json output
+	callgrind=true        ; enable callgrind output
+	config=true           ; dump current config
+
 Experimental pintool mode
 -------------------------
 
@@ -50,4 +69,3 @@ MATT can also use binary instrumentation mode through pintool
 (http://software.intel.com/en-us/articles/pin-a-dynamic-binary-instrumentation-tool)
 
 Please, check usage into src/pintool directory for this.
-
