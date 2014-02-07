@@ -33,37 +33,37 @@ desc: LL cache: \n\
 desc: Trigger: Program termination\n\
 \n\
 positions: line\n\
-events: AllocCnt FreeCnt MemOps\n\
+events: AllocCnt FreeCnt MemOps AllocSum\n\
 \n\
 ob=unknown\n\
 fi=unknown\n\
 fn=0x1\n\
-0 1 0 1\n\
+0 1 0 1 2\n\
 \n\
 ob=unknown\n\
 fi=unknown\n\
 fn=0x2\n\
-0 1 0 1\n\
+0 0 0 0 0\n\
 cob=unknown\n\
 cfi=unknown\n\
 cfn=0x1\n\
 calls=1 0\n\
-0 1 0 1\n\
+0 1 0 1 2\n\
 cob=unknown\n\
 cfi=unknown\n\
 cfn=0x2\n\
 calls=1 0\n\
-0 1 0 1\n\
+0 1 0 1 2\n\
 \n\
 ob=unknown\n\
 fi=unknown\n\
 fn=0x3\n\
-0 1 0 1\n\
+0 0 0 0 0\n\
 cob=unknown\n\
 cfi=unknown\n\
 cfn=0x2\n\
 calls=1 0\n\
-0 1 0 1\n\
+0 1 0 1 2\n\
 \n";
 
 /*******************  FUNCTION  *********************/
@@ -91,6 +91,7 @@ TEST(ValgrindOutput,testRecursive)
 	
 	std::stringstream buffer;
 	output.writeAsCallgrind(buffer,symbols);
+	//output.writeAsCallgrind("test.callgrind",symbols);
 	
 	EXPECT_EQ(CST_VALUE_1,buffer.str());
 	

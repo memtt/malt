@@ -24,6 +24,7 @@
 void funcC()
 {
 	int * ptr = new int[16];
+	*(char*)ptr = 'c';//required otherwise new compilers will remove malloc/free
 	delete [] ptr;
 }
 
@@ -63,8 +64,10 @@ void testRealloc(void)
 	void * ptr = realloc(NULL,16);
 	ptr = realloc(ptr,32);
 	ptr = realloc(ptr,0);
-	
-	free(malloc(44));
+
+	ptr = malloc(44);
+	*(char*)ptr = 'c';//required otherwise new compilers will remove malloc/free
+	free(ptr);
 }
 
 /*******************  FUNCTION  *********************/
@@ -88,7 +91,7 @@ void testThreads(void)
 	for (int i = 0 ; i < 100 ; i++)
 	{
 		void * ptr = malloc(64);
-		*(char*)ptr='c';
+		*(char*)ptr='c';//required otherwise new compilers will remove malloc/free
 		free(ptr);
 	}
 }
@@ -97,8 +100,12 @@ void testThreads(void)
 void testRecuseIntervedB(int depth);
 void testRecuseIntervedA(int depth)
 {
+	//static size_t mem = 0;
+	//mem += 64;
+	//printf("testRecuseIntervedA = %lu\n",mem);
+	
 	void * ptr = malloc(64);
-	*(char*)ptr='c';
+	*(char*)ptr='c';//required otherwise new compilers will remove malloc/free
 	free(ptr);
 	testRecuseIntervedB(depth);
 }
@@ -106,8 +113,12 @@ void testRecuseIntervedA(int depth)
 /*******************  FUNCTION  *********************/
 void testRecuseIntervedB(int depth)
 {
+	//static size_t mem = 0;
+	//mem += 64;
+	//printf("testRecuseIntervedB = %lu\n",mem);
+	
 	void * ptr = malloc(64);
-	*(char*)ptr='c';
+	*(char*)ptr='c';//required otherwise new compilers will remove malloc/free
 	free(ptr);
 	if (depth > 0)
 		testRecuseIntervedA(depth-1);
@@ -120,17 +131,17 @@ void testAllFuncs(void)
 	
 	//malloc
 	ptr = malloc(16);
-	*(char*)ptr = 'c';
+	*(char*)ptr = 'c';//required otherwise new compilers will remove malloc/free
 	free(ptr);
 	
 	//calloc
 	ptr = calloc(1,16);
-	*(char*)ptr = 'c';
+	*(char*)ptr = 'c';//required otherwise new compilers will remove malloc/free
 	free(ptr);
 	
 	//realloc
 	ptr = realloc(NULL,16);
-	*(char*)ptr = 'c';
+	*(char*)ptr = 'c';//required otherwise new compilers will remove malloc/free
 	free(ptr);
 	
 	//posix_memalign

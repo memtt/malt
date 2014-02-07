@@ -45,20 +45,15 @@ void ValgrindOutput::pushStackInfo(SimpleCallStackNode& stackNode,const SymbolRe
 		const CallSite * calleeSite = symbols.getCallSiteInfo(calleePtr);
 		
 		//check if already done to avoid accounting multipl times on recursive calls
-		bool alreadySeenCaller = (callerPtr == stack[0] || symbols.isSameFuntion(callerSite,stack[0]));
 		bool alreadySeenLink = false;
 		for (int j = 1 ; j < i ; j++)
 		{
-// 			puts("check seen");
 			if (callerPtr == stack[j] || symbols.isSameFuntion(callerSite,stack[j]))
 			{
-				alreadySeenCaller = true;
-// 				puts("seenCaller");
 				//check links
 				if (calleePtr == stack[j-1] || symbols.isSameFuntion(calleeSite,stack[j-1]))
 				{
 					alreadySeenLink = true;
-// 					puts("seenLink");
 				}
 			}
 		}
@@ -68,10 +63,6 @@ void ValgrindOutput::pushStackInfo(SimpleCallStackNode& stackNode,const SymbolRe
 		{
 			//search info in map
 			ValgrindCaller & callerInfo = callers[callerPtr];
-
-			//reduce on caller
-			if (!alreadySeenCaller)
-				callerInfo.info.push(stackInfo);
 
 			//cumulate on callee
 			CallStackInfo & calleeInfo = callerInfo.callees[calleePtr];

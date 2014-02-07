@@ -23,7 +23,7 @@ Options::Options(void)
 {
 	//stack
 	this->stackProfileEnabled     = true;
-	this->stackResolve            = false;
+	this->stackResolve            = true;
 	this->stackMode               = "backtrace";
 	//time
 	this->timeProfileEnabled      = true;

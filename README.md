@@ -66,6 +66,7 @@ Example of config file :
 	[stack]
 	enabled=true          ; enable stack profiles
 	mode=backtrace        ; select stack tracing mode (backtrace|enter-exit)
+	resolve=true          ; Automatically resolve symbol with addr2line at exit.
 
 	[output]
 	name=matt-%1-%2.%3    ; base name for output, %1 = exe, %2 = PID, %3 = extension

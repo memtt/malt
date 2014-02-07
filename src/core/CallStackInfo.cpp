@@ -167,7 +167,7 @@ void CallStackInfo::writeAsCallgrindEntry(int line, std::ostream& out) const
 // 	    << ' ' << free.sum << ' ' << free.min << ' ' << free.max << ' ' << free.sum
 // 	    << ' ' << lifetime.min << ' ' << lifetime.max
 // 	    << ' ' << alloc.count + free.count + cntZeros;
-	out << line << ' ' << alloc.count << ' ' << free.count << ' ' <<  alloc.count + free.count + cntZeros;
+	out << line << ' ' << alloc.count << ' ' << free.count << ' ' <<  alloc.count + free.count + cntZeros << ' ' << alloc.sum;
 }
 
 /*******************  FUNCTION  *********************/
@@ -178,7 +178,7 @@ void CallStackInfo::writeCallgrindEventDef(std::ostream& out)
 // 		<< "FreeSum FreeMin FreeMax FreeSum "
 // 		<< "LifetimeMin LifetimeMax "
 // 		<< "MemOps\n";
-	out << "events: AllocCnt FreeCnt MemOps\n";
+	out << "events: AllocCnt FreeCnt MemOps AllocSum\n";
 }
 
 }
