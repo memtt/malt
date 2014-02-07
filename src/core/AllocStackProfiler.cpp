@@ -21,6 +21,9 @@
 #include <common/FormattedMessage.hpp>
 #include "AllocStackProfiler.hpp"
 
+/********************  MACROS  **********************/
+#define MATT_SKIP_DEPTH 3
+
 /*******************  NAMESPACE  ********************/
 namespace MATT
 {
@@ -50,20 +53,20 @@ AllocStackProfiler::AllocStackProfiler(const Options & options,StackMode mode,bo
 /*******************  FUNCTION  *********************/
 void AllocStackProfiler::onMalloc(void* ptr, size_t size,Stack * userStack)
 {
-	onAllocEvent(ptr,size,2,userStack);
+	onAllocEvent(ptr,size,MATT_SKIP_DEPTH,userStack);
 }
 
 /*******************  FUNCTION  *********************/
 void AllocStackProfiler::onCalloc(void* ptr, size_t nmemb, size_t size,Stack * userStack)
 {
-	onAllocEvent(ptr,size * nmemb,2,userStack);
+	onAllocEvent(ptr,size * nmemb,MATT_SKIP_DEPTH,userStack);
 }
 
 /*******************  FUNCTION  *********************/
 void AllocStackProfiler::onFree(void* ptr,Stack * userStack)
 {
 	if (ptr != NULL)
-		onFreeEvent(ptr,2,userStack);
+		onFreeEvent(ptr,MATT_SKIP_DEPTH,userStack);
 }
 
 /*******************  FUNCTION  *********************/
@@ -81,11 +84,11 @@ void AllocStackProfiler::onRealloc(void* oldPtr, void* ptr, size_t newSize,Stack
 		
 		//free part
 		if (ptr != NULL)
-			callStackNode = onFreeEvent(oldPtr,2,userStack,callStackNode,false);
+			callStackNode = onFreeEvent(oldPtr,MATT_SKIP_DEPTH,userStack,callStackNode,false);
 		
 		//alloc part
 		if (newSize > 0)
-			callStackNode = onAllocEvent(ptr,newSize,2,userStack,callStackNode,false);
+			callStackNode = onAllocEvent(ptr,newSize,MATT_SKIP_DEPTH,userStack,callStackNode,false);
 	MATT_END_CRITICAL
 }
 
@@ -149,6 +152,7 @@ SimpleCallStackNode * AllocStackProfiler::onFreeEvent(void* ptr,int skipDepth, S
 			
 		//update mem usage
 		size_t size = segInfo->size;
+		ticks lifetime = segInfo->getLifetime();
 		if (options.timeProfileEnabled)
 			requestedMem.onDeltaEvent(size);
 		
@@ -159,10 +163,10 @@ SimpleCallStackNode * AllocStackProfiler::onFreeEvent(void* ptr,int skipDepth, S
 				callStackNode = getStackNode(skipDepth+1,-size,userStack);
 			
 			//count events
-			CODE_TIMING("updateInfoFree",callStackNode->getInfo().onFreeEvent(size,segInfo->getLifetime()));
+			CODE_TIMING("updateInfoFree",callStackNode->getInfo().onFreeEvent(size));
 			
 			//update alive (TODO, need to move this into a new function on StackNodeInfo)
-			segInfo->callStack->getInfo().alive -= size;
+			segInfo->callStack->getInfo().onFreeLinkedMemory(size,lifetime);
 		}
 		
 		//remove tracking info

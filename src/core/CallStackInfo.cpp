@@ -43,22 +43,32 @@ void SimpleQuantityHistory::addEvent(ssize_t value)
 	}
 	this->count++;
 	this->sum+=value;
+	
+	assert(max >= min);
 }
 
 /*******************  FUNCTION  *********************/
 void SimpleQuantityHistory::push(SimpleQuantityHistory& value)
 {
+	if (this->count == 0)
+	{
+		this->min = value.min;
+		this->max = value.max;
+	} else {
+		if (value.max > this->max)
+			this->max = value.max;
+		if (value.min < this->min)
+			this->min = value.min;
+	}
+	
 	this->count += value.count;
 	this->sum += value.sum;
-
-	if (this->max > value.max)
-		this->max = value.max;
-	if (this->min < value.min)
-		this->min += value.min;
+	
+	assert(max >= min);
 }
 
 /*******************  FUNCTION  *********************/
-void CallStackInfo::onFreeEvent(size_t value, ticks lifetime)
+void CallStackInfo::onFreeEvent(size_t value)
 {
 	if (value == 0)
 	{
@@ -66,15 +76,15 @@ void CallStackInfo::onFreeEvent(size_t value, ticks lifetime)
 	} else {
 		this->free.addEvent(value);
 	}
-	
-	if (lifetime != 0)
-		this->lifetime.addEvent(lifetime);
-	
-	//update alive memory
-	//this->alive-=value;
-	assert(this->alive >= 0);
-	if (this->alive > this->maxAlive)
-		this->maxAlive = this->alive;
+}
+
+/*******************  FUNCTION  *********************/
+ssize_t SimpleQuantityHistory::getMean(void) const
+{
+	if (count == 0)
+		return 0;
+	else
+		return sum/count;
 }
 
 /*******************  FUNCTION  *********************/
@@ -93,10 +103,12 @@ void CallStackInfo::onAllocEvent(size_t value)
 }
 
 /*******************  FUNCTION  *********************/
-void CallStackInfo::onFreeLinkedMemory(ssize_t value, ticks lifetime)
+void CallStackInfo::onFreeLinkedMemory(size_t value, ticks lifetime)
 {
-	assert(alive <= 0);
-	this->alive += value;
+	assert(alive >= value);
+	assert(alive >= 0);
+
+	this->alive -= value;
 	if (lifetime != 0)
 		this->lifetime.addEvent(lifetime);
 }
@@ -159,26 +171,22 @@ void convertToJson(htopml::JsonState& json, const SimpleQuantityHistory& value)
 /*******************  FUNCTION  *********************/
 void CallStackInfo::writeAsCallgrindEntry(int line, std::ostream& out) const
 {
-// 	assert(alive < 0);
-// 	if (alive < 0)
-// 		warning("Get negativ alive value, set to 0 !");
-// 	out << line << ' ' << maxAlive << ' ' << alive
-// 	    << ' ' << alloc.count << ' ' << alloc.min << ' ' << alloc.max << ' ' << alloc.sum 
-// 	    << ' ' << free.sum << ' ' << free.min << ' ' << free.max << ' ' << free.sum
-// 	    << ' ' << lifetime.min << ' ' << lifetime.max
-// 	    << ' ' << alloc.count + free.count + cntZeros;
-	out << line << ' ' << alloc.count << ' ' << free.count << ' ' <<  alloc.count + free.count + cntZeros << ' ' << alloc.sum;
+	assert(alloc.max >= alloc.min);
+	assert(free.max >= free.min);
+	assert(alive >= 0);
+	assert(maxAlive >= 0);
+	
+	out << line << ' ' << alloc.count << ' ' << free.count << ' ' <<  alloc.count + free.count + cntZeros 
+		<< ' ' << alloc.sum << ' ' << free.sum
+		<< ' ' << alive << ' ' << maxAlive;
 }
 
 /*******************  FUNCTION  *********************/
 void CallStackInfo::writeCallgrindEventDef(std::ostream& out)
 {
-// 	out << "events: MaxAliveMemory AliveMemory "
-// 	    << "AllocCnt AllocMin AllocMax AllocSum "
-// 		<< "FreeSum FreeMin FreeMax FreeSum "
-// 		<< "LifetimeMin LifetimeMax "
-// 		<< "MemOps\n";
-	out << "events: AllocCnt FreeCnt MemOps AllocSum\n";
+	out << "events: AllocCnt FreeCnt MemOps"
+		<< " AllocSum FreeSum"
+		<< " Leaks AliveReqMax\n";
 }
 
 }

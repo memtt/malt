@@ -33,37 +33,37 @@ desc: LL cache: \n\
 desc: Trigger: Program termination\n\
 \n\
 positions: line\n\
-events: AllocCnt FreeCnt MemOps AllocSum\n\
+events: AllocCnt FreeCnt MemOps AllocSum FreeSum Leaks AliveReqMax\n\
 \n\
 ob=unknown\n\
 fi=unknown\n\
 fn=0x1\n\
-0 1 0 1 2\n\
+0 1 0 1 2 0 2 2\n\
 \n\
 ob=unknown\n\
 fi=unknown\n\
 fn=0x2\n\
-0 0 0 0 0\n\
+0 0 0 0 0 0 0 0\n\
 cob=unknown\n\
 cfi=unknown\n\
 cfn=0x1\n\
 calls=1 0\n\
-0 1 0 1 2\n\
+0 1 0 1 2 0 2 2\n\
 cob=unknown\n\
 cfi=unknown\n\
 cfn=0x2\n\
 calls=1 0\n\
-0 1 0 1 2\n\
+0 1 0 1 2 0 2 2\n\
 \n\
 ob=unknown\n\
 fi=unknown\n\
 fn=0x3\n\
-0 0 0 0 0\n\
+0 0 0 0 0 0 0 0\n\
 cob=unknown\n\
 cfi=unknown\n\
 cfn=0x2\n\
 calls=1 0\n\
-0 1 0 1 2\n\
+0 1 0 1 2 0 2 2\n\
 \n";
 
 /*******************  FUNCTION  *********************/
@@ -79,10 +79,7 @@ TEST(ValgrindOutput,testRecursive)
 	ValgrindOutput output;
 	Stack stack(CST_STACK_1,7,STACK_ORDER_ASC);
 	SimpleCallStackNode stackNode(stack);
-	stackNode.getInfo().alloc.count=1;
-	stackNode.getInfo().alloc.max=2;
-	stackNode.getInfo().alloc.min=2;
-	stackNode.getInfo().alloc.sum=2;
+	stackNode.getInfo().onAllocEvent(2);
 	SymbolResolver symbols;
 	symbols.loadProcMap();
 	stack.resolveSymbols(symbols);
