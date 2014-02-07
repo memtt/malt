@@ -1,3 +1,3 @@
 Please add you name here if you contribute to this project.
 
- - Valat Sébastien <sebastien.valat@exascale-computing.eu>
+ - Valat Sébastien <sebastien.valat@exascale-computing.eu> | <sebastien.valat@gmail.com>

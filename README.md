@@ -19,6 +19,19 @@ MATT use CMake for is build system you can install it by following the procudre 
 	make test
 	make install
 
+Build options
+-------------
+
+MATT build support several options to define with -D option of CMake :
+
+ * -DENABLE_CODE_TIMING={yes|no} : Enable quick and dirty function to measure MATT internal
+   performances.
+ * -DENABLE_TEST={yes|no}        : Enable build of unit tests.
+ * -DJUNIT_OUTPUT={yes|no}       : Enable generation of junit files for jenkins integration.
+ * -DENABLE_VALGRIND={yes|no}    : Run unit tests inside valgrind memcheck and generate XML report.
+ * -DPORTABILITY_OS={UNIX}       : Set portability build option to fix OS specific calls.
+ * -DPORTABILITY_MUTEX={PTHREAD} : Set portability build option to select mutex implementation.
+
 How to use
 ----------
 
