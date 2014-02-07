@@ -51,6 +51,7 @@ struct CallStackInfo
 		void onFreeLinkedMemory(ssize_t value,ticks lifetime);
 		void push(CallStackInfo & info);
 		void writeAsCallgrindEntry(int line, std::ostream & out) const;
+		static void writeCallgrindEventDef(std::ostream & out);
 // 	public:
 		
 // 	private:

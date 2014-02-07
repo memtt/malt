@@ -148,7 +148,7 @@ SimpleCallStackNode * AllocStackProfiler::onFreeEvent(void* ptr,int skipDepth, S
 		}
 			
 		//update mem usage
-		ssize_t size = -segInfo->size;
+		size_t size = segInfo->size;
 		if (options.timeProfileEnabled)
 			requestedMem.onDeltaEvent(size);
 		
@@ -156,10 +156,13 @@ SimpleCallStackNode * AllocStackProfiler::onFreeEvent(void* ptr,int skipDepth, S
 		{
 			//search call stack info if not provided
 			if (callStackNode == NULL)
-				callStackNode = getStackNode(skipDepth+1,size,userStack);
+				callStackNode = getStackNode(skipDepth+1,-size,userStack);
 			
 			//count events
 			CODE_TIMING("updateInfoFree",callStackNode->getInfo().onFreeEvent(size,segInfo->getLifetime()));
+			
+			//update alive (TODO, need to move this into a new function on StackNodeInfo)
+			segInfo->callStack->getInfo().alive -= size;
 		}
 		
 		//remove tracking info

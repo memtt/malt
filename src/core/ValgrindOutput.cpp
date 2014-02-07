@@ -40,25 +40,38 @@ void ValgrindOutput::pushStackInfo(SimpleCallStackNode& stackNode,const SymbolRe
 		void * callerPtr = stack[i];
 		void * calleePtr = stack[i-1];
 		
+		//get location info
+		const CallSite * callerSite = symbols.getCallSiteInfo(callerPtr);
+		const CallSite * calleeSite = symbols.getCallSiteInfo(calleePtr);
+		
 		//check if already done to avoid accounting multipl times on recursive calls
-		bool alreadySeen = false;
-// 		for (int j = 0 ; j < i ; j++)
-// 		{
-// 			if (callerPtr == stack[j])
-// 			{
-// 				alreadySeen = true;
-// 				break;
-// 			}
-// 		}
+		bool alreadySeenCaller = (callerPtr == stack[0] || symbols.isSameFuntion(callerSite,stack[0]));
+		bool alreadySeenLink = false;
+		for (int j = 1 ; j < i ; j++)
+		{
+// 			puts("check seen");
+			if (callerPtr == stack[j] || symbols.isSameFuntion(callerSite,stack[j]))
+			{
+				alreadySeenCaller = true;
+// 				puts("seenCaller");
+				//check links
+				if (calleePtr == stack[j-1] || symbols.isSameFuntion(calleeSite,stack[j-1]))
+				{
+					alreadySeenLink = true;
+// 					puts("seenLink");
+				}
+			}
+		}
 
-		//if new entry, register
-		if (!alreadySeen)
+		//check if has info
+		if (!alreadySeenLink)
 		{
 			//search info in map
 			ValgrindCaller & callerInfo = callers[callerPtr];
 
 			//reduce on caller
-			callerInfo.info.push(stackInfo);
+			if (!alreadySeenCaller)
+				callerInfo.info.push(stackInfo);
 
 			//cumulate on callee
 			CallStackInfo & calleeInfo = callerInfo.callees[calleePtr];
@@ -119,7 +132,7 @@ void ValgrindOutput::writeAsCallgrind(ostream& out, const SymbolResolver& dic)
 	out << "desc: Trigger: Program termination" << LINE_BREAK;
 	out << LINE_BREAK;
 	out << "positions: line" << LINE_BREAK;
-	out << "events: MaxAliveMemory AllocSum Count" << LINE_BREAK;
+	CallStackInfo::writeCallgrindEventDef(out);
 	out << LINE_BREAK;
 	
 

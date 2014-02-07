@@ -37,8 +37,8 @@ class ValgrindOutput
 	public:
 		void pushStackInfo(MATT::SimpleCallStackNode& stackNode, const MATT::SymbolResolver& symbols);
 		void writeAsCallgrind(const std::string & filename,const SymbolResolver& dic);
-	protected:
 		void writeAsCallgrind(std::ostream & out, const SymbolResolver& dic);
+	protected:
 		void writeLocation(std::ostream& out, const SymbolResolver& dic, const CallSite * site, void * addr, bool call);
 	private:
 		ValgrindCallerMap callers;

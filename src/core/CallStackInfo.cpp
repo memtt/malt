@@ -13,6 +13,7 @@
 #include <json/JsonState.h>
 //internals
 #include "CallStackInfo.hpp"
+#include <common/Debug.hpp>
 
 /*******************  NAMESPACE  ********************/
 namespace MATT
@@ -48,9 +49,12 @@ void SimpleQuantityHistory::addEvent(ssize_t value)
 void SimpleQuantityHistory::push(SimpleQuantityHistory& value)
 {
 	this->count += value.count;
-	this->max += value.max;
-	this->min += value.min;
 	this->sum += value.sum;
+
+	if (this->max > value.max)
+		this->max = value.max;
+	if (this->min < value.min)
+		this->min += value.min;
 }
 
 /*******************  FUNCTION  *********************/
@@ -60,14 +64,15 @@ void CallStackInfo::onFreeEvent(size_t value, ticks lifetime)
 	{
 		cntZeros++;
 	} else {
-		this->free.addEvent(-value);
+		this->free.addEvent(value);
 	}
 	
 	if (lifetime != 0)
 		this->lifetime.addEvent(lifetime);
 	
 	//update alive memory
-	this->alive+=value;
+	//this->alive-=value;
+	assert(this->alive >= 0);
 	if (this->alive > this->maxAlive)
 		this->maxAlive = this->alive;
 }
@@ -99,6 +104,8 @@ void CallStackInfo::onFreeLinkedMemory(ssize_t value, ticks lifetime)
 /*******************  FUNCTION  *********************/
 CallStackInfo::CallStackInfo(void )
 {
+	this->alive = 0;
+	this->maxAlive = 0;
 	this->cntZeros = 0;
 }
 
@@ -123,7 +130,8 @@ void convertToJson(htopml::JsonState& json, const CallStackInfo& value)
 {
 	json.openStruct();
 	json.printField("countZeros",value.cntZeros);
-	json.printField("maxAlive",value.maxAlive);
+	json.printField("maxAliveReq",value.maxAlive);
+	json.printField("aliveReq",value.alive);
 	json.printField("alloc",value.alloc);
 	json.printField("free",value.free);
 	json.printField("lifetime",value.lifetime);
@@ -151,7 +159,26 @@ void convertToJson(htopml::JsonState& json, const SimpleQuantityHistory& value)
 /*******************  FUNCTION  *********************/
 void CallStackInfo::writeAsCallgrindEntry(int line, std::ostream& out) const
 {
-	out << line << " " << maxAlive << " " << alloc.sum << " "<< alloc.count + free.count + cntZeros;
+// 	assert(alive < 0);
+// 	if (alive < 0)
+// 		warning("Get negativ alive value, set to 0 !");
+// 	out << line << ' ' << maxAlive << ' ' << alive
+// 	    << ' ' << alloc.count << ' ' << alloc.min << ' ' << alloc.max << ' ' << alloc.sum 
+// 	    << ' ' << free.sum << ' ' << free.min << ' ' << free.max << ' ' << free.sum
+// 	    << ' ' << lifetime.min << ' ' << lifetime.max
+// 	    << ' ' << alloc.count + free.count + cntZeros;
+	out << line << ' ' << alloc.count << ' ' << free.count << ' ' <<  alloc.count + free.count + cntZeros;
+}
+
+/*******************  FUNCTION  *********************/
+void CallStackInfo::writeCallgrindEventDef(std::ostream& out)
+{
+// 	out << "events: MaxAliveMemory AliveMemory "
+// 	    << "AllocCnt AllocMin AllocMax AllocSum "
+// 		<< "FreeSum FreeMin FreeMax FreeSum "
+// 		<< "LifetimeMin LifetimeMax "
+// 		<< "MemOps\n";
+	out << "events: AllocCnt FreeCnt MemOps\n";
 }
 
 }

@@ -26,7 +26,7 @@ namespace MATT
 /*******************  FUNCTION  *********************/
 SymbolResolver::SymbolResolver(void )
 {
-
+	strings.push_back("??");
 }
 
 /*******************  FUNCTION  *********************/
@@ -64,7 +64,7 @@ void SymbolResolver::registerAddress(void* callSite)
 
 	//search procmap entry
 	LinuxProcMapEntry * procMapEntry = getMapEntry(callSite);
-	
+
 	//insert
 	callSiteMap[callSite].mapEntry = procMapEntry;
 }
@@ -190,7 +190,7 @@ CallSite::CallSite(LinuxProcMapEntry* mapEntry)
 	this->mapEntry = mapEntry;
 	this->line = 0;
 	this->function = -1;
-	this->file = 1;
+	this->file = -1;
 }
 
 /*******************  FUNCTION  *********************/
@@ -409,6 +409,25 @@ void SymbolResolver::resolveMissings(void)
 				it->second.function = getString(res[i]);
 		free(res);
 	}
+}
+
+/*******************  FUNCTION  *********************/
+bool SymbolResolver::isSameFuntion(const CallSite* s1, void* s2) const
+{
+	if (s1 == NULL || s2 == NULL)
+		return false;
+	
+	const CallSite * ss2 = getCallSiteInfo(s2);
+	if (ss2 == NULL)
+		return false;
+	
+	if (ss2 == s1)
+		return true;
+	
+	if (s1->function <= 0 || ss2->function <= 0)
+		return false;
+	
+	return (s1->mapEntry == ss2->mapEntry && s1->function == ss2->function);
 }
 
 }

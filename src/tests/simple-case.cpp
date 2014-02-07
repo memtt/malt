@@ -85,7 +85,7 @@ void testMaxAlive(void)
 void testThreads(void)
 {
 	#pragma omp parallel for
-	for (int i = 0 ; i < 10000 ; i++)
+	for (int i = 0 ; i < 100 ; i++)
 	{
 		void * ptr = malloc(64);
 		*(char*)ptr='c';
@@ -159,6 +159,15 @@ void testAllFuncs(void)
 	assert(ptr != NULL);
 	*(int*)ptr = res;
 	free(ptr);
+}
+
+/*******************  FUNCTION  *********************/
+void testZero(void)
+{
+	void * ptr = malloc(0);
+	free(NULL);
+	ptr = realloc(NULL,0);
+	*(char*)ptr = 'c';
 }
 
 /*******************  FUNCTION  *********************/
