@@ -54,3 +54,8 @@ add_subdirectory(portability)
 if (ENABLE_TESTS)
 	add_subdirectory(tests)
 endif (ENABLE_TESTS)
+
+######################################################
+INSTALL(TARGETS matt matt-base 
+	ARCHIVE DESTINATION lib
+	LIBRARY DESTINATION lib)

@@ -16,4 +16,4 @@ SET_TARGET_PROPERTIES(htopml-json PROPERTIES COMPILE_FLAGS -fPIC)
 
 ######################################################
 #install procedure
-INSTALL(FILES ${JSON_HEADERS} DESTINATION include/htopml)
+#INSTALL(FILES ${JSON_HEADERS} DESTINATION include/htopml)
