@@ -59,6 +59,8 @@ class AllocStackProfiler
 		ProfiledValue requestedMem;
 		ProfiledValue physicalMem;
 		ProfiledValue virtualMem;
+		ProfiledValue internalMem;
+		ProfiledValue segments;
 		StackMode mode;
 		Mutex lock;
 		bool threadSafe;

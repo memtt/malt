@@ -88,7 +88,7 @@ void AllocStackProfiler::onRealloc(void* oldPtr, void* ptr, size_t newSize,Stack
 		SimpleCallStackNode * callStackNode = NULL;
 		
 		//free part
-		if (ptr != NULL)
+		if (oldPtr != NULL)
 			callStackNode = onFreeEvent(oldPtr,MATT_SKIP_DEPTH,userStack,callStackNode,false);
 		
 		//alloc part
@@ -104,12 +104,13 @@ SimpleCallStackNode * AllocStackProfiler::onAllocEvent(void* ptr, size_t size,in
 		//update mem usage
 		if (options.timeProfileEnabled)
 		{
+			segments.onDeltaEvent(1);
 			requestedMem.onDeltaEvent(size);
 			if (virtualMem.isNextPoint())
 			{
 				OSMemUsage mem = OS::getMemoryUsage();
-				virtualMem.onUpdateValue(mem.virtualMemory);
-				physicalMem.onUpdateValue(mem.physicalMemory);
+				virtualMem.onUpdateValue(mem.virtualMemory - gblInternaAlloc->getTotalMemory());
+				physicalMem.onUpdateValue(mem.physicalMemory - gblInternaAlloc->getTotalMemory());
 			}
 		}
 	
@@ -126,8 +127,12 @@ SimpleCallStackNode * AllocStackProfiler::onAllocEvent(void* ptr, size_t size,in
 		//register for segment history tracking
 		if (ptr != NULL)
 			CODE_TIMING("segTracerAdd",segTracker.add(ptr,size,callStackNode));
-	MATT_END_CRITICAL
 	
+		//update intern mem usage
+		if (options.timeProfileEnabled)
+			internalMem.onUpdateValue(gblInternaAlloc->getInuseMemory());
+	MATT_END_CRITICAL
+
 	return callStackNode;
 }
 
@@ -139,8 +144,8 @@ SimpleCallStackNode * AllocStackProfiler::onFreeEvent(void* ptr,int skipDepth, S
 		if (options.timeProfileEnabled && virtualMem.isNextPoint())
 		{
 			OSMemUsage mem = OS::getMemoryUsage();
-			virtualMem.onUpdateValue(mem.virtualMemory);
-			physicalMem.onUpdateValue(mem.physicalMemory);
+			virtualMem.onUpdateValue(mem.virtualMemory - gblInternaAlloc->getTotalMemory());
+			physicalMem.onUpdateValue(mem.physicalMemory - gblInternaAlloc->getTotalMemory());
 		}
 
 		//search segment info to link with previous history
@@ -176,6 +181,13 @@ SimpleCallStackNode * AllocStackProfiler::onFreeEvent(void* ptr,int skipDepth, S
 		
 		//remove tracking info
 		CODE_TIMING("segTracerRemove",segTracker.remove(ptr));
+		
+		//update intern mem usage
+		if (options.timeProfileEnabled)
+		{
+			segments.onDeltaEvent(-1);
+			internalMem.onUpdateValue(gblInternaAlloc->getInuseMemory());
+		}
 	MATT_END_CRITICAL
 	
 	return callStackNode;
@@ -284,6 +296,8 @@ void convertToJson(htopml::JsonState& json, const AllocStackProfiler& value)
 		json.printField("requestedMem",value.requestedMem);
 		json.printField("physicalMem",value.physicalMem);
 		json.printField("virtualMem",value.virtualMem);
+		json.printField("internalMem",value.internalMem);
+		json.printField("segments",value.segments);
 	}
 	json.printField("leaks",value.segTracker);
 	CODE_TIMING("ticksPerSecond",json.printField("ticksPerSecond",ticksPerSecond()));

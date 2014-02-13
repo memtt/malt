@@ -24,6 +24,7 @@ class SimpleCallStackNode
 		SimpleCallStackNode(const Stack & stack, int skipDepth = 0);
 		CallStackInfo & getInfo(void) {return info;};
 		Stack & getCallStack(void) { return callStack;};
+		const Stack & getCallStack(void) const { return callStack;};
 	public:
 		friend std::ostream & operator << (std::ostream & out,const SimpleCallStackNode & tracer);
 		friend void convertToJson(htopml::JsonState & json, const SimpleCallStackNode & value);

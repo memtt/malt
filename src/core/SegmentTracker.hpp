@@ -19,6 +19,14 @@
 namespace MATT
 {
 
+/********************  STRUCT  **********************/
+struct LeakInfo
+{
+	LeakInfo(void);
+	size_t mem;
+	size_t cnt;
+};
+
 /*********************  CLASS  **********************/
 struct SegmentInfo
 {
@@ -36,6 +44,7 @@ struct SegmentInfo
 /*********************  TYPES  **********************/
 typedef std::map<void*,SegmentInfo,std::less<void*>,STLInternalAllocator<std::pair<void*,SegmentInfo> > > SegmentInfoMap;
 // typedef std::map<void*,SegmentInfo> SegmentInfoMap;
+typedef std::map<const SimpleCallStackNode*,LeakInfo> LeakInfoMap;
 
 /*********************  CLASS  **********************/
 class SegmentTracker
@@ -49,8 +58,13 @@ class SegmentTracker
 	public:
 		friend void convertToJson(htopml::JsonState & json,const SegmentTracker & value);
 	private:
+		void fillLeaks(LeakInfoMap & leakMap) const;
+	private:
 		SegmentInfoMap map;
 };
+
+/*******************  FUNCTION  *********************/
+void convertToJson(htopml::JsonState& json, const LeakInfoMap& value);
 
 }
 

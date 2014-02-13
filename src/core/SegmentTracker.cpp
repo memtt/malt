@@ -83,16 +83,44 @@ ticks SegmentInfo::getLifetime(void ) const
 }
 
 /*******************  FUNCTION  *********************/
+void SegmentTracker::fillLeaks(LeakInfoMap& leakMap) const
+{
+	for(SegmentInfoMap::const_iterator it = map.begin() ; it != map.end() ; ++it)
+	{
+		LeakInfo & info = leakMap[it->second.callStack];
+		info.cnt++;
+		info.mem+=it->second.size;
+	}
+}
+
+/*******************  FUNCTION  *********************/
 void convertToJson(htopml::JsonState& json, const SegmentTracker& value)
 {
-	json.openStruct();
-	for(SegmentInfoMap::const_iterator it = value.map.begin() ; it != value.map.end() ; ++it)
+	LeakInfoMap leaks;
+	value.fillLeaks(leaks);
+	convertToJson(json,leaks);
+}
+
+/*******************  FUNCTION  *********************/
+LeakInfo::LeakInfo(void)
+{
+	mem = 0;
+	cnt = 0;
+}
+
+/*******************  FUNCTION  *********************/
+void convertToJson(htopml::JsonState& json, const LeakInfoMap& value)
+{
+	json.openArray();
+	for (LeakInfoMap::const_iterator it = value.begin() ; it != value.end() ; ++it)
 	{
-		char buffer[64];
-		sprintf(buffer,"%p",it->first);
-		json.printField(buffer,it->second.callStack->getCallStack());
+		json.openStruct();
+		json.printField("stack",it->first->getCallStack());
+		json.printField("count",it->second.cnt);
+		json.printField("memory",it->second.mem);
+		json.closeStruct();
 	}
-	json.closeStruct();
+	json.closeArray();
 }
 
 }

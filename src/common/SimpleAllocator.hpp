@@ -56,10 +56,12 @@ class SimpleAllocator
 		void free(void * ptr);
 		size_t getTotalMemory(void);
 		size_t getUnusedMemory(void);
+		size_t getInuseMemory(void);
 		size_t getMaxSize(void) const;
 		void printState(void) const;
 	protected:
 		void requestSystemMemory(void);
+		void touchMemory(void * ptr,size_t size);
 		Chunk * getInList(size_t size);
 		Chunk * getInCur(size_t size);
 		Chunk * getInSys(size_t size);

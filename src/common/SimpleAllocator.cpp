@@ -15,6 +15,9 @@
 #include <cstdio>
 #include <iostream>
 
+/*******************  NAMESPACE  ********************/
+#define MATT_PAGE_SIZE 4096
+
 /***************** USING NAMESPACE ******************/
 using namespace std;
 
@@ -43,6 +46,7 @@ void SimpleAllocator::requestSystemMemory(void)
 	cur = (Chunk*)mmap(NULL,sysReqSize,PROT_READ|PROT_WRITE,MAP_ANON|MAP_PRIVATE,0,0);
 	assumeArg(cur != MAP_FAILED,"Failed to request memory with mmap for internal allocator : %s.").argStrErrno().end();
 	cur->size = sysReqSize - sizeof(*cur);
+	touchMemory(cur,cur->size);
 	this->totalMemory += sysReqSize;
 	this->unusedMemory += sysReqSize;
 }
@@ -286,6 +290,21 @@ void SimpleAllocator::printState(void) const
 	Helpers::printValue(cerr,unusedMemory,"o");
 	cerr << endl;
 	cerr << "=================================================================================================================================================" << endl;
+}
+
+/*******************  FUNCTION  *********************/
+size_t SimpleAllocator::getInuseMemory(void)
+{
+	return totalMemory - unusedMemory;
+}
+
+/*******************  FUNCTION  *********************/
+void SimpleAllocator::touchMemory(void* ptr, size_t size)
+{
+	if (ptr == NULL || ptr == MAP_FAILED)
+		return;
+	for (int i = 0 ; i < size ; i += MATT_PAGE_SIZE)
+		*(char*)ptr = '\0';
 }
 
 };
