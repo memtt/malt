@@ -118,7 +118,7 @@ SimpleCallStackNode * AllocStackProfiler::onAllocEvent(void* ptr, size_t size,in
 		{
 			//search if not provided
 			if (callStackNode == NULL)
-				callStackNode = getStackNode(skipDepth+1,size,userStack);
+				callStackNode = getStackNode(skipDepth+1,userStack);
 			
 			//count events
 			CODE_TIMING("updateInfoAlloc",callStackNode->getInfo().onAllocEvent(size));
@@ -170,7 +170,7 @@ SimpleCallStackNode * AllocStackProfiler::onFreeEvent(void* ptr,int skipDepth, S
 		{
 			//search call stack info if not provided
 			if (callStackNode == NULL)
-				callStackNode = getStackNode(skipDepth+1,-size,userStack);
+				callStackNode = getStackNode(skipDepth+1,userStack);
 			
 			//count events
 			CODE_TIMING("updateInfoFree",callStackNode->getInfo().onFreeEvent(size));
@@ -194,7 +194,7 @@ SimpleCallStackNode * AllocStackProfiler::onFreeEvent(void* ptr,int skipDepth, S
 }
 
 /*******************  FUNCTION  *********************/
-SimpleCallStackNode* AllocStackProfiler::getStackNode(int skipDepth, ssize_t delta, Stack* userStack)
+SimpleCallStackNode* AllocStackProfiler::getStackNode(int skipDepth,Stack* userStack)
 {
 	SimpleCallStackNode * res = NULL;
 

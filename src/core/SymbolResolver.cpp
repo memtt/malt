@@ -220,7 +220,7 @@ void SymbolResolver::resolveNames(void)
 	}
 	
 	//final check for not found
-	//resolveMissings();
+	resolveMissings();
 }
 
 /*******************  FUNCTION  *********************/
@@ -393,7 +393,7 @@ void SymbolResolver::resolveMissings(void)
 
 	//search
 	for (CallSiteMap::const_iterator it = callSiteMap.begin() ; it != callSiteMap.end() ; ++it)
-		if (it->second.function == -1)
+		if (it->second.function == -1 || getString(it->second.function) == "??")
 			toResolve.push_back(it->first);
 		
 	//nothing to do
@@ -405,9 +405,31 @@ void SymbolResolver::resolveMissings(void)
 	{
 		int i = 0;
 		for (CallSiteMap::iterator it = callSiteMap.begin() ; it != callSiteMap.end() ; ++it)
-			if (it->second.function == -1)
-				it->second.function = getString(res[i]);
+			if (it->second.function == -1 || getString(it->second.function) == "??")
+				it->second.function = getString(extractSymbolName(res[i++]));
 		free(res);
+	}
+}
+
+/*******************  FUNCTION  *********************/
+char * SymbolResolver::extractSymbolName(char* value)
+{
+	//errors
+	assert(value != NULL);
+	
+	//search last
+	char * pos1 = strrchr(value,'(');
+	char * pos2 = strrchr(value,')');
+	
+	//scanf
+	if (pos1 == NULL)
+	{
+		return value;
+	} else if (pos2 == NULL) {
+		return pos1;
+	} else {
+		*pos2 = '\0';
+		return pos1+1;
 	}
 }
 

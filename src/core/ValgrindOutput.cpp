@@ -10,6 +10,7 @@
 #include <cstring>
 #include <fstream>
 #include <iostream>
+#include <cstring>
 #include "ValgrindOutput.hpp"
 #include <portability/OS.hpp>
 
@@ -24,17 +25,28 @@ namespace MATT
 /*******************  FUNCTION  *********************/
 void ValgrindOutput::pushStackInfo(SimpleCallStackNode& stackNode,const SymbolResolver & symbols)
 {
+	int shift = 0;
+	
 	//get addresses
 	Stack & stack = stackNode.getCallStack();
 	CallStackInfo & stackInfo = stackNode.getInfo();
 	void * leafCalleePtr = stack.getCallee();
+	
+	//shift if operator new
+	const CallSite * leafInfo = symbols.getCallSiteInfo(leafCalleePtr);
+	const std::string & symbol = symbols.getString(leafInfo->function);
+	if (leafInfo != NULL && (strncmp("_Znw",symbol.c_str(),4) == 0 || strncmp("_Zna",symbol.c_str(),4) == 0))
+	{
+		leafCalleePtr = stack[1];
+		shift++;
+	}
 	
 	//search function info in caller map and reduce data
 	ValgrindCaller & funcInfo = callers[leafCalleePtr];
 	funcInfo.info.push(stackInfo);
 	
 	//if as caller/callee, register inclusive costs
-	for (int i = 1 ; i < stack.getSize() ; i++)
+	for (int i = 1+shift ; i < stack.getSize() ; i++)
 	{
 		//extrace callee/caller
 		void * callerPtr = stack[i];
@@ -109,6 +121,8 @@ void ValgrindOutput::writeLocation(ostream& out, const SymbolResolver& dic, cons
 /*******************  FUNCTION  *********************/
 void ValgrindOutput::writeAsCallgrind(ostream& out, const SymbolResolver& dic)
 {
+	int line;
+	
 	//header
 	out << "version: 1" << LINE_BREAK;
 	out << "creator: ATT-0.0.0" << LINE_BREAK;
@@ -136,10 +150,15 @@ void ValgrindOutput::writeAsCallgrind(ostream& out, const SymbolResolver& dic)
 		//location
 		writeLocation(out,dic,info,it->first,false);
 		if (info == NULL || info->line == -1)
-			it->second.info.writeAsCallgrindEntry(0,out);
+			line = 0;
 		else
-			it->second.info.writeAsCallgrindEntry(info->line,out);
+			line = info->line;
+
+		//local values
+		it->second.info.writeAsCallgrindEntry(line,out);
 		out << LINE_BREAK;
+
+		//childs
 		for (ValgrindCalleeMap::const_iterator itChild = it->second.callees.begin() ; itChild != it->second.callees.end() ; ++itChild)
 		{
 			const CallSite * infoChild = dic.getCallSiteInfo(itChild->first);
@@ -148,7 +167,7 @@ void ValgrindOutput::writeAsCallgrind(ostream& out, const SymbolResolver& dic)
 				out << "calls=" << itChild->second.free.count + itChild->second.alloc.count + itChild->second.cntZeros << " 0" << LINE_BREAK;
 			else
 				out << "calls=" << itChild->second.free.count + itChild->second.alloc.count + itChild->second.cntZeros << ' ' << infoChild->line << LINE_BREAK;
-			itChild->second.writeAsCallgrindEntry(0,out);
+			itChild->second.writeAsCallgrindEntry(line,out);
 			out << LINE_BREAK;
 		}
 		out << LINE_BREAK;

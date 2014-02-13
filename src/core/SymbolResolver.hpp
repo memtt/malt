@@ -76,6 +76,7 @@ class SymbolResolver
 		void resolveNames(LinuxProcMapEntry * procMapEntry);
 		int getString(const char* value);
 		void resolveMissings(void);
+		static char * extractSymbolName(char * value);
 	private:
 		FuncNameDicMap nameMap;
 		LinuxProcMap procMap;
