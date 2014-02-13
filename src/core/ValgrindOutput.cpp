@@ -33,20 +33,15 @@ void ValgrindOutput::pushStackInfo(SimpleCallStackNode& stackNode,const SymbolRe
 	void * leafCalleePtr = stack.getCallee();
 	
 	//shift if operator new
-	const CallSite * leafInfo = symbols.getCallSiteInfo(leafCalleePtr);
-	const std::string & symbol = symbols.getString(leafInfo->function);
-	if (leafInfo != NULL && (strncmp("_Znw",symbol.c_str(),4) == 0 || strncmp("_Zna",symbol.c_str(),4) == 0))
-	{
-		leafCalleePtr = stack[1];
-		shift++;
-	}
+	while (isNewOperator(symbols,leafCalleePtr))
+		leafCalleePtr = stack[++shift];
 	
 	//search function info in caller map and reduce data
 	ValgrindCaller & funcInfo = callers[leafCalleePtr];
 	funcInfo.info.push(stackInfo);
 	
 	//if as caller/callee, register inclusive costs
-	for (int i = 1+shift ; i < stack.getSize() ; i++)
+	for (int i = 1 + shift ; i < stack.getSize() ; i++)
 	{
 		//extrace callee/caller
 		void * callerPtr = stack[i];
@@ -82,6 +77,18 @@ void ValgrindOutput::pushStackInfo(SimpleCallStackNode& stackNode,const SymbolRe
 		}
 	}
 }
+
+/*******************  FUNCTION  *********************/
+bool ValgrindOutput::isNewOperator(const SymbolResolver& symbols, void* addr)
+{
+	const CallSite * leafInfo = symbols.getCallSiteInfo(addr);
+	if (leafInfo == NULL)
+		return false;
+
+	const std::string & symbol = symbols.getString(leafInfo->function);
+	return (strncmp("_Znw",symbol.c_str(),4) == 0 || strncmp("_Zna",symbol.c_str(),4) == 0);
+}
+
 
 /*******************  FUNCTION  *********************/
 void ValgrindOutput::writeAsCallgrind(const std::string& filename, const SymbolResolver & dic)
