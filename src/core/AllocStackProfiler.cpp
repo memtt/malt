@@ -19,6 +19,7 @@
 //internals
 #include <common/CodeTiming.hpp>
 #include <common/FormattedMessage.hpp>
+#include <common/SimpleAllocator.hpp>
 #include "AllocStackProfiler.hpp"
 
 /********************  MACROS  **********************/
@@ -35,6 +36,10 @@ AllocStackProfiler::AllocStackProfiler(const Options & options,StackMode mode,bo
 	this->mode = mode;
 	this->threadSafe = threadSafe;
 	this->options = options;
+	
+	//init internal alloc
+	if (gblInternaAlloc == NULL)
+		gblInternaAlloc = new SimpleAllocator(false);
 
 	switch(mode)
 	{
@@ -241,9 +246,12 @@ void AllocStackProfiler::onExit(void )
 			stackTracer.fillValgrindOut(vout);
 			CODE_TIMING("outputCallgrind",vout.writeAsCallgrind(FormattedMessage(options.outputName).arg(OS::getExeName()).arg(OS::getPID()).arg("callgrind").toString(),stackTracer.getNameDic()));
 		}
-		
+
 		//print timings
+		#ifdef MATT_ENABLE_CODE_TIMING
 		CodeTiming::printAll();
+		gblInternaAlloc->printState();
+		#endif //MATT_ENABLE_CODE_TIMING
 	MATT_END_CRITICAL
 }
 

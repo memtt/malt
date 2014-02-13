@@ -1,6 +1,10 @@
 #ifndef CONFIG_H
 #define CONFIG_H
 
+//select one of the spinlock mode
+#cmakedefine MATT_PORTABILITY_SPINLOCK_PTHREAD
+#cmakedefine MATT_PORTABILITY_SPINLOCK_DUMMY
+
 //select one of the mutex mode
 #cmakedefine MATT_PORTABILITY_MUTEX_PTHREAD
 #cmakedefine MATT_PORTABILITY_MUTEX_DUMMY

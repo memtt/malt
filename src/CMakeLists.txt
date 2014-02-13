@@ -8,14 +8,16 @@
 
 ######################################################
 #Code options
-set(ENABLE_CODE_TIMING "no"      CACHE BOOL   "Enable some tricks to quickly check timings of hostspots of MATT internal code.")
-set(ENABLE_TESTS       "yes"     CACHE BOOL   "Enable build of internal tests.")
+set(ENABLE_CODE_TIMING   "no"       CACHE BOOL   "Enable some tricks to quickly check timings of hostspots of MATT internal code.")
+set(ENABLE_TESTS         "yes"      CACHE BOOL   "Enable build of internal tests.")
 #select portability mode
-set(PORTABILITY_MUTEX  "PTHREAD" CACHE STRING "Select mutex implementation to use. Currently support : 'PTHREAD', 'DUMMY'.")
-set(PORTABILITY_OS     "UNIX"    CACHE STRING "Select OS implementation to use. Currently support : 'UNIX'.")
+set(PORTABILITY_SPINLOCK "PTHREAD"  CACHE STRING "Select spinlock implementation to use. Currently support : 'PTHREAD', 'DUMMY'.")
+set(PORTABILITY_MUTEX    "PTHREAD"  CACHE STRING "Select mutex implementation to use. Currently support : 'PTHREAD', 'DUMMY'.")
+set(PORTABILITY_OS       "UNIX"     CACHE STRING "Select OS implementation to use. Currently support : 'UNIX'.")
 
 ######################################################
 #select portability definitions
+set(MATT_PORTABILITY_SPINLOCK_${PORTABILITY_SPINLOCK} yes)
 set(MATT_PORTABILITY_MUTEX_${PORTABILITY_MUTEX} yes)
 set(MATT_PORTABILITY_OS_${PORTABILITY_OS}       yes)
 #enabling features
@@ -39,10 +41,11 @@ set(COMMON_OBJS $<TARGET_OBJECTS:htopml-json> $<TARGET_OBJECTS:matt-core> $<TARG
 
 ######################################################
 add_library(matt-base SHARED ${COMMON_OBJS})
+target_link_libraries(matt-base pthread)
 
 ######################################################
 add_library(matt SHARED ${COMMON_OBJS} $<TARGET_OBJECTS:matt-libc-wrapper>)
-target_link_libraries(matt dl)
+target_link_libraries(matt pthread dl)
 
 ######################################################
 add_subdirectory(core)

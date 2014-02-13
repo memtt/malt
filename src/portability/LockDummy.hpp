@@ -14,10 +14,10 @@ namespace MATT
 {
 
 /*********************  CLASS  **********************/
-struct MutexDummy
+struct LockDummy
 {
-	MutexDummy(void) {};
-	~MutexDummy(void) {};
+	LockDummy(void) {};
+	~LockDummy(void) {};
 	void lock(void) {};
 	void unlock(void) {};
 	bool tryLock(void) {return true;};

@@ -18,6 +18,7 @@
 #include <unistd.h>
 //locals
 #include "CodeTiming.hpp"
+#include "Helpers.hpp"
 
 /***************** USING NAMESPACE ******************/
 using namespace std;
@@ -27,8 +28,6 @@ namespace MATT
 {
 
 /********************** CONSTS **********************/
-/** Strings for unit printing. **/
-static const char * cstUnits[] = {"","K","M","G","T","P"};
 //Init static values of CodeTiming
 ticks CodeTiming::globalStart = 0;
 int CodeTiming::globalCntTimers = 0;
@@ -138,40 +137,17 @@ void CodeTiming::finalPrint(void) const
 		ticks wholeExec = getticks() - globalStart;
 		double ratio = (double)(100*sum) / (double)wholeExec;
 		cerr << "TIMING OF " << std::setw(32) << std::left << this->name << " => [ ";
-		printValue(min);
+		Helpers::printValue(cerr,min);
 		cerr << " , ";
-		printValue((double)sum / (double)count);
+		Helpers::printValue(cerr,(double)sum / (double)count);
 		cerr << " , ";
-		printValue(max);
+		Helpers::printValue(cerr,max);
 		cerr << " ] => TOTAL ( calls : ";
-		printValue(count);
+		Helpers::printValue(cerr,count);
 		cerr << " , time : ";
-		printValue(sum);
+		Helpers::printValue(cerr,sum);
 		cerr << " , " << "radio : ~ " << std::setprecision( 2 ) << setw(8) << std::left << ratio << "% )" << endl;
 	#endif
-}
-
-/*******************  FUNCTION  *********************/
-/**
- * Help to format values by using adapted unit.
- * @param value The value to print.
- * @param unit The name of the unit to use (cycles, seconds...). Empty for none.
-**/
-void CodeTiming::printValue(double value, const char* unit) const
-{
-	//errors
-	assert(unit != NULL);
-
-	//compte depth
-	int depth = 0;
-	while (value > 100)
-	{
-		depth++;
-		value /= 1000.0;
-	}
-	
-	//print
-	cerr << setw(5) << setprecision(2) << std::right << value << " " << setw(1) << cstUnits[depth] << unit;
 }
 
 /*******************  FUNCTION  *********************/
@@ -192,7 +168,7 @@ ticks ticksPerSecond(void)
 		ticks t0,t1;
 		gettimeofday(&ts0,NULL);
 		t0 = getticks();
-		sleep(1);
+// 		sleep(1);
 		t1 = getticks();
 		gettimeofday(&ts1,NULL);
 		

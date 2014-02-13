@@ -20,14 +20,17 @@
 #include "BacktraceCallStack.hpp"
 #include "SimpleCallStackNode.hpp"
 #include "ValgrindOutput.hpp"
+#include <common/STLInternalAllocator.hpp>
 
 /*******************  NAMESPACE  ********************/
 namespace MATT
 {
 
 /*******************  FUNCTION  *********************/
-typedef std::vector<SimpleCallStackNode*> SimpleBacktraceVector;
-typedef std::map<StackHash,SimpleBacktraceVector> SimpleBacktraceVectorMap;
+//typedef std::vector<SimpleCallStackNode*> SimpleBacktraceVector;
+typedef std::vector<SimpleCallStackNode*,STLInternalAllocator<SimpleCallStackNode*> > SimpleBacktraceVector;
+// typedef std::map<StackHash,SimpleBacktraceVector> SimpleBacktraceVectorMap;
+typedef std::map<StackHash,SimpleBacktraceVector,std::less<StackHash>,STLInternalAllocator<std::pair<StackHash,SimpleBacktraceVector> > > SimpleBacktraceVectorMap;
 
 /*********************  CLASS  **********************/
 class SimpleStackTracer

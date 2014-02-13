@@ -39,6 +39,16 @@ void yourFunc(void)
 #else
 	#define CODE_TIMING(name,code) do{code;}while(0)
 #endif
+
+
+/********************  MACROS  **********************/
+#ifdef MATT_ENABLE_CODE_TIMING
+	#define CODE_TIMING_FUNC_START(name) static MATT::CodeTiming __code_timing_local_##name##__(#name); ticks __code_timing_start_##name##__ = __code_timing_local_##name##__.start()
+	#define CODE_TIMING_FUNC_STOP(name) __code_timing_local_##name##__.end(__code_timing_start_##name##__)
+#else //MATT_ENABLE_CODE_TIMING
+	#define CODE_TIMING_FUNC_START(name) do{}while(0)
+	#define CODE_TIMING_FUNC_STOP(name) do{}while(0)
+#endif //MATT_ENABLE_CODE_TIMING
 	
 	
 /*******************  NAMESPACE  ********************/
@@ -56,9 +66,9 @@ namespace MATT
 void yourFun(void)
 {
 	static CodeTiming timing( "youFunc" );
-	timing.start();
+	ticks t = timing.start();
 	//your job
-	timing.stop();
+	timing.stop(t);
 }
 \endcode
  *
@@ -78,7 +88,6 @@ class CodeTiming
 		static int compare(const void * a,const void * b);
 		static void registerTimer(CodeTiming * timer);
 		static void timerFinish(CodeTiming * timer);
-		void printValue(double value, const char * unit = "") const;
 	private:
 		/** Name of the code section to profile, only used for display. **/
 		const char * name;

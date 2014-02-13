@@ -13,6 +13,7 @@
 #include <map>
 #include <cycle.h>
 #include "SimpleCallStackNode.hpp"
+#include <common/STLInternalAllocator.hpp>
 
 /*******************  NAMESPACE  ********************/
 namespace MATT
@@ -33,7 +34,8 @@ struct SegmentInfo
 };
 
 /*********************  TYPES  **********************/
-typedef std::map<void*,SegmentInfo> SegmentInfoMap;
+typedef std::map<void*,SegmentInfo,std::less<void*>,STLInternalAllocator<std::pair<void*,SegmentInfo> > > SegmentInfoMap;
+// typedef std::map<void*,SegmentInfo> SegmentInfoMap;
 
 /*********************  CLASS  **********************/
 class SegmentTracker

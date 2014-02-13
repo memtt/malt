@@ -10,6 +10,7 @@
 #define MATT_TAKE_LOCK_HPP
 
 /********************  HEADERS  *********************/
+#include <cstdlib>
 #include <cassert>
 
 /********************  INFO   ***********************/

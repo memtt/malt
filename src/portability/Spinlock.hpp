@@ -6,35 +6,26 @@
              LICENSE  : CeCILL-C
 *****************************************************/
 
-#ifndef MATT_MUTEX_HPP
-#define MATT_MUTEX_HPP
+#ifndef MATT_SPINLOCK_HPP
+#define MATT_SPINLOCK_HPP
 
 /********************  HEADERS  *********************/
 #include <common/TakeLock.hpp>
 #include <config.h>
 
 /*********************  TYPES  **********************/
-#if defined(MATT_PORTABILITY_MUTEX_PTHREAD)
+#if defined(MATT_PORTABILITY_SPINLOCK_PTHREAD)
 	//pthread mode
-	#include "MutexPthread.hpp"
-	
-	//map macros to generic names
-	#define MATT_STATIC_MUTEX_INIT {PTHREAD_MUTEX_INITIALIZER}
+	#include "SpinlockPthread.hpp"
 
 	//map types to generic names
 	namespace MATT
 	{
-		typedef StaticMutexPthread StaticMutex;
-		typedef MutexPthread Mutex;
+		typedef SpinlockPthread Spinlock;
 	}
-#elif defined(MATT_PORTABILITY_MUTEX_DUMMY)
+#elif defined(MATT_PORTABILITY_SPINLOCK_DUMMY)
 	//dummy mode (not thread safe, only for quik portability)
-	#include "MutexDummy.hpp"
-	
-	//map macros to generic names
-	#warning Need to cleanup this
-	static MATT::MutexDummy __matt__static_mutex_init__;
-	#define MATT_STATIC_MUTEX_INIT __matt__static_mutex_init__
+	#include "LockDummy.hpp"
 	
 	//show some warning
 	#warning Caution, you are using the DUMMY mutex implementation, MATT will not be thread-safe !
@@ -42,12 +33,11 @@
 	//map types to generic names
 	namespace MATT
 	{
-		typedef LockDummy StaticMutex;
-		typedef LockDummy Mutex;
+		typedef SpinlockDummy Spinlock;
 	};
 #else
 	//not found, fail to compile
-	#error "No available implementation for mutex, please check definition of one of MATT_PORTABILITY_MUTEX_* macro in config.h or PORTABILITY_MUTEX given to cmake."
+	#error "No available implementation for mutex, please check definition of one of MATT_PORTABILITY_SPINLOCK_* macro in config.h or PORTABILITY_SPINLOCK given to cmake."
 #endif
 
-#endif //MATT_MUTEX_HPP
+#endif //MATT_SPINLOCK_HPP

@@ -340,26 +340,36 @@ void Stack::resolveSymbols ( SymbolResolver& dic ) const
 /*******************  FUNCTION  *********************/
 void* Stack::getCallee(void ) const
 {
-	assert(size >= 1);
-	switch(order)
+	if (stack == NULL)
 	{
-		case STACK_ORDER_ASC:
-			return stack[0];
-		case STACK_ORDER_DESC:
-			return stack[size-1];
+		return NULL;
+	} else {
+		assert(size >= 1);
+		switch(order)
+		{
+			case STACK_ORDER_ASC:
+				return stack[0];
+			case STACK_ORDER_DESC:
+				return stack[size-1];
+		}
 	}
 }
 
 /*******************  FUNCTION  *********************/
 void* Stack::getCaller(void ) const
 {
-	assert(size >= 2);
-	switch(order)
+	if (stack == NULL)
 	{
-		case STACK_ORDER_ASC:
-			return stack[1];
-		case STACK_ORDER_DESC:
-			return stack[size-2];
+		return NULL;
+	} else {
+		assert(size >= 2);
+		switch(order)
+		{
+			case STACK_ORDER_ASC:
+				return stack[1];
+			case STACK_ORDER_DESC:
+				return stack[size-2];
+		}
 	}
 }
 
