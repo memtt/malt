@@ -87,9 +87,11 @@ function MattGetString(value,resIfNotFound)
 function MattMergeMinMax(onto,value)
 {
 	onto.count += value.count;
-	onto.min += value.min;
-	onto.max += value.max;
 	onto.sum += value.sum;
+	if (onto.min == 0 || (value.min < onto.min && value.min != 0))
+		onto.min = value.min;
+	if (onto.max == 0 || (value.max > onto.max && value.max != 0))
+		onto.max = value.max;
 }
 
 /****************************************************/
@@ -132,8 +134,6 @@ function MattReduceStackInfoObject(into,addr,subKey,value)
 /****************************************************/
 //map on datas/flat.json to provide flat profiles on functions
 app.get('/flat.json',function(req,res) {
-	console.log('Get flat profile /flat.json');
-
 	//loop on all entries and compute reduced flat view
 	var tmp = new Object;
 	var stats = data.stackInfo.stats;
@@ -168,7 +168,8 @@ app.get('/flat.json',function(req,res) {
 //export static deps
 app.use('/deps/jquery',Express.static(__dirname + '/client_deps/jquery-1.11.0'));
 app.use('/deps/bootstrap',Express.static(__dirname + '/client_deps/bootstrap-3.1.1-dist'));
-app.use('/deps/bootswatch',Express.static(__dirname + '/client_deps/bootswatch.com/slate'));
+app.use('/deps/bootswatch/slate',Express.static(__dirname + '/client_deps/bootswatch.com/slate'));
+app.use('/deps/bootswatch/fonts',Express.static(__dirname + '/client_deps/bootstrap-3.1.1-dist/fonts'));
 app.use('/deps/ejs',Express.static(__dirname + '/client_deps/ejs-1.0/'));
 app.use('/deps/ace',Express.static(__dirname + '/client_deps/ace-builds-1.1.1/'));
 app.use('/app-sources/',Express.static('/'));
@@ -177,4 +178,4 @@ app.use('/',Express.static(__dirname+'/client_files'));
 /****************************************************/
 //run express
 console.log("Starting server on http://localhost:" + port);
-app.listen(port);
+app.listen(port,'localhost');

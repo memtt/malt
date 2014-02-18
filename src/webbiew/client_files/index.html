@@ -9,7 +9,7 @@
 		<!-- Bootstrap -->
 		<link href="deps/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 		<!-- Theme -->
-<!-- 		<link href='deps/bootswatch/bootstrap.min.css' rel="stylesheet"> -->
+		<link href='deps/bootswatch/slate/bootstrap.min.css' rel="stylesheet">
 
 		<style type="text/css" media="screen">
 			#matt-editor { 
@@ -82,9 +82,9 @@
 							Allocated mem.
 							<span class="caret"></span>
 						</button>
-						<ul class="dropdown-menu">
-							<li><a href="javascript:document.getElementById('matt-func-list').matt.updateMetric('alloc.sum');">Allocated mem.</a></li>
-							<li><a href="javascript:document.getElementById('matt-func-list').matt.updateMatric('alloc.count');">Alloc num.</a></li>
+						<ul class="dropdown-menu" id='matt-selector-list'>
+				<!--			<li><a href="javascript:document.getElementById('matt-func-list').matt.updateMetric('alloc.sum');">Allocated mem.</a></li>
+							<li><a href="javascript:document.getElementById('matt-func-list').matt.updateMatric('alloc.count');">Alloc num.</a></li>-->
 						</ul>
 					</div>
 				
@@ -109,7 +109,7 @@
 				
 				//create editor
 				this.editor = ace.edit(divId);
-				//this.editor.setTheme("ace/theme/monokai");
+				this.editor.setTheme("ace/theme/tomorrow_night");
 				this.editor.getSession().setMode("ace/mode/c_cpp");
 				this.editor.setReadOnly(true);
 
@@ -117,14 +117,19 @@
 				//Function to update file in editor
 				this.updateFile = function(file,line)
 				{
-					mattAssert(file != '??' && file != '' && file != undefined,"Invalid file : " + file);
-
-					var mattObj = this;
-					$.get( "/app-sources/"+file,function(data){
-						mattObj.editor.setValue(data);
-						mattObj.editor.resize(true);
-						mattObj.editor.gotoLine(line);
-					});
+					if(file == '??' || file == '' || file == undefined)
+					{
+						this.editor.setValue("//Uknown source file, maybe debug informations are missing !\n");
+						this.editor.resize(true);
+						this.editor.gotoLine(1);
+					} else {
+						var mattObj = this;
+						$.get( "/app-sources/"+file,function(data){
+							mattObj.editor.setValue(data);
+							mattObj.editor.resize(true);
+							mattObj.editor.gotoLine(line);
+						});
+					}
 				}
 				
 // 				this.updateFile('/home/svalat/Projects/matt/src/tests/simple-case.cpp');
@@ -132,6 +137,7 @@
 		
 			$( document ).ready(function() {
 				var mattFuncList = new MattFuncList('matt-func-list');
+				mattFuncList.renderSelectorList('matt-selector-list');
 				var mattEditor = new MattEditor('matt-editor');
 			});
 		</script>

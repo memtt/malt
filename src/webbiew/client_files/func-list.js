@@ -13,13 +13,14 @@ function mattHumanValue(data,value)
 		return (100.0*value/data.ref).toFixed(1) + " %";
 	} else {
 		var power = 0;
-		while (value >= 100)
+		while (value >= 1000)
 		{
 			power++;
 			value /= 1000;
 		}
 
-		return value.toFixed(1) + " " + MATT_POWER[power] + data.unit;
+		//return value.toFixed(1) + " " + MATT_POWER[power] + data.unit;
+		return Math.round(value) + " " + MATT_POWER[power] + data.unit;
 	}
 }
 
@@ -35,12 +36,20 @@ function MattFuncList(ulId)
 	
 	//setup default modes
 	this.mode = 'total'; //total | own
-	this.select = 'alloc.sum';//alloc.sum | alloc.count | alloc.min | alloc.max
+	this.selected = 'alloc.sum';//alloc.sum | alloc.count | alloc.min | alloc.max... (see this.valueSelector)
 	this.unit = 'real';//real | percent
 	this.sort = 'asc';//asc | desc
 	
 	//data not fetch now
 	this.data = null;
+	
+	//build value extractor
+	this.valueSelector = new Object();
+	this.valueSelector['alloc.sum']   = {'name': 'Allocated mem.','extractor':function (entry) {return entry.alloc.sum;},'unit' : 'B','ref':'sum'};
+	this.valueSelector['alloc.count'] = {'name': 'Allocations num.','extractor':function (entry) {return entry.alloc.count;},'unit':'','ref':'sum'};
+	this.valueSelector['alloc.min'] = {'name': 'Min. alloc. size','extractor':function (entry) {return entry.alloc.min;},'unit':'B','ref':'max'};
+	this.valueSelector['alloc.max'] = {'name': 'Max. alloc. size','extractor':function (entry) {return entry.alloc.max;},'unit':'B','ref':'max'};
+	this.valueSelector['alloc.moy'] = {'name': 'Mean alloc. size','extractor':function (entry) {return entry.alloc.count == 0 ? 0 : entry.alloc.sum / entry.alloc.count;},'unit':'B','ref':'max'};
 	
 	//Declare render function
 	this.render = function()
@@ -53,6 +62,13 @@ function MattFuncList(ulId)
 		}
 	}
 	
+	//update selecteion
+	this.updateMetric = function(name)
+	{
+		this.selected = name;
+		this.render();
+	}
+
 	//toogle unit
 	this.toogleUnit = function()
 	{
@@ -93,6 +109,12 @@ function MattFuncList(ulId)
 		});
 	}
 	
+	this.renderSelectorList = function(id)
+	{
+		var callback = new EJS({url: 'selector-list.ejs'}).update(id);
+		callback({'selectors':this.valueSelector,'listId':this.ulId});
+	}
+
 	//Declare internal render
 	this.internalRender = function()
 	{
@@ -102,7 +124,7 @@ function MattFuncList(ulId)
 	}
 	
 	//extract selected value from data entry
-	this.internalGetSelectedValue = function(entry)
+	this.internalGetSelectedValue = function(entry,selector)
 	{
 		var selMode;
 		if (this.mode == 'total')
@@ -113,22 +135,25 @@ function MattFuncList(ulId)
 		if (selMode == undefined)
 			return 0;
 		
-		return selMode.alloc.sum;
+		return selector.extractor(selMode);
 	}
 	
 	//get unit 
-	this.internalGetUnit = function()
+	this.internalGetUnit = function(selector)
 	{
 		if (this.unit == 'real')
-			return 'B';
+			return selector.unit;
 		else
 			return '%';
 	}
 	
 	//get ref
-	this.internalGetRef = function(max,sum)
+	this.internalGetRef = function(max,sum,selector)
 	{
-		return sum;
+		if (selector.ref == 'max' || this.mode == 'total')
+			return max;
+		else
+			return sum;
 	}
 	
 	//check values
@@ -140,6 +165,7 @@ function MattFuncList(ulId)
 		mattAssert($.inArray(this.mode,this.acceptedModes),"Invalid property 'mode' : " + this.mode);
 		mattAssert($.inArray(this.sort,this.acceptedSort),"Invalid property 'sort' : " + this.mode);
 		mattAssert($.inArray(this.unit,this.acceptedUnit),"Invalid property 'unit' : " + this.unit);
+		mattAssert(this.valueSelector[this.selected] != undefined,"Invalid property 'selected' : " + this.selected);
 	}
 	
 	//Extract function list and format with user requirement
@@ -148,13 +174,17 @@ function MattFuncList(ulId)
 		var max = 0;
 		var sum = 0;
 		var res = new Array();
+		var selector = this.valueSelector[this.selected];
 		for(var i in data.funcs)
 		{
-			var value = this.internalGetSelectedValue(data.funcs[i]);
-			if (value > max)
-				max = value;
-			sum += value;
-			res.push({'name':i,'value':value,'details':data.funcs[i]});
+			var value = this.internalGetSelectedValue(data.funcs[i],selector);
+			if (value != 0)
+			{
+				if (value > max)
+					max = value;
+				sum += value;
+				res.push({'name':i,'value':value,'details':data.funcs[i]});
+			}
 		}
 
 		//sort
@@ -164,7 +194,7 @@ function MattFuncList(ulId)
 			res = res.sort(function (a,b) {return (a.value - b.value)});
 
 		//ok return for render
-		return {'data':{'entries':res, 'ref':this.internalGetRef(max,sum),'unit':this.internalGetUnit()}};
+		return {'data':{'entries':res, 'ref':this.internalGetRef(max,sum,selector),'unit':this.internalGetUnit(selector)}};
 	}
 	
 	//do render by default
