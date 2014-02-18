@@ -359,7 +359,7 @@ void convertToJson(htopml::JsonState& json, const CallSite& value)
 			json.printField("function",value.function);
 		if (value.line != 0)
 			json.printField("line",value.line);
-		json.printField("binary",value.mapEntry);
+		json.printField("binary",(void*)value.mapEntry);
 		json.closeStruct();
 	}
 }

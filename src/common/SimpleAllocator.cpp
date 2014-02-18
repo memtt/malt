@@ -57,7 +57,7 @@ void* SimpleAllocator::malloc(size_t size)
 	assert(this != NULL);
 
 	//timer
-	CODE_TIMING_FUNC_START(internalMalloc);
+	CODE_TIMING_FUNC_START("internalMalloc");
 		
 	//nothing to do
 	if (size == 0)
@@ -92,7 +92,7 @@ void* SimpleAllocator::malloc(size_t size)
 	MATT_END_CRITICAL
 	
 	//timer
-	CODE_TIMING_FUNC_STOP(internalMalloc);
+	CODE_TIMING_FUNC_STOP("internalMalloc");
 
 	//ok return
 	return chunk->getBody();
@@ -104,7 +104,7 @@ void SimpleAllocator::free(void* ptr)
 	assert(this != NULL);
 	
 	//timer
-	CODE_TIMING_FUNC_START(internalFree);
+	CODE_TIMING_FUNC_START("internalFree");
 
 	//nothing to do
 	if (ptr == NULL)
@@ -124,7 +124,7 @@ void SimpleAllocator::free(void* ptr)
 	MATT_END_CRITICAL
 	
 	//timer
-	CODE_TIMING_FUNC_STOP(internalFree);
+	CODE_TIMING_FUNC_STOP("internalFree");
 }
 
 /*******************  FUNCTION  *********************/

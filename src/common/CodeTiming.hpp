@@ -43,8 +43,20 @@ void yourFunc(void)
 
 /********************  MACROS  **********************/
 #ifdef MATT_ENABLE_CODE_TIMING
-	#define CODE_TIMING_FUNC_START(name) static MATT::CodeTiming __code_timing_local_##name##__(#name); ticks __code_timing_start_##name##__ = __code_timing_local_##name##__.start()
-	#define CODE_TIMING_FUNC_STOP(name) __code_timing_local_##name##__.end(__code_timing_start_##name##__)
+	/**
+	 * Provide a short way to measure code timings by using a star/stop representation.
+	 * @b CAUTION it use a local symbol so you cannot use more than one per scope. One might change this macro 
+	 * and use the name parameter to build the symbol name.
+	 * @param name Define the name to display at exit time.
+	**/
+	#define CODE_TIMING_FUNC_START(name) static MATT::CodeTiming __code_timing_local_func__(name); ticks __code_timing_start_func__ = __code_timing_local_func__.start()
+	/**
+	 * Provide a short way to measure code timings by using a star/stop representation.
+	 * @b CAUTION it use a local symbol so you cannot use more than one per scope. One might change this macro 
+	 * and use the name parameter to build the symbol name.
+	 * @param name Define the name to display at exit time.
+	**/
+	#define CODE_TIMING_FUNC_STOP(name) __code_timing_local_func__.end(__code_timing_start_func__)
 #else //MATT_ENABLE_CODE_TIMING
 	#define CODE_TIMING_FUNC_START(name) do{}while(0)
 	#define CODE_TIMING_FUNC_STOP(name) do{}while(0)

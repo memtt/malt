@@ -18,6 +18,15 @@ namespace MATT
 {
 
 /*********************  CLASS  **********************/
+/**
+ * Provide a short implementation of dynamic arrays which can grow
+ * exponentially until a certain limit then grow linearly.
+ * 
+ * @b CAUTION it will use realloc so please, do not use objects
+ * witch cannot be moved. It's mostly built for basic types.
+ * 
+ * @brief A short dynamic array implementation.
+**/
 template <class T>
 class Array
 {
@@ -32,24 +41,40 @@ class Array
 	private:
 		void updateSize(ssize_t delta);
 	private:
+		//Copy isn't implemented yet
+		Array(const Array & orig);
+		Array & operator=(const Array & orig);
+	private:
+		/** Pointer to the buffer **/
 		T * buffer;
+		/** Size of the buffer **/
 		int bufferSize;
+		/** Number of activ elements into the buffer. **/
 		int size;
-		int growCnt;
+		/** Initial size when adding the first element. **/
+		int initialSize;
+		/** Do not use exponential grow behind this limit, then use it for linear growing.**/
 		int maxExpGrow;
 };
 
 /*******************  FUNCTION  *********************/
+/**
+ * Array constructor. By default it does not allocate memory.
+ * @param initialSize Define the memory to allocate on first add.
+ * @param maxExpGrow Define exponential growing limit.
+ * @param defaultAlloc If true, initially allocate the buffer memory instead of using a lazy approch.
+**/
 template <class T>
-Array<T>::Array(int growCnt, int maxExpGrow,bool defaultAlloc)
+Array<T>::Array(int initialSize, int maxExpGrow,bool defaultAlloc)
 {
 	//params
 	this->buffer = NULL;
 	this->size = 0;
 	this->bufferSize = 0;
-	this->growCnt = growCnt;
+	this->initialSize = initialSize;
 	this->maxExpGrow = maxExpGrow;
 	
+	//get memory
 	if (defaultAlloc)
 	{
 		updateSize(1);
@@ -58,6 +83,9 @@ Array<T>::Array(int growCnt, int maxExpGrow,bool defaultAlloc)
 }
 
 /*******************  FUNCTION  *********************/
+/**
+ * Destructor of array.
+**/
 template <class T>
 Array<T>::~Array(void)
 {
@@ -69,6 +97,10 @@ Array<T>::~Array(void)
 }
 
 /*******************  FUNCTION  *********************/
+/**
+ * @return Return address of current buffer. Caution, it may change when adding
+ * content to the array.
+**/
 template <class T>
 const T* Array<T>::getBuffer(void) const
 {
@@ -76,13 +108,20 @@ const T* Array<T>::getBuffer(void) const
 }
 
 /*******************  FUNCTION  *********************/
+/**
+ * @return Number of active elements in array.
+**/
 template <class T>
 int Array<T>::getSize(void) const
 {
+	
 	return size;
 }
 
 /*******************  FUNCTION  *********************/
+/**
+ * @return Current size (elements) of the internal buffer.
+**/
 template <class T>
 int Array<T>::getBufferSize(void) const
 {
@@ -117,7 +156,7 @@ void Array<T>::updateSize(ssize_t delta)
 	if (size > bufferSize)
 	{
 		if (bufferSize == 0)
-			bufferSize += growCnt;
+			bufferSize += initialSize;
 		else if (bufferSize >= maxExpGrow)
 			bufferSize += maxExpGrow;
 		else

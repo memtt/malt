@@ -1,0 +1,25 @@
+{
+	"name": "matt-wenview",
+	"version": "0.0.0-dev",
+	"description": "Web view based on Node.js for MATT.",
+	"main": "main.js",
+	"scripts": {
+		"test": "main.js"
+	},
+	"keywords": [
+		"matt",
+		"memory",
+		"profile",
+		"leak",
+		"usage",
+		"malloc",
+		"allocator"
+	],
+	"author": "Sébastien Valat",
+	"licence": "CeCILL-C",
+	"dependencies": {
+		"express":"3.4.x",
+		"arg-parser":"1.0.x",
+		"clone":"0.1.11"
+	}
+}
