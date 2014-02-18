@@ -11,6 +11,18 @@
 		<!-- Theme -->
 <!-- 		<link href='deps/bootswatch/bootstrap.min.css' rel="stylesheet"> -->
 
+		<style type="text/css" media="screen">
+			#matt-editor { 
+	/*                      position: absolute; */
+	/*                      top: 0; */
+					right: 0;
+	/*                      bottom: 0; */
+					left: 0;
+					height:600px;
+					width:100%;
+			}
+		</style>
+
 		<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
 		<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
 		<!--[if lt IE 9]>
@@ -19,7 +31,7 @@
 		<![endif]-->
 	</head>
 	<body>
-		<h1>Hello, world!</h1>
+		<h1> .</h1>
 
 		<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
 		<script src="deps/jquery/jquery.min.js"></script>
@@ -27,10 +39,12 @@
 		<script src="deps/bootstrap/js/bootstrap.min.js"></script>
 		<!-- EJS system to apply code temples. -->
 		<script src="deps/ejs/ejs_production.js"></script>
+		<!-- ACE editor -->
+		<script src="/deps/ace/src-noconflict/ace.js"></script>
+		<script src="/deps/ace/src-noconflict/mode-c_cpp.js"></script>
 		<!-- MATT functions for func list -->
 		<script type='text/javascript' src='./func-list.js'></script>
-		
-		
+
 		<!-- Top NAV bar -->
 		<div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
 			<div class="container-fluid">
@@ -77,13 +91,48 @@
 					<ul class="nav nav-sidebar" id='matt-func-list'>
 					</ul>
 				</div>
+				<div class="col-sm-7 col-md-9 main">
+					<div id='matt-editor'>
+					//no selected sources
+					</div>
+				</div>
 			</div>
 		</div>
 		
 		<script type='text/javascript'>
+			function MattEditor(divId)
+			{
+				//store divid
+				this.divId = divId;
+				this.div = document.getElementById(divId);
+				this.div.matt = this;
+				
+				//create editor
+				this.editor = ace.edit(divId);
+				//this.editor.setTheme("ace/theme/monokai");
+				this.editor.getSession().setMode("ace/mode/c_cpp");
+				this.editor.setReadOnly(true);
+
+
+				//Function to update file in editor
+				this.updateFile = function(file,line)
+				{
+					mattAssert(file != '??' && file != '' && file != undefined,"Invalid file : " + file);
+
+					var mattObj = this;
+					$.get( "/app-sources/"+file,function(data){
+						mattObj.editor.setValue(data);
+						mattObj.editor.resize(true);
+						mattObj.editor.gotoLine(line);
+					});
+				}
+				
+// 				this.updateFile('/home/svalat/Projects/matt/src/tests/simple-case.cpp');
+			}
+		
 			$( document ).ready(function() {
-				//mattUpdateFunctionList();
 				var mattFuncList = new MattFuncList('matt-func-list');
+				var mattEditor = new MattEditor('matt-editor');
 			});
 		</script>
 	</body>

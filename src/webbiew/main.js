@@ -22,11 +22,17 @@ var app = Express();
 args = new Args('matt-webview', '1.0', 'Webiew for MATT based on Node.js','');
 //define args
 args.add({ name: 'input', desc: 'input file from MATT into JSON format', switches: [ '-i', '--input-file'], value: 'file', required: true });
+args.add({ name: 'port',  desc: 'Port to use to wait for HTTP requests', switches: [ '-p', '--port'],       value: 'port', required: false });
 if (!args.parse()) 
 {
 	console.error("Invalid parameters, please check with -h");
 	process.exit(1);
 }
+
+/****************************************************/
+var port = 8080;
+if (args.params.port != undefined)
+	port = args.params.port;
 
 /****************************************************/
 //load file
@@ -112,6 +118,9 @@ function MattReduceStackInfoObject(into,addr,subKey,value)
 		cur = into[key];
 		cur.file = MattGetString(site.file,"??");
 		cur.line = site.line;
+	} else {
+		if (site.line != 0 && site.line != -1 && (site.line < cur.line || cur.line == -1 || cur.line == 0))
+			cur.line = site.line;
 	}
 	
 	if (into[key][subKey] == undefined)
@@ -161,10 +170,11 @@ app.use('/deps/jquery',Express.static(__dirname + '/client_deps/jquery-1.11.0'))
 app.use('/deps/bootstrap',Express.static(__dirname + '/client_deps/bootstrap-3.1.1-dist'));
 app.use('/deps/bootswatch',Express.static(__dirname + '/client_deps/bootswatch.com/slate'));
 app.use('/deps/ejs',Express.static(__dirname + '/client_deps/ejs-1.0/'));
+app.use('/deps/ace',Express.static(__dirname + '/client_deps/ace-builds-1.1.1/'));
+app.use('/app-sources/',Express.static('/'));
 app.use('/',Express.static(__dirname+'/client_files'));
 
 /****************************************************/
 //run express
-var port = 8080;
 console.log("Starting server on http://localhost:" + port);
 app.listen(port);
