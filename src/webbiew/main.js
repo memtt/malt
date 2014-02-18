@@ -135,7 +135,7 @@ app.get('/flat.json',function(req,res) {
 		var infos = stats[i].infos;
 
 		//update internal values
-		MattReduceStackInfoObject(tmp,stack[0],"internal",infos);
+		MattReduceStackInfoObject(tmp,stack[0],"own",infos);
 		
 		//childs
 		var done = new Object;
@@ -145,7 +145,7 @@ app.get('/flat.json',function(req,res) {
 			if (done[func] == undefined)
 			{
 				done[func] = true;
-				MattReduceStackInfoObject(tmp,stack[j],"childs",infos);
+				MattReduceStackInfoObject(tmp,stack[j],"total",infos);
 			}
 		}
 	}
@@ -165,5 +165,6 @@ app.use('/',Express.static(__dirname+'/client_files'));
 
 /****************************************************/
 //run express
-console.log("Starting server on http://localhost:8080");
-app.listen(8080);
+var port = 8080;
+console.log("Starting server on http://localhost:" + port);
+app.listen(port);

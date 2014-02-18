@@ -9,7 +9,7 @@
 		<!-- Bootstrap -->
 		<link href="deps/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 		<!-- Theme -->
-		<link href='deps/bootswatch/bootstrap.min.css' rel="stylesheet">
+<!-- 		<link href='deps/bootswatch/bootstrap.min.css' rel="stylesheet"> -->
 
 		<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
 		<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -27,6 +27,8 @@
 		<script src="deps/bootstrap/js/bootstrap.min.js"></script>
 		<!-- EJS system to apply code temples. -->
 		<script src="deps/ejs/ejs_production.js"></script>
+		<!-- MATT functions for func list -->
+		<script type='text/javascript' src='./func-list.js'></script>
 		
 		
 		<!-- Top NAV bar -->
@@ -59,15 +61,16 @@
 			<div class="row">
 				<div class="col-sm-5 col-md-3 sidebar">
 					<div class="btn-group">
-						<button type="button" class="btn btn-default glyphicon glyphicon-sort-by-attributes"> </button>
-						<button type="button" class="btn btn-default">B</button>
+						<button type="button" class="btn btn-default" onclick="javascript:document.getElementById('matt-func-list').matt.toogleSort();"><span class='glyphicon glyphicon-sort'/> </button>
+						<button type="button" class="btn btn-default" onclick="javascript:document.getElementById('matt-func-list').matt.toogleUnit();"><b>%</b></button>
+						<button type="button" class="btn btn-default" onclick="javascript:document.getElementById('matt-func-list').matt.toogleMode();"><b>T</b></button>
 						<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-							Dropdown
+							Allocated mem.
 							<span class="caret"></span>
 						</button>
 						<ul class="dropdown-menu">
-							<li><a href="#">Dropdown link</a></li>
-							<li><a href="#">Dropdown link</a></li>
+							<li><a href="javascript:document.getElementById('matt-func-list').matt.updateMetric('alloc.sum');">Allocated mem.</a></li>
+							<li><a href="javascript:document.getElementById('matt-func-list').matt.updateMatric('alloc.count');">Alloc num.</a></li>
 						</ul>
 					</div>
 				
@@ -78,55 +81,9 @@
 		</div>
 		
 		<script type='text/javascript'>
-			var MATT_POWER = ['','K','M','G','T','P'];
-			function mattValue(value)
-			{
-				var power = 0;
-				while (value >= 100)
-					value /= 1000;
-				return value.toFixed(1);
-			}
-			
-			function mattValueDeco(value)
-			{
-				var power = 0;
-				while (value >= 100)
-				{
-					power++;
-					value /= 1000;
-				}
-				return MATT_POWER[power];
-			}
-		
-			function mattExtractFunctionList(data)
-			{
-				var max = 0;
-				var sum = 0;
-				var res = new Array();
-				for(var i in data.funcs)
-				{
-					var value = data.funcs[i].childs.alloc.sum;
-					if (value > max)
-						max = value;
-					sum += value;
-					res.push({'name':i,'value':value});
-				}
-
-				res = res.sort(function (a,b) {return (b.value - a.value)});
-
-				return {'data':{'entries':res, 'max':max,'sum':sum}};
-			}
-		
-			function mattUpdateFunctionList()
-			{
-				var callback = new EJS({url: 'func-list.ejs'}).update('matt-func-list');
-				$.getJSON( "flat.json", function( data ) {
-					callback(mattExtractFunctionList(data));
-				});
-			}
-		
 			$( document ).ready(function() {
-				mattUpdateFunctionList();
+				//mattUpdateFunctionList();
+				var mattFuncList = new MattFuncList('matt-func-list');
 			});
 		</script>
 	</body>

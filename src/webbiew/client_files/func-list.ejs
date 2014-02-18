@@ -1,12 +1,11 @@
 <% for(var i in data.entries) {%>
-	<li><a href="">
+	<li><a href="javascript:alert('load view for function <%= data.entries[i].name %> from source file <%= data.entries[i].details.file %>');">
 		<div class="progress" style='display:span;float:left;width:7%;'>
-			<div class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: <%= (100.0 * data.entries[i].value) / data.sum %>%;">
+			<div class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: <%= (100.0 * data.entries[i].value) / data.ref %>%;">
 				<span class="sr-only">60% Complete</span>
 			</div>
 		</div>
-		<span style='width:4em;display: inline-block;text-align:right;'><%= mattValue(data.entries[i].value) %></span>
-		<span style='width:4em;display: inline-block;'> <%= mattValueDeco(data.entries[i].value) %>B</span>
+		<span style='width:7em;display: inline-block;text-align:right;padding-right:1em;'><%= mattHumanValue(data,data.entries[i].value) %></span>
 		<span><%= data.entries[i].name %></span>
 	</a></li>
 <% } %>
