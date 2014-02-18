@@ -112,6 +112,12 @@ function MattReduceStackInfoObject(into,addr,subKey,value)
 	var key = addr;
 	if (site != undefined)
 		key = MattGetString(site.function,addr);
+	if (site == undefined)
+	{
+		site = new Object();
+		site.file = '??';
+		site.line = -1;
+	}
 
 	var cur = into[key];
 	if (cur == undefined)
@@ -132,6 +138,13 @@ function MattReduceStackInfoObject(into,addr,subKey,value)
 }
 
 /****************************************************/
+function MattIsCPPOperator(name)
+{
+	var begin = name.substring(0, 4);
+	return (begin == "_Znw" || begin == "_Zna");
+}
+
+/****************************************************/
 //map on datas/flat.json to provide flat profiles on functions
 app.get('/flat.json',function(req,res) {
 	//loop on all entries and compute reduced flat view
@@ -142,16 +155,20 @@ app.get('/flat.json',function(req,res) {
 		//extract some short pointers
 		var stack = stats[i].stack;
 		var infos = stats[i].infos;
+		
+		//skip C++ operators
+		var skip = 0;
+		while (MattIsCPPOperator(MattGetFunction(stack[skip]))) skip++;
 
 		//update internal values
-		MattReduceStackInfoObject(tmp,stack[0],"own",infos);
+		MattReduceStackInfoObject(tmp,stack[skip],"own",infos);
 		
 		//childs
 		var done = new Object;
 		for (var j in stack)
 		{
 			var func = MattGetFunction(stack[j]);
-			if (done[func] == undefined)
+			if (done[func] == undefined && !MattIsCPPOperator(func))
 			{
 				done[func] = true;
 				MattReduceStackInfoObject(tmp,stack[j],"total",infos);
@@ -160,7 +177,21 @@ app.get('/flat.json',function(req,res) {
 	}
 
 	//ok flush to user
-	res.write(JSON.stringify({'funcs':tmp},null,"\t"));
+	res.write(JSON.stringify(tmp,null,"\t"));
+	res.end();
+});
+
+/****************************************************/
+//export timed value to build charts
+app.get('/timed.json',function(req,res) {
+	var tmp = new Object();
+	tmp.segments     = data.segments;
+	tmp.internalMem  = data.internalMem;
+	tmp.virtualMem   = data.virtualMem;
+	tmp.physicalMem  = data.physicalMem;
+	tmp.requestedMem = data.requestedMem;
+	
+	res.write(JSON.stringify(tmp,null));
 	res.end();
 });
 
@@ -172,6 +203,7 @@ app.use('/deps/bootswatch/slate',Express.static(__dirname + '/client_deps/bootsw
 app.use('/deps/bootswatch/fonts',Express.static(__dirname + '/client_deps/bootstrap-3.1.1-dist/fonts'));
 app.use('/deps/ejs',Express.static(__dirname + '/client_deps/ejs-1.0/'));
 app.use('/deps/ace',Express.static(__dirname + '/client_deps/ace-builds-1.1.1/'));
+app.use('/deps/jqplot',Express.static(__dirname + '/client_deps/jqplot-1.0.8/'));
 app.use('/app-sources/',Express.static('/'));
 app.use('/',Express.static(__dirname+'/client_files'));
 

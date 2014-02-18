@@ -50,6 +50,7 @@ function MattFuncList(ulId)
 	this.valueSelector['alloc.min'] = {'name': 'Min. alloc. size','extractor':function (entry) {return entry.alloc.min;},'unit':'B','ref':'max'};
 	this.valueSelector['alloc.max'] = {'name': 'Max. alloc. size','extractor':function (entry) {return entry.alloc.max;},'unit':'B','ref':'max'};
 	this.valueSelector['alloc.moy'] = {'name': 'Mean alloc. size','extractor':function (entry) {return entry.alloc.count == 0 ? 0 : entry.alloc.sum / entry.alloc.count;},'unit':'B','ref':'max'};
+	this.valueSelector['free.count'] = {'name': 'Free num.','extractor':function (entry) {return entry.free.count;},'unit':'','ref':'sum'};
 	
 	//Declare render function
 	this.render = function()
@@ -175,15 +176,15 @@ function MattFuncList(ulId)
 		var sum = 0;
 		var res = new Array();
 		var selector = this.valueSelector[this.selected];
-		for(var i in data.funcs)
+		for(var i in data)
 		{
-			var value = this.internalGetSelectedValue(data.funcs[i],selector);
+			var value = this.internalGetSelectedValue(data[i],selector);
 			if (value != 0)
 			{
 				if (value > max)
 					max = value;
 				sum += value;
-				res.push({'name':i,'value':value,'details':data.funcs[i]});
+				res.push({'name':i,'value':value,'details':data[i]});
 			}
 		}
 
