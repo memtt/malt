@@ -6,6 +6,10 @@
 <% script('deps/jqplot/jquery.jqplot.css') -%>
 <% stylesheet('deps/jqplot/jquery.jqplot.css') -%>
 
+<% script('deps/d3js/d3.min.js') -%>
+<% script('deps/nvd3/nv.d3.min.js') -%>
+<% stylesheet('deps/nvd3/nv.d3.min.css') -%>
+
 <% script('time-analysis/time-graphs.js') -%>
 
 
@@ -13,9 +17,15 @@
 <div class="container-fluid">
 	<div class="row">
 		<div class="col-sm-12 col-md-12 main">
-			<div id='matt-plot' style="height:400px;width:90%;margin-left:auto;margin-right:auto;">
+			<!--<div id='matt-plot' style="height:400px;width:90%;margin-left:auto;margin-right:auto;">
 			</div>
 			<div id='matt-plot2' style="height:400px;width:90%;margin-left:auto;margin-right:auto;">
+			</div>-->
+			<div id='chart' class='matt-chart' style='width:90%;'>
+				<svg style='height:400px;'> </svg>
+			</div>
+			<div id='chart2' class='matt-chart'  style='width:90%;'>
+				<svg style='height:400px;'> </svg>
 			</div>
 		</div>
 	</div>
@@ -24,8 +34,10 @@
 <script type='text/javascript'>
 	$( document ).ready(function() {
 		$.getJSON( "timed.json", function( data ) {
-			mattUpdatePlot('matt-plot','Memory',mattConvertData(data),'B');
-			mattUpdatePlot('matt-plot2','Allocated segments',mattConvertCnt(data),'');
+// 			mattUpdatePlot('matt-plot','Memory',mattConvertData(data),'B');
+// 			mattUpdatePlot('matt-plot2','Allocated segments',mattConvertCnt(data),'');
+			mattNVDGraph("chart",mattConvertData(data),'B');
+			mattNVDGraph("chart2",mattConvertCnt(data),'');
 		});
 	});
 </script>

@@ -13,6 +13,7 @@
 #include <cstdlib>
 #include <cassert>
 #include <json/JsonState.h>
+#include <common/SimpleAllocator.hpp>
 //locals
 #include "Stack.h"
 

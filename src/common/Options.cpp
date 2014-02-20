@@ -27,7 +27,7 @@ Options::Options(void)
 	this->stackMode               = "backtrace";
 	//time
 	this->timeProfileEnabled      = true;
-	this->timeProfilePoints       = 1024;
+	this->timeProfilePoints       = 512;
 	this->timeProfileLinear       = false;
 	//output
 	this->outputName              = "matt-%1-%2.%3";

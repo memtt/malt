@@ -34,3 +34,21 @@
 	text-overflow:
 	ellipsis;max-width:51%;
 }
+
+.matt-chart svg g rect {
+	background:red;
+}
+
+.matt-chart .nvd3 .nv-axis line {
+	stroke:#4F5761;
+	stroke-dasharray:'5,5';
+}
+
+.matt-chart text {
+	fill:gray;
+}
+
+.matt-graph-background {
+	fill:#464D56;
+	opacity:1;
+}
