@@ -1,9 +1,3 @@
-function mattAssert(condition,message)
-{
-	if (!condition)
-		throw Error("Assert failed" + (typeof message !== "undefined" ? ": " + message : ""));
-}
-
 /** Short helper to convert values to human readable format **/
 var MATT_POWER = ['&nbsp;','K','M','G','T','P'];
 function mattHumanValue(data,value)
@@ -112,7 +106,7 @@ function MattFuncList(ulId)
 	
 	this.renderSelectorList = function(id)
 	{
-		var callback = new EJS({url: 'selector-list.ejs'}).update(id);
+		var callback = new EJS({url: '/stack-analysis/flat-func-selector.ejs'}).update(id);
 		callback({'selectors':this.valueSelector,'listId':this.ulId});
 	}
 
@@ -120,7 +114,7 @@ function MattFuncList(ulId)
 	this.internalRender = function()
 	{
 		this.internalSanityCheck();
-		var callback = new EJS({url: 'func-list.ejs'}).update(this.ulId);
+		var callback = new EJS({url: '/stack-analysis/flat-func-list.ejs'}).update(this.ulId);
 		callback(this.intenralExtractFunctionList(this.data));
 	}
 	
@@ -163,10 +157,10 @@ function MattFuncList(ulId)
 	var acceptedUnit  = ['%','real'];
 	this.internalSanityCheck = function()
 	{
-		mattAssert($.inArray(this.mode,this.acceptedModes),"Invalid property 'mode' : " + this.mode);
-		mattAssert($.inArray(this.sort,this.acceptedSort),"Invalid property 'sort' : " + this.mode);
-		mattAssert($.inArray(this.unit,this.acceptedUnit),"Invalid property 'unit' : " + this.unit);
-		mattAssert(this.valueSelector[this.selected] != undefined,"Invalid property 'selected' : " + this.selected);
+		mattHelper.assert($.inArray(this.mode,this.acceptedModes),"Invalid property 'mode' : " + this.mode);
+		mattHelper.assert($.inArray(this.sort,this.acceptedSort),"Invalid property 'sort' : " + this.mode);
+		mattHelper.assert($.inArray(this.unit,this.acceptedUnit),"Invalid property 'unit' : " + this.unit);
+		mattHelper.assert(this.valueSelector[this.selected] != undefined,"Invalid property 'selected' : " + this.selected);
 	}
 	
 	//Extract function list and format with user requirement

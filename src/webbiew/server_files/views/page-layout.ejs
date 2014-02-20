@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<!-- *************************** BASIC ******************************* -->
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>MATT WebView</title>
+
+		<!-- ***************************** CSS ******************************** -->
+		<!-- Bootstrap -->
+		<link href="deps/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+		<!-- Bootstrap theme -->
+		<link href='deps/bootswatch/slate/bootstrap.min.css' rel="stylesheet">
+		<!-- MATT CSS -->
+		<link href='/style.css' rel="stylesheet">
+		
+		<!-- ****************************** JS ******************************** -->
+		<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+		<script src="deps/jquery/jquery.min.js"></script>
+		<!-- Include all compiled plugins (below), or include individual files as needed -->
+		<script src="deps/bootstrap/js/bootstrap.min.js"></script>
+		<!-- EJS system to apply code temples. -->
+		<script src="deps/ejs/ejs_production.js"></script>
+		<!-- ACE editor -->
+		<script src="/deps/ace/src-noconflict/ace.js"></script>
+		<script src="/deps/ace/src-noconflict/mode-c_cpp.js"></script>
+		<!-- MATT helpers -->
+		<script src='/helper.js'></script>
+		
+		<!-- ************************* AUTOMATIC INCLUDES ********************** -->
+		<!-- CSS -->
+		<%-stylesheets%>
+		<!-- JS -->
+		<%-scripts%>
+
+		<!-- ****************************** TRICKS ***************************** -->
+		<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+		<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+		<!--[if lt IE 9]>
+		<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+		<script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+		<![endif]-->
+	</head>
+	<body>
+		<!-- TODO cleanup -->
+		<h1> .</h1>
+
+		<!-- **************************** TOP NAV BAR *************************** -->
+		<div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+			<div class="container-fluid">
+				<div class="navbar-header">
+					<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+						<span class="sr-only">Toggle navigation</span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+					</button>
+					<a class="navbar-brand" href="/">MATT WebView</a>
+					</div>
+					<div class="navbar-collapse collapse">
+					<ul class="nav navbar-nav navbar-right">
+						<li><a href="#">Summary</a></li>
+						<li><a href="stack-analysis.html">Stack analysis</a></li>
+						<li><a href="time-analysis.html">Time analysis</a></li>
+						<li><a href="#">Help</a></li>
+					</ul>
+					<!--<form class="navbar-form navbar-right">
+						<input type="text" class="form-control" placeholder="Search...">
+					</form>-->
+				</div>
+			</div>
+		</div>
+
+		<!-- *********************** MAIN PART ************************* -->
+		<%-body -%>
+	</body>
+</html>

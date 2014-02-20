@@ -1,0 +1,36 @@
+/******************** SOURCE EDITOR ******************/
+/* Source editor */
+#matt-source-editor { 
+	right: 0;
+	left: 0;
+	height:600px;
+	width:100%;
+}
+
+/******************* FLAT FUNC LIST ******************/
+/* Flat list of function in stack-analysis */
+#matt-func-list li a {
+	height:3em
+}
+
+#matt-func-list div.progress {
+	display:block;
+	float:left;
+	width:7%;
+}
+
+#matt-func-list .size {
+	width:7em;
+	display:block;
+	float:left;
+	text-align:right;
+	padding-right:1em;
+}
+
+#matt-func-list .func {
+	display:block;
+	float:left;
+	overflow:hidden;
+	text-overflow:
+	ellipsis;max-width:51%;
+}

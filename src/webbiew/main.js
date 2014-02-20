@@ -12,10 +12,14 @@ var fs      = require('fs');
 var Args    = require('arg-parser');
 var Express = require('express');
 var clone   = require('clone');
+var engine  = require('ejs-locals');
 
 /****************************************************/
 //start express
 var app = Express();
+app.engine('ejs',engine);
+app.set('views',__dirname + '/server_files/views');
+app.set('view engine','ejs');
 
 /****************************************************/
 //Manage args
@@ -193,6 +197,21 @@ app.get('/timed.json',function(req,res) {
 	
 	res.write(JSON.stringify(tmp,null));
 	res.end();
+});
+
+/****************************************************/
+app.get('/',function(eq,res,next){
+	res.render("stack-analysis",{});
+});
+
+/****************************************************/
+app.get('/stack-analysis.html',function(eq,res,next){
+	res.render("stack-analysis",{});
+});
+
+/****************************************************/
+app.get('/time-analysis.html',function(eq,res,next){
+	res.render("time-analysis",{});
 });
 
 /****************************************************/

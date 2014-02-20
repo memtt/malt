@@ -1,0 +1,43 @@
+<% layout('page-layout') -%>
+<% script('stack-analysis/flat-func-list.js') -%>
+<% script('stack-analysis/source-editor.js') -%>
+
+<!-- ****************** STACK ANALYSER *************** -->
+<div class="container-fluid">
+	<div class="row">
+		<div class="col-sm-5 col-md-4 col-lg-3 sidebar">
+			<!-- Selection -->
+			<div class="btn-group">
+				<button type="button" class="btn btn-default" onclick="javascript:document.getElementById('matt-func-list').matt.toogleSort();"><span class='glyphicon glyphicon-sort'/> </button>
+				<button type="button" class="btn btn-default" onclick="javascript:document.getElementById('matt-func-list').matt.toogleUnit();"><b>%</b></button>
+				<button type="button" class="btn btn-default" onclick="javascript:document.getElementById('matt-func-list').matt.toogleMode();"><b>I</b></button>
+				<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+					Allocated mem.
+					<span class="caret"></span>
+				</button>
+				<ul class="dropdown-menu" id='matt-selector-list'>
+					<!--<li><a href="javascript:document.getElementById('matt-func-list').matt.updateMatric('alloc.count');">Alloc num.</a></li>-->
+				</ul>
+			</div>
+		
+			<!-- Func lis -->
+			<ul class="nav nav-sidebar" id='matt-func-list'>
+			</ul>
+		</div>
+		
+		<!-- Source editor -->
+		<div class="col-sm-7 col-md-8 col-lg-9 main">
+			<div id='matt-source-editor'>
+			//no selected sources
+			</div>
+		</div>
+	</div>
+</div>
+
+<script type='text/javascript'>
+	$( document ).ready(function() {
+		var mattEditor = new MattEditor('matt-source-editor');
+		var mattFuncList = new MattFuncList('matt-func-list');
+		mattFuncList.renderSelectorList('matt-selector-list');
+	});
+</script>
