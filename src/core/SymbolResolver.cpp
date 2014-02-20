@@ -209,6 +209,8 @@ LinuxProcMapEntry* SymbolResolver::getMapEntry(void* callSite)
 /*******************  FUNCTION  *********************/
 void SymbolResolver::resolveNames(void)
 {
+	fprintf(stderr,"Resolving symbols with addr2line...\n");
+	
 	//avoid to LD_PRELOAD otherwise we will create fork bomb
 	setenv("LD_PRELOAD","",1);
 	
@@ -350,7 +352,7 @@ int SymbolResolver::getString(const char * value)
 /*******************  FUNCTION  *********************/
 void convertToJson(htopml::JsonState& json, const CallSite& value)
 {
-	if (value.mapEntry != NULL)
+	if (value.mapEntry != NULL || value.line != 0 || value.function != -1 || value.file != -1)
 	{
 		json.openStruct();
 		if (value.file != -1)// && *value.file != "??")
@@ -359,7 +361,8 @@ void convertToJson(htopml::JsonState& json, const CallSite& value)
 			json.printField("function",value.function);
 		if (value.line != 0)
 			json.printField("line",value.line);
-		json.printField("binary",(void*)value.mapEntry);
+		if (value.mapEntry != NULL)
+			json.printField("binary",value.mapEntry->file);
 		json.closeStruct();
 	}
 }

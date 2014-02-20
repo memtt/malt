@@ -20,6 +20,32 @@
  *  - LD_PRELOAD=../src/libAllocStackProfiler.so
 **/
 
+/*********************  CLASS  **********************/
+class OutOfMainAlloc
+{
+	public:
+		OutOfMainAlloc(void);
+		~OutOfMainAlloc(void);
+		void printf(void) {*(char*)ptr='c';};
+	private:
+		void * ptr;
+};
+
+/********************* GLOBALS **********************/
+OutOfMainAlloc gblOutOfMainAlloc;
+
+/*******************  FUNCTION  *********************/
+OutOfMainAlloc::OutOfMainAlloc(void)
+{
+	ptr = malloc(128);
+}
+
+/*******************  FUNCTION  *********************/
+OutOfMainAlloc::~OutOfMainAlloc(void)
+{
+	free(ptr);
+}
+
 /*******************  FUNCTION  *********************/
 void funcC()
 {
@@ -94,6 +120,20 @@ void testThreads(void)
 		*(char*)ptr='c';//required otherwise new compilers will remove malloc/free
 		free(ptr);
 	}
+}
+
+/*******************  FUNCTION  *********************/
+void testLeak(void)
+{
+	void * ptr = malloc(32);
+	*(char*)ptr = 'c';
+}
+
+/*******************  FUNCTION  *********************/
+void testLeak2(void)
+{
+	void * ptr = malloc(32);
+	*(char*)ptr = 'c';
 }
 
 /*******************  FUNCTION  *********************/
@@ -204,6 +244,8 @@ int main(void)
 	testRecuseIntervedA(2);
 	testThreads();
 	testAllFuncs();
+	testLeak();
+	testLeak2();
 
 	return 0;
 }

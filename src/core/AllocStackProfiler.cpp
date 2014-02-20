@@ -254,6 +254,7 @@ void AllocStackProfiler::onExit(void )
 		//valgrind out
 		if (options.outputCallgrind)
 		{
+			fprintf(stderr,"Prepare valgrind output...\n");
 			ValgrindOutput vout;
 			stackTracer.fillValgrindOut(vout);
 			CODE_TIMING("outputCallgrind",vout.writeAsCallgrind(FormattedMessage(options.outputName).arg(OS::getExeName()).arg(OS::getPID()).arg("callgrind").toString(),stackTracer.getNameDic()));

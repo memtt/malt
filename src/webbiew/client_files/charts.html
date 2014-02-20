@@ -14,6 +14,8 @@
 		<!--[if lt IE 9]><script language="javascript" type="text/javascript" src="excanvas.js"></script><![endif]-->
 		<script src="deps/jquery/jquery.min.js"></script>
 		<script language="javascript" type="text/javascript" src="deps/jqplot/jquery.jqplot.min.js"></script>
+		<script language="javascript" type="text/javascript" src="deps/jqplot/plugins/jqplot.enhancedLegendRenderer.min.js"></script>
+		<script language="javascript" type="text/javascript" src="deps/jqplot/plugins/jqplot.highlighter.min.js"></script>
 		<link rel="stylesheet" type="text/css" href="deps/jqplot/jquery.jqplot.css" />
 
 		<style type="text/css" media="screen">
@@ -46,6 +48,7 @@
 		<script src="/deps/ace/src-noconflict/ace.js"></script>
 		<script src="/deps/ace/src-noconflict/mode-c_cpp.js"></script>
 		<!-- MATT functions for func list -->
+		<script type='text/javascript' src='./helper.js'></script>
 		<script type='text/javascript' src='./func-list.js'></script>
 
 		<!-- Top NAV bar -->
@@ -99,21 +102,30 @@
 			function mattConvertData(data)
 			{
 				var res = new Array();
+				res.push( mattConvertDataInternal(data.virtualMem) );
+				res.push( mattConvertDataInternal(data.physicalMem) );
 				res.push( mattConvertDataInternal(data.requestedMem) );
 				res.push( mattConvertDataInternal(data.internalMem) );
-				return res;
+				var labels = new Array();
+				labels.push("Virtuel memory");
+				labels.push("Physical memory");
+				labels.push("Requested memory");
+				labels.push("Internal memory");
+				return {data:res,labels:labels};
 			}
 			
 			function mattConvertCnt(data)
 			{
 				var res = new Array();
 				res.push( mattConvertDataInternal(data.segments) );
-				return res;
+				var labels = new Array();
+				labels.push("Memory segments");
+				return {data:res,labels:labels};
 			}
 		
-			function mattUpdatePlot(id,title,data,labels)
+			function mattUpdatePlot(id,title,data,unit)
 			{			
-				var plot = $.jqplot(id, data, {
+				var plot = $.jqplot(id, data.data, {
 					title: title,
 					stackSeries: false,
 					seriesDefaults: {
@@ -124,7 +136,8 @@
 					legend: {
 						show: true,
 						placement: 'outsideGrid',
-						labels: labels,
+						renderer: $.jqplot.EnhancedLegendRenderer,
+						labels: data.labels,
 						location: 'ne',
 						rowSpacing: '0px'
 					},
@@ -142,7 +155,8 @@
 // 							ticks: ticks,
 							label: 'Time',
 							tickOptions: {
-								showGridline: false
+								showGridline: false,
+								formatter: function(format,value) {return mattHumanReadableValue(value,'');}
 							}
 						},
 						yaxis: {
@@ -150,15 +164,14 @@
 							label: 'Memory',
 							tickOptions: {
 							showGridline: false,
-							suffix: 'B',
-							tickRenderer: function(value) {return 'a';}
+							formatter: function(format,value) {return mattHumanReadableValue(value,unit);}
 							}
 						}
 					},
 					grid: {
 						drawGridLines: true, 
 						gridLineColor: '#cccccc',
-						background: '#fffdf6',
+						background: '#464D56',
 						borderColor: '#999999',
 						drawBorder: false,
 						shadow: false,
@@ -192,8 +205,8 @@
 		
 			$( document ).ready(function() {
 				$.getJSON( "timed.json", function( data ) {
-					mattUpdatePlot('matt-plot','Memory',mattConvertData(data),['Requested memory','MATT internal memory','C','D','E','F']);
-					mattUpdatePlot('matt-plot2','Allocated segments',mattConvertCnt(data),['Allocated segments']);
+					mattUpdatePlot('matt-plot','Memory',mattConvertData(data),'B');
+					mattUpdatePlot('matt-plot2','Allocated segments',mattConvertCnt(data),'');
 				});
 			});
 		</script>

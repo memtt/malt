@@ -109,17 +109,21 @@ LeakInfo::LeakInfo(void)
 }
 
 /*******************  FUNCTION  *********************/
+void convertToJson(htopml::JsonState& json, const LeakInfoMap::const_iterator& it)
+{
+	json.openStruct();
+	json.printField("stack",it->first->getCallStack());
+	json.printField("count",it->second.cnt);
+	json.printField("memory",it->second.mem);
+	json.closeStruct();
+}
+
+/*******************  FUNCTION  *********************/
 void convertToJson(htopml::JsonState& json, const LeakInfoMap& value)
 {
 	json.openArray();
 	for (LeakInfoMap::const_iterator it = value.begin() ; it != value.end() ; ++it)
-	{
-		json.openStruct();
-		json.printField("stack",it->first->getCallStack());
-		json.printField("count",it->second.cnt);
-		json.printField("memory",it->second.mem);
-		json.closeStruct();
-	}
+		json.printValue(it);
 	json.closeArray();
 }
 
