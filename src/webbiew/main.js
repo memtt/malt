@@ -22,6 +22,10 @@ app.set('views',__dirname + '/server_files/views');
 app.set('view engine','ejs');
 
 /****************************************************/
+//intenral cache for computed data which take a while to built
+var mattCache = new Object();
+
+/****************************************************/
 //Manage args
 args = new Args('matt-webview', '1.0', 'Webiew for MATT based on Node.js','');
 //define args
@@ -151,33 +155,40 @@ function MattIsCPPOperator(name)
 /****************************************************/
 //map on datas/flat.json to provide flat profiles on functions
 app.get('/flat.json',function(req,res) {
-	//loop on all entries and compute reduced flat view
-	var tmp = new Object;
-	var stats = data.stackInfo.stats;
-	for(var i in stats)
+	var tmp;
+	if (mattCache['flat.json'] != undefined)
 	{
-		//extract some short pointers
-		var stack = stats[i].stack;
-		var infos = stats[i].infos;
-		
-		//skip C++ operators
-		var skip = 0;
-		while (MattIsCPPOperator(MattGetFunction(stack[skip]))) skip++;
-
-		//update internal values
-		MattReduceStackInfoObject(tmp,stack[skip],"own",infos);
-		
-		//childs
-		var done = new Object;
-		for (var j in stack)
+		tmp = mattCache['flat.json'];
+	} else {
+		//loop on all entries and compute reduced flat view
+		var tmp = new Object;
+		var stats = data.stackInfo.stats;
+		for(var i in stats)
 		{
-			var func = MattGetFunction(stack[j]);
-			if (done[func] == undefined && !MattIsCPPOperator(func))
+			//extract some short pointers
+			var stack = stats[i].stack;
+			var infos = stats[i].infos;
+			
+			//skip C++ operators
+			var skip = 0;
+			while (MattIsCPPOperator(MattGetFunction(stack[skip]))) skip++;
+
+			//update internal values
+			MattReduceStackInfoObject(tmp,stack[skip],"own",infos);
+			
+			//childs
+			var done = new Object;
+			for (var j in stack)
 			{
-				done[func] = true;
-				MattReduceStackInfoObject(tmp,stack[j],"total",infos);
+				var func = MattGetFunction(stack[j]);
+				if (done[func] == undefined && !MattIsCPPOperator(func))
+				{
+					done[func] = true;
+					MattReduceStackInfoObject(tmp,stack[j],"total",infos);
+				}
 			}
 		}
+		mattCache['flat.json'] = tmp;
 	}
 
 	//ok flush to user
@@ -196,6 +207,36 @@ app.get('/timed.json',function(req,res) {
 	tmp.requestedMem = data.requestedMem;
 	
 	res.write(JSON.stringify(tmp,null));
+	res.end();
+});
+
+/****************************************************/
+app.get('/proc-map-distr.json',function(req,res) {
+	var tmp = new Object();
+	var map = data.stackInfo.sites.map;
+	var checkStack = /^\[stack:[0-9]+\]$/;
+	for (var i in map)
+	{
+		var mem = (parseInt(map[i].upper,16) - parseInt(map[i].lower,16));
+		var file = map[i].file;
+		if (file == '')
+			file = 'anonymous';
+		if (checkStack.test(file))
+			file = 'stack';
+		
+		if (tmp[file] == undefined)
+		{
+			tmp[file] = {
+				mem:mem,
+				cnt:1
+			};
+		} else {
+			tmp[file].mem += mem;
+			tmp[file].cnt++;
+		}
+	}
+	
+	res.write(JSON.stringify(tmp,null,'\t'));
 	res.end();
 });
 

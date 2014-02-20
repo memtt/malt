@@ -12,7 +12,7 @@ function MattHelper()
 			value /= 1000;
 		}
 
-		return Math.round(value) + " " + MATT_POWER[power] + unit;
+		return value.toFixed(1) + " " + MATT_POWER[power] + unit;
 	}
 	
 	/** Help to check values **/

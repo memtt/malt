@@ -9,6 +9,7 @@
 /********************  HEADERS  *********************/
 #include "SimpleAllocator.hpp"
 #include <sys/mman.h>
+#include <cstring>
 #include <common/Debug.hpp>
 #include "Helpers.hpp"
 #include "CodeTiming.hpp"
@@ -305,6 +306,23 @@ void SimpleAllocator::touchMemory(void* ptr, size_t size)
 		return;
 	for (int i = 0 ; i < size ; i += MATT_PAGE_SIZE)
 		*(char*)ptr = '\0';
+}
+
+/*******************  FUNCTION  *********************/
+void* SimpleAllocator::realloc(void * old,size_t size)
+{
+	void * res = NULL;
+	if (size > 0)
+		res = this->malloc(size);
+	if (old != NULL)
+	{
+		Chunk * chunk = Chunk::getFromBody(old);
+		assert(chunk != NULL);
+		size_t cpSize = max(chunk->size,size);
+		memcpy(res,old,cpSize);
+		this->free(old);
+	}
+	return res;
 }
 
 };

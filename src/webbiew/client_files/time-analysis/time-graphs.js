@@ -178,3 +178,48 @@ function sinAndCos(data) {
 	
 	return res;
 }
+
+function basename(path) {
+   return path.split('/').reverse()[0];
+}
+
+function mattProcMapPie(divId,data,selector)
+{
+	var tmp = new Array();
+	var sum = 0;
+	for (var i in data)
+	{
+		var value = selector(data[i]);
+		sum += value;
+		tmp.push({label:basename(i),value:value});
+	}
+	
+	tmp.sort(function(a,b){return b.value - a.value});
+	var cut = tmp;
+	if (tmp.length > 15)
+	{
+		cut = tmp.splice(0,15);
+		var partialSum = 0;
+		for (var i in cut)
+			partialSum += cut[i].value;
+		cut.push({label:'others',value:sum-partialSum});
+	}
+	
+	nv.addGraph(function() {
+		var chart = nv.models.pieChart()
+			.x(function(d) { return d.label })
+			.y(function(d) { return d.value })
+			.showLabels(true)
+			.labelThreshold(.05)
+			.labelType("percent");
+		
+		d3.select("#"+divId+" svg")
+			.datum(cut)
+			.transition().duration(350)
+			.call(chart);
+		
+		return chart;
+	});
+}
+
+

@@ -20,6 +20,9 @@
 /********************  MACROS  **********************/
 #define CALL_STACK_DEFAULT_SIZE   32
 #define CALL_STACK_GROW_THRESHOLD 1024
+#define MATT_MALLOC(x) gblInternaAlloc->malloc(x)
+#define MATT_FREE(x) gblInternaAlloc->free(x)
+#define MATT_REALLOC(x,y) gblInternaAlloc->realloc((x),(y))
 
 /*******************  NAMESPACE  ********************/
 namespace MATT
@@ -87,7 +90,7 @@ Stack::Stack ( const Stack& orig , int skipDepth)
 Stack::~Stack ( void )
 {
 	if (this->stack != NULL)
-		free(this->stack);
+		MATT_FREE(this->stack);
 	#ifndef NDEBUG
 	this->stack   = NULL;
 	this->size    = 0;
@@ -107,7 +110,7 @@ void Stack::set ( void** stack, int size, StackOrder order )
 	//realloc if required
 	if (this->memSize < size)
 	{
-		this->stack   = (void**)realloc(this->stack,size * sizeof(void**));
+		this->stack   = (void**)MATT_REALLOC(this->stack,size * sizeof(void**));
 		this->memSize = size;
 	}
 	
@@ -303,7 +306,7 @@ void Stack::grow ( void )
 	//if not allocated
 	if (this->stack == NULL)
 	{
-		this->stack = (void**)malloc(sizeof(void*) * CALL_STACK_DEFAULT_SIZE);
+		this->stack = (void**)MATT_MALLOC(sizeof(void*) * CALL_STACK_DEFAULT_SIZE);
 		this->memSize = CALL_STACK_DEFAULT_SIZE;
 		this->size = 0;
 	} else {
@@ -314,7 +317,7 @@ void Stack::grow ( void )
 			this->memSize += CALL_STACK_GROW_THRESHOLD;
 
 		//resize memory
-		this->stack = (void**)realloc(this->stack,this->memSize * sizeof(void*));
+		this->stack = (void**)MATT_REALLOC(this->stack,this->memSize * sizeof(void*));
 	}
 }
 

@@ -27,17 +27,28 @@
 			<div id='chart2' class='matt-chart'  style='width:90%;'>
 				<svg style='height:400px;'> </svg>
 			</div>
+			<div id='chart3' class='matt-chart'  style='width:40%;float:left;'>
+				<svg style='height:600px;'> </svg>
+			</div>
+			<div id='chart4' class='matt-chart'  style='width:40%;float:left;'>
+				<svg style='height:600px;'> </svg>
+			</div>
 		</div>
 	</div>
 </div>
 
 <script type='text/javascript'>
 	$( document ).ready(function() {
-		$.getJSON( "timed.json", function( data ) {
+		$.getJSON( "/timed.json", function( data ) {
 // 			mattUpdatePlot('matt-plot','Memory',mattConvertData(data),'B');
 // 			mattUpdatePlot('matt-plot2','Allocated segments',mattConvertCnt(data),'');
 			mattNVDGraph("chart",mattConvertData(data),'B');
 			mattNVDGraph("chart2",mattConvertCnt(data),'');
+		});
+		
+		$.getJSON( "/proc-map-distr.json", function( data ) {
+			mattProcMapPie('chart3',data,function(value){return value.mem;});
+			mattProcMapPie('chart4',data,function(value){return value.cnt;});
 		});
 	});
 </script>
