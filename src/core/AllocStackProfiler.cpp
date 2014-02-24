@@ -164,7 +164,7 @@ SimpleCallStackNode * AllocStackProfiler::onFreeEvent(void* ptr,int skipDepth, S
 		size_t size = segInfo->size;
 		ticks lifetime = segInfo->getLifetime();
 		if (options.timeProfileEnabled)
-			requestedMem.onDeltaEvent(size);
+			requestedMem.onDeltaEvent(-size);
 		
 		if (options.stackProfileEnabled)
 		{

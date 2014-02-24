@@ -146,10 +146,12 @@ function MattReduceStackInfoObject(into,addr,subKey,value)
 }
 
 /****************************************************/
+var opRegexp = /^((_Zn[wa])|(g_malloc)|(g_realloc)|(g_free))/
 function MattIsCPPOperator(name)
 {
-	var begin = name.substring(0, 4);
-	return (begin == "_Znw" || begin == "_Zna");
+// 	var begin = name.substring(0, 4);
+// 	return (begin == "_Znw" || begin == "_Zna" || begin == "g_malloc" || begin == "g_realloc" || begin == "g_free");
+	return opRegexp.test(name);
 }
 
 /****************************************************/

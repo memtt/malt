@@ -33,8 +33,8 @@ Options::Options(void)
 	this->outputName              = "matt-%1-%2.%3";
 	this->outputIndent            = true;
 	this->outputJson              = true;
-	this->outputLua               = true;
-	this->outputCallgrind         = true;
+	this->outputLua               = false;
+	this->outputCallgrind         = false;
 	this->outputDumpConfig        = true;
 }
 
