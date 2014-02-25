@@ -31,7 +31,7 @@ args = new Args('matt-webview', '1.0', 'Webiew for MATT based on Node.js','');
 //define args
 args.add({ name: 'input', desc: 'input file from MATT into JSON format', switches: [ '-i', '--input-file'], value: 'file', required: true });
 args.add({ name: 'port',  desc: 'Port to use to wait for HTTP requests', switches: [ '-p', '--port'],       value: 'port', required: false });
-args.add({ name: 'redirect',  desc: 'Redirect source dirs', switches: [ '-r', '--redirect'],       value: 'redirections', required: false });
+args.add({ name: 'override',  desc: 'Override source dirs. Format is src1:dest1,src2:dest2...', switches: [ '-o', '--override'],       value: 'redirections', required: false });
 if (!args.parse()) 
 {
 	console.error("Invalid parameters, please check with -h");
@@ -45,11 +45,14 @@ if (args.params.port != undefined)
 
 /****************************************************/
 var redirs = new Array();
-var tmp = args.params.redirect.split(',');
-for (var i in tmp)
+if (args.params.override != undefined)
 {
-	var tmp2 = tmp[i].split(':');
-	redirs.push({source:tmp2[0],dest:tmp2[1]});
+	var tmp = args.params.override.split(',');
+	for (var i in tmp)
+	{
+		var tmp2 = tmp[i].split(':');
+		redirs.push({source:tmp2[0],dest:tmp2[1]});
+	}
 }
 
 /****************************************************/
@@ -63,6 +66,42 @@ fs.readFile(args.params.input, 'utf8', function (err, buffer) {
 	}
 	data = JSON.parse(buffer);
 });
+
+/****************************************************/
+function MattGetLine(addr)
+{
+	var site = data.stackInfo.sites.instr[addr];
+	
+	//not found
+	if (site == undefined || site == -1)
+		return addr;
+
+	//extract func ID
+	if (site.line == undefined)
+		return -1;
+	else
+		return site.line;
+}
+
+/****************************************************/
+function MattGetFile(addr)
+{
+	var site = data.stackInfo.sites.instr[addr];
+	
+	//not found
+	if (site == undefined || site == -1)
+		return addr;
+
+	//extract func ID
+	var func = data.stackInfo.sites.strings[site.file];
+	
+	//not found
+	if (func == undefined)
+		return addr;
+
+	//ok
+	return func;
+}
 
 /****************************************************/
 function MattGetFunction(addr)
@@ -121,6 +160,37 @@ function MattReduceStackInfo(onto,value)
 	MattMergeMinMax(onto.alloc,value.alloc);
 	MattMergeMinMax(onto.free,value.free);
 	MattMergeMinMax(onto.lifetime,value.lifetime);
+}
+
+/****************************************************/
+function MattReduceStackInfoObjectGeneric(into,addr,subKey,value,criteria)
+{
+	var site = data.stackInfo.sites.instr[addr];
+	var key = addr;
+	key = criteria(addr);
+	if (site == undefined)
+	{
+		site = new Object();
+		site.file = '??';
+		site.line = -1;
+	}
+
+	var cur = into[key];
+	if (cur == undefined)
+	{
+		into[key] = new Object();
+		cur = into[key];
+		cur.file = MattGetString(site.file,"??");
+		cur.line = site.line;
+	} else {
+		if (site.line != 0 && site.line != -1 && (site.line < cur.line || cur.line == -1 || cur.line == 0))
+			cur.line = site.line;
+	}
+	
+	if (into[key][subKey] == undefined)
+		into[key][subKey] = clone(value);
+	else
+		MattReduceStackInfo(into[key][subKey],value);
 }
 
 /****************************************************/
@@ -223,6 +293,75 @@ app.get('/timed.json',function(req,res) {
 });
 
 /****************************************************/
+function extractAllocInfoGeneric(filterAccept,criteria,total)
+{
+	var stats = data.stackInfo.stats;
+	var res = new Object();
+	var callers = "total";
+	if (total == false)
+		callers = "childs";
+	
+	for(var i in stats)
+	{
+		//extract some short pointers
+		var stack = stats[i].stack;
+		var infos = stats[i].infos;
+		
+		//skip C++ operators
+		var skip = 0;
+		while (MattIsCPPOperator(MattGetFunction(stack[skip]))) skip++;
+		
+		//update internal values
+		if (filterAccept(stack[skip]))
+			MattReduceStackInfoObjectGeneric(res,stack[skip],"own",infos,criteria);
+		
+		//childs
+		var done = new Object;
+		for (var j in stack)
+		{
+			if (total == false && j <= skip)
+				continue;
+			var nameStep = MattGetFunction(stack[j]);
+			var crit = criteria(stack[j]);
+			if (filterAccept(stack[j]) && done[crit] == undefined && !MattIsCPPOperator(nameStep))
+			{
+				done[crit] = true;
+				MattReduceStackInfoObjectGeneric(res,stack[j],callers,infos,criteria);
+			}
+		}
+	}
+	
+	return res;
+}
+
+
+/****************************************************/
+function extractAllocInfoOfFile(file)
+{
+	return extractAllocInfoGeneric(
+		function(addr) {return MattGetFile(addr) == file;},
+		MattGetLine,
+		false);
+}
+
+/****************************************************/
+app.get('/file-infos.json',function(req,res) {
+	//extract file from request
+	var file = req.query.file;
+	
+	//return error
+	if (file == undefined)
+	{
+		res.send(500, 'Missing file GET parameter !');
+	} else {
+		console.log("extract alloc info of file : "+file);
+		var tmp = extractAllocInfoOfFile(file);
+		res.write(JSON.stringify(tmp,null,'\t'));
+	}
+	res.end();
+});
+
+/****************************************************/
 app.get('/proc-map-distr.json',function(req,res) {
 	var tmp = new Object();
 	var map = data.stackInfo.sites.map;
@@ -284,7 +423,7 @@ app.use('/',Express.static(__dirname+'/client_files'));
 for (var i in redirs)
 {
 	//TODO remove first '/' in strings
-	console.log("redirect : " + redirs[i].source + " -> " + redirs[i].dest);
+	console.log("override : " + redirs[i].source + " -> " + redirs[i].dest);
 	app.use('/app-sources/'+redirs[i].source,Express.static('/'+redirs[i].dest));
 }
 

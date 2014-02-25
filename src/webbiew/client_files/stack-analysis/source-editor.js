@@ -13,6 +13,7 @@ function MattEditor(divId)
 	
 	//cur file name
 	this.file = null;
+	this.fileStats = null;
 
 	//Function to update file in editor
 	this.updateFile = function(file,line)
@@ -38,7 +39,16 @@ function MattEditor(divId)
 				mattObj.editor.resize(true);
 				mattObj.editor.gotoLine(line);
 				mattObj.file = file;
+				mattObj.updateAnotations(file);
 			});
 		}
+	}
+	
+	//update anotations
+	this.updateAnotations = function(file)
+	{
+		$.get("/file-infos.json?file="+file,function(data) {
+			alert(data);
+		});
 	}
 }
