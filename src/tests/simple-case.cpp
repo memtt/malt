@@ -190,9 +190,11 @@ void testAllFuncs(void)
 	free(ptr);
 	
 	//posix_memalign
-	ptr = aligned_alloc(16,16);
-	*(int*)ptr = res;
-	free(ptr);
+	#ifdef aligned_alloc
+		ptr = aligned_alloc(16,16);
+		*(int*)ptr = res;
+		free(ptr);
+	#endif //aligned_alloc
 	
 	//posix_memalign
 	ptr = memalign(16,16);

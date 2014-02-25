@@ -31,6 +31,7 @@ args = new Args('matt-webview', '1.0', 'Webiew for MATT based on Node.js','');
 //define args
 args.add({ name: 'input', desc: 'input file from MATT into JSON format', switches: [ '-i', '--input-file'], value: 'file', required: true });
 args.add({ name: 'port',  desc: 'Port to use to wait for HTTP requests', switches: [ '-p', '--port'],       value: 'port', required: false });
+args.add({ name: 'redirect',  desc: 'Redirect source dirs', switches: [ '-r', '--redirect'],       value: 'redirections', required: false });
 if (!args.parse()) 
 {
 	console.error("Invalid parameters, please check with -h");
@@ -41,6 +42,15 @@ if (!args.parse())
 var port = 8080;
 if (args.params.port != undefined)
 	port = args.params.port;
+
+/****************************************************/
+var redirs = new Array();
+var tmp = args.params.redirect.split(',');
+for (var i in tmp)
+{
+	var tmp2 = tmp[i].split(':');
+	redirs.push({source:tmp2[0],dest:tmp2[1]});
+}
 
 /****************************************************/
 //load file
@@ -146,7 +156,7 @@ function MattReduceStackInfoObject(into,addr,subKey,value)
 }
 
 /****************************************************/
-var opRegexp = /^((_Zn[wa])|(g_malloc)|(g_realloc)|(g_free))/
+var opRegexp = /^((_Zn[wa])|(g_malloc)|(g_realloc)|(g_free)|(for__get_vm)|(for__free_vm))/
 function MattIsCPPOperator(name)
 {
 // 	var begin = name.substring(0, 4);
@@ -270,6 +280,13 @@ app.use('/deps/d3js',Express.static(__dirname + '/client_deps/d3js-3.4.2/'));
 app.use('/deps/nvd3',Express.static(__dirname + '/client_deps/nvd3-1.1.15-beta/'));
 app.use('/app-sources/',Express.static('/'));
 app.use('/',Express.static(__dirname+'/client_files'));
+
+for (var i in redirs)
+{
+	//TODO remove first '/' in strings
+	console.log("redirect : " + redirs[i].source + " -> " + redirs[i].dest);
+	app.use('/app-sources/'+redirs[i].source,Express.static('/'+redirs[i].dest));
+}
 
 /****************************************************/
 //run express

@@ -33,7 +33,7 @@ function MattEditor(divId)
 			this.file = null;
 		} else {
 			var mattObj = this;
-			$.get( "/app-sources/"+file,function(data){
+			$.get( "/app-sources"+file,function(data){
 				mattObj.editor.setValue(data);
 				mattObj.editor.resize(true);
 				mattObj.editor.gotoLine(line);

@@ -32,7 +32,7 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config.h.in ${CMAKE_CURRENT_BINARY_DI
 ######################################################
 include_directories(.)
 include_directories(../extern-deps/from-fftw)
-include_directories(../extern-deps/iniparser)
+include_directories(../extern-deps/iniparser/src)
 include_directories(../extern-deps/from-htopml)
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
