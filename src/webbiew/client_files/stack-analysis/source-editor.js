@@ -47,8 +47,16 @@ function MattEditor(divId)
 	//update anotations
 	this.updateAnotations = function(file)
 	{
-		$.get("/file-infos.json?file="+file,function(data) {
-			alert(data);
+		var cur = this;
+		$.getJSON("/file-infos.json?file="+file,function(data) {
+			var annot = new Array();
+			for (var i in data)
+			{
+				data[i].file = undefined;
+				data[i].binary = undefined;
+				annot.push({row: i, column: 0, html:'<pre>'+JSON.stringify(data[i],null,"\t")+'</pre>', type:"info"});
+			}
+			cur.editor.getSession().setAnnotations(annot);
 		});
 	}
 }
