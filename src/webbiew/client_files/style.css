@@ -41,6 +41,11 @@
 	color:black;
 }
 
+#matt-alloc-stacks {
+	background:gray;
+	color:black;
+}
+
 /******************* FLAT FUNC LIST ******************/
 /* Flat list of function in stack-analysis */
 #matt-func-list li a {

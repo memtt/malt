@@ -82,7 +82,15 @@ function MattEditor(divId)
 		marker.className = 'matt-annotation';
 		marker.innerHTML = mattHumanValue({unit:'B'},value);
 		marker.mattData = data;
-		marker.onclick = function() {document.getElementById("matt-alloc-info").innerHTML = dataToTextDetails(this.mattData);};
+		marker.onclick = function() {
+			document.getElementById("matt-alloc-info").innerHTML = dataToTextDetails(this.mattData);
+			$.getJSON("/stacks.json?file="+this.mattData.file+"&line="+this.mattData.line,function(data) {
+				var tmp = "";
+				for (var i in data)
+					tmp += JSON.stringify(data[i].stack);
+				document.getElementById("matt-alloc-stacks").innerHTML = tmp;
+			});
+		};
 		return marker;
 	}
 	
@@ -95,7 +103,7 @@ function MattEditor(divId)
 			var annot = new Array();
 			for (var i in data)
 			{
-				data[i].file = undefined;
+// 				data[i].file = undefined;
 				data[i].binary = undefined;
 				annot.push({row: i-1, column: 0, html:'<pre>'+JSON.stringify(data[i],null,"\t")+'</pre>', type:"info"});
 				

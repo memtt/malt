@@ -345,6 +345,70 @@ function extractAllocInfoOfFile(file)
 }
 
 /****************************************************/
+function filterExtractStacksCandidate(stack,file,line)
+{
+	for (var i in stack)
+	{
+		var entryLine = MattGetLine(stack[i]);
+		if (entryLine != line)
+			continue;
+		var entryFile = MattGetFile(stack[i]);
+		if (entryLine == line && entryFile == file)
+			return true;
+	}
+	return false;
+}
+
+function getHumanStack(stack)
+{
+	var res = new Array();
+	for (var i in stack)
+	{
+		var func = MattGetFunction(stack[i]);
+		res.push(func);
+	}
+	return res;
+}
+
+/****************************************************/
+function extractStacks(file,line)
+{
+	var stats = data.stackInfo.stats;
+	var res = new Array();	
+	
+	for(var i in stats)
+	{
+		//extract some short pointers
+		var stack = stats[i].stack;
+		var info = stats[i].infos;
+		
+		//check if conteain
+		if (filterExtractStacksCandidate(stack,file,line))
+			res.push({stack:getHumanStack(stack),info:info});
+	}
+	
+	return res;
+}
+
+/****************************************************/
+app.get('/stacks.json',function(req,res){
+	//extratc file from request
+	var file = req.query.file;
+	var line = req.query.line;
+	
+	//return error
+	if (file == undefined || line == undefined)
+	{
+		res.send(500, 'Missing file or line GET parameter !');
+	} else {
+		console.log("extract stacks for : "+file+" +"+line);
+		var tmp = extractStacks(file,line);
+		res.write(JSON.stringify(tmp,null,"\t"));
+	}
+	res.end();
+});
+
+/****************************************************/
 app.get('/file-infos.json',function(req,res) {
 	//extract file from request
 	var file = req.query.file;
