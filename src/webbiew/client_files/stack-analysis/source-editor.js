@@ -65,6 +65,11 @@ function MattEditor(divId)
 		}
 	}
 	
+	function dataToTextDetails(data)
+	{
+		return JSON.stringify(data,null,"\t");
+	}
+	
 	function makeMarker(data) {
 		if (data.own == undefined || data.own.alloc == undefined)
 			return null;
@@ -73,9 +78,11 @@ function MattEditor(divId)
 		if (value == undefined || value == 0)
 			return null;
 		
-		var marker = document.createElement("a");
+		var marker = document.createElement("div");
 		marker.className = 'matt-annotation';
 		marker.innerHTML = mattHumanValue({unit:'B'},value);
+		marker.mattData = data;
+		marker.onclick = function() {document.getElementById("matt-alloc-info").innerHTML = dataToTextDetails(this.mattData);};
 		return marker;
 	}
 	

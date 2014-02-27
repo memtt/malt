@@ -25,6 +25,8 @@
 	-moz-border-radius: 9px;
 	border-radius: 9px;
 	background-color: #b94a48;
+	
+	cursor:pointer;
 }
 
 #matt-source-editor  .CodeMirror
@@ -32,6 +34,11 @@
 /* 	height:auto; */
 	height:100%;
 	border:solid 1px black;
+}
+
+#matt-alloc-info {
+	background:white;
+	color:black;
 }
 
 /******************* FLAT FUNC LIST ******************/
