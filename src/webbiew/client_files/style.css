@@ -7,6 +7,33 @@
 	width:100%;
 }
 
+#matt-source-editor .matt-annotations {
+	width:5em;
+}
+
+#matt-source-editor .matt-annotation{
+	font-size:0.8em;
+	text-align:center;
+	
+	/* bardge http://cssdeck.com/labs/twitter-bootstrap-badges */
+	padding: 1px 9px 2px;
+	font-size: 12.025px;
+	font-weight: bold;
+	white-space: nowrap;
+	color: #ffffff;
+	-webkit-border-radius: 9px;
+	-moz-border-radius: 9px;
+	border-radius: 9px;
+	background-color: #b94a48;
+}
+
+#matt-source-editor  .CodeMirror
+{
+/* 	height:auto; */
+	height:100%;
+	border:solid 1px black;
+}
+
 /******************* FLAT FUNC LIST ******************/
 /* Flat list of function in stack-analysis */
 #matt-func-list li a {
@@ -51,4 +78,11 @@
 .matt-graph-background {
 	fill:#464D56;
 	opacity:1;
+}
+
+
+.ace_marker-layer .matt_warning {
+    position: absolute;
+    z-index: 4;
+    background: #1F384A;
 }

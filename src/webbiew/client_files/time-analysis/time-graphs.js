@@ -135,11 +135,11 @@ function mattNVDGraph(divId,data)
 		;
 		
 		chart.xAxis //Chart x-axis settings
-			.axisLabel('Time (ms)')
+			.axisLabel('Time (cycles)')
 			.tickFormat(function(value){return mattHelper.humanReadableValue(value,'');});
 		
 		chart.yAxis //Chart y-axis settings
-			.axisLabel('Voltage (v)')
+			.axisLabel('Memory')
 			.tickFormat(function(value){return mattHelper.humanReadableValue(value,'');});
 		
 		/* Done setting the chart up? Time to render it!*/

@@ -349,14 +349,22 @@ app.get('/file-infos.json',function(req,res) {
 	//extract file from request
 	var file = req.query.file;
 	
+	//setup cache root entry
+	if (mattCache['file-infos.json'] == undefined)
+		mattCache['file-infos.json'] = new Object();
+	
 	//return error
 	if (file == undefined)
 	{
 		res.send(500, 'Missing file GET parameter !');
+	} else if (mattCache['file-infos.json'][file] != undefined) {
+		res.write(mattCache['file-infos.json'][file]);
 	} else {
 		console.log("extract alloc info of file : "+file);
 		var tmp = extractAllocInfoOfFile(file);
-		res.write(JSON.stringify(tmp,null,'\t'));
+		tmp = JSON.stringify(tmp,null,'\t');
+		mattCache['file-infos.json'][file] = tmp;
+		res.write(tmp);
 	}
 	res.end();
 });
@@ -417,6 +425,10 @@ app.use('/deps/ace',Express.static(__dirname + '/client_deps/ace-builds-1.1.1/')
 app.use('/deps/jqplot',Express.static(__dirname + '/client_deps/jqplot-1.0.8/'));
 app.use('/deps/d3js',Express.static(__dirname + '/client_deps/d3js-3.4.2/'));
 app.use('/deps/nvd3',Express.static(__dirname + '/client_deps/nvd3-1.1.15-beta/'));
+app.use('/deps/codemirror/lib',Express.static(__dirname + '/node_modules/codemirror/lib'));
+app.use('/deps/codemirror/theme',Express.static(__dirname + '/node_modules/codemirror/theme'));
+app.use('/deps/codemirror/mode',Express.static(__dirname + '/node_modules/codemirror/mode'));
+app.use('/deps/codemirror/addon',Express.static(__dirname + '/node_modules/codemirror/addon'));
 app.use('/app-sources/',Express.static('/'));
 app.use('/',Express.static(__dirname+'/client_files'));
 
