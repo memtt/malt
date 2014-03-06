@@ -34,10 +34,9 @@ Options::Options(void)
 	this->outputIndent            = true;
 	this->outputJson              = true;
 	this->outputLua               = false;
-	this->outputCallgrind         = false;
+	this->outputCallgrind         = true;
 	this->outputDumpConfig        = true;
 }
-
 
 /*******************  FUNCTION  *********************/
 void Options::loadFromFile(const char* fname)

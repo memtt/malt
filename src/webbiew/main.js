@@ -341,7 +341,7 @@ function extractAllocInfoOfFile(file)
 	return extractAllocInfoGeneric(
 		function(addr) {return MattGetFile(addr) == file;},
 		MattGetLine,
-		false);
+		true);
 }
 
 /****************************************************/

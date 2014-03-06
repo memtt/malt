@@ -12,12 +12,14 @@
 }
 
 #matt-source-editor .matt-annotation{
-	font-size:0.8em;
-	text-align:center;
+	font-size:11px;
+	text-align:right;
+	
+	padding-right:9px;
 	
 	/* bardge http://cssdeck.com/labs/twitter-bootstrap-badges */
-	padding: 1px 9px 2px;
-	font-size: 12.025px;
+/* 	padding: 1px 9px 2px; */
+/* 	font-size: 12.025px; */
 	font-weight: bold;
 	white-space: nowrap;
 	color: #ffffff;

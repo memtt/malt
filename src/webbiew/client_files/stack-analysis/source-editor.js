@@ -29,12 +29,20 @@ function MattEditor(divId)
 	//cur file name
 	this.file = null;
 	this.fileStats = null;
+	this.selector = null;
+	this.mode = null;
+	
+	this.setSelector = function(selector,mode)
+	{
+		this.selector = selector;
+		this.mode = mode;
+	}
 
 	//Function to update file in editor
-	this.updateFile = function(file,line)
+	this.updateFile = function(file,line,force)
 	{
 		///trivial
-		if (file == this.file)
+		if (file == this.file && force != true)
 		{
 // 			this.editor.gotoLine(line);
 			this.editor.setCursor(line);
@@ -70,17 +78,17 @@ function MattEditor(divId)
 		return JSON.stringify(data,null,"\t");
 	}
 	
-	function makeMarker(data) {
-		if (data.own == undefined || data.own.alloc == undefined)
+	function makeMarker(selector,mode,data) {
+		if (data[mode] == undefined)
 			return null;
 		
-		var value = data.own.alloc.sum;
+		var value = selector.extractor(data[mode]);
 		if (value == undefined || value == 0)
 			return null;
 		
 		var marker = document.createElement("div");
 		marker.className = 'matt-annotation';
-		marker.innerHTML = mattHumanValue({unit:'B'},value);
+		marker.innerHTML = mattHumanValue({unit:selector.unit},value);
 		marker.mattData = data;
 		marker.onclick = function() {
 			document.getElementById("matt-alloc-info").innerHTML = dataToTextDetails(this.mattData);
@@ -100,17 +108,18 @@ function MattEditor(divId)
 		var cur = this;
 		$.getJSON("/file-infos.json?file="+file,function(data) {
 // 			var session = cur.editor.getSession();
-			var annot = new Array();
+// 			var annot = new Array();
+			cur.data = data;
 			for (var i in data)
 			{
 // 				data[i].file = undefined;
 				data[i].binary = undefined;
-				annot.push({row: i-1, column: 0, html:'<pre>'+JSON.stringify(data[i],null,"\t")+'</pre>', type:"info"});
+// 				annot.push({row: i-1, column: 0, html:'<pre>'+JSON.stringify(data[i],null,"\t")+'</pre>', type:"info"});
 				
 // 				var range = new Range(i, 1, i, 20);
 // 				var markerId = session.addMarker(range,"matt_warning", "text",false);
 				
-				cur.editor.setGutterMarker(i-1, "matt-annotations",makeMarker(data[i]));
+				cur.editor.setGutterMarker(i-1, "matt-annotations",makeMarker(cur.selector,cur.mode,data[i]));
 			}
 // 			session.setAnnotations(annot);
 // 			session.addMarker(range, "matt_info");
@@ -118,5 +127,15 @@ function MattEditor(divId)
 // 			setTimeout(function() {
 // 			d3.selectAll(".ace_gutter .ace_gutter-cell").style('width','200px');},1000);
 		});
+	}
+	
+	this.redrawAnnotations = function()
+	{
+		this.editor.clearGutter
+		for (var i in this.data)
+		{
+			this.data[i].binary = undefined;
+			this.editor.setGutterMarker(i-1, "matt-annotations",makeMarker(this.selector,this.mode,this.data[i]));
+		}
 	}
 }

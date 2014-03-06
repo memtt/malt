@@ -19,7 +19,7 @@
 				<button type="button" class="btn btn-default" onclick="javascript:document.getElementById('matt-func-list').matt.toogleUnit();"><b>%</b></button>
 				<button type="button" class="btn btn-default" onclick="javascript:document.getElementById('matt-func-list').matt.toogleMode();"><b>I</b></button>
 				<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-					Allocated mem.
+					<span id='matt-button-metric'>Allocated mem.</span>
 					<span class="caret"></span>
 				</button>
 				<ul class="dropdown-menu" id='matt-selector-list'>
@@ -35,8 +35,8 @@
 		<!-- Source editor -->
 		<div class="col-sm-7 col-md-8 col-lg-9 main">
 			<div id='matt-source-editor'></div>
-			<div id='matt-alloc-info'></div>
-			<div id='matt-alloc-stacks'></div>
+			<div id='matt-alloc-stacks' style="width:70%;float:left;"></div>
+			<div id='matt-alloc-info' style="width:30%;float:left;"></div>
 		</div>
 	</div>
 </div>

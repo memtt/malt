@@ -40,11 +40,13 @@ function MattFuncList(ulId)
 	//build value extractor
 	this.valueSelector = new Object();
 	this.valueSelector['alloc.sum']   = {'name': 'Allocated mem.','extractor':function (entry) {return entry.alloc.sum;},'unit' : 'B','ref':'sum'};
-	this.valueSelector['alloc.count'] = {'name': 'Allocations num.','extractor':function (entry) {return entry.alloc.count;},'unit':'','ref':'sum'};
+	this.valueSelector['alloc.count'] = {'name': 'Allocation num.','extractor':function (entry) {return entry.alloc.count;},'unit':'','ref':'sum'};
 	this.valueSelector['alloc.min'] = {'name': 'Min. alloc. size','extractor':function (entry) {return entry.alloc.min;},'unit':'B','ref':'max'};
 	this.valueSelector['alloc.max'] = {'name': 'Max. alloc. size','extractor':function (entry) {return entry.alloc.max;},'unit':'B','ref':'max'};
 	this.valueSelector['alloc.moy'] = {'name': 'Mean alloc. size','extractor':function (entry) {return entry.alloc.count == 0 ? 0 : entry.alloc.sum / entry.alloc.count;},'unit':'B','ref':'max'};
+	this.valueSelector['free.sum']   = {'name': 'Freed mem.','extractor':function (entry) {return entry.free.sum;},'unit' : 'B','ref':'sum'};
 	this.valueSelector['free.count'] = {'name': 'Free num.','extractor':function (entry) {return entry.free.count;},'unit':'','ref':'sum'};
+	this.valueSelector['memops']   = {'name': 'Memory ops.','extractor':function (entry) {return entry.alloc.count + entry.free.count;},'unit' : '','ref':'sum'};
 	
 	//Declare render function
 	this.render = function()
@@ -61,7 +63,8 @@ function MattFuncList(ulId)
 	this.updateMetric = function(name)
 	{
 		this.selected = name;
-		this.render();
+		this.onChangeRenderParameters();
+		document.getElementById('matt-button-metric').innerHTML = this.valueSelector[name].name;
 	}
 
 	//toogle unit
@@ -71,7 +74,7 @@ function MattFuncList(ulId)
 			this.unit = 'real';
 		else
 			this.unit = '%';
-		this.render();
+		this.onChangeRenderParameters();
 	}
 	
 	//toogle mode
@@ -81,7 +84,7 @@ function MattFuncList(ulId)
 			this.mode = 'own';
 		else
 			this.mode = 'total';
-		this.render();
+		this.onChangeRenderParameters();
 	}
 	
 	//toogle sort
@@ -91,7 +94,7 @@ function MattFuncList(ulId)
 			this.sort = 'desc';
 		else
 			this.sort = 'asc';
-		this.render();
+		this.onChangeRenderParameters();
 	}
 	
 	//Declare intenral fetchAndRender
@@ -190,6 +193,21 @@ function MattFuncList(ulId)
 
 		//ok return for render
 		return {'data':{'entries':res, 'ref':this.internalGetRef(max,sum,selector),'unit':this.internalGetUnit(selector)}};
+	}
+	
+	this.updateFileView = function(file,line)
+	{
+		var sourceEditor = document.getElementById('matt-source-editor').matt;
+		sourceEditor.setSelector(this.valueSelector[this.selected],this.mode);
+		sourceEditor.updateFile(file,line,true);
+	}
+	
+	this.onChangeRenderParameters = function()
+	{
+		this.render();
+		var sourceEditor = document.getElementById('matt-source-editor').matt;
+		sourceEditor.setSelector(this.valueSelector[this.selected],this.mode);
+		sourceEditor.redrawAnnotations();
 	}
 	
 	//do render by default

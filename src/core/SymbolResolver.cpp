@@ -255,7 +255,7 @@ void SymbolResolver::resolveNames(LinuxProcMapEntry * procMapEntry)
 			if (isSharedLib)
 				addr2lineCmd << ' '  << (void*)((size_t)it->first - (size_t)procMapEntry->lower);
 			else
-				addr2lineCmd << ' '  << it->first;
+				addr2lineCmd << ' '  << (void*)((size_t)it->first);
 			lst.push_back(&it->second);
 		}
 	}
