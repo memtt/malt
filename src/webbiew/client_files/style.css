@@ -3,7 +3,7 @@
 #matt-source-editor { 
 	right: 0;
 	left: 0;
-	height:600px;
+	height:700px;
 	width:100%;
 }
 
@@ -41,6 +41,7 @@
 #matt-alloc-info {
 	background:white;
 	color:black;
+	padding:10px;
 }
 
 #matt-alloc-stacks {

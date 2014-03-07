@@ -42,8 +42,8 @@
 		$.getJSON( "/timed.json", function( data ) {
 // 			mattUpdatePlot('matt-plot','Memory',mattConvertData(data),'B');
 // 			mattUpdatePlot('matt-plot2','Allocated segments',mattConvertCnt(data),'');
-			mattNVDGraph("chart",mattConvertData(data),'B');
-			mattNVDGraph("chart2",mattConvertCnt(data),'');
+			mattNVDGraph("chart",mattConvertData(data),'B','Memory');
+			mattNVDGraph("chart2",mattConvertCnt(data),'','Allocations');
 		});
 		
 		$.getJSON( "/proc-map-distr.json", function( data ) {

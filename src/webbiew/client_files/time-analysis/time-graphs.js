@@ -41,7 +41,7 @@ function mattConvertCnt(data)
 	return {data:res,labels:labels};
 }
 
-function mattUpdatePlot(id,title,data,unit)
+function mattUpdatePlot(id,title,data,unit,ylabel)
 {			
 	var plot = $.jqplot(id, data.data, {
 		title: title,
@@ -79,7 +79,7 @@ function mattUpdatePlot(id,title,data,unit)
 			},
 			yaxis: {
 				min: 0,
-				label: 'Memory',
+				label: ylabel,
 				tickOptions: {
 				showGridline: false,
 				formatter: function(format,value) {return mattHelper.humanReadableValue(value,unit);}
@@ -122,7 +122,7 @@ function mattUpdatePlot(id,title,data,unit)
 }
 
 
-function mattNVDGraph(divId,data)
+function mattNVDGraph(divId,data,ylabel)
 {
 	nv.addGraph(function() {
 		var chart = nv.models.lineChart()
@@ -139,7 +139,7 @@ function mattNVDGraph(divId,data)
 			.tickFormat(function(value){return mattHelper.humanReadableValue(value,'');});
 		
 		chart.yAxis //Chart y-axis settings
-			.axisLabel('Memory')
+			.axisLabel(ylabel)
 			.tickFormat(function(value){return mattHelper.humanReadableValue(value,'');});
 		
 		/* Done setting the chart up? Time to render it!*/

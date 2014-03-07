@@ -91,10 +91,12 @@ function MattEditor(divId)
 		marker.innerHTML = mattHumanValue({unit:selector.unit},value);
 		marker.mattData = data;
 		marker.onclick = function() {
-			document.getElementById("matt-alloc-info").innerHTML = dataToTextDetails(this.mattData);
+			var callback = new EJS({url: '/stack-analysis/alloc-site-details.ejs'}).update("matt-alloc-info");
+			callback(this.mattData);
+// 			document.getElementById("matt-alloc-info").innerHTML = dataToTextDetails(this.mattData);
 			$.getJSON("/stacks.json?file="+this.mattData.file+"&line="+this.mattData.line,function(data) {
 				var tmp = "";
-				for (var i in data)
+				for (var i in data.slice(0,10))
 					tmp += JSON.stringify(data[i].stack);
 				document.getElementById("matt-alloc-stacks").innerHTML = tmp;
 			});
