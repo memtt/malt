@@ -108,20 +108,20 @@ function MattEditor(divId)
 	this.updateAnotations = function(file)
 	{
 		var cur = this;
-		$.getJSON("/file-infos.json?file="+file,function(data) {
+		$.getJSON("/file-infos2.json?file="+file,function(data) {
 // 			var session = cur.editor.getSession();
 // 			var annot = new Array();
 			cur.data = data;
 			for (var i in data)
 			{
 // 				data[i].file = undefined;
-				data[i].binary = undefined;
+// 				data[i].binary = undefined;
 // 				annot.push({row: i-1, column: 0, html:'<pre>'+JSON.stringify(data[i],null,"\t")+'</pre>', type:"info"});
 				
 // 				var range = new Range(i, 1, i, 20);
 // 				var markerId = session.addMarker(range,"matt_warning", "text",false);
 				
-				cur.editor.setGutterMarker(i-1, "matt-annotations",makeMarker(cur.selector,cur.mode,data[i]));
+				cur.editor.setGutterMarker(this.data[i].line-1, "matt-annotations",makeMarker(cur.selector,cur.mode,data[i]));
 			}
 // 			session.setAnnotations(annot);
 // 			session.addMarker(range, "matt_info");
@@ -135,9 +135,6 @@ function MattEditor(divId)
 	{
 		this.editor.clearGutter
 		for (var i in this.data)
-		{
-			this.data[i].binary = undefined;
-			this.editor.setGutterMarker(i-1, "matt-annotations",makeMarker(this.selector,this.mode,this.data[i]));
-		}
+			this.editor.setGutterMarker(this.data[i].line-1, "matt-annotations",makeMarker(this.selector,this.mode,this.data[i]));
 	}
 }

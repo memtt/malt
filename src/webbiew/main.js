@@ -13,6 +13,8 @@ var Args    = require('arg-parser');
 var Express = require('express');
 var clone   = require('clone');
 var engine  = require('ejs-locals');
+//internal classes
+var MattProject = require('./server_files/lib/MattProject.js');
 
 /****************************************************/
 //start express
@@ -66,6 +68,8 @@ fs.readFile(args.params.input, 'utf8', function (err, buffer) {
 	}
 	data = JSON.parse(buffer);
 });
+
+var mattProject = new MattProject(args.params.input);
 
 /****************************************************/
 function MattGetLine(addr)
@@ -430,6 +434,17 @@ app.get('/file-infos.json',function(req,res) {
 		mattCache['file-infos.json'][file] = tmp;
 		res.write(tmp);
 	}
+	res.end();
+});
+
+/****************************************************/
+app.get('/file-infos2.json',function(req,res) {
+	//extract file from request
+	var file = req.query.file;
+	
+	var tmp = mattProject.getFileLinesFlatProfile(file,true);
+	tmp = JSON.stringify(tmp,null,'\t');
+	res.write(tmp);
 	res.end();
 });
 
