@@ -406,7 +406,8 @@ app.get('/stacks.json',function(req,res){
 		res.send(500, 'Missing file or line GET parameter !');
 	} else {
 		console.log("extract stacks for : "+file+" +"+line);
-		var tmp = extractStacks(file,line);
+		var tmp = mattProject.getFilterdStacksOnFileLine(file,line);
+		//extractStacks(file,line);
 		res.write(JSON.stringify(tmp,null,"\t"));
 	}
 	res.end();
@@ -429,7 +430,7 @@ app.get('/file-infos.json',function(req,res) {
 		res.write(mattCache['file-infos.json'][file]);
 	} else {
 		console.log("extract alloc info of file : "+file);
-		var tmp = extractAllocInfoOfFile(file);
+		var tmp = mattProject.getFileLinesFlatProfile(file,true);
 		tmp = JSON.stringify(tmp,null,'\t');
 		mattCache['file-infos.json'][file] = tmp;
 		res.write(tmp);
@@ -438,42 +439,8 @@ app.get('/file-infos.json',function(req,res) {
 });
 
 /****************************************************/
-app.get('/file-infos2.json',function(req,res) {
-	//extract file from request
-	var file = req.query.file;
-	
-	var tmp = mattProject.getFileLinesFlatProfile(file,true);
-	tmp = JSON.stringify(tmp,null,'\t');
-	res.write(tmp);
-	res.end();
-});
-
-/****************************************************/
 app.get('/proc-map-distr.json',function(req,res) {
-	var tmp = new Object();
-	var map = data.stackInfo.sites.map;
-	var checkStack = /^\[stack:[0-9]+\]$/;
-	for (var i in map)
-	{
-		var mem = (parseInt(map[i].upper,16) - parseInt(map[i].lower,16));
-		var file = map[i].file;
-		if (file == '')
-			file = 'anonymous';
-		if (checkStack.test(file))
-			file = 'stack';
-		
-		if (tmp[file] == undefined)
-		{
-			tmp[file] = {
-				mem:mem,
-				cnt:1
-			};
-		} else {
-			tmp[file].mem += mem;
-			tmp[file].cnt++;
-		}
-	}
-	
+	var tmp = mattProject.getProcMapDistr();
 	res.write(JSON.stringify(tmp,null,'\t'));
 	res.end();
 });

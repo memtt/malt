@@ -92,7 +92,9 @@ function MattEditor(divId)
 		marker.mattData = data;
 		marker.onclick = function() {
 			var callback = new EJS({url: '/stack-analysis/alloc-site-details.ejs'}).update("matt-alloc-info");
+			alert('ok' + this.mattData);
 			callback(this.mattData);
+			
 // 			document.getElementById("matt-alloc-info").innerHTML = dataToTextDetails(this.mattData);
 			$.getJSON("/stacks.json?file="+this.mattData.file+"&line="+this.mattData.line,function(data) {
 				var tmp = "";
@@ -108,7 +110,7 @@ function MattEditor(divId)
 	this.updateAnotations = function(file)
 	{
 		var cur = this;
-		$.getJSON("/file-infos2.json?file="+file,function(data) {
+		$.getJSON("/file-infos.json?file="+file,function(data) {
 // 			var session = cur.editor.getSession();
 // 			var annot = new Array();
 			cur.data = data;
@@ -121,7 +123,7 @@ function MattEditor(divId)
 // 				var range = new Range(i, 1, i, 20);
 // 				var markerId = session.addMarker(range,"matt_warning", "text",false);
 				
-				cur.editor.setGutterMarker(this.data[i].line-1, "matt-annotations",makeMarker(cur.selector,cur.mode,data[i]));
+				cur.editor.setGutterMarker(data[i].line-1, "matt-annotations",makeMarker(cur.selector,cur.mode,data[i]));
 			}
 // 			session.setAnnotations(annot);
 // 			session.addMarker(range, "matt_info");

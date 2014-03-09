@@ -130,6 +130,87 @@ MattProject.prototype.getFileLinesFlatProfile = function(file,total)
 }
 
 /****************************************************/
+MattProject.prototype.getProcMapDistr = function()
+{
+	//some local vars
+	var res = new Object();
+	var map = data.stackInfo.sites.map;
+	var checkStack = /^\[stack:[0-9]+\]$/;
+
+	//loop on map entries
+	for (var i in map)
+	{
+		//compte mem
+		var mem = (parseInt(map[i].upper,16) - parseInt(map[i].lower,16));
+		
+		//check goal
+		var file = map[i].file;
+		if (file == '')
+			file = 'anonymous';
+		if (checkStack.test(file))
+			file = 'stack';
+		
+		//sum
+		if (res[file] == undefined)
+		{
+			res[file] = {
+				mem:mem,
+				cnt:1
+			};
+		} else {
+			res[file].mem += mem;
+			res[file].cnt++;
+		}
+	}
+
+	//ok return
+	return res;
+}
+
+/****************************************************/
+/**
+ * Extract a list of stacks containing elements which pass the given filter function.
+ * @param filter A filter function which return a boolean and have prototype function(detailedStackEntry)
+**/
+MattProject.prototype.getFilterdStacks = function(filter)
+{
+	//get some refs
+	var stats = data.stackInfo.stats;
+	var res = new Array();	
+	
+	//loop on stat entries
+	for(var i in stats)
+	{
+		//extract some short pointers
+		var detailedStack = stats[i].detailedStack;
+		var info = stats[i].infos;
+		
+		//check if conteain
+		if (filterExtractStacksCandidate(detailedStack,filter))
+			res.push({stack:detailedStack,info:info});
+	}
+	
+	return res;
+}
+
+/****************************************************/
+MattProject.prototype.getFilterdStacksOnFileLine = function(file,line)
+{
+	return this.getFilterdStacks(function(entry) {
+		return entry.file == file && entry.line == line;
+	});
+}
+
+/****************************************************/
+function filterExtractStacksCandidate(detailedStack,filter)
+{
+	for (var i in detailedStack)
+		if (filter == true || filter(detailedStack[i]))
+			return true;
+	return false;
+}
+
+/****************************************************/
 /** Regexp to detect memory functions. **/
 var allocFuncRegexp = /^((_Zn[wa])|(g_malloc)|(g_realloc)|(g_free)|(for__get_vm)|(for__free_vm))/
 
@@ -163,29 +244,37 @@ function mergeStackInfoDatas(onto,value)
 }
 
 /****************************************************/
-function mergeStackInfo(into,detailedStackEntry,addr,subKey,value,mapping,fields)
+function mergeStackInfo(into,detailedStackEntry,addr,subKey,infos,mapping,fields)
 {
-	var key = mapping(detailedStackEntry);
+	//extract key by using mapping function
+	var key = mapping(detailedStackEntry,infos);
 	if (key == undefined)
 		key = addr;
 
+	//check existing
 	var cur = into[key];
 	if (cur == undefined)
 	{
+		//not exist -> create
 		cur = new Object();
-		//cur = clone(detailedStackEntry);
+	
+		//copy user requested fields
 		for (var i in fields)
 			cur[fields[i]] = detailedStackEntry[fields[i]];
+		
+		//add
 		into[key] = cur;
 	} else {
+		//check line and keep the lowest one
 		if (detailedStackEntry.line != 0 && detailedStackEntry.line != -1 && (detailedStackEntry.line < cur.line || cur.line == -1 || cur.line == 0))
 			cur.line = detailedStackEntry.line;
 	}
 	
+	//check for subkey (own or total) and clone or merge
 	if (cur[subKey] == undefined)
-		cur[subKey] = clone(value);
+		cur[subKey] = clone(infos);
 	else
-		mergeStackInfoDatas(cur[subKey],value);
+		mergeStackInfoDatas(cur[subKey],infos);
 }
 
 /****************************************************/
@@ -246,6 +335,7 @@ function optimizeProjectDatas(data)
 	var instrs = data.stackInfo.sites.instr;
 	
 	//do for stackInfo/instr section
+	//avoid to jump to string table every time
 	console.log("Optimizing stackInfo.sites.instr...");
 	for (var i in data.stackInfo.sites.instr)
 	{
@@ -257,6 +347,7 @@ function optimizeProjectDatas(data)
 	}
 	
 	//add detailedStack field to entries from stckInfo.stats and leaks
+	//avoid to jump to instr table every time
 	console.log("Optimizing access to stack details...");
 	for (var i in data.stackInfo.stats)
 	{
