@@ -183,7 +183,8 @@ function MattFuncList(ulId)
 				if (value > max)
 					max = value;
 				sum += value;
-				res.push({'name':i,'value':value,'details':data[i]});
+				var d = data[i];
+				res.push({'name':d.function,'value':value,'details':d});
 			}
 		}
 

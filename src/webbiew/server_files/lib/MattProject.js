@@ -130,6 +130,24 @@ MattProject.prototype.getFileLinesFlatProfile = function(file,total)
 }
 
 /****************************************************/
+/**
+ * Map memory informations from stack on functions (symbols).
+ * @param total If 'true', produce 'own' and 'total', otherwise produce 'own' and 'childs'.
+**/
+MattProject.prototype.getFlatFunctionProfile = function(total)
+{
+	var res = this.getFlatProfile(
+		function(entry) {return entry.function;},    //map on lines
+		true,                                        //accept all
+		['function','line','file'],                  //export only line info
+		total);
+	return res;
+}
+
+/****************************************************/
+/**
+ * Return virtual memory distribution extracted from /proc/self/maps and execution end.
+**/
 MattProject.prototype.getProcMapDistr = function()
 {
 	//some local vars
@@ -194,11 +212,29 @@ MattProject.prototype.getFilterdStacks = function(filter)
 }
 
 /****************************************************/
+/**
+ * Return the list of stacks (detailed) which contain location file:line.
+**/
 MattProject.prototype.getFilterdStacksOnFileLine = function(file,line)
 {
 	return this.getFilterdStacks(function(entry) {
 		return entry.file == file && entry.line == line;
 	});
+}
+
+/****************************************************/
+/**
+ * Return all timed values to build graphs.
+**/
+MattProject.prototype.getTimedValues = function()
+{
+	var tmp = new Object();
+	tmp.segments     = data.segments;
+	tmp.internalMem  = data.internalMem;
+	tmp.virtualMem   = data.virtualMem;
+	tmp.physicalMem  = data.physicalMem;
+	tmp.requestedMem = data.requestedMem;
+	return tmp;
 }
 
 /****************************************************/
