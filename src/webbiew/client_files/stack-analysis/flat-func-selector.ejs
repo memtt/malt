@@ -1,3 +1,14 @@
-<% for(var i in selectors) {%>
-	<li><a href="javascript:document.getElementById('<%=  listId %>').matt.updateMetric('<%= i %>');"><%= selectors[i].name %></a></li>
-<% } %>
+<div class="btn-group">
+	<button type="button" class="btn btn-default" onclick="javascript:document.getElementById('<%= divId %>').matt.toogleSort();"><span class='glyphicon glyphicon-sort'/> </button>
+	<button type="button" class="btn btn-default" onclick="javascript:document.getElementById('<%= divId %>').matt.toogleUnit();"><b>%</b></button>
+	<button type="button" class="btn btn-default" onclick="javascript:document.getElementById('<%= divId %>').matt.toogleMode();"><b>I</b></button>
+	<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+		<span id='<%= divId %>.button-metric'>Allocated mem.</span>
+		<span class="caret"></span>
+	</button>
+	<ul class="dropdown-menu" id='matt-selector-list'>
+		<% for(var i in selectors) {%>
+			<li><a href="javascript:document.getElementById('<%=  divId %>').matt.updateMetric('<%= i %>');"><%= selectors[i].name %></a></li>
+		<% } %>
+	</ul>
+</div>

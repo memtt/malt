@@ -87,7 +87,7 @@ app.get('/flat.json',function(req,res) {
 	}
 	
 	//ok flush to user
-	res.write(JSON.stringify(tmp),null,"\t"));
+	res.write(JSON.stringify(tmp,null,"\t"));
 	res.end();
 });
 
