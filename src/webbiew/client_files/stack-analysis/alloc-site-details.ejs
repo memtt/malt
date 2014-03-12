@@ -1,0 +1,25 @@
+<% if (total != undefined) {%>
+	<div><b>Total :</b></div>
+
+	<% if (total != undefined && total.alloc != undefined && total.alloc.count > 0) { %>
+		<div><%= total.alloc.count %> alloc : [ <%= total.alloc.min %> , <%= Math.round(total.alloc.sum / total.alloc.count) %> , <%= total.alloc.max %> ] (Bytes)</div>
+		<div>Allocated memory : <%= total.alloc.sum %> B</div>
+	<% } %>
+
+	<% if (total != undefined && total.free != undefined && total.free.count > 0) { %>
+		<div><%= total.free.count %> free : [ <%= total.free.min %> , <%=  Math.round(total.free.sum / total.free.count) %> , <%= total.free.max %> ] (Bytes)</div>
+		<div>Freed memory : <%= total.free.sum %> B</div>
+	<% } %>
+
+	<% if (total != undefined && total.lifetime != undefined && total.maxAliveReq > 0) { %>
+		<div>Allocations lifetime : [ <%= total.lifetime.min %> , <%= Math.round(total.lifetime.sum / total.lifetime.count) %> , <%= total.lifetime.max %> ] (cycles)</div>
+		<div>Max alive memory : <%= total.maxAliveReq %></div>
+	<% } %>
+
+	<% if (total != undefined && total.aliveReq != undefined && total.aliveReq > 0) { %>
+		<div>Leaks : <%= total.aliveReq %></div>
+	<% } %>
+<% } %>
+
+<div><br/><b>Locals :</b></div>
+
