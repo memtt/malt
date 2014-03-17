@@ -164,9 +164,11 @@ StackHash Stack::hash ( void** stack, int size ,StackOrder order)
 			{
 				StackHash cur = (StackHash)stack[i];
 				assert(cur != 0);
-				res ^= (StackHash)(cur+i+size);
-				res ^= (StackHash)(cur-i+size) << 32;
+// 				res ^= (StackHash)(cur+i+size);
+// 				res ^= (StackHash)(cur-i+size) << (i%32);
+				res += (StackHash)(cur) << (i%32);
 			}
+			res*=size;
 			break;
 		case STACK_ORDER_DESC:
 			//calc hash by doing xor on each call addresses
@@ -174,9 +176,11 @@ StackHash Stack::hash ( void** stack, int size ,StackOrder order)
 			{
 				StackHash cur = (StackHash)stack[i];
 				assert(cur != 0);
-				res ^= (StackHash)(cur+i+size);
-				res ^= (StackHash)(cur-i+size) << 32;
+// 				res ^= (StackHash)(cur+i+size);
+// 				res ^= (StackHash)(cur-i+size) << (i%32);
+				res += (StackHash)(cur) << (i%32);
 			}
+			res*=size;
 			break;
 	};
 
