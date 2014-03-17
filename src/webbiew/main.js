@@ -135,7 +135,7 @@ app.get('/file-infos.json',function(req,res) {
 		res.write(mattCache['file-infos.json'][file]);
 	} else {
 		console.log("extract alloc info of file : "+file);
-		var tmp = mattProject.getFileLinesFlatProfile(file,true);
+		var tmp = mattProject.getFileLinesFlatProfile(file,false);
 		tmp = JSON.stringify(tmp,null,'\t');
 		mattCache['file-infos.json'][file] = tmp;
 		res.write(tmp);
@@ -168,6 +168,7 @@ app.get('/time-analysis.html',function(eq,res,next){
 /****************************************************/
 //export static deps
 app.use('/deps/jquery',Express.static(__dirname + '/client_deps/jquery-1.11.0'));
+app.use('/deps/jquery-treetable',Express.static(__dirname + '/client_deps/jquery-treetable-3.1.0/'));
 app.use('/deps/bootstrap',Express.static(__dirname + '/client_deps/bootstrap-3.1.1-dist'));
 app.use('/deps/bootswatch/slate',Express.static(__dirname + '/client_deps/bootswatch.com/slate'));
 app.use('/deps/bootswatch/fonts',Express.static(__dirname + '/client_deps/bootstrap-3.1.1-dist/fonts'));
