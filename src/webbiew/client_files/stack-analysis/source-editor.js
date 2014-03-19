@@ -1,3 +1,120 @@
+/****************************************************/
+function mergeStackMinMaxInfo(onto,value)
+{
+	onto.count += value.count;
+	onto.sum += value.sum;
+	if (onto.min == 0 || (value.min < onto.min && value.min != 0))
+		onto.min = value.min;
+	if (onto.max == 0 || (value.max > onto.max && value.max != 0))
+		onto.max = value.max;
+}
+
+/****************************************************/
+function mergeStackInfoDatas(onto,value)
+{
+	onto.countZeros += value.countZeros;
+	onto.maxAliveReq += value.maxAliveReq;
+	onto.aliveReq += value.aliveReq;
+	mergeStackMinMaxInfo(onto.alloc,value.alloc);
+	mergeStackMinMaxInfo(onto.free,value.free);
+	mergeStackMinMaxInfo(onto.lifetime,value.lifetime);
+}
+
+/****************************************************/
+function computeTotal(value)
+{
+	//already done
+	if (value.total != undefined)
+	{
+		return;
+	} else if (value.own == undefined) {
+		value.total = jQuery.extend(true, {}, value.childs);
+	} else {
+		//copy
+		value.total = jQuery.extend(true, {}, value.own);
+		//merge
+		if (value.childs != undefined)
+			mergeStackInfoDatas(value.total,value.childs);
+	}
+}
+
+/****************************************************/
+function reduceStat(node,info)
+{
+	if(node.info == undefined)
+		node.info = jQuery.extend(true, {}, info);
+	else
+		mergeStackInfoDatas(node.info,info);
+}
+
+/****************************************************/
+function buildCallTree(data)
+{
+	var tree = {childs:{},id:null};
+	var id = 0;
+	data.forEach(function(call) {
+		var cur = tree;
+		reduceStat(cur,call.info);
+		call.stack.reverse().forEach(function(loc) {
+			if (cur.childs[loc.function] == undefined)
+				cur.childs[loc.function] = {childs:{},id:id++};
+			cur = cur.childs[loc.function];
+			reduceStat(cur,call.info);
+		});
+	});
+	return tree;
+}
+
+/****************************************************/
+function MattFuncTree(tableId)
+{
+	//vars
+	this.tableId = tableId;
+	this.table = $('#'+tableId);
+	
+	//setup
+	this.table.treetable({ expandable: true,initialState:'collasped',clickableNodeNames:true});
+	this.stackViewRoots = [];
+	
+	//update content
+	this.updateData = function(data)
+	{
+		//build tree
+		var tree = buildCallTree(data);
+		addToTree(tree);
+	}
+	
+	//add info to tree
+	this.addToTree = function(treeNode)
+	{
+		for (var i in treeNode.childs)
+		{
+			var rows = $("<tr/>").attr('data-tt-id',treeNode.childs[i].id);
+			if (treeNode.id != null)
+				rows = rows.attr('data-tt-parent-id',treeNode.id);
+			rows.append('<td>'+i+'</td>');
+			rows.append('<td>'+0+'</td>');
+			var parentNode = null;
+			if (treeNode.id != null)
+				parentNode = this.table.treetable('node',treeNode.id);	
+			this.table.treetable("loadBranch", parentNode, rows);
+			addToTree(treeNode.childs[i]);
+			//table.treetable("collapseNode", treeNode.childs[i].id);
+			if (parentNode == null)
+				this.stackViewRoots.push(treeNode.childs[i].id);
+		}
+	}
+	
+	//clear
+	this.clear = function()
+	{
+		this.stackViewRoots.forEach(function(value){
+			this.table.treetable('removeNode',value);
+		});
+		this.stackViewRoots = [];
+	}
+}
+
 function MattEditor(divId)
 {
 	//store divid
@@ -18,7 +135,8 @@ function MattEditor(divId)
 		gutters: ["matt-annotations","CodeMirror-linenumbers"]
 	});
 	
-	$("#matt-alloc-stacks-tree").treetable({ expandable: true,initialState:'expended',clickableNodeNames:true});
+	$("#matt-alloc-stacks-tree").treetable({ expandable: true,initialState:'collasped',clickableNodeNames:true});
+	$("#matt-alloc-stacks-tree")[0].stackViewRoots = [];
 	
 	//cur file name
 	this.file = null;
@@ -65,22 +183,35 @@ function MattEditor(divId)
 		return JSON.stringify(data,null,"\t");
 	}
 	
+	function clearStackView()
+	{
+		var table = $("#matt-alloc-stacks-tree");
+		var stackViewRoots = table[0].stackViewRoots;
+		stackViewRoots.forEach(function(value){
+			table.treetable('removeNode',value);
+		});
+		table[0].stackViewRoots = [];
+	}
+	
 	function addToTree(data)
 	{
 		var table = $("#matt-alloc-stacks-tree");
+		var stackViewRoots = table[0].stackViewRoots;
 		for (var i in data.childs)
 		{
 			var rows = $("<tr/>").attr('data-tt-id',data.childs[i].id);
 			if (data.id != null)
 				rows = rows.attr('data-tt-parent-id',data.id);
 			rows.append('<td>'+i+'</td>');
-			alert(data.id + " => " + i + " => " + data.childs[i].id);
+			rows.append('<td>'+0+'</td>');
 			var parentNode = null;
 			if (data.id != null)
 				parentNode = table.treetable('node',data.id);	
 			table.treetable("loadBranch", parentNode, rows);
-			alert("OK : " +data.id + " | " + parentNode + " => " + i + " => " + data.childs[i].id);
 			addToTree(data.childs[i]);
+			//table.treetable("collapseNode", data.childs[i].id);
+			if (parentNode == null)
+				stackViewRoots.push(data.childs[i].id);
 		}
 	}
 	
@@ -99,77 +230,13 @@ function MattEditor(divId)
 		marker.onclick = function() {
 			var callback = new EJS({url: '/stack-analysis/alloc-site-details.ejs'}).update("matt-alloc-info");
 			callback({info:this.mattData});
+			clearStackView();
 			$.getJSON("/stacks.json?file="+this.mattData.file+"&line="+this.mattData.line,function(data) {
 				var tree = buildCallTree(data);
 				addToTree(tree);
 			});
 		};
 		return marker;
-	}
-	
-	/****************************************************/
-	function mergeStackMinMaxInfo(onto,value)
-	{
-		onto.count += value.count;
-		onto.sum += value.sum;
-		if (onto.min == 0 || (value.min < onto.min && value.min != 0))
-			onto.min = value.min;
-		if (onto.max == 0 || (value.max > onto.max && value.max != 0))
-			onto.max = value.max;
-	}
-	
-	/****************************************************/
-	function mergeStackInfoDatas(onto,value)
-	{
-		onto.countZeros += value.countZeros;
-		onto.maxAliveReq += value.maxAliveReq;
-		onto.aliveReq += value.aliveReq;
-		mergeStackMinMaxInfo(onto.alloc,value.alloc);
-		mergeStackMinMaxInfo(onto.free,value.free);
-		mergeStackMinMaxInfo(onto.lifetime,value.lifetime);
-	}
-	
-	function computeTotal(value)
-	{
-		//already done
-		if (value.total != undefined)
-		{
-			return;
-		} else if (value.own == undefined) {
-			value.total = jQuery.extend(true, {}, value.childs);
-		} else {
-			//copy
-			value.total = jQuery.extend(true, {}, value.own);
-			//merge
-			if (value.childs != undefined)
-				mergeStackInfoDatas(value.total,value.childs);
-		}
-	}
-	
-	function reduceStat(node,info)
-	{
-		if(node.info == undefined)
-			node.info = jQuery.extend(true, {}, info);
-		else
-			mergeStackInfoDatas(node.info,info);
-	}
-	
-	function buildCallTree(data)
-	{
-		var tree = {childs:{},id:null};
-		var id = 0;
-		data.forEach(function(call) {
-			var cur = tree;
-			reduceStat(cur,call.info);
-			call.stack.reverse().forEach(function(loc) {
-				if (cur.childs[loc.function] == undefined)
-					cur.childs[loc.function] = {childs:{},id:id++};
-				cur = cur.childs[loc.function];
-				reduceStat(cur,call.info);
-			});
-		});
-		alert(JSON.stringify(tree,null,'\t'));
-		return tree;
 	}
 	
 	//update anotations

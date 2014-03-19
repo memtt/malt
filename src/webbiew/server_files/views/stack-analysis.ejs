@@ -36,10 +36,11 @@
 					<thead>
 						<tr>
 							<th>Function</th>
+							<th>Metric</th>
 						</tr>
 					</thead>
 					<tbody>
-						<tr class="branch expanded" data-tt-id="000">
+						<!--<tr class="branch expanded" data-tt-id="000">
           <td><span style="padding-left: 0px;" class="indenter"></span>app</td>
         </tr>
         <tr class="branch expanded" data-tt-id="100" data-tt-parent-id="000">
@@ -56,7 +57,7 @@
         </tr>
         <tr class="leaf expanded" data-tt-id="400" data-tt-parent-id="000">
           <td><span style="padding-left: 19px;" class="indenter"></span>views</td>
-        </tr>
+        </tr>-->
 					</tbody>
 				</table>
 			</div>
@@ -71,7 +72,7 @@
 		var mattFuncListSelector = new MattFuncListSelector('matt-func-list-selector');
 		mattFuncListSelector.onChange = function(){
 			mattFuncList.updateOptions(this);
-			mattEditor.setSelector(mattFuncListSelector.getSelector(),mattFuncListSelector.mode);
+			mattEditor.setConfig(mattFuncListSelector.getSelector(),mattFuncListSelector.mode);
 			mattEditor.redrawAnnotations();
 		};
 		mattFuncList.onClick = function(func,file,line)
