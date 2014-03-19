@@ -104,16 +104,20 @@ app.get('/stacks.json',function(req,res){
 	//extratc file from request
 	var file = req.query.file;
 	var line = req.query.line;
+	var func = req.query.func;
 	
 	//return error
-	if (file == undefined || line == undefined)
+	if (file != undefined || line != undefined)
 	{
-		res.send(500, 'Missing file or line GET parameter !');
-	} else {
 		console.log("extract stacks for : "+file+" +"+line);
 		var tmp = mattProject.getFilterdStacksOnFileLine(file,line);
-		//extractStacks(file,line);
 		res.write(JSON.stringify(tmp,null,"\t"));
+	} else if (func != undefined) {
+		console.log("extract stacks for : "+func);
+		var tmp = mattProject.getFilterdStacksOnSymbol(func);
+		res.write(JSON.stringify(tmp,null,"\t"));
+	} else {
+		res.send(500, 'Missing file or line GET parameter !');
 	}
 	res.end();
 });

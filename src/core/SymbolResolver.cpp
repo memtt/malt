@@ -81,10 +81,12 @@ const char* SymbolResolver::setupNewEntry(void* callSite)
 	assert(tmp != NULL);
 	assert(tmp[0] != NULL);
 
+	//copy the intersting part
 	char * res = strdup(tmp[0]);
 	nameMap[callSite] = res;
 	free(tmp);
 
+	//ok return
 	return res;
 }
 
@@ -417,6 +419,9 @@ void SymbolResolver::resolveMissings(void)
 /*******************  FUNCTION  *********************/
 char * SymbolResolver::extractSymbolName(char* value)
 {
+	//Vars
+	char * ret = NULL;
+	
 	//errors
 	assert(value != NULL);
 	
@@ -427,13 +432,25 @@ char * SymbolResolver::extractSymbolName(char* value)
 	//scanf
 	if (pos1 == NULL)
 	{
-		return value;
+		ret = value;
 	} else if (pos2 == NULL) {
-		return pos1;
+		ret = pos1;
 	} else {
 		*pos2 = '\0';
-		return pos1+1;
+		ret = pos1+1;
 	}
+	
+		//remove +0xXX
+	int i = 0;
+	while (ret[i] != '\0')
+	{
+		if (ret[i] == '+')
+			ret[i] = '\0';
+		else
+			i++;
+	}
+	
+	return ret;
 }
 
 /*******************  FUNCTION  *********************/

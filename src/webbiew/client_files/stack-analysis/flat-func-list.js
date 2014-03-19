@@ -135,6 +135,7 @@ function MattFuncList(ulId)
 	
 	//data not fetch now
 	this.data = null;
+	this.formattedData = null;
 	
 	//Declare render function
 	this.render = function()
@@ -164,7 +165,8 @@ function MattFuncList(ulId)
 	{
 		this.options.sanityCheck();
 		var callback = new EJS({url: '/stack-analysis/flat-func-list.ejs'}).update(this.ulId);
-		callback(this.intenralExtractFunctionList(this.data));
+		this.formattedData = this.internalExtractFunctionList(this.data);
+		callback(this.formattedData);
 	}
 	
 	//extract selected value from data entry
@@ -201,7 +203,7 @@ function MattFuncList(ulId)
 	}
 	
 	//Extract function list and format with user requirement
-	this.intenralExtractFunctionList = function(data)
+	this.internalExtractFunctionList = function(data)
 	{
 		var max = 0;
 		var sum = 0;
@@ -230,8 +232,13 @@ function MattFuncList(ulId)
 		return {'data':{'entries':res, 'ref':this.internalGetRef(max,sum,selector),'unit':this.internalGetUnit(selector)}};
 	}
 	
+	this.clickEntry = function(id)
+	{
+		this.onClick(this.formattedData.data.entries[id].details);
+	}
+	
 	//to override
-	this.onClick = function(func,file,line)
+	this.onClick = function(details)
 	{	
 	}
 	

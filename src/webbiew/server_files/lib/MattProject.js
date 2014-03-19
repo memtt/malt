@@ -224,6 +224,17 @@ MattProject.prototype.getFilterdStacksOnFileLine = function(file,line)
 
 /****************************************************/
 /**
+ * Return the list of stacks (detailed) which contain location file:line.
+**/
+MattProject.prototype.getFilterdStacksOnSymbol = function(symbol)
+{
+	return this.getFilterdStacks(function(entry) {
+		return entry.function == symbol;
+	});
+}
+
+/****************************************************/
+/**
  * Return all timed values to build graphs.
 **/
 MattProject.prototype.getTimedValues = function()

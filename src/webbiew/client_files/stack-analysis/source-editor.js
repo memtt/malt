@@ -75,6 +75,8 @@ function MattFuncTree(tableId)
 	//setup
 	this.table.treetable({ expandable: true,initialState:'collasped',clickableNodeNames:true});
 	this.stackViewRoots = [];
+	this.tree = null;
+	this.selector = null;
 	
 	//update content
 	this.updateData = function(data)
@@ -85,33 +87,114 @@ function MattFuncTree(tableId)
 	}
 	
 	//add info to tree
-	this.addToTree = function(treeNode)
+	this.addToTree = function(treeNode,selector,expandedDepth)
 	{
 		for (var i in treeNode.childs)
 		{
+			//extract value
+			var value = selector.extractor(treeNode.childs[i].info);
+			value = mattHumanValue({unit:selector.unit},value)
+			
+			//create html
 			var rows = $("<tr/>").attr('data-tt-id',treeNode.childs[i].id);
 			if (treeNode.id != null)
 				rows = rows.attr('data-tt-parent-id',treeNode.id);
 			rows.append('<td>'+i+'</td>');
-			rows.append('<td>'+0+'</td>');
+			rows.append('<td id='+this.tableId+'.value.'+treeNode.childs[i].id+'>'+value+'</td>');
+			
+			//attach to parent
 			var parentNode = null;
 			if (treeNode.id != null)
 				parentNode = this.table.treetable('node',treeNode.id);	
+			
+			//insert
 			this.table.treetable("loadBranch", parentNode, rows);
-			addToTree(treeNode.childs[i]);
-			//table.treetable("collapseNode", treeNode.childs[i].id);
+			
+			//childs
+			this.addToTree(treeNode.childs[i],selector,expandedDepth-1);
+			
+			//post actions
+			if (expandedDepth < 0)
+				this.table.treetable("collapseNode", treeNode.childs[i].id);
 			if (parentNode == null)
 				this.stackViewRoots.push(treeNode.childs[i].id);
 		}
 	}
 	
+	this.countUntilDepth = function(tree,maxDepth)
+	{
+		//trivial
+		if (maxDepth < 0)
+			return 0;
+		
+		var cnt = 0;
+		for(var i in tree.childs)
+			cnt+=this.countUntilDepth(tree.childs[i],maxDepth-1)+1;
+
+		return cnt;
+	}
+	
+	//check max expended depth
+	this.calcMaxEpendedDepth = function(tree,maxOpen)
+	{
+		var maxDepth = 0;
+		while (maxDepth < 20 && this.countUntilDepth(tree,maxDepth) < maxOpen)
+			maxDepth++;
+		return maxDepth-1;
+	}
+	
 	//clear
 	this.clear = function()
 	{
+		var cur = this;
 		this.stackViewRoots.forEach(function(value){
-			this.table.treetable('removeNode',value);
+			cur.table.treetable('removeNode',value);
 		});
 		this.stackViewRoots = [];
+	}
+	
+	this.update = function(file,line,selector)
+	{
+		var cur = this;
+		this.clear();
+		$.getJSON("/stacks.json?file="+encodeURIComponent(file)+"&line="+line,function(data) {
+			var tree = buildCallTree(data);
+			cur.addToTree(tree,selector,cur.calcMaxEpendedDepth(tree,8));
+			cur.tree = tree;
+		});
+	}
+	
+	this.updateFunc = function(func,selector)
+	{
+		var cur = this;
+		this.clear();
+		$.getJSON("/stacks.json?func="+encodeURIComponent(func),function(data) {
+			var tree = buildCallTree(data);
+			cur.addToTree(tree,selector,cur.calcMaxEpendedDepth(tree,4));
+			cur.tree = tree;
+		});
+	}
+	
+	this.updateSelectorInternal = function(tree,selector)
+	{
+		for(var i in tree.childs)
+		{
+			//extract value
+			var value = selector.extractor(tree.childs[i].info);
+			value = mattHumanValue({unit:selector.unit},value)
+			
+			//update value
+			document.getElementById(this.tableId+'.value.'+tree.childs[i].id).innerHTML = value;
+			
+			//cuilds
+			this.updateSelectorInternal(tree.childs[i],selector);
+		}
+	}
+	
+	this.updateSelector = function(selector)
+	{
+		if (this.tree != null)
+			this.updateSelectorInternal(this.tree,selector);
 	}
 }
 
@@ -135,8 +218,10 @@ function MattEditor(divId)
 		gutters: ["matt-annotations","CodeMirror-linenumbers"]
 	});
 	
-	$("#matt-alloc-stacks-tree").treetable({ expandable: true,initialState:'collasped',clickableNodeNames:true});
-	$("#matt-alloc-stacks-tree")[0].stackViewRoots = [];
+// 	$("#matt-alloc-stacks-tree").treetable({ expandable: true,initialState:'collasped',clickableNodeNames:true});
+// 	$("#matt-alloc-stacks-tree")[0].stackViewRoots = [];
+	//tree
+	this.funcTree = new MattFuncTree("matt-alloc-stacks-tree");
 	
 	//cur file name
 	this.file = null;
@@ -149,6 +234,34 @@ function MattEditor(divId)
 	{
 		this.selector = selector;
 		this.mode = mode;
+	}
+	
+	this.update = function(details,force)
+	{
+		if(details.file != '??' && details.file != '' && details.file != undefined)
+		{
+			this.updateFile(details.file,details.line,true);
+		} else if (details.function != undefined && details.function != '??' && details.function != '') {
+			this.updateFunc(details.function,details);
+		}
+		
+		if (details.function != undefined && details.function != '??' && details.function != '') {
+			this.updateDetails(details.function,details);
+		}
+	}
+	
+	this.updateDetails = function(func,info)
+	{
+		var callback = new EJS({url: '/stack-analysis/alloc-site-details.ejs'}).update("matt-alloc-info");
+		callback({info:info});
+		this.funcTree.updateFunc(func,this.selector);
+	}
+	
+	this.updateFunc = function(func,info)
+	{
+		this.editor.setValue("//Uknown source file, maybe debug informations are missing !\n");
+		this.editor.setCursor(1);
+		this.file = null;
 	}
 
 	//Function to update file in editor
@@ -183,39 +296,7 @@ function MattEditor(divId)
 		return JSON.stringify(data,null,"\t");
 	}
 	
-	function clearStackView()
-	{
-		var table = $("#matt-alloc-stacks-tree");
-		var stackViewRoots = table[0].stackViewRoots;
-		stackViewRoots.forEach(function(value){
-			table.treetable('removeNode',value);
-		});
-		table[0].stackViewRoots = [];
-	}
-	
-	function addToTree(data)
-	{
-		var table = $("#matt-alloc-stacks-tree");
-		var stackViewRoots = table[0].stackViewRoots;
-		for (var i in data.childs)
-		{
-			var rows = $("<tr/>").attr('data-tt-id',data.childs[i].id);
-			if (data.id != null)
-				rows = rows.attr('data-tt-parent-id',data.id);
-			rows.append('<td>'+i+'</td>');
-			rows.append('<td>'+0+'</td>');
-			var parentNode = null;
-			if (data.id != null)
-				parentNode = table.treetable('node',data.id);	
-			table.treetable("loadBranch", parentNode, rows);
-			addToTree(data.childs[i]);
-			//table.treetable("collapseNode", data.childs[i].id);
-			if (parentNode == null)
-				stackViewRoots.push(data.childs[i].id);
-		}
-	}
-	
-	function makeMarker(selector,mode,data) {
+	this.makeMarker = function(selector,mode,data) {
 		if (data[mode] == undefined)
 			return null;
 		
@@ -227,14 +308,11 @@ function MattEditor(divId)
 		marker.className = 'matt-annotation';
 		marker.innerHTML = mattHumanValue({unit:selector.unit},value);
 		marker.mattData = data;
+		var cur = this;
 		marker.onclick = function() {
 			var callback = new EJS({url: '/stack-analysis/alloc-site-details.ejs'}).update("matt-alloc-info");
 			callback({info:this.mattData});
-			clearStackView();
-			$.getJSON("/stacks.json?file="+this.mattData.file+"&line="+this.mattData.line,function(data) {
-				var tree = buildCallTree(data);
-				addToTree(tree);
-			});
+			cur.funcTree.update(this.mattData.file,this.mattData.line,selector);
 		};
 		return marker;
 	}
@@ -249,7 +327,7 @@ function MattEditor(divId)
 			{
 				data[i].file = cur.file;
 				computeTotal(data[i]);
-				cur.editor.setGutterMarker(data[i].line-1, "matt-annotations",makeMarker(cur.selector,cur.mode,data[i]));
+				cur.editor.setGutterMarker(data[i].line-1, "matt-annotations",cur.makeMarker(cur.selector,cur.mode,data[i]));
 			}
 		});
 	}
@@ -257,7 +335,8 @@ function MattEditor(divId)
 	this.redrawAnnotations = function()
 	{
 		this.editor.clearGutter
+		this.funcTree.updateSelector(this.selector);
 		for (var i in this.data)
-			this.editor.setGutterMarker(this.data[i].line-1, "matt-annotations",makeMarker(this.selector,this.mode,this.data[i]));
+			this.editor.setGutterMarker(this.data[i].line-1, "matt-annotations",this.makeMarker(this.selector,this.mode,this.data[i]));
 	}
 }

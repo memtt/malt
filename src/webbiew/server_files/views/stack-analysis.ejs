@@ -75,10 +75,10 @@
 			mattEditor.setConfig(mattFuncListSelector.getSelector(),mattFuncListSelector.mode);
 			mattEditor.redrawAnnotations();
 		};
-		mattFuncList.onClick = function(func,file,line)
+		mattFuncList.onClick = function(details)
 		{
 			mattEditor.setConfig(mattFuncListSelector.getSelector(),mattFuncListSelector.mode);
-			mattEditor.updateFile(file,line,true);
+			mattEditor.update(details,true);
 		}
 		mattFuncList.updateOptions(mattFuncListSelector);
 	});
