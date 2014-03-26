@@ -261,12 +261,26 @@ void JsonState::closeArray(void)
 }
 
 /*******************  FUNCTION  *********************/
+void JsonState::openFieldStruct(const char* name)
+{
+	openField(name);
+	openStruct();
+}
+
+/*******************  FUNCTION  *********************/
+void JsonState::closeFieldStruct(const char* name)
+{
+	closeStruct();
+	closeField(name);
+}
+
+/*******************  FUNCTION  *********************/
 /**
  * Start a new structure. To be used internally, for root elements or for values inside arrays.
 **/
 void JsonState::openStruct(void )
 {
-		//check where we are
+	//check where we are
 	assert(getState() & (JSON_STATE_FIELD | JSON_STATE_ARRAY | JSON_STATE_ROOT));
 
 	//setup state

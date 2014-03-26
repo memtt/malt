@@ -20,7 +20,7 @@ namespace MATT
 StackSizeTracker::StackSizeTracker(void)
 :stack(32,512,32)
 {
-	this->min = 0;
+	this->base = 0;
 	this->cur = 0;
 	this->stack.push_back(0);
 }
@@ -36,16 +36,16 @@ void StackSizeTracker::enter(void)
 	asm("movq %%rbp,%0" : "=r"(crbp));
 	asm("movq %%rsp,%0" : "=r"(crsp));
 	
-	//debug
-	//printf("matt %llu %lu\n",getticks(),crsp);
-	
 	//push
 	this->stack.push_back(crsp);
 	this->cur = crsp;
 	
 	//min
-	if (this->min == 0)
-		this->min = this->cur;
+	if (this->base == 0 || this->cur > this->base)
+		this->base = this->cur;
+	
+	//debug
+	//printf("matt %llu , %lu , %lu , %lu\n",getticks(),this->base,crsp,getSize());
 }
 
 /*******************  FUNCTION  *********************/
@@ -57,14 +57,31 @@ void StackSizeTracker::exit(void)
 /*******************  FUNCTION  *********************/
 long unsigned int StackSizeTracker::getSize(void) const
 {
-	return this->cur - this->min;
+	return this->base - this->cur;
 }
 
 /*******************  FUNCTION  *********************/
 StackSizeTracker& StackSizeTracker::operator=(const StackSizeTracker& orig)
 {
 	this->stack.set(orig.stack);
+	this->base = orig.base;
+	this->cur = orig.cur;
 	return *this;
+}
+
+/*******************  FUNCTION  *********************/
+void convertToJson(htopml::JsonState& json, const StackSizeTracker& value)
+{
+	int size = value.stack.getSize();
+	json.openArray();
+	for (int i = size - 1 ; i >= 0 ; i--)
+	{
+		if (value.stack[i] == 0)
+			json.printValue(0);
+		else
+			json.printValue(value.base - value.stack[i]);
+	}
+	json.closeArray();
 }
 
 }

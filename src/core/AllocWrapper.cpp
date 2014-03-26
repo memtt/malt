@@ -108,6 +108,8 @@ struct AllocWrapperGlobal
 	MemalignFuncPtr memalign;
 	/** Pointer to the profiler (use pointer due to use before main, only way to ensure init before first malloc usage). **/
 	AllocStackProfiler * profiler;
+	/** Keep track of user options. **/
+	Options * options;
 	/** Function used to init the structure on first use. **/
 	void init(void);
 	/** Function to cleanup the structure at exit. **/
@@ -141,7 +143,7 @@ struct ThreadLocalState
 
 /********************  GLOBALS  **********************/
 /** Store the global state of allocator wrapper. **/
-static AllocWrapperGlobal gblState = {ALLOC_WRAP_NOT_READY,MATT_STATIC_MUTEX_INIT,NULL,NULL,NULL,NULL};
+static AllocWrapperGlobal gblState = {ALLOC_WRAP_NOT_READY,MATT_STATIC_MUTEX_INIT,NULL,NULL,NULL,NULL,NULL};
 /** Store the per-thread state of allocator wrapper. **/
 static __thread ThreadLocalState tlsState = {NULL,NULL,false,false};
 /** Temporary buffer to return on first realloc used by dlsym and split infinit call loops. **/
@@ -213,13 +215,13 @@ void AllocWrapperGlobal::init(void )
 		gblState.status = ALLOC_WRAP_INIT_PROFILER;
 		
 		//load options
-		Options options;
+		gblState.options = new Options();
 		const char * configFile = getenv("MATT_CONFIG");
 		if (configFile != NULL)
-			options.loadFromFile(configFile);
+			gblState.options->loadFromFile(configFile);
 		
 		//ok do it
-		gblState.profiler = new AllocStackProfiler(options,getStackMode(options),true);
+		gblState.profiler = new AllocStackProfiler(*gblState.options,getStackMode(*gblState.options),true);
 		
 		//print info
 		fprintf(stderr,"Start memory instrumentation of %s - %d by library override.\n",OS::getExeName().c_str(),OS::getPID());
@@ -599,9 +601,15 @@ void __cyg_profile_func_enter (void *this_fn,void *call_site)
 	if ( ! localState.initialized )
 		localState.init();
 	
+	//stack tracking
 	localState.enterExitStack->enterFunction(this_fn);
-	localState.stackSizeTracker->enter();
-	gblState.profiler->onLargerStackSize(localState.stackSizeTracker,localState.enterExitStack);
+	
+	//max stack
+	if (gblState.options->maxStackEnabled)
+	{
+		localState.stackSizeTracker->enter();
+		gblState.profiler->onLargerStackSize(*localState.stackSizeTracker,*localState.enterExitStack);
+	}
 }
 
 /*********************  STRUCT  *********************/
@@ -625,6 +633,10 @@ void __cyg_profile_func_exit  (void *this_fn,void *call_site)
 	if ( ! localState.initialized )
 		localState.init();
 	
+	//stack tracking
 	localState.enterExitStack->exitFunction(this_fn);
-	localState.stackSizeTracker->exit();
+	
+	//max stack
+	if (gblState.options->maxStackEnabled)
+		localState.stackSizeTracker->exit();
 }

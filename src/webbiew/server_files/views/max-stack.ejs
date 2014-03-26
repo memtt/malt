@@ -1,0 +1,69 @@
+<% layout('page-layout') -%>
+<% script('stack-analysis/flat-func-list.js') -%>
+<% script('stack-analysis/source-editor.js') -%>
+<% script('deps/d3js/d3.min.js') -%>
+
+<% script('deps/jquery-treetable/javascripts/src/jquery.treetable.js') -%>
+<% stylesheet('deps/jquery-treetable/stylesheets/jquery.treetable.css') %>
+<% stylesheet('deps/jquery-treetable/stylesheets/jquery.treetable.theme.default.css') %>
+
+<% script('deps/codemirror/lib/codemirror.js') -%>
+<% script('deps/codemirror/mode/clike/clike.js') -%>
+<% script('deps/codemirror/addon/selection/active-line.js') -%>
+<% stylesheet('deps/codemirror/lib/codemirror.css') -%>
+<% stylesheet('deps/codemirror/theme/lesser-dark.css') -%>
+
+<!-- ****************** STACK ANALYSER *************** -->
+<div class="container-fluid">
+	<!-- Func lis -->
+	<div id='stack-blocks' style='width:100%'>
+		<div class="progress" style='height:45px;' id='stack-blocks-progress'>
+			<!--<div class="progress-bar" style="width: 35%">
+				35%<br/>sdfsdfdsf()
+			</div>
+			<div class="progress-bar progress-bar-warning" style="width: 20%">
+				<span class="sr-only">20% Complete (warning)</span>
+			</div>
+			<div class="progress-bar progress-bar-danger" style="width: 10%">
+				<span class="sr-only">10% Complete (danger)</span>
+			</div>-->
+		</div>
+		<div style='color:white;text-align:center;width:100%;' id='matt-max-stack-size'>
+		
+		</div>
+	</div>
+</div>
+
+<script type='text/javascript'>
+	var colors = ['#D9534F','#DF6D69', //red
+		'#F0AD4E','#F2B968',//orange
+		'#5CB85C','#74C374',//green
+		'#1B84EC','#428BCA','#5E9CD2',//blue
+		'#BE2ABC','#E390EC'];//purple
+
+	$( document ).ready(function() {
+		$.getJSON( "max-stack.json", function( data ) {
+			//data.details = data.details.sort(function(a,b) {return a.mem < b.mem;});
+			var total = data.totalMem;
+			$('#matt-max-stack-size').text(mattHelper.humanReadableValue(total,'B'));
+			for (var i = 0 ; i < data.details.length ; i++)
+			{
+				var ratio = (100.0 * data.details[i].mem / total);
+				if (ratio > 0 && data.details[i].info != undefined)
+				{
+					var color = colors[i%colors.length];
+					if (ratio < 5 && i > 10)
+						color = 'gray';
+					var el = $('<div/>').addClass("progress-bar")
+						.css("width",ratio+"%")
+						.css("background-color",color)
+						.html(mattHelper.humanReadableValue(data.details[i].mem,'B') + "<br/>" + data.details[i].info.function)
+						.click(data.details[i],function(event) {
+							alert(JSON.stringify(event.data,null,'\t'));
+						});
+					$("#stack-blocks-progress").append(el);
+				}
+			}
+		});
+	});
+</script>

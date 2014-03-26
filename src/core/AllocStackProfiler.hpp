@@ -69,7 +69,7 @@ class AllocStackProfiler
 		Options options;
 		Mutex largestStackLock;
 		unsigned long largestStackSize;
-		StackSizeTracker largestStackSizes;
+		StackSizeTracker largestStackMem;
 		Stack largestStack;
 };
 

@@ -80,6 +80,8 @@ class JsonState
 		void printFormattedValue(const char * format,...);
 		void openFieldArray(const char * name);
 		void closeFieldArray(const char * name);
+		void openFieldStruct(const char * name);
+		void closeFieldStruct(const char * name);
 		void openArray(void);
 		void closeArray(void);
 		void openStruct(void);

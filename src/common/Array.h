@@ -12,6 +12,8 @@
 /********************  HEADERS  *********************/
 #include <cstdlib>
 #include <cassert>
+#include <common/Debug.hpp>
+#include <json/JsonState.h>
 
 /*******************  NAMESPACE  ********************/
 namespace MATT
@@ -35,11 +37,14 @@ class Array
 		~Array(void);
 		T & push_back(const T & value);
 		T & operator[] (int id);
+		const T & operator[] (int id) const;
 		void pop(void);
 		int getSize(void) const;
 		int getBufferSize(void) const;
 		const T * getBuffer(void) const;
 		void set(const Array<T> & orig);
+	public:
+		template <class U> friend void convertToJson(htopml::JsonState & json, const Array<U> & value);
 	private:
 		void setSize(size_t size);
 		void updateSize(ssize_t delta);
@@ -144,6 +149,17 @@ T& Array<T>::operator[](int id)
 
 /*******************  FUNCTION  *********************/
 template <class T>
+const T& Array<T>::operator[](int id) const
+{
+	assert(id >= 0 && id < size);
+	if (id >= 0 && id < size)
+		return buffer[id];
+	else
+		return *(T*)NULL;
+}
+
+/*******************  FUNCTION  *********************/
+template <class T>
 T & Array<T>::push_back(const T& value)
 {
 	updateSize(1);
@@ -157,6 +173,7 @@ T & Array<T>::push_back(const T& value)
 template <class T>
 void Array<T>::setSize(size_t size)
 {
+	this->size = size;
 	if (size > bufferSize)
 	{
 		if (bufferSize == 0)
@@ -195,6 +212,13 @@ void Array<T>::set(const Array< T >& orig)
 	//copy content
 	for (int i =  0 ; i < orig.size ; i++)
 		this->buffer[i] = orig.buffer[i];
+}
+
+/*******************  FUNCTION  *********************/
+template <class T>
+void convertToJson(htopml::JsonState& json, const Array< T >& value)
+{
+	json.printArray(value.buffer,value.size);
 }
 
 }

@@ -49,6 +49,16 @@
 	color:black;
 }
 
+/********************* MAX STACK *********************/
+#stack-blocks-progress .progress-bar{
+	overflow:hidden;
+}
+
+#stack-blocks-progress .progress-bar:hover {
+	opacity: 0.85;
+	cursor: pointer;
+}
+
 /******************* FLAT FUNC LIST ******************/
 /* Flat list of function in stack-analysis */
 #matt-func-list li a {

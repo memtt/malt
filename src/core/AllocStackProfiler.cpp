@@ -292,8 +292,10 @@ void AllocStackProfiler::onExitFunction ( void* funcAddr )
 void convertToJson(htopml::JsonState& json, const AllocStackProfiler& value)
 {
 	json.openStruct();
+
 	if (value.options.stackProfileEnabled)
 		json.printField("stackInfo",value.stackTracer);
+
 	if (value.options.timeProfileEnabled)
 	{
 		json.printField("requestedMem",value.requestedMem);
@@ -302,6 +304,16 @@ void convertToJson(htopml::JsonState& json, const AllocStackProfiler& value)
 		json.printField("internalMem",value.internalMem);
 		json.printField("segments",value.segments);
 	}
+	
+	if (value.options.maxStackEnabled)
+	{
+		json.openFieldStruct("maxStack");
+		json.printField("size",value.largestStackSize);
+		json.printField("stack",value.largestStack);
+		json.printField("mem",value.largestStackMem);
+		json.closeFieldStruct("maxStack");
+	}
+	
 	json.printField("leaks",value.segTracker);
 	CODE_TIMING("ticksPerSecond",json.printField("ticksPerSecond",ticksPerSecond()));
 	json.closeStruct();
@@ -311,15 +323,15 @@ void convertToJson(htopml::JsonState& json, const AllocStackProfiler& value)
 void AllocStackProfiler::onLargerStackSize(const StackSizeTracker& stackSizes, const Stack& stack)
 {
 	//current is smaller
-	if (this->largestStackSize == 0 || stackSizes.getSize() < this->largestStackSize)
+	if (stackSizes.getSize() < this->largestStackSize)
 		return;
 	
 	//save
 	MATT_OPTIONAL_CRITICAL(largestStackLock,threadSafe)
 		this->largestStackSize = stackSizes.getSize();
-		this->largestStackSizes = stackSizes;
+		this->largestStackMem = stackSizes;
 		this->largestStack = stack;
-		MATT_DEBUG("update largestStack");
+		//ATT_DEBUG("update largestStack");
 	MATT_END_CRITICAL;
 }
 

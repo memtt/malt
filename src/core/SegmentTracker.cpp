@@ -47,7 +47,7 @@ SegmentInfo* SegmentTracker::add(void* ptr, size_t size, SimpleCallStackNode* ca
 	//check errors
 	assert(this->get(ptr) == NULL);
 	assert(callStack != NULL);
-	assert(size > 0);
+	//assert(size > 0);
 
 	//create entry
 	SegmentInfo & res = map[ptr];

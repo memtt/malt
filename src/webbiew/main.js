@@ -148,6 +148,13 @@ app.get('/file-infos.json',function(req,res) {
 });
 
 /****************************************************/
+app.get('/max-stack.json',function(req,res) {
+	var tmp = mattProject.getMaxStackInfoOnFunction();
+	res.write(JSON.stringify(tmp,null,'\t'));
+	res.end();
+});
+
+/****************************************************/
 app.get('/proc-map-distr.json',function(req,res) {
 	var tmp = mattProject.getProcMapDistr();
 	res.write(JSON.stringify(tmp,null,'\t'));
@@ -168,6 +175,12 @@ app.get('/stack-analysis.html',function(eq,res,next){
 app.get('/time-analysis.html',function(eq,res,next){
 	res.render("time-analysis",{});
 });
+
+/****************************************************/
+app.get('/max-stack.html',function(eq,res,next){
+	res.render("max-stack",{});
+});
+
 
 /****************************************************/
 //export static deps

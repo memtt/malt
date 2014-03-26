@@ -11,6 +11,7 @@
 
 /********************  HEADERS  *********************/
 #include <common/Array.h>
+#include <json/JsonState.h>
 
 /*******************  NAMESPACE  ********************/
 namespace MATT
@@ -25,10 +26,12 @@ class StackSizeTracker
 		void exit(void);
 		unsigned long getSize(void) const;
 		StackSizeTracker & operator=(const StackSizeTracker & orig);
+	public:
+		friend void convertToJson(htopml::JsonState & json, const StackSizeTracker & value);
 	private:
 		Array<unsigned long> stack;
 		unsigned long cur;
-		unsigned long min;
+		unsigned long base;
 };
 
 }

@@ -34,6 +34,8 @@ struct Options
 	bool timeProfileEnabled;
 	int timeProfilePoints;
 	bool timeProfileLinear;
+	//max stack
+	bool maxStackEnabled;
 	//output
 	std::string outputName;
 	bool outputIndent;

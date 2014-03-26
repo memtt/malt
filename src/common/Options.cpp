@@ -36,6 +36,8 @@ Options::Options(void)
 	this->outputLua               = false;
 	this->outputCallgrind         = true;
 	this->outputDumpConfig        = true;
+	//max stack
+	this->maxStackEnabled         = true;
 }
 
 /*******************  FUNCTION  *********************/
@@ -67,6 +69,9 @@ void Options::loadFromFile(const char* fname)
 	this->outputCallgrind     = iniparser_getboolean(iniDic,"output:callgrind",this->outputCallgrind);
 	this->outputDumpConfig    = iniparser_getboolean(iniDic,"output:config",this->outputDumpConfig);
 	
+	//max stack
+	this->maxStackEnabled     = iniparser_getboolean(iniDic,"max-stack:enabled",this->maxStackEnabled);
+	
 	//free dic
 	iniparser_freedict(iniDic);
 }
@@ -95,6 +100,9 @@ void Options::dumpConfig(const char* fname)
 	IniParserHelper::setEntry(dic,"output:callgrind",this->outputCallgrind);
 	IniParserHelper::setEntry(dic,"output:indent",this->outputIndent);
 	IniParserHelper::setEntry(dic,"output:config",this->outputDumpConfig);
+	
+	//max stack
+	IniParserHelper::setEntry(dic,"max-stack:enabled",this->maxStackEnabled);
 	
 	//write
 	FILE * fp = fopen(fname,"w");

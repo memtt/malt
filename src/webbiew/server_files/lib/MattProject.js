@@ -26,6 +26,7 @@ MattProject.prototype.loadFile = function(file)
 	//init
 	this.data = null;
 	this.file = file;
+	var cur = this;
 	console.log("Loading file : " + args.params.input);
 	
 	//read from FS
@@ -46,7 +47,7 @@ MattProject.prototype.loadFile = function(file)
 		console.log("Data optimization done.");
 		
 		//ok done
-		this.data = data;
+		cur.data = data;
 	});
 }
 
@@ -61,7 +62,7 @@ MattProject.prototype.loadFile = function(file)
 MattProject.prototype.getFlatProfile = function(mapping,accept,fields,total)
 {
 	//setup some local vars
-	var stats = data.stackInfo.stats;
+	var stats = this.data.stackInfo.stats;
 	var res = new Object();
 	var callers = "total";
 	var cur = null;
@@ -152,7 +153,7 @@ MattProject.prototype.getProcMapDistr = function()
 {
 	//some local vars
 	var res = new Object();
-	var map = data.stackInfo.sites.map;
+	var map = this.data.stackInfo.sites.map;
 	var checkStack = /^\[stack:[0-9]+\]$/;
 
 	//loop on map entries
@@ -193,7 +194,7 @@ MattProject.prototype.getProcMapDistr = function()
 MattProject.prototype.getFilterdStacks = function(filter)
 {
 	//get some refs
-	var stats = data.stackInfo.stats;
+	var stats = this.data.stackInfo.stats;
 	var res = new Array();	
 	
 	//loop on stat entries
@@ -240,12 +241,70 @@ MattProject.prototype.getFilterdStacksOnSymbol = function(symbol)
 MattProject.prototype.getTimedValues = function()
 {
 	var tmp = new Object();
-	tmp.segments     = data.segments;
-	tmp.internalMem  = data.internalMem;
-	tmp.virtualMem   = data.virtualMem;
-	tmp.physicalMem  = data.physicalMem;
-	tmp.requestedMem = data.requestedMem;
+	tmp.segments     = this.data.segments;
+	tmp.internalMem  = this.data.internalMem;
+	tmp.virtualMem   = this.data.virtualMem;
+	tmp.physicalMem  = this.data.physicalMem;
+	tmp.requestedMem = this.data.requestedMem;
 	return tmp;
+}
+
+/****************************************************/
+/**
+ * Flatten datas about the largest stack and return as json tree.
+**/
+MattProject.prototype.getFlattenMaxStackInfo = function(mapping,accept)
+{
+	//init hash map to flat on addresses
+	var ret = new Object();
+	var maxStack = this.data.maxStack;
+	
+	//loop on all entries
+	for (var i = 0 ; i < maxStack.stack.length ; i++)
+	{
+		//get some vars
+		var addr = maxStack.stack[i];
+		var mem = maxStack.mem[i] - maxStack.mem[i+1];
+		var info = this.data.stackInfo.sites.instr[addr];
+		var key = addr;
+		if (info != undefined)
+			key = mapping(info);
+		else
+			info = {function:addr};
+		
+		//check filter
+		if (accept == true || accept(info))
+		{
+			//create or merge
+			if (ret[key] == undefined)
+			{
+				ret[key] = {info:info,count:1,mem:mem};
+			} else {
+				ret[key].mem += mem;
+				ret[key].count++;
+			}
+		}
+	}
+	
+	//remove keys
+	var finalRes = [];
+	for (var i in ret)
+		finalRes.push(ret[i]);
+	
+	//ok return
+	return {details:finalRes,totalMem:maxStack.size};
+}
+
+/****************************************************/
+/**
+ * Flatten datas about the largest stack and return as json tree.
+**/
+MattProject.prototype.getMaxStackInfoOnFunction = function(mapping,accept)
+{
+	return this.getFlattenMaxStackInfo(
+		function(info) {return info.function;},
+		true
+	);
 }
 
 /****************************************************/

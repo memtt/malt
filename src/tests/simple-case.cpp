@@ -11,6 +11,7 @@
 #include <cstdlib>
 #include <unistd.h>
 #include <malloc.h>
+#include <cstring>
 #include <iostream>
 #include <cassert>
 
@@ -224,6 +225,22 @@ void testZero(void)
 }
 
 /*******************  FUNCTION  *********************/
+void allocOnStack(void)
+{
+	char var[2048];
+	memset(var,0,sizeof(var));
+}
+
+/*******************  FUNCTION  *********************/
+void allocOnStackRecurse(int depth)
+{
+	char var[512];
+	memset(var,0,sizeof(var));
+	if (depth > 0)
+		allocOnStackRecurse(depth-1);
+}
+
+/*******************  FUNCTION  *********************/
 int main(void)
 {
 	//first is calloc
@@ -248,6 +265,8 @@ int main(void)
 	testAllFuncs();
 	testLeak();
 	testLeak2();
+	allocOnStack();
+	allocOnStackRecurse(10);
 
 	return 0;
 }
