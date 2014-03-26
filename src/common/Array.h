@@ -35,10 +35,13 @@ class Array
 		~Array(void);
 		T & push_back(const T & value);
 		T & operator[] (int id);
+		void pop(void);
 		int getSize(void) const;
 		int getBufferSize(void) const;
 		const T * getBuffer(void) const;
+		void set(const Array<T> & orig);
 	private:
+		void setSize(size_t size);
 		void updateSize(ssize_t delta);
 	private:
 		//Copy isn't implemented yet
@@ -144,15 +147,16 @@ template <class T>
 T & Array<T>::push_back(const T& value)
 {
 	updateSize(1);
-	T * res = new (buffer+size-1) T(value);
+	//T * res = new (buffer+size-1) T(value);
+	T * res = &buffer[size - 1];
+	*res = value;
 	return *res;
 }
 
 /*******************  FUNCTION  *********************/
 template <class T>
-void Array<T>::updateSize(ssize_t delta)
+void Array<T>::setSize(size_t size)
 {
-	size += delta;
 	if (size > bufferSize)
 	{
 		if (bufferSize == 0)
@@ -164,6 +168,33 @@ void Array<T>::updateSize(ssize_t delta)
 		
 		buffer = (T*)realloc(buffer,bufferSize * sizeof(T));
 	}
+}
+
+/*******************  FUNCTION  *********************/
+template <class T>
+void Array<T>::updateSize(ssize_t delta)
+{
+	size += delta;
+	this->setSize(size);
+}
+
+/*******************  FUNCTION  *********************/
+template <class T>
+void Array<T>::pop(void)
+{
+	this->updateSize(-1);
+}
+
+/*******************  FUNCTION  *********************/
+template <class T>
+void Array<T>::set(const Array< T >& orig)
+{
+	//copy size and allocate memory if needed
+	this->setSize(orig.size);
+	
+	//copy content
+	for (int i =  0 ; i < orig.size ; i++)
+		this->buffer[i] = orig.buffer[i];
 }
 
 }

@@ -13,6 +13,7 @@ set(MATT_LIB_SRC Stack.cpp
                  ProfiledValue.cpp
                  SegmentTracker.cpp 
                  ValgrindOutput.cpp 
+                 StackSizeTracker.cpp
                  SimpleStackTracer.cpp 
                  EnterExitCallStack.cpp 
                  BacktraceCallStack.cpp 

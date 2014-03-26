@@ -20,6 +20,7 @@
 #include <common/CodeTiming.hpp>
 #include <common/FormattedMessage.hpp>
 #include <common/SimpleAllocator.hpp>
+#include <common/Debug.hpp>
 #include "AllocStackProfiler.hpp"
 
 /********************  MACROS  **********************/
@@ -31,11 +32,12 @@ namespace MATT
 
 /*******************  FUNCTION  *********************/
 AllocStackProfiler::AllocStackProfiler(const Options & options,StackMode mode,bool threadSafe)
-	:requestedMem(options.timeProfilePoints,options.timeProfileLinear)
+	:requestedMem(options.timeProfilePoints,options.timeProfileLinear),largestStack(STACK_ORDER_DESC)
 {
 	this->mode = mode;
 	this->threadSafe = threadSafe;
 	this->options = options;
+	this->largestStackSize = 0;
 	
 	//init internal alloc
 	if (gblInternaAlloc == NULL)
@@ -303,6 +305,22 @@ void convertToJson(htopml::JsonState& json, const AllocStackProfiler& value)
 	json.printField("leaks",value.segTracker);
 	CODE_TIMING("ticksPerSecond",json.printField("ticksPerSecond",ticksPerSecond()));
 	json.closeStruct();
+}
+
+/*******************  FUNCTION  *********************/
+void AllocStackProfiler::onLargerStackSize(const StackSizeTracker& stackSizes, const Stack& stack)
+{
+	//current is smaller
+	if (this->largestStackSize == 0 || stackSizes.getSize() < this->largestStackSize)
+		return;
+	
+	//save
+	MATT_OPTIONAL_CRITICAL(largestStackLock,threadSafe)
+		this->largestStackSize = stackSizes.getSize();
+		this->largestStackSizes = stackSizes;
+		this->largestStack = stack;
+		MATT_DEBUG("update largestStack");
+	MATT_END_CRITICAL;
 }
 
 }

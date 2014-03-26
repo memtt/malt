@@ -19,6 +19,7 @@
 #include "SimpleStackTracer.hpp"
 #include "EnterExitCallStack.hpp"
 #include "ProfiledValue.hpp"
+#include "StackSizeTracker.hpp"
 
 /*******************  NAMESPACE  ********************/
 namespace MATT
@@ -45,6 +46,7 @@ class AllocStackProfiler
 		void onExit(void);
 		void onEnterFunction(void * funcAddr);
 		void onExitFunction(void * funcAddr);
+		void onLargerStackSize(const StackSizeTracker & stackSizes,const Stack & stack);
 	public:
 		friend void convertToJson(htopml::JsonState& json, const AllocStackProfiler& value);
 	private:
@@ -65,6 +67,10 @@ class AllocStackProfiler
 		Mutex lock;
 		bool threadSafe;
 		Options options;
+		Mutex largestStackLock;
+		unsigned long largestStackSize;
+		StackSizeTracker largestStackSizes;
+		Stack largestStack;
 };
 
 }

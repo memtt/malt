@@ -381,4 +381,11 @@ void* Stack::getCaller(void ) const
 	}
 }
 
+/*******************  FUNCTION  *********************/
+Stack& Stack::operator=(const Stack& stack)
+{
+	this->set(stack);
+	return *this;
+}
+
 }

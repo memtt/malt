@@ -56,6 +56,7 @@ class Stack
 		void * getCallee(void) const;
 		void * operator[] (int idx);
 		static bool partialCompare(const Stack & stack1,int skip1,const Stack & stack2,int skip2);
+		Stack & operator = (const Stack & stack);
 	public:
 		friend std::ostream & operator << (std::ostream & out,const Stack & tracer);
 		friend void convertToJson(htopml::JsonState & json, const Stack & value);

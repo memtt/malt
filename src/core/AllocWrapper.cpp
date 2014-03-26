@@ -23,6 +23,7 @@
 #include <common/CodeTiming.hpp>
 #include <common/Debug.hpp>
 #include "AllocStackProfiler.hpp"
+#include "StackSizeTracker.hpp"
 
 /***************** USING NAMESPACE ******************/
 using namespace MATT;
@@ -123,6 +124,8 @@ struct ThreadLocalState
 {
 	/** Object used to follow the local stack for the enter/exit mode. **/
 	EnterExitCallStack * enterExitStack;
+	/** Follow size of stack in enter-exit mode. **/
+	StackSizeTracker * stackSizeTracker;
 	/** 
 	 * Avoid to instrument inner allocations, marked at 'true' when entering in first level malloc/free.... 
 	 * It permit to use dynamic allocation inside instrumentation functions.
@@ -140,7 +143,7 @@ struct ThreadLocalState
 /** Store the global state of allocator wrapper. **/
 static AllocWrapperGlobal gblState = {ALLOC_WRAP_NOT_READY,MATT_STATIC_MUTEX_INIT,NULL,NULL,NULL,NULL};
 /** Store the per-thread state of allocator wrapper. **/
-static __thread ThreadLocalState tlsState = {NULL,false,false};
+static __thread ThreadLocalState tlsState = {NULL,NULL,false,false};
 /** Temporary buffer to return on first realloc used by dlsym and split infinit call loops. **/
 static char gblCallocIniBuffer[4096];
 
@@ -271,10 +274,12 @@ void ThreadLocalState::init(void)
 	
 	//create the local chain
 	EnterExitCallStack * stack = new EnterExitCallStack();
+	StackSizeTracker * stackSize = new StackSizeTracker();
 	stack->enterFunction((void*)0x1);
 	
 	//ok mark no in use, ready for instr
 	tlsState.enterExitStack = stack;
+	tlsState.stackSizeTracker = stackSize;
 	tlsState.inUse = false;
 }
 
@@ -595,6 +600,8 @@ void __cyg_profile_func_enter (void *this_fn,void *call_site)
 		localState.init();
 	
 	localState.enterExitStack->enterFunction(this_fn);
+	localState.stackSizeTracker->enter();
+	gblState.profiler->onLargerStackSize(localState.stackSizeTracker,localState.enterExitStack);
 }
 
 /*********************  STRUCT  *********************/
@@ -619,4 +626,5 @@ void __cyg_profile_func_exit  (void *this_fn,void *call_site)
 		localState.init();
 	
 	localState.enterExitStack->exitFunction(this_fn);
+	localState.stackSizeTracker->exit();
 }
