@@ -23,12 +23,14 @@ function mattConvertData(data)
 {
 	var res = new Array();
 	res.push( mattConvertDataInternalD3JS(data.virtualMem) );
-	res.push( mattConvertDataInternalD3JS(data.requestedMem) );
 	res.push( mattConvertDataInternalD3JS(data.physicalMem) );
+	res.push( mattConvertDataInternalD3JS(data.requestedMem) );
+	
 	var labels = new Array();
 	labels.push("Virtual memory");
-	labels.push("Requested memory");
 	labels.push("Physical memory");
+	labels.push("Requested memory");
+	
 	return {data:res,labels:labels};
 }
 
