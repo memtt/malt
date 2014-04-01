@@ -18,6 +18,7 @@ set(MATT_LIB_SRC Stack.cpp
                  EnterExitCallStack.cpp 
                  BacktraceCallStack.cpp 
                  AllocStackProfiler.cpp 
+                 LinuxProcMapReader.cpp
                  SimpleCallStackNode.cpp)
 
 ######################################################

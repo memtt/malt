@@ -20,9 +20,6 @@
 /********************  MACROS  **********************/
 #define CALL_STACK_DEFAULT_SIZE   32
 #define CALL_STACK_GROW_THRESHOLD 1024
-#define MATT_MALLOC(x) gblInternaAlloc->malloc(x)
-#define MATT_FREE(x) gblInternaAlloc->free(x)
-#define MATT_REALLOC(x,y) gblInternaAlloc->realloc((x),(y))
 
 /*******************  NAMESPACE  ********************/
 namespace MATT

@@ -16,7 +16,7 @@
 #include "EnterExitCallStack.hpp"
 
 /********************  MACROS  **********************/
-#define MAX_SIZE 256
+#define MAX_SIZE (1024*1204)
 
 /*******************  NAMESPACE  ********************/
 namespace MATT

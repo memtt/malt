@@ -16,6 +16,7 @@
 #include <ostream>
 #include <cstdio>
 #include <json/JsonState.h>
+#include "LinuxProcMapReader.hpp"
 
 /*******************  FUNCTION  *********************/
 typedef std::map<void *,const char*> FuncNameDicMap;
@@ -31,15 +32,6 @@ namespace MATT
 {
 
 /********************  STRUCT  **********************/
-struct LinuxProcMapEntry
-{
-	void * lower;
-	void * upper;
-	void * offset;
-	std::string file;
-};
-
-/********************  STRUCT  **********************/
 struct CallSite
 {
 	CallSite(LinuxProcMapEntry * mapEntry = NULL);
@@ -50,7 +42,6 @@ struct CallSite
 };
 
 /*********************  TYPES  **********************/
-typedef std::vector<LinuxProcMapEntry> LinuxProcMap;
 typedef std::map<void*,CallSite> CallSiteMap;
 
 /*********************  CLASS  **********************/

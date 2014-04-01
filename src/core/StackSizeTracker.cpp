@@ -10,6 +10,7 @@
 #include <cassert>
 #include <cstdio>
 #include "StackSizeTracker.hpp"
+#include "LinuxProcMapReader.hpp"
 #include <cycle.h>
 
 /*******************  NAMESPACE  ********************/
@@ -18,10 +19,12 @@ namespace MATT
 
 /*******************  FUNCTION  *********************/
 StackSizeTracker::StackSizeTracker(void)
-:stack(32,512,32)
+:stack(128,2048,32)
 {
 	this->base = 0;
 	this->cur = 0;
+	this->mapLower = 0;
+	this->mapUpper = 0;
 	this->stack.push_back(0);
 }
 
@@ -44,8 +47,33 @@ void StackSizeTracker::enter(void)
 	if (this->base == 0 || this->cur > this->base)
 		this->base = this->cur;
 	
+	//laod upper/lower limits by checking with proc map
+	if (this->mapLower == 0 && this->mapUpper ==0)
+		this->loadMapping();
+	
 	//debug
 	//printf("matt %llu , %lu , %lu , %lu\n",getticks(),this->base,crsp,getSize());
+}
+
+/*******************  FUNCTION  *********************/
+void StackSizeTracker::loadMapping(void)
+{
+	//read proc map
+	LinuxProcMapReader procMap;
+	procMap.load();
+	
+	//get entry
+	const LinuxProcMapEntry * entry = procMap.getEntry((void*)this->base);
+	
+	//not found
+	if (entry == NULL)
+	{
+		MATT_WARNING("Failed to found stack mapping in /proc/map for !");
+	} else {
+		//copy info
+		this->mapLower = (unsigned long)entry->lower;
+		this->mapUpper = (unsigned long)entry->upper;
+	}
 }
 
 /*******************  FUNCTION  *********************/
@@ -66,13 +94,15 @@ StackSizeTracker& StackSizeTracker::operator=(const StackSizeTracker& orig)
 	this->stack.set(orig.stack);
 	this->base = orig.base;
 	this->cur = orig.cur;
+	this->mapLower = orig.mapLower;
+	this->mapUpper = orig.mapUpper;
 	return *this;
 }
 
 /*******************  FUNCTION  *********************/
 void convertToJson(htopml::JsonState& json, const StackSizeTracker& value)
 {
-	int size = value.stack.getSize();
+	int size = value.stack.size();
 	json.openArray();
 	for (int i = size - 1 ; i >= 0 ; i--)
 	{
@@ -82,6 +112,18 @@ void convertToJson(htopml::JsonState& json, const StackSizeTracker& value)
 			json.printValue(value.base - value.stack[i]);
 	}
 	json.closeArray();
+}
+
+/*******************  FUNCTION  *********************/
+long unsigned int StackSizeTracker::getTLS(void) const
+{
+	return mapUpper - base;
+}
+
+/*******************  FUNCTION  *********************/
+long unsigned int StackSizeTracker::getTotalSize(void) const
+{
+	return mapUpper - mapLower;
 }
 
 }

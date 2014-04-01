@@ -214,6 +214,10 @@ void AllocWrapperGlobal::init(void )
 		//init profiler
 		gblState.status = ALLOC_WRAP_INIT_PROFILER;
 		
+		//init internal alloc
+		if (gblInternaAlloc == NULL)
+			gblInternaAlloc = new SimpleAllocator(false);
+		
 		//load options
 		gblState.options = new Options();
 		const char * configFile = getenv("MATT_CONFIG");

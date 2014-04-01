@@ -23,6 +23,11 @@ namespace MATT
 #define MATT_ALLOC_BASIC_ALIGN (sizeof(void*))
 #define MATT_ALLOC_SPLIT_THRESOLD (2*MATT_ALLOC_MIN_SIZE)
 
+/********************  MACROS  **********************/
+#define MATT_MALLOC(x) gblInternaAlloc->malloc(x)
+#define MATT_FREE(x) gblInternaAlloc->free(x)
+#define MATT_REALLOC(x,y) gblInternaAlloc->realloc((x),(y))
+
 /********************  STRUCT  **********************/
 struct Chunk
 {

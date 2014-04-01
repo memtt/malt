@@ -66,7 +66,7 @@ typedef std::stack<JsonStateStruct> JsonStateStructStack;
  * JsonState is the central class to convert a structure into json text format.
  * It ensure the storage of current conversion status to open/close arrays,
  * structures and to register entries. This class is used by the convertToJson() method.
- * @brief Class to help to export objects into JSon.
+ * @brief Class to help to export objects into Json.
 **/
 class JsonState
 {

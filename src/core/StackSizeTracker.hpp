@@ -25,13 +25,19 @@ class StackSizeTracker
 		void enter(void);
 		void exit(void);
 		unsigned long getSize(void) const;
+		unsigned long getTotalSize(void) const;
+		unsigned long getTLS(void) const;
 		StackSizeTracker & operator=(const StackSizeTracker & orig);
 	public:
 		friend void convertToJson(htopml::JsonState & json, const StackSizeTracker & value);
 	private:
+		void loadMapping(void);
+	private:
 		Array<unsigned long> stack;
 		unsigned long cur;
 		unsigned long base;
+		unsigned long mapLower;
+		unsigned long mapUpper;
 };
 
 }

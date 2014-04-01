@@ -311,6 +311,8 @@ void convertToJson(htopml::JsonState& json, const AllocStackProfiler& value)
 		json.printField("size",value.largestStackSize);
 		json.printField("stack",value.largestStack);
 		json.printField("mem",value.largestStackMem);
+		json.printField("total",value.largestStackMem.getTotalSize());
+		json.printField("TLS",value.largestStackMem.getTLS());
 		json.closeFieldStruct("maxStack");
 	}
 	

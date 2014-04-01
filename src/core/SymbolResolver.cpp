@@ -402,10 +402,10 @@ void SymbolResolver::resolveMissings(void)
 			toResolve.push_back(it->first);
 		
 	//nothing to do
-	if (toResolve.getSize() == 0)
+	if (toResolve.size() == 0)
 		return;
 	
-	char ** res = backtrace_symbols(toResolve.getBuffer(),toResolve.getSize());
+	char ** res = backtrace_symbols(toResolve.getBuffer(),toResolve.size());
 	if (res != NULL)
 	{
 		int i = 0;
