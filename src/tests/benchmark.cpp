@@ -196,7 +196,7 @@ int main(void)
 	//setup timings
 	BenchTiming timing;
 	SimpleStackTracer tracer;
-	gblInternaAlloc = new SimpleAllocator();
+	gblInternaAlloc = new SimpleAllocator(true);
 
 	//init random
 	srand(time(NULL));

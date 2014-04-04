@@ -82,6 +82,7 @@
 #matt-func-list .func {
 	display:block;
 	float:left;
+	white-space: nowrap;
 	overflow:hidden;
 	text-overflow:
 	ellipsis;max-width:51%;

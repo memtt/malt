@@ -8,7 +8,7 @@
 
 /********************  HEADERS  *********************/
 #include <gtest/gtest.h>
-#include <common/Array.h>
+#include <common/Array.hpp>
 
 /***************** USING NAMESPACE ******************/
 using namespace MATT;

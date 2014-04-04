@@ -21,7 +21,7 @@
 #include "SimpleCallStackNode.hpp"
 #include "ValgrindOutput.hpp"
 #include <common/STLInternalAllocator.hpp>
-#include <common/Array.h>
+#include <common/Array.hpp>
 
 /*******************  NAMESPACE  ********************/
 namespace MATT

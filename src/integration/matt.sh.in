@@ -1,0 +1,40 @@
+#!/bin/sh
+######################################################
+#            PROJECT  : MATT                         #
+#            VERSION  : 0.1.0-dev                    #
+#            DATE     : 01/2014                      #
+#            AUTHOR   : Valat Sébastien              #
+#            LICENSE  : CeCILL-C                     #
+######################################################
+
+######################################################
+mattShowHelp()
+{
+	echo "TODO : help"
+}
+
+######################################################
+#Check args
+while true; do
+	case "$1" in
+		--help)
+			mattShowHelp
+			exit 0
+		;;
+		--config=*)
+			export MATT_CONFIG="`echo "$1" | sed -e 's/^--config=//g'`"
+			shift 1
+		;;
+		*)
+			break
+		;;
+	esac
+done
+
+######################################################
+#debug env
+# if [ ! -z "$MATT_CONFIG" ]; then echo "MATT_CONFIG=$MATT_CONFIG"; fi
+
+######################################################
+#run
+LD_PRELOAD=@CMAKE_INSTALL_PREFIX@/lib/libmatt.so "$@"

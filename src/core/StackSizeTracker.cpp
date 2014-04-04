@@ -48,8 +48,8 @@ void StackSizeTracker::enter(void)
 		this->base = this->cur;
 	
 	//laod upper/lower limits by checking with proc map
-	if (this->mapLower == 0 && this->mapUpper ==0)
-		this->loadMapping();
+	//if (this->mapLower == 0 && this->mapUpper ==0)
+	//	this->loadMapping();
 	
 	//debug
 	//printf("matt %llu , %lu , %lu , %lu\n",getticks(),this->base,crsp,getSize());
@@ -112,12 +112,6 @@ void convertToJson(htopml::JsonState& json, const StackSizeTracker& value)
 			json.printValue(value.base - value.stack[i]);
 	}
 	json.closeArray();
-}
-
-/*******************  FUNCTION  *********************/
-long unsigned int StackSizeTracker::getTLS(void) const
-{
-	return mapUpper - base;
 }
 
 /*******************  FUNCTION  *********************/

@@ -57,7 +57,7 @@ function buildCallTree(data)
 		reduceStat(cur,call.info);
 		call.stack.reverse().forEach(function(loc) {
 			if (cur.childs[loc.function] == undefined)
-				cur.childs[loc.function] = {childs:{},id:id++};
+				cur.childs[loc.function] = {childs:{},id:id++,location:loc};
 			cur = cur.childs[loc.function];
 			reduceStat(cur,call.info);
 		});
@@ -99,7 +99,10 @@ function MattFuncTree(tableId)
 			var rows = $("<tr/>").attr('data-tt-id',treeNode.childs[i].id);
 			if (treeNode.id != null)
 				rows = rows.attr('data-tt-parent-id',treeNode.id);
-			rows.append('<td>'+i+'</td>');
+
+			var td = $('<td>'+i+'</td>').click(treeNode.childs[i],function(event) {alert('click on '+JSON.stringify(event.data));})
+				.css('cursor','pointer');
+			rows.append(td);
 			rows.append('<td id='+this.tableId+'.value.'+treeNode.childs[i].id+'>'+value+'</td>');
 			
 			//attach to parent

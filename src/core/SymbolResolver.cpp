@@ -17,7 +17,7 @@
 #include "SymbolResolver.hpp"
 #include <json/JsonState.h>
 #include <common/Debug.hpp>
-#include <common/Array.h>
+#include <common/Array.hpp>
 
 /*******************  NAMESPACE  ********************/
 namespace MATT

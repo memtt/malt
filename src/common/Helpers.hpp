@@ -16,6 +16,10 @@
 namespace MATT
 {
 
+/********************  STRUCT  **********************/
+/**
+ * Struct to aggregate all global helper functions (might be better to be a namespace).
+**/
 struct Helpers
 {
 	static void printValue(std::ostream & out,double value, const char* unit = "");

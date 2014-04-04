@@ -34,7 +34,7 @@ Options::Options(void)
 	this->outputIndent            = true;
 	this->outputJson              = true;
 	this->outputLua               = false;
-	this->outputCallgrind         = true;
+	this->outputCallgrind         = false;
 	this->outputDumpConfig        = true;
 	//max stack
 	this->maxStackEnabled         = true;

@@ -10,17 +10,23 @@
 #define MATT_ARRAY_H
 
 /********************  HEADERS  *********************/
+//standard
 #include <cstdlib>
 #include <cassert>
+//common
 #include <common/Debug.hpp>
-#include <json/JsonState.h>
 #include <common/SimpleAllocator.hpp>
+//htopml json converter
+#include <json/JsonState.h>
 
 /*******************  NAMESPACE  ********************/
 namespace MATT
 {
 
 /*********************  CLASS  **********************/
+/**
+ * Short class to implement iterators compatible with STL semantic.
+**/
 template <class T>
 class ArrayIterator
 {
@@ -32,6 +38,7 @@ class ArrayIterator
 		bool operator!=(const ArrayIterator<T>& ref) const {return data!=ref.data;}
 		T & operator*() {return *data;}
 	private:
+		/** Keep track of current element. **/
 		T * data;
 };
 
@@ -49,7 +56,9 @@ template <class T>
 class Array
 {
 	public:
+		/** Provide iterators to keep same interface as vector. **/
 		typedef ArrayIterator<const T> const_iterator;
+		/** Provide iterators to keep same interface as vector. **/
 		typedef ArrayIterator<T> iterator;
 	public:
 		Array(int growCnt = 1,int maxExpGrow = (128*1024),bool defaultAlloc = false);
@@ -89,6 +98,10 @@ class Array
 };
 
 /*******************  FUNCTION  *********************/
+/**
+ * Copy constructor.
+ * @param orig Define the original array to copy on new one.
+**/
 template <class T>
 Array<T>::Array(const Array<T>& orig)
 {
@@ -175,6 +188,11 @@ int Array<T>::getBufferSize(void) const
 }
 
 /*******************  FUNCTION  *********************/
+/**
+ * Permut usage of operator [], if will fail with NULL pointer dereference if
+ * ID is invalid. In debug mode it will produce an assertion failure.
+ * @param id Id of element to return.
+**/
 template <class T>
 T& Array<T>::operator[](int id)
 {
@@ -186,6 +204,11 @@ T& Array<T>::operator[](int id)
 }
 
 /*******************  FUNCTION  *********************/
+/**
+ * Permut usage of operator [], if will fail with NULL pointer dereference if
+ * ID is invalid. In debug mode it will produce an assertion failure.
+ * @param id Id of element to return.
+**/
 template <class T>
 const T& Array<T>::operator[](int id) const
 {
@@ -197,6 +220,10 @@ const T& Array<T>::operator[](int id) const
 }
 
 /*******************  FUNCTION  *********************/
+/**
+ * Insert a new element and end.
+ * @param value New value to add to the array.
+**/
 template <class T>
 T & Array<T>::push_back(const T& value)
 {
@@ -208,6 +235,10 @@ T & Array<T>::push_back(const T& value)
 }
 
 /*******************  FUNCTION  *********************/
+/**
+ * Resize the array. It may induce reallocation of the internal buffer
+ * if it is too small.
+**/
 template <class T>
 void Array<T>::setSize(size_t size)
 {
@@ -226,6 +257,9 @@ void Array<T>::setSize(size_t size)
 }
 
 /*******************  FUNCTION  *********************/
+/**
+ * Same as setSize but by providing size variation as parameter.
+**/
 template <class T>
 void Array<T>::updateSize(ssize_t delta)
 {
@@ -233,6 +267,10 @@ void Array<T>::updateSize(ssize_t delta)
 }
 
 /*******************  FUNCTION  *********************/
+/**
+ * Remove the last element. It will not reduce the memory usage of the
+ * internal buffer.
+**/
 template <class T>
 void Array<T>::pop(void)
 {
@@ -241,6 +279,11 @@ void Array<T>::pop(void)
 }
 
 /*******************  FUNCTION  *********************/
+/**
+ * Change the content of the current array by copying the content from then
+ * given one.
+ * @param orig Original array to copy.
+**/
 template <class T>
 void Array<T>::set(const Array< T >& orig)
 {
@@ -253,6 +296,9 @@ void Array<T>::set(const Array< T >& orig)
 }
 
 /*******************  FUNCTION  *********************/
+/**
+ * Manage conversion to JSON/LUA through htopml::convertToJson functions.
+**/
 template <class T>
 void convertToJson(htopml::JsonState& json, const Array< T >& value)
 {
@@ -260,6 +306,9 @@ void convertToJson(htopml::JsonState& json, const Array< T >& value)
 }
 
 /*******************  FUNCTION  *********************/
+/**
+ * Manage affectation through equal operator.
+**/
 template <class T>
 Array<T> & Array<T>::operator=(const Array<T>& orig)
 {

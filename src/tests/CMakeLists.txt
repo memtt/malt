@@ -11,7 +11,17 @@
 include_directories(${GTEST_INCLUDE_DIRS} ${GMOCK_INCLUDE_DIRS})
 
 ######################################################
-set(TEST_NAMES TestSegmentTracker TestProfiledValue TestFormattedMessage TestFastBufferedStream TestArray TestStack TestSimpleStackTracker TestValgrindOutput TestSimpleAllocator TestStackTreeV2)
+set(TEST_NAMES TestSegmentTracker 
+               TestProfiledValue 
+               TestFormattedMessage 
+               TestFastBufferedStream 
+               TestArray 
+               TestStack 
+               TestSimpleStackTracker 
+               TestValgrindOutput 
+               TestSimpleAllocator 
+               #TestStackTreeV2
+               )
 
 ######################################################
 FOREACH(test_name ${TEST_NAMES})

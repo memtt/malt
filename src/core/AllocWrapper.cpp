@@ -216,7 +216,7 @@ void AllocWrapperGlobal::init(void )
 		
 		//init internal alloc
 		if (gblInternaAlloc == NULL)
-			gblInternaAlloc = new SimpleAllocator(false);
+			gblInternaAlloc = new SimpleAllocator(true);
 		
 		//load options
 		gblState.options = new Options();

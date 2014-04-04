@@ -58,6 +58,11 @@ class FormattedMessage
 };
 
 /*******************  FUNCTION  *********************/
+/**
+ * Setup argument value. First call will setup %1, second %2... All
+ * values are converted to string by standard STL stream operator onto stringstream object.
+ * @param value Value to convert to string and to setup as argument value.
+**/
 template <class T>
 FormattedMessage& FormattedMessage::arg(const T& value)
 {

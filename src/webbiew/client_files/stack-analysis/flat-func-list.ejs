@@ -6,6 +6,6 @@
 			</div>
 		</div>
 		<span class='size'><%= mattHumanValue(data,data.entries[i].value) %></span>
-		<span class='func'><%= data.entries[i].name %></span>
+		<span class='func'><%= $('<div/>').text(data.entries[i].name).html() %></span>
 	</a></li>
 <% } %>

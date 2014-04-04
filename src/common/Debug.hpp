@@ -54,6 +54,7 @@ class Debug : public FormattedMessage
 	public:
 		Debug(const char * format,const char * file,int line,DebugLevel level = MESSAGE_DEBUG);
 		Debug(const char * format,DebugLevel level = MESSAGE_DEBUG);
+		virtual ~Debug(void);
 		virtual void end(void);
 	protected:
 		/** Store the message level for end() method. **/
@@ -62,6 +63,8 @@ class Debug : public FormattedMessage
 		std::string file;
 		/** Store line to inform user in end() method. **/
 		int line;
+		/** To check is message is emitted at exit (only for debug purpose). **/
+		bool emitted;
 };
 
 /********************  MACROS  **********************/

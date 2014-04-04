@@ -41,7 +41,7 @@ AllocStackProfiler::AllocStackProfiler(const Options & options,StackMode mode,bo
 	
 	//init internal alloc
 	if (gblInternaAlloc == NULL)
-		gblInternaAlloc = new SimpleAllocator(false);
+		gblInternaAlloc = new SimpleAllocator(true);
 
 	switch(mode)
 	{
@@ -312,7 +312,6 @@ void convertToJson(htopml::JsonState& json, const AllocStackProfiler& value)
 		json.printField("stack",value.largestStack);
 		json.printField("mem",value.largestStackMem);
 		json.printField("total",value.largestStackMem.getTotalSize());
-		json.printField("TLS",value.largestStackMem.getTLS());
 		json.closeFieldStruct("maxStack");
 	}
 	

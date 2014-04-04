@@ -10,7 +10,7 @@
 #define MATT_STACK_SIZE_TRACKER_H
 
 /********************  HEADERS  *********************/
-#include <common/Array.h>
+#include <common/Array.hpp>
 #include <json/JsonState.h>
 
 /*******************  NAMESPACE  ********************/
@@ -26,7 +26,6 @@ class StackSizeTracker
 		void exit(void);
 		unsigned long getSize(void) const;
 		unsigned long getTotalSize(void) const;
-		unsigned long getTLS(void) const;
 		StackSizeTracker & operator=(const StackSizeTracker & orig);
 	public:
 		friend void convertToJson(htopml::JsonState & json, const StackSizeTracker & value);
