@@ -10,7 +10,8 @@
 #define MATT_TREE_CALL_TRACK_HPP
 
 /********************  HEADERS  *********************/
-#include <map>
+#include <set>
+#include <common/Debug.hpp>
 #include <json/ConvertToJson.h>
 #include <json/JsonState.h>
 #include "TreeStackTracerEntry.hpp"
@@ -24,12 +25,12 @@ template <class T>
 class TreeStackTracer
 {
 	public:
-		typedef std::map<TreeStackTracerEntry,T*> TreeStackTracerEntryMap;
-		typedef typename TreeStackTracerEntryMap::iterator Node;
+		typedef std::set< TreeStackTracerEntry<T> > TreeStackTracerEntryMap;
+		typedef TreeStackTracerEntry<T> * Node;
 	public:
 		Node getRootNode(void);
-		Node getNode(Node & parentNode, void* addr);
-		T & getData(Node & node);
+		Node getNode(Node parentNode, void* addr);
+		T & getData(Node node);
 	public:
 		template <class U> friend void convertToJson(htopml::JsonState & json, const TreeStackTracer<U> & value);
 	private:
@@ -40,57 +41,42 @@ class TreeStackTracer
 template <class T>
 typename TreeStackTracer<T>::Node TreeStackTracer<T>::getRootNode(void)
 {
-	TreeStackTracerEntry entry(NULL,NULL);
+	return getNode(NULL,NULL);
+}
+
+/*******************  FUNCTION  *********************/
+template <class T>
+typename TreeStackTracer<T>::Node TreeStackTracer<T>::getNode(typename TreeStackTracer<T>::Node parent, void* addr)
+{
+	TreeStackTracerEntry<T> entry(parent,addr);
 	typename TreeStackTracer<T>::TreeStackTracerEntryMap::iterator it = entries.find(entry);
 	if (it == entries.end())
 	{
-		entries[entry] = NULL;
+		entries.insert(entry);
 		it = entries.find(entry);
 	}
 	
-	return it;
+	return (TreeStackTracerEntry<T>*)&(*it);
 }
 
 /*******************  FUNCTION  *********************/
 template <class T>
-typename TreeStackTracer<T>::Node TreeStackTracer<T>::getNode(typename TreeStackTracer<T>::Node & parent, void* addr)
+T & TreeStackTracer<T>::getData(typename TreeStackTracer<T>::Node node)
 {
-	TreeStackTracerEntry entry(&parent->first,addr);
-	typename TreeStackTracer<T>::TreeStackTracerEntryMap::iterator it = entries.find(entry);
-	if (it == entries.end())
-	{
-		entries[entry] = NULL;
-		it = entries.find(entry);
-	}
+	//setup types
+	MATT_ASSERT(node != NULL);
 	
-	return it;
-}
+	//get res
+	T * res = node->value;
 
-/*******************  FUNCTION  *********************/
-template <class T>
-T & TreeStackTracer<T>::getData(typename TreeStackTracer<T>::Node & node)
-{
-	if (node->second == NULL)
-		node->second = new T;
-	return *node->second;
-}
-
-/*******************  FUNCTION  *********************/
-template <class T>
-void convertToJson(htopml::JsonState& json, const typename std::pair<const TreeStackTracerEntry*,const T *> & it)
-{
-	json.openStruct();
-	const TreeStackTracerEntry * cur = it.first;
-	json.openFieldArray("stack");
-	while (cur != NULL)
+	//allocate if need
+	if (res == NULL)
 	{
-		if (cur->codeAddr != NULL)
-			json.printValue(cur->codeAddr);
-		cur = cur->parent;
+		res = new T;
+		node->value = res;
 	}
-	json.closeFieldArray("stack");
-	json.printField("infos",*it.second);
-	json.closeStruct();
+
+	return *res;
 }
 
 /*******************  FUNCTION  *********************/
@@ -101,8 +87,10 @@ void convertToJson(htopml::JsonState& json, const MATT::TreeStackTracer< T >& va
 	
 	//search all non null data
 	for (typename TreeStackTracer<T>::TreeStackTracerEntryMap::const_iterator it = value.entries.begin() ; it != value.entries.end() ; ++it)
-		if (it->second != NULL)
-			json.printValue(std::pair<const TreeStackTracerEntry*,const T *>(&it->first,it->second));
+	{
+		if (it->value != NULL)
+			json.printValue(*it);
+	}
 	
 	json.closeArray();
 }

@@ -51,6 +51,7 @@ target_link_libraries(matt pthread dl)
 add_subdirectory(core)
 add_subdirectory(common)
 add_subdirectory(stackv2)
+add_subdirectory(stackv3)
 add_subdirectory(portability)
 add_subdirectory(integration)
 

@@ -21,7 +21,8 @@ set(TEST_NAMES TestSegmentTracker
                TestValgrindOutput 
                TestSimpleAllocator 
                TestStackTreeV2
-               )
+               TestStackTreeV3
+   )
 
 ######################################################
 FOREACH(test_name ${TEST_NAMES})
