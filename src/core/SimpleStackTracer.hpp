@@ -42,6 +42,7 @@ class SimpleStackTracer
 		~SimpleStackTracer(void);
 		SimpleCallStackNode& getBacktraceInfo(const Stack& stack, int skipDepth = 0);
 		void resolveSymbols(void);
+		void pushStackSymbolsToResolve(const Stack & stack);
 		void fillValgrindOut(ValgrindOutput & out) const;
 		const SymbolResolver & getNameDic(void) const;
 	public:

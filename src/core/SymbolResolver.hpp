@@ -59,6 +59,7 @@ class SymbolResolver
 		const CallSite * getCallSiteInfo(void * site) const;
 		const std::string & getString(int id) const;
 		bool isSameFuntion(const CallSite * s1,void * s2) const;
+		bool procMapIsLoaded(void) const;
 	public:
 		friend std::ostream & operator << (std::ostream & out,const SymbolResolver & dic);
 		friend void convertToJson(htopml::JsonState & json, const SymbolResolver & value);

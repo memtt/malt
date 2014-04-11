@@ -224,6 +224,7 @@ void AllocStackProfiler::onExit(void )
 {
 	MATT_OPTIONAL_CRITICAL(lock,threadSafe)
 		//resolve symbols
+		this->stackTracer.pushStackSymbolsToResolve(largestStack);
 		if (options.stackResolve)
 			CODE_TIMING("resolveSymbols",this->stackTracer.resolveSymbols());
 	

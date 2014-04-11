@@ -10,20 +10,29 @@
 ######################################################
 mattShowHelp()
 {
-	echo "TODO : help"
+	echo "Usage : matt [--config=file] [--help] [--] YOUR_COMMAND"
+	echo ""
+	echo "Options:"
+	echo "   -c=file/--config=file   Provide configuration file in INI format."
+	echo "   -h/--help               Show this help message."
+	echo ""
 }
 
 ######################################################
 #Check args
 while true; do
 	case "$1" in
-		--help)
+		--help|-h)
 			mattShowHelp
 			exit 0
 		;;
-		--config=*)
-			export MATT_CONFIG="`echo "$1" | sed -e 's/^--config=//g'`"
+		--config=*|-c=*)
+			export MATT_CONFIG="`echo "$1" | sed -e 's/^(--config=)|(-c=)//g'`"
 			shift 1
+		;;
+		--)
+			shift 1
+			break
 		;;
 		*)
 			break

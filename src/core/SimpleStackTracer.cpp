@@ -88,6 +88,12 @@ std::ostream& operator<<(std::ostream& out, const SimpleStackTracer& tracer)
 }
 
 /*******************  FUNCTION  *********************/
+void SimpleStackTracer::pushStackSymbolsToResolve(const Stack& stack)
+{
+	stack.resolveSymbols(dic);
+}
+
+/*******************  FUNCTION  *********************/
 void SimpleStackTracer::resolveSymbols(void)
 {
 	dic.loadProcMap();
@@ -95,7 +101,7 @@ void SimpleStackTracer::resolveSymbols(void)
 	{
 		const SimpleBacktraceVector & vec = itMap->second;
 		for (SimpleBacktraceVector::const_iterator it = vec.begin() ; it != vec.end() ; ++it)
-			(*it)->getCallStack().resolveSymbols(dic);
+			pushStackSymbolsToResolve((*it)->getCallStack());
 	}
 	dic.resolveNames();
 }

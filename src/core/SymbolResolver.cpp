@@ -130,6 +130,12 @@ const char* SymbolResolver::setupNewEntry(void* callSite, const std::string& nam
 }
 
 /*******************  FUNCTION  *********************/
+bool SymbolResolver::procMapIsLoaded(void) const
+{
+	return (procMap.empty() == false);
+}
+
+/*******************  FUNCTION  *********************/
 void SymbolResolver::loadProcMap(void)
 {
 	//errors
@@ -157,6 +163,7 @@ void SymbolResolver::loadProcMap(void)
 		{
 			//parse
 			int cnt = sscanf(buffer,"%p-%p %s %p %s %lu %s\n",&(entry.lower),&(entry.upper),ignored,&(entry.offset),ignored,&ignored2,fileName);
+			printf("%s => %p - %p\n",buffer,entry.lower,entry.upper);
 			
 			//check args
 			if (cnt == 7)
