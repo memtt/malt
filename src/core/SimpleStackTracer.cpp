@@ -88,29 +88,20 @@ std::ostream& operator<<(std::ostream& out, const SimpleStackTracer& tracer)
 }
 
 /*******************  FUNCTION  *********************/
-void SimpleStackTracer::pushStackSymbolsToResolve(const Stack& stack)
+void SimpleStackTracer::resolveSymbols(SymbolResolver & symbolResolver)
 {
-	stack.resolveSymbols(dic);
-}
-
-/*******************  FUNCTION  *********************/
-void SimpleStackTracer::resolveSymbols(void)
-{
-	dic.loadProcMap();
 	for (SimpleBacktraceVectorMap::const_iterator itMap = callmaps.begin() ; itMap != callmaps.end() ; ++itMap)
 	{
 		const SimpleBacktraceVector & vec = itMap->second;
 		for (SimpleBacktraceVector::const_iterator it = vec.begin() ; it != vec.end() ; ++it)
-			pushStackSymbolsToResolve((*it)->getCallStack());
+			(*it)->getCallStack().resolveSymbols(symbolResolver);
 	}
-	dic.resolveNames();
 }
 
 /*******************  FUNCTION  *********************/
 void convertToJson(htopml::JsonState& json, const SimpleStackTracer& value)
 {
 	json.openStruct();
-	json.printField("sites",value.dic);
 	json.openFieldArray("stats");
 	for (SimpleBacktraceVectorMap::const_iterator itMap = value.callmaps.begin() ; itMap != value.callmaps.end() ; ++itMap)
 	{
@@ -124,20 +115,14 @@ void convertToJson(htopml::JsonState& json, const SimpleStackTracer& value)
 }
 
 /*******************  FUNCTION  *********************/
-void SimpleStackTracer::fillValgrindOut(ValgrindOutput& out) const
+void SimpleStackTracer::fillValgrindOut(ValgrindOutput& out,SymbolResolver & symbolResolver) const
 {
 	for (SimpleBacktraceVectorMap::const_iterator itMap = callmaps.begin() ; itMap != callmaps.end() ; ++itMap)
 	{
 		const SimpleBacktraceVector & vec = itMap->second;
 		for (SimpleBacktraceVector::const_iterator it = vec.begin() ; it != vec.end() ; ++it)
-			out.pushStackInfo(**it,dic);
+			out.pushStackInfo(**it,symbolResolver);
 	}
-}
-
-/*******************  FUNCTION  *********************/
-const SymbolResolver& SimpleStackTracer::getNameDic(void) const
-{
-	return dic;
 }
 
 }

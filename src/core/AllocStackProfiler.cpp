@@ -224,9 +224,13 @@ void AllocStackProfiler::onExit(void )
 {
 	MATT_OPTIONAL_CRITICAL(lock,threadSafe)
 		//resolve symbols
-		this->stackTracer.pushStackSymbolsToResolve(largestStack);
 		if (options.stackResolve)
-			CODE_TIMING("resolveSymbols",this->stackTracer.resolveSymbols());
+			CODE_TIMING("resolveSymbols",
+				this->symbolResolver.loadProcMap();
+				this->largestStack.resolveSymbols(symbolResolver);
+				this->stackTracer.resolveSymbols(symbolResolver);
+				this->symbolResolver.resolveNames()
+			);
 	
 		//open output file
 		//TODO manage errors
@@ -259,8 +263,8 @@ void AllocStackProfiler::onExit(void )
 		{
 			fprintf(stderr,"Prepare valgrind output...\n");
 			ValgrindOutput vout;
-			stackTracer.fillValgrindOut(vout);
-			CODE_TIMING("outputCallgrind",vout.writeAsCallgrind(FormattedMessage(options.outputName).arg(OS::getExeName()).arg(OS::getPID()).arg("callgrind").toString(),stackTracer.getNameDic()));
+			stackTracer.fillValgrindOut(vout,symbolResolver);
+			CODE_TIMING("outputCallgrind",vout.writeAsCallgrind(FormattedMessage(options.outputName).arg(OS::getExeName()).arg(OS::getPID()).arg("callgrind").toString(),symbolResolver));
 		}
 
 		//print timings
@@ -296,6 +300,9 @@ void convertToJson(htopml::JsonState& json, const AllocStackProfiler& value)
 
 	if (value.options.stackProfileEnabled)
 		json.printField("stackInfo",value.stackTracer);
+	
+	if (value.options.stackResolve)
+		json.printField("sites",value.symbolResolver);
 
 	if (value.options.timeProfileEnabled)
 	{

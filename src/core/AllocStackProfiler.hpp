@@ -71,6 +71,7 @@ class AllocStackProfiler
 		unsigned long largestStackSize;
 		StackSizeTracker largestStackMem;
 		Stack largestStack;
+		SymbolResolver symbolResolver;
 };
 
 }

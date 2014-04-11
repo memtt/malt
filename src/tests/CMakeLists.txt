@@ -20,7 +20,7 @@ set(TEST_NAMES TestSegmentTracker
                TestSimpleStackTracker 
                TestValgrindOutput 
                TestSimpleAllocator 
-               #TestStackTreeV2
+               TestStackTreeV2
                )
 
 ######################################################

@@ -59,16 +59,6 @@ if (args.params.override != undefined)
 
 /****************************************************/
 //load file
-var data = null;
-console.log("Loading file : " + args.params.input);
-fs.readFile(args.params.input, 'utf8', function (err, buffer) {
-	if (err) {
-		console.log('Error: ' + err);
-		return;
-	}
-	data = JSON.parse(buffer);
-});
-
 var mattProject = new MattProject(args.params.input);
 
 /****************************************************/

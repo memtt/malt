@@ -153,7 +153,7 @@ MattProject.prototype.getProcMapDistr = function()
 {
 	//some local vars
 	var res = new Object();
-	var map = this.data.stackInfo.sites.map;
+	var map = this.data.sites.map;
 	var checkStack = /^\[stack:[0-9]+\]$/;
 
 	//loop on map entries
@@ -265,7 +265,7 @@ MattProject.prototype.getFlattenMaxStackInfo = function(mapping,accept)
 		//get some vars
 		var addr = maxStack.stack[i];
 		var mem = maxStack.mem[i] - maxStack.mem[i+1];
-		var info = this.data.stackInfo.sites.instr[addr];
+		var info = this.data.sites.instr[addr];
 		var key = addr;
 		if (info != undefined)
 			key = mapping(info);
@@ -386,7 +386,7 @@ function mergeStackInfo(into,detailedStackEntry,addr,subKey,infos,mapping,fields
 /****************************************************/
 /**
  * Short wrapper to get strings from data.stackInfo.strings section and to manage undefined files.
- * @param strings Must be the translation table from stackInfo.sites.strings
+ * @param strings Must be the translation table from sites.strings
 **/
 function getStringFromList(strings,id,defaultValue)
 {
@@ -406,7 +406,7 @@ function getStringFromList(strings,id,defaultValue)
 /**
  * To help quick search into data, procude a stack with refs to internal details instead of
  * simple addresses.
- * @param instrs Must be the translation table from stackInfo.sites.instr
+ * @param instrs Must be the translation table from sites.instr
 **/
 function genDetailedStack(instrs,stack)
 {
@@ -437,15 +437,15 @@ function genDetailedStack(instrs,stack)
 function optimizeProjectDatas(data)
 {
 	//get some inside vars
-	var strings = data.stackInfo.sites.strings;
-	var instrs = data.stackInfo.sites.instr;
+	var strings = data.sites.strings;
+	var instrs = data.sites.instr;
 	
 	//do for stackInfo/instr section
 	//avoid to jump to string table every time
-	console.log("Optimizing stackInfo.sites.instr...");
-	for (var i in data.stackInfo.sites.instr)
+	console.log("Optimizing sites.instr...");
+	for (var i in data.sites.instr)
 	{
-		var site = data.stackInfo.sites.instr[i];
+		var site = data.sites.instr[i];
 		site.function = getStringFromList(strings,site.function,"??");
 		site.file = getStringFromList(strings,site.file,"??");
 		if (site.line == undefined)
