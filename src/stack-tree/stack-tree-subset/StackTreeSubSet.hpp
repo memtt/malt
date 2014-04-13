@@ -6,14 +6,14 @@
              LICENSE  : CeCILL-C
 *****************************************************/
 
-#ifndef MATT_TREE_CALL_TRACK_HPP
-#define MATT_TREE_CALL_TRACK_HPP
+#ifndef MATT_STACK_TREE_SUB_SET_HPP
+#define MATT_STACK_TREE_SUB_SET_HPP
 
 /********************  HEADERS  *********************/
 #include <common/Debug.hpp>
 #include <json/ConvertToJson.h>
 #include <json/JsonState.h>
-#include "TreeStackTracerEntryV3.hpp"
+#include "StackTreeSubSetNode.hpp"
 
 /*******************  NAMESPACE  ********************/
 namespace MATT
@@ -21,24 +21,27 @@ namespace MATT
 
 /*********************  CLASS  **********************/
 template <class T>
-class TreeStackTracerV3
+class StackTreeSubSet
 {
 	public:
-		typedef TreeStackTracerEntryV3<T> * Node;
+		typedef void * Handler;
 	public:
-		TreeStackTracerV3(void);
-		Node getRootNode(void);
-		Node getNode(Node parentNode, void* addr);
-		T & getData(Node node);
+		StackTreeSubSet(void);
+		Handler buildNewhandler(void);
+		void destroyHandler(Handler & handler);
+		void enterHandler(Handler & handler,void * childAddr);
+		void exitHandler(Handler & handler,void * curAddr);
+		void moveToBacktrace(Handler & handler);
+		T & getData(Handler & handler);
 	public:
-		template <class U> friend void convertToJson(htopml::JsonState & json, const TreeStackTracerV3<U> & value);
+		template <class U> friend void convertToJson(htopml::JsonState & json, const StackTreeSubSet<U> & value);
 	private:
-		TreeStackTracerEntryV3<T> rootNode;
+		StackTreeSubSetNode<T> rootNode;
 };
 
 /*******************  FUNCTION  *********************/
 template <class T>
-TreeStackTracerV3<T>::TreeStackTracerV3(void)
+StackTreeSubSet<T>::StackTreeSubSet(void)
 	:rootNode(NULL,NULL)
 {
 
@@ -46,21 +49,21 @@ TreeStackTracerV3<T>::TreeStackTracerV3(void)
 
 /*******************  FUNCTION  *********************/
 template <class T>
-typename TreeStackTracerV3<T>::Node TreeStackTracerV3<T>::getRootNode(void)
+typename StackTreeSubSet<T>::Node StackTreeSubSet<T>::getRootNode(void)
 {
 	return &rootNode;
 }
 
 /*******************  FUNCTION  *********************/
 template <class T>
-typename TreeStackTracerV3<T>::Node TreeStackTracerV3<T>::getNode(typename TreeStackTracerV3<T>::Node parent, void* addr)
+typename StackTreeSubSet<T>::Node StackTreeSubSet<T>::getNode(typename StackTreeSubSet<T>::Node parent, void* addr)
 {
 	//check
 	MATT_ASSERT(parent != NULL);
 
 	//search
-	TreeStackTracerEntryV3<T> entry(parent,addr);
-	typename std::set<TreeStackTracerEntryV3<T> >::iterator it = parent->childs.find(entry);
+	StackTreeSubSetNode<T> entry(parent,addr);
+	typename std::set<StackTreeSubSetNode<T> >::iterator it = parent->childs.find(entry);
 	
 	//create if not found
 	if (it == parent->childs.end())
@@ -70,12 +73,12 @@ typename TreeStackTracerV3<T>::Node TreeStackTracerV3<T>::getNode(typename TreeS
 	}
 	
 	//return
-	return (TreeStackTracerEntryV3<T>*)&(*it);
+	return (StackTreeSubSetNode<T>*)&(*it);
 }
 
 /*******************  FUNCTION  *********************/
 template <class T>
-T & TreeStackTracerV3<T>::getData(typename TreeStackTracerV3<T>::Node node)
+T & StackTreeSubSet<T>::getData(typename StackTreeSubSet<T>::Node node)
 {
 	//setup types
 	MATT_ASSERT(node != NULL);
@@ -95,9 +98,9 @@ T & TreeStackTracerV3<T>::getData(typename TreeStackTracerV3<T>::Node node)
 
 /*******************  FUNCTION  *********************/
 template <class T>
-void convertToJson(htopml::JsonState& json, const std::set<TreeStackTracerEntryV3<T> > & value)
+void convertToJson(htopml::JsonState& json, const std::set<StackTreeSubSetNode<T> > & value)
 {
-	for (typename std::set<TreeStackTracerEntryV3<T> >::const_iterator it = value.begin() ; it != value.end() ; ++it)
+	for (typename std::set<StackTreeSubSetNode<T> >::const_iterator it = value.begin() ; it != value.end() ; ++it)
 	{
 		if (it->value != NULL)
 			json.printValue(*it);
@@ -107,7 +110,7 @@ void convertToJson(htopml::JsonState& json, const std::set<TreeStackTracerEntryV
 
 /*******************  FUNCTION  *********************/
 template <class T>
-void convertToJson(htopml::JsonState& json, const MATT::TreeStackTracerV3< T >& value)
+void convertToJson(htopml::JsonState& json, const MATT::StackTreeSubSet< T >& value)
 {
 	json.openArray();
 	convertToJson(json,value.rootNode.childs);
@@ -116,4 +119,4 @@ void convertToJson(htopml::JsonState& json, const MATT::TreeStackTracerV3< T >& 
 
 }
 
-#endif //MATT_TREE_CALL_TRACK_HPP
+#endif //MATT_STACK_TREE_SUB_SET_HPP
