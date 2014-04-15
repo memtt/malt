@@ -112,7 +112,7 @@ void LocalAllocStackProfiler::onEnterFunc(void* this_fn, void* call_site)
 {
 	//stack current loc tracking
 	//TODO this is also done by LocalAllocStackProfiler, maybe try to point his object instead of recompute
-	enterExitStack.enterFunction(this_fn);
+	enterExitStack.enterFunction(call_site);
 	
 	//max stack
 	if (options->maxStackEnabled)
@@ -124,7 +124,7 @@ void LocalAllocStackProfiler::onExitFunc(void* this_fn, void* call_site)
 {
 	//stack current loc tracking
 	//TODO this is also done by LocalAllocStackProfiler, maybe try to point his object instead of recompute
-	enterExitStack.exitFunction(this_fn);
+	enterExitStack.exitFunction(call_site);
 	
 	//max stack
 	if (options->maxStackEnabled)

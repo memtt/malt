@@ -73,7 +73,7 @@ function MattFuncTree(tableId)
 	this.table = $('#'+tableId);
 	
 	//setup
-	this.table.treetable({ expandable: true,initialState:'collasped',clickableNodeNames:true});
+	this.table.treetable({ expandable: true,initialState:'collasped',clickableNodeNames:false});
 	this.stackViewRoots = [];
 	this.tree = null;
 	this.selector = null;
@@ -100,8 +100,9 @@ function MattFuncTree(tableId)
 			if (treeNode.id != null)
 				rows = rows.attr('data-tt-parent-id',treeNode.id);
 
-			var td = $('<td>'+i+'</td>').click(treeNode.childs[i],function(event) {alert('click on '+JSON.stringify(event.data));})
+			var a = $('<span>'+i+'</span>').click(treeNode.childs[i],function(event) {alert('click on '+JSON.stringify(event.data));})
 				.css('cursor','pointer');
+			var td = $('<td/>').append(a);
 			rows.append(td);
 			rows.append('<td id='+this.tableId+'.value.'+treeNode.childs[i].id+'>'+value+'</td>');
 			

@@ -59,6 +59,12 @@
 	cursor: pointer;
 }
 
+/********************** STACK TREE ********************/
+#matt-alloc-stacks-tree tbody tr:hover
+{
+	background-color:#DCDCDC;
+}
+
 /******************* FLAT FUNC LIST ******************/
 /* Flat list of function in stack-analysis */
 #matt-func-list li a {
