@@ -14,6 +14,7 @@
 #include <json/ConvertToJson.h>
 #include <json/JsonState.h>
 #include "StackTreeSubSetNode.hpp"
+#include <core/Stack.h>
 
 /*******************  NAMESPACE  ********************/
 namespace MATT
@@ -24,13 +25,13 @@ template <class T>
 class StackTreeSubSet
 {
 	public:
-		typedef void * Handler;
+		typedef StackTreeSubSetNode<T> * Handler;
 	public:
 		StackTreeSubSet(void);
 		Handler buildNewhandler(void);
 		void destroyHandler(Handler & handler);
-		void enterHandler(Handler & handler,void * childAddr);
-		void exitHandler(Handler & handler,void * curAddr);
+		void enter(Handler & handler,void * childAddr);
+		void exit(Handler & handler,void * curAddr);
 		void moveToBacktrace(Handler & handler);
 		T & getData(Handler & handler);
 	public:
@@ -49,51 +50,77 @@ StackTreeSubSet<T>::StackTreeSubSet(void)
 
 /*******************  FUNCTION  *********************/
 template <class T>
-typename StackTreeSubSet<T>::Node StackTreeSubSet<T>::getRootNode(void)
+typename StackTreeSubSet<T>::Handler StackTreeSubSet<T>::buildNewhandler(void)
 {
 	return &rootNode;
 }
 
 /*******************  FUNCTION  *********************/
 template <class T>
-typename StackTreeSubSet<T>::Node StackTreeSubSet<T>::getNode(typename StackTreeSubSet<T>::Node parent, void* addr)
+void StackTreeSubSet<T>::enter(typename StackTreeSubSet<T>::Handler &handler, void* addr)
 {
 	//check
-	MATT_ASSERT(parent != NULL);
+	MATT_ASSERT(handler != NULL);
 
 	//search
-	StackTreeSubSetNode<T> entry(parent,addr);
-	typename std::set<StackTreeSubSetNode<T> >::iterator it = parent->childs.find(entry);
+	StackTreeSubSetNode<T> entry(handler,addr);
+	typename std::set<StackTreeSubSetNode<T> >::iterator it = handler->childs.find(entry);
 	
 	//create if not found
-	if (it == parent->childs.end())
+	if (it == handler->childs.end())
 	{
-		parent->childs.insert(entry);
-		it = parent->childs.find(entry);
+		handler->childs.insert(entry);
+		it = handler->childs.find(entry);
 	}
 	
 	//return
-	return (StackTreeSubSetNode<T>*)&(*it);
+	handler = (StackTreeSubSetNode<T>*)&(*it);
 }
 
 /*******************  FUNCTION  *********************/
 template <class T>
-T & StackTreeSubSet<T>::getData(typename StackTreeSubSet<T>::Node node)
+void StackTreeSubSet<T>::StackTreeSubSet::exit(typename StackTreeSubSet<T>::Handler& handler, void* curAddr)
 {
-	//setup types
-	MATT_ASSERT(node != NULL);
+	//check
+	MATT_ASSERT(handler != NULL);
+	MATT_ASSERT(handler != &rootNode);
+	
+	//move to parent
+	handler = handler->parent;
+}
+
+/*******************  FUNCTION  *********************/
+template <class T>
+T & StackTreeSubSet<T>::getData(typename StackTreeSubSet<T>::Handler & handler)
+{
+	//check
+	MATT_ASSERT(handler != NULL);
 	
 	//get res
-	T * res = node->value;
+	T * res = handler->value;
 
 	//allocate if need
 	if (res == NULL)
 	{
 		res = new T;
-		node->value = res;
+		handler->value = res;
 	}
 
 	return *res;
+}
+
+/*******************  FUNCTION  *********************/
+template <class T>
+void StackTreeSubSet<T>::destroyHandler(typename StackTreeSubSet<T>::Handler& handler)
+{
+	//nohting to to for this implementation as we only point tree nodes
+}
+
+/*******************  FUNCTION  *********************/
+template <class T>
+void StackTreeSubSet<T>::moveToBacktrace(typename StackTreeSubSet<T>::Handler& handler)
+{
+	MATT_FATAL("Backtrace currently not supported for enter-exit optimized trees !");
 }
 
 /*******************  FUNCTION  *********************/

@@ -6,8 +6,8 @@
              LICENSE  : CeCILL-C
 *****************************************************/
 
-#ifndef MATT_STACK_TREE_SUB_SET_HPP
-#define MATT_STACK_TREE_SUB_SET_HPP
+#ifndef MATT_STACK_TREE_SUB_SET_NODE_HPP
+#define MATT_STACK_TREE_SUB_SET_NODE_HPP
 
 /********************  HEADERS  *********************/
 #include <set>
@@ -76,4 +76,4 @@ void convertToJson(htopml::JsonState& json, const StackTreeSubSetNode< U >& valu
 
 }
 
-#endif //MATT_STACK_TREE_SUB_SET_HPP
+#endif //MATT_STACK_TREE_SUB_SET_NODE_HPP

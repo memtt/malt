@@ -8,7 +8,7 @@
 
 /********************  HEADERS  *********************/
 #include <gtest/gtest.h>
-#include <stackv3/TreeStackTracerV3.hpp>
+#include <stack-tree/stack-tree-subset/StackTreeSubSet.hpp>
 
 /***************** USING NAMESPACE ******************/
 using namespace MATT;
@@ -17,36 +17,40 @@ using namespace MATT;
 static const char CST_VALUE_1[] = "[{\n\t\"stack\":[\"0xb\", \"0xa\"],\n\t\"infos\":110\n}]";
 
 /*******************  FUNCTION  *********************/
-TEST(TestTreeStackTracerV3,getNode)
+TEST(TestStackTreeSubSet,getNode)
 {
 	//build a short tree
-	TreeStackTracerV3<int> tree;
-	TreeStackTracerV3<int>::Node root = tree.getRootNode();
-	TreeStackTracerV3<int>::Node node1 = tree.getNode(root,(void*)0xA);
-	TreeStackTracerV3<int>::Node node2 = tree.getNode(node1,(void*)0xB);
+	StackTreeSubSet<int> tree;
+	StackTreeSubSet<int>::Handler handler = tree.buildNewhandler();
+	tree.enter(handler,(void*)0xA);
+	tree.enter(handler,(void*)0xB);
 	
 	//try to get values
-	int & value1 = tree.getData(node2);
+	int & value1 = tree.getData(handler);
 	value1 = 110;
 	
 	//check if we reuse the value on next call
-	TreeStackTracerV3<int>::Node node3 = tree.getNode(node1,(void*)0xB);
-	int & value2 = tree.getData(node3);
+	StackTreeSubSet<int>::Handler handler2 = tree.buildNewhandler();
+	tree.enter(handler2,(void*)0xA);
+	tree.enter(handler2,(void*)0xB);
+	int & value2 = tree.getData(handler2);
+	
+	//check value and addr
 	EXPECT_EQ(value1,value2);
 	EXPECT_EQ(&value1,&value2);
 }
 
 /*******************  FUNCTION  *********************/
-TEST(TestTreeStackTracerV3,toJson)
+TEST(TestStackTreeSubSet,toJson)
 {
 	//build a short tree
-	TreeStackTracerV3<int> tree;
-	TreeStackTracerV3<int>::Node root = tree.getRootNode();
-	TreeStackTracerV3<int>::Node node1 = tree.getNode(root,(void*)0xA);
-	TreeStackTracerV3<int>::Node node2 = tree.getNode(node1,(void*)0xB);
+	StackTreeSubSet<int> tree;
+	StackTreeSubSet<int>::Handler handler = tree.buildNewhandler();
+	tree.enter(handler,(void*)0xA);
+	tree.enter(handler,(void*)0xB);
 	
 	//setup value
-	int & value1 = tree.getData(node2);
+	int & value1 = tree.getData(handler);
 	value1 = 110;
 	
 	//check json conversion
