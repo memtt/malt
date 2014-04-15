@@ -241,6 +241,13 @@ void allocOnStackRecurse(int depth)
 }
 
 /*******************  FUNCTION  *********************/
+void testParallelWithRecurse(void)
+{
+	#pragma omp parallel
+	testRecuseIntervedA(10);
+}
+
+/*******************  FUNCTION  *********************/
 int main(void)
 {
 	//first is calloc
@@ -267,6 +274,7 @@ int main(void)
 	testLeak2();
 	allocOnStack();
 	allocOnStackRecurse(10);
+	testParallelWithRecurse();
 
 	return 0;
 }

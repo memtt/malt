@@ -1,7 +1,6 @@
 <% layout('page-layout') -%>
 <% script('stack-analysis/flat-func-list.js') -%>
 <% script('stack-analysis/source-editor.js') -%>
-<% script('deps/d3js/d3.min.js') -%>
 
 <% script('deps/jquery-treetable/javascripts/src/jquery.treetable.js') -%>
 <% stylesheet('deps/jquery-treetable/stylesheets/jquery.treetable.css') %>
@@ -12,6 +11,12 @@
 <% script('deps/codemirror/addon/selection/active-line.js') -%>
 <% stylesheet('deps/codemirror/lib/codemirror.css') -%>
 <% stylesheet('deps/codemirror/theme/lesser-dark.css') -%>
+
+<% script('deps/d3js/d3.min.js') -%>
+<% script('deps/nvd3/nv.d3.min.js') -%>
+<% stylesheet('deps/nvd3/nv.d3.min.css') -%>
+
+<% script('time-analysis/time-graphs.js') -%>
 
 <!-- ****************** STACK ANALYSER *************** -->
 <div class="container-fluid">
@@ -31,10 +36,45 @@
 		<div style='color:white;text-align:center;width:100%;' id='matt-max-stack-size'>
 		
 		</div>
+		
+		<div id='chart' class='matt-chart' style='width:100%'>
+			<svg style='height:200px;'> </svg>
+		</div>
+		
+		<div id='chart2' class='matt-chart' style='width:100%'>
+			<svg style='height:400px;'> </svg>
+		</div>
 	</div>
 </div>
 
 <script type='text/javascript'>
+
+	function mattConvertDataStack(data)
+	{
+		var res = new Array();
+		res.push( mattConvertDataInternalD3JS(data.timeprofiler) );
+		
+		var labels = new Array();
+		labels.push("Largest stack");
+		
+		return {data:res,labels:labels};
+	}
+	
+	function mattConvertDataStackAll(data)
+	{
+		var res = new Array();
+		var labels = new Array();
+		
+		for (var i in data)
+		{
+			res.push( mattConvertDataInternalD3JS(data[i].timeprofiler) );
+			labels.push(i);
+		}
+		
+		return {data:res,labels:labels};
+	}
+
+
 	var colors = ['#D9534F','#DF6D69', //red
 		'#F0AD4E','#F2B968',//orange
 		'#5CB85C','#74C374',//green
@@ -65,5 +105,15 @@
 				}
 			}
 		});
+		
+		
+		$.getJSON( "/max-stack-infos.json", function( data ) {
+			mattNVDGraph("chart",mattConvertDataStack(data),'B','Memory');
+		});
+		
+		$.getJSON( "/stacks-mem.json", function( data ) {
+			mattNVDGraph("chart2",mattConvertDataStackAll(data),'B','Memory');
+		});
+		
 	});
 </script>

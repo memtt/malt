@@ -226,7 +226,7 @@ void AllocWrapperGlobal::init(void )
 		gblState.profiler = new AllocStackProfiler(*gblState.options,getStackMode(*gblState.options),true);
 		
 		//print info
-		fprintf(stderr,"Start memory instrumentation of %s - %d by library override.\n",OS::getExeName().c_str(),OS::getPID());
+		fprintf(stderr,"MATT : Start memory instrumentation of %s - %d by library override.\n",OS::getExeName().c_str(),OS::getPID());
 
 		//register on exit
 		on_exit(AllocWrapperGlobal::onExit,NULL);
@@ -277,6 +277,7 @@ void ThreadLocalState::init(void)
 	
 	//create the local chain
 	tlsState.profiler = new LocalAllocStackProfiler(gblState.profiler,true);
+	gblState.profiler->registerPerThreadProfiler(tlsState.profiler);
 	
 	//mark ready
 	tlsState.status = ALLOC_WRAP_READY;
@@ -563,7 +564,8 @@ void __cyg_profile_func_enter (void *this_fn,void *call_site)
 		localState.init();
 	
 	//stack tracking
-	localState.profiler->onEnterFunc(this_fn,call_site);
+	if (tlsState.status == ALLOC_WRAP_READY)
+		localState.profiler->onEnterFunc(this_fn,call_site);
 }
 
 /*********************  STRUCT  *********************/
@@ -588,5 +590,6 @@ void __cyg_profile_func_exit  (void *this_fn,void *call_site)
 		localState.init();
 	
 	//stack tracking
-	localState.profiler->onExitFunc(this_fn,call_site);
+	if (tlsState.status == ALLOC_WRAP_READY)
+		localState.profiler->onExitFunc(this_fn,call_site);
 }

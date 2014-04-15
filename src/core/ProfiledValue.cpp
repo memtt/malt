@@ -190,7 +190,7 @@ void convertToJson(htopml::JsonState& json, const ProfiledValue& value)
 	json.closeFieldArray("timestamp");
 	
 	json.printField("peakMemory",value.peak.max);
-	assert(value.peak.timestamp > value.startTime);
+	assert(value.peak.timestamp >= value.startTime);
 	json.printField("peakTimesteamp",value.peak.timestamp - value.startTime);
 	
 	json.printField("linearIndex",value.useLinearIndex);

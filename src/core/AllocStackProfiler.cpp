@@ -21,7 +21,9 @@
 #include <common/FormattedMessage.hpp>
 #include <common/SimpleAllocator.hpp>
 #include <common/Debug.hpp>
+//locals
 #include "AllocStackProfiler.hpp"
+#include "LocalAllocStackProfiler.hpp"
 
 /********************  MACROS  **********************/
 #define MATT_SKIP_DEPTH 3
@@ -55,6 +57,10 @@ AllocStackProfiler::AllocStackProfiler(const Options & options,StackMode mode,bo
 		case STACK_MODE_USER:
 			break;
 	}
+	
+	//init tref to convert ticks in sec
+	gettimeofday(&trefSec,NULL);
+	trefTicks = getticks();
 }
 
 /*******************  FUNCTION  *********************/
@@ -220,6 +226,13 @@ SimpleCallStackNode* AllocStackProfiler::getStackNode(int skipDepth,Stack* userS
 }
 
 /*******************  FUNCTION  *********************/
+void AllocStackProfiler::resolvePerThreadSymbols()
+{
+	for (LocalAllocStackProfilerList::const_iterator it = perThreadProfiler.begin() ; it != perThreadProfiler.end() ; ++it)			
+			(*it)->resolveSymbols(symbolResolver);
+}
+
+/*******************  FUNCTION  *********************/
 void AllocStackProfiler::onExit(void )
 {
 	MATT_OPTIONAL_CRITICAL(lock,threadSafe)
@@ -227,7 +240,7 @@ void AllocStackProfiler::onExit(void )
 		if (options.stackResolve)
 			CODE_TIMING("resolveSymbols",
 				this->symbolResolver.loadProcMap();
-				this->largestStack.resolveSymbols(symbolResolver);
+				this->resolvePerThreadSymbols();
 				this->stackTracer.resolveSymbols(symbolResolver);
 				this->symbolResolver.resolveNames()
 			);
@@ -315,16 +328,20 @@ void convertToJson(htopml::JsonState& json, const AllocStackProfiler& value)
 	
 	if (value.options.maxStackEnabled)
 	{
-		json.openFieldStruct("maxStack");
-		json.printField("size",value.largestStackSize);
-		json.printField("stack",value.largestStack);
-		json.printField("mem",value.largestStackMem);
-		json.printField("total",value.largestStackMem.getTotalSize());
-		json.closeFieldStruct("maxStack");
+		json.openFieldArray("threads");
+		for (LocalAllocStackProfilerList::const_iterator it = value.perThreadProfiler.begin() ; it != value.perThreadProfiler.end() ; ++it)			
+			json.printValue(**it);
+		json.closeFieldArray("threads");
+// 		json.openFieldStruct("maxStack");
+// 		json.printField("size",value.largestStackSize);
+// 		json.printField("stack",value.largestStack);
+// 		json.printField("mem",value.largestStackMem);
+// 		json.printField("total",value.largestStackMem.getTotalSize());
+// 		json.closeFieldStruct("maxStack");
 	}
 	
 	json.printField("leaks",value.segTracker);
-	CODE_TIMING("ticksPerSecond",json.printField("ticksPerSecond",ticksPerSecond()));
+	CODE_TIMING("ticksPerSecond",json.printField("ticksPerSecond",value.ticksPerSecond()));
 	json.closeStruct();
 }
 
@@ -348,6 +365,46 @@ void AllocStackProfiler::onLargerStackSize(const StackSizeTracker& stackSizes, c
 const Options* AllocStackProfiler::getOptions(void) const
 {
 	return &options;
+}
+
+/*******************  FUNCTION  *********************/
+void AllocStackProfiler::registerPerThreadProfiler(LocalAllocStackProfiler* profiler)
+{
+	//errors
+	MATT_ASSERT(profiler != NULL);
+	
+	//insert in list
+	MATT_OPTIONAL_CRITICAL(lock,threadSafe)
+		this->perThreadProfiler.push_back(profiler);
+	MATT_END_CRITICAL;
+}
+
+/*******************  FUNCTION  *********************/
+ticks AllocStackProfiler::ticksPerSecond(void) const
+{
+	timeval tSec;
+	ticks tTicks;
+	ticks res;
+	
+	//read
+	tTicks = getticks();
+	gettimeofday(&tSec,NULL);
+	
+	//compute delta and store
+	timeval delta;
+	timersub(&tSec,&trefSec,&delta);
+	
+	//if too chost, sleep a little and return
+	if (delta.tv_sec == 0 && delta.tv_usec < 200000)
+	{
+		fprintf(stderr,"MATT : Using usleep to get better ticks <-> seconds conversion !\n");
+		usleep(200000);
+		res = this->ticksPerSecond();
+	} else {
+		res = (double)(tTicks-trefTicks)/((double)delta.tv_sec + (double)delta.tv_usec/(double)1000000.0);
+	}
+	
+	return res;
 }
 
 }

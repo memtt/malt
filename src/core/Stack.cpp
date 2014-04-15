@@ -337,9 +337,9 @@ int Stack::getSize ( void ) const
 /*******************  FUNCTION  *********************/
 void Stack::resolveSymbols ( SymbolResolver& dic ) const
 {
-	assert(stack != NULL);
-	for (int i = 0 ; i < size ; i++)
-		dic.registerAddress(stack[i]);
+	if (stack != NULL)
+		for (int i = 0 ; i < size ; i++)
+			dic.registerAddress(stack[i]);
 }
 
 /*******************  FUNCTION  *********************/

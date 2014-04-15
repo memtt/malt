@@ -250,6 +250,43 @@ MattProject.prototype.getTimedValues = function()
 }
 
 /****************************************************/
+MattProject.prototype.getStacksMem = function()
+{
+	//prepare array
+	var res = new Array();
+	
+	//copy informations
+	for (var i in this.data.threads)
+		res.push(this.data.threads[i].stackMem);
+	
+	//ok return
+	return res;
+}
+
+/****************************************************/
+/**
+ * Get info about the largest stack
+**/
+MattProject.prototype.getMaxStack = function()
+{
+	//get first to start
+	var res = this.data.threads[0].stackMem;
+	
+	//loop
+	for (var i in this.data.threads)
+	{
+		var tmp = this.data.threads[i];
+		if (tmp.stackMem.size > res.size)
+		{
+			res = tmp.stackMem;
+			console.log(JSON.stringify(res));
+		}
+	}
+
+	return res;
+}
+
+/****************************************************/
 /**
  * Flatten datas about the largest stack and return as json tree.
 **/
@@ -257,7 +294,8 @@ MattProject.prototype.getFlattenMaxStackInfo = function(mapping,accept)
 {
 	//init hash map to flat on addresses
 	var ret = new Object();
-	var maxStack = this.data.maxStack;
+	//var maxStack = this.data.maxStack;
+	var maxStack = this.getMaxStack();
 	
 	//loop on all entries
 	for (var i = 0 ; i < maxStack.stack.length ; i++)

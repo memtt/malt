@@ -28,6 +28,7 @@ LocalAllocStackProfiler::LocalAllocStackProfiler(AllocStackProfiler* globalProfi
 	this->inUse = true;
 	
 	//setup fields
+	this->cntMemOps = 0;
 	this->globalProfiler = globalProfiler;
 	this->options = globalProfiler->getOptions();
 	enterExitStack.enterFunction((void*)0x1);
@@ -53,6 +54,7 @@ void LocalAllocStackProfiler::onMalloc(void* res, size_t size)
 	{
 		inUse = true;
 		CODE_TIMING("mallocProf",globalProfiler->onMalloc(res,size,&enterExitStack));
+		this->cntMemOps++;
 		inUse = oldInuse;
 	}
 }
@@ -68,6 +70,7 @@ void LocalAllocStackProfiler::onFree(void* ptr)
 	{
 		inUse = true;
 		CODE_TIMING("freeProf",globalProfiler->onFree(ptr,&enterExitStack));
+		this->cntMemOps++;
 		inUse = oldInuse;
 	}
 }
@@ -83,6 +86,7 @@ void LocalAllocStackProfiler::onCalloc(void * res,size_t nmemb, size_t size)
 	{
 		inUse = true;
 		CODE_TIMING("callocProf",globalProfiler->onCalloc(res,nmemb,size,&enterExitStack));
+		this->cntMemOps++;
 		inUse = oldInuse;
 	}
 }
@@ -98,6 +102,7 @@ void LocalAllocStackProfiler::onRealloc(void* ptr, void* res, size_t size)
 	{
 		inUse = true;
 		CODE_TIMING("reallocProf",globalProfiler->onRealloc(ptr,res,size,&enterExitStack));
+		this->cntMemOps++;
 		inUse = oldInuse;
 	}
 }
@@ -106,25 +111,39 @@ void LocalAllocStackProfiler::onRealloc(void* ptr, void* res, size_t size)
 void LocalAllocStackProfiler::onEnterFunc(void* this_fn, void* call_site)
 {
 	//stack current loc tracking
+	//TODO this is also done by LocalAllocStackProfiler, maybe try to point his object instead of recompute
 	enterExitStack.enterFunction(this_fn);
 	
 	//max stack
 	if (options->maxStackEnabled)
-	{
-		stackSizeTracker.enter();
-		globalProfiler->onLargerStackSize(stackSizeTracker,enterExitStack);
-	}
+		stackSizeAnalyser.onEnterFunc(this_fn);
 }
 
 /*******************  FUNCTION  *********************/
 void LocalAllocStackProfiler::onExitFunc(void* this_fn, void* call_site)
 {
 	//stack current loc tracking
+	//TODO this is also done by LocalAllocStackProfiler, maybe try to point his object instead of recompute
 	enterExitStack.exitFunction(this_fn);
 	
 	//max stack
 	if (options->maxStackEnabled)
-		stackSizeTracker.exit();
+		stackSizeAnalyser.onExitFunc(this_fn);
+}
+
+/*******************  FUNCTION  *********************/
+void convertToJson(htopml::JsonState& json, const LocalAllocStackProfiler& value)
+{
+	json.openStruct();
+	json.printField("stackMem",value.stackSizeAnalyser);
+	json.printField("cntMemOps",value.cntMemOps);
+	json.closeStruct();
+}
+
+/*******************  FUNCTION  *********************/
+void LocalAllocStackProfiler::resolveSymbols(SymbolResolver& symbolResolver) const
+{
+	this->stackSizeAnalyser.resolveSymbols(symbolResolver);
 }
 
 }

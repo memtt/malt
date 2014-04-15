@@ -16,6 +16,7 @@
 #include "StackSizeTracker.hpp"
 #include "EnterExitCallStack.hpp"
 #include "AllocStackProfiler.hpp"
+#include "StackSizeAnalyser.hpp"
 
 /*******************  FUNCTION  *********************/
 
@@ -41,6 +42,9 @@ class LocalAllocStackProfiler
 		void onRealloc(void * ptr,void * res, size_t size);
 		void onEnterFunc(void *this_fn,void *call_site);
 		void onExitFunc(void *this_fn,void *call_site);
+		void resolveSymbols(SymbolResolver & symbolResolver) const;
+	public:
+		friend void convertToJson(htopml::JsonState& json, const LocalAllocStackProfiler& value);
 	private:
 		/** Pointer to the global state **/
 		AllocStackProfiler * globalProfiler;
@@ -49,7 +53,9 @@ class LocalAllocStackProfiler
 		/** Object used to follow the local stack for the enter/exit mode. **/
 		EnterExitCallStack enterExitStack;
 		/** Follow size of stack in enter-exit mode. **/
-		StackSizeTracker stackSizeTracker;
+		StackSizeAnalyser stackSizeAnalyser;
+		/** Counter memory requests. **/
+		size_t cntMemOps;
 		/** Request for the object to take care of reentrance (disable not analyse inner calls). **/
 		bool reentrance;
 		/**

@@ -11,7 +11,11 @@
 
 /********************  HEADERS  *********************/
 //standard
+#include <list>
 #include <cstdlib>
+//os specific (TODO move)
+#include <sys/time.h>
+#include <unistd.h>
 //intenrals
 #include <common/Options.hpp>
 #include <portability/Mutex.hpp>
@@ -25,6 +29,9 @@
 namespace MATT
 {
 
+/*********************  TYPES  **********************/
+class LocalAllocStackProfiler;
+
 /********************  ENUM  ************************/
 enum StackMode
 {
@@ -32,6 +39,9 @@ enum StackMode
 	STACK_MODE_ENTER_EXIT_FUNC,
 	STACK_MODE_USER
 };
+
+/*********************  TYPES  **********************/
+typedef std::list<LocalAllocStackProfiler *,STLInternalAllocator<LocalAllocStackProfiler*> > LocalAllocStackProfilerList;
 
 /*********************  CLASS  **********************/
 class AllocStackProfiler
@@ -48,12 +58,15 @@ class AllocStackProfiler
 		void onExitFunction(void * funcAddr);
 		void onLargerStackSize(const StackSizeTracker & stackSizes,const Stack & stack);
 		const Options * getOptions(void) const;
+		void registerPerThreadProfiler(LocalAllocStackProfiler * profiler);
+		ticks ticksPerSecond(void) const;
 	public:
 		friend void convertToJson(htopml::JsonState& json, const AllocStackProfiler& value);
 	private:
 		SimpleCallStackNode * getStackNode(int skipDepth, MATT::Stack* userStack = 0);
 		SimpleCallStackNode * onAllocEvent(void * ptr,size_t size, int skipDepth,Stack * userStack = NULL,SimpleCallStackNode * callStackNode = NULL,bool doLock = true);
 		SimpleCallStackNode * onFreeEvent(void* ptr, int skipDepth, Stack* userStack = NULL, SimpleCallStackNode* callStackNode = NULL, bool doLock = true);
+		void resolvePerThreadSymbols(void);
 	private:
 		SimpleStackTracer stackTracer;
 		SegmentTracker segTracker;
@@ -73,6 +86,9 @@ class AllocStackProfiler
 		StackSizeTracker largestStackMem;
 		Stack largestStack;
 		SymbolResolver symbolResolver;
+		LocalAllocStackProfilerList perThreadProfiler;
+		timeval trefSec;
+		ticks trefTicks;
 };
 
 }

@@ -163,7 +163,7 @@ void SymbolResolver::loadProcMap(void)
 		{
 			//parse
 			int cnt = sscanf(buffer,"%p-%p %s %p %s %lu %s\n",&(entry.lower),&(entry.upper),ignored,&(entry.offset),ignored,&ignored2,fileName);
-			printf("%s => %p - %p\n",buffer,entry.lower,entry.upper);
+			//printf("%s => %p - %p\n",buffer,entry.lower,entry.upper);
 			
 			//check args
 			if (cnt == 7)
@@ -211,14 +211,15 @@ LinuxProcMapEntry* SymbolResolver::getMapEntry(void* callSite)
 			return &(*it);
 
 	//check errors
-	MATT_WARNING_ARG("Caution, call site is not found in procMap : %1.").arg(callSite).end();
+	if (callSite != (void*)0x1)
+		MATT_WARNING_ARG("Caution, call site is not found in procMap : %1.").arg(callSite).end();
 	return NULL;
 }
 
 /*******************  FUNCTION  *********************/
 void SymbolResolver::resolveNames(void)
 {
-	fprintf(stderr,"Resolving symbols with addr2line...\n");
+	fprintf(stderr,"MATT : Resolving symbols with addr2line...\n");
 	
 	//avoid to LD_PRELOAD otherwise we will create fork bomb
 	setenv("LD_PRELOAD","",1);

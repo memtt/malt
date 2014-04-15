@@ -15,6 +15,7 @@ set(MATT_LIB_SRC Stack.cpp
                  ValgrindOutput.cpp 
                  StackSizeTracker.cpp
                  SimpleStackTracer.cpp 
+                 StackSizeAnalyser.cpp
                  EnterExitCallStack.cpp 
                  BacktraceCallStack.cpp 
                  AllocStackProfiler.cpp 

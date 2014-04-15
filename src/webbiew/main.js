@@ -90,6 +90,22 @@ app.get('/timed.json',function(req,res) {
 });
 
 /****************************************************/
+//export max stack info
+app.get('/max-stack-infos.json',function (req,res){
+	var tmp = mattProject.getMaxStack();
+	res.write(JSON.stringify(tmp,null));
+	res.end();
+});
+
+/****************************************************/
+//export max stack info
+app.get('/stacks-mem.json',function (req,res){
+	var tmp = mattProject.getStacksMem();
+	res.write(JSON.stringify(tmp,null));
+	res.end();
+});
+
+/****************************************************/
 app.get('/stacks.json',function(req,res){
 	//extratc file from request
 	var file = req.query.file;
