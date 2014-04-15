@@ -344,4 +344,10 @@ void AllocStackProfiler::onLargerStackSize(const StackSizeTracker& stackSizes, c
 	MATT_END_CRITICAL;
 }
 
+/*******************  FUNCTION  *********************/
+const Options* AllocStackProfiler::getOptions(void) const
+{
+	return &options;
+}
+
 }

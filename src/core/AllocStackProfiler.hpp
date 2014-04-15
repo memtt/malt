@@ -47,6 +47,7 @@ class AllocStackProfiler
 		void onEnterFunction(void * funcAddr);
 		void onExitFunction(void * funcAddr);
 		void onLargerStackSize(const StackSizeTracker & stackSizes,const Stack & stack);
+		const Options * getOptions(void) const;
 	public:
 		friend void convertToJson(htopml::JsonState& json, const AllocStackProfiler& value);
 	private:

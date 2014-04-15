@@ -24,6 +24,7 @@
 #include <common/Debug.hpp>
 #include "AllocStackProfiler.hpp"
 #include "StackSizeTracker.hpp"
+#include "LocalAllocStackProfiler.hpp"
 
 /***************** USING NAMESPACE ******************/
 using namespace MATT;
@@ -119,23 +120,20 @@ struct AllocWrapperGlobal
 /********************  STRUCT  **********************/
 /**
  * Manage the local data attached to each threads. 
- * The content use lazy initialization on first access thanks to the default 'false' 
+ * The content use lazy initialization on first access thanks to the default status.
  * value of then 'init' field.
 **/
 struct ThreadLocalState
 {
-	/** Object used to follow the local stack for the enter/exit mode. **/
-	EnterExitCallStack * enterExitStack;
-	/** Follow size of stack in enter-exit mode. **/
-	StackSizeTracker * stackSizeTracker;
 	/** 
-	 * Avoid to instrument inner allocations, marked at 'true' when entering in first level malloc/free.... 
-	 * It permit to use dynamic allocation inside instrumentation functions.
-	 **/
-	bool inUse;
+	 * Local profiler manager to track stacks and cache information before flushing them in the globoal one.
+	 * It avoid to take locks every time and eventually permit to get a complete per-thread tracking.
+	**/
+	LocalAllocStackProfiler * profiler;
+
 	/**
 	 * Remember the default init state to manage lazy initialization.**/
-	bool initialized;
+	AllocWrapperGlobalStatus status;
 	
 	/** Function used to init the structure on first use. **/
 	void init(void);
@@ -145,7 +143,7 @@ struct ThreadLocalState
 /** Store the global state of allocator wrapper. **/
 static AllocWrapperGlobal gblState = {ALLOC_WRAP_NOT_READY,MATT_STATIC_MUTEX_INIT,NULL,NULL,NULL,NULL,NULL};
 /** Store the per-thread state of allocator wrapper. **/
-static __thread ThreadLocalState tlsState = {NULL,NULL,false,false};
+static __thread ThreadLocalState tlsState = {NULL,ALLOC_WRAP_NOT_READY};
 /** Temporary buffer to return on first realloc used by dlsym and split infinit call loops. **/
 static char gblCallocIniBuffer[4096];
 
@@ -268,25 +266,20 @@ void AllocWrapperGlobal::onExit(int status,void * arg)
 void ThreadLocalState::init(void)
 {
 	//check errors
-	assert(tlsState.enterExitStack == NULL);
+	assert(tlsState.profiler == NULL);
 	
 	//mark as init to authorize but in use to authorise malloc without intrum and cut infinit call loops
-	tlsState.initialized = true;
-	tlsState.inUse = true;
+	tlsState.status = ALLOC_WRAP_INIT_PROFILER;
 
 	//check init
 	if (gblState.status == ALLOC_WRAP_NOT_READY)
 		gblState.init();
 	
 	//create the local chain
-	EnterExitCallStack * stack = new EnterExitCallStack();
-	StackSizeTracker * stackSize = new StackSizeTracker();
-	stack->enterFunction((void*)0x1);
+	tlsState.profiler = new LocalAllocStackProfiler(gblState.profiler,true);
 	
-	//ok mark no in use, ready for instr
-	tlsState.enterExitStack = stack;
-	tlsState.stackSizeTracker = stackSize;
-	tlsState.inUse = false;
+	//mark ready
+	tlsState.status = ALLOC_WRAP_READY;
 }
 
 /*******************  FUNCTION  *********************/
@@ -303,7 +296,7 @@ void * malloc(size_t size)
 	ThreadLocalState & localState = tlsState;
 	
 	//check init
-	if ( ! localState.initialized )
+	if ( tlsState.status == ALLOC_WRAP_NOT_READY )
 		localState.init();
 
 	//run the default function
@@ -311,12 +304,8 @@ void * malloc(size_t size)
 	void * res = gblState.malloc(size);
 
 	//profile
-	if (!localState.inUse && gblState.status == ALLOC_WRAP_READY)
-	{
-		localState.inUse = true;
-		CODE_TIMING("mallocProf",gblState.profiler->onMalloc(res,size,localState.enterExitStack));
-		localState.inUse = false;
-	}
+	if (gblState.status == ALLOC_WRAP_READY && tlsState.status == ALLOC_WRAP_READY)
+		CODE_TIMING("malloc",localState.profiler->onMalloc(res,size));
 
 	//return segment to user
 	return res;
@@ -335,16 +324,12 @@ void free(void * ptr)
 	ThreadLocalState & localState = tlsState;
 	
 	//check init
-	if ( ! localState.initialized )
+	if ( tlsState.status == ALLOC_WRAP_NOT_READY )
 		localState.init();
 
 	//profile
-	if (!localState.inUse && gblState.status == ALLOC_WRAP_READY)
-	{
-		localState.inUse = true;
-		CODE_TIMING("freeProf",gblState.profiler->onFree(ptr,localState.enterExitStack));
-		localState.inUse = false;
-	}
+	if (gblState.status == ALLOC_WRAP_READY && tlsState.status == ALLOC_WRAP_READY)
+		CODE_TIMING("free",localState.profiler->onFree(ptr));
 
 	//run the default function
 	assert(gblState.status > ALLOC_WRAP_INIT_SYM);
@@ -366,7 +351,7 @@ void * calloc(size_t nmemb,size_t size)
 	ThreadLocalState & localState = tlsState;
 	
 	//check init
-	if ( ! localState.initialized )
+	if ( tlsState.status == ALLOC_WRAP_NOT_READY )
 		localState.init();
 
 	//calloc need a special trick for first use due to usage in dlsym
@@ -382,12 +367,8 @@ void * calloc(size_t nmemb,size_t size)
 	void * res = gblState.calloc(nmemb,size);
 
 	//profile
-	if (!localState.inUse && gblState.status == ALLOC_WRAP_READY)
-	{
-		localState.inUse = true;
-		gblState.profiler->onCalloc(res,nmemb,size,localState.enterExitStack);
-		localState.inUse = false;
-	}
+	if (gblState.status == ALLOC_WRAP_READY && tlsState.status == ALLOC_WRAP_READY)
+		CODE_TIMING("calloc",localState.profiler->onCalloc(res,nmemb,size));
 
 	//return result to user
 	return res;
@@ -408,7 +389,7 @@ void * realloc(void * ptr, size_t size)
 	ThreadLocalState & localState = tlsState;
 	
 	//check init
-	if ( ! localState.initialized )
+	if ( tlsState.status == ALLOC_WRAP_NOT_READY )
 		localState.init();
 
 	//run the default function
@@ -416,12 +397,8 @@ void * realloc(void * ptr, size_t size)
 	void * res = gblState.realloc(ptr,size);
 	
 	//profile
-	if (!localState.inUse && gblState.status == ALLOC_WRAP_READY)
-	{
-		localState.inUse = true;
-		CODE_TIMING("rellocProf",gblState.profiler->onRealloc(ptr,res,size,localState.enterExitStack));
-		localState.inUse = false;
-	}
+	if (gblState.status == ALLOC_WRAP_READY && tlsState.status == ALLOC_WRAP_READY)
+		CODE_TIMING("realloc",localState.profiler->onRealloc(ptr,res,size));
 	
 	return res;
 }
@@ -437,7 +414,7 @@ int posix_memalign(void ** memptr,size_t align, size_t size)
 	ThreadLocalState & localState = tlsState;
 	
 	//check init
-	if ( ! localState.initialized )
+	if ( tlsState.status == ALLOC_WRAP_NOT_READY )
 		localState.init();
 
 	//run the default function
@@ -445,12 +422,8 @@ int posix_memalign(void ** memptr,size_t align, size_t size)
 	int res = gblState.posix_memalign(memptr,align,size);
 
 	//profile
-	if (!localState.inUse && gblState.status == ALLOC_WRAP_READY && memptr != NULL)
-	{
-		localState.inUse = true;
-		CODE_TIMING("posixMemAlignProf",gblState.profiler->onMalloc(*memptr,size,localState.enterExitStack));
-		localState.inUse = false;
-	}
+	if (gblState.status == ALLOC_WRAP_READY && memptr != NULL)
+		CODE_TIMING("posix_memalign",localState.profiler->onMalloc(*memptr,size));
 
 	//return segment to user
 	return res;
@@ -467,7 +440,7 @@ void *aligned_alloc(size_t alignment, size_t size)
 	ThreadLocalState & localState = tlsState;
 	
 	//check init
-	if ( ! localState.initialized )
+	if ( tlsState.status == ALLOC_WRAP_NOT_READY )
 		localState.init();
 
 	//run the default function
@@ -475,12 +448,8 @@ void *aligned_alloc(size_t alignment, size_t size)
 	void * res = gblState.aligned_alloc(alignment,size);
 
 	//profile
-	if (!localState.inUse && gblState.status == ALLOC_WRAP_READY)
-	{
-		localState.inUse = true;
-		CODE_TIMING("posixMemAlignProf",gblState.profiler->onMalloc(res,size,localState.enterExitStack));
-		localState.inUse = false;
-	}
+	if (gblState.status == ALLOC_WRAP_READY && tlsState.status == ALLOC_WRAP_READY)
+		CODE_TIMING("aligned_alloc",localState.profiler->onMalloc(res,size));
 
 	//return segment to user
 	return res;
@@ -497,7 +466,7 @@ void *memalign(size_t alignment, size_t size)
 	ThreadLocalState & localState = tlsState;
 	
 	//check init
-	if ( ! localState.initialized )
+	if ( tlsState.status == ALLOC_WRAP_NOT_READY )
 		localState.init();
 
 	//run the default function
@@ -505,12 +474,8 @@ void *memalign(size_t alignment, size_t size)
 	void * res = gblState.memalign(alignment,size);
 
 	//profile
-	if (!localState.inUse && gblState.status == ALLOC_WRAP_READY)
-	{
-		localState.inUse = true;
-		CODE_TIMING("posixMemAlignProf",gblState.profiler->onMalloc(res,size,localState.enterExitStack));
-		localState.inUse = false;
-	}
+	if (gblState.status == ALLOC_WRAP_READY && tlsState.status == ALLOC_WRAP_READY)
+		CODE_TIMING("memalign",localState.profiler->onMalloc(res,size));
 
 	//return segment to user
 	return res;
@@ -527,7 +492,7 @@ void *valloc(size_t size)
 	ThreadLocalState & localState = tlsState;
 	
 	//check init
-	if ( ! localState.initialized )
+	if ( tlsState.status == ALLOC_WRAP_NOT_READY )
 		localState.init();
 
 	//run the default function
@@ -535,12 +500,8 @@ void *valloc(size_t size)
 	void * res = gblState.valloc(size);
 
 	//profile
-	if (!localState.inUse && gblState.status == ALLOC_WRAP_READY)
-	{
-		localState.inUse = true;
-		CODE_TIMING("posixMemAlignProf",gblState.profiler->onMalloc(res,size,localState.enterExitStack));
-		localState.inUse = false;
-	}
+	if (gblState.status == ALLOC_WRAP_READY && tlsState.status == ALLOC_WRAP_READY)
+		CODE_TIMING("valloc",localState.profiler->onMalloc(res,size));
 
 	//return segment to user
 	return res;
@@ -557,7 +518,7 @@ void *pvalloc(size_t size)
 	ThreadLocalState & localState = tlsState;
 	
 	//check init
-	if ( ! localState.initialized )
+	if ( tlsState.status == ALLOC_WRAP_NOT_READY )
 		localState.init();
 
 	//run the default function
@@ -565,12 +526,8 @@ void *pvalloc(size_t size)
 	void * res = gblState.pvalloc(size);
 
 	//profile
-	if (!localState.inUse && gblState.status == ALLOC_WRAP_READY)
-	{
-		localState.inUse = true;
-		CODE_TIMING("posixMemAlignProf",gblState.profiler->onMalloc(res,size,localState.enterExitStack));
-		localState.inUse = false;
-	}
+	if (gblState.status == ALLOC_WRAP_READY && tlsState.status == ALLOC_WRAP_READY)
+		CODE_TIMING("pvalloc",localState.profiler->onMalloc(res,size));
 
 	//return segment to user
 	return res;
@@ -602,18 +559,11 @@ void __cyg_profile_func_enter (void *this_fn,void *call_site)
 	ThreadLocalState & localState = tlsState;
 	
 	//check init
-	if ( ! localState.initialized )
+	if ( tlsState.status == ALLOC_WRAP_NOT_READY )
 		localState.init();
 	
 	//stack tracking
-	localState.enterExitStack->enterFunction(this_fn);
-	
-	//max stack
-	if (gblState.options->maxStackEnabled)
-	{
-		localState.stackSizeTracker->enter();
-		gblState.profiler->onLargerStackSize(*localState.stackSizeTracker,*localState.enterExitStack);
-	}
+	localState.profiler->onEnterFunc(this_fn,call_site);
 }
 
 /*********************  STRUCT  *********************/
@@ -634,13 +584,9 @@ void __cyg_profile_func_exit  (void *this_fn,void *call_site)
 	ThreadLocalState & localState = tlsState;
 	
 	//check init
-	if ( ! localState.initialized )
+	if ( tlsState.status == ALLOC_WRAP_NOT_READY )
 		localState.init();
 	
 	//stack tracking
-	localState.enterExitStack->exitFunction(this_fn);
-	
-	//max stack
-	if (gblState.options->maxStackEnabled)
-		localState.stackSizeTracker->exit();
+	localState.profiler->onExitFunc(this_fn,call_site);
 }

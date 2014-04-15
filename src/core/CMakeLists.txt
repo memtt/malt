@@ -19,7 +19,8 @@ set(MATT_LIB_SRC Stack.cpp
                  BacktraceCallStack.cpp 
                  AllocStackProfiler.cpp 
                  LinuxProcMapReader.cpp
-                 SimpleCallStackNode.cpp)
+                 SimpleCallStackNode.cpp
+                 LocalAllocStackProfiler.cpp)
 
 ######################################################
 add_library(matt-core OBJECT ${MATT_LIB_SRC})
