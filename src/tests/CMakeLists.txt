@@ -15,7 +15,6 @@ set(TEST_NAMES TestSegmentTracker
                TestProfiledValue 
                TestFormattedMessage 
                TestFastBufferedStream 
-               TestArray 
                TestStack 
                TestSimpleStackTracker 
                TestValgrindOutput 

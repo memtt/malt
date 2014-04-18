@@ -7,8 +7,16 @@
 ######################################################
 
 ######################################################
-add_library(matt-common OBJECT CodeTiming.cpp FormattedMessage.cpp Debug.cpp Options.cpp SimpleAllocator.cpp Helpers.cpp)
-SET_TARGET_PROPERTIES(matt-common PROPERTIES COMPILE_FLAGS -fPIC)
+#Use gtest
+include_directories(${GTEST_INCLUDE_DIRS} ${GMOCK_INCLUDE_DIRS})
+include_directories(../)
 
 ######################################################
-add_subdirectory(tests)
+set(TEST_NAMES TestArray)
+
+######################################################
+FOREACH(test_name ${TEST_NAMES})
+	add_executable(${test_name} ${test_name}.cpp)
+	target_link_libraries(${test_name} ${GTEST_BOTH_LIBRARIES} ${GMOCK_BOTH_LIBRARIES} matt-base)
+	matt_add_test(${test_name} ${test_name})
+ENDFOREACH(test_name)
