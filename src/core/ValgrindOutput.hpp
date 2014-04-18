@@ -14,6 +14,7 @@
 #include <map>
 #include <string>
 #include "SimpleCallStackNode.hpp"
+#include "SymbolResolver.hpp"
 
 namespace MATT
 {

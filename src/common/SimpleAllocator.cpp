@@ -64,31 +64,34 @@ SimpleAllocator::SimpleAllocator(bool threadSafe, size_t sysReqSize)
 /**
  * Request more memory from the OS.
  * It will register the current segment into free list and point the new one allocated with
- * size sysReqSize.
+ * size.
  * 
  * The memory is guarty to be physically mapped so we can safely substract getTotalMemory()
  * from the RSS value we read from /proc/self/statm to get the application memory consumption
  * without considering our own one.
 **/
-void SimpleAllocator::requestSystemMemory(void)
+void SimpleAllocator::requestSystemMemory(size_t size)
 {
+	//errors
+	assert(size % MATT_PAGE_SIZE == 0);
+	
 	//register too small chunk if have one
 	if (cur != NULL)
 		freeList.insertNext(cur);
 	
 	//allocate new one
-	cur = (Chunk*)mmap(NULL,sysReqSize,PROT_READ|PROT_WRITE,MAP_ANON|MAP_PRIVATE|MAP_POPULATE,0,0);
+	cur = (Chunk*)mmap(NULL,size,PROT_READ|PROT_WRITE,MAP_ANON|MAP_PRIVATE|MAP_POPULATE,0,0);
 	assumeArg(cur != MAP_FAILED,"Failed to request memory with mmap for internal allocator : %s.").argStrErrno().end();
 	
 	//update chunk info
-	cur->size = sysReqSize - sizeof(*cur);
+	cur->size = size - sizeof(*cur);
 
 	//to be sure for all OS
 	touchMemory(cur->getBody(),cur->size);
 	
 	//account memory
-	this->totalMemory += sysReqSize;
-	this->unusedMemory += sysReqSize;
+	this->totalMemory += size;
+	this->unusedMemory += size;
 }
 
 /*******************  FUNCTION  *********************/
@@ -187,7 +190,14 @@ void SimpleAllocator::free(void* ptr)
 **/
 Chunk* SimpleAllocator::getInSys(size_t size)
 {
-	requestSystemMemory();
+	size_t reqSize = size + sizeof(Chunk);
+	
+	if (reqSize <= sysReqSize)
+		requestSystemMemory(sysReqSize);
+	else if (reqSize % MATT_PAGE_SIZE == 0)
+		requestSystemMemory(reqSize);
+	else
+		requestSystemMemory(reqSize + (MATT_PAGE_SIZE - reqSize % MATT_PAGE_SIZE));
 	return getInCur(size);
 }
 

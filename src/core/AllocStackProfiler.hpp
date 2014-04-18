@@ -21,7 +21,7 @@
 #include <portability/Mutex.hpp>
 #include "SegmentTracker.hpp"
 #include "SimpleStackTracer.hpp"
-#include "EnterExitCallStack.hpp"
+#include <stacks/EnterExitStack.hpp>
 #include "ProfiledValue.hpp"
 #include "StackSizeTracker.hpp"
 
@@ -70,8 +70,8 @@ class AllocStackProfiler
 	private:
 		SimpleStackTracer stackTracer;
 		SegmentTracker segTracker;
-		BacktraceCallStack stack;
-		EnterExitCallStack exStack;
+		BacktraceStack stack;
+		EnterExitStack exStack;
 		ProfiledValue requestedMem;
 		ProfiledValue physicalMem;
 		ProfiledValue virtualMem;

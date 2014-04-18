@@ -14,23 +14,35 @@
 //GNU specific
 #include <execinfo.h>
 //internals
-#include "BacktraceCallStack.hpp"
+#include <common/Debug.hpp>
+#include <stacks/BacktraceStack.hpp>
 
 /********************  MACROS  **********************/
-#define CALL_STACK_MAX (128*1024)
+/**
+ * Limit the maximum size of the backtraces we extract to keep resonnable things.
+ * @TODO Move this into the option class to support dynamic definition.
+**/
+#define MATT_CALL_STACK_MAX (128*1024)
 
 /*******************  NAMESPACE  ********************/
 namespace MATT 
 {
 
 /*******************  FUNCTION  *********************/
-BacktraceCallStack::BacktraceCallStack(void)
+/**
+ * Constructor to setup the ordering mode compatible with backtrace().
+**/
+BacktraceStack::BacktraceStack(void)
 	:Stack(STACK_ORDER_ASC)
 {
 }
 
 /*******************  FUNCTION  *********************/
-void BacktraceCallStack::loadCurrentStack(void)
+/**
+ * Load the current backtrace. This function will automatically grow the internal buffer
+ * to adapt to the size needed to store the full call depth.
+**/
+void BacktraceStack::loadCurrentStack(void)
 {
 	if (this->stack == NULL)
 		this->grow();
@@ -44,13 +56,13 @@ void BacktraceCallStack::loadCurrentStack(void)
 		assert(loadedSize > 0);
 
 		//miss some entries, need to grow the buffer
-		if (loadedSize >= CALL_STACK_MAX)
+		if (loadedSize >= MATT_CALL_STACK_MAX)
 		{
 			static bool once = false;
 			if (!once)
 			{
 				once = true;
-				puts("Caution, need to cut some call stacks !");
+				MATT_ERROR("Caution, need to cut some call stacks !");
 			}
 			break;
 		} else if (loadedSize == this->memSize) {

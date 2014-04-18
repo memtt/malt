@@ -109,7 +109,7 @@ class SimpleAllocator
 		size_t getMaxSize(void) const;
 		void printState(std::ostream & out = std::cerr) const;
 	protected:
-		void requestSystemMemory(void);
+		void requestSystemMemory(size_t size);
 		void touchMemory(void * ptr,size_t size);
 		Chunk * getInList(size_t size);
 		Chunk * getInCur(size_t size);

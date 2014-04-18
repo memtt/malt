@@ -6,15 +6,15 @@
              LICENSE  : CeCILL-C
 *****************************************************/
 
-#ifndef MATT_ENTER_EXIT_CALL_STACK_HPP
-#define MATT_ENTER_EXIT_CALL_STACK_HPP
+#ifndef MATT_ENTER_EXIT_STACK_HPP
+#define MATT_ENTER_EXIT_STACK_HPP
 
 /********************  HEADERS  *********************/
 //standard
 #include <ostream>
 #include <cstdlib>
 //internals
-#include "Stack.h"
+#include <stacks/Stack.hpp>
 
 /*******************  FUNCTION  *********************/
 namespace htopml
@@ -27,10 +27,15 @@ namespace MATT
 {
 
 /*********************  CLASS  **********************/
-class EnterExitCallStack : public Stack
+/**
+ * Provide a specialized stack to manage the enter-exit mode to track stacks.
+ * In this mode, the app need to notify the tool when on entry/exit point of each functions.
+ * This way, we can rebuild the stack.
+**/
+class EnterExitStack : public Stack
 {
 	public:
-		EnterExitCallStack(void);
+		EnterExitStack(void);
 		void enterFunction(void * funcAddr);
 		void exitFunction(void * funcAddr);
 	private:
@@ -39,4 +44,4 @@ class EnterExitCallStack : public Stack
 
 }
 
-#endif //MATT_ENTER_EXIT_CALL_STACK_HPP
+#endif //MATT_ENTER_EXIT_STACK_HPP

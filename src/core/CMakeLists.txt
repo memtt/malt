@@ -7,8 +7,7 @@
 ######################################################
 
 ######################################################
-set(MATT_LIB_SRC Stack.cpp 
-                 SymbolResolver.cpp 
+set(MATT_LIB_SRC SymbolResolver.cpp 
                  CallStackInfo.cpp 
                  ProfiledValue.cpp
                  SegmentTracker.cpp 
@@ -16,8 +15,6 @@ set(MATT_LIB_SRC Stack.cpp
                  StackSizeTracker.cpp
                  SimpleStackTracer.cpp 
                  StackSizeAnalyser.cpp
-                 EnterExitCallStack.cpp 
-                 BacktraceCallStack.cpp 
                  AllocStackProfiler.cpp 
                  LinuxProcMapReader.cpp
                  SimpleCallStackNode.cpp
@@ -30,3 +27,6 @@ SET_TARGET_PROPERTIES(matt-core PROPERTIES COMPILE_FLAGS -fPIC)
 ######################################################
 add_library(matt-libc-wrapper OBJECT AllocWrapper.cpp)
 SET_TARGET_PROPERTIES(matt-libc-wrapper PROPERTIES COMPILE_FLAGS -fPIC)
+
+######################################################
+add_subdirectory(tests)

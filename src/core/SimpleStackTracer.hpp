@@ -17,7 +17,7 @@
 // #include <json/TypeToJson.h>
 //locals
 #include "SymbolResolver.hpp"
-#include "BacktraceCallStack.hpp"
+#include <stacks/BacktraceStack.hpp>
 #include "SimpleCallStackNode.hpp"
 #include "ValgrindOutput.hpp"
 #include <common/STLInternalAllocator.hpp>

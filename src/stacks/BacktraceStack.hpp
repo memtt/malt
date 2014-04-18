@@ -6,26 +6,32 @@
              LICENSE  : CeCILL-C
 *****************************************************/
 
-#ifndef MATT_BACKTRACE_BACKTRACE_HPP
-#define MATT_BACKTRACE_BACKTRACE_HPP
+#ifndef MATT_BACKTRACE_STACK_HPP
+#define MATT_BACKTRACE_STACK_HPP
 
 /********************  HEADERS  *********************/
-#include "Stack.h"
-#include "SymbolResolver.hpp"
-#include "CallStackInfo.hpp"
+//internal stacks
+#include <stacks/Stack.hpp>
+//internal core
+#include <core/SymbolResolver.hpp>
+#include <core/CallStackInfo.hpp>
 
 /*******************  NAMESPACE  ********************/
 namespace MATT
 {
 
 /*********************  CLASS  **********************/
-class BacktraceCallStack : public Stack
+/**
+ * Implement a specific class to provide backtrace integration on top of our internal
+ * stack representation.
+**/
+class BacktraceStack : public Stack
 {
 	public:
-		BacktraceCallStack(void);
+		BacktraceStack(void);
 		void loadCurrentStack(void);
 };
 
 }
 
-#endif //MATT_BACKTRACE_BACKTRACE_HPP
+#endif //MATT_BACKTRACE_STACK_HPP

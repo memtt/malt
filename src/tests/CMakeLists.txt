@@ -14,7 +14,6 @@ include_directories(${GTEST_INCLUDE_DIRS} ${GMOCK_INCLUDE_DIRS})
 set(TEST_NAMES TestSegmentTracker 
                TestProfiledValue  
                TestFastBufferedStream 
-               TestStack 
                TestSimpleStackTracker 
                TestValgrindOutput  
                TestStackTreeV2

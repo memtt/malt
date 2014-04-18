@@ -14,7 +14,7 @@
 #include <cstdlib>
 //locals
 #include "StackSizeTracker.hpp"
-#include "EnterExitCallStack.hpp"
+#include <stacks/EnterExitStack.hpp>
 #include "AllocStackProfiler.hpp"
 #include "StackSizeAnalyser.hpp"
 
@@ -51,7 +51,7 @@ class LocalAllocStackProfiler
 		/** Pointer to option object **/
 		const Options * options;
 		/** Object used to follow the local stack for the enter/exit mode. **/
-		EnterExitCallStack enterExitStack;
+		EnterExitStack enterExitStack;
 		/** Follow size of stack in enter-exit mode. **/
 		StackSizeAnalyser stackSizeAnalyser;
 		/** Counter memory requests. **/

@@ -8,7 +8,8 @@
 
 /********************  HEADERS  *********************/
 #include <gtest/gtest.h>
-#include <core/Stack.h>
+#include <stacks/Stack.hpp>
+#include <common/SimpleAllocator.hpp>
 #include <json/ConvertToJson.h>
 
 /***************** USING NAMESPACE ******************/
@@ -16,6 +17,7 @@ using namespace MATT;
 
 /********************** CONSTS **********************/
 void * CST_STACK_1[] = {(void*)0x1,(void*)0x2,(void*)0x3,(void*)0x4};
+void * CST_STACK_2[] = {(void*)0x4,(void*)0x3,(void*)0x2,(void*)0x1};
 
 /*******************  FUNCTION  *********************/
 TEST(Stack,constructorDefault)
@@ -175,4 +177,131 @@ TEST(Stack,convertToJsonDesc)
 	htopml::convertToJson(buffer,stack);
 	
 	EXPECT_EQ("[\"0x4\", \"0x3\", \"0x2\", \"0x1\"]",buffer.str());
+}
+
+/*******************  FUNCTION  *********************/
+TEST(Stack,copyConstructor)
+{
+	Stack stack(CST_STACK_1,4,STACK_ORDER_DESC);
+	Stack stack2(stack);
+	
+	EXPECT_EQ(stack,stack2);
+}
+
+/*******************  FUNCTION  *********************/
+TEST(Stack,set)
+{
+	Stack stack(CST_STACK_1,4,STACK_ORDER_DESC);
+	Stack stack2(STACK_ORDER_DESC);
+	stack2.set(stack);
+	
+	EXPECT_EQ(stack,stack2);
+}
+
+/*******************  FUNCTION  *********************/
+TEST(Stack,partialCopyConstructor1)
+{
+	Stack stack(CST_STACK_1,4,STACK_ORDER_DESC);
+	Stack stack2(stack,2);
+	
+	EXPECT_EQ(2,stack2.getSize());
+	EXPECT_EQ((void*)0x2,stack2[0]);
+	EXPECT_EQ((void*)0x1,stack2[1]);
+}
+
+/*******************  FUNCTION  *********************/
+TEST(Stack,partialCopyConstructor)
+{
+	Stack stack(CST_STACK_1,4,STACK_ORDER_ASC);
+	Stack stack2(stack,2);
+	
+	EXPECT_EQ(2,stack2.getSize());
+	EXPECT_EQ((void*)0x3,stack2[0]);
+	EXPECT_EQ((void*)0x4,stack2[1]);
+}
+
+/*******************  FUNCTION  *********************/
+TEST(Stack,hash)
+{
+	Stack stack1(CST_STACK_1,4,STACK_ORDER_ASC);
+	Stack stack2(CST_STACK_2,4,STACK_ORDER_DESC);
+	
+	StackHash hash1 = stack1.hash();
+	StackHash hash2 = stack2.hash();
+	
+	EXPECT_EQ(hash1,hash2);
+}
+
+/*******************  FUNCTION  *********************/
+TEST(Stack,hashPartial)
+{
+	Stack stack1(CST_STACK_1,4,STACK_ORDER_ASC);
+	Stack stack2(CST_STACK_2,4,STACK_ORDER_DESC);
+	
+	StackHash hash1 = stack1.hash(2);
+	StackHash hash2 = stack2.hash(2);
+	
+	EXPECT_EQ(hash1,hash2);
+}
+
+/*******************  FUNCTION  *********************/
+TEST(Stack,setReverse)
+{
+	Stack stack1(CST_STACK_1,4,STACK_ORDER_ASC);
+	Stack stack2(STACK_ORDER_ASC);
+	
+	stack2.set(CST_STACK_2,4,STACK_ORDER_DESC);
+	
+	EXPECT_EQ(stack1,stack2);
+}
+
+/*******************  FUNCTION  *********************/
+TEST(Stack,operatorEqual)
+{
+	Stack stack1(CST_STACK_1,4,STACK_ORDER_ASC);
+	Stack stack2(STACK_ORDER_ASC);
+	
+	stack2 = stack1;
+
+	EXPECT_EQ(stack1,stack2);
+}
+
+/*******************  FUNCTION  *********************/
+TEST(Stack,grow)
+{
+	Stack stack(STACK_ORDER_ASC);
+	size_t s1 = stack.getMemSize();
+	stack.grow();
+	size_t s2 = stack.getMemSize();
+	stack.grow();
+	size_t s3 = stack.getMemSize();
+	stack.grow();
+	size_t s4 = stack.getMemSize();
+	
+	EXPECT_GT(s2,s1);
+	EXPECT_GT(s3,s2);
+	EXPECT_GT(s4,s3);
+}
+
+
+/*******************  FUNCTION  *********************/
+TEST(Stack,large)
+{
+	Stack stack1(CST_STACK_1,4,STACK_ORDER_ASC);
+	
+	void ** tmp = new void*[1024*1024];
+	stack1.set(tmp,1024*1024,STACK_ORDER_ASC);
+	
+	EXPECT_EQ(1024*1024,stack1.getSize());
+}
+
+/*******************  FUNCTION  *********************/
+int main(int argc, char ** argv)
+{
+	//init internal allocator
+	gblInternaAlloc = new SimpleAllocator(true);
+	
+	// This allows the user to override the flag on the command line.
+	::testing::InitGoogleTest(&argc, argv);
+	return RUN_ALL_TESTS();
 }

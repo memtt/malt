@@ -9,6 +9,7 @@
 /********************  HEADERS  *********************/
 #include <cassert>
 #include <cstdio>
+#include <json/ConvertToJson.h>
 #include "SegmentTracker.hpp"
 
 /*******************  NAMESPACE  ********************/

@@ -9,7 +9,7 @@
 /********************  HEADERS  *********************/
 #include <gtest/gtest.h>
 #include <core/SegmentTracker.hpp>
-#include <core/Stack.h>
+#include <stacks/Stack.hpp>
 
 /***************** USING NAMESPACE ******************/
 using namespace MATT;

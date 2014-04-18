@@ -14,7 +14,7 @@
 #include <json/ConvertToJson.h>
 #include <json/JsonState.h>
 #include "StackTreeSubSetNode.hpp"
-#include <core/Stack.h>
+#include <stacks/Stack.hpp>
 
 /*******************  NAMESPACE  ********************/
 namespace MATT

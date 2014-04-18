@@ -13,7 +13,7 @@
 //from htopml
 #include <json/JsonState.h>
 //internals
-#include "EnterExitCallStack.hpp"
+#include <stacks/EnterExitStack.hpp>
 
 /********************  MACROS  **********************/
 #define MAX_SIZE (1024*1204)
@@ -23,14 +23,22 @@ namespace MATT
 {
 
 /*******************  FUNCTION  *********************/
-EnterExitCallStack::EnterExitCallStack ( void )
+/**
+ * Constructor for the enter-exit mode. It mostly setup the DESC convention for the underlying
+ * generic stack implementation.
+**/
+EnterExitStack::EnterExitStack ( void )
 	:Stack(STACK_ORDER_DESC)
 {
 	this->realSize = 0;
 }
 
 /*******************  FUNCTION  *********************/
-void EnterExitCallStack::enterFunction ( void* funcAddr )
+/**
+ * Notify function entry point.
+ * It may produce a reallocation of the storage segment.
+**/
+void EnterExitStack::enterFunction ( void* funcAddr )
 {
 	//check default
 	if (stack == NULL)
@@ -53,7 +61,11 @@ void EnterExitCallStack::enterFunction ( void* funcAddr )
 }
 
 /*******************  FUNCTION  *********************/
-void EnterExitCallStack::exitFunction ( void* funcAddr )
+/**
+ * Notify a function exit to remove the last stack entry.
+ * It will not free the related memory for future reuse.
+**/
+void EnterExitStack::exitFunction ( void* funcAddr )
 {
 	assert(size > 0);
 

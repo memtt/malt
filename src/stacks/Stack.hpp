@@ -10,12 +10,15 @@
 #define MATT_STACK_H
 
 /********************  HEADERS  *********************/
-#include <ostream>
+//std c
 #include <stdint.h>
-#include "SymbolResolver.hpp"
-// #include <json/JsonState.h>
+//std c++
+#include <ostream>
 
 /*******************  FUNCTION  *********************/
+/**
+ * Define a hash of the stack.
+**/
 typedef uint64_t StackHash;
 
 /*******************  FUNCTION  *********************/
@@ -28,14 +31,32 @@ namespace htopml
 namespace MATT
 {
 
+/*********************  TYPES  **********************/
+class SymbolResolver;
+
 /*********************  ENUM  ***********************/
+/**
+ * Define the ordering of the stack storage. The ordering is forced by the backtrace implementation
+ * and for the enter-exit mode, it is more efficient to use a reversed representation to enlarge the segment
+ * quicly.
+**/
 enum StackOrder
 {
+	/** Use asc mode [child2 < child1 < main] for the backtrace mode. **/
 	STACK_ORDER_ASC,
+	/** Use desc mode [main > child1 > child2] for the enter-exit mode. **/
 	STACK_ORDER_DESC
 };
 
 /*********************  CLASS  **********************/
+/**
+ * Provide a short reprensentation of a call stack as an array of instruction addresses.
+ * This base class can be extended to build the backtrace stack representation of the enter-exit
+ * one. It can also be used a a generic reprensentation to store the stack.
+ * It allocate all the memory thought the internal allocator.
+ * 
+ * @brief Base class to store complete backtraces.
+**/
 class Stack
 {
 	public:
@@ -57,15 +78,20 @@ class Stack
 		void * operator[] (int idx);
 		static bool partialCompare(const Stack & stack1,int skip1,const Stack & stack2,int skip2);
 		Stack & operator = (const Stack & stack);
+		size_t getMemSize(void) const;
 	public:
 		friend std::ostream & operator << (std::ostream & out,const Stack & tracer);
 		friend void convertToJson(htopml::JsonState & json, const Stack & value);
 		friend bool operator == (const Stack & v1,const Stack & v2);
 	protected:
+		/** Pointer to the array of addresses to store the stack steps. **/
 		void ** stack;
+		/** Size of the current stack. **/
 		int size;
+		/** Size of the buffer used to store the stack. **/
 		int memSize;
 	private:
+		/** Keep track of the element ordering in the stack storage. **/
 		StackOrder order;
 };
 

@@ -151,3 +151,11 @@ TEST(SimpleAllocator,printStat)
 	
 	EXPECT_EQ(CST_VALUE_1,out.str());
 }
+
+/*******************  FUNCTION  *********************/
+TEST(SimpleAllocator,tooLarge)
+{
+	SimpleAllocator alloc;
+	void * ptr = alloc.malloc(MATT_ALLOC_SYS_REQ_SIZE * 8);
+	memset(ptr,0,MATT_ALLOC_SYS_REQ_SIZE * 8);
+}

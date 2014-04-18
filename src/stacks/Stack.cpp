@@ -12,10 +12,13 @@
 #include <cstring>
 #include <cstdlib>
 #include <cassert>
+//htopml json converter
 #include <json/JsonState.h>
+//internals from common
 #include <common/SimpleAllocator.hpp>
+#include <core/SymbolResolver.hpp>
 //locals
-#include "Stack.h"
+#include "Stack.hpp"
 
 /********************  MACROS  **********************/
 #define CALL_STACK_DEFAULT_SIZE   32
@@ -26,6 +29,10 @@ namespace MATT
 {
 
 /*******************  FUNCTION  *********************/
+/**
+ * Stack constructor to init the internal states.
+ * @param order Define the element ordering depending on the instrumentation mode (backtrace of enter-exit).
+**/
 Stack::Stack ( StackOrder order )
 {
 	this->order   = order;
@@ -35,6 +42,10 @@ Stack::Stack ( StackOrder order )
 }
 
 /*******************  FUNCTION  *********************/
+/**
+ * Import a stack from a raw C representation, typically the one obtained from the backtrace() function.
+ * For the backtrace function, use STACK_ORDER_ASC ordering.
+**/
 Stack::Stack(void** stack, int size,StackOrder order)
 {
 	this->order   = order;
@@ -45,6 +56,9 @@ Stack::Stack(void** stack, int size,StackOrder order)
 }
 
 /*******************  FUNCTION  *********************/
+/**
+ * Copy constructor.
+**/
 Stack::Stack ( const Stack& orig )
 {
 	//default
@@ -58,6 +72,10 @@ Stack::Stack ( const Stack& orig )
 }
 
 /*******************  FUNCTION  *********************/
+/**
+ * Copy a part of the stack and skip the last elements (deepest elements).
+ * This function take care of the element ordering.
+**/
 Stack::Stack ( const Stack& orig , int skipDepth)
 {
 	//errors
@@ -84,6 +102,9 @@ Stack::Stack ( const Stack& orig , int skipDepth)
 }
 
 /*******************  FUNCTION  *********************/
+/**
+ * Stack descrutor to free internal memory.
+**/
 Stack::~Stack ( void )
 {
 	if (this->stack != NULL)
@@ -96,12 +117,19 @@ Stack::~Stack ( void )
 }
 
 /*******************  FUNCTION  *********************/
+/**
+ * Permit to replace the current stack content by the given one.
+**/
 void Stack::set ( const Stack& orig )
 {
 	this->set(orig.stack,orig.size,orig.order);
 }
 
 /*******************  FUNCTION  *********************/
+/**
+ * Permit to replace the current stack content by the given one.
+ * It can be feed by the raw representation provided by backtrace().
+**/
 void Stack::set ( void** stack, int size, StackOrder order )
 {
 	//realloc if required
@@ -125,6 +153,11 @@ void Stack::set ( void** stack, int size, StackOrder order )
 }
 
 /*******************  FUNCTION  *********************/
+/**
+ * Compute a short hash of the stack. The returned hash take care of the ordering so
+ * generate a uniq value which is valid for the two representation.
+ * @param skipDepth Ignore the deepest elements.
+**/
 StackHash Stack::hash ( int skipDepth ) const
 {
 	assert(skipDepth < size);
@@ -139,6 +172,9 @@ StackHash Stack::hash ( int skipDepth ) const
 }
 
 /*******************  FUNCTION  *********************/
+/**
+ * Internal function to compute the hash.
+**/
 StackHash Stack::hash ( void** stack, int size ,StackOrder order)
 {
 	//errors
@@ -175,7 +211,7 @@ StackHash Stack::hash ( void** stack, int size ,StackOrder order)
 				assert(cur != 0);
 // 				res ^= (StackHash)(cur+i+size);
 // 				res ^= (StackHash)(cur-i+size) << (i%32);
-				res += (StackHash)(cur) << (i%32);
+				res += (StackHash)(cur) << ((size-i-1)%32);
 			}
 			res*=size;
 			break;
@@ -185,6 +221,10 @@ StackHash Stack::hash ( void** stack, int size ,StackOrder order)
 }
 
 /*******************  FUNCTION  *********************/
+/**
+ * Operator to read stack entries. It provide a uniq ordering by checking the internal one.
+ * The external representation exposed to the user is by convention the backtrace one (ASC).
+**/
 void* Stack::operator[](int idx)
 {
 	//errors
@@ -205,6 +245,9 @@ void* Stack::operator[](int idx)
 }
 
 /*******************  FUNCTION  *********************/
+/**
+ * Print the stack content with the backtrace ordering (ASC).
+**/
 std::ostream& operator<< ( std::ostream& out, const Stack& obj )
 {
 	switch(obj.order)
@@ -222,6 +265,9 @@ std::ostream& operator<< ( std::ostream& out, const Stack& obj )
 }
 
 /*******************  FUNCTION  *********************/
+/**
+ * Compare two stacks. They must have the same internal ordering representation.
+**/
 bool operator== ( const Stack& v1, const Stack& v2 )
 {
 	//errors
@@ -245,6 +291,11 @@ bool operator== ( const Stack& v1, const Stack& v2 )
 }
 
 /*******************  FUNCTION  *********************/
+/**
+ * Compare a part of the stacks. They must have the same internal representation.
+ * For the outside point of view the skip parameters are given in the backtrace ordering (ASC).
+ * They ignore the deepest elements.
+**/
 bool Stack::partialCompare(const Stack& stack1, int skip1, const Stack& stack2, int skip2)
 {
 	//errors
@@ -283,6 +334,9 @@ bool Stack::partialCompare(const Stack& stack1, int skip1, const Stack& stack2, 
 }
 
 /*******************  FUNCTION  *********************/
+/**
+ * Manage json code generation by following the backtrace() ordering convention (ASC).
+**/
 void convertToJson ( htopml::JsonState& json, const Stack& obj )
 {
 	//select running mode
@@ -302,6 +356,15 @@ void convertToJson ( htopml::JsonState& json, const Stack& obj )
 }
 
 /*******************  FUNCTION  *********************/
+size_t Stack::getMemSize(void ) const
+{
+	return memSize;
+}
+
+/*******************  FUNCTION  *********************/
+/**
+ * Increase the internal memory use to store the stack.
+**/
 void Stack::grow ( void )
 {
 	//if not allocated
@@ -323,6 +386,9 @@ void Stack::grow ( void )
 }
 
 /*******************  FUNCTION  *********************/
+/**
+ * Check if the current stack if empty of not.
+**/
 bool Stack::isValid ( void ) const
 {
 	return (this->stack != NULL && this->size > 0);
@@ -335,6 +401,9 @@ int Stack::getSize ( void ) const
 }
 
 /*******************  FUNCTION  *********************/
+/**
+ * Loop on all symbols and register them into the symbol translator.
+**/
 void Stack::resolveSymbols ( SymbolResolver& dic ) const
 {
 	if (stack != NULL)

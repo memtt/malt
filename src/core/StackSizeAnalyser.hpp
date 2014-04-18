@@ -12,10 +12,10 @@
 /********************  HEADERS  *********************/
 //standard
 //locals
-#include "Stack.h"
+#include <stacks/Stack.hpp>
 #include "ProfiledValue.hpp"
 #include "StackSizeTracker.hpp"
-#include "EnterExitCallStack.hpp"
+#include <stacks/EnterExitStack.hpp>
 
 /*******************  NAMESPACE  ********************/
 namespace MATT
@@ -32,7 +32,7 @@ class StackSizeAnalyser
 		friend void convertToJson(htopml::JsonState& json, const StackSizeAnalyser& value);
 	private:
 		/** Follow current position stack and calls. **/
-		EnterExitCallStack currentStack;
+		EnterExitStack currentStack;
 		/** Follow memory used by each call in the current stack. **/
 		StackSizeTracker currentStackMem;
 		/** Size of the largest stack usage seen. **/
