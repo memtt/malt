@@ -62,7 +62,7 @@ class LocalAllocStackProfiler
 		 * Avoid to instrument inner allocations, marked at 'true' when entering in first level malloc/free.... 
 		 * It permit to use dynamic allocation inside instrumentation functions.
 		**/
-		bool inUse;
+		volatile bool inUse;
 };
 
 }

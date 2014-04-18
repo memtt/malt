@@ -8,11 +8,11 @@
 
 /********************  HEADERS  *********************/
 //standard
+#include <cerrno>
 #include <cstdio>
 #include <cassert>
 #include <cstdlib>
 #include <cstring>
-#include <cerrno>
 //internals
 #include "FormattedMessage.hpp"
 

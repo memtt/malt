@@ -68,7 +68,7 @@ class Array
 		T & operator[] (int id);
 		const T & operator[] (int id) const;
 		void pop(void);
-		size_t size(void) const {return activSize;};
+		size_t size(void) const;
 		int getSize(void) const;
 		int getBufferSize(void) const;
 		const T * getBuffer(void) const;
@@ -171,9 +171,18 @@ const T* Array<T>::getBuffer(void) const
  * @return Number of active elements in array.
 **/
 template <class T>
+size_t Array<T>::size(void) const
+{
+	return activSize;
+}
+
+/*******************  FUNCTION  *********************/
+/**
+ * @return Number of active elements in array.
+**/
+template <class T>
 int Array<T>::getSize(void) const
 {
-	
 	return activSize;
 }
 
@@ -228,8 +237,9 @@ template <class T>
 T & Array<T>::push_back(const T& value)
 {
 	updateSize(1);
+	assert(activSize <= bufferSize);
 	//T * res = new (buffer+size-1) T(value);
-	T * res = &buffer[activSize - 1];
+	T * res = buffer + activSize - 1;
 	*res = value;
 	return *res;
 }

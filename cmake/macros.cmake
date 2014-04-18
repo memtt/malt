@@ -25,3 +25,10 @@ MACRO(declare_test test_name)
 	target_link_libraries(${test_name} ${GTEST_BOTH_LIBRARIES} ${GMOCK_BOTH_LIBRARIES} ${EXTRA_LIBS})
 	add_test(${test_name} ${test_name})
 ENDMACRO(declare_test)
+
+######################################################
+MACRO(matt_enable_gcc_coverage)
+	set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -O0 -fprofile-arcs -ftest-coverage")
+	set(CMAKE_CXX_FLAGS "${CMAKE_C_FLAGS} -O0 -fprofile-arcs -ftest-coverage")
+	set(CMAKE_EXE_LINKER_FLAGS_FLAGS "${CMAKE_C_FLAGS} -O0 -fprofile-arcs -ftest-coverage")
+ENDMACRO(matt_enable_gcc_coverage)

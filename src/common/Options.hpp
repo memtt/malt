@@ -43,6 +43,7 @@ struct Options
 	bool outputJson;
 	bool outputCallgrind;
 	bool outputDumpConfig;
+	bool operator==(const Options & value) const;
 };
 
 /*******************  FUNCTION  *********************/

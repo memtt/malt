@@ -67,6 +67,10 @@ void Debug::end(void)
 	this->emitted = true;
 	switch(level)
 	{
+		case MESSAGE_DEBUG:
+			#ifdef NDEBUG
+				break;
+			#endif //NDEBUG
 		case MESSAGE_INFO:
 		case MESSAGE_NORMAL:
 			if (line != 0)
@@ -74,10 +78,14 @@ void Debug::end(void)
 			std::cout << cstLevelPrefix[level] << *this << std::endl;
 			break;
 		case MESSAGE_ASSERT:
-		case MESSAGE_DEBUG:
 			#ifdef NDEBUG
-			break;
-			#endif //NDEBUG
+				break();
+			#else
+				if (line != 0)
+					std::cout << std::endl << cstLevelPrefix[level] << "At " <<  file << ':' << line << " : \n";
+				std::cout << cstLevelPrefix[level] << *this << std::endl;
+				abort();
+			#endif
 		case MESSAGE_WARNING:
 		case MESSAGE_ERROR:
 			if (line != 0)

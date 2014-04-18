@@ -89,7 +89,7 @@ template <class T> std::ostream& convertToLua(std::ostream& out,const T & value,
 }
 
 /*******************  FUNCTION  *********************/
-inline void convertToJson ( JsonState& json, IJsonConvertible& object )
+inline void convertToJson ( JsonState& json, const htopml::IJsonConvertible& object )
 {
 	object.toJson(json);
 }

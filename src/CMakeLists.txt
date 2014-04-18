@@ -24,6 +24,9 @@ set(MATT_PORTABILITY_OS_${PORTABILITY_OS}       yes)
 if (ENABLE_CODE_TIMING)
 	set(MATT_ENABLE_CODE_TIMING yes)
 endif(ENABLE_CODE_TIMING)
+if (ENABLE_GCC_COVERAGE)
+	matt_enable_gcc_coverage()
+endif (ENABLE_GCC_COVERAGE)
 
 ######################################################
 #gen config.h

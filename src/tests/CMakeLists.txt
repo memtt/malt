@@ -12,13 +12,11 @@ include_directories(${GTEST_INCLUDE_DIRS} ${GMOCK_INCLUDE_DIRS})
 
 ######################################################
 set(TEST_NAMES TestSegmentTracker 
-               TestProfiledValue 
-               TestFormattedMessage 
+               TestProfiledValue  
                TestFastBufferedStream 
                TestStack 
                TestSimpleStackTracker 
-               TestValgrindOutput 
-               TestSimpleAllocator 
+               TestValgrindOutput  
                TestStackTreeV2
                TestStackTreeV3
    )
@@ -54,3 +52,8 @@ SET_TARGET_PROPERTIES(simple-case-finstr PROPERTIES COMPILE_FLAGS -finstrument-f
 add_executable(simple-case-finstr-linked simple-case.cpp)
 SET_TARGET_PROPERTIES(simple-case-finstr-linked PROPERTIES COMPILE_FLAGS -finstrument-functions)
 target_link_libraries(simple-case-finstr-linked matt)
+
+######################################################
+add_executable(test-atexit-first test-atexit-first.cpp)
+SET_TARGET_PROPERTIES(test-atexit-first PROPERTIES COMPILE_FLAGS -finstrument-functions)
+target_link_libraries(test-atexit-first matt)

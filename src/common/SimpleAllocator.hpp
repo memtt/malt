@@ -12,6 +12,7 @@
 /********************  HEADERS  *********************/
 //standard
 #include <cstdlib>
+#include <iostream>
 //portability dependent code
 #include <portability/Spinlock.hpp>
 
@@ -86,6 +87,15 @@ struct FreeChunk
 };
 
 /*********************  CLASS  **********************/
+/**
+ * Implement a simple internal allocator to manage segments on a single free list base.
+ * It uses mmap as lower function and keep all allocated memory. It also ensure full
+ * physical mapping of the mapped memory. Thanks to this componnent we can
+ * separate the segments used by our instrumentation tool and follow our internal memory
+ * consumption to not account it when tracking the application one.
+ * 
+ * @brief A short memory allocator for internal allocations.
+**/
 class SimpleAllocator
 {
 	public:
@@ -97,7 +107,7 @@ class SimpleAllocator
 		size_t getUnusedMemory(void);
 		size_t getInuseMemory(void);
 		size_t getMaxSize(void) const;
-		void printState(void) const;
+		void printState(std::ostream & out = std::cerr) const;
 	protected:
 		void requestSystemMemory(void);
 		void touchMemory(void * ptr,size_t size);
@@ -105,16 +115,31 @@ class SimpleAllocator
 		Chunk * getInCur(size_t size);
 		Chunk * getInSys(size_t size);
 	private:
+		/** Store the free chunk for resuse. **/
 		FreeChunk freeList;
+		/** Current chunk to split to get new segments. **/
 		Chunk * cur;
+		/** Size of memory segment to requests to OS via mmap to get more memory. **/
 		size_t sysReqSize;
+		/** Track the total memory used by this allocator. **/
 		size_t totalMemory;
+		/** Track the internal (total) unused memory allocated by this allocator. **/
 		size_t unusedMemory;
+		/** Enable or disable thread locking. **/
 		bool threadSafe;
+		/** Lock to protected the free list and internal counters. **/
 		Spinlock lock;
 };
 
 /*********************  CLASS  **********************/
+/**
+ * Provide a global pointer to allocate memory on our simple allocator.
+ * 
+ * @b CAUTION, this allocator is used in our intrumentation tool which might be initialized before
+ * main, so we cannot rely on static object initialization order. So it must be a pointer.
+ * 
+ * @TODO Maybe move this as a singleton to auto init.
+**/
 extern SimpleAllocator * gblInternaAlloc;
 
 };

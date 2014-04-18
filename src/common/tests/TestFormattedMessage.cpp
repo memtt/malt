@@ -7,6 +7,7 @@
 *****************************************************/
 
 /********************  HEADERS  *********************/
+#include <cerrno>
 #include <gtest/gtest.h>
 #include <common/FormattedMessage.hpp>
 #include <common/Debug.hpp>
@@ -24,6 +25,13 @@ TEST(FormattedMessage,constructor)
 TEST(FormattedMessage,basic)
 {
 	FormattedMessage message("Basic test");
+	EXPECT_EQ("Basic test",message.toString());
+}
+
+/*******************  FUNCTION  *********************/
+TEST(FormattedMessage,string)
+{
+	FormattedMessage message(std::string("Basic test"));
 	EXPECT_EQ("Basic test",message.toString());
 }
 
@@ -81,4 +89,26 @@ TEST(FormattedMessage,notTooMuch)
 	message.arg(30.1);
 	message.arg(40);
 	EXPECT_EQ("value = 10, 20, 30.1",message.toString());
+}
+
+/*******************  FUNCTION  *********************/
+TEST(FormattedMessage,operatorStream)
+{
+	FormattedMessage message("test %1");
+	message.arg("test");
+	
+	std::stringstream out;
+	out << message;
+	
+	EXPECT_EQ("test test",out.str());
+}
+
+/*******************  FUNCTION  *********************/
+TEST(FormattedMessage,errnoToString)
+{
+	FormattedMessage message("test %1");
+	errno=0;
+	message.argStrErrno();
+	
+	EXPECT_EQ("test Success",message.toString());
 }

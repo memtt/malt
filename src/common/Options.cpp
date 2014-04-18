@@ -41,6 +41,30 @@ Options::Options(void)
 }
 
 /*******************  FUNCTION  *********************/
+bool Options::operator==(const Options& value) const
+{
+	//stack
+	if (stackProfileEnabled != value.stackProfileEnabled) return false;
+	if (stackResolve != value.stackResolve) return false;
+	if (stackMode != value.stackMode) return false;
+	//time
+	if (this->timeProfileEnabled != value.timeProfileEnabled) return false;
+	if (this->timeProfilePoints != value.timeProfilePoints) return false;
+	if (this->timeProfileLinear != value.timeProfileLinear) return false;
+	//output
+	if (this->outputName != value.outputName) return false;
+	if (this->outputIndent != value.outputIndent) return false;
+	if (this->outputJson != value.outputJson) return false;
+	if (this->outputLua != value.outputLua) return false;
+	if (this->outputCallgrind != value.outputCallgrind) return false;
+	if (this->outputDumpConfig != value.outputDumpConfig) return false;
+	//max stack
+	if (this->maxStackEnabled != value.maxStackEnabled) return false;
+	
+	return true;
+}
+
+/*******************  FUNCTION  *********************/
 void Options::loadFromFile(const char* fname)
 {
 	//load ini dic

@@ -30,7 +30,7 @@ namespace htopml
 class IJsonConvertible
 {
 	public:
-		virtual void toJson(JsonState & json) = 0;
+		virtual void toJson(JsonState & json) const = 0;
 };
 
 /********************  MACRO  ***********************/
@@ -72,7 +72,7 @@ void convertToJson(JsonState & json, const char * value);
 void convertToJson(JsonState & json, const std::string& value);
 void convertToJson(JsonState & json, bool value);
 void convertToJson(JsonState & json, void * ptr);
-void convertToJson(JsonState & json, IJsonConvertible & object);
+void convertToJson(JsonState & json, const htopml::IJsonConvertible & object);
 
 /*******************  FUNCTION  *********************/
 //generic version
