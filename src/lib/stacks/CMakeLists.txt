@@ -16,4 +16,6 @@ add_library(matt-stacks OBJECT ${MATT_STACKS_SRC})
 SET_TARGET_PROPERTIES(matt-stacks PROPERTIES COMPILE_FLAGS -fPIC)
 
 ######################################################
-add_subdirectory(tests)
+if (ENABLE_TESTS)
+	add_subdirectory(tests)
+endif (ENABLE_TESTS)

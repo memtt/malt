@@ -29,4 +29,6 @@ add_library(matt-libc-wrapper OBJECT AllocWrapper.cpp)
 SET_TARGET_PROPERTIES(matt-libc-wrapper PROPERTIES COMPILE_FLAGS -fPIC)
 
 ######################################################
-add_subdirectory(tests)
+if (ENABLE_TESTS)
+	add_subdirectory(tests)
+endif (ENABLE_TESTS)

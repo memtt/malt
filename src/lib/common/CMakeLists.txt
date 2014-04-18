@@ -11,4 +11,6 @@ add_library(matt-common OBJECT CodeTiming.cpp FormattedMessage.cpp Debug.cpp Opt
 SET_TARGET_PROPERTIES(matt-common PROPERTIES COMPILE_FLAGS -fPIC)
 
 ######################################################
-add_subdirectory(tests)
+if (ENABLE_TESTS)
+	add_subdirectory(tests)
+endif (ENABLE_TESTS)
