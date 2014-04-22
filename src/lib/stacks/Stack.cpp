@@ -480,4 +480,24 @@ void Stack::fastSkip(int depth)
 	}
 }
 
+/*******************  FUNCTION  *********************/
+bool operator<(const Stack& v1, const Stack& v2)
+{
+	//trivial
+	if (v1.size < v2.size)
+		return true;
+	else if (v1.size != v2.size)
+		return false;
+	
+	
+	assert(v1.order == v2.order);
+
+	//check content starting by
+	for (int i = 0 ; i < v1.size ; i++)
+		if (v1.stack[i] >= v2.stack[i])
+			return false;
+
+	return true;
+}
+
 }

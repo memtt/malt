@@ -43,7 +43,7 @@ include_directories(${CMAKE_CURRENT_BINARY_DIR})
 set(COMMON_OBJS $<TARGET_OBJECTS:htopml-json> 
                 $<TARGET_OBJECTS:matt-core> 
                 $<TARGET_OBJECTS:matt-stacks> 
-                $<TARGET_OBJECTS:matt-stack-trees> 
+                #$<TARGET_OBJECTS:matt-stack-trees> 
                 $<TARGET_OBJECTS:matt-common> 
                 $<TARGET_OBJECTS:matt-port>
                 $<TARGET_OBJECTS:iniparser>)

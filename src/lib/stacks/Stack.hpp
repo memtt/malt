@@ -84,6 +84,7 @@ class Stack
 		friend std::ostream & operator << (std::ostream & out,const Stack & tracer);
 		friend void convertToJson(htopml::JsonState & json, const Stack & value);
 		friend bool operator == (const Stack & v1,const Stack & v2);
+		friend bool operator < (const Stack & v1,const Stack & v2);
 	protected:
 		/** Pointer to the array of addresses to store the stack steps (due to fast skip it can be after the start of this->mem). **/
 		void ** stack;
