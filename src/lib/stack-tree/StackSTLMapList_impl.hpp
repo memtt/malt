@@ -11,7 +11,7 @@
 
 /********************  HEADERS  *********************/
 //internal
-#include "StackSTLMap.hpp"
+#include "StackSTLMapList.hpp"
 
 /*******************  NAMESPACE  ********************/
 namespace MATT
@@ -19,7 +19,7 @@ namespace MATT
 
 /*******************  FUNCTION  *********************/
 template <class T>
-void* StackSTLMap<T>::allocateObject(void ) const
+void* StackSTLMapList<T>::allocateObject(void ) const
 {
 	void * ptr = MATT_MALLOC(sizeof(T));
 	return new (ptr)T();
@@ -27,7 +27,7 @@ void* StackSTLMap<T>::allocateObject(void ) const
 
 /*******************  FUNCTION  *********************/
 template <class T>
-void StackSTLMap<T>::deleteObject(void* ptr) const
+void StackSTLMapList<T>::deleteObject(void* ptr) const
 {
 	T * obj = (T*)ptr;
 	obj->~T();
@@ -36,45 +36,45 @@ void StackSTLMap<T>::deleteObject(void* ptr) const
 
 /*******************  FUNCTION  *********************/
 template <class T>
-StackSTLMap<T>::~StackSTLMap(void )
+StackSTLMapList<T>::~StackSTLMapList(void )
 {
 	this->clear();
 }
 
 /*******************  FUNCTION  *********************/
 template <class T>
-typename StackSTLMap<T>::Node StackSTLMap<T>::getNode(const Stack& stack, int skipDepth)
+typename StackSTLMapList<T>::Node StackSTLMapList<T>::getNode(const Stack& stack, int skipDepth)
 {
-	StackSTLMapAbstract::Node tmp = StackSTLMapAbstract::getNode(stack,skipDepth);
-	typename StackSTLMap<T>::Node res = {tmp.first,tmp.second};
+	StackSTLMapListAbstract::Node tmp = StackSTLMapListAbstract::getNode(stack,skipDepth);
+	typename StackSTLMapList<T>::Node res = {tmp.first,tmp.second};
 	return res;
 }
 
 /*******************  FUNCTION  *********************/
 template <class T>
-T& StackSTLMap<T>::getValueRef(const Stack& stack, int skipDepth)
+T& StackSTLMapList<T>::getValueRef(const Stack& stack, int skipDepth)
 {
-	return *(T*)StackSTLMapAbstract::getValue(stack,skipDepth);
+	return *(T*)StackSTLMapListAbstract::getValue(stack,skipDepth);
 }
 
 /*******************  FUNCTION  *********************/
 template <class T>
-T& StackSTLMap<T>::operator[](const Stack& stack)
+T& StackSTLMapList<T>::operator[](const Stack& stack)
 {
 	return getValueRef(stack);
 }
 
 /*******************  FUNCTION  *********************/
 template <class U>
-void convertToJson(htopml::JsonState& json, const StackSTLMap< U >& value)
+void convertToJson(htopml::JsonState& json, const StackSTLMapList< U >& value)
 {
-	const StackSTLMapAbstract & ref = value;
+	const StackSTLMapListAbstract & ref = value;
 	convertToJson(json, ref);
 }
 
 /*******************  FUNCTION  *********************/
 template <class T>
-void StackSTLMap<T>::printJsonValue(htopml::JsonState& json, const Stack * stack, void* value) const
+void StackSTLMapList<T>::printJsonValue(htopml::JsonState& json, const Stack * stack, void* value) const
 {
 	Node node = {stack,(T*)value};
 	json.openStruct();

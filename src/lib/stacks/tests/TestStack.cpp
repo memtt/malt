@@ -296,6 +296,30 @@ TEST(Stack,large)
 }
 
 /*******************  FUNCTION  *********************/
+TEST(Stack,fastSkip1)
+{
+	Stack stack(CST_STACK_1,4,STACK_ORDER_ASC);
+	stack.fastSkip(1);
+
+	std::stringstream buffer;
+	buffer << stack;
+	
+	EXPECT_EQ("0x2 0x3 0x4 ",buffer.str());
+}
+
+/*******************  FUNCTION  *********************/
+TEST(Stack,fastSkip2)
+{
+	Stack stack(CST_STACK_2,4,STACK_ORDER_DESC);
+	stack.fastSkip(1);
+
+	std::stringstream buffer;
+	buffer << stack;
+	
+	EXPECT_EQ("0x2 0x3 0x4 ",buffer.str());
+}
+
+/*******************  FUNCTION  *********************/
 int main(int argc, char ** argv)
 {
 	//init internal allocator

@@ -79,13 +79,16 @@ class Stack
 		static bool partialCompare(const Stack & stack1,int skip1,const Stack & stack2,int skip2);
 		Stack & operator = (const Stack & stack);
 		size_t getMemSize(void) const;
+		void fastSkip(int depth);
 	public:
 		friend std::ostream & operator << (std::ostream & out,const Stack & tracer);
 		friend void convertToJson(htopml::JsonState & json, const Stack & value);
 		friend bool operator == (const Stack & v1,const Stack & v2);
 	protected:
-		/** Pointer to the array of addresses to store the stack steps. **/
+		/** Pointer to the array of addresses to store the stack steps (due to fast skip it can be after the start of this->mem). **/
 		void ** stack;
+		/** Pointer to the array of addresses to store the stack steps (ignoring fast skip). **/
+		void ** mem;
 		/** Size of the current stack. **/
 		int size;
 		/** Size of the buffer used to store the stack. **/

@@ -31,7 +31,9 @@ LocalAllocStackProfiler::LocalAllocStackProfiler(AllocStackProfiler* globalProfi
 	this->cntMemOps = 0;
 	this->globalProfiler = globalProfiler;
 	this->options = globalProfiler->getOptions();
+	this->stackMode = globalProfiler->getStackMode();
 	enterExitStack.enterFunction((void*)0x1);
+	backtraceStack.loadCurrentStack();
 	
 	//ok for use
 	this->inUse = false;
@@ -53,7 +55,7 @@ void LocalAllocStackProfiler::onMalloc(void* res, size_t size)
 	if (!reentrance || !oldInuse)
 	{
 		inUse = true;
-		CODE_TIMING("mallocProf",globalProfiler->onMalloc(res,size,&enterExitStack));
+		CODE_TIMING("mallocProf",globalProfiler->onMalloc(res,size,getStack()));
 		this->cntMemOps++;
 		inUse = oldInuse;
 	}
@@ -69,7 +71,7 @@ void LocalAllocStackProfiler::onFree(void* ptr)
 	if (!reentrance || !oldInuse)
 	{
 		inUse = true;
-		CODE_TIMING("freeProf",globalProfiler->onFree(ptr,&enterExitStack));
+		CODE_TIMING("freeProf",globalProfiler->onFree(ptr,getStack()));
 		this->cntMemOps++;
 		inUse = oldInuse;
 	}
@@ -85,7 +87,7 @@ void LocalAllocStackProfiler::onCalloc(void * res,size_t nmemb, size_t size)
 	if (!reentrance || !oldInuse)
 	{
 		inUse = true;
-		CODE_TIMING("callocProf",globalProfiler->onCalloc(res,nmemb,size,&enterExitStack));
+		CODE_TIMING("callocProf",globalProfiler->onCalloc(res,nmemb,size,getStack()));
 		this->cntMemOps++;
 		inUse = oldInuse;
 	}
@@ -101,7 +103,7 @@ void LocalAllocStackProfiler::onRealloc(void* ptr, void* res, size_t size)
 	if (!reentrance || !oldInuse)
 	{
 		inUse = true;
-		CODE_TIMING("reallocProf",globalProfiler->onRealloc(ptr,res,size,&enterExitStack));
+		CODE_TIMING("reallocProf",globalProfiler->onRealloc(ptr,res,size,getStack()));
 		this->cntMemOps++;
 		inUse = oldInuse;
 	}
@@ -144,6 +146,23 @@ void convertToJson(htopml::JsonState& json, const LocalAllocStackProfiler& value
 void LocalAllocStackProfiler::resolveSymbols(SymbolResolver& symbolResolver) const
 {
 	this->stackSizeAnalyser.resolveSymbols(symbolResolver);
+}
+
+/*******************  FUNCTION  *********************/
+Stack* LocalAllocStackProfiler::getStack(void )
+{
+	//search with selected mode
+	switch(stackMode)
+	{
+		case STACK_MODE_BACKTRACE:
+			CODE_TIMING("loadCurrentStack",backtraceStack.loadCurrentStack());
+			backtraceStack.fastSkip(3);
+			return &backtraceStack;
+		case STACK_MODE_ENTER_EXIT_FUNC:
+			return &enterExitStack;
+		case STACK_MODE_USER:
+			return NULL;
+	}
 }
 
 }

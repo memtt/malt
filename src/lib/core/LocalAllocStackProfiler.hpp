@@ -45,6 +45,8 @@ class LocalAllocStackProfiler
 		void resolveSymbols(SymbolResolver & symbolResolver) const;
 	public:
 		friend void convertToJson(htopml::JsonState& json, const LocalAllocStackProfiler& value);
+	protected:
+		Stack * getStack(void);
 	private:
 		/** Pointer to the global state **/
 		AllocStackProfiler * globalProfiler;
@@ -52,6 +54,8 @@ class LocalAllocStackProfiler
 		const Options * options;
 		/** Object used to follow the local stack for the enter/exit mode. **/
 		EnterExitStack enterExitStack;
+		/** Object used to follow the local stack for the backtrace mode. **/
+		BacktraceStack backtraceStack;
 		/** Follow size of stack in enter-exit mode. **/
 		StackSizeAnalyser stackSizeAnalyser;
 		/** Counter memory requests. **/
@@ -63,6 +67,8 @@ class LocalAllocStackProfiler
 		 * It permit to use dynamic allocation inside instrumentation functions.
 		**/
 		volatile bool inUse;
+		/** Ways to track stack. **/
+		StackMode stackMode;
 };
 
 }

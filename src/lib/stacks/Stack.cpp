@@ -37,6 +37,7 @@ Stack::Stack ( StackOrder order )
 {
 	this->order   = order;
 	this->stack   = NULL;
+	this->mem     = NULL;
 	this->size    = 0;
 	this->memSize = 0;
 }
@@ -50,6 +51,7 @@ Stack::Stack(void** stack, int size,StackOrder order)
 {
 	this->order   = order;
 	this->stack   = NULL;
+	this->mem     = NULL;
 	this->size    = 0;
 	this->memSize = 0;
 	this->set(stack,size,order);
@@ -64,6 +66,7 @@ Stack::Stack ( const Stack& orig )
 	//default
 	this->order   = orig.order;
 	this->stack   = NULL;
+	this->mem     = NULL;
 	this->size    = 0;
 	this->memSize = 0;
 	
@@ -85,6 +88,7 @@ Stack::Stack ( const Stack& orig , int skipDepth)
 	//default
 	this->order   = orig.order;
 	this->stack   = NULL;
+	this->mem     = NULL;
 	this->size    = 0;
 	this->memSize = 0;
 	
@@ -107,10 +111,11 @@ Stack::Stack ( const Stack& orig , int skipDepth)
 **/
 Stack::~Stack ( void )
 {
-	if (this->stack != NULL)
-		MATT_FREE(this->stack);
+	if (this->mem != NULL)
+		MATT_FREE(this->mem);
 	#ifndef NDEBUG
 	this->stack   = NULL;
+	this->mem     = NULL;
 	this->size    = 0;
 	this->memSize = 0;
 	#endif
@@ -135,7 +140,8 @@ void Stack::set ( void** stack, int size, StackOrder order )
 	//realloc if required
 	if (this->memSize < size)
 	{
-		this->stack   = (void**)MATT_REALLOC(this->stack,size * sizeof(void**));
+		this->mem     = (void**)MATT_REALLOC(this->mem,size * sizeof(void**));
+		this->stack   = this->mem;
 		this->memSize = size;
 	}
 	
@@ -370,7 +376,7 @@ void Stack::grow ( void )
 	//if not allocated
 	if (this->stack == NULL)
 	{
-		this->stack = (void**)MATT_MALLOC(sizeof(void*) * CALL_STACK_DEFAULT_SIZE);
+		this->mem = (void**)MATT_MALLOC(sizeof(void*) * CALL_STACK_DEFAULT_SIZE);
 		this->memSize = CALL_STACK_DEFAULT_SIZE;
 		this->size = 0;
 	} else {
@@ -381,8 +387,11 @@ void Stack::grow ( void )
 			this->memSize += CALL_STACK_GROW_THRESHOLD;
 
 		//resize memory
-		this->stack = (void**)MATT_REALLOC(this->stack,this->memSize * sizeof(void*));
+		this->mem = (void**)MATT_REALLOC(this->mem,this->memSize * sizeof(void*));
 	}
+	
+	//point stack on mem (no quick skip)
+	this->stack = mem;
 }
 
 /*******************  FUNCTION  *********************/
@@ -452,6 +461,23 @@ Stack& Stack::operator=(const Stack& stack)
 {
 	this->set(stack);
 	return *this;
+}
+
+/*******************  FUNCTION  *********************/
+void Stack::fastSkip(int depth)
+{
+	assert(depth >= 0 && depth < size);
+	
+	switch(order)
+	{
+		case STACK_ORDER_ASC:
+			this->size -= depth;
+			this->stack+= depth;
+			break;
+		case STACK_ORDER_DESC:
+			this->size-= depth;
+			break;
+	}
 }
 
 }

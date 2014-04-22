@@ -44,6 +44,7 @@ BacktraceStack::BacktraceStack(void)
 **/
 void BacktraceStack::loadCurrentStack(void)
 {
+	this->stack = this->mem;
 	if (this->stack == NULL)
 		this->grow();
 	

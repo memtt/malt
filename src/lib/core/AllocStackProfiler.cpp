@@ -44,19 +44,6 @@ AllocStackProfiler::AllocStackProfiler(const Options & options,StackMode mode,bo
 	//init internal alloc
 	if (gblInternaAlloc == NULL)
 		gblInternaAlloc = new SimpleAllocator(true);
-
-	switch(mode)
-	{
-		case STACK_MODE_BACKTRACE:
-			stack.loadCurrentStack();
-			break;
-		case STACK_MODE_ENTER_EXIT_FUNC:
-			exStack.enterFunction((void*)0x1);
-			exStack.exitFunction((void*)0x1);
-			break;
-		case STACK_MODE_USER:
-			break;
-	}
 	
 	//init tref to convert ticks in sec
 	gettimeofday(&trefSec,NULL);
@@ -66,20 +53,20 @@ AllocStackProfiler::AllocStackProfiler(const Options & options,StackMode mode,bo
 /*******************  FUNCTION  *********************/
 void AllocStackProfiler::onMalloc(void* ptr, size_t size,Stack * userStack)
 {
-	onAllocEvent(ptr,size,MATT_SKIP_DEPTH,userStack);
+	onAllocEvent(ptr,size,userStack);
 }
 
 /*******************  FUNCTION  *********************/
 void AllocStackProfiler::onCalloc(void* ptr, size_t nmemb, size_t size,Stack * userStack)
 {
-	onAllocEvent(ptr,size * nmemb,MATT_SKIP_DEPTH,userStack);
+	onAllocEvent(ptr,size * nmemb,userStack);
 }
 
 /*******************  FUNCTION  *********************/
 void AllocStackProfiler::onFree(void* ptr,Stack * userStack)
 {
 	if (ptr != NULL)
-		onFreeEvent(ptr,MATT_SKIP_DEPTH,userStack);
+		onFreeEvent(ptr,userStack);
 }
 
 /*******************  FUNCTION  *********************/
@@ -97,16 +84,16 @@ void AllocStackProfiler::onRealloc(void* oldPtr, void* ptr, size_t newSize,Stack
 		
 		//free part
 		if (oldPtr != NULL)
-			callStackNode = onFreeEvent(oldPtr,MATT_SKIP_DEPTH,userStack,callStackNode,false);
+			callStackNode = onFreeEvent(oldPtr,userStack,callStackNode,false);
 		
 		//alloc part
 		if (newSize > 0)
-			callStackNode = onAllocEvent(ptr,newSize,MATT_SKIP_DEPTH,userStack,callStackNode,false);
+			callStackNode = onAllocEvent(ptr,newSize,userStack,callStackNode,false);
 	MATT_END_CRITICAL
 }
 
 /*******************  FUNCTION  *********************/
-SimpleCallStackNode * AllocStackProfiler::onAllocEvent(void* ptr, size_t size,int skipDepth, Stack* userStack,SimpleCallStackNode * callStackNode,bool doLock)
+SimpleCallStackNode * AllocStackProfiler::onAllocEvent(void* ptr, size_t size,Stack* userStack,SimpleCallStackNode * callStackNode,bool doLock)
 {
 	MATT_OPTIONAL_CRITICAL(lock,threadSafe && doLock)
 		//update mem usage
@@ -126,7 +113,7 @@ SimpleCallStackNode * AllocStackProfiler::onAllocEvent(void* ptr, size_t size,in
 		{
 			//search if not provided
 			if (callStackNode == NULL)
-				callStackNode = getStackNode(skipDepth+1,userStack);
+				callStackNode = getStackNode(userStack);
 			
 			//count events
 			CODE_TIMING("updateInfoAlloc",callStackNode->getInfo().onAllocEvent(size));
@@ -145,7 +132,7 @@ SimpleCallStackNode * AllocStackProfiler::onAllocEvent(void* ptr, size_t size,in
 }
 
 /*******************  FUNCTION  *********************/
-SimpleCallStackNode * AllocStackProfiler::onFreeEvent(void* ptr,int skipDepth, Stack* userStack,SimpleCallStackNode * callStackNode,bool doLock)
+SimpleCallStackNode * AllocStackProfiler::onFreeEvent(void* ptr, MATT::Stack* userStack, MATT::SimpleCallStackNode* callStackNode, bool doLock)
 {
 	MATT_OPTIONAL_CRITICAL(lock,threadSafe && doLock)
 		//update memory usage
@@ -178,7 +165,7 @@ SimpleCallStackNode * AllocStackProfiler::onFreeEvent(void* ptr,int skipDepth, S
 		{
 			//search call stack info if not provided
 			if (callStackNode == NULL)
-				callStackNode = getStackNode(skipDepth+1,userStack);
+				callStackNode = getStackNode(userStack);
 			
 			//count events
 			CODE_TIMING("updateInfoFree",callStackNode->getInfo().onFreeEvent(size));
@@ -202,26 +189,10 @@ SimpleCallStackNode * AllocStackProfiler::onFreeEvent(void* ptr,int skipDepth, S
 }
 
 /*******************  FUNCTION  *********************/
-SimpleCallStackNode* AllocStackProfiler::getStackNode(int skipDepth,Stack* userStack)
+SimpleCallStackNode* AllocStackProfiler::getStackNode(Stack* userStack)
 {
 	SimpleCallStackNode * res = NULL;
-
-	//search with selected mode
-	switch(mode)
-	{
-		case STACK_MODE_BACKTRACE:
-			CODE_TIMING("loadCurrentStack",stack.loadCurrentStack());
-			CODE_TIMING("searchInfo",res = &stackTracer.getBacktraceInfo(stack,skipDepth+1));
-			break;
-		case STACK_MODE_ENTER_EXIT_FUNC:
-			CODE_TIMING("searchInfoEx",res = &stackTracer.getBacktraceInfo(exStack));
-			break;
-		case STACK_MODE_USER:
-			if (userStack != NULL)
-				CODE_TIMING("searchInfoUser",res = &stackTracer.getBacktraceInfo(*userStack));
-			break;
-	}
-
+	CODE_TIMING("searchInfo",res = &stackTracer.getBacktraceInfo(*userStack));
 	return res;
 }
 
@@ -286,24 +257,6 @@ void AllocStackProfiler::onExit(void )
 		gblInternaAlloc->printState();
 		#endif //MATT_ENABLE_CODE_TIMING
 	MATT_END_CRITICAL
-}
-
-/*******************  FUNCTION  *********************/
-void AllocStackProfiler::onEnterFunction ( void* funcAddr )
-{
-	assert(mode == STACK_MODE_ENTER_EXIT_FUNC);
-	assert(!threadSafe);
-	if (mode == STACK_MODE_ENTER_EXIT_FUNC)
-		this->exStack.enterFunction(funcAddr);
-}
-
-/*******************  FUNCTION  *********************/
-void AllocStackProfiler::onExitFunction ( void* funcAddr )
-{
-	assert(mode == STACK_MODE_ENTER_EXIT_FUNC);
-	assert(!threadSafe);
-	if (mode == STACK_MODE_ENTER_EXIT_FUNC)
-		this->exStack.exitFunction(funcAddr);
 }
 
 /*******************  FUNCTION  *********************/

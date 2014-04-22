@@ -60,18 +60,17 @@ class AllocStackProfiler
 		const Options * getOptions(void) const;
 		void registerPerThreadProfiler(LocalAllocStackProfiler * profiler);
 		ticks ticksPerSecond(void) const;
+		StackMode getStackMode(void) const {return mode;};
 	public:
 		friend void convertToJson(htopml::JsonState& json, const AllocStackProfiler& value);
 	private:
-		SimpleCallStackNode * getStackNode(int skipDepth, MATT::Stack* userStack = 0);
-		SimpleCallStackNode * onAllocEvent(void * ptr,size_t size, int skipDepth,Stack * userStack = NULL,SimpleCallStackNode * callStackNode = NULL,bool doLock = true);
-		SimpleCallStackNode * onFreeEvent(void* ptr, int skipDepth, Stack* userStack = NULL, SimpleCallStackNode* callStackNode = NULL, bool doLock = true);
+		SimpleCallStackNode * getStackNode(MATT::Stack* userStack = 0);
+		SimpleCallStackNode * onAllocEvent(void* ptr, size_t size, MATT::Stack* userStack = 0, MATT::SimpleCallStackNode* callStackNode = 0, bool doLock = true);
+		SimpleCallStackNode * onFreeEvent(void* ptr,Stack* userStack = NULL, SimpleCallStackNode* callStackNode = NULL, bool doLock = true);
 		void resolvePerThreadSymbols(void);
 	private:
 		SimpleStackTracer stackTracer;
 		SegmentTracker segTracker;
-		BacktraceStack stack;
-		EnterExitStack exStack;
 		ProfiledValue requestedMem;
 		ProfiledValue physicalMem;
 		ProfiledValue virtualMem;

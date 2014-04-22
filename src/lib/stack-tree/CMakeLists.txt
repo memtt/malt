@@ -7,7 +7,7 @@
 ######################################################
 
 ######################################################
-set(MATT_STACK_TREES_SRC StackSTLMap.cpp)
+set(MATT_STACK_TREES_SRC StackSTLMapList.cpp)
 
 ######################################################
 add_library(matt-stack-trees OBJECT ${MATT_STACK_TREES_SRC})

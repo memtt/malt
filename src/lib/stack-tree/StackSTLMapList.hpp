@@ -6,8 +6,8 @@
              LICENSE  : CeCILL-C
 *****************************************************/
 
-#ifndef MATT_STACK_MAP_HPP
-#define MATT_STACK_MAP_HPP
+#ifndef MATT_STACK_MAP_LIST_HPP
+#define MATT_STACK_MAP_LIST_HPP
 
 /********************  HEADERS  *********************/
 //extern
@@ -25,15 +25,15 @@ namespace MATT
 {
 
 /*********************  CLASS  **********************/
-class StackSTLMapAbstract
+class StackSTLMapListAbstract
 {
 	public:
 		typedef std::pair<const Stack *,void*> Node;
 		typedef std::vector<Node,STLInternalAllocator<Node> > InternalVector;
 		typedef std::map<StackHash,InternalVector,std::less<StackHash>,STLInternalAllocator<std::pair<StackHash,InternalVector> > > InternalMap;
 	public:
-		StackSTLMapAbstract(void);
-		virtual ~StackSTLMapAbstract(void);
+		StackSTLMapListAbstract(void);
+		virtual ~StackSTLMapListAbstract(void);
 		void resolveSymbols(SymbolResolver & symbolResolver);
 		void clear();
 	protected:
@@ -44,14 +44,14 @@ class StackSTLMapAbstract
 		virtual void deleteObject(void * ptr) const = 0;
 		virtual void printJsonValue(htopml::JsonState & json,const Stack * stack,void * value) const = 0;
 	public:
-		friend void convertToJson(htopml::JsonState & json, const StackSTLMapAbstract & value);
+		friend void convertToJson(htopml::JsonState & json, const StackSTLMapListAbstract & value);
 	private:
 		InternalMap map;
 };
 
 /*********************  CLASS  **********************/
 template <class T>
-class StackSTLMap : public StackSTLMapAbstract
+class StackSTLMapList : public StackSTLMapListAbstract
 {
 	public:
 		struct Node
@@ -60,12 +60,12 @@ class StackSTLMap : public StackSTLMapAbstract
 			T * value;
 		};
 	public:
-		virtual ~StackSTLMap(void);
+		virtual ~StackSTLMapList(void);
 		T & getValueRef(const Stack & stack,int skipDepth = 0);
 		T & operator[](const Stack & stack);
 		Node getNode(const Stack & stack,int skipDepth = 0);
 	public:
-		template <class U> friend void convertToJson(htopml::JsonState & json, const StackSTLMap<U> & value);
+		template <class U> friend void convertToJson(htopml::JsonState & json, const StackSTLMapList<U> & value);
 	protected:
 		virtual void* allocateObject(void ) const;
 		virtual void deleteObject(void* ) const;
@@ -75,6 +75,6 @@ class StackSTLMap : public StackSTLMapAbstract
 }
 
 /********************  HEADERS  *********************/
-#include "StackSTLMap_impl.hpp"
+#include "StackSTLMapList_impl.hpp"
 
-#endif //MATT_STACK_MAP_HPP
+#endif //MATT_STACK_MAP_LIST_HPP

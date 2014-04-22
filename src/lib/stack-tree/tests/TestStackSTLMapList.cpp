@@ -10,7 +10,7 @@
 #include <gtest/gtest.h>
 #include <json/ConvertToJson.h>
 #include <common/SimpleAllocator.hpp>
-#include <stack-tree/StackSTLMap.hpp>
+#include <stack-tree/StackSTLMapList.hpp>
 
 /***************** USING NAMESPACE ******************/
 using namespace MATT;
@@ -18,15 +18,15 @@ using namespace MATT;
 void * CST_VALUE_1[] = {(void*)0x1,(void*)0x2,(void*)0x3,(void*)0x4};
 
 /*******************  FUNCTION  *********************/
-TEST(StackSTLMap,constructor)
+TEST(StackSTLMapList,constructor)
 {
-	StackSTLMap<int> map;
+	StackSTLMapList<int> map;
 }
 
 /*******************  FUNCTION  *********************/
-TEST(StackSTLMap,getValueRef)
+TEST(StackSTLMapList,getValueRef)
 {
-	StackSTLMap<int> map;
+	StackSTLMapList<int> map;
 	Stack stack(CST_VALUE_1,4,STACK_ORDER_ASC);
 	
 	map.getValueRef(stack) = 10;
@@ -34,9 +34,9 @@ TEST(StackSTLMap,getValueRef)
 }
 
 /*******************  FUNCTION  *********************/
-TEST(StackSTLMap,operatorArray)
+TEST(StackSTLMapList,operatorArray)
 {
-	StackSTLMap<int> map;
+	StackSTLMapList<int> map;
 	Stack stack(CST_VALUE_1,4,STACK_ORDER_ASC);
 	
 	map[stack] = 10;
@@ -44,9 +44,9 @@ TEST(StackSTLMap,operatorArray)
 }
 
 /*******************  FUNCTION  *********************/
-TEST(StackSTLMap,toJson)
+TEST(StackSTLMapList,toJson)
 {
-	StackSTLMap<int> map;
+	StackSTLMapList<int> map;
 	Stack stack1(CST_VALUE_1,3,STACK_ORDER_ASC);
 	map[stack1] = 10;
 	Stack stack2(CST_VALUE_1,4,STACK_ORDER_ASC);
