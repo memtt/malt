@@ -15,12 +15,14 @@
 #include <execinfo.h>
 //from htopml
 #include <json/ConvertToJson.h>
+//internal potability
 #include <portability/OS.hpp>
-//internals
-#include <common/CodeTiming.hpp>
-#include <common/FormattedMessage.hpp>
-#include <common/SimpleAllocator.hpp>
+//internal commons
 #include <common/Debug.hpp>
+#include <common/Helpers.hpp>
+#include <common/CodeTiming.hpp>
+#include <common/SimpleAllocator.hpp>
+#include <common/FormattedMessage.hpp>
 //locals
 #include "AllocStackProfiler.hpp"
 #include "LocalAllocStackProfiler.hpp"
@@ -223,7 +225,7 @@ void AllocStackProfiler::onExit(void )
 		//config
 		if (options.outputDumpConfig)
 		{
-			options.dumpConfig(FormattedMessage(options.outputName).arg(OS::getExeName()).arg(OS::getPID()).arg("ini").toString().c_str());
+			options.dumpConfig(FormattedMessage(options.outputName).arg(OS::getExeName()).arg(Helpers::getFileId()).arg("ini").toString().c_str());
 		}
 		
 		//lua

@@ -23,6 +23,7 @@ namespace MATT
 struct Helpers
 {
 	static void printValue(std::ostream & out,double value, const char* unit = "");
+	static int getFileId(void);
 };
 
 };

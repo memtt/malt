@@ -11,6 +11,8 @@
 #include <cassert>
 #include <iomanip>
 #include <cstdio>
+//portability wrappers
+#include <portability/OS.hpp>
 //header to implement
 #include "Helpers.hpp"
 
@@ -49,6 +51,16 @@ void Helpers::printValue(std::ostream & out,double value, const char* unit)
 	
 	//print
 	out << setw(5) << std::right << buffer << " " << setw(1) << cstUnits[depth] << unit;
+}
+
+/*******************  FUNCTION  *********************/
+/**
+ * Return a numeric identifier to add to output filename. By default it uses the current
+ * PID but it can also be override by LD_PRELOAD to support MPI ranks.
+**/
+int Helpers::getFileId(void )
+{
+	return OS::getPID();
 }
 
 }

@@ -8,13 +8,49 @@
 ######################################################
 
 ######################################################
+ENABLE_MPI=false
+MPI_WRAPPER_DIR="$HOME/.matt"
+
+######################################################
+mattPrepMPI()
+{
+	#create dir
+	if [ ! -d "$MPI_WRAPPER_DIR/" ]; then
+		mkdir -p "$MPI_WRAPPER_DIR" || exit 1
+	fi
+	
+	#select mpicxx
+	mpicxx="$1"
+
+	#missing parameter
+	if [ -z "$mpicxx" ]; then
+		if [ ! -z "$MPICXX" ]; then
+			echo "No mpicxx provided by command, trying your MPICXX="$MPICXX" from environnement !"
+			mpicxx="$MPICXX"
+		else
+			echo "No mpicxx provided by command, trying default 'mpicxx' from environnement !"
+			mpicxx=mpicxx
+		fi
+	fi
+
+	#compile file
+	echo "$mpicxx" '-shared' '-fPIC' "@CMAKE_INSTALL_PREFIX@/share/matt/MattMPIRank.cpp" -o "$MPI_WRAPPER_DIR/libmattmpi.so"
+	"$mpicxx" '-shared' '-fPIC' "@CMAKE_INSTALL_PREFIX@/share/matt/MattMPIRank.cpp" -o "$MPI_WRAPPER_DIR/libmattmpi.so"
+	
+	#finish
+	exit $?
+}
+
+######################################################
 mattShowHelp()
 {
 	echo "Usage : matt [--config=file] [--help] [--] YOUR_COMMAND"
 	echo ""
 	echo "Options:"
-	echo "   -c=file/--config=file   Provide configuration file in INI format."
-	echo "   -h/--help               Show this help message."
+	echo "   -c=file/--config=file     Provide configuration file in INI format."
+	echo "           --mpi             Use MPI wrapper to get ranks in output file names."
+	echo "           --prep-mpi=mpicxx Build the mpi wrapper into $HOME/.matt/libmattmpi.so"
+	echo "   -h/--help                 Show this help message."
 	echo ""
 }
 
@@ -28,6 +64,22 @@ while true; do
 		;;
 		--config=*|-c=*)
 			export MATT_CONFIG="`echo "$1" | sed -e 's/^(--config=)|(-c=)//g'`"
+			shift 1
+		;;
+		--mpi)
+			ENABLE_MPI=true
+			if [ ! -e "$MPI_WRAPPER_DIR/libmattmpi.so" ]; then
+				echo "Missing MPI wrapper to extract ranks, please prepare it with 'matt --prep-mpi=MPICXX' !"
+				exit 1
+			fi
+			shift 1
+		;;
+		--prep-mpi=*)
+			mattPrepMPI "`echo "$1" | sed -e 's/^--prep-mpi=//g'`"
+			shift 1
+		;;
+		--prep-mpi)
+			mattPrepMPI
 			shift 1
 		;;
 		--)
@@ -46,4 +98,8 @@ done
 
 ######################################################
 #run
-LD_PRELOAD=@CMAKE_INSTALL_PREFIX@/lib/libmatt.so "$@"
+if [ "$ENABLE_MPI" = "true" ]; then
+	LD_PRELOAD="$MPI_WRAPPER_DIR/libmattmpi.so @CMAKE_INSTALL_PREFIX@/lib/libmatt.so" "$@"
+else
+	LD_PRELOAD="@CMAKE_INSTALL_PREFIX@/lib/libmatt.so" "$@"
+fi
