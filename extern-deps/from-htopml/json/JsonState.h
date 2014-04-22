@@ -86,6 +86,7 @@ class JsonState
 		void closeArray(void);
 		void openStruct(void);
 		void closeStruct(void);
+		void printListSeparator(void);
 		JsonStateEnum getState(void) const;
 		std::ostream & getStream(void);
 		FastBufferedStream & getFastStream(void);

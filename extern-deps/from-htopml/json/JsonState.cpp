@@ -355,4 +355,17 @@ void JsonState::popState(JsonStateEnum state)
 	stateStack.pop();
 }
 
+/*******************  FUNCTION  *********************/
+void JsonState::printListSeparator(void )
+{
+	//check where we are
+	assert(getState() & (JSON_STATE_FIELD | JSON_STATE_ARRAY | JSON_STATE_ROOT));
+
+	//separator
+	if (getState() == JSON_STATE_ARRAY && !isFirst())
+		bufferdStream << ", ";
+
+	firstIsDone();
+}
+
 }

@@ -7,13 +7,17 @@
 ######################################################
 
 ######################################################
-set(MATT_STACK_TREES_SRC StackSTLMap.cpp)
+#Use gtest
+include_directories(${GTEST_INCLUDE_DIRS} ${GMOCK_INCLUDE_DIRS})
+include_directories(../)
 
 ######################################################
-add_library(matt-stack-trees OBJECT ${MATT_STACK_TREES_SRC})
-SET_TARGET_PROPERTIES(matt-stack-trees PROPERTIES COMPILE_FLAGS -fPIC)
+set(TEST_NAMES TestStackSTLMap)
 
 ######################################################
-if (ENABLE_TESTS)
-	add_subdirectory(tests)
-endif (ENABLE_TESTS)
+FOREACH(test_name ${TEST_NAMES})
+	add_executable(${test_name} ${test_name}.cpp)
+	target_link_libraries(${test_name} ${GTEST_BOTH_LIBRARIES} ${GMOCK_BOTH_LIBRARIES} matt-base)
+	matt_add_test(${test_name} ${test_name})
+ENDFOREACH(test_name)
+

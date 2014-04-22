@@ -86,23 +86,23 @@ TEST(Array,grow)
 	
 	//fill 4
 	int i = 0;
-	for (i ; i < 4 ; i++) array.push_back(i);
+	for (; i < 4 ; i++) array.push_back(i);
 	EXPECT_EQ(4,array.getBufferSize());
 	
-	for (i ; i < 8 ; i++) array.push_back(i);
+	for (; i < 8 ; i++) array.push_back(i);
 	EXPECT_EQ(8,array.getBufferSize());
 	
-	for (i ; i < 16 ; i++) array.push_back(i);
+	for (; i < 16 ; i++) array.push_back(i);
 	EXPECT_EQ(16,array.getBufferSize());
 
-	for (i ; i < 32 ; i++) array.push_back(i);
+	for (; i < 32 ; i++) array.push_back(i);
 	EXPECT_EQ(32,array.getBufferSize());
 
 	// now grow linearly
-	for (i ; i < 48 ; i++) array.push_back(i);
+	for (; i < 48 ; i++) array.push_back(i);
 	EXPECT_EQ(48,array.getBufferSize());
 	
-	for (i ; i < 64 ; i++) array.push_back(i);
+	for (; i < 64 ; i++) array.push_back(i);
 	EXPECT_EQ(64,array.getBufferSize());
 }
 
