@@ -37,6 +37,7 @@ class ValgrindOutput
 {
 	public:
 		void pushStackInfo(SimpleCallStackNode& stackNode, const SymbolResolver& symbols);
+		void pushStackInfo(const Stack & stack,const CallStackInfo & info, const SymbolResolver& symbols);
 		void writeAsCallgrind(const std::string & filename,const SymbolResolver& dic);
 		void writeAsCallgrind(std::ostream & out, const SymbolResolver& dic);
 	protected:

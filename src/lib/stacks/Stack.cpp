@@ -231,7 +231,7 @@ StackHash Stack::hash ( void** stack, int size ,StackOrder order)
  * Operator to read stack entries. It provide a uniq ordering by checking the internal one.
  * The external representation exposed to the user is by convention the backtrace one (ASC).
 **/
-void* Stack::operator[](int idx)
+void* Stack::operator[](int idx) const
 {
 	//errors
 	assert(idx >= 0);

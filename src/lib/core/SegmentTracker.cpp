@@ -20,7 +20,6 @@ namespace MATT
 SegmentInfo::SegmentInfo(void)
 {
 	this->size = 0;
-	this->callStack = NULL;
 	this->allocTime = getticks();
 }
 
@@ -43,11 +42,11 @@ SegmentTracker::~SegmentTracker(void)
 }
 
 /*******************  FUNCTION  *********************/
-SegmentInfo* SegmentTracker::add(void* ptr, size_t size, SimpleCallStackNode* callStack)
+SegmentInfo* SegmentTracker::add(void* ptr, size_t size, MATT::MMCallStackNode callStack)
 {
 	//check errors
 	assert(this->get(ptr) == NULL);
-	assert(callStack != NULL);
+	assert(callStack.valid());
 	//assert(size > 0);
 
 	//create entry
@@ -88,7 +87,7 @@ void SegmentTracker::fillLeaks(LeakInfoMap& leakMap) const
 {
 	for(SegmentInfoMap::const_iterator it = map.begin() ; it != map.end() ; ++it)
 	{
-		LeakInfo & info = leakMap[it->second.callStack];
+		LeakInfo & info = leakMap[it->second.callStack.stack];
 		info.cnt++;
 		info.mem+=it->second.size;
 	}
@@ -113,7 +112,7 @@ LeakInfo::LeakInfo(void)
 void convertToJson(htopml::JsonState& json, const LeakInfoMap::const_iterator& it)
 {
 	json.openStruct();
-	json.printField("stack",it->first->getCallStack());
+	json.printField("stack",*(it->first));
 	json.printField("count",it->second.cnt);
 	json.printField("memory",it->second.mem);
 	json.closeStruct();

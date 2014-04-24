@@ -31,7 +31,7 @@ struct SimpleQuantityHistory
 {
 	SimpleQuantityHistory(void);
 	void addEvent(ssize_t value);
-	void push(SimpleQuantityHistory & value);
+	void push(const MATT::SimpleQuantityHistory& value);
 	ssize_t getMean(void) const;
 	size_t count;
 	ssize_t min;
@@ -50,7 +50,7 @@ struct CallStackInfo
 		void onAllocEvent(size_t value);
 		void onFreeEvent(size_t value);
 		void onFreeLinkedMemory(size_t value,ticks lifetime);
-		void push(CallStackInfo & info);
+		void push(const MATT::CallStackInfo& info);
 		void writeAsCallgrindEntry(int line, std::ostream & out) const;
 		static void writeCallgrindEventDef(std::ostream & out);
 // 	public:

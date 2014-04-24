@@ -23,13 +23,11 @@ namespace MATT
 {
 
 /*******************  FUNCTION  *********************/
-void ValgrindOutput::pushStackInfo(SimpleCallStackNode& stackNode,const SymbolResolver & symbols)
+void ValgrindOutput::pushStackInfo(const MATT::Stack& stack, const MATT::CallStackInfo& info, const MATT::SymbolResolver& symbols)
 {
 	int shift = 0;
 	
 	//get addresses
-	Stack & stack = stackNode.getCallStack();
-	CallStackInfo & stackInfo = stackNode.getInfo();
 	void * leafCalleePtr = stack.getCallee();
 	
 	//shift if operator new
@@ -38,7 +36,7 @@ void ValgrindOutput::pushStackInfo(SimpleCallStackNode& stackNode,const SymbolRe
 	
 	//search function info in caller map and reduce data
 	ValgrindCaller & funcInfo = callers[leafCalleePtr];
-	funcInfo.info.push(stackInfo);
+	funcInfo.info.push(info);
 	
 	//if as caller/callee, register inclusive costs
 	for (int i = 1 + shift ; i < stack.getSize() ; i++)
@@ -73,9 +71,15 @@ void ValgrindOutput::pushStackInfo(SimpleCallStackNode& stackNode,const SymbolRe
 
 			//cumulate on callee
 			CallStackInfo & calleeInfo = callerInfo.callees[calleePtr];
-			calleeInfo.push(stackInfo);
+			calleeInfo.push(info);
 		}
 	}
+}
+
+/*******************  FUNCTION  *********************/
+void ValgrindOutput::pushStackInfo(SimpleCallStackNode& stackNode,const SymbolResolver & symbols)
+{
+	pushStackInfo(stackNode.getCallStack(),stackNode.getInfo(),symbols);
 }
 
 /*******************  FUNCTION  *********************/

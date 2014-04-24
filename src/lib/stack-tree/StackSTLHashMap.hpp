@@ -17,6 +17,7 @@
 #include <common/STLInternalAllocator.hpp>
 //internal stacks
 #include <stacks/Stack.hpp>
+#include <core/SymbolResolver.hpp>
 #include <json/JsonState.h>
 
 /*******************  NAMESPACE  ********************/
@@ -30,6 +31,7 @@ class StackSTLHashMap
 	public:
 		struct Key {
 			Key(const Stack * stack);
+			void cloneStack(void);
 			bool operator == (const Key & node) const;
 			bool operator < (const Key & node) const;
 			const Stack * stack;
@@ -49,6 +51,7 @@ class StackSTLHashMap
 		iterator end();
 		const_iterator begin() const;
 		const_iterator end() const;
+		void resolveSymbols(SymbolResolver & symbolResolver);
 	public:
 		template <class U> friend void convertToJson(htopml::JsonState & json, const StackSTLHashMap<U> & value);
 	private:
@@ -82,6 +85,7 @@ typename StackSTLHashMap<T>::Node & StackSTLHashMap<T>::getNode(const Stack& sta
 	//if not found, create
 	if (it == map.end())
 	{
+		key.cloneStack();
 		map[key] = T();
 		it = map.find(key);
 	}
@@ -182,6 +186,23 @@ template <class T>
 typename StackSTLHashMap<T>::const_iterator StackSTLHashMap<T>::end() const
 {
 	return map.end();
+}
+
+/*******************  FUNCTION  *********************/
+template <class T>
+void StackSTLHashMap<T>::resolveSymbols(SymbolResolver& symbolResolver)
+{
+	for (typename StackSTLHashMap< T >::InternalMap::const_iterator it = map.begin() ; it != map.end() ; ++it)
+		it->first.stack->resolveSymbols(symbolResolver);
+}
+
+/*******************  FUNCTION  *********************/
+template <class T>
+void StackSTLHashMap<T>::Key::cloneStack(void)
+{
+	assert(stack != NULL);
+	void * ptr = MATT_MALLOC(sizeof(Stack));
+	stack = new(ptr) Stack(*stack);
 }
 
 }

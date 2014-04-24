@@ -17,6 +17,16 @@
 namespace MATT
 {
 
+/********************  STRUCT  **********************/
+struct MMCallStackNode
+{
+	MMCallStackNode(void) {stack = NULL; infos = NULL;};
+	MMCallStackNode(const Stack * stack,CallStackInfo * infos) {this->stack = stack; this->infos = infos;};
+	bool valid(void) const {return stack != NULL && infos != NULL;};
+	const Stack * stack;
+	CallStackInfo * infos;
+};
+
 /*********************  CLASS  **********************/
 class SimpleCallStackNode
 {

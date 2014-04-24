@@ -48,7 +48,7 @@ void SimpleQuantityHistory::addEvent(ssize_t value)
 }
 
 /*******************  FUNCTION  *********************/
-void SimpleQuantityHistory::push(SimpleQuantityHistory& value)
+void SimpleQuantityHistory::push(const SimpleQuantityHistory& value)
 {
 	if (this->count == 0)
 	{
@@ -127,7 +127,7 @@ CallStackInfo::~CallStackInfo(void )
 }
 
 /*******************  FUNCTION  *********************/
-void CallStackInfo::push(CallStackInfo& info)
+void CallStackInfo::push(const CallStackInfo& info)
 {
 	this->alive += info.alive;
 	this->maxAlive += info.maxAlive;

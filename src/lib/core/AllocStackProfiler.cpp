@@ -82,21 +82,26 @@ void AllocStackProfiler::onRealloc(void* oldPtr, void* ptr, size_t newSize,Stack
 {
 	MATT_OPTIONAL_CRITICAL(lock,threadSafe)
 		//to avoid to search it 2 times
-		SimpleCallStackNode * callStackNode = NULL;
+		MMCallStackNode callStackNode;
 		
 		//free part
 		if (oldPtr != NULL)
-			callStackNode = onFreeEvent(oldPtr,userStack,callStackNode,false);
+			onFreeEvent(oldPtr,userStack,&callStackNode,false);
 		
 		//alloc part
 		if (newSize > 0)
-			callStackNode = onAllocEvent(ptr,newSize,userStack,callStackNode,false);
+			onAllocEvent(ptr,newSize,userStack,&callStackNode,false);
 	MATT_END_CRITICAL
 }
 
 /*******************  FUNCTION  *********************/
-SimpleCallStackNode * AllocStackProfiler::onAllocEvent(void* ptr, size_t size,Stack* userStack,SimpleCallStackNode * callStackNode,bool doLock)
+void AllocStackProfiler::onAllocEvent(void* ptr, size_t size,Stack* userStack,MMCallStackNode * callStackNode,bool doLock)
 {
+	//locals
+	MMCallStackNode localCallStackNode;
+	if (callStackNode == NULL)
+		callStackNode = &localCallStackNode;
+	
 	MATT_OPTIONAL_CRITICAL(lock,threadSafe && doLock)
 		//update mem usage
 		if (options.timeProfileEnabled)
@@ -114,28 +119,31 @@ SimpleCallStackNode * AllocStackProfiler::onAllocEvent(void* ptr, size_t size,St
 		if (options.stackProfileEnabled)
 		{
 			//search if not provided
-			if (callStackNode == NULL)
-				callStackNode = getStackNode(userStack);
+			if (!callStackNode->valid())
+				*callStackNode = getStackNode(userStack);
 			
 			//count events
-			CODE_TIMING("updateInfoAlloc",callStackNode->getInfo().onAllocEvent(size));
+			CODE_TIMING("updateInfoAlloc",callStackNode->infos->onAllocEvent(size));
 		}
 
 		//register for segment history tracking
 		if (ptr != NULL)
-			CODE_TIMING("segTracerAdd",segTracker.add(ptr,size,callStackNode));
+			CODE_TIMING("segTracerAdd",segTracker.add(ptr,size,*callStackNode));
 	
 		//update intern mem usage
 		if (options.timeProfileEnabled)
 			internalMem.onUpdateValue(gblInternaAlloc->getInuseMemory());
 	MATT_END_CRITICAL
-
-	return callStackNode;
 }
 
 /*******************  FUNCTION  *********************/
-SimpleCallStackNode * AllocStackProfiler::onFreeEvent(void* ptr, MATT::Stack* userStack, MATT::SimpleCallStackNode* callStackNode, bool doLock)
+void AllocStackProfiler::onFreeEvent(void* ptr, MATT::Stack* userStack, MMCallStackNode* callStackNode, bool doLock)
 {
+	//locals
+	MMCallStackNode localCallStackNode;
+	if (callStackNode == NULL)
+		callStackNode = &localCallStackNode;
+
 	MATT_OPTIONAL_CRITICAL(lock,threadSafe && doLock)
 		//update memory usage
 		if (options.timeProfileEnabled && virtualMem.isNextPoint())
@@ -154,7 +162,7 @@ SimpleCallStackNode * AllocStackProfiler::onFreeEvent(void* ptr, MATT::Stack* us
 		if (segInfo == NULL)
 		{
 			//fprintf(stderr,"Caution, get unknown free segment : %p, ingore it.\n",ptr);
-			return NULL;
+			return;
 		}
 			
 		//update mem usage
@@ -166,14 +174,14 @@ SimpleCallStackNode * AllocStackProfiler::onFreeEvent(void* ptr, MATT::Stack* us
 		if (options.stackProfileEnabled)
 		{
 			//search call stack info if not provided
-			if (callStackNode == NULL)
-				callStackNode = getStackNode(userStack);
+			if (!callStackNode->valid())
+				*callStackNode = getStackNode(userStack);
 			
 			//count events
-			CODE_TIMING("updateInfoFree",callStackNode->getInfo().onFreeEvent(size));
+			CODE_TIMING("updateInfoFree",callStackNode->infos->onFreeEvent(size));
 			
 			//update alive (TODO, need to move this into a new function on StackNodeInfo)
-			segInfo->callStack->getInfo().onFreeLinkedMemory(size,lifetime);
+			segInfo->callStack.infos->onFreeLinkedMemory(size,lifetime);
 		}
 		
 		//remove tracking info
@@ -186,15 +194,14 @@ SimpleCallStackNode * AllocStackProfiler::onFreeEvent(void* ptr, MATT::Stack* us
 			internalMem.onUpdateValue(gblInternaAlloc->getInuseMemory());
 		}
 	MATT_END_CRITICAL
-	
-	return callStackNode;
 }
 
 /*******************  FUNCTION  *********************/
-SimpleCallStackNode* AllocStackProfiler::getStackNode(Stack* userStack)
+MMCallStackNode AllocStackProfiler::getStackNode(Stack* userStack)
 {
-	SimpleCallStackNode * res = NULL;
-	CODE_TIMING("searchInfo",res = &stackTracer.getBacktraceInfo(*userStack));
+	MMStackMap::Node * node;
+	CODE_TIMING("searchInfo",node = &stackTracer.getNode(*userStack));
+	MMCallStackNode res(node->first.stack,&node->second);
 	return res;
 }
 
@@ -249,7 +256,11 @@ void AllocStackProfiler::onExit(void )
 		{
 			fprintf(stderr,"Prepare valgrind output...\n");
 			ValgrindOutput vout;
-			stackTracer.fillValgrindOut(vout,symbolResolver);
+			
+			for (StackSTLHashMap<CallStackInfo>::const_iterator itMap = stackTracer.begin() ; itMap != stackTracer.end() ; ++itMap)
+				vout.pushStackInfo(*(itMap->first.stack),itMap->second,symbolResolver);
+			
+			//stackTracer.fillValgrindOut(vout,symbolResolver);
 			CODE_TIMING("outputCallgrind",vout.writeAsCallgrind(FormattedMessage(options.outputName).arg(OS::getExeName()).arg(OS::getPID()).arg("callgrind").toString(),symbolResolver));
 		}
 

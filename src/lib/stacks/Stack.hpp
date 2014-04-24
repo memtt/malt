@@ -75,7 +75,7 @@ class Stack
 		void set(const Stack & orig);
 		void * getCaller(void) const;
 		void * getCallee(void) const;
-		void * operator[] (int idx);
+		void * operator[] (int idx) const;
 		static bool partialCompare(const Stack & stack1,int skip1,const Stack & stack2,int skip2);
 		Stack & operator = (const Stack & stack);
 		size_t getMemSize(void) const;

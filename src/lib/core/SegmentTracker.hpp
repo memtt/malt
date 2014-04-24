@@ -36,7 +36,7 @@ struct SegmentInfo
 	ticks getLifetime(void) const;
 
 	//vars
-	SimpleCallStackNode * callStack;
+	MMCallStackNode callStack;
 	size_t size;
 	ticks allocTime;
 };
@@ -44,7 +44,7 @@ struct SegmentInfo
 /*********************  TYPES  **********************/
 typedef std::map<void*,SegmentInfo,std::less<void*>,STLInternalAllocator<std::pair<void*,SegmentInfo> > > SegmentInfoMap;
 // typedef std::map<void*,SegmentInfo> SegmentInfoMap;
-typedef std::map<const SimpleCallStackNode*,LeakInfo> LeakInfoMap;
+typedef std::map<const Stack *,LeakInfo> LeakInfoMap;
 
 /*********************  CLASS  **********************/
 class SegmentTracker
@@ -52,7 +52,7 @@ class SegmentTracker
 	public:
 		SegmentTracker(void);
 		~SegmentTracker(void);
-		SegmentInfo * add(void* ptr, size_t size, SimpleCallStackNode* callStack);
+		SegmentInfo * add(void* ptr, size_t size, MMCallStackNode callStack);
 		SegmentInfo * get(void * ptr);
 		void remove(void * ptr);
 	public:

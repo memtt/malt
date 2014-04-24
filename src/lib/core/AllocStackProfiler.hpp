@@ -24,6 +24,7 @@
 #include <stacks/EnterExitStack.hpp>
 #include "ProfiledValue.hpp"
 #include "StackSizeTracker.hpp"
+#include <stack-tree/StackSTLHashMap.hpp>
 
 /*******************  NAMESPACE  ********************/
 namespace MATT
@@ -42,6 +43,7 @@ enum StackMode
 
 /*********************  TYPES  **********************/
 typedef std::list<LocalAllocStackProfiler *,STLInternalAllocator<LocalAllocStackProfiler*> > LocalAllocStackProfilerList;
+typedef StackSTLHashMap<CallStackInfo> MMStackMap;
 
 /*********************  CLASS  **********************/
 class AllocStackProfiler
@@ -64,12 +66,13 @@ class AllocStackProfiler
 	public:
 		friend void convertToJson(htopml::JsonState& json, const AllocStackProfiler& value);
 	private:
-		SimpleCallStackNode * getStackNode(MATT::Stack* userStack = 0);
-		SimpleCallStackNode * onAllocEvent(void* ptr, size_t size, MATT::Stack* userStack = 0, MATT::SimpleCallStackNode* callStackNode = 0, bool doLock = true);
-		SimpleCallStackNode * onFreeEvent(void* ptr,Stack* userStack = NULL, SimpleCallStackNode* callStackNode = NULL, bool doLock = true);
+		MMCallStackNode getStackNode(MATT::Stack* userStack = 0);
+		void onAllocEvent(void* ptr, size_t size, Stack* userStack, MMCallStackNode* callStackNode = NULL, bool doLock = true);
+		void onFreeEvent(void* ptr, Stack* userStack, MMCallStackNode* callStackNode = NULL, bool doLock = true);
 		void resolvePerThreadSymbols(void);
 	private:
-		SimpleStackTracer stackTracer;
+		//SimpleStackTracer stackTracer;
+		StackSTLHashMap<CallStackInfo> stackTracer;
 		SegmentTracker segTracker;
 		ProfiledValue requestedMem;
 		ProfiledValue physicalMem;
