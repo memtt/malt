@@ -31,6 +31,7 @@ struct PorfiledValueEntry
 	//values
 	size_t min;
 	size_t max;
+	ticks index;
 	ticks timestamp;
 };
 
@@ -45,19 +46,20 @@ class ProfiledValue
 	public:
 		friend void convertToJson(htopml::JsonState& json, const ProfiledValue& value);
 	private:
-		void updateCurrentMinMax(ticks t);
+		void updateCurrentMinMax(ticks index, ticks timestamp);
 		void flush(void);
 		void resize(void);
-		ticks getticks() const;
+		ticks getIndex() const;
 	private:
 		size_t steps;
 		ticks startTime;
+		ticks startIndex;
 		PorfiledValueEntry * entries;
 		PorfiledValueEntry peak;
 		PorfiledValueEntry current;
 		size_t currentId;
-		ticks deltaT;
-		ticks nextT;
+		ticks deltaIndex;
+		ticks nextIndex;
 		size_t value;
 		ticks linearIndex;
 		bool useLinearIndex;

@@ -79,7 +79,7 @@ void Debug::end(void)
 			break;
 		case MESSAGE_ASSERT:
 			#ifdef NDEBUG
-				break();
+				break;
 			#else
 				if (line != 0)
 					std::cout << std::endl << cstLevelPrefix[level] << "At " <<  file << ':' << line << " : \n";

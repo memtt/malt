@@ -174,7 +174,7 @@ static StackMode getStackMode(Options & options)
 	} else if (strcmp(mode,"backtrace") == 0 || strcmp(mode,"") == 0) {
 		ret = STACK_MODE_BACKTRACE;
 	} else if (strcmp(mode,"enter-exit") == 0) {
-		ret = STACK_MODE_USER;
+		ret = STACK_MODE_ENTER_EXIT_FUNC;
 	} else {
 		MATT_FATAL_ARG("Invalid mode in MATT_STACK environnement variable : '%1'! Supportted : backtrace | enter-exit.").arg(mode).end();
 	}
