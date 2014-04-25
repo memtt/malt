@@ -37,9 +37,9 @@
 		
 		</div>
 		
-		<div id='chart' class='matt-chart' style='width:100%'>
+		<!--<div id='chart' class='matt-chart' style='width:100%'>
 			<svg style='height:200px;'> </svg>
-		</div>
+		</div>-->
 		
 		<div id='chart2' class='matt-chart' style='width:100%'>
 			<svg style='height:400px;'> </svg>
@@ -107,9 +107,9 @@
 		});
 		
 		
-		$.getJSON( "/max-stack-infos.json", function( data ) {
+		/*$.getJSON( "/max-stack-infos.json", function( data ) {
 			mattNVDGraph("chart",mattConvertDataStack(data),'B','Memory');
-		});
+		});*/
 		
 		$.getJSON( "/stacks-mem.json", function( data ) {
 			mattNVDGraph("chart2",mattConvertDataStackAll(data),'B','Memory');

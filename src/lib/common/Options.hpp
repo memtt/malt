@@ -43,6 +43,9 @@ struct Options
 	bool outputJson;
 	bool outputCallgrind;
 	bool outputDumpConfig;
+	//size map
+	bool distrAllocSize;
+	bool distrReallocJump;
 	bool operator==(const Options & value) const;
 };
 

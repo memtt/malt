@@ -40,8 +40,8 @@ class LocalAllocStackProfiler
 		void onFree(void * ptr);
 		void onCalloc(void * res,size_t nmemb,size_t size);
 		void onRealloc(void * ptr,void * res, size_t size);
-		void onEnterFunc(void *this_fn,void *call_site);
-		void onExitFunc(void *this_fn,void *call_site);
+		void onEnterFunc(void *this_fn,void *call_site,bool ignoreStack=false);
+		void onExitFunc(void *this_fn,void *call_site,bool ignoreStack=false);
 		void resolveSymbols(SymbolResolver & symbolResolver) const;
 	public:
 		friend void convertToJson(htopml::JsonState& json, const LocalAllocStackProfiler& value);

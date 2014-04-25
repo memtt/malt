@@ -110,26 +110,26 @@ void LocalAllocStackProfiler::onRealloc(void* ptr, void* res, size_t size)
 }
 
 /*******************  FUNCTION  *********************/
-void LocalAllocStackProfiler::onEnterFunc(void* this_fn, void* call_site)
+void LocalAllocStackProfiler::onEnterFunc(void* this_fn, void* call_site, bool ignoreStack)
 {
 	//stack current loc tracking
 	//TODO this is also done by LocalAllocStackProfiler, maybe try to point his object instead of recompute
 	enterExitStack.enterFunction(call_site);
 	
 	//max stack
-	if (options->maxStackEnabled)
+	if (options->maxStackEnabled && !ignoreStack)
 		stackSizeAnalyser.onEnterFunc(this_fn);
 }
 
 /*******************  FUNCTION  *********************/
-void LocalAllocStackProfiler::onExitFunc(void* this_fn, void* call_site)
+void LocalAllocStackProfiler::onExitFunc(void* this_fn, void* call_site, bool ignoreStack)
 {
 	//stack current loc tracking
 	//TODO this is also done by LocalAllocStackProfiler, maybe try to point his object instead of recompute
 	enterExitStack.exitFunction(call_site);
 	
 	//max stack
-	if (options->maxStackEnabled)
+	if (options->maxStackEnabled && !ignoreStack)
 		stackSizeAnalyser.onExitFunc(this_fn);
 }
 

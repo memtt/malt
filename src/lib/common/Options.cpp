@@ -38,6 +38,9 @@ Options::Options(void)
 	this->outputDumpConfig        = true;
 	//max stack
 	this->maxStackEnabled         = true;
+	//maps
+	this->distrAllocSize          = true;
+	this->distrReallocJump        = true;
 }
 
 /*******************  FUNCTION  *********************/
@@ -60,6 +63,9 @@ bool Options::operator==(const Options& value) const
 	if (this->outputDumpConfig != value.outputDumpConfig) return false;
 	//max stack
 	if (this->maxStackEnabled != value.maxStackEnabled) return false;
+	//maps
+	if (this->distrAllocSize != value.distrAllocSize) return false;
+	if (this->distrReallocJump != value.distrReallocJump) return false;
 	
 	return true;
 }
@@ -96,6 +102,10 @@ void Options::loadFromFile(const char* fname)
 	//max stack
 	this->maxStackEnabled     = iniparser_getboolean(iniDic,"max-stack:enabled",this->maxStackEnabled);
 	
+	//maps
+	this->distrAllocSize      = iniparser_getboolean(iniDic,"distr:alloc_size",this->distrAllocSize);
+	this->distrReallocJump    = iniparser_getboolean(iniDic,"distr:realloc_jump",this->distrReallocJump);
+	
 	//free dic
 	iniparser_freedict(iniDic);
 }
@@ -127,6 +137,10 @@ void Options::dumpConfig(const char* fname)
 	
 	//max stack
 	IniParserHelper::setEntry(dic,"max-stack:enabled",this->maxStackEnabled);
+	
+	//maps
+	IniParserHelper::setEntry(dic,"distr:alloc_size",this->distrAllocSize);
+	IniParserHelper::setEntry(dic,"distr:realloc_jump",this->distrReallocJump);
 	
 	//write
 	FILE * fp = fopen(fname,"w");

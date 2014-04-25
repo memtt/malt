@@ -86,9 +86,18 @@ function MattFuncTree(tableId)
 		addToTree(tree);
 	}
 	
+	this.onClick = function(location,infos)
+	{
+		alert('click on '+JSON.stringify(location));
+	}
+	
 	//add info to tree
 	this.addToTree = function(treeNode,selector,expandedDepth)
 	{
+		var cur = this;
+		if (expandedDepth < -5)
+			return;
+
 		for (var i in treeNode.childs)
 		{
 			//extract value
@@ -100,7 +109,9 @@ function MattFuncTree(tableId)
 			if (treeNode.id != null)
 				rows = rows.attr('data-tt-parent-id',treeNode.id);
 
-			var a = $('<span>'+i+'</span>').click(treeNode.childs[i],function(event) {alert('click on '+JSON.stringify(event.data));})
+			var a = $('<span>'+i+'</span>').click(treeNode.childs[i],function(event) {
+				cur.onClick(event.data.location,event.data.infos);
+			})
 				.css('cursor','pointer');
 			var td = $('<td/>').append(a);
 			rows.append(td);
@@ -208,6 +219,7 @@ function MattEditor(divId)
 	this.divId = divId;
 	this.div = document.getElementById(divId);
 	this.div.matt = this;
+	var cur = this;
 
 	//create code mirror
 	this.editor = CodeMirror(this.div,{
@@ -226,6 +238,12 @@ function MattEditor(divId)
 // 	$("#matt-alloc-stacks-tree")[0].stackViewRoots = [];
 	//tree
 	this.funcTree = new MattFuncTree("matt-alloc-stacks-tree");
+	this.funcTree.onClick = function(location,infos)
+	{
+		if (location.file == "??" || location.line == -1)
+			alert("Unknown location : "+location.file + " " + location.line);
+		cur.updateFile(location.file,location.line,false);
+	}
 	
 	//cur file name
 	this.file = null;

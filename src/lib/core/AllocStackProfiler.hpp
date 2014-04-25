@@ -41,9 +41,19 @@ enum StackMode
 	STACK_MODE_USER
 };
 
+/********************  STRUCT  **********************/
+struct ReallocJump
+{
+	bool operator < (const ReallocJump & jump) const {return jump.oldSize < jump.oldSize || (jump.oldSize == jump.oldSize && jump.newSize == jump.newSize);};
+	size_t oldSize;
+	size_t newSize;
+};
+
 /*********************  TYPES  **********************/
 typedef std::list<LocalAllocStackProfiler *,STLInternalAllocator<LocalAllocStackProfiler*> > LocalAllocStackProfilerList;
 typedef StackSTLHashMap<CallStackInfo> MMStackMap;
+typedef std::map<size_t,size_t> AllocSizeDistrMap;
+typedef std::map<ReallocJump,size_t> ReallocJumpMap;
 
 /*********************  CLASS  **********************/
 class AllocStackProfiler
@@ -68,11 +78,12 @@ class AllocStackProfiler
 	private:
 		MMCallStackNode getStackNode(MATT::Stack* userStack = 0);
 		void onAllocEvent(void* ptr, size_t size, Stack* userStack, MMCallStackNode* callStackNode = NULL, bool doLock = true);
-		void onFreeEvent(void* ptr, Stack* userStack, MMCallStackNode* callStackNode = NULL, bool doLock = true);
+		  size_t onFreeEvent(void* ptr, MATT::Stack* userStack, MATT::MMCallStackNode* callStackNode = 0, bool doLock = true);
 		void resolvePerThreadSymbols(void);
 	private:
 		//SimpleStackTracer stackTracer;
 		StackSTLHashMap<CallStackInfo> stackTracer;
+		AllocSizeDistrMap sizeMap;
 		SegmentTracker segTracker;
 		ProfiledValue requestedMem;
 		ProfiledValue physicalMem;
@@ -91,6 +102,7 @@ class AllocStackProfiler
 		LocalAllocStackProfilerList perThreadProfiler;
 		timeval trefSec;
 		ticks trefTicks;
+		ReallocJumpMap reallocJumpMap;
 };
 
 }

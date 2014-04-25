@@ -308,9 +308,9 @@ void * malloc(size_t size)
 	if (gblState.status == ALLOC_WRAP_READY && tlsState.status == ALLOC_WRAP_READY)
 	{
 		void * retAddr =__builtin_extract_return_addr(__builtin_return_address(0));
-		localState.profiler->onEnterFunc((void*)malloc,retAddr);
+		localState.profiler->onEnterFunc((void*)malloc,retAddr,true);
 		localState.profiler->onMalloc(res,size);
-		localState.profiler->onExitFunc((void*)malloc,retAddr);
+		localState.profiler->onExitFunc((void*)malloc,retAddr,true);
 	}
 
 	//return segment to user
@@ -337,9 +337,9 @@ void free(void * ptr)
 	if (gblState.status == ALLOC_WRAP_READY && tlsState.status == ALLOC_WRAP_READY)
 	{
 		void * retAddr =__builtin_extract_return_addr(__builtin_return_address(0));
-		localState.profiler->onEnterFunc((void*)free,retAddr);
+		localState.profiler->onEnterFunc((void*)free,retAddr,true);
 		localState.profiler->onFree(ptr);
-		localState.profiler->onExitFunc((void*)free,retAddr);
+		localState.profiler->onExitFunc((void*)free,retAddr,true);
 	}
 
 	//run the default function
@@ -381,9 +381,9 @@ void * calloc(size_t nmemb,size_t size)
 	if (gblState.status == ALLOC_WRAP_READY && tlsState.status == ALLOC_WRAP_READY)
 	{
 		void * retAddr =__builtin_extract_return_addr(__builtin_return_address(0));
-		localState.profiler->onEnterFunc((void*)calloc,retAddr);
+		localState.profiler->onEnterFunc((void*)calloc,retAddr,true);
 		localState.profiler->onCalloc(res,nmemb,size);
-		localState.profiler->onExitFunc((void*)calloc,retAddr);
+		localState.profiler->onExitFunc((void*)calloc,retAddr,true);
 	}
 
 	//return result to user
@@ -416,9 +416,9 @@ void * realloc(void * ptr, size_t size)
 	if (gblState.status == ALLOC_WRAP_READY && tlsState.status == ALLOC_WRAP_READY)
 	{
 		void * retAddr =__builtin_extract_return_addr(__builtin_return_address(0));
-		localState.profiler->onEnterFunc((void*)realloc,retAddr);
+		localState.profiler->onEnterFunc((void*)realloc,retAddr,true);
 		localState.profiler->onRealloc(ptr,res,size);
-		localState.profiler->onExitFunc((void*)realloc,retAddr);
+		localState.profiler->onExitFunc((void*)realloc,retAddr,true);
 	}
 	
 	return res;
@@ -446,9 +446,9 @@ int posix_memalign(void ** memptr,size_t align, size_t size)
 	if (gblState.status == ALLOC_WRAP_READY && memptr != NULL)
 	{
 		void * retAddr =__builtin_extract_return_addr(__builtin_return_address(0));
-		localState.profiler->onEnterFunc((void*)posix_memalign,retAddr);
+		localState.profiler->onEnterFunc((void*)posix_memalign,retAddr,true);
 		localState.profiler->onMalloc(*memptr,size);
-		localState.profiler->onExitFunc((void*)posix_memalign,retAddr);
+		localState.profiler->onExitFunc((void*)posix_memalign,retAddr,true);
 	}
 
 	//return segment to user
@@ -477,9 +477,9 @@ void *aligned_alloc(size_t alignment, size_t size)
 	if (gblState.status == ALLOC_WRAP_READY && tlsState.status == ALLOC_WRAP_READY)
 	{
 		void * retAddr =__builtin_extract_return_addr(__builtin_return_address(0));
-		localState.profiler->onEnterFunc((void*)aligned_alloc,retAddr);
+		localState.profiler->onEnterFunc((void*)aligned_alloc,retAddr,true);
 		localState.profiler->onMalloc(res,size);
-		localState.profiler->onExitFunc((void*)aligned_alloc,retAddr);
+		localState.profiler->onExitFunc((void*)aligned_alloc,retAddr,true);
 	}
 
 	//return segment to user
@@ -508,9 +508,9 @@ void *memalign(size_t alignment, size_t size)
 	if (gblState.status == ALLOC_WRAP_READY && tlsState.status == ALLOC_WRAP_READY)
 	{
 		void * retAddr =__builtin_extract_return_addr(__builtin_return_address(0));
-		localState.profiler->onEnterFunc((void*)memalign,retAddr);
+		localState.profiler->onEnterFunc((void*)memalign,retAddr,true);
 		localState.profiler->onMalloc(res,size);
-		localState.profiler->onExitFunc((void*)memalign,retAddr);
+		localState.profiler->onExitFunc((void*)memalign,retAddr,true);
 	}
 
 	//return segment to user
@@ -539,9 +539,9 @@ void *valloc(size_t size)
 	if (gblState.status == ALLOC_WRAP_READY && tlsState.status == ALLOC_WRAP_READY)
 	{
 		void * retAddr =__builtin_extract_return_addr(__builtin_return_address(0));
-		localState.profiler->onEnterFunc((void*)valloc,retAddr);
+		localState.profiler->onEnterFunc((void*)valloc,retAddr,true);
 		localState.profiler->onMalloc(res,size);
-		localState.profiler->onExitFunc((void*)valloc,retAddr);
+		localState.profiler->onExitFunc((void*)valloc,retAddr,true);
 	}
 
 	//return segment to user
@@ -570,9 +570,9 @@ void *pvalloc(size_t size)
 	if (gblState.status == ALLOC_WRAP_READY && tlsState.status == ALLOC_WRAP_READY)
 	{
 		void * retAddr =__builtin_extract_return_addr(__builtin_return_address(0));
-		localState.profiler->onEnterFunc((void*)pvalloc,retAddr);
+		localState.profiler->onEnterFunc((void*)pvalloc,retAddr,true);
 		localState.profiler->onMalloc(res,size);
-		localState.profiler->onExitFunc((void*)pvalloc,retAddr);
+		localState.profiler->onExitFunc((void*)pvalloc,retAddr,true);
 	}
 
 	//return segment to user

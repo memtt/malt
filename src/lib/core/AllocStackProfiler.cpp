@@ -10,6 +10,7 @@
 //standard
 #include <cstdio>
 #include <fstream>
+#include <sstream>
 #include <iostream>
 //extension GNU
 #include <execinfo.h>
@@ -83,14 +84,26 @@ void AllocStackProfiler::onRealloc(void* oldPtr, void* ptr, size_t newSize,Stack
 	MATT_OPTIONAL_CRITICAL(lock,threadSafe)
 		//to avoid to search it 2 times
 		MMCallStackNode callStackNode;
+		size_t oldSize = 0;
 		
 		//free part
 		if (oldPtr != NULL)
-			onFreeEvent(oldPtr,userStack,&callStackNode,false);
+			oldSize = onFreeEvent(oldPtr,userStack,&callStackNode,false);
 		
 		//alloc part
 		if (newSize > 0)
 			onAllocEvent(ptr,newSize,userStack,&callStackNode,false);
+		
+		//register size jump
+		if (options.distrReallocJump)
+		{
+			ReallocJump jump = {oldSize,newSize};
+			ReallocJumpMap::iterator it = reallocJumpMap.find(jump);
+			if (it == reallocJumpMap.end())
+				reallocJumpMap[jump] = 1;
+			else
+				it->second++;
+		}
 	MATT_END_CRITICAL
 }
 
@@ -129,6 +142,16 @@ void AllocStackProfiler::onAllocEvent(void* ptr, size_t size,Stack* userStack,MM
 		//register for segment history tracking
 		if (ptr != NULL)
 			CODE_TIMING("segTracerAdd",segTracker.add(ptr,size,*callStackNode));
+		
+		//update size map
+		if (options.distrAllocSize)
+		{
+			AllocSizeDistrMap::iterator it = sizeMap.find(size);
+			if (it == sizeMap.end())
+				sizeMap[size] = 1;
+			else
+				it->second++;
+		}
 	
 		//update intern mem usage
 		if (options.timeProfileEnabled)
@@ -137,9 +160,10 @@ void AllocStackProfiler::onAllocEvent(void* ptr, size_t size,Stack* userStack,MM
 }
 
 /*******************  FUNCTION  *********************/
-void AllocStackProfiler::onFreeEvent(void* ptr, MATT::Stack* userStack, MMCallStackNode* callStackNode, bool doLock)
+size_t AllocStackProfiler::onFreeEvent(void* ptr, MATT::Stack* userStack, MMCallStackNode* callStackNode, bool doLock)
 {
 	//locals
+	size_t size = 0;
 	MMCallStackNode localCallStackNode;
 	if (callStackNode == NULL)
 		callStackNode = &localCallStackNode;
@@ -162,11 +186,11 @@ void AllocStackProfiler::onFreeEvent(void* ptr, MATT::Stack* userStack, MMCallSt
 		if (segInfo == NULL)
 		{
 			//fprintf(stderr,"Caution, get unknown free segment : %p, ingore it.\n",ptr);
-			return;
+			return 0;
 		}
 			
 		//update mem usage
-		size_t size = segInfo->size;
+		size = segInfo->size;
 		ticks lifetime = segInfo->getLifetime();
 		if (options.timeProfileEnabled)
 			requestedMem.onDeltaEvent(-size);
@@ -194,6 +218,8 @@ void AllocStackProfiler::onFreeEvent(void* ptr, MATT::Stack* userStack, MMCallSt
 			internalMem.onUpdateValue(gblInternaAlloc->getInuseMemory());
 		}
 	MATT_END_CRITICAL
+	
+	return size;
 }
 
 /*******************  FUNCTION  *********************/
@@ -209,7 +235,7 @@ MMCallStackNode AllocStackProfiler::getStackNode(Stack* userStack)
 void AllocStackProfiler::resolvePerThreadSymbols()
 {
 	for (LocalAllocStackProfilerList::const_iterator it = perThreadProfiler.begin() ; it != perThreadProfiler.end() ; ++it)			
-			(*it)->resolveSymbols(symbolResolver);
+		(*it)->resolveSymbols(symbolResolver);
 }
 
 /*******************  FUNCTION  *********************/
@@ -304,6 +330,33 @@ void convertToJson(htopml::JsonState& json, const AllocStackProfiler& value)
 // 		json.printField("mem",value.largestStackMem);
 // 		json.printField("total",value.largestStackMem.getTotalSize());
 // 		json.closeFieldStruct("maxStack");
+	}
+	
+	if (value.options.distrAllocSize)
+	{
+		json.openFieldStruct("sizeMap");
+		for (AllocSizeDistrMap::const_iterator it = value.sizeMap.begin() ; it != value.sizeMap.end() ; ++it)			
+		{
+			std::stringstream out;
+			out << it->first;
+			json.printField(out.str().c_str(),it->second);
+		}
+		json.closeFieldStruct("sizeMap");
+	}
+	
+	if (value.options.distrReallocJump)
+	{
+		json.openFieldArray("reallocJump");
+		for (ReallocJumpMap::const_iterator it = value.reallocJumpMap.begin() ; it != value.reallocJumpMap.end() ; ++it)			
+		{
+			json.printListSeparator();
+			json.openStruct();
+			json.printField("oldSize",it->first.oldSize);
+			json.printField("newSize",it->first.newSize);
+			json.printField("count",it->second);
+			json.closeStruct();
+		}
+		json.closeFieldArray("reallocJump");
 	}
 	
 	json.printField("leaks",value.segTracker);
