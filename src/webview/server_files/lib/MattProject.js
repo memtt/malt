@@ -250,6 +250,26 @@ MattProject.prototype.getTimedValues = function()
 }
 
 /****************************************************/
+/**
+ * Build a summary from the whole datas.
+**/
+MattProject.prototype.getSummary = function()
+{
+	var ret = {};
+
+	//extract global stats
+	ret.globalStats = {};
+	ret.globalStats.segments = this.data.segments.peakMemory;
+	ret.globalStats.internalMemory  = this.data.internalMem.peakMemory;
+	ret.globalStats.virtualMem  = this.data.virtualMem.peakMemory;
+	ret.globalStats.requestedMem  = this.data.requestedMem.peakMemory;
+	//res.globalStats.minChunkSize = ;
+	//res.globalStats.maxChunkSize = ;
+
+	return ret;
+}
+
+/****************************************************/
 MattProject.prototype.getStacksMem = function()
 {
 	//prepare array

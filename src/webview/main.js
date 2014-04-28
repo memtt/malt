@@ -82,6 +82,13 @@ app.get('/flat.json',function(req,res) {
 });
 
 /****************************************************/
+app.get('/summary.json',function(req,res) {
+	var tmp = mattProject.getSummary();
+	res.write(JSON.stringify(tmp,null));
+	res.end();
+});
+
+/****************************************************/
 //export timed value to build charts
 app.get('/timed.json',function(req,res) {
 	var tmp = mattProject.getTimedValues();
@@ -187,6 +194,10 @@ app.get('/max-stack.html',function(eq,res,next){
 	res.render("max-stack",{});
 });
 
+/****************************************************/
+app.get('/summary.html',function(eq,res,next){
+	res.render("summary",{});
+});
 
 /****************************************************/
 //export static deps
