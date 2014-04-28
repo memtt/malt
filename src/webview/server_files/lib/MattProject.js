@@ -263,8 +263,28 @@ MattProject.prototype.getSummary = function()
 	ret.globalStats.internalMemory  = this.data.internalMem.peakMemory;
 	ret.globalStats.virtualMem  = this.data.virtualMem.peakMemory;
 	ret.globalStats.requestedMem  = this.data.requestedMem.peakMemory;
-	//res.globalStats.minChunkSize = ;
-	//res.globalStats.maxChunkSize = ;
+	ret.globalStats.physicalMem  = this.data.physicalMem.peakMemory;
+	
+	//search min/max/count size
+	var min = -1;
+	var max = -1;
+	var count = 0;
+	var stats = this.data.stackInfo.stats;
+	for(var i in stats)
+	{
+		var info = stats[i].infos;
+		if ((info.alloc.min < min || min == -1) && info.alloc.min > 0)
+			min = info.alloc.min;
+		if (info.alloc.max > max || max == -1)
+			max = info.alloc.max;
+		count += info.alloc.count;
+	}
+	
+	//extract
+	ret.globalStats.minChunkSize = min;
+	ret.globalStats.maxChunkSize = max;
+	ret.globalStats.count = count;
+	ret.globalStats.largestStack = this.getMaxStack().size;
 
 	return ret;
 }

@@ -196,7 +196,7 @@ app.get('/max-stack.html',function(eq,res,next){
 
 /****************************************************/
 app.get('/summary.html',function(eq,res,next){
-	res.render("summary",{});
+	res.render("summary",mattProject.getSummary());
 });
 
 /****************************************************/

@@ -24,19 +24,19 @@
 			</tr>
 			<tr>
 				<td>Max virtual memory</td>
-				<td></td>
+				<td><%= globalStats.virtualMem %></td>
 			</tr>
 			<tr>
 				<td>Max physical memory</td>
-				<td></td>
+				<td><%= globalStats.physicalMem %></td>
 			</tr>
 			<tr>
 				<td>Max requested memory</td>
-				<td></td>
+				<td><%= globalStats.requestedMem %></td>
 			</tr>
 			<tr>
 				<td>Allocations</td>
-				<td></td>
+				<td><%= globalStats.count %></td>
 			</tr>
 			<tr>
 				<td>Max alive objects</td>
@@ -44,11 +44,29 @@
 			</tr>
 			<tr>
 				<td>Smallest allocations</td>
-				<td></td>
+				<td><%= globalStats.minChunkSize %></td>
 			</tr>
 			<tr>
 				<td>Largest allocations</td>
-				<td></td>
+				<td><%= globalStats.maxChunkSize %></td>
+			</tr>
+			<tr>
+				<td>Largest stack</td>
+				<td><%= globalStats.largestStack %></td>
+			</tr>
+		</table>
+	</div>
+	
+	<div>
+		<h1>Alloc numbers</h1>
+		<table>
+			<tr>
+				<td>Ratio</td>
+				<td>Allocs</td>
+				<td>Function</td>
+			</tr>
+			<tr>
+				
 			</tr>
 		</table>
 	</div>
@@ -56,6 +74,6 @@
 
 <script type='text/javascript'>
 	$( document ).ready(function() {
-		
+
 	});
 </script>
