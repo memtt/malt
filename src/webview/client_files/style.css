@@ -11,10 +11,11 @@
 	width:5em;
 }
 
-#matt-source-editor .matt-annotation{
+#matt-source-editor div.matt-annotation-small{
 	font-size:11px;
 	text-align:right;
 	
+	padding:2px;
 	padding-right:9px;
 	
 	/* bardge http://cssdeck.com/labs/twitter-bootstrap-badges */
@@ -26,8 +27,50 @@
 	-webkit-border-radius: 9px;
 	-moz-border-radius: 9px;
 	border-radius: 9px;
-	background-color: #b94a48;
+	/*background-color: #b94a48;*/
+	background-color:#397EBA;
+	cursor:pointer;
+}
+
+#matt-source-editor div.matt-annotation-medium{
+	font-size:11px;
+	text-align:right;
 	
+	padding:2px;
+	padding-right:9px;
+	
+	/* bardge http://cssdeck.com/labs/twitter-bootstrap-badges */
+/* 	padding: 1px 9px 2px; */
+/* 	font-size: 12.025px; */
+	font-weight: bold;
+	white-space: nowrap;
+	color: #ffffff;
+	-webkit-border-radius: 9px;
+	-moz-border-radius: 9px;
+	border-radius: 9px;
+	/*background-color: #b94a48;*/
+	background-color:#FFAB57;
+	cursor:pointer;
+}
+
+#matt-source-editor div.matt-annotation-large{
+	font-size:11px;
+	text-align:right;
+	
+	padding:2px;
+	padding-right:9px;
+	
+	/* bardge http://cssdeck.com/labs/twitter-bootstrap-badges */
+/* 	padding: 1px 9px 2px; */
+/* 	font-size: 12.025px; */
+	font-weight: bold;
+	white-space: nowrap;
+	color: #ffffff;
+	-webkit-border-radius: 9px;
+	-moz-border-radius: 9px;
+	border-radius: 9px;
+	/*background-color: #b94a48;*/
+	background-color:#FF9595;
 	cursor:pointer;
 }
 
@@ -94,7 +137,7 @@
 	ellipsis;max-width:51%;
 }
 
-.matt-chart svg g rect {
+/*.matt-chart svg g rect {
 	background:red;
 }
 
@@ -110,8 +153,52 @@
 .matt-graph-background {
 	fill:#464D56;
 	opacity:1;
+}*/
+
+/*********************************************************/
+h2 {
+	border-bottom:1px  solid black;
 }
 
+.table-func-list {
+	border-collapse:collapse;
+	width:30%;
+	/*margin-left:auto;
+	margin-right:auto;*/
+}
+
+.table-func-list th {
+	text-align:center;
+}
+
+.table-func-list td {
+	padding:5px;
+}
+
+.table-func-list .progress {
+	width:50px;
+	padding:0px;
+}
+
+.table-func-list .size {
+	min-width:100px;
+	text-align:right;
+	padding-right:20px;
+}
+
+.table-func-list th, td {
+	border:1px solid lightgray;
+}
+
+.table-func-list tr:hover > td{
+	background-color:#E9E9E9;
+}
+
+/*********************************************************/
+.matt-graph-background
+{
+	
+}
 
 .ace_marker-layer .matt_warning {
     position: absolute;

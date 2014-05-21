@@ -92,7 +92,7 @@ function MattFuncListSelector(divId)
 	this.valueSelector['free.sum']    = {name: 'Freed mem.',extractor:function (entry) {return entry.free.sum;},'unit' : 'B',ref:'sum'};
 	this.valueSelector['free.count']  = {name: 'Free num.',extractor:function (entry) {return entry.free.count;},'unit':'',ref:'sum'};
 	this.valueSelector['memops']      = {name: 'Memory ops.',extractor:function (entry) {return entry.alloc.count + entry.free.count;},'unit' : '',ref:'sum'};
-	this.valueSelector['alivemem']    = {name: 'Alive memory',extractor:function (entry) {return entry.maxAliveReq;},'unit' : 'B',ref:'sum'};
+	this.valueSelector['alivemem']    = {name: 'Peak memory',extractor:function (entry) {return entry.maxAliveReq;},'unit' : 'B',ref:'sum'};
 	this.valueSelector['leaks']       = {name: 'Leaks',extractor:function (entry) {return entry.aliveReq;},'unit' : 'B',ref:'sum'};
 
 	//ok do render

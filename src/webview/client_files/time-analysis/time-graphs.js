@@ -151,7 +151,7 @@ function mattNVDGraph(divId,data,ylabel)
 			.datum(myData) //Populate the <svg> element with chart data...
 			.call(chart); //Finally, render the chart!
 
-		d3.select('#'+divId + " svg g g rect").attr('style','').classed('matt-graph-background',true);
+		//d3.select('#'+divId + " svg g g rect").attr('style','').classed('matt-graph-background',true);
 		
 		//Update the chart when window resizes.
 		nv.utils.windowResize(function() { chart.update() });
@@ -172,7 +172,7 @@ function sinAndCos(data) {
 			{
 				values: data.data[i], //values - represents the array of {x,y} data points
 				key: data.labels[i], //key - the name of the series.
-				color: colors[i], //color - optional: choose your own line color.
+				//color: colors[i], //color - optional: choose your own line color.
 				area:true
 			}
 		);

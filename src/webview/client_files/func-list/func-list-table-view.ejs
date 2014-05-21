@@ -8,10 +8,10 @@ function mattHumanValue(data,value)
 		return (100.0*value/data.ref).toFixed(1) + " %";
 	} else {
 		var power = 0;
-		while (value >= 1000)
+		while (value >= 1024)
 		{
 			power++;
-			value /= 1000;
+			value /= 1024;
 		}
 
 		//return value.toFixed(1) + " " + MATT_POWER[power] + data.unit;
@@ -22,9 +22,9 @@ function mattHumanValue(data,value)
 
 <table class='table-func-list'>
 	<tr>
-		<td>Ratio</td>
-		<td>Allocs</td>
-		<td>Function</td>
+		<th>Ratio</th>
+		<th>Allocs</th>
+		<th>Function</th>
 	</tr>
 	<% for(var i in data.entries.slice(0,4)) {%>
 		<tr>

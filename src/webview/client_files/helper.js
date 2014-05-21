@@ -7,10 +7,10 @@ function MattHelper()
 	this.humanReadableValue = function(value,unit,protectedSpace)
 	{
 		var power = 0;
-		while (value >= 1000)
+		while (value >= 1024)
 		{
 			power++;
-			value /= 1000;
+			value /= 1024;
 		}
 
 		var res;

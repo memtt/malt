@@ -226,7 +226,8 @@ function MattEditor(divId)
 		value: "//function myScript(){return 100;}\n",
 		mode:  "clike",
 		lineNumbers: true,
-		theme:'lesser-dark',
+		//theme:'lesser-dark',
+		theme:'eclipse',
 		indentWithTabs:true,
 		fixedGutter:true,
 		readOnly:true,
@@ -318,7 +319,7 @@ function MattEditor(divId)
 		return JSON.stringify(data,null,"\t");
 	}
 	
-	this.makeMarker = function(selector,mode,data) {
+	this.makeMarker = function(selector,mode,data,max) {
 		if (data[mode] == undefined)
 			return null;
 		
@@ -327,7 +328,12 @@ function MattEditor(divId)
 			return null;
 		
 		var marker = document.createElement("div");
-		marker.className = 'matt-annotation';
+		if (value < max / 3.0)
+			marker.className = 'matt-annotation-small';
+		else if (value < 2.0 * max / 3.0 )
+			marker.className = 'matt-annotation-medium';
+		else
+			marker.className = 'matt-annotation-large';
 		marker.innerHTML = mattHumanValue({unit:selector.unit},value);
 		marker.mattData = data;
 		var cur = this;
@@ -337,6 +343,22 @@ function MattEditor(divId)
 			cur.funcTree.update(this.mattData.file,this.mattData.line,selector);
 		};
 		return marker;
+	}
+	
+	//extract max
+	this.extractMax = function(selector,mode,data)
+	{
+		var max = 0;
+		for (var i in data)
+		{
+			if (data[i][mode] != undefined)
+			{
+				var value = selector.extractor(data[i][mode]);
+				if (value != undefined && value > max)
+					max = value;
+			}
+		}
+		return max;
 	}
 	
 	//update anotations
@@ -349,7 +371,13 @@ function MattEditor(divId)
 			{
 				data[i].file = cur.file;
 				computeTotal(data[i]);
-				cur.editor.setGutterMarker(data[i].line-1, "matt-annotations",cur.makeMarker(cur.selector,cur.mode,data[i]));
+			}
+			
+			var max = cur.extractMax(cur.selector,cur.mode,data);
+			
+			for (var i in data)
+			{
+				cur.editor.setGutterMarker(data[i].line-1, "matt-annotations",cur.makeMarker(cur.selector,cur.mode,data[i],max));
 			}
 		});
 	}
@@ -357,8 +385,9 @@ function MattEditor(divId)
 	this.redrawAnnotations = function()
 	{
 		this.editor.clearGutter
-		this.funcTree.updateSelector(this.selector);
+		var max = this.extractMax(this.selector,this.mode,this.data);
 		for (var i in this.data)
-			this.editor.setGutterMarker(this.data[i].line-1, "matt-annotations",this.makeMarker(this.selector,this.mode,this.data[i]));
+			this.editor.setGutterMarker(this.data[i].line-1, "matt-annotations",this.makeMarker(this.selector,this.mode,this.data[i],max));
+		this.funcTree.updateSelector(this.selector);
 	}
 }

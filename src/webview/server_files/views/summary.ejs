@@ -12,10 +12,10 @@ var MATT_POWER_NPS = [' ','K','M','G','T','P'];
 function mattHumanReadableValue(value,unit,protectedSpace)
 {
 		var power = 0;
-		while (value >= 1000)
+		while (value >= 1024)
 		{
 			power++;
-			value /= 1000;
+			value /= 1024;
 		}
 
 		var res;
@@ -32,66 +32,66 @@ function mattHumanReadableValue(value,unit,protectedSpace)
 <div class="container-fluid">
 	<div>
 		<!-- Global summary -->
-		<h1>Global statistics</h1>
-		<table>
+		<h2>Global statistics</h2>
+		<table class='table-func-list'>
 			<tr>
-				<td>Metric</td>
-				<td>Value</td>
+				<th>Metric</th>
+				<th>Value</th>
 			</tr>
 			<tr>
 				<td>Max virtual memory</td>
-				<td><%= mattHumanReadableValue(globalStats.virtualMem,'B') %></td>
+				<td class='size'><%= mattHumanReadableValue(globalStats.virtualMem,'B') %></td>
 			</tr>
 			<tr>
 				<td>Max physical memory</td>
-				<td><%= mattHumanReadableValue(globalStats.physicalMem,'B') %></td>
+				<td class='size'><%= mattHumanReadableValue(globalStats.physicalMem,'B') %></td>
 			</tr>
 			<tr>
 				<td>Max requested memory</td>
-				<td><%= mattHumanReadableValue(globalStats.requestedMem,'B') %></td>
+				<td class='size'><%= mattHumanReadableValue(globalStats.requestedMem,'B') %></td>
 			</tr>
 			<tr>
 				<td>Allocations</td>
-				<td><%= mattHumanReadableValue(globalStats.count,'') %></td>
+				<td class='size'><%= mattHumanReadableValue(globalStats.count,'') %></td>
 			</tr>
 			<tr>
 				<td>Max alive objects</td>
-				<td></td>
+				<td class='size'></td>
 			</tr>
 			<tr>
 				<td>Smallest allocations</td>
-				<td><%= mattHumanReadableValue(globalStats.minChunkSize,'B') %></td>
+				<td class='size'><%= mattHumanReadableValue(globalStats.minChunkSize,'B') %></td>
 			</tr>
 			<tr>
 				<td>Largest allocations</td>
-				<td><%= mattHumanReadableValue(globalStats.maxChunkSize,'B') %></td>
+				<td class='size'><%= mattHumanReadableValue(globalStats.maxChunkSize,'B') %></td>
 			</tr>
 			<tr>
 				<td>Largest stack</td>
-				<td><%= mattHumanReadableValue(globalStats.largestStack,'B') %></td>
+				<td class='size'><%= mattHumanReadableValue(globalStats.largestStack,'B') %></td>
 			</tr>
 		</table>
 	</div>
 	
 	<!-- Top functions -->
 	<div>
-		<h1>Alloc numbers</h1>
+		<h2>Alloc numbers</h2>
 		<div id='table-func-list-count'/>
 	</div>
 	<div>
-		<h1>Allocated memory</h1>
+		<h2>Allocated memory</h2>
 		<div id='table-func-list-mem'/>
 	</div>
 	<div>
-		<h1>Peak memory</h1>
+		<h2>Peak memory</h2>
 		<div id='table-func-list-peak'/>
 	</div>
 	<div>
-		<h1>Leaks</h1>
+		<h2>Leaks</h2>
 		<div id='table-func-list-leaks'/>
 	</div>
 	<div>
-		<h1>Smallest allocations</h1>
+		<h2>Smallest allocations</h2>
 		<div id='table-func-list-min'/>
 	</div>
 </div>
@@ -105,7 +105,7 @@ function mattHumanReadableValue(value,unit,protectedSpace)
 		
 		//allocated mem
 		var funcListSelectorMem = new MattFuncListSelector({sort:'asc',selected:'alloc.sum',mode:'own'});
-		var mattFuncListMem = new MattFuncListView('table-func-list-mem',funcListSelectorCount);
+		var mattFuncListMem = new MattFuncListView('table-func-list-mem',funcListSelectorMem);
 		
 		//allocated mem
 		var funcListSelectorMin = new MattFuncListSelector({sort:'desc',selected:'alloc.min',mode:'own'});
