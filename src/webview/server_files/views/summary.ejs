@@ -1,21 +1,37 @@
 <% layout('page-layout') -%>
-<% script('stack-analysis/flat-func-list.js') -%>
-<% script('stack-analysis/source-editor.js') -%>
 <% script('deps/d3js/d3.min.js') -%>
 
-<% script('deps/jquery-treetable/javascripts/src/jquery.treetable.js') -%>
-<% stylesheet('deps/jquery-treetable/stylesheets/jquery.treetable.css') %>
-<% stylesheet('deps/jquery-treetable/stylesheets/jquery.treetable.theme.default.css') %>
+<!-- Files to manage func lists -->
+<% script('func-list/func-list-selector.js') -%>
+<% script('func-list/func-list-view.js') -%>
 
-<% script('deps/codemirror/lib/codemirror.js') -%>
-<% script('deps/codemirror/mode/clike/clike.js') -%>
-<% script('deps/codemirror/addon/selection/active-line.js') -%>
-<% stylesheet('deps/codemirror/lib/codemirror.css') -%>
-<% stylesheet('deps/codemirror/theme/lesser-dark.css') -%>
+<!-- ********** SHORT HELPER FUNCTION TO RUN ON SERVER SIDE ****** -->
+<%
+var MATT_POWER_PS  = ['&nbsp;','K','M','G','T','P'];
+var MATT_POWER_NPS = [' ','K','M','G','T','P'];
+function mattHumanReadableValue(value,unit,protectedSpace)
+{
+		var power = 0;
+		while (value >= 1000)
+		{
+			power++;
+			value /= 1000;
+		}
+
+		var res;
+		if (protectedSpace)
+			res = value.toFixed(1) + " " + MATT_POWER_PS[power] + unit;
+		else
+			res = value.toFixed(1) + " " + MATT_POWER_NPS[power] + unit;
+
+		return res;
+}
+%>
 
 <!-- ****************** STACK ANALYSER *************** -->
 <div class="container-fluid">
 	<div>
+		<!-- Global summary -->
 		<h1>Global statistics</h1>
 		<table>
 			<tr>
@@ -24,19 +40,19 @@
 			</tr>
 			<tr>
 				<td>Max virtual memory</td>
-				<td><%= globalStats.virtualMem %></td>
+				<td><%= mattHumanReadableValue(globalStats.virtualMem,'B') %></td>
 			</tr>
 			<tr>
 				<td>Max physical memory</td>
-				<td><%= globalStats.physicalMem %></td>
+				<td><%= mattHumanReadableValue(globalStats.physicalMem,'B') %></td>
 			</tr>
 			<tr>
 				<td>Max requested memory</td>
-				<td><%= globalStats.requestedMem %></td>
+				<td><%= mattHumanReadableValue(globalStats.requestedMem,'B') %></td>
 			</tr>
 			<tr>
 				<td>Allocations</td>
-				<td><%= globalStats.count %></td>
+				<td><%= mattHumanReadableValue(globalStats.count,'') %></td>
 			</tr>
 			<tr>
 				<td>Max alive objects</td>
@@ -44,36 +60,72 @@
 			</tr>
 			<tr>
 				<td>Smallest allocations</td>
-				<td><%= globalStats.minChunkSize %></td>
+				<td><%= mattHumanReadableValue(globalStats.minChunkSize,'B') %></td>
 			</tr>
 			<tr>
 				<td>Largest allocations</td>
-				<td><%= globalStats.maxChunkSize %></td>
+				<td><%= mattHumanReadableValue(globalStats.maxChunkSize,'B') %></td>
 			</tr>
 			<tr>
 				<td>Largest stack</td>
-				<td><%= globalStats.largestStack %></td>
+				<td><%= mattHumanReadableValue(globalStats.largestStack,'B') %></td>
 			</tr>
 		</table>
 	</div>
 	
+	<!-- Top functions -->
 	<div>
 		<h1>Alloc numbers</h1>
-		<table>
-			<tr>
-				<td>Ratio</td>
-				<td>Allocs</td>
-				<td>Function</td>
-			</tr>
-			<tr>
-				
-			</tr>
-		</table>
+		<div id='table-func-list-count'/>
+	</div>
+	<div>
+		<h1>Allocated memory</h1>
+		<div id='table-func-list-mem'/>
+	</div>
+	<div>
+		<h1>Peak memory</h1>
+		<div id='table-func-list-peak'/>
+	</div>
+	<div>
+		<h1>Leaks</h1>
+		<div id='table-func-list-leaks'/>
+	</div>
+	<div>
+		<h1>Smallest allocations</h1>
+		<div id='table-func-list-min'/>
 	</div>
 </div>
 
+<!-- Main script to run on page load -->
 <script type='text/javascript'>
 	$( document ).ready(function() {
-
+		//alloc count
+		var funcListSelectorCount = new MattFuncListSelector({sort:'asc',selected:'alloc.count',mode:'own'});
+		var mattFuncListCount = new MattFuncListView('table-func-list-count',funcListSelectorCount);
+		
+		//allocated mem
+		var funcListSelectorMem = new MattFuncListSelector({sort:'asc',selected:'alloc.sum',mode:'own'});
+		var mattFuncListMem = new MattFuncListView('table-func-list-mem',funcListSelectorCount);
+		
+		//allocated mem
+		var funcListSelectorMin = new MattFuncListSelector({sort:'desc',selected:'alloc.min',mode:'own'});
+		var mattFuncListMin = new MattFuncListView('table-func-list-min',funcListSelectorMin);
+		
+		//allocated leaks
+		var funcListSelectorLeaks = new MattFuncListSelector({sort:'asc',selected:'leaks',mode:'own'});
+		var mattFuncListLeaks = new MattFuncListView('table-func-list-leaks',funcListSelectorLeaks);
+		
+		//allocated peak
+		var funcListSelectorPeak = new MattFuncListSelector({sort:'asc',selected:'alivemem',mode:'own'});
+		var mattFuncListPeak = new MattFuncListView('table-func-list-peak',funcListSelectorPeak);
+	
+		//use common data for all objs to limit request numbers
+		$.getJSON( "flat.json", function( data ) {
+			mattFuncListCount.setData(data);
+			mattFuncListMem.setData(data);
+			mattFuncListMin.setData(data);
+			mattFuncListLeaks.setData(data);
+			mattFuncListPeak.setData(data);
+		});
 	});
 </script>
