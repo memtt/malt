@@ -204,7 +204,7 @@ app.get('/max-stack.html',function(eq,res,next){
 
 /****************************************************/
 app.get('/summary.html',function(eq,res,next){
-	res.render("summary",mattProject.getSummary());
+	res.render("page-summary",mattProject.getSummary());
 });
 
 /****************************************************/
@@ -217,8 +217,8 @@ app.use('/deps/bootswatch/fonts',Express.static(__dirname + '/client_deps/bootst
 app.use('/deps/ejs',Express.static(__dirname + '/client_deps/ejs-1.0/'));
 app.use('/deps/ace',Express.static(__dirname + '/client_deps/ace-builds-1.1.1/'));
 app.use('/deps/jqplot',Express.static(__dirname + '/client_deps/jqplot-1.0.8/'));
-app.use('/deps/d3js',Express.static(__dirname + '/client_deps/d3js-3.4.2/'));
-app.use('/deps/nvd3',Express.static(__dirname + '/client_deps/nvd3-1.1.15-beta/'));
+app.use('/deps/d3js',Express.static(__dirname + '/node_modules/d3/'));
+app.use('/deps/nvd3',Express.static(__dirname + '/node_modules/nvd3/'));
 app.use('/deps/codemirror/lib',Express.static(__dirname + '/node_modules/codemirror/lib'));
 app.use('/deps/codemirror/theme',Express.static(__dirname + '/node_modules/codemirror/theme'));
 app.use('/deps/codemirror/mode',Express.static(__dirname + '/node_modules/codemirror/mode'));

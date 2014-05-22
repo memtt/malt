@@ -1,5 +1,5 @@
 {
-  "name": "matt-wenview",
+  "name": "matt-webview",
   "version": "0.0.0-dev",
   "description": "Web view based on Node.js for MATT.",
   "main": "main.js",
@@ -22,6 +22,8 @@
     "arg-parser": "1.0.x",
     "clone": "0.1.11",
     "ejs-locals": "1.0.2",
-    "codemirror": "~3.22.0"
+    "codemirror":"4.2.x",
+    "d3":"3.4.x",
+    "nvd3":"git+https://github.com/novus/nvd3.git#master",
   }
 }

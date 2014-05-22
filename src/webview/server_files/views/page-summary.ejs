@@ -33,7 +33,7 @@ function mattHumanReadableValue(value,unit,protectedSpace)
 	<div>
 		<!-- Global summary -->
 		<h2>Global statistics</h2>
-		<table class='table-func-list'>
+		<table class='table-func-list' id='table-global-summary'>
 			<tr>
 				<th>Metric</th>
 				<th>Value</th>
@@ -100,24 +100,24 @@ function mattHumanReadableValue(value,unit,protectedSpace)
 <script type='text/javascript'>
 	$( document ).ready(function() {
 		//alloc count
-		var funcListSelectorCount = new MattFuncListSelector({sort:'asc',selected:'alloc.count',mode:'own'});
-		var mattFuncListCount = new MattFuncListView('table-func-list-count',funcListSelectorCount);
+		var funcListSelectorCount = new MattFuncListSelector({sort:'asc',matric:'alloc.count',mode:'own'});
+		var mattFuncListCount = new MattFuncListView('table-func-list-count',MATT_FUNC_LIST_TABLE_VIEW,4,funcListSelectorCount);
 		
 		//allocated mem
-		var funcListSelectorMem = new MattFuncListSelector({sort:'asc',selected:'alloc.sum',mode:'own'});
-		var mattFuncListMem = new MattFuncListView('table-func-list-mem',funcListSelectorMem);
+		var funcListSelectorMem = new MattFuncListSelector({sort:'asc',matric:'alloc.sum',mode:'own'});
+		var mattFuncListMem = new MattFuncListView('table-func-list-mem',MATT_FUNC_LIST_TABLE_VIEW,4,funcListSelectorMem);
 		
 		//allocated mem
-		var funcListSelectorMin = new MattFuncListSelector({sort:'desc',selected:'alloc.min',mode:'own'});
-		var mattFuncListMin = new MattFuncListView('table-func-list-min',funcListSelectorMin);
+		var funcListSelectorMin = new MattFuncListSelector({sort:'desc',matric:'alloc.min',mode:'own'});
+		var mattFuncListMin = new MattFuncListView('table-func-list-min',MATT_FUNC_LIST_TABLE_VIEW,4,funcListSelectorMin);
 		
 		//allocated leaks
-		var funcListSelectorLeaks = new MattFuncListSelector({sort:'asc',selected:'leaks',mode:'own'});
-		var mattFuncListLeaks = new MattFuncListView('table-func-list-leaks',funcListSelectorLeaks);
+		var funcListSelectorLeaks = new MattFuncListSelector({sort:'asc',matric:'leaks',mode:'own'});
+		var mattFuncListLeaks = new MattFuncListView('table-func-list-leaks',MATT_FUNC_LIST_TABLE_VIEW,4,funcListSelectorLeaks);
 		
 		//allocated peak
-		var funcListSelectorPeak = new MattFuncListSelector({sort:'asc',selected:'alivemem',mode:'own'});
-		var mattFuncListPeak = new MattFuncListView('table-func-list-peak',funcListSelectorPeak);
+		var funcListSelectorPeak = new MattFuncListSelector({sort:'asc',matric:'peakmem',mode:'own'});
+		var mattFuncListPeak = new MattFuncListView('table-func-list-peak',MATT_FUNC_LIST_TABLE_VIEW,4,funcListSelectorPeak);
 	
 		//use common data for all objs to limit request numbers
 		$.getJSON( "flat.json", function( data ) {
