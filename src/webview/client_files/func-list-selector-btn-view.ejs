@@ -1,0 +1,19 @@
+<div class="btn-group">
+	<button type="button" class="btn btn-default" onclick="javascript:document.getElementById('<%= divId %>').matt.toogleSort();"><span class='glyphicon glyphicon-sort'/> </button>
+	<button type="button" class="btn btn-default" onclick="javascript:document.getElementById('<%= divId %>').matt.toogleUnit();"><b>%</b></button>
+	<button type="button" class="btn btn-default" onclick="javascript:document.getElementById('<%= divId %>').matt.toogleMode();"><b>I</b></button>
+	<button type="button" class="btn btn-default" onclick="javascript:document.getElementById('<%= divId %>').matt.movePrevPage();"><span class='glyphicon glyphicon-arrow-left'/> </button>
+	<button type="button" class="btn btn-default" onclick="javascript:document.getElementById('<%= divId %>').matt.moveNextPage();"><span class='glyphicon glyphicon-arrow-right'/> </button>
+	<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+		<span id='<%= divId %>.button-metric'>Allocated mem.</span>
+		<span class="caret"></span>
+	</button>
+	<ul class="dropdown-menu" id='matt-selector-list' role='menu'>
+		<% for(var i in metrics) {%>
+			<li><a href="javascript:document.getElementById('<%=  divId %>').matt.updateMetric('<%= i %>');"><%= metrics[i].name %></a></li>
+		<% } %>
+	</ul>
+	<div class="input-group">
+		<input class="form-control col-lg-8" type="text" placeholder="Search" id="matt-input-search" onkeyup="javascript:document.getElementById('<%=  divId %>').matt.setFilter(this.value);"></input>
+	</div>
+</div>

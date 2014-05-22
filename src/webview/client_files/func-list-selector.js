@@ -19,6 +19,9 @@ function MattFuncListSelector(defaults)
 	this.metricName = 'alloc.sum';//alloc.sum | alloc.count | alloc.min | alloc.max... (see this.metrics)
 	this.unit = 'real';//real | percent
 	this.sort = 'asc';//asc | desc
+	this.from = 0;
+	this.count = 4;
+	this.filter = '';
 	
 	//apply user selection
 	if (defaults != undefined)
@@ -27,6 +30,8 @@ function MattFuncListSelector(defaults)
 		if (defaults.mode != undefined) this.mode = defaults.mode;
 		if (defaults.unit != undefined) this.unit = defaults.unit;
 		if (defaults.sort != undefined) this.sort = defaults.sort;
+		if (defaults.from != undefined) this.from = defaults.from;
+		if (defaults.count != undefined) this.count = defaults.count;
 	}
 		
 	
@@ -49,6 +54,15 @@ function MattFuncListSelector(defaults)
 
 /********************************************************************/
 /**
+ * Return the list of available metrics
+**/
+MattFuncListSelector.prototype.getMetrics = function()
+{
+	return this.metrics;
+}
+
+/********************************************************************/
+/**
  * Checker function to validate the current state of the selector.
 **/
 MattFuncListSelector.prototype.sanityCheck = function()
@@ -57,6 +71,34 @@ MattFuncListSelector.prototype.sanityCheck = function()
 	mattHelper.assert($.inArray(this.sort,this.acceptedSort),"Invalid property 'sort' : " + this.mode);
 	mattHelper.assert($.inArray(this.unit,this.acceptedUnit),"Invalid property 'unit' : " + this.unit);
 	mattHelper.assert(this.metrics[this.metricName] != undefined,"Invalid property 'metricName' : " + this.metricName);
+}
+
+/********************************************************************/
+/**
+ * Select the next part of the list
+**/
+MattFuncListSelector.prototype.moveNextPage = function()
+{
+	this.from += this.count;
+	this.onChange();
+}
+
+/********************************************************************/
+/**
+ * Select the next part of the list
+**/
+MattFuncListSelector.prototype.movePrevPage = function()
+{
+	this.from -= this.count;
+	if (this.from > 0)
+		this.from = 0;
+	this.onChange();
+}
+
+/********************************************************************/
+MattFuncListSelector.prototype.getRange = function()
+{
+	return {from:this.from,count:this.count,to:this.from+this.count};
 }
 
 /********************************************************************/
@@ -170,6 +212,13 @@ MattFuncListSelector.prototype.internalGetUnit = function()
 }
 
 /********************************************************************/
+MattFuncListSelector.prototype.setFilter = function(value)
+{
+	this.filter = value;
+	this.onChange();
+}
+
+/********************************************************************/
 /**
  * Extract function list and format with user requirement
 **/
@@ -181,14 +230,17 @@ MattFuncListSelector.prototype.extractData = function(data)
 
 	for(var i in data)
 	{
-		var value = this.internalGetSelectedValue(data[i]);
-		if (value != 0)
+		var d = data[i];
+		if (this.filter == '' || d.function.indexOf(this.filter) > -1)
 		{
-			if (value > max)
-				max = value;
-			sum += value;
-			var d = data[i];
-			res.push({name:d.function,'value':value,'details':d});
+			var value = this.internalGetSelectedValue(d);
+			if (value != 0)
+			{
+				if (value > max)
+					max = value;
+				sum += value;
+				res.push({name:d.function,'value':value,'details':d});
+			}
 		}
 	}
 

@@ -1,6 +1,7 @@
 /********************************************************************/
 /** Some constantes **/
-var MATT_FUNC_LIST_TABLE_VIEW='/func-list/func-list-table-view.ejs';
+var MATT_FUNC_LIST_TABLE_VIEW='/func-list-table-view.ejs';
+var MATT_FUNC_LIST_LEFT_MENU='/func-list-menu-view.ejs';
 
 /********************************************************************/
 /** 
@@ -9,21 +10,16 @@ var MATT_FUNC_LIST_TABLE_VIEW='/func-list/func-list-table-view.ejs';
  * @param entryTemplate Provide the URL of the EJS file to use to render each entries.
  * @param funcListSelector profive a selector to filter the data to show in the view (must be MattFuncListSelector)
 **/
-function MattFuncListView(containerId,entryTemplate,count,funcListSelector)
+function MattFuncListView(containerId,entryTemplate,funcListSelector)
 {
 	//check type
 	mattHelper.assert(funcListSelector == undefined || funcListSelector instanceof MattFuncListSelector);
 	mattHelper.assert(entryTemplate != undefined);
-	mattHelper.assert(count != undefined && count > 0);
 	
 	//Store ID
 	this.containerId = containerId;
 	this.container = document.getElementById(containerId);
 	mattHelper.assert(this.container != undefined);
-	
-	//number of line to show
-	this.from = 0;
-	this.count = count;
 	
 	//keep track of URL for EJS template
 	this.entryTemplate = entryTemplate;
@@ -95,7 +91,7 @@ MattFuncListView.prototype.internalRender = function()
 	this.selector.sanityCheck();
 	var callback = new EJS({url: this.entryTemplate}).update(this.containerId);
 	this.formattedData = this.selector.extractData(this.data);
-	callback({data:this.formattedData,mattHelper:mattHelper,containerId:this.containerId,from:this.from,count:this.count});
+	callback({data:this.formattedData,mattHelper:mattHelper,containerId:this.containerId,range:this.selector.getRange()});
 }
 
 /********************************************************************/	

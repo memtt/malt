@@ -1,18 +1,31 @@
 <% layout('page-layout') -%>
-<% script('stack-analysis/flat-func-list.js') -%>
-<% script('stack-analysis/source-editor.js') -%>
+
+<!-- To manage the function list on the left -->
+<% script('func-list-view.js') -%>
+<% script('func-list-selector.js') -%>
+<% script('func-list-selector-btn.js') -%>
+
+<!-- To manage code view -->
+<% script('source-editor.js') -%>
+
+<!-- Used to get color gradiant into source editor -->
 <% script('deps/d3js/d3.min.js') -%>
 
-<% script('deps/jquery-treetable/javascripts/src/jquery.treetable.js') -%>
-<% stylesheet('deps/jquery-treetable/stylesheets/jquery.treetable.css') %>
-<% stylesheet('deps/jquery-treetable/stylesheets/jquery.treetable.theme.default.css') %>
+<!-- Use to display info when clicking on editor annotations -->
+<% script('call-site-detail-view.js') -%>
 
+<!-- lib for code editor -->
 <% script('deps/codemirror/lib/codemirror.js') -%>
 <% script('deps/codemirror/mode/clike/clike.js') -%>
 <% script('deps/codemirror/addon/selection/active-line.js') -%>
 <% stylesheet('deps/codemirror/lib/codemirror.css') -%>
 <% stylesheet('deps/codemirror/theme/lesser-dark.css') -%>
 <% stylesheet('deps/codemirror/theme/eclipse.css') -%>
+
+<!-- Used to build the tree table to show call stacks -->
+<% script('deps/jquery-treetable/javascripts/src/jquery.treetable.js') -%>
+<% stylesheet('deps/jquery-treetable/stylesheets/jquery.treetable.css') %>
+<% stylesheet('deps/jquery-treetable/stylesheets/jquery.treetable.theme.default.css') %>
 
 <!-- ****************** STACK ANALYSER *************** -->
 <div class="container-fluid">
@@ -68,19 +81,53 @@
 
 <script type='text/javascript'>
 	$( document ).ready(function() {
-		var mattEditor = new MattEditor('matt-source-editor');
-		var mattFuncList = new MattFuncList('matt-func-list');
-		var mattFuncListSelector = new MattFuncListSelector('matt-func-list-selector');
-		mattFuncListSelector.onChange = function(){
-			mattFuncList.updateOptions(this);
+		//left menu with buttons and func list
+		var selectorButtons = new MattFuncListSelectorButtons('matt-func-list-selector',{count:30});
+		
+		//create left menu
+		var leftFuncList = new MattFuncListView('matt-func-list',MATT_FUNC_LIST_LEFT_MENU,selectorButtons.getSelector());
+		leftFuncList.render();
+		
+		//setup code editor
+		var codeEditor = new MattSourceEditor('matt-source-editor',selectorButtons.getSelector());
+		
+		//setup detail zone
+		var detailView = new MattCallSiteDetailView('matt-alloc-info');
+		
+		//dispatch event when clicking on entry of left menu
+		leftFuncList.onClick = function(details)
+		{
+			//alert('click on left menu TODO '+details.file+'\n'+JSON.stringify(details,null,'\t'));
+			//codeEditor.moveToFile(details.file);
+			//codeEditor.moveToFileLine(details.file,details.line);
+			codeEditor.moveToFileFunction(details.file,details.function);
+			detailView.render(details);
+		}
+		
+		//dispatch click on annotations
+		codeEditor.onClick = function(details)
+		{
+			detailView.render(details);
+		}
+		
+		//dispatch update of view mode (metric...)
+		selectorButtons.getSelector().onChange = function()
+		{
+			codeEditor.redrawAnnotations();
+		}
+		
+		////////////////////////////////////////////////////////////////////////////////////////////
+		/*
+		selectorButtons.getSelector().onChange = function(){
+			leftFuncList.render();
 			mattEditor.setConfig(mattFuncListSelector.getSelector(),mattFuncListSelector.mode);
 			mattEditor.redrawAnnotations();
 		};
-		mattFuncList.onClick = function(details)
+		leftFuncList.onClick = function(details)
 		{
+			alert('ok');
 			mattEditor.setConfig(mattFuncListSelector.getSelector(),mattFuncListSelector.mode);
 			mattEditor.update(details,true);
-		}
-		mattFuncList.updateOptions(mattFuncListSelector);
+		}*/
 	});
 </script>

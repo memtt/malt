@@ -184,12 +184,12 @@ app.get('/proc-map-distr.json',function(req,res) {
 
 /****************************************************/
 app.get('/',function(eq,res,next){
-	res.render("stack-analysis",{});
+	res.render("page-summary",mattProject.getSummary());
 });
 
 /****************************************************/
-app.get('/stack-analysis.html',function(eq,res,next){
-	res.render("stack-analysis",{});
+app.get('/source-profile.html',function(eq,res,next){
+	res.render("page-source-profile",{});
 });
 
 /****************************************************/

@@ -125,7 +125,7 @@ MattProject.prototype.getFileLinesFlatProfile = function(file,total)
 	var res = this.getFlatProfile(
 		function(entry) {return entry.line;},        //map on lines
 		function(entry) {return entry.file == file}, //accept only requested file
-		['line'],                                    //export only line info
+		['line','function'],                         //export only line info
 		total);
 	return res;
 }
