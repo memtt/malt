@@ -7,7 +7,7 @@
 function MattSourceEditor(containerId,selector)
 {
 	//errors
-	mattHelper.assert(selector != undefined);
+	mattHelper.assert(selector != undefined && selector instanceof MattFuncListSelector);
 	
 	//setup container
 	this.containerId = containerId;

@@ -14,6 +14,9 @@
 <!-- Use to display info when clicking on editor annotations -->
 <% script('call-site-detail-view.js') -%>
 
+<!-- Use to display call stack tree -->
+<% script('call-stacks-view.js') %>
+
 <!-- lib for code editor -->
 <% script('deps/codemirror/lib/codemirror.js') -%>
 <% script('deps/codemirror/mode/clike/clike.js') -%>
@@ -94,6 +97,9 @@
 		//setup detail zone
 		var detailView = new MattCallSiteDetailView('matt-alloc-info');
 		
+		//call stacks
+		var callStacks = new MattCallStacksView('matt-alloc-stacks-tree',selectorButtons.getSelector());
+		
 		//dispatch event when clicking on entry of left menu
 		leftFuncList.onClick = function(details)
 		{
@@ -102,18 +108,27 @@
 			//codeEditor.moveToFileLine(details.file,details.line);
 			codeEditor.moveToFileFunction(details.file,details.function);
 			detailView.render(details);
+			callStacks.updateFunc(details.function);
 		}
 		
 		//dispatch click on annotations
 		codeEditor.onClick = function(details)
 		{
 			detailView.render(details);
+			callStacks.update(details.file,details.line);
 		}
 		
 		//dispatch update of view mode (metric...)
 		selectorButtons.getSelector().onChange = function()
 		{
 			codeEditor.redrawAnnotations();
+		}
+		
+		//distpatch click on stack tree
+		callStacks.onClick = function(location,info)
+		{
+			//alert(JSON.stringify(info));
+			codeEditor.moveToFileFunction(location.file,location.function);
 		}
 		
 		////////////////////////////////////////////////////////////////////////////////////////////

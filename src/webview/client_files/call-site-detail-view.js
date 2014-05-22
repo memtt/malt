@@ -4,7 +4,7 @@
  * detailed info about the location.
  * @param containerId Provide the ID of the div in which to setup the code editor.
 **/
-function MattCallSiteDetailView(containerId,selector)
+function MattCallSiteDetailView(containerId)
 {
 	//setup container
 	this.containerId = containerId;

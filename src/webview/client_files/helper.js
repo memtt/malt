@@ -35,5 +35,29 @@ MattHelper.prototype.assert = function(condition,message)
 		throw Error("Assert failed" + (typeof message !== "undefined" ? ": " + message : ""));
 }
 
+/********************************************************************/
+MattHelper.prototype.mergeStackMinMaxInfo = function(onto,value)
+{
+	onto.count += value.count;
+	onto.sum += value.sum;
+	if (onto.min == 0 || (value.min < onto.min && value.min != 0))
+		onto.min = value.min;
+	if (onto.max == 0 || (value.max > onto.max && value.max != 0))
+		onto.max = value.max;
+}
+
+/********************************************************************/
+MattHelper.prototype.mergeStackInfoDatas = function(onto,value)
+{
+	onto.countZeros += value.countZeros;
+	onto.maxAliveReq += value.maxAliveReq;
+	onto.aliveReq += value.aliveReq;
+
+	this.mergeStackMinMaxInfo(onto.alloc,value.alloc);
+	this.mergeStackMinMaxInfo(onto.free,value.free);
+	this.mergeStackMinMaxInfo(onto.lifetime,value.lifetime);
+}
+
+/********************************************************************/
 //setup global instance
 var mattHelper = new MattHelper();
