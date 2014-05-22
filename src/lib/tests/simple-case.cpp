@@ -244,7 +244,7 @@ void allocOnStackRecurse(int depth)
 void testParallelWithRecurse(void)
 {
 	#pragma omp parallel
-	testRecuseIntervedA(10);
+	testRecuseIntervedB(5);
 }
 
 /*******************  FUNCTION  *********************/

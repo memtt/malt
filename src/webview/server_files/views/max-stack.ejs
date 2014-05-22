@@ -20,6 +20,11 @@
 
 <!-- ****************** STACK ANALYSER *************** -->
 <div class="container-fluid">
+	<div class="btn-group" id='thread-selector'>
+	</div>
+	
+	<br/>
+
 	<!-- Func lis -->
 	<div id='stack-blocks' style='width:100%'>
 		<div class="progress" style='height:45px;' id='stack-blocks-progress'>
@@ -80,10 +85,10 @@
 		'#5CB85C','#74C374',//green
 		'#1B84EC','#428BCA','#5E9CD2',//blue
 		'#BE2ABC','#E390EC'];//purple
-
-	$( document ).ready(function() {
-		$.getJSON( "max-stack.json", function( data ) {
-			//data.details = data.details.sort(function(a,b) {return a.mem < b.mem;});
+		
+	function drawStackMem(data)
+	{
+		//data.details = data.details.sort(function(a,b) {return a.mem < b.mem;});
 			var total = data.totalMem;
 			$('#matt-max-stack-size').text(mattHelper.humanReadableValue(total,'B'));
 			for (var i = 0 ; i < data.details.length ; i++)
@@ -104,6 +109,19 @@
 					$("#stack-blocks-progress").append(el);
 				}
 			}
+	}
+	
+	function updateStackMem(id)
+	{
+		$("#stack-blocks-progress").empty();
+		$.getJSON( "stack.json?id="+id, function( data ) {
+			drawStackMem(data);
+		});
+	}
+
+	$( document ).ready(function() {
+		$.getJSON( "max-stack.json", function( data ) {
+			drawStackMem(data);
 		});
 		
 		
@@ -111,8 +129,18 @@
 			mattNVDGraph("chart",mattConvertDataStack(data),'B','Memory');
 		});*/
 		
+		var stackData = null;
 		$.getJSON( "/stacks-mem.json", function( data ) {
+			stackData = data;
+			for (var i in data)
+			{
+				var b = $('<button type="button" class="btn btn-default" onclick="">'+i+'</button>');
+				b.click(i,function(evt) {updateStackMem(evt.data);});
+				$('#thread-selector').append(b);
+			}
 			mattNVDGraph("chart2",mattConvertDataStackAll(data),'B','Memory');
+			
+			
 		});
 		
 	});

@@ -319,7 +319,7 @@ function MattEditor(divId)
 		return JSON.stringify(data,null,"\t");
 	}
 	
-	this.makeMarker = function(selector,mode,data,max) {
+	this.makeMarker = function(selector,mode,data,max,colorScale) {
 		if (data[mode] == undefined)
 			return null;
 		
@@ -334,6 +334,7 @@ function MattEditor(divId)
 			marker.className = 'matt-annotation-medium';
 		else
 			marker.className = 'matt-annotation-large';
+		marker.style = "background-color:"+colorScale(value);
 		marker.innerHTML = mattHumanValue({unit:selector.unit},value);
 		marker.mattData = data;
 		var cur = this;
@@ -374,11 +375,12 @@ function MattEditor(divId)
 			}
 			
 			var max = cur.extractMax(cur.selector,cur.mode,data);
+			var colorScale = d3.scale.linear()
+				.range(["#397EBA","#FF9595"])
+				.domain([0,max]);
 			
 			for (var i in data)
-			{
-				cur.editor.setGutterMarker(data[i].line-1, "matt-annotations",cur.makeMarker(cur.selector,cur.mode,data[i],max));
-			}
+				cur.editor.setGutterMarker(data[i].line-1, "matt-annotations",cur.makeMarker(cur.selector,cur.mode,data[i],max,colorScale));
 		});
 	}
 	

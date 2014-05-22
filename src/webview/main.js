@@ -168,6 +168,14 @@ app.get('/max-stack.json',function(req,res) {
 });
 
 /****************************************************/
+app.get('/stack.json',function(req,res) {
+	var id = req.query.id;
+	var tmp = mattProject.getStackInfoOnFunction(id);
+	res.write(JSON.stringify(tmp,null,'\t'));
+	res.end();
+});
+
+/****************************************************/
 app.get('/proc-map-distr.json',function(req,res) {
 	var tmp = mattProject.getProcMapDistr();
 	res.write(JSON.stringify(tmp,null,'\t'));

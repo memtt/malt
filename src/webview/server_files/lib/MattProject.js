@@ -330,12 +330,13 @@ MattProject.prototype.getMaxStack = function()
 /**
  * Flatten datas about the largest stack and return as json tree.
 **/
-MattProject.prototype.getFlattenMaxStackInfo = function(mapping,accept)
+MattProject.prototype.getFlattenMaxStackInfo = function(mapping,accept,stack)
 {
 	//init hash map to flat on addresses
 	var ret = new Object();
 	//var maxStack = this.data.maxStack;
-	var maxStack = this.getMaxStack();
+	//var maxStack = this.getMaxStack();
+	var maxStack = stack;
 	
 	//loop on all entries
 	for (var i = 0 ; i < maxStack.stack.length ; i++)
@@ -381,7 +382,21 @@ MattProject.prototype.getMaxStackInfoOnFunction = function(mapping,accept)
 {
 	return this.getFlattenMaxStackInfo(
 		function(info) {return info.function;},
-		true
+		true,
+		this.getMaxStack()
+	);
+}
+
+/****************************************************/
+/**
+ * Flatten datas about the largest stack and return as json tree.
+**/
+MattProject.prototype.getStackInfoOnFunction = function(id)
+{
+	return this.getFlattenMaxStackInfo(
+		function(info) {return info.function;},
+		true,
+		this.data.threads[id].stackMem
 	);
 }
 
