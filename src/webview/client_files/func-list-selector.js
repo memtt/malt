@@ -26,7 +26,7 @@ function MattFuncListSelector(defaults)
 	//apply user selection
 	if (defaults != undefined)
 	{
-		if (defaults.metricName != undefined) this.metricName = defaults.metric;
+		if (defaults.metric != undefined) this.metricName = defaults.metric;
 		if (defaults.mode != undefined) this.mode = defaults.mode;
 		if (defaults.unit != undefined) this.unit = defaults.unit;
 		if (defaults.sort != undefined) this.sort = defaults.sort;
@@ -90,7 +90,7 @@ MattFuncListSelector.prototype.moveNextPage = function()
 MattFuncListSelector.prototype.movePrevPage = function()
 {
 	this.from -= this.count;
-	if (this.from > 0)
+	if (this.from < 0)
 		this.from = 0;
 	this.onChange();
 }

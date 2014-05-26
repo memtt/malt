@@ -20,6 +20,7 @@
 <!-- lib for code editor -->
 <% script('deps/codemirror/lib/codemirror.js') -%>
 <% script('deps/codemirror/mode/clike/clike.js') -%>
+<% script('deps/codemirror/mode/fortran/fortran.js') -%>
 <% script('deps/codemirror/addon/selection/active-line.js') -%>
 <% stylesheet('deps/codemirror/lib/codemirror.css') -%>
 <% stylesheet('deps/codemirror/theme/lesser-dark.css') -%>
@@ -121,6 +122,7 @@
 		//dispatch update of view mode (metric...)
 		selectorButtons.getSelector().onChange = function()
 		{
+			leftFuncList.render();
 			codeEditor.redrawAnnotations();
 		}
 		

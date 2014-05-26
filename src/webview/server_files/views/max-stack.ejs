@@ -20,7 +20,10 @@
 
 <!-- ****************** STACK ANALYSER *************** -->
 <div class="container-fluid">
-	<div class="btn-group" id='thread-selector'>
+	<div>
+		<span>Thread ID : </span>
+		<div class="btn-group" id='thread-selector'>
+		</div>
 	</div>
 	
 	<br/>
@@ -90,18 +93,21 @@
 	{
 		//data.details = data.details.sort(function(a,b) {return a.mem < b.mem;});
 			var total = data.totalMem;
+			var cnt = 0;
 			$('#matt-max-stack-size').text(mattHelper.humanReadableValue(total,'B'));
 			for (var i = 0 ; i < data.details.length ; i++)
 			{
 				var ratio = (100.0 * data.details[i].mem / total);
 				if (ratio > 0 && data.details[i].info != undefined)
 				{
-					var color = colors[i%colors.length];
+					var color = colors[cnt%colors.length];
+					cnt++;
+					//alert(cnt + " , "+colors.length + " -> " + color);
 					if (ratio < 5 && i > 10)
 						color = 'gray';
 					var el = $('<div/>').addClass("progress-bar")
 						.css("width",ratio+"%")
-						.css("background-color",color)
+						.css("background",color)
 						.html(mattHelper.humanReadableValue(data.details[i].mem,'B') + "<br/>" + data.details[i].info.function)
 						.click(data.details[i],function(event) {
 							alert(JSON.stringify(event.data,null,'\t'));

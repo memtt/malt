@@ -322,6 +322,7 @@ void SymbolResolver::resolveNames(LinuxProcMapEntry * procMapEntry)
 			
 			//get filename and function name address
 			lst[i]->file = getString(bufferFile);
+
 			//if (strcmp(bufferFunc,"??") == 0)
 			//	lst[i]->function = -1;
 			//else
@@ -355,6 +356,8 @@ int SymbolResolver::getString(const char * value)
 			return id;
 		id++;
 	}
+	if (*value == '\0')
+		fprintf(stderr,"insert empty\n");
 	strings.push_back(value);
 	return strings.size()-1;
 }
@@ -429,6 +432,7 @@ char * SymbolResolver::extractSymbolName(char* value)
 {
 	//Vars
 	char * ret = NULL;
+	std::string old = value;
 	
 	//errors
 	assert(value != NULL);
@@ -448,7 +452,7 @@ char * SymbolResolver::extractSymbolName(char* value)
 		ret = pos1+1;
 	}
 	
-		//remove +0xXX
+	//remove +0xXX
 	int i = 0;
 	while (ret[i] != '\0')
 	{
@@ -456,6 +460,12 @@ char * SymbolResolver::extractSymbolName(char* value)
 			ret[i] = '\0';
 		else
 			i++;
+	}
+	
+	if (*ret == 0)
+	{
+		ret = value;
+		memcpy(value,old.c_str(),old.size());
 	}
 	
 	return ret;

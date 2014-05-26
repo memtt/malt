@@ -183,6 +183,13 @@ app.get('/proc-map-distr.json',function(req,res) {
 });
 
 /****************************************************/
+app.get('/size-map.json',function(req,res) {
+	var tmp = mattProject.getSizeMap();
+	res.write(JSON.stringify(tmp,null,'\t'));
+	res.end();
+});
+
+/****************************************************/
 app.get('/',function(eq,res,next){
 	res.render("page-summary",mattProject.getSummary());
 });
@@ -205,6 +212,11 @@ app.get('/max-stack.html',function(eq,res,next){
 /****************************************************/
 app.get('/summary.html',function(eq,res,next){
 	res.render("page-summary",mattProject.getSummary());
+});
+
+/****************************************************/
+app.get('/alloc-sizes.html',function(eq,res,next){
+	res.render("page-alloc-sizes",{sizeMap:mattProject.getSizeMap()});
 });
 
 /****************************************************/

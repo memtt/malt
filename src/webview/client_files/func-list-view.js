@@ -91,6 +91,7 @@ MattFuncListView.prototype.internalRender = function()
 	this.selector.sanityCheck();
 	var callback = new EJS({url: this.entryTemplate}).update(this.containerId);
 	this.formattedData = this.selector.extractData(this.data);
+	//alert(JSON.stringify(this.selector.getRange()));
 	callback({data:this.formattedData,mattHelper:mattHelper,containerId:this.containerId,range:this.selector.getRange()});
 }
 

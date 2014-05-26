@@ -187,6 +187,12 @@ MattProject.prototype.getProcMapDistr = function()
 }
 
 /****************************************************/
+MattProject.prototype.getSizeMap = function()
+{
+	return this.data.sizeMap;
+}
+
+/****************************************************/
 /**
  * Extract a list of stacks containing elements which pass the given filter function.
  * @param filter A filter function which return a boolean and have prototype function(detailedStackEntry)
@@ -487,6 +493,8 @@ function getStringFromList(strings,id,defaultValue)
 	{
 		return defaultValue;
 	} else {
+		//if (strings[id] == '')
+		//	console.log("Get '' string "+id+"->"+strings.length);
 		var res = strings[id];
 		if (res == undefined)
 			return defaultValue;
@@ -523,6 +531,12 @@ function genDetailedStack(instrs,stack)
 }
 
 /****************************************************/
+function cleanupFunctionName()
+{
+	
+}
+
+/****************************************************/
 /**
  * Reorganize a little but the datas to get quicker access on requests. Mosty re-established the
  * in memory references between call site addresses and their textual definitions (line, file...).
@@ -533,13 +547,21 @@ function optimizeProjectDatas(data)
 	var strings = data.sites.strings;
 	var instrs = data.sites.instr;
 	
+	//TODO remove
+	for (var i in strings)
+		if (strings[i] == '')
+			console.log("???????????? => "+i+" -> "+strings.length);
+	
 	//do for stackInfo/instr section
 	//avoid to jump to string table every time
 	console.log("Optimizing sites.instr...");
 	for (var i in data.sites.instr)
 	{
 		var site = data.sites.instr[i];
+		//var old = site.function;
 		site.function = getStringFromList(strings,site.function,"??");
+		//if (site.function == '')
+		//	console.log("get '' => "+old);
 		site.file = getStringFromList(strings,site.file,"??");
 		if (site.line == undefined)
 			site.line = -1;

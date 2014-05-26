@@ -84,6 +84,23 @@ MattSourceEditor.prototype.moveToFile = function(file)
 	} else {
 		var cur = this;
 		$.get( "/app-sources"+file,function(data){
+			
+			//set mode
+			var ext = (/[.]/.exec(file)) ? /[^.]+$/.exec(file) : undefined;
+
+			alert(ext);
+			/*if (ext != undefined)
+				ext = ext.toLowerCase();*/
+
+			if (ext == undefined)
+				cur.editor.setOption("mode","clike");
+			else if (ext == 'c' || ext == 'h' || ext == 'cxx' || ext == 'c++' || ext == 'cpp' || ext == 'hxx' || ext == 'h++' || ext == 'hpp')
+				cur.editor.setOption("mode","clike");
+			else if (ext == 'f' || ext == 'f77' || ext == 'f90')
+				cur.editor.setOption("mode","fortran");
+			else
+				cur.editor.setOption("mode","clike");
+			
 			cur.editor.setValue(data);
 			cur.editor.setCursor(1);
 			cur.file = file;
