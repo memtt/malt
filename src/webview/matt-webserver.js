@@ -220,6 +220,14 @@ app.get('/alloc-sizes.html',function(eq,res,next){
 });
 
 /****************************************************/
+app.get('/data.json',function(eq,res,next){
+	res.sendfile(args.params.input);
+});
+
+/****************************************************/
+app.use('/',Express.static(__dirname+'/client_files'));
+
+/****************************************************/
 //export static deps
 app.use('/deps/jquery',Express.static(__dirname + '/client_deps/jquery-1.11.0'));
 app.use('/deps/jquery-treetable',Express.static(__dirname + '/client_deps/jquery-treetable-3.1.0/'));
@@ -229,14 +237,13 @@ app.use('/deps/bootswatch/fonts',Express.static(__dirname + '/client_deps/bootst
 app.use('/deps/ejs',Express.static(__dirname + '/client_deps/ejs-1.0/'));
 app.use('/deps/ace',Express.static(__dirname + '/client_deps/ace-builds-1.1.1/'));
 app.use('/deps/jqplot',Express.static(__dirname + '/client_deps/jqplot-1.0.8/'));
-app.use('/deps/d3js',Express.static(__dirname + '/node_modules/d3/'));
+app.use('/deps/d3js',Express.static(__dirname + '/client_deps/d3-3.4.8/'));
 app.use('/deps/nvd3',Express.static(__dirname + '/node_modules/nvd3/'));
 app.use('/deps/codemirror/lib',Express.static(__dirname + '/node_modules/codemirror/lib'));
 app.use('/deps/codemirror/theme',Express.static(__dirname + '/node_modules/codemirror/theme'));
 app.use('/deps/codemirror/mode',Express.static(__dirname + '/node_modules/codemirror/mode'));
 app.use('/deps/codemirror/addon',Express.static(__dirname + '/node_modules/codemirror/addon'));
 app.use('/app-sources/',Express.static('/'));
-app.use('/',Express.static(__dirname+'/client_files'));
 
 for (var i in redirs)
 {

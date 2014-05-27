@@ -14,7 +14,20 @@ function MattProject(file)
 	this.file = null;//more for debug to remember the related data file
 	
 	//load file
-	this.loadFile(file);
+	if (file != undefined)
+		this.loadFile(file);
+}
+
+/****************************************************/
+MattProject.prototype.loadData = function(data)
+{
+	//setup current data
+	this.data = data;
+
+	//optimize data
+	console.log("Optimizing datas for requests...");
+	optimizeProjectDatas(data);
+	console.log("Data optimization done.");
 }
 
 /****************************************************/
@@ -41,13 +54,7 @@ MattProject.prototype.loadFile = function(file)
 		//ok parse
 		var data = JSON.parse(buffer);
 		
-		//optimize data
-		console.log("Optimizing datas for requests...");
-		optimizeProjectDatas(data);
-		console.log("Data optimization done.");
-		
-		//ok done
-		cur.data = data;
+		cur.loadData(data);
 	});
 }
 
@@ -555,6 +562,7 @@ function optimizeProjectDatas(data)
 	//do for stackInfo/instr section
 	//avoid to jump to string table every time
 	console.log("Optimizing sites.instr...");
+	data.sourcesFiles = {};
 	for (var i in data.sites.instr)
 	{
 		var site = data.sites.instr[i];
@@ -563,6 +571,8 @@ function optimizeProjectDatas(data)
 		//if (site.function == '')
 		//	console.log("get '' => "+old);
 		site.file = getStringFromList(strings,site.file,"??");
+		if (site.file != '??')
+			data.sourceFiles[site.file] = true;
 		if (site.line == undefined)
 			site.line = -1;
 	}

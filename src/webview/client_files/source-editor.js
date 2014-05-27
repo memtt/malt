@@ -87,8 +87,6 @@ MattSourceEditor.prototype.moveToFile = function(file)
 			
 			//set mode
 			var ext = (/[.]/.exec(file)) ? /[^.]+$/.exec(file) : undefined;
-
-			alert(ext);
 			/*if (ext != undefined)
 				ext = ext.toLowerCase();*/
 

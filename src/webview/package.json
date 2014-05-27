@@ -23,7 +23,6 @@
     "clone": "0.1.11",
     "ejs-locals": "1.0.2",
     "codemirror":"4.2.x",
-    "d3":"3.4.x",
     "nvd3":"git+https://github.com/novus/nvd3.git#master"
   }
 }
