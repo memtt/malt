@@ -225,7 +225,19 @@ app.get('/data.json',function(eq,res,next){
 });
 
 /****************************************************/
-app.use('/',Express.static(__dirname+'/client_files'));
+var staticSourceServer = Express.static('/');
+app.use('/app-sources/',function(req,res,next){
+	
+	if (mattProject.isSourceFile(req.path))
+	{
+		console.log("Source file request :",req.path);
+		return staticSourceServer(req,res,next);
+	} else {
+		//invalid source request
+		console.log("Try to access invalid source file file :",req.path);
+		res.send(404,"File not found");
+	}
+});
 
 /****************************************************/
 //export static deps
@@ -237,13 +249,13 @@ app.use('/deps/bootswatch/fonts',Express.static(__dirname + '/client_deps/bootst
 app.use('/deps/ejs',Express.static(__dirname + '/client_deps/ejs-1.0/'));
 app.use('/deps/ace',Express.static(__dirname + '/client_deps/ace-builds-1.1.1/'));
 app.use('/deps/jqplot',Express.static(__dirname + '/client_deps/jqplot-1.0.8/'));
-app.use('/deps/d3js',Express.static(__dirname + '/client_deps/d3-3.4.8/'));
+app.use('/deps/d3js',Express.static(__dirname + '/client_deps/d3js-3.4.8/'));
 app.use('/deps/nvd3',Express.static(__dirname + '/node_modules/nvd3/'));
 app.use('/deps/codemirror/lib',Express.static(__dirname + '/node_modules/codemirror/lib'));
 app.use('/deps/codemirror/theme',Express.static(__dirname + '/node_modules/codemirror/theme'));
 app.use('/deps/codemirror/mode',Express.static(__dirname + '/node_modules/codemirror/mode'));
 app.use('/deps/codemirror/addon',Express.static(__dirname + '/node_modules/codemirror/addon'));
-app.use('/app-sources/',Express.static('/'));
+app.use('/',Express.static(__dirname+'/client_files'));
 
 for (var i in redirs)
 {

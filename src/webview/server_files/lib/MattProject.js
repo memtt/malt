@@ -402,6 +402,16 @@ MattProject.prototype.getMaxStackInfoOnFunction = function(mapping,accept)
 
 /****************************************************/
 /**
+ * Return true if the given path correspond to a source file of
+ * the current project.
+**/
+MattProject.prototype.isSourceFile = function(path)
+{
+	return (this.data.sourceFiles[path] == true)
+}
+
+/****************************************************/
+/**
  * Flatten datas about the largest stack and return as json tree.
 **/
 MattProject.prototype.getStackInfoOnFunction = function(id)
@@ -562,7 +572,7 @@ function optimizeProjectDatas(data)
 	//do for stackInfo/instr section
 	//avoid to jump to string table every time
 	console.log("Optimizing sites.instr...");
-	data.sourcesFiles = {};
+	data.sourceFiles = {};
 	for (var i in data.sites.instr)
 	{
 		var site = data.sites.instr[i];
