@@ -38,12 +38,12 @@ function MattFuncListSelector(defaults)
 	//build value extractor
 	this.metrics = new Object();
 	this.metrics['alloc.sum']   = {name: 'Allocated mem.',extractor:function (entry) {return entry.alloc.sum;},'unit' : 'B',ref:'sum'};
-	this.metrics['alloc.count'] = {name: 'Allocation num.',extractor:function (entry) {return entry.alloc.count;},'unit':'',ref:'sum'};
-	this.metrics['alloc.min']   = {name: 'Min. alloc. size',extractor:function (entry) {return entry.alloc.min;},'unit':'B',ref:'max'};
-	this.metrics['alloc.max']   = {name: 'Max. alloc. size',extractor:function (entry) {return entry.alloc.max;},'unit':'B',ref:'max'};
-	this.metrics['alloc.moy']   = {name: 'Mean alloc. size',extractor:function (entry) {return entry.alloc.count == 0 ? 0 : entry.alloc.sum / entry.alloc.count;},'unit':'B',ref:'max'};
+	this.metrics['alloc.count'] = {name: 'Allocation count',extractor:function (entry) {return entry.alloc.count;},'unit':'',ref:'sum'};
+	this.metrics['alloc.min']   = {name: 'Min. size',extractor:function (entry) {return entry.alloc.min;},'unit':'B',ref:'max'};
+	this.metrics['alloc.max']   = {name: 'Max. size',extractor:function (entry) {return entry.alloc.max;},'unit':'B',ref:'max'};
+	this.metrics['alloc.moy']   = {name: 'Mean size',extractor:function (entry) {return entry.alloc.count == 0 ? 0 : entry.alloc.sum / entry.alloc.count;},'unit':'B',ref:'max'};
 	this.metrics['free.sum']    = {name: 'Freed mem.',extractor:function (entry) {return entry.free.sum;},'unit' : 'B',ref:'sum'};
-	this.metrics['free.count']  = {name: 'Free num.',extractor:function (entry) {return entry.free.count;},'unit':'',ref:'sum'};
+	this.metrics['free.count']  = {name: 'Free count',extractor:function (entry) {return entry.free.count;},'unit':'',ref:'sum'};
 	this.metrics['memops']      = {name: 'Memory ops.',extractor:function (entry) {return entry.alloc.count + entry.free.count;},'unit' : '',ref:'sum'};
 	this.metrics['peakmem']     = {name: 'Peak memory',extractor:function (entry) {return entry.maxAliveReq;},'unit' : 'B',ref:'sum'};
 	this.metrics['leaks']       = {name: 'Leaks',extractor:function (entry) {return entry.aliveReq;},'unit' : 'B',ref:'sum'};

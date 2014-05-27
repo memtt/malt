@@ -71,12 +71,12 @@ label {
 		<h2>All sizes</h2>
 		<table class='table-func-list' id='table-global-summary'>
 			<tr>
-				<th>Metric</th>
+				<th>Chunk size</th>
 				<th>Value</th>
 			</tr>
 			<% for(var i in sizeMap) {%>
 				<tr>
-					<td><%= i %></td>
+					<td><%= mattHumanReadableValue(+i,'B') %></td>
 					<td class='size'><%= mattHumanReadableValue(sizeMap[i],'') %></td>
 				</tr>
 			<% } %>
@@ -132,7 +132,7 @@ $( document ).ready(function() {
 			{
 				formattedData.push({size:+i,frequency:+data[i]});
 				cnt ++;
-				if (cnt > 200)
+				if (cnt > 50)
 					break;
 			}
 		}

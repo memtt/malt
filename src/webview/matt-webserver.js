@@ -257,12 +257,12 @@ app.use('/deps/codemirror/mode',Express.static(__dirname + '/node_modules/codemi
 app.use('/deps/codemirror/addon',Express.static(__dirname + '/node_modules/codemirror/addon'));
 app.use('/',Express.static(__dirname+'/client_files'));
 
-for (var i in redirs)
+/*for (var i in redirs)
 {
 	//TODO remove first '/' in strings
 	console.log("override : " + redirs[i].source + " -> " + redirs[i].dest);
 	app.use('/app-sources/'+redirs[i].source,Express.static('/'+redirs[i].dest));
-}
+}*/
 
 /****************************************************/
 //run express

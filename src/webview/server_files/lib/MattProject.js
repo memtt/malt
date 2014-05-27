@@ -548,9 +548,18 @@ function genDetailedStack(instrs,stack)
 }
 
 /****************************************************/
-function cleanupFunctionName()
+var gccFortModRegex = /__([A-Za-z0-9_]+)_m_MOD_([A-Za-z0-9_]+)/;
+function cleanupFunctionName(funcName)
 {
-	
+	//fortran GCC mods
+	var res = gccFortModRegex.exec(funcName);
+
+	//console.log("Detect fortran module : "+res[1]+"::"+res[2]);
+
+	if (res != null)
+		return res[1]+"::"+res[2];
+	else
+		return funcName;
 }
 
 /****************************************************/
@@ -578,6 +587,7 @@ function optimizeProjectDatas(data)
 		var site = data.sites.instr[i];
 		//var old = site.function;
 		site.function = getStringFromList(strings,site.function,"??");
+		site.function = cleanupFunctionName(site.function);
 		//if (site.function == '')
 		//	console.log("get '' => "+old);
 		site.file = getStringFromList(strings,site.file,"??");

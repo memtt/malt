@@ -81,6 +81,18 @@
 	border:solid 1px lightgray;
 }
 
+#matt-source-filename {
+	border:solid 1px lightgray;
+	width:fit-content;
+	margin:0px;
+	border-top-right-radius: 9px;
+	border-top-left-radius: 9px;
+	padding:3px;
+	padding-left:10px;
+	padding-right:10px;
+	background-color:#F7F7F7;
+}
+
 #matt-alloc-info {
 	background:white;
 	color:black;

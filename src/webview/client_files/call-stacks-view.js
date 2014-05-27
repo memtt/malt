@@ -22,6 +22,9 @@ function MattCallStacksView(containerId,selector)
 	this.tree = null;
 	this.selector = selector;
 	
+	//counter to avoid multiple update due to async
+	this.asyncState = 0;
+	
 	//setup
 	this.initRender();
 }
@@ -60,10 +63,18 @@ MattCallStacksView.prototype.update = function(file,line)
 {
 	var cur = this;
 	this.clear();
+	
+	//avoid overlap between async req
+	this.asyncState++;
+	var state = this.asyncState;
+
 	$.getJSON("/stacks.json?file="+encodeURIComponent(file)+"&line="+line,function(data) {
-		var tree = cur.buildCallTree(data);
-		cur.addToTree(tree);
-		cur.tree = tree;
+		if (state == cur.asyncState)
+		{
+			var tree = cur.buildCallTree(data);
+			cur.addToTree(tree);
+			cur.tree = tree;
+		}
 	});
 }
 
@@ -72,10 +83,18 @@ MattCallStacksView.prototype.updateFunc = function(func)
 {
 	var cur = this;
 	this.clear();
+	
+	//avoid overlap between async req
+	this.asyncState++;
+	var state = this.asyncState;
+
 	$.getJSON("/stacks.json?func="+encodeURIComponent(func),function(data) {
-		var tree = cur.buildCallTree(data);
-		cur.addToTree(tree);
-		cur.tree = tree;
+		if (state == cur.asyncState)
+		{
+			var tree = cur.buildCallTree(data);
+			cur.addToTree(tree);
+			cur.tree = tree;
+		}
 	});
 }
 

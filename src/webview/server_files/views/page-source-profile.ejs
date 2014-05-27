@@ -47,6 +47,10 @@
 		
 		<!-- Source editor -->
 		<div class="col-sm-7 col-md-8 col-lg-9 main">
+		
+			<!-- Filename -->
+			<span id='matt-source-filename'>Filename...</span>
+		
 			<div id='matt-source-editor'></div>
 			<div id='matt-alloc-info' style="width:30%;float:left;"></div>
 			<div id='matt-alloc-stacks' style="width:70%;float:left;">
@@ -107,14 +111,17 @@
 			//alert('click on left menu TODO '+details.file+'\n'+JSON.stringify(details,null,'\t'));
 			//codeEditor.moveToFile(details.file);
 			//codeEditor.moveToFileLine(details.file,details.line);
+			$("#matt-source-filename").text(details.file);
 			codeEditor.moveToFileFunction(details.file,details.function);
 			detailView.render(details);
-			callStacks.updateFunc(details.function);
+			//callStacks.updateFunc(details.function);
+			callStacks.clear();
 		}
 		
 		//dispatch click on annotations
 		codeEditor.onClick = function(details)
 		{
+			$("#matt-source-filename").text(details.file);
 			detailView.render(details);
 			callStacks.update(details.file,details.line);
 		}
@@ -130,6 +137,7 @@
 		callStacks.onClick = function(location,info)
 		{
 			//alert(JSON.stringify(info));
+			$("#matt-source-filename").text(location.file);
 			codeEditor.moveToFileFunction(location.file,location.function);
 		}
 		
