@@ -229,7 +229,9 @@ void AllocWrapperGlobal::init(void )
 		fprintf(stderr,"MATT : Start memory instrumentation of %s - %d by library override.\n",OS::getExeName().c_str(),OS::getPID());
 
 		//register on exit
-		atexit(AllocWrapperGlobal::onExit);
+		//TODO remove when ensure that the attribute method work
+		//This line tend to create deadlock due to reentrance for some libs (openmpi for example)
+		//atexit(AllocWrapperGlobal::onExit);
 
 		//final state
 		gblState.status = ALLOC_WRAP_READY;
@@ -247,7 +249,10 @@ void AllocWrapperGlobal::init(void )
  * @param status Exit status of the application (return value of main()).
  * @param arg Unused argument, will be NULL.
 **/
-void AllocWrapperGlobal::onExit(void)
+//We use destructor attribute to register and provide a small value for optional
+//priority arg, so it might be the last library to destruct to capture as much
+//free() as possible for the leak tracking.
+__attribute__((destructor (0))) void AllocWrapperGlobal::onExit(void)
 {
 	if (gblState.status == ALLOC_WRAP_READY)
 	{

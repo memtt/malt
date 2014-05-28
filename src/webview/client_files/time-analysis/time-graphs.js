@@ -31,7 +31,7 @@ function mattConvertData(data)
 	labels.push("Physical memory");
 	labels.push("Requested memory");
 	
-	return {data:res,labels:labels};
+	return {data:res,labels:labels,ticksPerSecond:data.ticksPerSecond};
 }
 
 function mattConvertCnt(data)
@@ -40,7 +40,7 @@ function mattConvertCnt(data)
 	res.push( mattConvertDataInternalD3JS(data.segments) );
 	var labels = new Array();
 	labels.push("Memory segments");
-	return {data:res,labels:labels};
+	return {data:res,labels:labels,ticksPerSecond:data.ticksPerSecond};
 }
 
 function mattUpdatePlot(id,title,data,unit,ylabel)
@@ -137,15 +137,15 @@ function mattNVDGraph(divId,data,ylabel)
 		;
 		
 		chart.xAxis //Chart x-axis settings
-			.axisLabel('Time (cycles)')
-			.tickFormat(function(value){return mattHelper.humanReadableValue(value,'');});
+			.axisLabel('Time (secondes)')
+			.tickFormat(function(value){return mattHelper.humanReadableValue(value/(+data.ticksPerSecond),'');});
 		
 		chart.yAxis //Chart y-axis settings
 			.axisLabel(ylabel)
 			.tickFormat(function(value){return mattHelper.humanReadableValue(value,'');});
 		
 		/* Done setting the chart up? Time to render it!*/
-		var myData = sinAndCos(data); //You need data...
+		var myData = reformatDataForD3(data); //You need data...
 		
 		d3.select('#'+divId + " svg") //Select the <svg> element you want to render the chart in.
 			.datum(myData) //Populate the <svg> element with chart data...
@@ -162,7 +162,7 @@ function mattNVDGraph(divId,data,ylabel)
 /**************************************
 * Simple test data generator
 */
-function sinAndCos(data) {
+function reformatDataForD3(data) {
 	var res = new Array();
 	var colors = ['#ff7f0e','#2ca02c','#7777ff'];
 	

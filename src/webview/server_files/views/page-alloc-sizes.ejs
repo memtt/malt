@@ -72,12 +72,18 @@ label {
 		<table class='table-func-list' id='table-global-summary'>
 			<tr>
 				<th>Chunk size</th>
-				<th>Value</th>
+				<th>Count</th>
 			</tr>
-			<% for(var i in sizeMap) {%>
+			<%
+			var sortedSizeMap = [];
+			for (var i in sizeMap)
+				sortedSizeMap.push({size:(+i),count:(+sizeMap[i])});
+			sortedSizeMap.sort(function(a,b){return (b.count) - (a.count);});
+			%>
+			<% for(var i in sortedSizeMap) {%>
 				<tr>
-					<td><%= mattHumanReadableValue(+i,'B') %></td>
-					<td class='size'><%= mattHumanReadableValue(sizeMap[i],'') %></td>
+					<td><%= mattHumanReadableValue(sortedSizeMap[i].size,'B') %></td>
+					<td class='size'><%= mattHumanReadableValue(sortedSizeMap[i].count,'') %></td>
 				</tr>
 			<% } %>
 		</table>
@@ -171,7 +177,7 @@ $( document ).ready(function() {
 
 		var sortTimeout = setTimeout(function() {
 			d3.select("input").property("checked", true).each(change);
-		}, 2000);
+		}, 500);
 
 		function change() {
 			clearTimeout(sortTimeout);

@@ -259,6 +259,7 @@ MattProject.prototype.getTimedValues = function()
 	tmp.virtualMem   = this.data.virtualMem;
 	tmp.physicalMem  = this.data.physicalMem;
 	tmp.requestedMem = this.data.requestedMem;
+	tmp.ticksPerSecond = this.data.ticksPerSecond;
 	return tmp;
 }
 
@@ -313,7 +314,7 @@ MattProject.prototype.getStacksMem = function()
 		res.push(this.data.threads[i].stackMem);
 	
 	//ok return
-	return res;
+	return {stacks:res,ticksPerSecond:this.data.ticksPerSecond};
 }
 
 /****************************************************/
@@ -548,7 +549,7 @@ function genDetailedStack(instrs,stack)
 }
 
 /****************************************************/
-var gccFortModRegex = /__([A-Za-z0-9_]+)_m_MOD_([A-Za-z0-9_]+)/;
+var gccFortModRegex = /__([A-Za-z0-9_]+)_MOD_([A-Za-z0-9_]+)/;
 function cleanupFunctionName(funcName)
 {
 	//fortran GCC mods

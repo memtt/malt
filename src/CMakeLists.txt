@@ -9,3 +9,7 @@
 ######################################################
 add_subdirectory(lib)
 add_subdirectory(integration)
+
+######################################################
+# Install the webview into share directory
+INSTALL(DIRECTORY webview DESTINATION share/matt)

@@ -73,13 +73,13 @@
 		var res = new Array();
 		var labels = new Array();
 		
-		for (var i in data)
+		for (var i in data.stacks)
 		{
-			res.push( mattConvertDataInternalD3JS(data[i].timeprofiler) );
+			res.push( mattConvertDataInternalD3JS(data.stacks[i].timeprofiler) );
 			labels.push(i);
 		}
 		
-		return {data:res,labels:labels};
+		return {data:res,labels:labels,ticksPerSecond:data.ticksPerSecond};
 	}
 
 
@@ -138,7 +138,7 @@
 		var stackData = null;
 		$.getJSON( "/stacks-mem.json", function( data ) {
 			stackData = data;
-			for (var i in data)
+			for (var i in data.stacks)
 			{
 				var b = $('<button type="button" class="btn btn-default" onclick="">'+i+'</button>');
 				b.click(i,function(evt) {updateStackMem(evt.data);});
