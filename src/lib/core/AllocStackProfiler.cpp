@@ -37,7 +37,7 @@ namespace MATT
 
 /*******************  FUNCTION  *********************/
 AllocStackProfiler::AllocStackProfiler(const Options & options,StackMode mode,bool threadSafe)
-	:requestedMem(options.timeProfilePoints,options.timeProfileLinear),largestStack(STACK_ORDER_DESC)
+	:requestedMem(options.timeProfilePoints,options.timeProfileLinear),allocBandwidth(512),freeBandwidth(512),largestStack(STACK_ORDER_DESC)
 {
 	this->mode = mode;
 	this->threadSafe = threadSafe;
@@ -156,6 +156,9 @@ void AllocStackProfiler::onAllocEvent(void* ptr, size_t size,Stack* userStack,MM
 		//update intern mem usage
 		if (options.timeProfileEnabled)
 			internalMem.onUpdateValue(gblInternaAlloc->getInuseMemory());
+		
+		//track alloc bandwidth
+		allocBandwidth.push(size);
 	MATT_END_CRITICAL
 }
 
@@ -217,6 +220,9 @@ size_t AllocStackProfiler::onFreeEvent(void* ptr, MATT::Stack* userStack, MMCall
 			segments.onDeltaEvent(-1);
 			internalMem.onUpdateValue(gblInternaAlloc->getInuseMemory());
 		}
+		
+		//free badnwidth
+		freeBandwidth.push(size);
 	MATT_END_CRITICAL
 	
 	return size;
@@ -358,6 +364,9 @@ void convertToJson(htopml::JsonState& json, const AllocStackProfiler& value)
 		}
 		json.closeFieldArray("reallocJump");
 	}
+	
+	json.printField("allocBandwidth",value.allocBandwidth);
+	json.printField("freeBandwidth",value.freeBandwidth);
 	
 	json.printField("leaks",value.segTracker);
 	CODE_TIMING("ticksPerSecond",json.printField("ticksPerSecond",value.ticksPerSecond()));

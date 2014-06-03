@@ -9,28 +9,28 @@
 /********************  HEADERS  *********************/
 #include <sstream>
 #include <gtest/gtest.h>
-#include <core/ProfiledValue.hpp>
+#include <core/ProfiledCumulValue.hpp>
 
 /***************** USING NAMESPACE ******************/
 using namespace MATT;
 
 /********************** CONSTS **********************/
-const char CST_STRING_1[] = "{\n\t\"min\":[10, 30, 40, 50, 60],\n\t\"max\":[20, 30, 40, 50, 60],\n\t\"timestamp\":[1, 2, 3, 4, 5],\n\t\"peakMemory\":70,\n\t\"peakTimesteamp\":6,\n\t\"linearIndex\":true\n}";
-const char CST_STRING_2[] = "{\n\t\"min\":[10, 40, 190, 220, 290, 350, 480, 680, 730, 880],\n\t\"max\":[30, 100, 210, 280, 340, 410, 560, 720, 870, 940],\n\t\"timestamp\":[2, 9, 20, 27, 33, 40, 55, 71, 86, 93],\n\t\"peakMemory\":1000,\n\t\"peakTimesteamp\":99,\n\t\"linearIndex\":true\n}";
+const char CST_STRING_1[] = "{\n\t\"startTime\":0,\n\t\"steps\":10,\n\t\"values\":[10, 10, 10, 10, 10, 10, 10, 0, 0, 0]\n}";
+const char CST_STRING_2[] = "{\n\t\"startTime\":0,\n\t\"steps\":10,\n\t\"values\":[16, 16, 16, 16, 16, 16, 4, 0, 0, 0]\n}";
 
 /*******************  FUNCTION  *********************/
-TEST(ProfiledValue,constructor)
+TEST(ProfiledCumulValue,constructor)
 {
-	ProfiledValue profile(10);
+	ProfiledCumulValue profile(10);
 }
 
 /*******************  FUNCTION  *********************/
-TEST(ProfiledValue,test_1)
+TEST(ProfiledCumulValue,test_1)
 {
-	ProfiledValue profile(10,true);
+	ProfiledCumulValue profile(10,true);
 	
 	for (int i = 0 ; i < 7 ; i++)
-		profile.onDeltaEvent(10);
+		profile.push(10);
 	
 	std::stringstream buffer;
 	htopml::convertToJson(buffer,profile);
@@ -39,12 +39,12 @@ TEST(ProfiledValue,test_1)
 }
 
 /*******************  FUNCTION  *********************/
-TEST(ProfiledValue,test_2)
+TEST(ProfiledCumulValue,test_2)
 {
-	ProfiledValue profile(10,true);
+	ProfiledCumulValue profile(10,true);
 	
 	for (int i = 0 ; i < 100 ; i++)
-		profile.onDeltaEvent(10);
+		profile.push(1);
 	
 	std::stringstream buffer;
 	htopml::convertToJson(buffer,profile);

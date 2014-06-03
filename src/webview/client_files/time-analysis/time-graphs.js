@@ -19,6 +19,18 @@ function mattConvertDataInternalD3JS(data)
 	return res;
 }
 
+function mattConvertDataInternalRateD3JS(data,ticksPerSecond)
+{
+	var res = new Array();
+	//alert(data.startTime + " -> "+data.endTime+" -> "+data.steps);
+	for (var i in data.values)
+	{
+		if (data.startTime + data.steps*i <= data.endTime)
+			res.push({x:(data.steps*i)/ticksPerSecond,y:(0.0+data.values[i])/(0.0+data.steps)/ticksPerSecond});
+	}
+	return res;
+}
+
 function mattConvertData(data)
 {
 	var res = new Array();
@@ -41,6 +53,21 @@ function mattConvertCnt(data)
 	var labels = new Array();
 	labels.push("Memory segments");
 	return {data:res,labels:labels,ticksPerSecond:data.ticksPerSecond};
+}
+
+function mattConvertRate(data)
+{
+	var ticksPerSecond = data.ticksPerSecond;
+	//ticksPerSecond = 1;
+	
+	var res = new Array();
+	res.push( mattConvertDataInternalRateD3JS(data.allocBandwidth,ticksPerSecond) );
+	res.push( mattConvertDataInternalRateD3JS(data.freeBandwidth,ticksPerSecond) );
+
+	var labels = new Array();
+	labels.push("Alloc");
+	labels.push("Free");
+	return {data:res,labels:labels,ticksPerSecond:ticksPerSecond};
 }
 
 function mattUpdatePlot(id,title,data,unit,ylabel)

@@ -21,11 +21,11 @@ namespace MATT
 #define MATT_PROFILED_VALUE_DEFAULT_STEPS 1024
 
 /********************  STRUCT  **********************/
-struct PorfiledValueEntry
+struct ProfiledStateValueEntry
 {
 	//funcs
-	PorfiledValueEntry(void);
-	void reduce(const PorfiledValueEntry & value);
+	ProfiledStateValueEntry(void);
+	void reduce(const ProfiledStateValueEntry & value);
 	void reset(void);
 
 	//values
@@ -36,15 +36,15 @@ struct PorfiledValueEntry
 };
 
 /*********************  CLASS  **********************/
-class ProfiledValue
+class ProfiledStateValue
 {
 	public:
-		ProfiledValue(size_t steps = MATT_PROFILED_VALUE_DEFAULT_STEPS, bool useLinearIndex = false);
+		ProfiledStateValue(size_t steps = MATT_PROFILED_VALUE_DEFAULT_STEPS, bool useLinearIndex = false);
 		void onDeltaEvent(ssize_t delta);
 		void onUpdateValue(size_t value);
 		bool isNextPoint(void) const;
 	public:
-		friend void convertToJson(htopml::JsonState& json, const ProfiledValue& value);
+		friend void convertToJson(htopml::JsonState& json, const ProfiledStateValue& value);
 	private:
 		void updateCurrentMinMax(ticks index, ticks timestamp);
 		void flush(void);
@@ -54,9 +54,9 @@ class ProfiledValue
 		size_t steps;
 		ticks startTime;
 		ticks startIndex;
-		PorfiledValueEntry * entries;
-		PorfiledValueEntry peak;
-		PorfiledValueEntry current;
+		ProfiledStateValueEntry * entries;
+		ProfiledStateValueEntry peak;
+		ProfiledStateValueEntry current;
 		size_t currentId;
 		ticks deltaIndex;
 		ticks nextIndex;

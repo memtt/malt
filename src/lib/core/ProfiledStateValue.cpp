@@ -9,19 +9,19 @@
 /********************  HEADERS  *********************/
 #include <cassert>
 #include <cstring>
-#include "ProfiledValue.hpp"
+#include "ProfiledStateValue.hpp"
 
 namespace MATT
 {
 
 /*******************  FUNCTION  *********************/
-PorfiledValueEntry::PorfiledValueEntry(void)
+ProfiledStateValueEntry::ProfiledStateValueEntry(void)
 {
 	this->reset();
 }
 
 /*******************  FUNCTION  *********************/
-void PorfiledValueEntry::reset(void)
+void ProfiledStateValueEntry::reset(void)
 {
 	this->min = -1;
 	this->max = 0;
@@ -29,7 +29,7 @@ void PorfiledValueEntry::reset(void)
 }
 
 /*******************  FUNCTION  *********************/
-void PorfiledValueEntry::reduce(const PorfiledValueEntry& value)
+void ProfiledStateValueEntry::reduce(const ProfiledStateValueEntry& value)
 {
 	if (value.index > index)
 		index = value.index;
@@ -42,7 +42,7 @@ void PorfiledValueEntry::reduce(const PorfiledValueEntry& value)
 }
 
 /*******************  FUNCTION  *********************/
-ProfiledValue::ProfiledValue(size_t steps,bool useLinearIndex)
+ProfiledStateValue::ProfiledStateValue(size_t steps,bool useLinearIndex)
 {
 	//errors
 	assert(steps > 2); 
@@ -63,8 +63,8 @@ ProfiledValue::ProfiledValue(size_t steps,bool useLinearIndex)
 	this->nextIndex = startIndex + deltaIndex;
 	
 	//memory
-	this->entries = new PorfiledValueEntry[steps];
-	memset(this->entries,0,sizeof(PorfiledValueEntry)*steps);
+	this->entries = new ProfiledStateValueEntry[steps];
+	memset(this->entries,0,sizeof(ProfiledStateValueEntry)*steps);
 	
 	//peak
 	this->peak.min = 0;
@@ -74,14 +74,14 @@ ProfiledValue::ProfiledValue(size_t steps,bool useLinearIndex)
 }
 
 /*******************  FUNCTION  *********************/
-void ProfiledValue::onDeltaEvent(ssize_t delta)
+void ProfiledStateValue::onDeltaEvent(ssize_t delta)
 {
 	this->value += delta;
 	onUpdateValue(value);
 }
 
 /*******************  FUNCTION  *********************/
-void ProfiledValue::onUpdateValue(size_t value)
+void ProfiledStateValue::onUpdateValue(size_t value)
 {
 	//get current
 	ticks index = getIndex();
@@ -100,7 +100,7 @@ void ProfiledValue::onUpdateValue(size_t value)
 }
 
 /*******************  FUNCTION  *********************/
-void ProfiledValue::updateCurrentMinMax(ticks index, ticks timestamp )
+void ProfiledStateValue::updateCurrentMinMax(ticks index, ticks timestamp )
 {
 	//update current interval min/max
 	if (value > current.max)
@@ -120,13 +120,13 @@ void ProfiledValue::updateCurrentMinMax(ticks index, ticks timestamp )
 }
 
 /*******************  FUNCTION  *********************/
-bool ProfiledValue::isNextPoint(void) const
+bool ProfiledStateValue::isNextPoint(void) const
 {
 	return getIndex() > nextIndex;
 }
 
 /*******************  FUNCTION  *********************/
-void ProfiledValue::flush(void )
+void ProfiledStateValue::flush(void )
 {
 	//check if current if empty
 	if (this->current.index == 0)
@@ -147,7 +147,7 @@ void ProfiledValue::flush(void )
 }
 
 /*******************  FUNCTION  *********************/
-void ProfiledValue::resize(void )
+void ProfiledStateValue::resize(void )
 {
 	//errors
 	assert(currentId == steps);
@@ -157,7 +157,7 @@ void ProfiledValue::resize(void )
 	
 	//merge points
 	int outId = 0;
-	PorfiledValueEntry tmp = entries[0];
+	ProfiledStateValueEntry tmp = entries[0];
 	for (int i = 1 ; i < steps ; i++)
 	{
 		if (entries[i].index > startIndex + (outId + 1) * deltaIndex && tmp.index != 0)
@@ -174,7 +174,7 @@ void ProfiledValue::resize(void )
 }
 
 /*******************  FUNCTION  *********************/
-void convertToJson(htopml::JsonState& json, const ProfiledValue& value)
+void convertToJson(htopml::JsonState& json, const ProfiledStateValue& value)
 {
 	json.openStruct();
 	
@@ -214,7 +214,7 @@ void convertToJson(htopml::JsonState& json, const ProfiledValue& value)
 }
 
 /*******************  FUNCTION  *********************/
-ticks ProfiledValue::getIndex() const
+ticks ProfiledStateValue::getIndex() const
 {
 	if (useLinearIndex)
 		return linearIndex;

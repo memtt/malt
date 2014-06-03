@@ -32,6 +32,10 @@
 				<svg style='height:400px;'> </svg>
 			</div>
 			
+			<h2>Allocation rate</h2>
+			<div id='chart3' class='matt-chart' style='width:90%;'>
+				<svg style='height:400px;'> </svg>
+			</div>
 			
 			<!--<div id='chart3' class='matt-chart'  style='width:40%;float:left;'>
 				<svg style='height:600px;'> </svg>
@@ -50,6 +54,7 @@
 // 			mattUpdatePlot('matt-plot2','Allocated segments',mattConvertCnt(data),'');
 			mattNVDGraph("chart",mattConvertData(data),'B','Memory');
 			mattNVDGraph("chart2",mattConvertCnt(data),'','Allocations');
+			mattNVDGraph("chart3",mattConvertRate(data),'','Memory rate (B/s)');
 		});
 		
 		/*$.getJSON( "/proc-map-distr.json", function( data ) {

@@ -13,7 +13,7 @@
 //standard
 //locals
 #include <stacks/Stack.hpp>
-#include "ProfiledValue.hpp"
+#include "ProfiledStateValue.hpp"
 #include "StackSizeTracker.hpp"
 #include <stacks/EnterExitStack.hpp>
 
@@ -42,7 +42,7 @@ class StackSizeAnalyser
 		/** Dump of the largest call stack. **/
 		Stack largestStack;
 		/** Track stack size over time. **/
-		ProfiledValue timeProfile;
+		ProfiledStateValue timeProfile;
 };
 
 }

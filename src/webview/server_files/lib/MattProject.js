@@ -260,6 +260,8 @@ MattProject.prototype.getTimedValues = function()
 	tmp.physicalMem  = this.data.physicalMem;
 	tmp.requestedMem = this.data.requestedMem;
 	tmp.ticksPerSecond = this.data.ticksPerSecond;
+	tmp.allocBandwidth = this.data.allocBandwidth;
+	tmp.freeBandwidth = this.data.freeBandwidth;
 	return tmp;
 }
 

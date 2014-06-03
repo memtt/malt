@@ -22,8 +22,9 @@
 #include "SegmentTracker.hpp"
 #include "SimpleStackTracer.hpp"
 #include <stacks/EnterExitStack.hpp>
-#include "ProfiledValue.hpp"
+#include "ProfiledStateValue.hpp"
 #include "StackSizeTracker.hpp"
+#include "ProfiledCumulValue.hpp"
 #include <stack-tree/StackSTLHashMap.hpp>
 
 /*******************  NAMESPACE  ********************/
@@ -85,11 +86,13 @@ class AllocStackProfiler
 		StackSTLHashMap<CallStackInfo> stackTracer;
 		AllocSizeDistrMap sizeMap;
 		SegmentTracker segTracker;
-		ProfiledValue requestedMem;
-		ProfiledValue physicalMem;
-		ProfiledValue virtualMem;
-		ProfiledValue internalMem;
-		ProfiledValue segments;
+		ProfiledStateValue requestedMem;
+		ProfiledStateValue physicalMem;
+		ProfiledStateValue virtualMem;
+		ProfiledStateValue internalMem;
+		ProfiledStateValue segments;
+		ProfiledCumulValue allocBandwidth;
+		ProfiledCumulValue freeBandwidth;
 		StackMode mode;
 		Mutex lock;
 		bool threadSafe;

@@ -9,7 +9,6 @@
 ######################################################
 set(MATT_LIB_SRC SymbolResolver.cpp 
                  CallStackInfo.cpp 
-                 ProfiledValue.cpp
                  SegmentTracker.cpp 
                  ValgrindOutput.cpp 
                  StackSizeTracker.cpp
@@ -17,6 +16,8 @@ set(MATT_LIB_SRC SymbolResolver.cpp
                  StackSizeAnalyser.cpp
                  AllocStackProfiler.cpp 
                  LinuxProcMapReader.cpp
+                 ProfiledStateValue.cpp
+                 ProfiledCumulValue.cpp
                  SimpleCallStackNode.cpp
                  LocalAllocStackProfiler.cpp)
 
