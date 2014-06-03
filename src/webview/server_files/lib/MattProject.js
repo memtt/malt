@@ -23,6 +23,8 @@ MattProject.prototype.loadData = function(data)
 {
 	//setup current data
 	this.data = data;
+	
+	//console.log(JSON.stringify(this.getFullTree()));
 
 	//optimize data
 	console.log("Optimizing datas for requests...");
@@ -424,6 +426,32 @@ MattProject.prototype.getStackInfoOnFunction = function(id)
 		true,
 		this.data.threads[id].stackMem
 	);
+}
+
+/****************************************************/
+MattProject.prototype.getFullTree = function()
+{
+	var tree = {};
+	var data = this.data;
+	
+	for (var i in this.data.stackInfo.stats)
+	{
+		var cur = tree;
+		var stack = this.data.stackInfo.stats[i].stack;
+		for (var j in stack)
+		{
+			if (cur[stack[j]] == undefined)
+				cur[stack[j]] = {};
+			cur = cur[stack[j]];
+		}
+		
+		if (cur.infos == undefined)
+			cur.infos = clone(infos);
+		else
+			mergeStackInfoDatas(cur.infos,infos);
+	}
+	
+	return tree;
 }
 
 /****************************************************/
