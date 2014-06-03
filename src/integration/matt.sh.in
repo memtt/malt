@@ -50,6 +50,7 @@ mattShowHelp()
 	echo "   -c=file/--config=file     Provide configuration file in INI format."
 	echo "           --mpi             Use MPI wrapper to get ranks in output file names."
 	echo "           --prep-mpi=mpicxx Build the mpi wrapper into $HOME/.matt/libmattmpi.so"
+	echo "   -s=mode/--stack=mode      Select the stack tracking mode (backtrace|enter-exit)."
 	echo "   -h/--help                 Show this help message."
 	echo ""
 }

@@ -40,7 +40,7 @@ wrap the default memory allocator. It provide two basic instrumentation modes.
 
 By default MATT use backtrace to reconstruct you stack on malloc/free/... calls :
 
-	LD_PRELOD=libmatt.so {YOUR_PROGRAM} [OPTIONS]
+	{YOUR_PREFIX}/bin/matt {YOUR_PROGRAM} [OPTIONS]
 
 You can get better performance but less detailed stack by using option 
 -finstrument-function or similar on your compiler. Then, you need to tel MATT to use
