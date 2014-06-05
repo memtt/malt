@@ -19,13 +19,13 @@
 //intenrals
 #include <common/Options.hpp>
 #include <portability/Mutex.hpp>
-#include "SegmentTracker.hpp"
-#include "SimpleStackTracer.hpp"
 #include <stacks/EnterExitStack.hpp>
-#include "ProfiledStateValue.hpp"
-#include "StackSizeTracker.hpp"
-#include "ProfiledCumulValue.hpp"
 #include <stack-tree/StackSTLHashMap.hpp>
+#include "SegmentTracker.hpp"
+#include "StackSizeTracker.hpp"
+#include "SimpleStackTracer.hpp"
+#include "ProfiledStateValue.hpp"
+#include "ProfiledCumulValue.hpp"
 
 /*******************  NAMESPACE  ********************/
 namespace MATT
@@ -64,7 +64,7 @@ class AllocStackProfiler
 		void onMalloc(void * ptr,size_t size,Stack * userStack = NULL);
 		void onCalloc(void * ptr,size_t nmemb,size_t size,Stack * userStack = NULL);
 		void onPrepareRealloc(void * oldPtr,Stack * userStack = NULL);
-		void onRealloc(void * oldPtr,void * ptr,size_t newSize,Stack * userStack = NULL);
+		  size_t onRealloc(void* oldPtr, void* ptr, size_t newSize, MATT::Stack* userStack = 0);
 		void onFree(void * ptr,Stack * userStack = NULL);
 		void onExit(void);
 		void onEnterFunction(void * funcAddr);
@@ -74,6 +74,7 @@ class AllocStackProfiler
 		void registerPerThreadProfiler(LocalAllocStackProfiler * profiler);
 		ticks ticksPerSecond(void) const;
 		StackMode getStackMode(void) const {return mode;};
+		void registerMaqaoFunctionSymbol(int funcId,const char * funcName,const char * file,int line);
 	public:
 		friend void convertToJson(htopml::JsonState& json, const AllocStackProfiler& value);
 	private:

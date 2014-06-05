@@ -22,42 +22,6 @@ StackSizeAnalyser::StackSizeAnalyser(void)
 }
 
 /*******************  FUNCTION  *********************/
-void StackSizeAnalyser::onEnterFunc(void* funcAddr)
-{
-	//update current
-	currentStack.enterFunction(funcAddr);
-	currentStackMem.enter();
-	
-	//get current size
-	size_t cur = currentStackMem.getSize();
-	
-	//update time profile
-	timeProfile.onUpdateValue(cur);
-	
-	//check if largest
-	if (cur > largestSize)
-	{
-		largestSize = cur;
-		largestStackMem = currentStackMem;
-		largestStack = currentStack;
-	}
-}
-
-/*******************  FUNCTION  *********************/
-void StackSizeAnalyser::onExitFunc(void* funcAddr)
-{
-	//update current
-	currentStack.exitFunction(funcAddr);
-	currentStackMem.exit();
-	
-	//get current size
-	size_t cur = currentStackMem.getSize();
-	
-	//update time profile
-	timeProfile.onUpdateValue(cur);
-}
-
-/*******************  FUNCTION  *********************/
 void StackSizeAnalyser::resolveSymbols(SymbolResolver& symbolResolver) const
 {
 	largestStack.resolveSymbols(symbolResolver);

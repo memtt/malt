@@ -24,7 +24,9 @@ MattProject.prototype.loadData = function(data)
 	//setup current data
 	this.data = data;
 	
-	//console.log(JSON.stringify(this.getFullTree()));
+// 	this.data.stackInfo = this.getFullTree();
+// 	console.log(JSON.stringify(data));
+// 	this.data = null;
 
 	//optimize data
 	console.log("Optimizing datas for requests...");
@@ -288,6 +290,7 @@ MattProject.prototype.getSummary = function()
 	var max = -1;
 	var count = 0;
 	var stats = this.data.stackInfo.stats;
+	var sum = 0;
 	for(var i in stats)
 	{
 		var info = stats[i].infos;
@@ -296,6 +299,7 @@ MattProject.prototype.getSummary = function()
 		if (info.alloc.max > max || max == -1)
 			max = info.alloc.max;
 		count += info.alloc.count;
+		sum += info.alloc.sum;
 	}
 	
 	//extract
@@ -303,6 +307,7 @@ MattProject.prototype.getSummary = function()
 	ret.globalStats.maxChunkSize = max;
 	ret.globalStats.count = count;
 	ret.globalStats.largestStack = this.getMaxStack().size;
+	ret.globalStats.cumulAllocs = sum;
 
 	return ret;
 }
@@ -434,14 +439,18 @@ MattProject.prototype.getFullTree = function()
 	var tree = {};
 	var data = this.data;
 	
-	for (var i in this.data.stackInfo.stats)
+	for (var i in data.stackInfo.stats)
 	{
 		var cur = tree;
-		var stack = this.data.stackInfo.stats[i].stack;
+		var stack = data.stackInfo.stats[i].stack;
+		var infos = data.stackInfo.stats[i].infos;
 		for (var j in stack)
 		{
 			if (cur[stack[j]] == undefined)
+			{
 				cur[stack[j]] = {};
+				//cur[stack[j]].site = data.sites.instr[stack[j]];
+			}
 			cur = cur[stack[j]];
 		}
 		

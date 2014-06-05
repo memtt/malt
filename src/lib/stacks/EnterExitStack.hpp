@@ -13,8 +13,13 @@
 //standard
 #include <ostream>
 #include <cstdlib>
+#include <cassert>
 //internals
 #include <stacks/Stack.hpp>
+
+
+/********************  MACROS  **********************/
+#define MATT_MAX_STACK_SIZE (1024*1204)
 
 /*******************  FUNCTION  *********************/
 namespace htopml
@@ -36,11 +41,57 @@ class EnterExitStack : public Stack
 {
 	public:
 		EnterExitStack(void);
-		void enterFunction(void * funcAddr);
-		void exitFunction(void * funcAddr);
+		inline void enterFunction(void * funcAddr);
+		inline void exitFunction(void * funcAddr);
 	private:
 		size_t realSize;
 };
+
+/*******************  FUNCTION  *********************/
+/**
+ * Notify function entry point.
+ * It may produce a reallocation of the storage segment.
+**/
+inline void EnterExitStack::enterFunction ( void* funcAddr )
+{
+	//check default
+	if (stack == NULL)
+		this->grow();
+
+	//check realSize
+	size_t tmp = ++realSize;
+	if (tmp > MATT_MAX_STACK_SIZE)
+		return;
+	
+	//check size
+	if (size == memSize || stack == NULL)
+		this->grow();
+		
+	//update
+	this->stack[size++] = funcAddr;
+	
+	//errors
+	assert(size <= memSize);
+}
+
+/*******************  FUNCTION  *********************/
+/**
+ * Notify a function exit to remove the last stack entry.
+ * It will not free the related memory for future reuse.
+**/
+inline void EnterExitStack::exitFunction ( void* funcAddr )
+{
+	assert(size > 0);
+
+	size_t tmp = realSize--;
+	if (tmp >MATT_MAX_STACK_SIZE)
+		return;
+
+	if (size > 0)
+		size--;
+
+	assert(funcAddr == stack[size]);
+}
 
 }
 

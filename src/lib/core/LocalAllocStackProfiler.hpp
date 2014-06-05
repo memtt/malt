@@ -40,8 +40,8 @@ class LocalAllocStackProfiler
 		void onFree(void * ptr);
 		void onCalloc(void * res,size_t nmemb,size_t size);
 		void onRealloc(void * ptr,void * res, size_t size);
-		void onEnterFunc(void *this_fn,void *call_site,bool ignoreStack=false);
-		void onExitFunc(void *this_fn,void *call_site,bool ignoreStack=false);
+		inline void onEnterFunc(void *this_fn,void *call_site,bool ignoreStack=false);
+		inline void onExitFunc(void *this_fn,void *call_site,bool ignoreStack=false);
 		void resolveSymbols(SymbolResolver & symbolResolver) const;
 	public:
 		friend void convertToJson(htopml::JsonState& json, const LocalAllocStackProfiler& value);
@@ -69,7 +69,33 @@ class LocalAllocStackProfiler
 		volatile bool inUse;
 		/** Ways to track stack. **/
 		StackMode stackMode;
+		/** Cumul the allocated memory. **/
+		size_t cumulAlloc;
 };
+
+/*******************  FUNCTION  *********************/
+inline void LocalAllocStackProfiler::onEnterFunc(void* this_fn, void* call_site, bool ignoreStack)
+{
+	//stack current loc tracking
+	//TODO this is also done by LocalAllocStackProfiler, maybe try to point his object instead of recompute
+	enterExitStack.enterFunction(call_site);
+	
+	//max stack
+	if (options->maxStackEnabled && !ignoreStack)
+		stackSizeAnalyser.onEnterFunc(this_fn);
+}
+
+/*******************  FUNCTION  *********************/
+inline void LocalAllocStackProfiler::onExitFunc(void* this_fn, void* call_site, bool ignoreStack)
+{
+	//stack current loc tracking
+	//TODO this is also done by LocalAllocStackProfiler, maybe try to point his object instead of recompute
+	enterExitStack.exitFunction(call_site);
+	
+	//max stack
+	if (options->maxStackEnabled && !ignoreStack)
+		stackSizeAnalyser.onExitFunc(this_fn);
+}
 
 }
 

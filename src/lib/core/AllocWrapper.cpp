@@ -242,6 +242,13 @@ void AllocWrapperGlobal::init(void )
 }
 
 /*******************  FUNCTION  *********************/
+void libdestructor(void) __attribute__((destructor (101)));
+void libdestructor(void)
+{
+	AllocWrapperGlobal::onExit();
+}
+
+/*******************  FUNCTION  *********************/
 /**
  * Function to register into on_exit() one. It permit to cleanup memory and to flush
  * the extracted profile at the end of the execution.
@@ -252,7 +259,7 @@ void AllocWrapperGlobal::init(void )
 //We use destructor attribute to register and provide a small value for optional
 //priority arg, so it might be the last library to destruct to capture as much
 //free() as possible for the leak tracking.
-__attribute__((destructor (0))) void AllocWrapperGlobal::onExit(void)
+void AllocWrapperGlobal::onExit(void)
 {
 	if (gblState.status == ALLOC_WRAP_READY)
 	{
@@ -592,7 +599,7 @@ extern "C"
 	void __cyg_profile_func_exit  (void *this_fn,void *call_site);
 }
 
-/*********************  STRUCT  *********************/
+/*******************  FUNCTION  *********************/
 /**
  * Symbol used to capture entering in function when working with GCC/CLANG/ICC 
  * -finstrument-function CFLAG.
@@ -618,7 +625,7 @@ void __cyg_profile_func_enter (void *this_fn,void *call_site)
 		localState.profiler->onEnterFunc(this_fn,call_site);
 }
 
-/*********************  STRUCT  *********************/
+/*******************  FUNCTION  *********************/
 /**
  * Symbol used to capture exit of function when working with GCC/CLANG/ICC 
  * -finstrument-function CFLAG. 
@@ -642,4 +649,38 @@ void __cyg_profile_func_exit  (void *this_fn,void *call_site)
 	//stack tracking
 	if (tlsState.status == ALLOC_WRAP_READY)
 		localState.profiler->onExitFunc(this_fn,call_site);
+}
+
+
+/*******************  FUNCTION  *********************/
+extern "C" {
+	void maqao_enter_function(int fid,const char * funcName);
+	void maqao_exit_function(int fid,const char * funcName);
+	void maqao_reg_function(int funcId,const char * funcName,const char * file,int line);
+}
+
+/*******************  FUNCTION  *********************/
+void maqao_enter_function(int fid,const char * funcName)
+{
+	__cyg_profile_func_enter((void*)(size_t)fid,(void*)(size_t)fid);
+}
+
+/*******************  FUNCTION  *********************/
+void maqao_exit_function(int fid,const char * funcName)
+{
+	__cyg_profile_func_exit((void*)(size_t)fid,(void*)(size_t)fid);
+}
+
+/*******************  FUNCTION  *********************/
+void maqao_reg_function(int funcId,const char * funcName,const char * file,int line)
+{
+	//check init
+	if (gblState.status == ALLOC_WRAP_NOT_READY)
+		free(NULL);
+
+	//mark stack mode to be automatic
+	gblState.options->stackMode = STACK_MODE_ENTER_EXIT_FUNC;
+	
+	//reg
+	gblState.profiler->registerMaqaoFunctionSymbol(funcId,funcName,file,line);
 }

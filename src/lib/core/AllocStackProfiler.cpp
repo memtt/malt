@@ -73,18 +73,25 @@ void AllocStackProfiler::onFree(void* ptr,Stack * userStack)
 }
 
 /*******************  FUNCTION  *********************/
+void AllocStackProfiler::registerMaqaoFunctionSymbol(int funcId, const char* funcName, const char* file, int line)
+{
+	symbolResolver.registerMaqaoFunctionSymbol(funcId,funcName,file,line);
+}
+
+/*******************  FUNCTION  *********************/
 void AllocStackProfiler::onPrepareRealloc(void* oldPtr,Stack * userStack)
 {
 	//nothing to unregister, skip
 }
 
 /*******************  FUNCTION  *********************/
-void AllocStackProfiler::onRealloc(void* oldPtr, void* ptr, size_t newSize,Stack * userStack)
+size_t AllocStackProfiler::onRealloc(void* oldPtr, void* ptr, size_t newSize,Stack * userStack)
 {
+	size_t oldSize = 0;
+
 	MATT_OPTIONAL_CRITICAL(lock,threadSafe)
 		//to avoid to search it 2 times
 		MMCallStackNode callStackNode;
-		size_t oldSize = 0;
 		
 		//free part
 		if (oldPtr != NULL)
@@ -105,6 +112,8 @@ void AllocStackProfiler::onRealloc(void* oldPtr, void* ptr, size_t newSize,Stack
 				it->second++;
 		}
 	MATT_END_CRITICAL
+	
+	return oldSize;
 }
 
 /*******************  FUNCTION  *********************/

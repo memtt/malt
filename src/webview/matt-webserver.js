@@ -264,7 +264,7 @@ app.use('/',Express.static(__dirname+'/client_files'));
 	app.use('/app-sources/'+redirs[i].source,Express.static('/'+redirs[i].dest));
 }*/
 
-console.log(JSON.stringify(mattProject.getFullTree(),null,'\t'));
+//console.log(JSON.stringify(mattProject.getFullTree(),null,'\t'));
 
 /****************************************************/
 //run express

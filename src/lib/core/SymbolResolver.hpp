@@ -16,6 +16,7 @@
 #include <ostream>
 #include <cstdio>
 #include <json/JsonState.h>
+#include <common/STLInternalAllocator.hpp>
 #include "LinuxProcMapReader.hpp"
 
 /*******************  FUNCTION  *********************/
@@ -41,8 +42,17 @@ struct CallSite
 	LinuxProcMapEntry * mapEntry;
 };
 
+/********************  STRUCT  **********************/
+struct MaqaoSite
+{
+	const char * file;
+	const char * function;
+	int line;
+};
+
 /*********************  TYPES  **********************/
 typedef std::map<void*,CallSite> CallSiteMap;
+typedef std::map<void*,MaqaoSite,std::less<void*>,STLInternalAllocator<std::pair<void*,MaqaoSite> > > MaqaoSiteMap;
 
 /*********************  CLASS  **********************/
 class SymbolResolver
@@ -56,10 +66,12 @@ class SymbolResolver
 		const char * setupNewEntry(void * callSite,const std::string & name);
 		void loadProcMap(void);
 		void resolveNames(void);
+		void resolveMaqaoNames(void);
 		const CallSite * getCallSiteInfo(void * site) const;
 		const std::string & getString(int id) const;
 		bool isSameFuntion(const CallSite * s1,void * s2) const;
 		bool procMapIsLoaded(void) const;
+		void registerMaqaoFunctionSymbol(int funcId,const char * funcName,const char * file,int line);
 	public:
 		friend std::ostream & operator << (std::ostream & out,const SymbolResolver & dic);
 		friend void convertToJson(htopml::JsonState & json, const SymbolResolver & value);
@@ -74,6 +86,7 @@ class SymbolResolver
 		LinuxProcMap procMap;
 		CallSiteMap callSiteMap;
 		std::vector<std::string> strings;
+		MaqaoSiteMap maqaoSites;
 };
 
 /*******************  FUNCTION  *********************/

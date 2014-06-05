@@ -29,6 +29,7 @@ LocalAllocStackProfiler::LocalAllocStackProfiler(AllocStackProfiler* globalProfi
 	
 	//setup fields
 	this->cntMemOps = 0;
+	this->cumulAlloc = 0;
 	this->globalProfiler = globalProfiler;
 	this->options = globalProfiler->getOptions();
 	this->stackMode = globalProfiler->getStackMode();
@@ -57,6 +58,7 @@ void LocalAllocStackProfiler::onMalloc(void* res, size_t size)
 		inUse = true;
 		CODE_TIMING("mallocProf",globalProfiler->onMalloc(res,size,getStack()));
 		this->cntMemOps++;
+		this->cumulAlloc+=size;
 		inUse = oldInuse;
 	}
 }
@@ -89,6 +91,7 @@ void LocalAllocStackProfiler::onCalloc(void * res,size_t nmemb, size_t size)
 		inUse = true;
 		CODE_TIMING("callocProf",globalProfiler->onCalloc(res,nmemb,size,getStack()));
 		this->cntMemOps++;
+		this->cumulAlloc+=size;
 		inUse = oldInuse;
 	}
 }
@@ -105,32 +108,9 @@ void LocalAllocStackProfiler::onRealloc(void* ptr, void* res, size_t size)
 		inUse = true;
 		CODE_TIMING("reallocProf",globalProfiler->onRealloc(ptr,res,size,getStack()));
 		this->cntMemOps++;
+		this->cumulAlloc+=size;
 		inUse = oldInuse;
 	}
-}
-
-/*******************  FUNCTION  *********************/
-void LocalAllocStackProfiler::onEnterFunc(void* this_fn, void* call_site, bool ignoreStack)
-{
-	//stack current loc tracking
-	//TODO this is also done by LocalAllocStackProfiler, maybe try to point his object instead of recompute
-	enterExitStack.enterFunction(call_site);
-	
-	//max stack
-	if (options->maxStackEnabled && !ignoreStack)
-		stackSizeAnalyser.onEnterFunc(this_fn);
-}
-
-/*******************  FUNCTION  *********************/
-void LocalAllocStackProfiler::onExitFunc(void* this_fn, void* call_site, bool ignoreStack)
-{
-	//stack current loc tracking
-	//TODO this is also done by LocalAllocStackProfiler, maybe try to point his object instead of recompute
-	enterExitStack.exitFunction(call_site);
-	
-	//max stack
-	if (options->maxStackEnabled && !ignoreStack)
-		stackSizeAnalyser.onExitFunc(this_fn);
 }
 
 /*******************  FUNCTION  *********************/
@@ -139,6 +119,7 @@ void convertToJson(htopml::JsonState& json, const LocalAllocStackProfiler& value
 	json.openStruct();
 	json.printField("stackMem",value.stackSizeAnalyser);
 	json.printField("cntMemOps",value.cntMemOps);
+	json.printField("cumulAlloc",value.cumulAlloc);
 	json.closeStruct();
 }
 

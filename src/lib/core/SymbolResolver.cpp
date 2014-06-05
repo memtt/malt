@@ -219,6 +219,13 @@ LinuxProcMapEntry* SymbolResolver::getMapEntry(void* callSite)
 /*******************  FUNCTION  *********************/
 void SymbolResolver::resolveNames(void)
 {
+	//first try with maqao infos
+	if (!maqaoSites.empty())
+	{
+		fprintf(stderr,"MATT : Resolving symbols with maqao infos...\n");
+		this->resolveMaqaoNames();
+	}
+	
 	fprintf(stderr,"MATT : Resolving symbols with addr2line...\n");
 	
 	//avoid to LD_PRELOAD otherwise we will create fork bomb
@@ -233,6 +240,22 @@ void SymbolResolver::resolveNames(void)
 	
 	//final check for not found
 	resolveMissings();
+}
+
+/*******************  FUNCTION  *********************/
+void SymbolResolver::resolveMaqaoNames(void)
+{
+	for (CallSiteMap::iterator it = callSiteMap.begin() ; it != callSiteMap.end() ; ++it)
+	{
+		MaqaoSiteMap::iterator site = maqaoSites.find(it->first);
+		if (site != maqaoSites.end())
+		{
+			it->second.file = getString(site->second.file);
+			it->second.function = getString(site->second.function);
+			it->second.line = site->second.line;
+			assert(it->second.mapEntry == NULL);
+		}
+	}
 }
 
 /*******************  FUNCTION  *********************/
@@ -360,6 +383,16 @@ int SymbolResolver::getString(const char * value)
 		fprintf(stderr,"insert empty\n");
 	strings.push_back(value);
 	return strings.size()-1;
+}
+
+/*******************  FUNCTION  *********************/
+void SymbolResolver::registerMaqaoFunctionSymbol(int funcId, const char* funcName, const char* file, int line)
+{
+	MaqaoSite & site = maqaoSites[(void*)(size_t)funcId];
+	site.function = funcName;
+	puts(file);
+	site.line = line;
+	site.file = file;
 }
 
 /*******************  FUNCTION  *********************/

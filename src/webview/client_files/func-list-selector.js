@@ -47,7 +47,8 @@ function MattFuncListSelector(defaults)
 	this.metrics['memops']      = {name: 'Memory ops.',extractor:function (entry) {return entry.alloc.count + entry.free.count;},'unit' : '',ref:'sum'};
 	this.metrics['peakmem']     = {name: 'Peak memory',extractor:function (entry) {return entry.maxAliveReq;},'unit' : 'B',ref:'sum'};
 	this.metrics['leaks']       = {name: 'Leaks',extractor:function (entry) {return entry.aliveReq;},'unit' : 'B',ref:'sum'};
-	this.metrics['lifetime']    = {name: 'Lifetime',extractor:function (entry) {return entry.lifetime.sum/entry.lifetime.count;},'unit' : 'c',ref:'max'};
+	this.metrics['lifetime']    = {name: 'Lifetime',extractor:function (entry) {return alert(entry.alloc.sum/entry.maxAliveReq);},'unit' : '',ref:'max'};
+	//this.metrics['ratio']       = {name: 'Recycling ratio',extractor:function (entry) {return entry.alloc.sum/entry.lifetime.count;},'unit' : 'c',ref:'max'};
 	
 	//select default metric
 	this.metric = this.metrics[this.metricName];

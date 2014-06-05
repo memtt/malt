@@ -25,8 +25,8 @@ class StackSizeAnalyser
 {
 	public:
 		StackSizeAnalyser(void);
-		void onEnterFunc(void * funcAddr);
-		void onExitFunc(void * funcAddr);
+		inline void onEnterFunc(void * funcAddr);
+		inline void onExitFunc(void * funcAddr);
 		void resolveSymbols(SymbolResolver & symbolResolver) const;
 	public:
 		friend void convertToJson(htopml::JsonState& json, const StackSizeAnalyser& value);
@@ -44,6 +44,42 @@ class StackSizeAnalyser
 		/** Track stack size over time. **/
 		ProfiledStateValue timeProfile;
 };
+
+/*******************  FUNCTION  *********************/
+inline void StackSizeAnalyser::onEnterFunc(void* funcAddr)
+{
+	//update current
+	currentStack.enterFunction(funcAddr);
+	currentStackMem.enter();
+	
+	//get current size
+	size_t cur = currentStackMem.getSize();
+	
+	//update time profile
+	timeProfile.onUpdateValue(cur);
+	
+	//check if largest
+	if (cur > largestSize)
+	{
+		largestSize = cur;
+		largestStackMem = currentStackMem;
+		largestStack = currentStack;
+	}
+}
+
+/*******************  FUNCTION  *********************/
+inline void StackSizeAnalyser::onExitFunc(void* funcAddr)
+{
+	//update current
+	currentStack.exitFunction(funcAddr);
+	currentStackMem.exit();
+	
+	//get current size
+	size_t cur = currentStackMem.getSize();
+	
+	//update time profile
+	timeProfile.onUpdateValue(cur);
+}
 
 }
 
