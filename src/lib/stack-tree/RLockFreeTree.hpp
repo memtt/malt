@@ -61,6 +61,7 @@ class RLockFreeTree
 		RLockFreeTree(bool threadSafe = true);
 		Handler getRoot(void);
 		Handler getChild(Handler handler,void * callsite);
+		Handler getParent(Handler handler);
 		Handler getFromStack(Stack & stack);
 		T * getData(Handler handler);
 		T * getDataFromStack(Stack & stack);
@@ -77,7 +78,7 @@ class RLockFreeTree
 };
 
 /*******************  FUNCTION  *********************/
-RLockFreeTreeNode::RLockFreeTreeNode(void* callSite)
+inline RLockFreeTreeNode::RLockFreeTreeNode(void* callSite)
 {
 	this->data = NULL;
 	this->callSite = callSite;
@@ -163,6 +164,13 @@ template <class T>
 typename RLockFreeTree<T>::Handler RLockFreeTree<T>::getRoot(void)
 {
 	return &root;
+}
+
+/*******************  FUNCTION  *********************/
+template <class T>
+typename RLockFreeTree<T>::Handler RLockFreeTree<T>::getParent(RLockFreeTree::Handler handler)
+{
+	return handler->parent;
 }
 
 /*******************  FUNCTION  *********************/

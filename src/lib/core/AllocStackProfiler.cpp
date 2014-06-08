@@ -444,4 +444,10 @@ ticks AllocStackProfiler::ticksPerSecond(void) const
 	return res;
 }
 
+/*******************  FUNCTION  *********************/
+AllocTreeStrackTracer* AllocStackProfiler::getEnterExitStackTracer(void)
+{
+	return &treeStackTracer;
+}
+
 }

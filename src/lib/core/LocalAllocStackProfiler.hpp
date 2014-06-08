@@ -71,6 +71,9 @@ class LocalAllocStackProfiler
 		StackMode stackMode;
 		/** Cumul the allocated memory. **/
 		size_t cumulAlloc;
+		/** Pointer to the global enterExitStackTracer for enter-exit mode **/
+		AllocTreeStrackTracer * enterExitStackTracer;
+		AllocTreeStrackTracer::Handler enterExitHandler;
 };
 
 /*******************  FUNCTION  *********************/
@@ -79,6 +82,9 @@ inline void LocalAllocStackProfiler::onEnterFunc(void* this_fn, void* call_site,
 	//stack current loc tracking
 	//TODO this is also done by LocalAllocStackProfiler, maybe try to point his object instead of recompute
 	enterExitStack.enterFunction(call_site);
+	
+	//move into enter-exit tree
+	//this->enterExitHandler = this->enterExitStackTracer->getChild(enterExitHandler,call_site);
 	
 	//max stack
 	if (options->maxStackEnabled && !ignoreStack)
@@ -91,6 +97,9 @@ inline void LocalAllocStackProfiler::onExitFunc(void* this_fn, void* call_site, 
 	//stack current loc tracking
 	//TODO this is also done by LocalAllocStackProfiler, maybe try to point his object instead of recompute
 	enterExitStack.exitFunction(call_site);
+	
+	//move into enter-exit tree
+	//this->enterExitHandler = this->enterExitStackTracer->getParent(enterExitHandler);
 	
 	//max stack
 	if (options->maxStackEnabled && !ignoreStack)

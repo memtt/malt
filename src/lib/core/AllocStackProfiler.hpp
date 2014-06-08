@@ -21,6 +21,7 @@
 #include <portability/Mutex.hpp>
 #include <stacks/EnterExitStack.hpp>
 #include <stack-tree/StackSTLHashMap.hpp>
+#include <stack-tree/RLockFreeTree.hpp>
 #include <valprof/ProfiledStateValue.hpp>
 #include <valprof/ProfiledCumulValue.hpp>
 #include "SegmentTracker.hpp"
@@ -55,6 +56,7 @@ typedef std::list<LocalAllocStackProfiler *,STLInternalAllocator<LocalAllocStack
 typedef StackSTLHashMap<CallStackInfo> MMStackMap;
 typedef std::map<size_t,size_t> AllocSizeDistrMap;
 typedef std::map<ReallocJump,size_t> ReallocJumpMap;
+typedef RLockFreeTree<CallStackInfo> AllocTreeStrackTracer;
 
 /*********************  CLASS  **********************/
 class AllocStackProfiler
@@ -75,6 +77,7 @@ class AllocStackProfiler
 		ticks ticksPerSecond(void) const;
 		StackMode getStackMode(void) const {return mode;};
 		void registerMaqaoFunctionSymbol(int funcId,const char * funcName,const char * file,int line);
+		AllocTreeStrackTracer * getEnterExitStackTracer(void);
 	public:
 		friend void convertToJson(htopml::JsonState& json, const AllocStackProfiler& value);
 	private:
@@ -85,6 +88,7 @@ class AllocStackProfiler
 	private:
 		//SimpleStackTracer stackTracer;
 		StackSTLHashMap<CallStackInfo> stackTracer;
+		RLockFreeTree<CallStackInfo> treeStackTracer;
 		AllocSizeDistrMap sizeMap;
 		SegmentTracker segTracker;
 		ProfiledStateValue requestedMem;
