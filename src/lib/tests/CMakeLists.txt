@@ -16,9 +16,7 @@ set(TEST_NAMES TestSegmentTracker
                TestProfiledCumulValue
                TestFastBufferedStream 
                TestSimpleStackTracker 
-               TestValgrindOutput  
-               TestStackTreeV2
-               TestStackTreeV3
+               TestValgrindOutput
    )
 
 ######################################################

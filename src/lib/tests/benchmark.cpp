@@ -9,6 +9,7 @@
 #include <cycle.h>
 #include <stacks/BacktraceStack.hpp>
 #include <core/AllocStackProfiler.hpp>
+#include <stack-tree/RLockFreeTree.hpp>
 #include <cstdlib>
 #include <ostream>
 #include <string>
@@ -17,6 +18,7 @@
 #include <cassert>
 #include <iostream>
 #include <cstdio>
+#include <iomanip>
 
 using namespace std;
 using namespace MATT;
@@ -122,7 +124,7 @@ void BenchTiming::end(ostream& out)
 	ticks t = getticks() - startTime;
 	assert(getticks() > expectedEnd);
 	
-	out << name << " : repeated = " << cntEvents << " duration : ";
+	out << std::setw(20) << name << " : repeated = " << cntEvents << " duration : ";
 	printTime(out,t);
 	out << " : event : [ ";
 	printTime(out,minEventTime);
@@ -167,7 +169,31 @@ void initAsRandomStack(BacktraceStack & stack)
 	stack.set(buffer,size,STACK_ORDER_ASC);
 }
 
-void runTest(BenchTiming & timing,SimpleStackTracer & tracer,BacktraceStack * stacks, const char * name,int duration)
+void runTestFlat(BenchTiming & timing,StackSTLHashMap<CallStackInfo> & tracer,BacktraceStack * stacks, const char * name,int duration)
+{
+	timing.start(name,duration);
+	while(timing.needRun())
+	{
+		//choose random stack
+		BacktraceStack & stack = stacks[getRand(0,MAX_STACKS)];
+		int reuse = getRand(1,MAX_LOCAL_REUSE);
+		
+		//if stack not valid, build it
+		if (stack.isValid() == false)
+			initAsRandomStack(stack);
+		
+		//measure
+		for (int i = 0 ; i < reuse ; i++)
+		{
+			timing.eventStart();
+			tracer.getValueRef(stack).onAllocEvent(16);
+			timing.eventEnd();
+		}
+	}
+	timing.end(cout);
+}
+
+void runTestFlatOld(BenchTiming & timing,SimpleStackTracer & tracer,BacktraceStack * stacks, const char * name,int duration)
 {
 	timing.start(name,duration);
 	while(timing.needRun())
@@ -191,11 +217,38 @@ void runTest(BenchTiming & timing,SimpleStackTracer & tracer,BacktraceStack * st
 	timing.end(cout);
 }
 
+
+void runTestTree(BenchTiming & timing,RLockFreeTree<CallStackInfo> & tracer,BacktraceStack * stacks, const char * name,int duration)
+{
+	timing.start(name,duration);
+	while(timing.needRun())
+	{
+		//choose random stack
+		BacktraceStack & stack = stacks[getRand(0,MAX_STACKS)];
+		int reuse = getRand(1,MAX_LOCAL_REUSE);
+		
+		//if stack not valid, build it
+		if (stack.isValid() == false)
+			initAsRandomStack(stack);
+		
+		//measure
+		for (int i = 0 ; i < reuse ; i++)
+		{
+			timing.eventStart();
+			tracer.getDataFromStack(stack)->onAllocEvent(16);
+			timing.eventEnd();
+		}
+	}
+	timing.end(cout);
+}
+
 int main(void)
 {
 	//setup timings
 	BenchTiming timing;
-	SimpleStackTracer tracer;
+	StackSTLHashMap<CallStackInfo> tracer;
+	SimpleStackTracer tracerOld;
+	RLockFreeTree<CallStackInfo> tracerTree;
 	gblInternaAlloc = new SimpleAllocator(true);
 
 	//init random
@@ -204,7 +257,16 @@ int main(void)
 	//store random stacks to reuse	
 	BacktraceStack * stacks = new BacktraceStack[MAX_STACKS];
 	
-	runTest(timing,tracer,stacks,"testEmpty",20);
-	runTest(timing,tracer,stacks,"testFull",20);
+	int duration = 20;
+	printf("Running earch test for %d seconds\n",duration);
+	
+	runTestFlat(timing,tracer,stacks,"testFlatEmpty",duration);
+	runTestFlat(timing,tracer,stacks,"testFlatFull",duration);
+	
+	runTestFlatOld(timing,tracerOld,stacks,"testFlatOldEmpty",duration);
+	runTestFlatOld(timing,tracerOld,stacks,"testFlatOldFull",duration);
+	
+	runTestTree(timing,tracerTree,stacks,"testTreeEmpty",duration);
+	runTestTree(timing,tracerTree,stacks,"testTreeFull",duration);
 	return 0;
 }

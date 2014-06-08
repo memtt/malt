@@ -12,7 +12,7 @@ include_directories(${GTEST_INCLUDE_DIRS} ${GMOCK_INCLUDE_DIRS})
 include_directories(../)
 
 ######################################################
-set(TEST_NAMES TestStackSTLHashMap)
+set(TEST_NAMES TestStackSTLHashMap TestRLockFreeTree)
 
 ######################################################
 FOREACH(test_name ${TEST_NAMES})
