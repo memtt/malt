@@ -13,7 +13,7 @@
 //standard
 //locals
 #include <stacks/Stack.hpp>
-#include "ProfiledStateValue.hpp"
+#include <valprof/ProfiledStateValue.hpp>
 #include "StackSizeTracker.hpp"
 #include <stacks/EnterExitStack.hpp>
 

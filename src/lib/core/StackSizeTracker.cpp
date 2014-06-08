@@ -10,7 +10,7 @@
 #include <cassert>
 #include <cstdio>
 #include "StackSizeTracker.hpp"
-#include "LinuxProcMapReader.hpp"
+#include <portability/LinuxProcMapReader.hpp>
 #include <cycle.h>
 
 /*******************  NAMESPACE  ********************/

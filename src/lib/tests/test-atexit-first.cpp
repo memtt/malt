@@ -26,7 +26,8 @@ void funcAtExit(void)
 int main(void)
 {
 	atexit(funcAtExit);
-	malloc(16);
+	void * ptr = calloc(16,16);
+	ptr = realloc(ptr,32*32);
 
 	return 0;
 }

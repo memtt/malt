@@ -7,13 +7,18 @@
 ######################################################
 
 ######################################################
-if (MATT_PORTABILITY_OS_UNIX)
-	list(APPEND MATT_PORT_SRC OSUnix.cpp)
-endif (MATT_PORTABILITY_OS_UNIX)
+#Use gtest
+include_directories(${GTEST_INCLUDE_DIRS} ${GMOCK_INCLUDE_DIRS})
+include_directories(../)
 
 ######################################################
-list(APPEND MATT_PORT_SRC LinuxProcMapReader.cpp)
+set(TEST_NAMES TestProfiledStateValue  
+               TestProfiledCumulValue)
 
 ######################################################
-add_library(matt-port OBJECT ${MATT_PORT_SRC})
-SET_TARGET_PROPERTIES(matt-port PROPERTIES COMPILE_FLAGS -fPIC)
+FOREACH(test_name ${TEST_NAMES})
+	add_executable(${test_name} ${test_name}.cpp)
+	target_link_libraries(${test_name} ${GTEST_BOTH_LIBRARIES} ${GMOCK_BOTH_LIBRARIES} matt-base)
+	matt_add_test(${test_name} ${test_name})
+ENDFOREACH(test_name)
+

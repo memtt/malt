@@ -24,17 +24,34 @@ namespace MATT
 {
 
 /*********************  CLASS  **********************/
+/**
+ * Define the node for RLockFreeTree.
+**/
 struct RLockFreeTreeNode
 {
 	RLockFreeTreeNode(void*callSite);
+	/** Pointer to the next element on the same parent. NULL if none (last element). **/
 	RLockFreeTreeNode * next;
+	/** Pointer to the parent node, NULL if root. **/
 	RLockFreeTreeNode * parent;
+	/** Pointer to the first child of the current node. NULL if none. **/
 	RLockFreeTreeNode * firstChild;
+	/** Define the corresponding call site. **/
 	void * callSite;
+	/** Optional data attached to the current node, NULL if none. **/
 	void * data;
 };
 
 /*********************  CLASS  **********************/
+/**
+ * This class provide a basic tree based on nodes with childs and optional data attached to the nodes.
+ * The child list is built with a simple linked list. As we do not consider node deletion we can access to all lists
+ * without locks. We use locks only to insert new keys after checking their absence.
+ * 
+ * This tree might be used for the enter-exit mode in place of StackSTLHashMap.
+ * 
+ * @brief Short tree storage with lock free read access, no deletion and locked insertion. To be used for enter-exit mode.
+**/
 template <class T>
 class RLockFreeTree
 {
@@ -168,12 +185,22 @@ T* RLockFreeTree<T>::getData(typename RLockFreeTree<T>::Handler handler)
 {
 	if (handler == NULL)
 		return NULL;
+	
+	//read data addr
+	T * data = (T*)handler->data;
 
 	//if not exist, create
-	if (handler->data == NULL)
-		handler->data = new (gblInternaAlloc->malloc(sizeof(T))) T ();
+	if (data == NULL)
+	{
+		MATT_OPTIONAL_CRITICAL(lock,threadSafe)
+			//maybe another do the job juste before, so recheck before create
+			if (handler->data == NULL)
+				handler->data = new (gblInternaAlloc->malloc(sizeof(T))) T ();
+			data = (T*)handler->data;
+		MATT_END_CRITICAL
+	}
 	
-	return (T*)handler->data;
+	return (T*)data;
 }
 
 /*******************  FUNCTION  *********************/

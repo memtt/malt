@@ -22,9 +22,9 @@
 #include <portability/OS.hpp>
 #include <common/CodeTiming.hpp>
 #include <common/Debug.hpp>
-#include "AllocStackProfiler.hpp"
-#include "StackSizeTracker.hpp"
-#include "LocalAllocStackProfiler.hpp"
+#include <core/AllocStackProfiler.hpp>
+#include <core/StackSizeTracker.hpp>
+#include <core/LocalAllocStackProfiler.hpp>
 
 /***************** USING NAMESPACE ******************/
 using namespace MATT;

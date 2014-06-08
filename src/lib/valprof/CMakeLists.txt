@@ -7,13 +7,14 @@
 ######################################################
 
 ######################################################
-if (MATT_PORTABILITY_OS_UNIX)
-	list(APPEND MATT_PORT_SRC OSUnix.cpp)
-endif (MATT_PORTABILITY_OS_UNIX)
+set(MATT_VALPROF_SRC ProfiledStateValue.cpp
+                     ProfiledCumulValue.cpp)
 
 ######################################################
-list(APPEND MATT_PORT_SRC LinuxProcMapReader.cpp)
+add_library(matt-valprof OBJECT ${MATT_VALPROF_SRC})
+SET_TARGET_PROPERTIES(matt-valprof PROPERTIES COMPILE_FLAGS -fPIC)
 
 ######################################################
-add_library(matt-port OBJECT ${MATT_PORT_SRC})
-SET_TARGET_PROPERTIES(matt-port PROPERTIES COMPILE_FLAGS -fPIC)
+if (ENABLE_TESTS)
+	add_subdirectory(tests)
+endif (ENABLE_TESTS)

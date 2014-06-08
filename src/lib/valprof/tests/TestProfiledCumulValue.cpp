@@ -9,7 +9,7 @@
 /********************  HEADERS  *********************/
 #include <sstream>
 #include <gtest/gtest.h>
-#include <core/ProfiledCumulValue.hpp>
+#include <valprof/ProfiledCumulValue.hpp>
 
 /***************** USING NAMESPACE ******************/
 using namespace MATT;

@@ -17,7 +17,7 @@
 #include <cstdio>
 #include <json/JsonState.h>
 #include <common/STLInternalAllocator.hpp>
-#include "LinuxProcMapReader.hpp"
+#include <portability/LinuxProcMapReader.hpp>
 
 /*******************  FUNCTION  *********************/
 typedef std::map<void *,const char*> FuncNameDicMap;

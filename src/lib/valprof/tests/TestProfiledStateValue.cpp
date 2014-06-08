@@ -9,7 +9,7 @@
 /********************  HEADERS  *********************/
 #include <sstream>
 #include <gtest/gtest.h>
-#include <core/ProfiledStateValue.hpp>
+#include <valprof/ProfiledStateValue.hpp>
 
 /***************** USING NAMESPACE ******************/
 using namespace MATT;

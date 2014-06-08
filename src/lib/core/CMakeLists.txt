@@ -14,20 +14,13 @@ set(MATT_LIB_SRC SymbolResolver.cpp
                  StackSizeTracker.cpp
                  SimpleStackTracer.cpp 
                  StackSizeAnalyser.cpp
-                 AllocStackProfiler.cpp 
-                 LinuxProcMapReader.cpp
-                 ProfiledStateValue.cpp
-                 ProfiledCumulValue.cpp
+                 AllocStackProfiler.cpp
                  SimpleCallStackNode.cpp
                  LocalAllocStackProfiler.cpp)
 
 ######################################################
 add_library(matt-core OBJECT ${MATT_LIB_SRC})
 SET_TARGET_PROPERTIES(matt-core PROPERTIES COMPILE_FLAGS -fPIC)
-
-######################################################
-add_library(matt-libc-wrapper OBJECT AllocWrapper.cpp)
-SET_TARGET_PROPERTIES(matt-libc-wrapper PROPERTIES COMPILE_FLAGS -fPIC)
 
 ######################################################
 if (ENABLE_TESTS)

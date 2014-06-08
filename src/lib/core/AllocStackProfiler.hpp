@@ -21,11 +21,11 @@
 #include <portability/Mutex.hpp>
 #include <stacks/EnterExitStack.hpp>
 #include <stack-tree/StackSTLHashMap.hpp>
+#include <valprof/ProfiledStateValue.hpp>
+#include <valprof/ProfiledCumulValue.hpp>
 #include "SegmentTracker.hpp"
 #include "StackSizeTracker.hpp"
 #include "SimpleStackTracer.hpp"
-#include "ProfiledStateValue.hpp"
-#include "ProfiledCumulValue.hpp"
 
 /*******************  NAMESPACE  ********************/
 namespace MATT
