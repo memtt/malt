@@ -46,10 +46,10 @@ class ProfiledStateValue
 	public:
 		friend void convertToJson(htopml::JsonState& json, const ProfiledStateValue& value);
 	private:
-		void updateCurrentMinMax(ticks index, ticks timestamp);
+		inline void updateCurrentMinMax(ticks index, ticks timestamp);
 		void flush(void);
 		void resize(void);
-		ticks getIndex() const;
+		inline ticks getIndex() const;
 	private:
 		size_t steps;
 		ticks startTime;

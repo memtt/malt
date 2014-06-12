@@ -127,7 +127,7 @@ void* SimpleAllocator::malloc(size_t size)
 	//search in list
 	Chunk * chunk = NULL;
 	MATT_OPTIONAL_CRITICAL(lock,threadSafe)
-		chunk = getInList(size);
+		//chunk = getInList(size);
 
 		//if empty, check with cur
 		if (chunk == NULL)

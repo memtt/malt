@@ -25,8 +25,8 @@ function mattConvertDataInternalRateD3JS(data,ticksPerSecond)
 	//alert(data.startTime + " -> "+data.endTime+" -> "+data.steps);
 	for (var i in data.values)
 	{
-		if (data.startTime + data.steps*i <= data.endTime)
-			res.push({x:(data.steps*i)/ticksPerSecond,y:(0.0+data.values[i])/(0.0+data.steps)/ticksPerSecond});
+		if (data.startTime + data.scale*i <= data.endTime)
+			res.push({x:(data.scale*i),y:((data.values[i])/(data.scale/ticksPerSecond))});
 	}
 	return res;
 }

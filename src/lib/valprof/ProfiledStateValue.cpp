@@ -153,7 +153,7 @@ void ProfiledStateValue::resize(void )
 	assert(currentId == steps);
 	
 	//calc new delta t
-	deltaIndex = (getIndex() - startIndex)/steps;
+	deltaIndex = 2*(getIndex() - startIndex)/steps;
 	
 	//merge points
 	int outId = 0;

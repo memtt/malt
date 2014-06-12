@@ -128,14 +128,16 @@ void AllocStackProfiler::onAllocEvent(void* ptr, size_t size,Stack* userStack,MM
 		//update mem usage
 		if (options.timeProfileEnabled)
 		{
-			segments.onDeltaEvent(1);
-			requestedMem.onDeltaEvent(size);
-			if (virtualMem.isNextPoint())
-			{
-				OSMemUsage mem = OS::getMemoryUsage();
-				virtualMem.onUpdateValue(mem.virtualMemory - gblInternaAlloc->getTotalMemory());
-				physicalMem.onUpdateValue(mem.physicalMemory - gblInternaAlloc->getTotalMemory());
-			}
+			CODE_TIMING("timeProfileAllocStart",
+				segments.onDeltaEvent(1);
+				requestedMem.onDeltaEvent(size);
+				if (virtualMem.isNextPoint())
+				{
+					OSMemUsage mem = OS::getMemoryUsage();
+					virtualMem.onUpdateValue(mem.virtualMemory - gblInternaAlloc->getTotalMemory());
+					physicalMem.onUpdateValue(mem.physicalMemory - gblInternaAlloc->getTotalMemory());
+				}
+			);
 		}
 	
 		if (options.stackProfileEnabled)
@@ -155,16 +157,18 @@ void AllocStackProfiler::onAllocEvent(void* ptr, size_t size,Stack* userStack,MM
 		//update size map
 		if (options.distrAllocSize)
 		{
-			AllocSizeDistrMap::iterator it = sizeMap.find(size);
-			if (it == sizeMap.end())
-				sizeMap[size] = 1;
-			else
-				it->second++;
+			CODE_TIMING("sizeDistr",
+				AllocSizeDistrMap::iterator it = sizeMap.find(size);
+				if (it == sizeMap.end())
+					sizeMap[size] = 1;
+				else
+					it->second++;
+			);
 		}
 	
 		//update intern mem usage
 		if (options.timeProfileEnabled)
-			internalMem.onUpdateValue(gblInternaAlloc->getInuseMemory());
+			CODE_TIMING("timeProfileAllocEnd",internalMem.onUpdateValue(gblInternaAlloc->getInuseMemory()));
 		
 		//track alloc bandwidth
 		allocBandwidth.push(size);
@@ -184,9 +188,11 @@ size_t AllocStackProfiler::onFreeEvent(void* ptr, MATT::Stack* userStack, MMCall
 		//update memory usage
 		if (options.timeProfileEnabled && virtualMem.isNextPoint())
 		{
-			OSMemUsage mem = OS::getMemoryUsage();
-			virtualMem.onUpdateValue(mem.virtualMemory - gblInternaAlloc->getTotalMemory());
-			physicalMem.onUpdateValue(mem.physicalMemory - gblInternaAlloc->getTotalMemory());
+			CODE_TIMING("timeProfileFreeStart",
+				OSMemUsage mem = OS::getMemoryUsage();
+				virtualMem.onUpdateValue(mem.virtualMemory - gblInternaAlloc->getTotalMemory());
+				physicalMem.onUpdateValue(mem.physicalMemory - gblInternaAlloc->getTotalMemory());
+			);
 		}
 
 		//search segment info to link with previous history
@@ -205,7 +211,7 @@ size_t AllocStackProfiler::onFreeEvent(void* ptr, MATT::Stack* userStack, MMCall
 		size = segInfo->size;
 		ticks lifetime = segInfo->getLifetime();
 		if (options.timeProfileEnabled)
-			requestedMem.onDeltaEvent(-size);
+			CODE_TIMING("timeProfileFreeMiddle",requestedMem.onDeltaEvent(-size));
 		
 		if (options.stackProfileEnabled)
 		{
@@ -217,7 +223,7 @@ size_t AllocStackProfiler::onFreeEvent(void* ptr, MATT::Stack* userStack, MMCall
 			CODE_TIMING("updateInfoFree",callStackNode->infos->onFreeEvent(size));
 			
 			//update alive (TODO, need to move this into a new function on StackNodeInfo)
-			segInfo->callStack.infos->onFreeLinkedMemory(size,lifetime);
+			CODE_TIMING("freeLinkedMemory",segInfo->callStack.infos->onFreeLinkedMemory(size,lifetime));
 		}
 		
 		//remove tracking info
@@ -226,8 +232,10 @@ size_t AllocStackProfiler::onFreeEvent(void* ptr, MATT::Stack* userStack, MMCall
 		//update intern mem usage
 		if (options.timeProfileEnabled)
 		{
-			segments.onDeltaEvent(-1);
-			internalMem.onUpdateValue(gblInternaAlloc->getInuseMemory());
+			CODE_TIMING("timeProfileFreeEnd",
+				segments.onDeltaEvent(-1);
+				internalMem.onUpdateValue(gblInternaAlloc->getInuseMemory());
+			);
 		}
 		
 		//free badnwidth

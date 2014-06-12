@@ -146,7 +146,7 @@ void CodeTiming::finalPrint(void) const
 		Helpers::printValue(cerr,count);
 		cerr << " , time : ";
 		Helpers::printValue(cerr,sum);
-		cerr << " , " << "radio : ~ " << std::setprecision( 2 ) << setw(8) << std::left << ratio << "% )" << endl;
+		cerr << " , " << "ratio : ~ " << std::setprecision( 2 ) << setw(8) << std::left << ratio << "% )" << endl;
 	#endif
 }
 

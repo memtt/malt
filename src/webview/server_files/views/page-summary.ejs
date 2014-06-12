@@ -49,7 +49,7 @@ function mattHumanReadableValue(value,unit,protectedSpace)
 				<td><i>Peak of total physical memory obtained by tracking /proc/self/statm. It contain all allocated objects, global variables and binary code.</i></td>
 			</tr>
 			<tr>
-				<td>Max requested memory</td>
+				<td>Peak requested memory</td>
 				<td class='size'><%= mattHumanReadableValue(globalStats.requestedMem,'B') %></td>
 				<td><i>Peak of requested memory managed by malloc, free... It contain all dynamically allocated objects.</i></td>
 			</tr>
@@ -66,13 +66,13 @@ function mattHumanReadableValue(value,unit,protectedSpace)
 			<tr>
 				<td>Allocation count</td>
 				<td class='size'><%= mattHumanReadableValue(globalStats.count,'') %></td>
-				<td><i>Total number of all dyanmic memory allocation throuth malloc, calloc, realloc....</i></td>
+				<td><i>Total number of all dyanmic memory allocation with malloc, calloc, realloc....</i></td>
 			</tr>
-			<tr>
+			<!--<tr>
 				<td>Peak objects count</td>
 				<td class='size'></td>
 				<td><i>Maximum alive dyanmic chunks allocated by malloc, calloc...</i></td>
-			</tr>
+			</tr>-->
 			<tr>
 				<td>Smallest allocations</td>
 				<td class='size'><%= mattHumanReadableValue(globalStats.minChunkSize,'B') %></td>
@@ -88,11 +88,11 @@ function mattHumanReadableValue(value,unit,protectedSpace)
 				<td class='size'><%= mattHumanReadableValue(globalStats.largestStack,'B') %></td>
 				<td><i>Largest stack used by the program during the execution of all threads. Obtained by tracking RSP register while entering and exiting functions.</i></td>
 			</tr>
-			<tr>
+			<!--<tr>
 				<td>Leaks</td>
 				<td class='size'></td>
 				<td><i>Total memory which has leaked (malloc, calloc... without free).</i></td>
-			</tr>
+			</tr>-->
 		</table>
 	</div>
 	

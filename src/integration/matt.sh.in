@@ -67,6 +67,10 @@ while true; do
 			export MATT_CONFIG="`echo "$1" | sed -e 's/^(--config=)|(-c=)//g'`"
 			shift 1
 		;;
+		--stack=*|-s=*)
+			export MATT_STACK="`echo "$1" | sed -e 's/^(--stack=)|(-s=)//g'`"
+			shift 1
+		;;
 		--mpi)
 			ENABLE_MPI=true
 			if [ ! -e "$MPI_WRAPPER_DIR/libmattmpi.so" ]; then

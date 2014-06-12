@@ -22,6 +22,7 @@
 #include <stacks/EnterExitStack.hpp>
 #include <stack-tree/StackSTLHashMap.hpp>
 #include <stack-tree/RLockFreeTree.hpp>
+// #include <stack-tree/AbstractStackTree.hpp>
 #include <valprof/ProfiledStateValue.hpp>
 #include <valprof/ProfiledCumulValue.hpp>
 #include "SegmentTracker.hpp"
@@ -66,7 +67,7 @@ class AllocStackProfiler
 		void onMalloc(void * ptr,size_t size,Stack * userStack = NULL);
 		void onCalloc(void * ptr,size_t nmemb,size_t size,Stack * userStack = NULL);
 		void onPrepareRealloc(void * oldPtr,Stack * userStack = NULL);
-		  size_t onRealloc(void* oldPtr, void* ptr, size_t newSize, MATT::Stack* userStack = 0);
+		size_t onRealloc(void* oldPtr, void* ptr, size_t newSize, MATT::Stack* userStack = 0);
 		void onFree(void * ptr,Stack * userStack = NULL);
 		void onExit(void);
 		void onEnterFunction(void * funcAddr);
@@ -89,6 +90,7 @@ class AllocStackProfiler
 		//SimpleStackTracer stackTracer;
 		StackSTLHashMap<CallStackInfo> stackTracer;
 		RLockFreeTree<CallStackInfo> treeStackTracer;
+// 		AbstractStackTree<CallStackInfo> stackTree;
 		AllocSizeDistrMap sizeMap;
 		SegmentTracker segTracker;
 		ProfiledStateValue requestedMem;
@@ -99,10 +101,10 @@ class AllocStackProfiler
 		ProfiledCumulValue allocBandwidth;
 		ProfiledCumulValue freeBandwidth;
 		StackMode mode;
-		Mutex lock;
+		Spinlock lock;
 		bool threadSafe;
 		Options options;
-		Mutex largestStackLock;
+		Spinlock largestStackLock;
 		unsigned long largestStackSize;
 		StackSizeTracker largestStackMem;
 		Stack largestStack;

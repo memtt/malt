@@ -104,12 +104,14 @@ void ProfiledCumulValue::reshape(ticks neededIndex)
 /*******************  FUNCTION  *********************/
 void convertToJson(htopml::JsonState& json, const ProfiledCumulValue& value)
 {
+	size_t cnt = 1 + (value.lastSeenTime-value.startTime) / value.ticksPerEntry;
+	assert(cnt >= 0 && cnt <= value.steps);
 	json.openStruct();
 
 	json.printField("startTime",value.startTime);
-	json.printField("steps",value.steps);
+	json.printField("scale",value.ticksPerEntry);
 	json.printField("endTime",value.lastSeenTime);
-	json.printFieldArray("values",value.entries,value.steps);
+	json.printFieldArray("values",value.entries,cnt);
 	
 	json.closeStruct();
 }
