@@ -69,6 +69,7 @@ add_subdirectory(valprof)
 add_subdirectory(wrapper)
 add_subdirectory(stack-tree)
 add_subdirectory(portability)
+add_subdirectory(trace-reader)
 
 ######################################################
 if (ENABLE_TESTS)

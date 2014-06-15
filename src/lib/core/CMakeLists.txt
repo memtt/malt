@@ -7,8 +7,9 @@
 ######################################################
 
 ######################################################
-set(MATT_LIB_SRC SymbolResolver.cpp 
+set(MATT_LIB_SRC AllocTracer.cpp
                  CallStackInfo.cpp 
+                 SymbolResolver.cpp 
                  SegmentTracker.cpp 
                  ValgrindOutput.cpp 
                  StackSizeTracker.cpp

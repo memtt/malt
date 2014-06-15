@@ -29,6 +29,7 @@
 #include "StackSizeTracker.hpp"
 #include "SimpleStackTracer.hpp"
 #include "ELFReader.hpp"
+#include "AllocTracer.hpp"
 
 /*******************  NAMESPACE  ********************/
 namespace MATT
@@ -130,6 +131,7 @@ class AllocStackProfiler
 		ticks trefTicks;
 		ticks sharedLinearIndex;
 		ReallocJumpMap reallocJumpMap;
+		AllocTracer tracer;
 		size_t osTotalMemory;
 		size_t osFreeMemoryAtStart;
 		size_t osCachedMemoryAtStart;

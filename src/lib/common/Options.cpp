@@ -42,6 +42,8 @@ Options::Options(void)
 	//maps
 	this->distrAllocSize          = true;
 	this->distrReallocJump        = true;
+	//trace
+	this->traceEnabled            = true;
 }
 
 /*******************  FUNCTION  *********************/
@@ -67,6 +69,8 @@ bool Options::operator==(const Options& value) const
 	//maps
 	if (this->distrAllocSize != value.distrAllocSize) return false;
 	if (this->distrReallocJump != value.distrReallocJump) return false;
+	//trace
+	if (this->traceEnabled != value.traceEnabled) return false;
 	
 	return true;
 }
@@ -106,6 +110,9 @@ void Options::loadFromFile(const char* fname)
 	//maps
 	this->distrAllocSize      = iniparser_getboolean(iniDic,"distr:alloc_size",this->distrAllocSize);
 	this->distrReallocJump    = iniparser_getboolean(iniDic,"distr:realloc_jump",this->distrReallocJump);
+	
+	//trace
+	this->traceEnabled        = iniparser_getboolean(iniDic,"trace:enabled",this->traceEnabled);
 	
 	//free dic
 	iniparser_freedict(iniDic);
@@ -176,6 +183,9 @@ void Options::dumpConfig(const char* fname)
 	//maps
 	IniParserHelper::setEntry(dic,"distr:alloc_size",this->distrAllocSize);
 	IniParserHelper::setEntry(dic,"distr:realloc_jump",this->distrReallocJump);
+	
+	//trace
+	IniParserHelper::setEntry(dic,"trace:enabled",this->traceEnabled);
 	
 	//write
 	FILE * fp = fopen(fname,"w");

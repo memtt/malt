@@ -54,6 +54,8 @@ struct Options
 	bool distrAllocSize;
 	bool distrReallocJump;
 	bool operator==(const Options & value) const;
+	//trace
+	bool traceEnabled;
 };
 
 /*******************  FUNCTION  *********************/

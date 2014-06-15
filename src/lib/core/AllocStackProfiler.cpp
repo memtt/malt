@@ -59,6 +59,10 @@ AllocStackProfiler::AllocStackProfiler(const Options & options,StackMode mode,bo
 	gettimeofday(&trefSec,NULL);
 	trefTicks = getticks();
 	
+	//open trace file
+	if (options.traceEnabled)
+		tracer.open(FormattedMessage(options.outputName).arg(OS::getExeName()).arg(Helpers::getFileId()).arg("trace").toString());
+
 	//get memory state at start
 	OSMemUsage mem = OS::getMemoryUsage();
 	this->osTotalMemory = mem.totalMemory;
@@ -263,6 +267,10 @@ size_t AllocStackProfiler::onFreeEvent(void* ptr, MATT::Stack* userStack, MMCall
 			//update alive (TODO, need to move this into a new function on StackNodeInfo)
 			CODE_TIMING("freeLinkedMemory",segInfo->callStack.infos->onFreeLinkedMemory(size,lifetime,peakId));
 		}
+		
+		//trace
+		if (options.traceEnabled)
+			tracer.traceChunk(segInfo->callStack.stack,callStackNode->stack,size,segInfo->allocTime - trefTicks,lifetime);
 		
 		//remove tracking info
 		CODE_TIMING("segTracerRemove",segTracker.remove(ptr));
