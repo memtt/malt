@@ -44,6 +44,7 @@ class OSUnix
 		static OSMemUsage getMemoryUsage(void);
 		static unsigned int getPID(void);
 		static std::string getExeName(void);
+		static void setSigKillHandler(void (*handler)(int s));
 };
 
 }

@@ -107,7 +107,8 @@ $( document ).ready(function() {
 
 	var xAxis = d3.svg.axis()
 		.scale(x)
-		.orient("bottom");
+		.orient("bottom")
+		.tickFormat(function(d) { if (d == 0) { return 'others'; } else { return d;} });
 
 	var yAxis = d3.svg.axis()
 		.scale(y)
@@ -131,6 +132,8 @@ $( document ).ready(function() {
 				max = data[i];
 		//alert(max);
 		
+		var others = 0;
+		
 		for(var i in data)
 		{
 			//alert(i + " -> " + data[i]);
@@ -140,8 +143,11 @@ $( document ).ready(function() {
 				cnt ++;
 				if (cnt > 50)
 					break;
+			} else {
+				others += +data[i];
 			}
 		}
+		formattedData.push({size:0,frequency:+others});
 		
 		data = formattedData;
 		//alert(JSON.stringify(data));

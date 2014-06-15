@@ -184,6 +184,13 @@ static StackMode getStackMode(Options & options)
 }
 
 /*******************  FUNCTION  *********************/
+void sigKillHandler(int s)
+{
+	fprintf(stderr,"MATT: Capture signal KILL, dump profile and exit.");
+	exit(1);
+}
+
+/*******************  FUNCTION  *********************/
 /**
  * Function in charge of the lazy initialization of the global state.
  * It take care of multiple and parallel calls in case of use in multi-thread context.
@@ -232,6 +239,9 @@ void AllocWrapperGlobal::init(void )
 		//TODO remove when ensure that the attribute method work
 		//This line tend to create deadlock due to reentrance for some libs (openmpi for example)
 		//atexit(AllocWrapperGlobal::onExit);
+		
+		//register sigkill handler
+		OS::setSigKillHandler(sigKillHandler);
 
 		//final state
 		gblState.status = ALLOC_WRAP_READY;

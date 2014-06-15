@@ -9,10 +9,12 @@
 /********************  HEADERS  *********************/
 //standards
 #include <cstdio>
+#include <cstdlib>
 //unix specific files
 #include <sys/types.h>
 #include <unistd.h>
 #include <libgen.h>
+#include <signal.h>
 //internals
 #include <common/Debug.hpp>
 #include "Mutex.hpp"
@@ -85,6 +87,16 @@ std::string OSUnix::getExeName(void)
 	//extract exe from path
 	char * name = basename(buffer);
 	return name;
+}
+
+/*******************  FUNCTION  *********************/
+void OSUnix::setSigKillHandler(void (*handler)(int) )
+{
+	struct sigaction sigIntHandler;
+	sigIntHandler.sa_handler = handler;
+	sigemptyset(&sigIntHandler.sa_mask);
+	sigIntHandler.sa_flags = 0;
+	sigaction(SIGINT, &sigIntHandler, NULL);
 }
 
 }

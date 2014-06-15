@@ -28,7 +28,7 @@ Options::Options(void)
 	//time
 	this->timeProfileEnabled      = true;
 	this->timeProfilePoints       = 512;
-	this->timeProfileLinear       = true;
+	this->timeProfileLinear       = false;
 	//output
 	this->outputName              = "matt-%1-%2.%3";
 	this->outputIndent            = true;
