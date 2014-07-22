@@ -140,6 +140,7 @@ void AllocStackProfiler::onAllocEvent(void* ptr, size_t size,Stack* userStack,MM
 	MATT_OPTIONAL_CRITICAL(lock,threadSafe && doLock)
 		//update shared linear index
 		this->sharedLinearIndex++;
+		this->memOpsLevels();
 	
 		//update mem usage
 		if (options.timeProfileEnabled)
@@ -203,6 +204,7 @@ size_t AllocStackProfiler::onFreeEvent(void* ptr, MATT::Stack* userStack, MMCall
 	MATT_OPTIONAL_CRITICAL(lock,threadSafe && doLock)
 		//update shared linear index
 		this->sharedLinearIndex++;
+		this->memOpsLevels();
 
 		//update memory usage
 		if (options.timeProfileEnabled && virtualMem.isNextPoint())
@@ -481,6 +483,19 @@ ticks AllocStackProfiler::ticksPerSecond(void) const
 AllocTreeStrackTracer* AllocStackProfiler::getEnterExitStackTracer(void)
 {
 	return &treeStackTracer;
+}
+
+/*******************  FUNCTION  *********************/
+void AllocStackProfiler::memOpsLevels(void)
+{
+	if (sharedLinearIndex == 1000000)
+		fprintf(stderr,"MATT: Already seen 1M memory operations.\n");
+	if (sharedLinearIndex == 10000000)
+		fprintf(stderr,"MATT: Already seen 10M memory operations, MATT certainly slows your program.\n");
+	else if (sharedLinearIndex == 1000000000)
+		fprintf(stderr,"MATT: Already seen 1G memory operations, MATT certainly slows your program.\n");
+	else if (sharedLinearIndex == 100000000000)
+		fprintf(stderr,"MATT: Already seen 100G memory operations, MATT certainly slows your program.\n");
 }
 
 }

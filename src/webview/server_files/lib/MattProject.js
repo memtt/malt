@@ -63,6 +63,28 @@ MattProject.prototype.loadFile = function(file)
 }
 
 /****************************************************/
+MattProject.prototype.getDebugStackList = function()
+{
+	//setup some local vars
+	var stats = this.data.stackInfo.stats;
+	var res = [];
+
+	for(var i in stats)
+	{
+		var statsEntry = stats[i];
+		var detailedStack = statsEntry.detailedStack;
+		var stack = [];
+		for (var j in detailedStack)
+		{
+			stack.push(detailedStack[j].function);
+		}
+		res.push(stack);
+	}
+
+	return res;
+}
+
+/****************************************************/
 /**
  * Produce a flat profile by projecting stats onto sumbols. You can get some simple examples by going to getFileLinesFlatProfile() or getFunctionFlatProfile()
  * @param mapping Provide a function whith prototype function(entry,info) which return one of the entry field 

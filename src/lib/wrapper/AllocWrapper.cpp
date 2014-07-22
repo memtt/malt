@@ -29,6 +29,27 @@
 /***************** USING NAMESPACE ******************/
 using namespace MATT;
 
+/********************  MACRO  ***********************/
+/** Manage init of local state and fetch TLS in local pointer. **/
+#define MATT_WRAPPER_LOCAL_STATE_INIT \
+	/*get addr localy to avoid to read the TLS every time*/ \
+	ThreadLocalState & localState = tlsState; \
+	 \
+	/*check init */  \
+	if ( tlsState.status == ALLOC_WRAP_NOT_READY ) \
+		localState.init();
+
+/********************  MACRO  ***********************/
+/** Check init status of local and global state and call enter/exit methods, then do requested action. **/
+#define MATT_WRAPPER_LOCAL_STATE_ACTION(action)  \
+	if (gblState.status == ALLOC_WRAP_READY && tlsState.status == ALLOC_WRAP_READY) \
+	{ \
+		void * retAddr =__builtin_extract_return_addr(__builtin_return_address(0)); \
+		localState.profiler->onEnterFunc((void*)__func__,retAddr,true); \
+		do{action;}while(0); \
+		localState.profiler->onExitFunc((void*)__func__,retAddr,true); \
+	}
+
 /*******************  FUNCTION  *********************/
 /** Prototype of malloc function to get it into function pointer. **/
 typedef void * (*MallocFuncPtr) (size_t size);
@@ -315,25 +336,15 @@ void ThreadLocalState::init(void)
 **/
 void * malloc(size_t size)
 {
-	//get addr localy to avoid to read the TLS every time
-	ThreadLocalState & localState = tlsState;
-	
-	//check init
-	if ( tlsState.status == ALLOC_WRAP_NOT_READY )
-		localState.init();
+	//get local TLS and check init
+	MATT_WRAPPER_LOCAL_STATE_INIT
 
 	//run the default function
 	assert(gblState.status > ALLOC_WRAP_INIT_SYM);
 	void * res = gblState.malloc(size);
 
 	//profile
-	if (gblState.status == ALLOC_WRAP_READY && tlsState.status == ALLOC_WRAP_READY)
-	{
-		void * retAddr =__builtin_extract_return_addr(__builtin_return_address(0));
-		localState.profiler->onEnterFunc((void*)malloc,retAddr,true);
-		localState.profiler->onMalloc(res,size);
-		localState.profiler->onExitFunc((void*)malloc,retAddr,true);
-	}
+	MATT_WRAPPER_LOCAL_STATE_ACTION(localState.profiler->onMalloc(res,size));
 
 	//return segment to user
 	return res;
@@ -348,21 +359,11 @@ void * malloc(size_t size)
 **/
 void free(void * ptr)
 {
-	//get addr localy to avoid to read the TLS every time
-	ThreadLocalState & localState = tlsState;
-	
-	//check init
-	if ( tlsState.status == ALLOC_WRAP_NOT_READY )
-		localState.init();
+	//get local TLS and check init
+	MATT_WRAPPER_LOCAL_STATE_INIT;
 
 	//profile
-	if (gblState.status == ALLOC_WRAP_READY && tlsState.status == ALLOC_WRAP_READY)
-	{
-		void * retAddr =__builtin_extract_return_addr(__builtin_return_address(0));
-		localState.profiler->onEnterFunc((void*)free,retAddr,true);
-		localState.profiler->onFree(ptr);
-		localState.profiler->onExitFunc((void*)free,retAddr,true);
-	}
+	MATT_WRAPPER_LOCAL_STATE_ACTION(localState.profiler->onFree(ptr));
 
 	//run the default function
 	assert(gblState.status > ALLOC_WRAP_INIT_SYM);
@@ -380,12 +381,8 @@ void free(void * ptr)
 **/
 void * calloc(size_t nmemb,size_t size)
 {
-	//get addr localy to avoid to read the TLS every time
-	ThreadLocalState & localState = tlsState;
-	
-	//check init
-	if ( tlsState.status == ALLOC_WRAP_NOT_READY )
-		localState.init();
+	//get local TLS and check init
+	MATT_WRAPPER_LOCAL_STATE_INIT
 
 	//calloc need a special trick for first use due to usage in dlsym
 	//this way it avoid to create infinite loop
@@ -400,13 +397,7 @@ void * calloc(size_t nmemb,size_t size)
 	void * res = gblState.calloc(nmemb,size);
 
 	//profile
-	if (gblState.status == ALLOC_WRAP_READY && tlsState.status == ALLOC_WRAP_READY)
-	{
-		void * retAddr =__builtin_extract_return_addr(__builtin_return_address(0));
-		localState.profiler->onEnterFunc((void*)calloc,retAddr,true);
-		localState.profiler->onCalloc(res,nmemb,size);
-		localState.profiler->onExitFunc((void*)calloc,retAddr,true);
-	}
+	MATT_WRAPPER_LOCAL_STATE_ACTION(localState.profiler->onCalloc(res,nmemb,size));
 
 	//return result to user
 	return res;
@@ -423,25 +414,15 @@ void * calloc(size_t nmemb,size_t size)
 **/
 void * realloc(void * ptr, size_t size)
 {
-	//get addr localy to avoid to read the TLS every time
-	ThreadLocalState & localState = tlsState;
-	
-	//check init
-	if ( tlsState.status == ALLOC_WRAP_NOT_READY )
-		localState.init();
+	//get local TLS and check init
+	MATT_WRAPPER_LOCAL_STATE_INIT
 
 	//run the default function
 	assert(gblState.status > ALLOC_WRAP_INIT_SYM);
 	void * res = gblState.realloc(ptr,size);
 	
 	//profile
-	if (gblState.status == ALLOC_WRAP_READY && tlsState.status == ALLOC_WRAP_READY)
-	{
-		void * retAddr =__builtin_extract_return_addr(__builtin_return_address(0));
-		localState.profiler->onEnterFunc((void*)realloc,retAddr,true);
-		localState.profiler->onRealloc(ptr,res,size);
-		localState.profiler->onExitFunc((void*)realloc,retAddr,true);
-	}
+	MATT_WRAPPER_LOCAL_STATE_ACTION(localState.profiler->onRealloc(ptr,res,size));
 	
 	return res;
 }
@@ -453,25 +434,15 @@ void * realloc(void * ptr, size_t size)
 **/
 int posix_memalign(void ** memptr,size_t align, size_t size)
 {
-	//get addr localy to avoid to read the TLS every time
-	ThreadLocalState & localState = tlsState;
-	
-	//check init
-	if ( tlsState.status == ALLOC_WRAP_NOT_READY )
-		localState.init();
+	//get local TLS and check init
+	MATT_WRAPPER_LOCAL_STATE_INIT
 
 	//run the default function
 	assert(gblState.status > ALLOC_WRAP_INIT_SYM);
 	int res = gblState.posix_memalign(memptr,align,size);
 
 	//profile
-	if (gblState.status == ALLOC_WRAP_READY && memptr != NULL)
-	{
-		void * retAddr =__builtin_extract_return_addr(__builtin_return_address(0));
-		localState.profiler->onEnterFunc((void*)posix_memalign,retAddr,true);
-		localState.profiler->onMalloc(*memptr,size);
-		localState.profiler->onExitFunc((void*)posix_memalign,retAddr,true);
-	}
+	MATT_WRAPPER_LOCAL_STATE_ACTION(localState.profiler->onMalloc(*memptr,size));
 
 	//return segment to user
 	return res;
@@ -484,25 +455,15 @@ int posix_memalign(void ** memptr,size_t align, size_t size)
 **/
 void *aligned_alloc(size_t alignment, size_t size)
 {
-	//get addr localy to avoid to read the TLS every time
-	ThreadLocalState & localState = tlsState;
-	
-	//check init
-	if ( tlsState.status == ALLOC_WRAP_NOT_READY )
-		localState.init();
+	//get local TLS and check init
+	MATT_WRAPPER_LOCAL_STATE_INIT
 
 	//run the default function
 	assert(gblState.status > ALLOC_WRAP_INIT_SYM);
 	void * res = gblState.aligned_alloc(alignment,size);
 
 	//profile
-	if (gblState.status == ALLOC_WRAP_READY && tlsState.status == ALLOC_WRAP_READY)
-	{
-		void * retAddr =__builtin_extract_return_addr(__builtin_return_address(0));
-		localState.profiler->onEnterFunc((void*)aligned_alloc,retAddr,true);
-		localState.profiler->onMalloc(res,size);
-		localState.profiler->onExitFunc((void*)aligned_alloc,retAddr,true);
-	}
+	MATT_WRAPPER_LOCAL_STATE_ACTION(localState.profiler->onMalloc(res,size));
 
 	//return segment to user
 	return res;
@@ -515,25 +476,15 @@ void *aligned_alloc(size_t alignment, size_t size)
 **/
 void *memalign(size_t alignment, size_t size)
 {
-	//get addr localy to avoid to read the TLS every time
-	ThreadLocalState & localState = tlsState;
-	
-	//check init
-	if ( tlsState.status == ALLOC_WRAP_NOT_READY )
-		localState.init();
+	//get local TLS and check init
+	MATT_WRAPPER_LOCAL_STATE_INIT
 
 	//run the default function
 	assert(gblState.status > ALLOC_WRAP_INIT_SYM);
 	void * res = gblState.memalign(alignment,size);
 
 	//profile
-	if (gblState.status == ALLOC_WRAP_READY && tlsState.status == ALLOC_WRAP_READY)
-	{
-		void * retAddr =__builtin_extract_return_addr(__builtin_return_address(0));
-		localState.profiler->onEnterFunc((void*)memalign,retAddr,true);
-		localState.profiler->onMalloc(res,size);
-		localState.profiler->onExitFunc((void*)memalign,retAddr,true);
-	}
+	MATT_WRAPPER_LOCAL_STATE_ACTION(localState.profiler->onMalloc(res,size));
 
 	//return segment to user
 	return res;
@@ -546,25 +497,15 @@ void *memalign(size_t alignment, size_t size)
 **/
 void *valloc(size_t size)
 {
-	//get addr localy to avoid to read the TLS every time
-	ThreadLocalState & localState = tlsState;
-	
-	//check init
-	if ( tlsState.status == ALLOC_WRAP_NOT_READY )
-		localState.init();
+	//get local TLS and check init
+	MATT_WRAPPER_LOCAL_STATE_INIT
 
 	//run the default function
 	assert(gblState.status > ALLOC_WRAP_INIT_SYM);
 	void * res = gblState.valloc(size);
 
 	//profile
-	if (gblState.status == ALLOC_WRAP_READY && tlsState.status == ALLOC_WRAP_READY)
-	{
-		void * retAddr =__builtin_extract_return_addr(__builtin_return_address(0));
-		localState.profiler->onEnterFunc((void*)valloc,retAddr,true);
-		localState.profiler->onMalloc(res,size);
-		localState.profiler->onExitFunc((void*)valloc,retAddr,true);
-	}
+	MATT_WRAPPER_LOCAL_STATE_ACTION(localState.profiler->onMalloc(res,size));
 
 	//return segment to user
 	return res;
@@ -577,25 +518,15 @@ void *valloc(size_t size)
 **/
 void *pvalloc(size_t size)
 {
-	//get addr localy to avoid to read the TLS every time
-	ThreadLocalState & localState = tlsState;
-	
-	//check init
-	if ( tlsState.status == ALLOC_WRAP_NOT_READY )
-		localState.init();
+	//get local TLS and check init
+	MATT_WRAPPER_LOCAL_STATE_INIT
 
 	//run the default function
 	assert(gblState.status > ALLOC_WRAP_INIT_SYM);
 	void * res = gblState.pvalloc(size);
 
 	//profile
-	if (gblState.status == ALLOC_WRAP_READY && tlsState.status == ALLOC_WRAP_READY)
-	{
-		void * retAddr =__builtin_extract_return_addr(__builtin_return_address(0));
-		localState.profiler->onEnterFunc((void*)pvalloc,retAddr,true);
-		localState.profiler->onMalloc(res,size);
-		localState.profiler->onExitFunc((void*)pvalloc,retAddr,true);
-	}
+	MATT_WRAPPER_LOCAL_STATE_ACTION(localState.profiler->onMalloc(res,size));
 
 	//return segment to user
 	return res;
@@ -623,12 +554,8 @@ extern "C"
 **/
 void __cyg_profile_func_enter (void *this_fn,void *call_site)
 {
-	//get addr localy to avoid to read the TLS every time
-	ThreadLocalState & localState = tlsState;
-	
-	//check init
-	if ( tlsState.status == ALLOC_WRAP_NOT_READY )
-		localState.init();
+	//get local TLS and check init
+	MATT_WRAPPER_LOCAL_STATE_INIT
 	
 	//stack tracking
 	if (tlsState.status == ALLOC_WRAP_READY)
@@ -649,12 +576,8 @@ void __cyg_profile_func_enter (void *this_fn,void *call_site)
 **/
 void __cyg_profile_func_exit  (void *this_fn,void *call_site)
 {
-	//get addr localy to avoid to read the TLS every time
-	ThreadLocalState & localState = tlsState;
-	
-	//check init
-	if ( tlsState.status == ALLOC_WRAP_NOT_READY )
-		localState.init();
+	//get local TLS and check init
+	MATT_WRAPPER_LOCAL_STATE_INIT
 	
 	//stack tracking
 	if (tlsState.status == ALLOC_WRAP_READY)

@@ -86,6 +86,7 @@ class AllocStackProfiler
 		void onAllocEvent(void* ptr, size_t size, Stack* userStack, MMCallStackNode* callStackNode = NULL, bool doLock = true);
 		  size_t onFreeEvent(void* ptr, MATT::Stack* userStack, MATT::MMCallStackNode* callStackNode = 0, bool doLock = true);
 		void resolvePerThreadSymbols(void);
+		void memOpsLevels(void);
 	private:
 		//SimpleStackTracer stackTracer;
 		StackSTLHashMap<CallStackInfo> stackTracer;

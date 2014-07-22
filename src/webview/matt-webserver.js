@@ -190,6 +190,13 @@ app.get('/size-map.json',function(req,res) {
 });
 
 /****************************************************/
+app.get('/debug-stack-list.json',function(req,res) {
+	var tmp = mattProject.getDebugStackList();
+	res.write(JSON.stringify(tmp,null,'\t'));
+	res.end();
+});
+
+/****************************************************/
 app.get('/',function(eq,res,next){
 	res.render("page-summary",mattProject.getSummary());
 });
