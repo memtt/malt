@@ -31,16 +31,30 @@ struct LinuxInternalStatm
 };
 
 /********************  STRUCT  **********************/
-struct OSMemUsage
+struct OSProcMemUsage
 {
 	size_t virtualMemory;
 	size_t physicalMemory;
+};
+
+/********************  STRUCT  **********************/
+struct OSMemUsage
+{
+	size_t totalMemory;
+	size_t freeMemory;
+	size_t buffers;
+	size_t cached;
+	size_t swap;
+	size_t totalSwap;
+	size_t directMap4K;
+	size_t directMap2M;
 };
 
 /*********************  CLASS  **********************/
 class OSUnix
 {
 	public:
+		static OSProcMemUsage getProcMemoryUsage(void);
 		static OSMemUsage getMemoryUsage(void);
 		static unsigned int getPID(void);
 		static std::string getExeName(void);

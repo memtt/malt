@@ -114,6 +114,9 @@ class AllocStackProfiler
 		ticks trefTicks;
 		ticks sharedLinearIndex;
 		ReallocJumpMap reallocJumpMap;
+		size_t osTotalMemory;
+		size_t osFreeMemoryAtStart;
+		size_t osCachedMemoryAtStart;
 };
 
 }

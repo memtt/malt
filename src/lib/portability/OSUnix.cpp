@@ -25,16 +25,82 @@ namespace MATT
 {
 
 /*********************  CONSTS  *********************/
+static const char * cstMeminfoFile = "/proc/meminfo";
 static const char * cstStatmFile = "/proc/self/statm";
 static const char * cstExeFile = "/proc/self/exe";
 
 /*******************  FUNCTION  *********************/
 OSMemUsage OSUnix::getMemoryUsage(void)
 {
+	//use some static to avoid many open/close
+	static FILE * fp = NULL;
+	static StaticMutex gblMeminfoMutex = MATT_STATIC_MUTEX_INIT;
+	OSMemUsage finalRes = {0,0,0,0,0,0,0};
+	char buffer[512];
+	
+	//secure for threads
+	MATT_START_CRITICAL(gblMeminfoMutex)
+		//try to open if not already
+		if (fp == NULL)
+		{
+			fp = fopen(cstMeminfoFile,"r");
+			assumeArg(fp != NULL,"Fail to open %1 : %2").arg(cstMeminfoFile).argStrErrno().end();
+		}
+		
+		//seek to start
+		int res = fseek(fp,0,SEEK_SET);
+		assumeArg(res == 0,"Fail to seek into %1 : %2").arg(cstMeminfoFile).argStrErrno().end();
+		
+		//read
+		while (!feof(fp))
+		{
+			//read line into buffer
+			char * res = fgets(buffer,sizeof(buffer),fp);
+			
+			//get end
+			if (res == NULL)
+			{
+				MATT_ASSERT(feof(fp));
+				break;
+			}
+			
+			//extract
+			size_t value;
+			if (sscanf(buffer,"MemTotal: %lu kB",&value) == 1)
+			{
+				finalRes.totalMemory = value * 1024;
+			} else if (sscanf(buffer,"MemFree: %lu kB",&value) == 1) {
+				finalRes.freeMemory = value * 1024;
+			} else if (sscanf(buffer,"buffers: %lu kB",&value) == 1) {
+				finalRes.buffers = value * 1024;
+			} else if (sscanf(buffer,"Cached: %lu kB",&value) == 1) {
+				finalRes.cached = value * 1024;
+			} else if (sscanf(buffer,"SwapTotal: %lu kB",&value) == 1) {
+				finalRes.totalSwap = value * 1024;
+			} else if (sscanf(buffer,"SwapFree: %lu kB",&value) == 1) {
+				finalRes.swap = value * 1024;
+			} else if (sscanf(buffer,"DirectMap4k: %lu kB",&value) == 1) {
+				finalRes.directMap4K = value * 1024;
+			} else if (sscanf(buffer,"DirectMap2M: %lu kB",&value) == 1) {
+				finalRes.directMap2M = value * 1024;
+			}
+		}
+		
+		//compute swap
+		finalRes.swap = finalRes.totalSwap - finalRes.swap;
+	MATT_END_CRITICAL
+	
+	//return
+	return finalRes;
+}
+
+/*******************  FUNCTION  *********************/
+OSProcMemUsage OSUnix::getProcMemoryUsage(void)
+{
 	//use some static 
 	static FILE * fp = NULL;
 	static StaticMutex gblStatmMutex = MATT_STATIC_MUTEX_INIT;
-	OSMemUsage finalRes = {0,0};
+	OSProcMemUsage finalRes = {0,0};
 	
 	//secure for threads
 	MATT_START_CRITICAL(gblStatmMutex)
@@ -47,7 +113,7 @@ OSMemUsage OSUnix::getMemoryUsage(void)
 		
 		//seek to start
 		int res = fseek(fp,0,SEEK_SET);
-		assumeArg(fp != NULL,"Fail to seek into %1 : %2").arg(cstStatmFile).argStrErrno().end();
+		assumeArg(res == 0,"Fail to seek into %1 : %2").arg(cstStatmFile).argStrErrno().end();
 		
 		//read
 		LinuxInternalStatm stat;

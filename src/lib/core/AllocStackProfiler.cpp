@@ -58,6 +58,12 @@ AllocStackProfiler::AllocStackProfiler(const Options & options,StackMode mode,bo
 	//init tref to convert ticks in sec
 	gettimeofday(&trefSec,NULL);
 	trefTicks = getticks();
+	
+	//get memory state at start
+	OSMemUsage mem = OS::getMemoryUsage();
+	this->osTotalMemory = mem.totalMemory;
+	this->osFreeMemoryAtStart = mem.freeMemory;
+	this->osCachedMemoryAtStart = mem.cached;
 }
 
 /*******************  FUNCTION  *********************/
@@ -143,7 +149,7 @@ void AllocStackProfiler::onAllocEvent(void* ptr, size_t size,Stack* userStack,MM
 				requestedMem.onDeltaEvent(size);
 				if (virtualMem.isNextPoint())
 				{
-					OSMemUsage mem = OS::getMemoryUsage();
+					OSProcMemUsage mem = OS::getProcMemoryUsage();
 					virtualMem.onUpdateValue(mem.virtualMemory - gblInternaAlloc->getTotalMemory());
 					physicalMem.onUpdateValue(mem.physicalMemory - gblInternaAlloc->getTotalMemory());
 				}
@@ -202,7 +208,7 @@ size_t AllocStackProfiler::onFreeEvent(void* ptr, MATT::Stack* userStack, MMCall
 		if (options.timeProfileEnabled && virtualMem.isNextPoint())
 		{
 			CODE_TIMING("timeProfileFreeStart",
-				OSMemUsage mem = OS::getMemoryUsage();
+				OSProcMemUsage mem = OS::getProcMemoryUsage();
 				virtualMem.onUpdateValue(mem.virtualMemory - gblInternaAlloc->getTotalMemory());
 				physicalMem.onUpdateValue(mem.physicalMemory - gblInternaAlloc->getTotalMemory());
 			);
@@ -397,6 +403,12 @@ void convertToJson(htopml::JsonState& json, const AllocStackProfiler& value)
 	
 	json.printField("allocBandwidth",value.allocBandwidth);
 	json.printField("freeBandwidth",value.freeBandwidth);
+	
+	json.openFieldStruct("globals");
+	json.printField("totalMemory",value.osTotalMemory);
+	json.printField("freeMemory",value.osFreeMemoryAtStart);
+	json.printField("cachedMemory",value.osCachedMemoryAtStart);
+	json.closeFieldStruct("globals");
 	
 	json.printField("leaks",value.segTracker);
 	CODE_TIMING("ticksPerSecond",json.printField("ticksPerSecond",value.ticksPerSecond()));
