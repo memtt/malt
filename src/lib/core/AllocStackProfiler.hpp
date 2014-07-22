@@ -112,6 +112,7 @@ class AllocStackProfiler
 		LocalAllocStackProfilerList perThreadProfiler;
 		timeval trefSec;
 		ticks trefTicks;
+		ticks sharedLinearIndex;
 		ReallocJumpMap reallocJumpMap;
 };
 

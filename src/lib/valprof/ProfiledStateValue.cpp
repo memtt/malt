@@ -57,6 +57,7 @@ ProfiledStateValue::ProfiledStateValue(size_t steps,bool useLinearIndex)
 	this->currentId = 0;
 	this->steps = steps;
 	this->value = 0;
+	this->remoteLinearIndex = NULL;
 	
 	//current
 	this->deltaIndex = 1;
@@ -216,10 +217,20 @@ void convertToJson(htopml::JsonState& json, const ProfiledStateValue& value)
 /*******************  FUNCTION  *********************/
 ticks ProfiledStateValue::getIndex() const
 {
-	if (useLinearIndex)
-		return linearIndex;
-	else
+	if (useLinearIndex == false)
+	{
 		return ::getticks();
+	} else if (remoteLinearIndex == NULL) {
+		return linearIndex;
+	} else {
+		return *remoteLinearIndex;
+	}
+}
+
+/*******************  FUNCTION  *********************/
+void ProfiledStateValue::setRemoteLinearIndex(ticks* remoteLinearIndex)
+{
+	this->remoteLinearIndex = remoteLinearIndex;
 }
 
 

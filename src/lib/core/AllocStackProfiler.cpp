@@ -43,6 +43,13 @@ AllocStackProfiler::AllocStackProfiler(const Options & options,StackMode mode,bo
 	this->threadSafe = threadSafe;
 	this->options = options;
 	this->largestStackSize = 0;
+	this->sharedLinearIndex = 0;
+	
+	this->requestedMem.setRemoteLinearIndex(&sharedLinearIndex);
+	this->physicalMem.setRemoteLinearIndex(&sharedLinearIndex);
+	this->virtualMem.setRemoteLinearIndex(&sharedLinearIndex);
+	this->internalMem.setRemoteLinearIndex(&sharedLinearIndex);
+	this->segments.setRemoteLinearIndex(&sharedLinearIndex);
 	
 	//init internal alloc
 	if (gblInternaAlloc == NULL)
@@ -125,6 +132,9 @@ void AllocStackProfiler::onAllocEvent(void* ptr, size_t size,Stack* userStack,MM
 		callStackNode = &localCallStackNode;
 	
 	MATT_OPTIONAL_CRITICAL(lock,threadSafe && doLock)
+		//update shared linear index
+		this->sharedLinearIndex++;
+	
 		//update mem usage
 		if (options.timeProfileEnabled)
 		{
@@ -185,6 +195,9 @@ size_t AllocStackProfiler::onFreeEvent(void* ptr, MATT::Stack* userStack, MMCall
 		callStackNode = &localCallStackNode;
 
 	MATT_OPTIONAL_CRITICAL(lock,threadSafe && doLock)
+		//update shared linear index
+		this->sharedLinearIndex++;
+
 		//update memory usage
 		if (options.timeProfileEnabled && virtualMem.isNextPoint())
 		{

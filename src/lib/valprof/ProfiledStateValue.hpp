@@ -43,6 +43,7 @@ class ProfiledStateValue
 		void onDeltaEvent(ssize_t delta);
 		void onUpdateValue(size_t value);
 		bool isNextPoint(void) const;
+		void setRemoteLinearIndex(ticks * remoteLinearIndex);
 	public:
 		friend void convertToJson(htopml::JsonState& json, const ProfiledStateValue& value);
 	private:
@@ -63,6 +64,7 @@ class ProfiledStateValue
 		size_t value;
 		ticks linearIndex;
 		bool useLinearIndex;
+		ticks * remoteLinearIndex;
 };
 
 }
