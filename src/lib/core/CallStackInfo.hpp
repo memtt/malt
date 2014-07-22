@@ -47,12 +47,13 @@ struct CallStackInfo
 // 	public:
 		CallStackInfo(void);
 		~CallStackInfo(void);
-		void onAllocEvent(size_t value);
-		void onFreeEvent(size_t value);
-		void onFreeLinkedMemory(size_t value,ticks lifetime);
+		void onAllocEvent(size_t value,size_t peakId);
+		void onFreeEvent(size_t value,size_t peakId);
+		void onFreeLinkedMemory(size_t value,ticks lifetime,size_t peakId);
 		void push(const MATT::CallStackInfo& info);
 		void writeAsCallgrindEntry(int line, std::ostream & out) const;
 		static void writeCallgrindEventDef(std::ostream & out);
+		void updatePeak(size_t peakId);
 // 	public:
 		
 // 	private:
@@ -62,6 +63,8 @@ struct CallStackInfo
 		ssize_t cntZeros;
 		ssize_t alive;
 		ssize_t maxAlive;
+		ssize_t peak;
+		ssize_t peakId;
 };
 
 std::ostream & operator << (std::ostream & out,const CallStackInfo & info);

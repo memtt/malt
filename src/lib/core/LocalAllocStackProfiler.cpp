@@ -10,6 +10,8 @@
 //locals from common/
 #include <common/Debug.hpp>
 #include <common/CodeTiming.hpp>
+//Unix for mmap flags (need to move to portability directory)
+#include <sys/mman.h>
 //locals
 #include "LocalAllocStackProfiler.hpp"
 
@@ -114,6 +116,54 @@ void LocalAllocStackProfiler::onRealloc(void* ptr, void* res, size_t size)
 		this->cumulAlloc+=size;
 		inUse = oldInuse;
 	}
+}
+
+/*******************  FUNCTION  *********************/
+void LocalAllocStackProfiler::onMmap(void* ptr, size_t size, int flags, int fd)
+{
+// 	//skip file and non anon
+// 	if ((flags & (MAP_ANON|MAP_ANONYMOUS)) == 0 || fd != 0)
+// 		return;
+// 	
+// 	//old state
+// 	bool oldInuse = inUse;
+// 	
+// 	//get stack
+// 	Stack * stack = getStack();
+// 	
+// 	//check for renentrance
+// 	if (!reentrance || !oldInuse)
+// 	{
+// 		inUse = true;
+// 		CODE_TIMING("userMmapProf",globalProfiler->onMalloc(ptr,size,stack));
+// 		this->cntMemOps++;
+// 		this->cumulAlloc+=size;
+// 		inUse = oldInuse;
+// 	}
+	
+	//CODE_TIMING("globalMmapProf",globalProfiler->onGlobalMmap(ptr,size,stack));
+}
+
+/*******************  FUNCTION  *********************/
+void LocalAllocStackProfiler::onMunmap(void* ptr, size_t size)
+{
+// 	//old state
+// 	bool oldInuse = inUse;
+// 	
+// 	//get stack
+// 	Stack * stack = getStack();
+// 	
+// 	//check for renentrance
+// 	if (!reentrance || !oldInuse)
+// 	{
+// 		inUse = true;
+// 		CODE_TIMING("userMmapProf",globalProfiler->onFree(ptr,stack));
+// 		this->cntMemOps++;
+// 		this->cumulAlloc+=size;
+// 		inUse = oldInuse;
+// 	}
+	
+	//CODE_TIMING("globalMmapProf",globalProfiler->onGlobalMunmap(ptr,size,stack));
 }
 
 /*******************  FUNCTION  *********************/

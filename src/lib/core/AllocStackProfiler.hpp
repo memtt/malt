@@ -87,6 +87,7 @@ class AllocStackProfiler
 		  size_t onFreeEvent(void* ptr, MATT::Stack* userStack, MATT::MMCallStackNode* callStackNode = 0, bool doLock = true);
 		void resolvePerThreadSymbols(void);
 		void memOpsLevels(void);
+		void updatePeakInfoOfStacks(void);
 	private:
 		//SimpleStackTracer stackTracer;
 		StackSTLHashMap<CallStackInfo> stackTracer;
@@ -118,6 +119,9 @@ class AllocStackProfiler
 		size_t osTotalMemory;
 		size_t osFreeMemoryAtStart;
 		size_t osCachedMemoryAtStart;
+		size_t peakId;
+		size_t peak;
+		size_t curReq;
 };
 
 }

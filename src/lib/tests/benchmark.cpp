@@ -186,7 +186,7 @@ void runTestFlat(BenchTiming & timing,StackSTLHashMap<CallStackInfo> & tracer,Ba
 		for (int i = 0 ; i < reuse ; i++)
 		{
 			timing.eventStart();
-			tracer.getValueRef(stack).onAllocEvent(16);
+			tracer.getValueRef(stack).onAllocEvent(16,0);
 			timing.eventEnd();
 		}
 	}
@@ -210,7 +210,7 @@ void runTestFlatOld(BenchTiming & timing,SimpleStackTracer & tracer,BacktraceSta
 		for (int i = 0 ; i < reuse ; i++)
 		{
 			timing.eventStart();
-			tracer.getBacktraceInfo(stack).getInfo().onAllocEvent(16);
+			tracer.getBacktraceInfo(stack).getInfo().onAllocEvent(16,0);
 			timing.eventEnd();
 		}
 	}
@@ -235,7 +235,7 @@ void runTestTree(BenchTiming & timing,RLockFreeTree<CallStackInfo> & tracer,Back
 		for (int i = 0 ; i < reuse ; i++)
 		{
 			timing.eventStart();
-			tracer.getDataFromStack(stack)->onAllocEvent(16);
+			tracer.getDataFromStack(stack)->onAllocEvent(16,0);
 			timing.eventEnd();
 		}
 	}

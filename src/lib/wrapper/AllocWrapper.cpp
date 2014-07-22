@@ -59,16 +59,20 @@ typedef void   (*FreeFuncPtr)   (void * ptr);
 typedef void * (*CallocFuncPtr) (size_t nmemb,size_t size);
 /** Prototype of realloc function to get it into function pointer. **/
 typedef void * (*ReallocFuncPtr)(void * ptr,size_t size);
-/** Prototype of posix_memalign functino to get it into function pointer. **/
+/** Prototype of posix_memalign function to get it into function pointer. **/
 typedef int (*PosixMemalignFuncPtr)(void **memptr, size_t alignment, size_t size);
-/** Prototype of aligned_alloc functino to get it into function pointer. **/
+/** Prototype of aligned_alloc function to get it into function pointer. **/
 typedef void *(*AlignedAllocFuncPtr)(size_t alignment, size_t size);
-/** Prototype of valloc functino to get it into function pointer. **/
+/** Prototype of valloc function to get it into function pointer. **/
 typedef void *(*VallocFuncPtr)(size_t size);
-/** Prototype of memalign functino to get it into function pointer. **/
+/** Prototype of memalign function to get it into function pointer. **/
 typedef void *(*MemalignFuncPtr)(size_t alignment, size_t size);
-/** Prototype of pvalloc functino to get it into function pointer. **/
+/** Prototype of pvalloc function to get it into function pointer. **/
 typedef void *(*PVallocFuncPtr)(size_t size);
+/** Prototype of mmap function to get it into function pointer. **/
+typedef void *(*MmapFuncPtr)(void *start,size_t length,int prot,int flags,int fd,off_t offset);
+/** Prototype of munmap function to get it into function pointer. **/
+typedef int (*MunmapFuncPtr)(void *start,size_t length);
 
 /********************  ENUM  ************************/
 /**
@@ -128,6 +132,10 @@ struct AllocWrapperGlobal
 	PVallocFuncPtr pvalloc;
 	/** Pointer to the old (libc) memalign symbol. **/
 	MemalignFuncPtr memalign;
+	/** Pointer to the old (libc) mmap symbol. **/
+	MmapFuncPtr mmap;
+	/** Pointer to the old (libc) munmap symbol. **/
+	MunmapFuncPtr munmap;
 	/** Pointer to the profiler (use pointer due to use before main, only way to ensure init before first malloc usage). **/
 	AllocStackProfiler * profiler;
 	/** Keep track of user options. **/
@@ -227,6 +235,8 @@ void AllocWrapperGlobal::init(void )
 		gblState.status = ALLOC_WRAP_INIT_SYM;
 		
 		//search addresses
+		gblState.mmap = (MmapFuncPtr)dlsym(RTLD_NEXT,"mmap");
+		gblState.munmap = (MunmapFuncPtr)dlsym(RTLD_NEXT,"munmap");
 		gblState.malloc = (MallocFuncPtr)dlsym(RTLD_NEXT,"malloc");
 		gblState.free = (FreeFuncPtr)dlsym(RTLD_NEXT,"free");
 		gblState.calloc = (CallocFuncPtr)dlsym(RTLD_NEXT,"calloc");
@@ -527,6 +537,48 @@ void *pvalloc(size_t size)
 
 	//profile
 	MATT_WRAPPER_LOCAL_STATE_ACTION(localState.profiler->onMalloc(res,size));
+
+	//return segment to user
+	return res;
+}
+
+/*******************  FUNCTION  *********************/
+/**
+ * Wrapper of the pvalloc function to capture allocations. The original symbol will be
+ * search by dlsym() in AllocWrapperGlobal::init() .
+**/
+void *mmap(void *start, size_t length, int prot,int flags,int fd, off_t offset)
+{
+	//get local TLS and check init
+	MATT_WRAPPER_LOCAL_STATE_INIT
+
+	//run the default function
+	assert(gblState.status > ALLOC_WRAP_INIT_SYM);
+	void * res = gblState.mmap(start,length,prot,flags,fd,offset);
+
+	//profile
+	//MATT_WRAPPER_LOCAL_STATE_ACTION(localState.profiler->onMalloc(res,size));
+
+	//return segment to user
+	return res;
+}
+
+/*******************  FUNCTION  *********************/
+/**
+ * Wrapper of the pvalloc function to capture allocations. The original symbol will be
+ * search by dlsym() in AllocWrapperGlobal::init() .
+**/
+int munmap(void *start, size_t length)
+{
+	//get local TLS and check init
+	MATT_WRAPPER_LOCAL_STATE_INIT
+
+	//run the default function
+	assert(gblState.status > ALLOC_WRAP_INIT_SYM);
+	int res = gblState.munmap(start,length);
+
+	//profile
+	//MATT_WRAPPER_LOCAL_STATE_ACTION(localState.profiler->onMalloc(res,size));
 
 	//return segment to user
 	return res;

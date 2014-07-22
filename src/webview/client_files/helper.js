@@ -70,6 +70,7 @@ MattHelper.prototype.mergeStackInfoDatas = function(onto,value)
 	onto.countZeros += value.countZeros;
 	onto.maxAliveReq += value.maxAliveReq;
 	onto.aliveReq += value.aliveReq;
+	onto.globalPeak += value.globalPeak;
 
 	this.mergeStackMinMaxInfo(onto.alloc,value.alloc);
 	this.mergeStackMinMaxInfo(onto.free,value.free);

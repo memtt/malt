@@ -86,13 +86,13 @@ TEST(SimpleAllocator,mallocSeq1)
 	void * ptr1 = alloc.malloc(4*sizeof(int));
 	memset(ptr1,0,4*sizeof(int));
 	void * ptr2 = alloc.malloc(8*sizeof(int));
-	memset(ptr1,0,8*sizeof(int));
+	memset(ptr2,0,8*sizeof(int));
 	void * ptr3 = alloc.malloc(16*sizeof(int));
-	memset(ptr1,0,16*sizeof(int));
+	memset(ptr3,0,16*sizeof(int));
 	void * ptr4 = alloc.malloc(32*sizeof(int));
-	memset(ptr1,0,32*sizeof(int));
+	memset(ptr4,0,32*sizeof(int));
 	void * ptr5 = alloc.malloc(48*sizeof(int));
-	memset(ptr1,0,48*sizeof(int));
+	memset(ptr5,0,48*sizeof(int));
 }
 
 /*******************  FUNCTION  *********************/

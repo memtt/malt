@@ -79,7 +79,7 @@ TEST(ValgrindOutput,testRecursive)
 	ValgrindOutput output;
 	Stack stack(CST_STACK_1,7,STACK_ORDER_ASC);
 	SimpleCallStackNode stackNode(stack);
-	stackNode.getInfo().onAllocEvent(2);
+	stackNode.getInfo().onAllocEvent(2,0);
 	SymbolResolver symbols;
 	symbols.loadProcMap();
 	stack.resolveSymbols(symbols);

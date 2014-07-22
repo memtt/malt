@@ -58,6 +58,7 @@ SimpleAllocator::SimpleAllocator(bool threadSafe, size_t sysReqSize)
 	this->cur = NULL;
 	this->totalMemory = 0;
 	this->unusedMemory = 0;
+	this->curSearchInList = NULL;
 }
 
 /*******************  FUNCTION  *********************/
@@ -127,7 +128,7 @@ void* SimpleAllocator::malloc(size_t size)
 	//search in list
 	Chunk * chunk = NULL;
 	MATT_OPTIONAL_CRITICAL(lock,threadSafe)
-		//chunk = getInList(size);
+		chunk = getInList(size);
 
 		//if empty, check with cur
 		if (chunk == NULL)
@@ -241,10 +242,14 @@ Chunk* SimpleAllocator::getInCur(size_t size)
 **/
 Chunk* SimpleAllocator::getInList(size_t size)
 {
-	FreeChunk * f = freeList.next;
-	Chunk * res = NULL;
+	if (this->curSearchInList == NULL)
+		this->curSearchInList = freeList.next;
 	
-	while (f != &freeList && res == NULL)
+	FreeChunk * f = this->curSearchInList;
+	Chunk * res = NULL;
+	int maxTest = 16;
+	
+	while (f != &freeList && res == NULL && maxTest >= 0)
 	{
 		if (f->chunk.canContain(size))
 		{
@@ -252,6 +257,7 @@ Chunk* SimpleAllocator::getInList(size_t size)
 			res = &f->chunk;
 		}
 		f = f->next;
+		maxTest--;
 	}
 	
 	if (res != NULL)
@@ -261,6 +267,7 @@ Chunk* SimpleAllocator::getInList(size_t size)
 			Chunk * next = res->split(size);
 			freeList.insertNext(next);
 		}
+		this->curSearchInList = NULL;
 	}
 	
 	return res;

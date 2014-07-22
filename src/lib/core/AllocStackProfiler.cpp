@@ -64,6 +64,11 @@ AllocStackProfiler::AllocStackProfiler(const Options & options,StackMode mode,bo
 	this->osTotalMemory = mem.totalMemory;
 	this->osFreeMemoryAtStart = mem.freeMemory;
 	this->osCachedMemoryAtStart = mem.cached;
+	
+	//peak tracking
+	this->peakId = 0;
+	this->peak = 0;
+	this->curReq = 0;
 }
 
 /*******************  FUNCTION  *********************/
@@ -141,6 +146,14 @@ void AllocStackProfiler::onAllocEvent(void* ptr, size_t size,Stack* userStack,MM
 		//update shared linear index
 		this->sharedLinearIndex++;
 		this->memOpsLevels();
+		
+		//peak tracking
+		if (this->curReq > this->peak)
+		{
+			this->peakId++;
+			this->peak = this->curReq;
+		}
+		this->curReq += size;
 	
 		//update mem usage
 		if (options.timeProfileEnabled)
@@ -164,7 +177,7 @@ void AllocStackProfiler::onAllocEvent(void* ptr, size_t size,Stack* userStack,MM
 				*callStackNode = getStackNode(userStack);
 			
 			//count events
-			CODE_TIMING("updateInfoAlloc",callStackNode->infos->onAllocEvent(size));
+			CODE_TIMING("updateInfoAlloc",callStackNode->infos->onAllocEvent(size,peakId));
 		}
 
 		//register for segment history tracking
@@ -227,12 +240,21 @@ size_t AllocStackProfiler::onFreeEvent(void* ptr, MATT::Stack* userStack, MMCall
 			//fprintf(stderr,"Caution, get unknown free segment : %p, ingore it.\n",ptr);
 			return 0;
 		}
+		
 			
 		//update mem usage
 		size = segInfo->size;
 		ticks lifetime = segInfo->getLifetime();
 		if (options.timeProfileEnabled)
 			CODE_TIMING("timeProfileFreeMiddle",requestedMem.onDeltaEvent(-size));
+		
+		//peak tracking
+		if (this->curReq > this->peak)
+		{
+			this->peakId++;
+			this->peak = this->curReq;
+		}
+		this->curReq -= size;
 		
 		if (options.stackProfileEnabled)
 		{
@@ -241,10 +263,10 @@ size_t AllocStackProfiler::onFreeEvent(void* ptr, MATT::Stack* userStack, MMCall
 				*callStackNode = getStackNode(userStack);
 			
 			//count events
-			CODE_TIMING("updateInfoFree",callStackNode->infos->onFreeEvent(size));
+			CODE_TIMING("updateInfoFree",callStackNode->infos->onFreeEvent(size,peakId));
 			
 			//update alive (TODO, need to move this into a new function on StackNodeInfo)
-			CODE_TIMING("freeLinkedMemory",segInfo->callStack.infos->onFreeLinkedMemory(size,lifetime));
+			CODE_TIMING("freeLinkedMemory",segInfo->callStack.infos->onFreeLinkedMemory(size,lifetime,peakId));
 		}
 		
 		//remove tracking info
@@ -283,6 +305,14 @@ void AllocStackProfiler::resolvePerThreadSymbols()
 }
 
 /*******************  FUNCTION  *********************/
+void AllocStackProfiler::updatePeakInfoOfStacks(void)
+{
+	//fprintf(stderr,"peak = %lu , peakId = %lu\n",peak,peakId);
+	for (StackSTLHashMap<CallStackInfo>::iterator it = stackTracer.begin() ; it != stackTracer.end() ; ++it)
+		it->second.updatePeak(peakId);
+}
+
+/*******************  FUNCTION  *********************/
 void AllocStackProfiler::onExit(void )
 {
 	MATT_OPTIONAL_CRITICAL(lock,threadSafe)
@@ -294,6 +324,9 @@ void AllocStackProfiler::onExit(void )
 				this->stackTracer.resolveSymbols(symbolResolver);
 				this->symbolResolver.resolveNames()
 			);
+		
+		//update global peak info
+		updatePeakInfoOfStacks();
 	
 		//open output file
 		//TODO manage errors
@@ -360,6 +393,8 @@ void convertToJson(htopml::JsonState& json, const AllocStackProfiler& value)
 		json.printField("virtualMem",value.virtualMem);
 		json.printField("internalMem",value.internalMem);
 		json.printField("segments",value.segments);
+		json.printField("allocBandwidth",value.allocBandwidth);
+		json.printField("freeBandwidth",value.freeBandwidth);
 	}
 	
 	if (value.options.maxStackEnabled)
@@ -403,13 +438,10 @@ void convertToJson(htopml::JsonState& json, const AllocStackProfiler& value)
 		json.closeFieldArray("reallocJump");
 	}
 	
-	json.printField("allocBandwidth",value.allocBandwidth);
-	json.printField("freeBandwidth",value.freeBandwidth);
-	
 	json.openFieldStruct("globals");
-	json.printField("totalMemory",value.osTotalMemory);
-	json.printField("freeMemory",value.osFreeMemoryAtStart);
-	json.printField("cachedMemory",value.osCachedMemoryAtStart);
+		json.printField("totalMemory",value.osTotalMemory);
+		json.printField("freeMemory",value.osFreeMemoryAtStart);
+		json.printField("cachedMemory",value.osCachedMemoryAtStart);
 	json.closeFieldStruct("globals");
 	
 	json.printField("leaks",value.segTracker);

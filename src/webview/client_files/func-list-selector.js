@@ -45,7 +45,8 @@ function MattFuncListSelector(defaults)
 	this.metrics['free.sum']    = {name: 'Freed mem.',extractor:function (entry) {return entry.free.sum;},'unit' : 'B',ref:'sum'};
 	this.metrics['free.count']  = {name: 'Free count',extractor:function (entry) {return entry.free.count;},'unit':'',ref:'sum'};
 	this.metrics['memops']      = {name: 'Memory ops.',extractor:function (entry) {return entry.alloc.count + entry.free.count;},'unit' : '',ref:'sum'};
-	this.metrics['peakmem']     = {name: 'Peak memory',extractor:function (entry) {return entry.maxAliveReq;},'unit' : 'B',ref:'sum'};
+	this.metrics['lpeakmem']     = {name: 'Local peak',extractor:function (entry) {return entry.maxAliveReq;},'unit' : 'B',ref:'max'};
+	this.metrics['gpeakmem']     = {name: 'Global peak',extractor:function (entry) {return entry.globalPeak;},'unit' : 'B',ref:'sum'};
 	this.metrics['leaks']       = {name: 'Leaks',extractor:function (entry) {return entry.aliveReq;},'unit' : 'B',ref:'sum'};
 	this.metrics['lifetime']    = {name: 'Lifetime',extractor:function (entry) {return entry.lifetime;},'unit' : '',ref:'max'};
 // 	this.metrics['ratio']       = {name: 'Recycling ratio',extractor:function (entry) {return entry.alloc.sum/entry.lifetime.count;},'unit' : 'c',ref:'max'};

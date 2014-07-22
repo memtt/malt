@@ -119,6 +119,8 @@ class SimpleAllocator
 		FreeChunk freeList;
 		/** Current chunk to split to get new segments. **/
 		Chunk * cur;
+		/** Use next fit algo. **/
+		FreeChunk * curSearchInList;
 		/** Size of memory segment to requests to OS via mmap to get more memory. **/
 		size_t sysReqSize;
 		/** Track the total memory used by this allocator. **/
