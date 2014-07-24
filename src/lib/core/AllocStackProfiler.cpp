@@ -148,12 +148,7 @@ void AllocStackProfiler::onAllocEvent(void* ptr, size_t size,Stack* userStack,MM
 		this->memOpsLevels();
 		
 		//peak tracking
-		if (this->curReq > this->peak)
-		{
-			this->peakId++;
-			this->peak = this->curReq;
-		}
-		this->curReq += size;
+		peakTracking(size);
 	
 		//update mem usage
 		if (options.timeProfileEnabled)
@@ -249,12 +244,7 @@ size_t AllocStackProfiler::onFreeEvent(void* ptr, MATT::Stack* userStack, MMCall
 			CODE_TIMING("timeProfileFreeMiddle",requestedMem.onDeltaEvent(-size));
 		
 		//peak tracking
-		if (this->curReq > this->peak)
-		{
-			this->peakId++;
-			this->peak = this->curReq;
-		}
-		this->curReq -= size;
+		peakTracking(-size);
 		
 		if (options.stackProfileEnabled)
 		{
@@ -286,6 +276,17 @@ size_t AllocStackProfiler::onFreeEvent(void* ptr, MATT::Stack* userStack, MMCall
 	MATT_END_CRITICAL
 	
 	return size;
+}
+
+/*******************  FUNCTION  *********************/
+void AllocStackProfiler::peakTracking(ssize_t delta)
+{
+	if (this->curReq > this->peak)
+		{
+			this->peakId++;
+			this->peak = this->curReq;
+		}
+		this->curReq += delta;
 }
 
 /*******************  FUNCTION  *********************/
@@ -381,20 +382,22 @@ void convertToJson(htopml::JsonState& json, const AllocStackProfiler& value)
 	json.openStruct();
 
 	if (value.options.stackProfileEnabled)
-		json.printField("stackInfo",value.stackTracer);
+		json.printField("stacks",value.stackTracer);
 	
 	if (value.options.stackResolve)
 		json.printField("sites",value.symbolResolver);
 
 	if (value.options.timeProfileEnabled)
 	{
-		json.printField("requestedMem",value.requestedMem);
-		json.printField("physicalMem",value.physicalMem);
-		json.printField("virtualMem",value.virtualMem);
-		json.printField("internalMem",value.internalMem);
-		json.printField("segments",value.segments);
-		json.printField("allocBandwidth",value.allocBandwidth);
-		json.printField("freeBandwidth",value.freeBandwidth);
+		json.openFieldStruct("timeline");
+			json.printField("requestedMem",value.requestedMem);
+			json.printField("physicalMem",value.physicalMem);
+			json.printField("virtualMem",value.virtualMem);
+			json.printField("internalMem",value.internalMem);
+			json.printField("segments",value.segments);
+			json.printField("allocBandwidth",value.allocBandwidth);
+			json.printField("freeBandwidth",value.freeBandwidth);
+		json.closeFieldStruct("timeline");
 	}
 	
 	if (value.options.maxStackEnabled)
@@ -411,42 +414,45 @@ void convertToJson(htopml::JsonState& json, const AllocStackProfiler& value)
 // 		json.closeFieldStruct("maxStack");
 	}
 	
-	if (value.options.distrAllocSize)
-	{
-		json.openFieldStruct("sizeMap");
-		for (AllocSizeDistrMap::const_iterator it = value.sizeMap.begin() ; it != value.sizeMap.end() ; ++it)			
+	json.openFieldStruct("memStats");
+		if (value.options.distrAllocSize)
 		{
-			std::stringstream out;
-			out << it->first;
-			json.printField(out.str().c_str(),it->second);
+			json.openFieldStruct("sizeMap");
+			for (AllocSizeDistrMap::const_iterator it = value.sizeMap.begin() ; it != value.sizeMap.end() ; ++it)			
+			{
+				std::stringstream out;
+				out << it->first;
+				json.printField(out.str().c_str(),it->second);
+			}
+			json.closeFieldStruct("sizeMap");
 		}
-		json.closeFieldStruct("sizeMap");
-	}
-	
-	if (value.options.distrReallocJump)
-	{
-		json.openFieldArray("reallocJump");
-		for (ReallocJumpMap::const_iterator it = value.reallocJumpMap.begin() ; it != value.reallocJumpMap.end() ; ++it)			
+		
+		if (value.options.distrReallocJump)
 		{
-			json.printListSeparator();
-			json.openStruct();
-			json.printField("oldSize",it->first.oldSize);
-			json.printField("newSize",it->first.newSize);
-			json.printField("count",it->second);
-			json.closeStruct();
+			json.openFieldArray("reallocJump");
+			for (ReallocJumpMap::const_iterator it = value.reallocJumpMap.begin() ; it != value.reallocJumpMap.end() ; ++it)			
+			{
+				json.printListSeparator();
+				json.openStruct();
+				json.printField("oldSize",it->first.oldSize);
+				json.printField("newSize",it->first.newSize);
+				json.printField("count",it->second);
+				json.closeStruct();
+			}
+			json.closeFieldArray("reallocJump");
 		}
-		json.closeFieldArray("reallocJump");
-	}
+	json.closeFieldStruct("memStats");
 	
 	json.openFieldStruct("globals");
+		CODE_TIMING("ticksPerSecond",json.printField("ticksPerSecond",value.ticksPerSecond()));
 		json.printField("totalMemory",value.osTotalMemory);
 		json.printField("freeMemory",value.osFreeMemoryAtStart);
 		json.printField("cachedMemory",value.osCachedMemoryAtStart);
 	json.closeFieldStruct("globals");
 	
 	json.printField("leaks",value.segTracker);
-	CODE_TIMING("ticksPerSecond",json.printField("ticksPerSecond",value.ticksPerSecond()));
 	json.closeStruct();
+	fprintf(stderr,"peakId : %lu\n",value.peakId);
 }
 
 /*******************  FUNCTION  *********************/

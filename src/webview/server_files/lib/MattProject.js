@@ -24,7 +24,7 @@ MattProject.prototype.loadData = function(data)
 	//setup current data
 	this.data = data;
 	
-// 	this.data.stackInfo = this.getFullTree();
+// 	this.data.stacks = this.getFullTree();
 // 	console.log(JSON.stringify(data));
 // 	this.data = null;
 
@@ -63,10 +63,13 @@ MattProject.prototype.loadFile = function(file)
 }
 
 /****************************************************/
+/**
+ * Just for debug, print only stack with function names.
+**/
 MattProject.prototype.getDebugStackList = function()
 {
 	//setup some local vars
-	var stats = this.data.stackInfo.stats;
+	var stats = this.data.stacks.stats;
 	var res = [];
 
 	for(var i in stats)
@@ -88,14 +91,14 @@ MattProject.prototype.getDebugStackList = function()
 /**
  * Produce a flat profile by projecting stats onto sumbols. You can get some simple examples by going to getFileLinesFlatProfile() or getFunctionFlatProfile()
  * @param mapping Provide a function whith prototype function(entry,info) which return one of the entry field 
- * to be used as fusion criteria. Entry correspond to entries from stackInfo.stats
- * @param accept Can be 'true' or a function with prototype(entry,info) with entry from stackInfo.stats[].detailedStack to accept (true) or reject (false) them.
+ * to be used as fusion criteria. Entry correspond to entries from stacks.stats
+ * @param accept Can be 'true' or a function with prototype(entry,info) with entry from stacks.stats[].detailedStack to accept (true) or reject (false) them.
  * @param total If 'true', the output contain 'own' and 'total' otherwise it contain 'own' and 'childs'.
 **/
 MattProject.prototype.getFlatProfile = function(mapping,accept,fields,total)
 {
 	//setup some local vars
-	var stats = this.data.stackInfo.stats;
+	var stats = this.data.stacks.stats;
 	var res = new Object();
 	var callers = "total";
 	var cur = null;
@@ -222,7 +225,7 @@ MattProject.prototype.getProcMapDistr = function()
 /****************************************************/
 MattProject.prototype.getSizeMap = function()
 {
-	return this.data.sizeMap;
+	return this.data.memStats.sizeMap;
 }
 
 /****************************************************/
@@ -233,7 +236,7 @@ MattProject.prototype.getSizeMap = function()
 MattProject.prototype.getFilterdStacks = function(filter)
 {
 	//get some refs
-	var stats = this.data.stackInfo.stats;
+	var stats = this.data.stacks.stats;
 	var res = new Array();	
 	
 	//loop on stat entries
@@ -280,14 +283,14 @@ MattProject.prototype.getFilterdStacksOnSymbol = function(symbol)
 MattProject.prototype.getTimedValues = function()
 {
 	var tmp = new Object();
-	tmp.segments     = this.data.segments;
-	tmp.internalMem  = this.data.internalMem;
-	tmp.virtualMem   = this.data.virtualMem;
-	tmp.physicalMem  = this.data.physicalMem;
-	tmp.requestedMem = this.data.requestedMem;
-	tmp.ticksPerSecond = this.data.ticksPerSecond;
-	tmp.allocBandwidth = this.data.allocBandwidth;
-	tmp.freeBandwidth = this.data.freeBandwidth;
+	tmp.segments     = this.data.timeline.segments;
+	tmp.internalMem  = this.data.timeline.internalMem;
+	tmp.virtualMem   = this.data.timeline.virtualMem;
+	tmp.physicalMem  = this.data.timeline.physicalMem;
+	tmp.requestedMem = this.data.timeline.requestedMem;
+	tmp.ticksPerSecond = this.data.globals.ticksPerSecond;
+	tmp.allocBandwidth = this.data.timeline.allocBandwidth;
+	tmp.freeBandwidth = this.data.timeline.freeBandwidth;
 	return tmp;
 }
 
@@ -301,17 +304,17 @@ MattProject.prototype.getSummary = function()
 
 	//extract global stats
 	ret.globalStats = {};
-	ret.globalStats.segments = this.data.segments.peakMemory;
-	ret.globalStats.internalMemory  = this.data.internalMem.peakMemory;
-	ret.globalStats.virtualMem  = this.data.virtualMem.peakMemory;
-	ret.globalStats.requestedMem  = this.data.requestedMem.peakMemory;
-	ret.globalStats.physicalMem  = this.data.physicalMem.peakMemory;
+	ret.globalStats.segments = this.data.timeline.segments.peakMemory;
+	ret.globalStats.internalMemory  = this.data.timeline.internalMem.peakMemory;
+	ret.globalStats.virtualMem  = this.data.timeline.virtualMem.peakMemory;
+	ret.globalStats.requestedMem  = this.data.timeline.requestedMem.peakMemory;
+	ret.globalStats.physicalMem  = this.data.timeline.physicalMem.peakMemory;
 	
 	//search min/max/count size
 	var min = -1;
 	var max = -1;
 	var count = 0;
-	var stats = this.data.stackInfo.stats;
+	var stats = this.data.stacks.stats;
 	var sum = 0;
 	for(var i in stats)
 	{
@@ -345,7 +348,7 @@ MattProject.prototype.getStacksMem = function()
 		res.push(this.data.threads[i].stackMem);
 	
 	//ok return
-	return {stacks:res,ticksPerSecond:this.data.ticksPerSecond};
+	return {stacks:res,ticksPerSecond:this.data.globals.ticksPerSecond};
 }
 
 /****************************************************/
@@ -461,11 +464,11 @@ MattProject.prototype.getFullTree = function()
 	var tree = {};
 	var data = this.data;
 	
-	for (var i in data.stackInfo.stats)
+	for (var i in data.stacks.stats)
 	{
 		var cur = tree;
-		var stack = data.stackInfo.stats[i].stack;
-		var infos = data.stackInfo.stats[i].infos;
+		var stack = data.stacks.stats[i].stack;
+		var infos = data.stacks.stats[i].infos;
 		for (var j in stack)
 		{
 			if (cur[stack[j]] == undefined)
@@ -564,7 +567,7 @@ function mergeStackInfo(into,detailedStackEntry,addr,subKey,infos,mapping,fields
 
 /****************************************************/
 /**
- * Short wrapper to get strings from data.stackInfo.strings section and to manage undefined files.
+ * Short wrapper to get strings from data.stacks.strings section and to manage undefined files.
  * @param strings Must be the translation table from sites.strings
 **/
 function getStringFromList(strings,id,defaultValue)
@@ -641,7 +644,7 @@ function optimizeProjectDatas(data)
 		if (strings[i] == '')
 			console.log("???????????? => "+i+" -> "+strings.length);
 	
-	//do for stackInfo/instr section
+	//do for stacks/instr section
 	//avoid to jump to string table every time
 	console.log("Optimizing sites.instr...");
 	data.sourceFiles = {};
@@ -663,9 +666,9 @@ function optimizeProjectDatas(data)
 	//add detailedStack field to entries from stckInfo.stats and leaks
 	//avoid to jump to instr table every time
 	console.log("Optimizing access to stack details...");
-	for (var i in data.stackInfo.stats)
+	for (var i in data.stacks.stats)
 	{
-		var cur = data.stackInfo.stats[i];
+		var cur = data.stacks.stats[i];
 		cur.detailedStack = genDetailedStack(instrs,cur.stack);
 	}
 

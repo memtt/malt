@@ -88,6 +88,7 @@ class AllocStackProfiler
 		void resolvePerThreadSymbols(void);
 		void memOpsLevels(void);
 		void updatePeakInfoOfStacks(void);
+		void peakTracking(ssize_t delta);
 	private:
 		//SimpleStackTracer stackTracer;
 		StackSTLHashMap<CallStackInfo> stackTracer;
