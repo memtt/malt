@@ -199,4 +199,10 @@ Stack* LocalAllocStackProfiler::getStack(void )
 	}
 }
 
+/*******************  FUNCTION  *********************/
+bool LocalAllocStackProfiler::isEnterExit(void)
+{
+	return stackMode == STACK_MODE_ENTER_EXIT_FUNC;
+}
+
 }

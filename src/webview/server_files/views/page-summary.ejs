@@ -39,12 +39,12 @@ function mattHumanReadableValue(value,unit,protectedSpace)
 				<th>Descr</th>
 			</tr>
 			<tr>
-				<td>Max virtual memory</td>
+				<td>Peak virtual memory</td>
 				<td class='size'><%= mattHumanReadableValue(globalStats.virtualMem,'B') %></td>
 				<td><i>Peak of total virtual memory obtained by tracking /proc/self/statm. It contain all allocated objects, global variables and binary code.</i></td>
 			</tr>
 			<tr>
-				<td>Max physical memory</td>
+				<td>Peak physical memory</td>
 				<td class='size'><%= mattHumanReadableValue(globalStats.physicalMem,'B') %></td>
 				<td><i>Peak of total physical memory obtained by tracking /proc/self/statm. It contain all allocated objects, global variables and binary code.</i></td>
 			</tr>
@@ -106,7 +106,7 @@ function mattHumanReadableValue(value,unit,protectedSpace)
 		<div id='table-func-list-mem'/>
 	</div>
 	<div>
-		<h2>Peak memory</h2>
+		<h2>Memory on peak</h2>
 		<div id='table-func-list-peak'/>
 	</div>
 	<div>
@@ -141,7 +141,7 @@ function mattHumanReadableValue(value,unit,protectedSpace)
 		var mattFuncListLeaks = new MattFuncListView('table-func-list-leaks',MATT_FUNC_LIST_TABLE_VIEW,funcListSelectorLeaks);
 		
 		//allocated peak
-		var funcListSelectorPeak = new MattFuncListSelector({sort:'asc',metric:'peakmem',mode:'own',count:topX});
+		var funcListSelectorPeak = new MattFuncListSelector({sort:'asc',metric:'gpeakmem',mode:'own',count:topX});
 		var mattFuncListPeak = new MattFuncListView('table-func-list-peak',MATT_FUNC_LIST_TABLE_VIEW,funcListSelectorPeak);
 	
 		//use common data for all objs to limit request numbers

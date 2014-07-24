@@ -18,12 +18,12 @@
 //glibc
 #include <malloc.h>
 //intenrals
-#include <portability/Mutex.hpp>
-#include <portability/OS.hpp>
-#include <common/CodeTiming.hpp>
 #include <common/Debug.hpp>
-#include <core/AllocStackProfiler.hpp>
+#include <portability/OS.hpp>
+#include <portability/Mutex.hpp>
+#include <common/CodeTiming.hpp>
 #include <core/StackSizeTracker.hpp>
+#include <core/AllocStackProfiler.hpp>
 #include <core/LocalAllocStackProfiler.hpp>
 
 /***************** USING NAMESPACE ******************/
@@ -37,17 +37,27 @@ using namespace MATT;
 	 \
 	/*check init */  \
 	if ( tlsState.status == ALLOC_WRAP_NOT_READY ) \
-		localState.init();
+		localState.init();\
+	\
+	bool isEnterExit = true;\
+	if (localState.profiler != NULL) \
+		isEnterExit = localState.profiler->isEnterExit(); \
+	if (isEnterExit){};/*to remove, but add it add warning*/
 
 /********************  MACRO  ***********************/
 /** Check init status of local and global state and call enter/exit methods, then do requested action. **/
 #define MATT_WRAPPER_LOCAL_STATE_ACTION(action)  \
 	if (gblState.status == ALLOC_WRAP_READY && tlsState.status == ALLOC_WRAP_READY) \
 	{ \
-		void * retAddr =__builtin_extract_return_addr(__builtin_return_address(0)); \
-		localState.profiler->onEnterFunc((void*)__func__,retAddr,true); \
+		void * retAddr;\
+		if (isEnterExit)\
+		{\
+			retAddr =__builtin_extract_return_addr(__builtin_return_address(0)); \
+			localState.profiler->onEnterFunc((void*)__func__,retAddr,true); \
+		}\
 		do{action;}while(0); \
-		localState.profiler->onExitFunc((void*)__func__,retAddr,true); \
+		if (isEnterExit) \
+			localState.profiler->onExitFunc((void*)__func__,retAddr,true); \
 	}
 
 /*******************  FUNCTION  *********************/
@@ -205,7 +215,7 @@ static StackMode getStackMode(Options & options)
 	} else if (strcmp(mode,"enter-exit") == 0) {
 		ret = STACK_MODE_ENTER_EXIT_FUNC;
 	} else {
-		MATT_FATAL_ARG("Invalid mode in MATT_STACK environnement variable : '%1'! Supportted : backtrace | enter-exit.").arg(mode).end();
+		MATT_FATAL_ARG("Invalid mode in MATT_STACK environnement variable : '%1'! Supported : backtrace | enter-exit.").arg(mode).end();
 	}
 	
 	//ok done

@@ -1,0 +1,23 @@
+{
+  "name": "MATT-webview",
+  "version": "0.0.0",
+  "authors": [
+    "Sebastien Valat <sebastien.valat@exascale-computing.eu>"
+  ],
+  "moduleType": [
+    "node"
+  ],
+  "license": "CeCILL-C",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular": "~1.2.20",
+    "angular-route": "~1.2.20"
+  }
+}

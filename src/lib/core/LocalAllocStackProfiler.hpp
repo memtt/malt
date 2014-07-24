@@ -45,6 +45,7 @@ class LocalAllocStackProfiler
 		inline void onEnterFunc(void *this_fn,void *call_site,bool ignoreStack=false);
 		inline void onExitFunc(void *this_fn,void *call_site,bool ignoreStack=false);
 		void resolveSymbols(SymbolResolver & symbolResolver) const;
+		bool isEnterExit(void);
 	public:
 		friend void convertToJson(htopml::JsonState& json, const LocalAllocStackProfiler& value);
 	protected:
