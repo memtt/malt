@@ -73,6 +73,7 @@ void convertToJson(JsonState & json, const std::string& value);
 void convertToJson(JsonState & json, bool value);
 void convertToJson(JsonState & json, void * ptr);
 void convertToJson(JsonState & json, const htopml::IJsonConvertible & object);
+void convertToJson(JsonState & json, htopml::IJsonConvertible & object);
 
 /*******************  FUNCTION  *********************/
 //generic version

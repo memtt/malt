@@ -15,6 +15,15 @@
 using namespace MATT;
 
 /********************* GLOBALS **********************/
+//for pre init of global allocator
+class ForceInit
+{
+	public:
+		ForceInit(void) {gblInternaAlloc = new SimpleAllocator(true);};
+};
+ForceInit gblForceInit;
+
+/********************* GLOBALS **********************/
 static void * CST_STACK_1_CONTENT[] = {(void*)0x1,(void*)0x2,(void*)0x3};
 #define CST_STACK_1_SIZE (sizeof(CST_STACK_1_CONTENT)/sizeof(CST_STACK_1_CONTENT[0]))
 static void * CST_ADDR1 = ((void*)0x42);
@@ -99,4 +108,104 @@ TEST(TestSegmentTracker,testRemoveNotExist)
 	EXPECT_NULL(tracker.get(CST_ADDR1));
 	tracker.remove(CST_ADDR1);
 	EXPECT_NULL(tracker.get(CST_ADDR1));
+}
+
+/*******************  FUNCTION  *********************/
+TEST(TestSegmentTracker,testMunmap1)
+{
+	//setup objects
+	SegmentTracker tracker;
+	MMCallStackNode stack(&CST_STACK_1,&CST_INFO_1);
+	
+	//try to add a new entry
+	tracker.add((void*)0x100,0x100,stack);
+	
+	//munmap out of segment (after)
+	tracker.munmap((void*)0x300,0x100);
+	
+	SegmentInfo * info = tracker.get((void*)0x100);
+	EXPECT_NOT_NULL(info);
+	EXPECT_EQ(0x100,info->size);
+}
+
+/*******************  FUNCTION  *********************/
+TEST(TestSegmentTracker,testMunmap2)
+{
+	//setup objects
+	SegmentTracker tracker;
+	MMCallStackNode stack(&CST_STACK_1,&CST_INFO_1);
+	
+	//try to add a new entry
+	tracker.add((void*)0x100,0x100,stack);
+	
+	//munmap out of segment (left)
+	tracker.munmap((void*)0x001,0x10);
+	
+	SegmentInfo * info = tracker.get((void*)0x100);
+	EXPECT_NOT_NULL(info);
+	EXPECT_EQ(0x100,info->size);
+}
+
+/*******************  FUNCTION  *********************/
+TEST(TestSegmentTracker,testMunmap3)
+{
+	//setup objects
+	SegmentTracker tracker;
+	MMCallStackNode stack(&CST_STACK_1,&CST_INFO_1);
+	
+	//try to add a new entry
+	tracker.add((void*)0x100,0x100,stack);
+	
+	//munmap out of segment (after)
+	tracker.munmap((void*)0x100,0x080);
+	
+	SegmentInfo * info = tracker.get((void*)0x100);
+	EXPECT_NULL(info);
+	
+	info = tracker.get((void*)0x180);
+	ASSERT_NOT_NULL(info);
+	EXPECT_EQ(0x080,info->size);
+}
+
+/*******************  FUNCTION  *********************/
+TEST(TestSegmentTracker,testMunmap4)
+{
+	//setup objects
+	SegmentTracker tracker;
+	MMCallStackNode stack(&CST_STACK_1,&CST_INFO_1);
+	
+	//try to add a new entry
+	tracker.add((void*)0x100,0x100,stack);
+	
+	//munmap out of segment (after)
+	tracker.munmap((void*)0x180,0x080);
+	
+	SegmentInfo * info = tracker.get((void*)0x180);
+	EXPECT_NULL(info);
+	
+	info = tracker.get((void*)0x100);
+	ASSERT_NOT_NULL(info);
+	EXPECT_EQ(0x080,info->size);
+}
+
+/*******************  FUNCTION  *********************/
+TEST(TestSegmentTracker,testMunmap5)
+{
+	//setup objects
+	SegmentTracker tracker;
+	MMCallStackNode stack(&CST_STACK_1,&CST_INFO_1);
+	
+	//try to add a new entry
+	tracker.add((void*)0x100,0x100,stack);
+	
+	//munmap out of segment (after)
+	tracker.munmap((void*)0x140,0x080);
+	
+	SegmentInfo * info = tracker.get((void*)0x100);
+	ASSERT_NOT_NULL(info);
+	EXPECT_EQ(0x040,info->size);
+	
+	info = tracker.get((void*)0x1C0);
+	ASSERT_NOT_NULL(info);
+	EXPECT_EQ(0x040,info->size);
 }

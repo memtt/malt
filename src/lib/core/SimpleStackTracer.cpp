@@ -125,4 +125,7 @@ void SimpleStackTracer::fillValgrindOut(ValgrindOutput& out,SymbolResolver & sym
 	}
 }
 
+/*******************  FUNCTION  *********************/
+
+
 }

@@ -67,6 +67,9 @@ class AllocStackProfiler
 		void onMalloc(void * ptr,size_t size,Stack * userStack = NULL);
 		void onCalloc(void * ptr,size_t nmemb,size_t size,Stack * userStack = NULL);
 		void onPrepareRealloc(void * oldPtr,Stack * userStack = NULL);
+		void onMunmap(void * ptr,size_t size,Stack * userStack = NULL);
+		void onLLMmap(void * ptr,size_t size,Stack * userStack = NULL);
+		void onLLMunmap(void * ptr,size_t size,Stack * userStack = NULL);
 		size_t onRealloc(void* oldPtr, void* ptr, size_t newSize, MATT::Stack* userStack = 0);
 		void onFree(void * ptr,Stack * userStack = NULL);
 		void onExit(void);
@@ -102,6 +105,9 @@ class AllocStackProfiler
 		ProfiledStateValue virtualMem;
 		ProfiledStateValue internalMem;
 		ProfiledStateValue segments;
+		ProfiledStateValue sysFreeMemory;
+		ProfiledStateValue sysCachedMemory;
+		ProfiledStateValue sysSwapMemory;
 		ProfiledCumulValue allocBandwidth;
 		ProfiledCumulValue freeBandwidth;
 		StackMode mode;

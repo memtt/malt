@@ -127,4 +127,56 @@ void convertToJson(htopml::JsonState& json, const LeakInfoMap& value)
 	json.closeArray();
 }
 
+/*******************  FUNCTION  *********************/
+void SegmentTracker::munmap(void* ptr, size_t size)
+{
+	//search for strict equal
+	SegmentInfo * res = get(ptr);
+	if (res != NULL && res->size == size)
+	{
+		remove(ptr);
+		return;
+	}
+	
+	//loop on all segments to check overlap
+	for (SegmentInfoMap::iterator it = map.begin() ; it != map.end() ; ++it)
+	{
+		//calc start end
+		size_t start = (size_t)it->first;
+		size_t end = start + it->second.size;
+		
+		//check if partial overlap
+		if ((size_t)ptr < end && (size_t)ptr+size >= start)
+			split(it,ptr,size);
+	}
+}
+
+/*******************  FUNCTION  *********************/
+void SegmentTracker::split(SegmentInfoMap::iterator it, void* ptr, size_t size)
+{
+	//copy info
+	size_t segStart = (size_t)it->first;
+	SegmentInfo info = it->second;
+	
+	//compute left part if has one, update old or remove old
+	if (ptr > it->first)
+	{
+		size_t start = (size_t)it->first;
+		size_t end = (size_t)ptr;
+		it->second.size = end-start;
+	} else {
+		map.erase(it);
+	}
+	
+	//compute right part if has one
+	if ((size_t)ptr + size < segStart+info.size)
+	{
+		size_t start = (size_t)ptr+size;
+		size_t end = segStart + info.size;
+		info.size = end - start;
+		map[(void*)start] = info;
+	}
+}
+
+
 }

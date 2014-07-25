@@ -55,10 +55,12 @@ class SegmentTracker
 		SegmentInfo * add(void* ptr, size_t size, MMCallStackNode callStack);
 		SegmentInfo * get(void * ptr);
 		void remove(void * ptr);
+		void munmap(void * ptr,size_t size);
 	public:
 		friend void convertToJson(htopml::JsonState & json,const SegmentTracker & value);
 	private:
 		void fillLeaks(LeakInfoMap & leakMap) const;
+		void split(SegmentInfoMap::iterator it, void * ptr, size_t size);
 	private:
 		SegmentInfoMap map;
 };

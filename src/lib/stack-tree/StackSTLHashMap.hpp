@@ -13,28 +13,44 @@
 //std
 #include <map>
 #include <cassert>
+//from htpoml for json export
+#include <json/JsonState.h>
 //internal common
 #include <common/STLInternalAllocator.hpp>
 //internal stacks
 #include <stacks/Stack.hpp>
 #include <core/SymbolResolver.hpp>
-#include <json/JsonState.h>
 
 /*******************  NAMESPACE  ********************/
 namespace MATT
 {
 
 /*********************  CLASS  **********************/
+/**
+ * Provide a simple stack storage based on STL hash map. We use a three level hash construct 
+ * to quicly find the entries without reading the whole stack content to find it in map.
+ * 
+ * The key is composed in priority order :
+ *      - A simple hash of the map sotred into an unsigned long. Each stack maintain this hash for fast compare.
+ *      - Depth of the stack.
+ *      - Detailed content of the stack.
+ * 
+ * The ordering operator (<) will only compare the next  key if previous one provide equal reqults with
+ * the compared stack.
+**/
 template <class T>
 class StackSTLHashMap
 {
 	public:
+		/** Quicly define the key formed by pointer to the stack and the hash **/
 		struct Key {
 			Key(const Stack * stack);
 			void cloneStack(void);
 			bool operator == (const Key & node) const;
 			bool operator < (const Key & node) const;
+			/** Keep ref to the stack. **/
 			const Stack * stack;
+			/** Keep the hash for fast compare on search. **/
 			StackHash hash;
 		};
 		typedef typename std::pair<const Key,T> Node;
@@ -55,6 +71,7 @@ class StackSTLHashMap
 	public:
 		template <class U> friend void convertToJson(htopml::JsonState & json, const StackSTLHashMap<U> & value);
 	private:
+		/** Instal STL map. **/
 		InternalMap map;
 };
 

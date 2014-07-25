@@ -219,8 +219,12 @@ size_t AllocStackProfiler::onFreeEvent(void* ptr, MATT::Stack* userStack, MMCall
 		{
 			CODE_TIMING("timeProfileFreeStart",
 				OSProcMemUsage mem = OS::getProcMemoryUsage();
+				OSMemUsage sysMem = OS::getMemoryUsage();
 				virtualMem.onUpdateValue(mem.virtualMemory - gblInternaAlloc->getTotalMemory());
 				physicalMem.onUpdateValue(mem.physicalMemory - gblInternaAlloc->getTotalMemory());
+				sysFreeMemory.onUpdateValue(sysMem.freeMemory);
+				sysCachedMemory.onUpdateValue(sysMem.cached);
+				sysSwapMemory.onUpdateValue(sysMem.swap);
 			);
 		}
 
@@ -448,6 +452,9 @@ void convertToJson(htopml::JsonState& json, const AllocStackProfiler& value)
 		json.printField("totalMemory",value.osTotalMemory);
 		json.printField("freeMemory",value.osFreeMemoryAtStart);
 		json.printField("cachedMemory",value.osCachedMemoryAtStart);
+		json.printField("sysFreeMemory",value.sysFreeMemory);
+		json.printField("sysCachedMemory",value.sysCachedMemory);
+		json.printField("sysSwapMemory",value.sysSwapMemory);
 	json.closeFieldStruct("globals");
 	
 	json.printField("leaks",value.segTracker);

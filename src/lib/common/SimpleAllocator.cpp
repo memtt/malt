@@ -178,6 +178,7 @@ void SimpleAllocator::free(void* ptr)
 		this->unusedMemory += chunk->getTotalSize();
 		assert(unusedMemory <= totalMemory);
 		freeList.insertNext(chunk);
+		this->curSearchInList = NULL;
 	MATT_END_CRITICAL
 	
 	//timer
