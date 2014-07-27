@@ -13,7 +13,8 @@ include_directories(../)
 
 ######################################################
 set(TEST_NAMES TestProfiledStateValue  
-               TestProfiledCumulValue)
+               TestProfiledCumulValue
+               TestProfiledValue)
 
 ######################################################
 FOREACH(test_name ${TEST_NAMES})
