@@ -16,7 +16,8 @@ using namespace MATT;
 
 /********************** CONSTS **********************/
 const char CST_STRING_1[] = "{\n\t\"min\":[10, 30, 40, 50, 60],\n\t\"max\":[20, 30, 40, 50, 60],\n\t\"index\":[1, 2, 3, 4, 5],\n\t\"peakMemory\":70,\n\t\"peakIndex\":6,\n\t\"linearIndex\":true\n}";
-const char CST_STRING_2[] = "{\n\t\"min\":[10, 40, 190, 220, 290, 350, 480, 680, 730, 880],\n\t\"max\":[30, 100, 210, 280, 340, 410, 560, 720, 870, 940],\n\t\"index\":[2, 9, 20, 27, 33, 40, 55, 71, 86, 93],\n\t\"peakMemory\":1000,\n\t\"peakIndex\":99,\n\t\"linearIndex\":true\n}";
+const char CST_STRING_2[] = "{\n\t\"min\":[10, 130, 260, 280, 590, 640],\n\t\"max\":[120, 210, 270, 480, 630, 880],\n\t\"index\":[11, 20, 26, 47, 62, 87],\n\t\"peakMemory\":1000,\n\t\"peakIndex\":99,\n\t\"linearIndex\":true\n}";
+
 
 /*******************  FUNCTION  *********************/
 TEST(ProfiledValue,constructor)
