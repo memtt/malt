@@ -27,6 +27,9 @@ include(${CMAKE_SOURCE_DIR}/cmake/unittest-macros.cmake)
 ######################################################
 #Some global setup
 setup_internal_gmock_and_gtest()
+if (ENABLE_GCC_COVERAGE)
+	matt_enable_gcc_coverage()
+endif(ENABLE_GCC_COVERAGE)
 
 ######################################################
 #build subdirs
