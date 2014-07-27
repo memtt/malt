@@ -44,6 +44,7 @@ class ProfiledStateValue
 		void onUpdateValue(size_t value);
 		bool isNextPoint(void) const;
 		void setRemoteLinearIndex(ticks * remoteLinearIndex);
+		void disableTimestamp(void);
 	public:
 		friend void convertToJson(htopml::JsonState& json, const ProfiledStateValue& value);
 	private:
@@ -65,6 +66,7 @@ class ProfiledStateValue
 		ticks linearIndex;
 		bool useLinearIndex;
 		ticks * remoteLinearIndex;
+		bool printTimestamps;
 };
 
 }

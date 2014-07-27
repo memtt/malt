@@ -15,8 +15,8 @@
 using namespace MATT;
 
 /********************** CONSTS **********************/
-const char CST_STRING_1[] = "{\n\t\"startTime\":0,\n\t\"steps\":10,\n\t\"values\":[10, 10, 10, 10, 10, 10, 10, 0, 0, 0]\n}";
-const char CST_STRING_2[] = "{\n\t\"startTime\":0,\n\t\"steps\":10,\n\t\"values\":[16, 16, 16, 16, 16, 16, 4, 0, 0, 0]\n}";
+const char CST_STRING_1[] = "{\n\t\"startTime\":0,\n\t\"scale\":1,\n\t\"endTime\":6,\n\t\"values\":[10, 10, 10, 10, 10, 10, 10]\n}";
+const char CST_STRING_2[] = "{\n\t\"startTime\":0,\n\t\"scale\":16,\n\t\"endTime\":99,\n\t\"values\":[16, 16, 16, 16, 16, 16, 4]\n}";
 
 /*******************  FUNCTION  *********************/
 TEST(ProfiledCumulValue,constructor)

@@ -72,6 +72,7 @@ ProfiledStateValue::ProfiledStateValue(size_t steps,bool useLinearIndex)
 	this->peak.max = 0;
 	this->peak.index = this->startIndex;
 	this->peak.timestamp = this->startTime;
+	this->printTimestamps = true;
 }
 
 /*******************  FUNCTION  *********************/
@@ -197,17 +198,20 @@ void convertToJson(htopml::JsonState& json, const ProfiledStateValue& value)
 	}
 	json.closeFieldArray("index");
 	
-	json.openFieldArray("timestamp");
-	for (int i = 0 ; i < value.currentId ; i++)
+	if (value.printTimestamps)
 	{
-		assert(value.entries[i].timestamp > value.startTime);
-		json.printValue(value.entries[i].timestamp - value.startTime);
+	json.openFieldArray("timestamp");
+		for (int i = 0 ; i < value.currentId ; i++)
+		{
+			assert(value.entries[i].timestamp > value.startTime);
+			json.printValue(value.entries[i].timestamp - value.startTime);
+		}
+		json.closeFieldArray("timestamp");
+		json.printField("peakTimesteamp",value.peak.timestamp - value.startTime);
 	}
-	json.closeFieldArray("timestamp");
-	
+
 	json.printField("peakMemory",value.peak.max);
 	assert(value.peak.timestamp >= value.startTime);
-	json.printField("peakTimesteamp",value.peak.timestamp - value.startTime);
 	json.printField("peakIndex",value.peak.index - value.startIndex);
 	
 	json.printField("linearIndex",value.useLinearIndex);
@@ -233,5 +237,10 @@ void ProfiledStateValue::setRemoteLinearIndex(ticks* remoteLinearIndex)
 	this->remoteLinearIndex = remoteLinearIndex;
 }
 
+/*******************  FUNCTION  *********************/
+void ProfiledStateValue::disableTimestamp(void )
+{
+	this->printTimestamps = false;
+}
 
 }

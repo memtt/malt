@@ -37,31 +37,31 @@ events: AllocCnt FreeCnt MemOps AllocSum FreeSum Leaks AliveReqMax\n\
 \n\
 ob=unknown\n\
 fi=unknown\n\
-fn=0x1\n\
+fn=[0x1]\n\
 0 1 0 1 2 0 2 2\n\
 \n\
 ob=unknown\n\
 fi=unknown\n\
-fn=0x2\n\
+fn=[0x2]\n\
 0 0 0 0 0 0 0 0\n\
 cob=unknown\n\
 cfi=unknown\n\
-cfn=0x1\n\
+cfn=[0x1]\n\
 calls=1 0\n\
 0 1 0 1 2 0 2 2\n\
 cob=unknown\n\
 cfi=unknown\n\
-cfn=0x2\n\
+cfn=[0x2]\n\
 calls=1 0\n\
 0 1 0 1 2 0 2 2\n\
 \n\
 ob=unknown\n\
 fi=unknown\n\
-fn=0x3\n\
+fn=[0x3]\n\
 0 0 0 0 0 0 0 0\n\
 cob=unknown\n\
 cfi=unknown\n\
-cfn=0x2\n\
+cfn=[0x2]\n\
 calls=1 0\n\
 0 1 0 1 2 0 2 2\n\
 \n";
@@ -93,4 +93,15 @@ TEST(ValgrindOutput,testRecursive)
 	EXPECT_EQ(CST_VALUE_1,buffer.str());
 	
 	test1();test2();test3();
+}
+
+/*******************  FUNCTION  *********************/
+int main(int argc, char ** argv)
+{
+	//init internal allocator
+	gblInternaAlloc = new SimpleAllocator(true);
+	
+	// This allows the user to override the flag on the command line.
+	::testing::InitGoogleTest(&argc, argv);
+	return RUN_ALL_TESTS();
 }
