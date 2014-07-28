@@ -110,6 +110,8 @@ class AllocStackProfiler
 		ProfiledStateValue sysSwapMemory;
 		ProfiledCumulValue allocBandwidth;
 		ProfiledCumulValue freeBandwidth;
+		ProfiledCumulValue allocCnt;
+		ProfiledCumulValue freeCnt;
 		StackMode mode;
 		Spinlock lock;
 		bool threadSafe;

@@ -197,6 +197,7 @@ void AllocStackProfiler::onAllocEvent(void* ptr, size_t size,Stack* userStack,MM
 		
 		//track alloc bandwidth
 		allocBandwidth.push(size);
+		allocCnt.push(1);
 	MATT_END_CRITICAL
 }
 
@@ -277,6 +278,7 @@ size_t AllocStackProfiler::onFreeEvent(void* ptr, MATT::Stack* userStack, MMCall
 		
 		//free badnwidth
 		freeBandwidth.push(size);
+		freeCnt.push(1);
 	MATT_END_CRITICAL
 	
 	return size;
@@ -400,7 +402,9 @@ void convertToJson(htopml::JsonState& json, const AllocStackProfiler& value)
 			json.printField("internalMem",value.internalMem);
 			json.printField("segments",value.segments);
 			json.printField("allocBandwidth",value.allocBandwidth);
+			json.printField("allocCnt",value.allocCnt);
 			json.printField("freeBandwidth",value.freeBandwidth);
+			json.printField("freeCnt",value.freeCnt);
 		json.closeFieldStruct("timeline");
 	}
 	
