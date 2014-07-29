@@ -55,6 +55,17 @@ template <class T,class U> void convertToJson(JsonState & json, const std::map<T
 }
 
 /*******************  FUNCTION  *********************/
+template <class U> void convertToJson(JsonState & json, const std::map<std::string,U> & iterable)
+{
+	json.openStruct();
+
+	for (typename std::map<std::string,U>::const_iterator it = iterable.begin() ; it != iterable.end() ; ++it)
+		json.printField(it->first.c_str(),it->second);
+
+	json.closeStruct();
+}
+
+/*******************  FUNCTION  *********************/
 template <class T> void convertToJson(JsonState & json, const T & value)
 {
 	json.getFastStream() << value;

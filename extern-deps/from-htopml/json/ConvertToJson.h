@@ -84,6 +84,7 @@ template <class T> void convertToJson(JsonState & json, const T & iterable);
 template <class T> void convertToJson(JsonState & json, const std::vector<T> & iterable);
 template <class T> void convertToJson(JsonState & json, const std::list<T> & iterable);
 template <class T,class U> void convertToJson(JsonState & json, const std::map<T,U> & iterable);
+template <class U> void convertToJson(JsonState & json, const std::map<std::string,U> & iterable);
 
 }
 

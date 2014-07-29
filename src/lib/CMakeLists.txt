@@ -7,6 +7,10 @@
 ######################################################
 
 ######################################################
+#Find
+find_package(LibElf QUIET)
+
+######################################################
 #Code options
 set(ENABLE_CODE_TIMING   "no"       CACHE BOOL   "Enable some tricks to quickly check timings of hostspots of MATT internal code.")
 set(ENABLE_TESTS         "yes"      CACHE BOOL   "Enable build of internal tests.")
@@ -51,11 +55,11 @@ set(COMMON_OBJS $<TARGET_OBJECTS:htopml-json>
 
 ######################################################
 add_library(matt-base SHARED ${COMMON_OBJS})
-target_link_libraries(matt-base pthread)
+target_link_libraries(matt-base pthread elf)
 
 ######################################################
 add_library(matt SHARED ${COMMON_OBJS} $<TARGET_OBJECTS:matt-libc-wrapper>)
-target_link_libraries(matt pthread dl)
+target_link_libraries(matt pthread dl elf)
 
 ######################################################
 add_subdirectory(core)

@@ -28,6 +28,7 @@
 #include "SegmentTracker.hpp"
 #include "StackSizeTracker.hpp"
 #include "SimpleStackTracer.hpp"
+#include "ELFReader.hpp"
 
 /*******************  NAMESPACE  ********************/
 namespace MATT
@@ -58,6 +59,7 @@ typedef StackSTLHashMap<CallStackInfo> MMStackMap;
 typedef std::map<size_t,size_t> AllocSizeDistrMap;
 typedef std::map<ReallocJump,size_t> ReallocJumpMap;
 typedef RLockFreeTree<CallStackInfo> AllocTreeStrackTracer;
+typedef std::map<std::string,ElfGlobalVariableVector> GlobalVariableMap;
 
 /*********************  CLASS  **********************/
 class AllocStackProfiler
@@ -93,6 +95,7 @@ class AllocStackProfiler
 		void memOpsLevels(void);
 		void updatePeakInfoOfStacks(void);
 		void peakTracking(ssize_t delta);
+		void loadGlobalVariables(void);
 	private:
 		//SimpleStackTracer stackTracer;
 		StackSTLHashMap<CallStackInfo> stackTracer;
@@ -112,6 +115,7 @@ class AllocStackProfiler
 		ProfiledCumulValue freeBandwidth;
 		ProfiledCumulValue allocCnt;
 		ProfiledCumulValue freeCnt;
+		GlobalVariableMap globalVariables;
 		StackMode mode;
 		Spinlock lock;
 		bool threadSafe;

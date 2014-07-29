@@ -21,6 +21,13 @@
  *  - LD_PRELOAD=../src/libAllocStackProfiler.so
 **/
 
+/********************* GLOBALS **********************/
+//example of static and TLS arrays
+int gblArray[1024];
+static int gblStaticArray[1024];
+const char gblString[] = "test const global string";
+__thread int tlsArray[1024];
+
 /*********************  CLASS  **********************/
 class OutOfMainAlloc
 {
@@ -250,6 +257,10 @@ void testParallelWithRecurse(void)
 /*******************  FUNCTION  *********************/
 int main(void)
 {
+	gblArray[0] = gblString[0];
+	gblStaticArray[0] = gblString[0];
+	tlsArray[0] = gblArray[0];
+	
 	//first is calloc
 	void * ptr = calloc(16,16);
 	*(char*)ptr='c';//required otherwise new compilers will remove malloc/free

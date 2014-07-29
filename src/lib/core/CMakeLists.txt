@@ -17,6 +17,15 @@ set(MATT_LIB_SRC SymbolResolver.cpp
                  AllocStackProfiler.cpp
                  SimpleCallStackNode.cpp
                  LocalAllocStackProfiler.cpp)
+                 
+######################################################
+#Optional sources
+if (LIBELF_FOUND)
+	list(APPEND MATT_LIB_SRC ELFReader.cpp)
+else (LIBELF_FOUND)
+	message(STATUS "libelf not found, profiling will ignore global variables !")
+	list(APPEND MATT_LIB_SRC ELFReader_fake.cpp)
+endif (LIBELF_FOUND)
 
 ######################################################
 add_library(matt-core OBJECT ${MATT_LIB_SRC})

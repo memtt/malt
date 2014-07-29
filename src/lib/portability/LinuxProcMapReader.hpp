@@ -34,8 +34,12 @@ typedef std::vector<LinuxProcMapEntry> LinuxProcMap;
 class LinuxProcMapReader
 {
 	public:
+		typedef LinuxProcMap::const_iterator const_iterator;
+	public:
 		void load(void);
-		  const LinuxProcMapEntry* getEntry(void* addr) const;
+		const LinuxProcMapEntry* getEntry(void* addr) const;
+		const_iterator begin(void) { return procMap.begin(); };
+		const_iterator end(void) { return procMap.end(); };
 	private:
 		LinuxProcMap procMap;
 };

@@ -320,6 +320,44 @@ void AllocStackProfiler::updatePeakInfoOfStacks(void)
 }
 
 /*******************  FUNCTION  *********************/
+void AllocStackProfiler::loadGlobalVariables(void)
+{
+	//if not have libelf
+	if (!ElfReader::hasLibElf())
+		fprintf(stderr,"MATT : warning, matt was compiled without libelf, you will not get global variable memory usage !\n");
+	
+	//load /proc/map
+	LinuxProcMapReader map;
+	map.load();
+	
+	//loop on files and load vars
+	for (LinuxProcMapReader::const_iterator it = map.begin() ; it != map.end() ; ++it)
+	{
+		//if empty file
+		if (it->file.empty())
+			continue;
+		
+		//file not found (TODO move to portability and used better method, or manage error in ElfReader)
+		FILE * fp = fopen(it->file.c_str(),"r");
+		if (fp == NULL)
+			continue;
+		fclose(fp);
+		
+		//check exist
+		if (globalVariables.find(it->file) == globalVariables.end())
+		{
+			//fprintf(stderr,"MATT: Need to load global variables from %s\n",it->file.c_str());
+			
+			//open elf
+			ElfReader elfReader(it->file);
+
+			//extract
+			elfReader.loadGlobalVariables(globalVariables[it->file]);
+		}
+	}
+}
+
+/*******************  FUNCTION  *********************/
 void AllocStackProfiler::onExit(void )
 {
 	MATT_OPTIONAL_CRITICAL(lock,threadSafe)
@@ -334,6 +372,9 @@ void AllocStackProfiler::onExit(void )
 		
 		//update global peak info
 		updatePeakInfoOfStacks();
+		
+		//load global variables
+		loadGlobalVariables();
 	
 		//open output file
 		//TODO manage errors
@@ -449,6 +490,8 @@ void convertToJson(htopml::JsonState& json, const AllocStackProfiler& value)
 			}
 			json.closeFieldArray("reallocJump");
 		}
+		
+		json.printField("globalVariables",value.globalVariables);
 	json.closeFieldStruct("memStats");
 	
 	json.openFieldStruct("globals");
