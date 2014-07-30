@@ -27,6 +27,7 @@
 //locals
 #include "AllocStackProfiler.hpp"
 #include "LocalAllocStackProfiler.hpp"
+#include <tools/NMCmdReader.hpp>
 
 /********************  MACROS  **********************/
 #define MATT_SKIP_DEPTH 3
@@ -361,6 +362,11 @@ void AllocStackProfiler::loadGlobalVariables(void)
 
 			//extract
 			elfReader.loadGlobalVariables(globalVariables[it->file]);
+			
+			//search sources
+			NMCmdReader reader;
+			reader.load(it->file);
+			reader.findSources(globalVariables[it->file]);
 		}
 	}
 }

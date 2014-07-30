@@ -44,7 +44,7 @@ struct ElfStringTable
 typedef std::vector<ElfGlobalVariable> ElfGlobalVariableVector;
 
 /*********************  CLASS  **********************/
-struct ElfReader
+class ElfReader
 {
 	public:
 		ElfReader(const std::string & file);
