@@ -63,7 +63,10 @@ void ElfReader::openFile(const std::string& file)
 {
 	//open
 	FILE * fp = fopen(file.c_str(),"r");
-	assumeArg(fp != NULL,"Failed to open file %1 : %2").arg(file).argStrErrno().end();
+	assumeArg(fp != NULL,"Failed to open file %1 : %2")
+		.arg(file)
+		.argStrErrno()
+		.end();
 	
 	//start elf
 	this->elf = elf_begin(fileno(fp),ELF_C_READ,NULL);

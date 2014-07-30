@@ -1,0 +1,109 @@
+<% layout('page-layout') -%>
+
+<% script('deps/d3js/d3.min.js') -%>
+<% script('deps/nvd3/nv.d3.min.js') -%>
+<% stylesheet('deps/nvd3/nv.d3.min.css') -%>
+
+<% script('global-variables.js') -%>
+
+
+<!-- ****************** STACK ANALYSER *************** -->
+<div class="container-fluid">
+	<div>
+		<h2>Summary</h2>
+		<div>
+			Global variables : <%= globalVariables %>
+		</div>
+		<div>
+			TLS variables : <%= tlsVariables %>
+		</div>
+	</div>
+	
+	<div>
+		<h2>Distribution over binaries</h2>
+		<svg id="char"/>
+	</div>
+	
+	<div>
+		<h2>Distribution over variables</h2>
+		
+	</div>
+</div>
+
+<script type='text/javascript'>
+	function genGraph( data ) 
+	{
+		var chart = nv.models.multiBarHorizontalChart()
+						.x(function(d) { return d.name })
+						.y(function(d) { return d.size })
+						.margin({top: 30, right: 20, bottom: 50, left: 175})
+						.showValues(true)
+						.tooltips(true)           
+						.transitionDuration(350)
+						.showControls(true);        
+		
+
+		var i = 0;
+		
+		var gbl = [];
+		var tls = [];
+		
+// 		fileArray.sort( function( a , b )
+// 		{
+// 			return (b.bytes_read - a.bytes_read) + (b.bytes_written - a.bytes_written);
+// 		});
+		
+		var entry_counter = 0;
+		
+		for( var i in data )
+		{
+			var tmpTls = 0;
+			var tmpGbl = 0;
+			var tmp = data[i];
+			
+			for (var j in tmp)
+			{
+				if (tmp[j].tls)
+					tls += tmp[j].size;
+				else
+					tls += tmp[j].size;
+			}
+			
+			gbl.push( { "label" : i, "value" : tmpGbl } );
+			tls.push( { "label" : i, "value" : tmpTls } );
+			
+			entry_counter++;
+		}
+
+
+		var series = [ { key : "Global" , values : gbl, color : "#00F" },
+					   { key : "TLS" , values : tls, color : "#F00"  } ];
+
+	   var pthis = this;
+		
+	   chart.yAxis
+			.tickFormat(function(v){return pthis.toSize(v);});
+		
+		
+		$("#matrixContainer").height( entry_counter * 16 );
+		
+		$("#graph svg").empty();
+	
+		d3.select('#graph svg')
+			.datum(series)
+			.call(chart);
+
+		nv.utils.windowResize(chart.update);
+
+		return chart;
+	}
+
+
+
+
+	$( document ).ready(function() {
+		$.getJSON( "/global-variables.json", function( data ) {
+			genGraph(data);
+		});
+	});
+</script>

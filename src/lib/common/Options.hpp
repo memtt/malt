@@ -11,9 +11,16 @@
 
 /********************  HEADERS  *********************/
 #include <string>
+
+/********************  HEADERS  *********************/
 //iniparser
 extern "C" {
 #include <iniparser.h>
+}
+
+/*********************  TYPES  **********************/
+namespace htopml {
+	class JsonState;
 }
 
 /*******************  NAMESPACE  ********************/
@@ -57,6 +64,9 @@ struct IniParserHelper
 	static void setEntry (dictionary * dic, const char * key, bool value);
 	static void setEntry (dictionary * dic, const char * key, int value);
 };
+
+/*******************  FUNCTION  *********************/
+void convertToJson(htopml::JsonState & json,const Options & value);
 
 }
 

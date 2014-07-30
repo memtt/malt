@@ -13,6 +13,7 @@
 //internals
 #include "Debug.hpp"
 #include "Options.hpp"
+#include <json/JsonState.h>
 
 /*******************  NAMESPACE  ********************/
 namespace MATT 
@@ -108,6 +109,40 @@ void Options::loadFromFile(const char* fname)
 	
 	//free dic
 	iniparser_freedict(iniDic);
+}
+
+/*******************  FUNCTION  *********************/
+void convertToJson(htopml::JsonState & json,const Options & value)
+{
+	json.openFieldStruct("time");
+		json.printField("enabled",value.timeProfileEnabled);
+		json.printField("points",value.timeProfilePoints);
+		json.printField("linear",value.timeProfileLinear);
+	json.closeFieldStruct("time");
+	
+	json.openFieldStruct("stack");
+		json.printField("enabled",value.stackProfileEnabled);
+		json.printField("mode",value.stackMode.c_str());
+		json.printField("resolve",value.stackResolve);
+	json.closeFieldStruct("stack");
+	
+	json.openFieldStruct("output");
+		json.printField("callgrind",value.outputCallgrind);
+		json.printField("dumpConfig",value.outputDumpConfig);
+		json.printField("index",value.outputIndent);
+		json.printField("json",value.outputJson);
+		json.printField("lua",value.outputLua);
+		json.printField("name",value.outputName);
+	json.closeFieldStruct("output");
+	
+	json.openFieldStruct("maxStack");
+		json.printField("enabled",value.maxStackEnabled);
+	json.closeFieldStruct("maxStack");
+	
+	json.openFieldStruct("distr");
+		json.printField("allocSize",value.distrAllocSize);
+		json.printField("reallocJump",value.distrReallocJump);
+	json.closeFieldStruct("distr");
 }
 
 /*******************  FUNCTION  *********************/

@@ -113,6 +113,14 @@ app.get('/stacks-mem.json',function (req,res){
 });
 
 /****************************************************/
+//export max stack info
+app.get('/global-variables.json',function (req,res){
+	var tmp = mattProject.getGlobalVariables();
+	res.write(JSON.stringify(tmp,null));
+	res.end();
+});
+
+/****************************************************/
 app.get('/stacks.json',function(req,res){
 	//extratc file from request
 	var file = req.query.file;
@@ -224,6 +232,11 @@ app.get('/summary.html',function(eq,res,next){
 /****************************************************/
 app.get('/alloc-sizes.html',function(eq,res,next){
 	res.render("page-alloc-sizes",{sizeMap:mattProject.getSizeMap()});
+});
+
+/****************************************************/
+app.get('/globals.html',function(eq,res,next){
+	res.render("page-globals",{});
 });
 
 /****************************************************/

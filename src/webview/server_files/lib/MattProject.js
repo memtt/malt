@@ -89,6 +89,15 @@ MattProject.prototype.getDebugStackList = function()
 
 /****************************************************/
 /**
+ * Provide access to the list of global variables from executable and dynamic libs.
+**/
+MattProject.prototype.getGlobalVariables = function()
+{
+	return this.data.memStats.globalVariables;
+}
+
+/****************************************************/
+/**
  * Produce a flat profile by projecting stats onto sumbols. You can get some simple examples by going to getFileLinesFlatProfile() or getFunctionFlatProfile()
  * @param mapping Provide a function whith prototype function(entry,info) which return one of the entry field 
  * to be used as fusion criteria. Entry correspond to entries from stacks.stats

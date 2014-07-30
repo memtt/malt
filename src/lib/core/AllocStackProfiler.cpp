@@ -427,6 +427,16 @@ void AllocStackProfiler::onExit(void )
 void convertToJson(htopml::JsonState& json, const AllocStackProfiler& value)
 {
 	json.openStruct();
+	
+	json.openFieldStruct("run");
+		json.printField("formatVersion",1.0f);
+		json.printField("tool","matt-0.0.0");
+		json.printField("date","TODO");
+		json.printField("exe",OS::getExeName());
+		json.printField("fullCommand","TODO");
+	json.closeFieldStruct("run");
+	
+	json.printField("config",value.options);
 
 	if (value.options.stackProfileEnabled)
 		json.printField("stacks",value.stackTracer);
@@ -497,8 +507,8 @@ void convertToJson(htopml::JsonState& json, const AllocStackProfiler& value)
 	json.openFieldStruct("globals");
 		CODE_TIMING("ticksPerSecond",json.printField("ticksPerSecond",value.ticksPerSecond()));
 		json.printField("totalMemory",value.osTotalMemory);
-		json.printField("freeMemory",value.osFreeMemoryAtStart);
-		json.printField("cachedMemory",value.osCachedMemoryAtStart);
+		json.printField("freeMemoryAtStart",value.osFreeMemoryAtStart);
+		json.printField("cachedMemoryAtStart",value.osCachedMemoryAtStart);
 		json.printField("sysFreeMemory",value.sysFreeMemory);
 		json.printField("sysCachedMemory",value.sysCachedMemory);
 		json.printField("sysSwapMemory",value.sysSwapMemory);
