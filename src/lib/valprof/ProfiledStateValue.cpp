@@ -50,6 +50,7 @@ ProfiledStateValue::ProfiledStateValue(size_t steps,bool useLinearIndex)
 	//init pseudo clock for getticks and select mode
 	this->linearIndex = 0;
 	this->useLinearIndex = useLinearIndex;
+	this->remoteLinearIndex = NULL;
 	
 	///setup vars
 	this->startTime = getticks();
@@ -57,7 +58,6 @@ ProfiledStateValue::ProfiledStateValue(size_t steps,bool useLinearIndex)
 	this->currentId = 0;
 	this->steps = steps;
 	this->value = 0;
-	this->remoteLinearIndex = NULL;
 	
 	//current
 	this->deltaIndex = 1;
@@ -200,12 +200,12 @@ void convertToJson(htopml::JsonState& json, const ProfiledStateValue& value)
 	
 	if (value.printTimestamps)
 	{
-	json.openFieldArray("timestamp");
-		for (int i = 0 ; i < value.currentId ; i++)
-		{
-			assert(value.entries[i].timestamp > value.startTime);
-			json.printValue(value.entries[i].timestamp - value.startTime);
-		}
+		json.openFieldArray("timestamp");
+			for (int i = 0 ; i < value.currentId ; i++)
+			{
+				assert(value.entries[i].timestamp > value.startTime);
+				json.printValue(value.entries[i].timestamp - value.startTime);
+			}
 		json.closeFieldArray("timestamp");
 		json.printField("peakTimesteamp",value.peak.timestamp - value.startTime);
 	}

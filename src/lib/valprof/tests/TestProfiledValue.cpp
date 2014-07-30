@@ -47,6 +47,7 @@ TEST(ProfiledValue,push_only_5)
 	
 	//output
 	std::stringstream buffer;
+	profile.flush();
 	htopml::convertToJson(buffer,profile);
 	
 	EXPECT_EQ(CST_STRING_1,buffer.str());
@@ -68,6 +69,7 @@ TEST(ProfiledValue,push_max)
 	
 	//output
 	std::stringstream buffer;
+	profile.flush();
 	htopml::convertToJson(buffer,profile);
 	
 	EXPECT_EQ(CST_STRING_2,buffer.str());
@@ -89,6 +91,7 @@ TEST(ProfiledValue,push_more_than_max_1)
 	
 	//output
 	std::stringstream buffer;
+	profile.flush();
 	htopml::convertToJson(buffer,profile);
 	
 	EXPECT_EQ(CST_STRING_3,buffer.str());
@@ -110,6 +113,7 @@ TEST(ProfiledValue,push_more_than_max_2)
 	
 	//output
 	std::stringstream buffer;
+	profile.flush();
 	htopml::convertToJson(buffer,profile);
 	
 	EXPECT_EQ(CST_STRING_4,buffer.str());
@@ -132,6 +136,7 @@ TEST(ProfiledValue,hole)
 	
 	//output
 	std::stringstream buffer;
+	profile.flush();
 	htopml::convertToJson(buffer,profile);
 	
 	EXPECT_EQ(CST_STRING_5,buffer.str());

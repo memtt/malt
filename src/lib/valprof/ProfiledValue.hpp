@@ -309,6 +309,9 @@ void ProfiledValue<T>::flush(void )
 			locations[i] = NULL;
 		}
 	}
+	
+	//mark as flushed
+	this->flushed = true;
 }
 
 /*******************  FUNCTION  *********************/
