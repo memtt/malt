@@ -48,7 +48,8 @@ function MattFuncListSelector(defaults)
 	this.metrics['lpeakmem']     = {name: 'Local peak',extractor:function (entry) {return entry.maxAliveReq;},'unit' : 'B',ref:'max'};
 	this.metrics['gpeakmem']     = {name: 'Global peak',extractor:function (entry) {return entry.globalPeak;},'unit' : 'B',ref:'sum'};
 	this.metrics['leaks']       = {name: 'Leaks',extractor:function (entry) {return entry.aliveReq;},'unit' : 'B',ref:'sum'};
-	this.metrics['lifetime']    = {name: 'Lifetime',extractor:function (entry) {return entry.lifetime;},'unit' : '',ref:'max'};
+	this.metrics['lifetime.max']    = {name: 'Max lifetime',extractor:function (entry) {return entry.lifetime.max;},'unit' : '',ref:'max'};
+	this.metrics['lifetime.min']    = {name: 'Min lifetime',extractor:function (entry) {return entry.lifetime.min;},'unit' : '',ref:'max'};
 // 	this.metrics['ratio']       = {name: 'Recycling ratio',extractor:function (entry) {return entry.alloc.sum/entry.lifetime.count;},'unit' : 'c',ref:'max'};
 	
 	//select default metric

@@ -21,6 +21,8 @@ namespace MATT
 /*******************  FUNCTION  *********************/
 ElfReader::ElfReader(const std::string& file)
 {
+	this->elf = NULL;
+	this->fp = NULL;
 }
 
 /*******************  FUNCTION  *********************/

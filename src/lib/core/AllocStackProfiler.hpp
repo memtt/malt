@@ -49,7 +49,7 @@ enum StackMode
 /********************  STRUCT  **********************/
 struct ReallocJump
 {
-	bool operator < (const ReallocJump & jump) const {return jump.oldSize < jump.oldSize || (jump.oldSize == jump.oldSize && jump.newSize == jump.newSize);};
+	bool operator < (const ReallocJump & jump) const {return oldSize < jump.oldSize || (oldSize == jump.oldSize && newSize == jump.newSize);};
 	size_t oldSize;
 	size_t newSize;
 };
