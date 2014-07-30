@@ -33,6 +33,12 @@ if (ENABLE_GCC_COVERAGE)
 endif (ENABLE_GCC_COVERAGE)
 
 ######################################################
+set(LIB_MATT_DEPS pthread)
+if (LIBELF_FOUND)
+	list(APPEND LIB_MATT_DEPS elf)
+endif (LIBELF_FOUND)
+
+######################################################
 #gen config.h
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config.h.in ${CMAKE_CURRENT_BINARY_DIR}/config.h)
 
@@ -55,11 +61,11 @@ set(COMMON_OBJS $<TARGET_OBJECTS:htopml-json>
 
 ######################################################
 add_library(matt-base SHARED ${COMMON_OBJS})
-target_link_libraries(matt-base pthread elf)
+target_link_libraries(matt-base ${LIB_MATT_DEPS})
 
 ######################################################
 add_library(matt SHARED ${COMMON_OBJS} $<TARGET_OBJECTS:matt-libc-wrapper>)
-target_link_libraries(matt pthread dl elf)
+target_link_libraries(matt ${LIB_MATT_DEPS} dl)
 
 ######################################################
 add_subdirectory(core)
