@@ -42,5 +42,6 @@ void convertToJson(htopml::JsonState& json, const ElfGlobalVariable& value)
 bool ElfReader::hasLibElf(void)
 {
 	return false;
+}
 
 }
