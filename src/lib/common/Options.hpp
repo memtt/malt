@@ -56,6 +56,8 @@ struct Options
 	bool operator==(const Options & value) const;
 	//trace
 	bool traceEnabled;
+	//info
+	bool infoHidden;
 };
 
 /*******************  FUNCTION  *********************/

@@ -7,10 +7,8 @@
 ######################################################
 
 ######################################################
-add_subdirectory(lib)
-add_subdirectory(integration)
-add_subdirectory(trace-reader)
+include_directories(../lib)
+include_directories(../../extern-deps/from-fftw)
 
 ######################################################
-# Install the webview into share directory
-INSTALL(DIRECTORY webview DESTINATION share/matt)
+add_executable(matt-trace-reader main.cpp)

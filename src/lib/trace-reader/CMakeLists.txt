@@ -1,1 +1,0 @@
-add_executable(matt-trace-reader main.cpp)

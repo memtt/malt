@@ -44,6 +44,8 @@ Options::Options(void)
 	this->distrReallocJump        = true;
 	//trace
 	this->traceEnabled            = true;
+	//info
+	this->infoHidden              = false;
 }
 
 /*******************  FUNCTION  *********************/
@@ -71,6 +73,8 @@ bool Options::operator==(const Options& value) const
 	if (this->distrReallocJump != value.distrReallocJump) return false;
 	//trace
 	if (this->traceEnabled != value.traceEnabled) return false;
+	//info
+	if (this->infoHidden != value.infoHidden) return false;
 	
 	return true;
 }
@@ -114,6 +118,9 @@ void Options::loadFromFile(const char* fname)
 	//trace
 	this->traceEnabled        = iniparser_getboolean(iniDic,"trace:enabled",this->traceEnabled);
 	
+	//info
+	this->infoHidden          = iniparser_getboolean(iniDic,"info:hidden",this->infoHidden);
+	
 	//free dic
 	iniparser_freedict(iniDic);
 }
@@ -151,6 +158,10 @@ void convertToJson(htopml::JsonState & json,const Options & value)
 			json.printField("allocSize",value.distrAllocSize);
 			json.printField("reallocJump",value.distrReallocJump);
 		json.closeFieldStruct("distr");
+		
+		json.openFieldStruct("info");
+			json.printField("hidden",value.infoHidden);
+		json.closeFieldStruct("info");
 	json.closeStruct();
 }
 
@@ -188,6 +199,9 @@ void Options::dumpConfig(const char* fname)
 	
 	//trace
 	IniParserHelper::setEntry(dic,"trace:enabled",this->traceEnabled);
+	
+	//info
+	IniParserHelper::setEntry(dic,"info:hidden",this->infoHidden);
 	
 	//write
 	FILE * fp = fopen(fname,"w");

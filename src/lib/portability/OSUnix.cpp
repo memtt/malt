@@ -165,4 +165,33 @@ void OSUnix::setSigKillHandler(void (*handler)(int) )
 	sigaction(SIGINT, &sigIntHandler, NULL);
 }
 
+/*******************  FUNCTION  *********************/
+std::string OSUnix::getHostname(void)
+{
+	char buffer[4096];
+	int res = gethostname(buffer,sizeof(buffer));
+	assume(res == 0,"Failed to read hostname with getHostname() !");
+	return buffer;
+}
+
+/*******************  FUNCTION  *********************/
+std::string OSUnix::getDateTime(void)
+{
+	//vars
+	char buffer[200];
+	time_t t;
+	struct tm *tmp;
+
+	//get time
+	t = time(NULL);
+	tmp = localtime(&t);
+	assume(tmp != NULL,"Failed to get time with localtime() !");
+	
+	//convert to string format
+	int res = strftime(buffer, sizeof(buffer), "%F %R", tmp);
+	assume(res > 0,"Failed to convert time to string format with strftime() !");
+	
+    return buffer;
+}
+
 }
