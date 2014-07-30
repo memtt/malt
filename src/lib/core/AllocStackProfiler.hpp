@@ -25,10 +25,10 @@
 // #include <stack-tree/AbstractStackTree.hpp>
 #include <valprof/ProfiledStateValue.hpp>
 #include <valprof/ProfiledCumulValue.hpp>
+#include <tools/ELFReader.hpp>
 #include "SegmentTracker.hpp"
 #include "StackSizeTracker.hpp"
 #include "SimpleStackTracer.hpp"
-#include "ELFReader.hpp"
 #include "AllocTracer.hpp"
 
 /*******************  NAMESPACE  ********************/

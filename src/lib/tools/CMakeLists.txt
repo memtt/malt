@@ -7,21 +7,20 @@
 ######################################################
 
 ######################################################
-set(MATT_LIB_SRC AllocTracer.cpp
-                 CallStackInfo.cpp 
-                 SymbolResolver.cpp 
-                 SegmentTracker.cpp 
-                 ValgrindOutput.cpp 
-                 StackSizeTracker.cpp
-                 SimpleStackTracer.cpp 
-                 StackSizeAnalyser.cpp
-                 AllocStackProfiler.cpp
-                 SimpleCallStackNode.cpp
-                 LocalAllocStackProfiler.cpp)
+set(MATT_LIB_TOOLS_SRC )
+                 
+######################################################
+#Optional sources
+if (LIBELF_FOUND)
+	list(APPEND MATT_LIB_TOOLS_SRC ELFReader.cpp)
+else (LIBELF_FOUND)
+	message(STATUS "libelf not found, profiling will ignore global variables !")
+	list(APPEND MATT_LIB_TOOLS_SRC ELFReader_fake.cpp)
+endif (LIBELF_FOUND)
 
 ######################################################
-add_library(matt-core OBJECT ${MATT_LIB_SRC})
-SET_TARGET_PROPERTIES(matt-core PROPERTIES COMPILE_FLAGS -fPIC)
+add_library(matt-tools OBJECT ${MATT_LIB_TOOLS_SRC})
+SET_TARGET_PROPERTIES(matt-tools PROPERTIES COMPILE_FLAGS -fPIC)
 
 ######################################################
 if (ENABLE_TESTS)

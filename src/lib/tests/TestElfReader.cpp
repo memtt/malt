@@ -8,7 +8,7 @@
 
 /********************  HEADERS  *********************/
 #include <gtest/gtest.h>
-#include <core/ELFReader.hpp>
+#include <tools/ELFReader.hpp>
 #include <common/SimpleAllocator.hpp>
 
 /***************** USING NAMESPACE ******************/
