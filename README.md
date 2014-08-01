@@ -76,6 +76,22 @@ Example of config file :
 	callgrind=true        ; enable callgrind output
 	config=true           ; dump current config
 
+Using webview
+-------------
+
+You can use the webview by calling command `matt-webview` as :
+
+	matt-webview [-p PORT] -i matt-YOUR_PROGRAM-1234.json
+
+It will open a server listening localy on port 8080 so you can open your web browser
+to connect to the web interface via http://localhost:8080.
+
+If you are running the view remotly thought SSH you can redirect the ports by using :
+
+	ssh -L 8080:localhost:8080 user@ssh-server
+
+To use the webview you need to install the nodeJS package on your system : http://nodejs.org/.
+
 Experimental pintool mode
 -------------------------
 

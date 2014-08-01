@@ -16,3 +16,4 @@ set(MATT_THREAD_WRAPPER_SRC ThreadTracker.cpp)
 ######################################################
 add_library(matt-thread-wrapper OBJECT ${MATT_THREAD_WRAPPER_SRC})
 SET_TARGET_PROPERTIES(matt-thread-wrapper PROPERTIES COMPILE_FLAGS -fPIC)
+
