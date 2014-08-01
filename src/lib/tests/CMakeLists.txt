@@ -57,3 +57,7 @@ target_link_libraries(simple-case-finstr-linked matt)
 add_executable(test-atexit-first test-atexit-first.cpp)
 SET_TARGET_PROPERTIES(test-atexit-first PROPERTIES COMPILE_FLAGS -finstrument-functions)
 target_link_libraries(test-atexit-first matt)
+
+######################################################
+add_executable(test-pthread-tracking test-pthread-tracking.cpp)
+target_link_libraries(test-pthread-tracking matt)

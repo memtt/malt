@@ -33,7 +33,7 @@ if (ENABLE_GCC_COVERAGE)
 endif (ENABLE_GCC_COVERAGE)
 
 ######################################################
-set(LIB_MATT_DEPS pthread)
+set(LIB_MATT_DEPS pthread dl)
 if (LIBELF_FOUND)
 	list(APPEND LIB_MATT_DEPS elf)
 endif (LIBELF_FOUND)
@@ -55,6 +55,7 @@ set(COMMON_OBJS $<TARGET_OBJECTS:htopml-json>
                 $<TARGET_OBJECTS:matt-tools> 
                 $<TARGET_OBJECTS:matt-stacks> 
                 $<TARGET_OBJECTS:matt-valprof> 
+                $<TARGET_OBJECTS:matt-thread-wrapper> 
                 #$<TARGET_OBJECTS:matt-stack-trees> 
                 $<TARGET_OBJECTS:matt-common> 
                 $<TARGET_OBJECTS:matt-port>
@@ -66,7 +67,7 @@ target_link_libraries(matt-base ${LIB_MATT_DEPS})
 
 ######################################################
 add_library(matt SHARED ${COMMON_OBJS} $<TARGET_OBJECTS:matt-libc-wrapper>)
-target_link_libraries(matt ${LIB_MATT_DEPS} dl)
+target_link_libraries(matt ${LIB_MATT_DEPS})
 
 ######################################################
 add_subdirectory(core)

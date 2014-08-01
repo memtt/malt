@@ -183,6 +183,7 @@ void ElfReader::loadGlobalVariables(ElfGlobalVariableVector& variables)
 					var.name = strings.data + table[i].st_name;
 				var.size = table[i].st_size;
 				var.tls = (type == STT_TLS);
+				var.line = -1;
 				
 				//push
 				variables.push_back(var);
@@ -227,10 +228,15 @@ ElfStringTable ElfReader::getStringTable(int secId)
 void convertToJson(htopml::JsonState& json, const ElfGlobalVariable& value)
 {
 	json.openStruct();
-	json.printField("name",value.name);
-	json.printField("size",value.size);
-	json.printField("offset",value.offset);
-	json.printField("tls",value.tls);
+		json.printField("name",value.name);
+		json.printField("size",value.size);
+		json.printField("offset",value.offset);
+		json.printField("tls",value.tls);
+		if (value.line != -1 && !value.file.empty())
+		{
+			json.printField("line",value.line);
+			json.printField("file",value.file);
+		}
 	json.closeStruct();
 }
 

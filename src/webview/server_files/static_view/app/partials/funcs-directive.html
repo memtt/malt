@@ -1,0 +1,12 @@
+<div>
+<table>
+	<tr>
+		<th>Name</th>
+		<th>Value</th>
+	</tr>
+	<tr ng-repeat="func in funcs | orderBy:'info.'+selected:true | limitTo:limit" ng-click="selectFunc(func)">
+		<td>{{func.function}}</td>
+		<td>{{func.info[selected]}}</td>
+	</tr>
+</table>
+</div>

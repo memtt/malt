@@ -93,7 +93,10 @@ MattProject.prototype.getDebugStackList = function()
 **/
 MattProject.prototype.getGlobalVariables = function()
 {
-	return this.data.memStats.globalVariables;
+	return { 
+		vars: this.data.memStats.globalVariables,
+		maxThreadCount: this.data.globals.maxThreadCount
+	};
 }
 
 /****************************************************/

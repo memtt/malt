@@ -1,0 +1,37 @@
+<table>
+	<tr>
+		<th>Name</th>
+		<th>Value</th>
+	</tr>
+	<tr ng-repeat="func in funcs | orderBy:'info.'+selected:sortReverse | pagination: curPage * pageSize | limitTo: pageSize" ng-click="selectFunc(func)">
+		<td>{{func.function}}</td>
+		<td>{{func.info[selected]}}</td>
+	</tr>
+</table>
+
+buttons
+<div class="pagination-div">
+<ul>
+ <li>
+  <button type="button" ng-disabled="curPage == 0"
+ ng-click="curPage=curPage-1">PREV</button>
+ </li>
+ <li>
+ <span>Page {{curPage + 1}} of {{ numberOfPages() }}</span>
+ </li>
+ <li>
+ <button type="button"
+ ng-disabled="curPage >= funcs.length/pageSize - 1"
+ ng-click="curPage = curPage+1">NEXT </button>
+ </li>
+</ul>
+</div>
+
+
+<mattfunclist selected='phys' funcs='funcs' limit='4'></mattfunclist>
+<mattfunclist selected='virt' funcs='funcs' limit='4'></mattfunclist>
+
+<button ng-click="toogleSelected()">toogle : {{selected}}</button>
+<button ng-click="toogleSort()">toogle : {{sortReverse}}</button>
+
+<ui-codemirror ng-model="code">sdfdsf</ui-codemirror>

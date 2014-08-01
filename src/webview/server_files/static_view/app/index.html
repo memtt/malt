@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en" ng-app="matt.app">
+<head>
+	<meta charset="utf-8">
+	<title>MATT webview</title>
+  
+	<!-- bootstrap CSS -->
+	<link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css">
+  
+	<!-- Use of angular -->
+	<script src="bower_components/angular/angular.js"></script>
+	<script src="bower_components/angular-route/angular-route.js"></script>
+	<script src="bower_components/angular-animate/angular-animate.js"></script>
+	
+	<!--codemirror UI with angular -->
+	<link rel="stylesheet" type="text/css" href="bower_components/codemirror/lib/codemirror.css">
+	<script type="text/javascript" src="bower_components/codemirror/lib/codemirror.js"></script>
+	<script type="text/javascript" src="bower_components/codemirror/mode/clike/clike.js"></script>
+	<script type="text/javascript" src="bower_components/angular-ui-codemirror/ui-codemirror.js"></script>
+	
+	<!-- use of d3js/nvd3 for graphs -->
+	<script src="bower_components/d3/d3.min.js"></script>
+	<script src="bower_components/nvd3/nv.d3.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="bower_components/nvd3/nv.d3.min.css">
+  
+	<!-- MATT logic -->
+	<script src="js/helper.js"></script>
+	<script src="js/app.js"></script>
+	<script src="js/controlers.js"></script>
+	<script src="js/animations.js"></script>
+	<script src="js/page-home.js"></script>
+  
+	<!-- MATT CSS -->
+	<link rel="stylesheet" href="css/app.css">
+	<link rel="stylesheet" href="css/animations.css">
+</head>
+<body class='matt'>
+
+	<!-- Static navbar -->
+	<div class="navbar navbar-default navbar-static-top" role="navigation">
+		<div class="container">
+			<div class="navbar-header">
+				<a class="navbar-brand" href="#">MATT</a>
+			</div>
+			<div class="navbar-collapse collapse">
+				<ul class="nav navbar-nav" ng-controller="matt.ctrl.nav">
+					<li ng-class="{ active: route.current.pageKey == 'home'}"><a href="#/home">home</a></li>
+					<li ng-class="{ active: route.current.pageKey == 'page2'}"><a href="#/page2">Stacks</a></li>
+					<li ng-class="{ active: route.current.pageKey == 'funcs'}"><a href="#/funcs">Sources</a></li>
+					<li ng-class="{ active: route.current.pageKey == 'timeline'}"><a href="#/timeline">Timeline</a></li>
+					<li ng-class="{ active: route.current.pageKey == 'help'}"><a href="#/help">Help</a></li>
+				</ul>
+			</div><!--/.nav-collapse -->
+		</div>
+	</div>
+
+	<!-- Main container -->
+	<div class='view-container container'>
+		<div ng-view class='view-frame'></div>
+	</div>
+</body>
+</html>

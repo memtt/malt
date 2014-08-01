@@ -31,6 +31,8 @@ struct ElfGlobalVariable
 	size_t size;
 	size_t offset;
 	bool tls;
+	std::string file;
+	int line;
 };
 
 /********************  STRUCT  **********************/

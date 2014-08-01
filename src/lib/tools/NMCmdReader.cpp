@@ -112,17 +112,21 @@ bool NMCmdReader::load(const std::string& binaryFile)
 }
 
 /*******************  FUNCTION  *********************/
-void NMCmdReader::findSources(const ElfGlobalVariableVector& vars) const
+void NMCmdReader::findSources(ElfGlobalVariableVector& vars) const
 {
 	//Errors
 	assume(this->binaryFile.empty() == false,"Not binary files loaded, cannot resolve variable source sline declaration !");
 	
 	//search for all
-	for (ElfGlobalVariableVector::const_iterator it = vars.begin() ; it != vars.end() ; ++it)
+	for (ElfGlobalVariableVector::iterator it = vars.begin() ; it != vars.end() ; ++it)
 	{
 		const NMCmdReaderEntry * entry = getEntry(it->name);
 		if (entry != NULL)
+		{
 			fprintf(stderr,"NMEntry for %s : %s - %s - %s - %d\n",it->name.c_str(),entry->name.c_str(),entry->degmangledName.c_str(),entry->file.c_str(),entry->line);
+			it->line = entry->line;
+			it->file = entry->file;
+		}
 	}
 }
 
@@ -151,10 +155,18 @@ bool NMCmdReader::readNMLine(FILE * fp,NMCmdReaderEntry& entry)
 	int res = sscanf(bres,"%s %c %lx %lx %s\n",bufferName,&entry.type,&entry.offset,&entry.size,bufferFile);
 	if (res == 5)
 	{
-		fprintf(stderr,"lines %s",bres);
+		char * l = strrchr(bufferFile,':');
+		if (l != NULL)
+		{
+			*l = '\0';
+			l++;
+			entry.line = atoi(l);
+		} else {
+			entry.line = -1;
+		}
+		//fprintf(stderr,"lines %s",bres);
 		entry.name = bufferName;
 		entry.file = bufferFile;
-		entry.line = 0;
 		return true;
 	} else {
 		//fprintf(stderr,"ignore lines %s",bres);

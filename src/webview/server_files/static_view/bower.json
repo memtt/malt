@@ -1,0 +1,18 @@
+{
+  "name": "tuto-angular",
+  "version": "0.0.0",
+  "authors": [
+    "Valat Sébastien <sebastien.valat.dev@orange.fr>"
+  ],
+  "moduleType": [
+    "node"
+  ],
+  "license": "MIT",
+  "private": true,
+  "dependencies": {
+    "angular-route": "~1.2.20",
+    "bootstrap": "~3.2.0",
+    "angular-animate": "~1.2.20",
+    "angular-ui-codemirror": "~0.1.6"
+  }
+}

@@ -1,0 +1,107 @@
+<style type='text/css'>
+.runinfo {
+	border:none;
+	width:23%;
+	margin:5px;
+	float:left;
+	color:white;
+	text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+	border-radius: 5px;
+	padding:8px;
+}
+
+.runinfo .name {
+	font-size:13px;
+	text-transform: uppercase;
+}
+
+.runinfo .value{
+	font-size:28px;
+}
+
+.runinfo-program {
+	background-color:#E5412D;
+}
+
+.runinfo-time {
+	background-color:#EEA236;
+}
+
+.runinfo-avail-mem {
+	background-color:#888;
+}
+
+.runinfo-used-mem {
+	background-color:#E6E6E6
+}
+
+.matt-has-warning {
+	font-weight:bold;
+	color:red;
+}
+</style>
+<div class="home">
+
+	<div>
+		<div class="runinfo runinfo-program">
+			<div class='name'>Program</div>
+			<div class='value'>AVBP</div>
+		</div>
+		
+		<div class="runinfo runinfo-time">
+			<div class='name'>Execution time</div>
+			<div class='value'>16:01:02</div>
+		</div>
+
+		<div class="runinfo runinfo-avail-mem">
+			<div class='name'>Available memory</div>
+			<div class='value'>16G</div>
+		</div>
+		
+		<div class="runinfo runinfo-used-mem">
+			<div class='name'>Physical memory used</div>
+			<div class='value'>8G (4%)</div>
+		</div>
+	</div>
+
+	<h1>Run description</h1>
+	
+	
+	<table class='table table-bordered'>
+			<tr>
+				<td>Executable :</td>
+				<td>{{data.run.exe}}</td>
+			</tr><tr>
+				<td>Commande :</td>
+				<td><pre>{{data.run.command}}</pre></td>
+			</tr><tr>
+				<td>Tool :</td>
+				<td>{{data.run.tool}}</td>
+			</tr><tr>
+				<td>Date :</td>
+				<td>{{data.run.date}}</td>
+			</tr><tr>
+				<td>Execution time :</td>
+				<td>{{ticksToHourMinSec(data.run.runtime)}}</td>
+			</tr><tr>
+				<td>Ticks frequency :</td>
+				<td>{{data.run.ticksPerSecond}}</td>
+			</tr>
+		</table>
+
+	<h1>Global statistics</h1>
+
+	<table class='table table-bordered'>
+		<tr ng-repeat="entry in summaryViewEntries" ng-class="{'matt-has-warning': hasSummaryWarnings(entry.key)}">
+			<td class='matt-name'>{{entry.name}}</td>
+			<td class='matt-value'>
+				{{entry.format(data.summary[entry.key])}}
+				<img src='http://www.pinsound.org/wp-content/uploads/2013/07/warning.png' ng-repeat="warning in data.summaryWarnings[entry.key]" title="{{warning}}" width='24px'/>
+			</td>
+			<td class='matt-help'>{{entry.help}}</td><tr>
+		</tr>
+	</table>
+
+	<h1>Top functions</h1>
+
+</div>

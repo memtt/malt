@@ -41,7 +41,7 @@ class NMCmdReader
 		NMCmdReader(void);
 		~NMCmdReader(void);
 		bool load(const std::string & binaryFile);
-		void findSources(const ElfGlobalVariableVector & vars) const;
+		void findSources(MATT::ElfGlobalVariableVector& vars) const;
 		void clear();
 	private:
 		bool readNMLine(FILE * fp,NMCmdReaderEntry & entry);

@@ -28,6 +28,7 @@
 #include "AllocStackProfiler.hpp"
 #include "LocalAllocStackProfiler.hpp"
 #include <tools/NMCmdReader.hpp>
+#include <wrapper/ThreadTracker.hpp>
 
 /********************  MACROS  **********************/
 #define MATT_SKIP_DEPTH 3
@@ -530,6 +531,7 @@ void convertToJson(htopml::JsonState& json, const AllocStackProfiler& value)
 		json.printField("sysFreeMemory",value.sysFreeMemory);
 		json.printField("sysCachedMemory",value.sysCachedMemory);
 		json.printField("sysSwapMemory",value.sysSwapMemory);
+		json.printField("maxThreadCount",ThreadTracker::getMaxThreadCount());
 	json.closeFieldStruct("globals");
 	
 	json.printField("leaks",value.segTracker);
