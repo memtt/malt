@@ -284,7 +284,7 @@ app.use('/deps/codemirror/mode',Express.static(__dirname + '/node_modules/codemi
 app.use('/deps/codemirror/addon',Express.static(__dirname + '/node_modules/codemirror/addon'));
 app.use('/',Express.static(__dirname+'/client_files'));
 
-app.use('/static',Express.static(__dirname+'/server_files/static_view'));
+app.use('/client_v2',Express.static(__dirname+'/client_v2/app'));
 app.use('/deps/angular',Express.static(__dirname+'/bower_components/angular'));
 app.use('/deps/angular-route',Express.static(__dirname+'/bower_components/angular-route'));
 
