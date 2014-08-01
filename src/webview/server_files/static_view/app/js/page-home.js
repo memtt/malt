@@ -180,6 +180,108 @@ function MattPageHome()
 		}
 	];
 	
+	//declare metrics
+	var metrics = {
+		'alloc.sum': {
+			name: 'Allocated mem.',
+			extractor: function(x) {return x.alloc.sum;},
+			formatter: function(x) {return mattHelper.humanReadable(x,1,'B',false);},
+			defaultOrder: 'desc',
+			ref: 'sum'
+		},
+		'alloc.count': {
+			name: 'Allocated count',
+			extractor: function(x) {return x.alloc.count;},
+			formatter: function(x) {return mattHelper.humanReadable(x,1,'',false);},
+			defaultOrder: 'desc',
+			ref: 'sum'
+		},
+		'alloc.min': {
+			name: 'Min. alloc size',
+			extractor: function(x) {return x.alloc.min;},
+			formatter: function(x) {return mattHelper.humanReadable(x,1,'B',false);},
+			defaultOrder: 'asc',
+			ref: 'max'
+		},
+		'alloc.mean': {
+			name: 'Mean alloc size',
+			extractor: function(x) {return x.alloc.count == 0 ? 0 : x.alloc.sum / x.alloc.count;},
+			formatter: function(x) {return mattHelper.humanReadable(x,1,'B',false);},
+			defaultOrder: 'asc',
+			ref: 'max'
+		},
+		'alloc.max': {
+			name: 'Max. alloc size',
+			extractor: function(x) {return x.alloc.max;},
+			formatter: function(x) {return mattHelper.humanReadable(x,1,'B',false);},
+			defaultOrder: 'desc',
+			ref: 'max'
+		},
+		'free.sum': {
+			name: 'Freed mem.',
+			extractor: function(x) {return x.free.sum;},
+			formatter: function(x) {return mattHelper.humanReadable(x,1,'B',false);},
+			defaultOrder: 'desc',
+			ref: 'sum'
+		},
+		'free.count': {
+			name: 'Free count',
+			extractor: function(x) {return x.free.count;},
+			formatter: function(x) {return mattHelper.humanReadable(x,1,'',false);},
+			defaultOrder: 'desc',
+			ref: 'sum'
+		},
+		'memops': {
+			name: 'Memory ops.',
+			extractor: function(x) {return x.alloc.count + x.free.count;},
+			formatter: function(x) {return mattHelper.humanReadable(x,1,'',false);},
+			defaultOrder: 'desc',
+			ref: 'sum'
+		},
+		'peakmem.local': {
+			name: 'Local peak',
+			extractor: function(x) {return x.maxAliveReq;},
+			formatter: function(x) {return mattHelper.humanReadable(x,1,'B',false);},
+			defaultOrder: 'desc',
+			ref: 'max'
+		},
+		'peakmem.global': {
+			name: 'Global peak',
+			extractor: function(x) {return x.globalPeak;},
+			formatter: function(x) {return mattHelper.humanReadable(x,1,'B',false);},
+			defaultOrder: 'desc',
+			ref: 'sum'
+		},
+		'leaks': {
+			name: 'Leaks',
+			extractor: function(x) {return x.aliveReq;},
+			formatter: function(x) {return mattHelper.humanReadable(x,1,'B',false);},
+			defaultOrder: 'desc',
+			ref: 'sum'
+		},
+		'lifetime.max': {
+			name: 'Max lifetime',
+			extractor: function(x) {return x.lifetime.max;},
+			formatter: function(x) {return mattHelper.humanReadable(x,1,'',false);},
+			defaultOrder: 'desc',
+			ref: 'max'
+		},
+		'lifetime.min': {
+			name: 'Max lifetime',
+			extractor: function(x) {return x.lifetime.min;},
+			formatter: function(x) {return mattHelper.humanReadable(x,1,'',false);},
+			defaultOrder: 'asc',
+			ref: 'max'
+		},
+		'recycling.ratio': {
+			name: 'Recycling ratio',
+			extractor: function(x) {return x.alloc.count == 0 ? 1 : x.alloc.sum / x.alloc.count;},
+			formatter: function(x) {return mattHelper.humanReadable(x,1,'',false);},
+			defaultOrder: 'desc',
+			ref: 'max'
+		},
+	};
+	
 	//declare module to manage matt home page
 	var mattModule = angular.module('matt.page.home',[]);
 	
@@ -188,29 +290,35 @@ function MattPageHome()
 		//setup data
 		$scope.summaryViewEntries = summaryViewEntries;
 		$scope.displaySummaryLevel = 1;
-		$scope.data = defaultData;
+		$scope.displaySummaryHelp = false;
+		$scope.summaryData = defaultData;
 		
-		//fetch data
+		//fetch summaryData
 		$http.get('/data/summary.json').success(function(data) {
-			$scope.data = data;
+			$scope.summaryData = data;
+		});
+		
+		//fetch function list datas
+		$http.get('/flat.json').success(function(data) {
+			$scope.functions = data;
 		});
 		
 		//provide short function to check if has warning to enable color class on tab lines
 		$scope.hasSummaryWarnings = function(key) {
-			if ($scope.data.summaryWarnings[key] == undefined)
+			if ($scope.summaryData.summaryWarnings[key] == undefined)
 				return false;
 			else
-				return ($scope.data.summaryWarnings[key].length > 0);
+				return ($scope.summaryData.summaryWarnings[key].length > 0);
 		}
 		
 		//convert times
 		$scope.getFormattedExecTime = function() {
-			return mattHelper.ticksToHourMinSec($scope.data.run.runtime,$scope.data.system.ticksPerSecond);
+			return mattHelper.ticksToHourMinSec($scope.summaryData.run.runtime,$scope.summaryData.system.ticksPerSecond);
 		}
 		
 		//convert CPU freq
 		$scope.getFormattedCpuFreq = function() {
-			return mattHelper.humanReadable($scope.data.system.ticksPerSecond,1,'Hz',false);
+			return mattHelper.humanReadable($scope.summaryData.system.ticksPerSecond,1,'Hz',false);
 		}
 
 		//format values
@@ -218,7 +326,7 @@ function MattPageHome()
 			if (entry == undefined || entry.type == 'separator' || entry.key == undefined)
 				return '';
 			else
-				return entry.format($scope.data.summary[entry.key]);
+				return entry.format($scope.summaryData.summary[entry.key]);
 		}
 		
 		//manage toogle button
@@ -241,6 +349,78 @@ function MattPageHome()
 					res.push(input[i]);
 			}
 			return res;
+		};
+	});
+	
+	//directive to print function lists
+	homeCtrl.directive('matthomefunclist',function() {
+		return {
+			restrict: 'EA',
+			templateUrl: 'partials/matt-home-func-list.html',
+			replace: true,
+			scope: {
+				functions: '=',
+				metric: '@',
+				limit: '@',
+				inclusive: '@'
+			},
+			link: function ($scope) {
+				//select values for sort
+				$scope.getValue = function (x) {
+					if (x == undefined)
+						return 0;
+					if ($scope.inclusive == 'true')
+					{
+						return metrics[$scope.metric].extractor(x.total);
+					} else if ($scope.inclusive == 'false') {
+						if (x.own == undefined)
+							return 0;
+						else
+							return metrics[$scope.metric].extractor(x.own);
+					} else {
+						console.log("Invalid value for inclusive parametter of <matt-home-func-list> : "+$scope.inclusive);
+						return 0;
+					}
+				}
+
+				$scope.computeRef = function() {
+					var res = 0;
+					if (metrics[$scope.metric].ref == 'sum')
+					{
+						for (var i in $scope.functions)
+							res += $scope.getValue($scope.functions[i]);
+					} else if (metrics[$scope.metric].ref == 'sum') {
+						for (var i in $scope.functions)
+						{
+							var tmp = $scope.getValue($scope.functions[i]);
+							if (tmp > res)
+								res = tmp;
+						}
+					} else {
+						console.log("Invalid value for ref mode : "+metrics[$scope.metric].ref);
+						return 1;
+					}
+					return res;
+				}
+				
+				$scope.getValueRatio = function(x) {
+					return (100 *$scope.getValue(x)) / $scope.computeRef();
+				}
+	
+				//format value for print
+				$scope.getFormattedValue = function(x) {
+					return metrics[$scope.metric].formatter($scope.getValue(x));
+				}
+				
+				//check reverse
+				$scope.getReverse = function () {
+					return (metrics[$scope.metric].defaultOrder == 'desc');
+				}
+				
+				$scope.useHiddenClass = function (x)  {
+					return ($scope.getValue(x) == 0);
+				}
+			}
 		};
 	});
 }

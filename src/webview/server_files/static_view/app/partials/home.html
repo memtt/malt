@@ -43,6 +43,22 @@
 .matt-separator {
 	background:gray;
 }
+
+.matt-hidden {
+	display:none;
+}
+
+.matt-warning-button {
+	background-image: url(http://www.pinsound.org/wp-content/uploads/2013/07/warning.png); /* 16px x 16px */
+    background-color: transparent; /* make the button transparent */
+    background-repeat: no-repeat;  /* make the background image appear only once */
+    background-position: 0px 0px;  /* equivalent to 'top left' */
+    border: none;           /* assuming we don't want any borders */
+    cursor: pointer;        /* make the cursor like hovering over an <a> element */
+    height: 16px;           /* make this the size of your image */
+    padding-left: 16px;     /* make text start to the right of the image */
+    vertical-align: middle; /* align the text vertically centered */
+}
 </style>
 <div class="home">
 
@@ -74,16 +90,16 @@
 	<table class='table table-bordered'>
 			<tr>
 				<td>Executable :</td>
-				<td>{{data.run.exe}}</td>
+				<td>{{summaryData.run.exe}}</td>
 			</tr><tr>
 				<td>Commande :</td>
-				<td><pre>{{data.run.command}}</pre></td>
+				<td><pre>{{summaryData.run.command}}</pre></td>
 			</tr><tr>
 				<td>Tool :</td>
-				<td>{{data.run.tool}}</td>
+				<td>{{summaryData.run.tool}}</td>
 			</tr><tr>
 				<td>Date :</td>
-				<td>{{data.run.date}}</td>
+				<td>{{summaryData.run.date}}</td>
 			</tr><tr>
 				<td>Execution time :</td>
 				<td>{{getFormattedExecTime()}}</td>
@@ -95,18 +111,32 @@
 
 	<h1>Global statistics</h1>
 
-	<input type='button' ng-click='toogleSummaryDetails()' value='{{displaySummaryLevel == 1 ? "Show details" : "Hide details"}}'/>
+	<input type='button' ng-click='toogleSummaryDetails()' value='{{displaySummaryLevel == 1 ? "Show all details" : "Hide details"}}'/>
+	<input type='button' ng-click='displaySummaryHelp = !displaySummaryHelp' value='{{!displaySummaryHelp ? "Show help" : "Hide help"}}'/>
 	<table class='table table-bordered'>
 		<tr ng-repeat="entry in summaryViewEntries | summaryLevel:displaySummaryLevel:hasSummaryWarnings(entry.key)" ng-class="{'matt-has-warning': hasSummaryWarnings(entry.key)}">
 			<td class='matt-name'>{{entry.name}}</td>
 			<td class='matt-value'>
 				{{getFormattedValue(entry)}}
-				<img src='http://www.pinsound.org/wp-content/uploads/2013/07/warning.png' ng-repeat="warning in data.summaryWarnings[entry.key]" title="{{warning}}" width='24px'/>
+				<img src='http://www.pinsound.org/wp-content/uploads/2013/07/warning.png' ng-repeat="warning in summaryData.summaryWarnings[entry.key]" title="{{warning}}" data-container="body" data-content="{{warning}}" width='24px'/>
+				<!--<button class='btn btn-lg popover-dismiss' ng-repeat="warning in summaryData.summaryWarnings[entry.key]" data-trigger="hover" data-toggle="popover" data-container="body" data-content="{{warning}}" title="test">text</button>-->
 			</td>
-			<td class='matt-help'>{{entry.help}}</td><tr>
+			<td class='matt-help' ng-class="{'matt-hidden': !displaySummaryHelp}">{{entry.help}}</td><tr>
 		</tr>
 	</table>
 
 	<h1>Top functions</h1>
+	
+	<h2>Allocation count</h2>
+	<matthomefunclist metric='alloc.count' inclusive='false' functions='functions' limit='5'></matthomefunclist>
+	
+	<h2>Cumulated allocations</h2>
+	<matthomefunclist metric='alloc.sum' inclusive='false' functions='functions' limit='5'></matthomefunclist>
+	
+	<h2>Memory usage on peak</h2>
+	<matthomefunclist metric='peakmem.global' inclusive='false' functions='functions' limit='5'></matthomefunclist>
+	
+	<h2>Leaks</h2>
+	<matthomefunclist metric='leaks' inclusive='false' functions='functions' limit='5'></matthomefunclist>
 
 </div>
