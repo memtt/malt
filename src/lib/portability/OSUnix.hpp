@@ -60,7 +60,9 @@ class OSUnix
 		static std::string getExeName(void);
 		static std::string getHostname(void);
 		static std::string getDateTime(void);
+		static std::string getCmdLine(void);
 		static void setSigKillHandler(void (*handler)(int s));
+		static std::string loadTextFile(const std::string & file);
 };
 
 }

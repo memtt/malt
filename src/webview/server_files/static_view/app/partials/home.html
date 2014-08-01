@@ -39,6 +39,10 @@
 	font-weight:bold;
 	color:red;
 }
+
+.matt-separator {
+	background:gray;
+}
 </style>
 <div class="home">
 
@@ -82,20 +86,21 @@
 				<td>{{data.run.date}}</td>
 			</tr><tr>
 				<td>Execution time :</td>
-				<td>{{ticksToHourMinSec(data.run.runtime)}}</td>
+				<td>{{getFormattedExecTime()}}</td>
 			</tr><tr>
 				<td>Ticks frequency :</td>
-				<td>{{data.run.ticksPerSecond}}</td>
+				<td>{{getFormattedCpuFreq()}}</td>
 			</tr>
 		</table>
 
 	<h1>Global statistics</h1>
 
+	<input type='button' ng-click='toogleSummaryDetails()' value='{{displaySummaryLevel == 1 ? "Show details" : "Hide details"}}'/>
 	<table class='table table-bordered'>
-		<tr ng-repeat="entry in summaryViewEntries" ng-class="{'matt-has-warning': hasSummaryWarnings(entry.key)}">
+		<tr ng-repeat="entry in summaryViewEntries | summaryLevel:displaySummaryLevel:hasSummaryWarnings(entry.key)" ng-class="{'matt-has-warning': hasSummaryWarnings(entry.key)}">
 			<td class='matt-name'>{{entry.name}}</td>
 			<td class='matt-value'>
-				{{entry.format(data.summary[entry.key])}}
+				{{getFormattedValue(entry)}}
 				<img src='http://www.pinsound.org/wp-content/uploads/2013/07/warning.png' ng-repeat="warning in data.summaryWarnings[entry.key]" title="{{warning}}" width='24px'/>
 			</td>
 			<td class='matt-help'>{{entry.help}}</td><tr>

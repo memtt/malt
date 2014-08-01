@@ -307,6 +307,124 @@ MattProject.prototype.getTimedValues = function()
 }
 
 /****************************************************/
+MattProject.prototype.genSummaryWarnings = function(data)
+{
+	//vars
+	var ret = {};
+	
+	//check too large recycling ratio
+	if (data.summary.recyclingRatio > 10)
+		ret.recyclingRatio = ["Caution, you are heavily recycling your memory, it might hurt performance, check the allocation rate."];
+	if (data.summary.allocCount > 100000)
+		ret.allocCount = ["Caution, you are doing really large number of memory allocation, it might hurt performance."];
+	if (data.summary.leakMem > data.summary.peakRequestedMemory / 2)
+		ret.leakMem = ["Caution, half of your memory has leaked, it might not be an issue, but maybe you need to ensure the segments are used during the whole program life."]
+	
+	return ret;
+}
+
+/****************************************************/
+/**
+ * Build a summary from the whole datas.
+**/
+MattProject.prototype.getSummaryV2 = function()
+{
+	var ret = {};
+	
+	//extract run info
+	ret.run = this.data.run;
+	
+	//extract system info
+	ret.system = {};
+	ret.system.totalMemory = this.data.globals.totalMemory
+	ret.system.ticksPerSecond = this.data.globals.ticksPerSecond;
+	
+	//summary
+	ret.summary = {};
+	ret.summary.peakPhysicalMemory = this.data.timeline.physicalMem.peakMemory;
+	ret.summary.peakVirtualMemory = this.data.timeline.virtualMem.peakMemory;
+	ret.summary.peakRequestedMemory = this.data.timeline.requestedMem.peakMemory;
+	ret.summary.peakInternalMemory = this.data.timeline.internalMem.peakMemory;
+	ret.summary.peakSegmentCount = this.data.timeline.segments.peakMemory;
+	
+	//rates
+	var p = 0;
+	for (var i in this.data.timeline.allocBandwidth.values)
+		if (this.data.timeline.allocBandwidth.values[i] > p)
+			p = this.data.timeline.allocBandwidth.values[i];
+	ret.summary.peakAllocRate = p;
+	
+	p = 0;
+	for (var i in this.data.timeline.allocCnt.values)
+		if (this.data.timeline.allocCnt.values[i] > p)
+			p = this.data.timeline.allocCnt.values[i];
+	ret.summary.peakAllocCountRate = p;
+	
+	//search min/max/count size
+	var min = -1;
+	var max = -1;
+	var count = 0;
+	var stats = this.data.stacks.stats;
+	var sum = 0;
+	for(var i in stats)
+	{
+		var info = stats[i].infos;
+		if ((info.alloc.min < min || min == -1) && info.alloc.min > 0)
+			min = info.alloc.min;
+		if (info.alloc.max > max || max == -1)
+			max = info.alloc.max;
+		count += info.alloc.count;
+		sum += info.alloc.sum;
+	}
+	
+	//gen
+	ret.summary.totalAllocatedMemory = sum;
+	ret.summary.recyclingRatio = sum / ret.summary.peakRequestedMemory;
+	ret.summary.allocCount = count;
+	ret.summary.minAllocSize = min;
+	ret.summary.meanAllocSize = sum / count;
+	ret.summary.maxAllocSize = max;
+	
+	//leaks
+	var leakCount = 0;
+	var leakMem = 0;
+	var leaks = this.data.leaks;
+	for (var i in leaks)
+	{
+		leakCount += leaks[i].count;
+		leakMem += leaks[i].memory;
+	}
+	ret.summary.leakedMem = leakMem;
+	ret.summary.leakedCount = leakCount;
+	
+	//stacks
+	ret.summary.largestStack = this.getMaxStack().size;
+	
+	//global vars
+	var tlsMem = 0;
+	var gblMem = 0;
+	var gvars = this.data.memStats.globalVariables;
+	for (var i in gvars)
+	{
+		for (var j in gvars[i])
+		{
+			if (gvars[i][j].tls)
+				tlsMem += gvars[i][j].size;
+			else
+				gblMem += gvars[i][j].size;
+		}
+	}
+	ret.summary.globalVarMem = gblMem;
+	ret.summary.tlsVarMem = tlsMem;
+	
+	//summary warnings
+	ret.summaryWarnings = this.genSummaryWarnings(ret);
+	
+	//return
+	return ret;
+}
+
+/****************************************************/
 /**
  * Build a summary from the whole datas.
 **/

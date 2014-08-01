@@ -194,4 +194,40 @@ std::string OSUnix::getDateTime(void)
     return buffer;
 }
 
+/*******************  FUNCTION  *********************/
+std::string OSUnix::getCmdLine(void)
+{
+	return loadTextFile("/proc/self/cmdline");
+}
+
+/*******************  FUNCTION  *********************/
+std::string OSUnix::loadTextFile(const std::string& file)
+{
+	char buffer[1025];
+	std::string res;
+	
+	//open an check
+	FILE * fp = fopen(file.c_str(),"r");
+	assumeArg(fp != NULL,"Failed to read file %1 : %2 !")
+		.arg(file)
+		.argStrErrno()
+		.end();
+
+	//load content
+	while (!feof(fp)){
+		size_t tmp = fread(buffer,1,sizeof(buffer),fp);
+		if (tmp > 0)
+		{
+			buffer[tmp] = '\0';
+			res += buffer;
+		}
+	}
+	
+	//close file
+	fclose(fp);
+	
+	//finish
+	return res;
+}
+
 }

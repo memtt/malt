@@ -87,8 +87,8 @@ void recurseA(int depth)
 	{
 		void * ptr = malloc(64);
 		*(char*)ptr='c';//required otherwise new compilers will remove malloc/free
-		free(ptr);
 		recurseA(depth-1);
+		free(ptr);
 	}
 }
 

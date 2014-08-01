@@ -205,6 +205,13 @@ app.get('/debug-stack-list.json',function(req,res) {
 });
 
 /****************************************************/
+app.get('/data/summary.json',function(req,res) {
+	var tmp = mattProject.getSummaryV2();
+	res.write(JSON.stringify(tmp,null,'\t'));
+	res.end();
+});
+
+/****************************************************/
 app.get('/',function(eq,res,next){
 	res.render("page-summary",mattProject.getSummary());
 });

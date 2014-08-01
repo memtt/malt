@@ -447,10 +447,11 @@ void convertToJson(htopml::JsonState& json, const AllocStackProfiler& value)
 		json.printField("formatVersion",1.0f);
 		json.printField("tool","matt-0.0.0");
 		json.printField("date",OS::getDateTime());
+		json.printField("runtime",getticks() - value.trefTicks);
 		if (value.getOptions()->infoHidden == false)
 		{
 			json.printField("exe",OS::getExeName());
-			json.printField("fullCommand","TODO");
+			json.printField("command",OS::getCmdLine());
 			json.printField("hostname",OS::getHostname());
 		}
 	json.closeFieldStruct("run");
