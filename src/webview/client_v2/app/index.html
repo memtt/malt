@@ -32,6 +32,7 @@
 	
 	<!-- MATT objs -->
 	<script src="js/func-metrics.js"></script>
+	<script src="js/global-vars.js"></script>
 	
 	<!-- MATT pages -->
 	<script src="js/home.js"></script>
@@ -64,7 +65,7 @@
 					<li><a href="/time-analysis.html">Time analysis</a></li>
 					<li><a href="/max-stack.html">Stack</a></li>
 					<li><a href="/alloc-sizes.html">Alloc sizes</a></li>
-					<li><a href="/globals.html">Global variables</a></li>
+					<li ng-class="{ active: route.current.pageKey == 'globalVars'}"><a href="#/globalVars">Global variables</a></li>
 					<!--<li ng-class="{ active: route.current.pageKey == 'page2'}"><a href="#/page2">Stacks</a></li>
 					<li ng-class="{ active: route.current.pageKey == 'funcs'}"><a href="#/funcs">Sources</a></li>
 					<li ng-class="{ active: route.current.pageKey == 'timeline'}"><a href="#/timeline">Timeline</a></li>-->

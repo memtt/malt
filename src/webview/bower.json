@@ -18,6 +18,7 @@
   ],
   "dependencies": {
     "angular": "~1.2.20",
-    "angular-route": "~1.2.20"
+    "angular-route": "~1.2.20",
+    "nvd3": "~1.1.15-beta"
   }
 }

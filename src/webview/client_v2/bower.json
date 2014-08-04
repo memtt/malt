@@ -13,6 +13,7 @@
     "angular-route": "~1.2.20",
     "bootstrap": "~3.2.0",
     "angular-animate": "~1.2.20",
-    "angular-ui-codemirror": "~0.1.6"
+    "angular-ui-codemirror": "~0.1.6",
+    "nvd3": "~1.1.15-beta"
   }
 }

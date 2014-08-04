@@ -4,6 +4,7 @@ var mattApp = angular.module('matt.app', [
   'matt.anim',
   'ui.codemirror',
   'matt.page.home',
+  'matt.page.globalVars',
 ]);
 
 mattApp.config(['$routeProvider',
@@ -18,10 +19,10 @@ mattApp.config(['$routeProvider',
 			templateUrl: 'partials/help.html',
 			pageKey: 'help'
 		}).
-		when('/page2', {
-			templateUrl: 'partials/page-2.html',
-			controller: 'matt.ctrl.page2',
-			pageKey: 'page2'
+		when('/globalVars', {
+			templateUrl: 'partials/global-vars.html',
+			controller: 'matt.page.globalVars.ctrl',
+			pageKey: 'globalVars'
 		}).
 		when('/funcs', {
 			templateUrl: 'partials/funcs.html',
