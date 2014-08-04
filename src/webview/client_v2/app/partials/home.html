@@ -1,90 +1,30 @@
-<style type='text/css'>
-.runinfo {
-	border:none;
-	width:23%;
-	margin:5px;
-	float:left;
-	color:white;
-	text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
-	border-radius: 5px;
-	padding:8px;
-}
-
-.runinfo .name {
-	font-size:13px;
-	text-transform: uppercase;
-}
-
-.runinfo .value{
-	font-size:28px;
-}
-
-.runinfo-program {
-	background-color:#E5412D;
-}
-
-.runinfo-time {
-	background-color:#EEA236;
-}
-
-.runinfo-avail-mem {
-	background-color:#888;
-}
-
-.runinfo-used-mem {
-	background-color:#E6E6E6
-}
-
-.matt-has-warning {
-	font-weight:bold;
-	color:red;
-}
-
-.matt-separator {
-	background:gray;
-}
-
-.matt-hidden {
-	display:none;
-}
-
-.matt-warning-button {
-	background-image: url(http://www.pinsound.org/wp-content/uploads/2013/07/warning.png); /* 16px x 16px */
-    background-color: transparent; /* make the button transparent */
-    background-repeat: no-repeat;  /* make the background image appear only once */
-    background-position: 0px 0px;  /* equivalent to 'top left' */
-    border: none;           /* assuming we don't want any borders */
-    cursor: pointer;        /* make the cursor like hovering over an <a> element */
-    height: 16px;           /* make this the size of your image */
-    padding-left: 16px;     /* make text start to the right of the image */
-    vertical-align: middle; /* align the text vertically centered */
-}
-</style>
 <div class="home">
 
-	<div>
+	<div width='100%' height=''>
 		<div class="runinfo runinfo-program">
 			<div class='name'>Program</div>
-			<div class='value'>AVBP</div>
+			<div class='value'>TODO</div>
 		</div>
 		
 		<div class="runinfo runinfo-time">
 			<div class='name'>Execution time</div>
-			<div class='value'>16:01:02</div>
+			<div class='value'>{{getFormattedExecTime()}}</div>
 		</div>
 
 		<div class="runinfo runinfo-avail-mem">
 			<div class='name'>Available memory</div>
-			<div class='value'>16G</div>
+			<div class='value'>TODO</div>
 		</div>
 		
 		<div class="runinfo runinfo-used-mem">
 			<div class='name'>Physical memory used</div>
-			<div class='value'>8G (4%)</div>
+			<div class='value'>TODO XG (x%)</div>
 		</div>
+		<!-- To clear float issue -->
+		<div width='100%' style='clear:both;'></div>
 	</div>
 
-	<h1>Run description</h1>
+	<h2>Run description</h2>
 	
 	
 	<table class='table table-bordered'>
@@ -109,7 +49,7 @@
 			</tr>
 		</table>
 
-	<h1>Global statistics</h1>
+	<h2>Global statistics</h2>
 
 	<input type='button' ng-click='toogleSummaryDetails()' value='{{displaySummaryLevel == 1 ? "Show all details" : "Hide details"}}'/>
 	<input type='button' ng-click='displaySummaryHelp = !displaySummaryHelp' value='{{!displaySummaryHelp ? "Show help" : "Hide help"}}'/>
@@ -124,8 +64,6 @@
 			<td class='matt-help' ng-class="{'matt-hidden': !displaySummaryHelp}">{{entry.help}}</td><tr>
 		</tr>
 	</table>
-
-	<h1>Top functions</h1>
 	
 	<h2>Allocation count</h2>
 	<matthomefunclist metric='alloc.count' inclusive='false' functions='functions' limit='5'></matthomefunclist>

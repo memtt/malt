@@ -356,7 +356,7 @@ function MattPageHome()
 	homeCtrl.directive('matthomefunclist',function() {
 		return {
 			restrict: 'EA',
-			templateUrl: 'partials/matt-home-func-list.html',
+			templateUrl: 'partials/home-func-list.html',
 			replace: true,
 			scope: {
 				functions: '=',
@@ -365,42 +365,15 @@ function MattPageHome()
 				inclusive: '@'
 			},
 			link: function ($scope) {
+				$scope.funcMetrics = new MattFuncMetrics();
+				
 				//select values for sort
 				$scope.getValue = function (x) {
-					if (x == undefined)
-						return 0;
-					if ($scope.inclusive == 'true')
-					{
-						return metrics[$scope.metric].extractor(x.total);
-					} else if ($scope.inclusive == 'false') {
-						if (x.own == undefined)
-							return 0;
-						else
-							return metrics[$scope.metric].extractor(x.own);
-					} else {
-						console.log("Invalid value for inclusive parametter of <matt-home-func-list> : "+$scope.inclusive);
-						return 0;
-					}
+					return $scope.funcMetrics.getValue(x,$scope.metric,($scope.inclusive == 'true'));
 				}
 
 				$scope.computeRef = function() {
-					var res = 0;
-					if (metrics[$scope.metric].ref == 'sum')
-					{
-						for (var i in $scope.functions)
-							res += $scope.getValue($scope.functions[i]);
-					} else if (metrics[$scope.metric].ref == 'sum') {
-						for (var i in $scope.functions)
-						{
-							var tmp = $scope.getValue($scope.functions[i]);
-							if (tmp > res)
-								res = tmp;
-						}
-					} else {
-						console.log("Invalid value for ref mode : "+metrics[$scope.metric].ref);
-						return 1;
-					}
-					return res;
+					return $scope.funcMetrics.getRef($scope.functions,$scope.metric);
 				}
 				
 				$scope.getValueRatio = function(x) {
@@ -409,7 +382,7 @@ function MattPageHome()
 	
 				//format value for print
 				$scope.getFormattedValue = function(x) {
-					return metrics[$scope.metric].formatter($scope.getValue(x));
+					return $scope.funcMetrics.getFormattedValue(x,$scope.metric,($scope.inclusive == 'true'));
 				}
 				
 				//check reverse
