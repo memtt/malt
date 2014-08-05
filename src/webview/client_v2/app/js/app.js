@@ -5,6 +5,7 @@ var mattApp = angular.module('matt.app', [
   'ui.codemirror',
   'matt.page.home',
   'matt.page.globalVars',
+  'matt.page.allocSizeDistr'
 ]);
 
 mattApp.config(['$routeProvider',
@@ -23,6 +24,11 @@ mattApp.config(['$routeProvider',
 			templateUrl: 'partials/global-vars.html',
 			controller: 'matt.page.globalVars.ctrl',
 			pageKey: 'globalVars'
+		}).
+		when('/allocSizeDistr', {
+			templateUrl: 'partials/alloc-size-distr.html',
+			controller: 'matt.page.allocSizeDistr.ctrl',
+			pageKey: 'allocSizeDistr'
 		}).
 		when('/funcs', {
 			templateUrl: 'partials/funcs.html',

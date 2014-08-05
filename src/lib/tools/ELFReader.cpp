@@ -230,7 +230,7 @@ void convertToJson(htopml::JsonState& json, const ElfGlobalVariable& value)
 	json.openStruct();
 		json.printField("name",value.name);
 		json.printField("size",value.size);
-		json.printField("offset",value.offset);
+		//json.printField("offset",value.offset);
 		json.printField("tls",value.tls);
 		if (value.line != -1 && !value.file.empty())
 		{

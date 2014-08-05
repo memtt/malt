@@ -1,6 +1,21 @@
 function MattPageGlobalVars()
 {
-	var defaultData = {};
+	//an example of data format
+	var defaultData = {
+		maxThreadCount:1,
+		vars: {
+			"/usr/libc.so": [ /* Binary containing the variables */
+				{
+					name:'a', /* Name of the variable */
+					size:32,  /* Size of the variable in bytes. */
+					tls:false,/* Variable is TLS or standard global. */
+					//optional :
+					file:"/test.c",
+					line:10
+				}
+			]
+		}
+	};
 	var cur = this;
 	var svgId = 0;
 	
