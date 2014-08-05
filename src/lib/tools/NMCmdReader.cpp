@@ -13,6 +13,7 @@
 #include <sstream>
 #include <cstdio>
 #include <common/Debug.hpp>
+#include <portability/Compiler.hpp>
 
 /*******************  NAMESPACE  ********************/
 namespace MATT
@@ -47,63 +48,32 @@ bool NMCmdReader::load(const std::string& binaryFile)
 	this->clear();
 
 	//prepare cmds
-	std::stringstream nmCmdNoDemangle;
-	nmCmdNoDemangle << "nm --print-size -n --line-numbers -P --no-demangle " << binaryFile;
-	std::stringstream nmCmdDemangle;
-	nmCmdDemangle << "nm --print-size -n --line-numbers -P -C " << binaryFile;
+	std::stringstream nmCmd;
+	nmCmd << "nm --print-size -n --line-numbers -P --no-demangle " << binaryFile;
 	
 	//start nm 1
-	FILE * fpNoDem = popen(nmCmdNoDemangle.str().c_str(),"r");
-	if (fpNoDem == NULL)
+	FILE * fp = popen(nmCmd.str().c_str(),"r");
+	if (fp == NULL)
 	{
-		MATT_ERROR_ARG("Failed to use nm command as : %1 !").arg(nmCmdNoDemangle.str()).end();
-		return false;
-	}
-	
-	//start nm2
-	FILE * fpDem = popen(nmCmdDemangle.str().c_str(),"r");
-	if (fpDem == NULL)
-	{
-		MATT_ERROR_ARG("Failed to use nm command as : %1 !").arg(nmCmdDemangle.str()).end();
-		fclose(fpNoDem);
+		MATT_ERROR_ARG("Failed to use nm command as : %1 !").arg(nmCmd.str()).end();
 		return false;
 	}
 	
 	//vars
-	NMCmdReaderEntry entryDemangle;
-	NMCmdReaderEntry entryNoDemangle;
-	while (!feof(fpDem) && !feof(fpNoDem))
+	NMCmdReaderEntry entry;
+	while (!feof(fp))
 	{
 		//read first
-		//int res1 = fscanf(fpNoDem,"%s %c %lx %lx %s:%d\n",);
-		bool noDemangle = readNMLine(fpNoDem,entryNoDemangle);
-		bool demangle = readNMLine(fpDem,entryDemangle);
+		//int res1 = fscanf(fp,"%s %c %lx %lx %s:%d\n",);
+		bool status = readNMLine(fp,entry);
 		
-		//skip unused for us
-		if (noDemangle && entryNoDemangle.type != 'B' && entryNoDemangle.type != 'b')
-			continue;
-		
-		assume(noDemangle == demangle,"Not same status on demangle and no demangle version of nm call.");
-		
-		//merge if ok
-		if (demangle && noDemangle)
-		{
-			//check
-			assumeArg(entryDemangle.offset == entryNoDemangle.offset,"No same offset on nm entries (%1 != %2) !").arg(entryDemangle.offset).arg(entryNoDemangle.offset).end();
-			assumeArg(entryDemangle.size == entryNoDemangle.size,"No same size on nm entries (%1 != %2) !").arg(entryDemangle.size).arg(entryNoDemangle.size).end();
-			//merge
-			entryNoDemangle.degmangledName = entryDemangle.name;
-			//insert
-			entries.push_back(entryNoDemangle);
-		}
+		//insert if ok
+		if (status && (entry.type == 'B' || entry.type == 'b'))
+			entries.push_back(entry);
 	}
 
-	//check
-	assume(feof(fpDem) == feof(fpNoDem),"One nm instance finish faster than another, might be a bug !");
-	
 	//close
-	fclose(fpDem);
-	fclose(fpNoDem);
+	fclose(fp);
 	
 	//mark as done
 	this->binaryFile = binaryFile;
@@ -112,7 +82,7 @@ bool NMCmdReader::load(const std::string& binaryFile)
 }
 
 /*******************  FUNCTION  *********************/
-void NMCmdReader::findSources(ElfGlobalVariableVector& vars) const
+void NMCmdReader::findSourcesAndDemangle(ElfGlobalVariableVector& vars) const
 {
 	//Errors
 	assume(this->binaryFile.empty() == false,"Not binary files loaded, cannot resolve variable source sline declaration !");
@@ -121,12 +91,17 @@ void NMCmdReader::findSources(ElfGlobalVariableVector& vars) const
 	for (ElfGlobalVariableVector::iterator it = vars.begin() ; it != vars.end() ; ++it)
 	{
 		const NMCmdReaderEntry * entry = getEntry(it->name);
+		
+		//search for sources
 		if (entry != NULL)
 		{
-			fprintf(stderr,"NMEntry for %s : %s - %s - %s - %d\n",it->name.c_str(),entry->name.c_str(),entry->degmangledName.c_str(),entry->file.c_str(),entry->line);
 			it->line = entry->line;
 			it->file = entry->file;
+			fprintf(stderr,"NMEntry for %s : %s - %s - %d\n",it->name.c_str(),entry->name.c_str(),entry->file.c_str(),entry->line);
 		}
+		
+		//demangle namespace
+		it->name = Compiler::demangleCppNames(it->name);
 	}
 }
 

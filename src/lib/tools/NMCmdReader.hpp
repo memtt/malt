@@ -23,7 +23,6 @@ namespace MATT
 struct NMCmdReaderEntry
 {
 	std::string name;
-	std::string degmangledName;
 	char type;
 	size_t offset;
 	size_t size;
@@ -41,7 +40,7 @@ class NMCmdReader
 		NMCmdReader(void);
 		~NMCmdReader(void);
 		bool load(const std::string & binaryFile);
-		void findSources(MATT::ElfGlobalVariableVector& vars) const;
+		void findSourcesAndDemangle(MATT::ElfGlobalVariableVector& vars) const;
 		void clear();
 	private:
 		bool readNMLine(FILE * fp,NMCmdReaderEntry & entry);

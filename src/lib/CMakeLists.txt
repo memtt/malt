@@ -18,12 +18,14 @@ set(ENABLE_TESTS         "yes"      CACHE BOOL   "Enable build of internal tests
 set(PORTABILITY_SPINLOCK "PTHREAD"  CACHE STRING "Select spinlock implementation to use. Currently support : 'PTHREAD', 'DUMMY'.")
 set(PORTABILITY_MUTEX    "PTHREAD"  CACHE STRING "Select mutex implementation to use. Currently support : 'PTHREAD', 'DUMMY'.")
 set(PORTABILITY_OS       "UNIX"     CACHE STRING "Select OS implementation to use. Currently support : 'UNIX'.")
+set(PORTABILITY_COMPILER "GNU"      CACHE STRING "Selectot compiler support to use. Currently support : 'GNU' (also valid intel).")
 
 ######################################################
 #select portability definitions
-set(MATT_PORTABILITY_SPINLOCK_${PORTABILITY_SPINLOCK} yes)
-set(MATT_PORTABILITY_MUTEX_${PORTABILITY_MUTEX} yes)
-set(MATT_PORTABILITY_OS_${PORTABILITY_OS}       yes)
+set(MATT_PORTABILITY_SPINLOCK_${PORTABILITY_SPINLOCK}  yes)
+set(MATT_PORTABILITY_MUTEX_${PORTABILITY_MUTEX}        yes)
+set(MATT_PORTABILITY_OS_${PORTABILITY_OS}              yes)
+set(MATT_PORTABILITY_COMPILER_${PORTABILITY_COMPILER}  yes)
 #enabling features
 if (ENABLE_CODE_TIMING)
 	set(MATT_ENABLE_CODE_TIMING yes)

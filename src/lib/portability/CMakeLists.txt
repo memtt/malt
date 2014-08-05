@@ -13,6 +13,7 @@ endif (MATT_PORTABILITY_OS_UNIX)
 
 ######################################################
 list(APPEND MATT_PORT_SRC LinuxProcMapReader.cpp)
+list(APPEND MATT_PORT_SRC CompilerGNU.cpp)
 
 ######################################################
 add_library(matt-port OBJECT ${MATT_PORT_SRC})

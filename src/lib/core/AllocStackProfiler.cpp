@@ -367,7 +367,7 @@ void AllocStackProfiler::loadGlobalVariables(void)
 			//search sources
 			NMCmdReader reader;
 			reader.load(it->file);
-			reader.findSources(globalVariables[it->file]);
+			reader.findSourcesAndDemangle(globalVariables[it->file]);
 		}
 	}
 }

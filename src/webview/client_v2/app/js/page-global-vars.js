@@ -98,6 +98,12 @@ function MattPageGlobalVars()
 	});
 }
 
+MattPageGlobalVars.prototype.getTLSInstances = function(data)
+{
+	//1 instance of TLS per thread plus the one to store defualt values
+	return data.maxThreadCount + 1;
+}
+
 ////////////////////////////// SUMMARY /////////////////////////////////
 //function to build summary
 MattPageGlobalVars.prototype.getSummary = function(data)
@@ -116,7 +122,7 @@ MattPageGlobalVars.prototype.getSummary = function(data)
 		}
 	}
 	
-	return {global:gbl,tls:tls * data.maxThreadCount};
+	return {global:gbl,tls:tls * this.getTLSInstances(data)};
 }
 
 /////////////////////////////// PIES /////////////////////////////////////////////
@@ -162,7 +168,7 @@ MattPageGlobalVars.prototype.getDataForBinaryPies = function(data)
 		{
 			var cur = vars[bin][v];
 			if (cur.tls)
-				cnt += cur.size * data.maxThreadCount;
+				cnt += cur.size * this.getTLSInstances(data);
 			else
 				cnt += cur.size;
 		}
@@ -186,7 +192,7 @@ MattPageGlobalVars.prototype.getDataForVarPies = function(data)
 			var cur = vars[bin][v];
 			var size = cur.size;
 			if (cur.tls)
-				size *= data.maxThreadCount;
+				size *= this.getTLSInstances(data);
 			res.push({binary:bin,name:cur.name,value:size,file:cur.file,line:cur.line});
 		}
 	}
@@ -242,14 +248,14 @@ MattPageGlobalVars.prototype.getDataForBinaryGraphs = function(data)
 		{
 			var cur = vars[bin][v];
 			if (cur.tls)
-				cntTls += cur.size * data.maxThreadCount;
+				cntTls += cur.size * this.getTLSInstances(data);
 			else
 				cntGbl += cur.size;
 		}
 		res.push({name:bin.split('/').pop(),tls:cntTls,gbl:cntGbl});
 	}
 	
-	return this.formatDatasForBarChar(res);
+	return this.formatDatasForBarChar(data,res);
 }
 
 MattPageGlobalVars.prototype.getDataForVarGraphs = function(data,filter)
@@ -269,7 +275,7 @@ MattPageGlobalVars.prototype.getDataForVarGraphs = function(data,filter)
 			{
 					var cur = vars[bin][v];
 					if (cur.tls)
-						res.push({name:cur.name,tls:cur.size * data.maxThreadCount,gbl:0,file:cur.file,line:cur.line});
+						res.push({name:cur.name,tls:cur.size * this.getTLSInstances(data),gbl:0,file:cur.file,line:cur.line});
 					else
 						res.push({name:cur.name,tls:0,gbl:cur.size,file:cur.file,line:cur.line});
 			}
@@ -277,7 +283,7 @@ MattPageGlobalVars.prototype.getDataForVarGraphs = function(data,filter)
 		}
 	}
 	
-	return this.formatDatasForBarChar(this.cutDataForBarChart(res));
+	return this.formatDatasForBarChar(data,this.cutDataForBarChart(res));
 }
 
 MattPageGlobalVars.prototype.cutDataForBarChart = function(vars)
@@ -326,7 +332,7 @@ MattPageGlobalVars.prototype.cutDataForBarChart = function(vars)
 	return res;
 }
 
-MattPageGlobalVars.prototype.formatDatasForBarChar = function(vars)
+MattPageGlobalVars.prototype.formatDatasForBarChar = function(data,vars)
 {
 	var gbl = [];
 	var tls = [];
@@ -351,7 +357,8 @@ MattPageGlobalVars.prototype.formatDatasForBarChar = function(vars)
 		} , {
 			key:'TLS variables',
 			color:'red',
-			values:tls
+			values:tls,
+			tlsInstances: this.getTLSInstances(data)
 		}
 	];
 }
@@ -370,6 +377,7 @@ MattPageGlobalVars.prototype.updateMultiBarChart = function($scope,d3Selection,d
 
 MattPageGlobalVars.prototype.buildMultiBarChart = function($scope,d3Selection,data,onClick)
 {
+	var cur = this;
 	nv.addGraph(function() {
 		d3.select(d3Selection).attr('height', 150+data[0].values.length * 16 );
 
@@ -385,9 +393,12 @@ MattPageGlobalVars.prototype.buildMultiBarChart = function($scope,d3Selection,da
 			.tooltipContent(function(serieName,name,value,e,graph) {
 				var d = data[e.seriesIndex].values[e.pointIndex];
 				var pos = "";
+				var tls = "";
 				if (d.file != undefined && d.file != '')
 					pos = "<br/>" + d.file + ":" + d.line;
-				return "<div style='text-align:center'><h3>"+d.name+"</h3>"+mattHelper.humanReadable(d.value,1,'B',false)+pos+'</div>';
+				if (e.series.key == "TLS variables")
+					tls = " ( "+data[e.seriesIndex].tlsInstances+" * "+mattHelper.humanReadable(d.value/data[e.seriesIndex].tlsInstances,1,'B',false) +" ) ";
+				return "<div style='text-align:center'><h3>"+d.name+"</h3>"+mattHelper.humanReadable(d.value,1,'B',false)+tls+pos+'</div>';
 			});
 
 		$scope = chart;
