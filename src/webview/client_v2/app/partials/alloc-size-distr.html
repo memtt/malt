@@ -1,9 +1,38 @@
 <div class="container-fluid">
-	<div>
+		<div>
+			<div width='100%' height=''>
+			<div class="runinfo runinfo-program">
+				<div class='name'>Mean size</div>
+				<div class='value'>{{meanChunkSize}}</div>
+			</div>
+			
+			<div class="runinfo runinfo-time">
+				<div class='name'>Most used size</div>
+				<div class='value'>{{mostUsedSize}}</div>
+			</div>
+
+			<div class="runinfo runinfo-avail-mem">
+				<div class='name'>Largest</div>
+				<div class='value'>{{largestSize}}</div>
+			</div>
+
+			<!-- To clear float issue -->
+			<div width='100%' style='clear:both;'></div>
+		</div>
+	
 		<!-- Global summary -->
 		<h2>Most used sizes</h2>
-		<input type="checkbox"> Sort values
-		<svg id='graph'/>
+		<div id='matt-most-used-sizes'>
+			<input type="checkbox"> Sort values
+			<svg width="400px" width="100%"/>
+		</div>
+<!-- 		<mattsizedistrchart data='sizeMap' height='400px'/> -->
+	</div>
+	
+	<div>
+		<h2>Histogram</h2>
+		<div id='matt-size-distr-hist'>
+		</div>
 	</div>
 
 	<div>

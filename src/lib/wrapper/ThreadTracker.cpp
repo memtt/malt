@@ -31,7 +31,7 @@ static ThreadTrackerData gblThreadTrackerData = {1,1,NULL,PTHREAD_MUTEX_INITIALI
 void pthreadWrapperOnExit(void *)
 {
 	pthread_mutex_lock(&(gblThreadTrackerData.lock));
-	fprintf(stderr,"Destroy thread : %d / %d !\n",gblThreadTrackerData.threadCount,gblThreadTrackerData.maxThreadCount);
+	//fprintf(stderr,"Destroy thread : %d / %d !\n",gblThreadTrackerData.threadCount,gblThreadTrackerData.maxThreadCount);
 	gblThreadTrackerData.threadCount--;
 	assert(gblThreadTrackerData.threadCount >= 1);
 	pthread_mutex_unlock(&(gblThreadTrackerData.lock));
@@ -55,7 +55,7 @@ void * pthreadWrapperStartRoutine(void * arg)
 	//setup the key to get destructor call on thread exit (capture function finish or pthread_exit)
 	pthread_setspecific(gblThreadTrackerData.key, (void*)0x1);
 	
-	fprintf(stderr,"Create thread : %d / %d !\n",gblThreadTrackerData.threadCount,gblThreadTrackerData.maxThreadCount);
+	//fprintf(stderr,"Create thread : %d / %d !\n",gblThreadTrackerData.threadCount,gblThreadTrackerData.maxThreadCount);
 	
 	//run child
 	ThreadTrackerArg * subarg = (ThreadTrackerArg *)arg;
