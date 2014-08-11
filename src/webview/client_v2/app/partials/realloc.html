@@ -1,0 +1,46 @@
+<div class="container-fluid">
+		<div>
+			<div width='100%' height=''>
+			<div class="runinfo runinfo-program">
+				<div class='name'>Most used</div>
+				<div class='value'>{{meanChunkSize}}</div>
+			</div>
+			
+			<!--<div class="runinfo runinfo-time">
+				<div class='name'>Most used size</div>
+				<div class='value'>{{mostUsedSize}}</div>
+			</div>-->
+
+			<!-- To clear float issue -->
+			<div width='100%' style='clear:both;'></div>
+		</div>
+	
+		<!-- Global summary -->
+		<h2>Realloc jumps</h2>
+		<div id='matt-most-used-delta' class='matt-size-plot'>
+			<input type="checkbox"> Sort values
+			<svg heigt="400px" width="100%"/>
+		</div>
+		
+			<!-- Global summary -->
+		<h2>Realloc jumps</h2>
+		<div id='matt-log-delta' class='matt-size-plot'>
+			<svg heigt="400px" width="100%"/>
+		</div>
+		
+			<!-- Global summary -->
+		<h2>Size jumps</h2>
+		<div id='matt-resize-map' class='matt-resize-map '>
+			<svg heigt="400px"/>
+<!-- 			<svg heigt="400px" width="100%"/> -->
+		</div>
+		
+		<ul>
+			<li>TODO : count realloc used as free/malloc </li>
+			<li>TODO : most used delta</li>
+			<li>TODO : delta histo</li>
+			<li>TODO : size chart links with splines on circle</li>
+			<li></li>
+		</ul>
+	</div>
+</div>

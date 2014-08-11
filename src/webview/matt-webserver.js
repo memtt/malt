@@ -198,6 +198,13 @@ app.get('/size-map.json',function(req,res) {
 });
 
 /****************************************************/
+app.get('/realloc-map.json',function(req,res) {
+	var tmp = mattProject.getReallocMap();
+	res.write(JSON.stringify(tmp,null,'\t'));
+	res.end();
+});
+
+/****************************************************/
 app.get('/debug-stack-list.json',function(req,res) {
 	var tmp = mattProject.getDebugStackList();
 	res.write(JSON.stringify(tmp,null,'\t'));

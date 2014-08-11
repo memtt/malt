@@ -104,7 +104,7 @@ MattPageAllocSizeDistr.prototype.plotLogHisto = function(domId,data)
 		.attr('class', 'd3-tip')
 		.offset([-10, 0])
 		.html(function(d,i) {
-			return "<strong>"+ mattHelper.humanReadable(i==0?0:Math.pow(2,i-1),1,'B',false) + " - " + mattHelper.humanReadable(Math.pow(2,i),1,'B',false) +":</strong> <span style='color:red'>" + mattHelper.humanReadable(d.count,1,'',false) + "</span>";
+			return "<strong>"+ mattHelper.humanReadable(d.sizeLog==0?0:Math.pow(2,d.sizeLog-1),1,'B',false) + " - " + mattHelper.humanReadable(Math.pow(2,d.sizeLog),1,'B',false) +":</strong> <span style='color:red'>" + mattHelper.humanReadable(d.count,1,'',false) + "</span>";
 		})
 
 	svg.call(tip);

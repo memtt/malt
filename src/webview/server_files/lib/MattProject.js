@@ -241,6 +241,12 @@ MattProject.prototype.getSizeMap = function()
 }
 
 /****************************************************/
+MattProject.prototype.getReallocMap = function()
+{
+	return this.data.memStats.reallocJump;
+}
+
+/****************************************************/
 /**
  * Extract a list of stacks containing elements which pass the given filter function.
  * @param filter A filter function which return a boolean and have prototype function(detailedStackEntry)

@@ -5,7 +5,8 @@ var mattApp = angular.module('matt.app', [
   'ui.codemirror',
   'matt.page.home',
   'matt.page.globalVars',
-  'matt.page.allocSizeDistr'
+  'matt.page.allocSizeDistr',
+  'matt.page.realloc'
 ]);
 
 mattApp.config(['$routeProvider',
@@ -29,6 +30,11 @@ mattApp.config(['$routeProvider',
 			templateUrl: 'partials/alloc-size-distr.html',
 			controller: 'matt.page.allocSizeDistr.ctrl',
 			pageKey: 'allocSizeDistr'
+		}).
+		when('/realloc', {
+			templateUrl: 'partials/realloc.html',
+			controller: 'matt.page.realloc.ctrl',
+			pageKey: 'realloc'
 		}).
 		when('/funcs', {
 			templateUrl: 'partials/funcs.html',
