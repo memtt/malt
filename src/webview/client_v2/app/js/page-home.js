@@ -188,7 +188,7 @@ function MattPageHome()
 		//setup data
 		$scope.summaryViewEntries = summaryViewEntries;
 		$scope.displaySummaryLevel = 1;
-		$scope.displaySummaryHelp = false;
+		$scope.displaySummaryHelp = true;
 		$scope.summaryData = defaultData;
 		
 		//fetch summaryData

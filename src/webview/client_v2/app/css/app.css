@@ -50,34 +50,42 @@
 }
 
 /*********************** charts of size distr page **************************/
-#matt-most-used-sizes .axis text {
+.matt-size-plot .axis text {
   font: 10px sans-serif;
 }
 
-#matt-most-used-sizes .axis path,
-#matt-most-used-sizes .axis line {
+.matt-size-plot .axis path,
+.matt-size-plot .axis line {
   fill: none;
   stroke: #000;
   shape-rendering: crispEdges;
 }
 
-#matt-most-used-sizes .bar {
+.matt-size-plot .bar {
   fill: steelblue;
   fill-opacity: .9;
 }
 
-#matt-most-used-sizes .bar:hover {
+.matt-size-plot .bar:hover {
   fill: orangered ;
 }
 
-#matt-most-used-sizes .x.axis path {
+.matt-size-plot .x.axis path {
   display: none;
 }
 
-#matt-most-used-sizes label {
+.matt-size-plot label {
   position: absolute;
   top: 10px;
   right: 10px;
+}
+
+.matt-size-plot .grid .tick {
+    stroke: lightgrey;
+    opacity: 0.7;
+}
+.matt-size-plot .grid path {
+      stroke-width: 0;
 }
 
 .d3-tip {

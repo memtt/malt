@@ -33,56 +33,138 @@ function MattPageAllocSizeDistr()
 			
 			//charts
 			cur.setupMostUsedChart('matt-most-used-sizes',data);
-			cur.setupHistogramChart('matt-size-distr-hist',data);
+			cur.plotLogHisto('matt-size-distr-hist',data);
 		});
 	}]);
 }
 
-MattPageAllocSizeDistr.prototype.setupHistogramChart = function(domId,data)
+MattPageAllocSizeDistr.prototype.buildLog2Histo = function(data)
 {
-	//search max
-	var max = 0;
-	var cnt = 0;
+	var tmp = [];
+	
 	for (var i in data)
 	{
-		cnt++;
-		if (max < +i)
-			max = +i;
+		var id = Math.ceil(Math.log(+i) / Math.log(2));
+		if (tmp[id] == undefined)
+			tmp[id] = +data[i];
+		else
+			tmp[id] += +data[i];
 	}
 	
-	//compute ranges
-	var entries = 128;
-	var steps = 1;
-	if (cnt <= entries)
+	var hist=[];
+	for (var i in tmp)
 	{
-		entries = cnt;
-	} else {
-		steps = Math.ceil(max/entries);
+		hist.push({
+			sizeLog:+i,
+			count:tmp[i],
+		});
 	}
 	
-	//build steps
-	var hist = [];
-	for (var i = 0 ; i <= entries ; i++)
-		hist[+i] = {value:0,name:mattHelper.humanReadable(i*steps,1,'B',false)+" - "+mattHelper.humanReadable((i+1)*steps,1,'B',false)};
+	return hist;
+}
+
+MattPageAllocSizeDistr.prototype.plotLogHisto = function(domId,data)
+{
+	var hist = this.buildLog2Histo(data);
 	
-	//fill
-	for (var i in data)
-	{
-		var id = Math.floor((+i)/steps);
-		hist[id].value += +data[i];
-	}
+	var margin = {top: 20, right: 20, bottom: 30, left: 60},
+		width = (parseInt(d3.select('#'+domId+' svg').style('width')) || 960) - margin.left - margin.right,
+		height = 500 - margin.top - margin.bottom;
+
+	var formatPercent = d3.format(".0");
+
+	var x = d3.scale.linear()
+		.range([0, width]);
+
+	var y = d3.scale.linear()
+		.range([height, 0]);
+
+	var xAxis = d3.svg.axis()
+		.scale(x)
+		.orient("bottom")
+		.tickFormat(function(d) { return mattHelper.humanReadable(d==0?0:Math.pow(2,d-1),1,'B',false); });
+
+	var yAxis = d3.svg.axis()
+		.scale(y)
+		.orient("left")
+		.tickFormat(function(d) { return mattHelper.humanReadable(d,1,'',false); });
+
+	var yAxisLines = d3.svg.axis()
+		.scale(y)
+		.orient("left")
+		.tickFormat("");
+
+	var svg = d3.select("#"+domId+' svg')
+		.attr("width", width + margin.left + margin.right)
+		.attr("height", height + margin.top + margin.bottom)
+	.append("g")
+		.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+		
+	var tip = d3.tip()
+		.attr('class', 'd3-tip')
+		.offset([-10, 0])
+		.html(function(d,i) {
+			return "<strong>"+ mattHelper.humanReadable(i==0?0:Math.pow(2,i-1),1,'B',false) + " - " + mattHelper.humanReadable(Math.pow(2,i),1,'B',false) +":</strong> <span style='color:red'>" + mattHelper.humanReadable(d.count,1,'',false) + "</span>";
+		})
+
+	svg.call(tip);
+
+	x.domain([0, 1+d3.max(hist, function(d) { return d.sizeLog; })]);
+	y.domain([0, d3.max(hist, function(d) { return d.count; })]);
+	
+	svg.append("g")         
+		.attr("class", "grid")
+		.call(yAxisLines
+			.tickSize(-width, 0, 0)
+			.tickFormat("")
+		);
+
+	svg.append("g")
+		.attr("class", "x axis")
+		.attr("transform", "translate(0," + height + ")")
+		.call(xAxis);
+
+	svg.append("g")
+		.attr("class", "y axis")
+		.call(yAxis)
+		.append("text")
+		.attr("transform", "rotate(-90)")
+		.attr("y", 6)
+		.attr("dy", ".71em")
+		.style("text-anchor", "end")
+		.text("Frequency");
+
+	svg.selectAll(".bar")
+		.data(hist)
+		.enter().append("rect")
+		.attr("class", "bar")
+		.attr("x", function(d) { return x(d.sizeLog); })
+		.attr("width", x(1) )
+		.attr("y", function(d) { return y(d.count); })
+		.attr("height", function(d) { return height - y(d.count); })
+		.on('mouseover', tip.show)
+		.on('mouseout', tip.hide);
+}
+
+/*MattPageAllocSizeDistr.prototype.setupHistogramChart = function(domId,data)
+{
+	var hist = this.buildLogHisto(data);
 	
 	//TODO remove unused at end
 	
 	//format data
-	var formattedData = {
+	var formattedData = [{
 		key: 'Alloc size',
-		value: [{name:0,value:1},{name:2,value:2}]
-	};
+		color: 'blue',
+		values: hist
+		//values: [{name:0,count:1},{name:2,count:2}]
+	}];
 
 	//plot with nvd3
 	nv.addGraph(function() {
 		var chart = nv.models.multiBarChart()
+			.x(function(d) { return d.name })
+			.y(function(d) { return d.count })
 			.transitionDuration(350)
 			.reduceXTicks(false)   //If 'false', every single x-axis tick label will be rendered.
 			.rotateLabels(0)      //Angle to rotate x-axis labels.
@@ -94,8 +176,8 @@ MattPageAllocSizeDistr.prototype.setupHistogramChart = function(domId,data)
 // 		chart.xAxis
 // 			.tickFormat(d3.format(',f'));
 
-// 		chart.yAxis
-// 			.tickFormat(function(d) { return mattHelper.humanReadable(d,1,'B',false);});
+		chart.yAxis
+			.tickFormat(function(d) { return mattHelper.humanReadable(d,1,'',false);});
 
 		d3.select('#'+domId+' svg')
 			.datum(formattedData)
@@ -105,7 +187,7 @@ MattPageAllocSizeDistr.prototype.setupHistogramChart = function(domId,data)
 
 		return chart;
 	});
-}
+}*/
 
 MattPageAllocSizeDistr.prototype.setupMostUsedChart = function(domId,data)
 {
@@ -116,7 +198,7 @@ MattPageAllocSizeDistr.prototype.setupMostUsedChart = function(domId,data)
 	var formatPercent = d3.format(".0");
 
 	var x = d3.scale.ordinal()
-		.rangeRoundBands([0, width], .1, 1);
+		.rangeRoundBands([0, width], .31, 1);
 
 	var y = d3.scale.linear()
 		.range([height, 0]);
@@ -130,6 +212,11 @@ MattPageAllocSizeDistr.prototype.setupMostUsedChart = function(domId,data)
 		.scale(y)
 		.orient("left")
 		.tickFormat(function(d) { return mattHelper.humanReadable(d,1,'',false); });
+		
+	var yAxisLines = d3.svg.axis()
+		.scale(y)
+		.orient("left")
+		.tickFormat("");
 
 	var svg = d3.select("#"+domId+' svg')
 		.attr("width", width + margin.left + margin.right)
@@ -188,6 +275,13 @@ MattPageAllocSizeDistr.prototype.setupMostUsedChart = function(domId,data)
 		.attr("class", "x axis")
 		.attr("transform", "translate(0," + height + ")")
 		.call(xAxis);
+		
+	svg.append("g")         
+		.attr("class", "grid")
+		.call(yAxisLines
+			.tickSize(-width, 0, 0)
+			.tickFormat("")
+		);
 
 	svg.append("g")
 		.attr("class", "y axis")
