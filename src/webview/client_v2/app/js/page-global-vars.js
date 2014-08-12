@@ -144,7 +144,7 @@ MattPageGlobalVars.prototype.cutForPie = function(data,curPercent,maxNb,ignorePe
 		cum += sortedRes[i].value;
 		if (((100 * cum) / tot > curPercent && sortedRes.length - i >= 3) || i >= maxNb)
 		{
-			if ((100*(tot-cum))/tot < ignorePercent)
+// 			if ((100*(tot-cum))/tot < ignorePercent)
 				finalRes.push({name:'others',value:(tot-cum)});
 			break;
 		} else {
@@ -336,6 +336,7 @@ MattPageGlobalVars.prototype.formatDatasForBarChar = function(data,vars)
 {
 	var gbl = [];
 	var tls = [];
+	var sum = 0;
 	
 	//sorte
 	varsSorted = vars.sort(function(a,b){return (b.tls - a.tls)+(b.gbl - a.gbl)});
@@ -344,6 +345,7 @@ MattPageGlobalVars.prototype.formatDatasForBarChar = function(data,vars)
 	for (var i in varsSorted)
 	{
 		var cur = varsSorted[i];
+		sum += varsSorted[i].gbl + varsSorted[i].tls;
 		gbl.push({name:varsSorted[i].name,value:varsSorted[i].gbl,file:cur.file,line:cur.line});
 		tls.push({name:varsSorted[i].name,value:varsSorted[i].tls,file:cur.file,line:cur.line});
 	}
@@ -353,19 +355,22 @@ MattPageGlobalVars.prototype.formatDatasForBarChar = function(data,vars)
 		{
 			key:'Global variables',
 			color:'blue',
-			values:gbl
+			values:gbl,
+			total: sum
 		} , {
 			key:'TLS variables',
 			color:'red',
 			values:tls,
-			tlsInstances: this.getTLSInstances(data)
+			tlsInstances: this.getTLSInstances(data),
+			total: sum
 		}
 	];
 }
 
 MattPageGlobalVars.prototype.updateMultiBarChart = function($scope,d3Selection,data)
 {
-	var chart = $scope;
+	var chart = $scope.chart;
+	
 	d3.select(d3Selection).attr('height', 150+data[0].values.length * 16 );
 
 	nv.utils.windowResize(chart.update);
@@ -391,17 +396,20 @@ MattPageGlobalVars.prototype.buildMultiBarChart = function($scope,d3Selection,da
 			.showControls(true)
 			.stacked(true)        //Allow user to switch between "Grouped" and "Stacked" mode.
 			.tooltipContent(function(serieName,name,value,e,graph) {
-				var d = data[e.seriesIndex].values[e.pointIndex];
+				var d = e.series.values[e.pointIndex];
 				var pos = "";
 				var tls = "";
 				if (d.file != undefined && d.file != '')
 					pos = "<br/>" + d.file + ":" + d.line;
 				if (e.series.key == "TLS variables")
-					tls = " ( "+data[e.seriesIndex].tlsInstances+" * "+mattHelper.humanReadable(d.value/data[e.seriesIndex].tlsInstances,1,'B',false) +" ) ";
-				return "<div style='text-align:center'><h3>"+d.name+"</h3>"+mattHelper.humanReadable(d.value,1,'B',false)+tls+pos+'</div>';
+					tls = " [ "+e.series.tlsInstances+" * "+mattHelper.humanReadable(d.value/e.series.tlsInstances,1,'B',false) +" ] ";
+				var ratio = " ( "+(100*d.value/e.series.total).toFixed(2)+"% ) ";
+				console.log(data);
+				console.log(e);
+				return "<div style='text-align:center'><h3>"+d.name+"</h3>"+mattHelper.humanReadable(d.value,1,'B',false)+tls+ratio+pos+'</div>';
 			});
 
-		$scope = chart;
+		$scope.chart = chart;
 		chart.yAxis
 			.tickFormat(d3.format(',.2f'));
 			
