@@ -51,7 +51,7 @@ function MattFuncListSelector(defaults)
 	this.metrics['lifetime.max']    = {name: 'Max lifetime',extractor:function (entry) {return entry.lifetime.max;},'unit' : '',ref:'max'};
 	this.metrics['lifetime.min']    = {name: 'Min lifetime',extractor:function (entry) {return entry.lifetime.min;},'unit' : '',ref:'max'};
 	this.metrics['realloc.count']   = {name: 'Realloc',extractor:function(entry) {return entry.reallocCount || 0;},unit:'',ref:'sum'};
-	this.metrics['realloc.mean']   = {name: 'Realloc mean delta',extractor:function(entry) {return entry.reallocSumDelta == 0 ? 0 : entry.reallocSumDelta / entry/reallocCount;},unit:'B',ref:'sum'};
+	this.metrics['realloc.mean']   = {name: 'Realloc mean delta',extractor:function(entry) {return entry.reallocSumDelta == 0 ? 0 : entry.reallocSumDelta / entry.reallocCount;},unit:'B',ref:'sum'};
 // 	this.metrics['ratio']       = {name: 'Recycling ratio',extractor:function (entry) {return entry.alloc.sum/entry.lifetime.count;},'unit' : 'c',ref:'max'};
 	
 	//select default metric

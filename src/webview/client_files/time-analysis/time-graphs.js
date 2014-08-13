@@ -205,6 +205,7 @@ function reformatDataForD3(data) {
 		);
 	}
 	
+	console.log(res);
 	return res;
 }
 

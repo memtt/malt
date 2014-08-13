@@ -10,7 +10,7 @@
 		
 			<div class="runinfo runinfo-time">
 				<div class='name'>Threads</div>
-				<div class='value'>{{tlsVariablesMem}}</div>
+				<div class='value'>{{threads}}</div>
 			</div>
 
 			<!-- To clear float issue -->
@@ -20,14 +20,26 @@
 	
 	<div>
 		<h2>Stack peaks</h2>
+		<!--<ul class="pagination">
+			<li class="disabled"><a href="#">&laquo;</a></li>
+			<li class="active"><a href="#">1 <span class="sr-only">(current)</span></a></li>
+			...
+		</ul>-->
 		<div id='matt-stack-peaks'>
 			<svg width='100%' height='400px'/>
 		</div>
 	</div>
 	
 	<div>
-		<h2>Selected statck</h2>
+		<h2>Stack of thread {{selectedThreadId}}</h2>
 		<div id='matt-selected-stack-size'>
+			<svg width='100%' height='400px'/>
+		</div>
+	</div>
+	
+	<div>
+		<h2>Stack memory used by functions for thread {{selectedThreadId}}</h2>
+		<div id='matt-selected-stack-details'>
 			<svg width='100%' height='400px'/>
 		</div>
 	</div>

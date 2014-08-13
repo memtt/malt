@@ -144,6 +144,8 @@
 				b.click(i,function(evt) {updateStackMem(evt.data);});
 				$('#thread-selector').append(b);
 			}
+			
+			console.log(mattConvertDataStackAll(data));
 			mattNVDGraph("chart2",mattConvertDataStackAll(data),'B','Memory');
 			
 			

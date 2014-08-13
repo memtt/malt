@@ -10,6 +10,7 @@ function MattPageStackPeaks()
 		//fetch summaryData
 		$http.get('/stacks-mem.json').success(function(data) {
 			$scope.stackMem = data;
+			$scope.selectedThreadId = 0;
 			
 			//search largest
 			var largest = 0;
@@ -19,38 +20,55 @@ function MattPageStackPeaks()
 			
 			//export
 			$scope.largestStack = mattHelper.humanReadable(largest,1,"B",false);
+			$scope.threads = data.stacks.length;
 			
-			console.log(data);
-			cur.plotStackPeak('matt-stack-peaks',data);
-			cur.plotSelectedStackSize('matt-selected-stack-size',data,0);
+			var selectedChart = cur.plotSelectedStackSize('matt-selected-stack-size',data,-1);
+			
+			var selectedChartDetails = cur.plotStackMemOfFuncs('matt-selected-stack-details',0);
+			
+			cur.plotStackPeak('matt-stack-peaks',data, function(svg,chart,e) {
+				console.log(e);
+				$scope.selectedThreadId = e.pointIndex;
+				$scope.$apply();
+				selectedChart.update(data,e.pointIndex);
+				selectedChartDetails.update(e.pointIndex);
+			});
 		});
 	}]);
 }
 
 function reformatDataForD3(data,threadId) {
-	var d = [];
-	console.log(data);
-	for (var i in data.stacks[threadId].timeprofiler.max)
-		d.push([
-			data.stacks[threadId].timeprofiler.timestamp[i],
-			data.stacks[threadId].timeprofiler.max[i]]);
+	var res =  [];
 	
-	res = [{
-				values: d, //values - represents the array of {x,y} data points
-				key: threadId, //key - the name of the series.
-				//color: colors[i], //color - optional: choose your own line color.
-				area:true
-			}];
+	for (var j in data.stacks)
+	{
+		if (threadId == -1 || threadId == j)
+		{
+			var d = [];
+			for (var i in data.stacks[j].timeprofiler.max)
+				d.push({
+					x: data.stacks[j].timeprofiler.timestamp[i],
+					y: data.stacks[j].timeprofiler.max[i]
+				});
+			
+			res.push({
+						values: d, //values - represents the array of {x,y} data points
+						key: "Thread "+j, //key - the name of the series.
+						//color: colors[i], //color - optional: choose your own line color.
+						area:true
+					});
+		}
+	}
 
-	console.log(res);
 	return res;
 }
 
 MattPageStackPeaks.prototype.plotSelectedStackSize = function(domId,data,threadId)
 {
+	var chart;
 	nv.addGraph(function() {
-		var chart = nv.models.lineChart()
-			.margin({left: 100}) //Adjust chart margins to give the x-axis some breathing room.
+		chart = nv.models.lineChart()
+			.margin({top: 30, right: 20, bottom: 50, left: 200})
 			.useInteractiveGuideline(true) //We want nice looking tooltips and a guideline!
 			.transitionDuration(500) //how fast do you want the lines to transition?
 			.showLegend(true) //Show the legend, allowing users to turn on/off line series.
@@ -58,12 +76,16 @@ MattPageStackPeaks.prototype.plotSelectedStackSize = function(domId,data,threadI
 			.showXAxis(true) //Show the x-axis
 		;
 		
+// 		chart = nv.models.lineWithFocusChart()
+// 			.transitionDuration(500) //how fast do you want the lines to transition?
+// 		;
+		
 		chart.xAxis //Chart x-axis settings
 			.axisLabel('Time (secondes)')
-			.tickFormat(function(value){return mattHelper.humanReadable(value/(+data.ticksPerSecond),1,'');});
+			.tickFormat(function(value){return mattHelper.humanReadable(value/(+data.ticksPerSecond),1,'s');});
 		
 		chart.yAxis //Chart y-axis settings
-			.axisLabel("label")
+			.axisLabel("Stack size")
 			.tickFormat(function(value){return mattHelper.humanReadable(value,1,'B');});
 		
 		/* Done setting the chart up? Time to render it!*/
@@ -79,9 +101,111 @@ MattPageStackPeaks.prototype.plotSelectedStackSize = function(domId,data,threadI
 		nv.utils.windowResize(function() { chart.update() });
 		return chart;
 	});
+	
+	return {
+		update: function(data,threadId) {
+			console.log("Update data for threadId " +threadId);
+			d3.select('#'+domId+' svg')
+				.datum(reformatDataForD3(data,threadId))
+				.transition().duration(500)
+				.call(chart);
+		}
+	};
 }
 
-MattPageStackPeaks.prototype.plotStackPeak = function(domId,data)
+MattPageStackPeaks.prototype.plotStackMemOfFuncs = function(domId,threadId,onElementClick)
+{
+	var cur = this;
+	var chart;
+	nv.addGraph(function() {
+		chart = nv.models.multiBarHorizontalChart()
+			.x(function(d,i) { return d.info.function })
+			.y(function(d) { return d.mem })
+			.margin({top: 30, right: 20, bottom: 50, left: 200})
+			.showValues(true)           //Show bar value next to each bar.
+			.tooltips(true)             //Show tooltips on hover.
+			.transitionDuration(350)
+			.showControls(false)
+			.stacked(true)  ;      //Allow user to switch between "Grouped" and "Stacked" mode.
+// 			.tooltipContent(function(serieName,name,value,e,graph) {
+// 				var d = e.series.values[e.pointIndex];
+// 				var pos = "";
+// 				var tls = "";
+// 				if (d.file != undefined && d.file != '')
+// 					pos = "<br/>" + d.file + ":" + d.line;
+// 				if (e.series.key == "TLS variables")
+// 					tls = " [ "+e.series.tlsInstances+" * "+mattHelper.humanReadable(d.value/e.series.tlsInstances,1,'B',false) +" ] ";
+// 				var ratio = " ( "+(100*d.value/e.series.total).toFixed(2)+"% ) ";
+// 				//console.log(data);
+// 				//console.log(e);
+// 				return "<div style='text-align:center'><h3>"+d.name+"</h3>"+mattHelper.humanReadable(d.value,1,'B',false)+tls+ratio+pos+'</div>';
+// 			});
+
+		chart.yAxis
+			.axisLabel('Stack memory')
+			.tickFormat(function(d) {return mattHelper.humanReadable(d,1,'B',false);});
+			
+// 		chart.xAxis
+// 			.axisLabel('Function');
+			
+		if (onElementClick != undefined)
+		{
+			chart.multibar.dispatch.on("elementClick", function(e) {
+				onElementClick(d3.select("#"+domId+" svg"),chart,e);
+			});
+		}
+
+		d3.json('/stack.json?id='+threadId, function(data) {
+			//prepeare data
+			var formattedData = [
+				{
+					key:'Frame size',
+					color:'blue',
+					values:data.details
+				}
+			];
+			
+			d3.select("#"+domId+" svg").attr('height', 150+data.details.length * 16 );
+			
+			console.log(formattedData);
+			d3.select("#"+domId+" svg")
+				.datum(formattedData)
+				.call(chart);
+
+			nv.utils.windowResize(chart.update);
+		});
+
+		return chart;
+	});
+	
+	return {
+		update: function(threadId) {
+			d3.json('/stack.json?id='+threadId, function(data) {
+				//prepeare data
+				var formattedData = [
+					{
+						key:'Frame size',
+						color:'blue',
+						values:data.details
+					}
+				];
+				
+				d3.select("#"+domId+" svg").attr('height', 150+data.details.length * 16 );
+				
+				console.log(formattedData);
+				console.log("Update data for threadId " +threadId);
+				d3.select('#'+domId+' svg')
+					.datum(formattedData)
+					.transition().duration(500)
+					.call(chart);
+
+				nv.utils.windowResize(chart.update);
+			});
+		}
+	};
+}
+
+MattPageStackPeaks.prototype.plotStackPeak = function(domId,data,onElementClick)
 {
 	var cur = this;
 	nv.addGraph(function() {
@@ -121,7 +245,18 @@ MattPageStackPeaks.prototype.plotStackPeak = function(domId,data)
 
 // 		$scope.chart = chart;
 		chart.yAxis
+			.axisLabel('Maximum stack size')
 			.tickFormat(function(d) {return mattHelper.humanReadable(d,1,'B',false);});
+			
+		chart.xAxis
+			.axisLabel('Thread ID');
+			
+		if (onElementClick != undefined)
+		{
+			chart.multibar.dispatch.on("elementClick", function(e) {
+				onElementClick(d3.select("#"+domId+" svg"),chart,e);
+			});
+		}
 			
 // 		if (onClick != undefined)
 // 			chart.multibar.dispatch.on("elementClick", function(e) {onClick(e,chart);});
