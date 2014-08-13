@@ -6,7 +6,8 @@ var mattApp = angular.module('matt.app', [
   'matt.page.home',
   'matt.page.globalVars',
   'matt.page.allocSizeDistr',
-  'matt.page.realloc'
+  'matt.page.realloc',
+  'matt.page.stackPeaks'
 ]);
 
 mattApp.config(['$routeProvider',
@@ -30,6 +31,11 @@ mattApp.config(['$routeProvider',
 			templateUrl: 'partials/alloc-size-distr.html',
 			controller: 'matt.page.allocSizeDistr.ctrl',
 			pageKey: 'allocSizeDistr'
+		}).
+		when('/stackPeaks', {
+			templateUrl: 'partials/stack-peaks.html',
+			controller: 'matt.page.stackPeaks.ctrl',
+			pageKey: 'stackPeaks'
 		}).
 		when('/realloc', {
 			templateUrl: 'partials/realloc.html',

@@ -662,6 +662,8 @@ function mergeStackInfoDatas(onto,value)
 	onto.maxAliveReq += value.maxAliveReq;
 	onto.aliveReq += value.aliveReq;
 	onto.globalPeak += value.globalPeak;
+	onto.reallocCount += value.reallocCount;
+	onto.reallocSumDelta += value.reallocSumDelta;
 	mergeStackMinMaxInfo(onto.alloc,value.alloc);
 	mergeStackMinMaxInfo(onto.free,value.free);
 	mergeStackMinMaxInfo(onto.lifetime,value.lifetime);

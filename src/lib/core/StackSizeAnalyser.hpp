@@ -56,7 +56,7 @@ inline void StackSizeAnalyser::onEnterFunc(void* funcAddr)
 	size_t cur = currentStackMem.getSize();
 	
 	//update time profile
-	timeProfile.onUpdateValue(cur);
+	timeProfile.onUpdateValue(cur,funcAddr);
 	
 	//check if largest
 	if (cur > largestSize)
@@ -78,7 +78,7 @@ inline void StackSizeAnalyser::onExitFunc(void* funcAddr)
 	size_t cur = currentStackMem.getSize();
 	
 	//update time profile
-	timeProfile.onUpdateValue(cur);
+	timeProfile.onUpdateValue(cur,funcAddr);
 }
 
 }

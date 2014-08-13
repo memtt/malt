@@ -32,7 +32,7 @@ TEST(ProfiledValue,test_1)
 	profile.disableTimestamp();
 	
 	for (int i = 0 ; i < 7 ; i++)
-		profile.onDeltaEvent(10);
+		profile.onDeltaEvent(10,NULL);
 	
 	std::stringstream buffer;
 	htopml::convertToJson(buffer,profile);
@@ -47,7 +47,7 @@ TEST(ProfiledValue,test_2)
 	profile.disableTimestamp();
 	
 	for (int i = 0 ; i < 100 ; i++)
-		profile.onDeltaEvent(10);
+		profile.onDeltaEvent(10,NULL);
 	
 	std::stringstream buffer;
 	htopml::convertToJson(buffer,profile);

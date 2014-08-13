@@ -10,11 +10,99 @@ function MattPageRealloc()
 		//fetch summaryData
 		$http.get('/realloc-map.json').success(function(data) {
 			$scope.reallocMap = data;
+			
+			//search most used
+			var mostUsed = data[0];
+			var meanDelta = 0;
+			var count = 0;
+			for (var i in data)
+			{
+				meanDelta += Math.abs(data[i].oldSize - data[i].newSize);
+				count += data[i].count;
+				if (data[i].count > mostUsed.count)
+					mostUsed = data[i];
+			}
+			
+			$scope.realloCount = mattHelper.humanReadable(count,1,"",false);
+			$scope.meanDelta = mattHelper.humanReadable(meanDelta/data.length,1,"B",false);
+			$scope.formatedMostUsed = mattHelper.humanReadable(mostUsed.count,1,"",false) + " of " + mattHelper.humanReadable(mostUsed.oldSize,1,"B",false) + " -> " + mattHelper.humanReadable(mostUsed.newSize,1,"B",false);
+			
+			cur.plotMostUsed('matt-most-used',data,20);
 			cur.plotMostUsedDelta('matt-most-used-delta',cur.genDeltaDistr(data));
 			cur.plotLogDelta('matt-log-delta',cur.genDeltaDistr(data));
 			cur.resizeMap2('matt-resize-map',data);
 		});
 	}]);
+}
+
+MattPageRealloc.prototype.plotMostUsed = function(domId,data,maxNb)
+{
+	var data = this.cutMostUsed(data,maxNb);
+	
+	nv.addGraph(function() {
+
+		var chart = nv.models.multiBarChart()
+			.x(function(d) { return d.name })
+			.y(function(d) { return d.count })
+// 			.margin({top: 30, right: 20, bottom: 50, left: 175})
+// 			.showValues(true)           //Show bar value next to each bar.
+			.tooltips(true)             //Show tooltips on hover.
+// 			.transitionDuration(350)
+			.showControls(false)
+			.reduceXTicks(false)
+			.stacked(true);        //Allow user to switch between "Grouped" and "Stacked" mode.
+// 			.tooltipContent(function(serieName,name,value,e,graph) {
+// 				var d = e.series.values[e.pointIndex];
+// 				var pos = "";
+// 				var tls = "";
+// 				if (d.file != undefined && d.file != '')
+// 					pos = "<br/>" + d.file + ":" + d.line;
+// 				if (e.series.key == "TLS variables")
+// 					tls = " [ "+e.series.tlsInstances+" * "+mattHelper.humanReadable(d.value/e.series.tlsInstances,1,'B',false) +" ] ";
+// 				var ratio = " ( "+(100*d.value/e.series.total).toFixed(2)+"% ) ";
+// 				console.log(data);
+// 				console.log(e);
+// 				return "<div style='text-align:center'><h3>"+d.name+"</h3>"+mattHelper.humanReadable(d.value,1,'B',false)+tls+ratio+pos+'</div>';
+// 			});
+
+// 		$scope.chart = chart;
+		chart.yAxis
+			.tickFormat(function(d) {return mattHelper.humanReadable(d,1,"",false);});
+			
+		d3.select("#"+domId + " svg")
+			.datum(data)
+			.call(chart);
+		
+		nv.utils.windowResize(chart.update);
+
+		return chart;
+	});
+}
+
+MattPageRealloc.prototype.cutMostUsed = function(data,maxNb)
+{
+	var sortedData = data.sort(function(a,b) {return b.count - a.count;});
+	
+	var others = 0;
+	var cnt = 0;
+	var ret = [];
+	for (var i in sortedData)
+	{
+		cnt++;
+		if (cnt <= maxNb)
+		{
+			//console.log(cnt + " -> " + sortedData[i].oldSize + " -> " + sortedData[i].newSize + " -> "+sortedData[i].count);
+			ret.push({name:mattHelper.humanReadable(sortedData[i].oldSize,1,'B',false) + " -> " + mattHelper.humanReadable(sortedData[i].newSize,1,'B',false), count:sortedData[i].count});
+		} else {
+			others += sortedData[i].count;
+		}
+	}
+	if (others > 0)
+		ret.push({name:'others',count:others});
+	
+	ret = ret.sort(function(a,b) {return b.count - a.count;});
+
+	return [ { key:'Realloc', color:'blue', values:ret } ];
 }
 
 MattPageRealloc.prototype.genDeltaDistr = function(data)
@@ -25,10 +113,13 @@ MattPageRealloc.prototype.genDeltaDistr = function(data)
 		if (data[i].newSize != 0 && data[i].oldSize != 0)
 		{
 			var delta = data[i].newSize - data[i].oldSize;
-			if (res[delta] == undefined)
-				res[delta] = data[i].count;
-			else
-				res[delta] += data[i].count;
+			if (delta != 0)
+			{
+				if (res[delta] == undefined)
+					res[delta] = data[i].count;
+				else
+					res[delta] += data[i].count;
+			}
 		}
 	}
 	return res;
@@ -57,8 +148,6 @@ MattPageRealloc.prototype.buildLog2Histo = function(data)
 			count:tmp[i],
 		});
 	}
-	
-	console.log(hist);
 	
 	return hist;
 }
@@ -324,10 +413,13 @@ MattPageRealloc.prototype.resizeMap2 = function(domId,data)
 
 	var tmp = {};
 	var linklist = [];
+	var max = 0;
 	for (var i in data)
 	{
 		tmp[data[i].newSize] = true;
 		tmp[data[i].oldSize] = true;
+		if (data[i].count > max)
+			max = data[i].count;
 	}
 	var nodelist = {name:'',children:[]};
 	var map = {};
@@ -338,7 +430,7 @@ MattPageRealloc.prototype.resizeMap2 = function(domId,data)
 	}
 	
 	for (var i in data)
-		linklist.push({source:map[data[i].oldSize],target:map[data[i].newSize]});
+		linklist.push({source:map[data[i].oldSize],target:map[data[i].newSize],count:data[i].count});
 
 // 	d3.json("readme-flare-imports.json", function(error, classes) {
 	var nodes = cluster.nodes(nodelist),
@@ -349,7 +441,7 @@ MattPageRealloc.prototype.resizeMap2 = function(domId,data)
 		.enter().append("path")
 		.each(function(d) { d.source = d[0], d.target = d[d.length - 1]; })
 		.attr("class", "link")
-// 		.attr("stroke-width",20)
+// 		.attr("stroke-width",function(d) { console.log(d,i); return "20px"; })
 		.attr("d", line);
 
 	node = node
@@ -365,32 +457,37 @@ MattPageRealloc.prototype.resizeMap2 = function(domId,data)
 // 	});
 
 	function mouseovered(d) {
-	node
-		.each(function(n) { n.target = n.source = false; });
+		node
+			.each(function(n) { n.target = n.source = false; });
 
-	link
-		.classed("link--target", function(l) { if (l.target === d) return l.source.source = true; })
-		.classed("link--source", function(l) { if (l.source === d) return l.target.target = true; })
-		.filter(function(l) { return l.target === d || l.source === d; })
-		.each(function() { this.parentNode.appendChild(this); });
-		
-	function recurse(depth) {
-		var cnt = 0;
 		link
-			.classed("link--target", function(l) { if (l.target.source && !l.source.source) { cnt++; return l.source.source = true; } else { return l.source.source; } })
-			.classed("link--source", function(l) { if (l.source.target && !l.target.target) { cnt++; return l.target.target = true; } else { return l.target.target; } })
-// 			.classed("link--source", function(l) { if (l.source === u && mode == 'source' && (l.target.target != true)) { recurse(l.target,"target"); return l.target.target = true; } })
-// 			.filter(function(l) { return l[mode] === u; })
+			.classed("link--target", function(l) { if (l.target === d) return l.source.source = true; })
+			.classed("link--source", function(l) { if (l.source === d) return l.target.target = true; })
+			.filter(function(l) { return l.target === d || l.source === d; })
 			.each(function() { this.parentNode.appendChild(this); });
-		if (cnt > 0)
-			recurse(depth+1);
-	}
-	var recDepth = recurse(0);
-	console.log(recDepth);
+			
+		function recurse(depth) {
+			var cnt = 0;
+			link
+				.classed("link--target", function(l) { if (l.target.source && !l.source.source) { cnt++; return l.source.source = true; } else { return l.source.source; } })
+				.classed("link--source", function(l) { if (l.source.target && !l.target.target) { cnt++; return l.target.target = true; } else { return l.target.target; } })
+	// 			.classed("link--source", function(l) { if (l.source === u && mode == 'source' && (l.target.target != true)) { recurse(l.target,"target"); return l.target.target = true; } })
+	// 			.filter(function(l) { return l[mode] === u; })
+				.each(function() { this.parentNode.appendChild(this); });
+			if (cnt > 0)
+				return recurse(depth+1);
+			else
+				return depth;
+		}
+		
+		var doRecurse = false;
+		d3.select("#"+domId+" input").each(function() {doRecurse = this.checked;});
+		if (doRecurse)
+			var recDepth = recurse(0);
 
-	node
-		.classed("node--target", function(n) { return n.target; })
-		.classed("node--source", function(n) { return n.source; });
+		node
+			.classed("node--target", function(n) { return n.target; })
+			.classed("node--source", function(n) { return n.source; });
 	}
 
 	function mouseouted(d) {
@@ -428,7 +525,7 @@ MattPageRealloc.prototype.resizeMap = function(domId,data)
 	
 	var diameter = 960,
 		radius = diameter / 2,
-		innerRadius = radius - 120;
+		innerRadius = radius - 220;
 
 	var cluster = d3.layout.cluster()
 		.size([360, innerRadius])
@@ -465,7 +562,7 @@ MattPageRealloc.prototype.resizeMap = function(domId,data)
 	}
 	
 	for (var i in data)
-		linklist.push({source:map[data[i].oldSize],target:map[data[i].newSize]});
+		linklist.push({source:map[data[i].oldSize],target:map[data[i].newSize],count:data[i].count});
 
 // 	d3.json("readme-flare-imports.json", function(error, classes) {
 	var nodes = cluster.nodes(nodelist),
@@ -475,6 +572,7 @@ MattPageRealloc.prototype.resizeMap = function(domId,data)
 		.data(bundle(links))
 		.enter().append("path")
 		.attr("class", "link")
+		.attr("stroke-width", 20)
 		.attr("d", line);
 
 	svg.selectAll(".node")

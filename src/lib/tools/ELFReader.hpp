@@ -25,27 +25,45 @@ namespace MATT
 {
 
 /********************  STRUCT  **********************/
+/**
+ * Definition of a global variable extracted from libelf.
+**/
 struct ElfGlobalVariable
 {
+	/** Name of the variable. **/
 	std::string name;
+	/** Size (in bytes) of the variable. **/
 	size_t size;
+	/** Offset of the variable inside elf file. **/
 	size_t offset;
+	/** Define if the variable is a TLS or not. **/
 	bool tls;
+	/** Source file defining the variable or empty if no debug informations. **/
 	std::string file;
+	/** Declaration line inside source file. **/
 	int line;
 };
 
 /********************  STRUCT  **********************/
+/** Struct to point entries of the ELF string table. **/
 struct ElfStringTable
 {
+	/** Pointer to the C string. **/
 	const char * data;
+	/** Size of the C string. **/
 	size_t size;
 };
 
 /*********************  TYPES  **********************/
+/**
+ * Define a vector container for global variables.
+**/
 typedef std::vector<ElfGlobalVariable> ElfGlobalVariableVector;
 
 /*********************  CLASS  **********************/
+/**
+ * Wrapper of libelf to extract global variable list from binary file.
+**/
 class ElfReader
 {
 	public:
@@ -60,7 +78,9 @@ class ElfReader
 		Elf_Scn * getSectionByType(int type);
 		ElfStringTable getStringTable(int secId);
 	private:
+		/** Keep track of libelf handler until close. **/
 		Elf * elf;
+		/** Keep track of file descriptor used by libelf until close. **/
 		FILE * fp;
 };
 

@@ -14,6 +14,7 @@ find_package(LibElf QUIET)
 #Code options
 set(ENABLE_CODE_TIMING   "no"       CACHE BOOL   "Enable some tricks to quickly check timings of hostspots of MATT internal code.")
 set(ENABLE_TESTS         "yes"      CACHE BOOL   "Enable build of internal tests.")
+
 #select portability mode
 set(PORTABILITY_SPINLOCK "PTHREAD"  CACHE STRING "Select spinlock implementation to use. Currently support : 'PTHREAD', 'DUMMY'.")
 set(PORTABILITY_MUTEX    "PTHREAD"  CACHE STRING "Select mutex implementation to use. Currently support : 'PTHREAD', 'DUMMY'.")

@@ -33,6 +33,7 @@ struct ProfiledStateValueEntry
 	size_t max;
 	ticks index;
 	ticks timestamp;
+	void * location;
 };
 
 /*********************  CLASS  **********************/
@@ -40,15 +41,15 @@ class ProfiledStateValue
 {
 	public:
 		ProfiledStateValue(size_t steps = MATT_PROFILED_VALUE_DEFAULT_STEPS, bool useLinearIndex = false);
-		void onDeltaEvent(ssize_t delta);
-		void onUpdateValue(size_t value);
+		void onDeltaEvent(ssize_t delta, void* location);
+		void onUpdateValue(size_t value, void* location);
 		bool isNextPoint(void) const;
 		void setRemoteLinearIndex(ticks * remoteLinearIndex);
 		void disableTimestamp(void);
 	public:
 		friend void convertToJson(htopml::JsonState& json, const ProfiledStateValue& value);
 	private:
-		inline void updateCurrentMinMax(ticks index, ticks timestamp);
+		inline void updateCurrentMinMax(ticks index, ticks timestamp, void* location);
 		void flush(void);
 		void resize(void);
 		inline ticks getIndex() const;
@@ -67,6 +68,7 @@ class ProfiledStateValue
 		bool useLinearIndex;
 		ticks * remoteLinearIndex;
 		bool printTimestamps;
+		bool hasLocation;
 };
 
 }

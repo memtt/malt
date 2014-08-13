@@ -26,6 +26,7 @@ void ProfiledStateValueEntry::reset(void)
 	this->min = -1;
 	this->max = 0;
 	this->index = 0;
+	this->location = NULL;
 }
 
 /*******************  FUNCTION  *********************/
@@ -34,7 +35,10 @@ void ProfiledStateValueEntry::reduce(const ProfiledStateValueEntry& value)
 	if (value.index > index)
 		index = value.index;
 	if (value.timestamp > timestamp)
+	{
 		timestamp = value.timestamp;
+		location = value.location;
+	}
 	if (value.max > max)
 		max = value.max;
 	if (value.min < min)
@@ -58,6 +62,7 @@ ProfiledStateValue::ProfiledStateValue(size_t steps,bool useLinearIndex)
 	this->currentId = 0;
 	this->steps = steps;
 	this->value = 0;
+	this->hasLocation = false;
 	
 	//current
 	this->deltaIndex = 1;
@@ -76,33 +81,36 @@ ProfiledStateValue::ProfiledStateValue(size_t steps,bool useLinearIndex)
 }
 
 /*******************  FUNCTION  *********************/
-void ProfiledStateValue::onDeltaEvent(ssize_t delta)
+void ProfiledStateValue::onDeltaEvent(ssize_t delta,void * location)
 {
 	this->value += delta;
-	onUpdateValue(value);
+	onUpdateValue(value,location);
 }
 
 /*******************  FUNCTION  *********************/
-void ProfiledStateValue::onUpdateValue(size_t value)
+void ProfiledStateValue::onUpdateValue(size_t value,void * location)
 {
 	//get current
 	ticks index = getIndex();
 	ticks timestamp = getticks();
 	this->value = value;
 	
+	if (location != NULL)
+		this->hasLocation = true;
+	
 	//flush previous if really old
 	if (index > nextIndex)
 		this->flush();
 	
 	//update current
-	updateCurrentMinMax(index,timestamp);
+	updateCurrentMinMax(index,timestamp,location);
 	
 	//update linear index
 	linearIndex++;
 }
 
 /*******************  FUNCTION  *********************/
-void ProfiledStateValue::updateCurrentMinMax(ticks index, ticks timestamp )
+void ProfiledStateValue::updateCurrentMinMax(ticks index, ticks timestamp, void* location )
 {
 	//update current interval min/max
 	if (value > current.max)
@@ -111,6 +119,7 @@ void ProfiledStateValue::updateCurrentMinMax(ticks index, ticks timestamp )
 		this->current.min = value;
 	this->current.index = index;
 	this->current.timestamp = timestamp;
+	this->current.location = location;
 
 	//update max
 	if (this->value > this->peak.max)
@@ -197,6 +206,14 @@ void convertToJson(htopml::JsonState& json, const ProfiledStateValue& value)
 		json.printValue(value.entries[i].index - value.startIndex);
 	}
 	json.closeFieldArray("index");
+	
+	if (value.hasLocation)
+	{
+		json.openFieldArray("location");
+		for (int i = 0 ; i < value.currentId ; i++)
+			json.printValue(value.entries[i].location);
+		json.closeFieldArray("location");
+	}
 	
 	if (value.printTimestamps)
 	{

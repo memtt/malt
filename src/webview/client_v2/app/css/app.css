@@ -151,14 +151,20 @@
 .link--source,
 .link--target {
   stroke-opacity: 1;
-  stroke-width: 2px;
+  stroke-width: 3px;
 }
 
-.link--source {
+.link--source-sec,
+.link--target-sec {
+  stroke-opacity: 0.5;
+  stroke-width: 1px;
+}
+
+.link--source, .link--source-sec {
   stroke: #d62728;
 }
 
-.link--target {
+.link--target, .link--target-sec {
   stroke: #2ca02c;
 }
 

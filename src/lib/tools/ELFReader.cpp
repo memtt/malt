@@ -21,6 +21,11 @@ namespace MATT
 {
 
 /*******************  FUNCTION  *********************/
+/**
+ * Constructor of the elf reader. It will immediatly open
+ * the given file.
+ * @param file ELF file to open.
+**/
 ElfReader::ElfReader(const std::string& file)
 {
 	//defaults
@@ -35,12 +40,18 @@ ElfReader::ElfReader(const std::string& file)
 }
 
 /*******************  FUNCTION  *********************/
+/**
+ * Destructor of elf reader to automatically close libelf and file.
+**/
 ElfReader::~ElfReader(void)
 {
 	this->close();
 }
 
 /*******************  FUNCTION  *********************/
+/**
+ * Close the libelf handler and related file handler.
+**/
 void ElfReader::close(void)
 {
 	//fp
@@ -59,6 +70,10 @@ void ElfReader::close(void)
 }
 
 /*******************  FUNCTION  *********************/
+/**
+ * Open file and link with libelf to be ready for elf analysis.
+ * @param file Define the file to open.
+**/
 void ElfReader::openFile(const std::string& file)
 {
 	//open
@@ -85,14 +100,20 @@ void ElfReader::openFile(const std::string& file)
 }
 
 /*******************  FUNCTION  *********************/
+/**
+ * Libelf need some initialization stuff to work so ensure it's done
+ * at least once.
+**/
 void ElfReader::libelfInit(void)
 {
+	//check to do it only once
 	static bool initDone = false;
 
+	//check already done
 	if (initDone)
 		return;
 	
-	//check version
+	//check version (don't know why, but do not work without this)
 	elf_version(EV_CURRENT);
 	
 	//mark as done
@@ -100,6 +121,11 @@ void ElfReader::libelfInit(void)
 }
 
 /*******************  FUNCTION  *********************/
+/**
+ * Search the section corresponding to the given type.
+ * @param type Type of section to return.
+ * @return Pointer to the section (freed by libelf) of NULL if not found.
+**/
 Elf_Scn* ElfReader::getSectionByType(int type)
 {
 	//errors

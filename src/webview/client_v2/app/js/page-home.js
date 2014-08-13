@@ -227,6 +227,15 @@ function MattPageHome()
 				return entry.format($scope.summaryData.summary[entry.key]);
 		}
 		
+		$scope.getFormattedValueFromKey = function(key) {
+			for (var i in summaryViewEntries)
+			{
+				if (summaryViewEntries[i].key == key)
+					return $scope.getFormattedValue(summaryViewEntries[i]);
+			}
+			return "";
+		}
+		
 		//manage toogle button
 		$scope.toogleSummaryDetails = function() {
 			if ($scope.displaySummaryLevel == 1)

@@ -39,6 +39,7 @@
 	<script src="js/page-global-vars.js"></script>
 	<script src="js/page-alloc-size-distr.js"></script>
 	<script src="js/page-realloc.js"></script>
+	<script src="js/page-stack-peaks.js"></script>
 	
 	<!-- MATT OLD CSS -->
 	<link href='/style.css' rel="stylesheet">
@@ -67,6 +68,7 @@
 					<li><a href="/source-profile.html">Alloc sites</a></li>
 					<li><a href="/time-analysis.html">Time analysis</a></li>
 					<li><a href="/max-stack.html">Stack</a></li>
+					<li ng-class="{ active: route.current.pageKey == 'stackPeaks'}"><a href="#/stackPeaks">Stack memory</a></li>
 					<li ng-class="{ active: route.current.pageKey == 'allocSizeDistr'}"><a href="#/allocSizeDistr">Alloc sizes</a></li>
 					<li ng-class="{ active: route.current.pageKey == 'realloc'}"><a href="#/realloc">Realloc</a></li>
 					<li ng-class="{ active: route.current.pageKey == 'globalVars'}"><a href="#/globalVars">Global variables</a></li>

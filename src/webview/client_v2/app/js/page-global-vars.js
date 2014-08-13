@@ -43,7 +43,7 @@ function MattPageGlobalVars()
 			
 			$scope.onVarChartValueClick = function(e,chart,data,rscope)
 			{
-				console.log('filter on : '+e.point.name);
+				//console.log('filter on : '+e.point.name);
 				$scope.dataForVarBar = cur.getDataForVarGraphs($scope.globalVars,function(x) {return x == e.point.name;});
 				$scope.$apply();
 			}
@@ -404,17 +404,33 @@ MattPageGlobalVars.prototype.buildMultiBarChart = function($scope,d3Selection,da
 				if (e.series.key == "TLS variables")
 					tls = " [ "+e.series.tlsInstances+" * "+mattHelper.humanReadable(d.value/e.series.tlsInstances,1,'B',false) +" ] ";
 				var ratio = " ( "+(100*d.value/e.series.total).toFixed(2)+"% ) ";
-				console.log(data);
-				console.log(e);
+				//console.log(data);
+				//console.log(e);
 				return "<div style='text-align:center'><h3>"+d.name+"</h3>"+mattHelper.humanReadable(d.value,1,'B',false)+tls+ratio+pos+'</div>';
 			});
 
 		$scope.chart = chart;
 		chart.yAxis
-			.tickFormat(d3.format(',.2f'));
+			.tickFormat(function(d) {return mattHelper.humanReadable(d,1,'B',false);});
 			
 		if (onClick != undefined)
 			chart.multibar.dispatch.on("elementClick", function(e) {onClick(e,chart);});
+		
+		//labels
+// 		d3.select(d3Selection).append("text")
+// 			.attr("class", "x label")
+// 			.attr("text-anchor", "end")
+// 			.attr("x", width)
+// 			.attr("y", height - 6)
+// 			.text("Virtual size (B)");
+		
+// 		svg.append("text")
+// 			.attr("class", "y label")
+// 			.attr("text-anchor", "end")
+// 			.attr("y", 6)
+// 			.attr("dy", ".75em")
+// 			.attr("transform", "rotate(-90)")
+// 			.text("ylabel");
 
 		d3.select(d3Selection)
 			.datum(data)

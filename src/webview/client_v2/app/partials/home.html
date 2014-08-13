@@ -1,23 +1,24 @@
 <div class="home">
 
 	<div width='100%' height=''>
-		<div class="runinfo runinfo-program">
-			<div class='name'>Program</div>
-			<div class='value'>TODO</div>
-		</div>
-		
 		<div class="runinfo runinfo-time">
 			<div class='name'>Execution time</div>
 			<div class='value'>{{getFormattedExecTime()}}</div>
 		</div>
 
+	
+		<div class="runinfo runinfo-program">
+			<div class='name'>Physical memory peak</div>
+			<div class='value'>{{getFormattedValueFromKey('peakPhysicalMemory')}}</div>
+		</div>
+
 		<div class="runinfo runinfo-avail-mem">
-			<div class='name'>Available memory</div>
-			<div class='value'>TODO</div>
+			<div class='name'>Allocation count</div>
+			<div class='value'>{{getFormattedValueFromKey('allocCount')}}</div>
 		</div>
 		
 		<div class="runinfo runinfo-used-mem">
-			<div class='name'>Physical memory used</div>
+			<div class='name'>Available physical memory</div>
 			<div class='value'>TODO XG (x%)</div>
 		</div>
 		<!-- To clear float issue -->

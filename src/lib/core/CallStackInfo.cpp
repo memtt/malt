@@ -132,6 +132,8 @@ void CallStackInfo::onFreeLinkedMemory(size_t value, ticks lifetime,size_t peakI
 /*******************  FUNCTION  *********************/
 CallStackInfo::CallStackInfo(void )
 {
+	this->reallocCount = 0;
+	this->reallocDelta = 0;
 	this->alive = 0;
 	this->maxAlive = 0;
 	this->cntZeros = 0;
@@ -142,6 +144,16 @@ CallStackInfo::CallStackInfo(void )
 /*******************  FUNCTION  *********************/
 CallStackInfo::~CallStackInfo(void )
 {
+}
+
+/*******************  FUNCTION  *********************/
+void CallStackInfo::onReallocEvent(size_t oldSize, size_t newSize)
+{
+	this->reallocCount++;
+	if (oldSize > newSize)
+		this->reallocDelta += oldSize - newSize;
+	else
+		this->reallocDelta += newSize - oldSize;
 }
 
 /*******************  FUNCTION  *********************/
@@ -168,6 +180,8 @@ void convertToJson(htopml::JsonState& json, const CallStackInfo& value)
 	json.printField("free",value.free);
 	json.printField("lifetime",value.lifetime);
 	json.printField("globalPeak",value.peak);
+	json.printField("reallocCount",value.reallocCount);
+	json.printField("reallocSumDelta",value.reallocDelta);
 	json.closeStruct();
 }
 

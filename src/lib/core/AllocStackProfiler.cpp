@@ -32,6 +32,7 @@
 
 /********************  MACROS  **********************/
 #define MATT_SKIP_DEPTH 3
+#define STACK_LOCATION_ID NULL
 
 /*******************  NAMESPACE  ********************/
 namespace MATT
@@ -125,6 +126,16 @@ size_t AllocStackProfiler::onRealloc(void* oldPtr, void* ptr, size_t newSize,Sta
 		if (newSize > 0)
 			onAllocEvent(ptr,newSize,userStack,&callStackNode,false);
 		
+		//realloc
+		if (newSize > 0 && oldSize > 0 && newSize != oldSize)
+		{
+			//search if not provided
+			if (!callStackNode.valid())
+				callStackNode = getStackNode(userStack);
+			
+			callStackNode.infos->onReallocEvent(oldSize,newSize);
+		}
+		
 		//register size jump
 		if (options.distrReallocJump)
 		{
@@ -160,13 +171,13 @@ void AllocStackProfiler::onAllocEvent(void* ptr, size_t size,Stack* userStack,MM
 		if (options.timeProfileEnabled)
 		{
 			CODE_TIMING("timeProfileAllocStart",
-				segments.onDeltaEvent(1);
-				requestedMem.onDeltaEvent(size);
+				segments.onDeltaEvent(1,STACK_LOCATION_ID);
+				requestedMem.onDeltaEvent(size,STACK_LOCATION_ID);
 				if (virtualMem.isNextPoint())
 				{
 					OSProcMemUsage mem = OS::getProcMemoryUsage();
-					virtualMem.onUpdateValue(mem.virtualMemory - gblInternaAlloc->getTotalMemory());
-					physicalMem.onUpdateValue(mem.physicalMemory - gblInternaAlloc->getTotalMemory());
+					virtualMem.onUpdateValue(mem.virtualMemory - gblInternaAlloc->getTotalMemory(),STACK_LOCATION_ID);
+					physicalMem.onUpdateValue(mem.physicalMemory - gblInternaAlloc->getTotalMemory(),STACK_LOCATION_ID);
 				}
 			);
 		}
@@ -199,7 +210,7 @@ void AllocStackProfiler::onAllocEvent(void* ptr, size_t size,Stack* userStack,MM
 	
 		//update intern mem usage
 		if (options.timeProfileEnabled)
-			CODE_TIMING("timeProfileAllocEnd",internalMem.onUpdateValue(gblInternaAlloc->getInuseMemory()));
+			CODE_TIMING("timeProfileAllocEnd",internalMem.onUpdateValue(gblInternaAlloc->getInuseMemory(),STACK_LOCATION_ID));
 		
 		//track alloc bandwidth
 		allocBandwidth.push(size);
@@ -227,11 +238,11 @@ size_t AllocStackProfiler::onFreeEvent(void* ptr, MATT::Stack* userStack, MMCall
 			CODE_TIMING("timeProfileFreeStart",
 				OSProcMemUsage mem = OS::getProcMemoryUsage();
 				OSMemUsage sysMem = OS::getMemoryUsage();
-				virtualMem.onUpdateValue(mem.virtualMemory - gblInternaAlloc->getTotalMemory());
-				physicalMem.onUpdateValue(mem.physicalMemory - gblInternaAlloc->getTotalMemory());
-				sysFreeMemory.onUpdateValue(sysMem.freeMemory);
-				sysCachedMemory.onUpdateValue(sysMem.cached);
-				sysSwapMemory.onUpdateValue(sysMem.swap);
+				virtualMem.onUpdateValue(mem.virtualMemory - gblInternaAlloc->getTotalMemory(),STACK_LOCATION_ID);
+				physicalMem.onUpdateValue(mem.physicalMemory - gblInternaAlloc->getTotalMemory(),STACK_LOCATION_ID);
+				sysFreeMemory.onUpdateValue(sysMem.freeMemory,STACK_LOCATION_ID);
+				sysCachedMemory.onUpdateValue(sysMem.cached,STACK_LOCATION_ID);
+				sysSwapMemory.onUpdateValue(sysMem.swap,STACK_LOCATION_ID);
 			);
 		}
 
@@ -252,7 +263,7 @@ size_t AllocStackProfiler::onFreeEvent(void* ptr, MATT::Stack* userStack, MMCall
 		size = segInfo->size;
 		ticks lifetime = segInfo->getLifetime();
 		if (options.timeProfileEnabled)
-			CODE_TIMING("timeProfileFreeMiddle",requestedMem.onDeltaEvent(-size));
+			CODE_TIMING("timeProfileFreeMiddle",requestedMem.onDeltaEvent(-size,STACK_LOCATION_ID));
 		
 		//peak tracking
 		peakTracking(-size);
@@ -281,8 +292,8 @@ size_t AllocStackProfiler::onFreeEvent(void* ptr, MATT::Stack* userStack, MMCall
 		if (options.timeProfileEnabled)
 		{
 			CODE_TIMING("timeProfileFreeEnd",
-				segments.onDeltaEvent(-1);
-				internalMem.onUpdateValue(gblInternaAlloc->getInuseMemory());
+				segments.onDeltaEvent(-1,STACK_LOCATION_ID);
+				internalMem.onUpdateValue(gblInternaAlloc->getInuseMemory(),STACK_LOCATION_ID);
 			);
 		}
 		

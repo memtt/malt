@@ -49,6 +49,7 @@ struct CallStackInfo
 		~CallStackInfo(void);
 		void onAllocEvent(size_t value,size_t peakId);
 		void onFreeEvent(size_t value,size_t peakId);
+		void onReallocEvent(size_t oldSize,size_t newSize);
 		void onFreeLinkedMemory(size_t value,ticks lifetime,size_t peakId);
 		void push(const MATT::CallStackInfo& info);
 		void writeAsCallgrindEntry(int line, std::ostream & out) const;
@@ -65,6 +66,8 @@ struct CallStackInfo
 		ssize_t maxAlive;
 		ssize_t peak;
 		ssize_t peakId;
+		size_t reallocCount;
+		size_t reallocDelta;
 };
 
 std::ostream & operator << (std::ostream & out,const CallStackInfo & info);
