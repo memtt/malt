@@ -486,4 +486,11 @@ void FreeChunk::removeFromList(void)
 	this->next = this;
 }
 
+/*******************  FUNCTION  *********************/
+void initInternalAlloc(bool threadSafe)
+{
+	if (gblInternaAlloc == NULL)
+		gblInternaAlloc = new SimpleAllocator(threadSafe);
+}
+
 };

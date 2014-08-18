@@ -144,6 +144,9 @@ class SimpleAllocator
 **/
 extern SimpleAllocator * gblInternaAlloc;
 
+/*******************  FUNCTION  *********************/
+void initInternalAlloc(bool threadSafe = true);
+
 };
 
 #endif //MATT_SIMPLE_ALLOCATOR_HPP

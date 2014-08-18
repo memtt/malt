@@ -110,6 +110,21 @@ void AllocStackProfiler::onPrepareRealloc(void* oldPtr,Stack * userStack)
 }
 
 /*******************  FUNCTION  *********************/
+LocalAllocStackProfiler* AllocStackProfiler::createLocalStackProfiler(bool reentrant)
+{
+	LocalAllocStackProfiler* res = new AllocStackProfiler(this,reentrant);
+	this->registerPerThreadProfiler(res);
+	return res;
+}
+
+/*******************  FUNCTION  *********************/
+void AllocStackProfiler::destroyLocalStackProfiler(LocalAllocStackProfiler* localProfiler)
+{
+	//TODO need to track used and unused to recycle, but never really delete as we need it to
+	//dump state at execution end. 
+}
+
+/*******************  FUNCTION  *********************/
 size_t AllocStackProfiler::onRealloc(void* oldPtr, void* ptr, size_t newSize,Stack * userStack)
 {
 	size_t oldSize = 0;

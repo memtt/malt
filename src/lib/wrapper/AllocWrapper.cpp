@@ -261,9 +261,8 @@ void AllocWrapperGlobal::init(void )
 		gblState.status = ALLOC_WRAP_INIT_PROFILER;
 		
 		//init internal alloc
-		if (gblInternaAlloc == NULL)
-			gblInternaAlloc = new SimpleAllocator(true);
-		
+		initInternalAlloc(true);
+
 		//load options
 		gblState.options = new Options();
 		const char * configFile = getenv("MATT_CONFIG");
@@ -339,8 +338,7 @@ void ThreadLocalState::init(void)
 		gblState.init();
 	
 	//create the local chain
-	tlsState.profiler = new LocalAllocStackProfiler(gblState.profiler,true);
-	gblState.profiler->registerPerThreadProfiler(tlsState.profiler);
+	tlsState.profiler = gblState.profiler->createLocalStackProfiler(true);
 	
 	//mark ready
 	tlsState.status = ALLOC_WRAP_READY;

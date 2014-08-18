@@ -273,6 +273,8 @@ std::ostream& operator<< ( std::ostream& out, const Stack& obj )
 /*******************  FUNCTION  *********************/
 /**
  * Compare two stacks. They must have the same internal ordering representation.
+ * It first do fast check on size and ordering to give a quick answer and then
+ * start comparing the stack content.
 **/
 bool operator== ( const Stack& v1, const Stack& v2 )
 {
@@ -421,6 +423,9 @@ void Stack::resolveSymbols ( SymbolResolver& dic ) const
 }
 
 /*******************  FUNCTION  *********************/
+/**
+ * Return the callee, the current active function when doing backtrace(). Return NULL if no stack.
+**/
 void* Stack::getCallee(void ) const
 {
 	if (stack == NULL)
@@ -439,6 +444,9 @@ void* Stack::getCallee(void ) const
 }
 
 /*******************  FUNCTION  *********************/
+/**
+ * Return the caller of current function in call stack. Return NULL if no stack.
+**/
 void* Stack::getCaller(void ) const
 {
 	if (stack == NULL)
@@ -457,6 +465,11 @@ void* Stack::getCaller(void ) const
 }
 
 /*******************  FUNCTION  *********************/
+/**
+ * Copy operator.
+ * @param stack Define the stack to copy.
+ * @return Reference to the current stack.
+**/
 Stack& Stack::operator=(const Stack& stack)
 {
 	this->set(stack);
@@ -464,6 +477,11 @@ Stack& Stack::operator=(const Stack& stack)
 }
 
 /*******************  FUNCTION  *********************/
+/**
+ * Skip the last N call in the stack to ignore wrappers inside MATT. It take in account
+ * the internal element ordering.
+ * @param depth Define the number of call to skip.
+**/
 void Stack::fastSkip(int depth)
 {
 	assert(depth >= 0 && depth < size);
@@ -481,6 +499,10 @@ void Stack::fastSkip(int depth)
 }
 
 /*******************  FUNCTION  *********************/
+/**
+ * Ordering operator for stacks.
+ * It first compare stack sizes for fast call then compare the full stack content.
+**/
 bool operator<(const Stack& v1, const Stack& v2)
 {
 	//trivial

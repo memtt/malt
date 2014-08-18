@@ -86,6 +86,8 @@ class AllocStackProfiler
 		void registerMaqaoFunctionSymbol(int funcId,const char * funcName,const char * file,int line);
 		AllocTreeStrackTracer * getEnterExitStackTracer(void);
 		bool isEnterExit(void);
+		LocalAllocStackProfiler * createLocalStackProfiler(bool reentrant);
+		void destroyLocalStackProfiler(LocalAllocStackProfiler * localProfiler);
 	public:
 		friend void convertToJson(htopml::JsonState& json, const AllocStackProfiler& value);
 	private:
