@@ -28,8 +28,5 @@ detectNodeJS()
 #check node
 detectNodeJS
 
-#move to webview source directory
-cd "@CMAKE_INSTALL_PREFIX@/share/matt/webview"
-
 #call node on main script
-"$NODE" matt-webserver.js "$@"
+"$NODE" "@CMAKE_INSTALL_PREFIX@/share/matt/webview/matt-webserver.js" "$@"
