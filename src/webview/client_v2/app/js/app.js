@@ -7,7 +7,8 @@ var mattApp = angular.module('matt.app', [
   'matt.page.globalVars',
   'matt.page.allocSizeDistr',
   'matt.page.realloc',
-  'matt.page.stackPeaks'
+  'matt.page.stackPeaks',
+  'matt.page.timeline'
 ]);
 
 mattApp.config(['$routeProvider',
@@ -45,6 +46,11 @@ mattApp.config(['$routeProvider',
 		when('/funcs', {
 			templateUrl: 'partials/funcs.html',
 			controller: 'matt.ctrl.funcs',
+			pageKey: 'funcs'
+		}).
+		when('/timeline', {
+			templateUrl: 'partials/timeline.html',
+			controller: 'matt.page.timeline.ctrl',
 			pageKey: 'funcs'
 		})
 		.otherwise({

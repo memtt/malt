@@ -218,6 +218,11 @@ function MattPageHome()
 		$scope.getFormattedCpuFreq = function() {
 			return mattHelper.humanReadable($scope.summaryData.system.ticksPerSecond,1,'Hz',false);
 		}
+		
+		//convert CPU freq
+		$scope.getFormattedTotalMemory = function() {
+			return mattHelper.humanReadable($scope.summaryData.system.totalMemory,1,'b',false);
+		}
 
 		//format values
 		$scope.getFormattedValue = function(entry) {

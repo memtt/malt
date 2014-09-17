@@ -97,7 +97,7 @@ void NMCmdReader::findSourcesAndDemangle(ElfGlobalVariableVector& vars) const
 		{
 			it->line = entry->line;
 			it->file = entry->file;
-			fprintf(stderr,"NMEntry for %s : %s - %s - %d\n",it->name.c_str(),entry->name.c_str(),entry->file.c_str(),entry->line);
+			//fprintf(stderr,"NMEntry for %s : %s - %s - %d\n",it->name.c_str(),entry->name.c_str(),entry->file.c_str(),entry->line);
 		}
 		
 		//demangle namespace

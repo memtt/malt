@@ -25,7 +25,7 @@ bool hasVariable(ElfGlobalVariableVector & vars,std::string name,size_t size,boo
 {
 	for (ElfGlobalVariableVector::const_iterator it = vars.begin() ; it != vars.end() ; ++it)
 	{
-		fprintf(stderr,"%s -- %lu -- %d\n",it->name.c_str(),it->size,it->tls);
+		//fprintf(stderr,"%s -- %lu -- %d\n",it->name.c_str(),it->size,it->tls);
 		if (it->name == name && it->size == size && it->tls == tls)
 			return true;
 	}

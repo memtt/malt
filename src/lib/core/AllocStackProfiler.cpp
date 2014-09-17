@@ -563,7 +563,7 @@ void convertToJson(htopml::JsonState& json, const AllocStackProfiler& value)
 	
 	json.printField("leaks",value.segTracker);
 	json.closeStruct();
-	fprintf(stderr,"peakId : %lu\n",value.peakId);
+	//fprintf(stderr,"peakId : %lu\n",value.peakId);
 }
 
 /*******************  FUNCTION  *********************/
