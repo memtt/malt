@@ -8,7 +8,8 @@ var mattApp = angular.module('matt.app', [
   'matt.page.allocSizeDistr',
   'matt.page.realloc',
   'matt.page.stackPeaks',
-  'matt.page.timeline'
+  'matt.page.timeline',
+  'matt.page.sources'
 ]);
 
 mattApp.config(['$routeProvider',
@@ -51,7 +52,12 @@ mattApp.config(['$routeProvider',
 		when('/timeline', {
 			templateUrl: 'partials/timeline.html',
 			controller: 'matt.page.timeline.ctrl',
-			pageKey: 'funcs'
+			pageKey: 'timeline'
+		}).
+		when('/sources', {
+			templateUrl: 'partials/sources.html',
+			controller: 'matt.page.sources.ctrl',
+			pageKey: 'sources'
 		})
 		.otherwise({
 			redirectTo: '/home'

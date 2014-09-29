@@ -299,7 +299,7 @@ function MattPageHome()
 				
 				//check reverse
 				$scope.getReverse = function () {
-					return (metrics[$scope.metric].defaultOrder == 'desc');
+					return (mattMetrics[$scope.metric].defaultOrder == 'desc');
 				}
 				
 				$scope.useHiddenClass = function (x)  {

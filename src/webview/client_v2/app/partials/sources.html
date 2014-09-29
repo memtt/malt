@@ -1,0 +1,98 @@
+<div class="home">
+
+	<div class="row">
+			<div class="col-sm-5 col-md-4 col-lg-3 sidebar">
+				<!-- Selection -->
+				<div id='matt-func-list-selector'>
+					<div class="btn-group">
+						<button type="button" class="btn btn-default" ng-click="selector.toogleOrder()" title='Sort order.'><span class='glyphicon glyphicon-sort'/> </button>
+						<button type="button" class="btn btn-default" ng-click="selector.toogleRatio()" title='Show ratio to reference (max or sum) or absolute value.'><b>%</b></button>
+						<button type="button" class="btn btn-default" ng-click="selector.toogleInclusive()" title='Show inclusive or exclusive costs.'><b>I</b></button>
+<!-- 						<span class='dropdown'> -->
+							<button type="button" class="btn btn-default dropdown-toggle" type='button' data-toggle="dropdown" id='dropdownMenu1'>
+								<span>{{selector.getCurMetricName()}}</span>
+								<span class="caret"></span>
+							</button>
+							<ul class="dropdown-menu" id='matt-selector-list' role='menu' aria-labelledby='dropdownMenu1'>
+								<li ng-repeat="m in metricList" ng-click="selector.selectMetric(m)"><a href="">{{m.name}}</a></li>
+							</ul>
+<!-- 						</span> -->
+					</div>
+					<div class="input-group">
+						<input class="form-control col-lg-8" type="text" placeholder="Search" id="matt-input-search" ng-model="selector.query"></input>
+					</div>
+				</div>
+
+				<!-- Func lis -->
+				<div class="nav nav-sidebar" id='matt-func-list'>
+					<mattsourcefunclist metric='metric' inclusive='inclusive' functions='functions' limit='limit' order='order' ratio='ratio' query='query' selector='selector'></mattsourcefunclist>
+				</div>
+			</div>
+			
+			<!-- Source editor -->
+			<div class="col-sm-7 col-md-8 col-lg-9 main">
+			
+				<!-- Filename -->
+				<span id='matt-source-filename'>{{file}}</span>
+			
+				<div id='matt-source-editor'></div>
+				
+				
+				<div id='matt-alloc-info' style="width:30%;float:left;">
+				
+					<div>
+						<div><b>Inclusive :</b></div>
+						<div>Allocated memory : {{formatValue(info.total.alloc.sum,'B')}}</div>
+						<div>Freed memory : {{formatValue(info.total.free.sum,'B')}}</div>
+						<div>Max alive memory : {{formatValue(info.total.maxAliveReq,'')}}</div>
+						<div>Leaks : {{info.total.aliveReq}}</div>
+						<div>{{formatValue(info.total.alloc.count,'')}} alloc : [ {{formatValue(info.total.alloc.min,'B')}} , {{formatValue(Math.round(info.total.alloc.sum / info.total.alloc.count),'B')}} , {{formatValue(info.total.alloc.max,'B')}} ]</div>
+						<div>{{formatValue(info.total.free.count,'')}} free : [ {{formatValue(info.total.free.min,'B')}} , {{formatValue(Math.round(info.total.free.sum / info.total.free.count),'B')}} , {{formatValue(info.total.free.max,'B')}} ]</div>
+						<div>Lifetime : [ {{formatValue(info.total.lifetime.min,'')}} , {{formatValue(Math.round(info.total.lifetime.sum / info.total.lifetime.count),'')}} , {{formatValue(info.total.lifetime.max ,'')}} ] (cycles)</div>
+					</div>
+
+					<div>
+						<div><b>Exclusive :</b></div>
+						<div>Allocated memory : {{formatValue(info.own.alloc.sum,'B')}}</div>
+						<div>Freed memory : {{formatValue(info.own.free.sum,'B')}}</div>
+						<div>Max alive memory : {{formatValue(info.own.maxAliveReq,'')}}</div>
+						<div>Leaks : {{info.own.aliveReq}}</div>
+						<div>{{formatValue(info.own.alloc.count,'')}} alloc : [ {{formatValue(info.own.alloc.min,'B')}} , {{formatValue(Math.round(info.own.alloc.sum / info.own.alloc.count),'B')}} , {{formatValue(info.own.alloc.max,'B')}} ]</div>
+						<div>{{formatValue(info.own.free.count,'')}} free : [ {{formatValue(info.own.free.min,'B')}} , {{formatValue(Math.round(info.own.free.sum / info.own.free.count),'B')}} , {{formatValue(info.own.free.max,'B')}} ]</div>
+						<div>Lifetime : [ {{formatValue(info.own.lifetime.min,'')}} , {{formatValue(Math.round(info.own.lifetime.sum / info.own.lifetime.count),'')}} , {{formatValue(info.own.lifetime.max ,'')}} ] (cycles)</div>
+					</div>
+				
+				</div>
+				<div id='matt-alloc-stacks' style="width:70%;float:left;">
+					<table id='matt-alloc-stacks-tree'>
+						<thead>
+							<tr>
+								<th>Function</th>
+								<th>Metric</th>
+							</tr>
+						</thead>
+						<tbody>
+							<!--<tr class="branch expanded" data-tt-id="000">
+			<td><span style="padding-left: 0px;" class="indenter"></span>app</td>
+			</tr>
+			<tr class="branch expanded" data-tt-id="100" data-tt-parent-id="000">
+			<td><span style="padding-left: 19px;" class="indenter"></span>controllers</td>
+			</tr>
+			<tr class="leaf expanded" data-tt-id="500" data-tt-parent-id="100">
+			<td><span style="padding-left: 38px;" class="indenter"></span>application_controller.rb</td>
+			</tr>
+			<tr class="leaf expanded" data-tt-id="200" data-tt-parent-id="000">
+			<td><span style="padding-left: 19px;" class="indenter"></span>helpers</td>
+			</tr>
+			<tr class="leaf expanded" data-tt-id="300" data-tt-parent-id="000">
+			<td><span style="padding-left: 19px;" class="indenter"></span>models</td>
+			</tr>
+			<tr class="leaf expanded" data-tt-id="400" data-tt-parent-id="000">
+			<td><span style="padding-left: 19px;" class="indenter"></span>views</td>
+			</tr>-->
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+</div>

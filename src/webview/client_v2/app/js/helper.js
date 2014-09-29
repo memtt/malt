@@ -72,7 +72,7 @@ MattHelper.prototype.ticksToHourMinSec = function(t,ticksPerSec)
 /** Short helper to convert values to human readable format **/	
 MattHelper.prototype.humanReadable = function(value,decimals,unit,protectedSpace)
 {
-	if (value > 1 && value < 1024)
+	if (value >= 1 && value < 1024)
 		decimals = 0;
 	
 	if (value >= 0.1 || value == 0)
@@ -105,6 +105,30 @@ MattHelper.prototype.humanReadable = function(value,decimals,unit,protectedSpace
 	}
 
 	return res;
+}
+
+/********************************************************************/
+MattHelper.prototype.mergeStackMinMaxInfo = function(onto,value)
+{
+	onto.count += value.count;
+	onto.sum += value.sum;
+	if (onto.min == 0 || (value.min < onto.min && value.min != 0))
+		onto.min = value.min;
+	if (onto.max == 0 || (value.max > onto.max && value.max != 0))
+		onto.max = value.max;
+}
+
+/********************************************************************/
+MattHelper.prototype.mergeStackInfoDatas = function(onto,value)
+{
+	onto.countZeros += value.countZeros;
+	onto.maxAliveReq += value.maxAliveReq;
+	onto.aliveReq += value.aliveReq;
+	onto.globalPeak += value.globalPeak;
+
+	this.mergeStackMinMaxInfo(onto.alloc,value.alloc);
+	this.mergeStackMinMaxInfo(onto.free,value.free);
+	this.mergeStackMinMaxInfo(onto.lifetime,value.lifetime);
 }
 
 /**********************************************************************/

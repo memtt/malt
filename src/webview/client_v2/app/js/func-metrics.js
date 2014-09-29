@@ -104,6 +104,16 @@ function MattFuncMetrics()
 {
 }
 
+MattFuncMetrics.prototype.getMetricList = function()
+{
+	var ret = [];
+	for (var i in mattMetrics)
+	{
+		ret.push({name:mattMetrics[i].name,key:i});
+	}
+	return ret;
+}
+
 MattFuncMetrics.prototype.getMetricNames = function()
 {
 	var res = [];
@@ -140,6 +150,10 @@ MattFuncMetrics.prototype.getValueRatio = function(dataElement,metricName,inclus
 
 MattFuncMetrics.prototype.getRef = function(data,metricName)
 {
+// 	if (this.refs == undefined)
+// 		this.buildRefs(data);
+// 	console.log(metricName + " " + this.refs[metricName]);
+// 	return this.refs[metricName];
 	return this.computeRef(data,metricName);
 }
 
@@ -174,4 +188,90 @@ MattFuncMetrics.prototype.computeRef = function(data,metricName)
 	}
 
 	return res;
+}
+
+function MattSelector()
+{
+	this.funcMetrics = new MattFuncMetrics();
+	this.metric = 'alloc.count';
+	this.inclusive = true;
+	this.limit = 10;
+	this.ratio = false;
+	this.query='';
+	this.order = mattMetrics[this.metric].defaultOrder;
+	this.functions = [];
+}
+
+MattSelector.prototype.setData = function(data)
+{
+	this.functions = data;
+	this.onChange();
+}
+
+MattSelector.prototype.getValue = function(x)
+{
+	return this.funcMetrics.getValue(x,this.metric,this.inclusive);
+}
+
+MattSelector.prototype.computeRef = function() 
+{
+	return this.funcMetrics.getRef(this.functions,this.metric);
+}
+
+MattSelector.prototype.getValueRatio = function(x) 
+{
+	return (100 *this.getValue(x)) / this.computeRef();
+}
+
+MattSelector.prototype.getFormattedValue = function(x) 
+{
+	if (this.ratio)
+	{
+		return this.getValueRatio(x).toFixed(1)+"%";
+	} else {
+		return this.funcMetrics.getFormattedValue(x,this.metric,this.inclusive);
+	}
+}
+
+MattSelector.prototype.isReversedOrder = function () {
+	return (this.order == 'desc');
+}
+
+MattSelector.prototype.accepted = function(x)
+{
+	return (this.getValue(x) > 0 && (this.query == '' || x.function.indexOf(this.query) > -1));
+}
+
+MattSelector.prototype.toogleOrder = function()
+{
+	this.order = (this.order == 'asc')?'desc':'asc';
+	this.onChange();
+}
+
+MattSelector.prototype.toogleRatio = function()
+{
+	this.ratio =  !this.ratio;
+	this.onChange();
+}
+
+MattSelector.prototype.toogleInclusive = function()
+{
+	this.inclusive = !this.inclusive;
+	this.onChange();
+}
+
+MattSelector.prototype.getCurMetricName = function()
+{
+	return mattMetrics[this.metric].name;
+}
+
+MattSelector.prototype.selectMetric = function(metric)
+{
+	this.metric = metric.key;
+	this.onChange();
+}
+
+MattSelector.prototype.onChange = function()
+{
+	
 }

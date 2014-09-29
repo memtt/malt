@@ -4,7 +4,7 @@
 		<th>Value</th>
 		<th>Function</th>
 	</tr>
-	<tr ng-repeat="func in functions | orderBy:getValue:getReverse | limitTo:limit" ng-click="selectFunc(func)" ng-class='{"matt-hidden": useHiddenClass(func)}'>
+	<tr ng-repeat="func in functions | orderBy:getValue:getReverse() | limitTo:limit" ng-click="selectFunc(func)" ng-class='{"matt-hidden": useHiddenClass(func)}'>
 		<td class='progress-td'>
 			<div class='progress'>
 				<div class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: {{getValueRatio(func)}}%;">

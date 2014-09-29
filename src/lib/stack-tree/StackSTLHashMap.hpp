@@ -169,6 +169,7 @@ void convertToJson(htopml::JsonState& json, const StackSTLHashMap< U >& value)
 		json.printListSeparator();
 		json.openStruct();
 		json.printField("stack",*it->first.stack);
+		json.printField("stackId",(void*)it->first.stack);
 		json.printField("infos",it->second);
 		json.closeStruct();
 	}

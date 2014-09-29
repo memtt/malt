@@ -1,0 +1,14 @@
+<ul class="nav nav-sidebar" id='matt-func-list'>
+	<li ng-repeat="func in functions | filter:viewFilter | orderBy:getValue:isReversedOrder() | limitTo:limit" ng-click="selectFunc(func)" ng-class='{"matt-hidden": useHiddenClass(func)}' title="{{func.function}}">
+		<a ng-click="selectFunc(func)" href=''>
+			<div class='progress'>
+				<div class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: {{selector.getValueRatio(func)}}%;">
+					<span class="sr-only">60% Complete</span>
+				</div>
+			</div>
+			<span class='size'>{{selector.getFormattedValue(func)}}</span>
+			<span class='func'>{{func.function}}</span>
+		</a>
+	</li>
+</ul>
+
