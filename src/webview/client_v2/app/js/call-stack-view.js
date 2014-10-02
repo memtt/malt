@@ -163,7 +163,7 @@ MattCallStacksView.prototype.addToTree = function(treeNode)
 			rows = rows.attr('data-tt-branch', 'true');
 
 		var a = $('<span>'+i+'</span>').click(treeNode.childs[i],function(event) {
-			cur.onClick(event.data.location,event.data.infos);
+			cur.onClick(event.data.location,{total:treeNode.childs[i].info,own:treeNode.childs[i].info});
 		})
 			.css('cursor','pointer');
 		var td = $('<td/>').append(a);

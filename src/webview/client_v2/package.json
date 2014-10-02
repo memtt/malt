@@ -1,7 +1,7 @@
 {
-  "name": "tuto-angular",
+  "name": "matt-webview",
   "version": "0.0.0",
-  "description": "tuto",
+  "description": "Webview for MATT",
   "main": "index.js",
   "scripts": {
     "postinstall": "bower install",

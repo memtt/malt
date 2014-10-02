@@ -59,12 +59,31 @@ function MattPageTimeline()
 		$scope.$on('selectFunctionFromFuncList',function(event,e) {
 			console.log(e);
 // 			$scope.editor.
+			$scope.file = e.file;
 			$scope.editor.moveToFileFunction(e.file,e.function);
 			$scope.callStacks.updateFunc(e.function);
+			$scope.selectedDetails = e;
 // 			detailView.render(details);
 // 			//callStacks.updateFunc(details.function);
 // 			callStacks.clear();
 		});
+		
+		$scope.formatValue = function(value,unit)
+		{
+			if (value == undefined)
+				return mattHelper.humanReadable(0,1,unit,false);
+			else
+				return mattHelper.humanReadable(value,1,unit,false);
+		}
+
+		$scope.formatRoundedRatio = function(value,divider,unit)
+		{
+			//console.log(value);
+			if (value == undefined || divider == undefined || divider == 0)
+				return mattHelper.humanReadable(0,1,unit,false);
+			else
+				return $scope.formatValue(Math.round(value/divider),unit);
+		}
 		
 		//dispatch update of view mode (metric...)
 		$scope.selector.onChange = function()
@@ -79,6 +98,20 @@ function MattPageTimeline()
 			//$("#matt-source-filename").text(details.file);
 			//detailView.render(details);
 			$scope.callStacks.update(details.file,details.line);
+			$scope.selectedDetails = details;
+			$scope.$apply();
+		}
+		
+		//distpatch click on stack tree
+		$scope.callStacks.onClick = function(location,info)
+		{
+			console.log("click on call stack");
+			console.log(location);
+			console.log(info);
+			//alert(JSON.stringify(info));
+// 			$("#matt-source-filename").text(location.file);
+			$scope.editor.moveToFileFunction(location.file,location.function);
+			$scope.file = location.file;
 		}
 	}]);
 	

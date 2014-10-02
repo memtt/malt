@@ -42,24 +42,24 @@
 				
 					<div>
 						<div><b>Inclusive :</b></div>
-						<div>Allocated memory : {{formatValue(info.total.alloc.sum,'B')}}</div>
-						<div>Freed memory : {{formatValue(info.total.free.sum,'B')}}</div>
-						<div>Max alive memory : {{formatValue(info.total.maxAliveReq,'')}}</div>
+						<div>Allocated memory : {{formatValue(selectedDetails.total.alloc.sum,'B')}}</div>
+						<div>Freed memory : {{formatValue(selectedDetails.total.free.sum,'B')}}</div>
+						<div>Max alive memory : {{formatValue(selectedDetails.total.maxAliveReq,'')}}</div>
 						<div>Leaks : {{info.total.aliveReq}}</div>
-						<div>{{formatValue(info.total.alloc.count,'')}} alloc : [ {{formatValue(info.total.alloc.min,'B')}} , {{formatValue(Math.round(info.total.alloc.sum / info.total.alloc.count),'B')}} , {{formatValue(info.total.alloc.max,'B')}} ]</div>
-						<div>{{formatValue(info.total.free.count,'')}} free : [ {{formatValue(info.total.free.min,'B')}} , {{formatValue(Math.round(info.total.free.sum / info.total.free.count),'B')}} , {{formatValue(info.total.free.max,'B')}} ]</div>
-						<div>Lifetime : [ {{formatValue(info.total.lifetime.min,'')}} , {{formatValue(Math.round(info.total.lifetime.sum / info.total.lifetime.count),'')}} , {{formatValue(info.total.lifetime.max ,'')}} ] (cycles)</div>
+						<div>{{formatValue(selectedDetails.total.alloc.count,'')}} alloc : [ {{formatValue(selectedDetails.total.alloc.min,'B')}} , {{formatRoundedRatio(selectedDetails.total.alloc.sum , selectedDetails.total.alloc.count,'B')}} , {{formatValue(selectedDetails.total.alloc.max,'B')}} ]</div>
+						<div>{{formatValue(selectedDetails.total.free.count,'')}} free : [ {{formatValue(selectedDetails.total.free.min,'B')}} , {{formatRoundedRatio(selectedDetails.total.free.sum , selectedDetails.total.free.count,'B')}} , {{formatValue(selectedDetails.total.free.max,'B')}} ]</div>
+						<div>Lifetime : [ {{formatValue(selectedDetails.total.lifetime.min,'')}} , {{formatRoundedRatio(selectedDetails.total.lifetime.sum , selectedDetails.total.lifetime.count,'')}} , {{formatValue(selectedDetails.total.lifetime.max ,'')}} ] (cycles)</div>
 					</div>
 
 					<div>
 						<div><b>Exclusive :</b></div>
-						<div>Allocated memory : {{formatValue(info.own.alloc.sum,'B')}}</div>
-						<div>Freed memory : {{formatValue(info.own.free.sum,'B')}}</div>
-						<div>Max alive memory : {{formatValue(info.own.maxAliveReq,'')}}</div>
+						<div>Allocated memory : {{formatValue(selectedDetails.own.alloc.sum,'B')}}</div>
+						<div>Freed memory : {{formatValue(selectedDetails.own.free.sum,'B')}}</div>
+						<div>Max alive memory : {{formatValue(selectedDetails.own.maxAliveReq,'')}}</div>
 						<div>Leaks : {{info.own.aliveReq}}</div>
-						<div>{{formatValue(info.own.alloc.count,'')}} alloc : [ {{formatValue(info.own.alloc.min,'B')}} , {{formatValue(Math.round(info.own.alloc.sum / info.own.alloc.count),'B')}} , {{formatValue(info.own.alloc.max,'B')}} ]</div>
-						<div>{{formatValue(info.own.free.count,'')}} free : [ {{formatValue(info.own.free.min,'B')}} , {{formatValue(Math.round(info.own.free.sum / info.own.free.count),'B')}} , {{formatValue(info.own.free.max,'B')}} ]</div>
-						<div>Lifetime : [ {{formatValue(info.own.lifetime.min,'')}} , {{formatValue(Math.round(info.own.lifetime.sum / info.own.lifetime.count),'')}} , {{formatValue(info.own.lifetime.max ,'')}} ] (cycles)</div>
+						<div>{{formatValue(selectedDetails.own.alloc.count,'')}} alloc : [ {{formatValue(selectedDetails.own.alloc.min,'B')}} , {{formatRoundedRatio(selectedDetails.own.alloc.sum , selectedDetails.own.alloc.count,'B')}} , {{formatValue(selectedDetails.own.alloc.max,'B')}} ]</div>
+						<div>{{formatValue(selectedDetails.own.free.count,'')}} free : [ {{formatValue(selectedDetails.own.free.min,'B')}} , {{formatRoundedRatio(selectedDetails.own.free.sum , selectedDetails.own.free.count,'B')}} , {{formatValue(selectedDetails.own.free.max,'B')}} ]</div>
+						<div>Lifetime : [ {{formatValue(selectedDetails.own.lifetime.min,'')}} , {{formatRoundedRatio(selectedDetails.own.lifetime.sum , selectedDetails.own.lifetime.count,'')}} , {{formatValue(selectedDetails.own.lifetime.max ,'')}} ] (cycles)</div>
 					</div>
 				
 				</div>
