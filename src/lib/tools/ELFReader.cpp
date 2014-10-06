@@ -76,27 +76,50 @@ void ElfReader::close(void)
 **/
 void ElfReader::openFile(const std::string& file)
 {
+	//vars
+	Elf_Kind kind;
+	
 	//open
-	FILE * fp = fopen(file.c_str(),"r");
+	fp = fopen(file.c_str(),"r");
+	
 	assumeArg(fp != NULL,"Failed to open file %1 : %2")
 		.arg(file)
 		.argStrErrno()
 		.end();
-	
+
 	//start elf
 	this->elf = elf_begin(fileno(fp),ELF_C_READ,NULL);
-	assumeArg(elf != NULL,"Failed to open ELF file : %1. Error %2 : %3")
-		.arg(file)
-		.arg(elf_errno())
-		.arg(elf_errmsg(elf_errno()))
-		.end();
-	
+	if (this->elf == NULL)
+	{
+		MATT_WARNING_ARG("Failed to open ELF file : %1. Error %2 : %3")
+			.arg(file)
+			.arg(elf_errno())
+			.arg(elf_errmsg(elf_errno()))
+			.end();
+		goto err_elf_begin;
+	}
+
 	//check kind of ELF
-	Elf_Kind kind = elf_kind(elf);
-	assumeArg(kind == ELF_K_ELF,"Invalid kind of elf file, expect ELF (%1), get %2")
-		.arg(ELF_K_ELF)
-		.arg(kind)
-		.end();
+	kind = elf_kind(elf);
+	if (kind != ELF_K_ELF)
+	{
+		MATT_WARNING_ARG("Invalid kind of elf file, expect ELF (%1), get %2")
+			.arg(ELF_K_ELF)
+			.arg(kind)
+			.end();
+		goto err_elf_kind;
+	}
+
+	//ok valid
+	return;
+
+	//error management
+	err_elf_kind:
+		elf_end(elf);
+		this->elf = NULL;
+	err_elf_begin:
+		fclose(fp);
+		fp = NULL;
 }
 
 /*******************  FUNCTION  *********************/
