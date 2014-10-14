@@ -1,0 +1,16 @@
+{
+  "name": "d3-tip",
+  "version": "0.5.4",
+  "main": "src/d3.tip.js",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "components",
+    "examples",
+    "Makefile",
+    "docs"
+  ],
+  "dependencies": {
+    "d3": "~3.3.3"
+  }
+}
