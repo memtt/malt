@@ -15,7 +15,10 @@ function MattProject(file)
 	
 	//load file
 	if (file != undefined)
+	{
+		console.log("loading file "+file+"...");
 		this.loadFile(file);
+	}
 }
 
 /****************************************************/
@@ -44,10 +47,11 @@ MattProject.prototype.loadFile = function(file)
 	this.data = null;
 	this.file = file;
 	var cur = this;
-	console.log("Loading file : " + args.params.input);
 	
 	//read from FS
 	fs.readFile(args.params.input, 'utf8', function (err, buffer) {
+		console.log("Loading file : " + args.params.input);
+
 		//manage errors
 		if (err) {
 			var msg = 'Error: ' + err;
@@ -443,10 +447,10 @@ MattProject.prototype.getSummary = function()
 	//extract global stats
 	ret.globalStats = {};
 	ret.globalStats.segments = this.data.timeline.segments.peakMemory;
-	ret.globalStats.internalMemory  = this.data.timeline.internalMem.peakMemory;
-	ret.globalStats.virtualMem  = this.data.timeline.virtualMem.peakMemory;
-	ret.globalStats.requestedMem  = this.data.timeline.requestedMem.peakMemory;
-	ret.globalStats.physicalMem  = this.data.timeline.physicalMem.peakMemory;
+	ret.globalStats.internalMemory = this.data.timeline.internalMem.peakMemory;
+	ret.globalStats.virtualMem = this.data.timeline.virtualMem.peakMemory;
+	ret.globalStats.requestedMem = this.data.timeline.requestedMem.peakMemory;
+	ret.globalStats.physicalMem = this.data.timeline.physicalMem.peakMemory;
 	
 	//search min/max/count size
 	var min = -1;
@@ -624,6 +628,33 @@ MattProject.prototype.getFullTree = function()
 	}
 	
 	return tree;
+}
+
+/****************************************************/
+MattProject.prototype.toCallgrindFormat = function()
+{
+	//obj to store infos pre-sorted for output
+	var res = {
+		
+	};
+	
+	//loop on each stacks
+	console.log(this);
+	for (var i in this.data.stacks.stats)
+	{
+		var stack = this.data.stacks.stats[i];
+		var callerCallee = this.getStackCallerCalle(stack);
+
+		
+	}
+	return res;
+}
+
+/****************************************************/
+MattProject.prototype.getStackCallerCalle = function(stack)
+{
+	console.log(stack);
+	//leafCallee = 
 }
 
 /****************************************************/

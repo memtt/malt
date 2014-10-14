@@ -3222,11 +3222,7 @@ nv.models.cumulativeLineChart = function() {
       if (!line.values) {
          return line;
       }
-      var indexValue = line.values[idx];
-      if (indexValue == null) {
-        return line;
-      }
-      var v = lines.y()(indexValue, idx);
+      var v = lines.y()(line.values[idx], idx);
 
       //TODO: implement check below, and disable series if series loses 100% or more cause divide by 0 issue
       if (v < -.95 && !noErrorCheck) {
@@ -4650,7 +4646,8 @@ nv.models.indentedTree = function() {
 
             d3.select(this).select('span')
               .attr('class', d3.functor(column.classes) )
-              .text(function(d) { return column.format ? (d[column.key] ? column.format(d[column.key]) : '-') :  (d[column.key] || '-'); });
+              .text(function(d) { return column.format ? column.format(d) :
+                                        (d[column.key] || '-') });
           });
 
         if  (column.showCount) {
