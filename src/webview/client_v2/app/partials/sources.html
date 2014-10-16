@@ -5,11 +5,11 @@
 				<!-- Selection -->
 				<div id='matt-func-list-selector'>
 					<div class="btn-group">
-						<button type="button" class="btn btn-default" ng-click="selector.toogleOrder()" title='Sort order.'><span class='glyphicon glyphicon-sort'/> </button>
-						<button type="button" class="btn btn-default" ng-click="selector.toogleRatio()" title='Show ratio to reference (max or sum) or absolute value.'><b>%</b></button>
-						<button type="button" class="btn btn-default" ng-click="selector.toogleInclusive()" title='Show inclusive or exclusive costs.'><b>I</b></button>
+						<button type="button" class="btn btn-default" ng-click="selector.toogleOrder()" title='Sort order.'><span class='glyphicon' ng-class="{'glyphicon-sort-by-attributes':orderBtnStatus(),'glyphicon-sort-by-attributes-alt':!orderBtnStatus()}"/> </button>
+						<button type="button" class="btn btn-default" ng-class="{'active': selector.ratio}" ng-click="selector.toogleRatio()" title='Show ratio to reference (max or sum) or absolute value.'><b>%</b></button>
+						<button type="button" class="btn btn-default" ng-class="{'active': selector.inclusive}" ng-click="selector.toogleInclusive()" title='Show inclusive or exclusive costs.'><b>I</b></button>
 <!-- 						<span class='dropdown'> -->
-							<button type="button" class="btn btn-default dropdown-toggle" type='button' data-toggle="dropdown" id='dropdownMenu1'>
+							<button type="button" class="btn btn-default dropdown-toggle" type='button' data-toggle="dropdown" id='dropdownMenu1' title="Select metric.">
 								<span>{{selector.getCurMetricName()}}</span>
 								<span class="caret"></span>
 							</button>
@@ -26,6 +26,7 @@
 				<!-- Func lis -->
 				<div class="nav nav-sidebar" id='matt-func-list'>
 					<mattsourcefunclist metric='metric' inclusive='inclusive' functions='functions' limit='limit' order='order' ratio='ratio' query='query' selector='selector'></mattsourcefunclist>
+					<pagination items-per-page="selector.perPage" direction-links="true" boundary-links="false" total-items="selector.totalElements" ng-model="selector.currentPage" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;"></pagination>
 				</div>
 			</div>
 			
@@ -33,37 +34,72 @@
 			<div class="col-sm-7 col-md-8 col-lg-9 main">
 			
 				<!-- Filename -->
+				<div ng-hide='!hasSources()' class="alert alert-warning" role="alert">
+					No source code available !
+				</div>
+				<div ng-hide='hasSources()'>
 				<span id='matt-source-filename'>{{file}}</span>
 			
 				<div id='matt-source-editor'></div>
+				</div>
 				
-				
-				<div id='matt-alloc-info' style="width:30%;float:left;">
-				
-					<div>
-						<div><b>Inclusive :</b></div>
-						<div>Allocated memory : {{formatValue(selectedDetails.total.alloc.sum,'B')}}</div>
-						<div>Freed memory : {{formatValue(selectedDetails.total.free.sum,'B')}}</div>
-						<div>Max alive memory : {{formatValue(selectedDetails.total.maxAliveReq,'')}}</div>
-						<div>Leaks : {{info.total.aliveReq}}</div>
-						<div>{{formatValue(selectedDetails.total.alloc.count,'')}} alloc : [ {{formatValue(selectedDetails.total.alloc.min,'B')}} , {{formatRoundedRatio(selectedDetails.total.alloc.sum , selectedDetails.total.alloc.count,'B')}} , {{formatValue(selectedDetails.total.alloc.max,'B')}} ]</div>
-						<div>{{formatValue(selectedDetails.total.free.count,'')}} free : [ {{formatValue(selectedDetails.total.free.min,'B')}} , {{formatRoundedRatio(selectedDetails.total.free.sum , selectedDetails.total.free.count,'B')}} , {{formatValue(selectedDetails.total.free.max,'B')}} ]</div>
-						<div>Lifetime : [ {{formatValue(selectedDetails.total.lifetime.min,'')}} , {{formatRoundedRatio(selectedDetails.total.lifetime.sum , selectedDetails.total.lifetime.count,'')}} , {{formatValue(selectedDetails.total.lifetime.max ,'')}} ] (cycles)</div>
-					</div>
-
-					<div>
-						<div><b>Exclusive :</b></div>
-						<div>Allocated memory : {{formatValue(selectedDetails.own.alloc.sum,'B')}}</div>
-						<div>Freed memory : {{formatValue(selectedDetails.own.free.sum,'B')}}</div>
-						<div>Max alive memory : {{formatValue(selectedDetails.own.maxAliveReq,'')}}</div>
-						<div>Leaks : {{info.own.aliveReq}}</div>
-						<div>{{formatValue(selectedDetails.own.alloc.count,'')}} alloc : [ {{formatValue(selectedDetails.own.alloc.min,'B')}} , {{formatRoundedRatio(selectedDetails.own.alloc.sum , selectedDetails.own.alloc.count,'B')}} , {{formatValue(selectedDetails.own.alloc.max,'B')}} ]</div>
-						<div>{{formatValue(selectedDetails.own.free.count,'')}} free : [ {{formatValue(selectedDetails.own.free.min,'B')}} , {{formatRoundedRatio(selectedDetails.own.free.sum , selectedDetails.own.free.count,'B')}} , {{formatValue(selectedDetails.own.free.max,'B')}} ]</div>
-						<div>Lifetime : [ {{formatValue(selectedDetails.own.lifetime.min,'')}} , {{formatRoundedRatio(selectedDetails.own.lifetime.sum , selectedDetails.own.lifetime.count,'')}} , {{formatValue(selectedDetails.own.lifetime.max ,'')}} ] (cycles)</div>
-					</div>
+				<div id='matt-alloc-info' style="width:50%;float:left;">
+					<table style="width:100%">
+						<tr>
+							<td colspan="2"><b>Inclusive :</b></td>
+						</tr>
+						<tr>
+							<td>Allocated memory : </td><td> {{formatValue(selectedDetails.total.alloc.sum,'B')}}</td>
+						</tr>
+						<tr>
+							<td>Freed memory : </td><td>{{formatValue(selectedDetails.total.free.sum,'B')}}</td>
+						</tr>
+						<tr>
+							<td>Local peak : </td><td> {{formatValue(selectedDetails.total.maxAliveReq,'B')}}</td>
+						</tr>
+						<tr>
+							<td>Leaks : </td><td>{{selectedDetails.total.aliveReq}}</td>
+						</tr>
+						<tr>
+							<td>{{formatValue(selectedDetails.total.alloc.count,'')}} alloc : </td><td> [ {{formatValue(selectedDetails.total.alloc.min,'B')}} , {{formatRoundedRatio(selectedDetails.total.alloc.sum , selectedDetails.total.alloc.count,'B')}} , {{formatValue(selectedDetails.total.alloc.max,'B')}} ]</td>
+						</tr>
+						<tr>
+							<td>{{formatValue(selectedDetails.total.free.count,'')}} free : </td><td> [ {{formatValue(selectedDetails.total.free.min,'B')}} , {{formatRoundedRatio(selectedDetails.total.free.sum , selectedDetails.total.free.count,'B')}} , {{formatValue(selectedDetails.total.free.max,'B')}} ]</td>
+						</tr>
+						<tr>
+							<td>Lifetime : </td><td> [ {{formatValue(selectedDetails.total.lifetime.min,'')}} , {{formatRoundedRatio(selectedDetails.total.lifetime.sum , selectedDetails.total.lifetime.count,'')}} , {{formatValue(selectedDetails.total.lifetime.max ,'')}} ] (cycles)</div>
+						</tr>
+					</table>
+					<br/>
+					<table ng-hide="hasExlusiveValues()" style="width:100%">
+						<tr>
+							<td colspan="2"><b>Exclusive :</b></td>
+						</tr>
+						<tr>
+							<td>Allocated memory : </td><td> {{formatValue(selectedDetails.own.alloc.sum,'B')}}</td>
+						</tr>
+						<tr>
+							<td>Freed memory : </td><td>{{formatValue(selectedDetails.own.free.sum,'B')}}</td>
+						</tr>
+						<tr>
+							<td>Local peak : </td><td> {{formatValue(selectedDetails.own.maxAliveReq,'B')}}</td>
+						</tr>
+						<tr>
+							<td>Leaks : </td><td>{{selectedDetails.own.aliveReq}}</td>
+						</tr>
+						<tr>
+							<td>{{formatValue(selectedDetails.own.alloc.count,'')}} alloc : </td><td> [ {{formatValue(selectedDetails.own.alloc.min,'B')}} , {{formatRoundedRatio(selectedDetails.own.alloc.sum , selectedDetails.own.alloc.count,'B')}} , {{formatValue(selectedDetails.own.alloc.max,'B')}} ]</td>
+						</tr>
+						<tr>
+							<td>{{formatValue(selectedDetails.own.free.count,'')}} free : </td><td> [ {{formatValue(selectedDetails.own.free.min,'B')}} , {{formatRoundedRatio(selectedDetails.own.free.sum , selectedDetails.own.free.count,'B')}} , {{formatValue(selectedDetails.own.free.max,'B')}} ]</td>
+						</tr>
+						<tr>
+							<td>Lifetime : </td><td> [ {{formatValue(selectedDetails.own.lifetime.min,'')}} , {{formatRoundedRatio(selectedDetails.own.lifetime.sum , selectedDetails.own.lifetime.count,'')}} , {{formatValue(selectedDetails.own.lifetime.max ,'')}} ] (cycles)</div>
+						</tr>
+					</table>
 				
 				</div>
-				<div id='matt-alloc-stacks' style="width:70%;float:left;">
+				<div id='matt-alloc-stacks' style="width:50%;float:left;">
 					<table id='matt-alloc-stacks-tree'>
 						<thead>
 							<tr>

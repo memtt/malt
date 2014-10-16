@@ -27,6 +27,8 @@
 	<script type="text/javascript" src="bower_components/codemirror/lib/codemirror.js"></script>
 	<script type="text/javascript" src="bower_components/codemirror/mode/clike/clike.js"></script>
 	<script type="text/javascript" src="bower_components/angular-ui-codemirror/ui-codemirror.js"></script>
+<!-- 	<script type="text/javascript" src="bower_components/angular-ui-bootstrap-bower/ui-bootstrap.min.js"></script> -->
+	<script type="text/javascript" src="bower_components/angular-ui-bootstrap-bower/ui-bootstrap-tpls.min.js"></script>
 	
 	<!-- use of d3js/nvd3 for graphs -->
 	<script src="bower_components/d3/d3.min.js"></script>
@@ -78,10 +80,10 @@
 				<div class="navbar-collapse collapse">
 				<ul class="nav navbar-nav navbar-right">
 					<li ng-class="{ active: route.current.pageKey == 'home'}"><a href="#/home">Home</a></li>
-					<li><a href="/source-profile.html">Alloc sites</a></li>
+<!-- 					<li><a href="/source-profile.html">Alloc sites</a></li> -->
 					<li ng-class="{ active: route.current.pageKey == 'sources'}"><a href="#/sources">Sources</a></li>
 					<li ng-class="{ active: route.current.pageKey == 'timeline'}"><a href="#/timeline">Timeline analysis</a></li>
-					<li><a href="/max-stack.html">Stack</a></li>
+<!-- 					<li><a href="/max-stack.html">Stack</a></li> -->
 					<li ng-class="{ active: route.current.pageKey == 'stackPeaks'}"><a href="#/stackPeaks">Stack memory</a></li>
 					<li ng-class="{ active: route.current.pageKey == 'allocSizeDistr'}"><a href="#/allocSizeDistr">Alloc sizes</a></li>
 					<li ng-class="{ active: route.current.pageKey == 'realloc'}"><a href="#/realloc">Realloc</a></li>

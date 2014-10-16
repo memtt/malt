@@ -200,11 +200,27 @@ function MattSelector()
 	this.query='';
 	this.order = mattMetrics[this.metric].defaultOrder;
 	this.functions = [];
+	this.currentPage = 1;
+	this.perPage = 10;
+	this.totalElements = 0;
 }
 
 MattSelector.prototype.setData = function(data)
 {
 	this.functions = data;
+	this.onInternalChange();
+}
+
+MattSelector.prototype.onInternalChange = function()
+{
+	var cnt = 0;
+	for(var i in this.functions)
+	{
+		if (this.filter(this.functions[i]))
+			cnt++;
+	}
+	this.totalElements = cnt;
+	console.log(cnt);
 	this.onChange();
 }
 
@@ -233,7 +249,13 @@ MattSelector.prototype.getFormattedValue = function(x)
 	}
 }
 
-MattSelector.prototype.isReversedOrder = function () {
+MattSelector.prototype.filter = function(x) 
+{
+	return (this.getValue(x) > 0 && (this.query == '' || x.function.indexOf(this.query) > -1));
+}
+
+MattSelector.prototype.isReversedOrder = function () 
+{
 	return (this.order == 'desc');
 }
 
@@ -245,19 +267,19 @@ MattSelector.prototype.accepted = function(x)
 MattSelector.prototype.toogleOrder = function()
 {
 	this.order = (this.order == 'asc')?'desc':'asc';
-	this.onChange();
+	this.onInternalChange();
 }
 
 MattSelector.prototype.toogleRatio = function()
 {
 	this.ratio =  !this.ratio;
-	this.onChange();
+	this.onInternalChange();
 }
 
 MattSelector.prototype.toogleInclusive = function()
 {
 	this.inclusive = !this.inclusive;
-	this.onChange();
+	this.onInternalChange();
 }
 
 MattSelector.prototype.getCurMetricName = function()
@@ -268,7 +290,7 @@ MattSelector.prototype.getCurMetricName = function()
 MattSelector.prototype.selectMetric = function(metric)
 {
 	this.metric = metric.key;
-	this.onChange();
+	this.onInternalChange();
 }
 
 MattSelector.prototype.onChange = function()

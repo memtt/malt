@@ -9,7 +9,8 @@ var mattApp = angular.module('matt.app', [
   'matt.page.realloc',
   'matt.page.stackPeaks',
   'matt.page.timeline',
-  'matt.page.sources'
+  'matt.page.sources',
+  'ui.bootstrap'
 ]);
 
 mattApp.config(['$routeProvider',

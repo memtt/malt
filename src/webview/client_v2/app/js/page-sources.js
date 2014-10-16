@@ -13,7 +13,12 @@ function MattPageTimeline()
 		$scope.funcMetrics = new MattFuncMetrics();
 		$scope.metric = 'alloc.count';
 		$scope.inclusive = true;
-		$scope.limit = 30;
+		$scope.limit = 15;
+		
+		$scope.currentPage = 1;
+		$scope.totalItems = 20;
+		$scope.maxSize = 8;
+		
 		$scope.ratio = false;
 		$scope.query='';
 		$scope.order = mattMetrics[$scope.metric].defaultOrder;
@@ -28,6 +33,16 @@ function MattPageTimeline()
 			$scope.functions = data;
 			$scope.selector.setData(data);
 		});
+		
+		$scope.hasSources = function() 
+		{
+			return ($scope.file == "No source file..." || $scope.file == "??");
+		}
+		
+		$scope.orderBtnStatus = function()
+		{
+			return ($scope.selector.order == 'asc');
+		}
 		
 		//buttons
 		$scope.toogleOrder = function()
@@ -67,6 +82,14 @@ function MattPageTimeline()
 // 			//callStacks.updateFunc(details.function);
 // 			callStacks.clear();
 		});
+		
+		$scope.hasExlusiveValues = function()
+		{
+			if ($scope.selectedDetails == undefined || $scope.selectedDetails.own == undefined)
+				return true;
+			else
+				return !($scope.selectedDetails.own.alloc.count > 0 && $scope.selectedDetails.own.alloc.count > 0);
+		}
 		
 		$scope.formatValue = function(value,unit)
 		{
@@ -177,7 +200,7 @@ function MattPageTimeline()
 		
 				$scope.viewFilter = function(x)
 				{
-					return ($scope.getValue(x) > 0 && ($scope.query == '' || x.function.indexOf($scope.query) > -1));
+					return $scope.selector.filter(x);
 				}
 				
 				$scope.selectFunc = function(x) {

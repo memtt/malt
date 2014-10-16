@@ -75,6 +75,9 @@ MattHelper.prototype.humanReadable = function(value,decimals,unit,protectedSpace
 	if (value >= 1 && value < 1024)
 		decimals = 0;
 	
+	if (value == 0)
+		decimals = 0;
+	
 	if (value >= 0.1 || value == 0)
 	{
 		var power = 0;
