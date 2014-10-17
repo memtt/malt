@@ -8,7 +8,7 @@ function MattPageRealloc()
 	//main controler of the page
 	var pageCtrl = mattCtrl.controller('matt.page.realloc.ctrl',['$scope','$http',function($scope,$http) {
 		//fetch summaryData
-		$http.get('/realloc-map.json').success(function(data) {
+		mattDataSource.loadReallocStats($http,function(data) {
 			$scope.reallocMap = data;
 			
 			//search most used

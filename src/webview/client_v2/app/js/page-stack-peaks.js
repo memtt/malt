@@ -8,7 +8,7 @@ function MattPageStackPeaks()
 	//main controler of the page
 	var pageCtrl = mattCtrl.controller('matt.page.stackPeaks.ctrl',['$scope','$http',function($scope,$http) {
 		//fetch summaryData
-		$http.get('/stacks-mem.json').success(function(data) {
+		mattDataSource.loadStackData($http,function(data) {
 			$scope.stackMem = data;
 			$scope.selectedThreadId = 0;
 			

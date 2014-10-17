@@ -111,7 +111,7 @@ MattSourceEditor.prototype.moveToFile = function(file)
 		this.file = null;
 	} else {
 		var cur = this;
-		$.get( "/app-sources"+file,function(data){
+		mattDataSource.loadSourceFile(file,function(data){
 			cur.editor.setOption("mode",cur.getColorationType(file));
 			cur.editor.setValue(data);
 			cur.editor.setCursor(1);
@@ -307,7 +307,7 @@ MattSourceEditor.prototype.updateAnotations = function()
 	var file = this.file;
 	
 	//fetch flat profile of current file
-	$.getJSON("/file-infos.json?file="+file,function(data) {
+	mattDataSource.loadSourceFileAnnotations(file,function(data) {
 
 		//update data with more info than provided by server
 		cur.data = data;

@@ -29,7 +29,7 @@ function MattPageTimeline()
 		$scope.callStacks = new MattCallStacksView('matt-alloc-stacks-tree',$scope.selector);
 
 		//fetch function list datas
-		$http.get('/flat.json').success(function(data) {
+		mattDataSource.loadFlatFunctionStats($http,function(data) {
 			$scope.functions = data;
 			$scope.selector.setData(data);
 		});

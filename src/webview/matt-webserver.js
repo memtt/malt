@@ -220,7 +220,8 @@ app.get('/data/summary.json',function(req,res) {
 
 /****************************************************/
 app.get('/',function(eq,res,next){
-	res.render("page-summary",mattProject.getSummary());
+	res.redirect('client_v2/index.html');
+// 	res.render("page-summary",mattProject.getSummary());
 });
 
 /****************************************************/

@@ -150,7 +150,7 @@ function MattPageTimeline()
 	//main controler of the page
 	var pageCtrl = mattCtrl.controller('matt.page.timeline.ctrl',['$scope','$http',function($scope,$http) {
 		//fetch summaryData
-		$http.get('/timed.json').success(function(data) {
+		mattDataSource.loadTimedData($http,function(data) {
 			$scope.reallocMap = data;
 
 			mattNVDGraph("matt-mem-timeline",mattConvertData(data),'B','Memory');

@@ -70,29 +70,3 @@ mattCtrl.controller('matt.ctrl.funcs', ['$scope', '$http',
 		};
 
 	}]);
-
-mattCtrl.filter('pagination', function() {
-	return function(input, start)
-	{
-	start = +start;
-	return input.slice(start);
-	};
-});
-
-mattCtrl.directive('mattfunclist',function() {
-	return {
-		restrict: 'EA',
-		templateUrl: 'partials/funcs-directive.html',
-		replace: true,
-		scope: {
-			funcs: '=',
-			selected: '@',
-			limit: '@'
-		},
-		link: function ($scope) {
-			$scope.selectFunc = function(func) {
-				alert('click on func : '+func.function);
-			};
-		}
-	};
-});

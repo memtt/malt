@@ -8,7 +8,7 @@ function MattPageAllocSizeDistr()
 	//main controler of the page
 	var pageCtrl = mattCtrl.controller('matt.page.allocSizeDistr.ctrl',['$scope','$http',function($scope,$http) {
 		//fetch summaryData
-		$http.get('/size-map.json').success(function(data) {
+		mattDataSource.getSizeDistr($http,function(data) {
 			$scope.sizeMap = data;
 			
 			//search summary

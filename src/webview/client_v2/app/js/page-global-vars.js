@@ -25,7 +25,7 @@ function MattPageGlobalVars()
 	//main controler of the page
 	var pageCtrl = mattCtrl.controller('matt.page.globalVars.ctrl',['$scope','$http',function($scope,$http) {
 		//fetch summaryData
-		$http.get('/global-variables.json').success(function(data) {
+		mattDataSource.loadGlobalVars($http,function(data) {
 			//keep link to data
 			$scope.globalVars = data;
 			

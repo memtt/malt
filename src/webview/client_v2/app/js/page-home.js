@@ -192,12 +192,12 @@ function MattPageHome()
 		$scope.summaryData = defaultData;
 		
 		//fetch summaryData
-		$http.get('/data/summary.json').success(function(data) {
+		mattDataSource.loadGlobalSummary($http,function(data) {
 			$scope.summaryData = data;
 		});
 		
 		//fetch function list datas
-		$http.get('/flat.json').success(function(data) {
+		mattDataSource.loadFlatFunctionStats($http,function(data) {
 			$scope.functions = data;
 		});
 		
