@@ -168,5 +168,6 @@
   stroke: #2ca02c;
 }
 
-
-
+.matt-selected {
+	font-weight:bold;
+}

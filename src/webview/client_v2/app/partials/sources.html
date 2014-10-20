@@ -35,10 +35,10 @@
 			
 				<!-- Filename -->
 				<div ng-hide='!hasSources()' class="alert alert-warning" role="alert">
-					No source code available !
+					No source code available for function {{function}} !
 				</div>
 				<div ng-hide='hasSources()'>
-				<span id='matt-source-filename'>{{file}}</span>
+				<span id='matt-source-filename'>{{file}} | {{function}}</span>
 			
 				<div id='matt-source-editor'></div>
 				</div>

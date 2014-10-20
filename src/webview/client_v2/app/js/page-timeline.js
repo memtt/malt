@@ -33,7 +33,7 @@ function MattPageTimeline()
 			
 			chart.xAxis //Chart x-axis settings
 				.axisLabel('Time (secondes)')
-				.tickFormat(function(value){return mattHelper.humanReadable(value/(+data.ticksPerSecond),1,'',false);});
+				.tickFormat(function(value){return mattHelper.humanReadableTimes(value/(+data.ticksPerSecond),1,'',false);});
 			
 			chart.yAxis //Chart y-axis settings
 				.axisLabel(ylabel)
@@ -101,6 +101,21 @@ function MattPageTimeline()
 		
 		return {data:res,labels:labels,ticksPerSecond:data.ticksPerSecond};
 	}
+	
+	function mattConvertSysData(data)
+	{
+		var res = new Array();
+		res.push( mattConvertDataInternalD3JS(data.sysFreeMemory) );
+		res.push( mattConvertDataInternalD3JS(data.sysSwapMemory) );
+// 		res.push( mattConvertDataInternalD3JS(data.requestedMem) );
+		
+		var labels = new Array();
+		labels.push("System free memory");
+		labels.push("Swap memory");
+// 		labels.push("Requested memory");
+		
+		return {data:res,labels:labels,ticksPerSecond:data.ticksPerSecond};
+	}
 
 	function mattConvertCnt(data)
 	{
@@ -121,7 +136,7 @@ function MattPageTimeline()
 		res.push( mattConvertDataInternalRateD3JS(data.freeBandwidth,ticksPerSecond) );
 
 		var labels = new Array();
-		labels.push("Alloc");
+		labels.push("Malloc");
 		labels.push("Free");
 		return {data:res,labels:labels,ticksPerSecond:ticksPerSecond};
 	}
@@ -136,7 +151,7 @@ function MattPageTimeline()
 		res.push( mattConvertDataInternalRateD3JS(data.freeCnt,ticksPerSecond) );
 
 		var labels = new Array();
-		labels.push("Alloc");
+		labels.push("Malloc");
 		labels.push("Free");
 		return {data:res,labels:labels,ticksPerSecond:ticksPerSecond};
 	}
@@ -157,6 +172,7 @@ function MattPageTimeline()
 			mattNVDGraph("matt-alive-chunks-timeline",mattConvertCnt(data),'Alive chunks','Allocations');
 			mattNVDGraph("matt-alloc-rate-size-timeline",mattConvertSizeRate(data),'Allocation rate B/s','Memory rate (B/s)');
 			mattNVDGraph("matt-alloc-rate-count-timeline",mattConvertCountRate(data),'Allocation rate op/s','Memory rate (B/s)');
+			mattNVDGraph("matt-sys-free-mem-timeline",mattConvertSysData(data),"B","Memory");
 		});
 	}]);
 }

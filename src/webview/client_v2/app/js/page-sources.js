@@ -27,12 +27,6 @@ function MattPageTimeline()
 		$scope.selector = new MattSelector();
 		$scope.editor = new MattSourceEditor('matt-source-editor',$scope.selector);
 		$scope.callStacks = new MattCallStacksView('matt-alloc-stacks-tree',$scope.selector);
-
-		//fetch function list datas
-		mattDataSource.loadFlatFunctionStats($http,function(data) {
-			$scope.functions = data;
-			$scope.selector.setData(data);
-		});
 		
 		$scope.hasSources = function() 
 		{
@@ -75,6 +69,7 @@ function MattPageTimeline()
 			console.log(e);
 // 			$scope.editor.
 			$scope.file = e.file;
+			$scope.function = e.function;
 			$scope.editor.moveToFileFunction(e.file,e.function);
 			$scope.callStacks.updateFunc(e.function);
 			$scope.selectedDetails = e;
@@ -135,7 +130,23 @@ function MattPageTimeline()
 // 			$("#matt-source-filename").text(location.file);
 			$scope.editor.moveToFileFunction(location.file,location.function);
 			$scope.file = location.file;
+			$scope.function = location.function;
+			$scope.$apply();
 		}
+		
+		//fetch function list datas
+		mattDataSource.loadFlatFunctionStats($http,function(data) {
+			$scope.functions = data;
+			$scope.selector.setData(data);
+			if ($routeParams.func != undefined)
+			{
+				for (var i in data)
+					if (data[i].function == $routeParams.func)
+						$scope.$broadcast('selectFunctionFromFuncList',data[i]);
+			}
+			if ($routeParams.metric != undefined)
+				$scope.selector.selectMetric({key:$routeParams.metric});
+		});
 	}]);
 	
 	pageCtrl.filter('pagination', function() {
@@ -172,6 +183,10 @@ function MattPageTimeline()
 
 				$scope.computeRef = function() {
 					return $scope.funcMetrics.getRef($scope.functions,$scope.metric);
+				}
+				
+				$scope.isSelectedFunc = function(x) {
+					return (x.function == $scope.$parent.function);
 				}
 				
 				$scope.getValueRatio = function(x) {

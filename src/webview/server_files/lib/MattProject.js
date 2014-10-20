@@ -315,6 +315,8 @@ MattProject.prototype.getTimedValues = function()
 	tmp.freeBandwidth = this.data.timeline.freeBandwidth;
 	tmp.allocCnt = this.data.timeline.allocCnt;
 	tmp.freeCnt = this.data.timeline.freeCnt;
+	tmp.sysFreeMemory = this.data.globals.sysFreeMemory;
+	tmp.sysSwapMemory = this.data.globals.sysSwapMemory;
 	return tmp;
 }
 

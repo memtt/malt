@@ -111,6 +111,38 @@ MattHelper.prototype.humanReadable = function(value,decimals,unit,protectedSpace
 }
 
 /********************************************************************/
+MattHelper.prototype.humanReadableTimes = function(value)
+{
+	if (value > 0 && value < 1)
+	{
+		var tmp = value;
+		var exp = 1;
+		while (tmp < 1)
+		{
+			tmp*=10;
+			exp++;
+		}
+		return value.toFixed(exp);
+	}
+	
+	days=Math.floor(value/(60*60*24));
+	hours=Math.floor(value/(60*60)) % 24;
+	minutes=Math.floor(value/60) % 60;
+	seconds=value % 60;
+	
+	var res = "";
+	if (days > 0)
+		res+=days+".";
+	if (hours > 0 || days > 0)
+		res+=hours.toFixed(2)+":";
+	if (hours > 0 || days > 0 || minutes > 0)
+		res+=minutes.toFixed(2)+":";
+	if (hours > 0 || days > 0 || minutes > 0 || seconds > 0)
+		res+=seconds.toFixed(1);
+	return res;
+}
+
+/********************************************************************/
 MattHelper.prototype.mergeStackMinMaxInfo = function(onto,value)
 {
 	onto.count += value.count;

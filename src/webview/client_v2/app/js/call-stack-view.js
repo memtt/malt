@@ -68,7 +68,7 @@ MattCallStacksView.prototype.update = function(file,line)
 	this.asyncState++;
 	var state = this.asyncState;
 
-	$.getJSON("/stacks.json?file="+encodeURIComponent(file)+"&line="+line,function(data) {
+	mattDataSource.getCallStackDataFileLine(file,line,function(data) {
 		if (state == cur.asyncState)
 		{
 			var tree = cur.buildCallTree(data);
@@ -88,7 +88,7 @@ MattCallStacksView.prototype.updateFunc = function(func)
 	this.asyncState++;
 	var state = this.asyncState;
 
-	$.getJSON("/stacks.json?func="+encodeURIComponent(func),function(data) {
+	mattDataSource.getCallStackDataFunc(func,function(data) {
 		if (state == cur.asyncState)
 		{
 			var tree = cur.buildCallTree(data);
