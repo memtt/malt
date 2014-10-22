@@ -66,11 +66,11 @@ set(COMMON_OBJS $<TARGET_OBJECTS:htopml-json>
 
 ######################################################
 add_library(matt-base SHARED ${COMMON_OBJS})
-target_link_libraries(matt-base ${LIB_MATT_DEPS})
+target_link_libraries(matt-base ${LIB_MATT_DEPS} unwind-x86_64)
 
 ######################################################
 add_library(matt SHARED ${COMMON_OBJS} $<TARGET_OBJECTS:matt-libc-wrapper>)
-target_link_libraries(matt ${LIB_MATT_DEPS})
+target_link_libraries(matt ${LIB_MATT_DEPS} unwind-x86_64)
 
 ######################################################
 add_subdirectory(core)

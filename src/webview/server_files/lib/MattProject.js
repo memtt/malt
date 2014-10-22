@@ -328,7 +328,10 @@ MattProject.prototype.genSummaryWarnings = function(data)
 	
 	//check too large recycling ratio
 	if (data.summary.recyclingRatio > 10)
+	{
 		ret.recyclingRatio = ["Caution, you are heavily recycling your memory, it might hurt performance, check the allocation rate."];
+		ret.totalAllocatedMemory = ["Caution, you are heavily recycling your memory, it might hurt performance, check the allocation rate."];
+	}
 	if (data.summary.allocCount > 100000)
 		ret.allocCount = ["Caution, you are doing really large number of memory allocation, it might hurt performance."];
 	if (data.summary.leakMem > data.summary.peakRequestedMemory / 2)

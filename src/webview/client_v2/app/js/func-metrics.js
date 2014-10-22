@@ -85,7 +85,7 @@ var mattMetrics = {
 		ref: 'max'
 	},
 	'lifetime.min': {
-		name: 'Max lifetime',
+		name: 'Min lifetime',
 		extractor: function(x) {return x.lifetime.min;},
 		formatter: function(x) {return mattHelper.humanReadable(x,1,'',false);},
 		defaultOrder: 'asc',
@@ -93,7 +93,7 @@ var mattMetrics = {
 	},
 	'recycling.ratio': {
 		name: 'Recycling ratio',
-		extractor: function(x) {return x.alloc.count == 0 ? 1 : x.alloc.sum / x.alloc.count;},
+		extractor: function(x) {return x.alloc.count == 0 ? 1 : x.alloc.sum / x.alloc.maxAliveReq;},
 		formatter: function(x) {return mattHelper.humanReadable(x,1,'',false);},
 		defaultOrder: 'desc',
 		ref: 'max'
@@ -290,6 +290,7 @@ MattSelector.prototype.getCurMetricName = function()
 MattSelector.prototype.selectMetric = function(metric)
 {
 	this.metric = metric.key;
+	this.order = mattMetrics[this.metric].defaultOrder;
 	this.onInternalChange();
 }
 

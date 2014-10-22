@@ -72,7 +72,11 @@ MattHelper.prototype.ticksToHourMinSec = function(t,ticksPerSec)
 /** Short helper to convert values to human readable format **/	
 MattHelper.prototype.humanReadable = function(value,decimals,unit,protectedSpace)
 {
-	if (value >= 1 && value < 1024)
+	var mul = 1000;
+	if (unit == 'B' || unit == 'B')
+		mul = 1024;
+	
+	if (value >= 1 && value < mul)
 		decimals = 0;
 	
 	if (value == 0)
@@ -81,10 +85,10 @@ MattHelper.prototype.humanReadable = function(value,decimals,unit,protectedSpace
 	if (value >= 0.1 || value == 0)
 	{
 		var power = 0;
-		while (value >= 1024)
+		while (value >= mul)
 		{
 			power++;
-			value /= 1024;
+			value /= mul;
 		}
 
 		var res;

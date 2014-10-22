@@ -263,13 +263,27 @@ app.get('/data.json',function(eq,res,next){
 var staticSourceServer = Express.static('/');
 app.use('/app-sources/',function(req,res,next){
 	
+	var realPath = req.path;
+
+	//check for redirect
+	for (var i in redirs)
+	{
+		if (realPath.indexOf(redirs[i].source) == 0)
+		{
+			realPath = realPath.replace(redirs[i].source,redirs[i].dest)
+			console.log("Apply redirection with override : " + req.path+" -> "+realPath);
+		}
+	}
+	
 	if (mattProject.isSourceFile(req.path))
 	{
-		console.log("Source file request :",req.path);
+		console.log("Source file request :",realPath);
+		req.path = realPath;
+		req.url = realPath;
 		return staticSourceServer(req,res,next);
 	} else {
 		//invalid source request
-		console.log("Try to access invalid source file file :",req.path);
+		console.log("Try to access invalid source file file :",realPath);
 		res.send(404,"File not found");
 	}
 });
@@ -296,12 +310,12 @@ app.use('/client_v2',Express.static(__dirname+'/client_v2/app'));
 app.use('/deps/angular',Express.static(__dirname+'/bower_components/angular'));
 app.use('/deps/angular-route',Express.static(__dirname+'/bower_components/angular-route'));
 
-/*for (var i in redirs)
-{
-	//TODO remove first '/' in strings
-	console.log("override : " + redirs[i].source + " -> " + redirs[i].dest);
-	app.use('/app-sources/'+redirs[i].source,Express.static('/'+redirs[i].dest));
-}*/
+// for (var i in redirs)
+// {
+// 	//TODO remove first '/' in strings
+// 	console.log("override : " + redirs[i].source + " -> " + redirs[i].dest);
+// 	app.use('/app-sources/'+redirs[i].source,Express.static('/'+redirs[i].dest));
+// }
 
 //console.log(JSON.stringify(mattProject.getFullTree(),null,'\t'));
 

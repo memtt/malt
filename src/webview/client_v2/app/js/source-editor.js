@@ -39,7 +39,7 @@ MattSourceEditor.prototype.initRentering = function()
 {
 	//create code mirror
 	this.editor = CodeMirror(this.container,{
-		value: "//function myScript(){return 100;}\n",
+		value: "//Failed to load file\n",
 		mode:  "clike",
 		lineNumbers: true,
 		//theme:'lesser-dark',

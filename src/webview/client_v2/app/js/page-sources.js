@@ -18,6 +18,7 @@ function MattPageTimeline()
 		$scope.currentPage = 1;
 		$scope.totalItems = 20;
 		$scope.maxSize = 8;
+		$scope.maxSize = 4;
 		
 		$scope.ratio = false;
 		$scope.query='';
@@ -126,7 +127,7 @@ function MattPageTimeline()
 			console.log("click on call stack");
 			console.log(location);
 			console.log(info);
-			//alert(JSON.stringify(info));
+// 			alert(JSON.stringify(info));
 // 			$("#matt-source-filename").text(location.file);
 			$scope.editor.moveToFileFunction(location.file,location.function);
 			$scope.file = location.file;
