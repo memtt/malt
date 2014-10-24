@@ -15,6 +15,10 @@
 //select one of the compiler mode
 #cmakedefine MATT_PORTABILITY_COMPILER_GNU
 
+//select one of the backtrace mode
+#cmakedefine MATT_PORTABILITY_BACKTRACE_GLIBC
+#cmakedefine MATT_PORTABILITY_BACKTRACE_LIBUNWIND
+
 //Use code timing to help optimizing MATT code
 #cmakedefine MATT_ENABLE_CODE_TIMING
 

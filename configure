@@ -30,6 +30,7 @@ ENABLE_GCC_COVERAGE=''
 ENABLE_JUNIT_OUT=''
 ENABLE_VALGRIND=''
 LIB_SUFFIX=''
+LIBUNWIND=''
 
 ######################################################
 #Find default source dir
@@ -70,6 +71,7 @@ Optional Features:
 
 To find libs and commands :
    --with-cmake={command}  Define the cmake command to use [cmake].
+   --with-libunwind=...    Define the prefix of libunwind if wanted (-DLIBUNWIND_PREFIX=...)
 
 To get the generated cmake command :
    --show                  Display the cmake command and didn't execute it.
@@ -133,6 +135,9 @@ do
 			;;
 		--with-cmake=*)
 			CMAKE="`get_arg_value \"$arg\" --with-cmake`"
+			;;
+		--with-libunwind=*)
+			LIBUNWIND="`get_arg_value \"$arg\" --with-libunwind`"
 			;;
 		####################################################################
 		#--with-openpa=*)
@@ -223,7 +228,7 @@ gen_clean_command()
 COMMAND="`gen_clean_command "${CMAKE}" "-DCMAKE_BUILD_TYPE=${BUILD_TYPE}" "${PREFIX}" "${EXTRA_CXX}" \
 	"${EXTRA_CXXFLAGS}" "${EXTRA_LDFLAGS}" "${EXTRA_CC}" "${EXTRA_CFLAGS}" \
 	"${ENABLE_SELF_TEST}" "${ENABLE_JUNIT_OUT}" "${ENABLE_VALGRIND}" "${ENABLE_GCC_COVERAGE}" "${DISABLE_TESTS}" \
-	"${LIB_SUFFIX}" "${SOURCE_DIR}"`"
+	"${LIB_SUFFIX}" "${SOURCE_DIR}" "${LIBUNWIND}"`"
 
 ######################################################
 #execute or display

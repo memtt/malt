@@ -12,6 +12,11 @@ if (MATT_PORTABILITY_OS_UNIX)
 endif (MATT_PORTABILITY_OS_UNIX)
 
 ######################################################
+if (MATT_PORTABILITY_BACKTRACE_LIBUNWIND)
+	list(APPEND MATT_PORT_SRC BacktraceLibunwind.cpp)
+endif (MATT_PORTABILITY_BACKTRACE_LIBUNWIND)
+
+######################################################
 list(APPEND MATT_PORT_SRC LinuxProcMapReader.cpp)
 list(APPEND MATT_PORT_SRC CompilerGNU.cpp)
 
