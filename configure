@@ -30,7 +30,7 @@ ENABLE_GCC_COVERAGE=''
 ENABLE_JUNIT_OUT=''
 ENABLE_VALGRIND=''
 LIB_SUFFIX=''
-LIBUNWIND=''
+LIBUNWIND_PREFIX=''
 
 ######################################################
 #Find default source dir
@@ -137,7 +137,7 @@ do
 			CMAKE="`get_arg_value \"$arg\" --with-cmake`"
 			;;
 		--with-libunwind=*)
-			LIBUNWIND="`get_arg_value \"$arg\" --with-libunwind`"
+			LIBUNWIND_PREFIX="-DLIBUNWIND_PREFIX=`get_arg_value \"$arg\" --with-libunwind`"
 			;;
 		####################################################################
 		#--with-openpa=*)
@@ -228,7 +228,7 @@ gen_clean_command()
 COMMAND="`gen_clean_command "${CMAKE}" "-DCMAKE_BUILD_TYPE=${BUILD_TYPE}" "${PREFIX}" "${EXTRA_CXX}" \
 	"${EXTRA_CXXFLAGS}" "${EXTRA_LDFLAGS}" "${EXTRA_CC}" "${EXTRA_CFLAGS}" \
 	"${ENABLE_SELF_TEST}" "${ENABLE_JUNIT_OUT}" "${ENABLE_VALGRIND}" "${ENABLE_GCC_COVERAGE}" "${DISABLE_TESTS}" \
-	"${LIB_SUFFIX}" "${SOURCE_DIR}" "${LIBUNWIND}"`"
+	"${LIB_SUFFIX}" "${SOURCE_DIR}" "${LIBUNWIND_PREFIX}"`"
 
 ######################################################
 #execute or display
