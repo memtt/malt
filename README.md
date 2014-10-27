@@ -10,7 +10,18 @@ statistics about memory usage and help to find memory leaks.
 How to install
 --------------
 
-MATT use CMake for is build system you can install it by following the procudre :
+MATT use CMake for the build system but provide a simple configure wrapper for users
+familiar with autotools packaging so you can install by following the procedure :
+
+	mkdir build
+	cd build
+	../configure --prefix={YOUR_PREFIX}
+	make
+	make test
+	make install
+
+If you want more advance usage you need to call cmake by yourself so you can install it 
+by following the procedure :
 
 	mkdir build
 	cd build
@@ -46,15 +57,24 @@ You can get better performance but less detailed stack by using option
 -finstrument-function or similar on your compiler. Then, you need to tel MATT to use
 the "enter-exit" stack mode :
 
-	MATT_STACK="enter-exit" LD_PRELOD=libmatt.so {YOUR_PROGRAM} [OPTIONS]
+	{YOUR_PREFIX}/bin/matt -m=enter-exit {YOUR_PROGRAM} [OPTIONS]
+
+The matt script only provide a wrapper to automatically preload a dynamic library
+into the executable, you can also do it by hand in cas of issue :
+
+	LD_PRELOAD={YOUR_PREFIX}/lib/libmatt.so {YOUR_PROGRAM} [OPTIONS]
 
 Config
 ------
 
 You can provide a config file to MATT to setup some features. This file use the INI
-format.
+format. With the matt script :
 
-	MATT_CONFIG="myconfig.ini" LD_PRELOAD=libmatt.so {YOUR_PROGRAM} [OPTIONS]
+	{YOUR_PREFIX}/bin/matt -c=config.ini" {YOUR_PROGRAM} [OPTIONS]
+
+By hand :
+
+	MATT_CONFIG="config.ini" LD_PRELOAD=libmatt.so {YOUR_PROGRAM} [OPTIONS]
 
 Example of config file :
 
@@ -98,4 +118,11 @@ Experimental pintool mode
 MATT can also use binary instrumentation mode through pintool 
 (http://software.intel.com/en-us/articles/pin-a-dynamic-binary-instrumentation-tool)
 
-Please, check usage into src/pintool directory for this.
+Please, check usage into src/pintool directory.
+
+Experimental maqao mode
+-----------------------
+
+MATT can also use binary instrumentation with MAQAO (http://maqao.org/). 
+
+Please check usage into src/maqao directory.

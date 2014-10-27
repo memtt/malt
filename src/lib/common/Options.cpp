@@ -43,9 +43,10 @@ Options::Options(void)
 	this->distrAllocSize          = true;
 	this->distrReallocJump        = true;
 	//trace
-	this->traceEnabled            = true;
+	this->traceEnabled            = false;
 	//info
 	this->infoHidden              = false;
+	this->childs                  = false;
 }
 
 /*******************  FUNCTION  *********************/

@@ -107,7 +107,8 @@ function MattPageTimeline()
 		//dispatch update of view mode (metric...)
 		$scope.selector.onChange = function()
 		{
-// 			leftFuncList.render();
+			//TODO use a better way to update the call stack to avoid to redraw it completly (and close it which is bad for user)
+			$scope.callStacks.updateFunc($scope.function);
 			$scope.editor.redrawAnnotations();
 		}
 		

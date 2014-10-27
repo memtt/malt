@@ -58,6 +58,7 @@ struct Options
 	bool traceEnabled;
 	//info
 	bool infoHidden;
+	bool childs;
 };
 
 /*******************  FUNCTION  *********************/

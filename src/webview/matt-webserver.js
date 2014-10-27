@@ -321,5 +321,5 @@ app.use('/deps/angular-route',Express.static(__dirname+'/bower_components/angula
 
 /****************************************************/
 //run express
-console.log("Starting server on http://localhost:" + port);
+console.log("\n\nStarting server on http://localhost:" + port+"\n\n");
 app.listen(port,'localhost');
