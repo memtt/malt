@@ -140,6 +140,7 @@ class AllocStackProfiler
 		size_t peakId;
 		size_t peak;
 		size_t curReq;
+		std::string traceFilename;
 };
 
 }

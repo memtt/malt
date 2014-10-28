@@ -302,17 +302,16 @@ void TraceReaderStackAllocs::onStart(void)
 void TraceReaderStackAllocs::onEnd(void)
 {
 	bool first = true;
-	printf("[");
+	printf("{");
 	for (std::map<const MATT::Stack *,AtTimeInfo>::const_iterator it = map.begin() ; it != map.end() ; ++it)
 	{
 		if (!first)
-		{
-			first = false;
 			printf(",");
-		}
-		printf("\n\t%p: [%lu,%lu]",it->first,it->second.count,it->second.size);
+		else
+			first = false;
+		printf("\n\t\"%p\": [%lu,%lu]",it->first,it->second.count,it->second.size);
 	}
-	printf("\n]\n");
+	printf("\n}\n");
 }
 
 /*******************  FUNCTION  *********************/

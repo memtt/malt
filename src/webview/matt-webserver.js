@@ -13,6 +13,8 @@ var Args        = require('arg-parser');
 var Express     = require('express');
 var clone       = require('clone');
 var engine      = require('ejs-locals');
+var child       = require('child_process');
+
 //internal classes
 var MattProject = require('./server_files/lib/MattProject.js');
 
@@ -141,6 +143,30 @@ app.get('/stacks.json',function(req,res){
 		res.send(500, 'Missing file or line GET parameter !');
 	}
 	res.end();
+});
+
+/****************************************************/
+app.get('/memtrace-at.json',function(req,res) {
+	console.log("At : "+req.query.at);
+	console.log(mattProject.getTraceFilename());
+
+	var at = req.query.at;
+	var traceFile = mattProject.getTraceFilename();
+	if (at == undefined)
+	{
+		res.send(500, 'Missing file GET parameter (at) !');
+	} else if (traceFile == undefined) {
+		res.send(500, 'Missing trace file for the given matt analysis !');
+	} else {
+		child.execFile('matt-trace-reader', [ traceFile, "--mem", "--filter", "at="+at], function(err, stdout, stderr) { 
+			// Node.js will invoke this callback when the 
+			console.log(stdout);
+			var data = JSON.parse(stdout);
+			var data = mattProject.completeMemtraceAt(data);
+			res.write(JSON.stringify(data));
+			res.end();
+		});  
+	}
 });
 
 /****************************************************/

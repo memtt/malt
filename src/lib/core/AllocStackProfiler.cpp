@@ -64,7 +64,10 @@ AllocStackProfiler::AllocStackProfiler(const Options & options,StackMode mode,bo
 	
 	//open trace file
 	if (options.traceEnabled)
-		tracer.open(FormattedMessage(options.outputName).arg(OS::getExeName()).arg(Helpers::getFileId()).arg("trace").toString());
+	{
+		this->traceFilename = FormattedMessage(options.outputName).arg(OS::getExeName()).arg(Helpers::getFileId()).arg("trace").toString();
+		tracer.open(this->traceFilename);
+	}
 
 	//get memory state at start
 	OSMemUsage mem = OS::getMemoryUsage();
@@ -474,6 +477,8 @@ void convertToJson(htopml::JsonState& json, const AllocStackProfiler& value)
 		json.printField("tool","matt-0.0.0");
 		json.printField("date",OS::getDateTime());
 		json.printField("runtime",getticks() - value.trefTicks);
+		if (value.getOptions()->traceEnabled)
+			json.printField("tracefile",value.traceFilename);
 		if (value.getOptions()->infoHidden == false)
 		{
 			json.printField("exe",OS::getExeName());

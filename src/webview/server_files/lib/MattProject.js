@@ -2,6 +2,7 @@
 //deps
 var fs    = require('fs');
 var clone = require('clone');
+var path  = require('path');
 
 /****************************************************/
 /**
@@ -64,6 +65,50 @@ MattProject.prototype.loadFile = function(file)
 		
 		cur.loadData(data);
 	});
+}
+
+/****************************************************/
+/**
+ * Add info about stack to data extracted from traces
+**/
+MattProject.prototype.completeMemtraceAt = function(data)
+{
+	var stats = this.data.stacks.stats;
+	var out = [];
+	
+	for(var i in stats)
+	{
+		//extract some short refs
+		var statsEntry = stats[i];
+		var stack = statsEntry.stack;
+		
+		console.log(statsEntry.stackId + " -> " + data[statsEntry.stackId]);
+		if (data[statsEntry.stackId] != undefined)
+			out.push({stack:statsEntry.detailedStack,info:data[statsEntry.stackId]});
+	}
+	return out;
+}
+
+/****************************************************/
+/**
+ * Just to get the trace filename if available. 
+**/
+MattProject.prototype.getTraceFilename = function()
+{
+	var ret = this.data.run.tracefile;
+	if (ret == undefined)
+	{
+		//TODO add help by giving option
+		console.log("You request usage of trace file but analysis was run without this mode, please re-run your job to get a trace file. !");
+		return undefined;
+	} else {
+		if (this.file != undefined && this.file != "")
+		{
+			var dir = path.dirname(this.file);
+			ret = path.join(dir,ret);
+		}
+	}
+	return ret;
 }
 
 /****************************************************/
