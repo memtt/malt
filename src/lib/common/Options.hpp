@@ -28,10 +28,16 @@ namespace MATT
 {
 
 /********************  STRUCT  **********************/
+/**
+ * Structure to manage the MATT options. It manage loading status from a config 
+ * file in INI format.
+**/
 struct Options
 {
 	Options(void);
 	void loadFromFile(const char * fname);
+	void loadFromString(const char * value);
+	void loadFromIniDic(dictionary * iniDic);
 	void dumpConfig(const char * fname);
 	//vars for stack profilinf
 	bool stackProfileEnabled;
@@ -62,6 +68,9 @@ struct Options
 };
 
 /*******************  FUNCTION  *********************/
+/*
+ * Provide some helper functions to use INI parser.
+**/
 struct IniParserHelper
 {
 	static std::string extractSectionName ( const char * key );

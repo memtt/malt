@@ -43,7 +43,7 @@ Options::Options(void)
 	this->distrAllocSize          = true;
 	this->distrReallocJump        = true;
 	//trace
-	this->traceEnabled            = true;
+	this->traceEnabled            = false;
 	//info
 	this->infoHidden              = false;
 	this->childs                  = false;
@@ -81,15 +81,71 @@ bool Options::operator==(const Options& value) const
 }
 
 /*******************  FUNCTION  *********************/
-void Options::loadFromFile(const char* fname)
+void Options::loadFromString ( const char* value )
 {
-	//load ini dic
-	dictionary * iniDic;
-	assert(fname != NULL);
-	iniDic = iniparser_load(fname);
+	//trivial
+	if (value == NULL)
+		return;
+
+	//create fake dictionary
+	dictionary * dic = dictionary_new(10);
 	
+	//copy string
+	char * dump = strdup(value);
+	
+	//loop on separators ';'
+	char * cur = dump;
+	while (*cur != '\0')
+	{
+		//remind start
+		char * start = cur;
+		char * sep = NULL;
+		
+		//search ';' or '\0'
+		while (*cur != ';' && *cur != '\0')
+		{
+			if (*cur == '=')
+				sep = cur;
+			cur++;
+		}
+		
+		//skip to next
+		if (cur == start)
+		{
+			cur++;
+			continue;
+		}
+		
+		//is end
+		bool isEnd = (*cur == '\0');
+		assumeArg(sep != NULL,"Invalid string format to setup option : '%1', expect SECTION:NAME=VALUE.").arg(start).end();
+		
+		//cut strings
+		*cur = '\0';
+		*sep = '\0';
+		sep++;
+		
+		//setup in INI
+		IniParserHelper::setEntry(dic,start,sep);
+		
+		//move
+		if (isEnd == false)
+			cur++;
+	}
+	
+	//load
+	this->loadFromIniDic(dic);
+
+	//free
+	iniparser_freedict(dic);
+	free(dump);
+}
+
+/*******************  FUNCTION  *********************/
+void Options::loadFromIniDic ( dictionary* iniDic )
+{
 	//errors
-	assumeArg(iniDic != NULL,"Failed to load config file : %1 !").arg(fname);
+	assert(iniDic != NULL);
 	
 	//load values for time profiling
 	this->timeProfileEnabled  = iniparser_getboolean(iniDic,"time:enabled",this->timeProfileEnabled);
@@ -121,6 +177,21 @@ void Options::loadFromFile(const char* fname)
 	
 	//info
 	this->infoHidden          = iniparser_getboolean(iniDic,"info:hidden",this->infoHidden);
+}
+
+/*******************  FUNCTION  *********************/
+void Options::loadFromFile(const char* fname)
+{
+	//load ini dic
+	dictionary * iniDic;
+	assert(fname != NULL);
+	iniDic = iniparser_load(fname);
+	
+	//errors
+	assumeArg(iniDic != NULL,"Failed to load config file : %1 !").arg(fname);
+	
+	//load
+	loadFromIniDic(iniDic);
 	
 	//free dic
 	iniparser_freedict(iniDic);

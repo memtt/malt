@@ -268,6 +268,9 @@ void AllocWrapperGlobal::init(void )
 		const char * configFile = getenv("MATT_CONFIG");
 		if (configFile != NULL)
 			gblState.options->loadFromFile(configFile);
+		const char * envOptions = getenv("MATT_OPTIONS");
+		if (envOptions != NULL)
+			gblState.options->loadFromString(envOptions);
 		
 		//ok do it
 		gblState.profiler = new AllocStackProfiler(*gblState.options,getStackMode(*gblState.options),true);

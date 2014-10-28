@@ -10,6 +10,7 @@
 ######################################################
 ENABLE_MPI=false
 MPI_WRAPPER_DIR="$HOME/.matt"
+MATT_OPTIONS=""
 
 ######################################################
 mattPrepMPI()
@@ -44,14 +45,16 @@ mattPrepMPI()
 ######################################################
 mattShowHelp()
 {
-	echo "Usage : matt [--config=file] [--help] [--] YOUR_COMMAND"
+	echo "Usage : matt [--config file] [--help] [--] YOUR_COMMAND"
 	echo ""
 	echo "Options:"
-	echo "   -c=file/--config=file     Provide configuration file in INI format."
-	echo "           --mpi             Use MPI wrapper to get ranks in output file names."
-	echo "           --prep-mpi=mpicxx Build the mpi wrapper into $HOME/.matt/libmattmpi.so"
-	echo "   -s=mode/--stack=mode      Select the stack tracking mode (backtrace|enter-exit)."
-	echo "   -h/--help                 Show this help message."
+	echo "   -c file/--config file       Provide configuration file in INI format."
+	echo "           --mpi               Use MPI wrapper to get ranks in output file names."
+	echo "           --prep-mpi [mpicxx] Build the mpi wrapper into $HOME/.matt/libmattmpi.so"
+	echo "   -s mode/--stack=mode        Select the stack tracking mode (backtrace|enter-exit)."
+	echo "   -t/--trace                  Enable the tracing mode."
+	echo "   -o SEC:KEY=VAL;...          Override configuration values."
+	echo "   -h/--help                   Show this help message."
 	echo ""
 }
 
@@ -63,13 +66,21 @@ while true; do
 			mattShowHelp
 			exit 0
 		;;
-		--config=*|-c=*)
-			export MATT_CONFIG="`echo "$1" | sed -e 's/^(--config=)|(-c=)//g'`"
+		--config|-c)
+			export MATT_CONFIG="$2"
+			shift 2
+		;;
+		--stack|-s)
+			export MATT_STACK="$2"
+			shift 2
+		;;
+		--trace|-t)
+			export MATT_OPTIONS="${MATT_OPTIONS};trace:enabled=true"
 			shift 1
 		;;
-		--stack=*|-s=*)
-			export MATT_STACK="`echo "$1" | sed -e 's/^(--stack=)|(-s=)//g'`"
-			shift 1
+		--option|-o)
+			export MATT_OPTIONS="${MATT_OPTIONS};$2"
+			shift 2
 		;;
 		--mpi)
 			ENABLE_MPI=true
@@ -79,13 +90,17 @@ while true; do
 			fi
 			shift 1
 		;;
-		--prep-mpi=*)
-			mattPrepMPI "`echo "$1" | sed -e 's/^--prep-mpi=//g'`"
-			shift 1
-		;;
 		--prep-mpi)
-			mattPrepMPI
-			shift 1
+			case "$2" in
+				-*)
+					mattPrepMPI
+					shift 1
+				;;
+				*)
+					mattPrepMPI "$2"
+					shift 2
+				;;
+			esac
 		;;
 		--)
 			shift 1
