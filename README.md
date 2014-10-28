@@ -64,22 +64,21 @@ into the executable, you can also do it by hand in cas of issue :
 
 	LD_PRELOAD={YOUR_PREFIX}/lib/libmatt.so {YOUR_PROGRAM} [OPTIONS]
 
-About stacks
-------------
+Using webview
+-------------
 
-MATT use two ways to rebuild stacks, the default one rely on glibc backtrace but we observe severals 
-segfaults on some intel tools such as Intel OpenMP and Intel MPI so we also provide a more robust 
-approach based on libunwind if present on your system at build time. You can provide it with :
+You can use the webview by calling command `matt-webview` as :
 
-	../configure --with-libunwind=PREFIX
-	
-or on cmake :
+	matt-webview [-p PORT] -i matt-YOUR_PROGRAM-1234.json
 
-	cmake -DLIBUNWIND_PREFIX=PREFIX ..
+It will open a server listening localy on port 8080 so you can open your web browser
+to connect to the web interface via http://localhost:8080.
 
-The alternative rely on function instrumentation by adding prove on start/end for each function.
-It can be done by using -finstrument-function on your compiler juste as described in "How to use" section
-or by using binary instrumentation tools juste as explained at the end of this document.
+If you are running the view remotly thought SSH you can redirect the ports by using :
+
+	ssh -L 8080:localhost:8080 user@ssh-server
+
+To use the webview you need to install the nodeJS package on your system : http://nodejs.org/.
 
 Config
 ------
@@ -113,21 +112,22 @@ Example of config file :
 	callgrind=true        ; enable callgrind output
 	config=true           ; dump current config
 
-Using webview
--------------
+About stacks
+------------
 
-You can use the webview by calling command `matt-webview` as :
+MATT use two ways to rebuild stacks, the default one rely on glibc backtrace but we observe severals 
+segfaults on some intel tools such as Intel OpenMP and Intel MPI so we also provide a more robust 
+approach based on libunwind if present on your system at build time. You can provide it with :
 
-	matt-webview [-p PORT] -i matt-YOUR_PROGRAM-1234.json
+	../configure --with-libunwind=PREFIX
+	
+or on cmake :
 
-It will open a server listening localy on port 8080 so you can open your web browser
-to connect to the web interface via http://localhost:8080.
+	cmake -DLIBUNWIND_PREFIX=PREFIX ..
 
-If you are running the view remotly thought SSH you can redirect the ports by using :
-
-	ssh -L 8080:localhost:8080 user@ssh-server
-
-To use the webview you need to install the nodeJS package on your system : http://nodejs.org/.
+The alternative rely on function instrumentation by adding prove on start/end for each function.
+It can be done by using -finstrument-function on your compiler juste as described in "How to use" section
+or by using binary instrumentation tools juste as explained at the end of this document.
 
 Experimental pintool mode
 -------------------------
