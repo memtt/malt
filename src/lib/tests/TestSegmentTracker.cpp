@@ -66,7 +66,7 @@ TEST(TestSegmentTracker,testGetOK)
 	//try to get
 	SegmentInfo * info = tracker.get(CST_ADDR1);
 	ASSERT_NOT_NULL(info);
-	EXPECT_EQ(64,info->size);
+	EXPECT_EQ(64UL,info->size);
 }
 
 /*******************  FUNCTION  *********************/
@@ -125,7 +125,7 @@ TEST(TestSegmentTracker,testMunmap1)
 	
 	SegmentInfo * info = tracker.get((void*)0x100);
 	EXPECT_NOT_NULL(info);
-	EXPECT_EQ(0x100,info->size);
+	EXPECT_EQ(0x100U,info->size);
 }
 
 /*******************  FUNCTION  *********************/
@@ -143,7 +143,7 @@ TEST(TestSegmentTracker,testMunmap2)
 	
 	SegmentInfo * info = tracker.get((void*)0x100);
 	EXPECT_NOT_NULL(info);
-	EXPECT_EQ(0x100,info->size);
+	EXPECT_EQ(0x100U,info->size);
 }
 
 /*******************  FUNCTION  *********************/
@@ -164,7 +164,7 @@ TEST(TestSegmentTracker,testMunmap3)
 	
 	info = tracker.get((void*)0x180);
 	ASSERT_NOT_NULL(info);
-	EXPECT_EQ(0x080,info->size);
+	EXPECT_EQ(0x080U,info->size);
 }
 
 /*******************  FUNCTION  *********************/
@@ -185,7 +185,7 @@ TEST(TestSegmentTracker,testMunmap4)
 	
 	info = tracker.get((void*)0x100);
 	ASSERT_NOT_NULL(info);
-	EXPECT_EQ(0x080,info->size);
+	EXPECT_EQ(0x080U,info->size);
 }
 
 /*******************  FUNCTION  *********************/
@@ -203,9 +203,9 @@ TEST(TestSegmentTracker,testMunmap5)
 	
 	SegmentInfo * info = tracker.get((void*)0x100);
 	ASSERT_NOT_NULL(info);
-	EXPECT_EQ(0x040,info->size);
+	EXPECT_EQ(0x040U,info->size);
 	
 	info = tracker.get((void*)0x1C0);
 	ASSERT_NOT_NULL(info);
-	EXPECT_EQ(0x040,info->size);
+	EXPECT_EQ(0x040U,info->size);
 }

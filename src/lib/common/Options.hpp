@@ -33,6 +33,8 @@ namespace MATT
 /**
  * Structure to manage the MATT options. It manage loading status from a config 
  * file in INI format.
+ * 
+ * @brief Structure to manage all the MATT options.
 **/
 struct Options
 {
@@ -93,7 +95,7 @@ static inline Options & getOptions(void)
 {
 	assert(gblOptions != NULL);
 	return *gblOptions;
-};
+}
 
 /*******************  FUNCTION  *********************/
 /*

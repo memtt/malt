@@ -196,6 +196,9 @@ Stack* LocalAllocStackProfiler::getStack(void )
 			return &enterExitStack;
 		case STACK_MODE_USER:
 			return NULL;
+		default:
+			MATT_FATAL("Invalid stack mode !");
+			return NULL;
 	}
 }
 

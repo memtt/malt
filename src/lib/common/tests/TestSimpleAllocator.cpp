@@ -124,9 +124,9 @@ TEST(SimpleAllocator,refillNonMultiple)
 TEST(SimpleAllocator,getTotalAndInUseAndUnusedMemory)
 {
 	SimpleAllocator alloc;
-	EXPECT_EQ(0,alloc.getTotalMemory());
-	EXPECT_EQ(0,alloc.getUnusedMemory());
-	EXPECT_EQ(0,alloc.getInuseMemory());
+	EXPECT_EQ(0UL,alloc.getTotalMemory());
+	EXPECT_EQ(0UL,alloc.getUnusedMemory());
+	EXPECT_EQ(0UL,alloc.getInuseMemory());
 	alloc.malloc(32);
 	EXPECT_EQ(MATT_ALLOC_SYS_REQ_SIZE,alloc.getTotalMemory());
 	EXPECT_EQ(MATT_ALLOC_SYS_REQ_SIZE-32-sizeof(Chunk),alloc.getUnusedMemory());

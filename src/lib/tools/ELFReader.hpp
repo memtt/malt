@@ -75,7 +75,7 @@ class ElfReader
 		void libelfInit(void);
 		void openFile(const std::string & file);
 		void close(void);
-		Elf_Scn * getSectionByType(int type);
+		Elf_Scn* getSectionByType( size_t type );
 		ElfStringTable getStringTable(int secId);
 	private:
 		/** Keep track of libelf handler until close. **/

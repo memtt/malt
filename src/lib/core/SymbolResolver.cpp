@@ -311,7 +311,7 @@ void SymbolResolver::resolveNames(LinuxProcMapEntry * procMapEntry)
 	//read all entries
 	char bufferFunc[2*4096];
 	char bufferFile[4096];
-	int i = 0;
+	size_t i = 0;
 	while (!feof(fp))
 	{
 		//read the two lines
@@ -426,7 +426,7 @@ const CallSite* SymbolResolver::getCallSiteInfo(void* site) const
 /*******************  FUNCTION  *********************/
 const std::string& SymbolResolver::getString(int id) const
 {
-	assert(id < strings.size());
+	assert((size_t)id < strings.size());
 	return strings[id];
 }
 

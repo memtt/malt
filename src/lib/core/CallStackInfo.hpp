@@ -65,7 +65,7 @@ struct CallStackInfo
 		ssize_t alive;
 		ssize_t maxAlive;
 		ssize_t peak;
-		ssize_t peakId;
+		size_t peakId;
 		size_t reallocCount;
 		size_t reallocDelta;
 };

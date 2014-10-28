@@ -144,7 +144,7 @@ std::string OSUnix::getExeName(void)
 	
 	//read
 	size_t res = readlink(cstExeFile,buffer,sizeof(buffer));
-	assumeArg(res != -1,"Fail to read link %1 : %2 !").arg(cstExeFile).argStrErrno().end();
+	assumeArg(res != (size_t)-1,"Fail to read link %1 : %2 !").arg(cstExeFile).argStrErrno().end();
 	assume(res < sizeof(buffer),"Fail to read link to get exe name. Maybe buffer is too small.");
 	
 	//put \0

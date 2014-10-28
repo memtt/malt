@@ -239,8 +239,8 @@ template <class T>
 void ProfiledValue<T>::reshape(ticks t)
 {
 	//save old start/end
-	int oldStart = start;
-	int oldEnd = end;
+	ticks oldStart = start;
+	ticks oldEnd = end;
 	ticks oldPerPoints = perPoints;
 	
 	//update start/end

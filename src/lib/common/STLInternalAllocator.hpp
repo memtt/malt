@@ -17,8 +17,12 @@ namespace MATT
 {
 
 /*********************  CLASS  **********************/
-//Inspired from http://www.codeproject.com/Articles/4795/C-Standard-Allocator-An-Introduction-and-Implement
-//Thanks to Lai Shiaw San Kent
+/**
+ * Inspired from http://www.codeproject.com/Articles/4795/C-Standard-Allocator-An-Introduction-and-Implement
+ * Thanks to Lai Shiaw San Kent
+ * 
+ * @brief STL allocator to redirect STL map/list onto our own internal allocator.
+**/
 template<typename T>
 class STLInternalAllocator {
 	public : 

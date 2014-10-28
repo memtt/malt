@@ -169,7 +169,7 @@ void ProfiledStateValue::resize(void )
 	//merge points
 	int outId = 0;
 	ProfiledStateValueEntry tmp = entries[0];
-	for (int i = 1 ; i < steps ; i++)
+	for (size_t i = 1 ; i < steps ; i++)
 	{
 		if (entries[i].index > startIndex + (outId + 1) * deltaIndex && tmp.index != 0)
 		{
@@ -190,17 +190,17 @@ void convertToJson(htopml::JsonState& json, const ProfiledStateValue& value)
 	json.openStruct();
 	
 	json.openFieldArray("min");
-	for (int i = 0 ; i < value.currentId ; i++)
+	for (size_t i = 0 ; i < value.currentId ; i++)
 		json.printValue(value.entries[i].min);
 	json.closeFieldArray("min");
 	
 	json.openFieldArray("max");
-	for (int i = 0 ; i < value.currentId ; i++)
+	for (size_t i = 0 ; i < value.currentId ; i++)
 		json.printValue(value.entries[i].max);
 	json.closeFieldArray("max");
 	
 	json.openFieldArray("index");
-	for (int i = 0 ; i < value.currentId ; i++)
+	for (size_t i = 0 ; i < value.currentId ; i++)
 	{
 		assert(value.entries[i].index > value.startIndex);
 		json.printValue(value.entries[i].index - value.startIndex);
@@ -210,7 +210,7 @@ void convertToJson(htopml::JsonState& json, const ProfiledStateValue& value)
 	if (value.hasLocation)
 	{
 		json.openFieldArray("location");
-		for (int i = 0 ; i < value.currentId ; i++)
+		for (size_t i = 0 ; i < value.currentId ; i++)
 			json.printValue(value.entries[i].location);
 		json.closeFieldArray("location");
 	}
@@ -218,7 +218,7 @@ void convertToJson(htopml::JsonState& json, const ProfiledStateValue& value)
 	if (value.printTimestamps)
 	{
 		json.openFieldArray("timestamp");
-			for (int i = 0 ; i < value.currentId ; i++)
+			for (size_t i = 0 ; i < value.currentId ; i++)
 			{
 				assert(value.entries[i].timestamp > value.startTime);
 				json.printValue(value.entries[i].timestamp - value.startTime);

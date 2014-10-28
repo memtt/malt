@@ -88,6 +88,8 @@ namespace MATT
 }
 //... You non locked code here...
  * @endcode
+ *
+ * @brief Wrapper class to implement RAII method for thread locking.
 **/
 template <class T>
 class TakeLock

@@ -47,7 +47,7 @@ void CodeTiming::registerTimer(CodeTiming* timer)
 	assert(timer != NULL);
 	if (globalStart == 0)
 		globalStart = getticks();
-	assert(globalCntTimers < sizeof(globalTimers)/sizeof(globalTimers[0]));
+	assert((size_t)globalCntTimers < sizeof(globalTimers)/sizeof(globalTimers[0]));
 	globalTimers[globalCntTimers++] = timer;
 }
 

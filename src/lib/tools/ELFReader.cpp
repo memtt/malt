@@ -149,7 +149,7 @@ void ElfReader::libelfInit(void)
  * @param type Type of section to return.
  * @return Pointer to the section (freed by libelf) of NULL if not found.
 **/
-Elf_Scn* ElfReader::getSectionByType(int type)
+Elf_Scn* ElfReader::getSectionByType(size_t type)
 {
 	//errors
 	assert(elf != NULL);

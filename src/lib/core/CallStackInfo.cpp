@@ -119,7 +119,7 @@ void CallStackInfo::onAllocEvent(size_t value,size_t peakId)
 /*******************  FUNCTION  *********************/
 void CallStackInfo::onFreeLinkedMemory(size_t value, ticks lifetime,size_t peakId)
 {
-	assert(alive >= value);
+	assert(alive >= (ssize_t)value);
 	assert(alive >= 0);
 	
 	updatePeak(peakId);

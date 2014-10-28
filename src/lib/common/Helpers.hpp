@@ -20,6 +20,8 @@ namespace MATT
 /********************  STRUCT  **********************/
 /**
  * Struct to aggregate all global helper functions (might be better to be a namespace).
+ * 
+ * @brief Simple container to aggregate some helper functions.
 **/
 struct Helpers
 {

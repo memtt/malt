@@ -75,7 +75,7 @@ void FormattedMessage::toStream(std::ostream& out) const
 	size_t size = format.size();
 	
 	//loop over format
-	int i = 0;
+	size_t i = 0;
 	while (i < size)
 	{
 		//has %, capture of %%
@@ -130,7 +130,7 @@ std::string FormattedMessage::toString(void) const
 void FormattedMessage::pushValue(std::ostream & out,int id) const
 {
 	//manage errors
-	if (id == 0 || id > entries.size())
+	if (id == 0 || (size_t)id > entries.size())
 	{
 		fprintf(stderr,"Warning : missing ID=%d in formatted message '%s' !\n",id,format.c_str());
 		out << '%' << id;

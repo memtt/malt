@@ -95,7 +95,7 @@ void ProfiledCumulValue::reshape(ticks neededIndex)
 	memset(this->entries,0,sizeof(size_t) * steps);
 	
 	//recompute values
-	for (int i = 0 ; i < steps ; i++)
+	for (size_t i = 0 ; i < steps ; i++)
 		entries[i/ratio] += oldEntries[i];
 	
 	this->ticksPerEntry = newTickPerEntry;

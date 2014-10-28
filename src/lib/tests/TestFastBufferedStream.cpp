@@ -83,7 +83,7 @@ TEST_F(TestFastBufferdStream,putCStringLong)
 	//setup long chain
 	char buffer[1024];
 	char buffer2[1024];
-	for (int i = 0 ; i < sizeof(buffer) ; i++)
+	for (size_t i = 0 ; i < sizeof(buffer) ; i++)
 	{
 		buffer[i] = 'a';
 		buffer2[i] = 'a';

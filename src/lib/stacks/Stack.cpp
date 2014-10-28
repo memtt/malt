@@ -17,6 +17,7 @@
 //internals from common
 #include <common/SimpleAllocator.hpp>
 #include <core/SymbolResolver.hpp>
+#include <common/Debug.hpp>
 //locals
 #include "Stack.hpp"
 
@@ -174,6 +175,9 @@ StackHash Stack::hash ( int skipDepth ) const
 			return hash(stack+skipDepth,size - skipDepth,order);
 		case STACK_ORDER_DESC:
 			return hash(stack,size - skipDepth,order);
+		default:
+			MATT_FATAL("Invalid order !");
+			return 0;
 	}
 }
 
@@ -247,6 +251,8 @@ void* Stack::operator[](int idx) const
 			return stack[idx];
 		case STACK_ORDER_DESC:
 			return stack[size - idx - 1];
+		default:
+			return NULL;
 	}
 }
 
@@ -439,6 +445,8 @@ void* Stack::getCallee(void ) const
 				return stack[0];
 			case STACK_ORDER_DESC:
 				return stack[size-1];
+			default:
+				return NULL;
 		}
 	}
 }
@@ -460,6 +468,8 @@ void* Stack::getCaller(void ) const
 				return stack[1];
 			case STACK_ORDER_DESC:
 				return stack[size-2];
+			default:
+				return NULL;
 		}
 	}
 }
