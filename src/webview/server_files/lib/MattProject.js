@@ -488,6 +488,11 @@ MattProject.prototype.getSummaryV2 = function()
 	//summary warnings
 	ret.summaryWarnings = this.genSummaryWarnings(ret);
 	
+	//thread stats
+	ret.threadStats = [];
+	for (var i in this.data.threads)
+		ret.threadStats.push(this.data.threads[i].stats);
+
 	//return
 	return ret;
 }

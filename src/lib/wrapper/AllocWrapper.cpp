@@ -362,10 +362,13 @@ void * malloc(size_t size)
 
 	//run the default function
 	assert(gblState.status > ALLOC_WRAP_INIT_SYM);
+	
+	ticks t = getticks();
 	void * res = gblState.malloc(size);
+	t = getticks() - t;
 
 	//profile
-	MATT_WRAPPER_LOCAL_STATE_ACTION(localState.profiler->onMalloc(res,size));
+	MATT_WRAPPER_LOCAL_STATE_ACTION(localState.profiler->onMalloc(res,size,t,MALLOC_KIND_MALLOC));
 
 	//return segment to user
 	return res;
@@ -384,7 +387,7 @@ void free(void * ptr)
 	MATT_WRAPPER_LOCAL_STATE_INIT;
 
 	//profile
-	MATT_WRAPPER_LOCAL_STATE_ACTION(localState.profiler->onFree(ptr));
+	MATT_WRAPPER_LOCAL_STATE_ACTION(localState.profiler->onFree(ptr,0));
 
 	//run the default function
 	assert(gblState.status > ALLOC_WRAP_INIT_SYM);
@@ -415,10 +418,13 @@ void * calloc(size_t nmemb,size_t size)
 	
 	//run the default function
 	assert(gblState.status > ALLOC_WRAP_INIT_SYM);
+	
+	ticks t = getticks();
 	void * res = gblState.calloc(nmemb,size);
+	t = getticks() - t;
 
 	//profile
-	MATT_WRAPPER_LOCAL_STATE_ACTION(localState.profiler->onCalloc(res,nmemb,size));
+	MATT_WRAPPER_LOCAL_STATE_ACTION(localState.profiler->onCalloc(res,nmemb,size,t));
 
 	//return result to user
 	return res;
@@ -440,10 +446,13 @@ void * realloc(void * ptr, size_t size)
 
 	//run the default function
 	assert(gblState.status > ALLOC_WRAP_INIT_SYM);
+	
+	ticks t = getticks();
 	void * res = gblState.realloc(ptr,size);
+	t = getticks() - t;
 	
 	//profile
-	MATT_WRAPPER_LOCAL_STATE_ACTION(localState.profiler->onRealloc(ptr,res,size));
+	MATT_WRAPPER_LOCAL_STATE_ACTION(localState.profiler->onRealloc(ptr,res,size,t));
 	
 	return res;
 }
@@ -460,10 +469,13 @@ int posix_memalign(void ** memptr,size_t align, size_t size)
 
 	//run the default function
 	assert(gblState.status > ALLOC_WRAP_INIT_SYM);
+	
+	ticks t = getticks();
 	int res = gblState.posix_memalign(memptr,align,size);
+	t = getticks() - t;
 
 	//profile
-	MATT_WRAPPER_LOCAL_STATE_ACTION(localState.profiler->onMalloc(*memptr,size));
+	MATT_WRAPPER_LOCAL_STATE_ACTION(localState.profiler->onMalloc(*memptr,size,t,MALLOC_KIND_POSIX_MEMALIGN));
 
 	//return segment to user
 	return res;
@@ -474,17 +486,20 @@ int posix_memalign(void ** memptr,size_t align, size_t size)
  * Wrapper of the aligned_alloc function to capture allocations. The original symbol will be
  * search by dlsym() in AllocWrapperGlobal::init() .
 **/
-void *aligned_alloc(size_t alignment, size_t size)
+void * aligned_alloc(size_t alignment, size_t size)
 {
 	//get local TLS and check init
 	MATT_WRAPPER_LOCAL_STATE_INIT
 
 	//run the default function
 	assert(gblState.status > ALLOC_WRAP_INIT_SYM);
+	
+	ticks t = getticks();
 	void * res = gblState.aligned_alloc(alignment,size);
+	t = getticks() - t;
 
 	//profile
-	MATT_WRAPPER_LOCAL_STATE_ACTION(localState.profiler->onMalloc(res,size));
+	MATT_WRAPPER_LOCAL_STATE_ACTION(localState.profiler->onMalloc(res,size,t,MALLOC_KIND_ALIGNED_ALLOC));
 
 	//return segment to user
 	return res;
@@ -502,10 +517,13 @@ void *memalign(size_t alignment, size_t size)
 
 	//run the default function
 	assert(gblState.status > ALLOC_WRAP_INIT_SYM);
+	
+	ticks t = getticks();
 	void * res = gblState.memalign(alignment,size);
+	t = getticks() - t;
 
 	//profile
-	MATT_WRAPPER_LOCAL_STATE_ACTION(localState.profiler->onMalloc(res,size));
+	MATT_WRAPPER_LOCAL_STATE_ACTION(localState.profiler->onMalloc(res,size,t,MALLOC_KIND_POSIX_MEMALIGN));
 
 	//return segment to user
 	return res;
@@ -523,10 +541,13 @@ void *valloc(size_t size)
 
 	//run the default function
 	assert(gblState.status > ALLOC_WRAP_INIT_SYM);
+	
+	ticks t = getticks();
 	void * res = gblState.valloc(size);
+	t = getticks() - t;
 
 	//profile
-	MATT_WRAPPER_LOCAL_STATE_ACTION(localState.profiler->onMalloc(res,size));
+	MATT_WRAPPER_LOCAL_STATE_ACTION(localState.profiler->onMalloc(res,size,t,MALLOC_KIND_VALLOC));
 
 	//return segment to user
 	return res;
@@ -544,10 +565,13 @@ void *pvalloc(size_t size)
 
 	//run the default function
 	assert(gblState.status > ALLOC_WRAP_INIT_SYM);
+	
+	ticks t = getticks();
 	void * res = gblState.pvalloc(size);
+	t = getticks() - t;
 
 	//profile
-	MATT_WRAPPER_LOCAL_STATE_ACTION(localState.profiler->onMalloc(res,size));
+	MATT_WRAPPER_LOCAL_STATE_ACTION(localState.profiler->onMalloc(res,size,t,MALLOC_KIND_PVALLOC));
 
 	//return segment to user
 	return res;

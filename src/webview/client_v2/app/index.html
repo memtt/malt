@@ -57,6 +57,7 @@
 	<script src="js/page-stack-peaks.js"></script>
 	<script src="js/page-timeline.js"></script>
 	<script src="js/page-sources.js"></script>
+	<script src="js/page-per-thread.js"></script>
 	
 	<!-- MATT OLD CSS -->
 	<link href='/style.css' rel="stylesheet">
@@ -82,6 +83,7 @@
 				<div class="navbar-collapse collapse">
 				<ul class="nav navbar-nav navbar-right">
 					<li ng-class="{ active: route.current.pageKey == 'home'}"><a href="#/home">Home</a></li>
+					<li ng-class="{ active: route.current.pageKey == 'per-thread'}"><a href="#/per-thread">Threads</a></li>
 <!-- 					<li><a href="/source-profile.html">Alloc sites</a></li> -->
 					<li ng-class="{ active: route.current.pageKey == 'sources'}"><a href="#/sources">Sources</a></li>
 					<li ng-class="{ active: route.current.pageKey == 'timeline'}"><a href="#/timeline">Timeline analysis</a></li>

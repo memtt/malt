@@ -21,6 +21,11 @@ mattApp.config(['$routeProvider',
 			controller: 'matt.page.home.ctrl',
 			pageKey: 'home'
 		}).
+		when('/per-thread', {
+			templateUrl: 'partials/per-thread.html',
+			controller: 'matt.page.perthread.ctrl',
+			pageKey: 'per-thread'
+		}).
 		when('/help', {
 			templateUrl: 'partials/help.html',
 			pageKey: 'help'

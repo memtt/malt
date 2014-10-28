@@ -26,7 +26,8 @@ Not so much work
  * Use a dynamic lib to load tracer reader into node instead of using process output forward, might bt ok by using nodejs c++ wrappers
  * Permit to mark some user function as alloc function for inclusive/exclusive (ideally, click on function and 'mark as alloc wrapper')
    It might apply in isAllocFunction()
-   
+ * Remove the libs virtual memorty in virtual memory charts ?
+ 
 Need work
 ---------
 

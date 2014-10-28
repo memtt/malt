@@ -41,6 +41,46 @@ a = realloc(a,64);        //Total requested = 64
 free(a);                  //Total requested = 0
 </pre>
 
+<h2>Virtual memory</h2>
+
+<p>This is the memory the memory allocator (<code>malloc</code>) has requested to the system. Here, we remind that memory management is done at page (4K segments) granularity
+by the OS. When you request an allocation of 16 bytes, the allocator must request a least 4Kb to the OS through the <code>mmap</code> system call. 
+We can illustrate with the given code :</p>
+
+<pre>
+                          //initial virtual = 0
+void * a = malloc(16);    //Total virtual = 4K
+void * b = malloc(16);    //Total virtual = 4K
+free(b);                  //Total virtual = 4K
+b = malloc(16K);          //Total virtual = 20K
+free(b);                  //Total virtual = 20k
+a = realloc(a,64);        //Total virtual = 20K
+free(a);                  //Total virtual = 0
+</pre>
+
+<p>There is no guaranty that the allocator return the virtual memory immediatly, it might keep it for latter use. In practive it appens only for small segments (upper magnitude is roughtly 128 Kb).
+The virtual memory also contain all the libraries and executable code so can contain much more than the requested memory.</p>
+
+<h2>Physical memory</h2>
+
+<p>TODO</p>
+
+<h2>Internal memory</h2>
+
+<p>TODO</p>
+
+<h2>Virtual memory</h2>
+
+<p>TODO</p>
+
+<h2>About memory peaks</h2>
+
+<h2>About chunk lifetime</h2>
+
+<h2>About fragmentation</h2>
+
+<h2>Allocation rates</h2>
+
 <h1>Thanks</h1>
 
 <p>Special thanks to external projects used to build MATT :</p>

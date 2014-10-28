@@ -219,6 +219,8 @@ void Options::loadFromFile(const char* fname)
 	
 	//free dic
 	iniparser_freedict(iniDic);
+	
+	//TODO apply getenv MATT_OPTIONS to override here and add "envOverride" parameter to enable it from caller
 }
 
 /*******************  FUNCTION  *********************/

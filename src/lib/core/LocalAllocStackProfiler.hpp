@@ -24,6 +24,42 @@
 namespace MATT
 {
 
+/*********************  ENUM  ***********************/
+enum MallocKind
+{
+	MALLOC_KIND_MALLOC,
+	MALLOC_KIND_POSIX_MEMALIGN,
+	MALLOC_KIND_ALIGNED_ALLOC,
+	MALLOC_KIND_MEMALIGN,
+	MALLOC_KIND_VALLOC,
+	MALLOC_KIND_PVALLOC,
+	MALLOC_KIND_MAX,
+};
+
+/********************  STRUCT  **********************/
+struct FunctionStat
+{
+	FunctionStat(void);
+	void inc(ssize_t size,ticks time);
+	size_t count;
+	ssize_t sum;
+	ticks time;
+};
+
+/********************  STRUCT  **********************/
+struct PerThreadAllocStats
+{
+	FunctionStat malloc[MALLOC_KIND_MAX];
+	FunctionStat free;
+	FunctionStat calloc;
+	FunctionStat realloc;
+};
+
+/*******************  FUNCTION  *********************/
+void convertToJson(htopml::JsonState& json, const FunctionStat& value);
+void convertToJson(htopml::JsonState& json, const PerThreadAllocStats& value);
+
+/*********************  CLASS  **********************/
 /**
  * Object to be instntiate localy per thread to track stack and local parameters without loks.
  * It will cooperate with the global AllocStackProfiler to push the values on the global
@@ -36,10 +72,10 @@ class LocalAllocStackProfiler
 	public:
 		LocalAllocStackProfiler(AllocStackProfiler * globalProfiler,bool reentrance = true);
 		~LocalAllocStackProfiler(void);
-		void onMalloc(void * res,size_t size);
-		void onFree(void * ptr);
-		void onCalloc(void * res,size_t nmemb,size_t size);
-		void onRealloc(void * ptr,void * res, size_t size);
+		void onMalloc(void* res, size_t size, ticks time, MATT::MallocKind kind);
+		void onFree(void* ptr, ticks time);
+		void onCalloc(void * res,size_t nmemb,size_t size, ticks time);
+		void onRealloc(void* ptr, void* res, size_t size, ticks time);
 		void onMmap(void * ptr, size_t size,int flags,int fd);
 		void onMunmap(void * ptr, size_t size);
 		inline void onEnterFunc(void *this_fn,void *call_site,bool ignoreStack=false);
@@ -77,6 +113,7 @@ class LocalAllocStackProfiler
 		/** Pointer to the global enterExitStackTracer for enter-exit mode **/
 		AllocTreeStrackTracer * enterExitStackTracer;
 		AllocTreeStrackTracer::Handler enterExitHandler;
+		PerThreadAllocStats allocStats;
 };
 
 /*******************  FUNCTION  *********************/

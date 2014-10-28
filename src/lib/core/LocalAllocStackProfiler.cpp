@@ -52,7 +52,7 @@ LocalAllocStackProfiler::~LocalAllocStackProfiler(void)
 }
 
 /*******************  FUNCTION  *********************/
-void LocalAllocStackProfiler::onMalloc(void* res, size_t size)
+void LocalAllocStackProfiler::onMalloc(void* res, size_t size, ticks time, MallocKind kind)
 {
 	//old state
 	bool oldInuse = inUse;
@@ -64,12 +64,13 @@ void LocalAllocStackProfiler::onMalloc(void* res, size_t size)
 		CODE_TIMING("mallocProf",globalProfiler->onMalloc(res,size,getStack()));
 		this->cntMemOps++;
 		this->cumulAlloc+=size;
+		this->allocStats.malloc[kind].inc(size,time);
 		inUse = oldInuse;
 	}
 }
 
 /*******************  FUNCTION  *********************/
-void LocalAllocStackProfiler::onFree(void* ptr)
+void LocalAllocStackProfiler::onFree(void* ptr, ticks time)
 {
 	//old state
 	bool oldInuse = inUse;
@@ -81,11 +82,12 @@ void LocalAllocStackProfiler::onFree(void* ptr)
 		CODE_TIMING("freeProf",globalProfiler->onFree(ptr,getStack()));
 		this->cntMemOps++;
 		inUse = oldInuse;
+		this->allocStats.free.inc(0,time);
 	}
 }
 
 /*******************  FUNCTION  *********************/
-void LocalAllocStackProfiler::onCalloc(void * res,size_t nmemb, size_t size)
+void LocalAllocStackProfiler::onCalloc(void * res,size_t nmemb, size_t size, ticks time)
 {
 	//old state
 	bool oldInuse = inUse;
@@ -97,12 +99,13 @@ void LocalAllocStackProfiler::onCalloc(void * res,size_t nmemb, size_t size)
 		CODE_TIMING("callocProf",globalProfiler->onCalloc(res,nmemb,size,getStack()));
 		this->cntMemOps++;
 		this->cumulAlloc+=size;
+		this->allocStats.calloc.inc(size,time);
 		inUse = oldInuse;
 	}
 }
 
 /*******************  FUNCTION  *********************/
-void LocalAllocStackProfiler::onRealloc(void* ptr, void* res, size_t size)
+void LocalAllocStackProfiler::onRealloc(void* ptr, void* res, size_t size,ticks time)
 {
 	//old state
 	bool oldInuse = inUse;
@@ -114,6 +117,7 @@ void LocalAllocStackProfiler::onRealloc(void* ptr, void* res, size_t size)
 		CODE_TIMING("reallocProf",globalProfiler->onRealloc(ptr,res,size,getStack()));
 		this->cntMemOps++;
 		this->cumulAlloc+=size;
+		this->allocStats.realloc.inc(size,time);
 		inUse = oldInuse;
 	}
 }
@@ -173,6 +177,7 @@ void convertToJson(htopml::JsonState& json, const LocalAllocStackProfiler& value
 	json.printField("stackMem",value.stackSizeAnalyser);
 	json.printField("cntMemOps",value.cntMemOps);
 	json.printField("cumulAlloc",value.cumulAlloc);
+	json.printField("stats",value.allocStats);
 	json.closeStruct();
 }
 
@@ -206,6 +211,48 @@ Stack* LocalAllocStackProfiler::getStack(void )
 bool LocalAllocStackProfiler::isEnterExit(void)
 {
 	return stackMode == STACK_MODE_ENTER_EXIT_FUNC;
+}
+
+/*******************  FUNCTION  *********************/
+FunctionStat::FunctionStat(void)
+{
+	this->count = 0;
+	this->sum = 0;
+	this->time = 0;
+}
+
+/*******************  FUNCTION  *********************/
+void FunctionStat::inc(ssize_t value,ticks time)
+{
+	this->count++;
+	this->sum += value;
+	this->time += time;
+}
+
+/*******************  FUNCTION  *********************/
+void convertToJson(htopml::JsonState& json, const FunctionStat& value)
+{
+	json.openStruct();
+	json.printField("count",value.count);
+	json.printField("sum",value.sum);
+	json.printField("time",value.time);
+	json.closeStruct();
+}
+
+/*******************  FUNCTION  *********************/
+void convertToJson(htopml::JsonState& json, const PerThreadAllocStats& value)
+{
+	json.openStruct();
+	json.printField("malloc",value.malloc[MALLOC_KIND_MALLOC]);
+	json.printField("posix_memalign",value.malloc[MALLOC_KIND_POSIX_MEMALIGN]);
+	json.printField("aligned_alloc",value.malloc[MALLOC_KIND_ALIGNED_ALLOC]);
+	json.printField("memalign",value.malloc[MALLOC_KIND_MEMALIGN]);
+	json.printField("valloc",value.malloc[MALLOC_KIND_VALLOC]);
+	json.printField("pvalloc",value.malloc[MALLOC_KIND_PVALLOC]);
+	json.printField("free",value.free);
+	json.printField("calloc",value.calloc);
+	json.printField("realloc",value.realloc);
+	json.closeStruct();
 }
 
 }

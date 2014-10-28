@@ -1,5 +1,6 @@
 function MattPageHome()
 {
+	var cur = this;
 	var defaultData = {
 		run: {
 			exe: '',
