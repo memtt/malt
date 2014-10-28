@@ -173,6 +173,7 @@ size_t AllocStackProfiler::onRealloc(void* oldPtr, void* ptr, size_t newSize,Sta
 void AllocStackProfiler::onAllocEvent(void* ptr, size_t size,Stack* userStack,MMCallStackNode * callStackNode,bool doLock)
 {
 	//locals
+	ticks t = getticks();
 	MMCallStackNode localCallStackNode;
 	if (callStackNode == NULL)
 		callStackNode = &localCallStackNode;
@@ -196,6 +197,15 @@ void AllocStackProfiler::onAllocEvent(void* ptr, size_t size,Stack* userStack,MM
 					OSProcMemUsage mem = OS::getProcMemoryUsage();
 					virtualMem.onUpdateValue(mem.virtualMemory - gblInternaAlloc->getTotalMemory(),STACK_LOCATION_ID);
 					physicalMem.onUpdateValue(mem.physicalMemory - gblInternaAlloc->getTotalMemory(),STACK_LOCATION_ID);
+				}
+
+				curMemoryTimeline.segments++;
+				curMemoryTimeline.requestedMem+=size;
+				if (memoryTimeline.isNewPoint(t))
+				{
+					OSProcMemUsage mem = OS::getProcMemoryUsage();
+					curMemoryTimeline.virtualMem = mem.virtualMemory - gblInternaAlloc->getTotalMemory();
+					curMemoryTimeline.physicalMem = mem.physicalMemory - gblInternaAlloc->getTotalMemory();
 				}
 			);
 		}
@@ -228,7 +238,11 @@ void AllocStackProfiler::onAllocEvent(void* ptr, size_t size,Stack* userStack,MM
 	
 		//update intern mem usage
 		if (options.timeProfileEnabled)
+		{
 			CODE_TIMING("timeProfileAllocEnd",internalMem.onUpdateValue(gblInternaAlloc->getInuseMemory(),STACK_LOCATION_ID));
+			curMemoryTimeline.internalMem = gblInternaAlloc->getInuseMemory();
+			memoryTimeline.push(t,curMemoryTimeline,(void*)callStackNode->stack);
+		}
 		
 		//track alloc bandwidth
 		allocBandwidth.push(size);
@@ -240,6 +254,7 @@ void AllocStackProfiler::onAllocEvent(void* ptr, size_t size,Stack* userStack,MM
 size_t AllocStackProfiler::onFreeEvent(void* ptr, MATT::Stack* userStack, MMCallStackNode* callStackNode, bool doLock)
 {
 	//locals
+	ticks t = getticks();
 	size_t size = 0;
 	MMCallStackNode localCallStackNode;
 	if (callStackNode == NULL)
@@ -313,6 +328,21 @@ size_t AllocStackProfiler::onFreeEvent(void* ptr, MATT::Stack* userStack, MMCall
 				segments.onDeltaEvent(-1,STACK_LOCATION_ID);
 				internalMem.onUpdateValue(gblInternaAlloc->getInuseMemory(),STACK_LOCATION_ID);
 			);
+		}
+		
+		if (options.timeProfileEnabled)
+		{
+			
+			if (memoryTimeline.isNewPoint(t))
+			{
+				OSProcMemUsage mem = OS::getProcMemoryUsage();
+				curMemoryTimeline.virtualMem = mem.virtualMemory - gblInternaAlloc->getTotalMemory();
+				curMemoryTimeline.physicalMem = mem.physicalMemory - gblInternaAlloc->getTotalMemory();
+			}
+			curMemoryTimeline.segments--;
+			curMemoryTimeline.internalMem = gblInternaAlloc->getInuseMemory();
+			curMemoryTimeline.requestedMem -= size;
+			memoryTimeline.push(t,curMemoryTimeline,(void*)callStackNode->stack);
 		}
 		
 		//free badnwidth
@@ -419,6 +449,9 @@ void AllocStackProfiler::onExit(void )
 		
 		//load global variables
 		loadGlobalVariables();
+		
+		//flush
+		memoryTimeline.flush();
 	
 		//open output file
 		//TODO manage errors
@@ -567,6 +600,11 @@ void convertToJson(htopml::JsonState& json, const AllocStackProfiler& value)
 	json.closeFieldStruct("globals");
 	
 	json.printField("leaks",value.segTracker);
+	
+	json.openFieldStruct("experimental");
+		json.printField("memoryTimeline",value.memoryTimeline);
+	json.closeFieldStruct("experimental");
+
 	json.closeStruct();
 	//fprintf(stderr,"peakId : %lu\n",value.peakId);
 }
@@ -650,6 +688,75 @@ void AllocStackProfiler::memOpsLevels(void)
 		fprintf(stderr,"MATT: Already seen 1G memory operations, MATT certainly slows your program.\n");
 	else if (sharedLinearIndex == 100000000000)
 		fprintf(stderr,"MATT: Already seen 100G memory operations, MATT certainly slows your program.\n");
+}
+
+/*******************  FUNCTION  *********************/
+TimeTrackMemory::TimeTrackMemory()
+{
+	this->internalMem = 0;
+	this->physicalMem = 0;
+	this->requestedMem = 0;
+	this->segments = 0;
+}
+
+/*******************  FUNCTION  *********************/
+void TimeTrackMemory::set ( const TimeTrackMemory& v )
+{
+	this->internalMem = v.internalMem;
+	this->physicalMem = v.physicalMem;
+	this->requestedMem = v.requestedMem;
+	this->segments = v.segments;
+	this->virtualMem = v.virtualMem;
+}
+
+/*******************  FUNCTION  *********************/
+void convertToJson ( htopml::JsonState& json, const TimeTrackMemory& value)
+{
+// 	json.openStruct();
+// 	json.printField("internalMem",value.internalMem);
+// 	json.printField("physicalMem",value.physicalMem);
+// 	json.printField("requestedMem",value.requestedMem);
+// 	json.printField("segments",value.segments);
+// 	json.closeStruct();
+	json.openArray();
+	json.printValue(value.requestedMem);
+	json.printValue(value.virtualMem);
+	json.printValue(value.physicalMem);
+	json.printValue(value.internalMem);
+	json.printValue(value.segments);
+	json.closeArray();
+}
+
+/*******************  FUNCTION  *********************/
+bool TimeTrackMemory::push ( const TimeTrackMemory& v )
+{
+	bool ret = false;
+	if (v.internalMem > internalMem)
+	{
+		internalMem = v.internalMem;
+		ret = true;
+	}
+	if (v.physicalMem > physicalMem)
+	{
+		physicalMem = v.physicalMem;
+		ret = true;
+	}
+	if (v.requestedMem > requestedMem)
+	{
+		requestedMem = v.requestedMem;
+		ret = true;
+	}
+	if (v.segments > segments)
+	{
+		segments = v.segments;
+		ret = true;
+	}
+	if (v.virtualMem > virtualMem)
+	{
+		virtualMem = v.virtualMem;
+		ret = true;
+	}
+	return ret;
 }
 
 }

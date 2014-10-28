@@ -367,6 +367,7 @@ MattProject.prototype.getTimedValues = function()
 	tmp.freeCnt = this.data.timeline.freeCnt;
 	tmp.sysFreeMemory = this.data.globals.sysFreeMemory;
 	tmp.sysSwapMemory = this.data.globals.sysSwapMemory;
+	tmp.experimental = this.data.experimental.memoryTimeline;
 	return tmp;
 }
 

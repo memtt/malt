@@ -74,6 +74,17 @@ function MattPageTimeline()
 		}
 		return res;
 	}
+	
+	function mattConvertDataInternalD3JS2(data,id)
+	{
+		var res = new Array();
+		res.push({x:0,y:0});
+		for (var i = 0 ; i < data.values.length ; i++)
+		{
+			res.push({x:(i+1)*data.perPoints,y:data.values[i][id]});
+		}
+		return res;
+	}
 
 	function mattConvertDataInternalRateD3JS(data,ticksPerSecond)
 	{
@@ -90,9 +101,24 @@ function MattPageTimeline()
 	function mattConvertData(data)
 	{
 		var res = new Array();
-		res.push( mattConvertDataInternalD3JS(data.virtualMem) );
-		res.push( mattConvertDataInternalD3JS(data.physicalMem) );
-		res.push( mattConvertDataInternalD3JS(data.requestedMem) );
+		res.push( mattConvertDataInternalD3JS2(data.experimental,1) );
+		res.push( mattConvertDataInternalD3JS2(data.experimental,2) );
+		res.push( mattConvertDataInternalD3JS2(data.experimental,0) );
+		
+		var labels = new Array();
+		labels.push("Virtual memory");
+		labels.push("Physical memory");
+		labels.push("Requested memory");
+		
+		return {data:res,labels:labels,ticksPerSecond:data.ticksPerSecond};
+	}
+	
+	function mattConvertData2(data)
+	{
+		var res = new Array();
+		res.push( mattConvertDataInternalD3JS2(data.experimental,1) );
+		res.push( mattConvertDataInternalD3JS2(data.experimental,2) );
+		res.push( mattConvertDataInternalD3JS2(data.experimental,0) );
 		
 		var labels = new Array();
 		labels.push("Virtual memory");
@@ -120,7 +146,7 @@ function MattPageTimeline()
 	function mattConvertCnt(data)
 	{
 		var res = new Array();
-		res.push( mattConvertDataInternalD3JS(data.segments) );
+		res.push( mattConvertDataInternalD3JS2(data.experimental,4) );
 		var labels = new Array();
 		labels.push("Memory segments");
 		return {data:res,labels:labels,ticksPerSecond:data.ticksPerSecond};

@@ -10,19 +10,42 @@
 #define MATT_PROFILED_VALUE_HPP
 
 /********************  HEADERS  *********************/
+//std
 #include <cstdlib>
-#include <cycle.h>
-#include <json/JsonState.h>
 #include <cassert>
 #include <cstring>
+//from fftw
+#include <cycle.h>
+//extern deps
+#include <json/JsonState.h>
+//internal
 #include <common/Debug.hpp>
 
+/********************  MACRO  ***********************/
+/**
+ * Define how much steps to accumulate in a small buffer before starting to 
+ * reduce the values.
+**/
 #define MATT_PROFILED_STATE_VALUE_FIRST_STEPS 10
 
+/********************  NAMESPACE  *******************/
 namespace MATT
 {
 
 /*********************  CLASS  **********************/
+/**
+ * Class to manage time tracking of composed structures and to made reduction on them to maintain
+ * a limited number of internal values.
+ * It also associate a stack to each values to remember the caller who generate the extremal values.
+ * The types used here must provide :
+ *   - default constructor to init
+ *   - set function to set value
+ *   - push function to reduce values
+ *   - conversion to json
+ * 
+ * @todo Check for usage of internal allocator instead of default one.
+ * @brief Class to manage time tracking of multiple synchone values into composed structure.
+**/
 template <class T>
 class ProfiledValue
 {
@@ -31,6 +54,7 @@ class ProfiledValue
 		~ProfiledValue(void);
 		void push(ticks t,const T & value,void * location = NULL);
 		void flush(void);
+		bool isNewPoint(ticks t);
 	public:
 		template <class U> friend void convertToJson(htopml::JsonState& json, const ProfiledValue<U> & value);
 	private:
@@ -186,6 +210,20 @@ void ProfiledValue<T>::pushNext(ticks t, const T& value,void * location)
 		touched[id] = true;
 		locations[id] = location;
 	}
+}
+
+/*******************  FUNCTION  *********************/
+template <class T>
+bool ProfiledValue<T>::isNewPoint(ticks t)
+{
+	if (this->cntFirstPoints <= MATT_PROFILED_STATE_VALUE_FIRST_STEPS)
+		return true;
+	if (t >= end)
+		return true;
+	int id = (t - start) / perPoints;
+	if (touched[id] == false)
+		return true;
+	return false;
 }
 
 /*******************  FUNCTION  *********************/

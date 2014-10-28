@@ -25,6 +25,7 @@
 // #include <stack-tree/AbstractStackTree.hpp>
 #include <valprof/ProfiledStateValue.hpp>
 #include <valprof/ProfiledCumulValue.hpp>
+#include <valprof/ProfiledValue.hpp>
 #include <tools/ELFReader.hpp>
 #include "SegmentTracker.hpp"
 #include "StackSizeTracker.hpp"
@@ -61,6 +62,39 @@ typedef std::map<size_t,size_t> AllocSizeDistrMap;
 typedef std::map<ReallocJump,size_t> ReallocJumpMap;
 typedef RLockFreeTree<CallStackInfo> AllocTreeStrackTracer;
 typedef std::map<std::string,ElfGlobalVariableVector> GlobalVariableMap;
+
+/*********************  STRUCT  *********************/
+struct TimeTrackMemory
+{
+	//constructor & usefull funcs
+	TimeTrackMemory();
+	void set(const TimeTrackMemory & v);
+	bool push(const TimeTrackMemory & v);
+	friend void convertToJson(htopml::JsonState& json, const TimeTrackMemory & value);
+	//data
+	size_t requestedMem;
+	size_t physicalMem;
+	size_t virtualMem;
+	size_t internalMem;
+	size_t segments;
+};
+
+/*********************  STRUCT  *********************/
+struct TimeTrackSysMemory
+{
+	size_t freeMemory;
+	size_t cachedMemory;
+	size_t swapMemory;
+};
+
+/*********************  STRUCT  *********************/
+struct TimeTrackAllocBandwidth
+{
+	size_t allocMem;
+	size_t allocCount;
+	size_t freeMem;
+	size_t freeCount;
+};
 
 /*********************  CLASS  **********************/
 class AllocStackProfiler
@@ -141,6 +175,9 @@ class AllocStackProfiler
 		size_t peak;
 		size_t curReq;
 		std::string traceFilename;
+		
+		ProfiledValue<TimeTrackMemory> memoryTimeline;
+		TimeTrackMemory curMemoryTimeline;
 };
 
 }

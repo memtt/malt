@@ -229,7 +229,7 @@ void JsonState::closeFieldArray(const char * name)
 void JsonState::openArray(void)
 {
 	//check where we are
-	assert(getState() & (JSON_STATE_ROOT | JSON_STATE_FIELD));
+	assert(getState() & (JSON_STATE_ROOT | JSON_STATE_FIELD | JSON_STATE_ARRAY));
 
 	//setup state
 	pushState(JSON_STATE_ARRAY);
