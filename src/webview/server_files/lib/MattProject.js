@@ -131,7 +131,12 @@ MattProject.prototype.getFlatProfile = function(mapping,accept,fields,total)
 		
 		//skip C++ operators
 		var skip = 0;
-		while (isAllocFunction(detailedStack[skip].function)) skip++;
+		while (skip < detailedStack.length && isAllocFunction(detailedStack[skip].function)) skip++;
+		if (skip >= detailedStack.length)
+		{
+			console.log("Warning : get call stacks with only allocation function ??? : "+JSON.stringify(detailedStack) +" -> "+JSON.stringify(statsEntry));
+			continue;
+		}
 		
 		//update internal values
 		cur = detailedStack[skip];

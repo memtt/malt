@@ -64,6 +64,23 @@ into the executable, you can also do it by hand in cas of issue :
 
 	LD_PRELOAD={YOUR_PREFIX}/lib/libmatt.so {YOUR_PROGRAM} [OPTIONS]
 
+About stacks
+------------
+
+MATT use two ways to rebuild stacks, the default one rely on glibc backtrace but we observe severals 
+segfaults on some intel tools such as Intel OpenMP and Intel MPI so we also provide a more robust 
+approach based on libunwind if present on your system at build time. You can provide it with :
+
+	../configure --with-libunwind=PREFIX
+	
+or on cmake :
+
+	cmake -DLIBUNWIND_PREFIX=PREFIX ..
+
+The alternative rely on function instrumentation by adding prove on start/end for each function.
+It can be done by using -finstrument-function on your compiler juste as described in "How to use" section
+or by using binary instrumentation tools juste as explained at the end of this document.
+
 Config
 ------
 
