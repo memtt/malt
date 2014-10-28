@@ -10,7 +10,9 @@
 #define MATT_OPTIONS_HPP
 
 /********************  HEADERS  *********************/
+//std
 #include <string>
+#include <cassert>
 
 /********************  HEADERS  *********************/
 //iniparser
@@ -65,6 +67,32 @@ struct Options
 	//info
 	bool infoHidden;
 	bool childs;
+};
+
+/********************  GLOBALS  *********************/
+/** 
+ * Define a global instance of option to get access from the whole tool. 
+ * Please prefer to use the accessor instead of the variable itsef directly.
+ * The code will be inlined by be safer in debug mode.
+**/
+extern Options * gblOptions;
+
+/*******************  FUNCTION  *********************/
+static inline const Options & getGlobalOptions(void)
+{
+	assert(gblOptions != NULL);
+	return *gblOptions;
+}
+
+/*******************  FUNCTION  *********************/
+Options & initGlobalOptions(void);
+
+/*******************  FUNCTION  *********************/
+/** Safer function to access to the option, with check in debug mode.**/
+static inline Options & getOptions(void) 
+{
+	assert(gblOptions != NULL);
+	return *gblOptions;
 };
 
 /*******************  FUNCTION  *********************/

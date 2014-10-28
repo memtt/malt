@@ -264,7 +264,7 @@ void AllocWrapperGlobal::init(void )
 		initInternalAlloc(true);
 
 		//load options
-		gblState.options = new Options();
+		gblState.options = &initGlobalOptions();
 		const char * configFile = getenv("MATT_CONFIG");
 		if (configFile != NULL)
 			gblState.options->loadFromFile(configFile);

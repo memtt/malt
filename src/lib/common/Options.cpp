@@ -19,7 +19,13 @@
 namespace MATT 
 {
 
+/********************  GLOBALS  *********************/
+Options * gblOptions = NULL;
+
 /*******************  FUNCTION  *********************/
+/**
+ * Constructor to setup the default values for each options
+**/
 Options::Options(void)
 {
 	//stack
@@ -36,7 +42,7 @@ Options::Options(void)
 	this->outputJson              = true;
 	this->outputLua               = false;
 	this->outputCallgrind         = false;
-	this->outputDumpConfig        = true;
+	this->outputDumpConfig        = false;
 	//max stack
 	this->maxStackEnabled         = true;
 	//maps
@@ -50,6 +56,9 @@ Options::Options(void)
 }
 
 /*******************  FUNCTION  *********************/
+/**
+ * Manage operator == to help validation in unit test suite.
+**/
 bool Options::operator==(const Options& value) const
 {
 	//stack
@@ -81,6 +90,15 @@ bool Options::operator==(const Options& value) const
 }
 
 /*******************  FUNCTION  *********************/
+/**
+ * Load values from string, mostly to be used from MATT_OPTION environment variable.
+ * 
+ * It expect string format like :
+ * 
+ * SEC1:NAME1=VALUE1;SEC2:NAME2=VALUE2;
+ * 
+ * @param value Define the string to load as a config file.
+**/
 void Options::loadFromString ( const char* value )
 {
 	//trivial
@@ -142,6 +160,9 @@ void Options::loadFromString ( const char* value )
 }
 
 /*******************  FUNCTION  *********************/
+/**
+ * Internal function to load options from iniDic.
+**/
 void Options::loadFromIniDic ( dictionary* iniDic )
 {
 	//errors
@@ -180,6 +201,9 @@ void Options::loadFromIniDic ( dictionary* iniDic )
 }
 
 /*******************  FUNCTION  *********************/
+/**
+ * Function to load options from a config file in INI format.
+**/
 void Options::loadFromFile(const char* fname)
 {
 	//load ini dic
@@ -198,6 +222,10 @@ void Options::loadFromFile(const char* fname)
 }
 
 /*******************  FUNCTION  *********************/
+/**
+ * Helper function to convert the options to JSON output format and dump it
+ * into the MATT output profile.
+**/
 void convertToJson(htopml::JsonState & json,const Options & value)
 {
 	json.openStruct();
@@ -238,6 +266,9 @@ void convertToJson(htopml::JsonState & json,const Options & value)
 }
 
 /*******************  FUNCTION  *********************/
+/**
+ * Helper to dump the config as INI file.
+**/
 void Options::dumpConfig(const char* fname)
 {
 	//create dic
@@ -286,6 +317,9 @@ void Options::dumpConfig(const char* fname)
 }
 
 /*******************  FUNCTION  *********************/
+/**
+ * Internal function to split strings on ':' and extract the section name.
+**/
 std::string IniParserHelper::extractSectionName ( const char * key )
 {
 	std::string tmp;
@@ -296,6 +330,12 @@ std::string IniParserHelper::extractSectionName ( const char * key )
 }
 
 /*******************  FUNCTION  *********************/
+/**
+ * Updat some entries of a dictionnary.
+ * @param dic Define the dictionnary to update.
+ * @param key Define the key to update.
+ * @param value Define the value to setup for the given key.
+**/
 void IniParserHelper::setEntry(dictionary* dic, const char* key, const char* value)
 {
 	iniparser_set(dic,extractSectionName(key).c_str(),NULL);
@@ -303,17 +343,43 @@ void IniParserHelper::setEntry(dictionary* dic, const char* key, const char* val
 }
 
 /*******************  FUNCTION  *********************/
+/**
+ * Help set setup ini dic entries from boolean by converting them to string
+ * internally.
+ * @param dic Define the dictionnary to fill.
+ * @param key Define the key to update (key:name)
+ * @param value Define the boolean value to setup.
+**/
 void IniParserHelper::setEntry(dictionary* dic, const char* key, bool value)
 {
 	setEntry(dic,key,value?"true":"false");
 }
 
 /*******************  FUNCTION  *********************/
+/**
+ * Help set setup ini dic entries from integer by converting them to string
+ * internally.
+ * @param dic Define the dictionnary to fill.
+ * @param key Define the key to update (key:name)
+ * @param value Define the integer value to setup.
+**/
 void IniParserHelper::setEntry(dictionary* dic, const char* key, int value)
 {
 	char buffer[64];
 	sprintf(buffer,"%d",value);
 	setEntry(dic,key,buffer);
+}
+
+/*******************  FUNCTION  *********************/
+/**
+ * Need to be call once after malloc is available.
+**/
+Options& initGlobalOptions ( void )
+{
+	//error
+	assume (gblOptions == NULL,"initGlobalOptions was used previously, gblOptions is already init ! ");
+	gblOptions = new Options();
+	return *gblOptions;
 }
 
 }

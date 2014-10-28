@@ -53,7 +53,8 @@ mattShowHelp()
 	echo "           --prep-mpi [mpicxx] Build the mpi wrapper into $HOME/.matt/libmattmpi.so"
 	echo "   -s mode/--stack=mode        Select the stack tracking mode (backtrace|enter-exit)."
 	echo "   -t/--trace                  Enable the tracing mode."
-	echo "   -o SEC:KEY=VAL;...          Override configuration values."
+	echo "   -d/--dumpconfig             Enable the dump of config file at exit."
+	echo "   -o SEC:NAME=VAL;...         Override configuration values."
 	echo "   -h/--help                   Show this help message."
 	echo ""
 }
@@ -82,6 +83,9 @@ while true; do
 			export MATT_OPTIONS="${MATT_OPTIONS};$2"
 			shift 2
 		;;
+		--dumpconfig|-d)
+			export MATT_OPTIONS="${MATT_OPTIONS};output:config=true"
+			shift 1
 		--mpi)
 			ENABLE_MPI=true
 			if [ ! -e "$MPI_WRAPPER_DIR/libmattmpi.so" ]; then
