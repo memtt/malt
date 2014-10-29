@@ -75,6 +75,7 @@ class ProfiledValue
 		void * firstLocations[MATT_PROFILED_STATE_VALUE_FIRST_STEPS];
 		T * points;
 		T * oldPoints;
+		T peak;
 		bool * touched;
 		bool * oldTouched;
 		void ** locations;
@@ -160,6 +161,12 @@ ProfiledValue<T>::~ProfiledValue(void )
 template <class T>
 void ProfiledValue<T>::push(ticks t, const T& value,void * location)
 {
+	//update peak
+	if (this->cntFirstPoints == 0)
+		this->peak.set(value);
+	else
+		this->peak.push(value);
+	
 	//if not have all first points, aggregate
 	if (this->cntFirstPoints < MATT_PROFILED_STATE_VALUE_FIRST_STEPS)
 	{
@@ -369,6 +376,7 @@ void convertToJson(htopml::JsonState& json, const ProfiledValue<T>& value)
 	//global infos
 	json.printField("start",value.start);
 	json.printField("perPoints",value.perPoints);
+	json.printField("peak",value.peak);
 	
 	//values
 	json.printFieldArray("values",value.points,lastId+1);

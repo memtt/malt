@@ -82,6 +82,12 @@ struct TimeTrackMemory
 /*********************  STRUCT  *********************/
 struct TimeTrackSysMemory
 {
+	//constructor & usefull funcs
+	TimeTrackSysMemory();
+	void set(const TimeTrackSysMemory & v);
+	bool push(const TimeTrackSysMemory & v);
+	friend void convertToJson(htopml::JsonState& json, const TimeTrackSysMemory & value);
+	//data
 	size_t freeMemory;
 	size_t cachedMemory;
 	size_t swapMemory;
@@ -140,14 +146,6 @@ class AllocStackProfiler
 // 		AbstractStackTree<CallStackInfo> stackTree;
 		AllocSizeDistrMap sizeMap;
 		SegmentTracker segTracker;
-		ProfiledStateValue requestedMem;
-		ProfiledStateValue physicalMem;
-		ProfiledStateValue virtualMem;
-		ProfiledStateValue internalMem;
-		ProfiledStateValue segments;
-		ProfiledStateValue sysFreeMemory;
-		ProfiledStateValue sysCachedMemory;
-		ProfiledStateValue sysSwapMemory;
 		ProfiledCumulValue allocBandwidth;
 		ProfiledCumulValue freeBandwidth;
 		ProfiledCumulValue allocCnt;
@@ -178,6 +176,8 @@ class AllocStackProfiler
 		
 		ProfiledValue<TimeTrackMemory> memoryTimeline;
 		TimeTrackMemory curMemoryTimeline;
+		ProfiledValue<TimeTrackSysMemory> systemTimeline;
+		TimeTrackSysMemory curSystemTimeline;
 };
 
 }

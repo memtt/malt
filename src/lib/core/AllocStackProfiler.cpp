@@ -40,19 +40,13 @@ namespace MATT
 
 /*******************  FUNCTION  *********************/
 AllocStackProfiler::AllocStackProfiler(const Options & options,StackMode mode,bool threadSafe)
-	:requestedMem(options.timeProfilePoints,options.timeProfileLinear),allocBandwidth(512),freeBandwidth(512),largestStack(STACK_ORDER_DESC)
+	:allocBandwidth(512),freeBandwidth(512),largestStack(STACK_ORDER_DESC)
 {
 	this->mode = mode;
 	this->threadSafe = threadSafe;
 	this->options = options;
 	this->largestStackSize = 0;
 	this->sharedLinearIndex = 0;
-	
-	this->requestedMem.setRemoteLinearIndex(&sharedLinearIndex);
-	this->physicalMem.setRemoteLinearIndex(&sharedLinearIndex);
-	this->virtualMem.setRemoteLinearIndex(&sharedLinearIndex);
-	this->internalMem.setRemoteLinearIndex(&sharedLinearIndex);
-	this->segments.setRemoteLinearIndex(&sharedLinearIndex);
 	
 	//init internal alloc
 	if (gblInternaAlloc == NULL)
@@ -190,15 +184,6 @@ void AllocStackProfiler::onAllocEvent(void* ptr, size_t size,Stack* userStack,MM
 		if (options.timeProfileEnabled)
 		{
 			CODE_TIMING("timeProfileAllocStart",
-				segments.onDeltaEvent(1,STACK_LOCATION_ID);
-				requestedMem.onDeltaEvent(size,STACK_LOCATION_ID);
-				if (virtualMem.isNextPoint())
-				{
-					OSProcMemUsage mem = OS::getProcMemoryUsage();
-					virtualMem.onUpdateValue(mem.virtualMemory - gblInternaAlloc->getTotalMemory(),STACK_LOCATION_ID);
-					physicalMem.onUpdateValue(mem.physicalMemory - gblInternaAlloc->getTotalMemory(),STACK_LOCATION_ID);
-				}
-
 				curMemoryTimeline.segments++;
 				curMemoryTimeline.requestedMem+=size;
 				if (memoryTimeline.isNewPoint(t))
@@ -239,7 +224,6 @@ void AllocStackProfiler::onAllocEvent(void* ptr, size_t size,Stack* userStack,MM
 		//update intern mem usage
 		if (options.timeProfileEnabled)
 		{
-			CODE_TIMING("timeProfileAllocEnd",internalMem.onUpdateValue(gblInternaAlloc->getInuseMemory(),STACK_LOCATION_ID));
 			curMemoryTimeline.internalMem = gblInternaAlloc->getInuseMemory();
 			memoryTimeline.push(t,curMemoryTimeline,(void*)callStackNode->stack);
 		}
@@ -265,20 +249,6 @@ size_t AllocStackProfiler::onFreeEvent(void* ptr, MATT::Stack* userStack, MMCall
 		this->sharedLinearIndex++;
 		this->memOpsLevels();
 
-		//update memory usage
-		if (options.timeProfileEnabled && virtualMem.isNextPoint())
-		{
-			CODE_TIMING("timeProfileFreeStart",
-				OSProcMemUsage mem = OS::getProcMemoryUsage();
-				OSMemUsage sysMem = OS::getMemoryUsage();
-				virtualMem.onUpdateValue(mem.virtualMemory - gblInternaAlloc->getTotalMemory(),STACK_LOCATION_ID);
-				physicalMem.onUpdateValue(mem.physicalMemory - gblInternaAlloc->getTotalMemory(),STACK_LOCATION_ID);
-				sysFreeMemory.onUpdateValue(sysMem.freeMemory,STACK_LOCATION_ID);
-				sysCachedMemory.onUpdateValue(sysMem.cached,STACK_LOCATION_ID);
-				sysSwapMemory.onUpdateValue(sysMem.swap,STACK_LOCATION_ID);
-			);
-		}
-
 		//search segment info to link with previous history
 		SegmentInfo * segInfo = NULL;
 		if (options.timeProfileEnabled || options.stackProfileEnabled)
@@ -295,8 +265,6 @@ size_t AllocStackProfiler::onFreeEvent(void* ptr, MATT::Stack* userStack, MMCall
 		//update mem usage
 		size = segInfo->size;
 		ticks lifetime = segInfo->getLifetime();
-		if (options.timeProfileEnabled)
-			CODE_TIMING("timeProfileFreeMiddle",requestedMem.onDeltaEvent(-size,STACK_LOCATION_ID));
 		
 		//peak tracking
 		peakTracking(-size);
@@ -321,18 +289,10 @@ size_t AllocStackProfiler::onFreeEvent(void* ptr, MATT::Stack* userStack, MMCall
 		//remove tracking info
 		CODE_TIMING("segTracerRemove",segTracker.remove(ptr));
 		
-		//update intern mem usage
+		//update timeline
 		if (options.timeProfileEnabled)
 		{
-			CODE_TIMING("timeProfileFreeEnd",
-				segments.onDeltaEvent(-1,STACK_LOCATION_ID);
-				internalMem.onUpdateValue(gblInternaAlloc->getInuseMemory(),STACK_LOCATION_ID);
-			);
-		}
-		
-		if (options.timeProfileEnabled)
-		{
-			
+			//progr internal memory
 			if (memoryTimeline.isNewPoint(t))
 			{
 				OSProcMemUsage mem = OS::getProcMemoryUsage();
@@ -343,6 +303,16 @@ size_t AllocStackProfiler::onFreeEvent(void* ptr, MATT::Stack* userStack, MMCall
 			curMemoryTimeline.internalMem = gblInternaAlloc->getInuseMemory();
 			curMemoryTimeline.requestedMem -= size;
 			memoryTimeline.push(t,curMemoryTimeline,(void*)callStackNode->stack);
+
+			//system memory
+			if (systemTimeline.isNewPoint(t))
+			{
+				OSMemUsage sysMem = OS::getMemoryUsage();
+				curSystemTimeline.cachedMemory = sysMem.cached;
+				curSystemTimeline.freeMemory = sysMem.freeMemory;
+				curSystemTimeline.swapMemory = sysMem.swap;
+				systemTimeline.push(t,curSystemTimeline,(void*)callStackNode->stack);
+			}
 		}
 		
 		//free badnwidth
@@ -452,7 +422,8 @@ void AllocStackProfiler::onExit(void )
 		
 		//flush
 		memoryTimeline.flush();
-	
+		systemTimeline.flush();
+		
 		//open output file
 		//TODO manage errors
 		std::ofstream out;
@@ -531,15 +502,12 @@ void convertToJson(htopml::JsonState& json, const AllocStackProfiler& value)
 	if (value.options.timeProfileEnabled)
 	{
 		json.openFieldStruct("timeline");
-			json.printField("requestedMem",value.requestedMem);
-			json.printField("physicalMem",value.physicalMem);
-			json.printField("virtualMem",value.virtualMem);
-			json.printField("internalMem",value.internalMem);
-			json.printField("segments",value.segments);
 			json.printField("allocBandwidth",value.allocBandwidth);
 			json.printField("allocCnt",value.allocCnt);
 			json.printField("freeBandwidth",value.freeBandwidth);
 			json.printField("freeCnt",value.freeCnt);
+			json.printField("memoryTimeline",value.memoryTimeline);
+			json.printField("systemTimeline",value.systemTimeline);
 		json.closeFieldStruct("timeline");
 	}
 	
@@ -593,17 +561,10 @@ void convertToJson(htopml::JsonState& json, const AllocStackProfiler& value)
 		json.printField("totalMemory",value.osTotalMemory);
 		json.printField("freeMemoryAtStart",value.osFreeMemoryAtStart);
 		json.printField("cachedMemoryAtStart",value.osCachedMemoryAtStart);
-		json.printField("sysFreeMemory",value.sysFreeMemory);
-		json.printField("sysCachedMemory",value.sysCachedMemory);
-		json.printField("sysSwapMemory",value.sysSwapMemory);
 		json.printField("maxThreadCount",ThreadTracker::getMaxThreadCount());
 	json.closeFieldStruct("globals");
 	
 	json.printField("leaks",value.segTracker);
-	
-	json.openFieldStruct("experimental");
-		json.printField("memoryTimeline",value.memoryTimeline);
-	json.closeFieldStruct("experimental");
 
 	json.closeStruct();
 	//fprintf(stderr,"peakId : %lu\n",value.peakId);
@@ -730,33 +691,81 @@ void convertToJson ( htopml::JsonState& json, const TimeTrackMemory& value)
 /*******************  FUNCTION  *********************/
 bool TimeTrackMemory::push ( const TimeTrackMemory& v )
 {
-	bool ret = false;
+	bool hasUpdate = false;
 	if (v.internalMem > internalMem)
 	{
 		internalMem = v.internalMem;
-		ret = true;
+		hasUpdate = true;
 	}
 	if (v.physicalMem > physicalMem)
 	{
 		physicalMem = v.physicalMem;
-		ret = true;
+		hasUpdate = true;
 	}
 	if (v.requestedMem > requestedMem)
 	{
 		requestedMem = v.requestedMem;
-		ret = true;
+		hasUpdate = true;
 	}
 	if (v.segments > segments)
 	{
 		segments = v.segments;
-		ret = true;
+		hasUpdate = true;
 	}
 	if (v.virtualMem > virtualMem)
 	{
 		virtualMem = v.virtualMem;
-		ret = true;
+		hasUpdate = true;
 	}
-	return ret;
+	return hasUpdate;
+}
+
+/*******************  FUNCTION  *********************/
+TimeTrackSysMemory::TimeTrackSysMemory()
+{
+	this->freeMemory = 0;
+	this->swapMemory = 0;
+	this->cachedMemory = 0;
+}
+
+/*******************  FUNCTION  *********************/
+bool TimeTrackSysMemory::push(const TimeTrackSysMemory& v)
+{
+	bool hasUpdate = false;
+	if (v.freeMemory > freeMemory)
+	{
+		freeMemory = v.freeMemory;
+		hasUpdate = true;
+	}
+	if (v.swapMemory > swapMemory)
+	{
+		swapMemory = v.swapMemory;
+		hasUpdate = true;
+	}
+	if (v.cachedMemory > cachedMemory)
+	{
+		cachedMemory = v.cachedMemory;
+		hasUpdate = true;
+	}
+	return hasUpdate;
+}
+
+/*******************  FUNCTION  *********************/
+void TimeTrackSysMemory::set(const TimeTrackSysMemory& v)
+{
+	this->cachedMemory = v.cachedMemory;
+	this->freeMemory = v.freeMemory;
+	this->swapMemory = v.swapMemory;
+}
+
+/*******************  FUNCTION  *********************/
+void convertToJson(htopml::JsonState& json, const TimeTrackSysMemory& value)
+{
+	json.openArray();
+	json.printValue(value.freeMemory);
+	json.printValue(value.swapMemory);
+	json.printValue(value.cachedMemory);
+	json.closeArray();
 }
 
 }

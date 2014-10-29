@@ -101,9 +101,9 @@ function MattPageTimeline()
 	function mattConvertData(data)
 	{
 		var res = new Array();
-		res.push( mattConvertDataInternalD3JS2(data.experimental,1) );
-		res.push( mattConvertDataInternalD3JS2(data.experimental,2) );
-		res.push( mattConvertDataInternalD3JS2(data.experimental,0) );
+		res.push( mattConvertDataInternalD3JS2(data.memoryTimeline,1) );
+		res.push( mattConvertDataInternalD3JS2(data.memoryTimeline,2) );
+		res.push( mattConvertDataInternalD3JS2(data.memoryTimeline,0) );
 		
 		var labels = new Array();
 		labels.push("Virtual memory");
@@ -116,9 +116,9 @@ function MattPageTimeline()
 	function mattConvertData2(data)
 	{
 		var res = new Array();
-		res.push( mattConvertDataInternalD3JS2(data.experimental,1) );
-		res.push( mattConvertDataInternalD3JS2(data.experimental,2) );
-		res.push( mattConvertDataInternalD3JS2(data.experimental,0) );
+		res.push( mattConvertDataInternalD3JS2(data.memoryTimeline,1) );
+		res.push( mattConvertDataInternalD3JS2(data.memoryTimeline,2) );
+		res.push( mattConvertDataInternalD3JS2(data.memoryTimeline,0) );
 		
 		var labels = new Array();
 		labels.push("Virtual memory");
@@ -131,14 +131,14 @@ function MattPageTimeline()
 	function mattConvertSysData(data)
 	{
 		var res = new Array();
-		res.push( mattConvertDataInternalD3JS(data.sysFreeMemory) );
-		res.push( mattConvertDataInternalD3JS(data.sysSwapMemory) );
-// 		res.push( mattConvertDataInternalD3JS(data.requestedMem) );
+		res.push( mattConvertDataInternalD3JS2(data.systemTimeline,0) );
+		res.push( mattConvertDataInternalD3JS2(data.systemTimeline,1) );
+		//res.push( mattConvertDataInternalD3JS2(data.systemTimeline,2) );
 		
 		var labels = new Array();
 		labels.push("System free memory");
 		labels.push("Swap memory");
-// 		labels.push("Requested memory");
+		//labels.push("Cached memory");
 		
 		return {data:res,labels:labels,ticksPerSecond:data.ticksPerSecond};
 	}
@@ -146,7 +146,7 @@ function MattPageTimeline()
 	function mattConvertCnt(data)
 	{
 		var res = new Array();
-		res.push( mattConvertDataInternalD3JS2(data.experimental,4) );
+		res.push( mattConvertDataInternalD3JS2(data.memoryTimeline,4) );
 		var labels = new Array();
 		labels.push("Memory segments");
 		return {data:res,labels:labels,ticksPerSecond:data.ticksPerSecond};

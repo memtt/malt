@@ -27,7 +27,7 @@ MattPagePerThread.prototype.buildPerThreadChart = function(data,d3Selection,metr
 {
 	//format data
 	var formattedData = [];
-	var allocFuncs = ["malloc","free","calloc","realloc","posix_memalign","aligned_alloc","memalign","valloc","pvalloc","free","calloc","realloc"];
+	var allocFuncs = ["malloc","free","calloc","realloc","posix_memalign","aligned_alloc","memalign","valloc","pvalloc"];
 	for (var i in allocFuncs)
 	{
 		var values = [];

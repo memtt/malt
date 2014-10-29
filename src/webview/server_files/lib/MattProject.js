@@ -355,19 +355,18 @@ MattProject.prototype.getFilterdStacksOnSymbol = function(symbol)
 MattProject.prototype.getTimedValues = function()
 {
 	var tmp = new Object();
-	tmp.segments     = this.data.timeline.segments;
+	/*tmp.segments     = this.data.timeline.segments;
 	tmp.internalMem  = this.data.timeline.internalMem;
 	tmp.virtualMem   = this.data.timeline.virtualMem;
 	tmp.physicalMem  = this.data.timeline.physicalMem;
-	tmp.requestedMem = this.data.timeline.requestedMem;
+	tmp.requestedMem = this.data.timeline.requestedMem;*/
 	tmp.ticksPerSecond = this.data.globals.ticksPerSecond;
 	tmp.allocBandwidth = this.data.timeline.allocBandwidth;
 	tmp.freeBandwidth = this.data.timeline.freeBandwidth;
 	tmp.allocCnt = this.data.timeline.allocCnt;
 	tmp.freeCnt = this.data.timeline.freeCnt;
-	tmp.sysFreeMemory = this.data.globals.sysFreeMemory;
-	tmp.sysSwapMemory = this.data.globals.sysSwapMemory;
-	tmp.experimental = this.data.experimental.memoryTimeline;
+	tmp.memoryTimeline = this.data.timeline.memoryTimeline;
+	tmp.systemTimeline = this.data.timeline.systemTimeline;
 	return tmp;
 }
 
@@ -409,11 +408,11 @@ MattProject.prototype.getSummaryV2 = function()
 	
 	//summary
 	ret.summary = {};
-	ret.summary.peakPhysicalMemory = this.data.timeline.physicalMem.peakMemory;
-	ret.summary.peakVirtualMemory = this.data.timeline.virtualMem.peakMemory;
-	ret.summary.peakRequestedMemory = this.data.timeline.requestedMem.peakMemory;
-	ret.summary.peakInternalMemory = this.data.timeline.internalMem.peakMemory;
-	ret.summary.peakSegmentCount = this.data.timeline.segments.peakMemory;
+	ret.summary.peakPhysicalMemory = this.data.experimental.memoryTimeline.peak[2];//this.data.timeline.physicalMem.peakMemory;
+	ret.summary.peakVirtualMemory = this.data.experimental.memoryTimeline.peak[1];//this.data.timeline.virtualMem.peakMemory;
+	ret.summary.peakRequestedMemory = this.data.experimental.memoryTimeline.peak[0];//this.data.timeline.requestedMem.peakMemory;
+	ret.summary.peakInternalMemory = this.data.experimental.memoryTimeline.peak[4];//this.data.timeline.internalMem.peakMemory;
+	ret.summary.peakSegmentCount = this.data.experimental.memoryTimeline.peak[3];//this.data.timeline.segments.peakMemory;
 	
 	//rates
 	var p = 0;
@@ -507,11 +506,11 @@ MattProject.prototype.getSummary = function()
 
 	//extract global stats
 	ret.globalStats = {};
-	ret.globalStats.segments = this.data.timeline.segments.peakMemory;
-	ret.globalStats.internalMemory = this.data.timeline.internalMem.peakMemory;
-	ret.globalStats.virtualMem = this.data.timeline.virtualMem.peakMemory;
-	ret.globalStats.requestedMem = this.data.timeline.requestedMem.peakMemory;
-	ret.globalStats.physicalMem = this.data.timeline.physicalMem.peakMemory;
+	ret.globalStats.physicalMem = this.data.experimental.memoryTimeline.peak[2];//this.data.timeline.physicalMem.peakMemory;
+	ret.globalStats.virtualMem = this.data.experimental.memoryTimeline.peak[1];//this.data.timeline.virtualMem.peakMemory;
+	ret.globalStats.requestedMem = this.data.experimental.memoryTimeline.peak[0];//this.data.timeline.requestedMem.peakMemory;
+	ret.globalStats.internalMemory = this.data.experimental.memoryTimeline.peak[4];//this.data.timeline.internalMem.peakMemory;
+	ret.globalStats.segments = this.data.experimental.memoryTimeline.peak[3];//this.data.timeline.segments.peakMemory;
 	
 	//search min/max/count size
 	var min = -1;
