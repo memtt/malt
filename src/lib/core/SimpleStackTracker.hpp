@@ -16,7 +16,7 @@
 #include <ostream>
 // #include <json/TypeToJson.h>
 //locals
-#include "SymbolResolver.hpp"
+#include "SymbolSolver.hpp"
 #include <stacks/BacktraceStack.hpp>
 #include "SimpleCallStackNode.hpp"
 #include "ValgrindOutput.hpp"
@@ -35,17 +35,17 @@ typedef std::vector<SimpleCallStackNode*,STLInternalAllocator<SimpleCallStackNod
 typedef std::map<StackHash,SimpleBacktraceVector,std::less<StackHash>,STLInternalAllocator<std::pair<StackHash,SimpleBacktraceVector> > > SimpleBacktraceVectorMap;
 
 /*********************  CLASS  **********************/
-class SimpleStackTracer
+class SimpleStackTracker
 {
 	public:
-		SimpleStackTracer(void);
-		~SimpleStackTracer(void);
+		SimpleStackTracker(void);
+		~SimpleStackTracker(void);
 		SimpleCallStackNode& getBacktraceInfo(const Stack& stack, int skipDepth = 0);
-		void resolveSymbols(SymbolResolver & symbolResolver);
-		void fillValgrindOut(MATT::ValgrindOutput& out, MATT::SymbolResolver& symbolResolver) const;
+		void solveSymbols(SymbolSolver & symbolResolver);
+		void fillValgrindOut(MATT::ValgrindOutput& out, MATT::SymbolSolver& symbolResolver) const;
 	public:
-		friend std::ostream & operator << (std::ostream & out,const SimpleStackTracer & tracer);
-		friend void convertToJson(htopml::JsonState & json, const SimpleStackTracer & value);
+		friend std::ostream & operator << (std::ostream & out,const SimpleStackTracker & tracer);
+		friend void convertToJson(htopml::JsonState & json, const SimpleStackTracker & value);
 	private:
 		SimpleBacktraceVectorMap callmaps;
 		size_t count;

@@ -10,14 +10,14 @@
 #include <cstring>
 #include <cassert>
 #include <common/Debug.hpp>
-#include "AllocTracer.hpp"
+#include "AllocTraceFile.hpp"
 
 /*******************  NAMESPACE  ********************/
 namespace MATT
 {
 
 /*******************  FUNCTION  *********************/
-AllocTracer::AllocTracer(const std::string& file,size_t bufferSize)
+AllocTraceFile::AllocTraceFile(const std::string& file,size_t bufferSize)
 {
 	this->bufferSize = bufferSize;
 	this->buffer = new AllocTracerChunk[bufferSize];
@@ -27,14 +27,14 @@ AllocTracer::AllocTracer(const std::string& file,size_t bufferSize)
 }
 
 /*******************  FUNCTION  *********************/
-AllocTracer::~AllocTracer(void)
+AllocTraceFile::~AllocTraceFile(void)
 {
 	this->close();
 	delete [] buffer;
 }
 
 /*******************  FUNCTION  *********************/
-void AllocTracer::open(const std::string& file)
+void AllocTraceFile::open(const std::string& file)
 {
 	this->close();
 	
@@ -50,7 +50,7 @@ void AllocTracer::open(const std::string& file)
 }
 
 /*******************  FUNCTION  *********************/
-void AllocTracer::close(void)
+void AllocTraceFile::close(void)
 {
 	//nothing to do
 	if (fp == NULL)
@@ -62,7 +62,7 @@ void AllocTracer::close(void)
 }
 
 /*******************  FUNCTION  *********************/
-void AllocTracer::traceChunk(const Stack* allocStack, const Stack* freeStack, size_t size, ticks timestamp, ticks lifetime)
+void AllocTraceFile::traceChunk(const Stack* allocStack, const Stack* freeStack, size_t size, ticks timestamp, ticks lifetime)
 {
 	//check errors
 	assert(pos < bufferSize);
@@ -83,7 +83,7 @@ void AllocTracer::traceChunk(const Stack* allocStack, const Stack* freeStack, si
 }
 
 /*******************  FUNCTION  *********************/
-void AllocTracer::flush(void)
+void AllocTraceFile::flush(void)
 {
 	//check
 	assert(pos <= bufferSize);

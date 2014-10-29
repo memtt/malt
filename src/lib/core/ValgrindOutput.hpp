@@ -14,7 +14,7 @@
 #include <map>
 #include <string>
 #include "SimpleCallStackNode.hpp"
-#include "SymbolResolver.hpp"
+#include "SymbolSolver.hpp"
 
 namespace MATT
 {
@@ -36,13 +36,13 @@ typedef std::map<void*,ValgrindCaller> ValgrindCallerMap;
 class ValgrindOutput
 {
 	public:
-		void pushStackInfo(SimpleCallStackNode& stackNode, const SymbolResolver& symbols);
-		void pushStackInfo(const Stack & stack,const CallStackInfo & info, const SymbolResolver& symbols);
-		void writeAsCallgrind(const std::string & filename,const SymbolResolver& dic);
-		void writeAsCallgrind(std::ostream & out, const SymbolResolver& dic);
+		void pushStackInfo(SimpleCallStackNode& stackNode, const SymbolSolver& symbols);
+		void pushStackInfo(const Stack & stack,const CallStackInfo & info, const SymbolSolver& symbols);
+		void writeAsCallgrind(const std::string & filename,const SymbolSolver& dic);
+		void writeAsCallgrind(std::ostream & out, const SymbolSolver& dic);
 	protected:
-		void writeLocation(std::ostream& out, const SymbolResolver& dic, const CallSite * site, void * addr, bool call);
-		static bool isNewOperator(const SymbolResolver& symbols, void* addr);
+		void writeLocation(std::ostream& out, const SymbolSolver& dic, const CallSite * site, void * addr, bool call);
+		static bool isNewOperator(const SymbolSolver& symbols, void* addr);
 	private:
 		ValgrindCallerMap callers;
 };

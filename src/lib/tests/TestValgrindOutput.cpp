@@ -80,10 +80,10 @@ TEST(ValgrindOutput,testRecursive)
 	Stack stack(CST_STACK_1,7,STACK_ORDER_ASC);
 	SimpleCallStackNode stackNode(stack);
 	stackNode.getInfo().onAllocEvent(2,0);
-	SymbolResolver symbols;
+	SymbolSolver symbols;
 	symbols.loadProcMap();
-	stack.resolveSymbols(symbols);
-	symbols.resolveNames();
+	stack.solveSymbols(symbols);
+	symbols.solveNames();
 	output.pushStackInfo(stackNode,symbols);
 	
 	std::stringstream buffer;

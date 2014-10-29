@@ -55,31 +55,31 @@ typedef std::map<void*,CallSite> CallSiteMap;
 typedef std::map<void*,MaqaoSite,std::less<void*>,STLInternalAllocator<std::pair<void*,MaqaoSite> > > MaqaoSiteMap;
 
 /*********************  CLASS  **********************/
-class SymbolResolver
+class SymbolSolver
 {
 	public:
-		SymbolResolver(void);
-		~SymbolResolver(void);
+		SymbolSolver(void);
+		~SymbolSolver(void);
 		const char * getName(void * callSite);
 		void registerAddress(void * callSite);
 		const char* setupNewEntry(void* callSite);
 		const char * setupNewEntry(void * callSite,const std::string & name);
 		void loadProcMap(void);
-		void resolveNames(void);
-		void resolveMaqaoNames(void);
+		void solveNames(void);
+		void solveMaqaoNames(void);
 		const CallSite * getCallSiteInfo(void * site) const;
 		const std::string & getString(int id) const;
 		bool isSameFuntion(const CallSite * s1,void * s2) const;
 		bool procMapIsLoaded(void) const;
 		void registerMaqaoFunctionSymbol(int funcId,const char * funcName,const char * file,int line);
 	public:
-		friend std::ostream & operator << (std::ostream & out,const SymbolResolver & dic);
-		friend void convertToJson(htopml::JsonState & json, const SymbolResolver & value);
+		friend std::ostream & operator << (std::ostream & out,const SymbolSolver & dic);
+		friend void convertToJson(htopml::JsonState & json, const SymbolSolver & value);
 	private:
 		LinuxProcMapEntry * getMapEntry(void * callSite);
-		void resolveNames(LinuxProcMapEntry * procMapEntry);
+		void solveNames(LinuxProcMapEntry * procMapEntry);
 		int getString(const char* value);
-		void resolveMissings(void);
+		void solveMissings(void);
 		static char * extractSymbolName(char * value);
 	private:
 		FuncNameDicMap nameMap;

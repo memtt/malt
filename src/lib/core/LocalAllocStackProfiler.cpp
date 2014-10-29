@@ -182,9 +182,9 @@ void convertToJson(htopml::JsonState& json, const LocalAllocStackProfiler& value
 }
 
 /*******************  FUNCTION  *********************/
-void LocalAllocStackProfiler::resolveSymbols(SymbolResolver& symbolResolver) const
+void LocalAllocStackProfiler::solveSymbols(SymbolSolver& symbolResolver) const
 {
-	this->stackSizeAnalyser.resolveSymbols(symbolResolver);
+	this->stackSizeAnalyser.solveSymbols(symbolResolver);
 }
 
 /*******************  FUNCTION  *********************/

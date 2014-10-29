@@ -19,7 +19,7 @@
 #include <common/STLInternalAllocator.hpp>
 //internal stacks
 #include <stacks/Stack.hpp>
-#include <core/SymbolResolver.hpp>
+#include <core/SymbolSolver.hpp>
 
 /*******************  NAMESPACE  ********************/
 namespace MATT
@@ -67,7 +67,7 @@ class StackSTLHashMap
 		iterator end();
 		const_iterator begin() const;
 		const_iterator end() const;
-		void resolveSymbols(SymbolResolver & symbolResolver);
+		void solveSymbols(SymbolSolver & symbolResolver);
 	public:
 		template <class U> friend void convertToJson(htopml::JsonState & json, const StackSTLHashMap<U> & value);
 	private:
@@ -208,10 +208,10 @@ typename StackSTLHashMap<T>::const_iterator StackSTLHashMap<T>::end() const
 
 /*******************  FUNCTION  *********************/
 template <class T>
-void StackSTLHashMap<T>::resolveSymbols(SymbolResolver& symbolResolver)
+void StackSTLHashMap<T>::solveSymbols(SymbolSolver& symbolResolver)
 {
 	for (typename StackSTLHashMap< T >::InternalMap::const_iterator it = map.begin() ; it != map.end() ; ++it)
-		it->first.stack->resolveSymbols(symbolResolver);
+		it->first.stack->solveSymbols(symbolResolver);
 }
 
 /*******************  FUNCTION  *********************/

@@ -14,7 +14,7 @@
 #include <cstring>
 #include <cstdio>
 #include <iostream>
-#include "SymbolResolver.hpp"
+#include "SymbolSolver.hpp"
 #include <json/JsonState.h>
 #include <common/Debug.hpp>
 #include <common/Array.hpp>
@@ -24,20 +24,20 @@ namespace MATT
 {
 
 /*******************  FUNCTION  *********************/
-SymbolResolver::SymbolResolver(void )
+SymbolSolver::SymbolSolver(void )
 {
 	strings.push_back("??");
 }
 
 /*******************  FUNCTION  *********************/
-SymbolResolver::~SymbolResolver(void )
+SymbolSolver::~SymbolSolver(void )
 {
 	for (FuncNameDicMap::const_iterator it = nameMap.begin() ; it != nameMap.end() ; ++it)
 		free((void*)it->second);
 }
 
 /*******************  FUNCTION  *********************/
-const char* SymbolResolver::getName(void* callSite)
+const char* SymbolSolver::getName(void* callSite)
 {
 	//errors
 	assert(callSite != NULL);
@@ -55,7 +55,7 @@ const char* SymbolResolver::getName(void* callSite)
 }
 
 /*******************  FUNCTION  *********************/
-void SymbolResolver::registerAddress(void* callSite)
+void SymbolSolver::registerAddress(void* callSite)
 {
 	//check if present, if true, nothing to do
 	CallSiteMap::const_iterator it = callSiteMap.find(callSite);
@@ -70,7 +70,7 @@ void SymbolResolver::registerAddress(void* callSite)
 }
 
 /*******************  FUNCTION  *********************/
-const char* SymbolResolver::setupNewEntry(void* callSite)
+const char* SymbolSolver::setupNewEntry(void* callSite)
 {
 	//errors
 	assert(callSite != NULL);
@@ -91,7 +91,7 @@ const char* SymbolResolver::setupNewEntry(void* callSite)
 }
 
 /*******************  FUNCTION  *********************/
-std::ostream& operator<<(std::ostream& out, const SymbolResolver& dic)
+std::ostream& operator<<(std::ostream& out, const SymbolSolver& dic)
 {
 	for (FuncNameDicMap::const_iterator it = dic.nameMap.begin() ; it != dic.nameMap.end() ; ++it)
 		out << it->first << " " << it->second << std::endl;
@@ -99,7 +99,7 @@ std::ostream& operator<<(std::ostream& out, const SymbolResolver& dic)
 }
 
 /*******************  FUNCTION  *********************/
-void convertToJson(htopml::JsonState& json, const SymbolResolver& value)
+void convertToJson(htopml::JsonState& json, const SymbolSolver& value)
 {
 	json.openStruct();
 
@@ -113,7 +113,7 @@ void convertToJson(htopml::JsonState& json, const SymbolResolver& value)
 }
 
 /*******************  FUNCTION  *********************/
-const char* SymbolResolver::setupNewEntry(void* callSite, const std::string& name)
+const char* SymbolSolver::setupNewEntry(void* callSite, const std::string& name)
 {
 	//search in map
 	FuncNameDicMap::const_iterator it = this->nameMap.find(callSite);
@@ -130,13 +130,13 @@ const char* SymbolResolver::setupNewEntry(void* callSite, const std::string& nam
 }
 
 /*******************  FUNCTION  *********************/
-bool SymbolResolver::procMapIsLoaded(void) const
+bool SymbolSolver::procMapIsLoaded(void) const
 {
 	return (procMap.empty() == false);
 }
 
 /*******************  FUNCTION  *********************/
-void SymbolResolver::loadProcMap(void)
+void SymbolSolver::loadProcMap(void)
 {
 	//errors
 	assert(procMap.empty());
@@ -203,7 +203,7 @@ CallSite::CallSite(LinuxProcMapEntry* mapEntry)
 }
 
 /*******************  FUNCTION  *********************/
-LinuxProcMapEntry* SymbolResolver::getMapEntry(void* callSite)
+LinuxProcMapEntry* SymbolSolver::getMapEntry(void* callSite)
 {
 	//search in map by checking intervals
 	for (LinuxProcMap::iterator it = procMap.begin() ; it != procMap.end() ; ++it)
@@ -217,13 +217,13 @@ LinuxProcMapEntry* SymbolResolver::getMapEntry(void* callSite)
 }
 
 /*******************  FUNCTION  *********************/
-void SymbolResolver::resolveNames(void)
+void SymbolSolver::solveNames(void)
 {
 	//first try with maqao infos
 	if (!maqaoSites.empty())
 	{
 		fprintf(stderr,"MATT : Resolving symbols with maqao infos...\n");
-		this->resolveMaqaoNames();
+		this->solveMaqaoNames();
 	}
 	
 	fprintf(stderr,"MATT : Resolving symbols with addr2line...\n");
@@ -235,15 +235,15 @@ void SymbolResolver::resolveNames(void)
 	for (LinuxProcMap::iterator it = procMap.begin() ; it != procMap.end() ; ++it)
 	{
 		if (!(it->file.empty() || it->file[0] == '['))
-			resolveNames(&(*it));
+			solveNames(&(*it));
 	}
 	
 	//final check for not found
-	resolveMissings();
+	solveMissings();
 }
 
 /*******************  FUNCTION  *********************/
-void SymbolResolver::resolveMaqaoNames(void)
+void SymbolSolver::solveMaqaoNames(void)
 {
 	for (CallSiteMap::iterator it = callSiteMap.begin() ; it != callSiteMap.end() ; ++it)
 	{
@@ -266,7 +266,7 @@ void SymbolResolver::resolveMaqaoNames(void)
  * ​http://libglim.googlecode.com/svn/trunk/exception.hpp
  * ​http://stackoverflow.com/questions/10452847/backtrace-function-inside-shared-libraries 
 */
-void SymbolResolver::resolveNames(LinuxProcMapEntry * procMapEntry)
+void SymbolSolver::solveNames(LinuxProcMapEntry * procMapEntry)
 {
 	//prepare command
 	bool hasEntries = false;
@@ -370,7 +370,7 @@ void SymbolResolver::resolveNames(LinuxProcMapEntry * procMapEntry)
 }
 
 /*******************  FUNCTION  *********************/
-int SymbolResolver::getString(const char * value)
+int SymbolSolver::getString(const char * value)
 {
 	int id = 0;
 	for (std::vector<std::string>::iterator it = strings.begin() ; it != strings.end() ; ++it)
@@ -386,7 +386,7 @@ int SymbolResolver::getString(const char * value)
 }
 
 /*******************  FUNCTION  *********************/
-void SymbolResolver::registerMaqaoFunctionSymbol(int funcId, const char* funcName, const char* file, int line)
+void SymbolSolver::registerMaqaoFunctionSymbol(int funcId, const char* funcName, const char* file, int line)
 {
 	MaqaoSite & site = maqaoSites[(void*)(size_t)funcId];
 	site.function = funcName;
@@ -414,7 +414,7 @@ void convertToJson(htopml::JsonState& json, const CallSite& value)
 }
 
 /*******************  FUNCTION  *********************/
-const CallSite* SymbolResolver::getCallSiteInfo(void* site) const
+const CallSite* SymbolSolver::getCallSiteInfo(void* site) const
 {
 	CallSiteMap::const_iterator it = callSiteMap.find(site);
 	if (it == callSiteMap.end())
@@ -424,7 +424,7 @@ const CallSite* SymbolResolver::getCallSiteInfo(void* site) const
 }
 
 /*******************  FUNCTION  *********************/
-const std::string& SymbolResolver::getString(int id) const
+const std::string& SymbolSolver::getString(int id) const
 {
 	assert((size_t)id < strings.size());
 	return strings[id];
@@ -435,7 +435,7 @@ const std::string& SymbolResolver::getString(int id) const
  * Function to use after loading symbols with resolveNames(). It search all '??' values
  * and try a resolution of symbol names with backtrace_symbols() from glibc.
 **/
-void SymbolResolver::resolveMissings(void)
+void SymbolSolver::solveMissings(void)
 {
 	//store symbols not resolved
 	Array<void*> toResolve(16,1024,false);
@@ -461,7 +461,7 @@ void SymbolResolver::resolveMissings(void)
 }
 
 /*******************  FUNCTION  *********************/
-char * SymbolResolver::extractSymbolName(char* value)
+char * SymbolSolver::extractSymbolName(char* value)
 {
 	//Vars
 	char * ret = NULL;
@@ -505,7 +505,7 @@ char * SymbolResolver::extractSymbolName(char* value)
 }
 
 /*******************  FUNCTION  *********************/
-bool SymbolResolver::isSameFuntion(const CallSite* s1, void* s2) const
+bool SymbolSolver::isSameFuntion(const CallSite* s1, void* s2) const
 {
 	if (s1 == NULL || s2 == NULL)
 		return false;

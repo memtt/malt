@@ -23,7 +23,7 @@ namespace MATT
 {
 
 /*******************  FUNCTION  *********************/
-void ValgrindOutput::pushStackInfo(const MATT::Stack& stack, const MATT::CallStackInfo& info, const MATT::SymbolResolver& symbols)
+void ValgrindOutput::pushStackInfo(const MATT::Stack& stack, const MATT::CallStackInfo& info, const MATT::SymbolSolver& symbols)
 {
 	int shift = 0;
 	
@@ -77,13 +77,13 @@ void ValgrindOutput::pushStackInfo(const MATT::Stack& stack, const MATT::CallSta
 }
 
 /*******************  FUNCTION  *********************/
-void ValgrindOutput::pushStackInfo(SimpleCallStackNode& stackNode,const SymbolResolver & symbols)
+void ValgrindOutput::pushStackInfo(SimpleCallStackNode& stackNode,const SymbolSolver & symbols)
 {
 	pushStackInfo(stackNode.getCallStack(),stackNode.getInfo(),symbols);
 }
 
 /*******************  FUNCTION  *********************/
-bool ValgrindOutput::isNewOperator(const SymbolResolver& symbols, void* addr)
+bool ValgrindOutput::isNewOperator(const SymbolSolver& symbols, void* addr)
 {
 	const CallSite * leafInfo = symbols.getCallSiteInfo(addr);
 	if (leafInfo == NULL)
@@ -95,7 +95,7 @@ bool ValgrindOutput::isNewOperator(const SymbolResolver& symbols, void* addr)
 
 
 /*******************  FUNCTION  *********************/
-void ValgrindOutput::writeAsCallgrind(const std::string& filename, const SymbolResolver & dic)
+void ValgrindOutput::writeAsCallgrind(const std::string& filename, const SymbolSolver & dic)
 {
 	ofstream out;
 	out.open(filename.c_str());
@@ -104,7 +104,7 @@ void ValgrindOutput::writeAsCallgrind(const std::string& filename, const SymbolR
 }
 
 /*******************  FUNCTION  *********************/
-void ValgrindOutput::writeLocation(ostream& out, const SymbolResolver& dic, const CallSite * site, void * addr, bool call)
+void ValgrindOutput::writeLocation(ostream& out, const SymbolSolver& dic, const CallSite * site, void * addr, bool call)
 {
 	const char * callPrefix = "";
 	if (call)
@@ -130,7 +130,7 @@ void ValgrindOutput::writeLocation(ostream& out, const SymbolResolver& dic, cons
 }
 
 /*******************  FUNCTION  *********************/
-void ValgrindOutput::writeAsCallgrind(ostream& out, const SymbolResolver& dic)
+void ValgrindOutput::writeAsCallgrind(ostream& out, const SymbolSolver& dic)
 {
 	int line;
 	

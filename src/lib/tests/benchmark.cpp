@@ -193,7 +193,7 @@ void runTestFlat(BenchTiming & timing,StackSTLHashMap<CallStackInfo> & tracer,Ba
 	timing.end(cout);
 }
 
-void runTestFlatOld(BenchTiming & timing,SimpleStackTracer & tracer,BacktraceStack * stacks, const char * name,int duration)
+void runTestFlatOld(BenchTiming & timing,SimpleStackTracker & tracer,BacktraceStack * stacks, const char * name,int duration)
 {
 	timing.start(name,duration);
 	while(timing.needRun())
@@ -247,7 +247,7 @@ int main(void)
 	//setup timings
 	BenchTiming timing;
 	StackSTLHashMap<CallStackInfo> tracer;
-	SimpleStackTracer tracerOld;
+	SimpleStackTracker tracerOld;
 	RLockFreeTree<CallStackInfo> tracerTree;
 	gblInternaAlloc = new SimpleAllocator(true);
 

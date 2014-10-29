@@ -338,23 +338,23 @@ void AllocStackProfiler::peakTracking(ssize_t delta)
 MMCallStackNode AllocStackProfiler::getStackNode(Stack* userStack)
 {
 	MMStackMap::Node * node;
-	CODE_TIMING("searchInfo",node = &stackTracer.getNode(*userStack));
+	CODE_TIMING("searchInfo",node = &stackTracker.getNode(*userStack));
 	MMCallStackNode res(node->first.stack,&node->second);
 	return res;
 }
 
 /*******************  FUNCTION  *********************/
-void AllocStackProfiler::resolvePerThreadSymbols()
+void AllocStackProfiler::solvePerThreadSymbols()
 {
 	for (LocalAllocStackProfilerList::const_iterator it = perThreadProfiler.begin() ; it != perThreadProfiler.end() ; ++it)			
-		(*it)->resolveSymbols(symbolResolver);
+		(*it)->solveSymbols(symbolResolver);
 }
 
 /*******************  FUNCTION  *********************/
 void AllocStackProfiler::updatePeakInfoOfStacks(void)
 {
 	//fprintf(stderr,"peak = %lu , peakId = %lu\n",peak,peakId);
-	for (StackSTLHashMap<CallStackInfo>::iterator it = stackTracer.begin() ; it != stackTracer.end() ; ++it)
+	for (StackSTLHashMap<CallStackInfo>::iterator it = stackTracker.begin() ; it != stackTracker.end() ; ++it)
 		it->second.updatePeak(peakId);
 }
 
@@ -405,13 +405,13 @@ void AllocStackProfiler::loadGlobalVariables(void)
 void AllocStackProfiler::onExit(void )
 {
 	MATT_OPTIONAL_CRITICAL(lock,threadSafe)
-		//resolve symbols
+		//solve symbols
 		if (options.stackResolve)
-			CODE_TIMING("resolveSymbols",
+			CODE_TIMING("solveSymbols",
 				this->symbolResolver.loadProcMap();
-				this->resolvePerThreadSymbols();
-				this->stackTracer.resolveSymbols(symbolResolver);
-				this->symbolResolver.resolveNames()
+				this->solvePerThreadSymbols();
+				this->stackTracker.solveSymbols(symbolResolver);
+				this->symbolResolver.solveNames()
 			);
 		
 		//update global peak info
@@ -456,7 +456,7 @@ void AllocStackProfiler::onExit(void )
 			fprintf(stderr,"Prepare valgrind output...\n");
 			ValgrindOutput vout;
 			
-			for (StackSTLHashMap<CallStackInfo>::const_iterator itMap = stackTracer.begin() ; itMap != stackTracer.end() ; ++itMap)
+			for (StackSTLHashMap<CallStackInfo>::const_iterator itMap = stackTracker.begin() ; itMap != stackTracker.end() ; ++itMap)
 				vout.pushStackInfo(*(itMap->first.stack),itMap->second,symbolResolver);
 			
 			//stackTracer.fillValgrindOut(vout,symbolResolver);
@@ -494,7 +494,7 @@ void convertToJson(htopml::JsonState& json, const AllocStackProfiler& value)
 	json.printField("config",value.options);
 
 	if (value.options.stackProfileEnabled)
-		json.printField("stacks",value.stackTracer);
+		json.printField("stacks",value.stackTracker);
 	
 	if (value.options.stackResolve)
 		json.printField("sites",value.symbolResolver);
@@ -635,7 +635,7 @@ ticks AllocStackProfiler::ticksPerSecond(void) const
 /*******************  FUNCTION  *********************/
 AllocTreeStrackTracer* AllocStackProfiler::getEnterExitStackTracer(void)
 {
-	return &treeStackTracer;
+	return &treeStackTracker;
 }
 
 /*******************  FUNCTION  *********************/

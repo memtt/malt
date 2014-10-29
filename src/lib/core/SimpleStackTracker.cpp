@@ -12,20 +12,20 @@
 #include <cstdio>
 #include <json/JsonState.h>
 #include <common/CodeTiming.hpp>
-#include "SimpleStackTracer.hpp"
+#include "SimpleStackTracker.hpp"
 
 /*******************  NAMESPACE  ********************/
 namespace MATT
 {
 
 /*******************  FUNCTION  *********************/
-SimpleStackTracer::SimpleStackTracer(void )
+SimpleStackTracker::SimpleStackTracker(void )
 {
 	this->count = 0;
 }
 
 /*******************  FUNCTION  *********************/
-SimpleStackTracer::~SimpleStackTracer(void )
+SimpleStackTracker::~SimpleStackTracker(void )
 {
 	for (SimpleBacktraceVectorMap::const_iterator itMap = callmaps.begin() ; itMap != callmaps.end() ; ++itMap)
 	{
@@ -36,7 +36,7 @@ SimpleStackTracer::~SimpleStackTracer(void )
 }
 
 /*******************  FUNCTION  *********************/
-SimpleCallStackNode& SimpleStackTracer::getBacktraceInfo( const Stack& stack , int skipDepth )
+SimpleCallStackNode& SimpleStackTracker::getBacktraceInfo( const Stack& stack , int skipDepth )
 {
 	assert(stack.isValid());
 	
@@ -75,7 +75,7 @@ SimpleCallStackNode& SimpleStackTracer::getBacktraceInfo( const Stack& stack , i
 }
 
 /*******************  FUNCTION  *********************/
-std::ostream& operator<<(std::ostream& out, const SimpleStackTracer& tracer)
+std::ostream& operator<<(std::ostream& out, const SimpleStackTracker& tracer)
 {
 	for (SimpleBacktraceVectorMap::const_iterator itMap = tracer.callmaps.begin() ; itMap != tracer.callmaps.end() ; ++itMap)
 	{
@@ -88,18 +88,18 @@ std::ostream& operator<<(std::ostream& out, const SimpleStackTracer& tracer)
 }
 
 /*******************  FUNCTION  *********************/
-void SimpleStackTracer::resolveSymbols(SymbolResolver & symbolResolver)
+void SimpleStackTracker::solveSymbols(SymbolSolver & symbolResolver)
 {
 	for (SimpleBacktraceVectorMap::const_iterator itMap = callmaps.begin() ; itMap != callmaps.end() ; ++itMap)
 	{
 		const SimpleBacktraceVector & vec = itMap->second;
 		for (SimpleBacktraceVector::const_iterator it = vec.begin() ; it != vec.end() ; ++it)
-			(*it)->getCallStack().resolveSymbols(symbolResolver);
+			(*it)->getCallStack().solveSymbols(symbolResolver);
 	}
 }
 
 /*******************  FUNCTION  *********************/
-void convertToJson(htopml::JsonState& json, const SimpleStackTracer& value)
+void convertToJson(htopml::JsonState& json, const SimpleStackTracker& value)
 {
 	json.openStruct();
 	json.openFieldArray("stats");
@@ -115,7 +115,7 @@ void convertToJson(htopml::JsonState& json, const SimpleStackTracer& value)
 }
 
 /*******************  FUNCTION  *********************/
-void SimpleStackTracer::fillValgrindOut(ValgrindOutput& out,SymbolResolver & symbolResolver) const
+void SimpleStackTracker::fillValgrindOut(ValgrindOutput& out,SymbolSolver & symbolResolver) const
 {
 	for (SimpleBacktraceVectorMap::const_iterator itMap = callmaps.begin() ; itMap != callmaps.end() ; ++itMap)
 	{

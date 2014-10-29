@@ -16,7 +16,7 @@
 #include <common/SimpleAllocator.hpp>
 //internal stacks
 #include <stacks/EnterExitStack.hpp>
-#include <core/SymbolResolver.hpp>
+#include <core/SymbolSolver.hpp>
 #include <json/JsonState.h>
 
 /*******************  NAMESPACE  ********************/

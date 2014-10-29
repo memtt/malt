@@ -29,8 +29,8 @@
 #include <tools/ELFReader.hpp>
 #include "SegmentTracker.hpp"
 #include "StackSizeTracker.hpp"
-#include "SimpleStackTracer.hpp"
-#include "AllocTracer.hpp"
+#include "SimpleStackTracker.hpp"
+#include "AllocTraceFile.hpp"
 
 /*******************  NAMESPACE  ********************/
 namespace MATT
@@ -134,15 +134,15 @@ class AllocStackProfiler
 		MMCallStackNode getStackNode(MATT::Stack* userStack = 0);
 		void onAllocEvent(void* ptr, size_t size, Stack* userStack, MMCallStackNode* callStackNode = NULL, bool doLock = true);
 		  size_t onFreeEvent(void* ptr, MATT::Stack* userStack, MATT::MMCallStackNode* callStackNode = 0, bool doLock = true);
-		void resolvePerThreadSymbols(void);
+		void solvePerThreadSymbols(void);
 		void memOpsLevels(void);
 		void updatePeakInfoOfStacks(void);
 		void peakTracking(ssize_t delta);
 		void loadGlobalVariables(void);
 	private:
 		//SimpleStackTracer stackTracer;
-		StackSTLHashMap<CallStackInfo> stackTracer;
-		RLockFreeTree<CallStackInfo> treeStackTracer;
+		StackSTLHashMap<CallStackInfo> stackTracker;
+		RLockFreeTree<CallStackInfo> treeStackTracker;
 // 		AbstractStackTree<CallStackInfo> stackTree;
 		AllocSizeDistrMap sizeMap;
 		SegmentTracker segTracker;
@@ -159,13 +159,13 @@ class AllocStackProfiler
 		unsigned long largestStackSize;
 		StackSizeTracker largestStackMem;
 		Stack largestStack;
-		SymbolResolver symbolResolver;
+		SymbolSolver symbolResolver;
 		LocalAllocStackProfilerList perThreadProfiler;
 		timeval trefSec;
 		ticks trefTicks;
 		ticks sharedLinearIndex;
 		ReallocJumpMap reallocJumpMap;
-		AllocTracer tracer;
+		AllocTraceFile tracer;
 		size_t osTotalMemory;
 		size_t osFreeMemoryAtStart;
 		size_t osCachedMemoryAtStart;

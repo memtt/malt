@@ -13,7 +13,7 @@
 //internal stacks
 #include <stacks/Stack.hpp>
 //internal core
-#include <core/SymbolResolver.hpp>
+#include <core/SymbolSolver.hpp>
 #include <core/CallStackInfo.hpp>
 
 /*******************  NAMESPACE  ********************/

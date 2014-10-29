@@ -27,7 +27,7 @@ class StackSizeAnalyser
 		StackSizeAnalyser(void);
 		inline void onEnterFunc(void * funcAddr);
 		inline void onExitFunc(void * funcAddr);
-		void resolveSymbols(SymbolResolver & symbolResolver) const;
+		void solveSymbols(SymbolSolver & symbolResolver) const;
 	public:
 		friend void convertToJson(htopml::JsonState& json, const StackSizeAnalyser& value);
 	private:

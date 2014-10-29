@@ -16,7 +16,7 @@
 #include <json/JsonState.h>
 //internals from common
 #include <common/SimpleAllocator.hpp>
-#include <core/SymbolResolver.hpp>
+#include <core/SymbolSolver.hpp>
 #include <common/Debug.hpp>
 //locals
 #include "Stack.hpp"
@@ -421,7 +421,7 @@ int Stack::getSize ( void ) const
 /**
  * Loop on all symbols and register them into the symbol translator.
 **/
-void Stack::resolveSymbols ( SymbolResolver& dic ) const
+void Stack::solveSymbols ( SymbolSolver& dic ) const
 {
 	if (stack != NULL)
 		for (int i = 0 ; i < size ; i++)

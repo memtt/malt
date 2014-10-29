@@ -22,9 +22,9 @@ StackSizeAnalyser::StackSizeAnalyser(void)
 }
 
 /*******************  FUNCTION  *********************/
-void StackSizeAnalyser::resolveSymbols(SymbolResolver& symbolResolver) const
+void StackSizeAnalyser::solveSymbols(SymbolSolver& symbolResolver) const
 {
-	largestStack.resolveSymbols(symbolResolver);
+	largestStack.solveSymbols(symbolResolver);
 }
 
 /*******************  FUNCTION  *********************/

@@ -36,11 +36,11 @@ struct AllocTracerChunk
 };
 
 /*********************  CLASS  **********************/
-class AllocTracer
+class AllocTraceFile
 {
 	public:
-		AllocTracer(const std::string & file = "",size_t bufferSize = MATT_ALLOC_TRACER_BUFFER_SIZE);
-		~AllocTracer(void);
+		AllocTraceFile(const std::string & file = "",size_t bufferSize = MATT_ALLOC_TRACER_BUFFER_SIZE);
+		~AllocTraceFile(void);
 		void open(const std::string & file);
 		void close(void);
 		void traceChunk(const Stack * allocStack,const Stack * freeStack,size_t size,ticks timestamp,ticks lifetime);

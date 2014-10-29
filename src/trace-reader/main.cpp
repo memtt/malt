@@ -13,7 +13,7 @@
 //STL C++
 #include <map>
 //matt internals
-#include <core/AllocTracer.hpp>
+#include <core/AllocTraceFile.hpp>
 
 /********************  MACROS  **********************/
 #define BUFFER_SIZE 1024

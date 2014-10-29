@@ -8,7 +8,7 @@
 
 /********************  HEADERS  *********************/
 #include <gtest/gtest.h>
-#include <core/SimpleStackTracer.hpp>
+#include <core/SimpleStackTracker.hpp>
 
 /***************** USING NAMESPACE ******************/
 using namespace MATT;
@@ -23,13 +23,13 @@ int CST_STACK_1_SIZE = 32;
 /*******************  FUNCTION  *********************/
 TEST(SimpleStackTracer,constructor)
 {
-	SimpleStackTracer tracker;
+	SimpleStackTracker tracker;
 }
 
 /*******************  FUNCTION  *********************/
 TEST(SimpleStackTracer,findStackNodeAsc)
 {
-	SimpleStackTracer tracker;
+	SimpleStackTracker tracker;
 	Stack stack(CST_STACK_1,CST_STACK_1_SIZE,STACK_ORDER_ASC);
 	
 	SimpleCallStackNode & node1 = tracker.getBacktraceInfo(stack);
@@ -41,7 +41,7 @@ TEST(SimpleStackTracer,findStackNodeAsc)
 /*******************  FUNCTION  *********************/
 TEST(SimpleStackTracer,findStackNodeSkipDepthAsc)
 {
-	SimpleStackTracer tracker;
+	SimpleStackTracker tracker;
 	Stack stack(CST_STACK_1,CST_STACK_1_SIZE,STACK_ORDER_ASC);
 	
 	SimpleCallStackNode & node1 = tracker.getBacktraceInfo(stack,5);
@@ -53,7 +53,7 @@ TEST(SimpleStackTracer,findStackNodeSkipDepthAsc)
 /*******************  FUNCTION  *********************/
 TEST(SimpleStackTracer,findStackNodeDesc)
 {
-	SimpleStackTracer tracker;
+	SimpleStackTracker tracker;
 	Stack stack(CST_STACK_1,CST_STACK_1_SIZE,STACK_ORDER_DESC);
 	
 	SimpleCallStackNode & node1 = tracker.getBacktraceInfo(stack);
@@ -65,7 +65,7 @@ TEST(SimpleStackTracer,findStackNodeDesc)
 /*******************  FUNCTION  *********************/
 TEST(SimpleStackTracer,findStackNodeSkipDepthDesc)
 {
-	SimpleStackTracer tracker;
+	SimpleStackTracker tracker;
 	Stack stack(CST_STACK_1,CST_STACK_1_SIZE,STACK_ORDER_DESC);
 	
 	SimpleCallStackNode & node1 = tracker.getBacktraceInfo(stack,5);
