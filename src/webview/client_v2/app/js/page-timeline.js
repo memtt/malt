@@ -38,6 +38,10 @@ function MattPageTimeline()
 			chart.yAxis //Chart y-axis settings
 				.axisLabel(ylabel)
 				.tickFormat(function(value){return mattHelper.humanReadable(value,1,'',false);});
+				
+// 			chart.lines.dispatch.on('elementClick', function(e) {
+// 				alert("You've clicked on " + e.series.key + " - " + e.point.x);
+// 			});
 			
 			/* Done setting the chart up? Time to render it!*/
 			var myData = reformatDataForD3(data); //You need data...
