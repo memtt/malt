@@ -86,6 +86,7 @@ while true; do
 		--dumpconfig|-d)
 			export MATT_OPTIONS="${MATT_OPTIONS};output:config=true"
 			shift 1
+			;;
 		--mpi)
 			ENABLE_MPI=true
 			if [ ! -e "$MPI_WRAPPER_DIR/libmattmpi.so" ]; then

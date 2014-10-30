@@ -10,16 +10,22 @@
 #define MATT_FUNC_NAME_DIC_HPP
 
 /********************  HEADERS  *********************/
+//STD C++
+#include <cstdio>
+//STL C++
 #include <map>
 #include <set>
 #include <vector>
 #include <ostream>
-#include <cstdio>
+//extern deps
 #include <json/JsonState.h>
+//internal common
 #include <common/STLInternalAllocator.hpp>
+//internal portability
 #include <portability/LinuxProcMapReader.hpp>
 
 /*******************  FUNCTION  *********************/
+/** Define a function dictionnary to store addresses and related symboles. **/
 typedef std::map<void *,const char*> FuncNameDicMap;
 
 /*********************  TYPES  **********************/
@@ -33,6 +39,10 @@ namespace MATT
 {
 
 /********************  STRUCT  **********************/
+/**
+ * Define a call site.
+ * with its source informations extracted from debug symbols.
+**/
 struct CallSite
 {
 	CallSite(LinuxProcMapEntry * mapEntry = NULL);

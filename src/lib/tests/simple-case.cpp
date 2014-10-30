@@ -261,6 +261,9 @@ int main(void)
 	gblStaticArray[0] = gblString[0];
 	tlsArray[0] = gblArray[0];
 	
+	//ensure no remove
+	printf("To not remove global variables for test : %s\n",gblString);
+	
 	//first is calloc
 	void * ptr = calloc(16,16);
 	*(char*)ptr='c';//required otherwise new compilers will remove malloc/free

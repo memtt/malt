@@ -18,7 +18,6 @@ set(TEST_NAMES TestSegmentTracker
                TestFastBufferedStream 
                TestSimpleStackTracker 
                TestValgrindOutput
-               TestElfReader
    )
 
 ######################################################

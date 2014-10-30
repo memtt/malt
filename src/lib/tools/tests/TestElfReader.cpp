@@ -14,10 +14,13 @@
 /***************** USING NAMESPACE ******************/
 using namespace MATT;
 
+/********************* GLOBALS **********************/
+static const char CST_BINARY_FILE[] = TEST_BIN_DIR "/../../tests/simple-case-no-finstr"; 
+
 /*******************  FUNCTION  *********************/
 TEST(ElfReader,constructor)
 {
-	ElfReader reader(TEST_BIN_DIR "/simple-case-no-finstr");
+	ElfReader reader(CST_BINARY_FILE);
 }
 
 /*******************  FUNCTION  *********************/
@@ -36,7 +39,7 @@ bool hasVariable(ElfGlobalVariableVector & vars,std::string name,size_t size,boo
 /*******************  FUNCTION  *********************/
 TEST(ElfReader,loadSimpleCaseGlobVars)
 {
-	ElfReader reader(TEST_BIN_DIR "/simple-case-no-finstr");
+	ElfReader reader(CST_BINARY_FILE);
 	ElfGlobalVariableVector vars;
 	reader.loadGlobalVariables(vars);
 	
