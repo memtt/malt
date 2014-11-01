@@ -31,6 +31,11 @@ function MattPageTimeline()
 				.showXAxis(true) //Show the x-axis
 			;
 			
+// 			chart.interactiveLayer.dispatch.on("elementMousemove", function(e) {
+// 				alert('ok');
+// 				console.log(e);
+// 			});
+			
 			chart.xAxis //Chart x-axis settings
 				.axisLabel('Time (secondes)')
 				.tickFormat(function(value){return mattHelper.humanReadableTimes(value/(+data.ticksPerSecond),1,'',false);});
