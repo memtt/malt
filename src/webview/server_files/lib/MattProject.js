@@ -363,6 +363,7 @@ MattProject.prototype.getTimedValues = function()
 	tmp.ticksPerSecond = this.data.globals.ticksPerSecond;
 	tmp.allocBandwidth = this.data.timeline.allocBandwidth;
 	tmp.freeBandwidth = this.data.timeline.freeBandwidth;
+	tmp.memoryBandwidth = this.data.timeline.memoryBandwidth;
 	tmp.allocCnt = this.data.timeline.allocCnt;
 	tmp.freeCnt = this.data.timeline.freeCnt;
 	tmp.memoryTimeline = this.data.timeline.memoryTimeline;

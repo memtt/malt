@@ -93,6 +93,7 @@ function MattPageTimeline()
 	function mattConvertDataInternalRateD3JS(data,ticksPerSecond)
 	{
 		var res = new Array();
+		console.log(data.scale);
 		//alert(data.startTime + " -> "+data.endTime+" -> "+data.steps);
 		for (var i in data.values)
 		{
@@ -101,6 +102,23 @@ function MattPageTimeline()
 		}
 		return res;
 	}
+	
+	function mattConvertDataInternalRateD3JS2(data,id,ticksPerSecond)
+	{
+		var res = new Array();
+		//alert(data.startTime + " -> "+data.endTime+" -> "+data.steps);
+		res.push({x:0,y:0});
+		console.log("=> "+data.perPoint);
+		for (var i in data.values)
+		{
+			//if (data.startTime + data.scale*i <= data.endTime)
+			console.log(data.perPoints + " => " +data.values.length + " => " + i + " => "+(i+1)*data.perPoints/ticksPerSecond + " => "+data.values[i][id]);
+			res.push({x:(data.perPoints*(1+i)),y:((data.values[i][id])/(data.perPoints/ticksPerSecond))});
+		}
+		console.log(res);
+		return res;
+	}
+
 
 	function mattConvertData(data)
 	{
@@ -171,6 +189,21 @@ function MattPageTimeline()
 		return {data:res,labels:labels,ticksPerSecond:ticksPerSecond};
 	}
 	
+	function mattConvertSizeRate2(data)
+	{
+		var ticksPerSecond = +data.ticksPerSecond;
+		//ticksPerSecond = 1;
+		
+		var res = new Array();
+		res.push( mattConvertDataInternalRateD3JS2(data.memoryBandwidth,1,ticksPerSecond) );
+		res.push( mattConvertDataInternalRateD3JS2(data.memoryBandwidth,3,ticksPerSecond) );
+
+		var labels = new Array();
+		labels.push("Malloc");
+		labels.push("Free");
+		return {data:res,labels:labels,ticksPerSecond:ticksPerSecond};
+	}
+	
 	function mattConvertCountRate(data)
 	{
 		var ticksPerSecond = data.ticksPerSecond;
@@ -200,7 +233,7 @@ function MattPageTimeline()
 
 			mattNVDGraph("matt-mem-timeline",mattConvertData(data),'B','Memory');
 			mattNVDGraph("matt-alive-chunks-timeline",mattConvertCnt(data),'Alive chunks','Allocations');
-			mattNVDGraph("matt-alloc-rate-size-timeline",mattConvertSizeRate(data),'Allocation rate B/s','Memory rate (B/s)');
+			mattNVDGraph("matt-alloc-rate-size-timeline",mattConvertSizeRate2(data),'Allocation rate B/s','Memory rate (B/s)');
 			mattNVDGraph("matt-alloc-rate-count-timeline",mattConvertCountRate(data),'Allocation rate op/s','Memory rate (B/s)');
 			mattNVDGraph("matt-sys-free-mem-timeline",mattConvertSysData(data),"B","Memory");
 		});

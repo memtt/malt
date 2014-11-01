@@ -7,8 +7,7 @@
 ######################################################
 
 ######################################################
-set(MATT_VALPROF_SRC ProfiledStateValue.cpp
-                     ProfiledCumulValue.cpp)
+set(MATT_VALPROF_SRC ProfiledStateValue.cpp)
 
 ######################################################
 add_library(matt-valprof OBJECT ${MATT_VALPROF_SRC})

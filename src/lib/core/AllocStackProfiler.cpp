@@ -40,7 +40,12 @@ namespace MATT
 
 /*******************  FUNCTION  *********************/
 AllocStackProfiler::AllocStackProfiler(const Options & options,StackMode mode,bool threadSafe)
-	:allocBandwidth(512),freeBandwidth(512),largestStack(STACK_ORDER_DESC)
+	:allocBandwidth(MATT_PROFILED_CUMUL_VALUE_DEFAULT_STEPS,false,true)
+	,freeBandwidth(MATT_PROFILED_CUMUL_VALUE_DEFAULT_STEPS,false,true)
+	,allocCnt(MATT_PROFILED_CUMUL_VALUE_DEFAULT_STEPS,false,true)
+	,freeCnt(MATT_PROFILED_CUMUL_VALUE_DEFAULT_STEPS,false,true)
+	,largestStack(STACK_ORDER_DESC)
+	,memoryBandwidth(1024,true)
 {
 	this->mode = mode;
 	this->threadSafe = threadSafe;
@@ -231,6 +236,10 @@ void AllocStackProfiler::onAllocEvent(void* ptr, size_t size,Stack* userStack,MM
 		//track alloc bandwidth
 		allocBandwidth.push(size);
 		allocCnt.push(1);
+		TimeTrackAllocBandwidth allocBw;
+		allocBw.allocCount = 1;
+		allocBw.allocMem = size;
+		memoryBandwidth.push(t,allocBw,(void*)callStackNode->stack);
 	MATT_END_CRITICAL
 }
 
@@ -318,6 +327,10 @@ size_t AllocStackProfiler::onFreeEvent(void* ptr, MATT::Stack* userStack, MMCall
 		//free badnwidth
 		freeBandwidth.push(size);
 		freeCnt.push(1);
+		TimeTrackAllocBandwidth allocBw;
+		allocBw.freeCount = 1;
+		allocBw.freeMem = size;
+		memoryBandwidth.push(t,allocBw,(void*)callStackNode->stack);
 	MATT_END_CRITICAL
 	
 	return size;
@@ -423,6 +436,7 @@ void AllocStackProfiler::onExit(void )
 		//flush
 		memoryTimeline.flush();
 		systemTimeline.flush();
+		memoryBandwidth.flush();
 		
 		//open output file
 		//TODO manage errors
@@ -508,6 +522,7 @@ void convertToJson(htopml::JsonState& json, const AllocStackProfiler& value)
 			json.printField("freeCnt",value.freeCnt);
 			json.printField("memoryTimeline",value.memoryTimeline);
 			json.printField("systemTimeline",value.systemTimeline);
+			json.printField("memoryBandwidth",value.memoryBandwidth);
 		json.closeFieldStruct("timeline");
 	}
 	
@@ -661,16 +676,6 @@ TimeTrackMemory::TimeTrackMemory()
 }
 
 /*******************  FUNCTION  *********************/
-void TimeTrackMemory::set ( const TimeTrackMemory& v )
-{
-	this->internalMem = v.internalMem;
-	this->physicalMem = v.physicalMem;
-	this->requestedMem = v.requestedMem;
-	this->segments = v.segments;
-	this->virtualMem = v.virtualMem;
-}
-
-/*******************  FUNCTION  *********************/
 void convertToJson ( htopml::JsonState& json, const TimeTrackMemory& value)
 {
 // 	json.openStruct();
@@ -689,7 +694,7 @@ void convertToJson ( htopml::JsonState& json, const TimeTrackMemory& value)
 }
 
 /*******************  FUNCTION  *********************/
-bool TimeTrackMemory::push ( const TimeTrackMemory& v )
+bool TimeTrackMemory::reduce ( const TimeTrackMemory& v )
 {
 	bool hasUpdate = false;
 	if (v.internalMem > internalMem)
@@ -729,7 +734,7 @@ TimeTrackSysMemory::TimeTrackSysMemory()
 }
 
 /*******************  FUNCTION  *********************/
-bool TimeTrackSysMemory::push(const TimeTrackSysMemory& v)
+bool TimeTrackSysMemory::reduce(const TimeTrackSysMemory& v)
 {
 	bool hasUpdate = false;
 	if (v.freeMemory > freeMemory)
@@ -751,14 +756,6 @@ bool TimeTrackSysMemory::push(const TimeTrackSysMemory& v)
 }
 
 /*******************  FUNCTION  *********************/
-void TimeTrackSysMemory::set(const TimeTrackSysMemory& v)
-{
-	this->cachedMemory = v.cachedMemory;
-	this->freeMemory = v.freeMemory;
-	this->swapMemory = v.swapMemory;
-}
-
-/*******************  FUNCTION  *********************/
 void convertToJson(htopml::JsonState& json, const TimeTrackSysMemory& value)
 {
 	json.openArray();
@@ -766,6 +763,46 @@ void convertToJson(htopml::JsonState& json, const TimeTrackSysMemory& value)
 	json.printValue(value.swapMemory);
 	json.printValue(value.cachedMemory);
 	json.closeArray();
+}
+
+/*******************  FUNCTION  *********************/
+TimeTrackAllocBandwidth::TimeTrackAllocBandwidth()
+{
+	this->allocCount = 0;
+	this->allocMem = 0;
+	this->freeCount = 0;
+	this->freeMem = 0;
+}
+
+/*******************  FUNCTION  *********************/
+void convertToJson(htopml::JsonState& json, const TimeTrackAllocBandwidth& value)
+{
+	json.openArray();
+	json.printValue(value.allocCount);
+	json.printValue(value.allocMem);
+	json.printValue(value.freeCount);
+	json.printValue(value.freeMem);
+	json.closeArray();
+}
+
+/*******************  FUNCTION  *********************/
+TimeTrackAllocBandwidth& TimeTrackAllocBandwidth::operator+=(const TimeTrackAllocBandwidth& value)
+{
+	allocCount += value.allocCount;
+	allocMem += value.allocMem;
+	freeCount += value.freeCount;
+	freeMem += value.freeMem;
+	return *this;
+}
+
+/*******************  FUNCTION  *********************/
+bool TimeTrackAllocBandwidth::reduce(const TimeTrackAllocBandwidth & v)
+{
+	allocCount += v.allocCount;
+	allocMem += v.allocMem;
+	freeCount += v.freeCount;
+	freeMem += v.freeMem;
+	return true;
 }
 
 }

@@ -39,8 +39,8 @@ namespace MATT
  * It also associate a stack to each values to remember the caller who generate the extremal values.
  * The types used here must provide :
  *   - default constructor to init
- *   - set function to set value
- *   - push function to reduce values
+ *   - Operator =
+ *   - Reduction operator reduce() which return a boolean to true if a new max value has been found internally
  *   - conversion to json
  * 
  * @todo Check for usage of internal allocator instead of default one.
@@ -50,7 +50,7 @@ template <class T>
 class ProfiledValue
 {
 	public:
-		ProfiledValue(int steps = 1024);
+		ProfiledValue(int steps = 1024,bool bandwidth = false);
 		~ProfiledValue(void);
 		void push(ticks t,const T & value,void * location = NULL);
 		void flush(void);
@@ -69,33 +69,66 @@ class ProfiledValue
 		ProfiledValue(const ProfiledValue & orig);
 		ProfiledValue & operator = (const ProfiledValue & orig);
 	private:
+		/** It uses a first minimal number of points to determine a good time steps before accumulating. **/
 		int cntFirstPoints;
+		/** Storage for the first steps before accumulation (data). **/
 		T firstPoints[MATT_PROFILED_STATE_VALUE_FIRST_STEPS];
+		/** Storage for the first steps before accumulation (times). **/
 		ticks firstPointsTicks[MATT_PROFILED_STATE_VALUE_FIRST_STEPS];
+		/** Storage for the first steps before accumulation (locations).**/
 		void * firstLocations[MATT_PROFILED_STATE_VALUE_FIRST_STEPS];
+		/** Storage of time points data corresponding to CELL_ID * perPoints in time. **/
 		T * points;
+		/** 
+		 * Storage of the old time points data corresponding to CELL_ID * perPoints in time. 
+		 * It is used as temporar storage by swaping arrays for reshaping when requiring to update
+		 * the perPoints variable.
+		 **/
 		T * oldPoints;
+		/** Track the peak value.**/
 		T peak;
+		/** Remembre if it is touched or not to complete datas before generating json output. **/
 		bool * touched;
+		/** Remembre if it is touched or not to complete datas before generating json output. **/
 		bool * oldTouched;
+		/** 
+		 * Storage of call location of the last update of the current cell, so the generator of the
+		 * largest value if push() use a "larger than" operator.
+		**/
 		void ** locations;
+		/**
+		 * Storage of call location of the last update of the current cell, so the generator of the
+		 * largest value if push() use a "larger than" operator.
+		**/
 		void ** oldLocations;
+		/** Remember the final timetep to compute the total tracking time. **/
 		ticks start;
+		/** Remember the final timetep to compute the total tracking time. **/
 		ticks end;
+		/** Count the number of steps in use. **/
 		int steps;
+		/** Define the time (ticks) per point to convert ids to time. **/
 		ticks perPoints;
+		/** Check if already flushed before using json conversion. **/
 		bool flushed;
+		/** 
+		 * Determine with we are measuring bandiwdth or fixed values, so if we need to propagate
+		 * previous values or zero values on untouched intervals.
+		**/
+		bool bandwidth;
 };
 
 /*********************  CLASS  **********************/
+/**
+ * @brief Helper class to profiler simple scalars with max operator in ProfiledValue system.
+**/
 template <class T>
 struct ProfilableMaxScalar
 {
 	T value;
 	ProfilableMaxScalar(void) {};
 	ProfilableMaxScalar(const T & value) {this->value = value;};
-	void set(const ProfilableMaxScalar<T> & v) {this->value = v.value;};
-	bool push(const ProfilableMaxScalar<T> & v) {if (v.value > this->value) {this->value = v.value;return true;} else {return false;}};
+	bool reduce(const ProfilableMaxScalar<T> & v) {if (v.value > this->value) {this->value = v.value;return true;} else {return false;}};
 	template <class U> friend void convertToJson(htopml::JsonState& json, const ProfilableMaxScalar<U> & value) {json.getStream() << value.value;};
 };
 
@@ -114,7 +147,7 @@ void swap(T & v1, T & v2)
 
 /*******************  FUNCTION  *********************/
 template <class T>
-ProfiledValue<T>::ProfiledValue(int steps)
+ProfiledValue<T>::ProfiledValue(int steps,bool bandwidth)
 {
 	//errors
 	assert(steps > 0);
@@ -126,6 +159,7 @@ ProfiledValue<T>::ProfiledValue(int steps)
 	this->end = 0;
 	this->perPoints = 0;
 	this->flushed = false;
+	this->bandwidth = bandwidth;
 	
 	//allocate memory
 	this->points = new T[steps];
@@ -163,9 +197,9 @@ void ProfiledValue<T>::push(ticks t, const T& value,void * location)
 {
 	//update peak
 	if (this->cntFirstPoints == 0)
-		this->peak.set(value);
+		this->peak = value;
 	else
-		this->peak.push(value);
+		this->peak.reduce(value);
 	
 	//if not have all first points, aggregate
 	if (this->cntFirstPoints < MATT_PROFILED_STATE_VALUE_FIRST_STEPS)
@@ -186,7 +220,7 @@ void ProfiledValue<T>::push(ticks t, const T& value,void * location)
 template <class T>
 void ProfiledValue<T>::pushFirst(ticks t, const T& value,void * location)
 {
-	firstPoints[this->cntFirstPoints].set(value);
+	firstPoints[this->cntFirstPoints] = value;
 	firstPointsTicks[this->cntFirstPoints] = t;
 	firstLocations[this->cntFirstPoints] = location;
 	this->cntFirstPoints++;
@@ -209,11 +243,11 @@ void ProfiledValue<T>::pushNext(ticks t, const T& value,void * location)
 	//check if touched
 	if (touched[id])
 	{
-		bool tmp = points[id].push(value);
+		bool tmp = points[id].reduce(value);
 		if (tmp || locations[id] == NULL)
 			locations[id] = location;
 	} else {
-		points[id].set(value);
+		points[id] = value;
 		touched[id] = true;
 		locations[id] = location;
 	}
@@ -341,16 +375,17 @@ void ProfiledValue<T>::flush(void )
 	int cntTouched = getLastTouchedId() + 1;
 	
 	//propage values
-	T * lastPoint = NULL;
+	T zero;
+	T * lastPoint = &zero;
 	
 	//copy untouched values
 	for (int i = 0 ; i < cntTouched ; i++)
 	{
-		if (touched[i])
+		if (touched[i] && !bandwidth)
 		{
 			lastPoint = &points[i];
-		} else if (lastPoint != NULL) {
-			points[i].set(*lastPoint);
+		} else if (!touched[i] && lastPoint != NULL) {
+			points[i] = *lastPoint;
 			locations[i] = NULL;
 		}
 	}

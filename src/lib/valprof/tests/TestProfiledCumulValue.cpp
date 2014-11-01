@@ -21,13 +21,13 @@ const char CST_STRING_2[] = "{\n\t\"startTime\":0,\n\t\"scale\":16,\n\t\"endTime
 /*******************  FUNCTION  *********************/
 TEST(ProfiledCumulValue,constructor)
 {
-	ProfiledCumulValue profile(10);
+	ProfiledCumulValue<size_t> profile(10,false,true);
 }
 
 /*******************  FUNCTION  *********************/
 TEST(ProfiledCumulValue,test_1)
 {
-	ProfiledCumulValue profile(10,true);
+	ProfiledCumulValue<size_t> profile(10,true,true);
 	
 	for (int i = 0 ; i < 7 ; i++)
 		profile.push(10);
@@ -41,7 +41,7 @@ TEST(ProfiledCumulValue,test_1)
 /*******************  FUNCTION  *********************/
 TEST(ProfiledCumulValue,test_2)
 {
-	ProfiledCumulValue profile(10,true);
+	ProfiledCumulValue<size_t> profile(10,true,true);
 	
 	for (int i = 0 ; i < 100 ; i++)
 		profile.push(1);

@@ -68,8 +68,7 @@ struct TimeTrackMemory
 {
 	//constructor & usefull funcs
 	TimeTrackMemory();
-	void set(const TimeTrackMemory & v);
-	bool push(const TimeTrackMemory & v);
+	bool reduce(const TimeTrackMemory & v);
 	friend void convertToJson(htopml::JsonState& json, const TimeTrackMemory & value);
 	//data
 	size_t requestedMem;
@@ -84,8 +83,7 @@ struct TimeTrackSysMemory
 {
 	//constructor & usefull funcs
 	TimeTrackSysMemory();
-	void set(const TimeTrackSysMemory & v);
-	bool push(const TimeTrackSysMemory & v);
+	bool reduce(const TimeTrackSysMemory & v);
 	friend void convertToJson(htopml::JsonState& json, const TimeTrackSysMemory & value);
 	//data
 	size_t freeMemory;
@@ -96,6 +94,11 @@ struct TimeTrackSysMemory
 /*********************  STRUCT  *********************/
 struct TimeTrackAllocBandwidth
 {
+	TimeTrackAllocBandwidth();
+	TimeTrackAllocBandwidth & operator += (const TimeTrackAllocBandwidth & value);
+	friend void convertToJson(htopml::JsonState& json, const TimeTrackAllocBandwidth & value);
+	bool reduce(const TimeTrackAllocBandwidth & v);
+// 	friend TimeTrackAllocBandwidth operator 
 	size_t allocMem;
 	size_t allocCount;
 	size_t freeMem;
@@ -146,10 +149,10 @@ class AllocStackProfiler
 // 		AbstractStackTree<CallStackInfo> stackTree;
 		AllocSizeDistrMap sizeMap;
 		SegmentTracker segTracker;
-		ProfiledCumulValue allocBandwidth;
-		ProfiledCumulValue freeBandwidth;
-		ProfiledCumulValue allocCnt;
-		ProfiledCumulValue freeCnt;
+		ProfiledCumulValue<size_t> allocBandwidth;
+		ProfiledCumulValue<size_t> freeBandwidth;
+		ProfiledCumulValue<size_t> allocCnt;
+		ProfiledCumulValue<size_t> freeCnt;
 		GlobalVariableMap globalVariables;
 		StackMode mode;
 		Spinlock lock;
@@ -178,6 +181,7 @@ class AllocStackProfiler
 		TimeTrackMemory curMemoryTimeline;
 		ProfiledValue<TimeTrackSysMemory> systemTimeline;
 		TimeTrackSysMemory curSystemTimeline;
+		ProfiledValue<TimeTrackAllocBandwidth> memoryBandwidth;
 };
 
 }
