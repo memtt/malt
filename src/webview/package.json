@@ -4,6 +4,7 @@
   "description": "Web view based on Node.js for MATT.",
   "main": "main.js",
   "scripts": {
+    "postinstall": "bower install",
     "test": "main.js"
   },
   "keywords": [
@@ -18,11 +19,9 @@
   "author": "Sébastien Valat",
   "licence": "CeCILL-C",
   "dependencies": {
+    "bower": "^1.3.8",
     "express": "3.4.x",
     "arg-parser": "1.0.x",
-    "clone": "0.1.11",
-    "ejs-locals": "1.0.2",
-    "codemirror":"4.2.x",
-    "nvd3":"git+https://github.com/novus/nvd3.git#master"
+    "clone": "0.1.11"
   }
 }

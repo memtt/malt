@@ -1,24 +1,23 @@
 {
-  "name": "MATT-webview",
+  "name": "tuto-angular",
   "version": "0.0.0",
   "authors": [
-    "Sebastien Valat <sebastien.valat@exascale-computing.eu>"
+    "Valat Sébastien <sebastien.valat.dev@orange.fr>"
   ],
   "moduleType": [
     "node"
   ],
-  "license": "CeCILL-C",
+  "license": "MIT",
   "private": true,
-  "ignore": [
-    "**/.*",
-    "node_modules",
-    "bower_components",
-    "test",
-    "tests"
-  ],
   "dependencies": {
-    "angular": "~1.2.20",
-    "angular-route": "~1.2.20",
-    "nvd3": "~1.1.15-beta"
+    "angular-route": "~1.3.0",
+    "angular-ui-codemirror": "~0.1.6",
+    "bootstrap": "~3.2.0",
+    "codemirror": "~4.6.0",
+    "jquery": "~2.1.1",
+    "nvd3": "~1.1.15-beta",
+    "angular-animate": "~1.3.0",
+    "jquery-treetable": "~3.2.0",
+    "d3-tip": "~0.5.4"
   }
 }

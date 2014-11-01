@@ -12,18 +12,14 @@ var fs          = require('fs');
 var Args        = require('arg-parser');
 var Express     = require('express');
 var clone       = require('clone');
-var engine      = require('ejs-locals');
 var child       = require('child_process');
 
 //internal classes
-var MattProject = require('./server_files/lib/MattProject.js');
+var MattProject = require('./server-files/MattProject.js');
 
 /****************************************************/
 //start express
 var app = Express();
-app.engine('ejs',engine);
-app.set('views',__dirname + '/server_files/views');
-app.set('view engine','ejs');
 
 /****************************************************/
 //intenral cache for computed data which take a while to built
@@ -246,38 +242,8 @@ app.get('/data/summary.json',function(req,res) {
 
 /****************************************************/
 app.get('/',function(eq,res,next){
-	res.redirect('client_v2/index.html');
+	res.redirect('app/index.html');
 // 	res.render("page-summary",mattProject.getSummary());
-});
-
-/****************************************************/
-app.get('/source-profile.html',function(eq,res,next){
-	res.render("page-source-profile",{});
-});
-
-/****************************************************/
-app.get('/time-analysis.html',function(eq,res,next){
-	res.render("time-analysis",{});
-});
-
-/****************************************************/
-app.get('/max-stack.html',function(eq,res,next){
-	res.render("max-stack",{});
-});
-
-/****************************************************/
-app.get('/summary.html',function(eq,res,next){
-	res.render("page-summary",mattProject.getSummary());
-});
-
-/****************************************************/
-app.get('/alloc-sizes.html',function(eq,res,next){
-	res.render("page-alloc-sizes",{sizeMap:mattProject.getSizeMap()});
-});
-
-/****************************************************/
-app.get('/globals.html',function(eq,res,next){
-	res.render("page-globals",{});
 });
 
 /****************************************************/
@@ -316,23 +282,8 @@ app.use('/app-sources/',function(req,res,next){
 
 /****************************************************/
 //export static deps
-app.use('/deps/jquery',Express.static(__dirname + '/client_deps/jquery-1.11.0'));
-app.use('/deps/jquery-treetable',Express.static(__dirname + '/client_deps/jquery-treetable-3.1.0/'));
-app.use('/deps/bootstrap',Express.static(__dirname + '/client_deps/bootstrap-3.1.1-dist'));
-app.use('/deps/bootswatch/slate',Express.static(__dirname + '/client_deps/bootswatch.com/slate'));
-app.use('/deps/bootswatch/fonts',Express.static(__dirname + '/client_deps/bootstrap-3.1.1-dist/fonts'));
-app.use('/deps/ejs',Express.static(__dirname + '/client_deps/ejs-1.0/'));
-app.use('/deps/ace',Express.static(__dirname + '/client_deps/ace-builds-1.1.1/'));
-app.use('/deps/jqplot',Express.static(__dirname + '/client_deps/jqplot-1.0.8/'));
-app.use('/deps/d3js',Express.static(__dirname + '/client_deps/d3js-3.4.8/'));
-app.use('/deps/nvd3',Express.static(__dirname + '/node_modules/nvd3/'));
-app.use('/deps/codemirror/lib',Express.static(__dirname + '/node_modules/codemirror/lib'));
-app.use('/deps/codemirror/theme',Express.static(__dirname + '/node_modules/codemirror/theme'));
-app.use('/deps/codemirror/mode',Express.static(__dirname + '/node_modules/codemirror/mode'));
-app.use('/deps/codemirror/addon',Express.static(__dirname + '/node_modules/codemirror/addon'));
 app.use('/',Express.static(__dirname+'/client_files'));
-
-app.use('/client_v2',Express.static(__dirname+'/client_v2/app'));
+app.use('/app',Express.static(__dirname+'/client-files/app'));
 app.use('/deps/angular',Express.static(__dirname+'/bower_components/angular'));
 app.use('/deps/angular-route',Express.static(__dirname+'/bower_components/angular-route'));
 
