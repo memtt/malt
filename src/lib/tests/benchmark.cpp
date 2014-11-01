@@ -8,7 +8,7 @@
 
 #include <cycle.h>
 #include <stacks/BacktraceStack.hpp>
-#include <core/AllocStackProfiler.hpp>
+#include <profiler/AllocStackProfiler.hpp>
 #include <stack-tree/RLockFreeTree.hpp>
 #include <cstdlib>
 #include <ostream>

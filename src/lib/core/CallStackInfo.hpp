@@ -27,6 +27,15 @@ namespace MATT
 {
 
 /*********************  CLASS  **********************/
+/**
+ * Provide a simple class to track some quantitiy over time by taking care of their
+ * extremal values. By default it capture :
+ *    - number of operations
+ *    - min/max of the operation values
+ *    - global sum of the operation values
+ * 
+ * @brief Track min/max/count/sum of a value associated to an operation.
+**/
 struct SimpleQuantityHistory
 {
 	SimpleQuantityHistory(void);
@@ -39,39 +48,51 @@ struct SimpleQuantityHistory
 	ssize_t sum;
 };
 
-void convertToJson(htopml::JsonState& json, const SimpleQuantityHistory& value);
-
 /*********************  CLASS  **********************/
+/**
+ * @brief Structure to define the informations we tracked for each call site.
+**/
 struct CallStackInfo
 {
-// 	public:
+	public:
 		CallStackInfo(void);
-		~CallStackInfo(void);
 		void onAllocEvent(size_t value,size_t peakId);
 		void onFreeEvent(size_t value,size_t peakId);
 		void onReallocEvent(size_t oldSize,size_t newSize);
 		void onFreeLinkedMemory(size_t value,ticks lifetime,size_t peakId);
-		void push(const MATT::CallStackInfo& info);
+		void merge(const MATT::CallStackInfo& info);
 		void writeAsCallgrindEntry(int line, std::ostream & out) const;
+		void writeAsCallgrindCallEntry(int line, std::ostream& out) const;
 		static void writeCallgrindEventDef(std::ostream & out);
 		void updatePeak(size_t peakId);
-// 	public:
-		
-// 	private:
+	public:
+		friend void convertToJson(htopml::JsonState& json, const CallStackInfo& value);
+		friend std::ostream & operator << (std::ostream & out,const CallStackInfo & info);
+	private:
+		/** Track the min/max/sum/count of each memory allocation sizes. **/
 		SimpleQuantityHistory alloc;
+		/** Track the min/max/sum/count of each memory deallocation sizes. **/
 		SimpleQuantityHistory free;
+		/** Track the min/max/sum/count of each chunk lifetime. **/
 		SimpleQuantityHistory lifetime;
+		/** Count number of null size allocations. **/
 		ssize_t cntZeros;
+		/** Count the current allocated (alive) memory from this call site. **/
 		ssize_t alive;
+		/** Keep track of the maximum alive chunks during execution. **/
 		ssize_t maxAlive;
+		/** Keep track of the memory used on global application peak. **/
 		ssize_t peak;
+		/** Remember when we updated the peak prameter for the last time. **/
 		size_t peakId;
+		/** Keep track of the number of realloc. **/
 		size_t reallocCount;
+		/** Sum the memory allocated due to realloc. **/
 		size_t reallocDelta;
 };
 
-std::ostream & operator << (std::ostream & out,const CallStackInfo & info);
-void convertToJson(htopml::JsonState& json, const CallStackInfo& value);
+/*******************  FUNCTION  *********************/
+void convertToJson(htopml::JsonState& json, const SimpleQuantityHistory& value);
 
 }
 

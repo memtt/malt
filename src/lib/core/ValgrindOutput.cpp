@@ -36,7 +36,7 @@ void ValgrindOutput::pushStackInfo(const MATT::Stack& stack, const MATT::CallSta
 	
 	//search function info in caller map and reduce data
 	ValgrindCaller & funcInfo = callers[leafCalleePtr];
-	funcInfo.info.push(info);
+	funcInfo.info.merge(info);
 	
 	//if as caller/callee, register inclusive costs
 	for (int i = 1 + shift ; i < stack.getSize() ; i++)
@@ -71,7 +71,7 @@ void ValgrindOutput::pushStackInfo(const MATT::Stack& stack, const MATT::CallSta
 
 			//cumulate on callee
 			CallStackInfo & calleeInfo = callerInfo.callees[calleePtr];
-			calleeInfo.push(info);
+			calleeInfo.merge(info);
 		}
 	}
 }
@@ -174,10 +174,8 @@ void ValgrindOutput::writeAsCallgrind(ostream& out, const SymbolSolver& dic)
 		{
 			const CallSite * infoChild = dic.getCallSiteInfo(itChild->first);
 			writeLocation(out,dic,infoChild,itChild->first,true);
-			if (infoChild == NULL || infoChild->line == -1)
-				out << "calls=" << itChild->second.free.count + itChild->second.alloc.count + itChild->second.cntZeros << " 0" << LINE_BREAK;
-			else
-				out << "calls=" << itChild->second.free.count + itChild->second.alloc.count + itChild->second.cntZeros << ' ' << infoChild->line << LINE_BREAK;
+			if (infoChild == NULL)
+				itChild->second.writeAsCallgrindCallEntry(infoChild->line,out);
 			itChild->second.writeAsCallgrindEntry(line,out);
 			out << LINE_BREAK;
 		}

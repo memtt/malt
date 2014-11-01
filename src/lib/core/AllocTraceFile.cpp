@@ -17,6 +17,12 @@ namespace MATT
 {
 
 /*******************  FUNCTION  *********************/
+/**
+ * Constructor of the trace file manager. It mostly setup the local parameters
+ * and open the trace file.
+ * @param file Define the path to the output file to use.
+ * @param bufferSize define the size of the buffer to use.
+**/
 AllocTraceFile::AllocTraceFile(const std::string& file,size_t bufferSize)
 {
 	this->bufferSize = bufferSize;
@@ -27,6 +33,10 @@ AllocTraceFile::AllocTraceFile(const std::string& file,size_t bufferSize)
 }
 
 /*******************  FUNCTION  *********************/
+/**
+ * Destructor of the trace file manager, it mostly close the current trace file
+ * and delete the local buffer.
+**/
 AllocTraceFile::~AllocTraceFile(void)
 {
 	this->close();
@@ -34,6 +44,10 @@ AllocTraceFile::~AllocTraceFile(void)
 }
 
 /*******************  FUNCTION  *********************/
+/**
+ * Function used to open and prepare the trace file.
+ * @param file Define the file path to use.
+**/
 void AllocTraceFile::open(const std::string& file)
 {
 	this->close();
@@ -50,6 +64,10 @@ void AllocTraceFile::open(const std::string& file)
 }
 
 /*******************  FUNCTION  *********************/
+/**
+ * Close the trace file but take care of flushing the current buffer before
+ * doing it.
+**/
 void AllocTraceFile::close(void)
 {
 	//nothing to do
@@ -62,6 +80,15 @@ void AllocTraceFile::close(void)
 }
 
 /*******************  FUNCTION  *********************/
+/**
+ * Add a trace event for the given memory chunk. It can generate a write() to the file
+ * if the buffer is full.
+ * @param allocStack Define the call stack responsible of the allocation of the current chunk.
+ * @param freeStack Define the call stack responsible of the deallocation of the current chunk.
+ * @param size Define the requested size of the chuink at allocation time.
+ * @param timestamp Define the allocation timestamp.
+ * @param lifetime Define the lifetime of the current chunk.
+**/
 void AllocTraceFile::traceChunk(const Stack* allocStack, const Stack* freeStack, size_t size, ticks timestamp, ticks lifetime)
 {
 	//check errors
@@ -83,6 +110,10 @@ void AllocTraceFile::traceChunk(const Stack* allocStack, const Stack* freeStack,
 }
 
 /*******************  FUNCTION  *********************/
+/**
+ * Function responsible to flush the buffer content to the file and reset
+ * the internal counter.
+**/
 void AllocTraceFile::flush(void)
 {
 	//check

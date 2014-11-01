@@ -27,10 +27,10 @@
 #include <valprof/ProfiledCumulValue.hpp>
 #include <valprof/ProfiledValue.hpp>
 #include <tools/ELFReader.hpp>
-#include "SegmentTracker.hpp"
-#include "StackSizeTracker.hpp"
-#include "SimpleStackTracker.hpp"
-#include "AllocTraceFile.hpp"
+#include "core/SegmentTracker.hpp"
+#include "core/StackSizeTracker.hpp"
+#include "core/SimpleStackTracker.hpp"
+#include "core/AllocTraceFile.hpp"
 
 /*******************  NAMESPACE  ********************/
 namespace MATT

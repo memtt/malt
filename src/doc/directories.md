@@ -42,6 +42,7 @@ The lib sources splits in subdirectories, each contain a 'test' subdirectory wit
 - /src/lib/common : Provide the common function used by the whole library (debug, locks....)
 - /src/lib/portability : All plaftorm dependant code must be placed here. You will found more information about conventions of this directory into XXXXX-TODO
 - /src/lib/core : Contain the main classes used to run the MATT library.
+- /src/lib/profiler : Contain the main entry point to use in wrappers, it provide the per thread and global profiler.
 - /src/lib/tools : Provide some classes to wrap external tools or libraries (libelf, nm)
 - /src/lib/valprof : Provide classes to profile values overs time.
 - /src/lib/wrapper : Provide the wrapper to capture usage of standard functions (malloc/calloc/pthread_create...).

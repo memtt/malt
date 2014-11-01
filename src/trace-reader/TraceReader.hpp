@@ -11,7 +11,7 @@
 
 /********************  HEADERS  *********************/
 //matt internals
-#include <core/AllocTracer.hpp>
+#include <core/AllocTraceFile.hpp>
 
 /*******************  NAMESPACE  ********************/
 namespace MATT

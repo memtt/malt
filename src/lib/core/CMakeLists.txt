@@ -15,9 +15,7 @@ set(MATT_LIB_SRC AllocTraceFile.cpp
                  StackSizeTracker.cpp
                  SimpleStackTracker.cpp 
                  StackSizeAnalyser.cpp
-                 AllocStackProfiler.cpp
-                 SimpleCallStackNode.cpp
-                 LocalAllocStackProfiler.cpp)
+                 SimpleCallStackNode.cpp)
 
 ######################################################
 add_library(matt-core OBJECT ${MATT_LIB_SRC})

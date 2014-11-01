@@ -23,8 +23,8 @@
 #include <portability/Mutex.hpp>
 #include <common/CodeTiming.hpp>
 #include <core/StackSizeTracker.hpp>
-#include <core/AllocStackProfiler.hpp>
-#include <core/LocalAllocStackProfiler.hpp>
+#include <profiler/AllocStackProfiler.hpp>
+#include <profiler/LocalAllocStackProfiler.hpp>
 
 /***************** USING NAMESPACE ******************/
 using namespace MATT;

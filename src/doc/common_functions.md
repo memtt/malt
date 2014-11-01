@@ -132,3 +132,6 @@ your code with :
 	//Timing only take place if MATT_ENABLE_CODE_TIMING is defined
 	//It's enabled by cmake with -DENABLE_CODE_TIMING=yes
 	CODE_TIMING("name", you_function());
+
+Caution, there is some bugs due to at_exit() dead lock when instrumenting some programs so its a feature which
+is mostly buggy with the LD_PRELOAD approach. But its most for developper usage so...

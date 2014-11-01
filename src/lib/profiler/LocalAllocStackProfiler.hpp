@@ -13,10 +13,10 @@
 //std
 #include <cstdlib>
 //locals
-#include "StackSizeTracker.hpp"
+#include "core/StackSizeTracker.hpp"
 #include <stacks/EnterExitStack.hpp>
 #include "AllocStackProfiler.hpp"
-#include "StackSizeAnalyser.hpp"
+#include "core/StackSizeAnalyser.hpp"
 
 /*******************  FUNCTION  *********************/
 

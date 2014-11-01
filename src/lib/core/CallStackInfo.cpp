@@ -19,7 +19,13 @@
 namespace MATT
 {
 
+/********************  MACROS  **********************/
+#define LINE_BREAK "\n"
+
 /*******************  FUNCTION  *********************/
+/**
+ * Constructor the count/min/max/sum storage, mainly to setup values to zero.
+**/
 SimpleQuantityHistory::SimpleQuantityHistory(void )
 {
 	this->count = 0;
@@ -29,6 +35,9 @@ SimpleQuantityHistory::SimpleQuantityHistory(void )
 }
 
 /*******************  FUNCTION  *********************/
+/**
+ * Register a new event and update the count/min/max/sum depening on the given value.
+**/
 void SimpleQuantityHistory::addEvent(ssize_t value)
 {
 	if (this->count == 0)
@@ -48,6 +57,9 @@ void SimpleQuantityHistory::addEvent(ssize_t value)
 }
 
 /*******************  FUNCTION  *********************/
+/**
+ * Made a reduction on the current storage by merging the values from the given one.
+**/
 void SimpleQuantityHistory::push(const SimpleQuantityHistory& value)
 {
 	if (this->count == 0)
@@ -68,6 +80,12 @@ void SimpleQuantityHistory::push(const SimpleQuantityHistory& value)
 }
 
 /*******************  FUNCTION  *********************/
+/**
+ * Register a free event on the call stack info object.
+ * @param value Define the size of the chunk we deallocate.
+ * @param peakId Define the ID of the last global peak seen by the caller. If larger
+ * than the local one, update the local peak with current status.
+**/
 void CallStackInfo::onFreeEvent(size_t value,size_t peakId)
 {
 	if (value == 0)
@@ -80,6 +98,9 @@ void CallStackInfo::onFreeEvent(size_t value,size_t peakId)
 }
 
 /*******************  FUNCTION  *********************/
+/**
+ * @return Compute and return the mean size.
+**/
 ssize_t SimpleQuantityHistory::getMean(void) const
 {
 	if (count == 0)
@@ -89,6 +110,11 @@ ssize_t SimpleQuantityHistory::getMean(void) const
 }
 
 /*******************  FUNCTION  *********************/
+/**
+ * Take care of the peak update.
+ * @param peakId Define the ID of the last global peak seen by the caller. If larger
+ * than the local one, update the local peak with current status.
+**/
 void CallStackInfo::updatePeak(size_t peakId)
 {
 	if (this->peakId < peakId)
@@ -99,6 +125,12 @@ void CallStackInfo::updatePeak(size_t peakId)
 }
 
 /*******************  FUNCTION  *********************/
+/**
+ * Register a free event on the call stack info object.
+ * @param value Define the size of the chunk we allocate.
+ * @param peakId Define the ID of the last global peak seen by the caller. If larger
+ * than the local one, update the local peak with current status.
+**/
 void CallStackInfo::onAllocEvent(size_t value,size_t peakId)
 {
 	//update alloc counters
@@ -117,6 +149,14 @@ void CallStackInfo::onAllocEvent(size_t value,size_t peakId)
 }
 
 /*******************  FUNCTION  *********************/
+/**
+ * Free memory which is known to be seen before by the tool. We made the distinction due to some
+ * issues with negativ values which might appear on alive parameter otherwise if we missed some allocations.
+ * @param value Define the size of the chunk we allocate.
+ * @param filetime Define the lifetime of the chunk.
+ * @param peakId Define the ID of the last global peak seen by the caller. If larger
+ * than the local one, update the local peak with current status.
+**/
 void CallStackInfo::onFreeLinkedMemory(size_t value, ticks lifetime,size_t peakId)
 {
 	assert(alive >= (ssize_t)value);
@@ -130,6 +170,9 @@ void CallStackInfo::onFreeLinkedMemory(size_t value, ticks lifetime,size_t peakI
 }
 
 /*******************  FUNCTION  *********************/
+/**
+ * Constructor of the call stack info to setup the default values to zero.
+**/
 CallStackInfo::CallStackInfo(void )
 {
 	this->reallocCount = 0;
@@ -142,11 +185,11 @@ CallStackInfo::CallStackInfo(void )
 }
 
 /*******************  FUNCTION  *********************/
-CallStackInfo::~CallStackInfo(void )
-{
-}
-
-/*******************  FUNCTION  *********************/
+/**
+ * Register a realloc event.
+ * @param oldSize define the old size of the chunk.
+ * @param newSize define the new size of the chunk (parameter requested by realloc).
+**/
 void CallStackInfo::onReallocEvent(size_t oldSize, size_t newSize)
 {
 	this->reallocCount++;
@@ -157,7 +200,11 @@ void CallStackInfo::onReallocEvent(size_t oldSize, size_t newSize)
 }
 
 /*******************  FUNCTION  *********************/
-void CallStackInfo::push(const CallStackInfo& info)
+/**
+ * Merge two call stack info on the current one.
+ * @param info The remove info to merge on the current one.
+**/
+void CallStackInfo::merge(const CallStackInfo& info)
 {
 	this->alive += info.alive;
 	this->maxAlive += info.maxAlive;
@@ -170,6 +217,9 @@ void CallStackInfo::push(const CallStackInfo& info)
 }
 
 /*******************  FUNCTION  *********************/
+/**
+ * Manage json conversion of call stack info to be compatible with toJson().
+**/
 void convertToJson(htopml::JsonState& json, const CallStackInfo& value)
 {
 	json.openStruct();
@@ -186,6 +236,9 @@ void convertToJson(htopml::JsonState& json, const CallStackInfo& value)
 }
 
 /*******************  FUNCTION  *********************/
+/**
+ * Provide ostream compatbility to help debugging in unit tests.
+**/
 std::ostream& operator<<(std::ostream& out, const CallStackInfo& info)
 {
 	out << "count = " << info.cntZeros;
@@ -204,6 +257,9 @@ void convertToJson(htopml::JsonState& json, const SimpleQuantityHistory& value)
 }
 
 /*******************  FUNCTION  *********************/
+/**
+ * Dump the call stack info into kcachegrind compatible format.
+**/
 void CallStackInfo::writeAsCallgrindEntry(int line, std::ostream& out) const
 {
 	assert(alloc.max >= alloc.min);
@@ -217,6 +273,21 @@ void CallStackInfo::writeAsCallgrindEntry(int line, std::ostream& out) const
 }
 
 /*******************  FUNCTION  *********************/
+/**
+ * Dump as callgrind call entry.
+**/
+void CallStackInfo::writeAsCallgrindCallEntry ( int line, std::ostream& out ) const
+{
+	if (line == -1)
+		line = 0;
+	out << "calls=" << free.count + alloc.count + cntZeros << " 0" << LINE_BREAK;
+}
+
+/*******************  FUNCTION  *********************/
+/**
+ * Dump the definition of the internal metrics exported by the call stack info 
+ * into the kcachegrind compabitle output format.
+**/
 void CallStackInfo::writeCallgrindEventDef(std::ostream& out)
 {
 	out << "events: AllocCnt FreeCnt MemOps"

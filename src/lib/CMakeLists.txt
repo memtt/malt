@@ -73,14 +73,15 @@ include_directories(../../extern-deps/from-htopml)
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
 ######################################################
-set(COMMON_OBJS $<TARGET_OBJECTS:htopml-json> 
-                $<TARGET_OBJECTS:matt-core> 
-                $<TARGET_OBJECTS:matt-tools> 
-                $<TARGET_OBJECTS:matt-stacks> 
-                $<TARGET_OBJECTS:matt-valprof> 
-                $<TARGET_OBJECTS:matt-thread-wrapper> 
-                #$<TARGET_OBJECTS:matt-stack-trees> 
-                $<TARGET_OBJECTS:matt-common> 
+set(COMMON_OBJS $<TARGET_OBJECTS:htopml-json>
+                $<TARGET_OBJECTS:matt-core>
+                $<TARGET_OBJECTS:matt-tools>
+                $<TARGET_OBJECTS:matt-stacks>
+                $<TARGET_OBJECTS:matt-valprof>
+                $<TARGET_OBJECTS:matt-profiler>
+                $<TARGET_OBJECTS:matt-thread-wrapper>
+                #$<TARGET_OBJECTS:matt-stack-trees>
+                $<TARGET_OBJECTS:matt-common>
                 $<TARGET_OBJECTS:matt-port>
                 $<TARGET_OBJECTS:iniparser>)
 
@@ -99,6 +100,7 @@ add_subdirectory(common)
 add_subdirectory(stacks)
 add_subdirectory(valprof)
 add_subdirectory(wrapper)
+add_subdirectory(profiler)
 add_subdirectory(stack-tree)
 add_subdirectory(portability)
 
