@@ -46,6 +46,7 @@ struct Options
 	//vars for stack profilinf
 	bool stackProfileEnabled;
 	bool stackResolve;
+	bool stackLibunwind;
 	std::string stackMode;
 	//vars for time profiging
 	bool timeProfileEnabled;

@@ -22,4 +22,7 @@
 //Use code timing to help optimizing MATT code
 #cmakedefine MATT_ENABLE_CODE_TIMING
 
+//if have libunwind
+#cmakedefine MATT_HAVE_LIBUNWIND
+
 #endif //CONFIG_H

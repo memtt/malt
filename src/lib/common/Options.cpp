@@ -31,6 +31,7 @@ Options::Options(void)
 	//stack
 	this->stackProfileEnabled     = true;
 	this->stackResolve            = true;
+	this->stackLibunwind          = false;
 	this->stackMode               = "backtrace";
 	//time
 	this->timeProfileEnabled      = true;
@@ -65,6 +66,7 @@ bool Options::operator==(const Options& value) const
 	if (stackProfileEnabled != value.stackProfileEnabled) return false;
 	if (stackResolve != value.stackResolve) return false;
 	if (stackMode != value.stackMode) return false;
+	if (stackLibunwind != value.stackLibunwind) return false;
 	//time
 	if (this->timeProfileEnabled != value.timeProfileEnabled) return false;
 	if (this->timeProfilePoints != value.timeProfilePoints) return false;
@@ -176,6 +178,7 @@ void Options::loadFromIniDic ( dictionary* iniDic )
 	//load values for stack profiling
 	this->stackResolve        = iniparser_getboolean(iniDic,"stack:resolve",this->stackResolve);
 	this->stackProfileEnabled = iniparser_getboolean(iniDic,"stack:enabled",this->stackProfileEnabled);
+	this->stackLibunwind      = iniparser_getboolean(iniDic,"stack:libunwind",this->stackLibunwind);
 	this->stackMode           = iniparser_getstring(iniDic,"stack:mode",(char*)this->stackMode.c_str());
 	
 	//load values for output
@@ -241,6 +244,7 @@ void convertToJson(htopml::JsonState & json,const Options & value)
 			json.printField("enabled",value.stackProfileEnabled);
 			json.printField("mode",value.stackMode.c_str());
 			json.printField("resolve",value.stackResolve);
+			json.printField("libunwind",value.stackLibunwind);
 		json.closeFieldStruct("stack");
 		
 		json.openFieldStruct("output");
@@ -286,6 +290,7 @@ void Options::dumpConfig(const char* fname)
 	IniParserHelper::setEntry(dic,"stack:enabled",this->timeProfileEnabled);
 	IniParserHelper::setEntry(dic,"stack:mode",this->stackMode.c_str());
 	IniParserHelper::setEntry(dic,"stack:resolve",this->stackResolve);
+	IniParserHelper::setEntry(dic,"stack:libunwind",this->stackLibunwind);
 	
 	//output
 	IniParserHelper::setEntry(dic,"output:name",this->outputName.c_str());

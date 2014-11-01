@@ -125,6 +125,10 @@ or on cmake :
 
 	cmake -DLIBUNWIND_PREFIX=PREFIX ..
 
+You now can use it with matt by using :
+
+	matt -s libunwind {PROGRAM}
+
 The alternative rely on function instrumentation by adding prove on start/end for each function.
 It can be done by using -finstrument-function on your compiler juste as described in "How to use" section
 or by using binary instrumentation tools juste as explained at the end of this document.

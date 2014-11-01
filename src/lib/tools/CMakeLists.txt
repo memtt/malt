@@ -7,7 +7,7 @@
 ######################################################
 
 ######################################################
-set(MATT_LIB_TOOLS_SRC NMCmdReader.cpp)
+set(MATT_LIB_TOOLS_SRC NMCmdReader.cpp BacktraceLibunwind.cpp Backtrace.cpp)
                  
 ######################################################
 #Optional sources

@@ -193,6 +193,7 @@ static char gblCallocIniBuffer[4096];
  * 
  * Expected values are :
  *    - 'backtrace'  : use backtrace in malloc/calloc... calls to get the call stack.
+ *    - 'libunwind'  : similar to backtrace but use libunwind instead of the glibc implementation.
  *    - 'enter-exit' : follow the call of each function to continuously follow the stack status 
  *                     thanks to -finstrument-function flag of GCC/CLANG/ICC.
 **/
@@ -212,6 +213,9 @@ static StackMode getStackMode(Options & options)
 		ret = STACK_MODE_BACKTRACE;
 	} else if (strcmp(mode,"backtrace") == 0 || strcmp(mode,"") == 0) {
 		ret = STACK_MODE_BACKTRACE;
+	} else if (strcmp(mode,"libunwind") == 0 || strcmp(mode,"") == 0) {
+		ret = STACK_MODE_BACKTRACE;
+		options.stackLibunwind = true;
 	} else if (strcmp(mode,"enter-exit") == 0) {
 		ret = STACK_MODE_ENTER_EXIT_FUNC;
 	} else {
@@ -272,8 +276,11 @@ void AllocWrapperGlobal::init(void )
 		if (envOptions != NULL)
 			gblState.options->loadFromString(envOptions);
 		
+		//extract stack mode and update options for libunwind if required
+		StackMode mode = getStackMode(*gblState.options);
+		
 		//ok do it
-		gblState.profiler = new AllocStackProfiler(*gblState.options,getStackMode(*gblState.options),true);
+		gblState.profiler = new AllocStackProfiler(*gblState.options,mode,true);
 		
 		//print info
 		fprintf(stderr,"MATT : Start memory instrumentation of %s - %d by library override.\n",OS::getExeName().c_str(),OS::getPID());

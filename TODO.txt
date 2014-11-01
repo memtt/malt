@@ -7,6 +7,7 @@ Might be trivial
  * Remove indentation for json output format of MATT
    This is just an option on the Json output class, made it optional as it help for debug to get more readable files.
  * Migrate /XXX.json dynamic files into a /data/ subdirectory to be more clean
+ * Update help of config file in readme.md
 
 Not so much work
 ----------------

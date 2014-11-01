@@ -14,9 +14,9 @@ find_package(Libunwind QUIET)
 ######################################################
 #set default
 if (LIBUNWIND_FOUND)
-	set(MATT_DEFAULT_BACKTRACE_MODE "LIBUNWIND")
+	set(MATT_HAVE_LIBUNWIND "yes")
 else (LIBUNWIND_FOUND)
-	set(MATT_DEFAULT_BACKTRACE_MODE "GLIBC")
+	unset(MATT_HAVE_LIBUNWIND)
 endif (LIBUNWIND_FOUND)
 
 ######################################################
@@ -29,13 +29,6 @@ set(PORTABILITY_SPINLOCK  "PTHREAD"  CACHE STRING "Select spinlock implementatio
 set(PORTABILITY_MUTEX     "PTHREAD"  CACHE STRING "Select mutex implementation to use. Currently support : 'PTHREAD', 'DUMMY'.")
 set(PORTABILITY_OS        "UNIX"     CACHE STRING "Select OS implementation to use. Currently support : 'UNIX'.")
 set(PORTABILITY_COMPILER  "GNU"      CACHE STRING "Select compiler support to use. Currently support : 'GNU' (also valid intel).")
-set(PORTABILITY_BACKTRACE ${MATT_DEFAULT_BACKTRACE_MODE}    CACHE STRING "Select backtrace support to use. Currently support : 'GLIBC', 'LIBUNWIND'.")
-
-######################################################
-#check
-if ((NOT LIBUNWIND_FOUND) AND (${PORTABILITY_BACKTRACE} EQUAL "LIBUNWIND"))
-	message(FATAL_ERROR "Usage of LIBUNWIND for backtrace portability require presence of libunwind on your system, please check with -DLIBUNWIND_PREFIX=...")
-endif ((NOT LIBUNWIND_FOUND) AND (${PORTABILITY_BACKTRACE} EQUAL "LIBUNWIND"))
 
 ######################################################
 #select portability definitions
@@ -57,9 +50,9 @@ set(LIB_MATT_DEPS pthread dl)
 if (LIBELF_FOUND)
 	list(APPEND LIB_MATT_DEPS elf)
 endif (LIBELF_FOUND)
-if (MATT_PORTABILITY_BACKTRACE_LIBUNWIND)
+if (LIBUNWIND_FOUND)
 	list(APPEND LIB_MATT_DEPS unwind-x86_64)
-endif (MATT_PORTABILITY_BACKTRACE_LIBUNWIND)
+endif (LIBUNWIND_FOUND)
 
 ######################################################
 #gen config.h
