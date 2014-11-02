@@ -7,14 +7,15 @@
 ######################################################
 
 ######################################################
-set(MATT_LIB_SRC AllocTraceFile.cpp
-                 CallStackInfo.cpp 
-                 SymbolSolver.cpp 
-                 SegmentTracker.cpp 
-                 ValgrindOutput.cpp 
+set(MATT_LIB_SRC VmaTracker.cpp
+                 SymbolSolver.cpp
+                 CallStackInfo.cpp
+                 AllocTraceFile.cpp
+                 SegmentTracker.cpp
+                 ValgrindOutput.cpp
                  StackSizeTracker.cpp
-                 SimpleStackTracker.cpp 
                  StackSizeAnalyser.cpp
+                 SimpleStackTracker.cpp
                  SimpleCallStackNode.cpp)
 
 ######################################################

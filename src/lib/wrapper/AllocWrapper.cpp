@@ -83,6 +83,9 @@ typedef void *(*PVallocFuncPtr)(size_t size);
 typedef void *(*MmapFuncPtr)(void *start,size_t length,int prot,int flags,int fd,off_t offset);
 /** Prototype of munmap function to get it into function pointer. **/
 typedef int (*MunmapFuncPtr)(void *start,size_t length);
+/** Prototype of mremap function to get it into function pointer. **/
+typedef int (*MremapFuncPtr)(void *old_address, size_t old_size , size_t new_size, int flags);
+
 
 /********************  ENUM  ************************/
 /**
@@ -146,6 +149,8 @@ struct AllocWrapperGlobal
 	MmapFuncPtr mmap;
 	/** Pointer to the old (libc) munmap symbol. **/
 	MunmapFuncPtr munmap;
+	/** Pointer to the old (libc) mremap symbol. **/
+	MremapFuncPtr mremap;
 	/** Pointer to the profiler (use pointer due to use before main, only way to ensure init before first malloc usage). **/
 	AllocStackProfiler * profiler;
 	/** Keep track of user options. **/
@@ -260,6 +265,7 @@ void AllocWrapperGlobal::init(void )
 		gblState.valloc = (VallocFuncPtr)dlsym(RTLD_NEXT,"valloc");
 		gblState.memalign = (MemalignFuncPtr)dlsym(RTLD_NEXT,"memalign");
 		gblState.pvalloc = (PVallocFuncPtr)dlsym(RTLD_NEXT,"pvalloc");
+		gblState.mremap = (MremapFuncPtr)dlsym(RTLD_NEXT,"mremap");
 
 		//init profiler
 		gblState.status = ALLOC_WRAP_INIT_PROFILER;
@@ -599,7 +605,7 @@ void *mmap(void *start, size_t length, int prot,int flags,int fd, off_t offset)
 	void * res = gblState.mmap(start,length,prot,flags,fd,offset);
 
 	//profile
-	//MATT_WRAPPER_LOCAL_STATE_ACTION(localState.profiler->onMalloc(res,size));
+	//MATT_WRAPPER_LOCAL_STATE_ACTION(localState.profiler->onMmap(res,length,flags,fd));
 
 	//return segment to user
 	return res;
@@ -618,6 +624,27 @@ int munmap(void *start, size_t length)
 	//run the default function
 	assert(gblState.status > ALLOC_WRAP_INIT_SYM);
 	int res = gblState.munmap(start,length);
+
+	//profile
+	//MATT_WRAPPER_LOCAL_STATE_ACTION(localState.profiler->onMalloc(res,size));
+
+	//return segment to user
+	return res;
+}
+
+/*******************  FUNCTION  *********************/
+/**
+ * Wrapper of the pvalloc function to capture allocations. The original symbol will be
+ * search by dlsym() in AllocWrapperGlobal::init() .
+**/
+int mremap(void *old_address, size_t old_size , size_t new_size, int flags)
+{
+	//get local TLS and check init
+	MATT_WRAPPER_LOCAL_STATE_INIT
+
+	//run the default function
+	assert(gblState.status > ALLOC_WRAP_INIT_SYM);
+	int res = gblState.mremap(old_address,old_size,new_size,flags);
 
 	//profile
 	//MATT_WRAPPER_LOCAL_STATE_ACTION(localState.profiler->onMalloc(res,size));

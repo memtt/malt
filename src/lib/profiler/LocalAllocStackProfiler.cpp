@@ -125,25 +125,23 @@ void LocalAllocStackProfiler::onRealloc(void* ptr, void* res, size_t size,ticks 
 /*******************  FUNCTION  *********************/
 void LocalAllocStackProfiler::onMmap(void* ptr, size_t size, int flags, int fd)
 {
-// 	//skip file and non anon
-// 	if ((flags & (MAP_ANON|MAP_ANONYMOUS)) == 0 || fd != 0)
-// 		return;
-// 	
-// 	//old state
-// 	bool oldInuse = inUse;
-// 	
-// 	//get stack
-// 	Stack * stack = getStack();
-// 	
-// 	//check for renentrance
-// 	if (!reentrance || !oldInuse)
-// 	{
-// 		inUse = true;
-// 		CODE_TIMING("userMmapProf",globalProfiler->onMalloc(ptr,size,stack));
-// 		this->cntMemOps++;
-// 		this->cumulAlloc+=size;
-// 		inUse = oldInuse;
-// 	}
+	//skip file and non anon
+	if ((flags & (MAP_ANON|MAP_ANONYMOUS)) == 0 || fd != 0)
+		return;
+	
+	//old state
+	bool oldInuse = inUse;
+	
+	//get stack
+	Stack * stack = getStack();
+	
+	//check for renentrance
+	if (!reentrance || !oldInuse)
+	{
+		inUse = true;
+		CODE_TIMING("userMmapProf",globalProfiler->onMmap(ptr,size,stack));
+		inUse = oldInuse;
+	}
 	
 	//CODE_TIMING("globalMmapProf",globalProfiler->onGlobalMmap(ptr,size,stack));
 }

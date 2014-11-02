@@ -27,10 +27,11 @@
 #include <valprof/ProfiledCumulValue.hpp>
 #include <valprof/ProfiledValue.hpp>
 #include <tools/ELFReader.hpp>
-#include "core/SegmentTracker.hpp"
-#include "core/StackSizeTracker.hpp"
-#include "core/SimpleStackTracker.hpp"
-#include "core/AllocTraceFile.hpp"
+#include <core/SegmentTracker.hpp>
+#include <core/StackSizeTracker.hpp>
+#include <core/SimpleStackTracker.hpp>
+#include <core/AllocTraceFile.hpp>
+#include <core/VmaTracker.hpp>
 
 /*******************  NAMESPACE  ********************/
 namespace MATT
@@ -113,6 +114,7 @@ class AllocStackProfiler
 		void onMalloc(void * ptr,size_t size,Stack * userStack = NULL);
 		void onCalloc(void * ptr,size_t nmemb,size_t size,Stack * userStack = NULL);
 		void onPrepareRealloc(void * oldPtr,Stack * userStack = NULL);
+		void onMmap(void * ptr,size_t size,Stack * userStack = NULL);
 		void onMunmap(void * ptr,size_t size,Stack * userStack = NULL);
 		void onLLMmap(void * ptr,size_t size,Stack * userStack = NULL);
 		void onLLMunmap(void * ptr,size_t size,Stack * userStack = NULL);
@@ -176,12 +178,12 @@ class AllocStackProfiler
 		size_t peak;
 		size_t curReq;
 		std::string traceFilename;
-		
 		ProfiledValue<TimeTrackMemory> memoryTimeline;
 		TimeTrackMemory curMemoryTimeline;
 		ProfiledValue<TimeTrackSysMemory> systemTimeline;
 		TimeTrackSysMemory curSystemTimeline;
 		ProfiledValue<TimeTrackAllocBandwidth> memoryBandwidth;
+		VmaTracker vmaTracker;
 };
 
 }

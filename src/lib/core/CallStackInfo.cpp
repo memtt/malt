@@ -149,6 +149,12 @@ void CallStackInfo::onAllocEvent(size_t value,size_t peakId)
 }
 
 /*******************  FUNCTION  *********************/
+void CallStackInfo::onMmap ( size_t value )
+{
+	//this->mmap.addEvent(value);
+}
+
+/*******************  FUNCTION  *********************/
 /**
  * Free memory which is known to be seen before by the tool. We made the distinction due to some
  * issues with negativ values which might appear on alive parameter otherwise if we missed some allocations.
@@ -232,6 +238,7 @@ void convertToJson(htopml::JsonState& json, const CallStackInfo& value)
 	json.printField("globalPeak",value.peak);
 	json.printField("reallocCount",value.reallocCount);
 	json.printField("reallocSumDelta",value.reallocDelta);
+	//json.printField("mmap",value.mmap);
 	json.closeStruct();
 }
 

@@ -14,8 +14,7 @@ include_directories(${GTEST_INCLUDE_DIRS} ${GMOCK_INCLUDE_DIRS})
 add_definitions(-DTEST_BIN_DIR="${CMAKE_CURRENT_BINARY_DIR}")
 
 ######################################################
-set(TEST_NAMES TestSegmentTracker 
-               TestFastBufferedStream 
+set(TEST_NAMES TestFastBufferedStream 
                TestSimpleStackTracker 
                TestValgrindOutput
    )

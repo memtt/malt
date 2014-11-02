@@ -11,14 +11,32 @@ Global structure
 The json file contain major structures as :
 
 	{
-		globals: {}  /* Provide some global metric related to the run. */
+		run: {}      /* Provide some global informations about the run. */
+		config: {}   /* Provide a dump of the MATT configuration. */
 		stacks: {}   /* Provide profile projected on call stacks */
+		sites: {}    /* Provide informations to map addresses to source code. */
+		globals: {}  /* Provide some global metric related to the run. */
 		leaks: {}    /* Provide the list of leaks seen at end of execution (blocks still allocated). */
 		memStats: {} /* Some statistic represented by distributions about memory allocations . */
 		threads: {}  /* Provide per thread metrics. */
 		timeline: {} /* Provide metrics profile over time. */
-		sites: {}    /* Provide informations to map addresses to source code. */
+		globalVariables{} /* Memory used by the global variables of the program. */
 	}
+	
+Details about run
+-----------------
+
+	"run":{
+		"formatVersion":1,
+		"tool":"matt-0.0.0",
+		"date":"2014-11-01 18:56",
+		"runtime":416204055,
+		"exe":"simple-case-finstr-linked",
+		"command":"./simple-case-finstr-linked",
+		"hostname":"sebv4"
+	},
+
+
 
 Details about stacks
 --------------------
@@ -29,6 +47,7 @@ The "stacks" entry contain structure like :
 		stats: [                            /* List of stacks with data */
 			{
 				stack : ['0xa','0xb'],      /* Stacks with 0xb called by 0xa */
+				stackId : "0xaaa",          /* Id to identify the stack for use with traces. */
 				infos : {}
 			},
 			....

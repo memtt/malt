@@ -337,6 +337,18 @@ size_t AllocStackProfiler::onFreeEvent(void* ptr, MATT::Stack* userStack, MMCall
 }
 
 /*******************  FUNCTION  *********************/
+void AllocStackProfiler::onMmap ( void* ptr, size_t size, Stack* userStack )
+{
+	if (options.stackProfileEnabled)
+	{
+		vmaTracker.mmap(ptr,size);
+		//search call stack info if not provided
+		MMCallStackNode callStackNode = getStackNode(userStack);
+		callStackNode.infos->onMmap(size);
+	}
+}
+
+/*******************  FUNCTION  *********************/
 void AllocStackProfiler::peakTracking(ssize_t delta)
 {
 	if (this->curReq > this->peak)
