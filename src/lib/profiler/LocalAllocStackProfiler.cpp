@@ -193,7 +193,7 @@ Stack* LocalAllocStackProfiler::getStack(void )
 	{
 		case STACK_MODE_BACKTRACE:
 			CODE_TIMING("loadCurrentStack",backtraceStack.loadCurrentStack());
-			backtraceStack.fastSkip(3);
+			backtraceStack.fastSkip(5);
 			return &backtraceStack;
 		case STACK_MODE_ENTER_EXIT_FUNC:
 			return &enterExitStack;

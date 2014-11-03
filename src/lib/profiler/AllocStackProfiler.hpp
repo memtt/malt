@@ -151,10 +151,6 @@ class AllocStackProfiler
 // 		AbstractStackTree<CallStackInfo> stackTree;
 		AllocSizeDistrMap sizeMap;
 		SegmentTracker segTracker;
-		ProfiledCumulValue<size_t> allocBandwidth;
-		ProfiledCumulValue<size_t> freeBandwidth;
-		ProfiledCumulValue<size_t> allocCnt;
-		ProfiledCumulValue<size_t> freeCnt;
 		GlobalVariableMap globalVariables;
 		StackMode mode;
 		Spinlock lock;

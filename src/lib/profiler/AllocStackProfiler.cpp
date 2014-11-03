@@ -40,11 +40,7 @@ namespace MATT
 
 /*******************  FUNCTION  *********************/
 AllocStackProfiler::AllocStackProfiler(const Options & options,StackMode mode,bool threadSafe)
-	:allocBandwidth(MATT_PROFILED_CUMUL_VALUE_DEFAULT_STEPS,false,true)
-	,freeBandwidth(MATT_PROFILED_CUMUL_VALUE_DEFAULT_STEPS,false,true)
-	,allocCnt(MATT_PROFILED_CUMUL_VALUE_DEFAULT_STEPS,false,true)
-	,freeCnt(MATT_PROFILED_CUMUL_VALUE_DEFAULT_STEPS,false,true)
-	,largestStack(STACK_ORDER_DESC)
+	:largestStack(STACK_ORDER_DESC)
 	,memoryBandwidth(1024,true)
 {
 	this->mode = mode;
@@ -234,8 +230,6 @@ void AllocStackProfiler::onAllocEvent(void* ptr, size_t size,Stack* userStack,MM
 		}
 		
 		//track alloc bandwidth
-		allocBandwidth.push(size);
-		allocCnt.push(1);
 		TimeTrackAllocBandwidth allocBw;
 		allocBw.allocCount = 1;
 		allocBw.allocMem = size;
@@ -325,8 +319,6 @@ size_t AllocStackProfiler::onFreeEvent(void* ptr, MATT::Stack* userStack, MMCall
 		}
 		
 		//free badnwidth
-		freeBandwidth.push(size);
-		freeCnt.push(1);
 		TimeTrackAllocBandwidth allocBw;
 		allocBw.freeCount = 1;
 		allocBw.freeMem = size;
@@ -528,10 +520,6 @@ void convertToJson(htopml::JsonState& json, const AllocStackProfiler& value)
 	if (value.options.timeProfileEnabled)
 	{
 		json.openFieldStruct("timeline");
-			json.printField("allocBandwidth",value.allocBandwidth);
-			json.printField("allocCnt",value.allocCnt);
-			json.printField("freeBandwidth",value.freeBandwidth);
-			json.printField("freeCnt",value.freeCnt);
 			json.printField("memoryTimeline",value.memoryTimeline);
 			json.printField("systemTimeline",value.systemTimeline);
 			json.printField("memoryBandwidth",value.memoryBandwidth);
