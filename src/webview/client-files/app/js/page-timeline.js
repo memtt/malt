@@ -18,8 +18,42 @@ function MattPageTimeline()
 
 		return res;
 	}
+	
+	function mattNVDGraph2(divId,data,ylabel,stacked)
+	{
+		nv.addGraph(function() {
+			var chart = nv.models.stackedAreaChart()
+				.transitionDuration(350)
+// 				.reduceXTicks(true)   //If 'false', every single x-axis tick label will be rendered.
+// 				.rotateLabels(0)      //Angle to rotate x-axis labels.
+// 				.showControls(true)   //Allow user to switch between 'Grouped' and 'Stacked' mode.
+// 				.groupSpacing(0.1)    //Distance between each group of bars.
+				.useInteractiveGuideline(true)    //Tooltips which show all data points. Very nice!
+// 				.showControls(true)
+// 				.stacked(true)        //Allow user to switch between "Grouped" and "Stacked" mode.
+				;
 
-	function mattNVDGraph(divId,data,ylabel)
+			chart.xAxis //Chart x-axis settings
+				.axisLabel('Time (secondes)')
+				.tickFormat(function(value){return mattHelper.humanReadableTimes(value/(+data.ticksPerSecond),1,'',false);});
+			
+			chart.yAxis //Chart y-axis settings
+				.axisLabel(ylabel)
+				.tickFormat(function(value){return mattHelper.humanReadable(value,1,'',false);});
+
+			var myData = reformatDataForD3(data); //You need data...
+				
+			d3.select('#'+divId + " svg")
+				.datum(myData)
+				.call(chart);
+
+			nv.utils.windowResize(chart.update);
+
+			return chart;
+		});
+	}
+
+	function mattNVDGraph(divId,data,ylabel,stacked)
 	{
 		nv.addGraph(function() {
 			var chart = nv.models.lineChart()
@@ -88,6 +122,7 @@ function MattPageTimeline()
 	{
 		var res = new Array();
 		res.push({x:0,y:0});
+		console.log("scale data : "+data.perPoints);
 		for (var i = 0 ; i < data.values.length ; i++)
 		{
 			res.push({x:(i+1)*data.perPoints,y:data.values[i][id]});
@@ -111,14 +146,16 @@ function MattPageTimeline()
 	function mattConvertDataInternalRateD3JS2(data,id,ticksPerSecond)
 	{
 		var res = new Array();
+		var scale = data.perPoints;
+		console.log("scake rate : "+scale+" => "+(600*scale/ticksPerSecond));
 		//alert(data.startTime + " -> "+data.endTime+" -> "+data.steps);
 		res.push({x:0,y:0});
 		console.log("=> "+data.perPoint);
 		for (var i in data.values)
 		{
 			//if (data.startTime + data.scale*i <= data.endTime)
-			console.log(data.perPoints + " => " +data.values.length + " => " + i + " => "+(i+1)*data.perPoints/ticksPerSecond + " => "+data.values[i][id]);
-			res.push({x:(data.perPoints*(1+i)),y:((data.values[i][id])/(data.perPoints/ticksPerSecond))});
+// 			console.log(data.perPoints + " => " +data.values.length + " => " + i + " => "+(i+1)*data.perPoints/ticksPerSecond + " => "+data.values[i][id]);
+			res.push({x:(scale*(i+1)),y:((data.values[i][id])/(data.perPoints/ticksPerSecond))});
 		}
 		console.log(res);
 		return res;
@@ -224,6 +261,21 @@ function MattPageTimeline()
 		return {data:res,labels:labels,ticksPerSecond:ticksPerSecond};
 	}
 	
+	function mattConvertCountRate2(data)
+	{
+		var ticksPerSecond = data.ticksPerSecond;
+		//ticksPerSecond = 1;
+		
+		var res = new Array();
+		res.push( mattConvertDataInternalRateD3JS2(data.memoryBandwidth,0,ticksPerSecond) );
+		res.push( mattConvertDataInternalRateD3JS2(data.memoryBandwidth,2,ticksPerSecond) );
+
+		var labels = new Array();
+		labels.push("Malloc");
+		labels.push("Free");
+		return {data:res,labels:labels,ticksPerSecond:ticksPerSecond};
+	}
+	
 	///////////////////////////////////// MAIN ////////////////////////////////////
 	//declare module to manage matt home page
 	var mattModule = angular.module('matt.page.timeline',[]);
@@ -238,8 +290,8 @@ function MattPageTimeline()
 
 			mattNVDGraph("matt-mem-timeline",mattConvertData(data),'B','Memory');
 			mattNVDGraph("matt-alive-chunks-timeline",mattConvertCnt(data),'Alive chunks','Allocations');
-			mattNVDGraph("matt-alloc-rate-size-timeline",mattConvertSizeRate2(data),'Allocation rate B/s','Memory rate (B/s)');
-			mattNVDGraph("matt-alloc-rate-count-timeline",mattConvertCountRate(data),'Allocation rate op/s','Memory rate (B/s)');
+			mattNVDGraph2("matt-alloc-rate-size-timeline",mattConvertSizeRate2(data),'Allocation rate B/s','Memory rate (B/s)');
+			mattNVDGraph2("matt-alloc-rate-count-timeline",mattConvertCountRate2(data),'Allocation rate op/s','Memory rate (B/s)');
 			mattNVDGraph("matt-sys-free-mem-timeline",mattConvertSysData(data),"B","Memory");
 		});
 	}]);
