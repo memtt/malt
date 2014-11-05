@@ -418,17 +418,16 @@ MattProject.prototype.getSummaryV2 = function()
 	//rates
 	var p = 0;
 	for (var i in this.data.timeline.memoryBandwidth.values)
-		if (this.data.timeline.memoryBandwidth.values[1] > p)
-			p = this.data.timeline.memoryBandwidth.values[1];
-	ret.summary.peakAllocRate = p * this.data.timeline.memoryBandwidth.perPoints / this.data.globals.ticksPerSecond;
+		if (this.data.timeline.memoryBandwidth.values[i][1] > p)
+			p = this.data.timeline.memoryBandwidth.values[i][1];
+	ret.summary.peakAllocRate = (p / this.data.timeline.memoryBandwidth.perPoints) * this.data.globals.ticksPerSecond;
 	
 	p = 0;
 	for (var i in this.data.timeline.memoryBandwidth.values)
-		if (this.data.timeline.memoryBandwidth.values[3] > p)
-			p = this.data.timeline.memoryBandwidth.values[3];
-	ret.summary.peakAllocRate = p * this.data.timeline.memoryBandwidth.perPoints / this.data.globals.ticksPerSecond
-	ret.summary.peakAllocCountRate = p;
-	
+		if (this.data.timeline.memoryBandwidth.values[i][3] > p)
+			p = this.data.timeline.memoryBandwidth.values[i][3];
+	ret.summary.peakAllocCountRate = (p / this.data.timeline.memoryBandwidth.perPoints) * this.data.globals.ticksPerSecond;
+
 	//search min/max/count size
 	var min = -1;
 	var max = -1;
