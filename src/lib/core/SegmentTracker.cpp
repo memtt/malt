@@ -178,5 +178,4 @@ void SegmentTracker::split(SegmentInfoMap::iterator it, void* ptr, size_t size)
 	}
 }
 
-
 }

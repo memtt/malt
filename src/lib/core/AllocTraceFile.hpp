@@ -42,6 +42,8 @@ struct AllocTracerChunk
 {
 	/** ID of the call stack, by default we consider its memory address which is uniq. **/
 	const Stack * allocStack;
+	/** base address **/
+	void * addr;
 	/** Size of the allocated chunk (requested size) **/
 	size_t size;
 	/** Timestamp of creation in ticks. **/
@@ -61,7 +63,7 @@ class AllocTraceFile
 		~AllocTraceFile(void);
 		void open(const std::string & file);
 		void close(void);
-		void traceChunk(const Stack * allocStack,const Stack * freeStack,size_t size,ticks timestamp,ticks lifetime);
+		void traceChunk(const Stack * allocStack,const Stack * freeStack,void * addr,size_t size,ticks timestamp,ticks lifetime);
 	private:
 		void flush(void);
 	private:

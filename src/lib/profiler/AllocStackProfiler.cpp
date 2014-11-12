@@ -287,7 +287,7 @@ size_t AllocStackProfiler::onFreeEvent(void* ptr, MATT::Stack* userStack, MMCall
 		
 		//trace
 		if (options.traceEnabled)
-			tracer.traceChunk(segInfo->callStack.stack,callStackNode->stack,size,segInfo->allocTime - trefTicks,lifetime);
+			tracer.traceChunk(segInfo->callStack.stack,callStackNode->stack,ptr,size,segInfo->allocTime - trefTicks,lifetime);
 		
 		//remove tracking info
 		CODE_TIMING("segTracerRemove",segTracker.remove(ptr));

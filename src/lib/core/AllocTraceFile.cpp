@@ -89,7 +89,7 @@ void AllocTraceFile::close(void)
  * @param timestamp Define the allocation timestamp.
  * @param lifetime Define the lifetime of the current chunk.
 **/
-void AllocTraceFile::traceChunk(const Stack* allocStack, const Stack* freeStack, size_t size, ticks timestamp, ticks lifetime)
+void AllocTraceFile::traceChunk(const MATT::Stack* allocStack, const MATT::Stack* freeStack, void* addr, size_t size, ticks timestamp, ticks lifetime)
 {
 	//check errors
 	assert(pos < bufferSize);
@@ -99,6 +99,7 @@ void AllocTraceFile::traceChunk(const Stack* allocStack, const Stack* freeStack,
 	entry.allocStack = allocStack;
 	entry.lifetime = lifetime;
 	entry.size = size;
+	entry.addr = addr;
 	entry.timestamp = timestamp;
 	
 	//inc pos

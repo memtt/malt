@@ -57,5 +57,10 @@ SET_TARGET_PROPERTIES(test-atexit-first PROPERTIES COMPILE_FLAGS -finstrument-fu
 target_link_libraries(test-atexit-first matt)
 
 ######################################################
+add_executable(test-fragmentation test-fragmentation.cpp)
+SET_TARGET_PROPERTIES(test-fragmentation PROPERTIES COMPILE_FLAGS -finstrument-functions)
+target_link_libraries(test-fragmentation matt)
+
+######################################################
 add_executable(test-pthread-tracking test-pthread-tracking.cpp)
 target_link_libraries(test-pthread-tracking matt)

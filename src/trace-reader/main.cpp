@@ -15,6 +15,7 @@
 #include "TraceReaderPrint.hpp"
 #include "TraceReaderHisto.hpp"
 #include "TraceReaderStackAllocs.hpp"
+#include "TraceReaderFragmentation.hpp"
 
 /**********************  USING  *********************/
 using namespace MATT;
@@ -23,6 +24,7 @@ using namespace MATT;
 static const char * cstHelp = "Usage : %s [--help|-h] [MODE] [FILTER] {FILE.trace}\n\n\
 MODE : \n\
    --histo  {size|lifetime|time}\n\
+   --frag   {t1} {t2}\n\
    --mem\n\
    --print\n\
 \n\
@@ -37,6 +39,8 @@ enum Mode
 	MODE_PRINT,
 	MODE_HISTO,
 	MODE_AT_TIME,
+	MODE_FRAGMENTATION,
+	MODE_FRAGMENTATION_DETAILS
 };
 
 /*******************  FUNCTION  *********************/
@@ -44,6 +48,7 @@ int main(int argc, char ** argv)
 {
 	Mode mode = MODE_PRINT;
 	HistoCriteria histCrit = HISTO_SIZE;
+	ticks t1,t2;
 	Filter filter;
 	
 	//params
@@ -80,10 +85,33 @@ int main(int argc, char ** argv)
 			
 			//inc one more
 			i++;
+		} else if (strcmp(argv[i],"--frag") == 0) {
+			if (argc - 2 == i)
+			{
+				fprintf(stderr,"Missing argument values for option --frag\n");
+				return -1;
+			}
+			
+			mode = MODE_FRAGMENTATION;
+			t1 = atol(argv[i+1]);
+			t2 = atol(argv[i+2]);
+			i+=2;
+		} else if (strcmp(argv[i],"--frag-details") == 0) {
+			if (argc - 2 == i)
+			{
+				fprintf(stderr,"Missing argument values for option --frag-details\n");
+				return -1;
+			}
+			
+			mode = MODE_FRAGMENTATION_DETAILS;
+			t1 = atol(argv[i+1]);
+			t2 = atol(argv[i+2]);
+			i+=2;
+
 		} else if (strcmp(argv[i],"--histo") == 0) {
 			if (argc - 1 == i)
 			{
-				fprintf(stderr,"Missing arguement value for option --histo\n");
+				fprintf(stderr,"Missing argument value for option --histo\n");
 				return -1;
 			}
 			
@@ -125,6 +153,12 @@ int main(int argc, char ** argv)
 			break;
 		case MODE_AT_TIME:
 			reader = new TraceReaderStackAllocs(&filter);
+			break;
+		case MODE_FRAGMENTATION:
+			reader = new TraceReaderFragmentation(t1,t2,false,&filter);
+			break;
+		case MODE_FRAGMENTATION_DETAILS:
+			reader = new TraceReaderFragmentation(t1,t2,true,&filter);
 			break;
 		default:
 			fprintf(stderr,"Invalid mode : %d\n",mode);

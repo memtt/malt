@@ -43,7 +43,7 @@ void TraceReaderPrint::onData(MATT::AllocTracerChunk& chunk)
 	if (!first)
 		printf(",\n\t");
 	//printf("{\n\t\tallocStack: %p\n\t\tsize: %lu\n\t\ttimestamp: %llu\n\t\tlifetime: %llu\n\t}",buffer[i].allocStack,buffer[i].size,buffer[i].timestamp,buffer[i].lifetime);
-	printf("['%p',%lu,%llu,%llu]",chunk.allocStack,chunk.size,chunk.timestamp,chunk.lifetime);
+	printf("['%p','%p',%lu,%llu,%llu]",chunk.addr,chunk.allocStack,chunk.size,chunk.timestamp,chunk.lifetime);
 	first = false;
 }
 

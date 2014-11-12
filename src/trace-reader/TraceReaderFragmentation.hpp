@@ -1,0 +1,69 @@
+/*****************************************************
+             PROJECT  : MATT
+             VERSION  : 0.1.0-dev
+             DATE     : 01/2014
+             AUTHOR   : Valat Sébastien
+             LICENSE  : CeCILL-C
+*****************************************************/
+
+#ifndef MATT_TRACE_READER_FRAGMENTATION_HPP
+#define MATT_TRACE_READER_FRAGMENTATION_HPP
+
+/********************  HEADERS  *********************/
+#include <map>
+#include "TraceReader.hpp"
+
+/*******************  NAMESPACE  ********************/
+namespace MATT
+{
+
+/********************  STRUCT  **********************/
+struct FragmentationChunk
+{
+	AllocTracerChunk chunk;
+	bool presentAtStep2;
+	bool haveSharedPage;
+};
+
+/********************  STRUCT  **********************/
+class FragmentationChunkPerCallStack
+{
+	public:
+		FragmentationChunkPerCallStack();
+		void push(size_t size,ticks lifetime);
+		void print(const MATT::Stack* stack) const;
+	private:
+		size_t count;
+		size_t sum;
+		size_t min;
+		size_t max;
+		ticks sumLifetime;
+};
+
+/*********************  TYPES  **********************/
+class Stack;
+typedef std::map<void*,FragmentationChunk> FragmentationChunkMap;
+typedef std::map<const Stack *,FragmentationChunkPerCallStack> FragmentationChunkPerCallStackMap;
+
+/*********************  CLASS  **********************/
+class TraceReaderFragmentation : public TraceReader
+{
+	public:
+		TraceReaderFragmentation(ticks tStep1,ticks tStep2,bool details,Filter * filter = NULL);
+		virtual void onStart(void);
+		virtual void onData(MATT::AllocTracerChunk & chunk);
+		virtual void onEnd(void);
+	private:
+		void checkForSharedPages(void);
+		void printDetails(void);
+		void printPerCallStack(void);
+	private:
+		ticks tStep1;
+		ticks tStep2;
+		bool details;
+		FragmentationChunkMap chunks;
+};
+
+}
+
+#endif //MATT_TRACE_READER_FRAGMENTATION_HPP
