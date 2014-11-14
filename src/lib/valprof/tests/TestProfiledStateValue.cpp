@@ -1,5 +1,5 @@
 /*****************************************************
-             PROJECT  : MATT
+             PROJECT  : MALT
              VERSION  : 0.1.0-dev
              DATE     : 01/2014
              AUTHOR   : Valat Sébastien
@@ -12,7 +12,7 @@
 #include <valprof/ProfiledStateValue.hpp>
 
 /***************** USING NAMESPACE ******************/
-using namespace MATT;
+using namespace MALT;
 
 /********************** CONSTS **********************/
 const char CST_STRING_1[] = "{\n\t\"min\":[10, 30, 40, 50, 60],\n\t\"max\":[20, 30, 40, 50, 60],\n\t\"index\":[1, 2, 3, 4, 5],\n\t\"peakMemory\":70,\n\t\"peakIndex\":6,\n\t\"linearIndex\":true\n}";

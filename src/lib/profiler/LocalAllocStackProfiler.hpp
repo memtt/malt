@@ -1,13 +1,13 @@
 /*****************************************************
-             PROJECT  : MATT
+             PROJECT  : MALT
              VERSION  : 0.1.0-dev
              DATE     : 01/2014
              AUTHOR   : Valat Sébastien
              LICENSE  : CeCILL-C
 *****************************************************/
 
-#ifndef MATT_LOCAL_ALLOC_STACK_PROFILER_HPP
-#define MATT_LOCAL_ALLOC_STACK_PROFILER_HPP
+#ifndef MALT_LOCAL_ALLOC_STACK_PROFILER_HPP
+#define MALT_LOCAL_ALLOC_STACK_PROFILER_HPP
 
 /********************  HEADERS  *********************/
 //std
@@ -21,7 +21,7 @@
 /*******************  FUNCTION  *********************/
 
 /*******************  NAMESPACE  ********************/
-namespace MATT
+namespace MALT
 {
 
 /*********************  ENUM  ***********************/
@@ -72,7 +72,7 @@ class LocalAllocStackProfiler
 	public:
 		LocalAllocStackProfiler(AllocStackProfiler * globalProfiler,bool reentrance = true);
 		~LocalAllocStackProfiler(void);
-		void onMalloc(void* res, size_t size, ticks time, MATT::MallocKind kind);
+		void onMalloc(void* res, size_t size, ticks time, MALT::MallocKind kind);
 		void onFree(void* ptr, ticks time);
 		void onCalloc(void * res,size_t nmemb,size_t size, ticks time);
 		void onRealloc(void* ptr, void* res, size_t size, ticks time);
@@ -146,4 +146,4 @@ inline void LocalAllocStackProfiler::onExitFunc(void* this_fn, void* call_site, 
 
 }
 
-#endif //MATT_LOCAL_ALLOC_STACK_PROFILER_HPP
+#endif //MALT_LOCAL_ALLOC_STACK_PROFILER_HPP

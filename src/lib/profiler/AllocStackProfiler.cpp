@@ -1,5 +1,5 @@
 /*****************************************************
-             PROJECT  : MATT
+             PROJECT  : MALT
              VERSION  : 0.1.0-dev
              DATE     : 01/2014
              AUTHOR   : Valat Sébastien
@@ -31,11 +31,11 @@
 #include <wrapper/ThreadTracker.hpp>
 
 /********************  MACROS  **********************/
-#define MATT_SKIP_DEPTH 3
+#define MALT_SKIP_DEPTH 3
 #define STACK_LOCATION_ID NULL
 
 /*******************  NAMESPACE  ********************/
-namespace MATT
+namespace MALT
 {
 
 /*******************  FUNCTION  *********************/
@@ -127,7 +127,7 @@ size_t AllocStackProfiler::onRealloc(void* oldPtr, void* ptr, size_t newSize,Sta
 {
 	size_t oldSize = 0;
 
-	MATT_OPTIONAL_CRITICAL(lock,threadSafe)
+	MALT_OPTIONAL_CRITICAL(lock,threadSafe)
 		//to avoid to search it 2 times
 		MMCallStackNode callStackNode;
 		
@@ -159,7 +159,7 @@ size_t AllocStackProfiler::onRealloc(void* oldPtr, void* ptr, size_t newSize,Sta
 			else
 				it->second++;
 		}
-	MATT_END_CRITICAL
+	MALT_END_CRITICAL
 	
 	return oldSize;
 }
@@ -173,7 +173,7 @@ void AllocStackProfiler::onAllocEvent(void* ptr, size_t size,Stack* userStack,MM
 	if (callStackNode == NULL)
 		callStackNode = &localCallStackNode;
 	
-	MATT_OPTIONAL_CRITICAL(lock,threadSafe && doLock)
+	MALT_OPTIONAL_CRITICAL(lock,threadSafe && doLock)
 		//update shared linear index
 		this->sharedLinearIndex++;
 		this->memOpsLevels();
@@ -234,11 +234,11 @@ void AllocStackProfiler::onAllocEvent(void* ptr, size_t size,Stack* userStack,MM
 		allocBw.allocCount = 1;
 		allocBw.allocMem = size;
 		memoryBandwidth.push(t,allocBw,(void*)callStackNode->stack);
-	MATT_END_CRITICAL
+	MALT_END_CRITICAL
 }
 
 /*******************  FUNCTION  *********************/
-size_t AllocStackProfiler::onFreeEvent(void* ptr, MATT::Stack* userStack, MMCallStackNode* callStackNode, bool doLock)
+size_t AllocStackProfiler::onFreeEvent(void* ptr, MALT::Stack* userStack, MMCallStackNode* callStackNode, bool doLock)
 {
 	//locals
 	ticks t = getticks();
@@ -247,7 +247,7 @@ size_t AllocStackProfiler::onFreeEvent(void* ptr, MATT::Stack* userStack, MMCall
 	if (callStackNode == NULL)
 		callStackNode = &localCallStackNode;
 
-	MATT_OPTIONAL_CRITICAL(lock,threadSafe && doLock)
+	MALT_OPTIONAL_CRITICAL(lock,threadSafe && doLock)
 		//update shared linear index
 		this->sharedLinearIndex++;
 		this->memOpsLevels();
@@ -323,7 +323,7 @@ size_t AllocStackProfiler::onFreeEvent(void* ptr, MATT::Stack* userStack, MMCall
 		allocBw.freeCount = 1;
 		allocBw.freeMem = size;
 		memoryBandwidth.push(t,allocBw,(void*)callStackNode->stack);
-	MATT_END_CRITICAL
+	MALT_END_CRITICAL
 	
 	return size;
 }
@@ -380,7 +380,7 @@ void AllocStackProfiler::loadGlobalVariables(void)
 {
 	//if not have libelf
 	if (!ElfReader::hasLibElf())
-		fprintf(stderr,"MATT : warning, matt was compiled without libelf, you will not get global variable memory usage !\n");
+		fprintf(stderr,"MALT : warning, matt was compiled without libelf, you will not get global variable memory usage !\n");
 	
 	//load /proc/map
 	LinuxProcMapReader map;
@@ -402,7 +402,7 @@ void AllocStackProfiler::loadGlobalVariables(void)
 		//check exist
 		if (globalVariables.find(it->file) == globalVariables.end())
 		{
-			//fprintf(stderr,"MATT: Need to load global variables from %s\n",it->file.c_str());
+			//fprintf(stderr,"MALT: Need to load global variables from %s\n",it->file.c_str());
 			
 			//open elf
 			ElfReader elfReader(it->file);
@@ -421,7 +421,7 @@ void AllocStackProfiler::loadGlobalVariables(void)
 /*******************  FUNCTION  *********************/
 void AllocStackProfiler::onExit(void )
 {
-	MATT_OPTIONAL_CRITICAL(lock,threadSafe)
+	MALT_OPTIONAL_CRITICAL(lock,threadSafe)
 		//solve symbols
 		if (options.stackResolve)
 			CODE_TIMING("solveSymbols",
@@ -482,11 +482,11 @@ void AllocStackProfiler::onExit(void )
 		}
 
 		//print timings
-		#ifdef MATT_ENABLE_CODE_TIMING
+		#ifdef MALT_ENABLE_CODE_TIMING
 		CodeTiming::printAll();
 		gblInternaAlloc->printState();
-		#endif //MATT_ENABLE_CODE_TIMING
-	MATT_END_CRITICAL
+		#endif //MALT_ENABLE_CODE_TIMING
+	MALT_END_CRITICAL
 }
 
 /*******************  FUNCTION  *********************/
@@ -593,12 +593,12 @@ void AllocStackProfiler::onLargerStackSize(const StackSizeTracker& stackSizes, c
 		return;
 	
 	//save
-	MATT_OPTIONAL_CRITICAL(largestStackLock,threadSafe)
+	MALT_OPTIONAL_CRITICAL(largestStackLock,threadSafe)
 		this->largestStackSize = stackSizes.getSize();
 		this->largestStackMem = stackSizes;
 		this->largestStack = stack;
 		//ATT_DEBUG("update largestStack");
-	MATT_END_CRITICAL;
+	MALT_END_CRITICAL;
 }
 
 /*******************  FUNCTION  *********************/
@@ -611,12 +611,12 @@ const Options* AllocStackProfiler::getOptions(void) const
 void AllocStackProfiler::registerPerThreadProfiler(LocalAllocStackProfiler* profiler)
 {
 	//errors
-	MATT_ASSERT(profiler != NULL);
+	MALT_ASSERT(profiler != NULL);
 	
 	//insert in list
-	MATT_OPTIONAL_CRITICAL(lock,threadSafe)
+	MALT_OPTIONAL_CRITICAL(lock,threadSafe)
 		this->perThreadProfiler.push_back(profiler);
-	MATT_END_CRITICAL;
+	MALT_END_CRITICAL;
 }
 
 /*******************  FUNCTION  *********************/
@@ -637,7 +637,7 @@ ticks AllocStackProfiler::ticksPerSecond(void) const
 	//if too chost, sleep a little and return
 	if (delta.tv_sec == 0 && delta.tv_usec < 200000)
 	{
-		fprintf(stderr,"MATT : Using usleep to get better ticks <-> seconds conversion !\n");
+		fprintf(stderr,"MALT : Using usleep to get better ticks <-> seconds conversion !\n");
 		usleep(200000);
 		res = this->ticksPerSecond();
 	} else {
@@ -657,13 +657,13 @@ AllocTreeStrackTracer* AllocStackProfiler::getEnterExitStackTracer(void)
 void AllocStackProfiler::memOpsLevels(void)
 {
 	if (sharedLinearIndex == 1000000)
-		fprintf(stderr,"MATT: Already seen 1M memory operations.\n");
+		fprintf(stderr,"MALT: Already seen 1M memory operations.\n");
 	if (sharedLinearIndex == 10000000)
-		fprintf(stderr,"MATT: Already seen 10M memory operations, MATT certainly slows your program.\n");
+		fprintf(stderr,"MALT: Already seen 10M memory operations, MALT certainly slows your program.\n");
 	else if (sharedLinearIndex == 1000000000)
-		fprintf(stderr,"MATT: Already seen 1G memory operations, MATT certainly slows your program.\n");
+		fprintf(stderr,"MALT: Already seen 1G memory operations, MALT certainly slows your program.\n");
 	else if (sharedLinearIndex == 100000000000)
-		fprintf(stderr,"MATT: Already seen 100G memory operations, MATT certainly slows your program.\n");
+		fprintf(stderr,"MALT: Already seen 100G memory operations, MALT certainly slows your program.\n");
 }
 
 /*******************  FUNCTION  *********************/

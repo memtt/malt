@@ -1,5 +1,5 @@
 /*****************************************************
-             PROJECT  : MATT
+             PROJECT  : MALT
              VERSION  : 0.1.0-dev
              DATE     : 01/2014
              AUTHOR   : Valat Sébastien
@@ -14,7 +14,7 @@
 //libc POSIX.1, here we use GNU specific RTLD_NEXT (need _GNU_SOURCE)
 #include <dlfcn.h>
 
-namespace MATT
+namespace MALT
 {
 
 /********************* GLOBALS **********************/
@@ -95,18 +95,18 @@ int ThreadTracker::getThreadCount(void)
 int pthread_create(pthread_t *thread, const pthread_attr_t *attr,void *(*start_routine) (void *), void *arg)
 {
 	//init
-	if (MATT::gblThreadTrackerData.pthread_create == NULL)
+	if (MALT::gblThreadTrackerData.pthread_create == NULL)
 	{
-		 MATT::gblThreadTrackerData.pthread_create = (MATT::PthreadCreateFuncPtr)dlsym(RTLD_NEXT,"pthread_create");
-		 pthread_key_create(&MATT::gblThreadTrackerData.key,MATT::pthreadWrapperOnExit);
+		 MALT::gblThreadTrackerData.pthread_create = (MALT::PthreadCreateFuncPtr)dlsym(RTLD_NEXT,"pthread_create");
+		 pthread_key_create(&MALT::gblThreadTrackerData.key,MALT::pthreadWrapperOnExit);
 	}
 	
 	//prepare args
-	MATT::ThreadTrackerArg * subarg = new MATT::ThreadTrackerArg;
+	MALT::ThreadTrackerArg * subarg = new MALT::ThreadTrackerArg;
 	subarg->arg = arg;
 	subarg->routine = start_routine;
 
 	//call
-	return MATT::gblThreadTrackerData.pthread_create(thread,attr,MATT::pthreadWrapperStartRoutine,subarg);
+	return MALT::gblThreadTrackerData.pthread_create(thread,attr,MALT::pthreadWrapperStartRoutine,subarg);
 }
 

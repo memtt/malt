@@ -1,13 +1,13 @@
 /*****************************************************
-             PROJECT  : MATT
+             PROJECT  : MALT
              VERSION  : 0.1.0-dev
              DATE     : 01/2014
              AUTHOR   : Valat Sébastien
              LICENSE  : CeCILL-C
 *****************************************************/
 
-#ifndef MATT_CODE_TIMING_H
-#define MATT_CODE_TIMING_H
+#ifndef MALT_CODE_TIMING_H
+#define MALT_CODE_TIMING_H
 
 /********************  HEADERS  *********************/
 //standards
@@ -28,10 +28,10 @@ void yourFunc(void)
 }
 \endcode
 **/
-#ifdef MATT_ENABLE_CODE_TIMING
+#ifdef MALT_ENABLE_CODE_TIMING
 	#define CODE_TIMING(name,code) \
 		do {  \
-			static MATT::CodeTiming __code_timing_local##__LINE__##__(name);   \
+			static MALT::CodeTiming __code_timing_local##__LINE__##__(name);   \
 			ticks __code_timing_start##__line__##__ = __code_timing_local##__LINE__##__.start(); \
 			do {code;} while(0); \
 			__code_timing_local##__LINE__##__.end(__code_timing_start##__line__##__);  \
@@ -42,14 +42,14 @@ void yourFunc(void)
 
 
 /********************  MACROS  **********************/
-#ifdef MATT_ENABLE_CODE_TIMING
+#ifdef MALT_ENABLE_CODE_TIMING
 	/**
 	 * Provide a short way to measure code timings by using a star/stop representation.
 	 * @b CAUTION it use a local symbol so you cannot use more than one per scope. One might change this macro 
 	 * and use the name parameter to build the symbol name.
 	 * @param name Define the name to display at exit time.
 	**/
-	#define CODE_TIMING_FUNC_START(name) static MATT::CodeTiming __code_timing_local_func__(name); ticks __code_timing_start_func__ = __code_timing_local_func__.start()
+	#define CODE_TIMING_FUNC_START(name) static MALT::CodeTiming __code_timing_local_func__(name); ticks __code_timing_start_func__ = __code_timing_local_func__.start()
 	/**
 	 * Provide a short way to measure code timings by using a star/stop representation.
 	 * @b CAUTION it use a local symbol so you cannot use more than one per scope. One might change this macro 
@@ -57,14 +57,14 @@ void yourFunc(void)
 	 * @param name Define the name to display at exit time.
 	**/
 	#define CODE_TIMING_FUNC_STOP(name) __code_timing_local_func__.end(__code_timing_start_func__)
-#else //MATT_ENABLE_CODE_TIMING
+#else //MALT_ENABLE_CODE_TIMING
 	#define CODE_TIMING_FUNC_START(name) do{}while(0)
 	#define CODE_TIMING_FUNC_STOP(name) do{}while(0)
-#endif //MATT_ENABLE_CODE_TIMING
+#endif //MALT_ENABLE_CODE_TIMING
 	
 	
 /*******************  NAMESPACE  ********************/
-namespace MATT
+namespace MALT
 {
 
 /*********************  CLASS  **********************/
@@ -125,7 +125,7 @@ class CodeTiming
 /** Start measurement of a new call to your code. **/
 inline ticks CodeTiming::start(void)
 {
-	#ifdef MATT_ENABLE_CODE_TIMING
+	#ifdef MALT_ENABLE_CODE_TIMING
 		return getticks();
 	#else
 		return 0;
@@ -136,7 +136,7 @@ inline ticks CodeTiming::start(void)
 /** End measurement of the current call to your code. **/
 inline void CodeTiming::end(ticks start)
 {
-	#ifdef MATT_ENABLE_CODE_TIMING
+	#ifdef MALT_ENABLE_CODE_TIMING
 		//get time
 		ticks t =getticks() - start;
 		
@@ -160,4 +160,4 @@ ticks ticksPerSecond(void);
 
 }
 
-#endif //MATT_CODE_TIMING_H
+#endif //MALT_CODE_TIMING_H

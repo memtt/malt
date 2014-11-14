@@ -1,5 +1,5 @@
 /*****************************************************
-             PROJECT  : MATT
+             PROJECT  : MALT
              VERSION  : 0.1.0-dev
              DATE     : 01/2014
              AUTHOR   : Valat Sébastien
@@ -14,7 +14,7 @@
 #include <cycle.h>
 
 /*******************  NAMESPACE  ********************/
-namespace MATT
+namespace MALT
 {
 
 /*******************  FUNCTION  *********************/
@@ -68,7 +68,7 @@ void StackSizeTracker::loadMapping(void)
 	//not found
 	if (entry == NULL)
 	{
-		MATT_WARNING("Failed to found stack mapping in /proc/map for !");
+		MALT_WARNING("Failed to found stack mapping in /proc/map for !");
 	} else {
 		//copy info
 		this->mapLower = (unsigned long)entry->lower;

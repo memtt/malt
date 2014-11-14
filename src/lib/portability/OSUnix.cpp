@@ -1,5 +1,5 @@
 /*****************************************************
-             PROJECT  : MATT
+             PROJECT  : MALT
              VERSION  : 0.1.0-dev
              DATE     : 01/2014
              AUTHOR   : Valat Sébastien
@@ -21,7 +21,7 @@
 #include "OSUnix.hpp"
 
 /*******************  NAMESPACE  ********************/
-namespace MATT
+namespace MALT
 {
 
 /*********************  CONSTS  *********************/
@@ -34,12 +34,12 @@ OSMemUsage OSUnix::getMemoryUsage(void)
 {
 	//use some static to avoid many open/close
 	static FILE * fp = NULL;
-	static StaticMutex gblMeminfoMutex = MATT_STATIC_MUTEX_INIT;
+	static StaticMutex gblMeminfoMutex = MALT_STATIC_MUTEX_INIT;
 	OSMemUsage finalRes = {0,0,0,0,0,0,0};
 	char buffer[512];
 	
 	//secure for threads
-	MATT_START_CRITICAL(gblMeminfoMutex)
+	MALT_START_CRITICAL(gblMeminfoMutex)
 		//try to open if not already
 		if (fp == NULL)
 		{
@@ -60,7 +60,7 @@ OSMemUsage OSUnix::getMemoryUsage(void)
 			//get end
 			if (res == NULL)
 			{
-				MATT_ASSERT(feof(fp));
+				MALT_ASSERT(feof(fp));
 				break;
 			}
 			
@@ -88,7 +88,7 @@ OSMemUsage OSUnix::getMemoryUsage(void)
 		
 		//compute swap
 		finalRes.swap = finalRes.totalSwap - finalRes.swap;
-	MATT_END_CRITICAL
+	MALT_END_CRITICAL
 	
 	//return
 	return finalRes;
@@ -99,11 +99,11 @@ OSProcMemUsage OSUnix::getProcMemoryUsage(void)
 {
 	//use some static 
 	static FILE * fp = NULL;
-	static StaticMutex gblStatmMutex = MATT_STATIC_MUTEX_INIT;
+	static StaticMutex gblStatmMutex = MALT_STATIC_MUTEX_INIT;
 	OSProcMemUsage finalRes = {0,0};
 	
 	//secure for threads
-	MATT_START_CRITICAL(gblStatmMutex)
+	MALT_START_CRITICAL(gblStatmMutex)
 		//try to open if not already
 		if (fp == NULL)
 		{
@@ -124,7 +124,7 @@ OSProcMemUsage OSUnix::getProcMemoryUsage(void)
 		//extract values
 		finalRes.virtualMemory  = stat.size * 4096UL;
 		finalRes.physicalMemory = stat.resident * 4096UL;
-	MATT_END_CRITICAL
+	MALT_END_CRITICAL
 	
 	//return
 	return finalRes;

@@ -1,31 +1,31 @@
 /*****************************************************
-             PROJECT  : MATT
+             PROJECT  : MALT
              VERSION  : 0.1.0-dev
              DATE     : 01/2014
              AUTHOR   : Valat Sébastien
              LICENSE  : CeCILL-C
 *****************************************************/
 
-#ifndef MATT_PROFILED_CUMUL_VALUE_HPP
-#define MATT_PROFILED_CUMUL_VALUE_HPP
+#ifndef MALT_PROFILED_CUMUL_VALUE_HPP
+#define MALT_PROFILED_CUMUL_VALUE_HPP
 
 /********************  HEADERS  *********************/
 #include <cstdlib>
 #include <cycle.h>
 #include <json/ConvertToJson.h>
 
-namespace MATT
+namespace MALT
 {
 
 /********************  MACROS  **********************/
-#define MATT_PROFILED_CUMUL_VALUE_DEFAULT_STEPS 1024
+#define MALT_PROFILED_CUMUL_VALUE_DEFAULT_STEPS 1024
 
 /*********************  CLASS  **********************/
 template <class T>
 class ProfiledCumulValue
 {
 	public:
-		ProfiledCumulValue(size_t steps = MATT_PROFILED_CUMUL_VALUE_DEFAULT_STEPS,bool linearIndex = false,bool initMemset = false);
+		ProfiledCumulValue(size_t steps = MALT_PROFILED_CUMUL_VALUE_DEFAULT_STEPS,bool linearIndex = false,bool initMemset = false);
 		~ProfiledCumulValue(void);
 		void push(const T & delta);
 	public:
@@ -156,4 +156,4 @@ void convertToJson(htopml::JsonState& json, const ProfiledCumulValue<T>& value)
 
 }
 
-#endif //MATT_PROFILED_CUMUL_VALUE_HPP
+#endif //MALT_PROFILED_CUMUL_VALUE_HPP

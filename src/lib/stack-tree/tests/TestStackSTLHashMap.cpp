@@ -1,5 +1,5 @@
 /*****************************************************
-             PROJECT  : MATT
+             PROJECT  : MALT
              VERSION  : 0.1.0-dev
              DATE     : 01/2014
              AUTHOR   : Valat Sébastien
@@ -13,7 +13,7 @@
 #include <stack-tree/StackSTLHashMap.hpp>
 
 /***************** USING NAMESPACE ******************/
-using namespace MATT;
+using namespace MALT;
 
 void * CST_VALUE_1[] = {(void*)0x1,(void*)0x2,(void*)0x3,(void*)0x4};
 const char CST_VALUE_2[] = "{\n\

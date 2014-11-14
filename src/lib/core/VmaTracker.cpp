@@ -1,5 +1,5 @@
  /*****************************************************
-             PROJECT  : MATT
+             PROJECT  : MALT
              VERSION  : 0.1.0-dev
              DATE     : 01/2014
              AUTHOR   : Valat Sébastien
@@ -16,10 +16,10 @@
 #include "VmaTracker.hpp"
 
 /********************  MACRO  ***********************/
-#define MATT_VMA_TRACKER_DEFAULT_SIZE 1024
+#define MALT_VMA_TRACKER_DEFAULT_SIZE 1024
 
 /*******************  NAMESPACE  ********************/
-namespace MATT
+namespace MALT
 {
 
 /*******************  FUNCTION  *********************/
@@ -27,15 +27,15 @@ VmaTracker::VmaTracker ( void )
 {
 	this->count = 0;
 	this->lastInsert = 0;
-	this->size = MATT_VMA_TRACKER_DEFAULT_SIZE;
-	this->vmas = (VmaInfo*)MATT_MALLOC(sizeof(VmaInfo)*this->size);
+	this->size = MALT_VMA_TRACKER_DEFAULT_SIZE;
+	this->vmas = (VmaInfo*)MALT_MALLOC(sizeof(VmaInfo)*this->size);
 	memset(this->vmas,0,sizeof(VmaInfo)*this->size);
 }
 
 /*******************  FUNCTION  *********************/
 VmaTracker::~VmaTracker ( void )
 {
-	MATT_FREE(this->vmas);
+	MALT_FREE(this->vmas);
 }
 
 /*******************  FUNCTION  *********************/
@@ -65,7 +65,7 @@ void VmaTracker::grow ( void )
 	assert(count == size);
 	
 	size *= 2;
-	vmas = (VmaInfo*)MATT_REALLOC(vmas,size);
+	vmas = (VmaInfo*)MALT_REALLOC(vmas,size);
 	memset(vmas+size/2,0,size/2);
 }
 
@@ -86,7 +86,7 @@ void VmaTracker::mmap ( void* ptr, size_t size )
 	//ensure no overlap
 	size_t res = munmap(ptr,size);
 	if (res > 0)
-		MATT_WARNING("Caution, found some mmap overlaps, removing the old one...");
+		MALT_WARNING("Caution, found some mmap overlaps, removing the old one...");
 	
 	//insert
 	vmas[lastInsert].start = (size_t)ptr;

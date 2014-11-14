@@ -1,5 +1,5 @@
 /*****************************************************
-             PROJECT  : MATT
+             PROJECT  : MALT
              VERSION  : 0.1.0-dev
              DATE     : 01/2014
              AUTHOR   : Valat Sébastien
@@ -13,7 +13,7 @@
 #include <common/GTestHelper.hpp>
 
 /***************** USING NAMESPACE ******************/
-using namespace MATT;
+using namespace MALT;
 
 /*******************  FUNCTION  *********************/
 TEST(TestVmaTracker,testConstructor)

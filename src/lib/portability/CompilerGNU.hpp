@@ -1,20 +1,20 @@
 /*****************************************************
-             PROJECT  : MATT
+             PROJECT  : MALT
              VERSION  : 0.1.0-dev
              DATE     : 01/2014
              AUTHOR   : Valat Sébastien
              LICENSE  : CeCILL-C
 *****************************************************/
 
-#ifndef MATT_COMPILER_GNU_HPP
-#define MATT_COMPILER_GNU_HPP
+#ifndef MALT_COMPILER_GNU_HPP
+#define MALT_COMPILER_GNU_HPP
 
 /********************  HEADERS  *********************/
 //standard
 #include <string>
 
 /*******************  NAMESPACE  ********************/
-namespace MATT
+namespace MALT
 {
 
 /*********************  CLASS  **********************/
@@ -26,4 +26,4 @@ class CompilerGNU
 
 }
 
-#endif //MATT_COMPILER_GNU_HPP
+#endif //MALT_COMPILER_GNU_HPP

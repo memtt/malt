@@ -1,5 +1,5 @@
 /*****************************************************
-             PROJECT  : MATT
+             PROJECT  : MALT
              VERSION  : 0.1.0-dev
              DATE     : 01/2014
              AUTHOR   : Valat Sébastien
@@ -20,7 +20,7 @@
 #include <common/Array.hpp>
 
 /*******************  NAMESPACE  ********************/
-namespace MATT
+namespace MALT
 {
 
 /*******************  FUNCTION  *********************/
@@ -171,7 +171,7 @@ void SymbolSolver::loadProcMap(void)
 			else if (cnt == 6)
 				entry.file.clear();
 			else
-				MATT_FATAL_ARG("Invalid readline of proc/map entry : %1.").arg(buffer).end();
+				MALT_FATAL_ARG("Invalid readline of proc/map entry : %1.").arg(buffer).end();
 			
 			//ok push
 			procMap.push_back(entry);
@@ -212,7 +212,7 @@ LinuxProcMapEntry* SymbolSolver::getMapEntry(void* callSite)
 
 	//check errors
 	if (callSite != (void*)0x1)
-		MATT_WARNING_ARG("Caution, call site is not found in procMap : %1.").arg(callSite).end();
+		MALT_WARNING_ARG("Caution, call site is not found in procMap : %1.").arg(callSite).end();
 	return NULL;
 }
 
@@ -222,11 +222,11 @@ void SymbolSolver::solveNames(void)
 	//first try with maqao infos
 	if (!maqaoSites.empty())
 	{
-		fprintf(stderr,"MATT : Resolving symbols with maqao infos...\n");
+		fprintf(stderr,"MALT : Resolving symbols with maqao infos...\n");
 		this->solveMaqaoNames();
 	}
 	
-	fprintf(stderr,"MATT : Resolving symbols with addr2line...\n");
+	fprintf(stderr,"MALT : Resolving symbols with addr2line...\n");
 	
 	//avoid to LD_PRELOAD otherwise we will create fork bomb
 	setenv("LD_PRELOAD","",1);
@@ -304,7 +304,7 @@ void SymbolSolver::solveNames(LinuxProcMapEntry * procMapEntry)
 	//check error, skip resolution
 	if (fp == NULL)
 	{
-		MATT_ERROR_ARG("Fail to use addr2line on %1 to load symbols : %2.").arg(procMapEntry->file).argStrErrno().end();
+		MALT_ERROR_ARG("Fail to use addr2line on %1 to load symbols : %2.").arg(procMapEntry->file).argStrErrno().end();
 		return;
 	}
 	
@@ -336,7 +336,7 @@ void SymbolSolver::solveNames(LinuxProcMapEntry * procMapEntry)
 		char * sep = strrchr(bufferFile,':');
 		if (sep == NULL)
 		{
-			MATT_WARNING_ARG("Fail to split source location on ':' : %1").arg(bufferFile).end();
+			MALT_WARNING_ARG("Fail to split source location on ':' : %1").arg(bufferFile).end();
 		} else {
 			*sep='\0';
 			
@@ -361,7 +361,7 @@ void SymbolSolver::solveNames(LinuxProcMapEntry * procMapEntry)
 	int res = pclose(fp);
 	if (res != 0)
 	{
-		MATT_ERROR_ARG("Get error while using addr2line on %1 to load symbols : %2.").arg(procMapEntry->file).argStrErrno().end();
+		MALT_ERROR_ARG("Get error while using addr2line on %1 to load symbols : %2.").arg(procMapEntry->file).argStrErrno().end();
 		return;
 	}
 

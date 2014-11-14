@@ -1,5 +1,5 @@
 /*****************************************************
-             PROJECT  : MATT
+             PROJECT  : MALT
              VERSION  : 0.1.0-dev
              DATE     : 01/2014
              AUTHOR   : Valat Sébastien
@@ -13,7 +13,7 @@
 #include "SegmentTracker.hpp"
 
 /*******************  NAMESPACE  ********************/
-namespace MATT
+namespace MALT
 {
 
 /*******************  FUNCTION  *********************/
@@ -42,7 +42,7 @@ SegmentTracker::~SegmentTracker(void)
 }
 
 /*******************  FUNCTION  *********************/
-SegmentInfo* SegmentTracker::add(void* ptr, size_t size, MATT::MMCallStackNode callStack)
+SegmentInfo* SegmentTracker::add(void* ptr, size_t size, MALT::MMCallStackNode callStack)
 {
 	//check errors
 	assert(this->get(ptr) == NULL);

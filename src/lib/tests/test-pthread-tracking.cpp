@@ -1,5 +1,5 @@
 /*****************************************************
-             PROJECT  : MATT
+             PROJECT  : MALT
              VERSION  : 0.1.0-dev
              DATE     : 01/2014
              AUTHOR   : Valat Sébastien
@@ -61,7 +61,7 @@ int main(void)
 	for (int i = 0 ; i < NB_THREADS ; i++)
 		pthread_join(t[cntJoin++],&ret);
 	
-	fprintf(stderr,"Max threads : %d, current : %d\n",MATT::ThreadTracker::getMaxThreadCount(),MATT::ThreadTracker::getThreadCount());
+	fprintf(stderr,"Max threads : %d, current : %d\n",MALT::ThreadTracker::getMaxThreadCount(),MALT::ThreadTracker::getThreadCount());
 	//////////////////////////////////////////////////
 	
 	fprintf(stderr,"---- use thread_main_2 ----\n");
@@ -71,16 +71,16 @@ int main(void)
 	for (int i = 0 ; i < NB_THREADS ; i++)
 		pthread_join(t[cntJoin++],&ret);
 	
-	fprintf(stderr,"Max threads : %d, current : %d\n",MATT::ThreadTracker::getMaxThreadCount(),MATT::ThreadTracker::getThreadCount());
+	fprintf(stderr,"Max threads : %d, current : %d\n",MALT::ThreadTracker::getMaxThreadCount(),MALT::ThreadTracker::getThreadCount());
 	//////////////////////////////////////////////////
 	
 	fprintf(stderr,"---- use thread_main_3 ----\n");
 	for (int i = 0 ; i < NB_THREADS ; i++)
 		pthread_create(&t[cnt++],NULL,thread_main_3,NULL);
 
-	fprintf(stderr,"Max threads : %d, current : %d\n",MATT::ThreadTracker::getMaxThreadCount(),MATT::ThreadTracker::getThreadCount());
+	fprintf(stderr,"Max threads : %d, current : %d\n",MALT::ThreadTracker::getMaxThreadCount(),MALT::ThreadTracker::getThreadCount());
 	sleep(1);
-	fprintf(stderr,"Max threads : %d, current : %d\n",MATT::ThreadTracker::getMaxThreadCount(),MATT::ThreadTracker::getThreadCount());
+	fprintf(stderr,"Max threads : %d, current : %d\n",MALT::ThreadTracker::getMaxThreadCount(),MALT::ThreadTracker::getThreadCount());
 	
 	pthread_mutex_unlock(&mutex);
 	
@@ -89,7 +89,7 @@ int main(void)
 		pthread_join(t[cntJoin++],&ret);
 	
 	fprintf(stderr,"------------------------------------\n");
-	fprintf(stderr,"Max threads : %d, current : %d\n",MATT::ThreadTracker::getMaxThreadCount(),MATT::ThreadTracker::getThreadCount());
+	fprintf(stderr,"Max threads : %d, current : %d\n",MALT::ThreadTracker::getMaxThreadCount(),MALT::ThreadTracker::getThreadCount());
 	
 	return 0;
 }

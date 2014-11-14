@@ -1,5 +1,5 @@
 /*****************************************************
-             PROJECT  : MATT
+             PROJECT  : MALT
              VERSION  : 0.1.0-dev
              DATE     : 01/2014
              AUTHOR   : Valat Sébastien
@@ -13,7 +13,7 @@
 #include "AllocTraceFile.hpp"
 
 /*******************  NAMESPACE  ********************/
-namespace MATT
+namespace MALT
 {
 
 /*******************  FUNCTION  *********************/
@@ -57,7 +57,7 @@ void AllocTraceFile::open(const std::string& file)
 	
 	//check error
 	if (this->fp == NULL)
-		MATT_ERROR_ARG("Failed to open file %1 : %2\n").arg(file).argStrErrno();
+		MALT_ERROR_ARG("Failed to open file %1 : %2\n").arg(file).argStrErrno();
 	
 	//reset pos in buffer
 	this->pos = 0;
@@ -89,7 +89,7 @@ void AllocTraceFile::close(void)
  * @param timestamp Define the allocation timestamp.
  * @param lifetime Define the lifetime of the current chunk.
 **/
-void AllocTraceFile::traceChunk(const MATT::Stack* allocStack, const MATT::Stack* freeStack, void* addr, size_t size, ticks timestamp, ticks lifetime)
+void AllocTraceFile::traceChunk(const MALT::Stack* allocStack, const MALT::Stack* freeStack, void* addr, size_t size, ticks timestamp, ticks lifetime)
 {
 	//check errors
 	assert(pos < bufferSize);

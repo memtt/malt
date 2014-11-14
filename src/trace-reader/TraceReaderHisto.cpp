@@ -1,5 +1,5 @@
 /*****************************************************
-             PROJECT  : MATT
+             PROJECT  : MALT
              VERSION  : 0.1.0-dev
              DATE     : 01/2014
              AUTHOR   : Valat Sébastien
@@ -13,7 +13,7 @@
 #include "TraceReaderHisto.hpp"
 
 /*******************  NAMESPACE  ********************/
-namespace MATT
+namespace MALT
 {
 
 /*******************  FUNCTION  *********************/
@@ -43,7 +43,7 @@ void TraceReaderHisto::onEnd(void)
 }
 
 /*******************  FUNCTION  *********************/
-void TraceReaderHisto::onData(MATT::AllocTracerChunk& chunk)
+void TraceReaderHisto::onData(MALT::AllocTracerChunk& chunk)
 {
 	ticks indice;
 

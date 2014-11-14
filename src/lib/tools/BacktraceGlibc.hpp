@@ -1,20 +1,20 @@
 /*****************************************************
-             PROJECT  : MATT
+             PROJECT  : MALT
              VERSION  : 0.1.0-dev
              DATE     : 01/2014
              AUTHOR   : Valat Sébastien
              LICENSE  : CeCILL-C
 *****************************************************/
 
-#ifndef MATT_BACKTRACE_GLIBC_HPP
-#define MATT_BACKTRACE_GLIBC_HPP
+#ifndef MALT_BACKTRACE_GLIBC_HPP
+#define MALT_BACKTRACE_GLIBC_HPP
 
 /********************  HEADERS  *********************/
 //GNU specific for glibc backtrace
 #include <execinfo.h>
 
 /*******************  NAMESPACE  ********************/
-namespace MATT
+namespace MALT
 {
 
 /*********************  CLASS  **********************/
@@ -26,4 +26,4 @@ class BacktraceGlibc
 
 }
 
-#endif //MATT_BACKTRACE_GLIBC_HPP
+#endif //MALT_BACKTRACE_GLIBC_HPP

@@ -1,20 +1,20 @@
 /*****************************************************
-             PROJECT  : MATT
+             PROJECT  : MALT
              VERSION  : 0.1.0-dev
              DATE     : 01/2014
              AUTHOR   : Valat Sébastien
              LICENSE  : CeCILL-C
 *****************************************************/
 
-#ifndef MATT_STACK_SIZE_TRACKER_H
-#define MATT_STACK_SIZE_TRACKER_H
+#ifndef MALT_STACK_SIZE_TRACKER_H
+#define MALT_STACK_SIZE_TRACKER_H
 
 /********************  HEADERS  *********************/
 #include <common/Array.hpp>
 #include <json/JsonState.h>
 
 /*******************  NAMESPACE  ********************/
-namespace MATT
+namespace MALT
 {
 
 /*********************  CLASS  **********************/
@@ -41,4 +41,4 @@ class StackSizeTracker
 
 }
 
-#endif //MATT_STACK_SIZE_TRACKER_H
+#endif //MALT_STACK_SIZE_TRACKER_H

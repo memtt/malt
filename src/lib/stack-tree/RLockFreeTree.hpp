@@ -1,13 +1,13 @@
 /*****************************************************
-             PROJECT  : MATT
+             PROJECT  : MALT
              VERSION  : 0.1.0-dev
              DATE     : 01/2014
              AUTHOR   : Valat Sébastien
              LICENSE  : CeCILL-C
 *****************************************************/
 
-#ifndef MATT_RLOCK_FREE_TREE_HPP
-#define MATT_RLOCK_FREE_TREE_HPP
+#ifndef MALT_RLOCK_FREE_TREE_HPP
+#define MALT_RLOCK_FREE_TREE_HPP
 
 /********************  HEADERS  *********************/
 //std
@@ -20,7 +20,7 @@
 #include <json/JsonState.h>
 
 /*******************  NAMESPACE  ********************/
-namespace MATT
+namespace MALT
 {
 
 /*********************  CLASS  **********************/
@@ -102,11 +102,11 @@ typename RLockFreeTree<T>::Handler RLockFreeTree<T>::addChild(RLockFreeTreeNode*
 	RLockFreeTreeNode * child = NULL;
 	assert(node != NULL);
 
-	MATT_OPTIONAL_CRITICAL(lock,threadSafe)
+	MALT_OPTIONAL_CRITICAL(lock,threadSafe)
 		//re-check if another thread hasn't insert it at same time
 		child = findChild(node,callsite);
 		
-		//if already return it (we can safetly use return here between lock due to RAII support of MATT_OPTIONAL_CRITICAL)
+		//if already return it (we can safetly use return here between lock due to RAII support of MALT_OPTIONAL_CRITICAL)
 		if (child != NULL)
 			return child;
 		
@@ -116,7 +116,7 @@ typename RLockFreeTree<T>::Handler RLockFreeTree<T>::addChild(RLockFreeTreeNode*
 		
 		//insert
 		insertChild(node,child);
-	MATT_END_CRITICAL
+	MALT_END_CRITICAL
 	
 	return child;
 }
@@ -200,12 +200,12 @@ T* RLockFreeTree<T>::getData(typename RLockFreeTree<T>::Handler handler)
 	//if not exist, create
 	if (data == NULL)
 	{
-		MATT_OPTIONAL_CRITICAL(lock,threadSafe)
+		MALT_OPTIONAL_CRITICAL(lock,threadSafe)
 			//maybe another do the job juste before, so recheck before create
 			if (handler->data == NULL)
 				handler->data = new (gblInternaAlloc->malloc(sizeof(T))) T ();
 			data = (T*)handler->data;
-		MATT_END_CRITICAL
+		MALT_END_CRITICAL
 	}
 	
 	return (T*)data;
@@ -282,4 +282,4 @@ typename RLockFreeTree<T>::Handler RLockFreeTree<T>::getFromStack(Stack& stack)
 
 }
 
-#endif //MATT_RLOCK_FREE_TREE_HPP
+#endif //MALT_RLOCK_FREE_TREE_HPP

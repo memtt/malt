@@ -1,5 +1,5 @@
 ######################################################
-#            PROJECT  : MATT                         #
+#            PROJECT  : MALT                         #
 #            VERSION  : 0.1.0-dev                    #
 #            DATE     : 01/2014                      #
 #            AUTHOR   : Valat Sébastien              #
@@ -7,10 +7,10 @@
 ######################################################
 
 ######################################################
-set(MATT_VALPROF_SRC ProfiledStateValue.cpp)
+set(MALT_VALPROF_SRC ProfiledStateValue.cpp)
 
 ######################################################
-add_library(matt-valprof OBJECT ${MATT_VALPROF_SRC})
+add_library(matt-valprof OBJECT ${MALT_VALPROF_SRC})
 SET_TARGET_PROPERTIES(matt-valprof PROPERTIES COMPILE_FLAGS -fPIC)
 
 ######################################################

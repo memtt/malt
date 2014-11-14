@@ -2,7 +2,7 @@
 #include <sys/types.h>
 #include <unistd.h>
 
-namespace MATT
+namespace MALT
 {
 
 /********************* GLOBALS **********************/
@@ -36,7 +36,7 @@ int MPI_Init(int *argc, char ***argv)
 	int res = PMPI_Init(argc,argv);
 	
 	//extract rank
-	MPI_Comm_rank(MPI_COMM_WORLD,&MATT::mpiRank);
+	MPI_Comm_rank(MPI_COMM_WORLD,&MALT::mpiRank);
 	
 	return res;
 }
@@ -48,7 +48,7 @@ int MPI_Init_thread(int *argc, char ***argv, int required, int *provided)
 	int res = PMPI_Init_thread(argc,argv,required,provided);
 	
 	//extract rank
-	MPI_Comm_rank(MPI_COMM_WORLD,&MATT::mpiRank);
+	MPI_Comm_rank(MPI_COMM_WORLD,&MALT::mpiRank);
 	
 	return res;
 }

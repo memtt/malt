@@ -1,13 +1,13 @@
 /*****************************************************
-             PROJECT  : MATT
+             PROJECT  : MALT
              VERSION  : 0.1.0-dev
              DATE     : 01/2014
              AUTHOR   : Valat Sébastien
              LICENSE  : CeCILL-C
 *****************************************************/
 
-#ifndef MATT_TRACE_READER_HISTO_HPP
-#define MATT_TRACE_READER_HISTO_HPP
+#ifndef MALT_TRACE_READER_HISTO_HPP
+#define MALT_TRACE_READER_HISTO_HPP
 
 /********************  HEADERS  *********************/
 //STL C++
@@ -16,7 +16,7 @@
 #include "TraceReader.hpp"
 
 /*******************  NAMESPACE  ********************/
-namespace MATT
+namespace MALT
 {
 
 /*********************  ENUM  ***********************/
@@ -36,7 +36,7 @@ class TraceReaderHisto : public TraceReader
 	public:
 		TraceReaderHisto(HistoCriteria histCrit,Filter * filter = NULL);
 		virtual void onStart(void);
-		virtual void onData(MATT::AllocTracerChunk & chunk);
+		virtual void onData(MALT::AllocTracerChunk & chunk);
 		virtual void onEnd(void);
 	private:
 		HistoCriteria histCrit;
@@ -45,4 +45,4 @@ class TraceReaderHisto : public TraceReader
 
 }
 
-#endif //MATT_TRACE_READER_HISTO_HPP
+#endif //MALT_TRACE_READER_HISTO_HPP

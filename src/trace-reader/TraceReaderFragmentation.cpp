@@ -1,5 +1,5 @@
 /*****************************************************
-             PROJECT  : MATT
+             PROJECT  : MALT
              VERSION  : 0.1.0-dev
              DATE     : 01/2014
              AUTHOR   : Valat Sébastien
@@ -14,7 +14,7 @@
 #include "TraceReaderFragmentation.hpp"
 
 /*******************  NAMESPACE  ********************/
-namespace MATT
+namespace MALT
 {
 
 /********************  MACROS  **********************/
@@ -22,7 +22,7 @@ namespace MATT
 #define PAGE_MASK (~(PAGE_SIZE-1))
 
 /*******************  FUNCTION  *********************/
-TraceReaderFragmentation::TraceReaderFragmentation(ticks tStep1, ticks tStep2,bool details, MATT::Filter* filter): TraceReader(filter)
+TraceReaderFragmentation::TraceReaderFragmentation(ticks tStep1, ticks tStep2,bool details, MALT::Filter* filter): TraceReader(filter)
 {
 	if (tStep1 >= tStep2)
 	{
@@ -124,7 +124,7 @@ void TraceReaderFragmentation::checkForSharedPages(void)
 }
 
 /*******************  FUNCTION  *********************/
-void TraceReaderFragmentation::onData(MATT::AllocTracerChunk& chunk)
+void TraceReaderFragmentation::onData(MALT::AllocTracerChunk& chunk)
 {
 	//is alive on step 1, then register in list
 	if (chunk.allocTime <= tStep1 && chunk.allocTime+chunk.lifetime > tStep1)

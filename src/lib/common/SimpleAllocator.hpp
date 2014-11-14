@@ -1,13 +1,13 @@
 /*****************************************************
-             PROJECT  : MATT
+             PROJECT  : MALT
              VERSION  : 0.1.0-dev
              DATE     : 01/2014
              AUTHOR   : Valat Sébastien
              LICENSE  : CeCILL-C
 *****************************************************/
 
-#ifndef MATT_SIMPLE_ALLOCATOR_HPP
-#define MATT_SIMPLE_ALLOCATOR_HPP
+#ifndef MALT_SIMPLE_ALLOCATOR_HPP
+#define MALT_SIMPLE_ALLOCATOR_HPP
 
 /********************  HEADERS  *********************/
 //standard
@@ -17,29 +17,29 @@
 #include <portability/Spinlock.hpp>
 
 /*******************  NAMESPACE  ********************/
-namespace MATT
+namespace MALT
 {
 
 /********************  MACROS  **********************/
 /** Default memory size to request to system when internal memory is full. **/
-#define MATT_ALLOC_SYS_REQ_SIZE (256*1024UL)
+#define MALT_ALLOC_SYS_REQ_SIZE (256*1024UL)
 /** 
  * Minimal size of allocated chunk (depend on header size for chunk and free chunk handler). 
  * Size is defined as usable size without takking accound of chunk header size.
 **/
-#define MATT_ALLOC_MIN_SIZE (sizeof(FreeChunk) - sizeof(Chunk))
+#define MALT_ALLOC_MIN_SIZE (sizeof(FreeChunk) - sizeof(Chunk))
 /** Lower memory alignment considerd by allocator to split unused segements. **/
-#define MATT_ALLOC_BASIC_ALIGN (sizeof(void*))
+#define MALT_ALLOC_BASIC_ALIGN (sizeof(void*))
 /** Do not split elements smaller than given size. **/
-#define MATT_ALLOC_SPLIT_THRESOLD (2*MATT_ALLOC_MIN_SIZE)
+#define MALT_ALLOC_SPLIT_THRESOLD (2*MALT_ALLOC_MIN_SIZE)
 
 /********************  MACROS  **********************/
 /** Wrapper to replace malloc for internal allocations. **/
-#define MATT_MALLOC(x) gblInternaAlloc->malloc(x)
+#define MALT_MALLOC(x) gblInternaAlloc->malloc(x)
 /** Wrapper to replace free for internal allocations. **/
-#define MATT_FREE(x) gblInternaAlloc->free(x)
+#define MALT_FREE(x) gblInternaAlloc->free(x)
 /** Wrapper to replace realloc for internal allocations. **/
-#define MATT_REALLOC(x,y) gblInternaAlloc->realloc((x),(y))
+#define MALT_REALLOC(x,y) gblInternaAlloc->realloc((x),(y))
 
 /********************  STRUCT  **********************/
 /**
@@ -99,7 +99,7 @@ struct FreeChunk
 class SimpleAllocator
 {
 	public:
-		SimpleAllocator(bool threadSafe = false,size_t sysReqSize = MATT_ALLOC_SYS_REQ_SIZE);
+		SimpleAllocator(bool threadSafe = false,size_t sysReqSize = MALT_ALLOC_SYS_REQ_SIZE);
 		void * malloc(size_t size);
 		void free(void * ptr);
 		void * realloc(void * old,size_t size);
@@ -149,4 +149,4 @@ void initInternalAlloc(bool threadSafe = true);
 
 };
 
-#endif //MATT_SIMPLE_ALLOCATOR_HPP
+#endif //MALT_SIMPLE_ALLOCATOR_HPP

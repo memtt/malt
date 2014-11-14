@@ -1,13 +1,13 @@
 /*****************************************************
-             PROJECT  : MATT
+             PROJECT  : MALT
              VERSION  : 0.1.0-dev
              DATE     : 01/2014
              AUTHOR   : Valat Sébastien
              LICENSE  : CeCILL-C
 *****************************************************/
 
-#ifndef MATT_FORMATTED_MESSAGE_HPP
-#define MATT_FORMATTED_MESSAGE_HPP
+#ifndef MALT_FORMALTED_MESSAGE_HPP
+#define MALT_FORMALTED_MESSAGE_HPP
 
 /********************  HEADERS  *********************/
 //standard
@@ -16,7 +16,7 @@
 #include <sstream>
 
 /*******************  NAMESPACE  ********************/
-namespace MATT
+namespace MALT
 {
 
 /*********************  TYPES  **********************/
@@ -78,4 +78,4 @@ FormattedMessage& FormattedMessage::arg(const T& value)
 
 }
 
-#endif //MATT_FORMATTED_MESSAGE_HPP
+#endif //MALT_FORMALTED_MESSAGE_HPP

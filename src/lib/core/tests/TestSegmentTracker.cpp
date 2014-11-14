@@ -1,5 +1,5 @@
 /*****************************************************
-             PROJECT  : MATT
+             PROJECT  : MALT
              VERSION  : 0.1.0-dev
              DATE     : 01/2014
              AUTHOR   : Valat Sébastien
@@ -12,7 +12,7 @@
 #include <stacks/Stack.hpp>
 
 /***************** USING NAMESPACE ******************/
-using namespace MATT;
+using namespace MALT;
 
 /********************* GLOBALS **********************/
 //for pre init of global allocator

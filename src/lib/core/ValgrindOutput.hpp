@@ -1,13 +1,13 @@
 /*****************************************************
-             PROJECT  : MATT
+             PROJECT  : MALT
              VERSION  : 0.1.0-dev
              DATE     : 01/2014
              AUTHOR   : Valat Sébastien
              LICENSE  : CeCILL-C
 *****************************************************/
 
-#ifndef MATT_VALGRIND_OUTPUT_HPP
-#define MATT_VALGRIND_OUTPUT_HPP
+#ifndef MALT_VALGRIND_OUTPUT_HPP
+#define MALT_VALGRIND_OUTPUT_HPP
 
 /********************  HEADERS  *********************/
 #include <cstdlib>
@@ -16,7 +16,7 @@
 #include "SimpleCallStackNode.hpp"
 #include "SymbolSolver.hpp"
 
-namespace MATT
+namespace MALT
 {
 
 /*********************  TYPES  **********************/
@@ -49,4 +49,4 @@ class ValgrindOutput
 
 }
 
-#endif //MATT_VALGRIND_OUTPUT_HPP
+#endif //MALT_VALGRIND_OUTPUT_HPP

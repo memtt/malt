@@ -1,5 +1,5 @@
 /*****************************************************
-             PROJECT  : MATT
+             PROJECT  : MALT
              VERSION  : 0.1.0-dev
              DATE     : 01/2014
              AUTHOR   : Valat Sébastien
@@ -18,7 +18,7 @@
 #include "TraceReaderFragmentation.hpp"
 
 /**********************  USING  *********************/
-using namespace MATT;
+using namespace MALT;
 
 /********************** CONSTS **********************/
 static const char * cstHelp = "Usage : %s [--help|-h] [MODE] [FILTER] {FILE.trace}\n\n\

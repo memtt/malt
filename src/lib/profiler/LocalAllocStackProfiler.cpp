@@ -1,5 +1,5 @@
 /*****************************************************
-             PROJECT  : MATT
+             PROJECT  : MALT
              VERSION  : 0.1.0-dev
              DATE     : 01/2014
              AUTHOR   : Valat Sébastien
@@ -16,7 +16,7 @@
 #include "LocalAllocStackProfiler.hpp"
 
 /*******************  NAMESPACE  ********************/
-namespace MATT
+namespace MALT
 {
 
 /*******************  FUNCTION  *********************/
@@ -31,7 +31,6 @@ LocalAllocStackProfiler::LocalAllocStackProfiler(AllocStackProfiler* globalProfi
 	
 	//setup fields
 	this->cntMemOps = 0;
-	this->cumulAlloc = 0;
 	this->globalProfiler = globalProfiler;
 	this->options = globalProfiler->getOptions();
 	this->stackMode = globalProfiler->getStackMode();
@@ -63,7 +62,6 @@ void LocalAllocStackProfiler::onMalloc(void* res, size_t size, ticks time, Mallo
 		inUse = true;
 		CODE_TIMING("mallocProf",globalProfiler->onMalloc(res,size,getStack()));
 		this->cntMemOps++;
-		this->cumulAlloc+=size;
 		this->allocStats.malloc[kind].inc(size,time);
 		inUse = oldInuse;
 	}
@@ -98,7 +96,6 @@ void LocalAllocStackProfiler::onCalloc(void * res,size_t nmemb, size_t size, tic
 		inUse = true;
 		CODE_TIMING("callocProf",globalProfiler->onCalloc(res,nmemb,size,getStack()));
 		this->cntMemOps++;
-		this->cumulAlloc+=size;
 		this->allocStats.calloc.inc(size,time);
 		inUse = oldInuse;
 	}
@@ -116,7 +113,6 @@ void LocalAllocStackProfiler::onRealloc(void* ptr, void* res, size_t size,ticks 
 		inUse = true;
 		CODE_TIMING("reallocProf",globalProfiler->onRealloc(ptr,res,size,getStack()));
 		this->cntMemOps++;
-		this->cumulAlloc+=size;
 		this->allocStats.realloc.inc(size,time);
 		inUse = oldInuse;
 	}
@@ -174,7 +170,6 @@ void convertToJson(htopml::JsonState& json, const LocalAllocStackProfiler& value
 	json.openStruct();
 	json.printField("stackMem",value.stackSizeAnalyser);
 	json.printField("cntMemOps",value.cntMemOps);
-	json.printField("cumulAlloc",value.cumulAlloc);
 	json.printField("stats",value.allocStats);
 	json.closeStruct();
 }
@@ -200,7 +195,7 @@ Stack* LocalAllocStackProfiler::getStack(void )
 		case STACK_MODE_USER:
 			return NULL;
 		default:
-			MATT_FATAL("Invalid stack mode !");
+			MALT_FATAL("Invalid stack mode !");
 			return NULL;
 	}
 }

@@ -1,16 +1,16 @@
 /*****************************************************
-             PROJECT  : MATT
+             PROJECT  : MALT
              VERSION  : 0.1.0-dev
              DATE     : 01/2014
              AUTHOR   : Valat Sébastien
              LICENSE  : CeCILL-C
 *****************************************************/
 
-#ifndef MATT_MUTEX_DUMMY_HPP
-#define MATT_MUTEX_DUMMY_HPP
+#ifndef MALT_MUTEX_DUMMY_HPP
+#define MALT_MUTEX_DUMMY_HPP
 
 /*******************  NAMESPACE  ********************/
-namespace MATT
+namespace MALT
 {
 
 /*********************  CLASS  **********************/
@@ -25,4 +25,4 @@ struct LockDummy
 
 }
 
-#endif //MATT_MUTEX_DUMMY_HPP
+#endif //MALT_MUTEX_DUMMY_HPP

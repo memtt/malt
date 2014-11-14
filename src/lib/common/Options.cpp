@@ -1,5 +1,5 @@
 /*****************************************************
-             PROJECT  : MATT
+             PROJECT  : MALT
              VERSION  : 0.1.0-dev
              DATE     : 01/2014
              AUTHOR   : Valat Sébastien
@@ -16,7 +16,7 @@
 #include <json/JsonState.h>
 
 /*******************  NAMESPACE  ********************/
-namespace MATT 
+namespace MALT 
 {
 
 /********************  GLOBALS  *********************/
@@ -93,7 +93,7 @@ bool Options::operator==(const Options& value) const
 
 /*******************  FUNCTION  *********************/
 /**
- * Load values from string, mostly to be used from MATT_OPTION environment variable.
+ * Load values from string, mostly to be used from MALT_OPTION environment variable.
  * 
  * It expect string format like :
  * 
@@ -223,13 +223,13 @@ void Options::loadFromFile(const char* fname)
 	//free dic
 	iniparser_freedict(iniDic);
 	
-	//TODO apply getenv MATT_OPTIONS to override here and add "envOverride" parameter to enable it from caller
+	//TODO apply getenv MALT_OPTIONS to override here and add "envOverride" parameter to enable it from caller
 }
 
 /*******************  FUNCTION  *********************/
 /**
  * Helper function to convert the options to JSON output format and dump it
- * into the MATT output profile.
+ * into the MALT output profile.
 **/
 void convertToJson(htopml::JsonState & json,const Options & value)
 {

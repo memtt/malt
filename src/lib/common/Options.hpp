@@ -1,13 +1,13 @@
 /*****************************************************
-             PROJECT  : MATT
+             PROJECT  : MALT
              VERSION  : 0.1.0-dev
              DATE     : 01/2014
              AUTHOR   : Valat Sébastien
              LICENSE  : CeCILL-C
 *****************************************************/
 
-#ifndef MATT_OPTIONS_HPP
-#define MATT_OPTIONS_HPP
+#ifndef MALT_OPTIONS_HPP
+#define MALT_OPTIONS_HPP
 
 /********************  HEADERS  *********************/
 //std
@@ -26,15 +26,15 @@ namespace htopml {
 }
 
 /*******************  NAMESPACE  ********************/
-namespace MATT
+namespace MALT
 {
 
 /********************  STRUCT  **********************/
 /**
- * Structure to manage the MATT options. It manage loading status from a config 
+ * Structure to manage the MALT options. It manage loading status from a config 
  * file in INI format.
  * 
- * @brief Structure to manage all the MATT options.
+ * @brief Structure to manage all the MALT options.
 **/
 struct Options
 {
@@ -115,4 +115,4 @@ void convertToJson(htopml::JsonState & json,const Options & value);
 
 }
 
-#endif //MATT_OPTIONS_HPP
+#endif //MALT_OPTIONS_HPP

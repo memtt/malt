@@ -1,5 +1,5 @@
 /*****************************************************
-             PROJECT  : MATT
+             PROJECT  : MALT
              VERSION  : 0.1.0-dev
              DATE     : 01/2014
              AUTHOR   : Valat Sébastien
@@ -24,7 +24,7 @@
 using namespace std;
 
 /*******************  NAMESPACE  ********************/
-namespace MATT
+namespace MALT
 {
 
 /********************** CONSTS **********************/
@@ -90,8 +90,8 @@ int CodeTiming::compare(const void* a, const void* b)
 **/
 void CodeTiming::printAll(void)
 {
-	#ifdef MATT_ENABLE_CODE_TIMING
-		cerr << "=============================================================== MATT TIMINGS ====================================================================" << endl;
+	#ifdef MALT_ENABLE_CODE_TIMING
+		cerr << "=============================================================== MALT TIMINGS ====================================================================" << endl;
 		qsort(globalTimers,globalCntTimers,sizeof(globalTimers[0]),CodeTiming::compare);
 		for (int i = 0 ; i < globalCntTimers ; i++)
 		{	
@@ -114,7 +114,7 @@ CodeTiming::CodeTiming(const char* name)
 	this->max = 0;
 	this->min = 0;
 	this->sum = 0;
-	#ifdef MATT_ENABLE_CODE_TIMING
+	#ifdef MALT_ENABLE_CODE_TIMING
 		registerTimer(this);
 	#endif
 }
@@ -125,7 +125,7 @@ CodeTiming::CodeTiming(const char* name)
 **/
 CodeTiming::~CodeTiming(void)
 {
-	#ifdef MATT_ENABLE_CODE_TIMING
+	#ifdef MALT_ENABLE_CODE_TIMING
 		timerFinish(this);
 	#endif
 }
@@ -133,7 +133,7 @@ CodeTiming::~CodeTiming(void)
 /*******************  FUNCTION  *********************/
 void CodeTiming::finalPrint(void) const
 {
-	#ifdef MATT_ENABLE_CODE_TIMING
+	#ifdef MALT_ENABLE_CODE_TIMING
 		ticks wholeExec = getticks() - globalStart;
 		double ratio = (double)(100*sum) / (double)wholeExec;
 		cerr << "TIMING OF " << std::setw(32) << std::left << this->name << " => [ ";

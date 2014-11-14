@@ -1,16 +1,16 @@
 /*****************************************************
-             PROJECT  : MATT
+             PROJECT  : MALT
              VERSION  : 0.1.0-dev
              DATE     : 01/2014
              AUTHOR   : Valat Sébastien
              LICENSE  : CeCILL-C
 *****************************************************/
 
-#ifndef MATT_BACKTRACE_LIBUNWIND_HPP
-#define MATT_BACKTRACE_LIBUNWIND_HPP
+#ifndef MALT_BACKTRACE_LIBUNWIND_HPP
+#define MALT_BACKTRACE_LIBUNWIND_HPP
 
 /*******************  NAMESPACE  ********************/
-namespace MATT
+namespace MALT
 {
 
 /*********************  CLASS  **********************/
@@ -22,4 +22,4 @@ class BacktraceLibunwind
 
 }
 
-#endif //MATT_BACKTRACE_LIBUNWIND_HPP
+#endif //MALT_BACKTRACE_LIBUNWIND_HPP

@@ -1,13 +1,13 @@
 /*****************************************************
-             PROJECT  : MATT
+             PROJECT  : MALT
              VERSION  : 0.1.0-dev
              DATE     : 01/2014
              AUTHOR   : Valat Sébastien
              LICENSE  : CeCILL-C
 *****************************************************/
 
-#ifndef MATT_SIMPLE_BACKTRACE_STORAGE_HPP
-#define MATT_SIMPLE_BACKTRACE_STORAGE_HPP
+#ifndef MALT_SIMPLE_BACKTRACE_STORAGE_HPP
+#define MALT_SIMPLE_BACKTRACE_STORAGE_HPP
 
 /********************  HEADERS  *********************/
 //extern
@@ -24,13 +24,13 @@
 #include <common/Array.hpp>
 
 /*******************  NAMESPACE  ********************/
-namespace MATT
+namespace MALT
 {
 
 /*******************  FUNCTION  *********************/
 //typedef std::vector<SimpleCallStackNode*> SimpleBacktraceVector;
 typedef std::vector<SimpleCallStackNode*,STLInternalAllocator<SimpleCallStackNode*> > SimpleBacktraceVector;
-// typedef MATT::Array<SimpleCallStackNode*> SimpleBacktraceVector;
+// typedef MALT::Array<SimpleCallStackNode*> SimpleBacktraceVector;
 // typedef std::map<StackHash,SimpleBacktraceVector> SimpleBacktraceVectorMap;
 typedef std::map<StackHash,SimpleBacktraceVector,std::less<StackHash>,STLInternalAllocator<std::pair<StackHash,SimpleBacktraceVector> > > SimpleBacktraceVectorMap;
 
@@ -42,7 +42,7 @@ class SimpleStackTracker
 		~SimpleStackTracker(void);
 		SimpleCallStackNode& getBacktraceInfo(const Stack& stack, int skipDepth = 0);
 		void solveSymbols(SymbolSolver & symbolResolver);
-		void fillValgrindOut(MATT::ValgrindOutput& out, MATT::SymbolSolver& symbolResolver) const;
+		void fillValgrindOut(MALT::ValgrindOutput& out, MALT::SymbolSolver& symbolResolver) const;
 	public:
 		friend std::ostream & operator << (std::ostream & out,const SimpleStackTracker & tracer);
 		friend void convertToJson(htopml::JsonState & json, const SimpleStackTracker & value);
@@ -53,4 +53,4 @@ class SimpleStackTracker
 
 }
 
-#endif //MATT_SIMPLE_BACKTRACE_STORAGE_HPP
+#endif //MALT_SIMPLE_BACKTRACE_STORAGE_HPP

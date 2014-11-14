@@ -1,13 +1,13 @@
 /*****************************************************
-             PROJECT  : MATT
+             PROJECT  : MALT
              VERSION  : 0.1.0-dev
              DATE     : 01/2014
              AUTHOR   : Valat Sébastien
              LICENSE  : CeCILL-C
 *****************************************************/
 
-#ifndef MATT_RLOCK_FREE_TREE_HPP
-#define MATT_RLOCK_FREE_TREE_HPP
+#ifndef MALT_RLOCK_FREE_TREE_HPP
+#define MALT_RLOCK_FREE_TREE_HPP
 
 /********************  HEADERS  *********************/
 //std
@@ -17,7 +17,7 @@
 
 
 /*******************  NAMESPACE  ********************/
-namespace MATT
+namespace MALT
 {
 	
 /*********************  TYPES  **********************/
@@ -80,9 +80,9 @@ StackNodeHanlder AbstractStackTree::getNode(const Stack& stack)
 	StackNodeHanlder res;
 	if (useHashMap)
 	{
-		MATT_OPTIONAL_CRITICAL(mapLock,threadSafe)
+		MALT_OPTIONAL_CRITICAL(mapLock,threadSafe)
 			res = map.getNode(stack);
-		MATT_END_CRITICAL
+		MALT_END_CRITICAL
 	} else {
 		res = tree.getFromStack(stack);
 	}
@@ -113,4 +113,4 @@ void AbstractStackTree::toJson(htopml::JsonState& state)
 
 }
 
-#endif //MATT_RLOCK_FREE_TREE_HPP
+#endif //MALT_RLOCK_FREE_TREE_HPP

@@ -1,5 +1,5 @@
 /*****************************************************
-             PROJECT  : MATT
+             PROJECT  : MALT
              VERSION  : 0.1.0-dev
              DATE     : 01/2014
              AUTHOR   : Valat Sébastien
@@ -11,7 +11,7 @@
 #include <cstring>
 #include "ProfiledStateValue.hpp"
 
-namespace MATT
+namespace MALT
 {
 
 /*******************  FUNCTION  *********************/

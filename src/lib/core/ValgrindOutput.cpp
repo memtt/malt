@@ -1,5 +1,5 @@
 /*****************************************************
-             PROJECT  : MATT
+             PROJECT  : MALT
              VERSION  : 0.1.0-dev
              DATE     : 01/2014
              AUTHOR   : Valat Sébastien
@@ -19,11 +19,11 @@ using namespace std;
 /********************  MACROS  **********************/
 #define LINE_BREAK "\n"
 
-namespace MATT
+namespace MALT
 {
 
 /*******************  FUNCTION  *********************/
-void ValgrindOutput::pushStackInfo(const MATT::Stack& stack, const MATT::CallStackInfo& info, const MATT::SymbolSolver& symbols)
+void ValgrindOutput::pushStackInfo(const MALT::Stack& stack, const MALT::CallStackInfo& info, const MALT::SymbolSolver& symbols)
 {
 	int shift = 0;
 	

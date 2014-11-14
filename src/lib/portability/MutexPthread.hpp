@@ -1,19 +1,19 @@
 /*****************************************************
-             PROJECT  : MATT
+             PROJECT  : MALT
              VERSION  : 0.1.0-dev
              DATE     : 01/2014
              AUTHOR   : Valat Sébastien
              LICENSE  : CeCILL-C
 *****************************************************/
 
-#ifndef MATT_MUTEX_PTHREAD_HPP
-#define MATT_MUTEX_PTHREAD_HPP
+#ifndef MALT_MUTEX_PTHREAD_HPP
+#define MALT_MUTEX_PTHREAD_HPP
 
 /********************  HEADERS  *********************/
 #include "pthread.h"
 
 /*******************  NAMESPACE  ********************/
-namespace MATT
+namespace MALT
 {
 
 /********************  STRUCT  **********************/
@@ -95,4 +95,4 @@ inline bool MutexPthread::tryLock(void )
 
 }
 
-#endif //MATT_MUTEX_PTHREAD_HPP
+#endif //MALT_MUTEX_PTHREAD_HPP

@@ -1,5 +1,5 @@
 /*****************************************************
-             PROJECT  : MATT
+             PROJECT  : MALT
              VERSION  : 0.1.0-dev
              DATE     : 01/2014
              AUTHOR   : Valat Sébastien
@@ -12,7 +12,7 @@
 #include <valprof/ProfiledCumulValue.hpp>
 
 /***************** USING NAMESPACE ******************/
-using namespace MATT;
+using namespace MALT;
 
 /********************** CONSTS **********************/
 const char CST_STRING_1[] = "{\n\t\"startTime\":0,\n\t\"scale\":1,\n\t\"endTime\":6,\n\t\"values\":[10, 10, 10, 10, 10, 10, 10]\n}";

@@ -1,5 +1,5 @@
 /*****************************************************
-             PROJECT  : MATT
+             PROJECT  : MALT
              VERSION  : 0.1.0-dev
              DATE     : 01/2014
              AUTHOR   : Valat Sébastien
@@ -13,7 +13,7 @@
 #include "TraceReaderPrint.hpp"
 
 /*******************  NAMESPACE  ********************/
-namespace MATT
+namespace MALT
 {
 
 /*******************  FUNCTION  *********************/
@@ -38,7 +38,7 @@ void TraceReaderPrint::onEnd(void)
 }
 
 /*******************  FUNCTION  *********************/
-void TraceReaderPrint::onData(MATT::AllocTracerChunk& chunk)
+void TraceReaderPrint::onData(MALT::AllocTracerChunk& chunk)
 {
 	if (!first)
 		printf(",\n\t");

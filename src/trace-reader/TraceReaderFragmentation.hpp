@@ -1,20 +1,20 @@
 /*****************************************************
-             PROJECT  : MATT
+             PROJECT  : MALT
              VERSION  : 0.1.0-dev
              DATE     : 01/2014
              AUTHOR   : Valat Sébastien
              LICENSE  : CeCILL-C
 *****************************************************/
 
-#ifndef MATT_TRACE_READER_FRAGMENTATION_HPP
-#define MATT_TRACE_READER_FRAGMENTATION_HPP
+#ifndef MALT_TRACE_READER_FRAGMENTATION_HPP
+#define MALT_TRACE_READER_FRAGMENTATION_HPP
 
 /********************  HEADERS  *********************/
 #include <map>
 #include "TraceReader.hpp"
 
 /*******************  NAMESPACE  ********************/
-namespace MATT
+namespace MALT
 {
 
 /********************  STRUCT  **********************/
@@ -31,7 +31,7 @@ class FragmentationChunkPerCallStack
 	public:
 		FragmentationChunkPerCallStack();
 		void push(size_t size,ticks lifetime);
-		void print(const MATT::Stack* stack) const;
+		void print(const MALT::Stack* stack) const;
 	private:
 		size_t count;
 		size_t sum;
@@ -51,7 +51,7 @@ class TraceReaderFragmentation : public TraceReader
 	public:
 		TraceReaderFragmentation(ticks tStep1,ticks tStep2,bool details,Filter * filter = NULL);
 		virtual void onStart(void);
-		virtual void onData(MATT::AllocTracerChunk & chunk);
+		virtual void onData(MALT::AllocTracerChunk & chunk);
 		virtual void onEnd(void);
 	private:
 		void checkForSharedPages(void);
@@ -66,4 +66,4 @@ class TraceReaderFragmentation : public TraceReader
 
 }
 
-#endif //MATT_TRACE_READER_FRAGMENTATION_HPP
+#endif //MALT_TRACE_READER_FRAGMENTATION_HPP

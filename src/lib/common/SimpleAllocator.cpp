@@ -1,5 +1,5 @@
 /*****************************************************
-             PROJECT  : MATT
+             PROJECT  : MALT
              VERSION  : 0.1.0-dev
              DATE     : 01/2014
              AUTHOR   : Valat Sébastien
@@ -26,13 +26,13 @@
 /**
  * Define the page size we consider.
 **/
-#define MATT_PAGE_SIZE 4096
+#define MALT_PAGE_SIZE 4096
 
 /***************** USING NAMESPACE ******************/
 using namespace std;
 
 /*******************  NAMESPACE  ********************/
-namespace MATT
+namespace MALT
 {
 
 /********************* GLOBALS **********************/
@@ -43,12 +43,12 @@ SimpleAllocator * gblInternaAlloc = NULL;
  * Constructor of the simple allocator.
  * @param threadSafe Enable of disable thread locking.
  * @param sysReqSize Define the size of memory segments we request to the OS with mmap when the allocator need more memory.
- * It must be a multiple of MATT_PAGE_SIZE.
+ * It must be a multiple of MALT_PAGE_SIZE.
 **/
 SimpleAllocator::SimpleAllocator(bool threadSafe, size_t sysReqSize)
 {
 	//check
-	assert(sysReqSize % MATT_PAGE_SIZE == 0);
+	assert(sysReqSize % MALT_PAGE_SIZE == 0);
 	
 	//setup params
 	this->sysReqSize = sysReqSize;
@@ -74,7 +74,7 @@ SimpleAllocator::SimpleAllocator(bool threadSafe, size_t sysReqSize)
 void SimpleAllocator::requestSystemMemory(size_t size)
 {
 	//errors
-	assert(size % MATT_PAGE_SIZE == 0);
+	assert(size % MALT_PAGE_SIZE == 0);
 	
 	//register too small chunk if have one
 	if (cur != NULL)
@@ -117,17 +117,17 @@ void* SimpleAllocator::malloc(size_t size)
 		return NULL;
 	
 	//round to minimal
-	if (size < MATT_ALLOC_MIN_SIZE)
-		size = MATT_ALLOC_MIN_SIZE;
+	if (size < MALT_ALLOC_MIN_SIZE)
+		size = MALT_ALLOC_MIN_SIZE;
 	
 	//round to multiple of pointer size
-	if (size % sizeof(MATT_ALLOC_BASIC_ALIGN) != 0)
-		size += MATT_ALLOC_BASIC_ALIGN - (size % MATT_ALLOC_BASIC_ALIGN);
-	assert(size % MATT_ALLOC_BASIC_ALIGN == 0);
+	if (size % sizeof(MALT_ALLOC_BASIC_ALIGN) != 0)
+		size += MALT_ALLOC_BASIC_ALIGN - (size % MALT_ALLOC_BASIC_ALIGN);
+	assert(size % MALT_ALLOC_BASIC_ALIGN == 0);
 	
 	//search in list
 	Chunk * chunk = NULL;
-	MATT_OPTIONAL_CRITICAL(lock,threadSafe)
+	MALT_OPTIONAL_CRITICAL(lock,threadSafe)
 		chunk = getInList(size);
 
 		//if empty, check with cur
@@ -142,7 +142,7 @@ void* SimpleAllocator::malloc(size_t size)
 			assert(unusedMemory >= chunk->getTotalSize());
 			this->unusedMemory -= chunk->getTotalSize();
 		}
-	MATT_END_CRITICAL
+	MALT_END_CRITICAL
 	
 	//timer
 	CODE_TIMING_FUNC_STOP("internalMalloc");
@@ -174,12 +174,12 @@ void SimpleAllocator::free(void* ptr)
 		return;
 	
 	//register in free list
-	MATT_OPTIONAL_CRITICAL(lock,threadSafe)
+	MALT_OPTIONAL_CRITICAL(lock,threadSafe)
 		this->unusedMemory += chunk->getTotalSize();
 		assert(unusedMemory <= totalMemory);
 		freeList.insertNext(chunk);
 		this->curSearchInList = NULL;
-	MATT_END_CRITICAL
+	MALT_END_CRITICAL
 	
 	//timer
 	CODE_TIMING_FUNC_STOP("internalFree");
@@ -196,10 +196,10 @@ Chunk* SimpleAllocator::getInSys(size_t size)
 	
 	if (reqSize <= sysReqSize)
 		requestSystemMemory(sysReqSize);
-	else if (reqSize % MATT_PAGE_SIZE == 0)
+	else if (reqSize % MALT_PAGE_SIZE == 0)
 		requestSystemMemory(reqSize);
 	else
-		requestSystemMemory(reqSize + (MATT_PAGE_SIZE - reqSize % MATT_PAGE_SIZE));
+		requestSystemMemory(reqSize + (MALT_PAGE_SIZE - reqSize % MALT_PAGE_SIZE));
 	return getInCur(size);
 }
 
@@ -219,7 +219,7 @@ Chunk* SimpleAllocator::getInCur(size_t size)
 	
 	//if need to split
 	Chunk * res = cur;
-	if (cur->size - size > MATT_ALLOC_SPLIT_THRESOLD)
+	if (cur->size - size > MALT_ALLOC_SPLIT_THRESOLD)
 	{
 		Chunk * next = cur->split(size);
 		cur = next;
@@ -238,7 +238,7 @@ Chunk* SimpleAllocator::getInCur(size_t size)
 /**
  * Try to find a valid segment in the free list. If not found
  * the function return NULL so you need to manually fallback onto getInCur().
- * It will not overallocate more than MATT_ALLOC_SPLIT_THRESOLD.
+ * It will not overallocate more than MALT_ALLOC_SPLIT_THRESOLD.
  * @param size Requested segment size (body size without the extra header one).
 **/
 Chunk* SimpleAllocator::getInList(size_t size)
@@ -263,7 +263,7 @@ Chunk* SimpleAllocator::getInList(size_t size)
 	
 	if (res != NULL)
 	{
-		if (res->size - size > MATT_ALLOC_SPLIT_THRESOLD)
+		if (res->size - size > MALT_ALLOC_SPLIT_THRESOLD)
 		{
 			Chunk * next = res->split(size);
 			freeList.insertNext(next);
@@ -298,7 +298,7 @@ size_t SimpleAllocator::getMaxSize(void) const
 **/
 void SimpleAllocator::printState(std::ostream & out) const
 {
-	out << "=============================================================== MATT MEMORY =====================================================================" << endl;
+	out << "=============================================================== MALT MEMORY =====================================================================" << endl;
 	out << "Internal memory : allocated = ";
 	Helpers::printValue(out,totalMemory,"o");
 	out << " , unused = ";
@@ -326,7 +326,7 @@ void SimpleAllocator::touchMemory(void* ptr, size_t size)
 {
 	if (ptr == NULL || ptr == MAP_FAILED)
 		return;
-	for (size_t i = 0 ; i < size ; i += MATT_PAGE_SIZE)
+	for (size_t i = 0 ; i < size ; i += MALT_PAGE_SIZE)
 		*(char*)ptr = '\0';
 }
 
@@ -419,8 +419,8 @@ Chunk* Chunk::getFromBody(void* ptr)
 Chunk* Chunk::split(size_t size)
 {
 	//check
-	assert(this->size - size  > MATT_ALLOC_SPLIT_THRESOLD);
-	assert(size % MATT_ALLOC_BASIC_ALIGN == 0);
+	assert(this->size - size  > MALT_ALLOC_SPLIT_THRESOLD);
+	assert(size % MALT_ALLOC_BASIC_ALIGN == 0);
 	
 	//split
 	Chunk * next = (Chunk*)((size_t)(this+1)+size);
@@ -474,8 +474,8 @@ void FreeChunk::insertNext(Chunk* chunk)
 void FreeChunk::removeFromList(void)
 {
 	//check
-	MATT_ASSERT(this->prev->next == this);
-	MATT_ASSERT(this->next->prev == this);
+	MALT_ASSERT(this->prev->next == this);
+	MALT_ASSERT(this->next->prev == this);
 	
 	//remove
 	this->prev->next = next;

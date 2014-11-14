@@ -1,13 +1,13 @@
 /*****************************************************
-             PROJECT  : MATT
+             PROJECT  : MALT
              VERSION  : 0.1.0-dev
              DATE     : 01/2014
              AUTHOR   : Valat Sébastien
              LICENSE  : CeCILL-C
 *****************************************************/
 
-#ifndef MATT_BACKTRACE_STACK_HPP
-#define MATT_BACKTRACE_STACK_HPP
+#ifndef MALT_BACKTRACE_STACK_HPP
+#define MALT_BACKTRACE_STACK_HPP
 
 /********************  HEADERS  *********************/
 //internal stacks
@@ -17,7 +17,7 @@
 #include <core/CallStackInfo.hpp>
 
 /*******************  NAMESPACE  ********************/
-namespace MATT
+namespace MALT
 {
 
 /*********************  CLASS  **********************/
@@ -34,4 +34,4 @@ class BacktraceStack : public Stack
 
 }
 
-#endif //MATT_BACKTRACE_STACK_HPP
+#endif //MALT_BACKTRACE_STACK_HPP

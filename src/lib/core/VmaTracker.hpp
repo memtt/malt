@@ -1,19 +1,19 @@
  /*****************************************************
-             PROJECT  : MATT
+             PROJECT  : MALT
              VERSION  : 0.1.0-dev
              DATE     : 01/2014
              AUTHOR   : Valat Sébastien
              LICENSE  : CeCILL-C
 *****************************************************/
 
-#ifndef MATT_VMA_TRACKER_HPP
-#define MATT_VMA_TRACKER_HPP
+#ifndef MALT_VMA_TRACKER_HPP
+#define MALT_VMA_TRACKER_HPP
 
 /*******************  FUNCTION  *********************/
 //standard
 
 /*******************  NAMESPACE  ********************/
-namespace MATT
+namespace MALT
 {
 
 /*********************  STRUCT  *********************/

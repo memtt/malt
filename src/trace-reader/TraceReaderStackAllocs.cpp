@@ -1,5 +1,5 @@
 /*****************************************************
-             PROJECT  : MATT
+             PROJECT  : MALT
              VERSION  : 0.1.0-dev
              DATE     : 01/2014
              AUTHOR   : Valat Sébastien
@@ -11,7 +11,7 @@
 #include "TraceReaderStackAllocs.hpp"
 
 /*******************  NAMESPACE  ********************/
-namespace MATT
+namespace MALT
 {
 
 /*******************  FUNCTION  *********************/
@@ -30,7 +30,7 @@ void TraceReaderStackAllocs::onEnd(void)
 {
 	bool first = true;
 	printf("{");
-	for (std::map<const MATT::Stack *,AtTimeInfo>::const_iterator it = map.begin() ; it != map.end() ; ++it)
+	for (std::map<const MALT::Stack *,AtTimeInfo>::const_iterator it = map.begin() ; it != map.end() ; ++it)
 	{
 		if (!first)
 			printf(",");
@@ -42,7 +42,7 @@ void TraceReaderStackAllocs::onEnd(void)
 }
 
 /*******************  FUNCTION  *********************/
-void TraceReaderStackAllocs::onData(MATT::AllocTracerChunk& chunk)
+void TraceReaderStackAllocs::onData(MALT::AllocTracerChunk& chunk)
 {
 	AtTimeInfo & info = map[chunk.allocStack];
 	info.count++;

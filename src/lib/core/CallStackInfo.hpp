@@ -1,13 +1,13 @@
 /*****************************************************
-             PROJECT  : MATT
+             PROJECT  : MALT
              VERSION  : 0.1.0-dev
              DATE     : 01/2014
              AUTHOR   : Valat Sébastien
              LICENSE  : CeCILL-C
 *****************************************************/
 
-#ifndef MATT_CALL_STACK_INFO_HPP
-#define MATT_CALL_STACK_INFO_HPP
+#ifndef MALT_CALL_STACK_INFO_HPP
+#define MALT_CALL_STACK_INFO_HPP
 
 /*******************  FUNCTION  *********************/
 //standard
@@ -23,7 +23,7 @@ namespace htopml
 }
 
 /*******************  NAMESPACE  ********************/
-namespace MATT
+namespace MALT
 {
 
 /*********************  CLASS  **********************/
@@ -40,7 +40,7 @@ struct SimpleQuantityHistory
 {
 	SimpleQuantityHistory(void);
 	void addEvent(ssize_t value);
-	void push(const MATT::SimpleQuantityHistory& value);
+	void push(const MALT::SimpleQuantityHistory& value);
 	ssize_t getMean(void) const;
 	size_t count;
 	ssize_t min;
@@ -63,7 +63,7 @@ struct CallStackInfo
 		void onMmap(size_t value);
 		void onMunmap(size_t value);
 		void onMremap(size_t value);
-		void merge(const MATT::CallStackInfo& info);
+		void merge(const MALT::CallStackInfo& info);
 		void writeAsCallgrindEntry(int line, std::ostream & out) const;
 		void writeAsCallgrindCallEntry(int line, std::ostream& out) const;
 		static void writeCallgrindEventDef(std::ostream & out);

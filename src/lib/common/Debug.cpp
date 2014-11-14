@@ -1,5 +1,5 @@
 /*****************************************************
-             PROJECT  : MATT
+             PROJECT  : MALT
              VERSION  : 0.1.0-dev
              DATE     : 01/2014
              AUTHOR   : Valat Sébastien
@@ -15,7 +15,7 @@
 #include "Debug.hpp"
 
 /*******************  NAMESPACE  ********************/
-namespace MATT
+namespace MALT
 {
 
 /********************** CONSTS **********************/
@@ -37,7 +37,7 @@ static const char * cstLevelPrefix[] = {"Assert : ","Debug : ","Info : ","","War
 Debug msg("this is a test with arg %1 and arg %2 !").arg(10).arg("string").end();
 @endcode
 **/
-Debug::Debug(const char* format, const char* file, int line, MATT::DebugLevel level)
+Debug::Debug(const char* format, const char* file, int line, MALT::DebugLevel level)
 	:FormattedMessage(format)
 {
 	this->file = file;

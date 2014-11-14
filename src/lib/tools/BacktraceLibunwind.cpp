@@ -1,5 +1,5 @@
 /*****************************************************
-             PROJECT  : MATT
+             PROJECT  : MALT
              VERSION  : 0.1.0-dev
              DATE     : 01/2014
              AUTHOR   : Valat Sébastien
@@ -12,18 +12,18 @@
 //matt common
 #include <common/Debug.hpp>
 //libunwind
-#ifdef MATT_HAVE_LIBUNWIND
+#ifdef MALT_HAVE_LIBUNWIND
 	#include <libunwind.h>
-#endif //MATT_HAVE_LIBUNWIND
+#endif //MALT_HAVE_LIBUNWIND
 //local
 #include "BacktraceLibunwind.hpp"
 
 /*******************  NAMESPACE  ********************/
-namespace MATT
+namespace MALT
 {
 
 /*******************  FUNCTION  *********************/
-#ifdef MATT_HAVE_LIBUNWIND
+#ifdef MALT_HAVE_LIBUNWIND
 int BacktraceLibunwind::backtrace(void** buffer, int maxDepth)
 {
 	unw_cursor_t    cursor;
@@ -54,13 +54,13 @@ int BacktraceLibunwind::backtrace(void** buffer, int maxDepth)
 
 	return depth;
 }
-#else //MATT_HAVE_LIBUNWIND
+#else //MALT_HAVE_LIBUNWIND
 #error hummmm
 int BacktraceLibunwind::backtrace(void** buffer, int maxDepth)
 {
-	MATT_FATAL("Libunwind support wasn't compiled for you version of MATT please recompile or use the default glibc backtracing method !");
+	MALT_FATAL("Libunwind support wasn't compiled for you version of MALT please recompile or use the default glibc backtracing method !");
 	return 0;
 }
-#endif //MATT_HAVE_LIBUNWIND
+#endif //MALT_HAVE_LIBUNWIND
 
 }

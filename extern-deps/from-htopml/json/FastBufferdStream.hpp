@@ -6,8 +6,8 @@
              LICENSE  : CeCILL-C
 *****************************************************/
 
-#ifndef MATT_FAST_BUFFERED_STREAM_HPP
-#define MATT_FAST_BUFFERED_STREAM_HPP
+#ifndef MALT_FAST_BUFFERED_STREAM_HPP
+#define MALT_FAST_BUFFERED_STREAM_HPP
 
 /********************  HEADERS  *********************/
 #include <string>
@@ -241,4 +241,4 @@ inline FastBufferedStream& operator<<(FastBufferedStream& out, const T & value)
 
 }
 
-#endif //MATT_FAST_BUFFERED_STREAM_HPP
+#endif //MALT_FAST_BUFFERED_STREAM_HPP

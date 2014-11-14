@@ -1,13 +1,13 @@
 /*****************************************************
-             PROJECT  : MATT
+             PROJECT  : MALT
              VERSION  : 0.1.0-dev
              DATE     : 01/2014
              AUTHOR   : Valat Sébastien
              LICENSE  : CeCILL-C
 *****************************************************/
 
-#ifndef MATT_ALLOC_STACK_PROGILER_HPP
-#define MATT_ALLOC_STACK_PROGILER_HPP
+#ifndef MALT_ALLOC_STACK_PROGILER_HPP
+#define MALT_ALLOC_STACK_PROGILER_HPP
 
 /********************  HEADERS  *********************/
 //standard
@@ -34,7 +34,7 @@
 #include <core/VmaTracker.hpp>
 
 /*******************  NAMESPACE  ********************/
-namespace MATT
+namespace MALT
 {
 
 /*********************  TYPES  **********************/
@@ -118,7 +118,7 @@ class AllocStackProfiler
 		void onMunmap(void * ptr,size_t size,Stack * userStack = NULL);
 		void onLLMmap(void * ptr,size_t size,Stack * userStack = NULL);
 		void onLLMunmap(void * ptr,size_t size,Stack * userStack = NULL);
-		size_t onRealloc(void* oldPtr, void* ptr, size_t newSize, MATT::Stack* userStack = 0);
+		size_t onRealloc(void* oldPtr, void* ptr, size_t newSize, MALT::Stack* userStack = 0);
 		void onFree(void * ptr,Stack * userStack = NULL);
 		void onExit(void);
 		void onEnterFunction(void * funcAddr);
@@ -136,9 +136,9 @@ class AllocStackProfiler
 	public:
 		friend void convertToJson(htopml::JsonState& json, const AllocStackProfiler& value);
 	private:
-		MMCallStackNode getStackNode(MATT::Stack* userStack = 0);
+		MMCallStackNode getStackNode(MALT::Stack* userStack = 0);
 		void onAllocEvent(void* ptr, size_t size, Stack* userStack, MMCallStackNode* callStackNode = NULL, bool doLock = true);
-		  size_t onFreeEvent(void* ptr, MATT::Stack* userStack, MATT::MMCallStackNode* callStackNode = 0, bool doLock = true);
+		  size_t onFreeEvent(void* ptr, MALT::Stack* userStack, MALT::MMCallStackNode* callStackNode = 0, bool doLock = true);
 		void solvePerThreadSymbols(void);
 		void memOpsLevels(void);
 		void updatePeakInfoOfStacks(void);
@@ -184,4 +184,4 @@ class AllocStackProfiler
 
 }
 
-#endif //MATT_ALLOC_STACK_PROGILER_HPP
+#endif //MALT_ALLOC_STACK_PROGILER_HPP

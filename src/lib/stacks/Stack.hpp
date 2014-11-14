@@ -1,13 +1,13 @@
 /*****************************************************
-             PROJECT  : MATT
+             PROJECT  : MALT
              VERSION  : 0.1.0-dev
              DATE     : 01/2014
              AUTHOR   : Valat Sébastien
              LICENSE  : CeCILL-C
 *****************************************************/
 
-#ifndef MATT_STACK_H
-#define MATT_STACK_H
+#ifndef MALT_STACK_H
+#define MALT_STACK_H
 
 /********************  HEADERS  *********************/
 //std c
@@ -28,7 +28,7 @@ namespace htopml
 }
 
 /*******************  NAMESPACE  ********************/
-namespace MATT
+namespace MALT
 {
 
 /*********************  TYPES  **********************/
@@ -66,7 +66,7 @@ class Stack
 		Stack(const Stack & orig,int skipDepth);
 		virtual ~Stack(void);
 		StackHash hash(int skipDepth = 0) const;
-		static StackHash hash(void** stack, int size, MATT::StackOrder order);
+		static StackHash hash(void** stack, int size, MALT::StackOrder order);
 		void solveSymbols(SymbolSolver & dic) const;
 		void grow(void);
 		bool isValid(void) const;
@@ -101,4 +101,4 @@ class Stack
 
 }
 
-#endif //MATT_STACK_H
+#endif //MALT_STACK_H

@@ -1,5 +1,5 @@
 /*****************************************************
-             PROJECT  : MATT
+             PROJECT  : MALT
              VERSION  : 0.1.0-dev
              DATE     : 01/2014
              AUTHOR   : Valat Sébastien
@@ -11,10 +11,10 @@
 #include <common/SimpleAllocator.hpp>
 
 /***************** USING NAMESPACE ******************/
-using namespace MATT;
+using namespace MALT;
 
 /********************** CONSTS **********************/
-const char CST_VALUE_1[] = "=============================================================== MATT MEMORY =====================================================================\n\
+const char CST_VALUE_1[] = "=============================================================== MALT MEMORY =====================================================================\n\
 Internal memory : allocated = 262.1 Ko , unused = 262.1 Ko\n\
 =================================================================================================================================================\n";
 
@@ -128,8 +128,8 @@ TEST(SimpleAllocator,getTotalAndInUseAndUnusedMemory)
 	EXPECT_EQ(0UL,alloc.getUnusedMemory());
 	EXPECT_EQ(0UL,alloc.getInuseMemory());
 	alloc.malloc(32);
-	EXPECT_EQ(MATT_ALLOC_SYS_REQ_SIZE,alloc.getTotalMemory());
-	EXPECT_EQ(MATT_ALLOC_SYS_REQ_SIZE-32-sizeof(Chunk),alloc.getUnusedMemory());
+	EXPECT_EQ(MALT_ALLOC_SYS_REQ_SIZE,alloc.getTotalMemory());
+	EXPECT_EQ(MALT_ALLOC_SYS_REQ_SIZE-32-sizeof(Chunk),alloc.getUnusedMemory());
 	EXPECT_EQ(32+sizeof(Chunk),alloc.getInuseMemory());
 }
 
@@ -137,7 +137,7 @@ TEST(SimpleAllocator,getTotalAndInUseAndUnusedMemory)
 TEST(SimpleAllocator,getMaxSize)
 {
 	SimpleAllocator alloc;
-	EXPECT_EQ(MATT_ALLOC_SYS_REQ_SIZE,alloc.getMaxSize());
+	EXPECT_EQ(MALT_ALLOC_SYS_REQ_SIZE,alloc.getMaxSize());
 }
 
 /*******************  FUNCTION  *********************/
@@ -156,6 +156,6 @@ TEST(SimpleAllocator,printStat)
 TEST(SimpleAllocator,tooLarge)
 {
 	SimpleAllocator alloc;
-	void * ptr = alloc.malloc(MATT_ALLOC_SYS_REQ_SIZE * 8);
-	memset(ptr,0,MATT_ALLOC_SYS_REQ_SIZE * 8);
+	void * ptr = alloc.malloc(MALT_ALLOC_SYS_REQ_SIZE * 8);
+	memset(ptr,0,MALT_ALLOC_SYS_REQ_SIZE * 8);
 }

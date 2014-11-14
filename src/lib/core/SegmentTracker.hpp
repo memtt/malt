@@ -1,13 +1,13 @@
 /*****************************************************
-             PROJECT  : MATT
+             PROJECT  : MALT
              VERSION  : 0.1.0-dev
              DATE     : 01/2014
              AUTHOR   : Valat Sébastien
              LICENSE  : CeCILL-C
 *****************************************************/
 
-#ifndef MATT_SEGMENT_TRACKER_HPP
-#define MATT_SEGMENT_TRACKER_HPP
+#ifndef MALT_SEGMENT_TRACKER_HPP
+#define MALT_SEGMENT_TRACKER_HPP
 
 /********************  HEADERS  *********************/
 //STD
@@ -20,7 +20,7 @@
 
 
 /*******************  NAMESPACE  ********************/
-namespace MATT
+namespace MALT
 {
 
 /********************  STRUCT  **********************/
@@ -94,4 +94,4 @@ void convertToJson(htopml::JsonState& json, const LeakInfoMap& value);
 
 }
 
-#endif //MATT_SEGMENT_TRACKER_HPP
+#endif //MALT_SEGMENT_TRACKER_HPP

@@ -1,5 +1,5 @@
 ######################################################
-#            PROJECT  : MATT                         #
+#            PROJECT  : MALT                         #
 #            VERSION  : 0.1.0-dev                    #
 #            DATE     : 01/2014                      #
 #            AUTHOR   : Valat Sébastien              #
@@ -7,10 +7,10 @@
 ######################################################
 
 ######################################################
-set(MATT_STACK_TREES_SRC)
+set(MALT_STACK_TREES_SRC)
 
 ######################################################
-#add_library(matt-stack-trees OBJECT ${MATT_STACK_TREES_SRC})
+#add_library(matt-stack-trees OBJECT ${MALT_STACK_TREES_SRC})
 #SET_TARGET_PROPERTIES(matt-stack-trees PROPERTIES COMPILE_FLAGS -fPIC)
 
 ######################################################

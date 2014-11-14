@@ -1,16 +1,16 @@
 /*****************************************************
-             PROJECT  : MATT
+             PROJECT  : MALT
              VERSION  : 0.1.0-dev
              DATE     : 01/2014
              AUTHOR   : Valat Sébastien
              LICENSE  : CeCILL-C
 *****************************************************/
 
-#ifndef MATT_BACKTRACE_HPP
-#define MATT_BACKTRACE_HPP
+#ifndef MALT_BACKTRACE_HPP
+#define MALT_BACKTRACE_HPP
 
 /*******************  NAMESPACE  ********************/
-namespace MATT
+namespace MALT
 {
 
 /*********************  CLASS  **********************/
@@ -22,4 +22,4 @@ class Backtrace
 
 }
 
-#endif //MATT_BACKTRACE_HPP
+#endif //MALT_BACKTRACE_HPP

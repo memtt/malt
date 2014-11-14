@@ -1,5 +1,5 @@
 ######################################################
-#            PROJECT  : MATT                         #
+#            PROJECT  : MALT                         #
 #            VERSION  : 0.1.0-dev                    #
 #            DATE     : 01/2014                      #
 #            AUTHOR   : Valat Sébastien              #
@@ -7,19 +7,19 @@
 ######################################################
 
 ######################################################
-set(MATT_LIB_TOOLS_SRC NMCmdReader.cpp BacktraceLibunwind.cpp Backtrace.cpp)
+set(MALT_LIB_TOOLS_SRC NMCmdReader.cpp BacktraceLibunwind.cpp Backtrace.cpp)
                  
 ######################################################
 #Optional sources
 if (LIBELF_FOUND)
-	list(APPEND MATT_LIB_TOOLS_SRC ELFReader.cpp)
+	list(APPEND MALT_LIB_TOOLS_SRC ELFReader.cpp)
 else (LIBELF_FOUND)
 	message(STATUS "libelf not found, profiling will ignore global variables !")
-	list(APPEND MATT_LIB_TOOLS_SRC ELFReader_fake.cpp)
+	list(APPEND MALT_LIB_TOOLS_SRC ELFReader_fake.cpp)
 endif (LIBELF_FOUND)
 
 ######################################################
-add_library(matt-tools OBJECT ${MATT_LIB_TOOLS_SRC})
+add_library(matt-tools OBJECT ${MALT_LIB_TOOLS_SRC})
 SET_TARGET_PROPERTIES(matt-tools PROPERTIES COMPILE_FLAGS -fPIC)
 
 ######################################################

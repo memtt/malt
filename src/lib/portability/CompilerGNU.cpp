@@ -1,5 +1,5 @@
 /*****************************************************
-             PROJECT  : MATT
+             PROJECT  : MALT
              VERSION  : 0.1.0-dev
              DATE     : 01/2014
              AUTHOR   : Valat Sébastien
@@ -17,7 +17,7 @@
 #include <cxxabi.h>
 
 /*******************  NAMESPACE  ********************/
-namespace MATT
+namespace MALT
 {
 
 /*******************  FUNCTION  *********************/
@@ -29,7 +29,7 @@ std::string CompilerGNU::demangleCppNames(const std::string& value)
 	//trivial
 	if (value.empty())
 	{
-		MATT_WARNING("Get empty value as name for demangling !");
+		MALT_WARNING("Get empty value as name for demangling !");
 		return value;
 	} else if (value[0] != '_' || value[1] != 'Z') {
 		return value;
@@ -41,7 +41,7 @@ std::string CompilerGNU::demangleCppNames(const std::string& value)
 	//errors
 	if (status != 0 || res == NULL)
 	{
-		MATT_WARNING_ARG("Failed to demangle '%1' with compiler function, get error %2 !").arg(value).arg(status).end();
+		MALT_WARNING_ARG("Failed to demangle '%1' with compiler function, get error %2 !").arg(value).arg(status).end();
 		return value;
 	} else if (value == res) {
 		return value;

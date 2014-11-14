@@ -1,20 +1,20 @@
 /*****************************************************
-             PROJECT  : MATT
+             PROJECT  : MALT
              VERSION  : 0.1.0-dev
              DATE     : 01/2014
              AUTHOR   : Valat Sébastien
              LICENSE  : CeCILL-C
 *****************************************************/
 
-#ifndef MATT_SIMPLE_CALL_STACK_NODE_HPP
-#define MATT_SIMPLE_CALL_STACK_NODE_HPP
+#ifndef MALT_SIMPLE_CALL_STACK_NODE_HPP
+#define MALT_SIMPLE_CALL_STACK_NODE_HPP
 
 /********************  HEADERS  *********************/
 #include "CallStackInfo.hpp"
 #include <stacks/Stack.hpp>
 
 /*******************  NAMESPACE  ********************/
-namespace MATT
+namespace MALT
 {
 
 /********************  STRUCT  **********************/
@@ -49,4 +49,4 @@ class SimpleCallStackNode
 
 }
 
-#endif //MATT_SIMPLE_CALL_STACK_NODE_HPP
+#endif //MALT_SIMPLE_CALL_STACK_NODE_HPP

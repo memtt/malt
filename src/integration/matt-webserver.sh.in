@@ -1,6 +1,6 @@
 #!/bin/sh
 ######################################################
-#            PROJECT  : MATT                         #
+#            PROJECT  : MALT                         #
 #            VERSION  : 0.1.0-dev                    #
 #            DATE     : 01/2014                      #
 #            AUTHOR   : Valat Sébastien              #
@@ -15,11 +15,11 @@ detectNodeJS()
 		NODE='nodejs'
 	elif which node 2>/dev/null >/dev/null; then
 		NODE='node'
-	elif [ ! -z "$MATT_NODEJS" ]; then
-		NODE="$MATT_NODEJS"
+	elif [ ! -z "$MALT_NODEJS" ]; then
+		NODE="$MALT_NODEJS"
 	else
 		echo "ERROR : Cannot find NodeJS executable, please install 'node' or 'nodejs' package for your system or check your PATH." 1>&2
-		echo "You can also define the MATT_NODEJS environnement variable to point the NodeJS executable." 1>&2
+		echo "You can also define the MALT_NODEJS environnement variable to point the NodeJS executable." 1>&2
 		exit 1
 	fi
 }

@@ -1,13 +1,13 @@
 /*****************************************************
-             PROJECT  : MATT
+             PROJECT  : MALT
              VERSION  : 0.1.0-dev
              DATE     : 01/2014
              AUTHOR   : Valat Sébastien
              LICENSE  : CeCILL-C
 *****************************************************/
 
-#ifndef MATT_LINUX_PROC_MAP_HPP
-#define MATT_LINUX_PROC_MAP_HPP
+#ifndef MALT_LINUX_PROC_MAP_HPP
+#define MALT_LINUX_PROC_MAP_HPP
 
 /********************  HEADERS  *********************/
 //standard
@@ -15,7 +15,7 @@
 #include <string>
 
 /*******************  NAMESPACE  ********************/
-namespace MATT
+namespace MALT
 {
 
 /********************  STRUCT  **********************/
@@ -46,4 +46,4 @@ class LinuxProcMapReader
 
 }
 
-#endif //MATT_LINUX_PROC_MAP_HPP
+#endif //MALT_LINUX_PROC_MAP_HPP

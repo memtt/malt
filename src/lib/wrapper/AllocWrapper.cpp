@@ -1,5 +1,5 @@
 /*****************************************************
-             PROJECT  : MATT
+             PROJECT  : MALT
              VERSION  : 0.1.0-dev
              DATE     : 01/2014
              AUTHOR   : Valat Sébastien
@@ -27,11 +27,11 @@
 #include <profiler/LocalAllocStackProfiler.hpp>
 
 /***************** USING NAMESPACE ******************/
-using namespace MATT;
+using namespace MALT;
 
 /********************  MACRO  ***********************/
 /** Manage init of local state and fetch TLS in local pointer. **/
-#define MATT_WRAPPER_LOCAL_STATE_INIT \
+#define MALT_WRAPPER_LOCAL_STATE_INIT \
 	/*get addr localy to avoid to read the TLS every time*/ \
 	ThreadLocalState & localState = tlsState; \
 	 \
@@ -46,7 +46,7 @@ using namespace MATT;
 
 /********************  MACRO  ***********************/
 /** Check init status of local and global state and call enter/exit methods, then do requested action. **/
-#define MATT_WRAPPER_LOCAL_STATE_ACTION(action)  \
+#define MALT_WRAPPER_LOCAL_STATE_ACTION(action)  \
 	if (gblState.status == ALLOC_WRAP_READY && tlsState.status == ALLOC_WRAP_READY) \
 	{ \
 		void * retAddr;\
@@ -126,7 +126,7 @@ struct AllocWrapperGlobal
 	 * Mutex to protect the structure in multi-thread mode, only used to protect the init state. 
 	 * CAUTION, need to star at second position. 
 	**/
-	MATT::StaticMutex lock;
+	MALT::StaticMutex lock;
 	/** Pointer to the old (glibc) malloc symbol. **/
 	MallocFuncPtr malloc;
 	/** Pointer to the old (glibc) free symbol. **/
@@ -185,7 +185,7 @@ struct ThreadLocalState
 
 /********************  GLOBALS  **********************/
 /** Store the global state of allocator wrapper. **/
-static AllocWrapperGlobal gblState = {ALLOC_WRAP_NOT_READY,MATT_STATIC_MUTEX_INIT,NULL,NULL,NULL,NULL,NULL};
+static AllocWrapperGlobal gblState = {ALLOC_WRAP_NOT_READY,MALT_STATIC_MUTEX_INIT,NULL,NULL,NULL,NULL,NULL};
 /** Store the per-thread state of allocator wrapper. **/
 static __thread ThreadLocalState tlsState = {NULL,ALLOC_WRAP_NOT_READY};
 /** Temporary buffer to return on first realloc used by dlsym and split infinit call loops. **/
@@ -193,8 +193,8 @@ static char gblCallocIniBuffer[4096];
 
 /*******************  FUNCTION  *********************/
 /**
- * Check the stack mode to use by reading MATT_STACK environnement variable.
- * If MATT_STACK does not exist it use the value from config file (stack:mode).
+ * Check the stack mode to use by reading MALT_STACK environnement variable.
+ * If MALT_STACK does not exist it use the value from config file (stack:mode).
  * 
  * Expected values are :
  *    - 'backtrace'  : use backtrace in malloc/calloc... calls to get the call stack.
@@ -205,8 +205,8 @@ static char gblCallocIniBuffer[4096];
 static StackMode getStackMode(Options & options)
 {
 	//default values
-	const char * mode = getenv("MATT_STACK");
-	StackMode ret = MATT::STACK_MODE_BACKTRACE;
+	const char * mode = getenv("MALT_STACK");
+	StackMode ret = MALT::STACK_MODE_BACKTRACE;
 	
 	//if not env use config file
 	if (mode == NULL)
@@ -224,7 +224,7 @@ static StackMode getStackMode(Options & options)
 	} else if (strcmp(mode,"enter-exit") == 0) {
 		ret = STACK_MODE_ENTER_EXIT_FUNC;
 	} else {
-		MATT_FATAL_ARG("Invalid mode in MATT_STACK environnement variable : '%1'! Supported : backtrace | enter-exit.").arg(mode).end();
+		MALT_FATAL_ARG("Invalid mode in MALT_STACK environnement variable : '%1'! Supported : backtrace | enter-exit.").arg(mode).end();
 	}
 	
 	//ok done
@@ -234,7 +234,7 @@ static StackMode getStackMode(Options & options)
 /*******************  FUNCTION  *********************/
 void sigKillHandler(int s)
 {
-	fprintf(stderr,"MATT: Capture signal KILL, dump profile and exit.");
+	fprintf(stderr,"MALT: Capture signal KILL, dump profile and exit.");
 	exit(1);
 }
 
@@ -275,10 +275,10 @@ void AllocWrapperGlobal::init(void )
 
 		//load options
 		gblState.options = &initGlobalOptions();
-		const char * configFile = getenv("MATT_CONFIG");
+		const char * configFile = getenv("MALT_CONFIG");
 		if (configFile != NULL)
 			gblState.options->loadFromFile(configFile);
-		const char * envOptions = getenv("MATT_OPTIONS");
+		const char * envOptions = getenv("MALT_OPTIONS");
 		if (envOptions != NULL)
 			gblState.options->loadFromString(envOptions);
 		
@@ -289,7 +289,7 @@ void AllocWrapperGlobal::init(void )
 		gblState.profiler = new AllocStackProfiler(*gblState.options,mode,true);
 		
 		//print info
-		fprintf(stderr,"MATT : Start memory instrumentation of %s - %d by library override.\n",OS::getExeName().c_str(),OS::getPID());
+		fprintf(stderr,"MALT : Start memory instrumentation of %s - %d by library override.\n",OS::getExeName().c_str(),OS::getPID());
 
 		//register on exit
 		//TODO remove when ensure that the attribute method work
@@ -371,7 +371,7 @@ void ThreadLocalState::init(void)
 void * malloc(size_t size)
 {
 	//get local TLS and check init
-	MATT_WRAPPER_LOCAL_STATE_INIT
+	MALT_WRAPPER_LOCAL_STATE_INIT
 
 	//run the default function
 	assert(gblState.status > ALLOC_WRAP_INIT_SYM);
@@ -381,7 +381,7 @@ void * malloc(size_t size)
 	t = getticks() - t;
 
 	//profile
-	MATT_WRAPPER_LOCAL_STATE_ACTION(localState.profiler->onMalloc(res,size,t,MALLOC_KIND_MALLOC));
+	MALT_WRAPPER_LOCAL_STATE_ACTION(localState.profiler->onMalloc(res,size,t,MALLOC_KIND_MALLOC));
 
 	//return segment to user
 	return res;
@@ -397,10 +397,10 @@ void * malloc(size_t size)
 void free(void * ptr)
 {
 	//get local TLS and check init
-	MATT_WRAPPER_LOCAL_STATE_INIT;
+	MALT_WRAPPER_LOCAL_STATE_INIT;
 
 	//profile
-	MATT_WRAPPER_LOCAL_STATE_ACTION(localState.profiler->onFree(ptr,0));
+	MALT_WRAPPER_LOCAL_STATE_ACTION(localState.profiler->onFree(ptr,0));
 
 	//run the default function
 	assert(gblState.status > ALLOC_WRAP_INIT_SYM);
@@ -419,7 +419,7 @@ void free(void * ptr)
 void * calloc(size_t nmemb,size_t size)
 {
 	//get local TLS and check init
-	MATT_WRAPPER_LOCAL_STATE_INIT
+	MALT_WRAPPER_LOCAL_STATE_INIT
 
 	//calloc need a special trick for first use due to usage in dlsym
 	//this way it avoid to create infinite loop
@@ -437,7 +437,7 @@ void * calloc(size_t nmemb,size_t size)
 	t = getticks() - t;
 
 	//profile
-	MATT_WRAPPER_LOCAL_STATE_ACTION(localState.profiler->onCalloc(res,nmemb,size,t));
+	MALT_WRAPPER_LOCAL_STATE_ACTION(localState.profiler->onCalloc(res,nmemb,size,t));
 
 	//return result to user
 	return res;
@@ -455,7 +455,7 @@ void * calloc(size_t nmemb,size_t size)
 void * realloc(void * ptr, size_t size)
 {
 	//get local TLS and check init
-	MATT_WRAPPER_LOCAL_STATE_INIT
+	MALT_WRAPPER_LOCAL_STATE_INIT
 
 	//run the default function
 	assert(gblState.status > ALLOC_WRAP_INIT_SYM);
@@ -465,7 +465,7 @@ void * realloc(void * ptr, size_t size)
 	t = getticks() - t;
 	
 	//profile
-	MATT_WRAPPER_LOCAL_STATE_ACTION(localState.profiler->onRealloc(ptr,res,size,t));
+	MALT_WRAPPER_LOCAL_STATE_ACTION(localState.profiler->onRealloc(ptr,res,size,t));
 	
 	return res;
 }
@@ -478,7 +478,7 @@ void * realloc(void * ptr, size_t size)
 int posix_memalign(void ** memptr,size_t align, size_t size)
 {
 	//get local TLS and check init
-	MATT_WRAPPER_LOCAL_STATE_INIT
+	MALT_WRAPPER_LOCAL_STATE_INIT
 
 	//run the default function
 	assert(gblState.status > ALLOC_WRAP_INIT_SYM);
@@ -488,7 +488,7 @@ int posix_memalign(void ** memptr,size_t align, size_t size)
 	t = getticks() - t;
 
 	//profile
-	MATT_WRAPPER_LOCAL_STATE_ACTION(localState.profiler->onMalloc(*memptr,size,t,MALLOC_KIND_POSIX_MEMALIGN));
+	MALT_WRAPPER_LOCAL_STATE_ACTION(localState.profiler->onMalloc(*memptr,size,t,MALLOC_KIND_POSIX_MEMALIGN));
 
 	//return segment to user
 	return res;
@@ -502,7 +502,7 @@ int posix_memalign(void ** memptr,size_t align, size_t size)
 void * aligned_alloc(size_t alignment, size_t size)
 {
 	//get local TLS and check init
-	MATT_WRAPPER_LOCAL_STATE_INIT
+	MALT_WRAPPER_LOCAL_STATE_INIT
 
 	//run the default function
 	assert(gblState.status > ALLOC_WRAP_INIT_SYM);
@@ -512,7 +512,7 @@ void * aligned_alloc(size_t alignment, size_t size)
 	t = getticks() - t;
 
 	//profile
-	MATT_WRAPPER_LOCAL_STATE_ACTION(localState.profiler->onMalloc(res,size,t,MALLOC_KIND_ALIGNED_ALLOC));
+	MALT_WRAPPER_LOCAL_STATE_ACTION(localState.profiler->onMalloc(res,size,t,MALLOC_KIND_ALIGNED_ALLOC));
 
 	//return segment to user
 	return res;
@@ -526,7 +526,7 @@ void * aligned_alloc(size_t alignment, size_t size)
 void *memalign(size_t alignment, size_t size)
 {
 	//get local TLS and check init
-	MATT_WRAPPER_LOCAL_STATE_INIT
+	MALT_WRAPPER_LOCAL_STATE_INIT
 
 	//run the default function
 	assert(gblState.status > ALLOC_WRAP_INIT_SYM);
@@ -536,7 +536,7 @@ void *memalign(size_t alignment, size_t size)
 	t = getticks() - t;
 
 	//profile
-	MATT_WRAPPER_LOCAL_STATE_ACTION(localState.profiler->onMalloc(res,size,t,MALLOC_KIND_POSIX_MEMALIGN));
+	MALT_WRAPPER_LOCAL_STATE_ACTION(localState.profiler->onMalloc(res,size,t,MALLOC_KIND_POSIX_MEMALIGN));
 
 	//return segment to user
 	return res;
@@ -550,7 +550,7 @@ void *memalign(size_t alignment, size_t size)
 void *valloc(size_t size)
 {
 	//get local TLS and check init
-	MATT_WRAPPER_LOCAL_STATE_INIT
+	MALT_WRAPPER_LOCAL_STATE_INIT
 
 	//run the default function
 	assert(gblState.status > ALLOC_WRAP_INIT_SYM);
@@ -560,7 +560,7 @@ void *valloc(size_t size)
 	t = getticks() - t;
 
 	//profile
-	MATT_WRAPPER_LOCAL_STATE_ACTION(localState.profiler->onMalloc(res,size,t,MALLOC_KIND_VALLOC));
+	MALT_WRAPPER_LOCAL_STATE_ACTION(localState.profiler->onMalloc(res,size,t,MALLOC_KIND_VALLOC));
 
 	//return segment to user
 	return res;
@@ -574,7 +574,7 @@ void *valloc(size_t size)
 void *pvalloc(size_t size)
 {
 	//get local TLS and check init
-	MATT_WRAPPER_LOCAL_STATE_INIT
+	MALT_WRAPPER_LOCAL_STATE_INIT
 
 	//run the default function
 	assert(gblState.status > ALLOC_WRAP_INIT_SYM);
@@ -584,7 +584,7 @@ void *pvalloc(size_t size)
 	t = getticks() - t;
 
 	//profile
-	MATT_WRAPPER_LOCAL_STATE_ACTION(localState.profiler->onMalloc(res,size,t,MALLOC_KIND_PVALLOC));
+	MALT_WRAPPER_LOCAL_STATE_ACTION(localState.profiler->onMalloc(res,size,t,MALLOC_KIND_PVALLOC));
 
 	//return segment to user
 	return res;
@@ -598,14 +598,14 @@ void *pvalloc(size_t size)
 void *mmap(void *start, size_t length, int prot,int flags,int fd, off_t offset)
 {
 	//get local TLS and check init
-	MATT_WRAPPER_LOCAL_STATE_INIT
+	MALT_WRAPPER_LOCAL_STATE_INIT
 
 	//run the default function
 	assert(gblState.status > ALLOC_WRAP_INIT_SYM);
 	void * res = gblState.mmap(start,length,prot,flags,fd,offset);
 
 	//profile
-	//MATT_WRAPPER_LOCAL_STATE_ACTION(localState.profiler->onMmap(res,length,flags,fd));
+	//MALT_WRAPPER_LOCAL_STATE_ACTION(localState.profiler->onMmap(res,length,flags,fd));
 
 	//return segment to user
 	return res;
@@ -619,14 +619,14 @@ void *mmap(void *start, size_t length, int prot,int flags,int fd, off_t offset)
 int munmap(void *start, size_t length)
 {
 	//get local TLS and check init
-	MATT_WRAPPER_LOCAL_STATE_INIT
+	MALT_WRAPPER_LOCAL_STATE_INIT
 
 	//run the default function
 	assert(gblState.status > ALLOC_WRAP_INIT_SYM);
 	int res = gblState.munmap(start,length);
 
 	//profile
-	//MATT_WRAPPER_LOCAL_STATE_ACTION(localState.profiler->onMalloc(res,size));
+	//MALT_WRAPPER_LOCAL_STATE_ACTION(localState.profiler->onMalloc(res,size));
 
 	//return segment to user
 	return res;
@@ -640,14 +640,14 @@ int munmap(void *start, size_t length)
 int mremap(void *old_address, size_t old_size , size_t new_size, int flags)
 {
 	//get local TLS and check init
-	MATT_WRAPPER_LOCAL_STATE_INIT
+	MALT_WRAPPER_LOCAL_STATE_INIT
 
 	//run the default function
 	assert(gblState.status > ALLOC_WRAP_INIT_SYM);
 	int res = gblState.mremap(old_address,old_size,new_size,flags);
 
 	//profile
-	//MATT_WRAPPER_LOCAL_STATE_ACTION(localState.profiler->onMalloc(res,size));
+	//MALT_WRAPPER_LOCAL_STATE_ACTION(localState.profiler->onMalloc(res,size));
 
 	//return segment to user
 	return res;
@@ -676,7 +676,7 @@ extern "C"
 void __cyg_profile_func_enter (void *this_fn,void *call_site)
 {
 	//get local TLS and check init
-	MATT_WRAPPER_LOCAL_STATE_INIT
+	MALT_WRAPPER_LOCAL_STATE_INIT
 	
 	//stack tracking
 	if (tlsState.status == ALLOC_WRAP_READY)
@@ -698,7 +698,7 @@ void __cyg_profile_func_enter (void *this_fn,void *call_site)
 void __cyg_profile_func_exit  (void *this_fn,void *call_site)
 {
 	//get local TLS and check init
-	MATT_WRAPPER_LOCAL_STATE_INIT
+	MALT_WRAPPER_LOCAL_STATE_INIT
 	
 	//stack tracking
 	if (tlsState.status == ALLOC_WRAP_READY)

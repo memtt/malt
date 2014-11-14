@@ -1,24 +1,24 @@
 /*****************************************************
-             PROJECT  : MATT
+             PROJECT  : MALT
              VERSION  : 0.1.0-dev
              DATE     : 01/2014
              AUTHOR   : Valat Sébastien
              LICENSE  : CeCILL-C
 *****************************************************/
 
-#ifndef MATT_MEMORY_TIMELINE_HPP
-#define MATT_MEMORY_TIMELINE_HPP
+#ifndef MALT_MEMORY_TIMELINE_HPP
+#define MALT_MEMORY_TIMELINE_HPP
 
 /********************  HEADERS  *********************/
 #include <cstdlib>
 #include <cycle.h>
 #include <json/ConvertToJson.h>
 
-namespace MATT
+namespace MALT
 {
 
 /********************  MACROS  **********************/
-#define MATT_PROFILED_VALUE_DEFAULT_STEPS 1024
+#define MALT_PROFILED_VALUE_DEFAULT_STEPS 1024
 
 /********************  STRUCT  **********************/
 struct ProfiledStateValueEntry
@@ -40,7 +40,7 @@ struct ProfiledStateValueEntry
 class ProfiledStateValue
 {
 	public:
-		ProfiledStateValue(size_t steps = MATT_PROFILED_VALUE_DEFAULT_STEPS, bool useLinearIndex = false);
+		ProfiledStateValue(size_t steps = MALT_PROFILED_VALUE_DEFAULT_STEPS, bool useLinearIndex = false);
 		void onDeltaEvent(ssize_t delta, void* location);
 		void onUpdateValue(size_t value, void* location);
 		bool isNextPoint(void) const;
@@ -73,4 +73,4 @@ class ProfiledStateValue
 
 }
 
-#endif //MATT_MEMORY_TIMELINE_HPP
+#endif //MALT_MEMORY_TIMELINE_HPP

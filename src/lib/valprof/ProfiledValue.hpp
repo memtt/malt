@@ -1,13 +1,13 @@
 /*****************************************************
-             PROJECT  : MATT
+             PROJECT  : MALT
              VERSION  : 0.1.0-dev
              DATE     : 01/2014
              AUTHOR   : Valat Sébastien
              LICENSE  : CeCILL-C
 *****************************************************/
 
-#ifndef MATT_PROFILED_VALUE_HPP
-#define MATT_PROFILED_VALUE_HPP
+#ifndef MALT_PROFILED_VALUE_HPP
+#define MALT_PROFILED_VALUE_HPP
 
 /********************  HEADERS  *********************/
 //std
@@ -26,10 +26,10 @@
  * Define how much steps to accumulate in a small buffer before starting to 
  * reduce the values.
 **/
-#define MATT_PROFILED_STATE_VALUE_FIRST_STEPS 10
+#define MALT_PROFILED_STATE_VALUE_FIRST_STEPS 10
 
 /********************  NAMESPACE  *******************/
-namespace MATT
+namespace MALT
 {
 
 /*********************  CLASS  **********************/
@@ -72,11 +72,11 @@ class ProfiledValue
 		/** It uses a first minimal number of points to determine a good time steps before accumulating. **/
 		int cntFirstPoints;
 		/** Storage for the first steps before accumulation (data). **/
-		T firstPoints[MATT_PROFILED_STATE_VALUE_FIRST_STEPS];
+		T firstPoints[MALT_PROFILED_STATE_VALUE_FIRST_STEPS];
 		/** Storage for the first steps before accumulation (times). **/
-		ticks firstPointsTicks[MATT_PROFILED_STATE_VALUE_FIRST_STEPS];
+		ticks firstPointsTicks[MALT_PROFILED_STATE_VALUE_FIRST_STEPS];
 		/** Storage for the first steps before accumulation (locations).**/
-		void * firstLocations[MATT_PROFILED_STATE_VALUE_FIRST_STEPS];
+		void * firstLocations[MALT_PROFILED_STATE_VALUE_FIRST_STEPS];
 		/** Storage of time points data corresponding to CELL_ID * perPoints in time. **/
 		T * points;
 		/** 
@@ -202,10 +202,10 @@ void ProfiledValue<T>::push(ticks t, const T& value,void * location)
 		this->peak.reduce(value);
 	
 	//if not have all first points, aggregate
-	if (this->cntFirstPoints < MATT_PROFILED_STATE_VALUE_FIRST_STEPS)
+	if (this->cntFirstPoints < MALT_PROFILED_STATE_VALUE_FIRST_STEPS)
 	{
 		this->pushFirst(t,value,location);
-	} else if (this->cntFirstPoints == MATT_PROFILED_STATE_VALUE_FIRST_STEPS) {
+	} else if (this->cntFirstPoints == MALT_PROFILED_STATE_VALUE_FIRST_STEPS) {
 		this->firstShape();
 		this->push(t, value,location);
 	} else {
@@ -257,7 +257,7 @@ void ProfiledValue<T>::pushNext(ticks t, const T& value,void * location)
 template <class T>
 bool ProfiledValue<T>::isNewPoint(ticks t)
 {
-	if (this->cntFirstPoints <= MATT_PROFILED_STATE_VALUE_FIRST_STEPS)
+	if (this->cntFirstPoints <= MALT_PROFILED_STATE_VALUE_FIRST_STEPS)
 		return true;
 	if (t >= end)
 		return true;
@@ -287,7 +287,7 @@ void ProfiledValue<T>::firstShape(void )
 	this->updateStartEnd(min,max);
 	
 	//mark end
-	this->cntFirstPoints = MATT_PROFILED_STATE_VALUE_FIRST_STEPS + 1;
+	this->cntFirstPoints = MALT_PROFILED_STATE_VALUE_FIRST_STEPS + 1;
 	
 	//flush values
 	for (int i = 0 ; i < oldCnt ; i++)
@@ -368,7 +368,7 @@ template <class T>
 void ProfiledValue<T>::flush(void )
 {
 	//flush first touch
-	if (cntFirstPoints <= MATT_PROFILED_STATE_VALUE_FIRST_STEPS)
+	if (cntFirstPoints <= MALT_PROFILED_STATE_VALUE_FIRST_STEPS)
 		firstShape();
 	
 	//search nb touched
@@ -422,4 +422,4 @@ void convertToJson(htopml::JsonState& json, const ProfiledValue<T>& value)
 
 }
 
-#endif //MATT_PROFILED_VALUE_HPP
+#endif //MALT_PROFILED_VALUE_HPP

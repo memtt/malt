@@ -1,13 +1,13 @@
 /*****************************************************
-             PROJECT  : MATT
+             PROJECT  : MALT
              VERSION  : 0.1.0-dev
              DATE     : 01/2014
              AUTHOR   : Valat Sébastien
              LICENSE  : CeCILL-C
 *****************************************************/
 
-#ifndef MATT_ARRAY_H
-#define MATT_ARRAY_H
+#ifndef MALT_ARRAY_H
+#define MALT_ARRAY_H
 
 /********************  HEADERS  *********************/
 //standard
@@ -20,7 +20,7 @@
 #include <json/JsonState.h>
 
 /*******************  NAMESPACE  ********************/
-namespace MATT
+namespace MALT
 {
 
 /*********************  CLASS  **********************/
@@ -149,7 +149,7 @@ template <class T>
 Array<T>::~Array(void)
 {
 	if (buffer != NULL)
-		MATT_FREE(buffer);
+		MALT_FREE(buffer);
 	buffer = NULL;
 	activSize = 0;
 	bufferSize = 0;
@@ -262,7 +262,7 @@ void Array<T>::setSize(size_t size)
 		else
 			bufferSize *= 2;
 		
-		buffer = (T*)MATT_REALLOC(buffer,bufferSize * sizeof(T));
+		buffer = (T*)MALT_REALLOC(buffer,bufferSize * sizeof(T));
 	}
 }
 
@@ -328,4 +328,4 @@ Array<T> & Array<T>::operator=(const Array<T>& orig)
 
 }
 
-#endif //MATT_ARRAY_H
+#endif //MALT_ARRAY_H

@@ -1,5 +1,5 @@
 ######################################################
-#            PROJECT  : MATT                         #
+#            PROJECT  : MALT                         #
 #            VERSION  : 0.1.0-dev                    #
 #            DATE     : 01/2014                      #
 #            AUTHOR   : Valat Sébastien              #
@@ -7,9 +7,9 @@
 ######################################################
 
 ######################################################
-set(MATT_LIB_SRC AllocStackProfiler.cpp
+set(MALT_LIB_SRC AllocStackProfiler.cpp
 	             LocalAllocStackProfiler.cpp)
 
 ######################################################
-add_library(matt-profiler OBJECT ${MATT_LIB_SRC})
+add_library(matt-profiler OBJECT ${MALT_LIB_SRC})
 SET_TARGET_PROPERTIES(matt-profiler PROPERTIES COMPILE_FLAGS -fPIC)

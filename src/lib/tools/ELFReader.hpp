@@ -1,13 +1,13 @@
 /*****************************************************
-             PROJECT  : MATT
+             PROJECT  : MALT
              VERSION  : 0.1.0-dev
              DATE     : 01/2014
              AUTHOR   : Valat Sébastien
              LICENSE  : CeCILL-C
 *****************************************************/
 
-#ifndef MATT_ELF_READER_HPP
-#define MATT_ELF_READER_HPP
+#ifndef MALT_ELF_READER_HPP
+#define MALT_ELF_READER_HPP
 
 /*******************  FUNCTION  *********************/
 //standard
@@ -21,7 +21,7 @@ struct Elf;
 struct Elf_Scn;
 
 /*******************  NAMESPACE  ********************/
-namespace MATT
+namespace MALT
 {
 
 /********************  STRUCT  **********************/
@@ -90,4 +90,4 @@ void convertToJson(htopml::JsonState& json, const ElfGlobalVariable& value);
 
 }
 
-#endif //MATT_ELF_READER_HPP
+#endif //MALT_ELF_READER_HPP

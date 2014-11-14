@@ -1,5 +1,5 @@
 /*****************************************************
-             PROJECT  : MATT
+             PROJECT  : MALT
              VERSION  : 0.1.0-dev
              DATE     : 01/2014
              AUTHOR   : Valat Sébastien
@@ -17,7 +17,7 @@
 #include <libelf.h>
 
 /*******************  NAMESPACE  ********************/
-namespace MATT
+namespace MALT
 {
 
 /*******************  FUNCTION  *********************/
@@ -91,7 +91,7 @@ void ElfReader::openFile(const std::string& file)
 	this->elf = elf_begin(fileno(fp),ELF_C_READ,NULL);
 	if (this->elf == NULL)
 	{
-		MATT_WARNING_ARG("Failed to open ELF file : %1. Error %2 : %3")
+		MALT_WARNING_ARG("Failed to open ELF file : %1. Error %2 : %3")
 			.arg(file)
 			.arg(elf_errno())
 			.arg(elf_errmsg(elf_errno()))
@@ -103,7 +103,7 @@ void ElfReader::openFile(const std::string& file)
 	kind = elf_kind(elf);
 	if (kind != ELF_K_ELF)
 	{
-		MATT_WARNING_ARG("Invalid kind of elf file, expect ELF (%1), get %2")
+		MALT_WARNING_ARG("Invalid kind of elf file, expect ELF (%1), get %2")
 			.arg(ELF_K_ELF)
 			.arg(kind)
 			.end();

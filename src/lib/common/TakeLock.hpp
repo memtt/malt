@@ -1,13 +1,13 @@
 /*****************************************************
-             PROJECT  : MATT
+             PROJECT  : MALT
              VERSION  : 0.1.0-dev
              DATE     : 01/2014
              AUTHOR   : Valat Sébastien
              LICENSE  : CeCILL-C
 *****************************************************/
 
-#ifndef MATT_TAKE_LOCK_HPP
-#define MATT_TAKE_LOCK_HPP
+#ifndef MALT_TAKE_LOCK_HPP
+#define MALT_TAKE_LOCK_HPP
 
 /********************  HEADERS  *********************/
 #include <cstdlib>
@@ -27,18 +27,18 @@
  * 
  * @code{c++}
 Mutex mylock;
-MATT_OPTIONAL_CRITICAL(mylock,isParallel)
+MALT_OPTIONAL_CRITICAL(mylock,isParallel)
 	//to your stuff
 	if (error)
 		return -1;
 	//final stiff
-MATT_END_CRITICAL
+MALT_END_CRITICAL
  * @endcode
  * 
  * @param lock Define the lock to take. A lock object just has to provide lock() and unlock() methods.
  * @param takeLock Take the lock if true otherwise consider a sequential use and do not take the lock.
 **/
-#define MATT_OPTIONAL_CRITICAL(lock,takeLock) do { MATT::TakeLock<typeof(lock)> _local_take_lock__(&(lock),(takeLock));
+#define MALT_OPTIONAL_CRITICAL(lock,takeLock) do { MALT::TakeLock<typeof(lock)> _local_take_lock__(&(lock),(takeLock));
 
 /********************  MACROS  **********************/
 /**
@@ -48,24 +48,24 @@ MATT_END_CRITICAL
  * 
  * @code{c++}
 Mutex mylock;
-MATT_START_CRITICAL(mylock)
+MALT_START_CRITICAL(mylock)
 	//to your stuff
 	if (error)
 		return -1;
 	//final stiff
-MATT_END_CRITICAL
+MALT_END_CRITICAL
  * @endcode
  * 
  * @param lock Define the lock to take. A lock object just has to provide lock() and unlock() methods.
 **/
-#define MATT_START_CRITICAL(lock) { MATT::TakeLock<typeof(lock)> _local_take_lock__(&(lock));
+#define MALT_START_CRITICAL(lock) { MALT::TakeLock<typeof(lock)> _local_take_lock__(&(lock));
 
 /********************  MACROS  **********************/
 /** Close a critical region defined by START_CRITICAL of OPTIONAL_CRITICAL. **/
-#define MATT_END_CRITICAL }while(0);
+#define MALT_END_CRITICAL }while(0);
 
 /*******************  NAMESPACE  ********************/
-namespace MATT
+namespace MALT
 {
 
 /*********************  CLASS  **********************/
@@ -159,5 +159,5 @@ inline void TakeLock<T>::unlock(void )
 
 }
 
-#endif //MATT_TAKE_LOCK_HPP
+#endif //MALT_TAKE_LOCK_HPP
 

@@ -1,13 +1,13 @@
  /*****************************************************
-             PROJECT  : MATT
+             PROJECT  : MALT
              VERSION  : 0.1.0-dev
              DATE     : 01/2014
              AUTHOR   : Valat Sébastien
              LICENSE  : CeCILL-C
 *****************************************************/
 
-#ifndef MATT_ALLOC_TRACER_HPP
-#define MATT_ALLOC_TRACER_HPP
+#ifndef MALT_ALLOC_TRACER_HPP
+#define MALT_ALLOC_TRACER_HPP
 
 /*******************  FUNCTION  *********************/
 //standard
@@ -17,7 +17,7 @@
 #include <string>
 
 /*******************  NAMESPACE  ********************/
-namespace MATT
+namespace MALT
 {
 
 /*********************  TYPES  **********************/
@@ -28,7 +28,7 @@ class Stack;
  * Buffer size to accumulate the element to dump to trace file to not
  * write them one by one.
 **/
-#define MATT_ALLOC_TRACER_BUFFER_SIZE 4096
+#define MALT_ALLOC_TRACER_BUFFER_SIZE 4096
 
 /********************  STRUCT  **********************/
 /**
@@ -59,7 +59,7 @@ struct AllocTracerChunk
 class AllocTraceFile
 {
 	public:
-		AllocTraceFile(const std::string & file = "",size_t bufferSize = MATT_ALLOC_TRACER_BUFFER_SIZE);
+		AllocTraceFile(const std::string & file = "",size_t bufferSize = MALT_ALLOC_TRACER_BUFFER_SIZE);
 		~AllocTraceFile(void);
 		void open(const std::string & file);
 		void close(void);

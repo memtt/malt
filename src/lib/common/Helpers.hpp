@@ -1,20 +1,20 @@
 /*****************************************************
-             PROJECT  : MATT
+             PROJECT  : MALT
              VERSION  : 0.1.0-dev
              DATE     : 01/2014
              AUTHOR   : Valat Sébastien
              LICENSE  : CeCILL-C
 *****************************************************/
 
-#ifndef MATT_HELPERS_HPP
-#define MATT_HELPERS_HPP
+#ifndef MALT_HELPERS_HPP
+#define MALT_HELPERS_HPP
 
 /********************  HEADERS  *********************/
 //STL C++
 #include <ostream>
 
 /*******************  NAMESPACE  ********************/
-namespace MATT
+namespace MALT
 {
 
 /********************  STRUCT  **********************/
@@ -31,4 +31,4 @@ struct Helpers
 
 };
 
-#endif //MATT_HELPERS_HPP
+#endif //MALT_HELPERS_HPP

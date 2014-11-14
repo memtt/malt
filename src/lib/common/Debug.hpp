@@ -1,5 +1,5 @@
 /*****************************************************
-             PROJECT  : MATT
+             PROJECT  : MALT
              VERSION  : 0.1.0-dev
              DATE     : 01/2014
              AUTHOR   : Valat Sébastien
@@ -13,7 +13,7 @@
 #include "FormattedMessage.hpp"
 
 /*******************  NAMESPACE  ********************/
-namespace MATT
+namespace MALT
 {
 
 /*********************  ENUM  ***********************/
@@ -71,7 +71,7 @@ class Debug : public FormattedMessage
 /**
  * Helper to get current location (file and line).
 **/
-#define MATT_CODE_LOCATION __FILE__,__LINE__
+#define MALT_CODE_LOCATION __FILE__,__LINE__
 
 /*******************  FUNCTION  *********************/
 /** Short function to print debug static messages without arguments. **/
@@ -84,31 +84,31 @@ inline Debug error(const char * format)   {return Debug(format,MESSAGE_ERROR);  
 inline Debug fatal(const char * format)   {return Debug(format,MESSAGE_FATAL);  }
 
 /********************  MACROS  **********************/
-#define MATT_FATAL(x)   MATT_FATAL_ARG(x).end()
-#define MATT_DEBUG(x)   MATT_DEBUG_ARG(x).end()
-#define MATT_ERROR(x)   MATT_ERROR_ARG(x).end()
-#define MATT_WARNING(x) MATT_WARNING_ARG(x).end()
-#define MATT_MESSAGE(x) MATT_MESSAGE_ARG(x).end()
-#define MATT_INFO(x)    MATT_INFO_ARG(x).end()
+#define MALT_FATAL(x)   MALT_FATAL_ARG(x).end()
+#define MALT_DEBUG(x)   MALT_DEBUG_ARG(x).end()
+#define MALT_ERROR(x)   MALT_ERROR_ARG(x).end()
+#define MALT_WARNING(x) MALT_WARNING_ARG(x).end()
+#define MALT_MESSAGE(x) MALT_MESSAGE_ARG(x).end()
+#define MALT_INFO(x)    MALT_INFO_ARG(x).end()
 
 /********************  MACROS  **********************/
-#define MATT_FATAL_ARG(x)   MATT::Debug(x,MATT_CODE_LOCATION,MESSAGE_FATAL  )
-#define MATT_DEBUG_ARG(x)   MATT::Debug(x,MATT_CODE_LOCATION,MESSAGE_DEBUG  )
-#define MATT_ERROR_ARG(x)   MATT::Debug(x,MATT_CODE_LOCATION,MESSAGE_ERROR  )
-#define MATT_WARNING_ARG(x) MATT::Debug(x,MATT_CODE_LOCATION,MESSAGE_WARNING)
-#define MATT_MESSAGE_ARG(x) MATT::Debug(x,MATT_CODE_LOCATION,MESSAGE_NORMAL )
-#define MATT_INFO_ARG(x)    MATT::Debug(x,MATT_CODE_LOCATION,MESSAGE_INFO )
+#define MALT_FATAL_ARG(x)   MALT::Debug(x,MALT_CODE_LOCATION,MESSAGE_FATAL  )
+#define MALT_DEBUG_ARG(x)   MALT::Debug(x,MALT_CODE_LOCATION,MESSAGE_DEBUG  )
+#define MALT_ERROR_ARG(x)   MALT::Debug(x,MALT_CODE_LOCATION,MESSAGE_ERROR  )
+#define MALT_WARNING_ARG(x) MALT::Debug(x,MALT_CODE_LOCATION,MESSAGE_WARNING)
+#define MALT_MESSAGE_ARG(x) MALT::Debug(x,MALT_CODE_LOCATION,MESSAGE_NORMAL )
+#define MALT_INFO_ARG(x)    MALT::Debug(x,MALT_CODE_LOCATION,MESSAGE_INFO )
 
 /********************  MACROS  **********************/
-#define assume(check,message) do { if (!(check)) MATT_FATAL(message); } while(0)
-#define assumeArg(check,message) if (!(check)) MATT_FATAL_ARG(message)
+#define assume(check,message) do { if (!(check)) MALT_FATAL(message); } while(0)
+#define assumeArg(check,message) if (!(check)) MALT_FATAL_ARG(message)
 
 /********************  MACROS  **********************/
-#define MATT_TO_STRING(x) #x
+#define MALT_TO_STRING(x) #x
 #ifdef NDEBUG
-	#define MATT_ASSERT(x)      do{} while(0)
+	#define MALT_ASSERT(x)      do{} while(0)
 #else
-	#define MATT_ASSERT(x)      do{ if (!(x)) MATT::Debug(MATT_TO_STRING(x),MATT_CODE_LOCATION,MESSAGE_ASSERT).end(); } while(0)
+	#define MALT_ASSERT(x)      do{ if (!(x)) MALT::Debug(MALT_TO_STRING(x),MALT_CODE_LOCATION,MESSAGE_ASSERT).end(); } while(0)
 #endif
 
 }

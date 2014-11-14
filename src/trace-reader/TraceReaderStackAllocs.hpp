@@ -1,13 +1,13 @@
 /*****************************************************
-             PROJECT  : MATT
+             PROJECT  : MALT
              VERSION  : 0.1.0-dev
              DATE     : 01/2014
              AUTHOR   : Valat Sébastien
              LICENSE  : CeCILL-C
 *****************************************************/
 
-#ifndef MATT_TRACE_READER_STACK_ALLOCS_HPP
-#define MATT_TRACE_READER_STACK_ALLOCS_HPP
+#ifndef MALT_TRACE_READER_STACK_ALLOCS_HPP
+#define MALT_TRACE_READER_STACK_ALLOCS_HPP
 
 /********************  HEADERS  *********************/
 //STL C++
@@ -16,7 +16,7 @@
 #include "TraceReader.hpp"
 
 /*******************  NAMESPACE  ********************/
-namespace MATT
+namespace MALT
 {
 
 /********************  STRUCT  **********************/
@@ -33,12 +33,12 @@ class TraceReaderStackAllocs : public TraceReader
 	public:
 		TraceReaderStackAllocs(Filter * filter = NULL);
 		virtual void onStart(void);
-		virtual void onData(MATT::AllocTracerChunk & chunk);
+		virtual void onData(MALT::AllocTracerChunk & chunk);
 		virtual void onEnd(void);
 	private:
-		std::map<const MATT::Stack *,AtTimeInfo> map;
+		std::map<const MALT::Stack *,AtTimeInfo> map;
 };
 
 }
 
-#endif //MATT_TRACE_READER_STACK_ALLOCS_HPP
+#endif //MALT_TRACE_READER_STACK_ALLOCS_HPP

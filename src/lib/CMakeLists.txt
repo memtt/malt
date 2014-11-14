@@ -1,5 +1,5 @@
 ######################################################
-#            PROJECT  : MATT                         #
+#            PROJECT  : MALT                         #
 #            VERSION  : 0.1.0-dev                    #
 #            DATE     : 01/2014                      #
 #            AUTHOR   : Valat Sébastien              #
@@ -14,14 +14,14 @@ find_package(Libunwind QUIET)
 ######################################################
 #set default
 if (LIBUNWIND_FOUND)
-	set(MATT_HAVE_LIBUNWIND "yes")
+	set(MALT_HAVE_LIBUNWIND "yes")
 else (LIBUNWIND_FOUND)
-	unset(MATT_HAVE_LIBUNWIND)
+	unset(MALT_HAVE_LIBUNWIND)
 endif (LIBUNWIND_FOUND)
 
 ######################################################
 #Code options
-set(ENABLE_CODE_TIMING   "no"       CACHE BOOL   "Enable some tricks to quickly check timings of hostspots of MATT internal code.")
+set(ENABLE_CODE_TIMING   "no"       CACHE BOOL   "Enable some tricks to quickly check timings of hostspots of MALT internal code.")
 set(ENABLE_TESTS         "yes"      CACHE BOOL   "Enable build of internal tests.")
 
 #select portability mode
@@ -32,26 +32,26 @@ set(PORTABILITY_COMPILER  "GNU"      CACHE STRING "Select compiler support to us
 
 ######################################################
 #select portability definitions
-set(MATT_PORTABILITY_SPINLOCK_${PORTABILITY_SPINLOCK}  yes)
-set(MATT_PORTABILITY_MUTEX_${PORTABILITY_MUTEX}        yes)
-set(MATT_PORTABILITY_OS_${PORTABILITY_OS}              yes)
-set(MATT_PORTABILITY_COMPILER_${PORTABILITY_COMPILER}  yes)
-set(MATT_PORTABILITY_BACKTRACE_${PORTABILITY_BACKTRACE}  yes)
+set(MALT_PORTABILITY_SPINLOCK_${PORTABILITY_SPINLOCK}  yes)
+set(MALT_PORTABILITY_MUTEX_${PORTABILITY_MUTEX}        yes)
+set(MALT_PORTABILITY_OS_${PORTABILITY_OS}              yes)
+set(MALT_PORTABILITY_COMPILER_${PORTABILITY_COMPILER}  yes)
+set(MALT_PORTABILITY_BACKTRACE_${PORTABILITY_BACKTRACE}  yes)
 #enabling features
 if (ENABLE_CODE_TIMING)
-	set(MATT_ENABLE_CODE_TIMING yes)
+	set(MALT_ENABLE_CODE_TIMING yes)
 endif(ENABLE_CODE_TIMING)
 if (ENABLE_GCC_COVERAGE)
 	matt_enable_gcc_coverage()
 endif (ENABLE_GCC_COVERAGE)
 
 ######################################################
-set(LIB_MATT_DEPS pthread dl)
+set(LIB_MALT_DEPS pthread dl)
 if (LIBELF_FOUND)
-	list(APPEND LIB_MATT_DEPS elf)
+	list(APPEND LIB_MALT_DEPS elf)
 endif (LIBELF_FOUND)
 if (LIBUNWIND_FOUND)
-	list(APPEND LIB_MATT_DEPS unwind-x86_64)
+	list(APPEND LIB_MALT_DEPS unwind-x86_64)
 endif (LIBUNWIND_FOUND)
 
 ######################################################
@@ -80,11 +80,11 @@ set(COMMON_OBJS $<TARGET_OBJECTS:htopml-json>
 
 ######################################################
 add_library(matt-base SHARED ${COMMON_OBJS})
-target_link_libraries(matt-base ${LIB_MATT_DEPS})
+target_link_libraries(matt-base ${LIB_MALT_DEPS})
 
 ######################################################
 add_library(matt SHARED ${COMMON_OBJS} $<TARGET_OBJECTS:matt-libc-wrapper>)
-target_link_libraries(matt ${LIB_MATT_DEPS})
+target_link_libraries(matt ${LIB_MALT_DEPS})
 
 ######################################################
 add_subdirectory(core)

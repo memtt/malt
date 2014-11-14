@@ -1,13 +1,13 @@
 /*****************************************************
-             PROJECT  : MATT
+             PROJECT  : MALT
              VERSION  : 0.1.0-dev
              DATE     : 01/2014
              AUTHOR   : Valat Sébastien
              LICENSE  : CeCILL-C
 *****************************************************/
 
-#ifndef MATT_STACK_STL_HASH_HPP
-#define MATT_STACK_STL_HASH_HPP
+#ifndef MALT_STACK_STL_HASH_HPP
+#define MALT_STACK_STL_HASH_HPP
 
 /********************  HEADERS  *********************/
 //std
@@ -22,7 +22,7 @@
 #include <core/SymbolSolver.hpp>
 
 /*******************  NAMESPACE  ********************/
-namespace MATT
+namespace MALT
 {
 
 /*********************  CLASS  **********************/
@@ -62,7 +62,7 @@ class StackSTLHashMap
 		virtual ~StackSTLHashMap(void);
 		T & getValueRef(const Stack & stack);
 		T & operator[](const Stack & stack);
-		Node & getNode(const MATT::Stack& stack);
+		Node & getNode(const MALT::Stack& stack);
 		iterator begin();
 		iterator end();
 		const_iterator begin() const;
@@ -219,10 +219,10 @@ template <class T>
 void StackSTLHashMap<T>::Key::cloneStack(void)
 {
 	assert(stack != NULL);
-	void * ptr = MATT_MALLOC(sizeof(Stack));
+	void * ptr = MALT_MALLOC(sizeof(Stack));
 	stack = new(ptr) Stack(*stack);
 }
 
 }
 
-#endif //MATT_STACK_STL_HASH_HPP
+#endif //MALT_STACK_STL_HASH_HPP

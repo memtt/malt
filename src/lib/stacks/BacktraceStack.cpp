@@ -1,5 +1,5 @@
 /*****************************************************
-             PROJECT  : MATT
+             PROJECT  : MALT
              VERSION  : 0.1.0-dev
              DATE     : 01/2014
              AUTHOR   : Valat Sébastien
@@ -23,10 +23,10 @@
  * Limit the maximum size of the backtraces we extract to keep resonnable things.
  * @TODO Move this into the option class to support dynamic definition.
 **/
-#define MATT_CALL_STACK_MAX (128*1024)
+#define MALT_CALL_STACK_MAX (128*1024)
 
 /*******************  NAMESPACE  ********************/
-namespace MATT 
+namespace MALT 
 {
 
 /*******************  FUNCTION  *********************/
@@ -61,13 +61,13 @@ void BacktraceStack::loadCurrentStack(void)
 		assert(loadedSize > 0);
 
 		//miss some entries, need to grow the buffer
-		if (loadedSize >= MATT_CALL_STACK_MAX)
+		if (loadedSize >= MALT_CALL_STACK_MAX)
 		{
 			static bool once = false;
 			if (!once)
 			{
 				once = true;
-				MATT_ERROR("Caution, need to cut some call stacks !");
+				MALT_ERROR("Caution, need to cut some call stacks !");
 			}
 			break;
 		} else if (loadedSize == this->memSize) {

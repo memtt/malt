@@ -1,5 +1,5 @@
 /*****************************************************
-             PROJECT  : MATT
+             PROJECT  : MALT
              VERSION  : 0.1.0-dev
              DATE     : 01/2014
              AUTHOR   : Valat Sébastien
@@ -10,13 +10,13 @@
 //standard
 #include <cstdio>
 #include <cassert>
-//MATT common
+//MALT common
 #include <common/Debug.hpp>
 //locals
 #include "LinuxProcMapReader.hpp"
 
 /*******************  NAMESPACE  ********************/
-namespace MATT
+namespace MALT
 {
 
 /*******************  FUNCTION  *********************/
@@ -54,7 +54,7 @@ void LinuxProcMapReader::load(void)
 			else if (cnt == 6)
 				entry.file.clear();
 			else
-				MATT_FATAL_ARG("Invalid readline of proc/map entry : %1.").arg(buffer).end();
+				MALT_FATAL_ARG("Invalid readline of proc/map entry : %1.").arg(buffer).end();
 			
 			//ok push
 			procMap.push_back(entry);

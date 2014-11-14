@@ -1,5 +1,5 @@
 /*****************************************************
-             PROJECT  : MATT
+             PROJECT  : MALT
              VERSION  : 0.1.0-dev
              DATE     : 01/2014
              AUTHOR   : Valat Sébastien
@@ -26,7 +26,7 @@
 #define CALL_STACK_GROW_THRESHOLD 1024
 
 /*******************  NAMESPACE  ********************/
-namespace MATT
+namespace MALT
 {
 
 /*******************  FUNCTION  *********************/
@@ -113,7 +113,7 @@ Stack::Stack ( const Stack& orig , int skipDepth)
 Stack::~Stack ( void )
 {
 	if (this->mem != NULL)
-		MATT_FREE(this->mem);
+		MALT_FREE(this->mem);
 	#ifndef NDEBUG
 	this->stack   = NULL;
 	this->mem     = NULL;
@@ -141,7 +141,7 @@ void Stack::set ( void** stack, int size, StackOrder order )
 	//realloc if required
 	if (this->memSize < size)
 	{
-		this->mem     = (void**)MATT_REALLOC(this->mem,size * sizeof(void**));
+		this->mem     = (void**)MALT_REALLOC(this->mem,size * sizeof(void**));
 		this->stack   = this->mem;
 		this->memSize = size;
 	}
@@ -176,7 +176,7 @@ StackHash Stack::hash ( int skipDepth ) const
 		case STACK_ORDER_DESC:
 			return hash(stack,size - skipDepth,order);
 		default:
-			MATT_FATAL("Invalid order !");
+			MALT_FATAL("Invalid order !");
 			return 0;
 	}
 }
@@ -384,7 +384,7 @@ void Stack::grow ( void )
 	//if not allocated
 	if (this->stack == NULL)
 	{
-		this->mem = (void**)MATT_MALLOC(sizeof(void*) * CALL_STACK_DEFAULT_SIZE);
+		this->mem = (void**)MALT_MALLOC(sizeof(void*) * CALL_STACK_DEFAULT_SIZE);
 		this->memSize = CALL_STACK_DEFAULT_SIZE;
 		this->size = 0;
 	} else {
@@ -395,7 +395,7 @@ void Stack::grow ( void )
 			this->memSize += CALL_STACK_GROW_THRESHOLD;
 
 		//resize memory
-		this->mem = (void**)MATT_REALLOC(this->mem,this->memSize * sizeof(void*));
+		this->mem = (void**)MALT_REALLOC(this->mem,this->memSize * sizeof(void*));
 	}
 	
 	//point stack on mem (no quick skip)
@@ -488,7 +488,7 @@ Stack& Stack::operator=(const Stack& stack)
 
 /*******************  FUNCTION  *********************/
 /**
- * Skip the last N call in the stack to ignore wrappers inside MATT. It take in account
+ * Skip the last N call in the stack to ignore wrappers inside MALT. It take in account
  * the internal element ordering.
  * @param depth Define the number of call to skip.
 **/

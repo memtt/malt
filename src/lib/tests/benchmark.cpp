@@ -1,5 +1,5 @@
 /*****************************************************
-             PROJECT  : MATT
+             PROJECT  : MALT
              VERSION  : 0.1.0-dev
              DATE     : 01/2014
              AUTHOR   : Valat Sébastien
@@ -21,7 +21,7 @@
 #include <iomanip>
 
 using namespace std;
-using namespace MATT;
+using namespace MALT;
 
 #define MAX_STACKS 10000
 #define MAX_LOCAL_REUSE 5

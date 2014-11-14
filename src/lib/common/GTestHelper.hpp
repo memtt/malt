@@ -1,19 +1,19 @@
 /*****************************************************
-             PROJECT  : MATT
+             PROJECT  : MALT
              VERSION  : 0.1.0-dev
              DATE     : 01/2014
              AUTHOR   : Valat Sébastien
              LICENSE  : CeCILL-C
 *****************************************************/
 
-#ifndef MATT_GTEST_HELPER_HPP
-#define MATT_GTEST_HELPER_HPP
+#ifndef MALT_GTEST_HELPER_HPP
+#define MALT_GTEST_HELPER_HPP
 
 /********************  HEADERS  *********************/
 #include <gtest/gtest.h>
 	
 /*******************  NAMESPACE  ********************/
-namespace MATT
+namespace MALT
 {
 
 /********************  MACROS  **********************/
@@ -24,4 +24,4 @@ namespace MATT
 
 }
 
-#endif //MATT_GTEST_HELPER_HPP
+#endif //MALT_GTEST_HELPER_HPP

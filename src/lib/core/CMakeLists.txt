@@ -1,5 +1,5 @@
 ######################################################
-#            PROJECT  : MATT                         #
+#            PROJECT  : MALT                         #
 #            VERSION  : 0.1.0-dev                    #
 #            DATE     : 01/2014                      #
 #            AUTHOR   : Valat Sébastien              #
@@ -7,7 +7,7 @@
 ######################################################
 
 ######################################################
-set(MATT_LIB_SRC VmaTracker.cpp
+set(MALT_LIB_SRC VmaTracker.cpp
                  SymbolSolver.cpp
                  CallStackInfo.cpp
                  AllocTraceFile.cpp
@@ -19,7 +19,7 @@ set(MATT_LIB_SRC VmaTracker.cpp
                  SimpleCallStackNode.cpp)
 
 ######################################################
-add_library(matt-core OBJECT ${MATT_LIB_SRC})
+add_library(matt-core OBJECT ${MALT_LIB_SRC})
 SET_TARGET_PROPERTIES(matt-core PROPERTIES COMPILE_FLAGS -fPIC)
 
 ######################################################

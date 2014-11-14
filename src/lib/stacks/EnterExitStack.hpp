@@ -1,13 +1,13 @@
 /*****************************************************
-             PROJECT  : MATT
+             PROJECT  : MALT
              VERSION  : 0.1.0-dev
              DATE     : 01/2014
              AUTHOR   : Valat Sébastien
              LICENSE  : CeCILL-C
 *****************************************************/
 
-#ifndef MATT_ENTER_EXIT_STACK_HPP
-#define MATT_ENTER_EXIT_STACK_HPP
+#ifndef MALT_ENTER_EXIT_STACK_HPP
+#define MALT_ENTER_EXIT_STACK_HPP
 
 /********************  HEADERS  *********************/
 //standard
@@ -19,7 +19,7 @@
 
 
 /********************  MACROS  **********************/
-#define MATT_MAX_STACK_SIZE (1024*1204)
+#define MALT_MAX_STACK_SIZE (1024*1204)
 
 /*******************  FUNCTION  *********************/
 namespace htopml
@@ -28,7 +28,7 @@ namespace htopml
 }
 
 /*******************  NAMESPACE  ********************/
-namespace MATT
+namespace MALT
 {
 
 /*********************  CLASS  **********************/
@@ -60,7 +60,7 @@ inline void EnterExitStack::enterFunction ( void* funcAddr )
 
 	//check realSize
 	size_t tmp = ++realSize;
-	if (tmp > MATT_MAX_STACK_SIZE)
+	if (tmp > MALT_MAX_STACK_SIZE)
 		return;
 	
 	//check size
@@ -84,7 +84,7 @@ inline void EnterExitStack::exitFunction ( void* funcAddr )
 	assert(size > 0);
 
 	size_t tmp = realSize--;
-	if (tmp >MATT_MAX_STACK_SIZE)
+	if (tmp >MALT_MAX_STACK_SIZE)
 		return;
 
 	if (size > 0)
@@ -95,4 +95,4 @@ inline void EnterExitStack::exitFunction ( void* funcAddr )
 
 }
 
-#endif //MATT_ENTER_EXIT_STACK_HPP
+#endif //MALT_ENTER_EXIT_STACK_HPP

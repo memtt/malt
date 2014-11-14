@@ -1,5 +1,5 @@
 /*****************************************************
-             PROJECT  : MATT
+             PROJECT  : MALT
              VERSION  : 0.1.0-dev
              DATE     : 01/2014
              AUTHOR   : Valat Sébastien
@@ -16,7 +16,7 @@
 #include <portability/Compiler.hpp>
 
 /*******************  NAMESPACE  ********************/
-namespace MATT
+namespace MALT
 {
 
 /*******************  FUNCTION  *********************/
@@ -55,7 +55,7 @@ bool NMCmdReader::load(const std::string& binaryFile)
 	FILE * fp = popen(nmCmd.str().c_str(),"r");
 	if (fp == NULL)
 	{
-		MATT_ERROR_ARG("Failed to use nm command as : %1 !").arg(nmCmd.str()).end();
+		MALT_ERROR_ARG("Failed to use nm command as : %1 !").arg(nmCmd.str()).end();
 		return false;
 	}
 	

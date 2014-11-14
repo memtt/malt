@@ -1,5 +1,5 @@
 /*****************************************************
-             PROJECT  : MATT
+             PROJECT  : MALT
              VERSION  : 0.1.0-dev
              DATE     : 01/2014
              AUTHOR   : Valat Sébastien
@@ -11,7 +11,7 @@
 #include "TraceReader.hpp"
 
 /*******************  NAMESPACE  ********************/
-namespace MATT
+namespace MALT
 {
 
 /********************  MACROS  **********************/
@@ -26,7 +26,7 @@ Filter::Filter()
 }
 
 /*******************  FUNCTION  *********************/
-bool Filter::accept(MATT::AllocTracerChunk& chunk)
+bool Filter::accept(MALT::AllocTracerChunk& chunk)
 {
 	return (filterSize == 0 || filterSize == chunk.size) 
 	    && (filterStack == NULL || filterStack == chunk.allocStack)
@@ -84,7 +84,7 @@ void TraceReader::run(FILE* fp)
 	this->onStart();
 	
 	//loop
-	MATT::AllocTracerChunk buffer[BUFFER_SIZE];
+	MALT::AllocTracerChunk buffer[BUFFER_SIZE];
 	while (!feof(fp))
 	{
 		size_t size = fread(buffer,sizeof(buffer[0]),BUFFER_SIZE,fp);

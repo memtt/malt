@@ -1,13 +1,13 @@
 /*****************************************************
-             PROJECT  : MATT
+             PROJECT  : MALT
              VERSION  : 0.1.0-dev
              DATE     : 01/2014
              AUTHOR   : Valat Sébastien
              LICENSE  : CeCILL-C
 *****************************************************/
 
-#ifndef MATT_STACK_SIZE_ANALYSER_HPP
-#define MATT_STACK_SIZE_ANALYSER_HPP
+#ifndef MALT_STACK_SIZE_ANALYSER_HPP
+#define MALT_STACK_SIZE_ANALYSER_HPP
 
 /********************  HEADERS  *********************/
 //standard
@@ -18,7 +18,7 @@
 #include <stacks/EnterExitStack.hpp>
 
 /*******************  NAMESPACE  ********************/
-namespace MATT
+namespace MALT
 {
 
 class StackSizeAnalyser
@@ -83,4 +83,4 @@ inline void StackSizeAnalyser::onExitFunc(void* funcAddr)
 
 }
 
-#endif //MATT_STACK_SIZE_ANALYSER_HPP
+#endif //MALT_STACK_SIZE_ANALYSER_HPP

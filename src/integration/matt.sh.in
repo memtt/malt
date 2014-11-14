@@ -1,6 +1,6 @@
 #!/bin/sh
 ######################################################
-#            PROJECT  : MATT                         #
+#            PROJECT  : MALT                         #
 #            VERSION  : 0.1.0-dev                    #
 #            DATE     : 01/2014                      #
 #            AUTHOR   : Valat Sébastien              #
@@ -10,7 +10,7 @@
 ######################################################
 ENABLE_MPI=false
 MPI_WRAPPER_DIR="$HOME/.matt"
-MATT_OPTIONS=""
+MALT_OPTIONS=""
 
 ######################################################
 mattPrepMPI()
@@ -68,23 +68,23 @@ while true; do
 			exit 0
 		;;
 		--config|-c)
-			export MATT_CONFIG="$2"
+			export MALT_CONFIG="$2"
 			shift 2
 		;;
 		--stack|-s)
-			export MATT_STACK="$2"
+			export MALT_STACK="$2"
 			shift 2
 		;;
 		--trace|-t)
-			export MATT_OPTIONS="${MATT_OPTIONS};trace:enabled=true"
+			export MALT_OPTIONS="${MALT_OPTIONS};trace:enabled=true"
 			shift 1
 		;;
 		--option|-o)
-			export MATT_OPTIONS="${MATT_OPTIONS};$2"
+			export MALT_OPTIONS="${MALT_OPTIONS};$2"
 			shift 2
 		;;
 		--dumpconfig|-d)
-			export MATT_OPTIONS="${MATT_OPTIONS};output:config=true"
+			export MALT_OPTIONS="${MALT_OPTIONS};output:config=true"
 			shift 1
 			;;
 		--mpi)
@@ -119,7 +119,7 @@ done
 
 ######################################################
 #debug env
-# if [ ! -z "$MATT_CONFIG" ]; then echo "MATT_CONFIG=$MATT_CONFIG"; fi
+# if [ ! -z "$MALT_CONFIG" ]; then echo "MALT_CONFIG=$MALT_CONFIG"; fi
 
 ######################################################
 #run

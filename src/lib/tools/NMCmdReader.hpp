@@ -1,13 +1,13 @@
 /*****************************************************
-             PROJECT  : MATT
+             PROJECT  : MALT
              VERSION  : 0.1.0-dev
              DATE     : 01/2014
              AUTHOR   : Valat Sébastien
              LICENSE  : CeCILL-C
 *****************************************************/
 
-#ifndef MATT_NM_CMD_READER_HPP
-#define MATT_NM_CMD_READER_HPP
+#ifndef MALT_NM_CMD_READER_HPP
+#define MALT_NM_CMD_READER_HPP
 
 /*******************  FUNCTION  *********************/
 //standard
@@ -16,7 +16,7 @@
 #include "ELFReader.hpp"
 
 /*******************  NAMESPACE  ********************/
-namespace MATT
+namespace MALT
 {
 
 /********************  STRUCT  **********************/
@@ -40,7 +40,7 @@ class NMCmdReader
 		NMCmdReader(void);
 		~NMCmdReader(void);
 		bool load(const std::string & binaryFile);
-		void findSourcesAndDemangle(MATT::ElfGlobalVariableVector& vars) const;
+		void findSourcesAndDemangle(MALT::ElfGlobalVariableVector& vars) const;
 		void clear();
 	private:
 		bool readNMLine(FILE * fp,NMCmdReaderEntry & entry);
@@ -52,4 +52,4 @@ class NMCmdReader
 
 }
 
-#endif //MATT_ELF_READER_HPP
+#endif //MALT_ELF_READER_HPP

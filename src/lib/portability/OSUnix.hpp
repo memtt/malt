@@ -1,13 +1,13 @@
 /*****************************************************
-             PROJECT  : MATT
+             PROJECT  : MALT
              VERSION  : 0.1.0-dev
              DATE     : 01/2014
              AUTHOR   : Valat Sébastien
              LICENSE  : CeCILL-C
 *****************************************************/
 
-#ifndef MATT_OS_UNIX_HPP
-#define MATT_OS_UNIX_HPP
+#ifndef MALT_OS_UNIX_HPP
+#define MALT_OS_UNIX_HPP
 
 /********************  HEADERS  *********************/
 //standard
@@ -15,7 +15,7 @@
 #include <cstdlib>
 
 /*******************  NAMESPACE  ********************/
-namespace MATT
+namespace MALT
 {
 
 /*********************  STRUCT  *********************/
@@ -67,4 +67,4 @@ class OSUnix
 
 }
 
-#endif //MATT_OS_UNIX_HPP
+#endif //MALT_OS_UNIX_HPP

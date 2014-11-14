@@ -1,5 +1,5 @@
 /*****************************************************
-             PROJECT  : MATT
+             PROJECT  : MALT
              VERSION  : 0.1.0-dev
              DATE     : 01/2014
              AUTHOR   : Valat Sébastien
@@ -10,12 +10,12 @@
 #include "StackSizeAnalyser.hpp"
 
 /*******************  NAMESPACE  ********************/
-namespace MATT
+namespace MALT
 {
 
 /*******************  FUNCTION  *********************/
 StackSizeAnalyser::StackSizeAnalyser(void)
-	:largestStack(STACK_ORDER_DESC),timeProfile(MATT_PROFILED_VALUE_DEFAULT_STEPS,true)
+	:largestStack(STACK_ORDER_DESC),timeProfile(MALT_PROFILED_VALUE_DEFAULT_STEPS,true)
 {
 	this->largestSize = 0;
 	currentStack.enterFunction((void*)0x1);

@@ -1,13 +1,13 @@
 /*****************************************************
-             PROJECT  : MATT
+             PROJECT  : MALT
              VERSION  : 0.1.0-dev
              DATE     : 01/2014
              AUTHOR   : Valat Sébastien
              LICENSE  : CeCILL-C
 *****************************************************/
 
-#ifndef MATT_FUNC_NAME_DIC_HPP
-#define MATT_FUNC_NAME_DIC_HPP
+#ifndef MALT_FUNC_NAME_DIC_HPP
+#define MALT_FUNC_NAME_DIC_HPP
 
 /********************  HEADERS  *********************/
 //STD C++
@@ -35,7 +35,7 @@ namespace htopml
 }
 
 /*******************  NAMESPACE  ********************/
-namespace MATT
+namespace MALT
 {
 
 /********************  STRUCT  **********************/
@@ -120,4 +120,4 @@ template <class T> void convertToJson(htopml::JsonState & json, const std::map<v
 
 }
 
-#endif //MATT_FUNC_NAME_DIC_HPP
+#endif //MALT_FUNC_NAME_DIC_HPP

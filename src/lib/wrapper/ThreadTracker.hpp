@@ -1,20 +1,20 @@
 /*****************************************************
-             PROJECT  : MATT
+             PROJECT  : MALT
              VERSION  : 0.1.0-dev
              DATE     : 01/2014
              AUTHOR   : Valat Sébastien
              LICENSE  : CeCILL-C
 *****************************************************/
 
-#ifndef MATT_THREAD_TRACKER_HPP
-#define MATT_THREAD_TRACKER_HPP
+#ifndef MALT_THREAD_TRACKER_HPP
+#define MALT_THREAD_TRACKER_HPP
 
 /********************  HEADERS  *********************/
 //standard
 #include <cstdlib>
 #include <pthread.h>
 
-namespace MATT
+namespace MALT
 {
 
 /*********************  TYPES  **********************/
@@ -67,5 +67,5 @@ struct ThreadTracker
 
 }
 
-#endif //MATT_THREAD_TRACKER_HPP
+#endif //MALT_THREAD_TRACKER_HPP
 

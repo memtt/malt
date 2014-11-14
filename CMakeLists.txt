@@ -1,5 +1,5 @@
 ######################################################
-#            PROJECT  : MATT                         #
+#            PROJECT  : MALT                         #
 #            VERSION  : 0.1.0-dev                    #
 #            DATE     : 01/2014                      #
 #            AUTHOR   : Valat Sébastien              #
@@ -9,7 +9,7 @@
 ######################################################
 #Usage of OBJECT keyword in add_library require 2.8.8 (or something like that, need to check)
 cmake_minimum_required(VERSION 2.8.8)
-project(MATT)
+project(MALT)
 
 ######################################################
 #global setup

@@ -1,16 +1,16 @@
-MATT : Memory Allocations Tracking Tools
-========================================
+MALT : Malloc Tracker
+=====================
 
 What it is ?
 ------------
 
-MATT is a memory tool to find where you allocate your memory. It also provide you some
+MALT is a memory tool to find where you allocate your memory. It also provide you some
 statistics about memory usage and help to find memory leaks.
 
 How to install
 --------------
 
-MATT use CMake for the build system but provide a simple configure wrapper for users
+MALT use CMake for the build system but provide a simple configure wrapper for users
 familiar with autotools packaging so you can install by following the procedure :
 
 	mkdir build
@@ -33,9 +33,9 @@ by following the procedure :
 Build options
 -------------
 
-MATT build support several options to define with -D option of CMake :
+MALT build support several options to define with -D option of CMake :
 
- * -DENABLE_CODE_TIMING={yes|no} : Enable quick and dirty function to measure MATT internal
+ * -DENABLE_CODE_TIMING={yes|no} : Enable quick and dirty function to measure MALT internal
    performances.
  * -DENABLE_TEST={yes|no}        : Enable build of unit tests.
  * -DJUNIT_OUTPUT={yes|no}       : Enable generation of junit files for jenkins integration.
@@ -46,15 +46,15 @@ MATT build support several options to define with -D option of CMake :
 How to use
 ----------
 
-MATT currently provide a dynamic library you need to preload in your application to
+MALT currently provide a dynamic library you need to preload in your application to
 wrap the default memory allocator. It provide two basic instrumentation modes.
 
-By default MATT use backtrace to reconstruct you stack on malloc/free/... calls :
+By default MALT use backtrace to reconstruct you stack on malloc/free/... calls :
 
 	{YOUR_PREFIX}/bin/matt {YOUR_PROGRAM} [OPTIONS]
 
 You can get better performance but less detailed stack by using option 
--finstrument-function or similar on your compiler. Then, you need to tel MATT to use
+-finstrument-function or similar on your compiler. Then, you need to tel MALT to use
 the "enter-exit" stack mode :
 
 	{YOUR_PREFIX}/bin/matt -m=enter-exit {YOUR_PROGRAM} [OPTIONS]
@@ -83,14 +83,14 @@ To use the webview you need to install the nodeJS package on your system : http:
 Config
 ------
 
-You can provide a config file to MATT to setup some features. This file use the INI
+You can provide a config file to MALT to setup some features. This file use the INI
 format. With the matt script :
 
 	{YOUR_PREFIX}/bin/matt -c=config.ini" {YOUR_PROGRAM} [OPTIONS]
 
 By hand :
 
-	MATT_CONFIG="config.ini" LD_PRELOAD=libmatt.so {YOUR_PROGRAM} [OPTIONS]
+	MALT_CONFIG="config.ini" LD_PRELOAD=libmatt.so {YOUR_PROGRAM} [OPTIONS]
 
 Example of config file :
 
@@ -121,14 +121,14 @@ Environnement variables
 
 If you do not use the matt wrapper and use directly LD_PRELOAD you can use the Environnement variables :
 
-	MATT_OPTIONS="stack:enabled=true;output:indent=true;"
-	MATT_CONFIG="config.ini"
-	MATT_STACK="libunwind"
+	MALT_OPTIONS="stack:enabled=true;output:indent=true;"
+	MALT_CONFIG="config.ini"
+	MALT_STACK="libunwind"
 
 About stacks
 ------------
 
-MATT use two ways to rebuild stacks, the default one rely on glibc backtrace but we observe severals 
+MALT use two ways to rebuild stacks, the default one rely on glibc backtrace but we observe severals 
 segfaults on some intel tools such as Intel OpenMP and Intel MPI so we also provide a more robust 
 approach based on libunwind if present on your system at build time. You can provide it with :
 
@@ -149,7 +149,7 @@ or by using binary instrumentation tools juste as explained at the end of this d
 Experimental pintool mode
 -------------------------
 
-MATT can also use binary instrumentation mode through pintool 
+MALT can also use binary instrumentation mode through pintool 
 (http://software.intel.com/en-us/articles/pin-a-dynamic-binary-instrumentation-tool)
 
 Please, check usage into src/pintool directory.
@@ -157,6 +157,6 @@ Please, check usage into src/pintool directory.
 Experimental maqao mode
 -----------------------
 
-MATT can also use binary instrumentation with MAQAO (http://maqao.org/). 
+MALT can also use binary instrumentation with MAQAO (http://maqao.org/). 
 
 Please check usage into src/maqao directory.
