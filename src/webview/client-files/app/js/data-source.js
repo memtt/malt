@@ -69,6 +69,11 @@ MattDataSourceNodeJS.prototype.getCallStackDataFunc = function(func,handler)
 	$.getJSON("/stacks.json?func="+encodeURIComponent(func),handler);
 }
 
+MattDataSourceNodeJS.prototype.loadProcMaps = function(func,handler)
+{
+	$.getJSON("/procmaps.json",handler);
+}
+
 /////////////////////////////////////////////////////////////////////////
 
 //SImple class to wrap all access to remote data, it might be easier to change or remove the server

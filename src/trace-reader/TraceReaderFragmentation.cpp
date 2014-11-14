@@ -127,11 +127,11 @@ void TraceReaderFragmentation::checkForSharedPages(void)
 void TraceReaderFragmentation::onData(MATT::AllocTracerChunk& chunk)
 {
 	//is alive on step 1, then register in list
-	if (chunk.timestamp <= tStep1 && chunk.timestamp+chunk.lifetime > tStep1)
+	if (chunk.allocTime <= tStep1 && chunk.allocTime+chunk.lifetime > tStep1)
 	{
 		FragmentationChunk & info = chunks[chunk.addr];
 		info.chunk = chunk;
-		info.presentAtStep2 = (chunk.timestamp+chunk.lifetime > tStep2);
+		info.presentAtStep2 = (chunk.allocTime+chunk.lifetime > tStep2);
 		info.haveSharedPage = false;
 	}
 }

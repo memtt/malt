@@ -112,6 +112,14 @@ app.get('/stacks-mem.json',function (req,res){
 
 /****************************************************/
 //export max stack info
+app.get('/procmap.json',function (req,res){
+	var tmp = mattProject.getProcMap();
+	res.write(JSON.stringify(tmp,null));
+	res.end();
+});
+
+/****************************************************/
+//export max stack info
 app.get('/global-variables.json',function (req,res){
 	var tmp = mattProject.getGlobalVariables();
 	res.write(JSON.stringify(tmp,null));

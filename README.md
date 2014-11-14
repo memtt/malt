@@ -112,6 +112,19 @@ Example of config file :
 	callgrind=true        ; enable callgrind output
 	config=true           ; dump current config
 
+Option values can be override on the fly with command :
+
+	{YOUR_PREFIX}/bin/matt -o "stack:enabled=true;output:indent=true;" {YOUR_PROGRAM} [OPTIONS]
+
+Environnement variables
+-----------------------
+
+If you do not use the matt wrapper and use directly LD_PRELOAD you can use the Environnement variables :
+
+	MATT_OPTIONS="stack:enabled=true;output:indent=true;"
+	MATT_CONFIG="config.ini"
+	MATT_STACK="libunwind"
+
 About stacks
 ------------
 

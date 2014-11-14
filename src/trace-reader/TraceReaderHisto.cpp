@@ -56,7 +56,7 @@ void TraceReaderHisto::onData(MATT::AllocTracerChunk& chunk)
 			indice = chunk.lifetime;
 			break;
 		case HISTO_TIME:
-			indice = chunk.timestamp;
+			indice = chunk.allocTime;
 			break;
 	}
 	

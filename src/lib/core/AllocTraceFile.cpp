@@ -100,7 +100,7 @@ void AllocTraceFile::traceChunk(const MATT::Stack* allocStack, const MATT::Stack
 	entry.lifetime = lifetime;
 	entry.size = size;
 	entry.addr = addr;
-	entry.timestamp = timestamp;
+	entry.allocTime = timestamp;
 	
 	//inc pos
 	this->pos++;

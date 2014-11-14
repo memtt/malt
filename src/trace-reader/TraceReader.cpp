@@ -30,7 +30,7 @@ bool Filter::accept(MATT::AllocTracerChunk& chunk)
 {
 	return (filterSize == 0 || filterSize == chunk.size) 
 	    && (filterStack == NULL || filterStack == chunk.allocStack)
-		&& (at == 0 || (chunk.timestamp <= at && chunk.timestamp + chunk.lifetime >= at));
+		&& (at == 0 || (chunk.allocTime <= at && chunk.allocTime + chunk.lifetime >= at));
 }
 
 

@@ -47,7 +47,7 @@ struct AllocTracerChunk
 	/** Size of the allocated chunk (requested size) **/
 	size_t size;
 	/** Timestamp of creation in ticks. **/
-	ticks timestamp;
+	ticks allocTime;
 	/** Lifetime of the chunk in ticks. **/
 	ticks lifetime;
 };

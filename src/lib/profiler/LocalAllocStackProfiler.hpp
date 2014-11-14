@@ -108,8 +108,6 @@ class LocalAllocStackProfiler
 		volatile bool inUse;
 		/** Ways to track stack. **/
 		StackMode stackMode;
-		/** Cumul the allocated memory. **/
-		size_t cumulAlloc;
 		/** Pointer to the global enterExitStackTracer for enter-exit mode **/
 		AllocTreeStrackTracer * enterExitStackTracer;
 		AllocTreeStrackTracer::Handler enterExitHandler;

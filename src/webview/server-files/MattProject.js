@@ -68,6 +68,12 @@ MattProject.prototype.loadFile = function(file)
 }
 
 /****************************************************/
+MattProject.prototype.getProcMap = function()
+{
+	return this.stacks.sites.map;
+}
+
+/****************************************************/
 /**
  * Add info about stack to data extracted from traces
 **/
