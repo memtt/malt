@@ -7,15 +7,12 @@
 ######################################################
 
 ######################################################
-add_library(matt-common OBJECT CodeTiming.cpp 
-                               FormattedMessage.cpp 
-                               Debug.cpp Options.cpp 
-                               SimpleAllocator.cpp 
-                               Helpers.cpp
-                               NoFreeAllocator.cpp)
-SET_TARGET_PROPERTIES(matt-common PROPERTIES COMPILE_FLAGS -fPIC)
+#Generate file with full paths
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/matt.sh.in ${CMAKE_CURRENT_BINARY_DIR}/matt)
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/matt-webserver.sh.in ${CMAKE_CURRENT_BINARY_DIR}/matt-webserver)
 
 ######################################################
-if (ENABLE_TESTS)
-	add_subdirectory(tests)
-endif (ENABLE_TESTS)
+#install
+INSTALL(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/matt ${CMAKE_CURRENT_BINARY_DIR}/matt-webserver
+        DESTINATION bin/)
+INSTALL(FILES MattMPIRank.cpp DESTINATION share/matt)

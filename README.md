@@ -99,3 +99,28 @@ MATT can also use binary instrumentation mode through pintool
 (http://software.intel.com/en-us/articles/pin-a-dynamic-binary-instrumentation-tool)
 
 Please, check usage into src/pintool directory for this.
+
+Generate code coverage of internal test suite :
+-----------------------------------------------
+
+To geneate test coverage, we need to setup CFLAGS for gcc+gcov :
+
+        -DCMAKE_CXX_FLAGS="-O0 -fprofile-arcs -ftest-coverage"
+        -DCMAKE_C_FLAGS="-O0 -fprofile-arcs -ftest-coverage"
+        -DCMAKE_EXE_LINKER_FLAGS="-O0 -fprofile-arcs -ftest-coverage
+
+You can do it simply by using :
+
+        $ cmake .. -DTEST_COVERAGE=yes
+
+or
+
+        $ ../configure --enable-gcc-coverage
+
+Now build, run the tests and call lcov and genhtml :
+
+        $ make
+        $ ./src/test/all_tests
+        $ lcov -o out.info -c -d .
+        $ genhtml -o html out.inf
+

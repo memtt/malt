@@ -1,0 +1,32 @@
+#!/bin/sh
+######################################################
+#            PROJECT  : MATT                         #
+#            VERSION  : 0.1.0-dev                    #
+#            DATE     : 01/2014                      #
+#            AUTHOR   : Valat Sébastien              #
+#            LICENSE  : CeCILL-C                     #
+######################################################
+
+######################################################
+NODE=""
+detectNodeJS()
+{
+	if which nodejs 2>/dev/null >/dev/null; then
+		NODE='nodejs'
+	elif which node 2>/dev/null >/dev/null; then
+		NODE='node'
+	elif [ ! -z "$MATT_NODEJS" ]; then
+		NODE="$MATT_NODEJS"
+	else
+		echo "ERROR : Cannot find NodeJS executable, please install 'node' or 'nodejs' package for your system or check your PATH." 1>&2
+		echo "You can also define the MATT_NODEJS environnement variable to point the NodeJS executable." 1>&2
+		exit 1
+	fi
+}
+
+######################################################
+#check node
+detectNodeJS
+
+#call node on main script
+"$NODE" "@CMAKE_INSTALL_PREFIX@/share/matt/webview/matt-webserver.js" "$@"

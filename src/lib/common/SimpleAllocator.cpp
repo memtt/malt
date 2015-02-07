@@ -12,8 +12,6 @@
 #include <cstring>
 #include <cassert>
 #include <iostream>
-//OS dependent (need to move)
-#include <sys/mman.h>
 //internal commons
 #include "Debug.hpp"
 #include "Helpers.hpp"
@@ -81,8 +79,8 @@ void SimpleAllocator::requestSystemMemory(size_t size)
 		freeList.insertNext(cur);
 	
 	//allocate new one
-	cur = (Chunk*)mmap(NULL,size,PROT_READ|PROT_WRITE,MAP_ANON|MAP_PRIVATE|MAP_POPULATE,0,0);
-	assumeArg(cur != MAP_FAILED,"Failed to request memory with mmap for internal allocator : %s.").argStrErrno().end();
+	cur = (Chunk*)OS::mmap(size,true);
+	assumeArg(cur != NULL,"Failed to request memory with mmap for internal allocator : %s.").argStrErrno().end();
 	
 	//update chunk info
 	cur->size = size - sizeof(*cur);
@@ -324,7 +322,7 @@ size_t SimpleAllocator::getInuseMemory(void)
 **/
 void SimpleAllocator::touchMemory(void* ptr, size_t size)
 {
-	if (ptr == NULL || ptr == MAP_FAILED)
+	if (ptr == NULL || ptr == NULL)
 		return;
 	for (int i = 0 ; i < size ; i += MATT_PAGE_SIZE)
 		*(char*)ptr = '\0';

@@ -12,13 +12,10 @@ include_directories(${GTEST_INCLUDE_DIRS} ${GMOCK_INCLUDE_DIRS})
 include_directories(../)
 
 ######################################################
-set(TEST_NAMES TestArray
-               TestOptions
-               TestSimpleAllocator
-               TestSTLInternalAllocator
-               TestFormattedMessage
-               TestNoFreeAllocator
-   )
+set(TEST_NAMES TestStack
+               TestBacktraceStack
+               TestEnterExitStack
+               TestRLockFreeTree)
 
 ######################################################
 FOREACH(test_name ${TEST_NAMES})
@@ -26,3 +23,4 @@ FOREACH(test_name ${TEST_NAMES})
 	target_link_libraries(${test_name} ${GTEST_BOTH_LIBRARIES} ${GMOCK_BOTH_LIBRARIES} matt-base)
 	matt_add_test(${test_name} ${test_name})
 ENDFOREACH(test_name)
+

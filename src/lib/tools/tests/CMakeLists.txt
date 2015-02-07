@@ -9,16 +9,12 @@
 ######################################################
 #Use gtest
 include_directories(${GTEST_INCLUDE_DIRS} ${GMOCK_INCLUDE_DIRS})
-include_directories(../)
 
 ######################################################
-set(TEST_NAMES TestArray
-               TestOptions
-               TestSimpleAllocator
-               TestSTLInternalAllocator
-               TestFormattedMessage
-               TestNoFreeAllocator
-   )
+add_definitions(-DTEST_BIN_DIR="${CMAKE_CURRENT_BINARY_DIR}")
+
+######################################################
+set(TEST_NAMES TestElfReader)
 
 ######################################################
 FOREACH(test_name ${TEST_NAMES})

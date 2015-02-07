@@ -10,6 +10,7 @@
 //std
 #include <cstdio>
 #include <cassert>
+#include <deque>
 //internals
 #include "Debug.hpp"
 #include "Options.hpp"
@@ -19,14 +20,15 @@
 namespace MATT 
 {
 
+/********************  GLOBALS  *********************/
+Options * gblOptions = NULL;
+
 /*******************  FUNCTION  *********************/
 template <class T>
-OptionDef<T>::OptionDef(MATT::Options* options, T* ptr, const std::string & section,const std::string & name, const T& defaultValue)
+OptionDef<T>::OptionDef(T* ptr, const std::string & section,const std::string & name, const T& defaultValue)
+:OptionDefGeneric(section,name)
 {
-	options->options.push_back(this);
 	this->ptr = ptr;
-	this->section = section;
-	this->name = name;
 	this->defaultValue = defaultValue;
 	*(this->ptr) = defaultValue;
 }
@@ -64,9 +66,11 @@ void OptionDef<T>::dump(htopml::JsonState& json)
 
 /*******************  FUNCTION  *********************/
 template <class T>
-bool OptionDef<T>::equal(void* ptr)
+bool OptionDef<T>::equal(MATT::OptionDefGeneric& ptr) const
 {
-	return *(this->ptr) == *(T*)ptr;
+	assert(this->getName() == ptr.getName() && this->getSection() == ptr.getSection());
+	OptionDef<T> * tmp = dynamic_cast<OptionDef<T>*>(&ptr);;
+	return *(this->ptr) == *(T*)(tmp->ptr);
 }
 
 /*******************  FUNCTION  *********************/
@@ -104,59 +108,38 @@ void OptionDef<T>::setToDefault(void)
 Options::Options(void)
 {
 	//stack
-	new OptionDef<bool>       (this,&this->stackProfileEnabled,"stack"   ,"enabled"    ,true);
-	new OptionDef<bool>       (this,&this->stackResolve       ,"stack"   ,"resolve"    ,true);
-	new OptionDef<std::string>(this,&this->stackMode          ,"stack"   ,"mode"       ,"backtrace");
+	options.push_back(new OptionDef<bool>        (&this->stackProfileEnabled,"stack"   ,"enabled"    ,true));
+	options.push_back(new OptionDef<bool>        (&this->stackResolve       ,"stack"   ,"resolve"    ,true));
+	options.push_back(new OptionDef<std::string> (&this->stackMode          ,"stack"   ,"mode"       ,"backtrace"));
+	options.push_back(new OptionDef<bool>        (&this->stackLibunwind     ,"stack"   ,"libunwind"  ,false));
 	//time
-	new OptionDef<bool>        (this,&this->timeProfileEnabled,"time"    ,"enabled"    ,true);
-	new OptionDef<int>         (this,&this->timeProfilePoints ,"time"    ,"points"     ,512);
-	new OptionDef<bool>        (this,&this->timeProfileLinear ,"time"    ,"linear"     ,false);
+	options.push_back(new OptionDef<bool>        (&this->timeProfileEnabled,"time"    ,"enabled"    ,true));
+	options.push_back(new OptionDef<int>         (&this->timeProfilePoints ,"time"    ,"points"     ,512));
+	options.push_back(new OptionDef<bool>        (&this->timeProfileLinear ,"time"    ,"linear"     ,false));
 	//output
-	new OptionDef<std::string> (this,&this->outputName        ,"output"   ,"name"      ,"matt-%1-%2.%3");
-	new OptionDef<bool>        (this,&this->outputIndent      ,"output"   ,"indent"    ,true);
-	new OptionDef<bool>        (this,&this->outputJson        ,"output"   ,"json"      ,true);
-	new OptionDef<bool>        (this,&this->outputLua         ,"output"   ,"lua"       ,false);
-	new OptionDef<bool>        (this,&this->outputCallgrind   ,"output"   ,"callgrind" ,false);
-	new OptionDef<bool>        (this,&this->outputDumpConfig  ,"output"   ,"config"    ,true);
+	options.push_back(new OptionDef<std::string> (&this->outputName        ,"output"   ,"name"      ,"matt-%1-%2.%3"));
+	options.push_back(new OptionDef<bool>        (&this->outputIndent      ,"output"   ,"indent"    ,true));
+	options.push_back(new OptionDef<bool>        (&this->outputJson        ,"output"   ,"json"      ,true));
+	options.push_back(new OptionDef<bool>        (&this->outputLua         ,"output"   ,"lua"       ,false));
+	options.push_back(new OptionDef<bool>        (&this->outputCallgrind   ,"output"   ,"callgrind" ,false));
+	options.push_back(new OptionDef<bool>        (&this->outputDumpConfig  ,"output"   ,"config"    ,true));
 	//max stack
-	new OptionDef<bool>        (this,&this->maxStackEnabled   ,"max-stack","enabled"   ,true);
+	options.push_back(new OptionDef<bool>        (&this->maxStackEnabled   ,"max-stack","enabled"   ,true));
 	//maps
-	new OptionDef<bool>        (this,&this->distrAllocSize    ,"distr"    ,"alloc_size",true);
-	new OptionDef<bool>        (this,&this->distrAllocSize    ,"distr"    ,"realloc_jump",true);
+	options.push_back(new OptionDef<bool>        (&this->distrAllocSize    ,"distr"    ,"alloc_size",true));
+	options.push_back(new OptionDef<bool>        (&this->distrAllocSize    ,"distr"    ,"realloc_jump",true));
 	//trace
-	new OptionDef<bool>        (this,&this->traceEnabled      ,"trace"    ,"enabled"    ,true);
+	options.push_back(new OptionDef<bool>        (&this->traceEnabled      ,"trace"    ,"enabled"    ,true));
 	//info
-	new OptionDef<bool>        (this,&this->infoHidden        ,"info"     ,"hidden"     ,false);
+	options.push_back(new OptionDef<bool>        (&this->infoHidden        ,"info"     ,"hidden"     ,false));
 }
 
 /*******************  FUNCTION  *********************/
 bool Options::operator==(const Options& value) const
 {
-	//stack
-	if (stackProfileEnabled != value.stackProfileEnabled) return false;
-	if (stackResolve != value.stackResolve) return false;
-	if (stackMode != value.stackMode) return false;
-	//time
-	if (this->timeProfileEnabled != value.timeProfileEnabled) return false;
-	if (this->timeProfilePoints != value.timeProfilePoints) return false;
-	if (this->timeProfileLinear != value.timeProfileLinear) return false;
-	//output
-	if (this->outputName != value.outputName) return false;
-	if (this->outputIndent != value.outputIndent) return false;
-	if (this->outputJson != value.outputJson) return false;
-	if (this->outputLua != value.outputLua) return false;
-	if (this->outputCallgrind != value.outputCallgrind) return false;
-	if (this->outputDumpConfig != value.outputDumpConfig) return false;
-	//max stack
-	if (this->maxStackEnabled != value.maxStackEnabled) return false;
-	//maps
-	if (this->distrAllocSize != value.distrAllocSize) return false;
-	if (this->distrReallocJump != value.distrReallocJump) return false;
-	//trace
-	if (this->traceEnabled != value.traceEnabled) return false;
-	//info
-	if (this->infoHidden != value.infoHidden) return false;
-	
+	for (int i = 0 ; i < options.size() ; i++)
+		if (options[i]->equal(*value.options[i]) == false)
+			return false;
 	return true;
 }
 
@@ -171,36 +154,8 @@ void Options::loadFromFile(const char* fname)
 	//errors
 	assumeArg(iniDic != NULL,"Failed to load config file : %1 !").arg(fname);
 	
-	//load values for time profiling
-	this->timeProfileEnabled  = iniparser_getboolean(iniDic,"time:enabled",this->timeProfileEnabled);
-	this->timeProfilePoints   = iniparser_getint(iniDic,"time:points",this->timeProfilePoints);
-	this->timeProfileLinear   = iniparser_getboolean(iniDic,"time:linear_index",this->timeProfileLinear);
-	
-	//load values for stack profiling
-	this->stackResolve        = iniparser_getboolean(iniDic,"stack:resolve",this->stackResolve);
-	this->stackProfileEnabled = iniparser_getboolean(iniDic,"stack:enabled",this->stackProfileEnabled);
-	this->stackMode           = iniparser_getstring(iniDic,"stack:mode",(char*)this->stackMode.c_str());
-	
-	//load values for output
-	this->outputName          = iniparser_getstring(iniDic,"output:name",(char*)this->outputName.c_str());
-	this->outputIndent        = iniparser_getboolean(iniDic,"output:indent",this->outputIndent);
-	this->outputJson          = iniparser_getboolean(iniDic,"output:json",this->outputJson);
-	this->outputLua           = iniparser_getboolean(iniDic,"output:lua",this->outputLua);
-	this->outputCallgrind     = iniparser_getboolean(iniDic,"output:callgrind",this->outputCallgrind);
-	this->outputDumpConfig    = iniparser_getboolean(iniDic,"output:config",this->outputDumpConfig);
-	
-	//max stack
-	this->maxStackEnabled     = iniparser_getboolean(iniDic,"max-stack:enabled",this->maxStackEnabled);
-	
-	//maps
-	this->distrAllocSize      = iniparser_getboolean(iniDic,"distr:alloc_size",this->distrAllocSize);
-	this->distrReallocJump    = iniparser_getboolean(iniDic,"distr:realloc_jump",this->distrReallocJump);
-	
-	//trace
-	this->traceEnabled        = iniparser_getboolean(iniDic,"trace:enabled",this->traceEnabled);
-	
-	//info
-	this->infoHidden          = iniparser_getboolean(iniDic,"info:hidden",this->infoHidden);
+	for (int i = 0 ; i < options.size() ; i++)
+		options[i]->load(iniDic);
 	
 	//free dic
 	iniparser_freedict(iniDic);
@@ -209,41 +164,20 @@ void Options::loadFromFile(const char* fname)
 /*******************  FUNCTION  *********************/
 void convertToJson(htopml::JsonState & json,const Options & value)
 {
+	//gen group list
+	std::deque<std::string> groups;
+	for (int i = 0 ; i < value.options.size() ; i++)
+		groups.push_back(value.options[i]->getSection());
+	
 	json.openStruct();
-		json.openFieldStruct("time");
-			json.printField("enabled",value.timeProfileEnabled);
-			json.printField("points",value.timeProfilePoints);
-			json.printField("linear",value.timeProfileLinear);
-		json.closeFieldStruct("time");
+	for (std::deque<std::string>::iterator it = groups.begin() ; it != groups.end() ; ++it)
+	{
+		json.openFieldStruct(it->c_str());
+		for (int i = 0 ; i < value.options.size() ; i++)
+			value.options[i]->dump(json);
+		json.closeFieldStruct(it->c_str());
 		
-		json.openFieldStruct("stack");
-			json.printField("enabled",value.stackProfileEnabled);
-			json.printField("mode",value.stackMode.c_str());
-			json.printField("resolve",value.stackResolve);
-		json.closeFieldStruct("stack");
-		
-		json.openFieldStruct("output");
-			json.printField("callgrind",value.outputCallgrind);
-			json.printField("dumpConfig",value.outputDumpConfig);
-			json.printField("index",value.outputIndent);
-			json.printField("json",value.outputJson);
-			json.printField("lua",value.outputLua);
-			json.printField("name",value.outputName);
-		json.closeFieldStruct("output");
-		
-		json.openFieldStruct("maxStack");
-			json.printField("enabled",value.maxStackEnabled);
-		json.closeFieldStruct("maxStack");
-		
-		json.openFieldStruct("distr");
-			json.printField("allocSize",value.distrAllocSize);
-			json.printField("reallocJump",value.distrReallocJump);
-		json.closeFieldStruct("distr");
-		
-		json.openFieldStruct("info");
-			json.printField("hidden",value.infoHidden);
-		json.closeFieldStruct("info");
-	json.closeStruct();
+	}
 }
 
 /*******************  FUNCTION  *********************/
@@ -253,36 +187,8 @@ void Options::dumpConfig(const char* fname)
 	assert(fname != NULL);
 	dictionary * dic = dictionary_new(10);
 	
-	//fill
-	IniParserHelper::setEntry(dic,"time:enabled",this->timeProfileEnabled);
-	IniParserHelper::setEntry(dic,"time:points",this->timeProfilePoints);
-	IniParserHelper::setEntry(dic,"time:linear_index",this->timeProfileLinear);
-	
-	//stack
-	IniParserHelper::setEntry(dic,"stack:enabled",this->timeProfileEnabled);
-	IniParserHelper::setEntry(dic,"stack:mode",this->stackMode.c_str());
-	IniParserHelper::setEntry(dic,"stack:resolve",this->stackResolve);
-	
-	//output
-	IniParserHelper::setEntry(dic,"output:name",this->outputName.c_str());
-	IniParserHelper::setEntry(dic,"output:lua",this->outputLua);
-	IniParserHelper::setEntry(dic,"output:json",this->outputJson);
-	IniParserHelper::setEntry(dic,"output:callgrind",this->outputCallgrind);
-	IniParserHelper::setEntry(dic,"output:indent",this->outputIndent);
-	IniParserHelper::setEntry(dic,"output:config",this->outputDumpConfig);
-	
-	//max stack
-	IniParserHelper::setEntry(dic,"max-stack:enabled",this->maxStackEnabled);
-	
-	//maps
-	IniParserHelper::setEntry(dic,"distr:alloc_size",this->distrAllocSize);
-	IniParserHelper::setEntry(dic,"distr:realloc_jump",this->distrReallocJump);
-	
-	//trace
-	IniParserHelper::setEntry(dic,"trace:enabled",this->traceEnabled);
-	
-	//info
-	IniParserHelper::setEntry(dic,"info:hidden",this->infoHidden);
+	for (int i = 0 ; i < options.size() ; i++)
+		options[i]->dump(dic);
 	
 	//write
 	FILE * fp = fopen(fname,"w");

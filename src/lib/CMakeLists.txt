@@ -55,8 +55,8 @@ include_directories(${CMAKE_CURRENT_BINARY_DIR})
 set(COMMON_OBJS 
                 $<TARGET_OBJECTS:htopml-json> 
 #                 $<TARGET_OBJECTS:matt-core> 
-#                 $<TARGET_OBJECTS:matt-tools> 
-#                 $<TARGET_OBJECTS:matt-stacks> 
+                $<TARGET_OBJECTS:matt-tools> 
+                $<TARGET_OBJECTS:matt-stacks> 
 #                 $<TARGET_OBJECTS:matt-valprof> 
 #                 $<TARGET_OBJECTS:matt-thread-wrapper> 
                 #$<TARGET_OBJECTS:matt-stack-trees> 
@@ -75,9 +75,9 @@ target_link_libraries(matt-base ${LIB_MATT_DEPS})
 
 ######################################################
 # add_subdirectory(core)
-# add_subdirectory(tools)
+add_subdirectory(tools)
 add_subdirectory(common)
-# add_subdirectory(stacks)
+add_subdirectory(stacks)
 # add_subdirectory(valprof)
 # add_subdirectory(wrapper)
 # add_subdirectory(stack-tree)

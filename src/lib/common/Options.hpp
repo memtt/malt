@@ -11,6 +11,8 @@
 
 /********************  HEADERS  *********************/
 #include <string>
+#include <vector>
+#include <cassert>
 
 /********************  HEADERS  *********************/
 //iniparser
@@ -30,11 +32,18 @@ namespace MATT
 /********************  STRUCT  **********************/
 class OptionDefGeneric
 {
-	virtual void load(dictionary * dic) = 0;
-	virtual void dump(dictionary * dic) = 0;
-	virtual void dump(htopml::JsonState & json) = 0;
-	virtual void setToDefault(void) = 0;
-	virtual bool equal(void * ptr) = 0;
+	public:
+		OptionDefGeneric(const std::string & section,const std::string & name) {this->name = name; this->section = section;};
+		virtual void load(dictionary * dic) = 0;
+		virtual void dump(dictionary * dic) = 0;
+		virtual void dump(htopml::JsonState & json) = 0;
+		virtual void setToDefault(void) = 0;
+		virtual bool equal(OptionDefGeneric & ptr) const = 0;
+		const std::string & getName(void) const {return name;};
+		const std::string  & getSection(void) const {return section;};
+	protected:
+		std::string section;
+		std::string name;
 };
 
 /********************  STRUCT  **********************/
@@ -42,16 +51,14 @@ template <class T>
 class OptionDef : public OptionDefGeneric
 {
 	public:
-		OptionDef(struct Options * options,T * ptr,const std::string & section,const std::string & name,const T & defaultValue);
+		OptionDef(T * ptr,const std::string & section,const std::string & name,const T & defaultValue);
 		void load(dictionary * dic);
 		void dump(dictionary * dic);
 		void dump(htopml::JsonState & json);
 		void setToDefault(void);
-		bool equal(void * ptr);
+		bool equal(OptionDefGeneric & ptr) const;
 	private:
 		T * ptr;
-		std::string section;
-		std::string name;
 		T defaultValue;
 };
 
@@ -69,6 +76,7 @@ struct Options
 	bool stackProfileEnabled;
 	bool stackResolve;
 	std::string stackMode;
+	bool stackLibunwind;
 	//vars for time profiging
 	bool timeProfileEnabled;
 	int timeProfilePoints;
@@ -100,6 +108,32 @@ struct IniParserHelper
 	static void setEntry (dictionary * dic, const char * key, bool value);
 	static void setEntry (dictionary * dic, const char * key, int value);
 };
+
+/********************  GLOBALS  *********************/
+/** 
+ * Define a global instance of option to get access from the whole tool. 
+ * Please prefer to use the accessor instead of the variable itsef directly.
+ * The code will be inlined by be safer in debug mode.
+**/
+extern Options * gblOptions;
+
+/*******************  FUNCTION  *********************/
+static inline const Options & getGlobalOptions(void)
+{
+	assert(gblOptions != NULL);
+	return *gblOptions;
+}
+
+/*******************  FUNCTION  *********************/
+Options & initGlobalOptions(void);
+
+/*******************  FUNCTION  *********************/
+/** Safer function to access to the option, with check in debug mode.**/
+static inline Options & getOptions(void) 
+{
+	assert(gblOptions != NULL);
+	return *gblOptions;
+}
 
 /*******************  FUNCTION  *********************/
 void convertToJson(htopml::JsonState & json,const Options & value);
