@@ -8,7 +8,7 @@
 
 ######################################################
 add_subdirectory(lib)
-#add_subdirectory(integration)
+add_subdirectory(integration)
 #add_subdirectory(trace-reader)
 
 ######################################################
