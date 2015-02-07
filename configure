@@ -1,0 +1,236 @@
+#!/bin/sh
+######################################################
+#            PROJECT  : MATT                         #
+#            VERSION  : 0.1.0-dev                    #
+#            DATE     : 01/2014                      #
+#            AUTHOR   : Valat Sébastien              #
+#            LICENSE  : CeCILL-C                     #
+######################################################
+
+######################################################
+# This script provide a simple wrapper to cmake to fix
+# the missing --help equivalent to autotools. And it
+# may be more intuitive for users to use the well
+# known ./configure & make & make install procedure.
+
+######################################################
+#script setup
+PROJECT_NAME='MATT : Memory Allocations Tracking Tool'
+# State variables
+PREFIX='/usr/local'
+CMAKE='cmake'
+EXTRA_CC=''
+EXTRA_CXX=''
+EXTRA_CFLAGS=''
+EXTRA_CXXFLAGS=''
+EXTRA_LDFLAGS=''
+BUILD_TYPE='Release'
+#features
+ENABLE_GCC_COVERAGE=''
+ENABLE_JUNIT_OUT=''
+ENABLE_VALGRIND=''
+LIB_SUFFIX=''
+
+######################################################
+#Find default source dir
+SOURCE_DIR="`dirname \"$0\"`"
+
+######################################################
+HELP_MESSAGE="'configure' is a cmake wrapper to build ${PROJECT_NAME}
+For more control, prefer to use cmake directely, this wrapper only aims
+to ease your life for standard cases.
+
+Usage: ./configure [OPTION]... [VAR=VALUE]...
+
+To assign environment variables (e.g., CC, CFLAGS...), specify them as
+VAR=VALUE.  See below for descriptions of some of the useful variables.
+
+Defaults for the options are specified in brackets.
+
+Configuration:
+  -h, --help              display this help and exit
+      --srcdir=DIR        find the sources in DIR [configure dir or '${SOURCE_DIR}']
+
+Installation directories:
+   --prefix=PREFIX         install files in PREFIX [${PREFIX}]
+   --lib-suffix=SUFFIX     used to force suffix for lib directory. [empty].
+
+By default, 'make install' will install all the files in
+'/usr/local/bin', '/usr/local/lib' etc.  You can specify
+an installation prefix other than '/usr/local' using '--prefix',
+for instance '--prefix=$HOME'.
+
+Optional Features:
+   --enable-debug          Enable debugging support (-DCMAKE_BUILD_TYPE=Debug).
+   --enable-gcc-coverage   Enable GCC option to generate test coverage of the lib.
+   --enable-junit-output   Save test output in JUnit format (only in self-test mode).
+   --enable-valgrind       Enable valgrind on unit tests (-DENABLE_VALGRIND=yes).
+   --disable-tests         Disable unit tests of the lib (-DENABLE_TESTS=no).
+   --enable-jenkins        Enable all checking modes (unit, valgrind, coverage...).
+
+To find libs and commands :
+   --with-cmake={command}  Define the cmake command to use [cmake].
+
+To get the generated cmake command :
+   --show                  Display the cmake command and didn't execute it.
+
+Some influential environment variables:
+   LDFLAGS     linker flags, e.g. -L<lib dir> if you have libraries in a
+               nonstandard directory <lib dir>
+   CC          C compiler command
+   CFLAGS      C compiler flags
+   CXX         C++ compiler command
+   CXXFLAGS    C++ compiler flags"
+
+######################################################
+#Function to extract value from args. It split on equals
+#Params :
+#  $1 : user argument with option
+#  $2 : Option (--prefix)
+get_arg_value()
+{
+	echo "$1" | sed -e "s/^$2=//g"
+}
+
+######################################################
+#Convert enable/disable options into yes/no status
+#  $1 : user arguement (--enable-.... or --disable-....)
+#  $2 : Optional argument. Use value INVERT to permut yes/no mapping.
+enabl_disabl_to_yes_no()
+{
+	case "$1" in
+		--enable-*)
+			if [ "$2" = 'INVERT' ]; then echo 'no'; else echo 'yes'; fi
+			;;
+		--disable-*)
+			if [ "$2" = 'INVERT' ]; then echo 'yes'; else echo 'no'; fi
+			;;
+		*)
+			echo "Invalid value in enabl_disabl_to_yes_no(), require --disable-* or --enable-*." 1>&2
+			echo 'unknown'
+			;;
+	esac
+}
+
+######################################################
+#parse arguments
+for arg in "$@"
+do
+	case "$arg" in
+		-h | --help)
+			echo "$HELP_MESSAGE"
+			exit 0
+			;;
+		--prefix=*)
+			PREFIX="-DCMAKE_INSTALL_PREFIX=`get_arg_value \"$arg\" --prefix`"
+			;;
+		--srcdir=*)
+			SOURCE_DIR="`get_arg_value \"$arg\" --srcdir`"
+			;;
+		--lib-suffix=*)
+			LIB_SUFFIX="`get_arg_value \"$arg\" --lib-suffix`"
+			if [ ! -z "${LIB_SUFFIX}" ]; then LIB_SUFFIX="-DLIB_SUFFIX=${LIB_SUFFIX}"; fi
+			;;
+		--with-cmake=*)
+			CMAKE="`get_arg_value \"$arg\" --with-cmake`"
+			;;
+		####################################################################
+		#--with-openpa=*)
+		#	OPENPA_PREFIX="-DOPENPA_PREFIX=`get_arg_value \"$arg\" --with-openpa`"
+		#	;;
+		####################################################################
+		--enable-debug)
+			BUILD_TYPE='Debug'
+			;;
+		--enable-gcc-coverage | --disable-gcc-coverage)
+			ENABLE_GCC_COVERAGE="-DENABLE_GCC_COVERAGE=`enabl_disabl_to_yes_no $arg`"
+			;;
+		--enable-junit-output | --disable-junit-output)
+			ENABLE_JUNIT_OUT="-DENABLE_JUNIT_OUTPUT=`enabl_disabl_to_yes_no $arg`"
+			;;
+		--enable-valgrind | --disable-valgrind)
+			ENABLE_VALGRIND="-DENABLE_VALGRIND=`enabl_disabl_to_yes_no $arg`"
+			;;
+		--disable-tests | --enable-tests)
+			DISABLE_TESTS="-DENABLE_TESTS=`enabl_disabl_to_yes_no $arg`";
+			;;
+		--enable-jenkins)
+			ENABLE_JUNIT_OUT='-DENABLE_JUNIT_OUTPUT=yes'
+			ENABLE_VALGRIND='-DENABLE_VALGRIND=yes'
+			BUILD_TYPE='Debug'
+			EXTRA_CXXFLAGS="${EXTRA_CXXFLAGS} -Wall -fprofile-arcs -ftest-coverage"
+			;;
+		--show)
+			ENABLE_DISPLAY_COMMAND='true'
+			;;
+		CC=*)
+			EXTRA_CC="`get_arg_value \"$arg\" CC`"
+			;;
+		CFLAGS=*)
+			EXTRA_CFLAGS="`get_arg_value \"$arg\" CFLAGS`"
+			;;
+		CXX=*)
+			EXTRA_CXX="`get_arg_value \"$arg\" CXX`"
+			;;
+		CXXFLAGS=*)
+			EXTRA_CXXFLAGS="${EXTRA_CXXFLAGS} `get_arg_value \"$arg\" CXXFLAGS`"
+			;;
+		LDFLAGS=*)
+			EXTRA_LDFLAGS="${EXTRA_CFLAGS} `get_arg_value \"$arg\" LDFLAGS`"
+			;;
+		*)
+			echo "Invalid argument : $arg, please check in --help." 1>&2
+			exit 1
+			;;
+	esac
+done
+
+######################################################
+#Check current directory
+if [ -f 'CMakeLists.txt' ] && [ -f 'configure' ]; then
+	echo "ERROR : CMake isn't adapted to support build directely in source"
+	echo "directory. Prefer to create a subdirectory to build."
+	echo ""
+	echo "Example : mkdir build && cd build && ../configure"
+	exit 1
+fi
+
+######################################################
+#Gen CC/CXX/LDFLAGS commands
+if [ ! -z "$EXTRA_CC" ];       then EXTRA_CC="-DCMAKE_C_COMPILER=${EXTRA_CC}"                 ; fi
+if [ ! -z "$EXTRA_CFLAGS" ];   then EXTRA_CFLAGS="-DCMAKE_C_COMPILER=${EXTRA_CFLAGS}"         ; fi
+if [ ! -z "$EXTRA_CXX" ];      then EXTRA_CXX="-DCMAKE_CXX_COMPILER=${EXTRA_CXX}"             ; fi
+if [ ! -z "$EXTRA_CXXFLAGS" ]; then EXTRA_CXXFLAGS="-DCMAKE_CXX_FLAGS=${EXTRA_CXXFLAGS}"      ; fi
+if [ ! -z "$EXTRA_LDFLAGS" ];  then EXTRA_LDFLAGS="-DCMAKE_EXE_LINKER_FLAGS=${EXTRA_LDFLAGS}" ; fi
+
+######################################################
+#Function to gen clean command
+#Params : {command} [args...]
+gen_clean_command()
+{
+	res=""
+	for tmp in "$@"
+	do
+		if [ ! -z "${tmp}" ]; then
+			res="${res} '${tmp}'"
+		fi
+	done
+	echo "${res}"
+}
+
+######################################################
+#Gen final command
+COMMAND="`gen_clean_command "${CMAKE}" "-DCMAKE_BUILD_TYPE=${BUILD_TYPE}" "${PREFIX}" "${EXTRA_CXX}" \
+	"${EXTRA_CXXFLAGS}" "${EXTRA_LDFLAGS}" "${EXTRA_CC}" "${EXTRA_CFLAGS}" \
+	"${ENABLE_SELF_TEST}" "${ENABLE_JUNIT_OUT}" "${ENABLE_VALGRIND}" "${ENABLE_GCC_COVERAGE}" "${DISABLE_TESTS}" \
+	"${LIB_SUFFIX}" "${SOURCE_DIR}"`"
+
+######################################################
+#execute or display
+if [ "${ENABLE_DISPLAY_COMMAND}" = 'true' ]; then
+	echo "${COMMAND}"
+else
+	echo ">>${COMMAND}"
+	eval "${COMMAND}"
+	exit $?
+fi
