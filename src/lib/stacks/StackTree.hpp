@@ -22,6 +22,17 @@ typedef void * StackTreeHandler;
 /********************  MACROS  **********************/
 #define MATT_STACK_TREE_ENTRIES 2
 
+/*********************  TYPES  **********************/
+class StackTreeStorage
+{
+	public:
+		StackTreeStorage() {for (int i = 0 ; i < MATT_STACK_TREE_ENTRIES ; i++) data[i] = NULL;};
+		void * & operator[](int id) {return data[id];};
+		void * operator[](int id) const {return (data[id]);};
+	private:
+		void* data [MATT_STACK_TREE_ENTRIES];
+};
+
 /*********************  CLASS  **********************/
 class StackTreeTypeDescriptor
 {
@@ -55,13 +66,15 @@ class StackTree
 		virtual StackTreeHandler enterFunction(StackTreeHandler handler,void * callsite) = 0;
 		virtual StackTreeHandler exitFunction(StackTreeHandler handler,void  * callsite) = 0;
 		virtual StackTreeHandler enterThread(void) = 0;
-		virtual StackTreeHandler setFromStack(StackTreeHandler handler,const Stack & stack) = 0;
+		virtual StackTreeHandler getFromStack(StackTreeHandler handler,const Stack & stack) = 0;
+		virtual StackTreeHandler getFromStack(StackTreeHandler handler,int skip) = 0;
 		virtual void exitThread(StackTreeHandler handler) = 0;
 		template <class T> T & getTypedData(StackTreeHandler handler,int id){return *(T*)getData(handler,id);};
-		template <class T> int addDescriptor(const std::string & name) {names[descriptorsCnt]=name;descriptors[descriptorsCnt]=new StackTreeTypeDescriptorTyped<T>();return descriptorsCnt++;};
+		template <class T> int addDescriptor(const std::string & name) {return addDescriptor(name,new StackTreeTypeDescriptorTyped<T>());};
+		int addDescriptor(const std::string name, StackTreeTypeDescriptor * descriptor) {names[descriptorsCnt]=name;descriptors[descriptorsCnt]=descriptor;return descriptorsCnt++;};
 	protected:
 		virtual void * getData(StackTreeHandler handler,int id) = 0;
-		virtual void setData(StackTreeHandler handler,int id, void* data) = 0;
+// 		virtual void setData(StackTreeHandler handler,int id, void* data) = 0;
 	protected:
 		std::string names[MATT_STACK_TREE_ENTRIES];
 		StackTreeTypeDescriptor * descriptors[MATT_STACK_TREE_ENTRIES];

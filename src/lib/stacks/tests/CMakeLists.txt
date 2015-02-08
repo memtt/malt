@@ -15,7 +15,8 @@ include_directories(../)
 set(TEST_NAMES TestStack
                TestBacktraceStack
                TestEnterExitStack
-               TestRLockFreeTree)
+               TestRLockFreeTree
+               TestStackTreeMap)
 
 ######################################################
 FOREACH(test_name ${TEST_NAMES})

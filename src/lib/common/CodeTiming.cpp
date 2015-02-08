@@ -88,16 +88,16 @@ int CodeTiming::compare(const void* a, const void* b)
  * will order the results on asc order based on the total cost (sum).
  * It will print on std::cerr.
 **/
-void CodeTiming::printAll(void)
+void CodeTiming::printAll(std::ostream & out)
 {
 	#ifdef MATT_ENABLE_CODE_TIMING
-		cerr << "=============================================================== MATT TIMINGS ====================================================================" << endl;
+		out << "=============================================================== MATT TIMINGS ====================================================================" << endl;
 		qsort(globalTimers,globalCntTimers,sizeof(globalTimers[0]),CodeTiming::compare);
 		for (int i = 0 ; i < globalCntTimers ; i++)
 		{	
 			globalTimers[i]->finalPrint();
 		}
-		cerr << "=================================================================================================================================================" << endl;
+		out << "=================================================================================================================================================" << endl;
 	#endif
 }
 
@@ -131,22 +131,22 @@ CodeTiming::~CodeTiming(void)
 }
 
 /*******************  FUNCTION  *********************/
-void CodeTiming::finalPrint(void) const
+void CodeTiming::finalPrint(ostream& out) const
 {
 	#ifdef MATT_ENABLE_CODE_TIMING
 		ticks wholeExec = getticks() - globalStart;
 		double ratio = (double)(100*sum) / (double)wholeExec;
-		cerr << "TIMING OF " << std::setw(32) << std::left << this->name << " => [ ";
-		Helpers::printValue(cerr,min);
-		cerr << " , ";
-		Helpers::printValue(cerr,(double)sum / (double)count);
-		cerr << " , ";
-		Helpers::printValue(cerr,max);
-		cerr << " ] => TOTAL ( calls : ";
-		Helpers::printValue(cerr,count);
-		cerr << " , time : ";
-		Helpers::printValue(cerr,sum);
-		cerr << " , " << "ratio : ~ " << std::setprecision( 2 ) << setw(8) << std::left << ratio << "% )" << endl;
+		out << "TIMING OF " << std::setw(32) << std::left << this->name << " => [ ";
+		Helpers::printValue(out,min);
+		out << " , ";
+		Helpers::printValue(out,(double)sum / (double)count);
+		out << " , ";
+		Helpers::printValue(out,max);
+		out << " ] => TOTAL ( calls : ";
+		Helpers::printValue(out,count);
+		out << " , time : ";
+		Helpers::printValue(out,sum);
+		out << " , " << "ratio : ~ " << std::setprecision( 2 ) << setw(8) << std::left << ratio << "% )" << endl;
 	#endif
 }
 

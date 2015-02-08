@@ -13,6 +13,7 @@
 //standards
 #include <string>
 #include <cstdlib>
+#include <iostream>
 //from fftw (copied into extern-deps)
 #include <cycle.h>
 //internal
@@ -34,7 +35,7 @@ void yourFunc(void)
 			static MATT::CodeTiming __code_timing_local##__LINE__##__(name);   \
 			ticks __code_timing_start##__line__##__ = __code_timing_local##__LINE__##__.start(); \
 			do {code;} while(0); \
-			__code_timing_local##__LINE__##__.end(__code_timing_start##__line__##__);  \
+			__code_timing_local##__LINE__##__.stop(__code_timing_start##__line__##__);  \
 		} while(0)
 #else
 	#define CODE_TIMING(name,code) do{code;}while(0)
@@ -56,7 +57,7 @@ void yourFunc(void)
 	 * and use the name parameter to build the symbol name.
 	 * @param name Define the name to display at exit time.
 	**/
-	#define CODE_TIMING_FUNC_STOP(name) __code_timing_local_func__.end(__code_timing_start_func__)
+	#define CODE_TIMING_FUNC_STOP(name) __code_timing_local_func__.stop(__code_timing_start_func__)
 #else //MATT_ENABLE_CODE_TIMING
 	#define CODE_TIMING_FUNC_START(name) do{}while(0)
 	#define CODE_TIMING_FUNC_STOP(name) do{}while(0)
@@ -92,10 +93,10 @@ class CodeTiming
 		CodeTiming(const char * name);
 		~CodeTiming(void);
 		ticks start(void);
-		void end(ticks value);
-		void finalPrint(void) const;
+		void stop(ticks value);
+		void finalPrint(std::ostream & out = std::cerr) const;
 		const char * getName(void) const {return name;};
-		static void printAll(void);
+		static void printAll(std::ostream & out = std::cerr);
 	private:
 		static int compare(const void * a,const void * b);
 		static void registerTimer(CodeTiming * timer);
@@ -134,7 +135,7 @@ inline ticks CodeTiming::start(void)
 
 /*******************  FUNCTION  *********************/
 /** End measurement of the current call to your code. **/
-inline void CodeTiming::end(ticks start)
+inline void CodeTiming::stop(ticks start)
 {
 	#ifdef MATT_ENABLE_CODE_TIMING
 		//get time

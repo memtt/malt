@@ -28,3 +28,34 @@ TEST(TestOptions,test_macro_start_stop)
 	a=2+2;
 	CODE_TIMING_FUNC_STOP("test_macro_start_stop");
 }
+
+/*******************  FUNCTION  *********************/
+TEST(TestOptions,test_object)
+{
+	CodeTiming timing("test");
+	EXPECT_EQ("test",timing.getName());
+	
+}
+
+/*******************  FUNCTION  *********************/
+TEST(TestOptions,test_start_stop)
+{
+	CodeTiming timing("test");
+	timing.start();
+	timing.stop(100);
+}
+
+/*******************  FUNCTION  *********************/
+TEST(TestOptions,test_final_print)
+{
+	CodeTiming timing("test");
+	timing.start();
+	timing.stop(100);
+	std::stringstream out;
+	timing.finalPrint(out);
+	#ifdef MATT_ENABLE_CODE_TIMING
+	EXPECT_EQ("",out.str());
+	#else
+	EXPECT_EQ("",out.str());
+	#endif
+}

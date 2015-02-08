@@ -117,7 +117,7 @@ StackTreeHandler RLockFreeTree::setOnRoot(StackTreeHandler handler)
 }
 
 /*******************  FUNCTION  *********************/
-StackTreeHandler RLockFreeTree::setFromStack(StackTreeHandler handler, const Stack & stack)
+StackTreeHandler RLockFreeTree::getFromStack(StackTreeHandler handler, const Stack & stack)
 {
 	//check
 	assert(stack.isValid());
@@ -128,6 +128,24 @@ StackTreeHandler RLockFreeTree::setFromStack(StackTreeHandler handler, const Sta
 		handler = enterFunction(handler,stack[i]);
 	
 	return handler;
+}
+
+/*******************  FUNCTION  *********************/
+void RLockFreeTree::copyData(const MATT::Stack& stack, const MATT::StackTreeStorage& storage)
+{
+	StackTreeHandler handler = enterThread();
+	handler = getFromStack(handler,stack);
+	getNode(handler)->data = storage;
+	exitThread(handler);
+}
+
+/*******************  FUNCTION  *********************/
+StackTreeHandler RLockFreeTree::getFromStack(StackTreeHandler handler, int skip)
+{
+	BacktraceStack stack;
+	stack.loadCurrentStack();
+	stack.fastSkip(skip+1);
+	return getFromStack(handler,stack);
 }
 
 /*******************  FUNCTION  *********************/
@@ -168,12 +186,12 @@ void* RLockFreeTree::getData(MATT::StackTreeHandler handler, int id)
 }
 
 /*******************  FUNCTION  *********************/
-void RLockFreeTree::setData(MATT::StackTreeHandler handler, int id, void* data)
-{
-	assert(id < MATT_STACK_TREE_ENTRIES);
-	Handler typedHandler = (Handler)handler;
-	typedHandler->data[id] = data;
-}
+// void RLockFreeTree::setData(MATT::StackTreeHandler handler, int id, void* data)
+// {
+// 	assert(id < MATT_STACK_TREE_ENTRIES);
+// 	Handler typedHandler = (Handler)handler;
+// 	typedHandler->data[id] = data;
+// }
 
 /*******************  FUNCTION  *********************/
 void convertToJson(htopml::JsonState& json, const RLockFreeTree& tree)

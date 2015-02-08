@@ -43,7 +43,7 @@ struct RLockFreeTreeNode
 	/** Define the corresponding call site. **/
 	void * callSite;
 	/** Optional data attached to the current node, NULL if none. **/
-	void * data[MATT_STACK_TREE_ENTRIES];
+	StackTreeStorage data;
 	/**
 	 * Short integer ID to keep reproductible output for unit test instead of using data address.
 	 * It also produce smaller output than exadecimal addresses. 
@@ -77,12 +77,14 @@ class RLockFreeTree : public StackTree
 		virtual StackTreeHandler setOnRoot(StackTreeHandler handler);
 		virtual void exitThread(StackTreeHandler handler);
 		Handler getNode(StackTreeHandler handler);
-		virtual StackTreeHandler setFromStack(StackTreeHandler handler, const Stack & stack);
+		virtual StackTreeHandler getFromStack(StackTreeHandler handler, const Stack & stack);
+		virtual StackTreeHandler getFromStack(StackTreeHandler handler,int skip);
+		virtual void copyData(const Stack & stack,const StackTreeStorage & storage);
 	public:
 		friend void convertToJson(htopml::JsonState & json, const RLockFreeTree & tree);
 	protected:
 		virtual void * getData(StackTreeHandler handler,int id);
-		virtual void setData(StackTreeHandler handler,int id, void* data);
+// 		virtual void setData(StackTreeHandler handler,int id, void* data);
 		Handler addChild(Handler node, void* callsite);
 		Handler findChild(Handler node, void* callsite);
 		virtual void insertChild(RLockFreeTreeNode * parent,RLockFreeTreeNode * child);
