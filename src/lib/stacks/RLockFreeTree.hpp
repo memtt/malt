@@ -43,7 +43,7 @@ struct RLockFreeTreeNode
 	/** Define the corresponding call site. **/
 	void * callSite;
 	/** Optional data attached to the current node, NULL if none. **/
-	void * data;
+	void * data[MATT_STACK_TREE_ENTRIES];
 	/**
 	 * Short integer ID to keep reproductible output for unit test instead of using data address.
 	 * It also produce smaller output than exadecimal addresses. 
@@ -81,58 +81,18 @@ class RLockFreeTree : public StackTree
 	public:
 		friend void convertToJson(htopml::JsonState & json, const RLockFreeTree & tree);
 	protected:
-		virtual void * getData(StackTreeHandler handler);
-		virtual void setData(StackTreeHandler handler, void* data);
+		virtual void * getData(StackTreeHandler handler,int id);
+		virtual void setData(StackTreeHandler handler,int id, void* data);
 		Handler addChild(Handler node, void* callsite);
 		Handler findChild(Handler node, void* callsite);
 		virtual void insertChild(RLockFreeTreeNode * parent,RLockFreeTreeNode * child);
+		void printData(htopml::JsonState & json,const RLockFreeTreeNode * node,int i) const;
+		void printData(htopml::JsonState & json,int i) const;
 	protected:
 		Spinlock lock;
 		bool threadSafe;
 		RLockFreeTreeNode root;
 		int lastDataId;
-};
-
-/*********************  CLASS  **********************/
-template <class T>
-class TypedRLockFreeTree : public RLockFreeTree
-{
-	public:
-		virtual T & getTypedData(StackTreeHandler handler) 
-		{
-			T * data = (T*)RLockFreeTree::getData(handler);
-			if (data == NULL)
-			{
-				data = new T;
-				setData(handler,data);
-			}
-			return *data;
-		};
-		template <class U> friend void convertToJson(htopml::JsonState & json, const TypedRLockFreeTree<U> & tree)
-		{
-			json.openStruct();
-				json.printField("calltree",(RLockFreeTree)tree);
-				json.openFieldStruct("data");
-				printData(json,&tree.root);
-				json.closeFieldStruct("data");
-			json.closeStruct();
-		}
-	protected:
-		static void printData(htopml::JsonState & json,const RLockFreeTreeNode * node)
-		{
-			char buffer[64];
-			if (node->data != NULL)
-			{
-				sprintf(buffer,"%d",node->dataId);
-				json.printField(buffer,*(const T*)node->data);
-			}
-			RLockFreeTreeNode * cur = node->firstChild;
-			while (cur != NULL)
-			{
-				printData(json,cur);
-				cur = cur->next;
-			}
-		}
 };
 
 }

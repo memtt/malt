@@ -119,16 +119,16 @@ CodeTiming::CodeTiming(const char* name)
 	#endif
 }
 
-// /*******************  FUNCTION  *********************/
-// /**
-//  * The destructor is in charge of printing the final results.
-// **/
-// CodeTiming::~CodeTiming(void)
-// {
-// 	#ifdef MATT_ENABLE_CODE_TIMING
-// 		timerFinish(this);
-// 	#endif
-// }
+/*******************  FUNCTION  *********************/
+/**
+ * The destructor is in charge of printing the final results.
+**/
+CodeTiming::~CodeTiming(void)
+{
+	#ifdef MATT_ENABLE_CODE_TIMING
+		timerFinish(this);
+	#endif
+}
 
 /*******************  FUNCTION  *********************/
 void CodeTiming::finalPrint(void) const

@@ -28,20 +28,24 @@ const char CST_VALUE_2[] =  "{\n\
 \t\t}\n\
 \t},\n\
 \t\"data\":{\n\
-\t\t\"2\":11,\n\
-\t\t\"0\":10\n\
+\t\t\"test-counter\":{\n\
+\t\t\t\"2\":11,\n\
+\t\t\t\"0\":10\n\
+\t\t}\n\
 \t}\n}";
 
 /*******************  FUNCTION  *********************/
 TEST(TypedRLockFreeTree,constructor)
 {
-	TypedRLockFreeTree<int> tree;
+	RLockFreeTree tree;
 }
 
 /*******************  FUNCTION  *********************/
 TEST(TypedRLockFreeTree,enterThread)
 {
-	TypedRLockFreeTree<int> tree;
+	RLockFreeTree tree;
+	tree.addDescriptor<int>("test-counter");
+	
 	StackTreeHandler handler1 = tree.enterThread();
 	StackTreeHandler handler2 = tree.enterThread();
 	
@@ -52,7 +56,9 @@ TEST(TypedRLockFreeTree,enterThread)
 /*******************  FUNCTION  *********************/
 TEST(TypedRLockFreeTree,enterFunction)
 {
-	TypedRLockFreeTree<int> tree;
+	RLockFreeTree tree;
+	tree.addDescriptor<int>("test-counter");
+
 	StackTreeHandler handler1 = tree.enterThread();
 	StackTreeHandler handler2 = tree.enterFunction(handler1,(void*)0xAAA);
 	StackTreeHandler handler3 = tree.enterFunction(handler1,(void*)0xAAA);
@@ -66,15 +72,17 @@ TEST(TypedRLockFreeTree,enterFunction)
 /*******************  FUNCTION  *********************/
 TEST(TypedRLockFreeTree,getData)
 {
-	TypedRLockFreeTree<int> tree;
+	RLockFreeTree tree;
+	tree.addDescriptor<int>("test-counter");
+
 	StackTreeHandler handler1 = tree.enterThread();
 	StackTreeHandler handler2 = tree.enterFunction(handler1,(void*)0xAAA);
 	StackTreeHandler handler3 = tree.enterFunction(handler1,(void*)0xBBB);
 	
-	int * data21 = &tree.getTypedData(handler2);
-	int * data22 = &tree.getTypedData(handler2);
-	int * data31 = &tree.getTypedData(handler3);
-	int * data32 = &tree.getTypedData(handler3);
+	int * data21 = &tree.getTypedData<int>(handler2,0);
+	int * data22 = &tree.getTypedData<int>(handler2,0);
+	int * data31 = &tree.getTypedData<int>(handler3,0);
+	int * data32 = &tree.getTypedData<int>(handler3,0);
 	
 	EXPECT_EQ(data21,data22);
 	EXPECT_EQ(data31,data32);
@@ -84,14 +92,16 @@ TEST(TypedRLockFreeTree,getData)
 /*******************  FUNCTION  *********************/
 TEST(TypedRLockFreeTree,toJson)
 {
-	TypedRLockFreeTree<int> tree;
+	RLockFreeTree tree;
+	tree.addDescriptor<int>("test-counter");
+
 	StackTreeHandler handler1 = tree.enterThread();
 	StackTreeHandler handler2 = tree.enterFunction(handler1,(void*)0xAAA);
 	StackTreeHandler handler3 = tree.enterFunction(handler1,(void*)0xBBB);
 	StackTreeHandler handler4 = tree.enterFunction(handler3,(void*)0xCCC);
 	
-	tree.getTypedData(handler2) = 10;
-	tree.getTypedData(handler4) = 11;
+	tree.getTypedData<int>(handler2,0) = 10;
+	tree.getTypedData<int>(handler4,0) = 11;
 	
 	std::stringstream out;
 	htopml::convertToJson(out,tree);
@@ -102,7 +112,9 @@ TEST(TypedRLockFreeTree,toJson)
 /*******************  FUNCTION  *********************/
 TEST(TypedRLockFreeTree,parallelUse)
 {
-	TypedRLockFreeTree<int> tree;
+	RLockFreeTree tree;
+	tree.addDescriptor<int>("test-counter");
+
 	#pragma omp parallel
 	{
 		for (int j = 0 ; j < 1000 ; j++)

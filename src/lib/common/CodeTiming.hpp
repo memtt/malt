@@ -90,7 +90,7 @@ class CodeTiming
 {
 	public:
 		CodeTiming(const char * name);
-		//~CodeTiming(void);
+		~CodeTiming(void);
 		ticks start(void);
 		void end(ticks value);
 		void finalPrint(void) const;

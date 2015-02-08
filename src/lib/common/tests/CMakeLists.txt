@@ -18,6 +18,8 @@ set(TEST_NAMES TestArray
                TestSTLInternalAllocator
                TestFormattedMessage
                TestNoFreeAllocator
+               TestCodeTimings
+               TestHelper
    )
 
 ######################################################
