@@ -58,7 +58,7 @@ set(COMMON_OBJS
                 $<TARGET_OBJECTS:matt-tools> 
                 $<TARGET_OBJECTS:matt-stacks> 
 #                 $<TARGET_OBJECTS:matt-valprof> 
-#                 $<TARGET_OBJECTS:matt-thread-wrapper> 
+                $<TARGET_OBJECTS:matt-thread-wrapper> 
                 #$<TARGET_OBJECTS:matt-stack-trees> 
                 $<TARGET_OBJECTS:matt-common> 
                 $<TARGET_OBJECTS:matt-port>
@@ -70,8 +70,8 @@ add_library(matt-base SHARED ${COMMON_OBJS})
 target_link_libraries(matt-base ${LIB_MATT_DEPS})
 
 ######################################################
-# add_library(matt SHARED ${COMMON_OBJS} $<TARGET_OBJECTS:matt-libc-wrapper>)
-# target_link_libraries(matt ${LIB_MATT_DEPS})
+add_library(matt SHARED ${COMMON_OBJS} $<TARGET_OBJECTS:matt-libc-wrapper>)
+target_link_libraries(matt ${LIB_MATT_DEPS})
 
 ######################################################
 # add_subdirectory(core)
@@ -79,7 +79,7 @@ add_subdirectory(tools)
 add_subdirectory(common)
 add_subdirectory(stacks)
 # add_subdirectory(valprof)
-# add_subdirectory(wrapper)
+add_subdirectory(wrapper)
 # add_subdirectory(stack-tree)
 add_subdirectory(portability)
 
