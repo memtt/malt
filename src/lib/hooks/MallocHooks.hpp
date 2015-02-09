@@ -11,25 +11,37 @@
 
 /********************  HEADERS  *********************/
 #include <cstdlib>
+#include <cycle.h>
 
 /***************** USING NAMESPACE ******************/
 namespace MATT
 {
+	
+/********************  STRUCT  **********************/
+struct MallocHooksInfos
+{
+	ticks calltime;
+	void * retaddr;
+	void * func;
+};
 
 /*********************  CLASS  **********************/
 class MallocHooks
 {
 	public:
 		virtual ~MallocHooks(void) {};
-		virtual void onMalloc(void* ret,size_t size) = 0;
-		virtual void onFree(void * ptr) = 0;
-		virtual void onCalloc(void * ret,size_t nmemb,size_t size) = 0;
-		virtual void onRealloc(void * ret,void * ptr, size_t size) = 0;
-		virtual void onPosixMemalign(int ret,void ** memptr,size_t align, size_t size) = 0;
-		virtual void onAlignedAlloc(void * ret,size_t alignment, size_t size) = 0;
-		virtual void onMemalign(void * ret,size_t alignment, size_t size) = 0;
-		virtual void onValloc(void * ret,size_t size) = 0;
-		virtual void onPvalloc(void * ret,size_t size) = 0;
+		virtual void onMalloc(MallocHooksInfos & info,void* ret,size_t size) = 0;
+		virtual void onFree(MallocHooksInfos & info,void * ptr) = 0;
+		virtual void onCalloc(MallocHooksInfos & info,void * ret,size_t nmemb,size_t size) = 0;
+		virtual void onRealloc(MallocHooksInfos & info,void * ret,void * ptr, size_t size) = 0;
+		virtual void onPosixMemalign(MallocHooksInfos & info,int ret,void ** memptr,size_t align, size_t size) = 0;
+		virtual void onAlignedAlloc(MallocHooksInfos & info,void * ret,size_t alignment, size_t size) = 0;
+		virtual void onMemalign(MallocHooksInfos & info,void * ret,size_t alignment, size_t size) = 0;
+		virtual void onValloc(MallocHooksInfos & info,void * ret,size_t size) = 0;
+		virtual void onPvalloc(MallocHooksInfos & info,void * ret,size_t size) = 0;
+		virtual void onEnterFunction(MallocHooksInfos & info) = 0;
+		virtual void onExitFunction(MallocHooksInfos & info) = 0;
+		virtual bool callEnterExit(void) = 0;
 };
 
 /*******************  FUNCTION  *********************/

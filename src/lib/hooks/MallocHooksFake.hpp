@@ -21,15 +21,18 @@ class MallocHooksFake : public MallocHooks
 {
 	public:
 		virtual ~MallocHooksFake(void) {};
-		virtual void onMalloc(void* ret,size_t size);
-		virtual void onFree(void * ret);
-		virtual void onCalloc(void * ret,size_t nmemb,size_t size);
-		virtual void onRealloc(void * ret,void * ptr, size_t size);
-		virtual void onPosixMemalign(int ret,void ** memptr,size_t align, size_t size);
-		virtual void onAlignedAlloc(void * ret,size_t alignment, size_t size);
-		virtual void onMemalign(void * ret,size_t alignment, size_t size);
-		virtual void onValloc(void * ret,size_t size);
-		virtual void onPvalloc(void * ret,size_t size);
+		virtual void onMalloc(MallocHooksInfos & info,void* ret,size_t size);
+		virtual void onFree(MallocHooksInfos & info,void * ret);
+		virtual void onCalloc(MallocHooksInfos & info,void * ret,size_t nmemb,size_t size);
+		virtual void onRealloc(MallocHooksInfos & info,void * ret,void * ptr, size_t size);
+		virtual void onPosixMemalign(MallocHooksInfos & info,int ret,void ** memptr,size_t align, size_t size);
+		virtual void onAlignedAlloc(MallocHooksInfos & info,void * ret,size_t alignment, size_t size);
+		virtual void onMemalign(MallocHooksInfos & info,void * ret,size_t alignment, size_t size);
+		virtual void onValloc(MallocHooksInfos & info,void * ret,size_t size);
+		virtual void onPvalloc(MallocHooksInfos & info,void * ret,size_t size);
+		virtual void onEnterFunction(MallocHooksInfos& info);
+		virtual void onExitFunction(MallocHooksInfos& info);
+		virtual bool callEnterExit(void);
 };
 
 };

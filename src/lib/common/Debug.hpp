@@ -84,12 +84,12 @@ inline Debug error(const char * format)   {return Debug(format,MESSAGE_ERROR);  
 inline Debug fatal(const char * format)   {return Debug(format,MESSAGE_FATAL);  }
 
 /********************  MACROS  **********************/
-#define MATT_FATAL_ARG(x)   MATT::Debug(x,MATT_CODE_LOCATION,MESSAGE_FATAL  )
-#define MATT_DEBUG_ARG(x)   MATT::Debug(x,MATT_CODE_LOCATION,MESSAGE_DEBUG  )
-#define MATT_ERROR_ARG(x)   MATT::Debug(x,MATT_CODE_LOCATION,MESSAGE_ERROR  )
-#define MATT_WARNING_ARG(x) MATT::Debug(x,MATT_CODE_LOCATION,MESSAGE_WARNING)
-#define MATT_MESSAGE_ARG(x) MATT::Debug(x,MATT_CODE_LOCATION,MESSAGE_NORMAL )
-#define MATT_INFO_ARG(x)    MATT::Debug(x,MATT_CODE_LOCATION,MESSAGE_INFO )
+#define MATT_FATAL_ARG(x)   MATT::Debug(x,MATT_CODE_LOCATION,MATT::MESSAGE_FATAL  )
+#define MATT_DEBUG_ARG(x)   MATT::Debug(x,MATT_CODE_LOCATION,MATT::MESSAGE_DEBUG  )
+#define MATT_ERROR_ARG(x)   MATT::Debug(x,MATT_CODE_LOCATION,MATT::MESSAGE_ERROR  )
+#define MATT_WARNING_ARG(x) MATT::Debug(x,MATT_CODE_LOCATION,MATT::MESSAGE_WARNING)
+#define MATT_MESSAGE_ARG(x) MATT::Debug(x,MATT_CODE_LOCATION,MATT::MESSAGE_NORMAL )
+#define MATT_INFO_ARG(x)    MATT::Debug(x,MATT_CODE_LOCATION,MATT::MESSAGE_INFO )
 
 /********************  MACROS  **********************/
 #define MATT_FATAL(x)   MATT_FATAL_ARG(x).end()
@@ -108,7 +108,7 @@ inline Debug fatal(const char * format)   {return Debug(format,MESSAGE_FATAL);  
 #ifdef NDEBUG
 	#define MATT_ASSERT(x)      do{} while(0)
 #else
-	#define MATT_ASSERT(x)      do{ if (!(x)) MATT::Debug(MATT_TO_STRING(x),MATT_CODE_LOCATION,MESSAGE_ASSERT).end(); } while(0)
+	#define MATT_ASSERT(x)      do{ if (!(x)) MATT::Debug(MATT_TO_STRING(x),MATT_CODE_LOCATION,MATT::MESSAGE_ASSERT).end(); } while(0)
 #endif
 
 }

@@ -58,12 +58,15 @@ set(COMMON_OBJS
                 $<TARGET_OBJECTS:matt-tools> 
                 $<TARGET_OBJECTS:matt-stacks> 
 #                 $<TARGET_OBJECTS:matt-valprof> 
-                $<TARGET_OBJECTS:matt-thread-wrapper> 
                 #$<TARGET_OBJECTS:matt-stack-trees> 
                 $<TARGET_OBJECTS:matt-common> 
                 $<TARGET_OBJECTS:matt-port>
                 $<TARGET_OBJECTS:matt-hooks> 
                 $<TARGET_OBJECTS:iniparser>
+                )
+set(WRAPPERS_OBJS
+                $<TARGET_OBJECTS:matt-malloc-wrapper> 
+                $<TARGET_OBJECTS:matt-thread-wrapper>
                 )
 
 ######################################################
@@ -71,7 +74,7 @@ add_library(matt-base SHARED ${COMMON_OBJS}  $<TARGET_OBJECTS:matt-init-fake>)
 target_link_libraries(matt-base ${LIB_MATT_DEPS})
 
 ######################################################
-add_library(matt SHARED ${COMMON_OBJS} $<TARGET_OBJECTS:matt-libc-wrapper>  $<TARGET_OBJECTS:matt-init-fake>)
+add_library(matt SHARED ${COMMON_OBJS} ${WRAPPERS_OBJS} $<TARGET_OBJECTS:matt-init-fake>)
 target_link_libraries(matt ${LIB_MATT_DEPS})
 
 ######################################################

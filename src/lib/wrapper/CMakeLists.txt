@@ -7,13 +7,10 @@
 ######################################################
 
 ######################################################
-add_library(matt-libc-wrapper OBJECT ../wrapper/AllocWrapper.cpp)
-SET_TARGET_PROPERTIES(matt-libc-wrapper PROPERTIES COMPILE_FLAGS -fPIC)
+add_library(matt-malloc-wrapper OBJECT MallocWrapper.cpp)
+SET_TARGET_PROPERTIES(matt-malloc-wrapper PROPERTIES COMPILE_FLAGS -fPIC)
 
 ######################################################
-set(MATT_THREAD_WRAPPER_SRC PThreadWrapper.cpp)
-
-######################################################
-add_library(matt-thread-wrapper OBJECT ${MATT_THREAD_WRAPPER_SRC})
+add_library(matt-thread-wrapper OBJECT PThreadWrapper.cpp)
 SET_TARGET_PROPERTIES(matt-thread-wrapper PROPERTIES COMPILE_FLAGS -fPIC)
 
