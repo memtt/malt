@@ -7,6 +7,6 @@
 ######################################################
 
 ######################################################
-add_library(matt-hooks OBJECT ThreadHooksFake.cpp MallocHooksFake.cpp MmapHooksFake.cpp)
+add_library(matt-hooks OBJECT ThreadHooksFake.cpp MallocHooksFake.cpp MmapHooksFake.cpp ExitHooksFake.cpp EnterExitFunctionHooksFake.cpp)
 SET_TARGET_PROPERTIES(matt-hooks PROPERTIES COMPILE_FLAGS -fPIC)
 

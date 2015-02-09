@@ -7,50 +7,37 @@
 *****************************************************/
 
 /********************  HEADERS  *********************/
-//standard
-#include <hooks/ThreadHooksFake.hpp>
-#include <hooks/MallocHooksFake.hpp>
-#include <hooks/MmapHooksFake.hpp>
-#include <hooks/ExitHooksFake.hpp>
-#include <hooks/EnterExitFunctionHooksFake.hpp>
-#include <common/Debug.hpp>
+#include "InitMatt.hpp"
 
+/*******************  FUNCTION  *********************/
 namespace MATT
 {
+
+/********************  GLOBALS  *********************/
+static InitMatt * gblMatt;
 
 /*******************  FUNCTION  *********************/
 ThreadHooks * threadHookInit(void)
 {
-	static ThreadHooksFake gblThreadHooks;
-	return &gblThreadHooks;
+	return gblMatt;
 }
 
 /*******************  FUNCTION  *********************/
 MallocHooks * mallocHookInit(void)
 {
-	static MallocHooksFake gblMallocHooks;
-	return &gblMallocHooks;
+	return gblMatt;
 }
 
 /*******************  FUNCTION  *********************/
 MmapHooks * mmapHookInit(void)
 {
-	static MmapHooksFake gblMmapHooks;
-	return &gblMmapHooks;
+	return gblMatt;
 }
 
 /*******************  FUNCTION  *********************/
 ExitHooks * exitHookInit(void)
 {
-	static ExitHooksFake gblExitHooks;
-	return &gblExitHooks;
-}
-
-/*******************  FUNCTION  *********************/
-EnterExitFunctionHooks * enterExitFunctionHookInit(void)
-{
-	static EnterExitFunctionHooksFake gblEnterExitFunctionHooks;
-	return &gblEnterExitFunctionHooks;
+	return gblMatt;
 }
 
 }

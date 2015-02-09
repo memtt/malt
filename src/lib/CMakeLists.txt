@@ -67,6 +67,9 @@ set(COMMON_OBJS
 set(WRAPPERS_OBJS
                 $<TARGET_OBJECTS:matt-malloc-wrapper> 
                 $<TARGET_OBJECTS:matt-thread-wrapper>
+                $<TARGET_OBJECTS:matt-mmap-wrapper>
+                $<TARGET_OBJECTS:matt-exit-wrapper>
+                $<TARGET_OBJECTS:matt-function-wrapper>
                 )
 
 ######################################################
