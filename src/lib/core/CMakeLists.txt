@@ -7,13 +7,8 @@
 ######################################################
 
 ######################################################
-add_library(matt-common OBJECT CodeTiming.cpp 
-                               FormattedMessage.cpp 
-                               Debug.cpp Options.cpp 
-                               SimpleAllocator.cpp 
-                               Helpers.cpp
-                               NoFreeAllocator.cpp)
-SET_TARGET_PROPERTIES(matt-common PROPERTIES COMPILE_FLAGS -fPIC)
+add_library(matt-core OBJECT CallCounter.cpp)
+SET_TARGET_PROPERTIES(matt-core PROPERTIES COMPILE_FLAGS -fPIC)
 
 ######################################################
 if (ENABLE_TESTS)

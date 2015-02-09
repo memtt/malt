@@ -14,12 +14,13 @@
 #include <hooks/MallocHooks.hpp>
 #include <hooks/MmapHooks.hpp>
 #include <hooks/ThreadHooks.hpp>
+#include <hooks/EnterExitFunctionHooks.hpp>
 
 namespace MATT
 {
 
 /*********************  CLASS  **********************/
-class InitMatt : public ExitHooks, MmapHooks, ThreadHooks, MallocHooks
+class InitMatt : public ExitHooks, public MmapHooks, public ThreadHooks, public MallocHooks, public EnterExitFunctionHooks
 {
 	public:
 		virtual ~InitMatt ( void );
@@ -51,6 +52,10 @@ class InitMatt : public ExitHooks, MmapHooks, ThreadHooks, MallocHooks
 		virtual void onPvalloc ( MallocHooksInfos& info, void* ret, size_t size );
 		virtual void onRealloc ( MallocHooksInfos& info, void* ret, void* ptr, size_t size );
 		virtual void onValloc ( MallocHooksInfos& info, void* ret, size_t size );
+		//enter exit function
+		virtual bool isEnterExitFunction ( void );
+		virtual void onEnterFunction ( void* caller, void* function );
+		virtual void onExitFunction ( void* caller, void* function );
 };
 
 }
