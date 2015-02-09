@@ -16,6 +16,8 @@
 #include <unistd.h>
 #include <libgen.h>
 #include <signal.h>
+//libc POSIX.1, here we use GNU specific RTLD_NEXT (need _GNU_SOURCE)
+#include <dlfcn.h>
 //internals
 #include <common/Debug.hpp>
 #include "Mutex.hpp"
@@ -249,6 +251,12 @@ void* OSUnix::mmap(size_t size, bool populate)
 void OSUnix::munmap(void* ptr, size_t size)
 {
 	munmap(ptr,size);
+}
+
+/*******************  FUNCTION  *********************/
+void * OSUnix::dlsymNextGeneric(const char* name)
+{
+	return dlsym(RTLD_NEXT,name);
 }
 
 }

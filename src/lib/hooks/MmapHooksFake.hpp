@@ -1,0 +1,31 @@
+/*****************************************************
+             PROJECT  : MATT
+             VERSION  : 0.1.0-dev
+             DATE     : 01/2014
+             AUTHOR   : Valat Sébastien
+             LICENSE  : CeCILL-C
+*****************************************************/
+
+#ifndef MATT_MMAP_HOOKS_FAKE_HPP
+#define MATT_MMAP_HOOKS_FAKE_HPP
+
+/********************  HEADERS  *********************/
+#include "MmapHooks.hpp"
+
+/***************** USING NAMESPACE ******************/
+namespace MATT
+{
+
+/*********************  CLASS  **********************/
+class MmapHooksFake : public MmapHooks
+{
+	public:
+		virtual ~MmapHooksFake(void) {};
+		virtual void onMmap(void * res,void *start, size_t length, int prot,int flags,int fd, size_t offset);
+		virtual void onMunmap(int ret,void *start, size_t length);
+		virtual void onMremap(void * ret,void *old_address, size_t old_size , size_t new_size, int flags);
+};
+
+};
+
+#endif //MATT_MMAP_HOOKS_FAKE_HPP

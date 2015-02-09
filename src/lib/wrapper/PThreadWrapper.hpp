@@ -13,6 +13,8 @@
 //standard
 #include <cstdlib>
 #include <pthread.h>
+//lcoals
+#include <hooks/ThreadHooks.hpp>
 
 namespace MATT
 {
@@ -41,28 +43,14 @@ struct PThreadWrapperArg
  * Structure to keep track of the global state monstly to remind active and 
  * maximum thread count.
 **/
-struct PThreadWrapperData
+struct PthreadWrapperData
 {
-	/** Keep track of alive thread count. **/
-	int threadCount;
-	/** Keep track of maximum thread count seen since start. **/
-	int maxThreadCount;
+	/** Hook object to send events to user **/
+	ThreadHooks * threadHooks;
 	/** Pointer to the libc pthread_create method. **/
 	PthreadCreateFuncPtr pthread_create;
-	/** Mutex to protect update of the two counters. **/
-	pthread_mutex_t lock;
 	/** Keep track of pthread_key to use its destructor to be notified on thread exit. **/
 	pthread_key_t key;
-};
-
-/*********************  CLASS  **********************/
-/**
- * Put user function in a sub namespace.
-**/
-struct PThreadWrapper
-{
-	static int getThreadCount(void);
-	static int getMaxThreadCount(void);
 };
 
 }
