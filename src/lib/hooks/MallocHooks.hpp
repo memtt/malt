@@ -41,9 +41,9 @@ class MallocHooks
 		virtual void onMemalign(MallocHooksInfos & info,void * ret,size_t alignment, size_t size) = 0;
 		virtual void onValloc(MallocHooksInfos & info,void * ret,size_t size) = 0;
 		virtual void onPvalloc(MallocHooksInfos & info,void * ret,size_t size) = 0;
-		virtual void onEnterFunction(MallocHooksInfos & info) = 0;
-		virtual void onExitFunction(MallocHooksInfos & info) = 0;
-		virtual bool callEnterExit(void) = 0;
+		virtual void onMallocEnterFunction(MallocHooksInfos & info) = 0;
+		virtual void onMallocExitFunction(MallocHooksInfos & info) = 0;
+		virtual bool mallocCallEnterExit(void) = 0;
 };
 
 /*******************  FUNCTION  *********************/

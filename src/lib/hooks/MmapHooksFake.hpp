@@ -21,9 +21,12 @@ class MmapHooksFake : public MmapHooks
 {
 	public:
 		virtual ~MmapHooksFake(void) {};
-		virtual void onMmap(void * res,void *start, size_t length, int prot,int flags,int fd, size_t offset);
-		virtual void onMunmap(int ret,void *start, size_t length);
-		virtual void onMremap(void * ret,void *old_address, size_t old_size , size_t new_size, int flags);
+		virtual void onMmap(MmapHooksInfos & info,void * res,void *start, size_t length, int prot,int flags,int fd, size_t offset);
+		virtual void onMunmap(MmapHooksInfos & info,int ret,void *start, size_t length);
+		virtual void onMremap(MmapHooksInfos & info,void * ret,void *old_address, size_t old_size , size_t new_size, int flags);
+		virtual bool mmapCallEnterExit ( void );
+		virtual void onMmapEnterFunction ( MmapHooksInfos& info );
+		virtual void onMmapExitFunction ( MmapHooksInfos& info );
 };
 
 };

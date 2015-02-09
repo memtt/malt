@@ -37,7 +37,7 @@ namespace MATT
 		{\
 			infos.retaddr = __builtin_extract_return_addr(__builtin_return_address(0));\
 			infos.func = (void*)__func__;\
-			MATT::gblMallocWrapperState.hooks->onEnterFunction(infos);\
+			MATT::gblMallocWrapperState.hooks->onMallocEnterFunction(infos);\
 		}\
 		preaction;\
 	}\
@@ -52,7 +52,7 @@ namespace MATT
 	{\
 		action;\
 		if (MATT::gblMallocWrapperState.enterExit)\
-			MATT::gblMallocWrapperState.hooks->onExitFunction(infos);\
+			MATT::gblMallocWrapperState.hooks->onMallocExitFunction(infos);\
 		MATT::gblReenter = false;\
 	}\
 \
@@ -92,7 +92,7 @@ void mallocWrapperInit(void)
 		gblMallocWrapperState.hooks = mallocHookInit();
 
 		//check mode
-		gblMallocWrapperState.enterExit = MATT::gblMallocWrapperState.hooks->callEnterExit();
+		gblMallocWrapperState.enterExit = MATT::gblMallocWrapperState.hooks->mallocCallEnterExit();
 
 		//final state
 		gblMallocWrapperState.status = ALLOC_WRAP_READY;

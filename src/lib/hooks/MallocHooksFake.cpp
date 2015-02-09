@@ -81,19 +81,19 @@ void MallocHooksFake::onRealloc(MallocHooksInfos & info,void* ret, void* ptr, si
 }
 
 /*******************  FUNCTION  *********************/
-void MallocHooksFake::onEnterFunction(MallocHooksInfos& info)
+void MallocHooksFake::onMallocEnterFunction(MallocHooksInfos& info)
 {
 	MATT_INFO_ARG("enterFunction( %1 , %2 )").arg(info.retaddr).arg(info.func).end();
 }
 
 /*******************  FUNCTION  *********************/
-void MallocHooksFake::onExitFunction(MallocHooksInfos& info)
+void MallocHooksFake::onMallocExitFunction(MallocHooksInfos& info)
 {
 	MATT_INFO_ARG("exitFunction( %1 , %2 )").arg(info.retaddr).arg(info.func).end();
 }
 
 /*******************  FUNCTION  *********************/
-bool MallocHooksFake::callEnterExit(void)
+bool MallocHooksFake::mallocCallEnterExit(void)
 {
 	return true;
 }

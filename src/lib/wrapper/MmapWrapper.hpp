@@ -6,13 +6,13 @@
              LICENSE  : CeCILL-C
 *****************************************************/
 
-#ifndef MATT_MALLOC_WRAPPER_HPP
-#define MATT_MALLOC_WRAPPER_HPP
+#ifndef MATT_MMAP_WRAPPER_HPP
+#define MATT_MMAP_WRAPPER_HPP
 
 /********************  HEADERS  *********************/
 //standard
 #include <cstdlib>
-#include <hooks/MallocHooks.hpp>
+#include <hooks/MmapHooks.hpp>
 #include <portability/Mutex.hpp>
 #include "MallocWrapper.hpp"
 
@@ -28,7 +28,7 @@ typedef int (*MunmapFuncPtr)(void *start,size_t length);
 typedef int (*MremapFuncPtr)(void *old_address, size_t old_size , size_t new_size, int flags);
 
 /********************  STRUCT  **********************/
-struct MallocLibcFunctions
+struct MmapLibcFunctions
 {
 	/** Pointer to the old (libc) mmap symbol. **/
 	MmapFuncPtr mmap;
@@ -39,7 +39,7 @@ struct MallocLibcFunctions
 };
 
 /********************  STRUCT  **********************/
-struct MallocWrapperState
+struct MmapWrapperState
 {
 	/** Current state in life cycle of the structure. CAUTION, need to stay at first position. **/
 	AllocWrapperStatus status;
@@ -49,16 +49,16 @@ struct MallocWrapperState
 	**/
 	StaticMutex lock;
 	/** Pointer to hooks **/
-	MallocHooks * hooks;
+	MmapHooks * hooks;
 	/** Pointer to original functions **/
-	MallocLibcFunctions functions;
+	MmapLibcFunctions functions;
 	/** Remind enter-exit mode status **/
 	bool enterExit;
 };
 
 /*******************  FUNCTION  *********************/
-void mallocWrapperInit(void);
+void mmapWrapperInit(void);
 
 }
 
-#endif //MATT_MALLOC_WRAPPER_HPP
+#endif //MATT_MMAP_WRAPPER_HPP
