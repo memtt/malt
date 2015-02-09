@@ -18,6 +18,7 @@ namespace MATT
 
 /********************* GLOBALS **********************/
 MallocWrapperState gblMallocWrapperState = {ALLOC_WRAP_NOT_INIT,MATT_STATIC_MUTEX_INIT,NULL};
+static __thread bool gblReenter = false;
 
 /*******************  FUNCTION  *********************/
 void mallocWrapperInit(void)
@@ -70,7 +71,7 @@ void mallocWrapperInit(void)
 **/
 void * malloc(size_t size)
 {
-	if (MATT::gblMallocWrapperState.status == MATT::ALLOC_WRAP_INIT_SYMBOL)
+	if (MATT::gblMallocWrapperState.status == MATT::ALLOC_WRAP_NOT_INIT)
 		MATT::mallocWrapperInit();
 
 	//run the default function
@@ -86,16 +87,20 @@ void * malloc(size_t size)
 	infos.calltime = t;
 	
 	//enter exit
-	
-	if (MATT::gblMallocWrapperState.enterExit)
+	if (!MATT::gblReenter)
 	{
-		infos.retaddr = __builtin_extract_return_addr(__builtin_return_address(0));
-		infos.func = (void*)__func__;
-		MATT::gblMallocWrapperState.hooks->onEnterFunction(infos);
+		MATT::gblReenter = true;
+		if (MATT::gblMallocWrapperState.enterExit)
+		{
+			infos.retaddr = __builtin_extract_return_addr(__builtin_return_address(0));
+			infos.func = (void*)__func__;
+			MATT::gblMallocWrapperState.hooks->onEnterFunction(infos);
+		}
+		MATT::gblMallocWrapperState.hooks->onMalloc(infos,ret,size);
+		if (MATT::gblMallocWrapperState.enterExit)
+			MATT::gblMallocWrapperState.hooks->onExitFunction(infos);
+		MATT::gblReenter = false;
 	}
-	MATT::gblMallocWrapperState.hooks->onMalloc(infos,ret,size);
-	if (MATT::gblMallocWrapperState.enterExit)
-		MATT::gblMallocWrapperState.hooks->onExitFunction(infos);
 
 	//return segment to user
 	return ret;
