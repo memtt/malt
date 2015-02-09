@@ -9,3 +9,7 @@
 ######################################################
 add_library(matt-init-fake OBJECT InitFake.cpp)
 SET_TARGET_PROPERTIES(matt-init-fake PROPERTIES COMPILE_FLAGS -fPIC)
+
+######################################################
+add_library(matt-init OBJECT InitFake.cpp)
+SET_TARGET_PROPERTIES(matt-init PROPERTIES COMPILE_FLAGS -fPIC)

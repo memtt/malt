@@ -13,5 +13,6 @@ void libdestructor(void) __attribute__((destructor (101)));
 void libdestructor(void)
 {
 	MATT::ExitHooks * hook = MATT::exitHookInit();
-	hook->onExit();
+	if (hook != NULL)
+		hook->onExit();
 }

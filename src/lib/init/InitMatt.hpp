@@ -22,8 +22,8 @@ namespace MATT
 class InitMatt : public ExitHooks, MmapHooks, ThreadHooks, MallocHooks
 {
 	public:
-		InitMatt(void);
 		virtual ~InitMatt ( void );
+		void init(void);
 		//exit
 		virtual void onExit ( void );
 		//mmap

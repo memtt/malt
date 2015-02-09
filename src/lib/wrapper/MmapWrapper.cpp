@@ -31,7 +31,7 @@ namespace MATT
 \
 	bool reenter = MATT::gblReenter;\
 	/*enter exit*/\
-	if (!reenter)\
+	if (!reenter && MATT::gblMmapWrapperState.hooks != NULL)\
 	{\
 		MATT::gblReenter = true;\
 		if (MATT::gblMmapWrapperState.enterExit)\
@@ -49,7 +49,7 @@ namespace MATT
 	infos.calltime = t;\
 \
 	/*enter exit*/\
-	if (!reenter)\
+	if (!reenter && MATT::gblMmapWrapperState.hooks != NULL)\
 	{\
 		action;\
 		if (MATT::gblMmapWrapperState.enterExit)\

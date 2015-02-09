@@ -8,35 +8,68 @@
 
 /********************  HEADERS  *********************/
 #include "InitMatt.hpp"
+#include <hooks/EnterExitFunctionHooks.hpp>
 
 /*******************  FUNCTION  *********************/
 namespace MATT
 {
 
 /********************  GLOBALS  *********************/
-static InitMatt * gblMatt;
+static bool gblMattWasInit = false;
+static InitMatt gblMatt;
 
 /*******************  FUNCTION  *********************/
 ThreadHooks * threadHookInit(void)
 {
+	if (!gblMattWasInit)
+	{
+		gblMatt.init();
+		gblMattWasInit = true;
+	}
 	return gblMatt;
 }
 
 /*******************  FUNCTION  *********************/
 MallocHooks * mallocHookInit(void)
 {
+	if (!gblMattWasInit)
+	{
+		gblMatt.init();
+		gblMattWasInit = true;
+	}
 	return gblMatt;
 }
 
 /*******************  FUNCTION  *********************/
 MmapHooks * mmapHookInit(void)
 {
+	if (!gblMattWasInit)
+	{
+		gblMatt.init();
+		gblMattWasInit = true;
+	}
 	return gblMatt;
 }
 
 /*******************  FUNCTION  *********************/
 ExitHooks * exitHookInit(void)
 {
+	if (!gblMattWasInit)
+	{
+		gblMatt.init();
+		gblMattWasInit = true;
+	}
+	return gblMatt;
+}
+
+/*******************  FUNCTION  *********************/
+EnterExitFunctionHooks * enterExitFunctionHooks(void)
+{
+	if (!gblMattWasInit)
+	{
+		gblMatt.init();
+		gblMattWasInit = true;
+	}
 	return gblMatt;
 }
 

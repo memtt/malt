@@ -29,7 +29,8 @@ static PthreadWrapperData gblWrapperData = {NULL,NULL};
 **/
 void pthreadWrapperOnExit(void *)
 {
-	gblWrapperData.threadHooks->onThreadExit();
+	if (gblWrapperData.threadHooks != NULL)
+		gblWrapperData.threadHooks->onThreadExit();
 }
 
 /*******************  FUNCTION  *********************/
@@ -41,7 +42,8 @@ void pthreadWrapperOnExit(void *)
 void * pthreadWrapperStartRoutine(void * arg)
 {
 	//send event
-	gblWrapperData.threadHooks->onThreadCreate();	
+	if (gblWrapperData.threadHooks != NULL)
+		gblWrapperData.threadHooks->onThreadCreate();	
 
 	//setup the key to get destructor call on thread exit (capture function finish or pthread_exit)
 	pthread_setspecific(gblWrapperData.key, (void*)0x1);

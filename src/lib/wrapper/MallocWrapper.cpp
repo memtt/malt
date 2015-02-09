@@ -30,7 +30,7 @@ namespace MATT
 \
 	bool reenter = MATT::gblReenter;\
 	/*enter exit*/\
-	if (!reenter)\
+	if (!reenter && MATT::gblMallocWrapperState.hooks != NULL)\
 	{\
 		MATT::gblReenter = true;\
 		if (MATT::gblMallocWrapperState.enterExit)\
@@ -48,7 +48,7 @@ namespace MATT
 	infos.calltime = t;\
 \
 	/*enter exit*/\
-	if (!reenter)\
+	if (!reenter && MATT::gblMallocWrapperState.hooks != NULL)\
 	{\
 		action;\
 		if (MATT::gblMallocWrapperState.enterExit)\
