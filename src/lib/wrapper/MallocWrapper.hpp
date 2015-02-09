@@ -6,6 +6,9 @@
              LICENSE  : CeCILL-C
 *****************************************************/
 
+#ifndef MATT_MALLOC_WRAPPER_HPP
+#define MATT_MALLOC_WRAPPER_HPP
+
 /********************  HEADERS  *********************/
 //standard
 #include <cstdlib>
@@ -101,3 +104,5 @@ struct MallocWrapperState
 void mallocWrapperInit(void);
 
 }
+
+#endif //MATT_MALLOC_WRAPPER_HPP

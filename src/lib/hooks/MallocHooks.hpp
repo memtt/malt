@@ -31,8 +31,10 @@ class MallocHooks
 	public:
 		virtual ~MallocHooks(void) {};
 		virtual void onMalloc(MallocHooksInfos & info,void* ret,size_t size) = 0;
+		virtual void onPreFree(MallocHooksInfos & info,void * ptr) = 0;
 		virtual void onFree(MallocHooksInfos & info,void * ptr) = 0;
 		virtual void onCalloc(MallocHooksInfos & info,void * ret,size_t nmemb,size_t size) = 0;
+		virtual void onPreRealloc(MallocHooksInfos & info,void * ptr, size_t size) = 0;
 		virtual void onRealloc(MallocHooksInfos & info,void * ret,void * ptr, size_t size) = 0;
 		virtual void onPosixMemalign(MallocHooksInfos & info,int ret,void ** memptr,size_t align, size_t size) = 0;
 		virtual void onAlignedAlloc(MallocHooksInfos & info,void * ret,size_t alignment, size_t size) = 0;

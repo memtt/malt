@@ -21,9 +21,15 @@ void MallocHooksFake::onMalloc(MallocHooksInfos & info,void* ret, size_t size)
 }
 
 /*******************  FUNCTION  *********************/
+void MallocHooksFake::onPreFree(MallocHooksInfos & info,void* ptr)
+{
+	MATT_INFO_ARG("pre-free( %1 )").arg(ptr).end();
+}
+
+/*******************  FUNCTION  *********************/
 void MallocHooksFake::onFree(MallocHooksInfos & info,void* ptr)
 {
-	MATT_INFO_ARG("free( %1 )").arg(ptr);
+	MATT_INFO_ARG("free( %1 )").arg(ptr).end();
 }
 
 /*******************  FUNCTION  *********************/
@@ -62,6 +68,13 @@ void MallocHooksFake::onValloc(MallocHooksInfos & info,void* ret, size_t size)
 	MATT_INFO_ARG("%1 = valloc( %2 )").arg(ret).arg(size).end();
 }
 
+/*******************  FUNCTION  *********************/
+void MallocHooksFake::onPreRealloc(MallocHooksInfos & info,void* ptr, size_t size)
+{
+	MATT_INFO_ARG("pre-realloc( %2 , %3 )").arg(ptr).arg(size).end();
+}
+
+/*******************  FUNCTION  *********************/
 void MallocHooksFake::onRealloc(MallocHooksInfos & info,void* ret, void* ptr, size_t size)
 {
 	MATT_INFO_ARG("%1 = realloc( %2 , %3 )").arg(ret).arg(ptr).arg(size).end();
