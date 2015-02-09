@@ -1,3 +1,4 @@
+#!/bin/bash
 ######################################################
 #            PROJECT  : MATT                         #
 #            VERSION  : 0.0.0                        #
@@ -7,31 +8,37 @@
 ######################################################
 
 ######################################################
-#Usage of OBJECT keyword in add_library require 2.8.8 (or something like that, need to check)
-cmake_minimum_required(VERSION 2.8.8)
-project(MATT)
+COLOR_RED="$(printf "\033[31m")"
+COLOR_RESET="$(printf "\033[0m")"
 
 ######################################################
-#global setup
-enable_testing()
+function print_error()
+{
+	echo "${COLOR_RED}$@${COLOR_RESET}" 1>&2
+}
 
 ######################################################
-#Add internal search path for scripts
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_SOURCE_DIR}/cmake/)
+#check args
+if [ -z "$1" ]; then
+	print_error "Missing version !"
+	echo "Usage : $0 {VERSION}" 1>&2
+	exit 1
+fi
 
 ######################################################
-#Delegate some cmake scripts
-include(${CMAKE_SOURCE_DIR}/cmake/macros.cmake)
-include(${CMAKE_SOURCE_DIR}/cmake/unittest-macros.cmake)
+#check call from root directory of project
+if [ "$0" != "./dev/update-version.sh" ]; then
+	print_error "Caution, you must call this script from the project root directory !"
+fi
 
 ######################################################
-#Some global setup
-setup_internal_gmock_and_gtest()
-if (ENABLE_GCC_COVERAGE)
-	matt_enable_gcc_coverage()
-endif(ENABLE_GCC_COVERAGE)
+version="$1"
+newdate="DATE     : $(date +%m/%Y)"
+V="VERSION"
+newversion="$V  : $(printf "%-16s" "$version")"
 
 ######################################################
-#build subdirs
-add_subdirectory(src)
-add_subdirectory(extern-deps)
+find ./ | while read file
+do
+	sed -i -r -e "s#  DATE     : [0-9]{2}/[0-9]{4}#  ${newdate}#g" -e "s#  $V  : .{16}#  ${newversion}#" "${file}"
+done
