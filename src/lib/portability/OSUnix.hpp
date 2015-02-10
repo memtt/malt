@@ -61,6 +61,7 @@ class OSUnix
 		static std::string getHostname(void);
 		static std::string getDateTime(void);
 		static std::string getCmdLine(void);
+		static const char * getEnv( const char* name );
 		static void setSigKillHandler(void (*handler)(int s));
 		static std::string loadTextFile(const std::string & file);
 		static void * mmap(size_t size, bool populate = false);

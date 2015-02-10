@@ -208,4 +208,10 @@ bool StackTreeMap::isEnterExit ( void ) const
 	return !backtrace;
 }
 
+/*******************  FUNCTION  *********************/
+void StackTreeMap::toJson ( htopml::JsonState& json, const StackTree& tree ) const
+{
+	convertToJson(json,dynamic_cast<const StackTreeMap&>(tree));
+}
+
 }

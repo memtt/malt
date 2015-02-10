@@ -9,6 +9,15 @@
 /********************  HEADERS  *********************/
 #include "ProcessLevelAnalysis.hpp"
 #include <hooks/EnterExitFunctionHooks.hpp>
+#include <common/FormattedMessage.hpp>
+#include <common/Options.hpp>
+#include <common/Helpers.hpp>
+#include <common/CodeTiming.hpp>
+#include <portability/OS.hpp>
+#include <stacks/StackTreeMap.hpp>
+#include <stacks/RLockFreeTree.hpp>
+#include <common/Debug.hpp>
+#include <fstream>
 
 /*******************  FUNCTION  *********************/
 namespace MATT
@@ -29,7 +38,21 @@ ProcessLevelAnalysis::~ProcessLevelAnalysis ( void )
 /*******************  FUNCTION  *********************/
 void ProcessLevelAnalysis::init ( void )
 {
-
+	Options & options = getOptions();
+	switch(options.getStackMode())
+	{
+		case MATT_STACK_MAP_BACKTRACE:
+			this->stackTree = new StackTreeMap();
+			break;
+		case MATT_STACK_TREE_ENTER_EXIT:
+			this->stackTree = new RLockFreeTree();
+			break;
+		case MATT_STACK_MAP_ENTER_EXIT:
+			this->stackTree = new StackTreeMap(false);
+			break;
+		default:
+			MATT_FATAL_ARG("Invalid stck tree mode from options : %1 ! ").arg(options.getStackMode()).end();
+	}
 }
 
 /*******************  FUNCTION  *********************/
@@ -57,7 +80,38 @@ void ProcessLevelAnalysis::onCalloc ( MallocHooksInfos& info, void* ret, size_t 
 /*******************  FUNCTION  *********************/
 void ProcessLevelAnalysis::onExit ( void )
 {
+	//open output file
+		//TODO manage errors
+		std::ofstream out;
+		Options & options = getOptions();
+		
+		//config
+// 		if (options.outputDumpConfig)
+// 		{
+// 			options.dumpConfig(FormattedMessage(options.outputName).arg(OS::getExeName()).arg(Helpers::getFileId()).arg("ini").toString().c_str());
+// 		}
+		
+		//lua
+// 		if (options.outputLua)
+// 		{
+// 			out.open(FormattedMessage(options.outputName).arg(OS::getExeName()).arg(Helpers::getFileId()).arg("lua").toString().c_str());
+// 			CODE_TIMING("outputLua",htopml::convertToLua(out,*this,options.outputIndent));
+// 			out.close();
+// 		}
 
+		//json
+// 		if (options.outputJson)
+// 		{
+			out.open(FormattedMessage(options.outputName).arg(OS::getExeName()).arg(Helpers::getFileId()).arg("json").toString().c_str());
+			CODE_TIMING("outputJson",htopml::convertToJson(out,*this,options.outputIndent));
+			out.close();
+// 		}
+
+		//print timings
+		#ifdef MATT_ENABLE_CODE_TIMING
+		CodeTiming::printAll();
+		gblInternaAlloc->printState();
+		#endif //MATT_ENABLE_CODE_TIMING
 }
 
 /*******************  FUNCTION  *********************/
@@ -209,6 +263,20 @@ ThreadLevelAnalysis* ProcessLevelAnalysis::getNewThreadLevelAnalysis ( void )
 StackTree* ProcessLevelAnalysis::getStackTree ( void )
 {
 	return stackTree;
+}
+
+/*******************  FUNCTION  *********************/
+void convertToJson ( htopml::JsonState& json, const ProcessLevelAnalysis& value )
+{
+	json.openStruct();
+		json.printField("stacks",*(value.stackTree));
+		json.openFieldArray("threads");
+			for (ThreadLevelAnalysisVector::const_iterator it = value.threads.begin() ; it != value.threads.end() ; ++it)
+			{
+				json.printValue(**it);
+			}
+		json.closeFieldArray("threads");
+	json.closeStruct();
 }
 
 }

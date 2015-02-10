@@ -60,11 +60,14 @@ class ProcessLevelAnalysis : public ExitHooks, public MmapHooks, public ThreadHo
 		virtual void onValloc ( MallocHooksInfos& info, void* ret, size_t size );
 		//enter exit function
 		virtual bool isEnterExitFunction ( void );
+		/*******************  FUNCTION  *********************/
 		virtual void onEnterFunction ( void* caller, void* function );
 		virtual void onExitFunction ( void* caller, void* function );
 		//manage tls
 		ThreadLevelAnalysis * getNewThreadLevelAnalysis(void);
 		StackTree * getStackTree(void);
+		//output
+		friend void convertToJson ( htopml::JsonState& json, const ProcessLevelAnalysis& value );
 	private:
 		ThreadLevelAnalysisVector threads;
 		StackTree * stackTree;

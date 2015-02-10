@@ -259,4 +259,10 @@ void * OSUnix::dlsymNextGeneric(const char* name)
 	return dlsym(RTLD_NEXT,name);
 }
 
+/*******************  FUNCTION  *********************/
+const char* OSUnix::getEnv ( const char* name )
+{
+	return getenv(name);
+}
+
 }

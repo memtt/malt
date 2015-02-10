@@ -74,6 +74,8 @@ class StackTree
 		template <class T> T & getTypedData(StackTreeHandler handler,int id){return *(T*)getData(handler,id);};
 		template <class T> int addDescriptor(const std::string & name) {return addDescriptor(name,new StackTreeTypeDescriptorTyped<T>());};
 		int addDescriptor(const std::string name, StackTreeTypeDescriptor * descriptor) {names[descriptorsCnt]=name;descriptors[descriptorsCnt]=descriptor;return descriptorsCnt++;};
+		virtual void toJson(htopml::JsonState & json, const StackTree & tree) const = 0;
+		friend void convertToJson(htopml::JsonState & json, const StackTree & tree) {tree.toJson(json,tree);};
 	protected:
 		virtual void * getData(StackTreeHandler handler,int id) = 0;
 // 		virtual void setData(StackTreeHandler handler,int id, void* data) = 0;

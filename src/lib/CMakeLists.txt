@@ -74,12 +74,16 @@ set(WRAPPERS_OBJS
                 )
 
 ######################################################
-add_library(matt-base SHARED ${COMMON_OBJS}  $<TARGET_OBJECTS:matt-init-fake>)
+add_library(matt-base SHARED ${COMMON_OBJS}  $<TARGET_OBJECTS:matt-init>)
 target_link_libraries(matt-base ${LIB_MATT_DEPS})
 
 ######################################################
-add_library(matt SHARED ${COMMON_OBJS} ${WRAPPERS_OBJS} $<TARGET_OBJECTS:matt-init-fake>)
+add_library(matt SHARED ${COMMON_OBJS} ${WRAPPERS_OBJS} $<TARGET_OBJECTS:matt-init>)
 target_link_libraries(matt ${LIB_MATT_DEPS})
+
+######################################################
+add_library(matt-fake SHARED ${COMMON_OBJS} ${WRAPPERS_OBJS} $<TARGET_OBJECTS:matt-init-fake>)
+target_link_libraries(matt-fake ${LIB_MATT_DEPS})
 
 ######################################################
 add_subdirectory(init)

@@ -154,8 +154,7 @@ void Options::loadFromFile(const char* fname)
 	//errors
 	assumeArg(iniDic != NULL,"Failed to load config file : %1 !").arg(fname);
 	
-	for (int i = 0 ; i < options.size() ; i++)
-		options[i]->load(iniDic);
+	this->loadFromIniDic(iniDic);
 	
 	//free dic
 	iniparser_freedict(iniDic);
@@ -229,6 +228,117 @@ void IniParserHelper::setEntry(dictionary* dic, const char* key, int value)
 	char buffer[64];
 	sprintf(buffer,"%d",value);
 	setEntry(dic,key,buffer);
+}
+
+/*******************  FUNCTION  *********************/
+/**
+ * Internal function to load options from iniDic.
+**/
+void Options::loadFromIniDic ( dictionary* iniDic )
+{
+	//errors
+	assert(iniDic != NULL);
+	
+	for (int i = 0 ; i < options.size() ; i++)
+		options[i]->load(iniDic);
+}
+
+/*******************  FUNCTION  *********************/
+/**
+ * Load values from string, mostly to be used from MATT_OPTION environment variable.
+ * 
+ * It expect string format like :
+ * 
+ * SEC1:NAME1=VALUE1;SEC2:NAME2=VALUE2;
+ * 
+ * @param value Define the string to load as a config file.
+**/
+void Options::loadFromString ( const char* value )
+{
+	//trivial
+	if (value == NULL)
+		return;
+
+	//create fake dictionary
+	dictionary * dic = dictionary_new(10);
+	
+	//copy string
+	char * dump = strdup(value);
+	
+	//loop on separators ';'
+	char * cur = dump;
+	while (*cur != '\0')
+	{
+		//remind start
+		char * start = cur;
+		char * sep = NULL;
+		
+		//search ';' or '\0'
+		while (*cur != ';' && *cur != '\0')
+		{
+			if (*cur == '=')
+				sep = cur;
+			cur++;
+		}
+		
+		//skip to next
+		if (cur == start)
+		{
+			cur++;
+			continue;
+		}
+		
+		//is end
+		bool isEnd = (*cur == '\0');
+		assumeArg(sep != NULL,"Invalid string format to setup option : '%1', expect SECTION:NAME=VALUE.").arg(start).end();
+		
+		//cut strings
+		*cur = '\0';
+		*sep = '\0';
+		sep++;
+		
+		//setup in INI
+		IniParserHelper::setEntry(dic,start,sep);
+		
+		//move
+		if (isEnd == false)
+			cur++;
+	}
+	
+	//load
+	this->loadFromIniDic(dic);
+
+	//free
+	iniparser_freedict(dic);
+	free(dump);
+}
+
+/*******************  FUNCTION  *********************/
+OptionStackMode Options::getStackMode ( void )
+{
+	if (this->stackMode == "backtrace")
+	{
+		return MATT_STACK_MAP_BACKTRACE;
+	} else if (this->stackMode == "tree-enter-exit") {
+		return MATT_STACK_TREE_ENTER_EXIT;
+	} else if (this->stackMode == "map-enter-exit") {
+		return MATT_STACK_MAP_ENTER_EXIT;
+	} else {
+		MATT_FATAL_ARG("Invalid stack mode : %1 !").arg(this->stackMode).end();
+		return MATT_STACK_MAP_BACKTRACE;
+	}
+}
+
+/*******************  FUNCTION  *********************/
+/**
+ * Need to be call once after malloc is available.
+**/
+Options& initGlobalOptions ( void )
+{
+	//error
+	assume (gblOptions == NULL,"initGlobalOptions was used previously, gblOptions is already init ! ");
+	gblOptions = new Options();
+	return *gblOptions;
 }
 
 }

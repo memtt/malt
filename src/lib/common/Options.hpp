@@ -28,6 +28,14 @@ namespace htopml {
 /*******************  NAMESPACE  ********************/
 namespace MATT
 {
+
+/********************  ENUM  ************************/
+enum OptionStackMode
+{
+	MATT_STACK_MAP_BACKTRACE,
+	MATT_STACK_TREE_ENTER_EXIT,
+	MATT_STACK_MAP_ENTER_EXIT
+};
 	
 /********************  STRUCT  **********************/
 class OptionDefGeneric
@@ -71,6 +79,9 @@ struct Options
 	Options(void);
 	void loadFromFile(const char * fname);
 	void dumpConfig(const char * fname);
+	void loadFromString ( const char* value );
+	void loadFromIniDic ( dictionary* iniDic );
+	OptionStackMode getStackMode(void);
 	OptionDefVector options;
 	//vars for stack profilinf
 	bool stackProfileEnabled;

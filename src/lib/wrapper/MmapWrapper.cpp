@@ -22,7 +22,11 @@ namespace MATT
 #define MATT_MMAP_WRAPPER(preaction,call,action,ret) \
 	/*call hoook*/\
 	MATT::MmapHooksInfos infos;\
-	MATT::MmapHooks * hooks = MATT::mmapHookInit();\
+	MATT::MmapHooks * hooks = NULL;\
+	bool reenter = MATT::gblReenter;\
+	\
+	if (reenter)\
+		hooks = MATT::mmapHookInit();\
 \
 	if (MATT::gblMmapWrapperState.status == MATT::ALLOC_WRAP_NOT_INIT)\
 		MATT::mmapWrapperInit();\
@@ -30,7 +34,6 @@ namespace MATT
 	/*run the default function*/\
 	MATT_ASSERT(MATT::gblMmapWrapperState.status > MATT::ALLOC_WRAP_INIT_SYMBOL);\
 \
-	bool reenter = MATT::gblReenter;\
 	/*enter exit*/\
 	if (!reenter && hooks != NULL)\
 	{\

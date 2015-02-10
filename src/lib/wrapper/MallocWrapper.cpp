@@ -21,7 +21,11 @@ namespace MATT
 #define MATT_MALLOC_WRAPPER(preaction,call,action,ret) \
 	/*call hoook*/\
 	MATT::MallocHooksInfos infos;\
-	MATT::MallocHooks * hooks = MATT::mallocHookInit();\
+	bool reenter = MATT::gblReenter;\
+	MATT::MallocHooks * hooks = NULL;\
+	\
+	if (reenter)\
+		hooks = MATT::mallocHookInit();\
 \
 	if (MATT::gblMallocWrapperState.status == MATT::ALLOC_WRAP_NOT_INIT)\
 		MATT::mallocWrapperInit();\
@@ -29,7 +33,6 @@ namespace MATT
 	/*run the default function*/\
 	MATT_ASSERT(MATT::gblMallocWrapperState.status > MATT::ALLOC_WRAP_INIT_SYMBOL);\
 \
-	bool reenter = MATT::gblReenter;\
 	/*enter exit*/\
 	if (!reenter && hooks != NULL)\
 	{\
@@ -112,6 +115,10 @@ void mallocWrapperInit(void)
 **/
 void * malloc(size_t size)
 {
+	//to load options
+	if (MATT::gblMallocWrapperState.status == MATT::ALLOC_WRAP_INIT_HOOKS)
+		return MATT::gblMallocWrapperState.functions.malloc(size);
+
 	MATT_MALLOC_WRAPPER(
 		MATT_MALLOC_WRAPPER_NO_ACTION,
 		void * ret = MATT::gblMallocWrapperState.functions.malloc(size),
@@ -129,6 +136,10 @@ void * malloc(size_t size)
 **/
 void free(void * ptr)
 {
+	//to load options
+	if (MATT::gblMallocWrapperState.status == MATT::ALLOC_WRAP_INIT_HOOKS)
+		return MATT::gblMallocWrapperState.functions.free(ptr);
+
 	MATT_MALLOC_WRAPPER(
 		hooks->onPreFree(infos,ptr),
 		MATT::gblMallocWrapperState.functions.free(ptr),

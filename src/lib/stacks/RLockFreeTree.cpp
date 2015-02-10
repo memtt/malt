@@ -266,4 +266,10 @@ bool RLockFreeTree::isEnterExit ( void ) const
 	return true;
 }
 
+/*******************  FUNCTION  *********************/
+void RLockFreeTree::toJson ( htopml::JsonState& json, const MATT::StackTree& tree ) const
+{
+	convertToJson(json,dynamic_cast<const RLockFreeTree&>(tree));
+}
+
 }
