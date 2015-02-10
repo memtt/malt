@@ -17,6 +17,7 @@
 #include <hooks/EnterExitFunctionHooks.hpp>
 #include "ThreadLevelAnalysis.hpp"
 #include <common/STLInternalAllocator.hpp>
+#include <core/Clock.hpp>
 #include <vector>
 
 namespace MATT
@@ -78,6 +79,7 @@ class ProcessLevelAnalysis : public ExitHooks, public MmapHooks, public ThreadHo
 	private:
 		ThreadLevelAnalysisVector threads;
 		StackTree * stackTree;
+		Clock mallocClock;
 };
 
 }

@@ -79,12 +79,14 @@ bool ProcessLevelAnalysis::mmapCallEnterExit ( void )
 /*******************  FUNCTION  *********************/
 void ProcessLevelAnalysis::onAlignedAlloc ( MallocHooksInfos& info, void* ret, size_t alignment, size_t size )
 {
+	this->mallocClock.markEvent();
 	this->stackTree->getTypedData<CallCounter>(info.handler,MATT_ANA_ID_ALLOC).call(size);
 }
 
 /*******************  FUNCTION  *********************/
 void ProcessLevelAnalysis::onCalloc ( MallocHooksInfos& info, void* ret, size_t nmemb, size_t size )
 {
+	this->mallocClock.markEvent();
 	this->stackTree->getTypedData<CallCounter>(info.handler,MATT_ANA_ID_ALLOC).call(size);
 }
 
@@ -131,12 +133,12 @@ void ProcessLevelAnalysis::onExit ( void )
 /*******************  FUNCTION  *********************/
 void ProcessLevelAnalysis::onFree ( MallocHooksInfos& info, void* ptr )
 {
-
 }
 
 /*******************  FUNCTION  *********************/
 void ProcessLevelAnalysis::onMalloc ( MallocHooksInfos& info, void* ret, size_t size )
 {
+	this->mallocClock.markEvent();
 	this->stackTree->getTypedData<CallCounter>(info.handler,MATT_ANA_ID_ALLOC).call(size);
 }
 
@@ -155,6 +157,7 @@ void ProcessLevelAnalysis::onMallocExitFunction ( MallocHooksInfos& info ,void *
 /*******************  FUNCTION  *********************/
 void ProcessLevelAnalysis::onMemalign ( MallocHooksInfos& info, void* ret, size_t alignment, size_t size )
 {
+	this->mallocClock.markEvent();
 	this->stackTree->getTypedData<CallCounter>(info.handler,MATT_ANA_ID_ALLOC).call(size);
 }
 
@@ -191,25 +194,26 @@ void ProcessLevelAnalysis::onMunmap ( MmapHooksInfos& info, int ret, void* start
 /*******************  FUNCTION  *********************/
 void ProcessLevelAnalysis::onPosixMemalign ( MallocHooksInfos& info, int ret, void** memptr, size_t align, size_t size )
 {
+	this->mallocClock.markEvent();
 	this->stackTree->getTypedData<CallCounter>(info.handler,MATT_ANA_ID_ALLOC).call(size);
 }
 
 /*******************  FUNCTION  *********************/
 void ProcessLevelAnalysis::onPreFree ( MallocHooksInfos& info, void* ptr )
 {
-
+	this->mallocClock.markEvent();
 }
 
 /*******************  FUNCTION  *********************/
 void ProcessLevelAnalysis::onPreRealloc ( MallocHooksInfos& info, void* ptr, size_t size )
 {
-
+	this->mallocClock.markEvent();
 }
 
 /*******************  FUNCTION  *********************/
 void ProcessLevelAnalysis::onPvalloc ( MallocHooksInfos& info, void* ret, size_t size )
 {
-
+	this->mallocClock.markEvent();
 }
 
 /*******************  FUNCTION  *********************/
@@ -233,6 +237,7 @@ void ProcessLevelAnalysis::onThreadExit ( void )
 /*******************  FUNCTION  *********************/
 void ProcessLevelAnalysis::onValloc ( MallocHooksInfos& info, void* ret, size_t size )
 {
+	this->mallocClock.markEvent();
 	this->stackTree->getTypedData<CallCounter>(info.handler,MATT_ANA_ID_ALLOC).call(size);
 }
 
