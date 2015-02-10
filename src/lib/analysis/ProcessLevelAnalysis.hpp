@@ -25,6 +25,12 @@ namespace MATT
 /*********************  TYPES  **********************/
 typedef std::vector<ThreadLevelAnalysis*,STLInternalAllocator<ThreadLevelAnalysis*> > ThreadLevelAnalysisVector;
 
+/********************  ENUM  ************************/
+enum ProcessAnalysisIDS
+{
+	MATT_ANA_ID_ALLOC,
+};
+
 /*********************  CLASS  **********************/
 class ProcessLevelAnalysis : public ExitHooks, public MmapHooks, public ThreadHooks, public MallocHooks, public EnterExitFunctionHooks
 {

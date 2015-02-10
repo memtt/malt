@@ -15,48 +15,38 @@ namespace MATT
 {
 
 /*******************  FUNCTION  *********************/
-CallCounter::CallCounter ( bool time )
+CallCounter::CallCounter ( void )
 {
-	this->time = time;
 	this->count = 0;
-	this->maxTime = 0;
-	this->minTime = 0;
-	this->sumTime = 0;
+	this->max = 0;
+	this->min = 0;
+	this->sum = 0;
 }
 
 /*******************  FUNCTION  *********************/
 void CallCounter::call ( ticks t )
 {
 	this->count++;
-	this->sumTime += t;
-	if (this->minTime == 0 || t < this->minTime)
-		this->minTime = t;
-	if (this->maxTime == 0 || t > this->maxTime)
-		this->maxTime = t;
+	this->sum += t;
+	if (this->min == 0 || t < this->min)
+		this->min = t;
+	if (this->max == 0 || t > this->max)
+		this->max = t;
 }
 
 /*******************  FUNCTION  *********************/
 void convertToJson ( htopml::JsonState& json, const CallCounter& value )
 {
 	json.openStruct();
-	if (value.time)
-	{
 		json.printField("count",value.count);
-		json.printField("sumTime",value.sumTime);
-		json.printField("minTime",value.minTime);
-		json.printField("maxTime",value.maxTime);
-	} else {
-		json.printField("count",value.count);
-		json.printField("sum",value.sumTime);
-		json.printField("min",value.minTime);
-		json.printField("max",value.maxTime);
-	}
+		json.printField("sum",value.sum);
+		json.printField("min",value.min);
+		json.printField("max",value.max);
 	json.closeStruct();
 }
 
 /*******************  FUNCTION  *********************/
 CallTimeSizeCounter::CallTimeSizeCounter ( void )
-	:CallCounter(true)
 {
 
 }
@@ -77,12 +67,12 @@ void convertToJson ( htopml::JsonState& json, const CallTimeSizeCounter& value )
 {
 	json.openStruct();
 		json.printField("count",value.count);
-		json.printField("sumTime",value.sumTime);
-		json.printField("minTime",value.minTime);
-		json.printField("maxTime",value.maxTime);
-		json.printField("sumSize",value.sumTime);
-		json.printField("minSize",value.minTime);
-		json.printField("maxSize",value.maxTime);
+		json.printField("sumTime",value.sum);
+		json.printField("minTime",value.min);
+		json.printField("maxTime",value.max);
+		json.printField("sumSize",value.sumSize);
+		json.printField("minSize",value.minSize);
+		json.printField("maxSize",value.maxSize);
 	json.closeStruct();
 }
 

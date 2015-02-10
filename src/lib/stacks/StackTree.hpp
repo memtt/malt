@@ -20,7 +20,7 @@ namespace MATT
 typedef void * StackTreeHandler;
 
 /********************  MACROS  **********************/
-#define MATT_STACK_TREE_ENTRIES 2
+#define MATT_STACK_TREE_ENTRIES 4
 #define MATT_STACK_TREE_NULL NULL
 
 /*********************  TYPES  **********************/

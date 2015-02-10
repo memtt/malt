@@ -210,6 +210,7 @@ void convertToJson(htopml::JsonState& json, const StackTreeMap& tree)
 		otree.copyData(*it->first.stack,it->second);
 	
 	otree.exitThread(handler);
+	otree.markChildData();
 	
 	convertToJson(json,otree);
 }

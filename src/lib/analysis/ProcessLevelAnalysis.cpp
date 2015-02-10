@@ -58,6 +58,10 @@ void ProcessLevelAnalysis::init ( void )
 		default:
 			MATT_FATAL_ARG("Invalid stck tree mode from options : %1 ! ").arg(options.getStackMode()).end();
 	}
+	
+	//setup tree
+	int id = this->stackTree->addDescriptor<CallCounter>("alloc");
+	assumeArg(id == MATT_ANA_ID_ALLOC,"Do not get valid ID while registering descriptors : %1 != %2").arg(id).arg(MATT_ANA_ID_ALLOC).end();
 }
 
 /*******************  FUNCTION  *********************/
@@ -75,13 +79,13 @@ bool ProcessLevelAnalysis::mmapCallEnterExit ( void )
 /*******************  FUNCTION  *********************/
 void ProcessLevelAnalysis::onAlignedAlloc ( MallocHooksInfos& info, void* ret, size_t alignment, size_t size )
 {
-
+	this->stackTree->getTypedData<CallCounter>(info.handler,MATT_ANA_ID_ALLOC).call(size);
 }
 
 /*******************  FUNCTION  *********************/
 void ProcessLevelAnalysis::onCalloc ( MallocHooksInfos& info, void* ret, size_t nmemb, size_t size )
 {
-
+	this->stackTree->getTypedData<CallCounter>(info.handler,MATT_ANA_ID_ALLOC).call(size);
 }
 
 /*******************  FUNCTION  *********************/
@@ -133,7 +137,7 @@ void ProcessLevelAnalysis::onFree ( MallocHooksInfos& info, void* ptr )
 /*******************  FUNCTION  *********************/
 void ProcessLevelAnalysis::onMalloc ( MallocHooksInfos& info, void* ret, size_t size )
 {
-
+	this->stackTree->getTypedData<CallCounter>(info.handler,MATT_ANA_ID_ALLOC).call(size);
 }
 
 /*******************  FUNCTION  *********************/
@@ -151,7 +155,7 @@ void ProcessLevelAnalysis::onMallocExitFunction ( MallocHooksInfos& info ,void *
 /*******************  FUNCTION  *********************/
 void ProcessLevelAnalysis::onMemalign ( MallocHooksInfos& info, void* ret, size_t alignment, size_t size )
 {
-
+	this->stackTree->getTypedData<CallCounter>(info.handler,MATT_ANA_ID_ALLOC).call(size);
 }
 
 /*******************  FUNCTION  *********************/
@@ -187,7 +191,7 @@ void ProcessLevelAnalysis::onMunmap ( MmapHooksInfos& info, int ret, void* start
 /*******************  FUNCTION  *********************/
 void ProcessLevelAnalysis::onPosixMemalign ( MallocHooksInfos& info, int ret, void** memptr, size_t align, size_t size )
 {
-
+	this->stackTree->getTypedData<CallCounter>(info.handler,MATT_ANA_ID_ALLOC).call(size);
 }
 
 /*******************  FUNCTION  *********************/
@@ -211,7 +215,7 @@ void ProcessLevelAnalysis::onPvalloc ( MallocHooksInfos& info, void* ret, size_t
 /*******************  FUNCTION  *********************/
 void ProcessLevelAnalysis::onRealloc ( MallocHooksInfos& info, void* ret, void* ptr, size_t size )
 {
-
+	this->stackTree->getTypedData<CallCounter>(info.handler,MATT_ANA_ID_ALLOC).call(size);
 }
 
 /*******************  FUNCTION  *********************/
@@ -229,7 +233,7 @@ void ProcessLevelAnalysis::onThreadExit ( void )
 /*******************  FUNCTION  *********************/
 void ProcessLevelAnalysis::onValloc ( MallocHooksInfos& info, void* ret, size_t size )
 {
-
+	this->stackTree->getTypedData<CallCounter>(info.handler,MATT_ANA_ID_ALLOC).call(size);
 }
 
 /*******************  FUNCTION  *********************/

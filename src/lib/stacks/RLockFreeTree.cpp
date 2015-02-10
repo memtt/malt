@@ -9,6 +9,7 @@
 /********************  HEADERS  *********************/
 #include "RLockFreeTree.hpp"
 #include <json/JsonState.h>
+#include <common/Debug.hpp>
 
 /*******************  NAMESPACE  ********************/
 namespace MATT
@@ -219,7 +220,7 @@ void convertToJson(htopml::JsonState& json, const RLockFreeTreeNode& tree)
 			if (tree.data[i] != NULL)
 				haveData = true;
 		
-		if (tree.dataId >= 0 && haveData)
+		if (tree.dataId >= 0 && tree.hasChildData)
 			json.printField("dataId",tree.dataId);
 		
 		if (tree.firstChild != NULL)
@@ -274,11 +275,33 @@ void RLockFreeTree::toJson ( htopml::JsonState& json, const MATT::StackTree& tre
 }
 
 /*******************  FUNCTION  *********************/
+bool RLockFreeTreeNode::hasData ( void )
+{
+	for (int i = 0 ; i < MATT_STACK_TREE_ENTRIES ; i++)
+	{
+		if (data[i] != NULL)
+		{
+			return true;
+		}
+	}
+	
+	if (dataId != -1)
+		return true;
+	else
+		return false;
+}
+
+/*******************  FUNCTION  *********************/
 void RLockFreeTree::markChildData ( MATT::RLockFreeTreeNode* node )
 {
+	MATT_INFO("markChild");
+	
+	//set root
 	if (node == NULL)
 		node = &this->root;
-	if (node->dataId != -1)
+	
+	//check current
+	if (node->hasData())
 	{
 		RLockFreeTreeNode * cur = node;
 		while (cur != NULL)
@@ -286,6 +309,14 @@ void RLockFreeTree::markChildData ( MATT::RLockFreeTreeNode* node )
 			cur->hasChildData = true;
 			cur = cur->parent;
 		}
+	}
+	
+	//childs
+	RLockFreeTreeNode * cur = node->firstChild;
+	while(cur != NULL)
+	{
+		markChildData(cur);
+		cur = cur->next;
 	}
 }
 

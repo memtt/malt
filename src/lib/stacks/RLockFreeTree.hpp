@@ -34,6 +34,7 @@ namespace MATT
 struct RLockFreeTreeNode
 {
 	RLockFreeTreeNode(void*callSite);
+	bool hasData(void);
 	/** Pointer to the next element on the same parent. NULL if none (last element). **/
 	RLockFreeTreeNode * next;
 	/** Pointer to the parent node, NULL if root. **/

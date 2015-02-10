@@ -27,16 +27,15 @@ namespace MATT
 class CallCounter
 {
 	public:
-		CallCounter(bool time);
+		CallCounter(void);
 		void call(ticks t);
 		friend void convertToJson(htopml::JsonState & json,const CallCounter & value);
 		friend void convertToJson(htopml::JsonState & json,const class CallTimeSizeCounter & value);
 	private:
-		bool time;
 		size_t count;
-		ticks minTime;
-		ticks maxTime;
-		ticks sumTime;
+		ticks min;
+		ticks max;
+		ticks sum;
 };
 
 /*********************  CLASS  **********************/
