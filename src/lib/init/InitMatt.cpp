@@ -43,11 +43,15 @@ void optionsInit(void)
 void doGlobalInit(void)
 {
 	gblIsInInit = true;
-	if (gblInternaAlloc == NULL)
-		gblInternaAlloc = new SimpleAllocator();
 	doNoFreeAllocatorInit();
+	if (gblInternaAlloc == NULL)
+	{
+		void * ptr = MATT_NO_FREE_MALLOC(sizeof(SimpleAllocator));
+		gblInternaAlloc = new(ptr) SimpleAllocator();
+	}
 	optionsInit();
-	gblMatt = new ProcessLevelAnalysis();
+	void * ptr = MATT_NO_FREE_MALLOC(sizeof(ProcessLevelAnalysis));
+	gblMatt = new(ptr) ProcessLevelAnalysis();
 	gblIsInInit = false;
 }
 

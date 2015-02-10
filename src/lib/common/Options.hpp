@@ -15,6 +15,7 @@
 #include <cassert>
 
 /********************  HEADERS  *********************/
+#include "STLInternalAllocator.hpp"
 //iniparser
 extern "C" {
 #include <iniparser.h>
@@ -41,17 +42,17 @@ enum OptionStackMode
 class OptionDefGeneric
 {
 	public:
-		OptionDefGeneric(const std::string & section,const std::string & name) {this->name = name; this->section = section;};
+		OptionDefGeneric(const char * section,const char * name) {this->name = name; this->section = section;};
 		virtual void load(dictionary * dic) = 0;
 		virtual void dump(dictionary * dic) = 0;
 		virtual void dump(htopml::JsonState & json) = 0;
 		virtual void setToDefault(void) = 0;
 		virtual bool equal(OptionDefGeneric & ptr) const = 0;
-		const std::string & getName(void) const {return name;};
-		const std::string  & getSection(void) const {return section;};
+		const char * getName(void) const {return name;};
+		const char * getSection(void) const {return section;};
 	protected:
-		std::string section;
-		std::string name;
+		const char * section;
+		const char * name;
 };
 
 /********************  STRUCT  **********************/
@@ -59,7 +60,7 @@ template <class T>
 class OptionDef : public OptionDefGeneric
 {
 	public:
-		OptionDef(T * ptr,const std::string & section,const std::string & name,const T & defaultValue);
+		OptionDef(T * ptr,const char * section,const char * name,const T & defaultValue);
 		void load(dictionary * dic);
 		void dump(dictionary * dic);
 		void dump(htopml::JsonState & json);
@@ -71,7 +72,7 @@ class OptionDef : public OptionDefGeneric
 };
 
 /*********************  TYPES  **********************/
-typedef std::vector<OptionDefGeneric*> OptionDefVector;
+typedef std::vector<OptionDefGeneric*,STLInternalAllocator<OptionDefGeneric*> > OptionDefVector;
 
 /********************  STRUCT  **********************/
 struct Options

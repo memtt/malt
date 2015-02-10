@@ -15,6 +15,7 @@
 #include "Debug.hpp"
 #include "Options.hpp"
 #include <json/JsonState.h>
+#include <common/NoFreeAllocator.hpp>
 
 /*******************  NAMESPACE  ********************/
 namespace MATT 
@@ -25,7 +26,7 @@ Options * gblOptions = NULL;
 
 /*******************  FUNCTION  *********************/
 template <class T>
-OptionDef<T>::OptionDef(T* ptr, const std::string & section,const std::string & name, const T& defaultValue)
+OptionDef<T>::OptionDef(T* ptr, const char * section,const char * name, const T& defaultValue)
 :OptionDefGeneric(section,name)
 {
 	this->ptr = ptr;
@@ -37,31 +38,40 @@ OptionDef<T>::OptionDef(T* ptr, const std::string & section,const std::string & 
 template <>
 void OptionDef<bool>::dump(dictionary* dic)
 {
-	std::string tmp = this->section + ":" + this->name;
-	IniParserHelper::setEntry(dic,tmp.c_str(),*this->ptr);
+	char buffer[1024] = {'\0'};
+	strcat(buffer,this->section);
+	strcat(buffer,":");
+	strcat(buffer,this->name);
+	IniParserHelper::setEntry(dic,buffer,*this->ptr);
 }
 
 /*******************  FUNCTION  *********************/
 template <>
 void OptionDef<std::string>::dump(dictionary* dic)
 {
-	std::string tmp = this->section + ":" + this->name;
-	IniParserHelper::setEntry(dic,tmp.c_str(),(this->ptr)->c_str());
+	char buffer[1024] = {'\0'};
+	strcat(buffer,this->section);
+	strcat(buffer,":");
+	strcat(buffer,this->name);
+	IniParserHelper::setEntry(dic,buffer,(this->ptr)->c_str());
 }
 
 /*******************  FUNCTION  *********************/
 template <>
 void OptionDef<int>::dump(dictionary* dic)
 {
-	std::string tmp = this->section + ":" + this->name;
-	IniParserHelper::setEntry(dic,tmp.c_str(),(this->ptr));
+	char buffer[1024] = {'\0'};
+	strcat(buffer,this->section);
+	strcat(buffer,":");
+	strcat(buffer,this->name);
+	IniParserHelper::setEntry(dic,buffer,(this->ptr));
 }
 
 /*******************  FUNCTION  *********************/
 template <class T>
 void OptionDef<T>::dump(htopml::JsonState& json)
 {
-	json.printField(this->name.c_str(),*this->ptr);
+	json.printField(this->name,*this->ptr);
 }
 
 /*******************  FUNCTION  *********************/
@@ -77,24 +87,33 @@ bool OptionDef<T>::equal(MATT::OptionDefGeneric& ptr) const
 template <>
 void OptionDef<bool>::load(dictionary* dic)
 {
-	std::string tmp = this->section+":"+this->name;
-	*(this->ptr)  = iniparser_getboolean(dic,tmp.c_str(),*(this->ptr));
+	char buffer[1024] = {'\0'};
+	strcat(buffer,this->section);
+	strcat(buffer,":");
+	strcat(buffer,this->name);
+	*(this->ptr)  = iniparser_getboolean(dic,buffer,*(this->ptr));
 }
 
 /*******************  FUNCTION  *********************/
 template <>
 void OptionDef<std::string>::load(dictionary* dic)
 {
-	std::string tmp = this->section+":"+this->name;
-	*(this->ptr)  = iniparser_getstring(dic,tmp.c_str(),(char*)this->ptr->c_str());
+	char buffer[1024] = {'\0'};
+	strcat(buffer,this->section);
+	strcat(buffer,":");
+	strcat(buffer,this->name);
+	*(this->ptr)  = iniparser_getstring(dic,buffer,(char*)this->ptr->c_str());
 }
 
 /*******************  FUNCTION  *********************/
 template <>
 void OptionDef<int>::load(dictionary* dic)
 {
-	std::string tmp = this->section+":"+this->name;
-	*(this->ptr)  = iniparser_getint(dic,tmp.c_str(),*this->ptr);
+	char buffer[1024] = {'\0'};
+	strcat(buffer,this->section);
+	strcat(buffer,":");
+	strcat(buffer,this->name);
+	*(this->ptr)  = iniparser_getint(dic,buffer,*this->ptr);
 }
 
 /*******************  FUNCTION  *********************/
@@ -337,7 +356,8 @@ Options& initGlobalOptions ( void )
 {
 	//error
 	assume (gblOptions == NULL,"initGlobalOptions was used previously, gblOptions is already init ! ");
-	gblOptions = new Options();
+	void * ptr = MATT_NO_FREE_MALLOC(sizeof(Options));
+	gblOptions = new(ptr) Options();
 	return *gblOptions;
 }
 

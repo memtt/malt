@@ -40,16 +40,20 @@ ProcessLevelAnalysis::~ProcessLevelAnalysis ( void )
 void ProcessLevelAnalysis::init ( void )
 {
 	Options & options = getOptions();
+	void * ptr;
 	switch(options.getStackMode())
 	{
 		case MATT_STACK_MAP_BACKTRACE:
-			this->stackTree = new StackTreeMap();
+			ptr = MATT_NO_FREE_MALLOC(sizeof(StackTreeMap));
+			this->stackTree = new (ptr) StackTreeMap();
 			break;
 		case MATT_STACK_TREE_ENTER_EXIT:
-			this->stackTree = new RLockFreeTree();
+			ptr = MATT_NO_FREE_MALLOC(sizeof(RLockFreeTree));
+			this->stackTree = new (ptr) RLockFreeTree();
 			break;
 		case MATT_STACK_MAP_ENTER_EXIT:
-			this->stackTree = new StackTreeMap(false);
+			ptr = MATT_NO_FREE_MALLOC(sizeof(StackTreeMap));
+			this->stackTree = new (ptr) StackTreeMap(false);
 			break;
 		default:
 			MATT_FATAL_ARG("Invalid stck tree mode from options : %1 ! ").arg(options.getStackMode()).end();
