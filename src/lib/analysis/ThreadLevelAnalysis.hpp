@@ -65,6 +65,7 @@ class ThreadLevelAnalysis : public MallocHooks, public EnterExitFunctionHooks
 		virtual bool isEnterExitFunction ( void );
 		virtual void onEnterFunction ( void* caller, void* function );
 		virtual void onExitFunction ( void* caller, void* function );
+		void setupStack(MallocHooksInfos& info);
 		bool isInUse(void);
 		void setInUse(bool status);
 	protected:

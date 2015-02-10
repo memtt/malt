@@ -12,6 +12,7 @@
 /********************  HEADERS  *********************/
 #include <cstdlib>
 #include <cycle.h>
+#include <stacks/StackTree.hpp>
 
 /***************** USING NAMESPACE ******************/
 namespace MATT
@@ -20,6 +21,7 @@ namespace MATT
 /********************  STRUCT  **********************/
 struct MallocHooksInfos
 {
+	StackTreeHandler handler;
 	ticks calltime;
 	void * retaddr;
 	void * func;

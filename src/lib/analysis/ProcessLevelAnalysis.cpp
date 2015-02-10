@@ -63,11 +63,13 @@ void ProcessLevelAnalysis::init ( void )
 /*******************  FUNCTION  *********************/
 bool ProcessLevelAnalysis::mallocCallEnterExit ( void )
 {
+	return this->stackTree->isEnterExit();
 }
 
 /*******************  FUNCTION  *********************/
 bool ProcessLevelAnalysis::mmapCallEnterExit ( void )
 {
+	return this->stackTree->isEnterExit();
 }
 
 /*******************  FUNCTION  *********************/
@@ -89,6 +91,9 @@ void ProcessLevelAnalysis::onExit ( void )
 		//TODO manage errors
 		std::ofstream out;
 		Options & options = getOptions();
+		
+		if (options.getStackMode() == MATT_STACK_TREE_ENTER_EXIT)
+			dynamic_cast<RLockFreeTree*>(stackTree)->markChildData();
 		
 		//config
 // 		if (options.outputDumpConfig)
@@ -230,7 +235,7 @@ void ProcessLevelAnalysis::onValloc ( MallocHooksInfos& info, void* ret, size_t 
 /*******************  FUNCTION  *********************/
 bool ProcessLevelAnalysis::isEnterExitFunction ( void )
 {
-
+	return this->stackTree->isEnterExit();
 }
 
 /*******************  FUNCTION  *********************/

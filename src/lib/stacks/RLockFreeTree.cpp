@@ -22,6 +22,7 @@ RLockFreeTreeNode::RLockFreeTreeNode(void * callsite)
 	this->firstChild = NULL;
 	this->parent = NULL;
 	this->dataId = -1;
+	this->hasChildData = false;
 	for (int i = 0 ; i < MATT_STACK_TREE_ENTRIES ; i++)
 		this->data[i] = NULL;
 }
@@ -212,7 +213,6 @@ void convertToJson(htopml::JsonState& json, const RLockFreeTreeNode& tree)
 {
 	char buffer[64];
 	json.openStruct();
-	
 		//data ID
 		bool haveData = false;
 		for (int i = 0 ; i < MATT_STACK_TREE_ENTRIES ; i++)
@@ -228,7 +228,8 @@ void convertToJson(htopml::JsonState& json, const RLockFreeTreeNode& tree)
 			while (cur != NULL)
 			{
 				sprintf(buffer,"%p",cur->callSite);
-				json.printField(buffer,*cur);
+				if (cur->hasChildData)
+					json.printField(buffer,*cur);
 				cur = cur->next;
 			}
 		}
@@ -270,6 +271,22 @@ bool RLockFreeTree::isEnterExit ( void ) const
 void RLockFreeTree::toJson ( htopml::JsonState& json, const MATT::StackTree& tree ) const
 {
 	convertToJson(json,dynamic_cast<const RLockFreeTree&>(tree));
+}
+
+/*******************  FUNCTION  *********************/
+void RLockFreeTree::markChildData ( MATT::RLockFreeTreeNode* node )
+{
+	if (node == NULL)
+		node = &this->root;
+	if (node->dataId != -1)
+	{
+		RLockFreeTreeNode * cur = node;
+		while (cur != NULL)
+		{
+			cur->hasChildData = true;
+			cur = cur->parent;
+		}
+	}
 }
 
 }
