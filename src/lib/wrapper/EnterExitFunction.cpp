@@ -23,16 +23,13 @@ extern "C"
 **/
 void __cyg_profile_func_enter (void *this_fn,void *call_site)
 {
-	static MATT::EnterExitFunctionHooks * hooks = NULL;
-	static bool isEnterExit = false;
+	MATT::EnterExitFunctionHooks * hooks = NULL;
+	bool isEnterExit = false;
 	
-	if (hooks == NULL)
-	{
-		hooks = MATT::enterExitFunctionHookInit();
-		if (hooks != NULL)
-			hooks->isEnterExitFunction();
-	}
-	
+	hooks = MATT::enterExitFunctionHookInit();
+	if (hooks != NULL)
+		hooks->isEnterExitFunction();
+
 	if (isEnterExit)
 		hooks->onEnterFunction(this_fn,call_site);
 }
@@ -51,16 +48,13 @@ void __cyg_profile_func_enter (void *this_fn,void *call_site)
 **/
 void __cyg_profile_func_exit  (void *this_fn,void *call_site)
 {
-	static MATT::EnterExitFunctionHooks * hooks = NULL;
-	static bool isEnterExit = false;
+	MATT::EnterExitFunctionHooks * hooks = NULL;
+	bool isEnterExit = false;
 	
-	if (hooks == NULL)
-	{
-		hooks = MATT::enterExitFunctionHookInit();
-		if (hooks != NULL)
-			hooks->isEnterExitFunction();
-	}
-	
+	hooks = MATT::enterExitFunctionHookInit();
+	if (hooks != NULL)
+		hooks->isEnterExitFunction();
+
 	if (isEnterExit)
 		hooks->onExitFunction(this_fn,call_site);
 }

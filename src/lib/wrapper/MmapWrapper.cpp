@@ -22,6 +22,7 @@ namespace MATT
 #define MATT_MMAP_WRAPPER(preaction,call,action,ret) \
 	/*call hoook*/\
 	MATT::MmapHooksInfos infos;\
+	MATT::MmapHooks * hooks = MATT::mmapHookInit();\
 \
 	if (MATT::gblMmapWrapperState.status == MATT::ALLOC_WRAP_NOT_INIT)\
 		MATT::mmapWrapperInit();\
@@ -31,14 +32,14 @@ namespace MATT
 \
 	bool reenter = MATT::gblReenter;\
 	/*enter exit*/\
-	if (!reenter && MATT::gblMmapWrapperState.hooks != NULL)\
+	if (!reenter && hooks != NULL)\
 	{\
 		MATT::gblReenter = true;\
 		if (MATT::gblMmapWrapperState.enterExit)\
 		{\
 			infos.retaddr = __builtin_extract_return_addr(__builtin_return_address(0));\
 			infos.func = (void*)__func__;\
-			MATT::gblMmapWrapperState.hooks->onMmapEnterFunction(infos);\
+			hooks->onMmapEnterFunction(infos);\
 		}\
 		preaction;\
 	}\
@@ -49,11 +50,11 @@ namespace MATT
 	infos.calltime = t;\
 \
 	/*enter exit*/\
-	if (!reenter && MATT::gblMmapWrapperState.hooks != NULL)\
+	if (!reenter && hooks != NULL)\
 	{\
 		action;\
 		if (MATT::gblMmapWrapperState.enterExit)\
-			MATT::gblMmapWrapperState.hooks->onMmapExitFunction(infos);\
+			hooks->onMmapExitFunction(infos);\
 		MATT::gblReenter = false;\
 	}\
 \
@@ -61,7 +62,7 @@ namespace MATT
 	ret
 
 /********************* GLOBALS **********************/
-MmapWrapperState gblMmapWrapperState = {ALLOC_WRAP_NOT_INIT,MATT_STATIC_MUTEX_INIT,NULL};
+MmapWrapperState gblMmapWrapperState = {ALLOC_WRAP_NOT_INIT,MATT_STATIC_MUTEX_INIT};
 static __thread bool gblReenter = false;
 
 /*******************  FUNCTION  *********************/
@@ -82,12 +83,13 @@ void mmapWrapperInit(void)
 
 		//init profiler
 		gblMmapWrapperState.status = ALLOC_WRAP_INIT_HOOKS;
-		
-		//init internal alloc
-		gblMmapWrapperState.hooks = mmapHookInit();
 
 		//check mode
-		gblMmapWrapperState.enterExit = MATT::gblMmapWrapperState.hooks->mmapCallEnterExit();
+		MmapHooks * hooks = mmapHookInit();
+		if (hooks == NULL)
+			gblMmapWrapperState.enterExit = false;
+		else
+			gblMmapWrapperState.enterExit = mmapHookInit()->mmapCallEnterExit();
 
 		//final state
 		gblMmapWrapperState.status = ALLOC_WRAP_READY;
@@ -109,7 +111,7 @@ void *mmap(void *start, size_t length, int prot,int flags,int fd, off_t offset)
 	MATT_MMAP_WRAPPER(
 		MATT_MMAP_WRAPPER_NO_ACTION,
 		void * ret = MATT::gblMmapWrapperState.functions.mmap(start,length,prot,flags,fd,offset),
-		MATT::gblMmapWrapperState.hooks->onMmap(infos,ret,start,length,prot,flags,fd,offset),
+		hooks->onMmap(infos,ret,start,length,prot,flags,fd,offset),
 		return ret;
 	);
 }

@@ -202,4 +202,10 @@ void convertToJson(htopml::JsonState& json, const StackTreeMap& tree)
 	convertToJson(json,otree);
 }
 
+/*******************  FUNCTION  *********************/
+bool StackTreeMap::isEnterExit ( void ) const
+{
+	return !backtrace;
+}
+
 }

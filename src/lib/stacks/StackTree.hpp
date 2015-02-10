@@ -21,6 +21,7 @@ typedef void * StackTreeHandler;
 
 /********************  MACROS  **********************/
 #define MATT_STACK_TREE_ENTRIES 2
+#define MATT_STACK_TREE_NULL NULL
 
 /*********************  TYPES  **********************/
 class StackTreeStorage
@@ -69,6 +70,7 @@ class StackTree
 		virtual StackTreeHandler getFromStack(StackTreeHandler handler,const Stack & stack) = 0;
 		virtual StackTreeHandler getFromStack(StackTreeHandler handler,int skip) = 0;
 		virtual void exitThread(StackTreeHandler handler) = 0;
+		virtual bool isEnterExit(void) const = 0;
 		template <class T> T & getTypedData(StackTreeHandler handler,int id){return *(T*)getData(handler,id);};
 		template <class T> int addDescriptor(const std::string & name) {return addDescriptor(name,new StackTreeTypeDescriptorTyped<T>());};
 		int addDescriptor(const std::string name, StackTreeTypeDescriptor * descriptor) {names[descriptorsCnt]=name;descriptors[descriptorsCnt]=descriptor;return descriptorsCnt++;};

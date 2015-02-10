@@ -48,8 +48,6 @@ struct MmapWrapperState
 	 * CAUTION, need to star at second position. 
 	**/
 	StaticMutex lock;
-	/** Pointer to hooks **/
-	MmapHooks * hooks;
 	/** Pointer to original functions **/
 	MmapLibcFunctions functions;
 	/** Remind enter-exit mode status **/

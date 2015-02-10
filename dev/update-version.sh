@@ -40,5 +40,8 @@ newversion="$V  : $(printf "%-16s" "$version")"
 ######################################################
 find ./ | while read file
 do
-	sed -i -r -e "s#  DATE     : [0-9]{2}/[0-9]{4}#  ${newdate}#g" -e "s#  $V  : .{16}#  ${newversion}#" "${file}"
+	sed -i -r -e "s#  DATE     : [0-9]{2}/[0-9]{4}#  ${newdate}#g" \
+	          -e "s#  $V  : .{16}#  ${newversion}#" \
+	          -e "s#  $V  : [0-9a-zA-Z.]+\$#  $V  : ${version}#" \
+			  "${file}"
 done

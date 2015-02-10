@@ -260,4 +260,10 @@ void RLockFreeTree::printData(htopml::JsonState& json, const RLockFreeTreeNode* 
 	}
 }
 
+/*******************  FUNCTION  *********************/
+bool RLockFreeTree::isEnterExit ( void ) const
+{
+	return true;
+}
+
 }

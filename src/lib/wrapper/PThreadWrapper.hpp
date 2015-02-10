@@ -45,8 +45,6 @@ struct PThreadWrapperArg
 **/
 struct PthreadWrapperData
 {
-	/** Hook object to send events to user **/
-	ThreadHooks * threadHooks;
 	/** Pointer to the libc pthread_create method. **/
 	PthreadCreateFuncPtr pthread_create;
 	/** Keep track of pthread_key to use its destructor to be notified on thread exit. **/

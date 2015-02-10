@@ -21,6 +21,7 @@ namespace MATT
 #define MATT_MALLOC_WRAPPER(preaction,call,action,ret) \
 	/*call hoook*/\
 	MATT::MallocHooksInfos infos;\
+	MATT::MallocHooks * hooks = MATT::mallocHookInit();\
 \
 	if (MATT::gblMallocWrapperState.status == MATT::ALLOC_WRAP_NOT_INIT)\
 		MATT::mallocWrapperInit();\
@@ -30,14 +31,14 @@ namespace MATT
 \
 	bool reenter = MATT::gblReenter;\
 	/*enter exit*/\
-	if (!reenter && MATT::gblMallocWrapperState.hooks != NULL)\
+	if (!reenter && hooks != NULL)\
 	{\
 		MATT::gblReenter = true;\
 		if (MATT::gblMallocWrapperState.enterExit)\
 		{\
 			infos.retaddr = __builtin_extract_return_addr(__builtin_return_address(0));\
 			infos.func = (void*)__func__;\
-			MATT::gblMallocWrapperState.hooks->onMallocEnterFunction(infos);\
+			hooks->onMallocEnterFunction(infos,infos.retaddr,infos.func);\
 		}\
 		preaction;\
 	}\
@@ -48,11 +49,11 @@ namespace MATT
 	infos.calltime = t;\
 \
 	/*enter exit*/\
-	if (!reenter && MATT::gblMallocWrapperState.hooks != NULL)\
+	if (!reenter && hooks != NULL)\
 	{\
 		action;\
 		if (MATT::gblMallocWrapperState.enterExit)\
-			MATT::gblMallocWrapperState.hooks->onMallocExitFunction(infos);\
+			hooks->onMallocExitFunction(infos,infos.retaddr,infos.func);\
 		MATT::gblReenter = false;\
 	}\
 \
@@ -60,7 +61,7 @@ namespace MATT
 	ret
 
 /********************* GLOBALS **********************/
-MallocWrapperState gblMallocWrapperState = {ALLOC_WRAP_NOT_INIT,MATT_STATIC_MUTEX_INIT,NULL};
+MallocWrapperState gblMallocWrapperState = {ALLOC_WRAP_NOT_INIT,MATT_STATIC_MUTEX_INIT};
 static __thread bool gblReenter = false;
 
 /*******************  FUNCTION  *********************/
@@ -87,12 +88,9 @@ void mallocWrapperInit(void)
 
 		//init profiler
 		gblMallocWrapperState.status = ALLOC_WRAP_INIT_HOOKS;
-		
-		//init internal alloc
-		gblMallocWrapperState.hooks = mallocHookInit();
 
 		//check mode
-		gblMallocWrapperState.enterExit = MATT::gblMallocWrapperState.hooks->mallocCallEnterExit();
+		gblMallocWrapperState.enterExit = mallocHookInit()->mallocCallEnterExit();
 
 		//final state
 		gblMallocWrapperState.status = ALLOC_WRAP_READY;
@@ -117,7 +115,7 @@ void * malloc(size_t size)
 	MATT_MALLOC_WRAPPER(
 		MATT_MALLOC_WRAPPER_NO_ACTION,
 		void * ret = MATT::gblMallocWrapperState.functions.malloc(size),
-		MATT::gblMallocWrapperState.hooks->onMalloc(infos,ret,size),
+		hooks->onMalloc(infos,ret,size),
 		return ret;
 	);
 }
@@ -132,9 +130,9 @@ void * malloc(size_t size)
 void free(void * ptr)
 {
 	MATT_MALLOC_WRAPPER(
-		MATT::gblMallocWrapperState.hooks->onPreFree(infos,ptr),
+		hooks->onPreFree(infos,ptr),
 		MATT::gblMallocWrapperState.functions.free(ptr),
-		MATT::gblMallocWrapperState.hooks->onFree(infos,ptr),
+		hooks->onFree(infos,ptr),
 		return;
 	);
 }
@@ -163,7 +161,7 @@ void * calloc(size_t nmemb,size_t size)
 	MATT_MALLOC_WRAPPER(
 		MATT_MALLOC_WRAPPER_NO_ACTION,
 		void * ret = MATT::gblMallocWrapperState.functions.calloc(nmemb,size),
-		MATT::gblMallocWrapperState.hooks->onCalloc(infos,ret,nmemb,size),
+		hooks->onCalloc(infos,ret,nmemb,size),
 		return ret;
 	);
 }
@@ -180,9 +178,9 @@ void * calloc(size_t nmemb,size_t size)
 void * realloc(void * ptr, size_t size)
 {
 	MATT_MALLOC_WRAPPER(
-		MATT::gblMallocWrapperState.hooks->onPreRealloc(infos,ptr,size),
+		hooks->onPreRealloc(infos,ptr,size),
 		void * ret = MATT::gblMallocWrapperState.functions.realloc(ptr,size),
-		MATT::gblMallocWrapperState.hooks->onRealloc(infos,ret,ptr,size),
+		hooks->onRealloc(infos,ret,ptr,size),
 		return ret;
 	);
 }
@@ -197,7 +195,7 @@ int posix_memalign(void ** memptr,size_t align, size_t size)
 	MATT_MALLOC_WRAPPER(
 		MATT_MALLOC_WRAPPER_NO_ACTION,
 		int ret = MATT::gblMallocWrapperState.functions.posix_memalign(memptr,align,size),
-		MATT::gblMallocWrapperState.hooks->onPosixMemalign(infos,ret,memptr,align,size),
+		hooks->onPosixMemalign(infos,ret,memptr,align,size),
 		return ret;
 	);
 }
@@ -212,7 +210,7 @@ void * aligned_alloc(size_t alignment, size_t size)
 	MATT_MALLOC_WRAPPER(
 		MATT_MALLOC_WRAPPER_NO_ACTION,
 		void * ret = MATT::gblMallocWrapperState.functions.aligned_alloc(alignment, size),
-		MATT::gblMallocWrapperState.hooks->onAlignedAlloc(infos,ret,alignment, size),
+		hooks->onAlignedAlloc(infos,ret,alignment, size),
 		return ret;
 	);
 }
@@ -227,7 +225,7 @@ void *memalign(size_t alignment, size_t size)
 	MATT_MALLOC_WRAPPER(
 		MATT_MALLOC_WRAPPER_NO_ACTION,
 		void * ret = MATT::gblMallocWrapperState.functions.memalign(alignment, size),
-		MATT::gblMallocWrapperState.hooks->onMemalign(infos,ret,alignment, size),
+		hooks->onMemalign(infos,ret,alignment, size),
 		return ret;
 	);
 }
@@ -242,7 +240,7 @@ void *valloc(size_t size)
 	MATT_MALLOC_WRAPPER(
 		MATT_MALLOC_WRAPPER_NO_ACTION,
 		void * ret = MATT::gblMallocWrapperState.functions.valloc(size),
-		MATT::gblMallocWrapperState.hooks->onValloc(infos,ret,size),
+		hooks->onValloc(infos,ret,size),
 		return ret;
 	);
 }
@@ -257,7 +255,7 @@ void *pvalloc(size_t size)
 	MATT_MALLOC_WRAPPER(
 		MATT_MALLOC_WRAPPER_NO_ACTION,
 		void * ret = MATT::gblMallocWrapperState.functions.pvalloc(size),
-		MATT::gblMallocWrapperState.hooks->onPvalloc(infos,ret,size),
+		hooks->onPvalloc(infos,ret,size),
 		return ret;
 	);
 }

@@ -57,6 +57,7 @@ set(COMMON_OBJS
                 $<TARGET_OBJECTS:matt-core>
                 $<TARGET_OBJECTS:matt-tools>
                 $<TARGET_OBJECTS:matt-stacks> 
+                $<TARGET_OBJECTS:matt-analysis> 
 #                 $<TARGET_OBJECTS:matt-valprof>
                 #$<TARGET_OBJECTS:matt-stack-trees>
                 $<TARGET_OBJECTS:matt-common> 
@@ -89,6 +90,7 @@ add_subdirectory(common)
 add_subdirectory(stacks)
 # add_subdirectory(valprof)
 add_subdirectory(wrapper)
+add_subdirectory(analysis)
 # add_subdirectory(stack-tree)
 add_subdirectory(portability)
 

@@ -92,8 +92,6 @@ struct MallocWrapperState
 	 * CAUTION, need to star at second position. 
 	**/
 	StaticMutex lock;
-	/** Pointer to hooks **/
-	MallocHooks * hooks;
 	/** Pointer to original functions **/
 	MallocLibcFunctions functions;
 	/** Remind enter-exit mode status **/

@@ -32,8 +32,8 @@ class MallocHooksFake : public MallocHooks
 		virtual void onMemalign(MallocHooksInfos & info,void * ret,size_t alignment, size_t size);
 		virtual void onValloc(MallocHooksInfos & info,void * ret,size_t size);
 		virtual void onPvalloc(MallocHooksInfos & info,void * ret,size_t size);
-		virtual void onMallocEnterFunction(MallocHooksInfos& info);
-		virtual void onMallocExitFunction(MallocHooksInfos& info);
+		virtual void onMallocEnterFunction(MallocHooksInfos& info,void * caller,void * function);
+		virtual void onMallocExitFunction(MallocHooksInfos& info,void * caller,void * function);
 		virtual bool mallocCallEnterExit(void);
 };
 

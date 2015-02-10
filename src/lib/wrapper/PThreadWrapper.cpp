@@ -20,7 +20,7 @@ namespace MATT
 /**
  * Static instance of thread tracker.
 **/
-static PthreadWrapperData gblWrapperData = {NULL,NULL};
+static PthreadWrapperData gblWrapperData = {NULL};
 
 /*******************  FUNCTION  *********************/
 /**
@@ -29,8 +29,9 @@ static PthreadWrapperData gblWrapperData = {NULL,NULL};
 **/
 void pthreadWrapperOnExit(void *)
 {
-	if (gblWrapperData.threadHooks != NULL)
-		gblWrapperData.threadHooks->onThreadExit();
+	MATT::ThreadHooks * hooks = MATT::threadHookInit();
+	if (hooks != NULL)
+		hooks->onThreadExit();
 }
 
 /*******************  FUNCTION  *********************/
@@ -41,9 +42,10 @@ void pthreadWrapperOnExit(void *)
 **/
 void * pthreadWrapperStartRoutine(void * arg)
 {
+	MATT::ThreadHooks * hooks = MATT::threadHookInit();
 	//send event
-	if (gblWrapperData.threadHooks != NULL)
-		gblWrapperData.threadHooks->onThreadCreate();	
+	if (hooks != NULL)
+		hooks->onThreadCreate();	
 
 	//setup the key to get destructor call on thread exit (capture function finish or pthread_exit)
 	pthread_setspecific(gblWrapperData.key, (void*)0x1);
@@ -72,7 +74,6 @@ int pthread_create(pthread_t *thread, const pthread_attr_t *attr,void *(*start_r
 	//init
 	if (MATT::gblWrapperData.pthread_create == NULL)
 	{
-		MATT::gblWrapperData.threadHooks = MATT::threadHookInit();
 		MATT::gblWrapperData.pthread_create = MATT::OS::dlsymNext<MATT::PthreadCreateFuncPtr>("pthread_create");
 		pthread_key_create(&MATT::gblWrapperData.key,MATT::pthreadWrapperOnExit);
 	}

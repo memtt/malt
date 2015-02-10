@@ -56,6 +56,7 @@ class StackTreeMap : public StackTree
 		virtual void exitThread(StackTreeHandler handler);
 		virtual StackTreeHandler getFromStack(StackTreeHandler handler, const Stack & stack);
 		virtual StackTreeHandler getFromStack(StackTreeHandler handler, int skip);
+		virtual bool isEnterExit ( void ) const;
 	public:
 		friend void convertToJson(htopml::JsonState & json, const StackTreeMap & tree);
 	protected:
