@@ -18,6 +18,7 @@
 #include <stacks/RLockFreeTree.hpp>
 #include <common/Debug.hpp>
 #include <fstream>
+#include <common/NoFreeAllocator.hpp>
 
 /*******************  FUNCTION  *********************/
 namespace MATT
@@ -254,8 +255,10 @@ ThreadLevelAnalysis* ProcessLevelAnalysis::getNewThreadLevelAnalysis ( void )
 	}
 	
 	//create new
-	ThreadLevelAnalysis * ret = new ThreadLevelAnalysis(this);
+	void * ptr = MATT_NO_FREE_MALLOC(sizeof(ThreadLevelAnalysis));
+	ThreadLevelAnalysis * ret = new(ptr) ThreadLevelAnalysis(this);
 	ret->setInUse(true);
+	this->threads.push_back(ret);
 	return ret;
 }
 

@@ -16,13 +16,14 @@
 #include <hooks/ThreadHooks.hpp>
 #include <hooks/EnterExitFunctionHooks.hpp>
 #include "ThreadLevelAnalysis.hpp"
+#include <common/STLInternalAllocator.hpp>
 #include <vector>
 
 namespace MATT
 {
 
 /*********************  TYPES  **********************/
-typedef std::vector<ThreadLevelAnalysis*> ThreadLevelAnalysisVector;
+typedef std::vector<ThreadLevelAnalysis*,STLInternalAllocator<ThreadLevelAnalysis*> > ThreadLevelAnalysisVector;
 
 /*********************  CLASS  **********************/
 class ProcessLevelAnalysis : public ExitHooks, public MmapHooks, public ThreadHooks, public MallocHooks, public EnterExitFunctionHooks

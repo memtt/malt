@@ -13,6 +13,7 @@
 #include "EnterExitStack.hpp"
 #include "RLockFreeTree.hpp"
 #include <common/Debug.hpp>
+#include <common/NoFreeAllocator.hpp>
 
 /*******************  NAMESPACE  ********************/
 namespace MATT
@@ -75,7 +76,8 @@ StackTreeMap::~StackTreeMap(void)
 /*******************  FUNCTION  *********************/
 StackTreeHandler StackTreeMap::enterThread(void)
 {
-	Handler * handler = new Handler;
+	void * ptr = MATT_NO_FREE_MALLOC(sizeof(Handler));
+	Handler * handler = new(ptr) Handler;
 	handler->storage = NULL;
 	return handler;
 }
@@ -83,21 +85,31 @@ StackTreeHandler StackTreeMap::enterThread(void)
 /*******************  FUNCTION  *********************/
 StackTreeHandler StackTreeMap::exitFunction(StackTreeHandler handler, void* callsite)
 {
-	assume(!backtrace,"Try to use exitFunction with backtrace mode enabled !");
-	Handler * typedHandler = (Handler*)handler;
-	typedHandler->enterExitStack.exitFunction(callsite);
-	typedHandler->storage = NULL;
-	return handler;
+	//assume(!backtrace,"Try to use exitFunction with backtrace mode enabled !");
+	if (backtrace)
+	{
+		Handler * typedHandler = (Handler*)handler;
+		typedHandler->enterExitStack.exitFunction(callsite);
+		typedHandler->storage = NULL;
+		return handler;
+	} else {
+		return handler;
+	}
 }
 
 /*******************  FUNCTION  *********************/
 StackTreeHandler StackTreeMap::enterFunction(StackTreeHandler handler, void* callsite)
 {
-	assume(!backtrace,"Try to use exitFunction with backtrace mode enabled !");
-	Handler * typedHandler = (Handler*)handler;
-	typedHandler->enterExitStack.enterFunction(callsite);
-	typedHandler->storage = NULL;
-	return handler;
+	//assume(!backtrace,"Try to use exitFunction with backtrace mode enabled !");
+	if (backtrace)
+	{
+		Handler * typedHandler = (Handler*)handler;
+		typedHandler->enterExitStack.enterFunction(callsite);
+		typedHandler->storage = NULL;
+		return handler;
+	} else {
+		return handler;
+	}
 }
 
 /*******************  FUNCTION  *********************/

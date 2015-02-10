@@ -25,7 +25,7 @@ namespace MATT
 	MATT::MmapHooks * hooks = NULL;\
 	bool reenter = MATT::gblReenter;\
 	\
-	if (reenter)\
+	if (!reenter)\
 		hooks = MATT::mmapHookInit();\
 \
 	if (MATT::gblMmapWrapperState.status == MATT::ALLOC_WRAP_NOT_INIT)\

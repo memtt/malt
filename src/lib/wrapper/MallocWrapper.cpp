@@ -24,7 +24,7 @@ namespace MATT
 	bool reenter = MATT::gblReenter;\
 	MATT::MallocHooks * hooks = NULL;\
 	\
-	if (reenter)\
+	if (!reenter)\
 		hooks = MATT::mallocHookInit();\
 \
 	if (MATT::gblMallocWrapperState.status == MATT::ALLOC_WRAP_NOT_INIT)\
@@ -92,11 +92,11 @@ void mallocWrapperInit(void)
 		//init profiler
 		gblMallocWrapperState.status = ALLOC_WRAP_INIT_HOOKS;
 
-		//check mode
-		gblMallocWrapperState.enterExit = mallocHookInit()->mallocCallEnterExit();
-
 		//final state
 		gblMallocWrapperState.status = ALLOC_WRAP_READY;
+		
+		//check mode
+		gblMallocWrapperState.enterExit = mallocHookInit()->mallocCallEnterExit();
 	}
 
 	//secure in case of first call in threads

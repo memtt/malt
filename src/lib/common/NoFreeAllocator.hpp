@@ -31,7 +31,7 @@ struct NoFreeAllocatorSegment
 class NoFreeAllocator
 {
 	public:
-		NoFreeAllocator(void);
+		void init(void);
 		size_t memory(void);
 		void * allocate(size_t size);
 	private:
@@ -40,6 +40,15 @@ class NoFreeAllocator
 		size_t memSum;
 		NoFreeAllocatorSegment * cur;
 };
+
+/********************  GLOBALS  *********************/
+extern NoFreeAllocator gblNoFreeAllocator;
+
+/*******************  FUNCTION  *********************/
+static inline void doNoFreeAllocatorInit(void) {gblNoFreeAllocator.init();}
+
+/*******************  FUNCTION  *********************/
+#define MATT_NO_FREE_MALLOC(x) gblNoFreeAllocator.allocate(x)
 
 }
 

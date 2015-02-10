@@ -12,6 +12,8 @@
 #include <hooks/EnterExitFunctionHooks.hpp>
 #include <hooks/MallocHooksFake.hpp>
 #include <common/Options.hpp>
+#include <common/NoFreeAllocator.hpp>
+#include <common/SimpleAllocator.hpp>
 #include <portability/OS.hpp>
 
 /*******************  FUNCTION  *********************/
@@ -41,6 +43,9 @@ void optionsInit(void)
 void doGlobalInit(void)
 {
 	gblIsInInit = true;
+	if (gblInternaAlloc == NULL)
+		gblInternaAlloc = new SimpleAllocator();
+	doNoFreeAllocatorInit();
 	optionsInit();
 	gblMatt = new ProcessLevelAnalysis();
 	gblIsInInit = false;
@@ -65,7 +70,9 @@ MallocHooks * mallocHookInit(void)
 	if (gblMatt == NULL)
 		doGlobalInit();
 	if (tls == NULL)
+	{
 		tls = tlsMatt = gblMatt->getNewThreadLevelAnalysis();
+	}
 	return tls;
 }
 
@@ -98,7 +105,9 @@ EnterExitFunctionHooks * enterExitFunctionHookInit(void)
 	if (gblMatt == NULL)
 		doGlobalInit();
 	if (tls == NULL)
+	{
 		tls = tlsMatt = gblMatt->getNewThreadLevelAnalysis();
+	}
 	return tls;
 }
 

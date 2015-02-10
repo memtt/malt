@@ -19,7 +19,10 @@ namespace MATT
 {
 
 /*******************  FUNCTION  *********************/
-NoFreeAllocator::NoFreeAllocator(void)
+NoFreeAllocator gblNoFreeAllocator;
+
+/*******************  FUNCTION  *********************/
+void NoFreeAllocator::init( void )
 {
 	this->cur = NULL;
 	this->memSum = 0;
