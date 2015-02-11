@@ -62,7 +62,8 @@ set(COMMON_OBJS
                 #$<TARGET_OBJECTS:matt-stack-trees>
                 $<TARGET_OBJECTS:matt-common> 
                 $<TARGET_OBJECTS:matt-port>
-                $<TARGET_OBJECTS:matt-hooks> 
+                $<TARGET_OBJECTS:matt-hooks>
+                $<TARGET_OBJECTS:matt-allocators> 
                 $<TARGET_OBJECTS:iniparser>
                 )
 set(WRAPPERS_OBJS
@@ -95,6 +96,7 @@ add_subdirectory(stacks)
 # add_subdirectory(valprof)
 add_subdirectory(wrapper)
 add_subdirectory(analysis)
+add_subdirectory(allocators)
 # add_subdirectory(stack-tree)
 add_subdirectory(portability)
 

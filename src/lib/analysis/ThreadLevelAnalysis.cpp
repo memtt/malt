@@ -9,7 +9,7 @@
 /********************  HEADERS  *********************/
 #include "ThreadLevelAnalysis.hpp"
 #include "ProcessLevelAnalysis.hpp"
-#include <common/Options.hpp>
+#include <core/Options.hpp>
 #include <json/JsonState.h>
 #include <common/Debug.hpp>
 

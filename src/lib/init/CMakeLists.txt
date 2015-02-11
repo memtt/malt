@@ -13,3 +13,7 @@ SET_TARGET_PROPERTIES(matt-init-fake PROPERTIES COMPILE_FLAGS -fPIC)
 ######################################################
 add_library(matt-init OBJECT InitMatt.cpp)
 SET_TARGET_PROPERTIES(matt-init PROPERTIES COMPILE_FLAGS -fPIC)
+
+######################################################
+add_library(matt-init-unit-tests OBJECT InitUnitTests.cpp)
+SET_TARGET_PROPERTIES(matt-init PROPERTIES COMPILE_FLAGS -fPIC)

@@ -294,8 +294,6 @@ bool RLockFreeTreeNode::hasData ( void )
 /*******************  FUNCTION  *********************/
 void RLockFreeTree::markChildData ( MATT::RLockFreeTreeNode* node )
 {
-	MATT_INFO("markChild");
-	
 	//set root
 	if (node == NULL)
 		node = &this->root;

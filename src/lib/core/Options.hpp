@@ -15,7 +15,7 @@
 #include <cassert>
 
 /********************  HEADERS  *********************/
-#include "STLInternalAllocator.hpp"
+#include <allocators/STLInternalAllocator.hpp>
 //iniparser
 extern "C" {
 #include <iniparser.h>

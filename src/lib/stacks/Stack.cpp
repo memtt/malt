@@ -15,7 +15,7 @@
 //htopml json converter
 #include <json/JsonState.h>
 //internals from common
-#include <common/SimpleAllocator.hpp>
+#include <allocators/SimpleAllocator.hpp>
 // #include <core/SymbolSolver.hpp>
 #include <common/Debug.hpp>
 //locals

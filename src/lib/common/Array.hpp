@@ -15,7 +15,7 @@
 #include <cassert>
 //common
 #include <common/Debug.hpp>
-#include <common/SimpleAllocator.hpp>
+#include <allocators/SimpleAllocator.hpp>
 //htopml json converter
 #include <json/JsonState.h>
 

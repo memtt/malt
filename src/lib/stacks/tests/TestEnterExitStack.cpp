@@ -9,7 +9,7 @@
 /********************  HEADERS  *********************/
 #include <gtest/gtest.h>
 #include <EnterExitStack.hpp>
-#include <common/SimpleAllocator.hpp>
+#include <allocators/SimpleAllocator.hpp>
 
 /***************** USING NAMESPACE ******************/
 using namespace MATT;
@@ -28,13 +28,3 @@ TEST(Stack,test1)
 		EXPECT_EQ((void*)(size_t)(4-i),stack[i]);
 }
 
-/*******************  FUNCTION  *********************/
-int main(int argc, char ** argv)
-{
-	//init internal allocator
-	gblInternaAlloc = new SimpleAllocator(true);
-	
-	// This allows the user to override the flag on the command line.
-	::testing::InitGoogleTest(&argc, argv);
-	return RUN_ALL_TESTS();
-}

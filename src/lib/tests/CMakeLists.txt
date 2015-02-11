@@ -21,7 +21,7 @@ add_definitions(-DTEST_BIN_DIR="${CMAKE_CURRENT_BINARY_DIR}")
 
 ######################################################
 FOREACH(test_name ${TEST_NAMES})
-	add_executable(${test_name} ${test_name}.cpp)
+	add_executable(${test_name} ${test_name}.cpp $<TARGET_OBJECTS:matt-init-unit-tests>)
 	target_link_libraries(${test_name} ${GTEST_BOTH_LIBRARIES} ${GMOCK_BOTH_LIBRARIES} matt-base)
 	matt_add_test(${test_name} ${test_name})
 ENDFOREACH(test_name)

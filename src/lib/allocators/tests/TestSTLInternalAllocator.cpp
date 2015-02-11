@@ -14,7 +14,7 @@
 //gtest
 #include <gtest/gtest.h>
 //internals
-#include <common/STLInternalAllocator.hpp>
+#include <allocators/STLInternalAllocator.hpp>
 
 /***************** USING NAMESPACE ******************/
 using namespace MATT;
@@ -77,15 +77,4 @@ TEST(TestSTLInternalAllocator,withMap)
 	
 	//clear
 	container.clear();
-}
-
-/*******************  FUNCTION  *********************/
-int main(int argc, char ** argv)
-{
-	//init internal allocator
-	gblInternaAlloc = new SimpleAllocator(true);
-	
-	// This allows the user to override the flag on the command line.
-	::testing::InitGoogleTest(&argc, argv);
-	return RUN_ALL_TESTS();
 }

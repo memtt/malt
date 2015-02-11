@@ -13,9 +13,9 @@
 #include <cassert>
 #include <iostream>
 //internal commons
-#include "Debug.hpp"
-#include "Helpers.hpp"
-#include "CodeTiming.hpp"
+#include <common/Debug.hpp>
+#include <common/Helpers.hpp>
+#include <common/CodeTiming.hpp>
 //object to implement
 #include "SimpleAllocator.hpp"
 #include <portability/OS.hpp>

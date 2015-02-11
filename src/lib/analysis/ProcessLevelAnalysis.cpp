@@ -10,7 +10,7 @@
 #include "ProcessLevelAnalysis.hpp"
 #include <hooks/EnterExitFunctionHooks.hpp>
 #include <common/FormattedMessage.hpp>
-#include <common/Options.hpp>
+#include <core/Options.hpp>
 #include <common/Helpers.hpp>
 #include <common/CodeTiming.hpp>
 #include <portability/OS.hpp>
@@ -18,7 +18,7 @@
 #include <stacks/RLockFreeTree.hpp>
 #include <common/Debug.hpp>
 #include <fstream>
-#include <common/NoFreeAllocator.hpp>
+#include <allocators/NoFreeAllocator.hpp>
 
 /*******************  FUNCTION  *********************/
 namespace MATT

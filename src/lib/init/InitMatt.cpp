@@ -11,9 +11,9 @@
 #include <analysis/ThreadLevelAnalysis.hpp>
 #include <hooks/EnterExitFunctionHooks.hpp>
 #include <hooks/MallocHooksFake.hpp>
-#include <common/Options.hpp>
-#include <common/NoFreeAllocator.hpp>
-#include <common/SimpleAllocator.hpp>
+#include <core/Options.hpp>
+#include <allocators/NoFreeAllocator.hpp>
+#include <allocators/SimpleAllocator.hpp>
 #include <portability/OS.hpp>
 
 /*******************  FUNCTION  *********************/

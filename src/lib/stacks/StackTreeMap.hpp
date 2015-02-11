@@ -13,7 +13,7 @@
 #include "StackTree.hpp"
 #include "EnterExitStack.hpp"
 #include "BacktraceStack.hpp"
-#include <common/STLInternalAllocator.hpp>
+#include <allocators/STLInternalAllocator.hpp>
 #include <json/JsonState.h>
 
 

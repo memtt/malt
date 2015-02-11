@@ -12,10 +12,10 @@
 #include <cassert>
 #include <deque>
 //internals
-#include "Debug.hpp"
+#include <common/Debug.hpp>
 #include "Options.hpp"
 #include <json/JsonState.h>
-#include <common/NoFreeAllocator.hpp>
+#include <allocators/NoFreeAllocator.hpp>
 
 /*******************  NAMESPACE  ********************/
 namespace MATT 

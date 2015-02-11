@@ -8,7 +8,7 @@
 
 /********************  HEADERS  *********************/
 #include <gtest/gtest.h>
-#include "NoFreeAllocator.hpp"
+#include <allocators/NoFreeAllocator.hpp>
 
 /***************** USING NAMESPACE ******************/
 using namespace MATT;
@@ -17,6 +17,7 @@ using namespace MATT;
 TEST(NoFreeAllocator,constructor)
 {
 	NoFreeAllocator allocator;
+	allocator.allocate(16);
 }
 
 /*******************  FUNCTION  *********************/

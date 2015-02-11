@@ -16,7 +16,7 @@
 #include <hooks/ThreadHooks.hpp>
 #include <hooks/EnterExitFunctionHooks.hpp>
 #include "ThreadLevelAnalysis.hpp"
-#include <common/STLInternalAllocator.hpp>
+#include <allocators/STLInternalAllocator.hpp>
 #include <core/Clock.hpp>
 #include <vector>
 

@@ -7,7 +7,7 @@
 *****************************************************/
 
 /********************  HEADERS  *********************/
-#include <common/Options.hpp>
+#include <core/Options.hpp>
 #include "Backtrace.hpp"
 #include "BacktraceGlibc.hpp"
 #include "BacktraceLibunwind.hpp"

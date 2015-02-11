@@ -8,7 +8,7 @@
 
 /********************  HEADERS  *********************/
 #include <gtest/gtest.h>
-#include <common/SimpleAllocator.hpp>
+#include <allocators/SimpleAllocator.hpp>
 
 /***************** USING NAMESPACE ******************/
 using namespace MATT;

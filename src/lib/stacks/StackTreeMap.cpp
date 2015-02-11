@@ -13,7 +13,7 @@
 #include "EnterExitStack.hpp"
 #include "RLockFreeTree.hpp"
 #include <common/Debug.hpp>
-#include <common/NoFreeAllocator.hpp>
+#include <allocators/NoFreeAllocator.hpp>
 
 /*******************  NAMESPACE  ********************/
 namespace MATT

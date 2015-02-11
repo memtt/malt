@@ -9,7 +9,7 @@
 /********************  HEADERS  *********************/
 #include <gtest/gtest.h>
 #include <json/ConvertToJson.h>
-#include <common/SimpleAllocator.hpp>
+#include <allocators/SimpleAllocator.hpp>
 #include <stacks/RLockFreeTree.hpp>
 
 /***************** USING NAMESPACE ******************/
@@ -127,13 +127,3 @@ TEST(TypedRLockFreeTree,parallelUse)
 	}
 }
 
-/*******************  FUNCTION  *********************/
-int main(int argc, char ** argv)
-{
-	//init internal allocator
-	gblInternaAlloc = new SimpleAllocator(true);
-	
-	// This allows the user to override the flag on the command line.
-	::testing::InitGoogleTest(&argc, argv);
-	return RUN_ALL_TESTS();
-}
