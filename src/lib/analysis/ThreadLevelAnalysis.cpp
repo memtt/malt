@@ -201,8 +201,8 @@ void ThreadLevelAnalysis::onExitFunction ( void* caller, void* function )
 /*******************  FUNCTION  *********************/
 void ThreadLevelAnalysis::setupStack ( MallocHooksInfos& info )
 {
-	if (isEnterExitFunction() == false)
-		stackTreeHandler = stackTree->getFromStack(stackTreeHandler,2);
+// 	if (isEnterExitFunction() == false)
+	stackTreeHandler = stackTree->getFromStack(stackTreeHandler,2);
 	info.handler = stackTreeHandler;
 	info.dataHandler = stackTree->getDataHandler(info.handler);
 	info.dataId = stackTree->getStackId(info.dataHandler);

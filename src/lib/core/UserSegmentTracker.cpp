@@ -88,9 +88,16 @@ void UserSegmentTracker::buildLeakSummary ( LeakSummaryMap& leakSummaryMap )
 UserSegment UserSegmentTracker::unregister ( Clock & clock,void* ptr )
 {
 	UserSegmentInfoMap::iterator it = map.find(ptr);
-	UserSegment ret = it->second;
-	map.erase(ptr);
-	return ret;
+	if (it == map.end())
+	{
+		UserSegment ret;
+		ret.size = 0;
+		return ret;
+	} else {
+		UserSegment ret = it->second;
+		map.erase(ptr);
+		return ret;
+	}
 }
 
 };

@@ -18,7 +18,7 @@ namespace MATT
 {
 
 /********************  MACROS  **********************/
-#define MATT_STACK_TREE_ENTRIES 4
+#define MATT_STACK_TREE_ENTRIES 8
 #define MATT_STACK_TREE_NULL NULL
 
 /*********************  TYPES  **********************/

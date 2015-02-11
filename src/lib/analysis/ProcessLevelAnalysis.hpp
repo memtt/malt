@@ -30,9 +30,9 @@ typedef std::vector<ThreadLevelAnalysis*,STLInternalAllocator<ThreadLevelAnalysi
 /********************  ENUM  ************************/
 enum ProcessAnalysisIDS
 {
-	MATT_ANA_ID_ALLOC,
-	MATT_ANA_ID_FREE,
-	MATT_ANA_ID_LIFETIME,
+	MATT_ANA_ID_ALLOC = 0,
+	MATT_ANA_ID_FREE = 1,
+	MATT_ANA_ID_LIFETIME = 2,
 };
 
 /*********************  CLASS  **********************/

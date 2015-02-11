@@ -141,9 +141,12 @@ void ProcessLevelAnalysis::onExit ( void )
 void ProcessLevelAnalysis::onFree ( MallocHooksInfos& info, void* ptr )
 {
 	UserSegment segment = this->userSegmentTracker.unregister(mallocClock,ptr);
-	ticks lifetime = this->mallocClock.getLastEventTime(CLOCK_TICKS) - segment.birth;
-	this->stackTree->getTypedData<CallCounter>(segment.dataHandler,MATT_ANA_ID_LIFETIME).call(lifetime);
-	this->stackTree->getTypedData<CallCounter>(info.handler,MATT_ANA_ID_FREE).call(segment.size);
+	if (segment.size > 0)
+	{
+		ticks lifetime = this->mallocClock.getLastEventTime(CLOCK_TICKS) - segment.birth;
+		this->stackTree->getTypedData<CallCounter>(segment.dataHandler,MATT_ANA_ID_LIFETIME).call(lifetime);
+		this->stackTree->getTypedData<CallCounter>(info.handler,MATT_ANA_ID_FREE).call(segment.size);
+	}
 }
 
 /*******************  FUNCTION  *********************/
