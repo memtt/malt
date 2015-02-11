@@ -12,6 +12,8 @@
 #include "MallocWrapper.hpp"
 #include <portability/OS.hpp>
 #include <common/Debug.hpp>
+#include <cstdlib>
+#include <malloc.h>
 
 namespace MATT
 {

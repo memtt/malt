@@ -10,7 +10,7 @@
 #include <analysis/ProcessLevelAnalysis.hpp>
 #include <analysis/ThreadLevelAnalysis.hpp>
 #include <hooks/EnterExitFunctionHooks.hpp>
-#include <hooks/MallocHooksFake.hpp>
+#include <hooks/GlobalHooksNone.hpp>
 #include <core/Options.hpp>
 #include <allocators/NoFreeAllocator.hpp>
 #include <allocators/SimpleAllocator.hpp>
@@ -24,7 +24,8 @@ namespace MATT
 static ProcessLevelAnalysis * gblMatt = NULL;
 static __thread ThreadLevelAnalysis * tlsMatt = NULL;
 static bool gblIsInInit = false;
-static MallocHooksFake gblMallocHooksFake;
+static GlobalHooksNone gblMallocHooksNone;
+// static MallocHooksFake gblMallocHooksNone;
 
 /*******************  FUNCTION  *********************/
 void optionsInit(void)
@@ -69,7 +70,7 @@ ThreadHooks * threadHookInit(void)
 MallocHooks * mallocHookInit(void)
 {
 	if (gblIsInInit)
-		return &gblMallocHooksFake;
+		return &gblMallocHooksNone;
 	ThreadLevelAnalysis * tls = tlsMatt;
 	if (gblMatt == NULL)
 		doGlobalInit();

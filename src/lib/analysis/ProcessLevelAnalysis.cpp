@@ -146,6 +146,8 @@ void ProcessLevelAnalysis::onFree ( MallocHooksInfos& info, void* ptr )
 		ticks lifetime = this->mallocClock.getLastEventTime(CLOCK_TICKS) - segment.birth;
 		this->stackTree->getTypedData<CallCounter>(segment.dataHandler,MATT_ANA_ID_LIFETIME).call(lifetime);
 		this->stackTree->getTypedData<CallCounter>(info.handler,MATT_ANA_ID_FREE).call(segment.size);
+	} else {
+		MATT_WARNING_ARG("Capture non tracked segments : %1 !").arg(ptr).end();
 	}
 }
 
