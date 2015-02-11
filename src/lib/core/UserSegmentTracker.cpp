@@ -7,6 +7,7 @@
 *****************************************************/
 
 /********************  HEADERS  *********************/
+#include <common/Helpers.hpp>
 #include "UserSegmentTracker.hpp"
 
 /********************  NAMESPACE  *******************/
@@ -36,7 +37,7 @@ void convertToJson ( htopml::JsonState& json, const UserSegmentTracker& value )
 {
 	char buffer[256];
 	json.openStruct();
-		for (UserSegmentInfoMap::const_iterator it = value.map.begin() ; it != value.map.end() ; ++it)
+		foreachConst(UserSegmentInfoMap,value.map,it)
 		{
 			sprintf(buffer,"%p",it->first);
 			json.printField(buffer,it->second);

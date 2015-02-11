@@ -106,9 +106,7 @@ void ProcessLevelAnalysis::onExit ( void )
 		//TODO manage errors
 		std::ofstream out;
 		Options & options = getOptions();
-		
-		if (options.getStackMode() == MATT_STACK_TREE_ENTER_EXIT)
-			dynamic_cast<RLockFreeTree*>(stackTree)->markChildData();
+		stackTree->prepareForOutput();
 		
 		//config
 // 		if (options.outputDumpConfig)

@@ -7,6 +7,7 @@
 *****************************************************/
 
 /**
+ * @file NoFreeAllocator.hpp
  * Here we implemented a custom allocator which do not return the memory.
  * As we didn't need to free the memory we can allocate the segments without
  * adding header. It reduce the memory fragmentation and open the door for

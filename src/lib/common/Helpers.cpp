@@ -41,12 +41,12 @@ void Helpers::printValue(std::ostream & out,double value, const char* unit)
 
 	//compte depth
 	int depth = 0;
-	while (value >= 1000)
+	while (value >= 1024)
 	{
 		depth++;
-		value /= 1000.0;
+		value /= 1024.0;
 	}
-	
+
 	sprintf(buffer,"%3.1f",value);
 	
 	//print

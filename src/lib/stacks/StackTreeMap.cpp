@@ -20,12 +20,12 @@ namespace MATT
 {
 
 /*******************  FUNCTION  *********************/
-StackTreeMap::Key::Key(const Stack* stack,int id)
+StackTreeMap::Key::Key(const Stack* stack,int dataId)
 {
 	assert(stack != NULL);
 	this->stack = stack;
 	this->hash = stack->hash();
-	this->id =  id;
+	this->dataId =  dataId;
 }
 
 /*******************  FUNCTION  *********************/
@@ -205,7 +205,7 @@ StackTreeHandler StackTreeMap::getFromStack(StackTreeHandler handler, const Stac
 		if (it == map.end())
 		{
 			key.cloneStack();
-			key.id = nextId++;
+			nextId++;
 			StackTreeStorage storage;
 			map[key] = storage;
 			it = map.find(key);
@@ -214,7 +214,7 @@ StackTreeHandler StackTreeMap::getFromStack(StackTreeHandler handler, const Stac
 	MATT_END_CRITICAL
 	
 	//return
-	typedHandler->stackId = it->first.id;
+	typedHandler->stackId = it->first.dataId;
 	typedHandler->storage = &(it->second);
 	return handler;
 }
@@ -231,6 +231,12 @@ StackTreeHandler StackTreeMap::getFromStack(StackTreeHandler handler, int skip)
 }
 
 /*******************  FUNCTION  *********************/
+void StackTreeMap::prepareForOutput ( void )
+{
+
+}
+
+/*******************  FUNCTION  *********************/
 void convertToJson(htopml::JsonState& json, const StackTreeMap& tree)
 {
 	RLockFreeTree otree;
@@ -243,7 +249,7 @@ void convertToJson(htopml::JsonState& json, const StackTreeMap& tree)
 		
 	//copy values
 	for (StackTreeMap::NodeMap::const_iterator it = tree.map.begin() ; it != tree.map.end() ; ++it)
-		otree.copyData(*it->first.stack,it->second,it->first.id);
+		otree.copyData(*it->first.stack,it->second,it->first.dataId);
 	
 	otree.exitThread(handler);
 	otree.markChildData();

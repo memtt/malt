@@ -88,6 +88,7 @@ class RLockFreeTree : public StackTree
 		virtual StackTreeDataHandler getDataHandler ( StackTreeHandler handler );
 		void markChildData(RLockFreeTreeNode * node = NULL);
 		virtual int getStackId ( StackTreeDataHandler handler );
+		virtual void prepareForOutput ( void );
 	public:
 		friend void convertToJson(htopml::JsonState & json, const RLockFreeTree & tree);
 	protected:

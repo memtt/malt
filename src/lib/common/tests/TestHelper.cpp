@@ -19,11 +19,11 @@ TEST(Array,printValue)
 {
 	std::stringstream out1;
 	Helpers::printValue(out1,16,"B");
-	EXPECT_EQ("16B",out1.str());
+	EXPECT_EQ(" 16.0  B",out1.str());
 	
 	std::stringstream out2;
 	Helpers::printValue(out2,4096,"B");
-	EXPECT_EQ("4KB",out2.str());
+	EXPECT_EQ("  4.0 KB",out2.str());
 }
 
 /*******************  FUNCTION  *********************/

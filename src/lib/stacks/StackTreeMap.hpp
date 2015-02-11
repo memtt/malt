@@ -13,6 +13,7 @@
 #include "StackTree.hpp"
 #include "EnterExitStack.hpp"
 #include "BacktraceStack.hpp"
+#include "RLockFreeTree.hpp"
 #include <allocators/STLInternalAllocator.hpp>
 #include <json/JsonState.h>
 
@@ -36,7 +37,7 @@ class StackTreeMap : public StackTree
 			/** Keep the hash for fast compare on search. **/
 			StackHash hash;
 			/** uniq id for json output **/
-			int id;
+			int dataId;
 		};
 		struct Handler 
 		{
@@ -61,6 +62,7 @@ class StackTreeMap : public StackTree
 		virtual void toJson ( htopml::JsonState& json, const StackTree& tree ) const;
 		virtual StackTreeDataHandler getDataHandler ( StackTreeHandler handler );
 		virtual int getStackId ( StackTreeDataHandler handler );
+		virtual void prepareForOutput ( void );
 	public:
 		friend void convertToJson(htopml::JsonState & json, const StackTreeMap & tree);
 	protected:

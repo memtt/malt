@@ -139,7 +139,7 @@ void RLockFreeTree::copyData(const MATT::Stack& stack, const MATT::StackTreeStor
 	handler = getFromStack(handler,stack);
 	MATT::RLockFreeTree::Handler typedHandler = getNode(handler);
 	typedHandler->data = storage;
-	typedHandler->dataId = id;
+// 	typedHandler->dataId = id;
 	exitThread(handler);
 }
 
@@ -246,10 +246,10 @@ void convertToJson(htopml::JsonState& json, const RLockFreeTreeNode& tree)
 			if (tree.data[i] != NULL)
 				haveData = true;
 		
-		if (tree.dataId >= 0 && tree.hasChildData)
+		if (tree.dataId >= 0 && haveData)
 			json.printField("dataId",tree.dataId);
 		
-		if (tree.firstChild != NULL)
+		if (tree.firstChild != NULL && tree.hasChildData)
 		{
 			RLockFreeTreeNode * cur = tree.firstChild;
 			while (cur != NULL)
@@ -342,6 +342,12 @@ void RLockFreeTree::markChildData ( MATT::RLockFreeTreeNode* node )
 		markChildData(cur);
 		cur = cur->next;
 	}
+}
+
+/*******************  FUNCTION  *********************/
+void RLockFreeTree::prepareForOutput ( void )
+{
+	markChildData();
 }
 
 }

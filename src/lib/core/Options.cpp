@@ -64,7 +64,7 @@ void OptionDef<int>::dump(dictionary* dic)
 	strcat(buffer,this->section);
 	strcat(buffer,":");
 	strcat(buffer,this->name);
-	IniParserHelper::setEntry(dic,buffer,(this->ptr));
+	IniParserHelper::setEntry(dic,buffer,*(this->ptr));
 }
 
 /*******************  FUNCTION  *********************/

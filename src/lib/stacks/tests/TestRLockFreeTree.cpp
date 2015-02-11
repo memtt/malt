@@ -104,6 +104,7 @@ TEST(TypedRLockFreeTree,toJson)
 	tree.getTypedData<int>(handler4,0) = 11;
 	
 	std::stringstream out;
+	tree.prepareForOutput();
 	htopml::convertToJson(out,tree);
 	
 	EXPECT_EQ(CST_VALUE_2,out.str());

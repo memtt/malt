@@ -26,6 +26,10 @@ struct Helpers
 	static int getFileId(void);
 };
 
+/********************  MACRO  ***********************/
+#define foreach(type,list,it) for(type::iterator it = (list).begin() ; it != (list).end ; ++it)
+#define foreachConst(type,list,it) for(type::const_iterator it = (list).begin() ; it != (list).end() ; ++it)
+
 };
 
 #endif //MATT_HELPERS_HPP

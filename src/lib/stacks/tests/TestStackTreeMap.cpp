@@ -34,7 +34,6 @@ const char CST_VALUE_2[] =  "{\n\
 \t\t}\n\
 \t}\n}";
 
-
 /*******************  FUNCTION  *********************/
 TEST(StackTreeMap,constructor)
 {
@@ -87,8 +86,36 @@ TEST(StackTreeMap,toJson)
 	handler = map.getFromStack(handler,stack3);
 	map.getTypedData<int>(handler,0) = 11;
 	
+	map.prepareForOutput();
 	std::stringstream out;
 	htopml::convertToJson(out,map);
 	//try
 	EXPECT_EQ(CST_VALUE_2,out.str());
+}
+
+/*******************  FUNCTION  *********************/
+TEST(StackTreeMap,testDataHandler)
+{
+	//setup map
+	StackTreeMap map;
+	int id = map.addDescriptor<int>("test-counter");
+	EXPECT_EQ(0,id);
+	
+	//move to entry
+	StackTreeHandler handler = map.enterThread();
+	
+	//setup
+	static void * sstack1[] = {(void*)0xAAA,(void*)0xDDD};
+	
+	//setup stack
+	Stack stack1(sstack1,2,STACK_ORDER_ASC);
+	handler = map.getFromStack(handler,stack1);
+	
+	//get data handler (eg. in malloc)
+	StackTreeDataHandler dataHandler = map.getDataHandler(handler);
+	
+	//now try to setup valu (eg. in later in free)
+	map.getTypedData<int>(dataHandler,0) = 10;
+	
+	EXPECT_EQ(10,map.getTypedData<int>(dataHandler,0));
 }
