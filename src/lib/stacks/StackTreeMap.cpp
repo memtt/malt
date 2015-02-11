@@ -115,8 +115,8 @@ StackTreeHandler StackTreeMap::enterFunction(StackTreeHandler handler, void* cal
 /*******************  FUNCTION  *********************/
 void StackTreeMap::exitThread(StackTreeHandler handler)
 {
-	Handler * typedHandler = (Handler*)handler;
-	delete typedHandler;
+// 	Handler * typedHandler = (Handler*)handler;
+	//delete typedHandler;
 }
 
 /*******************  FUNCTION  *********************/
@@ -177,22 +177,27 @@ StackTreeHandler StackTreeMap::getFromStack(StackTreeHandler handler, const Stac
 {
 	//get handler
 	Handler * typedHandler = (Handler*)handler;
+	NodeMap::iterator it;
 	
 	//build key
 	Key key(&stack,nextId);
 	
-	//search
-	NodeMap::iterator it = map.find(key);
+	MATT_OPTIONAL_CRITICAL(lock,threadSafe)
 	
-	//if not found, create
-	if (it == map.end())
-	{
-		key.cloneStack();
-		key.id = nextId++;
-		StackTreeStorage storage;
-		map[key] = storage;
+		//search
 		it = map.find(key);
-	}
+		
+		//if not found, create
+		if (it == map.end())
+		{
+			key.cloneStack();
+			key.id = nextId++;
+			StackTreeStorage storage;
+			map[key] = storage;
+			it = map.find(key);
+		}
+	
+	MATT_END_CRITICAL
 	
 	//return
 	typedHandler->stackId = it->first.id;

@@ -55,6 +55,7 @@ class StackTreeTypeDescriptorTyped : public StackTreeTypeDescriptor
 /*********************  TYPES  **********************/
 typedef void * StackTreeHandler;
 typedef StackTreeStorage * StackTreeDataHandler;
+typedef int StackId;
 
 /*********************  CLASS  **********************/
 class StackTree
@@ -74,7 +75,7 @@ class StackTree
 		virtual void exitThread(StackTreeHandler handler) = 0;
 		virtual bool isEnterExit(void) const = 0;
 		virtual StackTreeDataHandler getDataHandler(StackTreeHandler handler) = 0;
-		virtual int getStackId(StackTreeDataHandler handler) = 0;
+		virtual StackId getStackId(StackTreeDataHandler handler) = 0;
 		template <class T> T & getTypedData(StackTreeHandler handler,int id){return *(T*)getData(handler,id);};
 		template <class T> T & getTypedData(StackTreeDataHandler handler,int id){return *(T*)getData(handler,id);};
 		template <class T> int addDescriptor(const std::string & name) {return addDescriptor(name,new StackTreeTypeDescriptorTyped<T>());};

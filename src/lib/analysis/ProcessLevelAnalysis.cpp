@@ -20,6 +20,9 @@
 #include <fstream>
 #include <allocators/NoFreeAllocator.hpp>
 
+/********************  MACRO  ***********************/
+#define MATT_THREAD_ID 0
+
 /*******************  FUNCTION  *********************/
 namespace MATT
 {
@@ -62,6 +65,12 @@ void ProcessLevelAnalysis::init ( void )
 	//setup tree
 	int id = this->stackTree->addDescriptor<CallCounter>("alloc");
 	assumeArg(id == MATT_ANA_ID_ALLOC,"Do not get valid ID while registering descriptors : %1 != %2").arg(id).arg(MATT_ANA_ID_ALLOC).end();
+	
+	id = this->stackTree->addDescriptor<CallCounter>("free");
+	assumeArg(id == MATT_ANA_ID_FREE,"Do not get valid ID while registering descriptors : %1 != %2").arg(id).arg(MATT_ANA_ID_FREE).end();
+	
+	id = this->stackTree->addDescriptor<CallCounter>("lifetime");
+	assumeArg(id == MATT_ANA_ID_LIFETIME,"Do not get valid ID while registering descriptors : %1 != %2").arg(id).arg(MATT_ANA_ID_LIFETIME).end();
 }
 
 /*******************  FUNCTION  *********************/
@@ -80,14 +89,14 @@ bool ProcessLevelAnalysis::mmapCallEnterExit ( void )
 void ProcessLevelAnalysis::onAlignedAlloc ( MallocHooksInfos& info, void* ret, size_t alignment, size_t size )
 {
 	this->mallocClock.markEvent();
-	this->stackTree->getTypedData<CallCounter>(info.handler,MATT_ANA_ID_ALLOC).call(size);
+	onAlloc(info,ret,size);
 }
 
 /*******************  FUNCTION  *********************/
 void ProcessLevelAnalysis::onCalloc ( MallocHooksInfos& info, void* ret, size_t nmemb, size_t size )
 {
 	this->mallocClock.markEvent();
-	this->stackTree->getTypedData<CallCounter>(info.handler,MATT_ANA_ID_ALLOC).call(size);
+	onAlloc(info,ret,size);
 }
 
 /*******************  FUNCTION  *********************/
@@ -133,13 +142,24 @@ void ProcessLevelAnalysis::onExit ( void )
 /*******************  FUNCTION  *********************/
 void ProcessLevelAnalysis::onFree ( MallocHooksInfos& info, void* ptr )
 {
+	UserSegment segment = this->userSegmentTracker.unregister(mallocClock,ptr);
+	ticks lifetime = this->mallocClock.getLastEventTime(CLOCK_TICKS) - segment.birth;
+	this->stackTree->getTypedData<CallCounter>(segment.dataHandler,MATT_ANA_ID_LIFETIME).call(lifetime);
+	this->stackTree->getTypedData<CallCounter>(info.handler,MATT_ANA_ID_FREE).call(segment.size);
+}
+
+/*******************  FUNCTION  *********************/
+void ProcessLevelAnalysis::onAlloc ( MallocHooksInfos& info, void* ret, size_t size )
+{
+	this->stackTree->getTypedData<CallCounter>(info.handler,MATT_ANA_ID_ALLOC).call(size);
+	this->userSegmentTracker.registerChunk(ret,size,mallocClock.getLastEventTime(CLOCK_TICKS),info.dataId,MATT_THREAD_ID,info.dataHandler);
 }
 
 /*******************  FUNCTION  *********************/
 void ProcessLevelAnalysis::onMalloc ( MallocHooksInfos& info, void* ret, size_t size )
 {
 	this->mallocClock.markEvent();
-	this->stackTree->getTypedData<CallCounter>(info.handler,MATT_ANA_ID_ALLOC).call(size);
+	this->onAlloc(info,ret,size);
 }
 
 /*******************  FUNCTION  *********************/
@@ -158,7 +178,7 @@ void ProcessLevelAnalysis::onMallocExitFunction ( MallocHooksInfos& info ,void *
 void ProcessLevelAnalysis::onMemalign ( MallocHooksInfos& info, void* ret, size_t alignment, size_t size )
 {
 	this->mallocClock.markEvent();
-	this->stackTree->getTypedData<CallCounter>(info.handler,MATT_ANA_ID_ALLOC).call(size);
+	this->onAlloc(info,ret,size);
 }
 
 /*******************  FUNCTION  *********************/
@@ -195,7 +215,7 @@ void ProcessLevelAnalysis::onMunmap ( MmapHooksInfos& info, int ret, void* start
 void ProcessLevelAnalysis::onPosixMemalign ( MallocHooksInfos& info, int ret, void** memptr, size_t align, size_t size )
 {
 	this->mallocClock.markEvent();
-	this->stackTree->getTypedData<CallCounter>(info.handler,MATT_ANA_ID_ALLOC).call(size);
+	this->onAlloc(info,*memptr,size);
 }
 
 /*******************  FUNCTION  *********************/
@@ -214,12 +234,14 @@ void ProcessLevelAnalysis::onPreRealloc ( MallocHooksInfos& info, void* ptr, siz
 void ProcessLevelAnalysis::onPvalloc ( MallocHooksInfos& info, void* ret, size_t size )
 {
 	this->mallocClock.markEvent();
+	this->onAlloc(info,ret,size);
 }
 
 /*******************  FUNCTION  *********************/
 void ProcessLevelAnalysis::onRealloc ( MallocHooksInfos& info, void* ret, void* ptr, size_t size )
 {
-	this->stackTree->getTypedData<CallCounter>(info.handler,MATT_ANA_ID_ALLOC).call(size);
+	this->mallocClock.markEvent();
+	this->onAlloc(info,ret,size);
 }
 
 /*******************  FUNCTION  *********************/
@@ -238,7 +260,7 @@ void ProcessLevelAnalysis::onThreadExit ( void )
 void ProcessLevelAnalysis::onValloc ( MallocHooksInfos& info, void* ret, size_t size )
 {
 	this->mallocClock.markEvent();
-	this->stackTree->getTypedData<CallCounter>(info.handler,MATT_ANA_ID_ALLOC).call(size);
+	this->onAlloc(info,ret,size);
 }
 
 /*******************  FUNCTION  *********************/
@@ -290,6 +312,7 @@ StackTree* ProcessLevelAnalysis::getStackTree ( void )
 void convertToJson ( htopml::JsonState& json, const ProcessLevelAnalysis& value )
 {
 	json.openStruct();
+		json.printField("options",getOptions());
 		json.printField("stacks",*(value.stackTree));
 		json.openFieldArray("threads");
 			for (ThreadLevelAnalysisVector::const_iterator it = value.threads.begin() ; it != value.threads.end() ; ++it)

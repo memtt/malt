@@ -180,22 +180,37 @@ void Options::loadFromFile(const char* fname)
 }
 
 /*******************  FUNCTION  *********************/
+/**
+ * @todo CLeanup this by checking deque capability
+**/
+bool groupContains(const std::deque<std::string>& group,const std::string & name)
+{
+	for (std::deque<std::string>::const_iterator it = group.begin() ; it != group.end() ; ++it)
+		if (*it == name)
+			return true;
+	return false;
+}
+
+/*******************  FUNCTION  *********************/
 void convertToJson(htopml::JsonState & json,const Options & value)
 {
 	//gen group list
 	std::deque<std::string> groups;
 	for (int i = 0 ; i < value.options.size() ; i++)
-		groups.push_back(value.options[i]->getSection());
+		if (!groupContains(groups,value.options[i]->getSection()))
+			groups.push_back(value.options[i]->getSection());
 	
 	json.openStruct();
 	for (std::deque<std::string>::iterator it = groups.begin() ; it != groups.end() ; ++it)
 	{
 		json.openFieldStruct(it->c_str());
 		for (int i = 0 ; i < value.options.size() ; i++)
-			value.options[i]->dump(json);
+			if (value.options[i]->getSection() == *it)
+				value.options[i]->dump(json);
 		json.closeFieldStruct(it->c_str());
 		
 	}
+	json.closeStruct();
 }
 
 /*******************  FUNCTION  *********************/

@@ -18,6 +18,7 @@
 #include "ThreadLevelAnalysis.hpp"
 #include <allocators/STLInternalAllocator.hpp>
 #include <core/Clock.hpp>
+#include <core/UserSegmentTracker.hpp>
 #include <vector>
 
 namespace MATT
@@ -30,6 +31,8 @@ typedef std::vector<ThreadLevelAnalysis*,STLInternalAllocator<ThreadLevelAnalysi
 enum ProcessAnalysisIDS
 {
 	MATT_ANA_ID_ALLOC,
+	MATT_ANA_ID_FREE,
+	MATT_ANA_ID_LIFETIME,
 };
 
 /*********************  CLASS  **********************/
@@ -39,6 +42,8 @@ class ProcessLevelAnalysis : public ExitHooks, public MmapHooks, public ThreadHo
 		ProcessLevelAnalysis(void);
 		virtual ~ProcessLevelAnalysis ( void );
 		void init(void);
+		//common
+		void onAlloc(MallocHooksInfos& info, void* ret, size_t size);
 		//exit
 		virtual void onExit ( void );
 		//mmap
@@ -80,6 +85,7 @@ class ProcessLevelAnalysis : public ExitHooks, public MmapHooks, public ThreadHo
 		ThreadLevelAnalysisVector threads;
 		StackTree * stackTree;
 		Clock mallocClock;
+		UserSegmentTracker userSegmentTracker;
 };
 
 }
