@@ -22,6 +22,8 @@ namespace MATT
 struct MallocHooksInfos
 {
 	StackTreeHandler handler;
+	StackTreeDataHandler dataHandler;
+	int dataId;
 	ticks calltime;
 	void * retaddr;
 	void * func;

@@ -43,6 +43,7 @@ class StackTreeMap : public StackTree
 			BacktraceStack backtraceStack;
 			EnterExitStack enterExitStack;
 			StackTreeStorage * storage;
+			int stackId;
 			
 		};
 		typedef std::pair<const Key,StackTreeStorage> Node;
@@ -58,6 +59,8 @@ class StackTreeMap : public StackTree
 		virtual StackTreeHandler getFromStack(StackTreeHandler handler, int skip);
 		virtual bool isEnterExit ( void ) const;
 		virtual void toJson ( htopml::JsonState& json, const StackTree& tree ) const;
+		virtual StackTreeDataHandler getDataHandler ( StackTreeHandler handler );
+		virtual int getStackId ( StackTreeDataHandler handler );
 	public:
 		friend void convertToJson(htopml::JsonState & json, const StackTreeMap & tree);
 	protected:

@@ -17,8 +17,6 @@
 namespace MATT
 {
 
-typedef void * StackTreeHandler;
-
 /********************  MACROS  **********************/
 #define MATT_STACK_TREE_ENTRIES 4
 #define MATT_STACK_TREE_NULL NULL
@@ -54,6 +52,10 @@ class StackTreeTypeDescriptorTyped : public StackTreeTypeDescriptor
 		virtual void toJson(htopml::JsonState & json,const char * name,void * ptr) {json.printField(name,*(T*)ptr);};
 };
 
+/*********************  TYPES  **********************/
+typedef void * StackTreeHandler;
+typedef StackTreeStorage * StackTreeDataHandler;
+
 /*********************  CLASS  **********************/
 class StackTree
 {
@@ -71,13 +73,17 @@ class StackTree
 		virtual StackTreeHandler getFromStack(StackTreeHandler handler,int skip) = 0;
 		virtual void exitThread(StackTreeHandler handler) = 0;
 		virtual bool isEnterExit(void) const = 0;
+		virtual StackTreeDataHandler getDataHandler(StackTreeHandler handler) = 0;
+		virtual int getStackId(StackTreeDataHandler handler) = 0;
 		template <class T> T & getTypedData(StackTreeHandler handler,int id){return *(T*)getData(handler,id);};
+		template <class T> T & getTypedData(StackTreeDataHandler handler,int id){return *(T*)getData(handler,id);};
 		template <class T> int addDescriptor(const std::string & name) {return addDescriptor(name,new StackTreeTypeDescriptorTyped<T>());};
 		int addDescriptor(const std::string name, StackTreeTypeDescriptor * descriptor) {names[descriptorsCnt]=name;descriptors[descriptorsCnt]=descriptor;return descriptorsCnt++;};
 		virtual void toJson(htopml::JsonState & json, const StackTree & tree) const = 0;
 		friend void convertToJson(htopml::JsonState & json, const StackTree & tree) {tree.toJson(json,tree);};
 	protected:
 		virtual void * getData(StackTreeHandler handler,int id) = 0;
+		virtual void * getData(StackTreeDataHandler handler,int id) {return (*handler)[id];};
 // 		virtual void setData(StackTreeHandler handler,int id, void* data) = 0;
 	protected:
 		std::string names[MATT_STACK_TREE_ENTRIES];

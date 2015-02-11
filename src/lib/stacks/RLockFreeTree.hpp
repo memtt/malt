@@ -82,10 +82,12 @@ class RLockFreeTree : public StackTree
 		Handler getNode(StackTreeHandler handler);
 		virtual StackTreeHandler getFromStack(StackTreeHandler handler, const Stack & stack);
 		virtual StackTreeHandler getFromStack(StackTreeHandler handler,int skip);
-		virtual void copyData(const Stack & stack,const StackTreeStorage & storage);
+		virtual void copyData( const MATT::Stack& stack, const MATT::StackTreeStorage& storage, int id );
 		virtual bool isEnterExit ( void ) const;
 		virtual void toJson ( htopml::JsonState& json, const StackTree& tree ) const;
+		virtual StackTreeDataHandler getDataHandler ( StackTreeHandler handler );
 		void markChildData(RLockFreeTreeNode * node = NULL);
+		virtual int getStackId ( StackTreeDataHandler handler );
 	public:
 		friend void convertToJson(htopml::JsonState & json, const RLockFreeTree & tree);
 	protected:

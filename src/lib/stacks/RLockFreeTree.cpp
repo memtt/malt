@@ -133,11 +133,13 @@ StackTreeHandler RLockFreeTree::getFromStack(StackTreeHandler handler, const Sta
 }
 
 /*******************  FUNCTION  *********************/
-void RLockFreeTree::copyData(const MATT::Stack& stack, const MATT::StackTreeStorage& storage)
+void RLockFreeTree::copyData(const MATT::Stack& stack, const MATT::StackTreeStorage& storage,int id)
 {
 	StackTreeHandler handler = enterThread();
 	handler = getFromStack(handler,stack);
-	getNode(handler)->data = storage;
+	MATT::RLockFreeTree::Handler typedHandler = getNode(handler);
+	typedHandler->data = storage;
+	typedHandler->dataId = id;
 	exitThread(handler);
 }
 
@@ -177,13 +179,28 @@ StackTreeHandler RLockFreeTree::exitFunction(StackTreeHandler handler, void* cal
 }
 
 /*******************  FUNCTION  *********************/
+StackTreeDataHandler RLockFreeTree::getDataHandler ( StackTreeHandler handler )
+{
+	Handler typedHandler = (Handler)handler;
+	return &typedHandler->data;
+}
+
+/*******************  FUNCTION  *********************/
+int RLockFreeTree::getStackId ( StackTreeDataHandler handler )
+{
+	Handler typedHandler = (Handler)handler;
+	assert(typedHandler->dataId != -1);
+	return typedHandler->dataId;
+}
+
+/*******************  FUNCTION  *********************/
 void* RLockFreeTree::getData(MATT::StackTreeHandler handler, int id)
 {
 	assert(id < MATT_STACK_TREE_ENTRIES);
-	Handler typedHandler = (Handler)handler;
-	void * ret = typedHandler->data[id];
+	StackTreeDataHandler dataHandler = getDataHandler(handler);
+	void * ret = (*dataHandler)[id];
 	if (ret == NULL)
-		ret = typedHandler->data[id] = descriptors[id]->allocate();
+		ret = (*dataHandler)[id] = descriptors[id]->allocate();
 	return ret;
 }
 

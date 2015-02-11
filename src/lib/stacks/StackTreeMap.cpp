@@ -120,10 +120,15 @@ void StackTreeMap::exitThread(StackTreeHandler handler)
 }
 
 /*******************  FUNCTION  *********************/
-void* & StackTreeMap::internalGetData(StackTreeHandler handler, int id)
+int StackTreeMap::getStackId ( StackTreeDataHandler handler )
 {
-	assert(id < MATT_STACK_TREE_ENTRIES);
+	Handler * typedHandler = (Handler*)handler;
+	return typedHandler->stackId;
+}
 
+/*******************  FUNCTION  *********************/
+StackTreeDataHandler StackTreeMap::getDataHandler ( StackTreeHandler handler )
+{
 	//get handler
 	Handler * typedHandler = (Handler*)handler;
 	StackTreeStorage * storage = typedHandler->storage;
@@ -138,6 +143,17 @@ void* & StackTreeMap::internalGetData(StackTreeHandler handler, int id)
 			typedHandler = (Handler*)getFromStack(handler,typedHandler->enterExitStack);
 		storage = typedHandler->storage;
 	}
+	
+	return storage;
+}
+
+/*******************  FUNCTION  *********************/
+void* & StackTreeMap::internalGetData(StackTreeHandler handler, int id)
+{
+	assert(id < MATT_STACK_TREE_ENTRIES);
+
+	//get handler
+	StackTreeStorage * storage = getDataHandler(handler);
 	
 	//entry
 	void * & entry = (*storage)[id];
@@ -172,13 +188,14 @@ StackTreeHandler StackTreeMap::getFromStack(StackTreeHandler handler, const Stac
 	if (it == map.end())
 	{
 		key.cloneStack();
+		key.id = nextId++;
 		StackTreeStorage storage;
 		map[key] = storage;
-		nextId++;
 		it = map.find(key);
 	}
 	
 	//return
+	typedHandler->stackId = it->first.id;
 	typedHandler->storage = &(it->second);
 	return handler;
 }
@@ -207,7 +224,7 @@ void convertToJson(htopml::JsonState& json, const StackTreeMap& tree)
 		
 	//copy values
 	for (StackTreeMap::NodeMap::const_iterator it = tree.map.begin() ; it != tree.map.end() ; ++it)
-		otree.copyData(*it->first.stack,it->second);
+		otree.copyData(*it->first.stack,it->second,it->first.id);
 	
 	otree.exitThread(handler);
 	otree.markChildData();
