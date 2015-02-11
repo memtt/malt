@@ -92,6 +92,7 @@ class RLockFreeTree : public StackTree
 		friend void convertToJson(htopml::JsonState & json, const RLockFreeTree & tree);
 	protected:
 		virtual void * getData(StackTreeHandler handler,int id);
+		virtual void * getData ( MATT::StackTreeDataHandler dataHandler, int id );
 // 		virtual void setData(StackTreeHandler handler,int id, void* data);
 		Handler addChild(Handler node, void* callsite);
 		Handler findChild(Handler node, void* callsite);

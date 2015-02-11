@@ -205,6 +205,15 @@ void* RLockFreeTree::getData(MATT::StackTreeHandler handler, int id)
 }
 
 /*******************  FUNCTION  *********************/
+void* RLockFreeTree::getData ( StackTreeDataHandler dataHandler, int id )
+{
+	void * ret = (*dataHandler)[id];
+	if (ret == NULL)
+		ret = (*dataHandler)[id] = descriptors[id]->allocate();
+	return ret;
+}
+
+/*******************  FUNCTION  *********************/
 // void RLockFreeTree::setData(MATT::StackTreeHandler handler, int id, void* data)
 // {
 // 	assert(id < MATT_STACK_TREE_ENTRIES);

@@ -66,6 +66,7 @@ class StackTreeMap : public StackTree
 	protected:
 		virtual void * & internalGetData(StackTreeHandler handler,int id);
 		virtual void * getData(StackTreeHandler handler,int id);
+		virtual void* getData ( StackTreeDataHandler handler, int id );
 		void printData(htopml::JsonState & json,int id) const;
 	protected:
 		Spinlock lock;

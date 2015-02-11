@@ -173,6 +173,20 @@ void* StackTreeMap::getData(StackTreeHandler handler, int id)
 }
 
 /*******************  FUNCTION  *********************/
+void* StackTreeMap::getData ( StackTreeDataHandler handler, int id )
+{
+	//entry
+	void * entry = (*handler)[id];
+	
+	//allocate
+	if (entry == NULL)
+		(*handler)[id] = descriptors[id]->allocate();
+	
+	//return
+	return (*handler)[id];
+}
+
+/*******************  FUNCTION  *********************/
 StackTreeHandler StackTreeMap::getFromStack(StackTreeHandler handler, const Stack& stack)
 {
 	//get handler

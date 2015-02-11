@@ -84,7 +84,7 @@ class StackTree
 		friend void convertToJson(htopml::JsonState & json, const StackTree & tree) {tree.toJson(json,tree);};
 	protected:
 		virtual void * getData(StackTreeHandler handler,int id) = 0;
-		virtual void * getData(StackTreeDataHandler handler,int id) {return (*handler)[id];};
+		virtual void * getData(StackTreeDataHandler handler,int id)  = 0;
 // 		virtual void setData(StackTreeHandler handler,int id, void* data) = 0;
 	protected:
 		std::string names[MATT_STACK_TREE_ENTRIES];

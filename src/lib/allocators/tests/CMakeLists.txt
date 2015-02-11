@@ -14,6 +14,7 @@ include_directories(../)
 ######################################################
 set(TEST_NAMES TestSimpleAllocator
                TestSTLInternalAllocator
+               TestSTLInternalAllocatorNoFree
                TestNoFreeAllocator
    )
 

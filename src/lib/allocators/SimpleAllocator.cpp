@@ -46,7 +46,10 @@ SimpleAllocator * gblInternaAlloc = NULL;
 SimpleAllocator::SimpleAllocator(bool threadSafe, size_t sysReqSize)
 {
 	//check
-	assert(sysReqSize % MATT_PAGE_SIZE == 0);
+	assumeArg(sysReqSize % MATT_PAGE_SIZE == 0,"sysReqSize must be a multiple of MATT_PAGE_SIZE(%1), but get %2 !")
+		.arg(MATT_PAGE_SIZE)
+		.arg(sysReqSize)
+		.end();
 	
 	//setup params
 	this->sysReqSize = sysReqSize;
@@ -71,8 +74,11 @@ SimpleAllocator::SimpleAllocator(bool threadSafe, size_t sysReqSize)
 **/
 void SimpleAllocator::requestSystemMemory(size_t size)
 {
-	//errors
-	assert(size % MATT_PAGE_SIZE == 0);
+	//check
+	assumeArg(sysReqSize % MATT_PAGE_SIZE == 0,"sysReqSize must be a multiple of MATT_PAGE_SIZE(%1), but get %2 !")
+		.arg(MATT_PAGE_SIZE)
+		.arg(sysReqSize)
+		.end();
 	
 	//register too small chunk if have one
 	if (cur != NULL)
@@ -106,6 +112,10 @@ void SimpleAllocator::requestSystemMemory(size_t size)
 void* SimpleAllocator::malloc(size_t size)
 {
 	assert(this != NULL);
+	
+	//rount to multiple of pointer size
+	if (size % sizeof(void*) != 0)
+		size += sizeof(void*) - size%sizeof(void*);
 
 	//timer
 	CODE_TIMING_FUNC_START("internalMalloc");

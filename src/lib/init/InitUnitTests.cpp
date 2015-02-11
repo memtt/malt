@@ -8,13 +8,16 @@
 
 /********************  HEADERS  *********************/
 #include <allocators/SimpleAllocator.hpp>
+#include <allocators/NoFreeAllocator.hpp>
 #include <gtest/gtest.h>
 
 /*******************  FUNCTION  *********************/
 int main(int argc, char ** argv)
 {
 	//init internal allocator
-	MATT::gblInternaAlloc = new MATT::SimpleAllocator(true);
+	MATT::doNoFreeAllocatorInit();
+	void * ptr = MATT::gblNoFreeAllocator.allocate(sizeof(MATT::SimpleAllocator));
+	MATT::gblInternaAlloc = new (ptr) MATT::SimpleAllocator(true);
 	
 	// This allows the user to override the flag on the command line.
 	::testing::InitGoogleTest(&argc, argv);
