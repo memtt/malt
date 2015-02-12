@@ -46,8 +46,18 @@
 			},
 			"lifetime":{
 
+			},
+			"peak":{
+
 			}
 		}
 	},
-	"threads":[]
+	"threads":[],
+	"globals":{
+		"peak":{
+			"finalValue":0,
+			"peakTime":0,
+			"peak":0
+		}
+	}
 }
