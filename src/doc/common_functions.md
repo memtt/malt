@@ -124,6 +124,18 @@ You can wrap this allocator into STL object with :
 
 	std::list< int , STLInternalAllocator<int> > myList;
 
+In MATT there is some allocations wichi are never freed. For such allocation you can use the NoFreeAllocator :
+
+	#include <common/NoFreeAllocator.hpp>
+	
+	void * ptr = MATT_NO_FREE_MALLOC(16);
+
+Or use inside STL containers :
+
+	#include <common/STLInternalAllocatorNoFree.hpp>
+
+	std::list< int , STLInternalAllocatorNoFree<int> > myList;
+
 Code timings
 ------------
 

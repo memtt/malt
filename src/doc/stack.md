@@ -34,5 +34,42 @@ an ordering operator the help such support. Stack compare is done on size then o
 be used to build efficient AVL trees in addition to the hash and it will use full compare only on
 limited number of elements.
 
+Generic entries
+---------------
 
+MATT use an abstract tree representation that can contain any types of data as long as we defined a related
+descriptor at init time. First we need to allocate a tree implementation, there is currently three solutions :
+
+	#include <core/options.hpp>
+	#include <stacks/StackTreeMap.hpp>
+	#include <stacks/RLockFreeTree.hpp>
+	#include <allocators/NoFreeAllocator.hpp>
+
+	Options & options = getOptions();
+	void * ptr;
+	switch(options.getStackMode())
+	{
+		case MATT_STACK_MAP_BACKTRACE:
+			ptr = MATT_NO_FREE_MALLOC(sizeof(StackTreeMap));
+			this->stackTree = new (ptr) StackTreeMap();
+			break;
+		case MATT_STACK_TREE_ENTER_EXIT:
+			ptr = MATT_NO_FREE_MALLOC(sizeof(RLockFreeTree));
+			this->stackTree = new (ptr) RLockFreeTree();
+			break;
+		case MATT_STACK_MAP_ENTER_EXIT:
+			ptr = MATT_NO_FREE_MALLOC(sizeof(StackTreeMap));
+			this->stackTree = new (ptr) StackTreeMap(false);
+			break;
+		default:
+			MATT_FATAL_ARG("Invalid stck tree mode from options : %1 ! ").arg(options.getStackMode()).end();
+	}
+
+Now you can setup the descriptors by providing a type and an entry name :
+	
+	#include <stacks/StackTree.hpp>
+	
+	//setup tree
+	int id = this->stackTree->addDescriptor<CallCounter>("alloc");
+	assumeArg(id == MATT_ANA_ID_ALLOC,"Do not get valid ID while registering descriptors : %1 != %2").arg(id).arg(MATT_ANA_ID_ALLOC).end();
 
