@@ -1,3 +1,4 @@
+#!/bin/bash
 ######################################################
 #            PROJECT  : MATT                         #
 #            VERSION  : 0.0.0                        #
@@ -7,10 +8,8 @@
 ######################################################
 
 ######################################################
-add_library(matt-analysis OBJECT ProcessLevelAnalysis.cpp ThreadLevelAnalysis.cpp)
-SET_TARGET_PROPERTIES(matt-analysis PROPERTIES COMPILE_FLAGS -fPIC)
-
-######################################################
-if (ENABLE_TESTS)
-	add_subdirectory(tests)
-endif (ENABLE_TESTS)
+#This script remove the special chars from C strings test report
+filename="$1"
+tmp="$(cat $filename)"
+tmp="$(echo -e "$tmp" | sed -e 's/\\\"/"/g')"
+echo "$tmp" >  "$filename"

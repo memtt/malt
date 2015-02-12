@@ -8,10 +8,14 @@ To print error messages with object formatting you can use the FormattedMessage 
 as base class for Debug messages defined into common/Debug.h. Debug messages can be quicly displayed
 with :
 
+	#include <common/Debug.hpp>
+	
 	MATT_FATAL("Describe error");
 
 If you need arguments :
 
+	#include <common/Debug.hpp>
+	
 	MATT_FATAL_ARG("Describe error with arg %1 and %2").arg(x).arg(y).end()
 
 Please do not forget the call to end() method to print the message and apply exit method (abort or raise exception...)

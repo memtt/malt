@@ -1,0 +1,53 @@
+{
+	"options":{
+		"stack":{
+			"enabled":true,
+			"resolve":true,
+			"mode":"backtrace",
+			"libunwind":false
+		},
+		"time":{
+			"enabled":true,
+			"points":512,
+			"linear":false
+		},
+		"output":{
+			"name":"matt-%1-%2.%3",
+			"indent":true,
+			"json":true,
+			"lua":false,
+			"callgrind":false,
+			"config":true
+		},
+		"max-stack":{
+			"enabled":true
+		},
+		"distr":{
+			"alloc_size":true,
+			"realloc_jump":true
+		},
+		"trace":{
+			"enabled":true
+		},
+		"info":{
+			"hidden":false
+		}
+	},
+	"stacks":{
+		"calltree":{
+
+		},
+		"data":{
+			"alloc":{
+
+			},
+			"free":{
+
+			},
+			"lifetime":{
+
+			}
+		}
+	},
+	"threads":[]
+}

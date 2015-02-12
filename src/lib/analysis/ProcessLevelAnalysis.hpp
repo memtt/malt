@@ -73,7 +73,7 @@ class ProcessLevelAnalysis : public ExitHooks, public MmapHooks, public ThreadHo
 		virtual void onValloc ( MallocHooksInfos& info, void* ret, size_t size );
 		//enter exit function
 		virtual bool isEnterExitFunction ( void );
-		/*******************  FUNCTION  *********************/
+		//enter-exit handkers
 		virtual void onEnterFunction ( void* caller, void* function );
 		virtual void onExitFunction ( void* caller, void* function );
 		//manage tls

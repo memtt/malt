@@ -1,6 +1,74 @@
 Code entry points
 =================
 
+Init system
+-----------
+
+The MATT instrumentation is init and drived from the init/ subdirectory which
+intantiate the hooks the user want. It mosly need to implement the init
+function :
+
+	namespace MATT
+	{
+		ThreadHooks * threadHookInit(void);
+		MallocHooks * mallocHookInit(void):
+		MmapHooks * mmapHookInit(void);
+		ExitHooks * exitHookInit(void);
+		EnterExitFunctionHooks * enterExitFunctionHookInit(void);
+	}
+
+By default MATT use the InitMatt.cpp file.
+
+All those functions must return an implementation of the related hooks interfaces.
+The functions are called before every use so can also manage TLS related instances
+for per thread analysis.
+
+The init script must also take care of the internal (simple and nofree) allocators :
+
+	#include <allocators/SimpleAllocator.hpp>
+	#include <allocators/NoFreeAllocator.hpp>
+	
+	doNoFreeAllocatorInit();
+	if (gblInternaAlloc == NULL)
+	{
+		void * ptr = MATT_NO_FREE_MALLOC(sizeof(SimpleAllocator));
+		gblInternaAlloc = new(ptr) SimpleAllocator();
+	}
+
+As a last requirement, the init script must load the MATT options :
+
+	#include <core/Options.hpp>
+	
+	void optionsInit(void)
+	{
+		//load options
+		Options & options = initGlobalOptions();
+		const char * configFile = OS::getEnv("MATT_CONFIG");
+		if (configFile != NULL)
+			options.loadFromFile(configFile);
+		const char * envOptions = OS::getEnv("MATT_OPTIONS");
+		if (envOptions != NULL)
+			options.loadFromString(envOptions);
+	}
+
+Standard analysis
+-----------------
+
+The default implementation of MATT hook interfaces are stored into analysis/
+subdirectory and provide the per-thread and per-process analysis. Those two
+implementation are linked together as the per-thread objects are allocated
+and registered by the per-process object :
+
+	#include <analysis/ProcessLevelAnalysis.hpp>
+	#include <analysis/ThreadLevelAnalysis.hpp>
+	
+	if (tls == NULL)
+	{
+		tls = tlsMatt = gblMatt->getNewThreadLevelAnalysis();
+	}
+
+--TODO rewrite--
+	
 Core system
 -----------
 

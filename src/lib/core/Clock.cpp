@@ -23,11 +23,19 @@ Clock::Clock()
 }
 
 /*******************  FUNCTION  *********************/
+Clock::Clock(const Clock & clock)
+{
+	this->eventId = clock.eventId;
+	this->lastEvent = clock.lastEvent;
+	this->start = clock.start;
+}
+
+/*******************  FUNCTION  *********************/
 ticks Clock::get ( ClockMode mode ) const
 {
 	assert(mode == CLOCK_TICKS || mode == CLOCK_ID);
 	if (mode == CLOCK_TICKS)
-		return getticks();
+		return getticks() - this->start;
 	else
 		return eventId;
 }
@@ -46,7 +54,7 @@ ticks Clock::getLastEventTime ( ClockMode mode ) const
 void Clock::markEvent ( void )
 {
 	eventId++;
-	lastEvent = getticks();
+	lastEvent = getticks() - this->start;
 }
 
 /*******************  FUNCTION  *********************/

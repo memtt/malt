@@ -28,6 +28,7 @@ class Clock
 {
 	public:
 		Clock();
+		Clock(const Clock & clock);
 		void markEvent(void);
 		ticks get(ClockMode mode) const;
 		ticks getLastEventTime(ClockMode mode) const;
