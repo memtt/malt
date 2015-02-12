@@ -10,16 +10,20 @@
 #define MATT_PROCESS_LEVEL_ANLYSIS_HPP
 
 /********************  HEADERS  *********************/
-#include <hooks/ExitHooks.hpp>
-#include <hooks/MallocHooks.hpp>
-#include <hooks/MmapHooks.hpp>
-#include <hooks/ThreadHooks.hpp>
-#include <hooks/EnterExitFunctionHooks.hpp>
-#include "ThreadLevelAnalysis.hpp"
-#include <allocators/STLInternalAllocator.hpp>
-#include <core/Clock.hpp>
-#include <core/UserSegmentTracker.hpp>
+//std C++
 #include <vector>
+//internal
+#include <core/Clock.hpp>
+#include <hooks/ExitHooks.hpp>
+#include <hooks/MmapHooks.hpp>
+#include <hooks/MallocHooks.hpp>
+#include <hooks/ThreadHooks.hpp>
+#include <core/UserSegmentTracker.hpp>
+#include <core/PeakTracker.hpp>
+#include <hooks/EnterExitFunctionHooks.hpp>
+#include <allocators/STLInternalAllocator.hpp>
+//current
+#include "ThreadLevelAnalysis.hpp"
 
 namespace MATT
 {
@@ -33,6 +37,7 @@ enum ProcessAnalysisIDS
 	MATT_ANA_ID_ALLOC = 0,
 	MATT_ANA_ID_FREE = 1,
 	MATT_ANA_ID_LIFETIME = 2,
+	MATT_ANA_ID_PEAK = 3,
 };
 
 /*********************  CLASS  **********************/
@@ -44,6 +49,7 @@ class ProcessLevelAnalysis : public ExitHooks, public MmapHooks, public ThreadHo
 		void init(void);
 		//common
 		void onAlloc(MallocHooksInfos& info, void* ret, size_t size);
+		void onFreeMem(MallocHooksInfos & info, void * ptr);
 		//exit
 		virtual void onExit ( void );
 		//mmap
@@ -86,6 +92,7 @@ class ProcessLevelAnalysis : public ExitHooks, public MmapHooks, public ThreadHo
 		StackTree * stackTree;
 		Clock mallocClock;
 		UserSegmentTracker userSegmentTracker;
+		PeakTracker globalPeakTracker;
 };
 
 }

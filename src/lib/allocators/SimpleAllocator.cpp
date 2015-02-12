@@ -16,9 +16,9 @@
 #include <common/Debug.hpp>
 #include <common/Helpers.hpp>
 #include <common/CodeTiming.hpp>
+#include <portability/OS.hpp>
 //object to implement
 #include "SimpleAllocator.hpp"
-#include <portability/OS.hpp>
 
 /*******************  NAMESPACE  ********************/
 /**

@@ -7,12 +7,17 @@
 *****************************************************/
 
 /********************  HEADERS  *********************/
+//gtest
 #include <gtest/gtest.h>
+//std C++
 #include <string>
-#include <analysis/ProcessLevelAnalysis.hpp>
+//system posix
+#include <sys/mman.h>
+//matt
 #include <core/Options.hpp>
 #include <portability/OS.hpp>
-#include <sys/mman.h>
+//current
+#include <analysis/ProcessLevelAnalysis.hpp>
 
 /***************** USING NAMESPACE ******************/
 using namespace MATT;

@@ -7,18 +7,19 @@
 *****************************************************/
 
 /********************  HEADERS  *********************/
-#include "ProcessLevelAnalysis.hpp"
-#include <hooks/EnterExitFunctionHooks.hpp>
-#include <common/FormattedMessage.hpp>
+//std c++
+#include <fstream>
+//matt
+#include <common/Debug.hpp>
 #include <core/Options.hpp>
 #include <common/Helpers.hpp>
-#include <common/CodeTiming.hpp>
 #include <portability/OS.hpp>
+#include <common/CodeTiming.hpp>
 #include <stacks/StackTreeMap.hpp>
 #include <stacks/RLockFreeTree.hpp>
-#include <common/Debug.hpp>
-#include <fstream>
 #include <allocators/NoFreeAllocator.hpp>
+//current
+#include "ProcessLevelAnalysis.hpp"
 
 /********************  MACRO  ***********************/
 #define MATT_THREAD_ID 0
@@ -71,6 +72,9 @@ void ProcessLevelAnalysis::init ( void )
 	
 	id = this->stackTree->addDescriptor<CallCounter>("lifetime");
 	assumeArg(id == MATT_ANA_ID_LIFETIME,"Do not get valid ID while registering descriptors : %1 != %2").arg(id).arg(MATT_ANA_ID_LIFETIME).end();
+	
+	id = this->stackTree->addDescriptor<StackPeakTracker>("peak");
+	assumeArg(id == MATT_ANA_ID_PEAK,"Do not get valid ID while registering descriptors : %1 != %2").arg(id).arg(MATT_ANA_ID_PEAK).end();
 }
 
 /*******************  FUNCTION  *********************/
@@ -140,12 +144,19 @@ void ProcessLevelAnalysis::onExit ( void )
 /*******************  FUNCTION  *********************/
 void ProcessLevelAnalysis::onFree ( MallocHooksInfos& info, void* ptr )
 {
+}
+
+/*******************  FUNCTION  *********************/
+void ProcessLevelAnalysis::onFreeMem ( MallocHooksInfos& info, void* ptr )
+{
 	UserSegment segment = this->userSegmentTracker.unregister(mallocClock,ptr);
 	if (segment.size > 0)
 	{
 		ticks lifetime = this->mallocClock.getLastEventTime(CLOCK_TICKS) - segment.birth;
 		this->stackTree->getTypedData<CallCounter>(segment.dataHandler,MATT_ANA_ID_LIFETIME).call(lifetime);
 		this->stackTree->getTypedData<CallCounter>(info.handler,MATT_ANA_ID_FREE).call(segment.size);
+		this->globalPeakTracker.update(mallocClock.getLastEventTime(CLOCK_TICKS),-segment.size);
+		this->stackTree->getTypedData<StackPeakTracker>(segment.dataHandler,MATT_ANA_ID_PEAK).update(mallocClock.getLastEventTime(CLOCK_TICKS),-segment.size,this->globalPeakTracker);
 	} else {
 		MATT_WARNING_ARG("Capture non tracked segments : %1 !").arg(ptr).end();
 	}
@@ -156,6 +167,8 @@ void ProcessLevelAnalysis::onAlloc ( MallocHooksInfos& info, void* ret, size_t s
 {
 	this->stackTree->getTypedData<CallCounter>(info.handler,MATT_ANA_ID_ALLOC).call(size);
 	this->userSegmentTracker.registerChunk(ret,size,mallocClock.getLastEventTime(CLOCK_TICKS),info.dataId,MATT_THREAD_ID,info.dataHandler);
+	this->globalPeakTracker.update(mallocClock.getLastEventTime(CLOCK_TICKS),size);
+	this->stackTree->getTypedData<StackPeakTracker>(info.handler,MATT_ANA_ID_PEAK).update(mallocClock.getLastEventTime(CLOCK_TICKS),size,this->globalPeakTracker);
 }
 
 /*******************  FUNCTION  *********************/
@@ -225,12 +238,14 @@ void ProcessLevelAnalysis::onPosixMemalign ( MallocHooksInfos& info, int ret, vo
 void ProcessLevelAnalysis::onPreFree ( MallocHooksInfos& info, void* ptr )
 {
 	this->mallocClock.markEvent();
+	this->onFreeMem(info,ptr);
 }
 
 /*******************  FUNCTION  *********************/
 void ProcessLevelAnalysis::onPreRealloc ( MallocHooksInfos& info, void* ptr, size_t size )
 {
 	this->mallocClock.markEvent();
+	this->onFreeMem(info,ptr);
 }
 
 /*******************  FUNCTION  *********************/
@@ -323,6 +338,9 @@ void convertToJson ( htopml::JsonState& json, const ProcessLevelAnalysis& value 
 				json.printValue(**it);
 			}
 		json.closeFieldArray("threads");
+		json.openFieldStruct("globals");
+			json.printField("peak",value.globalPeakTracker);
+		json.closeFieldStruct("globals");
 	json.closeStruct();
 }
 
