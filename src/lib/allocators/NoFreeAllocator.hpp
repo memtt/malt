@@ -98,6 +98,10 @@ static inline void doNoFreeAllocatorInit(void) {gblNoFreeAllocator.init();}
 /** Short wrapper to ease desactivation of this allocator and usage of the standard one **/
 #define MATT_NO_FREE_MALLOC(x) gblNoFreeAllocator.allocate(x)
 
+/*******************  FUNCTION  *********************/
+/** Function to use the global allocator **/
+template <class T> T * noFreeMalloc(size_t cnt) {return (T*)gblNoFreeAllocator.allocate(sizeof(T)*cnt);};
+
 }
 
 #endif //MATT_NO_FREE_ALLOCATOR_HPP

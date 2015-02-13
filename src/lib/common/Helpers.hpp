@@ -24,6 +24,7 @@ struct Helpers
 {
 	static void printValue(std::ostream & out,double value, const char* unit = "");
 	static int getFileId(void);
+	template <class T> static void permut(T & a,T & b) {T tmp = a;a = b;b=tmp;};
 };
 
 /********************  MACRO  ***********************/

@@ -7,7 +7,7 @@
 ######################################################
 
 ######################################################
-add_library(matt-core OBJECT CallCounter.cpp Clock.cpp Options.cpp UserSegmentTracker.cpp PeakTracker.cpp)
+add_library(matt-core OBJECT CallCounter.cpp Clock.cpp Options.cpp UserSegmentTracker.cpp PeakTracker.cpp TimeProfiler.cpp)
 SET_TARGET_PROPERTIES(matt-core PROPERTIES COMPILE_FLAGS -fPIC)
 
 ######################################################
