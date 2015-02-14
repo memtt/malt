@@ -35,6 +35,7 @@ struct RLockFreeTreeNode
 {
 	RLockFreeTreeNode(void*callSite);
 	bool hasData(void);
+	virtual void registerSymbols ( SymbolRegistry& solver ) const;
 	/** Pointer to the next element on the same parent. NULL if none (last element). **/
 	RLockFreeTreeNode * next;
 	/** Pointer to the parent node, NULL if root. **/
@@ -86,6 +87,7 @@ class RLockFreeTree : public StackTree
 		virtual bool isEnterExit ( void ) const;
 		virtual void toJson ( htopml::JsonState& json, const StackTree& tree ) const;
 		virtual StackTreeDataHandler getDataHandler ( StackTreeHandler handler );
+		virtual void registerSymbols ( SymbolRegistry& solver ) const;
 		void markChildData(RLockFreeTreeNode * node = NULL);
 		virtual int getStackId ( StackTreeDataHandler handler );
 		virtual void prepareForOutput ( void );

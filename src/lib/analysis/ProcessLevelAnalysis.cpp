@@ -131,7 +131,15 @@ void ProcessLevelAnalysis::onExit ( void )
 		//TODO manage errors
 		std::ofstream out;
 		Options & options = getOptions();
+		
+		//preapre for output
 		stackTree->prepareForOutput();
+		
+		//solve symbols
+		registry.loadProcMap();
+		stackTree->registerSymbols(registry);
+		registry.solveNames();
+		
 		
 		//config
 // 		if (options.outputDumpConfig)
@@ -420,6 +428,7 @@ void convertToJson ( htopml::JsonState& json, const ProcessLevelAnalysis& value 
 {
 	json.openStruct();
 		json.printField("options",getOptions());
+		json.printField("symbols",value.registry);
 		json.printField("stacks",*(value.stackTree));
 		json.openFieldArray("threads");
 			for (ThreadLevelAnalysisVector::const_iterator it = value.threads.begin() ; it != value.threads.end() ; ++it)

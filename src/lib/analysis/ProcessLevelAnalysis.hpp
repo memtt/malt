@@ -21,6 +21,7 @@
 #include <core/UserSegmentTracker.hpp>
 #include <core/PeakTracker.hpp>
 #include <core/TimeProfiler.hpp>
+#include <core/SymbolRegistry.hpp>
 #include <hooks/EnterExitFunctionHooks.hpp>
 #include <allocators/STLInternalAllocator.hpp>
 //current
@@ -139,6 +140,7 @@ class ProcessLevelAnalysis : public ExitHooks, public MmapHooks, public ThreadHo
 		TimeProfiler memStats;
 		TimeProfiler systemStats;
 		TimeProfiler opsBandwidth;
+		SymbolRegistry registry;
 };
 
 }

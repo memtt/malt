@@ -20,6 +20,7 @@
 #include <common/Debug.hpp>
 //locals
 #include "Stack.hpp"
+#include <core/SymbolRegistry.hpp>
 
 /********************  MACROS  **********************/
 #define CALL_STACK_DEFAULT_SIZE   32
@@ -421,12 +422,12 @@ int Stack::getSize ( void ) const
 /**
  * Loop on all symbols and register them into the symbol translator.
 **/
-// void Stack::solveSymbols ( SymbolSolver& dic ) const
-// {
-// 	if (stack != NULL)
-// 		for (int i = 0 ; i < size ; i++)
-// 			dic.registerAddress(stack[i]);
-// }
+void Stack::registerSymbols ( SymbolRegistry& dic ) const
+{
+	if (stack != NULL)
+		for (int i = 0 ; i < size ; i++)
+			dic.registerAddress(stack[i]);
+}
 
 /*******************  FUNCTION  *********************/
 /**

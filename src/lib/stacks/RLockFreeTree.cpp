@@ -10,6 +10,7 @@
 #include "RLockFreeTree.hpp"
 #include <json/JsonState.h>
 #include <common/Debug.hpp>
+#include <core/SymbolRegistry.hpp>
 
 /*******************  NAMESPACE  ********************/
 namespace MATT
@@ -348,6 +349,24 @@ void RLockFreeTree::markChildData ( MATT::RLockFreeTreeNode* node )
 void RLockFreeTree::prepareForOutput ( void )
 {
 	markChildData();
+}
+
+/*******************  FUNCTION  *********************/
+void RLockFreeTree::registerSymbols ( SymbolRegistry& solver ) const
+{
+	root.registerSymbols(solver);
+}
+
+/*******************  FUNCTION  *********************/
+void RLockFreeTreeNode::registerSymbols ( SymbolRegistry& solver ) const
+{
+	solver.registerAddress(callSite);
+	RLockFreeTreeNode * cur = firstChild;
+	while (cur != NULL)
+	{
+		solver.registerAddress(cur->callSite);
+		cur->registerSymbols(solver);
+	}
 }
 
 }

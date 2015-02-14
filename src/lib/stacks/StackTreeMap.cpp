@@ -13,7 +13,9 @@
 #include "EnterExitStack.hpp"
 #include "RLockFreeTree.hpp"
 #include <common/Debug.hpp>
+#include <common/Helpers.hpp>
 #include <allocators/NoFreeAllocator.hpp>
+#include <core/SymbolRegistry.hpp>
 
 /*******************  NAMESPACE  ********************/
 namespace MATT
@@ -252,7 +254,7 @@ void convertToJson(htopml::JsonState& json, const StackTreeMap& tree)
 			otree.addDescriptor(tree.names[i],tree.descriptors[i]);
 		
 	//copy values
-	for (StackTreeMap::NodeMap::const_iterator it = tree.map.begin() ; it != tree.map.end() ; ++it)
+	foreachConst(StackTreeMap::NodeMap,tree.map,it)
 		otree.copyData(*it->first.stack,it->second,it->first.dataId);
 	
 	otree.exitThread(handler);
@@ -271,6 +273,13 @@ bool StackTreeMap::isEnterExit ( void ) const
 void StackTreeMap::toJson ( htopml::JsonState& json, const StackTree& tree ) const
 {
 	convertToJson(json,dynamic_cast<const StackTreeMap&>(tree));
+}
+
+/*******************  FUNCTION  *********************/
+void StackTreeMap::registerSymbols ( SymbolRegistry& registry ) const
+{
+	foreachConst(StackTreeMap::NodeMap,map,it)
+		it->first.stack->registerSymbols(registry);
 }
 
 }

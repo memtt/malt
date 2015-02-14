@@ -32,7 +32,7 @@ namespace MATT
 {
 
 /*********************  TYPES  **********************/
-class SymbolSolver;
+class SymbolRegistry;
 
 /*********************  ENUM  ***********************/
 /**
@@ -67,7 +67,7 @@ class Stack
 		virtual ~Stack(void);
 		StackHash hash(int skipDepth = 0) const;
 		static StackHash hash(void** stack, int size, MATT::StackOrder order);
-		void solveSymbols(SymbolSolver & dic) const;
+		void registerSymbols(SymbolRegistry & dic) const;
 		void grow(void);
 		bool isValid(void) const;
 		int getSize(void) const;

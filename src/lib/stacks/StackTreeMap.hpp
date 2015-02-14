@@ -63,6 +63,7 @@ class StackTreeMap : public StackTree
 		virtual StackTreeDataHandler getDataHandler ( StackTreeHandler handler );
 		virtual int getStackId ( StackTreeDataHandler handler );
 		virtual void prepareForOutput ( void );
+		virtual void registerSymbols ( MATT::SymbolRegistry& registry ) const;
 	public:
 		friend void convertToJson(htopml::JsonState & json, const StackTreeMap & tree);
 	protected:
