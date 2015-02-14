@@ -87,7 +87,7 @@ struct AllocStateStats
 class ProcessLevelAnalysis : public ExitHooks, public MmapHooks, public ThreadHooks, public MallocHooks, public EnterExitFunctionHooks
 {
 	public:
-		ProcessLevelAnalysis(void);
+		ProcessLevelAnalysis(bool threadSafe = true);
 		virtual ~ProcessLevelAnalysis ( void );
 		void init(void);
 		//common
@@ -131,7 +131,11 @@ class ProcessLevelAnalysis : public ExitHooks, public MmapHooks, public ThreadHo
 		StackTree * getStackTree(void);
 		//output
 		friend void convertToJson ( htopml::JsonState& json, const ProcessLevelAnalysis& value );
+	protected:
+		void runInfoToJson( htopml::JsonState& json ) const;
 	private:
+		bool threadSafe;
+		Spinlock lock;
 		ThreadLevelAnalysisVector threads;
 		StackTree * stackTree;
 		Clock mallocClock;
@@ -143,6 +147,7 @@ class ProcessLevelAnalysis : public ExitHooks, public MmapHooks, public ThreadHo
 		TimeProfiler opsBandwidth;
 		SymbolRegistry registry;
 		GlobalVariables globalVariables;
+		std::string traceFilename;
 };
 
 }

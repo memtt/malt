@@ -29,11 +29,12 @@ namespace MATT
 {
 
 /*******************  FUNCTION  *********************/
-ProcessLevelAnalysis::ProcessLevelAnalysis ( void )
+ProcessLevelAnalysis::ProcessLevelAnalysis ( bool threadSafe )
 	:memStats(MATT_MEM_STATS_COUNT_ENTRIES,MATT_TIME_PROFILER_DEFAULT_SIZE,false)
 	,systemStats(MATT_SYS_STATS_COUNT_ENTRIES,MATT_TIME_PROFILER_DEFAULT_SIZE,false)
 	,opsBandwidth(MATT_OPS_BW_COUNT_ENTRIES,MATT_TIME_PROFILER_DEFAULT_SIZE,true)
 {
+	this->threadSafe = threadSafe;
 	this->init();
 }
 
@@ -113,21 +114,26 @@ bool ProcessLevelAnalysis::mmapCallEnterExit ( void )
 /*******************  FUNCTION  *********************/
 void ProcessLevelAnalysis::onAlignedAlloc ( MallocHooksInfos& info, void* ret, size_t alignment, size_t size )
 {
-	this->mallocClock.markEvent();
-	onAlloc(info,ret,size);
+	MATT_OPTIONAL_CRITICAL(lock,threadSafe)
+		this->mallocClock.markEvent();
+		onAlloc(info,ret,size);
+	MATT_END_CRITICAL
 }
 
 /*******************  FUNCTION  *********************/
 void ProcessLevelAnalysis::onCalloc ( MallocHooksInfos& info, void* ret, size_t nmemb, size_t size )
 {
-	this->mallocClock.markEvent();
-	onAlloc(info,ret,size);
+	MATT_OPTIONAL_CRITICAL(lock,threadSafe)
+		this->mallocClock.markEvent();
+		onAlloc(info,ret,size);
+	MATT_END_CRITICAL
 }
 
 /*******************  FUNCTION  *********************/
 void ProcessLevelAnalysis::onExit ( void )
 {
-	//open output file
+	MATT_OPTIONAL_CRITICAL(lock,threadSafe)
+		//open output file
 		//TODO manage errors
 		std::ofstream out;
 		Options & options = getOptions();
@@ -171,6 +177,7 @@ void ProcessLevelAnalysis::onExit ( void )
 		CodeTiming::printAll();
 		gblInternaAlloc->printState();
 		#endif //MATT_ENABLE_CODE_TIMING
+	MATT_END_CRITICAL
 }
 
 /*******************  FUNCTION  *********************/
@@ -274,8 +281,10 @@ void ProcessLevelAnalysis::updateMemStats ( MallocHooksInfos& info, void* ret, s
 /*******************  FUNCTION  *********************/
 void ProcessLevelAnalysis::onMalloc ( MallocHooksInfos& info, void* ret, size_t size )
 {
-	this->mallocClock.markEvent();
-	this->onAlloc(info,ret,size);
+	MATT_OPTIONAL_CRITICAL(lock,threadSafe)
+		this->mallocClock.markEvent();
+		this->onAlloc(info,ret,size);
+	MATT_END_CRITICAL
 }
 
 /*******************  FUNCTION  *********************/
@@ -293,8 +302,10 @@ void ProcessLevelAnalysis::onMallocExitFunction ( MallocHooksInfos& info ,void *
 /*******************  FUNCTION  *********************/
 void ProcessLevelAnalysis::onMemalign ( MallocHooksInfos& info, void* ret, size_t alignment, size_t size )
 {
-	this->mallocClock.markEvent();
-	this->onAlloc(info,ret,size);
+	MATT_OPTIONAL_CRITICAL(lock,threadSafe)
+		this->mallocClock.markEvent();
+		this->onAlloc(info,ret,size);
+	MATT_END_CRITICAL
 }
 
 /*******************  FUNCTION  *********************/
@@ -330,36 +341,46 @@ void ProcessLevelAnalysis::onMunmap ( MmapHooksInfos& info, int ret, void* start
 /*******************  FUNCTION  *********************/
 void ProcessLevelAnalysis::onPosixMemalign ( MallocHooksInfos& info, int ret, void** memptr, size_t align, size_t size )
 {
-	this->mallocClock.markEvent();
-	this->onAlloc(info,*memptr,size);
+	MATT_OPTIONAL_CRITICAL(lock,threadSafe)
+		this->mallocClock.markEvent();
+		this->onAlloc(info,*memptr,size);
+	MATT_END_CRITICAL
 }
 
 /*******************  FUNCTION  *********************/
 void ProcessLevelAnalysis::onPreFree ( MallocHooksInfos& info, void* ptr )
 {
-	this->mallocClock.markEvent();
-	this->onFreeMem(info,ptr);
+	MATT_OPTIONAL_CRITICAL(lock,threadSafe)
+		this->mallocClock.markEvent();
+		this->onFreeMem(info,ptr);
+	MATT_END_CRITICAL
 }
 
 /*******************  FUNCTION  *********************/
 void ProcessLevelAnalysis::onPreRealloc ( MallocHooksInfos& info, void* ptr, size_t size )
 {
-	this->mallocClock.markEvent();
-	this->onFreeMem(info,ptr);
+	MATT_OPTIONAL_CRITICAL(lock,threadSafe)
+		this->mallocClock.markEvent();
+		this->onFreeMem(info,ptr);
+	MATT_END_CRITICAL
 }
 
 /*******************  FUNCTION  *********************/
 void ProcessLevelAnalysis::onPvalloc ( MallocHooksInfos& info, void* ret, size_t size )
 {
-	this->mallocClock.markEvent();
-	this->onAlloc(info,ret,size);
+	MATT_OPTIONAL_CRITICAL(lock,threadSafe)
+		this->mallocClock.markEvent();
+		this->onAlloc(info,ret,size);
+	MATT_END_CRITICAL
 }
 
 /*******************  FUNCTION  *********************/
 void ProcessLevelAnalysis::onRealloc ( MallocHooksInfos& info, void* ret, void* ptr, size_t size )
 {
-	this->mallocClock.markEvent();
-	this->onAlloc(info,ret,size);
+	MATT_OPTIONAL_CRITICAL(lock,threadSafe)
+		this->mallocClock.markEvent();
+		this->onAlloc(info,ret,size);
+	MATT_END_CRITICAL
 }
 
 /*******************  FUNCTION  *********************/
@@ -377,8 +398,10 @@ void ProcessLevelAnalysis::onThreadExit ( void )
 /*******************  FUNCTION  *********************/
 void ProcessLevelAnalysis::onValloc ( MallocHooksInfos& info, void* ret, size_t size )
 {
-	this->mallocClock.markEvent();
-	this->onAlloc(info,ret,size);
+	MATT_OPTIONAL_CRITICAL(lock,threadSafe)
+		this->mallocClock.markEvent();
+		this->onAlloc(info,ret,size);
+	MATT_END_CRITICAL
 }
 
 /*******************  FUNCTION  *********************/
@@ -402,22 +425,24 @@ void ProcessLevelAnalysis::onExitFunction ( void* caller, void* function )
 /*******************  FUNCTION  *********************/
 ThreadLevelAnalysis* ProcessLevelAnalysis::getNewThreadLevelAnalysis ( void )
 {
-	//search not in use
-	for (ThreadLevelAnalysisVector::iterator it = threads.begin() ; it != threads.end() ; ++it)
-	{
-		if ((*it)->isInUse() == false)
+	MATT_OPTIONAL_CRITICAL(lock,threadSafe)
+		//search not in use
+		for (ThreadLevelAnalysisVector::iterator it = threads.begin() ; it != threads.end() ; ++it)
 		{
-			(*it)->setInUse(true);
-			return *it;
+			if ((*it)->isInUse() == false)
+			{
+				(*it)->setInUse(true);
+				return *it;
+			}
 		}
-	}
-	
-	//create new
-	void * ptr = MATT_NO_FREE_MALLOC(sizeof(ThreadLevelAnalysis));
-	ThreadLevelAnalysis * ret = new(ptr) ThreadLevelAnalysis(this);
-	ret->setInUse(true);
-	this->threads.push_back(ret);
-	return ret;
+		
+		//create new
+		void * ptr = MATT_NO_FREE_MALLOC(sizeof(ThreadLevelAnalysis));
+		ThreadLevelAnalysis * ret = new(ptr) ThreadLevelAnalysis(this);
+		ret->setInUse(true);
+		this->threads.push_back(ret);
+		return ret;
+	MATT_END_CRITICAL
 }
 
 /*******************  FUNCTION  *********************/
@@ -431,6 +456,7 @@ void convertToJson ( htopml::JsonState& json, const ProcessLevelAnalysis& value 
 {
 	json.openStruct();
 		json.printField("options",getOptions());
+		value.runInfoToJson(json);
 		json.printField("symbols",value.registry);
 		json.printField("globalVariables",value.globalVariables);
 		json.printField("stacks",*(value.stackTree));
@@ -449,6 +475,25 @@ void convertToJson ( htopml::JsonState& json, const ProcessLevelAnalysis& value 
 			json.printField("opsBandwidth",value.opsBandwidth);
 		json.closeFieldStruct("timeline");
 	json.closeStruct();
+}
+
+/*******************  FUNCTION  *********************/
+void ProcessLevelAnalysis::runInfoToJson ( htopml::JsonState& json ) const
+{
+	json.openFieldStruct("run");
+		json.printField("formatVersion",1.0f);
+			json.printField("tool","matt-0.0.0");
+			json.printField("date",OS::getDateTime());
+			json.printField("runtime",mallocClock.get(CLOCK_TICKS));
+			if (getOptions().traceEnabled)
+				json.printField("tracefile",traceFilename);
+			if (getOptions().infoHidden == false)
+			{
+				json.printField("exe",OS::getExeName());
+				json.printField("command",OS::getCmdLine());
+				json.printField("hostname",OS::getHostname());
+			}
+	json.closeFieldStruct("run");
 }
 
 }
