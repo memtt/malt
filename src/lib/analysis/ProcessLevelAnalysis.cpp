@@ -97,6 +97,13 @@ void ProcessLevelAnalysis::init ( void )
 	this->opsBandwidth.registerEntry(MATT_OPS_BW_ALLOCATED_COUNT,"allocCount");
 	this->opsBandwidth.registerEntry(MATT_OPS_BW_FREED_SIZE,"freeSize");
 	this->opsBandwidth.registerEntry(MATT_OPS_BW_FREED_COUNT,"freeCount");
+	
+	//open trace file
+	if (options.traceEnabled)
+	{
+		this->traceFilename = FormattedMessage(options.outputName).arg(OS::getExeName()).arg(Helpers::getFileId()).arg("trace").toString();
+		this->tracer.open(this->traceFilename);
+	}
 }
 
 /*******************  FUNCTION  *********************/
@@ -137,6 +144,9 @@ void ProcessLevelAnalysis::onExit ( void )
 		//TODO manage errors
 		std::ofstream out;
 		Options & options = getOptions();
+		
+		//close trace
+		tracer.close();
 		
 		//preapre for output
 		stackTree->prepareForOutput();
@@ -188,6 +198,7 @@ void ProcessLevelAnalysis::onFree ( MallocHooksInfos& info, void* ptr )
 /*******************  FUNCTION  *********************/
 void ProcessLevelAnalysis::onFreeMem ( MallocHooksInfos& info, void* ptr )
 {
+	Options & options = getOptions();
 	UserSegment segment = this->userSegmentTracker.unregister(mallocClock,ptr);
 	if (segment.size > 0)
 	{
@@ -204,6 +215,10 @@ void ProcessLevelAnalysis::onFreeMem ( MallocHooksInfos& info, void* ptr )
 		
 		//update states
 		this->updateMemStats(info,ptr,segment.size,false);
+		
+		//trace
+		if (options.traceEnabled)
+			this->tracer.traceChunk(segment.stackId,info.dataId,segment.size,segment.birth,lifetime);
 	} else {
 		MATT_WARNING_ARG("Capture non tracked segments : %1 !").arg(ptr).end();
 	}
@@ -232,7 +247,7 @@ void ProcessLevelAnalysis::updateMemStats ( MallocHooksInfos& info, void* ret, s
 	//fetch some locals
 	ticks time = mallocClock.get(CLOCK_TICKS);
 	int dataId = info.dataId;
-	assert(dataId == stackTree->getStackId(info.dataHandler));
+	//assert(dataId == stackTree->getStackId(info.dataHandler));
 	
 	//get virtual and physical
 	OSProcMemUsage mem = OS::getProcMemoryUsage();

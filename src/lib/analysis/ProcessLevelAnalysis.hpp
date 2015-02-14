@@ -23,6 +23,7 @@
 #include <core/TimeProfiler.hpp>
 #include <core/SymbolRegistry.hpp>
 #include <core/GlobalVariables.hpp>
+#include <core/AllocTracer.hpp>
 #include <hooks/EnterExitFunctionHooks.hpp>
 #include <allocators/STLInternalAllocator.hpp>
 //current
@@ -147,6 +148,7 @@ class ProcessLevelAnalysis : public ExitHooks, public MmapHooks, public ThreadHo
 		TimeProfiler opsBandwidth;
 		SymbolRegistry registry;
 		GlobalVariables globalVariables;
+		AllocTracer tracer;
 		std::string traceFilename;
 };
 

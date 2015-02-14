@@ -13,7 +13,8 @@ add_library(matt-core OBJECT CallCounter.cpp
                              PeakTracker.cpp 
                              TimeProfiler.cpp 
                              SymbolRegistry.cpp
-                             GlobalVariables.cpp)
+                             GlobalVariables.cpp
+                             AllocTracer)
 SET_TARGET_PROPERTIES(matt-core PROPERTIES COMPILE_FLAGS -fPIC)
 
 ######################################################

@@ -8,10 +8,10 @@
 
 #ifndef MATT_STACK_TREE_HPP
 #define MATT_STACK_TREE_HPP
-#include "Stack.hpp"
-#include <json/JsonState.h>
 
 /********************  HEADERS  *********************/
+#include "Stack.hpp"
+#include <json/JsonState.h>
 
 /*******************  NAMESPACE  ********************/
 namespace MATT
