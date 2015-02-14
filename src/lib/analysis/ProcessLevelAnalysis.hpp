@@ -24,6 +24,7 @@
 #include <core/SymbolRegistry.hpp>
 #include <core/GlobalVariables.hpp>
 #include <core/AllocTracer.hpp>
+#include <core/AllocSizeDistribution.hpp>
 #include <hooks/EnterExitFunctionHooks.hpp>
 #include <allocators/STLInternalAllocator.hpp>
 //current
@@ -150,6 +151,7 @@ class ProcessLevelAnalysis : public ExitHooks, public MmapHooks, public ThreadHo
 		GlobalVariables globalVariables;
 		AllocTracer tracer;
 		std::string traceFilename;
+		AllocSizeDistribution allocSizeDistr;
 };
 
 }

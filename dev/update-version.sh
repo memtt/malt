@@ -42,6 +42,11 @@ find ./ | while read file
 do
 	sed -i -r -e "s#  DATE     : [0-9]{2}/[0-9]{4}#  ${newdate}#g" \
 	          -e "s#  $V  : .{16}#  ${newversion}#" \
-	          -e "s#  $V  : [0-9a-zA-Z.]+\$#  $V  : ${version}#" \
+	          -e "s#  $V  : [0-9a-zA-Z-.]+\$#  $V  : ${version}#" \
 			  "${file}"
 done
+
+######################################################
+#update bower and package
+sed -e -r -e "s/\"version\": \"[0-9A-Za-z-.]+\"/\"version\": \"${version}\"/g" src/webview/bower.json
+sed -e -r -e "s/\"version\": \"[0-9A-Za-z-.]+\"/\"version\": \"${version}\"/g" src/webview/package.json

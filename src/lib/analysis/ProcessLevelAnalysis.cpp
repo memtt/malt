@@ -239,6 +239,9 @@ void ProcessLevelAnalysis::onAlloc ( MallocHooksInfos& info, void* ret, size_t s
 	
 	//update states
 	this->updateMemStats(info,ret,size,true);
+	
+	//size distr
+	allocSizeDistr.add(size);
 }
 
 /*******************  FUNCTION  *********************/
@@ -483,6 +486,7 @@ void convertToJson ( htopml::JsonState& json, const ProcessLevelAnalysis& value 
 		json.closeFieldArray("threads");
 		json.openFieldStruct("globals");
 			json.printField("peak",value.globalPeakTracker);
+			json.printField("allocSizeDistr",value.allocSizeDistr);
 		json.closeFieldStruct("globals");
 		json.openFieldStruct("timeline");
 			json.printField("memStats",value.memStats);
