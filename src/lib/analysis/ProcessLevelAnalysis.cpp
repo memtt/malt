@@ -140,6 +140,9 @@ void ProcessLevelAnalysis::onExit ( void )
 		stackTree->registerSymbols(registry);
 		registry.solveNames();
 		
+		//load global variables
+		globalVariables.load();
+		
 		
 		//config
 // 		if (options.outputDumpConfig)
@@ -429,6 +432,7 @@ void convertToJson ( htopml::JsonState& json, const ProcessLevelAnalysis& value 
 	json.openStruct();
 		json.printField("options",getOptions());
 		json.printField("symbols",value.registry);
+		json.printField("globalVariables",value.globalVariables);
 		json.printField("stacks",*(value.stackTree));
 		json.openFieldArray("threads");
 			for (ThreadLevelAnalysisVector::const_iterator it = value.threads.begin() ; it != value.threads.end() ; ++it)

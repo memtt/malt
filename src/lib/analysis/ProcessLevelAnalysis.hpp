@@ -22,6 +22,7 @@
 #include <core/PeakTracker.hpp>
 #include <core/TimeProfiler.hpp>
 #include <core/SymbolRegistry.hpp>
+#include <core/GlobalVariables.hpp>
 #include <hooks/EnterExitFunctionHooks.hpp>
 #include <allocators/STLInternalAllocator.hpp>
 //current
@@ -141,6 +142,7 @@ class ProcessLevelAnalysis : public ExitHooks, public MmapHooks, public ThreadHo
 		TimeProfiler systemStats;
 		TimeProfiler opsBandwidth;
 		SymbolRegistry registry;
+		GlobalVariables globalVariables;
 };
 
 }
