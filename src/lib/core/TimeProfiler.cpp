@@ -17,13 +17,17 @@ namespace MATT
 {
 
 /*******************  FUNCTION  *********************/
-TimeProfiler::TimeProfiler (int entries, int size , bool lastOnNotTouched)
+TimeProfiler::TimeProfiler (int entries, int size , bool bandwidth)
 {
+	//errors
+	assert(entries > 0);
+	assert(size > 0);
+	
 	//defaults
 	this->steps = 1;
 	this->size = size;
 	this->entries = entries;
-	this->lastOnNotTouched = lastOnNotTouched;
+	this->bandwidth = bandwidth;
 	
 	//names
 	this->entryNames = new (noFreeMalloc<std::string>(entries))std::string[entries];
@@ -73,7 +77,7 @@ void TimeProfiler::reset ( void )
 void TimeProfiler::reshape ( ticks time )
 {
 	//update steps
-	while (size*steps <= time)
+	while (((ticks)size)*steps <= time)
 		steps *= 2;
 	
 	//permut
@@ -95,6 +99,7 @@ void TimeProfiler::reshape ( ticks time )
 void TimeProfiler::push ( ticks time, StackId stackId,int entryId, const ValueType & value )
 {
 	assumeArg(entryId < entries,"Invalid entry ID : %1, must be lower than %2 !").arg(entryId).arg(entries).end();
+	assert(steps > 0);
 	
 	//need reshape
 	if (time >= steps * size)
@@ -105,10 +110,16 @@ void TimeProfiler::push ( ticks time, StackId stackId,int entryId, const ValueTy
 	
 	//update
 	ValueType & v = this->values[id+(size*entryId)];
-	if (value > v || this->touched[id+(size*entryId)] == false)
+	if (bandwidth)
 	{
-		v = value;
+		v += value;
 		this->stackIds[id] = stackId;
+	} else {
+		if (value > v || this->touched[id+(size*entryId)] == false)
+		{
+			v = value;
+			this->stackIds[id] = stackId;
+		}
 	}
 	
 	//touch
@@ -116,10 +127,19 @@ void TimeProfiler::push ( ticks time, StackId stackId,int entryId, const ValueTy
 }
 
 /*******************  FUNCTION  *********************/
+bool TimeProfiler::isNewPoint ( ticks time, int id ) const
+{
+	if (time > steps * (ticks)size)
+		return true;
+	else
+		return !(touched[time/steps + id * size]);
+}
+
+/*******************  FUNCTION  *********************/
 void convertToJson ( htopml::JsonState& json, const TimeProfiler & value )
 {
 	size_t maxId = value.getMaxTouchedId();
-	bool lastOnNotTouched = value.lastOnNotTouched;
+	bool bandwidth = value.bandwidth;
 	
 	//check names
 	for (int i = 0 ; i < value.entries ; i++)
@@ -134,7 +154,7 @@ void convertToJson ( htopml::JsonState& json, const TimeProfiler & value )
 				TimeProfiler::ValueType last = 0;
 				for (int i = 0 ; i < maxId ; i++)
 				{
-					if (lastOnNotTouched == false || value.touched[j*value.size+i])
+					if (bandwidth || value.touched[j*value.size+i])
 					{
 						last = value.values[j*value.size+i];
 						json.printValue(last);

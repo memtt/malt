@@ -25,6 +25,7 @@ static ProcessLevelAnalysis * gblMatt = NULL;
 static __thread ThreadLevelAnalysis * tlsMatt = NULL;
 static bool gblIsInInit = false;
 static GlobalHooksNone gblMallocHooksNone;
+static bool gblReachExit = false;
 // static MallocHooksFake gblMallocHooksNone;
 
 /*******************  FUNCTION  *********************/
@@ -59,7 +60,7 @@ void doGlobalInit(void)
 /*******************  FUNCTION  *********************/
 ThreadHooks * threadHookInit(void)
 {
-	if (gblIsInInit)
+	if (gblIsInInit || gblReachExit)
 		return NULL;
 	if (gblMatt == NULL)
 		doGlobalInit();
@@ -71,6 +72,8 @@ MallocHooks * mallocHookInit(void)
 {
 	if (gblIsInInit)
 		return &gblMallocHooksNone;
+	if (gblReachExit)
+		return NULL;
 	ThreadLevelAnalysis * tls = tlsMatt;
 	if (gblMatt == NULL)
 		doGlobalInit();
@@ -84,7 +87,7 @@ MallocHooks * mallocHookInit(void)
 /*******************  FUNCTION  *********************/
 MmapHooks * mmapHookInit(void)
 {
-	if (gblIsInInit)
+	if (gblIsInInit || gblReachExit)
 		return NULL;
 	if (gblMatt == NULL)
 		doGlobalInit();
@@ -94,17 +97,18 @@ MmapHooks * mmapHookInit(void)
 /*******************  FUNCTION  *********************/
 ExitHooks * exitHookInit(void)
 {
-	if (gblIsInInit)
+	if (gblIsInInit || gblReachExit)
 		return NULL;
 	if (gblMatt == NULL)
 		doGlobalInit();
+	 gblReachExit = true;
 	return gblMatt;
 }
 
 /*******************  FUNCTION  *********************/
 EnterExitFunctionHooks * enterExitFunctionHookInit(void)
 {
-	if (gblIsInInit)
+	if (gblIsInInit || gblReachExit)
 		return NULL;
 	ThreadLevelAnalysis * tls = tlsMatt;
 	if (gblMatt == NULL)

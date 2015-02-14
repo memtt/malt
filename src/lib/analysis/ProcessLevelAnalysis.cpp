@@ -30,6 +30,9 @@ namespace MATT
 
 /*******************  FUNCTION  *********************/
 ProcessLevelAnalysis::ProcessLevelAnalysis ( void )
+	:memStats(MATT_MEM_STATS_COUNT_ENTRIES,MATT_TIME_PROFILER_DEFAULT_SIZE,false)
+	,systemStats(MATT_SYS_STATS_COUNT_ENTRIES,MATT_TIME_PROFILER_DEFAULT_SIZE,false)
+	,opsBandwidth(MATT_OPS_BW_COUNT_ENTRIES,MATT_TIME_PROFILER_DEFAULT_SIZE,true)
 {
 	this->init();
 }
@@ -75,6 +78,24 @@ void ProcessLevelAnalysis::init ( void )
 	
 	id = this->stackTree->addDescriptor<StackPeakTracker>("peak");
 	assumeArg(id == MATT_ANA_ID_PEAK,"Do not get valid ID while registering descriptors : %1 != %2").arg(id).arg(MATT_ANA_ID_PEAK).end();
+	
+	//mem stats
+	this->memStats.registerEntry(MATT_MEM_STATS_REQUESTED,"requestedByMalloc");
+	this->memStats.registerEntry(MATT_MEM_STATS_PHYSICAL,"processPhysical");
+	this->memStats.registerEntry(MATT_MEM_STATS_VIRTUAL,"processVirtual");
+	this->memStats.registerEntry(MATT_MEM_STATS_INTERNAL,"mattInternalMalloc");
+	this->memStats.registerEntry(MATT_MEM_STATS_SEGMENTS,"mallocSegments");
+	
+	//system stats
+	this->systemStats.registerEntry(MATT_SYS_STATS_FREE,"systemFreeMem");
+	this->systemStats.registerEntry(MATT_SYS_STATS_CACHE,"systemCachedMem");
+	this->systemStats.registerEntry(MATT_SYS_STATS_SWAP,"systemSwapedMem");
+	
+	//bandwidths
+	this->opsBandwidth.registerEntry(MATT_OPS_BW_ALLOCATED_SIZE,"allocSize");
+	this->opsBandwidth.registerEntry(MATT_OPS_BW_ALLOCATED_COUNT,"allocCount");
+	this->opsBandwidth.registerEntry(MATT_OPS_BW_FREED_SIZE,"freeSize");
+	this->opsBandwidth.registerEntry(MATT_OPS_BW_FREED_COUNT,"freeCount");
 }
 
 /*******************  FUNCTION  *********************/
@@ -152,11 +173,19 @@ void ProcessLevelAnalysis::onFreeMem ( MallocHooksInfos& info, void* ptr )
 	UserSegment segment = this->userSegmentTracker.unregister(mallocClock,ptr);
 	if (segment.size > 0)
 	{
+		//track chunk lifetime and update on alloc stack info
 		ticks lifetime = this->mallocClock.getLastEventTime(CLOCK_TICKS) - segment.birth;
 		this->stackTree->getTypedData<CallCounter>(segment.dataHandler,MATT_ANA_ID_LIFETIME).call(lifetime);
+		
+		//stack stats for free
 		this->stackTree->getTypedData<CallCounter>(info.handler,MATT_ANA_ID_FREE).call(segment.size);
+		
+		//peak tracking
 		this->globalPeakTracker.update(mallocClock.getLastEventTime(CLOCK_TICKS),-segment.size);
 		this->stackTree->getTypedData<StackPeakTracker>(segment.dataHandler,MATT_ANA_ID_PEAK).update(mallocClock.getLastEventTime(CLOCK_TICKS),-segment.size,this->globalPeakTracker);
+		
+		//update states
+		this->updateMemStats(info,ptr,segment.size,false);
 	} else {
 		MATT_WARNING_ARG("Capture non tracked segments : %1 !").arg(ptr).end();
 	}
@@ -165,10 +194,70 @@ void ProcessLevelAnalysis::onFreeMem ( MallocHooksInfos& info, void* ptr )
 /*******************  FUNCTION  *********************/
 void ProcessLevelAnalysis::onAlloc ( MallocHooksInfos& info, void* ret, size_t size )
 {
+	//update per stack allocation stats
 	this->stackTree->getTypedData<CallCounter>(info.handler,MATT_ANA_ID_ALLOC).call(size);
+	
+	//register segment for on free info
 	this->userSegmentTracker.registerChunk(ret,size,mallocClock.getLastEventTime(CLOCK_TICKS),info.dataId,MATT_THREAD_ID,info.dataHandler);
+	
+	//update global and per stack peak tracking
 	this->globalPeakTracker.update(mallocClock.getLastEventTime(CLOCK_TICKS),size);
 	this->stackTree->getTypedData<StackPeakTracker>(info.handler,MATT_ANA_ID_PEAK).update(mallocClock.getLastEventTime(CLOCK_TICKS),size,this->globalPeakTracker);
+	
+	//update states
+	this->updateMemStats(info,ret,size,true);
+}
+
+/*******************  FUNCTION  *********************/
+void ProcessLevelAnalysis::updateMemStats ( MallocHooksInfos& info, void* ret, size_t size, bool alloc )
+{
+	//fetch some locals
+	ticks time = mallocClock.get(CLOCK_TICKS);
+	int dataId = info.dataId;
+	assert(dataId == stackTree->getStackId(info.dataHandler));
+	
+	//get virtual and physical
+	OSProcMemUsage mem = OS::getProcMemoryUsage();
+	size_t internalMem = gblInternaAlloc->getTotalMemory() + gblNoFreeAllocator.getTotalMemory();
+	size_t virtualMem = mem.virtualMemory - internalMem;
+	size_t physicalMem = mem.physicalMemory - internalMem;
+	
+	//updaye globals
+	if (alloc)
+	{
+		this->allocStateStats.requestedMem += size;
+		this->allocStateStats.segmentCount++;
+	} else {
+		this->allocStateStats.requestedMem -= size;
+		this->allocStateStats.segmentCount--;
+	}
+	
+	//update timed values
+	this->memStats.push(time,dataId,MATT_MEM_STATS_REQUESTED,this->allocStateStats.requestedMem);
+	this->memStats.push(time,dataId,MATT_MEM_STATS_SEGMENTS,this->allocStateStats.segmentCount);
+	this->memStats.push(time,dataId,MATT_MEM_STATS_PHYSICAL,physicalMem);
+	this->memStats.push(time,dataId,MATT_MEM_STATS_VIRTUAL,virtualMem);
+	this->memStats.push(time,dataId,MATT_MEM_STATS_INTERNAL,internalMem);
+	
+	//update system info only on new points, only on free
+	//alloc allocate virtual memory so might have no immediate effects on physical system memory
+	if (systemStats.isNewPoint(time,MATT_SYS_STATS_FREE) && !alloc)
+	{
+		OSMemUsage sysMem = OS::getMemoryUsage();
+		this->systemStats.push(time,dataId,MATT_SYS_STATS_FREE,sysMem.freeMemory);
+		this->systemStats.push(time,dataId,MATT_SYS_STATS_CACHE,sysMem.cached);
+		this->systemStats.push(time,dataId,MATT_SYS_STATS_SWAP, sysMem.swap);
+	}
+	
+	//bandwidth
+	if (alloc)
+	{
+		this->opsBandwidth.push(time,dataId,MATT_OPS_BW_ALLOCATED_SIZE,size);
+		this->opsBandwidth.push(time,dataId,MATT_OPS_BW_ALLOCATED_COUNT,1);
+	} else {
+		this->opsBandwidth.push(time,dataId,MATT_OPS_BW_FREED_SIZE,size);
+		this->opsBandwidth.push(time,dataId,MATT_OPS_BW_FREED_COUNT,1);
+	}
 }
 
 /*******************  FUNCTION  *********************/
@@ -341,6 +430,11 @@ void convertToJson ( htopml::JsonState& json, const ProcessLevelAnalysis& value 
 		json.openFieldStruct("globals");
 			json.printField("peak",value.globalPeakTracker);
 		json.closeFieldStruct("globals");
+		json.openFieldStruct("timeline");
+			json.printField("memStats",value.memStats);
+			json.printField("systemStats",value.systemStats);
+			json.printField("opsBandwidth",value.opsBandwidth);
+		json.closeFieldStruct("timeline");
 	json.closeStruct();
 }
 

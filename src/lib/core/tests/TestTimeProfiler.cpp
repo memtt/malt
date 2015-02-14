@@ -24,14 +24,20 @@ static const char * CST_VALUE_2 =   "{\n\
 \t\"stackIds\":[1, 3, 5, 7, 9, 11, 13, 15, 17],\n\
 \t\"a\":[1, 3, 4, 2, 4, 1, 3, 4, 2],\n\
 \t\"b\":[10, 30, 50, 70, 90, 10, 30, 50, 70]\n}";
-static const char * CST_VALUE_3 =   "{\n\
+static const char * CST_VALUE_3 =  "{\n\
 \t\"steps\":1,\n\
 \t\"stackIds\":[0, 1, -1, -1, -1, 5, 6, 7, 8],\n\
 \t\"a\":[0, 1, 1, 1, 1, 0, 1, 2, 3]\n}";
-static const char * CST_VALUE_4 =   "{\n\
+static const char * CST_VALUE_4 = "{\n\
 \t\"steps\":1,\n\
 \t\"stackIds\":[0, 1, -1, -1, -1, 5, 6, 7, 8],\n\
-\t\"a\":[0, 1, 0, 0, 0, 0, 1, 2, 3]\n}";
+\t\"a\":[0, 1, 1, 1, 1, 0, 1, 2, 3]\n}";
+
+static const char * CST_VALUE_5 =  "{\n\
+\t\"steps\":128,\n\
+\t\"stackIds\":[639, -1, -1, -1, -1, 767, 895],\n\
+\t\"a\":[1271, 0, 0, 0, 0, 253, 257]\n}";
+
 
 
 
@@ -119,4 +125,21 @@ TEST(PeakTracker,notTouchedFalse)
 	std::stringstream out;
 	htopml::convertToJson(out,profiler);
 	EXPECT_EQ(CST_VALUE_4,out.str());
+}
+
+
+/*******************  FUNCTION  *********************/
+TEST(PeakTracker,notTouchedTrueMany)
+{
+	TimeProfiler profiler(1,10,true);
+	profiler.registerEntry(0,"a");
+	for (int i = 0 ; i < 1000 ; i++)
+	{
+		if (i < 2 || i > 4)
+			profiler.push(i,i,0,(i%5));
+	}
+	
+	std::stringstream out;
+	htopml::convertToJson(out,profiler);
+	EXPECT_EQ(CST_VALUE_5,out.str());
 }

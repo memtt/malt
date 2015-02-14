@@ -22,7 +22,11 @@ namespace MATT
 /*******************  FUNCTION  *********************/
 StackTreeMap::Key::Key(const Stack* stack,int dataId)
 {
+	//check
 	assert(stack != NULL);
+	assert(dataId >= 0);
+	
+	//setup data
 	this->stack = stack;
 	this->hash = stack->hash();
 	this->dataId =  dataId;

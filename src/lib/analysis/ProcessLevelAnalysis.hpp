@@ -20,6 +20,7 @@
 #include <hooks/ThreadHooks.hpp>
 #include <core/UserSegmentTracker.hpp>
 #include <core/PeakTracker.hpp>
+#include <core/TimeProfiler.hpp>
 #include <hooks/EnterExitFunctionHooks.hpp>
 #include <allocators/STLInternalAllocator.hpp>
 //current
@@ -40,6 +41,46 @@ enum ProcessAnalysisIDS
 	MATT_ANA_ID_PEAK = 3,
 };
 
+/********************  ENUM  ************************/
+enum AllocMemStats
+{
+	MATT_MEM_STATS_REQUESTED,
+	MATT_MEM_STATS_PHYSICAL,
+	MATT_MEM_STATS_VIRTUAL,
+	MATT_MEM_STATS_INTERNAL,
+	MATT_MEM_STATS_SEGMENTS,
+	//must stay on last position
+	MATT_MEM_STATS_COUNT_ENTRIES
+};
+
+/********************  ENUM  ************************/
+enum SystemStats
+{
+	MATT_SYS_STATS_FREE,
+	MATT_SYS_STATS_CACHE,
+	MATT_SYS_STATS_SWAP,
+	//must stay on last position
+	MATT_SYS_STATS_COUNT_ENTRIES
+};
+
+/********************  ENUM  ************************/
+enum AllocOpsBandwidth
+{
+	MATT_OPS_BW_ALLOCATED_SIZE,
+	MATT_OPS_BW_ALLOCATED_COUNT,
+	MATT_OPS_BW_FREED_SIZE,
+	MATT_OPS_BW_FREED_COUNT,
+	//must stay on last position
+	MATT_OPS_BW_COUNT_ENTRIES
+};
+
+/*********************  STRUCT  *********************/
+struct AllocStateStats
+{
+	size_t requestedMem;
+	size_t segmentCount;
+};
+
 /*********************  CLASS  **********************/
 class ProcessLevelAnalysis : public ExitHooks, public MmapHooks, public ThreadHooks, public MallocHooks, public EnterExitFunctionHooks
 {
@@ -50,6 +91,7 @@ class ProcessLevelAnalysis : public ExitHooks, public MmapHooks, public ThreadHo
 		//common
 		void onAlloc(MallocHooksInfos& info, void* ret, size_t size);
 		void onFreeMem(MallocHooksInfos & info, void * ptr);
+		void updateMemStats( MATT::MallocHooksInfos& info, void* ret, size_t size, bool alloc );
 		//exit
 		virtual void onExit ( void );
 		//mmap
@@ -93,6 +135,10 @@ class ProcessLevelAnalysis : public ExitHooks, public MmapHooks, public ThreadHo
 		Clock mallocClock;
 		UserSegmentTracker userSegmentTracker;
 		PeakTracker globalPeakTracker;
+		AllocStateStats allocStateStats;
+		TimeProfiler memStats;
+		TimeProfiler systemStats;
+		TimeProfiler opsBandwidth;
 };
 
 }
