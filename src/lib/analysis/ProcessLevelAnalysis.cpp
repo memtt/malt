@@ -35,6 +35,11 @@ ProcessLevelAnalysis::ProcessLevelAnalysis ( bool threadSafe )
 	,opsBandwidth(MATT_OPS_BW_COUNT_ENTRIES,MATT_TIME_PROFILER_DEFAULT_SIZE,true)
 {
 	this->threadSafe = threadSafe;
+	this->activeThreads = 1;
+	this->maxThreads = 1;
+	OSMemUsage usage = OS::getMemoryUsage();
+	this->freeMemoryAtStart = usage.freeMemory;
+	this->cachedMemoryAtStart = usage.cached;
 	this->init();
 }
 
@@ -404,13 +409,20 @@ void ProcessLevelAnalysis::onRealloc ( MallocHooksInfos& info, void* ret, void* 
 /*******************  FUNCTION  *********************/
 void ProcessLevelAnalysis::onThreadCreate ( void )
 {
-
+	MATT_OPTIONAL_CRITICAL(lock,threadSafe)
+		activeThreads++;
+		if (activeThreads > maxThreads)
+			maxThreads = activeThreads;
+	MATT_END_CRITICAL
 }
 
 /*******************  FUNCTION  *********************/
 void ProcessLevelAnalysis::onThreadExit ( void )
 {
-
+	MATT_OPTIONAL_CRITICAL(lock,threadSafe)
+		activeThreads--;
+		assert(activeThreads >= 1); 
+	MATT_END_CRITICAL
 }
 
 /*******************  FUNCTION  *********************/
@@ -473,10 +485,11 @@ StackTree* ProcessLevelAnalysis::getStackTree ( void )
 void convertToJson ( htopml::JsonState& json, const ProcessLevelAnalysis& value )
 {
 	json.openStruct();
-		json.printField("options",getOptions());
 		value.runInfoToJson(json);
+		json.printField("options",getOptions());
 		json.printField("symbols",value.registry);
 		json.printField("globalVariables",value.globalVariables);
+		json.printField("allocSizeDistr",value.allocSizeDistr);
 		json.printField("stacks",*(value.stackTree));
 		json.openFieldArray("threads");
 			for (ThreadLevelAnalysisVector::const_iterator it = value.threads.begin() ; it != value.threads.end() ; ++it)
@@ -485,8 +498,12 @@ void convertToJson ( htopml::JsonState& json, const ProcessLevelAnalysis& value 
 			}
 		json.closeFieldArray("threads");
 		json.openFieldStruct("globals");
+			json.printField("ticksPerSecond",value.mallocClock.getTicksPerSecond());
 			json.printField("peak",value.globalPeakTracker);
-			json.printField("allocSizeDistr",value.allocSizeDistr);
+			json.printField("totalSysMem",OS::getMemoryUsage().totalMemory);
+			json.printField("freeMemoryAtStart",value.freeMemoryAtStart);
+			json.printField("cachedMemoryAtStart",value.cachedMemoryAtStart);
+			json.printField("maxThreads",value.maxThreads);
 		json.closeFieldStruct("globals");
 		json.openFieldStruct("timeline");
 			json.printField("memStats",value.memStats);

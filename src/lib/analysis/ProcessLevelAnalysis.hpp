@@ -152,6 +152,10 @@ class ProcessLevelAnalysis : public ExitHooks, public MmapHooks, public ThreadHo
 		AllocTracer tracer;
 		std::string traceFilename;
 		AllocSizeDistribution allocSizeDistr;
+		int activeThreads;
+		int maxThreads;
+		size_t freeMemoryAtStart;
+		size_t cachedMemoryAtStart;
 };
 
 }

@@ -62,5 +62,10 @@ SET_TARGET_PROPERTIES(test-fragmentation PROPERTIES COMPILE_FLAGS -finstrument-f
 target_link_libraries(test-fragmentation matt)
 
 ######################################################
+add_executable(test-trivial test-trivial.cpp)
+SET_TARGET_PROPERTIES(test-trivial PROPERTIES COMPILE_FLAGS -finstrument-functions)
+target_link_libraries(test-trivial matt)
+
+######################################################
 # add_executable(test-pthread-tracking test-pthread-tracking.cpp)
 # target_link_libraries(test-pthread-tracking matt)

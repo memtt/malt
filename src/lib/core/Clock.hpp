@@ -33,10 +33,12 @@ class Clock
 		ticks get(ClockMode mode) const;
 		ticks getLastEventTime(ClockMode mode) const;
 		ticks getStart(void);
+		ticks getTicksPerSecond(void) const;
 	protected:
 		ticks lastEvent;
 		ticks eventId;
-		ticks start;
+		ticks startCycles;
+		timeval startTimeval;
 };
 
 }
