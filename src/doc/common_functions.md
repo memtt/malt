@@ -8,11 +8,11 @@ To print error messages with object formatting you can use the FormattedMessage 
 as base class for Debug messages defined into common/Debug.h. Debug messages can be quicly displayed
 with :
 
-	MATT_FATAL("Describe error");
+	MALT_FATAL("Describe error");
 
 If you need arguments :
 
-	MATT_FATAL_ARG("Describe error with arg %1 and %2").arg(x).arg(y).end()
+	MALT_FATAL_ARG("Describe error with arg %1 and %2").arg(x).arg(y).end()
 
 Please do not forget the call to end() method to print the message and apply exit method (abort or raise exception...)
 
@@ -28,14 +28,14 @@ Message levels are :
 Assert / assume
 ---------------
 
-As assert() do malloc() on failure we recommend to use the MATT\_ASSERT() macro to avoid entering into
-infinite loop into MATT internal methods called inside malloc/calloc...
+As assert() do malloc() on failure we recommend to use the MALT\_ASSERT() macro to avoid entering into
+infinite loop into MALT internal methods called inside malloc/calloc...
 
 	#include <common/Debug.h>
 
-	MATT_ASSERT(check == true);
+	MALT_ASSERT(check == true);
 
-Assertions are disabled for production but MATT provide a second macro (assume and assumeArg) which
+Assertions are disabled for production but MALT provide a second macro (assume and assumeArg) which
 stay active but need an error message.
 
 	#include <common/Debug.h>
@@ -52,7 +52,7 @@ When checking commands from glibc, you can easily use the error message from err
 Locking
 -------
 
-At low level MATT provide two wrapper classes for locks : Mutex and Spinlock which can be used as :
+At low level MALT provide two wrapper classes for locks : Mutex and Spinlock which can be used as :
 
 	#include <portability/Mutex.hpp>
 
@@ -82,14 +82,14 @@ This scheme permit to support return/expection inside critical sections.
 
 
 	Mutex mutex;
-	MATT_CRITICAL(mutex)
+	MALT_CRITICAL(mutex)
 		//you stuff
 
 		//error can be handled with return inside critical section
 		//it will automatically unlock before exiting function
 		if (error)
 			return;
-	MATT_END_CRITICAL
+	MALT_END_CRITICAL
 
 You can also use the optional variant which use or not use the lock depending on a boolean
 parameter :
@@ -97,22 +97,22 @@ parameter :
 	#include <portability/Spinlock.hpp>
 
 	Spinlock lock;
-	MATT_OPTIONAL_CRITICAL(lock,isThreadSafe)
+	MALT_OPTIONAL_CRITICAL(lock,isThreadSafe)
 		//do your stuff here
-	MATT_END_CRITICAL
+	MALT_END_CRITICAL
 
 Internal memory allocations
 ---------------------------
 
-MATT track memory allocation so we prefer to delegate internal allocation to a separate allocator to not change the
+MALT track memory allocation so we prefer to delegate internal allocation to a separate allocator to not change the
 memory layout of the profiled application. This allocator is implemented into SimpleAllocator.[ch]pp and can be used
 as :
 
 	#include <common/SimpleAllocator.hpp>
 
-	void * ptr = MATT_MALLOC(16);
-	MATT_REALLOC(ptr,32);
-	MATT_FREE(ptr);
+	void * ptr = MALT_MALLOC(16);
+	MALT_REALLOC(ptr,32);
+	MALT_FREE(ptr);
 
 You can wrap this allocator into STL object with :
 
@@ -123,13 +123,13 @@ You can wrap this allocator into STL object with :
 Code timings
 ------------
 
-The common function provide some macro to quickly time some internal functions of MATT. Timings can be used by wrapping
+The common function provide some macro to quickly time some internal functions of MALT. Timings can be used by wrapping
 your code with :
 
 	#include <common/CodeTimings.hpp>
 
 	//will automatically print the results at exit
-	//Timing only take place if MATT_ENABLE_CODE_TIMING is defined
+	//Timing only take place if MALT_ENABLE_CODE_TIMING is defined
 	//It's enabled by cmake with -DENABLE_CODE_TIMING=yes
 	CODE_TIMING("name", you_function());
 

@@ -284,7 +284,7 @@ MattSourceEditor.prototype.makeMarker = function(data,max,colorScale) {
 }
 
 /********************************************************************/
-var MATT_POWER = ['&nbsp;','K','M','G','T','P'];
+var MALT_POWER = ['&nbsp;','K','M','G','T','P'];
 MattSourceEditor.prototype.mattHumanValue = function(value,unit)
 {
 	var power = 0;
@@ -294,8 +294,8 @@ MattSourceEditor.prototype.mattHumanValue = function(value,unit)
 		value /= 1024;
 	}
 
-	//return value.toFixed(1) + " " + MATT_POWER[power] + data.unit;
-	return Math.round(value) + " " + MATT_POWER[power] + unit;
+	//return value.toFixed(1) + " " + MALT_POWER[power] + data.unit;
+	return Math.round(value) + " " + MALT_POWER[power] + unit;
 }
 
 /********************************************************************/

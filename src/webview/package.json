@@ -1,7 +1,7 @@
 {
   "name": "matt-webview",
   "version": "0.0.0-dev",
-  "description": "Web view based on Node.js for MATT.",
+  "description": "Web view based on Node.js for MALT.",
   "main": "main.js",
   "scripts": {
     "postinstall": "bower install",

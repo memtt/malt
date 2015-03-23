@@ -1,7 +1,7 @@
 Instrumentation with pintool
 ============================
 
-MATT can also use binary instrumentation mode through pintool 
+MALT can also use binary instrumentation mode through pintool 
 (http://software.intel.com/en-us/articles/pin-a-dynamic-binary-instrumentation-tool)
 
 To compile :

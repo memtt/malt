@@ -81,9 +81,9 @@ function MattPageHome()
 			format: function(x) {return mattHelper.humanReadable(x,1,'',false);}
 		},{
 			key:'peakInternalMemory',
-			name:'MATT peak memory',
+			name:'MALT peak memory',
 			level: 2,
-			help:"Peak of memory internally used by MATT.",
+			help:"Peak of memory internally used by MALT.",
 			format: function(x) {return mattHelper.humanReadable(x,1,'B',false);}
 		},{
 			type:'separator',

@@ -1,7 +1,7 @@
 Instrumentation with pintool
 ============================
 
-MATT can also use binary instrumentation mode through maqao.
+MALT can also use binary instrumentation mode through maqao.
 (http://www.maqao.org/)
 
 To instrument your code :

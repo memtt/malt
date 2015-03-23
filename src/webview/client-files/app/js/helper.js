@@ -2,10 +2,10 @@
 function MattHelper()
 {
 	/********************************************************************/
-	this.MATT_POWER_PS  = ['&nbsp;','K','M','G','T','P'];
-	this.MATT_POWER_NPS = [' ','K','M','G','T','P'];
-	this.MATT_SUBPOWER_PS  = ['&nbsp;','m','u','n'];
-	this.MATT_SUBPOWER_NPS = [' ','m','u','n','p'];
+	this.MALT_POWER_PS  = ['&nbsp;','K','M','G','T','P'];
+	this.MALT_POWER_NPS = [' ','K','M','G','T','P'];
+	this.MALT_SUBPOWER_PS  = ['&nbsp;','m','u','n'];
+	this.MALT_SUBPOWER_NPS = [' ','m','u','n','p'];
 }
 
 /**********************************************************************/
@@ -93,9 +93,9 @@ MattHelper.prototype.humanReadable = function(value,decimals,unit,protectedSpace
 
 		var res;
 		if (protectedSpace)
-			res = value.toFixed(decimals) + " " + this.MATT_POWER_PS[power] + unit;
+			res = value.toFixed(decimals) + " " + this.MALT_POWER_PS[power] + unit;
 		else
-			res = value.toFixed(decimals) + " " + this.MATT_POWER_NPS[power] + unit;
+			res = value.toFixed(decimals) + " " + this.MALT_POWER_NPS[power] + unit;
 	} else {
 		var power = 0;
 		while (value < 0.1 && power < 4)
@@ -106,9 +106,9 @@ MattHelper.prototype.humanReadable = function(value,decimals,unit,protectedSpace
 
 		var res;
 		if (protectedSpace)
-			res = value.toFixed(decimals) + " " + this.MATT_SUBPOWER_PS[power] + unit;
+			res = value.toFixed(decimals) + " " + this.MALT_SUBPOWER_PS[power] + unit;
 		else
-			res = value.toFixed(decimals) + " " + this.MATT_SUBPOWER_NPS[power] + unit;
+			res = value.toFixed(decimals) + " " + this.MALT_SUBPOWER_NPS[power] + unit;
 	}
 
 	return res;

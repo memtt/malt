@@ -1,7 +1,7 @@
 {
   "name": "matt-webview",
   "version": "0.0.0",
-  "description": "Webview for MATT",
+  "description": "Webview for MALT",
   "main": "index.js",
   "scripts": {
     "postinstall": "bower install",

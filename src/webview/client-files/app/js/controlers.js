@@ -1,4 +1,4 @@
-//decalre controlers for MATT
+//decalre controlers for MALT
 var mattCtrl = angular.module('matt.controlers',[]);
 
 mattCtrl.controller('matt.ctrl.help',['$scope',function($scope) {

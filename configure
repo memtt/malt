@@ -1,6 +1,6 @@
 #!/bin/sh
 ######################################################
-#            PROJECT  : MATT                         #
+#            PROJECT  : MALT                         #
 #            VERSION  : 0.1.0-dev                    #
 #            DATE     : 01/2014                      #
 #            AUTHOR   : Valat Sébastien              #
@@ -15,7 +15,7 @@
 
 ######################################################
 #script setup
-PROJECT_NAME='MATT : Memory Allocations Tracking Tool'
+PROJECT_NAME='MALT : Memory Allocations Tracking Tool'
 # State variables
 PREFIX='/usr/local'
 CMAKE='cmake'

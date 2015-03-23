@@ -1,9 +1,9 @@
-MATT output format
+MALT output format
 ==================
 
-MATT support two output format, a first one compatible with callgrind/kcachegrind syntax
+MALT support two output format, a first one compatible with callgrind/kcachegrind syntax
 which is described in http://valgrind.org/docs/manual/cl-format.html. The second format
-is based on JSON and related to MATT.
+is based on JSON and related to MALT.
 
 Global structure
 ----------------
@@ -12,7 +12,7 @@ The json file contain major structures as :
 
 	{
 		run: {}      /* Provide some global informations about the run. */
-		config: {}   /* Provide a dump of the MATT configuration. */
+		config: {}   /* Provide a dump of the MALT configuration. */
 		stacks: {}   /* Provide profile projected on call stacks */
 		sites: {}    /* Provide informations to map addresses to source code. */
 		globals: {}  /* Provide some global metric related to the run. */

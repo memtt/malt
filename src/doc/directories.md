@@ -1,7 +1,7 @@
 Project directories
 ===================
 
-This document provide a short description of the MATT directory structure.
+This document provide a short description of the MALT directory structure.
 
 - /dev : Draft directory to put some developpement files (UML, scripts...)
 - /cmake : Directory for all cmake scripts.
@@ -27,11 +27,11 @@ About /src
 It is the main source directory containing all the important files of the project. It splits into subdits for each components :
 
 - /src/doc : Contain all the documentation files, mostly in markdown format for doxygen and gitlab/github.
-- /src/integration : Provide some files to integrate MATT in other tools or in system. Currently mostly integration files with MPI and wrapper scripts to help users.
-- /src/lib : Main part of the MATT code with instrumentation library implementation (libmatt.so). It also provide  libmattbase.so without malloc/calloc/... wrappers linked.
+- /src/integration : Provide some files to integrate MALT in other tools or in system. Currently mostly integration files with MPI and wrapper scripts to help users.
+- /src/lib : Main part of the MALT code with instrumentation library implementation (libmatt.so). It also provide  libmattbase.so without malloc/calloc/... wrappers linked.
 - /src/maqao : Provide the files for instrumentation with MAQAO.
 - /src/pintool : Provide the files for instrumentation with Pintool.
-- /src/trace-reader : Provide a small program to convert MATT traces into json format and to made some reduction/filtering.
+- /src/trace-reader : Provide a small program to convert MALT traces into json format and to made some reduction/filtering.
 - /src/webbiew : Provide the GUI as a web interface based on NodeJS + AnulgarJS + Bootstrap + D3JS + NVD3
 
 About /src/lib
@@ -41,7 +41,7 @@ The lib sources splits in subdirectories, each contain a 'test' subdirectory wit
 
 - /src/lib/common : Provide the common function used by the whole library (debug, locks....)
 - /src/lib/portability : All plaftorm dependant code must be placed here. You will found more information about conventions of this directory into XXXXX-TODO
-- /src/lib/core : Contain the main classes used to run the MATT library.
+- /src/lib/core : Contain the main classes used to run the MALT library.
 - /src/lib/profiler : Contain the main entry point to use in wrappers, it provide the per thread and global profiler.
 - /src/lib/tools : Provide some classes to wrap external tools or libraries (libelf, nm)
 - /src/lib/valprof : Provide classes to profile values overs time.

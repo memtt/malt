@@ -16,7 +16,7 @@ of the loading methods :
  - BacktraceStack : Implementation for the backtrace method. This class only provide implementation of loading
   method through glibc backtrace() function. It use ASC ordering so the most recent frame in use, last element is the
   root of the callstack.
- - EnterExitStack : Similar to backtrace but for use with instrumented mode where MATT is notified on function
+ - EnterExitStack : Similar to backtrace but for use with instrumented mode where MALT is notified on function
    enter/exit. It use a reverse storage order and provide filling through enter() and exit() methods.
 
 Memory
