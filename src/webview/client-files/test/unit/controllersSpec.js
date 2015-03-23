@@ -1,15 +1,15 @@
 'use strict';
 
-describe('matt.ctrl',function() {
-	describe('matt.ctrl.page1',function() {
-		beforeEach(module('matt.controlers'));
+describe('malt.ctrl',function() {
+	describe('malt.ctrl.page1',function() {
+		beforeEach(module('malt.controlers'));
 		beforeEach(function(){
 			localStorage.clear();
 		});
 		
 		it('should have "coucou" in scope', inject(function ($controller) {
 			var scope = {};
-			var ctrl = $controller('matt.ctrl.page1',{$scope:scope});
+			var ctrl = $controller('malt.ctrl.page1',{$scope:scope});
 			
 			expect(scope.test).toBe('coucou');
 		}));

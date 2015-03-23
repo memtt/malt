@@ -1,17 +1,17 @@
 /******************** SOURCE EDITOR ******************/
 /* Source editor */
-#matt-source-editor { 
+#malt-source-editor { 
 	right: 0;
 	left: 0;
 	height:500px;
 	width:100%;
 }
 
-#matt-source-editor .matt-annotations {
+#malt-source-editor .malt-annotations {
 	width:5em;
 }
 
-#matt-source-editor div.matt-annotation-small{
+#malt-source-editor div.malt-annotation-small{
 	font-size:11px;
 	text-align:right;
 	
@@ -32,7 +32,7 @@
 	cursor:pointer;
 }
 
-#matt-source-editor div.matt-annotation-medium{
+#malt-source-editor div.malt-annotation-medium{
 	font-size:11px;
 	text-align:right;
 	
@@ -53,7 +53,7 @@
 	cursor:pointer;
 }
 
-#matt-source-editor div.matt-annotation-large{
+#malt-source-editor div.malt-annotation-large{
 	font-size:11px;
 	text-align:right;
 	
@@ -74,14 +74,14 @@
 	cursor:pointer;
 }
 
-#matt-source-editor  .CodeMirror
+#malt-source-editor  .CodeMirror
 {
 /* 	height:auto; */
 	height:100%;
 	border:solid 1px lightgray;
 }
 
-#matt-source-filename {
+#malt-source-filename {
 	border:solid 1px lightgray;
 	width:fit-content;
 	margin:0px;
@@ -93,13 +93,13 @@
 	background-color:#F7F7F7;
 }
 
-#matt-alloc-info {
+#malt-alloc-info {
 	background:white;
 	color:black;
 	padding:10px;
 }
 
-#matt-alloc-stacks {
+#malt-alloc-stacks {
 /* 	background:gray; */
 	color:black;
 }
@@ -115,24 +115,24 @@
 }
 
 /********************** STACK TREE ********************/
-#matt-alloc-stacks-tree tbody tr:hover
+#malt-alloc-stacks-tree tbody tr:hover
 {
 	background-color:#DCDCDC;
 }
 
 /******************* FLAT FUNC LIST ******************/
 /* Flat list of function in stack-analysis */
-#matt-func-list li a {
+#malt-func-list li a {
 	height:3em
 }
 
-#matt-func-list div.progress {
+#malt-func-list div.progress {
 	display:block;
 	float:left;
 	width:7%;
 }
 
-#matt-func-list .size {
+#malt-func-list .size {
 	width:7em;
 	display:block;
 	float:left;
@@ -140,7 +140,7 @@
 	padding-right:1em;
 }
 
-#matt-func-list .func {
+#malt-func-list .func {
 	display:block;
 	float:left;
 	white-space: nowrap;
@@ -149,20 +149,20 @@
 	ellipsis;max-width:51%;
 }
 
-/*.matt-chart svg g rect {
+/*.malt-chart svg g rect {
 	background:red;
 }
 
-.matt-chart .nvd3 .nv-axis line {
+.malt-chart .nvd3 .nv-axis line {
 	stroke:#4F5761;
 	stroke-dasharray:'5,5';
 }
 
-.matt-chart text {
+.malt-chart text {
 	fill:gray;
 }
 
-.matt-graph-background {
+.malt-graph-background {
 	fill:#464D56;
 	opacity:1;
 }*/
@@ -215,12 +215,12 @@ h2 {
 }
 
 /*********************************************************/
-.matt-graph-background
+.malt-graph-background
 {
 	
 }
 
-.ace_marker-layer .matt_warning {
+.ace_marker-layer .malt_warning {
     position: absolute;
     z-index: 4;
     background: #1F384A;

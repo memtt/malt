@@ -38,7 +38,7 @@ Options::Options(void)
 	this->timeProfilePoints       = 512;
 	this->timeProfileLinear       = false;
 	//output
-	this->outputName              = "matt-%1-%2.%3";
+	this->outputName              = "malt-%1-%2.%3";
 	this->outputIndent            = true;
 	this->outputJson              = true;
 	this->outputLua               = false;

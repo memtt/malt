@@ -1,5 +1,5 @@
 {
-  "name": "matt-webview",
+  "name": "malt-webview",
   "version": "0.0.0-dev",
   "description": "Web view based on Node.js for MALT.",
   "main": "main.js",
@@ -8,7 +8,7 @@
     "test": "main.js"
   },
   "keywords": [
-    "matt",
+    "malt",
     "memory",
     "profile",
     "leak",

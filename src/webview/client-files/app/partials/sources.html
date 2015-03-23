@@ -3,7 +3,7 @@
 	<div class="row">
 			<div class="col-sm-5 col-md-4 col-lg-3 sidebar">
 				<!-- Selection -->
-				<div id='matt-func-list-selector'>
+				<div id='malt-func-list-selector'>
 					<div class="btn-group">
 						<button type="button" class="btn btn-default" ng-click="selector.toogleOrder()" title='Sort order.'><span class='glyphicon' ng-class="{'glyphicon-sort-by-attributes':orderBtnStatus(),'glyphicon-sort-by-attributes-alt':!orderBtnStatus()}"/> </button>
 						<button type="button" class="btn btn-default" ng-class="{'active': selector.ratio}" ng-click="selector.toogleRatio()" title='Show ratio to reference (max or sum) or absolute value.'><b>%</b></button>
@@ -13,19 +13,19 @@
 								<span>{{selector.getCurMetricName()}}</span>
 								<span class="caret"></span>
 							</button>
-							<ul class="dropdown-menu" id='matt-selector-list' role='menu' aria-labelledby='dropdownMenu1'>
+							<ul class="dropdown-menu" id='malt-selector-list' role='menu' aria-labelledby='dropdownMenu1'>
 								<li ng-repeat="m in metricList" ng-click="selector.selectMetric(m)"><a href="">{{m.name}}</a></li>
 							</ul>
 <!-- 						</span> -->
 					</div>
 					<div class="input-group">
-						<input class="form-control col-lg-8" type="text" placeholder="Search" id="matt-input-search" ng-model="selector.query"></input>
+						<input class="form-control col-lg-8" type="text" placeholder="Search" id="malt-input-search" ng-model="selector.query"></input>
 					</div>
 				</div>
 
 				<!-- Func lis -->
-				<div class="nav nav-sidebar" id='matt-func-list'>
-					<mattsourcefunclist metric='metric' inclusive='inclusive' functions='functions' limit='limit' order='order' ratio='ratio' query='query' selector='selector'></mattsourcefunclist>
+				<div class="nav nav-sidebar" id='malt-func-list'>
+					<maltsourcefunclist metric='metric' inclusive='inclusive' functions='functions' limit='limit' order='order' ratio='ratio' query='query' selector='selector'></maltsourcefunclist>
 					<pagination items-per-page="selector.perPage" direction-links="true" max-size="maxSize" rotate="false" boundary-links="false" total-items="selector.totalElements" ng-model="selector.currentPage" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;"></pagination>
 				</div>
 			</div>
@@ -38,12 +38,12 @@
 					No source code available for function {{function}} !
 				</div>
 				<div ng-hide='hasSources()'>
-				<span id='matt-source-filename'>{{file}} | {{function}}</span>
+				<span id='malt-source-filename'>{{file}} | {{function}}</span>
 			
-				<div id='matt-source-editor'></div>
+				<div id='malt-source-editor'></div>
 				</div>
 				
-				<div id='matt-alloc-info' style="width:50%;float:left;">
+				<div id='malt-alloc-info' style="width:50%;float:left;">
 					<table style="width:100%">
 						<tr>
 							<td colspan="2"><b>Inclusive :</b></td>
@@ -99,8 +99,8 @@
 					</table>
 				
 				</div>
-				<div id='matt-alloc-stacks' style="width:50%;float:left;">
-					<table id='matt-alloc-stacks-tree'>
+				<div id='malt-alloc-stacks' style="width:50%;float:left;">
+					<table id='malt-alloc-stacks-tree'>
 						<thead>
 							<tr>
 								<th>Function</th>

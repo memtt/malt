@@ -19,7 +19,7 @@ function MattPageTimeline()
 		return res;
 	}
 	
-	function mattNVDGraph2(divId,data,ylabel,stacked)
+	function maltNVDGraph2(divId,data,ylabel,stacked)
 	{
 		nv.addGraph(function() {
 			var chart = nv.models.stackedAreaChart()
@@ -35,11 +35,11 @@ function MattPageTimeline()
 
 			chart.xAxis //Chart x-axis settings
 				.axisLabel('Time (secondes)')
-				.tickFormat(function(value){return mattHelper.humanReadableTimes(value/(+data.ticksPerSecond),1,'',false);});
+				.tickFormat(function(value){return maltHelper.humanReadableTimes(value/(+data.ticksPerSecond),1,'',false);});
 			
 			chart.yAxis //Chart y-axis settings
 				.axisLabel(ylabel)
-				.tickFormat(function(value){return mattHelper.humanReadable(value,1,'',false);});
+				.tickFormat(function(value){return maltHelper.humanReadable(value,1,'',false);});
 
 			var myData = reformatDataForD3(data); //You need data...
 				
@@ -53,7 +53,7 @@ function MattPageTimeline()
 		});
 	}
 
-	function mattNVDGraph(divId,data,ylabel,stacked)
+	function maltNVDGraph(divId,data,ylabel,stacked)
 	{
 		nv.addGraph(function() {
 			var chart = nv.models.lineChart()
@@ -72,11 +72,11 @@ function MattPageTimeline()
 			
 			chart.xAxis //Chart x-axis settings
 				.axisLabel('Time (secondes)')
-				.tickFormat(function(value){return mattHelper.humanReadableTimes(value/(+data.ticksPerSecond),1,'',false);});
+				.tickFormat(function(value){return maltHelper.humanReadableTimes(value/(+data.ticksPerSecond),1,'',false);});
 			
 			chart.yAxis //Chart y-axis settings
 				.axisLabel(ylabel)
-				.tickFormat(function(value){return mattHelper.humanReadable(value,1,'',false);});
+				.tickFormat(function(value){return maltHelper.humanReadable(value,1,'',false);});
 				
 // 			chart.lines.dispatch.on('elementClick', function(e) {
 // 				alert("You've clicked on " + e.series.key + " - " + e.point.x);
@@ -89,7 +89,7 @@ function MattPageTimeline()
 				.datum(myData) //Populate the <svg> element with chart data...
 				.call(chart); //Finally, render the chart!
 
-			//d3.select('#'+divId + " svg g g rect").attr('style','').classed('matt-graph-background',true);
+			//d3.select('#'+divId + " svg g g rect").attr('style','').classed('malt-graph-background',true);
 			
 			//Update the chart when window resizes.
 			nv.utils.windowResize(function() { chart.update() });
@@ -97,7 +97,7 @@ function MattPageTimeline()
 		});
 	}
 	
-	function mattConvertDataInternal(data)
+	function maltConvertDataInternal(data)
 	{
 		var res = new Array();
 		for (var i = 0 ; i < data.timestamp.length ; i++)
@@ -107,7 +107,7 @@ function MattPageTimeline()
 		return res;
 	}
 
-	function mattConvertDataInternalD3JS(data)
+	function maltConvertDataInternalD3JS(data)
 	{
 		var res = new Array();
 		res.push({x:(data.timestamp[0]-1),y:0});
@@ -118,7 +118,7 @@ function MattPageTimeline()
 		return res;
 	}
 	
-	function mattConvertDataInternalD3JS2(data,id)
+	function maltConvertDataInternalD3JS2(data,id)
 	{
 		var res = new Array();
 		res.push({x:0,y:0});
@@ -130,7 +130,7 @@ function MattPageTimeline()
 		return res;
 	}
 
-	function mattConvertDataInternalRateD3JS(data,ticksPerSecond)
+	function maltConvertDataInternalRateD3JS(data,ticksPerSecond)
 	{
 		var res = new Array();
 		console.log(data.scale);
@@ -143,7 +143,7 @@ function MattPageTimeline()
 		return res;
 	}
 	
-	function mattConvertDataInternalRateD3JS2(data,id,ticksPerSecond)
+	function maltConvertDataInternalRateD3JS2(data,id,ticksPerSecond)
 	{
 		var res = new Array();
 		var scale = data.perPoints;
@@ -162,12 +162,12 @@ function MattPageTimeline()
 	}
 
 
-	function mattConvertData(data)
+	function maltConvertData(data)
 	{
 		var res = new Array();
-		res.push( mattConvertDataInternalD3JS2(data.memoryTimeline,1) );
-		res.push( mattConvertDataInternalD3JS2(data.memoryTimeline,2) );
-		res.push( mattConvertDataInternalD3JS2(data.memoryTimeline,0) );
+		res.push( maltConvertDataInternalD3JS2(data.memoryTimeline,1) );
+		res.push( maltConvertDataInternalD3JS2(data.memoryTimeline,2) );
+		res.push( maltConvertDataInternalD3JS2(data.memoryTimeline,0) );
 		
 		var labels = new Array();
 		labels.push("Virtual memory");
@@ -177,12 +177,12 @@ function MattPageTimeline()
 		return {data:res,labels:labels,ticksPerSecond:data.ticksPerSecond};
 	}
 	
-	function mattConvertData2(data)
+	function maltConvertData2(data)
 	{
 		var res = new Array();
-		res.push( mattConvertDataInternalD3JS2(data.memoryTimeline,1) );
-		res.push( mattConvertDataInternalD3JS2(data.memoryTimeline,2) );
-		res.push( mattConvertDataInternalD3JS2(data.memoryTimeline,0) );
+		res.push( maltConvertDataInternalD3JS2(data.memoryTimeline,1) );
+		res.push( maltConvertDataInternalD3JS2(data.memoryTimeline,2) );
+		res.push( maltConvertDataInternalD3JS2(data.memoryTimeline,0) );
 		
 		var labels = new Array();
 		labels.push("Virtual memory");
@@ -192,12 +192,12 @@ function MattPageTimeline()
 		return {data:res,labels:labels,ticksPerSecond:data.ticksPerSecond};
 	}
 	
-	function mattConvertSysData(data)
+	function maltConvertSysData(data)
 	{
 		var res = new Array();
-		res.push( mattConvertDataInternalD3JS2(data.systemTimeline,0) );
-		res.push( mattConvertDataInternalD3JS2(data.systemTimeline,1) );
-		//res.push( mattConvertDataInternalD3JS2(data.systemTimeline,2) );
+		res.push( maltConvertDataInternalD3JS2(data.systemTimeline,0) );
+		res.push( maltConvertDataInternalD3JS2(data.systemTimeline,1) );
+		//res.push( maltConvertDataInternalD3JS2(data.systemTimeline,2) );
 		
 		var labels = new Array();
 		labels.push("System free memory");
@@ -207,23 +207,23 @@ function MattPageTimeline()
 		return {data:res,labels:labels,ticksPerSecond:data.ticksPerSecond};
 	}
 
-	function mattConvertCnt(data)
+	function maltConvertCnt(data)
 	{
 		var res = new Array();
-		res.push( mattConvertDataInternalD3JS2(data.memoryTimeline,4) );
+		res.push( maltConvertDataInternalD3JS2(data.memoryTimeline,4) );
 		var labels = new Array();
 		labels.push("Memory segments");
 		return {data:res,labels:labels,ticksPerSecond:data.ticksPerSecond};
 	}
 
-	function mattConvertSizeRate(data)
+	function maltConvertSizeRate(data)
 	{
 		var ticksPerSecond = data.ticksPerSecond;
 		//ticksPerSecond = 1;
 		
 		var res = new Array();
-		res.push( mattConvertDataInternalRateD3JS(data.allocBandwidth,ticksPerSecond) );
-		res.push( mattConvertDataInternalRateD3JS(data.freeBandwidth,ticksPerSecond) );
+		res.push( maltConvertDataInternalRateD3JS(data.allocBandwidth,ticksPerSecond) );
+		res.push( maltConvertDataInternalRateD3JS(data.freeBandwidth,ticksPerSecond) );
 
 		var labels = new Array();
 		labels.push("Malloc");
@@ -231,14 +231,14 @@ function MattPageTimeline()
 		return {data:res,labels:labels,ticksPerSecond:ticksPerSecond};
 	}
 	
-	function mattConvertSizeRate2(data)
+	function maltConvertSizeRate2(data)
 	{
 		var ticksPerSecond = +data.ticksPerSecond;
 		//ticksPerSecond = 1;
 		
 		var res = new Array();
-		res.push( mattConvertDataInternalRateD3JS2(data.memoryBandwidth,1,ticksPerSecond) );
-		res.push( mattConvertDataInternalRateD3JS2(data.memoryBandwidth,3,ticksPerSecond) );
+		res.push( maltConvertDataInternalRateD3JS2(data.memoryBandwidth,1,ticksPerSecond) );
+		res.push( maltConvertDataInternalRateD3JS2(data.memoryBandwidth,3,ticksPerSecond) );
 
 		var labels = new Array();
 		labels.push("Malloc");
@@ -246,14 +246,14 @@ function MattPageTimeline()
 		return {data:res,labels:labels,ticksPerSecond:ticksPerSecond};
 	}
 	
-	function mattConvertCountRate(data)
+	function maltConvertCountRate(data)
 	{
 		var ticksPerSecond = data.ticksPerSecond;
 		//ticksPerSecond = 1;
 		
 		var res = new Array();
-		res.push( mattConvertDataInternalRateD3JS(data.allocCnt,ticksPerSecond) );
-		res.push( mattConvertDataInternalRateD3JS(data.freeCnt,ticksPerSecond) );
+		res.push( maltConvertDataInternalRateD3JS(data.allocCnt,ticksPerSecond) );
+		res.push( maltConvertDataInternalRateD3JS(data.freeCnt,ticksPerSecond) );
 
 		var labels = new Array();
 		labels.push("Malloc");
@@ -261,14 +261,14 @@ function MattPageTimeline()
 		return {data:res,labels:labels,ticksPerSecond:ticksPerSecond};
 	}
 	
-	function mattConvertCountRate2(data)
+	function maltConvertCountRate2(data)
 	{
 		var ticksPerSecond = data.ticksPerSecond;
 		//ticksPerSecond = 1;
 		
 		var res = new Array();
-		res.push( mattConvertDataInternalRateD3JS2(data.memoryBandwidth,0,ticksPerSecond) );
-		res.push( mattConvertDataInternalRateD3JS2(data.memoryBandwidth,2,ticksPerSecond) );
+		res.push( maltConvertDataInternalRateD3JS2(data.memoryBandwidth,0,ticksPerSecond) );
+		res.push( maltConvertDataInternalRateD3JS2(data.memoryBandwidth,2,ticksPerSecond) );
 
 		var labels = new Array();
 		labels.push("Malloc");
@@ -277,24 +277,24 @@ function MattPageTimeline()
 	}
 	
 	///////////////////////////////////// MAIN ////////////////////////////////////
-	//declare module to manage matt home page
-	var mattModule = angular.module('matt.page.timeline',[]);
+	//declare module to manage malt home page
+	var maltModule = angular.module('malt.page.timeline',[]);
 	var svgId = 0;
 	var cur = this;
 	
 	//main controler of the page
-	var pageCtrl = mattCtrl.controller('matt.page.timeline.ctrl',['$scope','$http',function($scope,$http) {
+	var pageCtrl = maltCtrl.controller('malt.page.timeline.ctrl',['$scope','$http',function($scope,$http) {
 		//fetch summaryData
-		mattDataSource.loadTimedData($http,function(data) {
+		maltDataSource.loadTimedData($http,function(data) {
 			$scope.reallocMap = data;
 
-			mattNVDGraph("matt-mem-timeline",mattConvertData(data),'B','Memory');
-			mattNVDGraph("matt-alive-chunks-timeline",mattConvertCnt(data),'Alive chunks','Allocations');
-			mattNVDGraph2("matt-alloc-rate-size-timeline",mattConvertSizeRate2(data),'Allocation rate B/s','Memory rate (B/s)');
-			mattNVDGraph2("matt-alloc-rate-count-timeline",mattConvertCountRate2(data),'Allocation rate op/s','Memory rate (B/s)');
-			mattNVDGraph("matt-sys-free-mem-timeline",mattConvertSysData(data),"B","Memory");
+			maltNVDGraph("malt-mem-timeline",maltConvertData(data),'B','Memory');
+			maltNVDGraph("malt-alive-chunks-timeline",maltConvertCnt(data),'Alive chunks','Allocations');
+			maltNVDGraph2("malt-alloc-rate-size-timeline",maltConvertSizeRate2(data),'Allocation rate B/s','Memory rate (B/s)');
+			maltNVDGraph2("malt-alloc-rate-count-timeline",maltConvertCountRate2(data),'Allocation rate op/s','Memory rate (B/s)');
+			maltNVDGraph("malt-sys-free-mem-timeline",maltConvertSysData(data),"B","Memory");
 		});
 	}]);
 }
 
-var mattPageTimeline = new MattPageTimeline();
+var maltPageTimeline = new MattPageTimeline();

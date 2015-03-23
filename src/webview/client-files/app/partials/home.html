@@ -59,27 +59,27 @@
 	<input type='button' ng-click='toogleSummaryDetails()' value='{{displaySummaryLevel == 1 ? "Show all details" : "Hide details"}}'/>
 	<input type='button' ng-click='displaySummaryHelp = !displaySummaryHelp' value='{{!displaySummaryHelp ? "Show help" : "Hide help"}}'/>
 	<table class='table table-bordered'>
-		<tr ng-repeat="entry in summaryViewEntries | summaryLevel:displaySummaryLevel:hasSummaryWarnings(entry.key)" ng-class="{'matt-has-warning': hasSummaryWarnings(entry.key)}">
-			<td class='matt-name'>{{entry.name}}</td>
-			<td class='matt-value'>
+		<tr ng-repeat="entry in summaryViewEntries | summaryLevel:displaySummaryLevel:hasSummaryWarnings(entry.key)" ng-class="{'malt-has-warning': hasSummaryWarnings(entry.key)}">
+			<td class='malt-name'>{{entry.name}}</td>
+			<td class='malt-value'>
 				{{getFormattedValue(entry)}}
 				<img src='http://www.pinsound.org/wp-content/uploads/2013/07/warning.png' ng-repeat="warning in summaryData.summaryWarnings[entry.key]" title="{{warning}}" data-container="body" data-content="{{warning}}" width='24px'/>
 				<!--<button class='btn btn-lg popover-dismiss' ng-repeat="warning in summaryData.summaryWarnings[entry.key]" data-trigger="hover" data-toggle="popover" data-container="body" data-content="{{warning}}" title="test">text</button>-->
 			</td>
-			<td class='matt-help' ng-class="{'matt-hidden': !displaySummaryHelp}">{{entry.help}}</td><tr>
+			<td class='malt-help' ng-class="{'malt-hidden': !displaySummaryHelp}">{{entry.help}}</td><tr>
 		</tr>
 	</table>
 	
 	<h2>Allocation count</h2>
-	<matthomefunclist metric='alloc.count' inclusive='false' functions='functions' limit='5'></matthomefunclist>
+	<malthomefunclist metric='alloc.count' inclusive='false' functions='functions' limit='5'></malthomefunclist>
 	
 	<h2>Cumulated allocations</h2>
-	<matthomefunclist metric='alloc.sum' inclusive='false' functions='functions' limit='5'></matthomefunclist>
+	<malthomefunclist metric='alloc.sum' inclusive='false' functions='functions' limit='5'></malthomefunclist>
 	
 	<h2>Memory usage on peak</h2>
-	<matthomefunclist metric='peakmem.global' inclusive='false' functions='functions' limit='5'></matthomefunclist>
+	<malthomefunclist metric='peakmem.global' inclusive='false' functions='functions' limit='5'></malthomefunclist>
 	
 	<h2>Leaks</h2>
-	<matthomefunclist metric='leaks' inclusive='false' functions='functions' limit='5'></matthomefunclist>
+	<malthomefunclist metric='leaks' inclusive='false' functions='functions' limit='5'></malthomefunclist>
 
 </div>

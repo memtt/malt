@@ -174,5 +174,5 @@ MattDataSourceClientSide.prototype.getCallStackDataFunc = function(func,handler)
 /////////////////////////////////////////////////////////////////////////
 
 //create global instance to be used in all pages
-var mattDataSource = new MattDataSourceNodeJS();
-// var mattDataSource = new MattDataSourceClientSide();
+var maltDataSource = new MattDataSourceNodeJS();
+// var maltDataSource = new MattDataSourceClientSide();

@@ -2,11 +2,11 @@ function MattPagePerThread()
 {
 	var cur = this;
 
-	//declare module to manage matt home page
-	var mattModule = angular.module('matt.page.perthread',[]);
+	//declare module to manage malt home page
+	var maltModule = angular.module('malt.page.perthread',[]);
 	
 	//main controler of the page
-	var homeCtrl = mattCtrl.controller('matt.page.perthread.ctrl',['$scope','$http',function($scope,$http) {
+	var homeCtrl = maltCtrl.controller('malt.page.perthread.ctrl',['$scope','$http',function($scope,$http) {
 		//setup data
 // 		$scope.summaryViewEntries = summaryViewEntries;
 		$scope.displaySummaryLevel = 1;
@@ -14,11 +14,11 @@ function MattPagePerThread()
 // 		$scope.summaryData = defaultData;
 		
 		//fetch summaryData
-		mattDataSource.loadGlobalSummary($http,function(data) {
+		maltDataSource.loadGlobalSummary($http,function(data) {
 			$scope.summaryData = data;
-			cur.buildPerThreadChart(data,"#matt-per-thread-funcs-count svg","count");
-			cur.buildPerThreadChart(data,"#matt-per-thread-funcs-time svg","time");
-			cur.buildPerThreadChart(data,"#matt-per-thread-funcs-sum svg","sum");
+			cur.buildPerThreadChart(data,"#malt-per-thread-funcs-count svg","count");
+			cur.buildPerThreadChart(data,"#malt-per-thread-funcs-time svg","time");
+			cur.buildPerThreadChart(data,"#malt-per-thread-funcs-sum svg","sum");
 		});
 	}]);
 }
@@ -65,17 +65,17 @@ MattPagePerThread.prototype.buildPerThreadChart = function(data,d3Selection,metr
 // 				if (d.file != undefined && d.file != '')
 // 					pos = "<br/>" + d.file + ":" + d.line;
 // 				if (e.series.key == "TLS variables")
-// 					tls = " [ "+e.series.tlsInstances+" * "+mattHelper.humanReadable(d.value/e.series.tlsInstances,1,'B',false) +" ] ";
+// 					tls = " [ "+e.series.tlsInstances+" * "+maltHelper.humanReadable(d.value/e.series.tlsInstances,1,'B',false) +" ] ";
 // 				var ratio = " ( "+(100*d.value/e.series.total).toFixed(2)+"% ) ";
 // 				//console.log(data);
 // 				//console.log(e);
-// 				return "<div style='text-align:center'><h3>"+d.name+"</h3>"+mattHelper.humanReadable(d.value,1,'B',false)+tls+ratio+pos+'</div>';
+// 				return "<div style='text-align:center'><h3>"+d.name+"</h3>"+maltHelper.humanReadable(d.value,1,'B',false)+tls+ratio+pos+'</div>';
 // 			})
 			;
 
 // 		$scope.chart = chart;
 		chart.yAxis
-			.tickFormat(function(d) {return mattHelper.humanReadable(d,1,'',false);});
+			.tickFormat(function(d) {return maltHelper.humanReadable(d,1,'',false);});
 			
 // 		if (onClick != undefined)
 // 			chart.multibar.dispatch.on("elementClick", function(e) {onClick(e,chart);});
@@ -105,4 +105,4 @@ MattPagePerThread.prototype.buildPerThreadChart = function(data,d3Selection,metr
 }
 
 //init and export
-var mattPagePerThread = new MattPagePerThread();
+var maltPagePerThread = new MattPagePerThread();

@@ -42,7 +42,7 @@ if (ENABLE_CODE_TIMING)
 	set(MALT_ENABLE_CODE_TIMING yes)
 endif(ENABLE_CODE_TIMING)
 if (ENABLE_GCC_COVERAGE)
-	matt_enable_gcc_coverage()
+	malt_enable_gcc_coverage()
 endif (ENABLE_GCC_COVERAGE)
 
 ######################################################
@@ -67,24 +67,24 @@ include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
 ######################################################
 set(COMMON_OBJS $<TARGET_OBJECTS:htopml-json>
-                $<TARGET_OBJECTS:matt-core>
-                $<TARGET_OBJECTS:matt-tools>
-                $<TARGET_OBJECTS:matt-stacks>
-                $<TARGET_OBJECTS:matt-valprof>
-                $<TARGET_OBJECTS:matt-profiler>
-                $<TARGET_OBJECTS:matt-thread-wrapper>
-                #$<TARGET_OBJECTS:matt-stack-trees>
-                $<TARGET_OBJECTS:matt-common>
-                $<TARGET_OBJECTS:matt-port>
+                $<TARGET_OBJECTS:malt-core>
+                $<TARGET_OBJECTS:malt-tools>
+                $<TARGET_OBJECTS:malt-stacks>
+                $<TARGET_OBJECTS:malt-valprof>
+                $<TARGET_OBJECTS:malt-profiler>
+                $<TARGET_OBJECTS:malt-thread-wrapper>
+                #$<TARGET_OBJECTS:malt-stack-trees>
+                $<TARGET_OBJECTS:malt-common>
+                $<TARGET_OBJECTS:malt-port>
                 $<TARGET_OBJECTS:iniparser>)
 
 ######################################################
-add_library(matt-base SHARED ${COMMON_OBJS})
-target_link_libraries(matt-base ${LIB_MALT_DEPS})
+add_library(malt-base SHARED ${COMMON_OBJS})
+target_link_libraries(malt-base ${LIB_MALT_DEPS})
 
 ######################################################
-add_library(matt SHARED ${COMMON_OBJS} $<TARGET_OBJECTS:matt-libc-wrapper>)
-target_link_libraries(matt ${LIB_MALT_DEPS})
+add_library(malt SHARED ${COMMON_OBJS} $<TARGET_OBJECTS:malt-libc-wrapper>)
+target_link_libraries(malt ${LIB_MALT_DEPS})
 
 ######################################################
 add_subdirectory(core)
@@ -103,6 +103,6 @@ if (ENABLE_TESTS)
 endif (ENABLE_TESTS)
 
 ######################################################
-INSTALL(TARGETS matt matt-base 
+INSTALL(TARGETS malt malt-base 
 	ARCHIVE DESTINATION lib
 	LIBRARY DESTINATION lib)

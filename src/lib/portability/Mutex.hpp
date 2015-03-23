@@ -33,8 +33,8 @@
 	
 	//map macros to generic names
 	#warning Need to cleanup this
-	static MALT::MutexDummy __matt__static_mutex_init__;
-	#define MALT_STATIC_MUTEX_INIT __matt__static_mutex_init__
+	static MALT::MutexDummy __malt__static_mutex_init__;
+	#define MALT_STATIC_MUTEX_INIT __malt__static_mutex_init__
 	
 	//show some warning
 	#warning Caution, you are using the DUMMY mutex implementation, MALT will not be thread-safe !

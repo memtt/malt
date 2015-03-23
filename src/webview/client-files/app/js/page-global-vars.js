@@ -19,20 +19,20 @@ function MattPageGlobalVars()
 	var cur = this;
 	var svgId = 0;
 	
-	//declare module to manage matt home page
-	var mattModule = angular.module('matt.page.globalVars',[]);
+	//declare module to manage malt home page
+	var maltModule = angular.module('malt.page.globalVars',[]);
 	
 	//main controler of the page
-	var pageCtrl = mattCtrl.controller('matt.page.globalVars.ctrl',['$scope','$http',function($scope,$http) {
+	var pageCtrl = maltCtrl.controller('malt.page.globalVars.ctrl',['$scope','$http',function($scope,$http) {
 		//fetch summaryData
-		mattDataSource.loadGlobalVars($http,function(data) {
+		maltDataSource.loadGlobalVars($http,function(data) {
 			//keep link to data
 			$scope.globalVars = data;
 			
 			//extract some infos for view
 			var summary = cur.getSummary(data);
-			$scope.globalVariablesMem = mattHelper.humanReadable(summary.global,1,'B',false);
-			$scope.tlsVariablesMem = mattHelper.humanReadable(summary.tls,1,'B',false);
+			$scope.globalVariablesMem = maltHelper.humanReadable(summary.global,1,'B',false);
+			$scope.tlsVariablesMem = maltHelper.humanReadable(summary.tls,1,'B',false);
 			$scope.activeThreads = data.maxThreadCount;
 			
 			//gen formatted data
@@ -51,7 +51,7 @@ function MattPageGlobalVars()
 	}]);
 
 	//directive to put pie graphs
-	pageCtrl.directive('mattgblvarchart',function() {
+	pageCtrl.directive('maltgblvarchart',function() {
 		return {
 			restrict: 'EA',
 			template: '<div><svg/></div>',
@@ -69,16 +69,16 @@ function MattPageGlobalVars()
 						switch($scope.kind)
 						{
 							case 'pie':
-								cur.buildDonutGraph('#mattgblvarchart' + $scope.elementID + ' svg',$scope.data);
+								cur.buildDonutGraph('#maltgblvarchart' + $scope.elementID + ' svg',$scope.data);
 								break;
 							case 'bar':
 								if ($scope.chart == undefined)
-									cur.buildMultiBarChart($scope,'#mattgblvarchart' + $scope.elementID + ' svg',$scope.data,function(e,chart,data){$scope.onvalueclick(e,chart,data,$scope);});
+									cur.buildMultiBarChart($scope,'#maltgblvarchart' + $scope.elementID + ' svg',$scope.data,function(e,chart,data){$scope.onvalueclick(e,chart,data,$scope);});
 								else
-									cur.updateMultiBarChart($scope,'#mattgblvarchart' + $scope.elementID + ' svg',$scope.data);
+									cur.updateMultiBarChart($scope,'#maltgblvarchart' + $scope.elementID + ' svg',$scope.data);
 								break;
 							default:
-								console.log("Invalid kinf of matt gbl var chart : "+$scope.kind);
+								console.log("Invalid kinf of malt gbl var chart : "+$scope.kind);
 						}
 					}
 				});
@@ -88,11 +88,11 @@ function MattPageGlobalVars()
 				{
 					//setup element ID
 					$scope.elementID = svgId++;
-					angular.element($element).attr('id', 'mattgblvarchart'+$scope.elementID );
+					angular.element($element).attr('id', 'maltgblvarchart'+$scope.elementID );
 				}
 				
 				if ($scope.height != undefined)
-					d3.select('#mattgblvarchart' + $scope.elementID + ' svg').attr('height',$scope.height);
+					d3.select('#maltgblvarchart' + $scope.elementID + ' svg').attr('height',$scope.height);
 			}]
 		}
 	});
@@ -200,7 +200,7 @@ MattPageGlobalVars.prototype.getDataForVarPies = function(data)
 	return res;
 }
 
-//matt-vars-pie-bin
+//malt-vars-pie-bin
 MattPageGlobalVars.prototype.buildDonutGraph = function(d3Selection,data)
 {
 	if (data == undefined)
@@ -221,7 +221,7 @@ MattPageGlobalVars.prototype.buildDonutGraph = function(d3Selection,data)
 			var pos = "";
 			if (d.file != undefined && d.file != '')
 				pos = "<br/>" + d.file + ":" + d.line;
-			return "<div style='text-align:center'><h3>"+d.name+"</h3>"+mattHelper.humanReadable(d.value,1,'B',false)+pos+'</div>';
+			return "<div style='text-align:center'><h3>"+d.name+"</h3>"+maltHelper.humanReadable(d.value,1,'B',false)+pos+'</div>';
 		});
 
 		d3.select(d3Selection)
@@ -402,16 +402,16 @@ MattPageGlobalVars.prototype.buildMultiBarChart = function($scope,d3Selection,da
 				if (d.file != undefined && d.file != '')
 					pos = "<br/>" + d.file + ":" + d.line;
 				if (e.series.key == "TLS variables")
-					tls = " [ "+e.series.tlsInstances+" * "+mattHelper.humanReadable(d.value/e.series.tlsInstances,1,'B',false) +" ] ";
+					tls = " [ "+e.series.tlsInstances+" * "+maltHelper.humanReadable(d.value/e.series.tlsInstances,1,'B',false) +" ] ";
 				var ratio = " ( "+(100*d.value/e.series.total).toFixed(2)+"% ) ";
 				//console.log(data);
 				//console.log(e);
-				return "<div style='text-align:center'><h3>"+d.name+"</h3>"+mattHelper.humanReadable(d.value,1,'B',false)+tls+ratio+pos+'</div>';
+				return "<div style='text-align:center'><h3>"+d.name+"</h3>"+maltHelper.humanReadable(d.value,1,'B',false)+tls+ratio+pos+'</div>';
 			});
 
 		$scope.chart = chart;
 		chart.yAxis
-			.tickFormat(function(d) {return mattHelper.humanReadable(d,1,'B',false);});
+			.tickFormat(function(d) {return maltHelper.humanReadable(d,1,'B',false);});
 			
 		if (onClick != undefined)
 			chart.multibar.dispatch.on("elementClick", function(e) {onClick(e,chart);});
@@ -443,4 +443,4 @@ MattPageGlobalVars.prototype.buildMultiBarChart = function($scope,d3Selection,da
 }
 
 //init and export
-var mattPageGlobalVars = new MattPageGlobalVars();
+var maltPageGlobalVars = new MattPageGlobalVars();

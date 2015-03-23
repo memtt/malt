@@ -10,8 +10,8 @@
 set(MALT_STACK_TREES_SRC)
 
 ######################################################
-#add_library(matt-stack-trees OBJECT ${MALT_STACK_TREES_SRC})
-#SET_TARGET_PROPERTIES(matt-stack-trees PROPERTIES COMPILE_FLAGS -fPIC)
+#add_library(malt-stack-trees OBJECT ${MALT_STACK_TREES_SRC})
+#SET_TARGET_PROPERTIES(malt-stack-trees PROPERTIES COMPILE_FLAGS -fPIC)
 
 ######################################################
 if (ENABLE_TESTS)

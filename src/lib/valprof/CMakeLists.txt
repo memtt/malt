@@ -10,8 +10,8 @@
 set(MALT_VALPROF_SRC ProfiledStateValue.cpp)
 
 ######################################################
-add_library(matt-valprof OBJECT ${MALT_VALPROF_SRC})
-SET_TARGET_PROPERTIES(matt-valprof PROPERTIES COMPILE_FLAGS -fPIC)
+add_library(malt-valprof OBJECT ${MALT_VALPROF_SRC})
+SET_TARGET_PROPERTIES(malt-valprof PROPERTIES COMPILE_FLAGS -fPIC)
 
 ######################################################
 if (ENABLE_TESTS)

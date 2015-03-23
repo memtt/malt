@@ -16,5 +16,5 @@ list(APPEND MALT_PORT_SRC LinuxProcMapReader.cpp)
 list(APPEND MALT_PORT_SRC CompilerGNU.cpp)
 
 ######################################################
-add_library(matt-port OBJECT ${MALT_PORT_SRC})
-SET_TARGET_PROPERTIES(matt-port PROPERTIES COMPILE_FLAGS -fPIC)
+add_library(malt-port OBJECT ${MALT_PORT_SRC})
+SET_TARGET_PROPERTIES(malt-port PROPERTIES COMPILE_FLAGS -fPIC)

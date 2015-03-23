@@ -23,11 +23,11 @@ var app = Express();
 
 /****************************************************/
 //intenral cache for computed data which take a while to built
-var mattCache = new Object();
+var maltCache = new Object();
 
 /****************************************************/
 //Manage args
-args = new Args('matt-webview', '1.0', 'Webiew for MALT based on Node.js','');
+args = new Args('malt-webview', '1.0', 'Webiew for MALT based on Node.js','');
 //define args
 args.add({ name: 'input', desc: 'input file from MALT into JSON format', switches: [ '-i', '--input-file'], value: 'file', required: true });
 args.add({ name: 'port',  desc: 'Port to use to wait for HTTP requests', switches: [ '-p', '--port'],       value: 'port', required: false });
@@ -57,21 +57,21 @@ if (args.params.override != undefined)
 
 /****************************************************/
 //load file
-var mattProject = new MattProject(args.params.input);
+var maltProject = new MattProject(args.params.input);
 
 /****************************************************/
 app.get('/flat.json',function(req,res) {
 	var tmp = null;
 
 	//check cache
-	if (mattCache['flat.json'] != undefined)
+	if (maltCache['flat.json'] != undefined)
 	{
 		//take from cache
-		tmp = mattCache['flat.json'];
+		tmp = maltCache['flat.json'];
 	} else {
 		//compute and cache
-		tmp = mattProject.getFlatFunctionProfile();
-		mattCache['flat.json'] = tmp;
+		tmp = maltProject.getFlatFunctionProfile();
+		maltCache['flat.json'] = tmp;
 	}
 	
 	//ok flush to user
@@ -81,7 +81,7 @@ app.get('/flat.json',function(req,res) {
 
 /****************************************************/
 app.get('/summary.json',function(req,res) {
-	var tmp = mattProject.getSummary();
+	var tmp = maltProject.getSummary();
 	res.write(JSON.stringify(tmp,null));
 	res.end();
 });
@@ -89,7 +89,7 @@ app.get('/summary.json',function(req,res) {
 /****************************************************/
 //export timed value to build charts
 app.get('/timed.json',function(req,res) {
-	var tmp = mattProject.getTimedValues();
+	var tmp = maltProject.getTimedValues();
 	res.write(JSON.stringify(tmp,null));
 	res.end();
 });
@@ -97,7 +97,7 @@ app.get('/timed.json',function(req,res) {
 /****************************************************/
 //export max stack info
 app.get('/max-stack-infos.json',function (req,res){
-	var tmp = mattProject.getMaxStack();
+	var tmp = maltProject.getMaxStack();
 	res.write(JSON.stringify(tmp,null));
 	res.end();
 });
@@ -105,7 +105,7 @@ app.get('/max-stack-infos.json',function (req,res){
 /****************************************************/
 //export max stack info
 app.get('/stacks-mem.json',function (req,res){
-	var tmp = mattProject.getStacksMem();
+	var tmp = maltProject.getStacksMem();
 	res.write(JSON.stringify(tmp,null));
 	res.end();
 });
@@ -113,7 +113,7 @@ app.get('/stacks-mem.json',function (req,res){
 /****************************************************/
 //export max stack info
 app.get('/procmap.json',function (req,res){
-	var tmp = mattProject.getProcMap();
+	var tmp = maltProject.getProcMap();
 	res.write(JSON.stringify(tmp,null));
 	res.end();
 });
@@ -121,7 +121,7 @@ app.get('/procmap.json',function (req,res){
 /****************************************************/
 //export max stack info
 app.get('/global-variables.json',function (req,res){
-	var tmp = mattProject.getGlobalVariables();
+	var tmp = maltProject.getGlobalVariables();
 	res.write(JSON.stringify(tmp,null));
 	res.end();
 });
@@ -137,11 +137,11 @@ app.get('/stacks.json',function(req,res){
 	if (file != undefined || line != undefined)
 	{
 		console.log("extract stacks for : "+file+" +"+line);
-		var tmp = mattProject.getFilterdStacksOnFileLine(file,line);
+		var tmp = maltProject.getFilterdStacksOnFileLine(file,line);
 		res.write(JSON.stringify(tmp,null,"\t"));
 	} else if (func != undefined) {
 		console.log("extract stacks for : "+func);
-		var tmp = mattProject.getFilterdStacksOnSymbol(func);
+		var tmp = maltProject.getFilterdStacksOnSymbol(func);
 		res.write(JSON.stringify(tmp,null,"\t"));
 	} else {
 		res.send(500, 'Missing file or line GET parameter !');
@@ -152,21 +152,21 @@ app.get('/stacks.json',function(req,res){
 /****************************************************/
 app.get('/memtrace-at.json',function(req,res) {
 	console.log("At : "+req.query.at);
-	console.log(mattProject.getTraceFilename());
+	console.log(maltProject.getTraceFilename());
 
 	var at = req.query.at;
-	var traceFile = mattProject.getTraceFilename();
+	var traceFile = maltProject.getTraceFilename();
 	if (at == undefined)
 	{
 		res.send(500, 'Missing file GET parameter (at) !');
 	} else if (traceFile == undefined) {
-		res.send(500, 'Missing trace file for the given matt analysis !');
+		res.send(500, 'Missing trace file for the given malt analysis !');
 	} else {
-		child.execFile('matt-trace-reader', [ traceFile, "--mem", "--filter", "at="+at], function(err, stdout, stderr) { 
+		child.execFile('malt-trace-reader', [ traceFile, "--mem", "--filter", "at="+at], function(err, stdout, stderr) { 
 			// Node.js will invoke this callback when the 
 			console.log(stdout);
 			var data = JSON.parse(stdout);
-			var data = mattProject.completeMemtraceAt(data);
+			var data = maltProject.completeMemtraceAt(data);
 			res.write(JSON.stringify(data));
 			res.end();
 		});  
@@ -179,20 +179,20 @@ app.get('/file-infos.json',function(req,res) {
 	var file = req.query.file;
 	
 	//setup cache root entry
-	if (mattCache['file-infos.json'] == undefined)
-		mattCache['file-infos.json'] = new Object();
+	if (maltCache['file-infos.json'] == undefined)
+		maltCache['file-infos.json'] = new Object();
 	
 	//return error
 	if (file == undefined)
 	{
 		res.send(500, 'Missing file GET parameter !');
-	} else if (mattCache['file-infos.json'][file] != undefined) {
-		res.write(mattCache['file-infos.json'][file]);
+	} else if (maltCache['file-infos.json'][file] != undefined) {
+		res.write(maltCache['file-infos.json'][file]);
 	} else {
 		console.log("extract alloc info of file : "+file);
-		var tmp = mattProject.getFileLinesFlatProfile(file,false);
+		var tmp = maltProject.getFileLinesFlatProfile(file,false);
 		tmp = JSON.stringify(tmp,null,'\t');
-		mattCache['file-infos.json'][file] = tmp;
+		maltCache['file-infos.json'][file] = tmp;
 		res.write(tmp);
 	}
 	res.end();
@@ -200,7 +200,7 @@ app.get('/file-infos.json',function(req,res) {
 
 /****************************************************/
 app.get('/max-stack.json',function(req,res) {
-	var tmp = mattProject.getMaxStackInfoOnFunction();
+	var tmp = maltProject.getMaxStackInfoOnFunction();
 	res.write(JSON.stringify(tmp,null,'\t'));
 	res.end();
 });
@@ -208,42 +208,42 @@ app.get('/max-stack.json',function(req,res) {
 /****************************************************/
 app.get('/stack.json',function(req,res) {
 	var id = req.query.id;
-	var tmp = mattProject.getStackInfoOnFunction(id);
+	var tmp = maltProject.getStackInfoOnFunction(id);
 	res.write(JSON.stringify(tmp,null,'\t'));
 	res.end();
 });
 
 /****************************************************/
 app.get('/proc-map-distr.json',function(req,res) {
-	var tmp = mattProject.getProcMapDistr();
+	var tmp = maltProject.getProcMapDistr();
 	res.write(JSON.stringify(tmp,null,'\t'));
 	res.end();
 });
 
 /****************************************************/
 app.get('/size-map.json',function(req,res) {
-	var tmp = mattProject.getSizeMap();
+	var tmp = maltProject.getSizeMap();
 	res.write(JSON.stringify(tmp,null,'\t'));
 	res.end();
 });
 
 /****************************************************/
 app.get('/realloc-map.json',function(req,res) {
-	var tmp = mattProject.getReallocMap();
+	var tmp = maltProject.getReallocMap();
 	res.write(JSON.stringify(tmp,null,'\t'));
 	res.end();
 });
 
 /****************************************************/
 app.get('/debug-stack-list.json',function(req,res) {
-	var tmp = mattProject.getDebugStackList();
+	var tmp = maltProject.getDebugStackList();
 	res.write(JSON.stringify(tmp,null,'\t'));
 	res.end();
 });
 
 /****************************************************/
 app.get('/data/summary.json',function(req,res) {
-	var tmp = mattProject.getSummaryV2();
+	var tmp = maltProject.getSummaryV2();
 	res.write(JSON.stringify(tmp,null,'\t'));
 	res.end();
 });
@@ -251,7 +251,7 @@ app.get('/data/summary.json',function(req,res) {
 /****************************************************/
 app.get('/',function(eq,res,next){
 	res.redirect('app/index.html');
-// 	res.render("page-summary",mattProject.getSummary());
+// 	res.render("page-summary",maltProject.getSummary());
 });
 
 /****************************************************/
@@ -275,7 +275,7 @@ app.use('/app-sources/',function(req,res,next){
 		}
 	}
 	
-	if (mattProject.isSourceFile(req.path))
+	if (maltProject.isSourceFile(req.path))
 	{
 		console.log("Source file request :",realPath);
 		req.path = realPath;
@@ -302,7 +302,7 @@ app.use('/deps/angular-route',Express.static(__dirname+'/bower_components/angula
 // 	app.use('/app-sources/'+redirs[i].source,Express.static('/'+redirs[i].dest));
 // }
 
-//console.log(JSON.stringify(mattProject.getFullTree(),null,'\t'));
+//console.log(JSON.stringify(maltProject.getFullTree(),null,'\t'));
 
 /****************************************************/
 //run express

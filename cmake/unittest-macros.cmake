@@ -17,7 +17,7 @@ set(ENABLE_JUNIT_OUTPUT "no" CACHE BOOL "Generate unit test output in junit form
 
 ######################################################
 #For integration of tests in jenkins, but only in self-test mode
-macro (matt_add_test test_name)
+macro (malt_add_test test_name)
 	#steup wrapper
 	if (ENABLE_VALGRIND)
 			set(tmp_test_wrapper valgrind --xml=yes --xml-file=${CMAKE_CURRENT_BINARY_DIR}/${test_name}.memcheck.xml --tool=memcheck --leak-check=full --show-reachable=yes)
@@ -32,4 +32,4 @@ macro (matt_add_test test_name)
 
 	#gen text command and register
 	add_test(${test_name} ${tmp_test_wrapper} ${CMAKE_CURRENT_BINARY_DIR}/${test_name} ${tmp_test_run_option})
-endmacro (matt_add_test)
+endmacro (malt_add_test)

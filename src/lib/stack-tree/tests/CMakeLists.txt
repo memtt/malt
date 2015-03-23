@@ -17,7 +17,7 @@ set(TEST_NAMES TestStackSTLHashMap TestRLockFreeTree)
 ######################################################
 FOREACH(test_name ${TEST_NAMES})
 	add_executable(${test_name} ${test_name}.cpp)
-	target_link_libraries(${test_name} ${GTEST_BOTH_LIBRARIES} ${GMOCK_BOTH_LIBRARIES} matt-base)
-	matt_add_test(${test_name} ${test_name})
+	target_link_libraries(${test_name} ${GTEST_BOTH_LIBRARIES} ${GMOCK_BOTH_LIBRARIES} malt-base)
+	malt_add_test(${test_name} ${test_name})
 ENDFOREACH(test_name)
 

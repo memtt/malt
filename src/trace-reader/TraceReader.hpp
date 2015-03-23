@@ -10,7 +10,7 @@
 #define MALT_TRACE_READER_HPP
 
 /********************  HEADERS  *********************/
-//matt internals
+//malt internals
 #include <core/AllocTraceFile.hpp>
 
 /*******************  NAMESPACE  ********************/

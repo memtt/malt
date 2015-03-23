@@ -7,15 +7,15 @@
 function MattCallStacksView(containerId,selector)
 {
 	//errors
-	//mattHelper.assert(selector != undefined && selector instanceof MattFuncListSelector);
+	//maltHelper.assert(selector != undefined && selector instanceof MattFuncListSelector);
 	
 	//setup container
 	this.containerId = containerId;
 	this.container = $('#'+containerId);
 	
 	//check and link
-	//mattHelper.assert(this.container != undefined);
-	this.container.matt = this;
+	//maltHelper.assert(this.container != undefined);
+	this.container.malt = this;
 	
 	//defaults
 	this.stackViewRoots = [];
@@ -39,7 +39,7 @@ MattCallStacksView.prototype.initRender = function()
 		clickableNodeNames:false,
 		onNodeExpand: function() {
 			var node = this;
-			cur.addToTree(node.mattData);
+			cur.addToTree(node.maltData);
         },
 		onNodeCollapse: function() {
 			var node = this;
@@ -68,7 +68,7 @@ MattCallStacksView.prototype.update = function(file,line)
 	this.asyncState++;
 	var state = this.asyncState;
 
-	mattDataSource.getCallStackDataFileLine(file,line,function(data) {
+	maltDataSource.getCallStackDataFileLine(file,line,function(data) {
 		if (state == cur.asyncState)
 		{
 			var tree = cur.buildCallTree(data);
@@ -88,7 +88,7 @@ MattCallStacksView.prototype.updateFunc = function(func)
 	this.asyncState++;
 	var state = this.asyncState;
 
-	mattDataSource.getCallStackDataFunc(func,function(data) {
+	maltDataSource.getCallStackDataFunc(func,function(data) {
 		if (state == cur.asyncState)
 		{
 			var tree = cur.buildCallTree(data);
@@ -104,7 +104,7 @@ function reduceStat(node,info)
 	if(node.info == undefined)
 		node.info = jQuery.extend(true, {}, info);
 	else
-		mattHelper.mergeStackInfoDatas(node.info,info);
+		maltHelper.mergeStackInfoDatas(node.info,info);
 }
 
 /****************************************************/
@@ -150,7 +150,7 @@ MattCallStacksView.prototype.addToTree = function(treeNode)
 // 		var value = metric.extractor(treeNode.childs[i].info);
 		if (value == 0)
 			continue;
-		//value = mattHelper.humanReadableValue(value,metric.unit);
+		//value = maltHelper.humanReadableValue(value,metric.unit);
 		value = this.selector.getFormattedValue({total:treeNode.childs[i].info,own:treeNode.childs[i].info});
 		
 		//create html
@@ -180,7 +180,7 @@ MattCallStacksView.prototype.addToTree = function(treeNode)
 		
 		//map user data
 		var branch = this.container.treetable('node',treeNode.childs[i].id);
-		branch.mattData = treeNode.childs[i];
+		branch.maltData = treeNode.childs[i];
 		
 		//childs
 		//this.addToTree(treeNode.childs[i],selector,expandedDepth-1);

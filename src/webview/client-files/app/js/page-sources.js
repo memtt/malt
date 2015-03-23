@@ -1,13 +1,13 @@
 function MattPageTimeline()
 {
 	///////////////////////////////////// MAIN ////////////////////////////////////
-	//declare module to manage matt home page
-	var mattModule = angular.module('matt.page.sources',[]);
+	//declare module to manage malt home page
+	var maltModule = angular.module('malt.page.sources',[]);
 	var svgId = 0;
 	var cur = this;
 	
 	//main controler of the page
-	var pageCtrl = mattCtrl.controller('matt.page.sources.ctrl',['$scope','$routeParams','$http',function($scope,$routeParams,$http) {
+	var pageCtrl = maltCtrl.controller('malt.page.sources.ctrl',['$scope','$routeParams','$http',function($scope,$routeParams,$http) {
 		//manage function list view
 		$scope.functions = [];
 		$scope.funcMetrics = new MattFuncMetrics();
@@ -22,12 +22,12 @@ function MattPageTimeline()
 		
 		$scope.ratio = false;
 		$scope.query='';
-		$scope.order = mattMetrics[$scope.metric].defaultOrder;
+		$scope.order = maltMetrics[$scope.metric].defaultOrder;
 		$scope.metricList = $scope.funcMetrics.getMetricList();
 		$scope.file = "No source file...";
 		$scope.selector = new MattSelector();
-		$scope.editor = new MattSourceEditor('matt-source-editor',$scope.selector);
-		$scope.callStacks = new MattCallStacksView('matt-alloc-stacks-tree',$scope.selector);
+		$scope.editor = new MattSourceEditor('malt-source-editor',$scope.selector);
+		$scope.callStacks = new MattCallStacksView('malt-alloc-stacks-tree',$scope.selector);
 		
 		$scope.hasSources = function() 
 		{
@@ -57,7 +57,7 @@ function MattPageTimeline()
 		
 		$scope.getCurMetricName = function()
 		{
-			return mattMetrics[$scope.metric].name;
+			return maltMetrics[$scope.metric].name;
 		}
 		
 		$scope.selectMetric = function(metric)
@@ -90,16 +90,16 @@ function MattPageTimeline()
 		$scope.formatValue = function(value,unit)
 		{
 			if (value == undefined)
-				return mattHelper.humanReadable(0,1,unit,false);
+				return maltHelper.humanReadable(0,1,unit,false);
 			else
-				return mattHelper.humanReadable(value,1,unit,false);
+				return maltHelper.humanReadable(value,1,unit,false);
 		}
 
 		$scope.formatRoundedRatio = function(value,divider,unit)
 		{
 			//console.log(value);
 			if (value == undefined || divider == undefined || divider == 0)
-				return mattHelper.humanReadable(0,1,unit,false);
+				return maltHelper.humanReadable(0,1,unit,false);
 			else
 				return $scope.formatValue(Math.round(value/divider),unit);
 		}
@@ -115,7 +115,7 @@ function MattPageTimeline()
 		//dispatch click on annotations
 		$scope.editor.onClick = function(details)
 		{
-			//$("#matt-source-filename").text(details.file);
+			//$("#malt-source-filename").text(details.file);
 			//detailView.render(details);
 			$scope.callStacks.update(details.file,details.line);
 			$scope.selectedDetails = details;
@@ -129,7 +129,7 @@ function MattPageTimeline()
 			console.log(location);
 			console.log(info);
 // 			alert(JSON.stringify(info));
-// 			$("#matt-source-filename").text(location.file);
+// 			$("#malt-source-filename").text(location.file);
 			$scope.editor.moveToFileFunction(location.file,location.function);
 			$scope.file = location.file;
 			$scope.function = location.function;
@@ -137,7 +137,7 @@ function MattPageTimeline()
 		}
 		
 		//fetch function list datas
-		mattDataSource.loadFlatFunctionStats($http,function(data) {
+		maltDataSource.loadFlatFunctionStats($http,function(data) {
 			$scope.functions = data;
 			$scope.selector.setData(data);
 			if ($routeParams.func != undefined)
@@ -160,7 +160,7 @@ function MattPageTimeline()
 	});
 	
 	//directive to print function lists
-	pageCtrl.directive('mattsourcefunclist',function() {
+	pageCtrl.directive('maltsourcefunclist',function() {
 		return {
 			restrict: 'EA',
 			templateUrl: 'partials/source-func-list.html',
@@ -228,4 +228,4 @@ function MattPageTimeline()
 	});
 }
 
-var mattPageTimeline = new MattPageTimeline();
+var maltPageTimeline = new MattPageTimeline();

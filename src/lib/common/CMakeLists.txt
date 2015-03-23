@@ -7,8 +7,8 @@
 ######################################################
 
 ######################################################
-add_library(matt-common OBJECT CodeTiming.cpp FormattedMessage.cpp Debug.cpp Options.cpp SimpleAllocator.cpp Helpers.cpp)
-SET_TARGET_PROPERTIES(matt-common PROPERTIES COMPILE_FLAGS -fPIC)
+add_library(malt-common OBJECT CodeTiming.cpp FormattedMessage.cpp Debug.cpp Options.cpp SimpleAllocator.cpp Helpers.cpp)
+SET_TARGET_PROPERTIES(malt-common PROPERTIES COMPILE_FLAGS -fPIC)
 
 ######################################################
 if (ENABLE_TESTS)

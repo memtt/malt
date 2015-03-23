@@ -36,55 +36,55 @@
 }
 
 /********************* some css for home page *******************************/
-.matt-has-warning {
+.malt-has-warning {
 	font-weight:bold;
 	color:red;
 }
 
-.matt-separator {
+.malt-separator {
 	background:gray;
 }
 
-.matt-hidden {
+.malt-hidden {
 	display:none;
 }
 
 /*********************** charts of size distr page **************************/
-.matt-size-plot .axis text {
+.malt-size-plot .axis text {
   font: 10px sans-serif;
 }
 
-.matt-size-plot .axis path,
-.matt-size-plot .axis line {
+.malt-size-plot .axis path,
+.malt-size-plot .axis line {
   fill: none;
   stroke: #000;
   shape-rendering: crispEdges;
 }
 
-.matt-size-plot .bar {
+.malt-size-plot .bar {
   fill: steelblue;
   fill-opacity: .9;
 }
 
-.matt-size-plot .bar:hover {
+.malt-size-plot .bar:hover {
   fill: orangered ;
 }
 
-.matt-size-plot .x.axis path {
+.malt-size-plot .x.axis path {
   display: none;
 }
 
-.matt-size-plot label {
+.malt-size-plot label {
   position: absolute;
   top: 10px;
   right: 10px;
 }
 
-.matt-size-plot .grid .tick {
+.malt-size-plot .grid .tick {
     stroke: lightgrey;
     opacity: 0.7;
 }
-.matt-size-plot .grid path {
+.malt-size-plot .grid path {
       stroke-width: 0;
 }
 
@@ -168,6 +168,6 @@
   stroke: #2ca02c;
 }
 
-.matt-selected {
+.malt-selected {
 	font-weight:bold;
 }

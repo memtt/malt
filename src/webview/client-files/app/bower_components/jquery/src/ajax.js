@@ -670,7 +670,7 @@ jQuery.extend({
 			}
 
 			// Dereference transport for early garbage collection
-			// (no matter how long the jqXHR object will be used)
+			// (no malter how long the jqXHR object will be used)
 			transport = undefined;
 
 			// Cache response headers
@@ -687,7 +687,7 @@ jQuery.extend({
 				response = ajaxHandleResponses( s, jqXHR, responses );
 			}
 
-			// Convert no matter what (that way responseXXX fields are always set)
+			// Convert no malter what (that way responseXXX fields are always set)
 			response = ajaxConvert( s, response, jqXHR, isSuccess );
 
 			// If successful, handle type chaining

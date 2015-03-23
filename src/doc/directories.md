@@ -28,7 +28,7 @@ It is the main source directory containing all the important files of the projec
 
 - /src/doc : Contain all the documentation files, mostly in markdown format for doxygen and gitlab/github.
 - /src/integration : Provide some files to integrate MALT in other tools or in system. Currently mostly integration files with MPI and wrapper scripts to help users.
-- /src/lib : Main part of the MALT code with instrumentation library implementation (libmatt.so). It also provide  libmattbase.so without malloc/calloc/... wrappers linked.
+- /src/lib : Main part of the MALT code with instrumentation library implementation (libmalt.so). It also provide  libmaltbase.so without malloc/calloc/... wrappers linked.
 - /src/maqao : Provide the files for instrumentation with MAQAO.
 - /src/pintool : Provide the files for instrumentation with Pintool.
 - /src/trace-reader : Provide a small program to convert MALT traces into json format and to made some reduction/filtering.

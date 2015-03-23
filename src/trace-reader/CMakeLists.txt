@@ -11,7 +11,7 @@ include_directories(../lib)
 include_directories(../../extern-deps/from-fftw)
 
 ######################################################
-add_executable(matt-trace-reader main.cpp
+add_executable(malt-trace-reader main.cpp
                                  TraceReader.cpp
                                  TraceReaderPrint.cpp
                                  TraceReaderHisto.cpp

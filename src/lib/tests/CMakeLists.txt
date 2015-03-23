@@ -22,12 +22,12 @@ set(TEST_NAMES TestFastBufferedStream
 ######################################################
 FOREACH(test_name ${TEST_NAMES})
 	add_executable(${test_name} ${test_name}.cpp)
-	target_link_libraries(${test_name} ${GTEST_BOTH_LIBRARIES} ${GMOCK_BOTH_LIBRARIES} matt-base)
-	matt_add_test(${test_name} ${test_name})
+	target_link_libraries(${test_name} ${GTEST_BOTH_LIBRARIES} ${GMOCK_BOTH_LIBRARIES} malt-base)
+	malt_add_test(${test_name} ${test_name})
 ENDFOREACH(test_name)
 
 add_executable(bench benchmark.cpp)
-target_link_libraries(bench matt-base dl)
+target_link_libraries(bench malt-base dl)
 
 ######################################################
 #Enable openMP if present to use paralle tests
@@ -49,18 +49,18 @@ SET_TARGET_PROPERTIES(simple-case-finstr PROPERTIES COMPILE_FLAGS -finstrument-f
 ######################################################
 add_executable(simple-case-finstr-linked simple-case.cpp)
 SET_TARGET_PROPERTIES(simple-case-finstr-linked PROPERTIES COMPILE_FLAGS -finstrument-functions)
-target_link_libraries(simple-case-finstr-linked matt)
+target_link_libraries(simple-case-finstr-linked malt)
 
 ######################################################
 add_executable(test-atexit-first test-atexit-first.cpp)
 SET_TARGET_PROPERTIES(test-atexit-first PROPERTIES COMPILE_FLAGS -finstrument-functions)
-target_link_libraries(test-atexit-first matt)
+target_link_libraries(test-atexit-first malt)
 
 ######################################################
 add_executable(test-fragmentation test-fragmentation.cpp)
 SET_TARGET_PROPERTIES(test-fragmentation PROPERTIES COMPILE_FLAGS -finstrument-functions)
-target_link_libraries(test-fragmentation matt)
+target_link_libraries(test-fragmentation malt)
 
 ######################################################
 add_executable(test-pthread-tracking test-pthread-tracking.cpp)
-target_link_libraries(test-pthread-tracking matt)
+target_link_libraries(test-pthread-tracking malt)

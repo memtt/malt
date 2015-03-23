@@ -7,9 +7,9 @@
 *****************************************************/
 
 /********************  HEADERS  *********************/
-//matt config
+//malt config
 #include <config.h>
-//matt common
+//malt common
 #include <common/Debug.hpp>
 //libunwind
 #ifdef MALT_HAVE_LIBUNWIND

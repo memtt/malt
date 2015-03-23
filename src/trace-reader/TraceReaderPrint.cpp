@@ -9,7 +9,7 @@
 /********************  HEADERS  *********************/
 //STD
 #include <cstdio>
-//matt internals
+//malt internals
 #include "TraceReaderPrint.hpp"
 
 /*******************  NAMESPACE  ********************/

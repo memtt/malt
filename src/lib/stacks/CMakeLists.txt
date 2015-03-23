@@ -12,8 +12,8 @@ set(MALT_STACKS_SRC Stack.cpp
                     EnterExitStack.cpp)
 
 ######################################################
-add_library(matt-stacks OBJECT ${MALT_STACKS_SRC})
-SET_TARGET_PROPERTIES(matt-stacks PROPERTIES COMPILE_FLAGS -fPIC)
+add_library(malt-stacks OBJECT ${MALT_STACKS_SRC})
+SET_TARGET_PROPERTIES(malt-stacks PROPERTIES COMPILE_FLAGS -fPIC)
 
 ######################################################
 if (ENABLE_TESTS)

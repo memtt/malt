@@ -13,5 +13,5 @@ add_subdirectory(trace-reader)
 
 ######################################################
 # Install the webview into share directory
-INSTALL(DIRECTORY webview DESTINATION share/matt
+INSTALL(DIRECTORY webview DESTINATION share/malt
 	PATTERN webview/client_v2/node_modules EXCLUDE)

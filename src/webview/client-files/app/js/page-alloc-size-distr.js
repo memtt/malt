@@ -1,14 +1,14 @@
 function MattPageAllocSizeDistr()
 {
-	//declare module to manage matt home page
-	var mattModule = angular.module('matt.page.allocSizeDistr',[]);
+	//declare module to manage malt home page
+	var maltModule = angular.module('malt.page.allocSizeDistr',[]);
 	var svgId = 0;
 	var cur = this;
 	
 	//main controler of the page
-	var pageCtrl = mattCtrl.controller('matt.page.allocSizeDistr.ctrl',['$scope','$http',function($scope,$http) {
+	var pageCtrl = maltCtrl.controller('malt.page.allocSizeDistr.ctrl',['$scope','$http',function($scope,$http) {
 		//fetch summaryData
-		mattDataSource.getSizeDistr($http,function(data) {
+		maltDataSource.getSizeDistr($http,function(data) {
 			$scope.sizeMap = data;
 			
 			//search summary
@@ -27,13 +27,13 @@ function MattPageAllocSizeDistr()
 			}
 			
 			//Export
-			$scope.meanChunkSize = mattHelper.humanReadable(sumSize / sumCount,1,'B',false);
-			$scope.mostUsedSize = mattHelper.humanReadable(mostUsed,1,'B',false);
-			$scope.largestSize = mattHelper.humanReadable(largest,1,'B',false);
+			$scope.meanChunkSize = maltHelper.humanReadable(sumSize / sumCount,1,'B',false);
+			$scope.mostUsedSize = maltHelper.humanReadable(mostUsed,1,'B',false);
+			$scope.largestSize = maltHelper.humanReadable(largest,1,'B',false);
 			
 			//charts
-			cur.setupMostUsedChart('matt-most-used-sizes',data);
-			cur.plotLogHisto('matt-size-distr-hist',data);
+			cur.setupMostUsedChart('malt-most-used-sizes',data);
+			cur.plotLogHisto('malt-size-distr-hist',data);
 		});
 	}]);
 }
@@ -82,12 +82,12 @@ MattPageAllocSizeDistr.prototype.plotLogHisto = function(domId,data)
 	var xAxis = d3.svg.axis()
 		.scale(x)
 		.orient("bottom")
-		.tickFormat(function(d) { return mattHelper.humanReadable(d==0?0:Math.pow(2,d-1),1,'B',false); });
+		.tickFormat(function(d) { return maltHelper.humanReadable(d==0?0:Math.pow(2,d-1),1,'B',false); });
 
 	var yAxis = d3.svg.axis()
 		.scale(y)
 		.orient("left")
-		.tickFormat(function(d) { return mattHelper.humanReadable(d,1,'',false); });
+		.tickFormat(function(d) { return maltHelper.humanReadable(d,1,'',false); });
 
 	var yAxisLines = d3.svg.axis()
 		.scale(y)
@@ -104,7 +104,7 @@ MattPageAllocSizeDistr.prototype.plotLogHisto = function(domId,data)
 		.attr('class', 'd3-tip')
 		.offset([-10, 0])
 		.html(function(d,i) {
-			return "<strong>"+ mattHelper.humanReadable(d.sizeLog==0?0:Math.pow(2,d.sizeLog-1),1,'B',false) + " - " + mattHelper.humanReadable(Math.pow(2,d.sizeLog),1,'B',false) +":</strong> <span style='color:red'>" + mattHelper.humanReadable(d.count,1,'',false) + "</span>";
+			return "<strong>"+ maltHelper.humanReadable(d.sizeLog==0?0:Math.pow(2,d.sizeLog-1),1,'B',false) + " - " + maltHelper.humanReadable(Math.pow(2,d.sizeLog),1,'B',false) +":</strong> <span style='color:red'>" + maltHelper.humanReadable(d.count,1,'',false) + "</span>";
 		})
 
 	svg.call(tip);
@@ -177,7 +177,7 @@ MattPageAllocSizeDistr.prototype.plotLogHisto = function(domId,data)
 // 			.tickFormat(d3.format(',f'));
 
 		chart.yAxis
-			.tickFormat(function(d) { return mattHelper.humanReadable(d,1,'',false);});
+			.tickFormat(function(d) { return maltHelper.humanReadable(d,1,'',false);});
 
 		d3.select('#'+domId+' svg')
 			.datum(formattedData)
@@ -206,12 +206,12 @@ MattPageAllocSizeDistr.prototype.setupMostUsedChart = function(domId,data)
 	var xAxis = d3.svg.axis()
 		.scale(x)
 		.orient("bottom")
-		.tickFormat(function(d) { if (d == 0) { return 'others'; } else { return mattHelper.humanReadable(d,1,'',false);} });
+		.tickFormat(function(d) { if (d == 0) { return 'others'; } else { return maltHelper.humanReadable(d,1,'',false);} });
 
 	var yAxis = d3.svg.axis()
 		.scale(y)
 		.orient("left")
-		.tickFormat(function(d) { return mattHelper.humanReadable(d,1,'',false); });
+		.tickFormat(function(d) { return maltHelper.humanReadable(d,1,'',false); });
 		
 	var yAxisLines = d3.svg.axis()
 		.scale(y)
@@ -228,7 +228,7 @@ MattPageAllocSizeDistr.prototype.setupMostUsedChart = function(domId,data)
 		.attr('class', 'd3-tip')
 		.offset([-10, 0])
 		.html(function(d) {
-			return "<strong>Frequency:</strong> <span style='color:red'>" + mattHelper.humanReadable(d.frequency,1,'',false) + "</span>";
+			return "<strong>Frequency:</strong> <span style='color:red'>" + maltHelper.humanReadable(d.frequency,1,'',false) + "</span>";
 		})
 
 	svg.call(tip);
@@ -335,4 +335,4 @@ MattPageAllocSizeDistr.prototype.setupMostUsedChart = function(domId,data)
 }
 
 //init and export
-var mattAllocSizeDistr = new MattPageAllocSizeDistr();
+var maltAllocSizeDistr = new MattPageAllocSizeDistr();

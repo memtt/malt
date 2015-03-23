@@ -1,10 +1,10 @@
 /********************* BETWEEN ROUTES ****************************/
 /* Animation when moving between routes (pages) */
-.matt .view-container {
+.malt .view-container {
   position: relative;
 }
 
-.matt .view-frame.ng-enter, .matt .view-frame.ng-leave {
+.malt .view-frame.ng-enter, .malt .view-frame.ng-leave {
   background: white;
   position: absolute;
   top: 0;
@@ -12,44 +12,44 @@
   right: 0;
 }
 
-.matt .view-frame.ng-enter {
-  -webkit-animation: 0.5s matt-fade-in;
-  -moz-animation: 0.5s matt-fade-in;
-  -o-animation: 0.5s matt-fade-in;
-  animation: 0.5s matt-fade-in;
+.malt .view-frame.ng-enter {
+  -webkit-animation: 0.5s malt-fade-in;
+  -moz-animation: 0.5s malt-fade-in;
+  -o-animation: 0.5s malt-fade-in;
+  animation: 0.5s malt-fade-in;
   z-index: 100;
 }
 
-.matt .view-frame.ng-leave {
-  -webkit-animation: 0.5s matt-fade-out;
-  -moz-animation: 0.5s matt-fade-out;
-  -o-animation: 0.5s matt-fade-out;
-  animation: 0.5s matt-fade-out;
+.malt .view-frame.ng-leave {
+  -webkit-animation: 0.5s malt-fade-out;
+  -moz-animation: 0.5s malt-fade-out;
+  -o-animation: 0.5s malt-fade-out;
+  animation: 0.5s malt-fade-out;
   z-index:99;
 }
 
-@keyframes matt-fade-in {
+@keyframes malt-fade-in {
   from { opacity: 0; }
   to { opacity: 1; }
 }
-@-moz-keyframes matt-fade-in {
+@-moz-keyframes malt-fade-in {
   from { opacity: 0; }
   to { opacity: 1; }
 }
-@-webkit-keyframes matt-fade-in {
+@-webkit-keyframes malt-fade-in {
   from { opacity: 0; }
   to { opacity: 1; }
 }
 
-@keyframes matt-fade-out {
+@keyframes malt-fade-out {
   from { opacity: 1; }
   to { opacity: 0; }
 }
-@-moz-keyframes matt-fade-out {
+@-moz-keyframes malt-fade-out {
   from { opacity: 1; }
   to { opacity: 0; }
 }
-@-webkit-keyframes matt-fade-out {
+@-webkit-keyframes malt-fade-out {
   from { opacity: 1; }
   to { opacity: 0; }
 }

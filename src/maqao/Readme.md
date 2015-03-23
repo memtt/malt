@@ -6,8 +6,8 @@ MALT can also use binary instrumentation mode through maqao.
 
 To instrument your code :
 
-maqao instrument i=matt.mil {YOUR_PROGRAM}
+maqao instrument i=malt.mil {YOUR_PROGRAM}
 
 To use :
 
-matt ./{YOUR_PROGRAM}_mil.i
+malt ./{YOUR_PROGRAM}_mil.i

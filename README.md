@@ -51,25 +51,25 @@ wrap the default memory allocator. It provide two basic instrumentation modes.
 
 By default MALT use backtrace to reconstruct you stack on malloc/free/... calls :
 
-	{YOUR_PREFIX}/bin/matt {YOUR_PROGRAM} [OPTIONS]
+	{YOUR_PREFIX}/bin/malt {YOUR_PROGRAM} [OPTIONS]
 
 You can get better performance but less detailed stack by using option 
 -finstrument-function or similar on your compiler. Then, you need to tel MALT to use
 the "enter-exit" stack mode :
 
-	{YOUR_PREFIX}/bin/matt -m=enter-exit {YOUR_PROGRAM} [OPTIONS]
+	{YOUR_PREFIX}/bin/malt -m=enter-exit {YOUR_PROGRAM} [OPTIONS]
 
-The matt script only provide a wrapper to automatically preload a dynamic library
+The malt script only provide a wrapper to automatically preload a dynamic library
 into the executable, you can also do it by hand in cas of issue :
 
-	LD_PRELOAD={YOUR_PREFIX}/lib/libmatt.so {YOUR_PROGRAM} [OPTIONS]
+	LD_PRELOAD={YOUR_PREFIX}/lib/libmalt.so {YOUR_PROGRAM} [OPTIONS]
 
 Using webview
 -------------
 
-You can use the webview by calling command `matt-webview` as :
+You can use the webview by calling command `malt-webview` as :
 
-	matt-webview [-p PORT] -i matt-YOUR_PROGRAM-1234.json
+	malt-webview [-p PORT] -i malt-YOUR_PROGRAM-1234.json
 
 It will open a server listening localy on port 8080 so you can open your web browser
 to connect to the web interface via http://localhost:8080.
@@ -84,13 +84,13 @@ Config
 ------
 
 You can provide a config file to MALT to setup some features. This file use the INI
-format. With the matt script :
+format. With the malt script :
 
-	{YOUR_PREFIX}/bin/matt -c=config.ini" {YOUR_PROGRAM} [OPTIONS]
+	{YOUR_PREFIX}/bin/malt -c=config.ini" {YOUR_PROGRAM} [OPTIONS]
 
 By hand :
 
-	MALT_CONFIG="config.ini" LD_PRELOAD=libmatt.so {YOUR_PROGRAM} [OPTIONS]
+	MALT_CONFIG="config.ini" LD_PRELOAD=libmalt.so {YOUR_PROGRAM} [OPTIONS]
 
 Example of config file :
 
@@ -105,7 +105,7 @@ Example of config file :
 	resolve=true          ; Automatically resolve symbol with addr2line at exit.
 
 	[output]
-	name=matt-%1-%2.%3    ; base name for output, %1 = exe, %2 = PID, %3 = extension
+	name=malt-%1-%2.%3    ; base name for output, %1 = exe, %2 = PID, %3 = extension
 	indent=true           ; indent the output
 	lua=true              ; enable LUA output
 	json=true             ; enable json output
@@ -114,12 +114,12 @@ Example of config file :
 
 Option values can be override on the fly with command :
 
-	{YOUR_PREFIX}/bin/matt -o "stack:enabled=true;output:indent=true;" {YOUR_PROGRAM} [OPTIONS]
+	{YOUR_PREFIX}/bin/malt -o "stack:enabled=true;output:indent=true;" {YOUR_PROGRAM} [OPTIONS]
 
 Environnement variables
 -----------------------
 
-If you do not use the matt wrapper and use directly LD_PRELOAD you can use the Environnement variables :
+If you do not use the malt wrapper and use directly LD_PRELOAD you can use the Environnement variables :
 
 	MALT_OPTIONS="stack:enabled=true;output:indent=true;"
 	MALT_CONFIG="config.ini"
@@ -138,9 +138,9 @@ or on cmake :
 
 	cmake -DLIBUNWIND_PREFIX=PREFIX ..
 
-You now can use it with matt by using :
+You now can use it with malt by using :
 
-	matt -s libunwind {PROGRAM}
+	malt -s libunwind {PROGRAM}
 
 The alternative rely on function instrumentation by adding prove on start/end for each function.
 It can be done by using -finstrument-function on your compiler juste as described in "How to use" section

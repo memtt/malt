@@ -171,4 +171,4 @@ MattHelper.prototype.mergeStackInfoDatas = function(onto,value)
 }
 
 /**********************************************************************/
-mattHelper = new MattHelper();
+maltHelper = new MattHelper();

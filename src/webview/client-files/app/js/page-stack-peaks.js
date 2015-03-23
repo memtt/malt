@@ -1,14 +1,14 @@
 function MattPageStackPeaks()
 {
-	//declare module to manage matt home page
-	var mattModule = angular.module('matt.page.stackPeaks',[]);
+	//declare module to manage malt home page
+	var maltModule = angular.module('malt.page.stackPeaks',[]);
 	var svgId = 0;
 	var cur = this;
 	
 	//main controler of the page
-	var pageCtrl = mattCtrl.controller('matt.page.stackPeaks.ctrl',['$scope','$http',function($scope,$http) {
+	var pageCtrl = maltCtrl.controller('malt.page.stackPeaks.ctrl',['$scope','$http',function($scope,$http) {
 		//fetch summaryData
-		mattDataSource.loadStackData($http,function(data) {
+		maltDataSource.loadStackData($http,function(data) {
 			$scope.stackMem = data;
 			$scope.selectedThreadId = 0;
 			
@@ -19,14 +19,14 @@ function MattPageStackPeaks()
 					largest = data.stacks[i].size;
 			
 			//export
-			$scope.largestStack = mattHelper.humanReadable(largest,1,"B",false);
+			$scope.largestStack = maltHelper.humanReadable(largest,1,"B",false);
 			$scope.threads = data.stacks.length;
 			
-			var selectedChart = cur.plotSelectedStackSize('matt-selected-stack-size',data,-1);
+			var selectedChart = cur.plotSelectedStackSize('malt-selected-stack-size',data,-1);
 			
-			var selectedChartDetails = cur.plotStackMemOfFuncs('matt-selected-stack-details',0);
+			var selectedChartDetails = cur.plotStackMemOfFuncs('malt-selected-stack-details',0);
 			
-			cur.plotStackPeak('matt-stack-peaks',data, function(svg,chart,e) {
+			cur.plotStackPeak('malt-stack-peaks',data, function(svg,chart,e) {
 				console.log(e);
 				$scope.selectedThreadId = e.pointIndex;
 				$scope.$apply();
@@ -82,11 +82,11 @@ MattPageStackPeaks.prototype.plotSelectedStackSize = function(domId,data,threadI
 		
 		chart.xAxis //Chart x-axis settings
 			.axisLabel('Time (secondes)')
-			.tickFormat(function(value){return mattHelper.humanReadable(value/(+data.ticksPerSecond),1,'s');});
+			.tickFormat(function(value){return maltHelper.humanReadable(value/(+data.ticksPerSecond),1,'s');});
 		
 		chart.yAxis //Chart y-axis settings
 			.axisLabel("Stack size")
-			.tickFormat(function(value){return mattHelper.humanReadable(value,1,'B');});
+			.tickFormat(function(value){return maltHelper.humanReadable(value,1,'B');});
 		
 		/* Done setting the chart up? Time to render it!*/
 		var formattedData = reformatDataForD3(data,threadId); //You need data...
@@ -95,7 +95,7 @@ MattPageStackPeaks.prototype.plotSelectedStackSize = function(domId,data,threadI
 			.datum(formattedData) //Populate the <svg> element with chart data...
 			.call(chart); //Finally, render the chart!
 
-		//d3.select('#'+divId + " svg g g rect").attr('style','').classed('matt-graph-background',true);
+		//d3.select('#'+divId + " svg g g rect").attr('style','').classed('malt-graph-background',true);
 		
 		//Update the chart when window resizes.
 		nv.utils.windowResize(function() { chart.update() });
@@ -134,16 +134,16 @@ MattPageStackPeaks.prototype.plotStackMemOfFuncs = function(domId,threadId,onEle
 // 				if (d.file != undefined && d.file != '')
 // 					pos = "<br/>" + d.file + ":" + d.line;
 // 				if (e.series.key == "TLS variables")
-// 					tls = " [ "+e.series.tlsInstances+" * "+mattHelper.humanReadable(d.value/e.series.tlsInstances,1,'B',false) +" ] ";
+// 					tls = " [ "+e.series.tlsInstances+" * "+maltHelper.humanReadable(d.value/e.series.tlsInstances,1,'B',false) +" ] ";
 // 				var ratio = " ( "+(100*d.value/e.series.total).toFixed(2)+"% ) ";
 // 				//console.log(data);
 // 				//console.log(e);
-// 				return "<div style='text-align:center'><h3>"+d.name+"</h3>"+mattHelper.humanReadable(d.value,1,'B',false)+tls+ratio+pos+'</div>';
+// 				return "<div style='text-align:center'><h3>"+d.name+"</h3>"+maltHelper.humanReadable(d.value,1,'B',false)+tls+ratio+pos+'</div>';
 // 			});
 
 		chart.yAxis
 			.axisLabel('Stack memory')
-			.tickFormat(function(d) {return mattHelper.humanReadable(d,1,'B',false);});
+			.tickFormat(function(d) {return maltHelper.humanReadable(d,1,'B',false);});
 			
 // 		chart.xAxis
 // 			.axisLabel('Function');
@@ -236,17 +236,17 @@ MattPageStackPeaks.prototype.plotStackPeak = function(domId,data,onElementClick)
 // 				if (d.file != undefined && d.file != '')
 // 					pos = "<br/>" + d.file + ":" + d.line;
 // 				if (e.series.key == "TLS variables")
-// 					tls = " [ "+e.series.tlsInstances+" * "+mattHelper.humanReadable(d.value/e.series.tlsInstances,1,'B',false) +" ] ";
+// 					tls = " [ "+e.series.tlsInstances+" * "+maltHelper.humanReadable(d.value/e.series.tlsInstances,1,'B',false) +" ] ";
 // 				var ratio = " ( "+(100*d.value/e.series.total).toFixed(2)+"% ) ";
 // 				//console.log(data);
 // 				//console.log(e);
-// 				return "<div style='text-align:center'><h3>"+d.name+"</h3>"+mattHelper.humanReadable(d.value,1,'B',false)+tls+ratio+pos+'</div>';
+// 				return "<div style='text-align:center'><h3>"+d.name+"</h3>"+maltHelper.humanReadable(d.value,1,'B',false)+tls+ratio+pos+'</div>';
 // 			});
 
 // 		$scope.chart = chart;
 		chart.yAxis
 			.axisLabel('Maximum stack size')
-			.tickFormat(function(d) {return mattHelper.humanReadable(d,1,'B',false);});
+			.tickFormat(function(d) {return maltHelper.humanReadable(d,1,'B',false);});
 			
 		chart.xAxis
 			.axisLabel('Thread ID');
@@ -287,4 +287,4 @@ MattPageStackPeaks.prototype.plotStackPeak = function(domId,data,onElementClick)
 	});
 }
 
-var mattPageStackPeaks = new MattPageStackPeaks();
+var maltPageStackPeaks = new MattPageStackPeaks();

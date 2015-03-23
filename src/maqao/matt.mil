@@ -43,19 +43,19 @@ mb:setOutputSuffix("_mil.i");
 fct = mb:addFunction();
 --Probe at function entries
 e_entries = fct:newEvent("entries");
-p_entries = e_entries:newProbeExt("maqao_enter_function","libmatt.so");
+p_entries = e_entries:newProbeExt("maqao_enter_function","libmalt.so");
 p_entries:addParamUser(fid);
 p_entries:addParamUser(udf);
 
 --Probe at function entries
 e_exits = fct:newEvent("exits");
-p_exits = e_exits:newProbeExt("maqao_exit_function","libmatt.so");
+p_exits = e_exits:newProbeExt("maqao_exit_function","libmalt.so");
 p_exits:addParamUser(fid);
 p_exits:addParamUser(udf);
 
 --Reg all funcs
 e_fentries_ape = p_entries:newEvent("at_program_entry");
-p_fentries_ape = e_fentries_ape:newProbeExt("maqao_reg_function","libmatt.so");
+p_fentries_ape = e_fentries_ape:newProbeExt("maqao_reg_function","libmalt.so");
 p_fentries_ape:addParamUser(fid);
 p_fentries_ape:addParamUser(udf);
 p_fentries_ape:addParamUser(ffile);

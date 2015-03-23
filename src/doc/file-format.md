@@ -28,7 +28,7 @@ Details about run
 
 	"run":{
 		"formatVersion":1,
-		"tool":"matt-0.0.0",
+		"tool":"malt-0.0.0",
 		"date":"2014-11-01 18:56",
 		"runtime":416204055,
 		"exe":"simple-case-finstr-linked",

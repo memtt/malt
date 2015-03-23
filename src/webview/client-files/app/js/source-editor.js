@@ -7,15 +7,15 @@
 function MattSourceEditor(containerId,selector)
 {
 	//errors
-	//mattHelper.assert(selector != undefined && selector instanceof MattSelector);
+	//maltHelper.assert(selector != undefined && selector instanceof MattSelector);
 	
 	//setup container
 	this.containerId = containerId;
 	this.container = document.getElementById(containerId);
 	
 	//check and link
-	//mattHelper.assert(this.container != undefined);
-	this.container.matt = this;
+	//maltHelper.assert(this.container != undefined);
+	this.container.malt = this;
 	
 	//defaults
 	this.file = null;
@@ -48,7 +48,7 @@ MattSourceEditor.prototype.initRentering = function()
 		fixedGutter:true,
 		readOnly:true,
 		styleActiveLine: true,
-		gutters: ["matt-annotations","CodeMirror-linenumbers"]
+		gutters: ["malt-annotations","CodeMirror-linenumbers"]
 	});
 }
 
@@ -111,7 +111,7 @@ MattSourceEditor.prototype.moveToFile = function(file)
 		this.file = null;
 	} else {
 		var cur = this;
-		mattDataSource.loadSourceFile(file,function(data){
+		maltDataSource.loadSourceFile(file,function(data){
 			cur.editor.setOption("mode",cur.getColorationType(file));
 			cur.editor.setValue(data);
 			cur.editor.setCursor(1);
@@ -259,24 +259,24 @@ MattSourceEditor.prototype.makeMarker = function(data,max,colorScale) {
 	
 	//select basic 3 colors (TO REMOVE)
 	if (value < max / 3.0)
-		marker.className = 'matt-annotation-small';
+		marker.className = 'malt-annotation-small';
 	else if (value < 2.0 * max / 3.0 )
-		marker.className = 'matt-annotation-medium';
+		marker.className = 'malt-annotation-medium';
 	else
-		marker.className = 'matt-annotation-large';
+		marker.className = 'malt-annotation-large';
 	
 	//apply color gradiant
 	marker.style = "background-color:"+colorScale(value);
 	
 	//setup values
-	//marker.innerHTML = this.mattHumanValue(value,metric.unit);
+	//marker.innerHTML = this.maltHumanValue(value,metric.unit);
 	marker.innerHTML = this.selector.getFormattedValue(data);
-	marker.mattData = data;
+	marker.maltData = data;
 	
 	//manage onclick
 	var cur = this;
 	marker.onclick = function() {
-		cur.onClick(this.mattData);
+		cur.onClick(this.maltData);
 	};
 	
 	//ok return
@@ -285,7 +285,7 @@ MattSourceEditor.prototype.makeMarker = function(data,max,colorScale) {
 
 /********************************************************************/
 var MALT_POWER = ['&nbsp;','K','M','G','T','P'];
-MattSourceEditor.prototype.mattHumanValue = function(value,unit)
+MattSourceEditor.prototype.maltHumanValue = function(value,unit)
 {
 	var power = 0;
 	while (value >= 1024)
@@ -307,7 +307,7 @@ MattSourceEditor.prototype.updateAnotations = function()
 	var file = this.file;
 	
 	//fetch flat profile of current file
-	mattDataSource.loadSourceFileAnnotations(file,function(data) {
+	maltDataSource.loadSourceFileAnnotations(file,function(data) {
 
 		//update data with more info than provided by server
 		cur.data = data;
@@ -341,5 +341,5 @@ MattSourceEditor.prototype.redrawAnnotations = function()
 	
 	//insert all markers
 	for (var i in this.data)
-		this.editor.setGutterMarker(this.data[i].line-1, "matt-annotations",this.makeMarker(this.data[i],max,colorScale));
+		this.editor.setGutterMarker(this.data[i].line-1, "malt-annotations",this.makeMarker(this.data[i],max,colorScale));
 }

@@ -19,8 +19,8 @@ set(MALT_LIB_SRC VmaTracker.cpp
                  SimpleCallStackNode.cpp)
 
 ######################################################
-add_library(matt-core OBJECT ${MALT_LIB_SRC})
-SET_TARGET_PROPERTIES(matt-core PROPERTIES COMPILE_FLAGS -fPIC)
+add_library(malt-core OBJECT ${MALT_LIB_SRC})
+SET_TARGET_PROPERTIES(malt-core PROPERTIES COMPILE_FLAGS -fPIC)
 
 ######################################################
 if (ENABLE_TESTS)

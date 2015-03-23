@@ -9,11 +9,11 @@
 
 ######################################################
 ENABLE_MPI=false
-MPI_WRAPPER_DIR="$HOME/.matt"
+MPI_WRAPPER_DIR="$HOME/.malt"
 MALT_OPTIONS=""
 
 ######################################################
-mattPrepMPI()
+maltPrepMPI()
 {
 	#create dir
 	if [ ! -d "$MPI_WRAPPER_DIR/" ]; then
@@ -35,22 +35,22 @@ mattPrepMPI()
 	fi
 
 	#compile file
-	echo "$mpicxx" '-shared' '-fPIC' "@CMAKE_INSTALL_PREFIX@/share/matt/MattMPIRank.cpp" -o "$MPI_WRAPPER_DIR/libmattmpi.so"
-	"$mpicxx" '-shared' '-fPIC' "@CMAKE_INSTALL_PREFIX@/share/matt/MattMPIRank.cpp" -o "$MPI_WRAPPER_DIR/libmattmpi.so"
+	echo "$mpicxx" '-shared' '-fPIC' "@CMAKE_INSTALL_PREFIX@/share/malt/MattMPIRank.cpp" -o "$MPI_WRAPPER_DIR/libmaltmpi.so"
+	"$mpicxx" '-shared' '-fPIC' "@CMAKE_INSTALL_PREFIX@/share/malt/MattMPIRank.cpp" -o "$MPI_WRAPPER_DIR/libmaltmpi.so"
 	
 	#finish
 	exit $?
 }
 
 ######################################################
-mattShowHelp()
+maltShowHelp()
 {
-	echo "Usage : matt [--config file] [--help] [--] YOUR_COMMAND"
+	echo "Usage : malt [--config file] [--help] [--] YOUR_COMMAND"
 	echo ""
 	echo "Options:"
 	echo "   -c file/--config file       Provide configuration file in INI format."
 	echo "           --mpi               Use MPI wrapper to get ranks in output file names."
-	echo "           --prep-mpi [mpicxx] Build the mpi wrapper into $HOME/.matt/libmattmpi.so"
+	echo "           --prep-mpi [mpicxx] Build the mpi wrapper into $HOME/.malt/libmaltmpi.so"
 	echo "   -s mode/--stack=mode        Select the stack tracking mode (backtrace|enter-exit)."
 	echo "   -t/--trace                  Enable the tracing mode."
 	echo "   -d/--dumpconfig             Enable the dump of config file at exit."
@@ -64,7 +64,7 @@ mattShowHelp()
 while true; do
 	case "$1" in
 		--help|-h)
-			mattShowHelp
+			maltShowHelp
 			exit 0
 		;;
 		--config|-c)
@@ -89,8 +89,8 @@ while true; do
 			;;
 		--mpi)
 			ENABLE_MPI=true
-			if [ ! -e "$MPI_WRAPPER_DIR/libmattmpi.so" ]; then
-				echo "Missing MPI wrapper to extract ranks, please prepare it with 'matt --prep-mpi=MPICXX' !"
+			if [ ! -e "$MPI_WRAPPER_DIR/libmaltmpi.so" ]; then
+				echo "Missing MPI wrapper to extract ranks, please prepare it with 'malt --prep-mpi=MPICXX' !"
 				exit 1
 			fi
 			shift 1
@@ -98,11 +98,11 @@ while true; do
 		--prep-mpi)
 			case "$2" in
 				-*)
-					mattPrepMPI
+					maltPrepMPI
 					shift 1
 				;;
 				*)
-					mattPrepMPI "$2"
+					maltPrepMPI "$2"
 					shift 2
 				;;
 			esac
@@ -124,7 +124,7 @@ done
 ######################################################
 #run
 if [ "$ENABLE_MPI" = "true" ]; then
-	LD_PRELOAD="$MPI_WRAPPER_DIR/libmattmpi.so @CMAKE_INSTALL_PREFIX@/lib/libmatt.so" "$@"
+	LD_PRELOAD="$MPI_WRAPPER_DIR/libmaltmpi.so @CMAKE_INSTALL_PREFIX@/lib/libmalt.so" "$@"
 else
-	LD_PRELOAD="@CMAKE_INSTALL_PREFIX@/lib/libmatt.so" "$@"
+	LD_PRELOAD="@CMAKE_INSTALL_PREFIX@/lib/libmalt.so" "$@"
 fi

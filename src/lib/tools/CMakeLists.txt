@@ -19,8 +19,8 @@ else (LIBELF_FOUND)
 endif (LIBELF_FOUND)
 
 ######################################################
-add_library(matt-tools OBJECT ${MALT_LIB_TOOLS_SRC})
-SET_TARGET_PROPERTIES(matt-tools PROPERTIES COMPILE_FLAGS -fPIC)
+add_library(malt-tools OBJECT ${MALT_LIB_TOOLS_SRC})
+SET_TARGET_PROPERTIES(malt-tools PROPERTIES COMPILE_FLAGS -fPIC)
 
 ######################################################
 if (ENABLE_TESTS)

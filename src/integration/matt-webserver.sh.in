@@ -29,4 +29,4 @@ detectNodeJS()
 detectNodeJS
 
 #call node on main script
-"$NODE" "@CMAKE_INSTALL_PREFIX@/share/matt/webview/matt-webserver.js" "$@"
+"$NODE" "@CMAKE_INSTALL_PREFIX@/share/malt/webview/malt-webserver.js" "$@"

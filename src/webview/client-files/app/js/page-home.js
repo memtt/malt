@@ -60,31 +60,31 @@ function MattPageHome()
 			name:'Physical memory peak',
 			level: 1,
 			help:"Peak of total physical memory obtained by tracking /proc/self/statm. It contain all allocated objects, global variables and binary code.",
-			format: function(x) {return mattHelper.humanReadable(x,1,'B',false);}
+			format: function(x) {return maltHelper.humanReadable(x,1,'B',false);}
 		},{
 			key:'peakVirtualMemory',
 			name:'Virtual memory peak',
 			level: 1,
 			help:"Peak of total virtual memory obtained by tracking /proc/self/statm. It contain all allocated objects, global variables and binary code.",
-			format: function(x) {return mattHelper.humanReadable(x,1,'B',false);}
+			format: function(x) {return maltHelper.humanReadable(x,1,'B',false);}
 		},{
 			key:'peakRequestedMemory',
 			name:'Requested memory peak',
 			level: 1,
 			help:"Peak of requested memory managed by malloc, free... It contain all dynamically allocated objects.",
-			format: function(x) {return mattHelper.humanReadable(x,1,'B',false);}
+			format: function(x) {return maltHelper.humanReadable(x,1,'B',false);}
 		},{
 			key:'peakSegmentCount',
 			name:'Alive object peak',
 			level: 2,
 			help:"Peak number of alive object allocated by malloc, calloc, realloc....",
-			format: function(x) {return mattHelper.humanReadable(x,1,'',false);}
+			format: function(x) {return maltHelper.humanReadable(x,1,'',false);}
 		},{
 			key:'peakInternalMemory',
 			name:'MALT peak memory',
 			level: 2,
 			help:"Peak of memory internally used by MALT.",
-			format: function(x) {return mattHelper.humanReadable(x,1,'B',false);}
+			format: function(x) {return maltHelper.humanReadable(x,1,'B',false);}
 		},{
 			type:'separator',
 			level: 2
@@ -93,13 +93,13 @@ function MattPageHome()
 			name:'Cumulated memory allocations',
 			level: 1,
 			help:"Sum of all dyanmic memory allocation throuth malloc, calloc, realloc....",
-			format: function(x) {return mattHelper.humanReadable(x,1,'B',false);}
+			format: function(x) {return maltHelper.humanReadable(x,1,'B',false);}
 		},{
 			key:'allocCount',
 			name:'Allocation count',
 			level: 1,
 			help:"Total number of all dyanmic memory allocation with malloc, calloc, realloc....",
-			format: function(x) {return mattHelper.humanReadable(x,1,'',false);}
+			format: function(x) {return maltHelper.humanReadable(x,1,'',false);}
 		},{
 			key:'recyclingRatio',
 			name:'Recycling ratio',
@@ -114,19 +114,19 @@ function MattPageHome()
 			name:'Smallest allocations',
 			level: 2,
 			help:"The smallest request size received by malloc, calloc...",
-			format: function(x) {return mattHelper.humanReadable(x,1,'B',false);}
+			format: function(x) {return maltHelper.humanReadable(x,1,'B',false);}
 		},{
 			key:'meanAllocSize',
 			name:'Largest allocations',
 			level: 2,
 			help:"The mean request size received by malloc, calloc...",
-			format: function(x) {return mattHelper.humanReadable(x,1,'B',false);}
+			format: function(x) {return maltHelper.humanReadable(x,1,'B',false);}
 		},{
 			key:'maxAllocSize',
 			name:'Largest allocations',
 			level: 2,
 			help:"The largest request size received by malloc, calloc...",
-			format: function(x) {return mattHelper.humanReadable(x,1,'B',false);}
+			format: function(x) {return maltHelper.humanReadable(x,1,'B',false);}
 		},{
 			type:'separator',
 			level: 2
@@ -135,13 +135,13 @@ function MattPageHome()
 			name:'Leaked memory',
 			level: 1,
 			help:"Total memory which has leaked (malloc, calloc... without free).",
-			format: function(x) {return mattHelper.humanReadable(x,1,'B',false);}
+			format: function(x) {return maltHelper.humanReadable(x,1,'B',false);}
 		},{
 			key:'leakedCount',
 			name:'Leaked object count',
 			level: 2,
 			help:"Total number of allocated object which have leaked (malloc, calloc... without free).",
-			format: function(x) {return mattHelper.humanReadable(x,1,'B',false);}
+			format: function(x) {return maltHelper.humanReadable(x,1,'B',false);}
 		},{
 			type:'separator',
 			level: 2
@@ -150,19 +150,19 @@ function MattPageHome()
 			name:'Largest stack',
 			level: 1,
 			help:"Memory used by the largest stack seen during execution of threads.",
-			format: function(x) {return mattHelper.humanReadable(x,1,'B',false);}
+			format: function(x) {return maltHelper.humanReadable(x,1,'B',false);}
 		},{
 			key:'globalVarMem',
 			name:'Global variables',
 			level: 1,
 			help:"Memory used by global variables.",
-			format: function(x) {return mattHelper.humanReadable(x,1,'B',false);}
+			format: function(x) {return maltHelper.humanReadable(x,1,'B',false);}
 		},{
 			key:'tlsVarMem',
 			name:'TLS variables',
 			level: 1,
 			help:"Memory used by TLS variables (already multiplied by number of thread of execution).",
-			format: function(x) {return mattHelper.humanReadable(x,1,'B',false);}
+			format: function(x) {return maltHelper.humanReadable(x,1,'B',false);}
 		},{
 			type:'separator',
 			level: 2
@@ -171,21 +171,21 @@ function MattPageHome()
 			name:'Peak allocation rate',
 			level: 1,
 			help:"Peak of memory allocation rate (in memory size).",
-			format: function(x) {return mattHelper.humanReadable(x,1,'B/s',false);}
+			format: function(x) {return maltHelper.humanReadable(x,1,'B/s',false);}
 		},{
 			key:'peakAllocCountRate',
 			name:'Peak allocation call rate',
 			level: 2,
 			help:"Peak of memory allocation call rate.",
-			format: function(x) {return mattHelper.humanReadable(x,1,'/s',false);}
+			format: function(x) {return maltHelper.humanReadable(x,1,'/s',false);}
 		}
 	];
 
-	//declare module to manage matt home page
-	var mattModule = angular.module('matt.page.home',[]);
+	//declare module to manage malt home page
+	var maltModule = angular.module('malt.page.home',[]);
 	
 	//main controler of the page
-	var homeCtrl = mattCtrl.controller('matt.page.home.ctrl',['$scope','$http',function($scope,$http) {
+	var homeCtrl = maltCtrl.controller('malt.page.home.ctrl',['$scope','$http',function($scope,$http) {
 		//setup data
 		$scope.summaryViewEntries = summaryViewEntries;
 		$scope.displaySummaryLevel = 1;
@@ -193,12 +193,12 @@ function MattPageHome()
 		$scope.summaryData = defaultData;
 		
 		//fetch summaryData
-		mattDataSource.loadGlobalSummary($http,function(data) {
+		maltDataSource.loadGlobalSummary($http,function(data) {
 			$scope.summaryData = data;
 		});
 		
 		//fetch function list datas
-		mattDataSource.loadFlatFunctionStats($http,function(data) {
+		maltDataSource.loadFlatFunctionStats($http,function(data) {
 			$scope.functions = data;
 		});
 		
@@ -212,17 +212,17 @@ function MattPageHome()
 		
 		//convert times
 		$scope.getFormattedExecTime = function() {
-			return mattHelper.ticksToHourMinSec($scope.summaryData.run.runtime,$scope.summaryData.system.ticksPerSecond);
+			return maltHelper.ticksToHourMinSec($scope.summaryData.run.runtime,$scope.summaryData.system.ticksPerSecond);
 		}
 		
 		//convert CPU freq
 		$scope.getFormattedCpuFreq = function() {
-			return mattHelper.humanReadable($scope.summaryData.system.ticksPerSecond,1,'Hz',false);
+			return maltHelper.humanReadable($scope.summaryData.system.ticksPerSecond,1,'Hz',false);
 		}
 		
 		//convert CPU freq
 		$scope.getFormattedTotalMemory = function() {
-			return mattHelper.humanReadable($scope.summaryData.system.totalMemory,1,'b',false);
+			return maltHelper.humanReadable($scope.summaryData.system.totalMemory,1,'b',false);
 		}
 
 		//format values
@@ -266,7 +266,7 @@ function MattPageHome()
 	});
 	
 	//directive to print function lists
-	homeCtrl.directive('matthomefunclist',function() {
+	homeCtrl.directive('malthomefunclist',function() {
 		return {
 			restrict: 'EA',
 			templateUrl: 'partials/home-func-list.html',
@@ -300,7 +300,7 @@ function MattPageHome()
 				
 				//check reverse
 				$scope.getReverse = function () {
-					return (mattMetrics[$scope.metric].defaultOrder == 'desc');
+					return (maltMetrics[$scope.metric].defaultOrder == 'desc');
 				}
 				
 				$scope.useHiddenClass = function (x)  {
@@ -312,4 +312,4 @@ function MattPageHome()
 }
 
 //init and export
-var mattPageHome = new MattPageHome();
+var maltPageHome = new MattPageHome();

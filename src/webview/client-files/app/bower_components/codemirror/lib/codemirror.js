@@ -532,7 +532,7 @@
   }
 
   function lineNumberFor(options, i) {
-    return String(options.lineNumberFormatter(i + options.firstLineNumber));
+    return String(options.lineNumberFormalter(i + options.firstLineNumber));
   }
 
   // Computes display.scroller.scrollLeft + display.gutters.offsetWidth,
@@ -4520,7 +4520,7 @@
     guttersChanged(cm);
   }, true);
   option("firstLineNumber", 1, guttersChanged, true);
-  option("lineNumberFormatter", function(integer) {return integer;}, guttersChanged, true);
+  option("lineNumberFormalter", function(integer) {return integer;}, guttersChanged, true);
   option("showCursorWhenSelecting", false, updateSelection, true);
 
   option("resetSelectionOnContextMenu", true);

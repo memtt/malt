@@ -380,7 +380,7 @@ void AllocStackProfiler::loadGlobalVariables(void)
 {
 	//if not have libelf
 	if (!ElfReader::hasLibElf())
-		fprintf(stderr,"MALT : warning, matt was compiled without libelf, you will not get global variable memory usage !\n");
+		fprintf(stderr,"MALT : warning, malt was compiled without libelf, you will not get global variable memory usage !\n");
 	
 	//load /proc/map
 	LinuxProcMapReader map;
@@ -496,7 +496,7 @@ void convertToJson(htopml::JsonState& json, const AllocStackProfiler& value)
 	
 	json.openFieldStruct("run");
 		json.printField("formatVersion",1.0f);
-		json.printField("tool","matt-0.0.0");
+		json.printField("tool","malt-0.0.0");
 		json.printField("date",OS::getDateTime());
 		json.printField("runtime",getticks() - value.trefTicks);
 		if (value.getOptions()->traceEnabled)

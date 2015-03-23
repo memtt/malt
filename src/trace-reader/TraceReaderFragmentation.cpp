@@ -9,7 +9,7 @@
 /********************  HEADERS  *********************/
 //STD
 #include <cstdio>
-//matt internals
+//malt internals
 #include <common/Debug.hpp>
 #include "TraceReaderFragmentation.hpp"
 

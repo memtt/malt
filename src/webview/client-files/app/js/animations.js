@@ -1,1 +1,1 @@
-angular.module('matt.anim', ['ngAnimate']);
+angular.module('malt.anim', ['ngAnimate']);

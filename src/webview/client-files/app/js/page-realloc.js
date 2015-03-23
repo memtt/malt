@@ -1,14 +1,14 @@
 function MattPageRealloc()
 {
-	//declare module to manage matt home page
-	var mattModule = angular.module('matt.page.realloc',[]);
+	//declare module to manage malt home page
+	var maltModule = angular.module('malt.page.realloc',[]);
 	var svgId = 0;
 	var cur = this;
 	
 	//main controler of the page
-	var pageCtrl = mattCtrl.controller('matt.page.realloc.ctrl',['$scope','$http',function($scope,$http) {
+	var pageCtrl = maltCtrl.controller('malt.page.realloc.ctrl',['$scope','$http',function($scope,$http) {
 		//fetch summaryData
-		mattDataSource.loadReallocStats($http,function(data) {
+		maltDataSource.loadReallocStats($http,function(data) {
 			$scope.reallocMap = data;
 			
 			//search most used
@@ -23,14 +23,14 @@ function MattPageRealloc()
 					mostUsed = data[i];
 			}
 			
-			$scope.realloCount = mattHelper.humanReadable(count,1,"",false);
-			$scope.meanDelta = mattHelper.humanReadable(meanDelta/data.length,1,"B",false);
-			$scope.formatedMostUsed = mattHelper.humanReadable(mostUsed.count,1,"",false) + " of " + mattHelper.humanReadable(mostUsed.oldSize,1,"B",false) + " -> " + mattHelper.humanReadable(mostUsed.newSize,1,"B",false);
+			$scope.realloCount = maltHelper.humanReadable(count,1,"",false);
+			$scope.meanDelta = maltHelper.humanReadable(meanDelta/data.length,1,"B",false);
+			$scope.formatedMostUsed = maltHelper.humanReadable(mostUsed.count,1,"",false) + " of " + maltHelper.humanReadable(mostUsed.oldSize,1,"B",false) + " -> " + maltHelper.humanReadable(mostUsed.newSize,1,"B",false);
 			
-			cur.plotMostUsed('matt-most-used',data,20);
-			cur.plotMostUsedDelta('matt-most-used-delta',cur.genDeltaDistr(data));
-			cur.plotLogDelta('matt-log-delta',cur.genDeltaDistr(data));
-			cur.resizeMap2('matt-resize-map',data);
+			cur.plotMostUsed('malt-most-used',data,20);
+			cur.plotMostUsedDelta('malt-most-used-delta',cur.genDeltaDistr(data));
+			cur.plotLogDelta('malt-log-delta',cur.genDeltaDistr(data));
+			cur.resizeMap2('malt-resize-map',data);
 		});
 	}]);
 }
@@ -58,16 +58,16 @@ MattPageRealloc.prototype.plotMostUsed = function(domId,data,maxNb)
 // 				if (d.file != undefined && d.file != '')
 // 					pos = "<br/>" + d.file + ":" + d.line;
 // 				if (e.series.key == "TLS variables")
-// 					tls = " [ "+e.series.tlsInstances+" * "+mattHelper.humanReadable(d.value/e.series.tlsInstances,1,'B',false) +" ] ";
+// 					tls = " [ "+e.series.tlsInstances+" * "+maltHelper.humanReadable(d.value/e.series.tlsInstances,1,'B',false) +" ] ";
 // 				var ratio = " ( "+(100*d.value/e.series.total).toFixed(2)+"% ) ";
 // 				console.log(data);
 // 				console.log(e);
-// 				return "<div style='text-align:center'><h3>"+d.name+"</h3>"+mattHelper.humanReadable(d.value,1,'B',false)+tls+ratio+pos+'</div>';
+// 				return "<div style='text-align:center'><h3>"+d.name+"</h3>"+maltHelper.humanReadable(d.value,1,'B',false)+tls+ratio+pos+'</div>';
 // 			});
 
 // 		$scope.chart = chart;
 		chart.yAxis
-			.tickFormat(function(d) {return mattHelper.humanReadable(d,1,"",false);});
+			.tickFormat(function(d) {return maltHelper.humanReadable(d,1,"",false);});
 			
 		d3.select("#"+domId + " svg")
 			.datum(data)
@@ -92,7 +92,7 @@ MattPageRealloc.prototype.cutMostUsed = function(data,maxNb)
 		if (cnt <= maxNb)
 		{
 			//console.log(cnt + " -> " + sortedData[i].oldSize + " -> " + sortedData[i].newSize + " -> "+sortedData[i].count);
-			ret.push({name:mattHelper.humanReadable(sortedData[i].oldSize,1,'B',false) + " -> " + mattHelper.humanReadable(sortedData[i].newSize,1,'B',false), count:sortedData[i].count});
+			ret.push({name:maltHelper.humanReadable(sortedData[i].oldSize,1,'B',false) + " -> " + maltHelper.humanReadable(sortedData[i].newSize,1,'B',false), count:sortedData[i].count});
 		} else {
 			others += sortedData[i].count;
 		}
@@ -171,12 +171,12 @@ MattPageRealloc.prototype.plotLogDelta = function(domId,data)
 	var xAxis = d3.svg.axis()
 		.scale(x)
 		.orient("bottom")
-		.tickFormat(function(d) { return (d<0?'-':'')+mattHelper.humanReadable(d==0?0:Math.pow(2,Math.abs(d)-1),1,'B',false); });
+		.tickFormat(function(d) { return (d<0?'-':'')+maltHelper.humanReadable(d==0?0:Math.pow(2,Math.abs(d)-1),1,'B',false); });
 
 	var yAxis = d3.svg.axis()
 		.scale(y)
 		.orient("left")
-		.tickFormat(function(d) { return mattHelper.humanReadable(d,1,'',false); });
+		.tickFormat(function(d) { return maltHelper.humanReadable(d,1,'',false); });
 
 	var yAxisLines = d3.svg.axis()
 		.scale(y)
@@ -193,7 +193,7 @@ MattPageRealloc.prototype.plotLogDelta = function(domId,data)
 		.attr('class', 'd3-tip')
 		.offset([-10, 0])
 		.html(function(d,i) {
-			return "<strong>"+ ((d.sizeLog<0)?'-':'')+mattHelper.humanReadable(d.sizeLog==0?0:Math.pow(2,Math.abs(d.sizeLog)-1),1,'B',false) + " - " + ((d.sizeLog<0)?'-':'')+mattHelper.humanReadable(Math.pow(2,Math.abs(d.sizeLog)),1,'B',false) +":</strong> <span style='color:red'>" + mattHelper.humanReadable(d.count,1,'',false) + "</span>";
+			return "<strong>"+ ((d.sizeLog<0)?'-':'')+maltHelper.humanReadable(d.sizeLog==0?0:Math.pow(2,Math.abs(d.sizeLog)-1),1,'B',false) + " - " + ((d.sizeLog<0)?'-':'')+maltHelper.humanReadable(Math.pow(2,Math.abs(d.sizeLog)),1,'B',false) +":</strong> <span style='color:red'>" + maltHelper.humanReadable(d.count,1,'',false) + "</span>";
 		})
 
 	svg.call(tip);
@@ -252,12 +252,12 @@ MattPageRealloc.prototype.plotMostUsedDelta = function(domId,data)
 	var xAxis = d3.svg.axis()
 		.scale(x)
 		.orient("bottom")
-		.tickFormat(function(d) { if (d == 0) { return 'others'; } else { if (+d >= 0) return mattHelper.humanReadable(d,1,'',false); else return '-' + mattHelper.humanReadable(-d,1,'',false); } });
+		.tickFormat(function(d) { if (d == 0) { return 'others'; } else { if (+d >= 0) return maltHelper.humanReadable(d,1,'',false); else return '-' + maltHelper.humanReadable(-d,1,'',false); } });
 
 	var yAxis = d3.svg.axis()
 		.scale(y)
 		.orient("left")
-		.tickFormat(function(d) { return mattHelper.humanReadable(d,1,'',false); });
+		.tickFormat(function(d) { return maltHelper.humanReadable(d,1,'',false); });
 		
 	var yAxisLines = d3.svg.axis()
 		.scale(y)
@@ -274,7 +274,7 @@ MattPageRealloc.prototype.plotMostUsedDelta = function(domId,data)
 		.attr('class', 'd3-tip')
 		.offset([-10, 0])
 		.html(function(d) {
-			return "<strong>Frequency:</strong> <span style='color:red'>" + mattHelper.humanReadable(d.frequency,1,'',false) + "</span>";
+			return "<strong>Frequency:</strong> <span style='color:red'>" + maltHelper.humanReadable(d.frequency,1,'',false) + "</span>";
 		})
 
 	svg.call(tip);
@@ -451,7 +451,7 @@ MattPageRealloc.prototype.resizeMap2 = function(domId,data)
 		.attr("dy", ".31em")
 		.attr("transform", function(d) { return "rotate(" + (d.x - 90) + ")translate(" + (d.y + 8) + ",0)" + (d.x < 180 ? "" : "rotate(180)"); })
 		.style("text-anchor", function(d) { return d.x < 180 ? "start" : "end"; })
-		.text(function(d) { return mattHelper.humanReadable(+d.key,1,'B',false); })
+		.text(function(d) { return maltHelper.humanReadable(+d.key,1,'B',false); })
 		.on("mouseover", mouseovered)
 		.on("mouseout", mouseouted);
 // 	});
@@ -585,7 +585,7 @@ MattPageRealloc.prototype.resizeMap = function(domId,data)
 		.attr("dy", ".31em")
 		.attr("text-anchor", function(d) { return d.x < 180 ? "start" : "end"; })
 		.attr("transform", function(d) { return d.x < 180 ? null : "rotate(180)"; })
-		.text(function(d) { return mattHelper.humanReadable(+d.key,1,'B',false); });
+		.text(function(d) { return maltHelper.humanReadable(+d.key,1,'B',false); });
 // 	});
 
 	d3.select(self.frameElement).style("height", diameter + "px");
@@ -635,4 +635,4 @@ MattPageRealloc.prototype.resizeMap = function(domId,data)
 	}
 }
 
-var mattPageRealloc = new MattPageRealloc();
+var maltPageRealloc = new MattPageRealloc();
