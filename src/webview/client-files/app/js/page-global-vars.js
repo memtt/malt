@@ -1,4 +1,4 @@
-function MattPageGlobalVars()
+function MaltPageGlobalVars()
 {
 	//an example of data format
 	var defaultData = {
@@ -98,7 +98,7 @@ function MattPageGlobalVars()
 	});
 }
 
-MattPageGlobalVars.prototype.getTLSInstances = function(data)
+MaltPageGlobalVars.prototype.getTLSInstances = function(data)
 {
 	//1 instance of TLS per thread plus the one to store defualt values
 	return data.maxThreadCount + 1;
@@ -106,7 +106,7 @@ MattPageGlobalVars.prototype.getTLSInstances = function(data)
 
 ////////////////////////////// SUMMARY /////////////////////////////////
 //function to build summary
-MattPageGlobalVars.prototype.getSummary = function(data)
+MaltPageGlobalVars.prototype.getSummary = function(data)
 {
 	var tls = 0;
 	var gbl = 0;
@@ -126,7 +126,7 @@ MattPageGlobalVars.prototype.getSummary = function(data)
 }
 
 /////////////////////////////// PIES /////////////////////////////////////////////
-MattPageGlobalVars.prototype.cutForPie = function(data,curPercent,maxNb,ignorePercent)
+MaltPageGlobalVars.prototype.cutForPie = function(data,curPercent,maxNb,ignorePercent)
 {	
 	//compute tot
 	var tot = 0;
@@ -155,7 +155,7 @@ MattPageGlobalVars.prototype.cutForPie = function(data,curPercent,maxNb,ignorePe
 	return finalRes;
 }
 
-MattPageGlobalVars.prototype.getDataForBinaryPies = function(data)
+MaltPageGlobalVars.prototype.getDataForBinaryPies = function(data)
 {
 	var res = [];
 	var vars = data.vars;
@@ -178,7 +178,7 @@ MattPageGlobalVars.prototype.getDataForBinaryPies = function(data)
 	return res;
 }
 
-MattPageGlobalVars.prototype.getDataForVarPies = function(data)
+MaltPageGlobalVars.prototype.getDataForVarPies = function(data)
 {
 	var res = [];
 	var vars = data.vars;
@@ -201,7 +201,7 @@ MattPageGlobalVars.prototype.getDataForVarPies = function(data)
 }
 
 //malt-vars-pie-bin
-MattPageGlobalVars.prototype.buildDonutGraph = function(d3Selection,data)
+MaltPageGlobalVars.prototype.buildDonutGraph = function(d3Selection,data)
 {
 	if (data == undefined)
 		return;
@@ -234,7 +234,7 @@ MattPageGlobalVars.prototype.buildDonutGraph = function(d3Selection,data)
 }
 
 /////////////////////////// BAR CHART /////////////////////////////////
-MattPageGlobalVars.prototype.getDataForBinaryGraphs = function(data)
+MaltPageGlobalVars.prototype.getDataForBinaryGraphs = function(data)
 {
 	var res = [];
 	var vars = data.vars;
@@ -258,7 +258,7 @@ MattPageGlobalVars.prototype.getDataForBinaryGraphs = function(data)
 	return this.formatDatasForBarChar(data,res);
 }
 
-MattPageGlobalVars.prototype.getDataForVarGraphs = function(data,filter)
+MaltPageGlobalVars.prototype.getDataForVarGraphs = function(data,filter)
 {
 	var res = [];
 	var vars = data.vars;
@@ -286,7 +286,7 @@ MattPageGlobalVars.prototype.getDataForVarGraphs = function(data,filter)
 	return this.formatDatasForBarChar(data,this.cutDataForBarChart(res));
 }
 
-MattPageGlobalVars.prototype.cutDataForBarChart = function(vars)
+MaltPageGlobalVars.prototype.cutDataForBarChart = function(vars)
 {
 	//no filter
 	if (vars.length < 16)
@@ -332,7 +332,7 @@ MattPageGlobalVars.prototype.cutDataForBarChart = function(vars)
 	return res;
 }
 
-MattPageGlobalVars.prototype.formatDatasForBarChar = function(data,vars)
+MaltPageGlobalVars.prototype.formatDatasForBarChar = function(data,vars)
 {
 	var gbl = [];
 	var tls = [];
@@ -367,7 +367,7 @@ MattPageGlobalVars.prototype.formatDatasForBarChar = function(data,vars)
 	];
 }
 
-MattPageGlobalVars.prototype.updateMultiBarChart = function($scope,d3Selection,data)
+MaltPageGlobalVars.prototype.updateMultiBarChart = function($scope,d3Selection,data)
 {
 	var chart = $scope.chart;
 	
@@ -380,7 +380,7 @@ MattPageGlobalVars.prototype.updateMultiBarChart = function($scope,d3Selection,d
 			.call(chart);
 }
 
-MattPageGlobalVars.prototype.buildMultiBarChart = function($scope,d3Selection,data,onClick)
+MaltPageGlobalVars.prototype.buildMultiBarChart = function($scope,d3Selection,data,onClick)
 {
 	var cur = this;
 	nv.addGraph(function() {
@@ -443,4 +443,4 @@ MattPageGlobalVars.prototype.buildMultiBarChart = function($scope,d3Selection,da
 }
 
 //init and export
-var maltPageGlobalVars = new MattPageGlobalVars();
+var maltPageGlobalVars = new MaltPageGlobalVars();

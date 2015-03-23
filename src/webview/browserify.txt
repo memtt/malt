@@ -1,1 +1,1 @@
-./node_modules/.bin/browserify server_files/lib/MattProject.js -s MattProject -o MattBundle.js
+./node_modules/.bin/browserify server_files/lib/MaltProject.js -s MaltProject -o MaltBundle.js

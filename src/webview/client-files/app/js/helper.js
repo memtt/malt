@@ -1,5 +1,5 @@
 /**********************************************************************/
-function MattHelper()
+function MaltHelper()
 {
 	/********************************************************************/
 	this.MALT_POWER_PS  = ['&nbsp;','K','M','G','T','P'];
@@ -14,7 +14,7 @@ function MattHelper()
  * @param value Define the value to padd
  * @param size Define the final size of the string.
 **/
-MattHelper.prototype.zeroFill = function(value,size)
+MaltHelper.prototype.zeroFill = function(value,size)
 {
 	var cur = value;
 	var pad = '';
@@ -45,7 +45,7 @@ MattHelper.prototype.zeroFill = function(value,size)
  * @param t time to convert
  * @param ticksPerSec Ref to convert ticks to seconds.
 **/
-MattHelper.prototype.ticksToHourMinSec = function(t,ticksPerSec)
+MaltHelper.prototype.ticksToHourMinSec = function(t,ticksPerSec)
 {
 	//calc sec
 	var tot = Math.round(t / ticksPerSec);
@@ -70,7 +70,7 @@ MattHelper.prototype.ticksToHourMinSec = function(t,ticksPerSec)
 
 /********************************************************************/
 /** Short helper to convert values to human readable format **/	
-MattHelper.prototype.humanReadable = function(value,decimals,unit,protectedSpace)
+MaltHelper.prototype.humanReadable = function(value,decimals,unit,protectedSpace)
 {
 	var mul = 1000;
 	if (unit == 'B' || unit == 'B')
@@ -115,7 +115,7 @@ MattHelper.prototype.humanReadable = function(value,decimals,unit,protectedSpace
 }
 
 /********************************************************************/
-MattHelper.prototype.humanReadableTimes = function(value)
+MaltHelper.prototype.humanReadableTimes = function(value)
 {
 	if (value > 0 && value < 1)
 	{
@@ -147,7 +147,7 @@ MattHelper.prototype.humanReadableTimes = function(value)
 }
 
 /********************************************************************/
-MattHelper.prototype.mergeStackMinMaxInfo = function(onto,value)
+MaltHelper.prototype.mergeStackMinMaxInfo = function(onto,value)
 {
 	onto.count += value.count;
 	onto.sum += value.sum;
@@ -158,7 +158,7 @@ MattHelper.prototype.mergeStackMinMaxInfo = function(onto,value)
 }
 
 /********************************************************************/
-MattHelper.prototype.mergeStackInfoDatas = function(onto,value)
+MaltHelper.prototype.mergeStackInfoDatas = function(onto,value)
 {
 	onto.countZeros += value.countZeros;
 	onto.maxAliveReq += value.maxAliveReq;
@@ -171,4 +171,4 @@ MattHelper.prototype.mergeStackInfoDatas = function(onto,value)
 }
 
 /**********************************************************************/
-maltHelper = new MattHelper();
+maltHelper = new MaltHelper();

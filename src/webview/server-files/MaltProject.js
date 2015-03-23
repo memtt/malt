@@ -6,9 +6,9 @@ var path  = require('path');
 
 /****************************************************/
 /**
- * Construct a MattProject by loading data in JSON format from given file.
+ * Construct a MaltProject by loading data in JSON format from given file.
 **/
-function MattProject(file)
+function MaltProject(file)
 {
 	//declare internal stats to get a short list in same place
 	this.data = null;//store data tree
@@ -23,7 +23,7 @@ function MattProject(file)
 }
 
 /****************************************************/
-MattProject.prototype.loadData = function(data)
+MaltProject.prototype.loadData = function(data)
 {
 	//setup current data
 	this.data = data;
@@ -42,7 +42,7 @@ MattProject.prototype.loadData = function(data)
 /**
  * Function in charge of loading the json file.
 **/
-MattProject.prototype.loadFile = function(file)
+MaltProject.prototype.loadFile = function(file)
 {
 	//init
 	this.data = null;
@@ -68,7 +68,7 @@ MattProject.prototype.loadFile = function(file)
 }
 
 /****************************************************/
-MattProject.prototype.getProcMap = function()
+MaltProject.prototype.getProcMap = function()
 {
 	return this.stacks.sites.map;
 }
@@ -77,7 +77,7 @@ MattProject.prototype.getProcMap = function()
 /**
  * Add info about stack to data extracted from traces
 **/
-MattProject.prototype.completeMemtraceAt = function(data)
+MaltProject.prototype.completeMemtraceAt = function(data)
 {
 	var stats = this.data.stacks.stats;
 	var out = [];
@@ -99,7 +99,7 @@ MattProject.prototype.completeMemtraceAt = function(data)
 /**
  * Just to get the trace filename if available. 
 **/
-MattProject.prototype.getTraceFilename = function()
+MaltProject.prototype.getTraceFilename = function()
 {
 	var ret = this.data.run.tracefile;
 	if (ret == undefined)
@@ -121,7 +121,7 @@ MattProject.prototype.getTraceFilename = function()
 /**
  * Just for debug, print only stack with function names.
 **/
-MattProject.prototype.getDebugStackList = function()
+MaltProject.prototype.getDebugStackList = function()
 {
 	//setup some local vars
 	var stats = this.data.stacks.stats;
@@ -146,7 +146,7 @@ MattProject.prototype.getDebugStackList = function()
 /**
  * Provide access to the list of global variables from executable and dynamic libs.
 **/
-MattProject.prototype.getGlobalVariables = function()
+MaltProject.prototype.getGlobalVariables = function()
 {
 	return { 
 		vars: this.data.memStats.globalVariables,
@@ -162,7 +162,7 @@ MattProject.prototype.getGlobalVariables = function()
  * @param accept Can be 'true' or a function with prototype(entry,info) with entry from stacks.stats[].detailedStack to accept (true) or reject (false) them.
  * @param total If 'true', the output contain 'own' and 'total' otherwise it contain 'own' and 'childs'.
 **/
-MattProject.prototype.getFlatProfile = function(mapping,accept,fields,total)
+MaltProject.prototype.getFlatProfile = function(mapping,accept,fields,total)
 {
 	//setup some local vars
 	var stats = this.data.stacks.stats;
@@ -228,7 +228,7 @@ MattProject.prototype.getFlatProfile = function(mapping,accept,fields,total)
  * Map memory informations from stack onto file lines.
  * @param total If 'true', produce 'own' and 'total', otherwise produce 'own' and 'childs'.
 **/
-MattProject.prototype.getFileLinesFlatProfile = function(file,total)
+MaltProject.prototype.getFileLinesFlatProfile = function(file,total)
 {
 	var res = this.getFlatProfile(
 		function(entry) {return entry.line;},        //map on lines
@@ -243,7 +243,7 @@ MattProject.prototype.getFileLinesFlatProfile = function(file,total)
  * Map memory informations from stack on functions (symbols).
  * @param total If 'true', produce 'own' and 'total', otherwise produce 'own' and 'childs'.
 **/
-MattProject.prototype.getFlatFunctionProfile = function(total)
+MaltProject.prototype.getFlatFunctionProfile = function(total)
 {
 	var res = this.getFlatProfile(
 		function(entry) {return entry.function;},    //map on lines
@@ -257,7 +257,7 @@ MattProject.prototype.getFlatFunctionProfile = function(total)
 /**
  * Return virtual memory distribution extracted from /proc/self/maps and execution end.
 **/
-MattProject.prototype.getProcMapDistr = function()
+MaltProject.prototype.getProcMapDistr = function()
 {
 	//some local vars
 	var res = new Object();
@@ -295,13 +295,13 @@ MattProject.prototype.getProcMapDistr = function()
 }
 
 /****************************************************/
-MattProject.prototype.getSizeMap = function()
+MaltProject.prototype.getSizeMap = function()
 {
 	return this.data.memStats.sizeMap;
 }
 
 /****************************************************/
-MattProject.prototype.getReallocMap = function()
+MaltProject.prototype.getReallocMap = function()
 {
 	return this.data.memStats.reallocJump;
 }
@@ -311,7 +311,7 @@ MattProject.prototype.getReallocMap = function()
  * Extract a list of stacks containing elements which pass the given filter function.
  * @param filter A filter function which return a boolean and have prototype function(detailedStackEntry)
 **/
-MattProject.prototype.getFilterdStacks = function(filter)
+MaltProject.prototype.getFilterdStacks = function(filter)
 {
 	//get some refs
 	var stats = this.data.stacks.stats;
@@ -336,7 +336,7 @@ MattProject.prototype.getFilterdStacks = function(filter)
 /**
  * Return the list of stacks (detailed) which contain location file:line.
 **/
-MattProject.prototype.getFilterdStacksOnFileLine = function(file,line)
+MaltProject.prototype.getFilterdStacksOnFileLine = function(file,line)
 {
 	return this.getFilterdStacks(function(entry) {
 		return entry.file == file && entry.line == line;
@@ -347,7 +347,7 @@ MattProject.prototype.getFilterdStacksOnFileLine = function(file,line)
 /**
  * Return the list of stacks (detailed) which contain location file:line.
 **/
-MattProject.prototype.getFilterdStacksOnSymbol = function(symbol)
+MaltProject.prototype.getFilterdStacksOnSymbol = function(symbol)
 {
 	return this.getFilterdStacks(function(entry) {
 		return entry.function == symbol;
@@ -358,7 +358,7 @@ MattProject.prototype.getFilterdStacksOnSymbol = function(symbol)
 /**
  * Return all timed values to build graphs.
 **/
-MattProject.prototype.getTimedValues = function()
+MaltProject.prototype.getTimedValues = function()
 {
 	var tmp = new Object();
 	/*tmp.segments     = this.data.timeline.segments;
@@ -378,7 +378,7 @@ MattProject.prototype.getTimedValues = function()
 }
 
 /****************************************************/
-MattProject.prototype.genSummaryWarnings = function(data)
+MaltProject.prototype.genSummaryWarnings = function(data)
 {
 	//vars
 	var ret = {};
@@ -401,7 +401,7 @@ MattProject.prototype.genSummaryWarnings = function(data)
 /**
  * Build a summary from the whole datas.
 **/
-MattProject.prototype.getSummaryV2 = function()
+MaltProject.prototype.getSummaryV2 = function()
 {
 	var ret = {};
 	
@@ -507,7 +507,7 @@ MattProject.prototype.getSummaryV2 = function()
 /**
  * Build a summary from the whole datas.
 **/
-MattProject.prototype.getSummary = function()
+MaltProject.prototype.getSummary = function()
 {
 	var ret = {};
 
@@ -547,7 +547,7 @@ MattProject.prototype.getSummary = function()
 }
 
 /****************************************************/
-MattProject.prototype.getStacksMem = function()
+MaltProject.prototype.getStacksMem = function()
 {
 	//prepare array
 	var res = new Array();
@@ -564,7 +564,7 @@ MattProject.prototype.getStacksMem = function()
 /**
  * Get info about the largest stack
 **/
-MattProject.prototype.getMaxStack = function()
+MaltProject.prototype.getMaxStack = function()
 {
 	//get first to start
 	var res = this.data.threads[0].stackMem;
@@ -587,7 +587,7 @@ MattProject.prototype.getMaxStack = function()
 /**
  * Flatten datas about the largest stack and return as json tree.
 **/
-MattProject.prototype.getFlattenMaxStackInfo = function(mapping,accept,stack)
+MaltProject.prototype.getFlattenMaxStackInfo = function(mapping,accept,stack)
 {
 	//init hash map to flat on addresses
 	var ret = new Object();
@@ -635,7 +635,7 @@ MattProject.prototype.getFlattenMaxStackInfo = function(mapping,accept,stack)
 /**
  * Flatten datas about the largest stack and return as json tree.
 **/
-MattProject.prototype.getMaxStackInfoOnFunction = function(mapping,accept)
+MaltProject.prototype.getMaxStackInfoOnFunction = function(mapping,accept)
 {
 	return this.getFlattenMaxStackInfo(
 		function(info) {return info.function;},
@@ -649,7 +649,7 @@ MattProject.prototype.getMaxStackInfoOnFunction = function(mapping,accept)
  * Return true if the given path correspond to a source file of
  * the current project.
 **/
-MattProject.prototype.isSourceFile = function(path)
+MaltProject.prototype.isSourceFile = function(path)
 {
 	return (this.data.sourceFiles[path] == true)
 }
@@ -658,7 +658,7 @@ MattProject.prototype.isSourceFile = function(path)
 /**
  * Flatten datas about the largest stack and return as json tree.
 **/
-MattProject.prototype.getStackInfoOnFunction = function(id)
+MaltProject.prototype.getStackInfoOnFunction = function(id)
 {
 	return this.getFlattenMaxStackInfo(
 		function(info) {return info.function;},
@@ -668,7 +668,7 @@ MattProject.prototype.getStackInfoOnFunction = function(id)
 }
 
 /****************************************************/
-MattProject.prototype.getFullTree = function()
+MaltProject.prototype.getFullTree = function()
 {
 	var tree = {};
 	var data = this.data;
@@ -698,7 +698,7 @@ MattProject.prototype.getFullTree = function()
 }
 
 /****************************************************/
-MattProject.prototype.toCallgrindFormat = function()
+MaltProject.prototype.toCallgrindFormat = function()
 {
 	//obj to store infos pre-sorted for output
 	var res = {
@@ -718,7 +718,7 @@ MattProject.prototype.toCallgrindFormat = function()
 }
 
 /****************************************************/
-MattProject.prototype.getStackCallerCalle = function(stack)
+MaltProject.prototype.getStackCallerCalle = function(stack)
 {
 	console.log(stack);
 	//leafCallee = 
@@ -920,4 +920,4 @@ function optimizeProjectDatas(data)
 
 /****************************************************/
 //export definition
-module.exports = MattProject;
+module.exports = MaltProject;

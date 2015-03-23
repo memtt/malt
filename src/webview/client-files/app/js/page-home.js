@@ -1,4 +1,4 @@
-function MattPageHome()
+function MaltPageHome()
 {
 	var cur = this;
 	var defaultData = {
@@ -278,7 +278,7 @@ function MattPageHome()
 				inclusive: '@'
 			},
 			link: function ($scope) {
-				$scope.funcMetrics = new MattFuncMetrics();
+				$scope.funcMetrics = new MaltFuncMetrics();
 				
 				//select values for sort
 				$scope.getValue = function (x) {
@@ -312,4 +312,4 @@ function MattPageHome()
 }
 
 //init and export
-var maltPageHome = new MattPageHome();
+var maltPageHome = new MaltPageHome();

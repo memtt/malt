@@ -27,9 +27,9 @@ Selection
 Implementation are selected throught variables exported by cmake into src/lib/config.h :
 
 - MALT\_PORTABILITY\_SPINLOCK\_\* : Provide spinlock wrapper, by default use pthread implementation but might be other
-  for example on windows. Matt also provide a Dummy verison.
+  for example on windows. Malt also provide a Dummy verison.
 - MALT\_PORTABILITY\_MUTEX\_\* : Provide spinlock wrapper, by default use pthread implementation but might be other
-  for example on windows. Matt also provide a Dummy version.
+  for example on windows. Malt also provide a Dummy version.
 - MALT\_PORTABILITY\_OS\_\* : Provide some OS specific routines. Currently only implement Unix version.
 - MALT\_PORTABILITY\_COMPILER\_\* : Provide some compiler specific routines. Currently only provide GCC/ICC for C++
   demangling.

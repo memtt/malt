@@ -100,11 +100,11 @@ var maltMetrics = {
 	},
 };
 
-function MattFuncMetrics()
+function MaltFuncMetrics()
 {
 }
 
-MattFuncMetrics.prototype.getMetricList = function()
+MaltFuncMetrics.prototype.getMetricList = function()
 {
 	var ret = [];
 	for (var i in maltMetrics)
@@ -114,7 +114,7 @@ MattFuncMetrics.prototype.getMetricList = function()
 	return ret;
 }
 
-MattFuncMetrics.prototype.getMetricNames = function()
+MaltFuncMetrics.prototype.getMetricNames = function()
 {
 	var res = [];
 	for (var i in maltMetrics)
@@ -122,7 +122,7 @@ MattFuncMetrics.prototype.getMetricNames = function()
 	return res;
 }
 
-MattFuncMetrics.prototype.getValue = function(dataElement,metricName,inclusive)
+MaltFuncMetrics.prototype.getValue = function(dataElement,metricName,inclusive)
 {
 	var metric = maltMetrics[metricName];
 
@@ -138,17 +138,17 @@ MattFuncMetrics.prototype.getValue = function(dataElement,metricName,inclusive)
 	}
 }
 
-MattFuncMetrics.prototype.getFormattedValue = function(dataElement,metricName,inclusive)
+MaltFuncMetrics.prototype.getFormattedValue = function(dataElement,metricName,inclusive)
 {
 	return maltMetrics[metricName].formalter(this.getValue(dataElement,metricName,inclusive));
 }
 
-MattFuncMetrics.prototype.getValueRatio = function(dataElement,metricName,inclusive)
+MaltFuncMetrics.prototype.getValueRatio = function(dataElement,metricName,inclusive)
 {
 	return (100 *this.getValue(dataElement,metricName,inclusive)) / this.ref[metricName];
 }
 
-MattFuncMetrics.prototype.getRef = function(data,metricName)
+MaltFuncMetrics.prototype.getRef = function(data,metricName)
 {
 // 	if (this.refs == undefined)
 // 		this.buildRefs(data);
@@ -157,14 +157,14 @@ MattFuncMetrics.prototype.getRef = function(data,metricName)
 	return this.computeRef(data,metricName);
 }
 
-MattFuncMetrics.prototype.buildRefs = function(data)
+MaltFuncMetrics.prototype.buildRefs = function(data)
 {
 	this.refs = {};
 	for (var i in maltMetrics)
 		this.refs[i] = this.computeRef(data,maltMetrics[i]);
 }
 
-MattFuncMetrics.prototype.computeRef = function(data,metricName)
+MaltFuncMetrics.prototype.computeRef = function(data,metricName)
 {
 	var metric = maltMetrics[metricName];
 	var res = 0;
@@ -190,9 +190,9 @@ MattFuncMetrics.prototype.computeRef = function(data,metricName)
 	return res;
 }
 
-function MattSelector()
+function MaltSelector()
 {
-	this.funcMetrics = new MattFuncMetrics();
+	this.funcMetrics = new MaltFuncMetrics();
 	this.metric = 'alloc.count';
 	this.inclusive = true;
 	this.limit = 10;
@@ -205,13 +205,13 @@ function MattSelector()
 	this.totalElements = 0;
 }
 
-MattSelector.prototype.setData = function(data)
+MaltSelector.prototype.setData = function(data)
 {
 	this.functions = data;
 	this.onInternalChange();
 }
 
-MattSelector.prototype.onInternalChange = function()
+MaltSelector.prototype.onInternalChange = function()
 {
 	var cnt = 0;
 	for(var i in this.functions)
@@ -224,22 +224,22 @@ MattSelector.prototype.onInternalChange = function()
 	this.onChange();
 }
 
-MattSelector.prototype.getValue = function(x)
+MaltSelector.prototype.getValue = function(x)
 {
 	return this.funcMetrics.getValue(x,this.metric,this.inclusive);
 }
 
-MattSelector.prototype.computeRef = function() 
+MaltSelector.prototype.computeRef = function() 
 {
 	return this.funcMetrics.getRef(this.functions,this.metric);
 }
 
-MattSelector.prototype.getValueRatio = function(x) 
+MaltSelector.prototype.getValueRatio = function(x) 
 {
 	return (100 *this.getValue(x)) / this.computeRef();
 }
 
-MattSelector.prototype.getFormattedValue = function(x) 
+MaltSelector.prototype.getFormattedValue = function(x) 
 {
 	if (this.ratio)
 	{
@@ -249,52 +249,52 @@ MattSelector.prototype.getFormattedValue = function(x)
 	}
 }
 
-MattSelector.prototype.filter = function(x) 
+MaltSelector.prototype.filter = function(x) 
 {
 	return (this.getValue(x) > 0 && (this.query == '' || x.function.indexOf(this.query) > -1));
 }
 
-MattSelector.prototype.isReversedOrder = function () 
+MaltSelector.prototype.isReversedOrder = function () 
 {
 	return (this.order == 'desc');
 }
 
-MattSelector.prototype.accepted = function(x)
+MaltSelector.prototype.accepted = function(x)
 {
 	return (this.getValue(x) > 0 && (this.query == '' || x.function.indexOf(this.query) > -1));
 }
 
-MattSelector.prototype.toogleOrder = function()
+MaltSelector.prototype.toogleOrder = function()
 {
 	this.order = (this.order == 'asc')?'desc':'asc';
 	this.onInternalChange();
 }
 
-MattSelector.prototype.toogleRatio = function()
+MaltSelector.prototype.toogleRatio = function()
 {
 	this.ratio =  !this.ratio;
 	this.onInternalChange();
 }
 
-MattSelector.prototype.toogleInclusive = function()
+MaltSelector.prototype.toogleInclusive = function()
 {
 	this.inclusive = !this.inclusive;
 	this.onInternalChange();
 }
 
-MattSelector.prototype.getCurMetricName = function()
+MaltSelector.prototype.getCurMetricName = function()
 {
 	return maltMetrics[this.metric].name;
 }
 
-MattSelector.prototype.selectMetric = function(metric)
+MaltSelector.prototype.selectMetric = function(metric)
 {
 	this.metric = metric.key;
 	this.order = maltMetrics[this.metric].defaultOrder;
 	this.onInternalChange();
 }
 
-MattSelector.prototype.onChange = function()
+MaltSelector.prototype.onChange = function()
 {
 	
 }

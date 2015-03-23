@@ -4,10 +4,10 @@
  * @param containerId Provide the ID of the div in which to setup the code editor.
  * @param selector Define a metric selector to extract call sites infos for annotations
 **/
-function MattSourceEditor(containerId,selector)
+function MaltSourceEditor(containerId,selector)
 {
 	//errors
-	//maltHelper.assert(selector != undefined && selector instanceof MattSelector);
+	//maltHelper.assert(selector != undefined && selector instanceof MaltSelector);
 	
 	//setup container
 	this.containerId = containerId;
@@ -29,13 +29,13 @@ function MattSourceEditor(containerId,selector)
 
 /********************************************************************/
 //To be override by user to capture events
-MattSourceEditor.prototype.onClick = function(infos)
+MaltSourceEditor.prototype.onClick = function(infos)
 {
 	alert(JSON.stringify(infos,null,'\t'));
 }
 
 /********************************************************************/
-MattSourceEditor.prototype.initRentering = function()
+MaltSourceEditor.prototype.initRentering = function()
 {
 	//create code mirror
 	this.editor = CodeMirror(this.container,{
@@ -53,7 +53,7 @@ MattSourceEditor.prototype.initRentering = function()
 }
 
 /********************************************************************/
-MattSourceEditor.prototype.doPostMove = function()
+MaltSourceEditor.prototype.doPostMove = function()
 {
 	if (this.postMove.type == 'line' && this.postMove.line != -1)
 	{
@@ -66,7 +66,7 @@ MattSourceEditor.prototype.doPostMove = function()
 }
 
 /********************************************************************/
-MattSourceEditor.prototype.getColorationType = function(filename)
+MaltSourceEditor.prototype.getColorationType = function(filename)
 {
 	//set mode
 	var ext = (/[.]/.exec(filename)) ? /[^.]+$/.exec(filename) : undefined;
@@ -94,7 +94,7 @@ MattSourceEditor.prototype.getColorationType = function(filename)
 }
 
 /********************************************************************/
-MattSourceEditor.prototype.moveToFile = function(file)
+MaltSourceEditor.prototype.moveToFile = function(file)
 {
 	//nothing to do
 	if (this.file == file)
@@ -122,7 +122,7 @@ MattSourceEditor.prototype.moveToFile = function(file)
 }
 
 /********************************************************************/
-MattSourceEditor.prototype.moveToFileLine = function(file,line)
+MaltSourceEditor.prototype.moveToFileLine = function(file,line)
 {
 	if (line != -1)
 		this.postMove = {type:'line',line:line};
@@ -132,7 +132,7 @@ MattSourceEditor.prototype.moveToFileLine = function(file,line)
 }
 
 /********************************************************************/
-MattSourceEditor.prototype.findLargestAnnot = function(file,func)
+MaltSourceEditor.prototype.findLargestAnnot = function(file,func)
 {
 	var line = -1;
 // 	var metric = this.selector.metric;
@@ -159,7 +159,7 @@ MattSourceEditor.prototype.findLargestAnnot = function(file,func)
 }
 
 /********************************************************************/
-MattSourceEditor.prototype.moveToFileFunction = function(file,func)
+MaltSourceEditor.prototype.moveToFileFunction = function(file,func)
 {
 	if (func != -1 && func != '' && func != '??')
 		this.postMove = {type:'func',func:func};
@@ -169,7 +169,7 @@ MattSourceEditor.prototype.moveToFileFunction = function(file,func)
 }
 
 /****************************************************/
-MattSourceEditor.prototype.internalMergeStackMinMaxInfo = function(onto,value)
+MaltSourceEditor.prototype.internalMergeStackMinMaxInfo = function(onto,value)
 {
 	onto.count += value.count;
 	onto.sum += value.sum;
@@ -180,7 +180,7 @@ MattSourceEditor.prototype.internalMergeStackMinMaxInfo = function(onto,value)
 }
 
 /****************************************************/
-MattSourceEditor.prototype.internalMergeStackInfoDatas = function(onto,value)
+MaltSourceEditor.prototype.internalMergeStackInfoDatas = function(onto,value)
 {
 	onto.countZeros += value.countZeros;
 	onto.maxAliveReq += value.maxAliveReq;
@@ -191,7 +191,7 @@ MattSourceEditor.prototype.internalMergeStackInfoDatas = function(onto,value)
 }
 
 /********************************************************************/
-MattSourceEditor.prototype.internalComputeTotal = function(value)
+MaltSourceEditor.prototype.internalComputeTotal = function(value)
 {
 	//already done
 	if (value.total != undefined)
@@ -210,7 +210,7 @@ MattSourceEditor.prototype.internalComputeTotal = function(value)
 
 /********************************************************************/
 //extract max
-MattSourceEditor.prototype.extractMax = function(data)
+MaltSourceEditor.prototype.extractMax = function(data)
 {
 	//setup some vars
 	var max = 0;
@@ -238,7 +238,7 @@ MattSourceEditor.prototype.extractMax = function(data)
 /**
  * Build a marker HTML DOM do be insert as annotations into codemirror
 **/
-MattSourceEditor.prototype.makeMarker = function(data,max,colorScale) {
+MaltSourceEditor.prototype.makeMarker = function(data,max,colorScale) {
 
 	//some local vars
 // 	var mode = this.selector.mode;
@@ -285,7 +285,7 @@ MattSourceEditor.prototype.makeMarker = function(data,max,colorScale) {
 
 /********************************************************************/
 var MALT_POWER = ['&nbsp;','K','M','G','T','P'];
-MattSourceEditor.prototype.maltHumanValue = function(value,unit)
+MaltSourceEditor.prototype.maltHumanValue = function(value,unit)
 {
 	var power = 0;
 	while (value >= 1024)
@@ -300,7 +300,7 @@ MattSourceEditor.prototype.maltHumanValue = function(value,unit)
 
 /********************************************************************/
 //update anotations
-MattSourceEditor.prototype.updateAnotations = function()
+MaltSourceEditor.prototype.updateAnotations = function()
 {
 	//keep track of current this
 	var cur = this;
@@ -326,7 +326,7 @@ MattSourceEditor.prototype.updateAnotations = function()
 }
 
 /********************************************************************/
-MattSourceEditor.prototype.redrawAnnotations = function()
+MaltSourceEditor.prototype.redrawAnnotations = function()
 {
 	//clear old
 	this.editor.clearGutter();

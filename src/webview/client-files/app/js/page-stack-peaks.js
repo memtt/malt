@@ -1,4 +1,4 @@
-function MattPageStackPeaks()
+function MaltPageStackPeaks()
 {
 	//declare module to manage malt home page
 	var maltModule = angular.module('malt.page.stackPeaks',[]);
@@ -63,7 +63,7 @@ function reformatDataForD3(data,threadId) {
 	return res;
 }
 
-MattPageStackPeaks.prototype.plotSelectedStackSize = function(domId,data,threadId)
+MaltPageStackPeaks.prototype.plotSelectedStackSize = function(domId,data,threadId)
 {
 	var chart;
 	nv.addGraph(function() {
@@ -113,7 +113,7 @@ MattPageStackPeaks.prototype.plotSelectedStackSize = function(domId,data,threadI
 	};
 }
 
-MattPageStackPeaks.prototype.plotStackMemOfFuncs = function(domId,threadId,onElementClick)
+MaltPageStackPeaks.prototype.plotStackMemOfFuncs = function(domId,threadId,onElementClick)
 {
 	var cur = this;
 	var chart;
@@ -205,7 +205,7 @@ MattPageStackPeaks.prototype.plotStackMemOfFuncs = function(domId,threadId,onEle
 	};
 }
 
-MattPageStackPeaks.prototype.plotStackPeak = function(domId,data,onElementClick)
+MaltPageStackPeaks.prototype.plotStackPeak = function(domId,data,onElementClick)
 {
 	var cur = this;
 	nv.addGraph(function() {
@@ -287,4 +287,4 @@ MattPageStackPeaks.prototype.plotStackPeak = function(domId,data,onElementClick)
 	});
 }
 
-var maltPageStackPeaks = new MattPageStackPeaks();
+var maltPageStackPeaks = new MaltPageStackPeaks();

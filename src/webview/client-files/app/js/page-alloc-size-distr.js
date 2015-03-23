@@ -1,4 +1,4 @@
-function MattPageAllocSizeDistr()
+function MaltPageAllocSizeDistr()
 {
 	//declare module to manage malt home page
 	var maltModule = angular.module('malt.page.allocSizeDistr',[]);
@@ -38,7 +38,7 @@ function MattPageAllocSizeDistr()
 	}]);
 }
 
-MattPageAllocSizeDistr.prototype.buildLog2Histo = function(data)
+MaltPageAllocSizeDistr.prototype.buildLog2Histo = function(data)
 {
 	var tmp = [];
 	
@@ -63,7 +63,7 @@ MattPageAllocSizeDistr.prototype.buildLog2Histo = function(data)
 	return hist;
 }
 
-MattPageAllocSizeDistr.prototype.plotLogHisto = function(domId,data)
+MaltPageAllocSizeDistr.prototype.plotLogHisto = function(domId,data)
 {
 	var hist = this.buildLog2Histo(data);
 	
@@ -146,7 +146,7 @@ MattPageAllocSizeDistr.prototype.plotLogHisto = function(domId,data)
 		.on('mouseout', tip.hide);
 }
 
-/*MattPageAllocSizeDistr.prototype.setupHistogramChart = function(domId,data)
+/*MaltPageAllocSizeDistr.prototype.setupHistogramChart = function(domId,data)
 {
 	var hist = this.buildLogHisto(data);
 	
@@ -189,7 +189,7 @@ MattPageAllocSizeDistr.prototype.plotLogHisto = function(domId,data)
 	});
 }*/
 
-MattPageAllocSizeDistr.prototype.setupMostUsedChart = function(domId,data)
+MaltPageAllocSizeDistr.prototype.setupMostUsedChart = function(domId,data)
 {
 	var margin = {top: 20, right: 20, bottom: 30, left: 60},
 		width = (parseInt(d3.select('#'+domId+' svg').style('width')) || 960) - margin.left - margin.right,
@@ -335,4 +335,4 @@ MattPageAllocSizeDistr.prototype.setupMostUsedChart = function(domId,data)
 }
 
 //init and export
-var maltAllocSizeDistr = new MattPageAllocSizeDistr();
+var maltAllocSizeDistr = new MaltPageAllocSizeDistr();

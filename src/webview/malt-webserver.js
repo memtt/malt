@@ -15,7 +15,7 @@ var clone       = require('clone');
 var child       = require('child_process');
 
 //internal classes
-var MattProject = require('./server-files/MattProject.js');
+var MaltProject = require('./server-files/MaltProject.js');
 
 /****************************************************/
 //start express
@@ -57,7 +57,7 @@ if (args.params.override != undefined)
 
 /****************************************************/
 //load file
-var maltProject = new MattProject(args.params.input);
+var maltProject = new MaltProject(args.params.input);
 
 /****************************************************/
 app.get('/flat.json',function(req,res) {

@@ -1,75 +1,75 @@
 //SImple class to wrap all access to remote data, it might be easier to change or remove the server
 //this way by just rewriting this class for exemple to directly load the data inside the browser
 //itself
-function MattDataSourceNodeJS()
+function MaltDataSourceNodeJS()
 {
 	
 }
 
 //wrapper to fetch source files from remote server [source-editor.js]
-MattDataSourceNodeJS.prototype.loadSourceFile = function(file,handler)
+MaltDataSourceNodeJS.prototype.loadSourceFile = function(file,handler)
 {
 	$.get("/app-sources"+file,handler);
 }
 
 //wrapper to getch annotation of source files [source-editor.js]
-MattDataSourceNodeJS.prototype.loadSourceFileAnnotations = function(file,handler)
+MaltDataSourceNodeJS.prototype.loadSourceFileAnnotations = function(file,handler)
 {
 	$.getJSON("/file-infos.json?file="+file,handler);
 }
 
 //wrapper to fetch timed data [page-timeline.js]
-MattDataSourceNodeJS.prototype.loadTimedData = function($http,handler)
+MaltDataSourceNodeJS.prototype.loadTimedData = function($http,handler)
 {
 	$http.get('/timed.json').success(handler);
 }
 
 //wrapper to fetch stack data [page-stack-peak.js]
-MattDataSourceNodeJS.prototype.loadStackData = function($http,handler)
+MaltDataSourceNodeJS.prototype.loadStackData = function($http,handler)
 {
 	$http.get('/stacks-mem.json').success(handler);
 }
 
 //wrapper to getch data for function list on left side of source browser [page-source.js & page-home]
-MattDataSourceNodeJS.prototype.loadFlatFunctionStats = function($http,handler)
+MaltDataSourceNodeJS.prototype.loadFlatFunctionStats = function($http,handler)
 {
 	$http.get('/flat.json').success(handler);
 }
 
 //wrapper to fetch data for realloc stats [page-realloc.js]
-MattDataSourceNodeJS.prototype.loadReallocStats = function($http,handler)
+MaltDataSourceNodeJS.prototype.loadReallocStats = function($http,handler)
 {
 	$http.get('/realloc-map.json').success(handler);
 }
 
 //wrapper to fetch global summary for home page [page-home.js]
-MattDataSourceNodeJS.prototype.loadGlobalSummary = function($http,handler)
+MaltDataSourceNodeJS.prototype.loadGlobalSummary = function($http,handler)
 {
 	$http.get('/data/summary.json').success(handler);
 }
 
 //wrapper to fetch the global variables infos [page-global-vars.js]
-MattDataSourceNodeJS.prototype.loadGlobalVars = function($http,handler)
+MaltDataSourceNodeJS.prototype.loadGlobalVars = function($http,handler)
 {
 	$http.get('/global-variables.json').success(handler);
 }
 
-MattDataSourceNodeJS.prototype.getSizeDistr = function($http,handler)
+MaltDataSourceNodeJS.prototype.getSizeDistr = function($http,handler)
 {
 	$http.get('/size-map.json').success(handler);
 }
 
-MattDataSourceNodeJS.prototype.getCallStackDataFileLine = function(file,line,handler)
+MaltDataSourceNodeJS.prototype.getCallStackDataFileLine = function(file,line,handler)
 {
 	$.getJSON("/stacks.json?file="+encodeURIComponent(file)+"&line="+line,handler);
 }
 
-MattDataSourceNodeJS.prototype.getCallStackDataFunc = function(func,handler)
+MaltDataSourceNodeJS.prototype.getCallStackDataFunc = function(func,handler)
 {
 	$.getJSON("/stacks.json?func="+encodeURIComponent(func),handler);
 }
 
-MattDataSourceNodeJS.prototype.loadProcMaps = function(func,handler)
+MaltDataSourceNodeJS.prototype.loadProcMaps = function(func,handler)
 {
 	$.getJSON("/procmaps.json",handler);
 }
@@ -79,13 +79,13 @@ MattDataSourceNodeJS.prototype.loadProcMaps = function(func,handler)
 //SImple class to wrap all access to remote data, it might be easier to change or remove the server
 //this way by just rewriting this class for exemple to directly load the data inside the browser
 //itself
-function MattDataSourceClientSide()
+function MaltDataSourceClientSide()
 {
 	var cur = this;
 	this.cache = {};
 	this.data = {};
-// 	var MattProject = require("MattProject");
-	this.project = new MattProject();
+// 	var MaltProject = require("MaltProject");
+	this.project = new MaltProject();
 	
 	$.getJSON("/data.json",function(data) {
 		cur.data = data;
@@ -94,33 +94,33 @@ function MattDataSourceClientSide()
 }
 
 //wrapper to fetch source files from remote server [source-editor.js]
-MattDataSourceClientSide.prototype.loadSourceFile = function(file,handler)
+MaltDataSourceClientSide.prototype.loadSourceFile = function(file,handler)
 {
 	$.get("/app-sources"+file,handler);
 }
 
 //wrapper to getch annotation of source files [source-editor.js]
-MattDataSourceClientSide.prototype.loadSourceFileAnnotations = function(file,handler)
+MaltDataSourceClientSide.prototype.loadSourceFileAnnotations = function(file,handler)
 {
 	$.getJSON("/file-infos.json?file="+file,handler);
 }
 
 //wrapper to fetch timed data [page-timeline.js]
-MattDataSourceClientSide.prototype.loadTimedData = function($http,handler)
+MaltDataSourceClientSide.prototype.loadTimedData = function($http,handler)
 {
 // 	$http.get('/timed.json').success(handler);
 	handler(this.project.getTimedValues());
 }
 
 //wrapper to fetch stack data [page-stack-peak.js]
-MattDataSourceClientSide.prototype.loadStackData = function($http,handler)
+MaltDataSourceClientSide.prototype.loadStackData = function($http,handler)
 {
 // 	$http.get('/stacks-mem.json').success(handler);
 	handler(this.project.getStacksMem());
 }
 
 //wrapper to getch data for function list on left side of source browser [page-source.js & page-home]
-MattDataSourceClientSide.prototype.loadFlatFunctionStats = function($http,handler)
+MaltDataSourceClientSide.prototype.loadFlatFunctionStats = function($http,handler)
 {
 	//$http.get('/flat.json').success(handler);
 	var res = this.cache['/flat.json'];
@@ -133,39 +133,39 @@ MattDataSourceClientSide.prototype.loadFlatFunctionStats = function($http,handle
 }
 
 //wrapper to fetch data for realloc stats [page-realloc.js]
-MattDataSourceClientSide.prototype.loadReallocStats = function($http,handler)
+MaltDataSourceClientSide.prototype.loadReallocStats = function($http,handler)
 {
 // 	$http.get('/realloc-map.json').success(handler);
 	handler(this.project.getReallocMap());
 }
 
 //wrapper to fetch global summary for home page [page-home.js]
-MattDataSourceClientSide.prototype.loadGlobalSummary = function($http,handler)
+MaltDataSourceClientSide.prototype.loadGlobalSummary = function($http,handler)
 {
 // 	$http.get('/data/summary.json').success(handler);
 	handler(this.project.getSummaryV2());
 }
 
 //wrapper to fetch the global variables infos [page-global-vars.js]
-MattDataSourceClientSide.prototype.loadGlobalVars = function($http,handler)
+MaltDataSourceClientSide.prototype.loadGlobalVars = function($http,handler)
 {
 // 	$http.get('/global-variables.json').success(handler);
 	handler(this.project.getGlobalVariables());
 }
 
-MattDataSourceClientSide.prototype.getSizeDistr = function($http,handler)
+MaltDataSourceClientSide.prototype.getSizeDistr = function($http,handler)
 {
 // 	$http.get('/size-map.json').success($http,handler);
 	handler(this.project.getSizeMap());
 }
 
-MattDataSourceClientSide.prototype.getCallStackDataFileLine = function(file,line,handler)
+MaltDataSourceClientSide.prototype.getCallStackDataFileLine = function(file,line,handler)
 {
 	//$.getJSON("/stacks.json?file="+encodeURIComponent(file)+"&line="+line,handler);
 	handler(this.project.getFilterdStacksOnFileLine(file,line));
 }
 
-MattDataSourceClientSide.prototype.getCallStackDataFunc = function(func,handler)
+MaltDataSourceClientSide.prototype.getCallStackDataFunc = function(func,handler)
 {
 	//$.getJSON("/stacks.json?func="+encodeURIComponent(func),handler);
 	handler(this.project.getFilterdStacksOnSymbol(func));
@@ -174,5 +174,5 @@ MattDataSourceClientSide.prototype.getCallStackDataFunc = function(func,handler)
 /////////////////////////////////////////////////////////////////////////
 
 //create global instance to be used in all pages
-var maltDataSource = new MattDataSourceNodeJS();
-// var maltDataSource = new MattDataSourceClientSide();
+var maltDataSource = new MaltDataSourceNodeJS();
+// var maltDataSource = new MaltDataSourceClientSide();

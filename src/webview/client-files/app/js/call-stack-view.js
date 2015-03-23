@@ -4,10 +4,10 @@
  * @param containerId Define the DIV ID in which to draw the tree.
  * @param selector Define the selector object to be used to extract informations to annotate the tree.
 **/
-function MattCallStacksView(containerId,selector)
+function MaltCallStacksView(containerId,selector)
 {
 	//errors
-	//maltHelper.assert(selector != undefined && selector instanceof MattFuncListSelector);
+	//maltHelper.assert(selector != undefined && selector instanceof MaltFuncListSelector);
 	
 	//setup container
 	this.containerId = containerId;
@@ -30,7 +30,7 @@ function MattCallStacksView(containerId,selector)
 }
 
 /********************************************************************/
-MattCallStacksView.prototype.initRender = function()
+MaltCallStacksView.prototype.initRender = function()
 {
 	var cur = this;
 	this.container.treetable({ 
@@ -49,7 +49,7 @@ MattCallStacksView.prototype.initRender = function()
 }
 
 /********************************************************************/
-MattCallStacksView.prototype.clear = function()
+MaltCallStacksView.prototype.clear = function()
 {
 	var cur = this;
 	this.stackViewRoots.forEach(function(value){
@@ -59,7 +59,7 @@ MattCallStacksView.prototype.clear = function()
 }
 
 /********************************************************************/
-MattCallStacksView.prototype.update = function(file,line)
+MaltCallStacksView.prototype.update = function(file,line)
 {
 	var cur = this;
 	this.clear();
@@ -79,7 +79,7 @@ MattCallStacksView.prototype.update = function(file,line)
 }
 
 /********************************************************************/
-MattCallStacksView.prototype.updateFunc = function(func)
+MaltCallStacksView.prototype.updateFunc = function(func)
 {
 	var cur = this;
 	this.clear();
@@ -108,7 +108,7 @@ function reduceStat(node,info)
 }
 
 /****************************************************/
-MattCallStacksView.prototype.buildCallTree = function(data)
+MaltCallStacksView.prototype.buildCallTree = function(data)
 {
 	var tree = {childs:{},id:null};
 	var id = 0;
@@ -128,7 +128,7 @@ MattCallStacksView.prototype.buildCallTree = function(data)
 }
 
 /****************************************************/
-MattCallStacksView.prototype.onClick = function(location,infos)
+MaltCallStacksView.prototype.onClick = function(location,infos)
 {
 	console.log("Click on call stack element");
 	console.log(location);
@@ -138,7 +138,7 @@ MattCallStacksView.prototype.onClick = function(location,infos)
 
 /****************************************************/
 //add info to tree
-MattCallStacksView.prototype.addToTree = function(treeNode)
+MaltCallStacksView.prototype.addToTree = function(treeNode)
 {
 	var cur = this;
 	//var metric = this.selector.getMetric();

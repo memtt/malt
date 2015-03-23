@@ -1,4 +1,4 @@
-function MattPageRealloc()
+function MaltPageRealloc()
 {
 	//declare module to manage malt home page
 	var maltModule = angular.module('malt.page.realloc',[]);
@@ -35,7 +35,7 @@ function MattPageRealloc()
 	}]);
 }
 
-MattPageRealloc.prototype.plotMostUsed = function(domId,data,maxNb)
+MaltPageRealloc.prototype.plotMostUsed = function(domId,data,maxNb)
 {
 	var data = this.cutMostUsed(data,maxNb);
 	
@@ -79,7 +79,7 @@ MattPageRealloc.prototype.plotMostUsed = function(domId,data,maxNb)
 	});
 }
 
-MattPageRealloc.prototype.cutMostUsed = function(data,maxNb)
+MaltPageRealloc.prototype.cutMostUsed = function(data,maxNb)
 {
 	var sortedData = data.sort(function(a,b) {return b.count - a.count;});
 	
@@ -105,7 +105,7 @@ MattPageRealloc.prototype.cutMostUsed = function(data,maxNb)
 	return [ { key:'Realloc', color:'blue', values:ret } ];
 }
 
-MattPageRealloc.prototype.genDeltaDistr = function(data)
+MaltPageRealloc.prototype.genDeltaDistr = function(data)
 {
 	var res = {};
 	for (var i in data)
@@ -125,7 +125,7 @@ MattPageRealloc.prototype.genDeltaDistr = function(data)
 	return res;
 }
 
-MattPageRealloc.prototype.buildLog2Histo = function(data)
+MaltPageRealloc.prototype.buildLog2Histo = function(data)
 {
 	var tmp = {};
 	
@@ -152,7 +152,7 @@ MattPageRealloc.prototype.buildLog2Histo = function(data)
 	return hist;
 }
 
-MattPageRealloc.prototype.plotLogDelta = function(domId,data)
+MaltPageRealloc.prototype.plotLogDelta = function(domId,data)
 {
 	var hist = this.buildLog2Histo(data);
 	
@@ -235,7 +235,7 @@ MattPageRealloc.prototype.plotLogDelta = function(domId,data)
 		.on('mouseout', tip.hide);
 }
 
-MattPageRealloc.prototype.plotMostUsedDelta = function(domId,data)
+MaltPageRealloc.prototype.plotMostUsedDelta = function(domId,data)
 {
 	var margin = {top: 20, right: 20, bottom: 30, left: 60},
 		width = (parseInt(d3.select('#'+domId+' svg').style('width')) || 960) - margin.left - margin.right,
@@ -383,7 +383,7 @@ MattPageRealloc.prototype.plotMostUsedDelta = function(domId,data)
 //http://bl.ocks.org/mbostock/1044242
 //http://bl.ocks.org/mbostock/7607999
 //http://bl.ocks.org/mbostock/4341134
-MattPageRealloc.prototype.resizeMap2 = function(domId,data)
+MaltPageRealloc.prototype.resizeMap2 = function(domId,data)
 {
 	var diameter = 960,
 		radius = diameter / 2,
@@ -503,7 +503,7 @@ MattPageRealloc.prototype.resizeMap2 = function(domId,data)
 	d3.select(self.frameElement).style("height", diameter + "px");
 }
 
-MattPageRealloc.prototype.resizeMap = function(domId,data)
+MaltPageRealloc.prototype.resizeMap = function(domId,data)
 {
 // 	data = [
 // 		{
@@ -635,4 +635,4 @@ MattPageRealloc.prototype.resizeMap = function(domId,data)
 	}
 }
 
-var maltPageRealloc = new MattPageRealloc();
+var maltPageRealloc = new MaltPageRealloc();

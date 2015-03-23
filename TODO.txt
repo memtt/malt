@@ -36,7 +36,7 @@ Need work
  * Maybe store the stack tree as a tree instead of list of call stack (can reduce output file size of a factor 2), but
    need some patch in GUI to rebuild the list representation used everywhere.
    Not so much work for the lib side as there is a tree class already available, but might need some work on the webview side.
-   A first step might be to juste regenerate the current format in memory when loading the file in the client MattProject class.
+   A first step might be to juste regenerate the current format in memory when loading the file in the client MaltProject class.
  * In webview, page for source annotations : add tree view of costs for call site (by default when source are not availables) [CFG]
  * Integration of tracer. Need to call the reader through node and return the informations in GUI. Interesting to do :
     - possibility to get memory used at some timestep by each call stacks (return ids, chunk count and memory size), partially done in trace reader

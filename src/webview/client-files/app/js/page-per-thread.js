@@ -1,4 +1,4 @@
-function MattPagePerThread()
+function MaltPagePerThread()
 {
 	var cur = this;
 
@@ -23,7 +23,7 @@ function MattPagePerThread()
 	}]);
 }
 
-MattPagePerThread.prototype.buildPerThreadChart = function(data,d3Selection,metric)
+MaltPagePerThread.prototype.buildPerThreadChart = function(data,d3Selection,metric)
 {
 	//format data
 	var formattedData = [];
@@ -105,4 +105,4 @@ MattPagePerThread.prototype.buildPerThreadChart = function(data,d3Selection,metr
 }
 
 //init and export
-var maltPagePerThread = new MattPagePerThread();
+var maltPagePerThread = new MaltPagePerThread();

@@ -1,4 +1,4 @@
-function MattPageTimeline()
+function MaltPageTimeline()
 {
 	function reformatDataForD3(data) {
 		var res = new Array();
@@ -297,4 +297,4 @@ function MattPageTimeline()
 	}]);
 }
 
-var maltPageTimeline = new MattPageTimeline();
+var maltPageTimeline = new MaltPageTimeline();

@@ -1,4 +1,4 @@
-function MattPageTimeline()
+function MaltPageTimeline()
 {
 	///////////////////////////////////// MAIN ////////////////////////////////////
 	//declare module to manage malt home page
@@ -10,7 +10,7 @@ function MattPageTimeline()
 	var pageCtrl = maltCtrl.controller('malt.page.sources.ctrl',['$scope','$routeParams','$http',function($scope,$routeParams,$http) {
 		//manage function list view
 		$scope.functions = [];
-		$scope.funcMetrics = new MattFuncMetrics();
+		$scope.funcMetrics = new MaltFuncMetrics();
 		$scope.metric = 'alloc.count';
 		$scope.inclusive = true;
 		$scope.limit = 15;
@@ -25,9 +25,9 @@ function MattPageTimeline()
 		$scope.order = maltMetrics[$scope.metric].defaultOrder;
 		$scope.metricList = $scope.funcMetrics.getMetricList();
 		$scope.file = "No source file...";
-		$scope.selector = new MattSelector();
-		$scope.editor = new MattSourceEditor('malt-source-editor',$scope.selector);
-		$scope.callStacks = new MattCallStacksView('malt-alloc-stacks-tree',$scope.selector);
+		$scope.selector = new MaltSelector();
+		$scope.editor = new MaltSourceEditor('malt-source-editor',$scope.selector);
+		$scope.callStacks = new MaltCallStacksView('malt-alloc-stacks-tree',$scope.selector);
 		
 		$scope.hasSources = function() 
 		{
@@ -176,7 +176,7 @@ function MattPageTimeline()
 				selector:'='
 			},
 			link: function ($scope) {
-				$scope.funcMetrics = new MattFuncMetrics();
+				$scope.funcMetrics = new MaltFuncMetrics();
 				
 				//select values for sort
 				$scope.getValue = function (x) {
@@ -228,4 +228,4 @@ function MattPageTimeline()
 	});
 }
 
-var maltPageTimeline = new MattPageTimeline();
+var maltPageTimeline = new MaltPageTimeline();
