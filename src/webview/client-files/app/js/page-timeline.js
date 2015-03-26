@@ -178,7 +178,7 @@ function MaltPageTimeline()
 		labels.push("Physical memory");
 		labels.push("Requested memory");
 		
-		return {data:res,labels:labels,ticksPerSecond:data.ticksPerSecond};
+		return {labels:labels,ticksPerSecond:data.ticksPerSecond,data:res};
 	}
 	
 	function maltConvertData2(data)
@@ -193,7 +193,7 @@ function MaltPageTimeline()
 		labels.push("Physical memory");
 		labels.push("Requested memory");
 		
-		return {data:res,labels:labels,ticksPerSecond:data.ticksPerSecond};
+		return {labels:labels,ticksPerSecond:data.ticksPerSecond,data:res};
 	}
 	
 	function maltConvertSysData(data)
@@ -208,7 +208,7 @@ function MaltPageTimeline()
 		labels.push("Swap memory");
 		//labels.push("Cached memory");
 		
-		return {data:res,labels:labels,ticksPerSecond:data.ticksPerSecond};
+		return {labels:labels,ticksPerSecond:data.ticksPerSecond,data:res};
 	}
 
 	function maltConvertCnt(data)
@@ -217,7 +217,7 @@ function MaltPageTimeline()
 		res.push( maltConvertDataInternalD3JS2(data.memoryTimeline,4) );
 		var labels = new Array();
 		labels.push("Memory segments");
-		return {data:res,labels:labels,ticksPerSecond:data.ticksPerSecond};
+		return {labels:labels,ticksPerSecond:data.ticksPerSecond,data:res};
 	}
 
 	function maltConvertSizeRate(data)
@@ -232,7 +232,7 @@ function MaltPageTimeline()
 		var labels = new Array();
 		labels.push("Malloc");
 		labels.push("Free");
-		return {data:res,labels:labels,ticksPerSecond:ticksPerSecond};
+		return {labels:labels,ticksPerSecond:ticksPerSecond,data:res};
 	}
 	
 	function maltConvertSizeRate2(data)
@@ -247,7 +247,7 @@ function MaltPageTimeline()
 		var labels = new Array();
 		labels.push("Malloc");
 		labels.push("Free");
-		return {data:res,labels:labels,ticksPerSecond:ticksPerSecond};
+		return {labels:labels,ticksPerSecond:ticksPerSecond,data:res};
 	}
 	
 	function maltConvertCountRate(data)
@@ -262,7 +262,7 @@ function MaltPageTimeline()
 		var labels = new Array();
 		labels.push("Malloc");
 		labels.push("Free");
-		return {data:res,labels:labels,ticksPerSecond:ticksPerSecond};
+		return {labels:labels,ticksPerSecond:ticksPerSecond,data:res};
 	}
 	
 	function maltConvertCountRate2(data)
@@ -277,7 +277,39 @@ function MaltPageTimeline()
 		var labels = new Array();
 		labels.push("Malloc");
 		labels.push("Free");
-		return {data:res,labels:labels,ticksPerSecond:ticksPerSecond};
+		return {labels:labels,ticksPerSecond:ticksPerSecond,data:res};
+	}
+	
+	function graphDataToCSV(data)
+	{
+		//buffer
+		var buffer = "";
+
+		//header
+		for (var i in data.labels)
+		{
+			if (i > 0)
+				buffer+=",";
+			buffer += data.labels[i] + " timestamp"+","+data.labels[i];
+		}
+		buffer+="\n";
+		
+		//values
+		for (var j in data.data[0])
+		{
+			for (var i in data.data)
+			{
+				if (i > 0)
+					buffer+=",";
+				if (data.data[i][j] != undefined)
+					buffer += data.data[i][j].x + ","+data.data[i][j].y;
+				else
+					buffer += ",";
+			}
+			buffer+="\n";
+		}
+		
+		return buffer;
 	}
 	
 	///////////////////////////////////// MAIN ////////////////////////////////////
@@ -288,9 +320,49 @@ function MaltPageTimeline()
 	
 	//main controler of the page
 	var pageCtrl = maltCtrl.controller('malt.page.timeline.ctrl',['$scope','$http',function($scope,$http) {
+		
+		$scope.onExportData = function(dataName,format)
+		{
+			var data;
+			
+			//select data
+			switch(dataName)
+			{
+				case 'malt-mem-timeline':
+					data = maltConvertData($scope.data);
+					break;
+				case 'malt-alive-chunks-timeline':
+					data = maltConvertCnt($scope.data);
+					break;
+				case "malt-alloc-rate-size-timeline":
+					data = maltConvertSizeRate2($scope.data);
+					break;
+				case "malt-alloc-rate-count-timeline":
+					data = maltConvertCountRate2($scope.data);
+					break;
+				case "malt-sys-free-mem-timeline":
+					data = maltConvertSysData($scope.data);
+					break;
+			}
+			
+			//set formatted data
+			switch(format)
+			{
+				case 'json':
+					$scope.dataModal = JSON.stringify(data,null,' ');
+					break;
+				case 'csv':
+					$scope.dataModal = graphDataToCSV(data);
+					break;
+			}
+			
+			//show
+			$('#myModal').modal();
+		}
+
 		//fetch summaryData
 		maltDataSource.loadTimedData($http,function(data) {
-			$scope.reallocMap = data;
+			$scope.data = data;
 
 			maltNVDGraph("malt-mem-timeline",maltConvertData(data),'B','Memory');
 			maltNVDGraph("malt-alive-chunks-timeline",maltConvertCnt(data),'Alive chunks','Allocations');

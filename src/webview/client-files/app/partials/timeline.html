@@ -23,30 +23,71 @@
 		<h2>Memory allocated over time</h2>
 		<div id='malt-mem-timeline' class='malt-size-plot'>
 			<svg height="400px" width="100%"/>
+			<center><a href="" ng-click="onExportData('malt-mem-timeline','json')">JSON data</a> | <a href="" ng-click="onExportData('malt-mem-timeline','csv')">CSV data</a></center>
 		</div>
 		
 		<!-- Global summary -->
 		<h2>Alive chunks over time</h2>
 		<div id='malt-alive-chunks-timeline' class='malt-size-plot'>
 			<svg height="400px" width="100%"/>
+			<center><a href="" ng-click="onExportData('malt-alive-chunks-timeline','json')">JSON data</a> | <a href="" ng-click="onExportData('malt-alive-chunks-timeline','csv')">CSV data</a></center>
 		</div>
 		
 		<!-- Global summary -->
 		<h2>Allocation rate (memory size)</h2>
 		<div id='malt-alloc-rate-size-timeline' class='malt-size-plot'>
 			<svg height="400px" width="100%"/>
+			<center><a href="" ng-click="onExportData('malt-alloc-rate-size-timeline','json')">JSON data</a> | <a href="" ng-click="onExportData('malt-alloc-rate-size-timeline','csv')">CSV data</a></center>
 		</div>
 		
 		<!-- Global summary -->
 		<h2>Allocation rate (operations)</h2>
 		<div id='malt-alloc-rate-count-timeline' class='malt-size-plot'>
 			<svg height="400px" width="100%"/>
+			<center><a href="" ng-click="onExportData('malt-alloc-rate-count-timeline','json')">JSON data</a> | <a href="" ng-click="onExportData('malt-alloc-rate-count-timeline','csv')">CSV data</a></center>
 		</div>
 		
 		<!-- Global summary -->
 		<h2>System memory</h2>
 		<div id='malt-sys-free-mem-timeline' class='malt-size-plot'>
 			<svg height="400px" width="100%"/>
+			<center><a href="" ng-click="onExportData('malt-sys-free-mem-timeline','json')">JSON data</a> | <a href="" ng-click="onExportData('malt-sys-free-mem-timeline','csv')">CSV data</a></center>
 		</div>
 	</div>
+	
+	<div class="modal fade" id="myModal" >
+		<div class="modal-dialog">
+			<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title">Modal title</h4>
+			</div>
+			<div class="modal-body">
+<!-- 				<textarea width="200" cols="65" rows="20">{{dataModal}}</textarea> -->
+				<pre id="modal-pre" style="max-height: 400px;">{{dataModal}}</pre>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+				<button type="button" class="btn btn-primary" onclick="selectOnClickPre(document.getElementById('modal-pre'))">Select all</button>
+			</div>
+			</div><!-- /.modal-content -->
+		</div><!-- /.modal-dialog -->
+	</div><!-- /.modal -->
+	<script>
+		function selectOnClickPre(obj)
+		{
+			if (obj.select) {
+			obj.select();
+			}
+			else if (document.selection) {
+				var range = document.body.createTextRange();
+				range.moveToElementText(obj);
+				range.select();
+			} else if (window.getSelection) {
+				var range = document.createRange();
+				range.selectNode(obj);
+				window.getSelection().addRange(range);
+			}
+		}
+	</script>
 </div>
