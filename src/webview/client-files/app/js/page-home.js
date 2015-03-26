@@ -117,7 +117,7 @@ function MaltPageHome()
 			format: function(x) {return maltHelper.humanReadable(x,1,'B',false);}
 		},{
 			key:'meanAllocSize',
-			name:'Largest allocations',
+			name:'Mean allocations',
 			level: 2,
 			help:"The mean request size received by malloc, calloc...",
 			format: function(x) {return maltHelper.humanReadable(x,1,'B',false);}
@@ -141,7 +141,7 @@ function MaltPageHome()
 			name:'Leaked object count',
 			level: 2,
 			help:"Total number of allocated object which have leaked (malloc, calloc... without free).",
-			format: function(x) {return maltHelper.humanReadable(x,1,'B',false);}
+			format: function(x) {return maltHelper.humanReadable(x,1,'',false);}
 		},{
 			type:'separator',
 			level: 2

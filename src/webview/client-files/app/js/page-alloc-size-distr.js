@@ -18,7 +18,7 @@ function MaltPageAllocSizeDistr()
 			var largest = 0;
 			for (var i in data)
 			{
-				sumSize += +i;
+				sumSize += +i*(+data[i]);
 				sumCount += +data[i];
 				if (mostUsed == -1 || +data[mostUsed] < +data[i])
 					mostUsed = +i;
