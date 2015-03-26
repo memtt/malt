@@ -1,7 +1,7 @@
 ######################################################
 #            PROJECT  : MALT                         #
-#            VERSION  : 0.1.0-dev                    #
-#            DATE     : 01/2014                      #
+#            VERSION  : 0.1.0                        #
+#            DATE     : 03/2015                      #
 #            AUTHOR   : Valat Sébastien              #
 #            LICENSE  : CeCILL-C                     #
 ######################################################
@@ -32,3 +32,11 @@ MACRO(malt_enable_gcc_coverage)
 	set(CMAKE_CXX_FLAGS "${CMAKE_C_FLAGS} -O0 -fprofile-arcs -ftest-coverage")
 	set(CMAKE_EXE_LINKER_FLAGS_FLAGS "${CMAKE_C_FLAGS} -O0 -fprofile-arcs -ftest-coverage")
 ENDMACRO(malt_enable_gcc_coverage)
+
+######################################################
+MACRO(check_nodejs)
+	find_program(NODEJS_PATH NAMES node nodejs)
+	if (NOT NODEJS_PATH)
+		message(WARNING "Failed to find nodeJS program, the webserver GUI will not work !")
+	endif(NOT NODEJS_PATH)
+ENDMACRO(check_nodejs)

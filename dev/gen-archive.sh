@@ -1,5 +1,6 @@
+#!/bin/bash
 ######################################################
-#            PROJECT  : MALT                         #
+#            PROJECT  : MATT                         #
 #            VERSION  : 0.1.0                        #
 #            DATE     : 03/2015                      #
 #            AUTHOR   : Valat Sébastien              #
@@ -7,9 +8,11 @@
 ######################################################
 
 ######################################################
-set(MALT_LIB_SRC AllocStackProfiler.cpp
-	             LocalAllocStackProfiler.cpp)
+#extract version
+version=0.1.0
+prefix=malt-${version}
 
 ######################################################
-add_library(malt-profiler OBJECT ${MALT_LIB_SRC})
-SET_TARGET_PROPERTIES(malt-profiler PROPERTIES COMPILE_FLAGS -fPIC)
+echo "Generate ${prefix}.tar.gz..."
+git archive --format=tar --prefix=${prefix}/ HEAD | gzip > ${prefix}.tar.gz
+echo "Finished"

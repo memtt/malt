@@ -1,6 +1,6 @@
 {
   "name": "malt-webview",
-  "version": "0.0.0-dev",
+  "version": "0.1.0",
   "description": "Web view based on Node.js for MALT.",
   "main": "main.js",
   "scripts": {
