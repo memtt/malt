@@ -46,6 +46,10 @@ function MaltPageTimeline()
 			d3.select('#'+divId + " svg")
 				.datum(myData)
 				.call(chart);
+				
+			d3.selectAll('#'+divId + " svg").on("keyup", function (e) {    
+				alert(e[0].values[0]);
+				});
 
 			nv.utils.windowResize(chart.update);
 

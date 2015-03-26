@@ -115,6 +115,8 @@ MaltHelper.prototype.humanReadable = function(value,decimals,unit,protectedSpace
 }
 
 /********************************************************************/
+
+/********************************************************************/
 MaltHelper.prototype.humanReadableTimes = function(value)
 {
 	if (value > 0 && value < 1)
@@ -138,9 +140,9 @@ MaltHelper.prototype.humanReadableTimes = function(value)
 	if (days > 0)
 		res+=days+".";
 	if (hours > 0 || days > 0)
-		res+=hours.toFixed(2)+":";
+		res+=String("00"+hours).slice(-2)+":";
 	if (hours > 0 || days > 0 || minutes > 0)
-		res+=minutes.toFixed(2)+":";
+		res+=String("00"+minutes).slice(-2)+":";
 	if (hours > 0 || days > 0 || minutes > 0 || seconds > 0)
 		res+=seconds.toFixed(1);
 	return res;
