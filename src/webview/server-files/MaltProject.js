@@ -55,9 +55,8 @@ MaltProject.prototype.loadFile = function(file)
 
 		//manage errors
 		if (err) {
-			var msg = 'Error: ' + err;
-			console.log(msg);
-			throw new Error(msg);
+			console.log(err);
+			throw new Error(err);
 		}
 		
 		//ok parse

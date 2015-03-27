@@ -61,19 +61,37 @@ free(a);                  //Total virtual = 0
 <p>There is no guaranty that the allocator return the virtual memory immediatly, it might keep it for latter use. In practive it appens only for small segments (upper magnitude is roughtly 128 Kb).
 The virtual memory also contain all the libraries and executable code so can contain much more than the requested memory.</p>
 
+<p>Caution, in practive the virtual take in account the memory space consummed by the binaries (lib and executable) of your program. MALT remove its own memory usage from this metric.</p>
+
 <h2>Physical memory</h2>
 
-<p>TODO</p>
+<p>By default the operating system only allocate Virtual Memory by keeping track of the authorized memory addressed. He didn't associate any physical
+pages to those virtual segments. The first access on a virtual page generate a "page fault" to notify the OS. On page fault, the OS searh and
+map a physical page to the virtual one. The virtual memory give the memory requested by the user and the physical give the memory used by
+the user. Gaps between those two metrics point too large allocation compared to the memory usage.</p>
+
+<pre>
+                          //initial virtual = 0,  physical = 0
+void * a = malloc(2M);    //Total virtual = 2M,  physical = 0
+memset(a,0,1M)            //Total virtual = 2M,  physical = 1M
+memset(a+1M,0,1M)         //Total virtual = 2M,  physical = 2M
+free(a);                  //Total virtual = 0,   physical = 0
+</pre>
+
+<p>Caution, in practive the physical memory as for the virtual take in account the memory space consummed by the binaries (lib and executable) of your program. MALT remove its own memory usage from this metric.</p>
 
 <h2>Internal memory</h2>
 
-<p>TODO</p>
-
-<h2>Virtual memory</h2>
-
-<p>TODO</p>
+<p>The internal memory represent the memory used by MALT itself.</p>
 
 <h2>About memory peaks</h2>
+
+<p>MALT provide two kinds of memory peaks : </p>
+
+<ul>
+	<li>Local peak : it track the maximum memor used by a given function for the wall execution.</li>
+	<li>Global peak : it track the memory used by a function at global peak time, it might be smaller than local peak as the function might use no memory when the global peak append.</li>
+</ul>
 
 <h2>About chunk lifetime</h2>
 
