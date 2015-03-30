@@ -289,8 +289,9 @@ function MaltPageTimeline()
 		for (var i in data.labels)
 		{
 			if (i > 0)
-				buffer+=",";
-			buffer += data.labels[i] + " timestamp"+","+data.labels[i];
+				buffer+="\t";
+			buffer += '"' + data.labels[i] + " timestamp"+'"\t"'+data.labels[i]+"'";
+			//buffer += data.labels[i] + " timestamp"+'\t'+data.labels[i];
 		}
 		buffer+="\n";
 		
@@ -300,11 +301,11 @@ function MaltPageTimeline()
 			for (var i in data.data)
 			{
 				if (i > 0)
-					buffer+=",";
+					buffer+="\t";
 				if (data.data[i][j] != undefined)
-					buffer += data.data[i][j].x + ","+data.data[i][j].y;
+					buffer += data.data[i][j].x + "\t"+data.data[i][j].y;
 				else
-					buffer += ",";
+					buffer += "\t";
 			}
 			buffer+="\n";
 		}
