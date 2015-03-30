@@ -25,7 +25,8 @@ module.exports = function(grunt) {
 		"client-files/app/js/source-editor.js",
 		"client-files/app/js/call-stack-view.js",
 		//pages
-		"client-files/app/js/MaltBundle.js",
+		//"build/MaltBundle.js",
+		//"MaltBundle.js",
 		"client-files/app/js/data-source.js",
 		"client-files/app/js/page-home.js",
 		"client-files/app/js/page-global-vars.js",
@@ -34,7 +35,9 @@ module.exports = function(grunt) {
 		"client-files/app/js/page-stack-peaks.js",
 		"client-files/app/js/page-timeline.js",
 		"client-files/app/js/page-sources.js",
-		"client-files/app/js/page-per-thread.js"
+		"client-files/app/js/page-per-thread.js",
+		//partials
+		"build/app-partials.js"
 	];
 	var cssFiles = [
 		"client-files/app/bower_components/jquery-treetable/css/jquery.treetable.css",
@@ -51,20 +54,22 @@ module.exports = function(grunt) {
 	// Project configuration.
 	grunt.initConfig({
 		pkg: grunt.file.readJSON('package.json'),
-		uglify: {
+		concat: {
 			options: {
-				banner: '/*! <%= pkg.name %> <%= grunt.template.today("yyyy-mm-dd") %> */\n'
+				banner: '/*! <%= pkg.name %> <%= grunt.template.today("yyyy-mm-dd") %> */\n',
+// 				separator: ';'
+				mangle: false
 			},
-			distr: {
+			dist: {
 				files: {
-					'distr/<%= pkg.name %>.min.js':jsFiles
+					'dist/<%= pkg.name %>.min.js':jsFiles
 				}
 			}
 		},
 		browserify: {
 			dist: {
 				files: {
-					'client-files/app/js/MaltBundle.js': ['server-files/MaltProject.js'],
+					'build/MaltBundle.js': ['server-files/MaltProject.js'],
 				},
 				options: {
 				}
@@ -75,9 +80,9 @@ module.exports = function(grunt) {
 				shorthandCompacting: false,
 				roundingPrecision: -1
 			},
-			distr: {
+			dist: {
 				files: {
-					'distr/<%= pkg.name %>.min.css': cssFiles
+					'dist/<%= pkg.name %>.min.css': cssFiles
 				}
 			}
 		},
@@ -85,7 +90,7 @@ module.exports = function(grunt) {
 			main: {
 				files: [
 					// includes files within path
-					{expand: true,flatten:true, src: ['client-files/app/index-distr.html'], dest: 'distr/', filter: 'isFile'},
+					{expand: true,flatten:true, src: ['client-files/app/index-dist.html'], dest: 'dist/', filter: 'isFile'},
 
 					// includes files within path and its sub-directories
 					//{expand: true, src: ['path/**'], dest: 'dest/'},
@@ -98,14 +103,22 @@ module.exports = function(grunt) {
 				],
 			},
 		},
+		ngtemplates:  {
+			"malt.app":        {
+				cwd:      'client-files/app',
+				src:      'partials/**.html',
+				dest:     'build/app-partials.js'
+			}
+		}
 	});
 
 	// Load the plugin that provides the "uglify" task.
-	grunt.loadNpmTasks('grunt-contrib-uglify');
+	grunt.loadNpmTasks('grunt-contrib-concat');
 	grunt.loadNpmTasks('grunt-browserify');
 	grunt.loadNpmTasks('grunt-contrib-cssmin');
 	grunt.loadNpmTasks('grunt-contrib-copy');
+	grunt.loadNpmTasks('grunt-angular-templates');
 
 	// Default task(s).
-	grunt.registerTask('default', ['browserify','uglify','cssmin','copy']);
+	grunt.registerTask('default', ['browserify','ngtemplates','concat','cssmin','copy']);
 };

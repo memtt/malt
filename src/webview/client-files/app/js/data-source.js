@@ -93,6 +93,20 @@ function MaltDataSourceClientSide()
 	});
 }
 
+//SImple class to wrap all access to remote data, it might be easier to change or remove the server
+//this way by just rewriting this class for exemple to directly load the data inside the browser
+//itself
+function MaltDataSourceClientSideData(data)
+{
+	var cur = this;
+	this.cache = {};
+	this.data = {};
+// 	var MaltProject = require("MaltProject");
+	this.project = new MaltProject();
+	
+	cur.project.loadData(data);
+}
+
 //wrapper to fetch source files from remote server [source-editor.js]
 MaltDataSourceClientSide.prototype.loadSourceFile = function(file,handler)
 {
@@ -173,6 +187,13 @@ MaltDataSourceClientSide.prototype.getCallStackDataFunc = function(func,handler)
 
 /////////////////////////////////////////////////////////////////////////
 
-//create global instance to be used in all pages
-var maltDataSource = new MaltDataSourceNodeJS();
-// var maltDataSource = new MaltDataSourceClientSide();
+// if (maltData == undefined)
+// {
+// 	alert("Use dynamic MALT data.");
+	//create global instance to be used in all pages
+	var maltDataSource = new MaltDataSourceNodeJS();
+	// var maltDataSource = new MaltDataSourceClientSide();
+// } else {
+// 	alert("Use preloaded MALT data.");
+// 	var maltDataSource = new MaltDataSourceClientSideData(maltData);
+// }
