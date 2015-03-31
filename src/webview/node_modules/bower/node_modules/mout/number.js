@@ -4,6 +4,7 @@
 //run `node build` instead
 module.exports = {
     'MAX_INT' : require('./number/MAX_INT'),
+    'MAX_SAFE_INTEGER' : require('./number/MAX_SAFE_INTEGER'),
     'MAX_UINT' : require('./number/MAX_UINT'),
     'MIN_INT' : require('./number/MIN_INT'),
     'abbreviate' : require('./number/abbreviate'),

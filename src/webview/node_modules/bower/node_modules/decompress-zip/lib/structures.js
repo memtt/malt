@@ -1,5 +1,4 @@
 'use strict';
-
 var binary = require('binary');
 
 var convertDateTime = function (dosDate, dosTime) {
@@ -220,7 +219,6 @@ var readFileEntry = function (buffer) {
 
     return fileEntry;
 };
-
 
 var structures = module.exports = {
     readEndRecord: readEndRecord,

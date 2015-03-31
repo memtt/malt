@@ -50,7 +50,7 @@ var base = {
     }
 };
 
-var myObj = createObject(base, {
+var myObject = createObject(base, {
     name : 'Lorem Ipsum'
 });
 
@@ -119,6 +119,38 @@ See: [`clone()`](#clone)
 
 
 
+## deepEquals(a, b, [callback]):Boolean
+
+Recursively tests whether two values contains the same keys and values.
+
+`callback` specifies the equality comparison function used to compare
+non-object values. It defaults to using the [`is()`](#is) function.
+
+If the values are both an object or array, it will recurse into both values,
+checking if their keys/values are equal. It will only check the keys and values
+contained by the objects; it will not check the objects' prototypes.  If either
+of the values are not objects, they will be checked using the `callback`
+function.
+
+Example:
+
+```js
+deepEquals({ a: 1 }, { a: 1 }); // true
+deepEquals({ value: { a: 1 } }, { value: { a: 1 } }); // true
+deepEquals({ value: { a: 1 } }, { value: { a: 2 } }); // false
+deepEquals({ value: { a: 1 } }, { value: { a: 1, b: 2 } }); // false
+deepEquals({}, null); // false
+deepEquals(null, null); // true
+deepEquals(
+    { a: { b: 1 } },
+    { a: { b: '1' } },
+    function(a, b) { return a == b; }); // true
+```
+
+See: [object/equals](object.html#equals), [array/equals](array.html#equals)
+
+
+
 ## defaults(val, ...defaults):void
 
 Return first value that isn't `null` or `undefined`.
@@ -129,6 +161,13 @@ Return first value that isn't `null` or `undefined`.
         bar = defaults(bar, 123);
         // ...
     }
+
+
+
+## GLOBAL:Object
+
+Reference to the global context (`window` inside a browser, `global` on
+node.js). Works on ES3 and ES5 strict-mode.
 
 
 
@@ -234,6 +273,9 @@ If value is a Date.
 
 Checks if Array/Object/String is empty.
 
+Will return `true` for any object that doesn't contain enumerable properties
+and also to any type of value that isn't considered a collection (boolean,
+null, undefined, function, etc).
 
 ```js
 isEmpty('');         // true
@@ -242,6 +284,11 @@ isEmpty([]);         // true
 isEmpty([1, 2]);     // false
 isEmpty({});         // true
 isEmpty({a:1, b:2}); // false
+// null, undefined, booleans, numbers are considered as "empty" values
+isEmpty(null);       // true
+isEmpty(undefined);  // true
+isEmpty(123);        // true
+isEmpty(true);       // true
 ```
 
 

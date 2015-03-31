@@ -1,4 +1,4 @@
-
+var isPrimitive = require('../lang/isPrimitive');
 
     /**
      * get "nested" object property
@@ -9,7 +9,7 @@
 
         while (prop = parts.shift()) {
             obj = obj[prop];
-            if (typeof obj !== 'object' || !obj) return;
+            if (obj == null) return;
         }
 
         return obj[last];

@@ -1,6 +1,5 @@
 var kindOf = require('./kindOf');
-
-    var _win = this;
+var GLOBAL = require('./GLOBAL');
 
     /**
      * Convert array-like object into array
@@ -11,7 +10,7 @@ var kindOf = require('./kindOf');
             n;
 
         if (val != null) {
-            if ( val.length == null || kind === 'String' || kind === 'Function' || kind === 'RegExp' || val === _win ) {
+            if ( val.length == null || kind === 'String' || kind === 'Function' || kind === 'RegExp' || val === GLOBAL ) {
                 //string, regexp, function have .length but user probably just want
                 //to wrap value into an array..
                 ret[ret.length] = val;

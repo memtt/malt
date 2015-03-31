@@ -1,10 +1,7 @@
 var hasOwn = require('./hasOwn');
 var every = require('./every');
 var isObject = require('../lang/isObject');
-
-    function defaultCompare(a, b) {
-        return a === b;
-    }
+var is = require('../lang/is');
 
     // Makes a function to compare the object values from the specified compare
     // operation callback.
@@ -22,7 +19,7 @@ var isObject = require('../lang/isObject');
      * Checks if two objects have the same keys and values.
      */
     function equals(a, b, callback) {
-        callback = callback || defaultCompare;
+        callback = callback || is;
 
         if (!isObject(a) || !isObject(b)) {
             return callback(a, b);

@@ -10,7 +10,7 @@ var makeIterator = require('../function/makeIterator_');
         }
 
         var n = arr.length;
-        while (n-- >= 0) {
+        while (--n >= 0) {
             if (iterator(arr[n], n, arr)) {
                 return n;
             }

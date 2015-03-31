@@ -52,7 +52,7 @@ PThrottler.prototype.abort = function () {
         return entry.deferred.promise;
     });
 
-    return Q.allResolved(promises)
+    return Q.allSettled(promises)
     .then(function () {});  // Resolve with no value
 };
 

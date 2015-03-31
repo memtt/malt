@@ -1,6 +1,5 @@
 #!/usr/bin/env node
 'use strict';
-
 var nopt = require('nopt');
 var path = require('path');
 var version = require('../package.json').version;
@@ -32,10 +31,12 @@ var pad = function (string, length) {
 
 var octal = function (number, digits) {
     var result = '';
+
     for (var i = 0; i < digits; i++) {
         result = (number & 0x07) + result;
         number >>= 3;
     }
+
     return result;
 };
 

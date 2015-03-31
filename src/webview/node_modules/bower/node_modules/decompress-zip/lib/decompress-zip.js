@@ -15,13 +15,9 @@ var signatures = require('./signatures');
 var extractors = require('./extractors');
 var FileDetails = require('./file-details');
 
-// Denodify some node lib methods
-
 var fstat = Q.denodeify(fs.fstat);
 var read = Q.denodeify(fs.read);
 var fopen = Q.denodeify(fs.open);
-
-// Class definition
 
 function DecompressZip(filename) {
     events.EventEmitter.call(this);
@@ -30,6 +26,7 @@ function DecompressZip(filename) {
     this.stats = null;
     this.fd = null;
     this.chunkSize = 1024 * 1024; // Buffer up to 1Mb at a time
+    this.dirCache = {};
 
     // When we need a resource, we should check if there is a promise for it
     // already and use that. If the promise is already fulfilled we don't do the
@@ -38,8 +35,6 @@ function DecompressZip(filename) {
 }
 
 util.inherits(DecompressZip, events.EventEmitter);
-
-DecompressZip.version = require('../package.json').version;
 
 DecompressZip.prototype.openFile = function () {
     return fopen(this.filename, 'r');
@@ -107,7 +102,8 @@ DecompressZip.prototype.extract = function (options) {
         if (options.strip) {
             files = files.map(function (file) {
                 if (file.type !== 'Directory') {
-                    var dir = file.parent.split(path.sep);
+                    // we don't use `path.sep` as we're using `/` in Windows too
+                    var dir = file.parent.split('/');
                     var filename = file.filename;
 
                     if (options.strip > dir.length) {
@@ -116,7 +112,8 @@ DecompressZip.prototype.extract = function (options) {
                         dir = dir.slice(options.strip);
                     }
 
-                    return file.path = path.join(dir.join(path.sep), filename);
+                    file.path = path.join(dir.join(path.sep), filename);
+                    return file;
                 }
             });
         }
@@ -240,10 +237,11 @@ DecompressZip.prototype.extractFiles = function (files, options, results) {
     var self = this;
 
     results = results || [];
-
+    var fileIndex = 0;
     files.forEach(function (file) {
         var promise = self.extractFile(file, options)
         .then(function (result) {
+            self.emit('progress', fileIndex++, files.length);
             results.push(result);
         });
 
@@ -284,7 +282,7 @@ DecompressZip.prototype.extractFile = function (file, options) {
     //   98 - PPMd version I, Rev 1
 
     if (file.type === 'Directory') {
-        return extractors.folder(file, destination);
+        return extractors.folder(file, destination, this);
     }
 
     if (file.type === 'File') {
@@ -310,6 +308,5 @@ DecompressZip.prototype.extractFile = function (file, options) {
 
     throw new Error('Unsupported file type "' + file.type + '"');
 };
-
 
 module.exports = DecompressZip;
