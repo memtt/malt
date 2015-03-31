@@ -155,12 +155,8 @@ void convertToJson ( htopml::JsonState& json, const TimeProfiler & value )
 				for (int i = 0 ; i < maxId ; i++)
 				{
 					if (bandwidth || value.touched[j*value.size+i])
-					{
 						last = value.values[j*value.size+i];
-						json.printValue(last);
-					} else {
-						json.printValue(last);
-					}
+					json.printValue(last);
 				}
 			json.closeFieldArray(value.entryNames[j].c_str());
 		}

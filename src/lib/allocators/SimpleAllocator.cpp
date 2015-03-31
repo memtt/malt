@@ -109,13 +109,46 @@ void SimpleAllocator::requestSystemMemory(size_t size)
  *
  * @param size of the segment to allocate.
 **/
-void* SimpleAllocator::malloc(size_t size)
+void * SimpleAllocator::malloc(size_t size)
+{
+	#ifdef NDEBUG
+		return realMalloc(size);
+	#else
+		size = alignOn(size,MATT_ALLOC_BASIC_ALIGN);
+		size += sizeof(size_t);
+		size_t * ptr = realMalloc(size);
+		ptr[(size / sizeof(size_t))-1] = 0x42;
+	#endif
+}
+
+/*******************  FUNCTION  *********************/
+void SimpleAllocator::checkCanary ( void* ptr, size_t size )
+{
+	//MATT_ASSERT((size_*)ptr[0]== 0x42);
+	MATT_ASSERT((size_*)ptr[(size/sizeof(size_t))-1]== 0x42);
+}
+
+/*******************  FUNCTION  *********************/
+size_t SimpleAllocator::alignOn ( size_t size, size_t align )
+{
+	//rount to multiple of pointer size
+	if (size % align != 0)
+		size += align - size%align;
+
+	return size;
+}
+
+/*******************  FUNCTION  *********************/
+/**
+ * Implementation of malloc, it is used by malloc() with or
+ * without canary code for debugging.
+**/
+void* SimpleAllocator::realMalloc(size_t size)
 {
 	assert(this != NULL);
 	
 	//rount to multiple of pointer size
-	if (size % sizeof(void*) != 0)
-		size += sizeof(void*) - size%sizeof(void*);
+	size = alignOn(size,MATT_ALLOC_BASIC_ALIGN);
 
 	//timer
 	CODE_TIMING_FUNC_START("internalMalloc");
@@ -180,6 +213,11 @@ void SimpleAllocator::free(void* ptr)
 	assert(chunk != NULL);
 	if (chunk == NULL)
 		return;
+	
+	//check canary
+	#ifndef NDEBUG
+		checkCanary(ptr,chunk->size);
+	#endif //NDEBUG
 	
 	//register in free list
 	MATT_OPTIONAL_CRITICAL(lock,threadSafe)
