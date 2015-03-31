@@ -73,6 +73,7 @@ module.exports = function(grunt) {
 					'build/MaltBundle.js': ['server-files/MaltProject.js'],
 				},
 				options: {
+					external: "MaltProject",
 				}
 			}
 		},
@@ -90,7 +91,9 @@ module.exports = function(grunt) {
 		copy: {
 			main: {
 				files: [
-					{expand: true,flatten:true, src: ['client-files/app/index-dist.html','client-files/app/js/MaltBundle.js'], dest: 'dist/', filter: 'isFile'},
+					{expand: true,flatten:true, src: ['client-files/app/index-dist.html'], dest: 'dist/', filter: 'isFile'},
+					//TODO remve this and use auto-generated (browserify) one, but need to find option to export class name :
+					{expand: true,flatten:true, src: ['client-files/app/js/MaltBundle.js'], dest: 'dist/', filter: 'isFile'},
 					//{expand: true,flatten:true, src: jsFiles, dest: 'dist/js', filter: 'isFile'},
 					//{expand: true,flatten:true, src: ['client-files/app/partials/*.html'], dest: 'partials/', filter: 'isFile'},
 				],
