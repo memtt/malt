@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en" ng-app="malt.app">
+<head>
+	<meta charset="utf-8">
+	<title>MALT webview</title>
+	
+		<!-- config -->
+	<script language="javascript">
+		maltStandalone=true;
+	</script>
+	
+	<!-- Jquery -->
+	<script src="MaltBundle.js"></script>
+	<script src="malt-webview.min.js"></script>
+	<link rel="stylesheet" href="malt-webview.min.css">
+	
+	
+	<!-- Jquery -->
+<!-- 	<script src="js/jquery.min.js"></script> -->
+	
+	<!-- Jquery treetable -->
+<!-- 	<script src="js/jquery.treetable.js"></script> -->
+<!-- 	<link rel="stylesheet" href="css/jquery.treetable.css"> -->
+<!-- 	<link rel="stylesheet" href="css/jquery.treetable.theme.default.css"> -->
+  
+	<!-- bootstrap CSS -->
+<!-- 	<link rel="stylesheet" href="css/bootstrap.min.css"> -->
+<!-- 	<link rel="stylesheet" href="css/bootstrap-theme.min.css"> -->
+<!-- 	<script src="js/bootstrap.min.js"></script> -->
+  
+	<!-- Use of angular -->
+<!-- 	<script src="js/angular.js"></script> -->
+<!-- 	<script src="js/angular-route.js"></script> -->
+<!-- 	<script src="js/angular-animate.js"></script> -->
+	
+	<!--codemirror UI with angular -->
+<!-- 	<link rel="stylesheet" type="text/css" href="css/codemirror.css"> -->
+<!-- 	<link rel="stylesheet" type="text/css" href="css/eclipse.css"> -->
+<!-- 	<script type="text/javascript" src="js/codemirror.js"></script> -->
+<!-- 	<script type="text/javascript" src="js/clike.js"></script> -->
+<!-- 	<script type="text/javascript" src="js/ui-codemirror.js"></script> -->
+<!-- 	<script type="text/javascript" src="js/ui-bootstrap.min.js"></script> -->
+<!-- 	<script type="text/javascript" src="js/ui-bootstrap-tpls.min.js"></script> -->
+	
+	<!-- use of d3js/nvd3 for graphs -->
+<!-- 	<script src="js/d3.min.js"></script> -->
+<!-- 	<script src="js/nv.d3.min.js"></script> -->
+<!-- 	<script src="js/d3.tip.min.js"></script> -->
+<!-- 	<link rel="stylesheet" type="text/css" href="css/nv.d3.min.css"> -->
+  
+	<!-- MALT logic -->
+<!-- 	<script src="js/helper.js"></script> -->
+<!-- 	<script src="js/app.js"></script> -->
+<!-- 	<script src="js/controlers.js"></script> -->
+<!-- 	<script src="js/animations.js"></script> -->
+	
+	<!-- MALT objs -->
+<!-- 	<script src="js/func-metrics.js"></script> -->
+<!-- 	<script src="js/source-editor.js"></script> -->
+<!-- 	<script src="js/call-stack-view.js"></script> -->
+	
+	<!-- MALT pages -->
+<!-- 	<script src="js/MaltBundle.js"></script> -->
+<!-- 	<script src="js/data-source.js"></script> -->
+<!-- 	<script src="js/page-home.js"></script> -->
+<!-- 	<script src="js/page-global-vars.js"></script> -->
+<!-- 	<script src="js/page-alloc-size-distr.js"></script> -->
+<!-- 	<script src="js/page-realloc.js"></script> -->
+<!-- 	<script src="js/page-stack-peaks.js"></script> -->
+<!-- 	<script src="js/page-timeline.js"></script> -->
+<!-- 	<script src="js/page-sources.js"></script> -->
+<!-- 	<script src="js/page-per-thread.js"></script> -->
+	
+<!-- 	<script src="js/app-partials.js"></script> -->
+	
+</head>
+<body class='malt'>
+
+	<!-- Static navbar -->
+	<div class="navbar navbar-inverse navbar-top" role="navigation">
+		<div class="container-fluid">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+					<span class="sr-only">Toggle navigation</span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+				<a class="navbar-brand" href="/">MALT WebView</a>
+				</div>
+				<div class="navbar-collapse collapse">
+				<ul class="nav navbar-nav navbar-right">
+					<li ng-class="{ active: route.current.pageKey == 'home'}"><a href="#/home">Home</a></li>
+					<li ng-class="{ active: route.current.pageKey == 'per-thread'}"><a href="#/per-thread">Threads</a></li>
+<!-- 					<li><a href="/source-profile.html">Alloc sites</a></li> -->
+					<li ng-class="{ active: route.current.pageKey == 'sources'}"><a href="#/sources">Sources</a></li>
+					<li ng-class="{ active: route.current.pageKey == 'timeline'}"><a href="#/timeline">Timeline analysis</a></li>
+<!-- 					<li><a href="/max-stack.html">Stack</a></li> -->
+					<li ng-class="{ active: route.current.pageKey == 'stackPeaks'}"><a href="#/stackPeaks">Stack memory</a></li>
+					<li ng-class="{ active: route.current.pageKey == 'allocSizeDistr'}"><a href="#/allocSizeDistr">Alloc sizes</a></li>
+					<li ng-class="{ active: route.current.pageKey == 'realloc'}"><a href="#/realloc">Realloc</a></li>
+					<li ng-class="{ active: route.current.pageKey == 'globalVars'}"><a href="#/globalVars">Global variables</a></li>
+					<!--<li ng-class="{ active: route.current.pageKey == 'page2'}"><a href="#/page2">Stacks</a></li>
+					<li ng-class="{ active: route.current.pageKey == 'funcs'}"><a href="#/funcs">Sources</a></li>-->
+					<li ng-class="{ active: route.current.pageKey == 'help'}"><a href="#/help">Help</a></li>
+				</ul>
+				<!--<form class="navbar-form navbar-right">
+					<input type="text" class="form-control" placeholder="Search...">
+				</form>-->
+			</div>
+		</div>
+	</div>
+
+	<!-- Main container -->
+	<div class='view-container container-fluid'>
+		<div ng-view class='view-frame'></div>
+	</div>
+</body>
+</html>

@@ -25,7 +25,8 @@ module.exports = function(grunt) {
 		"client-files/app/js/source-editor.js",
 		"client-files/app/js/call-stack-view.js",
 		//pages
-		//"build/MaltBundle.js",
+// 		"client-files/app/js/MaltBundle.js",
+// 		"build/MaltBundle.js",
 		//"MaltBundle.js",
 		"client-files/app/js/data-source.js",
 		"client-files/app/js/page-home.js",
@@ -89,17 +90,9 @@ module.exports = function(grunt) {
 		copy: {
 			main: {
 				files: [
-					// includes files within path
-					{expand: true,flatten:true, src: ['client-files/app/index-dist.html'], dest: 'dist/', filter: 'isFile'},
-
-					// includes files within path and its sub-directories
-					//{expand: true, src: ['path/**'], dest: 'dest/'},
-
-					// makes all src relative to cwd
-					//{expand: true, cwd: 'path/', src: ['**'], dest: 'dest/'},
-
-					// flattens results to a single level
-					//{expand: true, flatten: true, src: ['path/**'], dest: 'dest/', filter: 'isFile'},
+					{expand: true,flatten:true, src: ['client-files/app/index-dist.html','client-files/app/js/MaltBundle.js'], dest: 'dist/', filter: 'isFile'},
+					//{expand: true,flatten:true, src: jsFiles, dest: 'dist/js', filter: 'isFile'},
+					//{expand: true,flatten:true, src: ['client-files/app/partials/*.html'], dest: 'partials/', filter: 'isFile'},
 				],
 			},
 		},

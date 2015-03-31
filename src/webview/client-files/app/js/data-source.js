@@ -186,14 +186,10 @@ MaltDataSourceClientSide.prototype.getCallStackDataFunc = function(func,handler)
 }
 
 /////////////////////////////////////////////////////////////////////////
-
-// if (maltData == undefined)
-// {
-// 	alert("Use dynamic MALT data.");
-	//create global instance to be used in all pages
+if (maltStandalone)
+{
+	var maltDataSource = new MaltDataSourceClientSide();
+	// var maltDataSource = new MaltDataSourceClientSideData(maltData);
+} else {
 	var maltDataSource = new MaltDataSourceNodeJS();
-	// var maltDataSource = new MaltDataSourceClientSide();
-// } else {
-// 	alert("Use preloaded MALT data.");
-// 	var maltDataSource = new MaltDataSourceClientSideData(maltData);
-// }
+}
