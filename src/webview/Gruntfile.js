@@ -70,10 +70,12 @@ module.exports = function(grunt) {
 		browserify: {
 			dist: {
 				files: {
-					'build/MaltBundle.js': ['server-files/MaltProject.js'],
+					'dist/MaltBundle.js': ['server-files/MaltProject.js'],
 				},
 				options: {
-					external: "MaltProject",
+					browserifyOptions: {
+						standalone: "MaltProject",
+					}
 				}
 			}
 		},
@@ -92,8 +94,6 @@ module.exports = function(grunt) {
 			main: {
 				files: [
 					{expand: true,flatten:true, src: ['client-files/app/index-dist.html'], dest: 'dist/', filter: 'isFile'},
-					//TODO remve this and use auto-generated (browserify) one, but need to find option to export class name :
-					{expand: true,flatten:true, src: ['client-files/app/js/MaltBundle.js'], dest: 'dist/', filter: 'isFile'},
 					//{expand: true,flatten:true, src: jsFiles, dest: 'dist/js', filter: 'isFile'},
 					//{expand: true,flatten:true, src: ['client-files/app/partials/*.html'], dest: 'partials/', filter: 'isFile'},
 				],
