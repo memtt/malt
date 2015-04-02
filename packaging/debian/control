@@ -1,0 +1,12 @@
+Source: malt
+Section: devel
+Priority: optional
+Maintainer: Sébastien Valat <sebastien.valat.dev@orange.fr>
+Build-Depends: debhelper (>= 7), cmake, cdbs
+Standards-Version: 3.9.1
+Homepage: https://github.com/svalat/malt
+Package: malt
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, libelf-dev libunwind-dev
+Description: Tool to track memory allocation with a Web GUI.
+Tool to track memory allocation with a Web GUI.
