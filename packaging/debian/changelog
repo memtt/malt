@@ -1,7 +1,0 @@
-svunittest (0.2.0) unstable; urgency=low
-
-  * Bug fixing
-  * Add support of debian packaging
-  * Add generation of standalone GUI version
-
- -- Sébastien Valat <sebastien.valat.dev@orange.fr> Tue Mar 31 15:04:05 2015 +0200

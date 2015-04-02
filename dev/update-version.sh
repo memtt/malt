@@ -12,6 +12,13 @@ COLOR_RED="$(printf "\033[31m")"
 COLOR_RESET="$(printf "\033[0m")"
 
 ######################################################
+function extract_old_version()
+{
+	OLD_VERSION=$(cat configure | grep VERSION | xargs echo | cut -d " " -f 4)
+	echo "Old version is ${OLD_VERSION}"
+}
+
+######################################################
 function print_error()
 {
 	echo "${COLOR_RED}$@${COLOR_RESET}" 1>&2
@@ -38,6 +45,9 @@ V="VERSION"
 newversion="$V  : $(printf "%-16s" "$version")"
 
 ######################################################
+extract_old_version()
+
+######################################################
 find ./ | while read file
 do
 	#exclude node
@@ -59,3 +69,4 @@ done
 sed -i -r -e "s/\"version\": \"[0-9A-Za-z.-]+\"/\"version\": \"${version}\"/g" src/webview/bower.json
 sed -i -r -e "s/\"version\": \"[0-9A-Za-z.-]+\"/\"version\": \"${version}\"/g" src/webview/package.json
 sed -i -r -e "s/^version=[0-9A-Za-z.-]+$/version=${version}/g" dev/gen-archive.sh
+sed -i -r -e "s/${OLD_VERSION}/${version}/g" packaging/README.md

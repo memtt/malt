@@ -146,6 +146,14 @@ The alternative rely on function instrumentation by adding prove on start/end fo
 It can be done by using -finstrument-function on your compiler juste as described in "How to use" section
 or by using binary instrumentation tools juste as explained at the end of this document.
 
+Tracking stack size
+-------------------
+
+Malt can also track the memorty used by stacks over time, but for this support it is required to
+enable a compiler flag :
+
+	gcc -finstrument-functions {YOUR FILES}
+
 Experimental pintool mode
 -------------------------
 
@@ -160,3 +168,8 @@ Experimental maqao mode
 MALT can also use binary instrumentation with MAQAO (http://maqao.org/). 
 
 Please check usage into src/maqao directory.
+
+Packaging
+---------
+
+If you want to generate distribution packages, please check README.md inside packaging subdirectory.
