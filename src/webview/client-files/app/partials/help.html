@@ -82,7 +82,7 @@ free(a);                  //Total virtual = 0,   physical = 0
 
 <h2>Internal memory</h2>
 
-<p>The internal memory represent the memory used by MALT itself.</p>
+<p>The internal memory represent the memory used by MALT itself. It is determined by using a custom allocator for MALT allocations separately from the ones of you program which are managed by the standard allocator.</p>
 
 <h2>About memory peaks</h2>
 
@@ -94,6 +94,8 @@ free(a);                  //Total virtual = 0,   physical = 0
 </ul>
 
 <h2>About chunk lifetime</h2>
+
+Chunk lifetime correspond to the time between malloc and free.
 
 <h2>About fragmentation</h2>
 

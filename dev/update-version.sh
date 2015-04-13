@@ -56,8 +56,10 @@ do
 	if [ ! -z "$(echo $file | grep bower_components)" ]; then continue; fi
 	#exclude git
 	if [ ! -z "$(echo $file | grep .git)" ]; then continue; fi
-	#exclude git
+	#exclude extern-deps
 	if [ ! -z "$(echo $file | grep extern-deps)" ]; then continue; fi
+
+	#do replacement
 	sed -i -r -e "s#  DATE     : [0-9]{2}/[0-9]{4}#  ${newdate}#g" \
 	          -e "s#  $V  : .{16}#  ${newversion}#" \
 	          -e "s#  $V  : [0-9a-zA-Z.-]+\$#  $V  : ${version}#" \

@@ -18,8 +18,8 @@ function MaltPageTimeline()
 
 		return res;
 	}
-	
-	function maltNVDGraph2(divId,data,ylabel,stacked)
+
+	function maltNVDGraph2(divId,data,ylabel,stacked,unit)
 	{
 		nv.addGraph(function() {
 			var chart = nv.models.stackedAreaChart()
@@ -31,7 +31,9 @@ function MaltPageTimeline()
 				.useInteractiveGuideline(true)    //Tooltips which show all data points. Very nice!
 // 				.showControls(true)
 // 				.stacked(true)        //Allow user to switch between "Grouped" and "Stacked" mode.
+				.margin({left: 100})
 				;
+			chart.margin.left = 100;
 
 			chart.xAxis //Chart x-axis settings
 				.axisLabel('Time (secondes)')
@@ -39,7 +41,7 @@ function MaltPageTimeline()
 			
 			chart.yAxis //Chart y-axis settings
 				.axisLabel(ylabel)
-				.tickFormat(function(value){return maltHelper.humanReadable(value,1,'',false);});
+				.tickFormat(function(value){return maltHelper.humanReadable(value,1,unit,false);});
 
 			var myData = reformatDataForD3(data); //You need data...
 				
@@ -57,7 +59,7 @@ function MaltPageTimeline()
 		});
 	}
 
-	function maltNVDGraph(divId,data,ylabel,stacked)
+	function maltNVDGraph(divId,data,ylabel,stacked,unit)
 	{
 		nv.addGraph(function() {
 			var chart = nv.models.lineChart()
@@ -80,7 +82,7 @@ function MaltPageTimeline()
 			
 			chart.yAxis //Chart y-axis settings
 				.axisLabel(ylabel)
-				.tickFormat(function(value){return maltHelper.humanReadable(value,1,'',false);});
+				.tickFormat(function(value){return maltHelper.humanReadable(value,1,unit,false);});
 				
 // 			chart.lines.dispatch.on('elementClick', function(e) {
 // 				alert("You've clicked on " + e.series.key + " - " + e.point.x);
@@ -150,7 +152,8 @@ function MaltPageTimeline()
 	function maltConvertDataInternalRateD3JS2(data,id,ticksPerSecond)
 	{
 		var res = new Array();
-		var scale = data.perPoints;
+		//????? why need to /10, dont understand??????
+		var scale = data.perPoints/10;
 		console.log("scake rate : "+scale+" => "+(600*scale/ticksPerSecond));
 		//alert(data.startTime + " -> "+data.endTime+" -> "+data.steps);
 		res.push({x:0,y:0});
@@ -159,7 +162,8 @@ function MaltPageTimeline()
 		{
 			//if (data.startTime + data.scale*i <= data.endTime)
 // 			console.log(data.perPoints + " => " +data.values.length + " => " + i + " => "+(i+1)*data.perPoints/ticksPerSecond + " => "+data.values[i][id]);
-			res.push({x:(scale*(i+1)),y:((data.values[i][id])/(data.perPoints/ticksPerSecond))});
+			//res.push({x:(scale*(i+1)),y:((data.values[i][id])/(data.perPoints/ticksPerSecond))});
+			res.push({x:(scale*(i+1)),y:((data.values[i][id]))});
 		}
 		console.log(res);
 		return res;
@@ -365,13 +369,26 @@ function MaltPageTimeline()
 		maltDataSource.loadTimedData($http,function(data) {
 			$scope.data = data;
 
-			maltNVDGraph("malt-mem-timeline",maltConvertData(data),'B','Memory');
-			maltNVDGraph("malt-alive-chunks-timeline",maltConvertCnt(data),'Alive chunks','Allocations');
-			maltNVDGraph2("malt-alloc-rate-size-timeline",maltConvertSizeRate2(data),'Allocation rate B/s','Memory rate (B/s)');
-			maltNVDGraph2("malt-alloc-rate-count-timeline",maltConvertCountRate2(data),'Allocation rate op/s','Memory rate (B/s)');
-			maltNVDGraph("malt-sys-free-mem-timeline",maltConvertSysData(data),"B","Memory");
+			maltNVDGraph("malt-mem-timeline",maltConvertData(data),'B','Memory','B');
+			maltNVDGraph("malt-alive-chunks-timeline",maltConvertCnt(data),'Alive chunks','Allocations','');
+			maltNVDGraph2("malt-alloc-rate-size-timeline",maltConvertSizeRate2(data),'Allocation rate B','Memory rate (B)','B');
+			maltNVDGraph2("malt-alloc-rate-count-timeline",maltConvertCountRate2(data),'Allocation rate op','Memory rate (ops)','');
+			maltNVDGraph("malt-sys-free-mem-timeline",maltConvertSysData(data),"System free mem (B)","Memory",'B');
 		});
 	}]);
+}
+
+function maltTimelineSaveAsSVG(id)
+{
+	// Get the d3js SVG element
+	var tmp = document.getElementById(id);
+	var svg = tmp.getElementsByTagName("svg")[0];
+	// Extract the data as SVG text string
+	var svg_xml = (new XMLSerializer).serializeToString(svg);
+
+	// save
+	var blob = new Blob([svg_xml], {type: "image/svg+xml"});
+	saveAs(blob, id+".svg");
 }
 
 var maltPageTimeline = new MaltPageTimeline();

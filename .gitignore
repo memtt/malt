@@ -1,1 +1,6 @@
-src/webbiew/node_modules/
+src/webview/node_modules/grunt*
+src/webview/node_modules/browserify/
+src/webview/node_modules/.bin/grunt
+src/webview/node_modules/.bin/browserify
+src/webview/dist
+src/webview/build
