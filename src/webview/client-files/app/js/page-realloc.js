@@ -31,8 +31,65 @@ function MaltPageRealloc()
 			cur.plotMostUsedDelta('malt-most-used-delta',cur.genDeltaDistr(data));
 			cur.plotLogDelta('malt-log-delta',cur.genDeltaDistr(data));
 			cur.resizeMap2('malt-resize-map',data);
+			cur.plotXY('malt-xy',data);
 		});
 	}]);
+}
+
+MaltPageRealloc.prototype.genXYData = function(data)
+{
+	var ret = [];
+	
+	ret.push({
+      key: 'Realloc',
+      values: []
+    });
+	
+	for (var i in data)
+	{
+		ret[0].values.push({
+			x: data[i].newSize,
+			y: data[i].oldSize,
+			size: 2*Math.log(data[i].count),
+			shape:'circle'
+		});
+	}
+	return ret;
+}
+
+MaltPageRealloc.prototype.plotXY = function(domId,data)
+{
+	var cur = this;
+	nv.addGraph(function() {
+		var chart = nv.models.scatterChart()
+						.showDistX(true)    //showDist, when true, will display those little distribution lines on the axis.
+						.showDistY(true)
+						.transitionDuration(350)
+						.color(d3.scale.category10().range());
+
+		//Configure how the tooltip looks.
+		chart.tooltipContent(function(key,a,b,c) {
+			console.log(c);
+			return key+" : "+b+ " -> "+a;
+		});
+
+		//Axis settings
+		chart.xAxis
+			.axisLabel('Old size')
+			.tickFormat(function(d) { return maltHelper.humanReadable(d,1,'B',false); });
+		chart.yAxis
+			.axisLabel('New size')
+			.tickFormat(function(d) { return maltHelper.humanReadable(d,1,'B',false); });
+		chart.scatter.onlyCircles(true);
+
+		d3.select('#'+domId+' svg')
+			.datum(cur.genXYData(data))
+			.call(chart);
+
+		nv.utils.windowResize(chart.update);
+
+		return chart;
+		});
 }
 
 MaltPageRealloc.prototype.plotMostUsed = function(domId,data,maxNb)
