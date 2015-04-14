@@ -1,0 +1,35 @@
+ * valgrind / massif
+ * tcmalloc heap checker/profiler
+ * http://www.softwareverify.com/cpp-memory.php 
+ * mempro http://www.puredevsoftware.com/MemPro.htm
+ * http://en.wikipedia.org/wiki/IBM_Rational_Purify
+ * http://igprof.org/
+ * http://people.redhat.com/otaylor/memprof/memtools.html
+ * http://panthema.net/2013/malloc_count/
+???:
+ * http://support.smartbear.com/screencasts/aqtime/
+ * http://www.yourkit.com/docs/80/help/allocations.jsp
+ * http://support.smartbear.com/viewarticle/43401/
+ * http://mpatrol.sourceforge.net/doc/Profiling.html
+ * http://dotnet.dzone.com/articles/profiling-application-visual-1
+ * http://www.mercurylang.org/information/doc-latest/mercury_user_guide/Using-mprof-for-profiling-memory-allocation.html
+ * http://stackoverflow.com/questions/10356761/tracing-the-root-cause-of-low-memory-warnings
+ * http://t-t-travails.blogspot.fr/2007/11/firefox-fragmentation.html
+
+ * http://dl.acm.org/citation.cfm?id=2155247.2155271&coll=DL&dl=GUIDE&CFID=382499296&CFTOKEN=99510033 : PSnAP: accurate synthetic address streams through memory profiles
+ * jemalloc view idea : http://www.canonware.com/jemalloc/
+ * http://dl.acm.org/citation.cfm?id=1122971.1122987&coll=DL&dl=GUIDE&CFID=382499296&CFTOKEN=99510033 : Hardware profile-guided automatic page placement for ccNUMA systems
+ * http://dl.acm.org/citation.cfm?id=1879211.1879221&coll=DL&dl=GUIDE&CFID=382499296&CFTOKEN=99510033 : AllocRay: memory allocation visualization for unmanaged languages
+ * http://dl.acm.org/citation.cfm?id=1133956.1133972&coll=DL&dl=GUIDE&CFID=382499296&CFTOKEN=99510033 : Visualising dynamic memory allocators
+ * http://dl.acm.org/citation.cfm?id=2384179.2384181&coll=DL&dl=GUIDE&CFID=382499296&CFTOKEN=99510033 : Multiscale visualization of dynamic software logs
+ * http://dl.acm.org/citation.cfm?id=582419.582451&coll=DL&dl=GUIDE&CFID=382499296&CFTOKEN=99510033 : GCspy: an adaptable heap visualisation framework
+ * http://dl.acm.org/citation.cfm?id=1028976.1028998&coll=DL&dl=GUIDE&CFID=382499296&CFTOKEN=99510033 : Vertical profiling: understanding the behavior of object-priented applications
+
+ * http://dl.acm.org/citation.cfm?id=1541656.1541669&coll=DL&dl=GUIDE&CFID=382499296&CFTOKEN=99510033 : Formal Memory Models for the Verification of Low-Level Operating-System Code
+
+
+ * http://dl.acm.org/citation.cfm?id=359863.359890&coll=DL&dl=GUIDE&CFID=382499296&CFTOKEN=99510033 : Dynamic memory allocation in computer simulation
+ * http://dl.acm.org/citation.cfm?id=2076810.2077087&coll=DL&dl=GUIDE&CFID=382499296&CFTOKEN=99510033 : Simulation of high-performance memory allocators
+ * MemProf: a memory profiler for NUMA multicore systems
+ * http://dl.acm.org/citation.cfm?id=1111583.1111594&coll=DL&dl=GUIDE&CFID=382499296&CFTOKEN=99510033 : A locality-improving dynamic memory allocator
+

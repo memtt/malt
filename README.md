@@ -7,6 +7,19 @@ What it is ?
 MALT is a memory tool to find where you allocate your memory. It also provide you some
 statistics about memory usage and help to find memory leaks.
 
+Dependencies
+------------
+
+MALT depend on presence of :
+
+ - binutils (nm and add2line) to extract symbols. Tested version is 2.24.
+
+It optionaly depend on :
+
+ - nodejs (http://nodejs.org/) to run the GUI webserver. Tested version is 0.10.30.
+ - libelf (http://www.mr511.de/software/english.html) to extract global variable list from executables and libs. Tested version is 0.128.
+ - libunwind (http://www.nongnu.org/libunwind/) as alternative implementation of glibc backtrace method. Tested version is 1.1.
+
 How to install
 --------------
 
@@ -168,8 +181,3 @@ Experimental maqao mode
 MALT can also use binary instrumentation with MAQAO (http://maqao.org/). 
 
 Please check usage into src/maqao directory.
-
-Packaging
----------
-
-If you want to generate distribution packages, please check README.md inside packaging subdirectory.

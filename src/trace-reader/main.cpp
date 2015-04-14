@@ -54,7 +54,7 @@ int main(int argc, char ** argv)
 	//params
 	if (argc < 2)
 	{
-		fprintf(stderr,"Missing arguement, please provide the trace file as parameter.");
+		fprintf(stderr,"Missing arguement, please provide the trace file as parameter.\n");
 		return -1;
 	}
 
