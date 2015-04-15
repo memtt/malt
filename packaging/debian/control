@@ -1,0 +1,13 @@
+Source: malt
+Section: devel
+Priority: optional
+Maintainer: Sébastien Valat <sebastien.valat.dev@orange.fr>
+Build-Depends: debhelper (>= 7), cmake, cdbs, libunwind-dev, libelf-dev
+Standards-Version: 3.9.4
+Homepage: https://github.com/svalat/malt
+
+Package: malt
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends},binutils,libunwind,libelf1,nodejs
+Description: Memory profiling tool to track memory allocations (malloc,free,realloc...)
+ Memory profiling tool to track memory allocations (malloc,free,realloc...)

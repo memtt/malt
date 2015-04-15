@@ -181,3 +181,10 @@ Experimental maqao mode
 MALT can also use binary instrumentation with MAQAO (http://maqao.org/). 
 
 Please check usage into src/maqao directory.
+
+Packaging
+---------
+
+You can find packaging instructions inside packagin/README.md.
+For quicker use you can use the dev/packagin.sh script which do
+the steps automatically.
