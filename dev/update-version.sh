@@ -75,4 +75,5 @@ sed -i -r -e "s/\"version\": \"[0-9A-Za-z.-]+\"/\"version\": \"${version}\"/g" s
 sed -i -r -e "s/^version=[0-9A-Za-z.-]+$/version=${version}/g" dev/gen-archive.sh
 sed -i -r -e "s/${OLD_VERSION}/${version}/g" packaging/README.md
 sed -i -r -e "s/${OLD_VERSION}/${version}/g" dev/packaging.sh
+sed -i -r -e "s/${OLD_VERSION}/${version}/g" packaging/fedora/malt.spec
 sed -i -r -e "s/${OLD_VERSION}/${version}/g" packaging/debian/changelog
