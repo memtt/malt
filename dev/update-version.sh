@@ -1,8 +1,8 @@
 #!/bin/bash
 ######################################################
 #            PROJECT  : MATT                         #
-#            VERSION  : 0.1.0                        #
-#            DATE     : 03/2015                      #
+#            VERSION  : 0.2.0                        #
+#            DATE     : 04/2015                      #
 #            AUTHOR   : Valat Sébastien              #
 #            LICENSE  : CeCILL-C                     #
 ######################################################
@@ -45,19 +45,21 @@ V="VERSION"
 newversion="$V  : $(printf "%-16s" "$version")"
 
 ######################################################
-extract_old_version()
+extract_old_version
 
 ######################################################
 find ./ | while read file
 do
-	#exclude node
-	if [ ! -z "$(echo $file | grep node_modules)" ]; then continue; fi
-	#exclude bower
-	if [ ! -z "$(echo $file | grep bower_components)" ]; then continue; fi
-	#exclude git
-	if [ ! -z "$(echo $file | grep .git)" ]; then continue; fi
-	#exclude extern-deps
-	if [ ! -z "$(echo $file | grep extern-deps)" ]; then continue; fi
+	#exclude directories
+	if [ -d "$file" ]; then continue; fi
+
+	#exclude some paths
+	case "$file" in
+		*node_modules*|*bower_components*|*.git*|*extern-deps*)
+			#echo "exclude $file"
+			continue
+			;;
+	esac
 
 	#do replacement
 	sed -i -r -e "s#  DATE     : [0-9]{2}/[0-9]{4}#  ${newdate}#g" \
@@ -73,3 +75,4 @@ sed -i -r -e "s/\"version\": \"[0-9A-Za-z.-]+\"/\"version\": \"${version}\"/g" s
 sed -i -r -e "s/^version=[0-9A-Za-z.-]+$/version=${version}/g" dev/gen-archive.sh
 sed -i -r -e "s/${OLD_VERSION}/${version}/g" packaging/README.md
 sed -i -r -e "s/${OLD_VERSION}/${version}/g" dev/packaging.sh
+sed -i -r -e "s/${OLD_VERSION}/${version}/g" packaging/debian/changelog

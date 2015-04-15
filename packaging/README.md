@@ -7,7 +7,7 @@ I. UBUNTU / DEBIAN :
 --------------------
 
 This project support the debian packing to build .dev files. To build such package you may use the files in packaging/debian.
-First create a directory in your home dir, place the project archive in it and rename it to malt_0.1.0.orig.tar.gz.
+First create a directory in your home dir, place the project archive in it and rename it to malt_0.2.0.orig.tar.gz.
 
 To setup your working environneemnt, you will found documentation on 
 https://wiki.ubuntu.com/PbuilderHowto or https://wiki.debian.org/IntroDebianPackaging. We mosly need :
@@ -17,12 +17,12 @@ https://wiki.ubuntu.com/PbuilderHowto or https://wiki.debian.org/IntroDebianPack
 
 If you work with git version you can build the archive with :
 
-	git archive --prefix=malt-0.1.0/ 0.1.0 | gzip > malt_0.1.0.orig.tar.gz
+	git archive --prefix=malt-0.2.0/ 0.2.0 | gzip > malt_0.2.0.orig.tar.gz
 
-Go to your directory and extract malt_0.1.0.orig.tar.gz with and go in the directory.
+Go to your directory and extract malt_0.2.0.orig.tar.gz with and go in the directory.
 
-	tar -xvzf malt-0.1.0.orig.tar.gz
-	cd malt-0.1.0
+	tar -xvzf malt-0.2.0.orig.tar.gz
+	cd malt-0.2.0
 
 Now go to the malt-0.0.1 directory and copy the packaging/debian into debian :
 
