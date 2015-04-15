@@ -4,7 +4,7 @@ Packaging
 This directory contain some files to help you to build a package on distributions, please read this file before using it.
 
 I. UBUNTU / DEBIAN :
---------------------_
+--------------------
 
 This project support the debian packing to build .dev files. To build such package you may use the files in packaging/debian.
 First create a directory in your home dir, place the project archive in it and rename it to malt_0.1.0.orig.tar.gz.
