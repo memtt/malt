@@ -43,3 +43,24 @@ So you can build package with your source package by running :
 	sudo pbuilder build ../*.dsc
 
 You will obtain the package in /var/cache/pbuilder/results.
+
+
+
+II. FEDORA / CENTOS / REDHAT :
+------------------------------
+
+You can find more documentation on http://fedoraproject.org/wiki/How_to_create_an_RPM_package.
+First ensure to get the required tools :
+
+	sudo yum install rpmdevtools yum-utils cmake 
+	rpmdev-setuptree
+
+Now generate the archive file (or download it from internet) :
+
+	git archive --prefix=malt-0.2.0/ 0.2.0 | bzip2 > ~/rpmbuild/SOURCES/malt-0.2.0.tar.bz2
+
+And build the package :
+
+	rpmbuild -ba packaging/fedora/svUnitTest.spec
+
+Now you may get *.rpm files in ~/rpmbuild/RPMS and ~/rpmbuild/SRPMS dirs.

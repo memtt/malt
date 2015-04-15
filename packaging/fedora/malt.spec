@@ -17,8 +17,8 @@ URL: https://github.com/downloads/svalat/svUnitTest/%{name}-%{version}.tar.bz2
 Source0: %{name}-%{version}.tar.bz2
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
-BuildRequires: cmake, gcc-c++ libunwind-devel libelf-devel
-Requires: libunwind libelf binutils
+BuildRequires: cmake, gcc-c++ libunwind-devel elfutils-devel
+Requires: libunwind elfutils-libelf binutils nodejs
 
 %description
 Memory profiling tool to track memory allocations (malloc, realloc, free...)
@@ -42,7 +42,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_bindir}/*
 %{_libdir}/*
 %{_datadir}/*
-%{_includedir}/*
+#%{_includedir}/*
 %doc
 
 %changelog

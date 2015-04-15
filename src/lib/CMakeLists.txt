@@ -103,6 +103,15 @@ if (ENABLE_TESTS)
 endif (ENABLE_TESTS)
 
 ######################################################
+#check for lib/lib64 suffix
+get_property(LIB64 GLOBAL PROPERTY FIND_LIBRARY_USE_LIB64_PATHS)
+if (LIB64)
+    set(LIBSUFFIX 64)
+else()
+    set(LIBSUFFIX "")
+endif()
+
+######################################################
 INSTALL(TARGETS malt malt-base 
-	ARCHIVE DESTINATION lib
-	LIBRARY DESTINATION lib)
+	ARCHIVE DESTINATION lib${LIBSUFFIX}
+	LIBRARY DESTINATION lib${LIBSUFFIX})

@@ -24,7 +24,7 @@ function debian_common()
 	#go to directory
 	cd malt-${VERSION}
 	#copy debian directory
-	cp -r ../packaging/debian debian
+	cp -r packaging/debian debian
 }
 
 #generate debian package from current install
@@ -53,10 +53,23 @@ function debian_pbuilder_packaging()
 function show_help()
 {
 	echo "Invalid argument, required build type as parameter" 1>&2
-	echo "   $0 {debian|debian-pbuilder}" 1>&2
+	echo "   $0 {debian|debian-pbuilder|fedora|rpm}" 1>&2
 	exit 1
 }
 
+#rpm
+function fedora_packaging()
+{
+	#rpm tree
+	rpmdev-setuptree
+	#gen archive
+	git archive --prefix=malt-0.2.0/ 0.2.0 | bzip2 > ~/rpmbuild/SOURCES/malt-0.2.0.tar.bz2
+	#build
+	rpmbuild -ba packaging/fedora/malt.spec
+	#move here
+	mv ~/rpmbuild/SRPMS/malt-0.2.0*.src.rpm .
+	mv ~/rpmbuild/RPMS/*/malt-*.rpm .
+}
 
 #select mode
 case $1 in
@@ -65,6 +78,9 @@ case $1 in
 		;;
 	'debian-pbuilder')
 		debian_pbuilder_packaging
+		;;
+	'fedora'|'rpm')
+		fedora_packaging
 		;;
 	''|'help'|'list')
 		show_help
