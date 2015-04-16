@@ -66,10 +66,12 @@ MaltPageAllocSizeDistr.prototype.buildLog2Histo = function(data)
 MaltPageAllocSizeDistr.prototype.plotLogHisto = function(domId,data)
 {
 	var hist = this.buildLog2Histo(data);
+	var svgWidth = parseInt(d3.select('#'+domId+' svg').style('width'));
+	var svgHeight = parseInt(d3.select('#'+domId+' svg').style('height'));
 	
-	var margin = {top: 20, right: 20, bottom: 30, left: 60},
-		width = (parseInt(d3.select('#'+domId+' svg').style('width')) || 960) - margin.left - margin.right,
-		height = 500 - margin.top - margin.bottom;
+	var margin = {top: 20, right: 20, bottom: 60, left: 60},
+		width = svgWidth - margin.left - margin.right,
+		height = svgHeight - margin.top - margin.bottom;
 
 	var formatPercent = d3.format(".0");
 
@@ -144,6 +146,8 @@ MaltPageAllocSizeDistr.prototype.plotLogHisto = function(domId,data)
 		.attr("height", function(d) { return height - y(d.count); })
 		.on('mouseover', tip.show)
 		.on('mouseout', tip.hide);
+	
+		
 }
 
 /*MaltPageAllocSizeDistr.prototype.setupHistogramChart = function(domId,data)
@@ -191,9 +195,12 @@ MaltPageAllocSizeDistr.prototype.plotLogHisto = function(domId,data)
 
 MaltPageAllocSizeDistr.prototype.setupMostUsedChart = function(domId,data)
 {
+	var svgWidth = parseInt(d3.select('#'+domId+' svg').style('width'));
+	var svgHeight = parseInt(d3.select('#'+domId+' svg').style('height'));
+
 	var margin = {top: 20, right: 20, bottom: 30, left: 60},
-		width = (parseInt(d3.select('#'+domId+' svg').style('width')) || 960) - margin.left - margin.right,
-		height = 500 - margin.top - margin.bottom;
+		width = svgWidth - margin.left - margin.right,
+		height = svgHeight - margin.top - margin.bottom;
 
 	var formatPercent = d3.format(".0");
 

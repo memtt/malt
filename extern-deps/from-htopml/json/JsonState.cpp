@@ -109,7 +109,8 @@ void JsonState::printFormattedField(const char * name, const char* format, ... )
 	va_end (param);
 	
 	//check buffer overflow
-	assert(size <= SPRINTF_BUFFER_SIZE);
+	if (size <= SPRINTF_BUFFER_SIZE)
+		abort();
 
 	//print
 	openField(name);
@@ -141,7 +142,8 @@ void JsonState::printFormattedValue(const char* format, ... )
 	va_end (param);
 	
 	//check buffer overflow
-	assert(size <= SPRINTF_BUFFER_SIZE);
+	if (size <= SPRINTF_BUFFER_SIZE)
+		abort();
 
 	//print
 	bufferdStream << buffer;
