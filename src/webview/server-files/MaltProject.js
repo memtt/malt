@@ -417,8 +417,8 @@ MaltProject.prototype.getSummaryV2 = function()
 	ret.summary.peakPhysicalMemory = this.data.timeline.memoryTimeline.peak[2];//this.data.timeline.physicalMem.peakMemory;
 	ret.summary.peakVirtualMemory = this.data.timeline.memoryTimeline.peak[1];//this.data.timeline.virtualMem.peakMemory;
 	ret.summary.peakRequestedMemory = this.data.timeline.memoryTimeline.peak[0];//this.data.timeline.requestedMem.peakMemory;
-	ret.summary.peakInternalMemory = this.data.timeline.memoryTimeline.peak[4];//this.data.timeline.internalMem.peakMemory;
-	ret.summary.peakSegmentCount = this.data.timeline.memoryTimeline.peak[3];//this.data.timeline.segments.peakMemory;
+	ret.summary.peakInternalMemory = this.data.timeline.memoryTimeline.peak[3];//this.data.timeline.internalMem.peakMemory;
+	ret.summary.peakSegmentCount = this.data.timeline.memoryTimeline.peak[4];//this.data.timeline.segments.peakMemory;
 	
 	//rates
 	var p = 0;
