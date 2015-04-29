@@ -10,6 +10,7 @@
 #include <gtest/gtest.h>
 #include <stacks/BacktraceStack.hpp>
 #include <common/SimpleAllocator.hpp>
+#include <common/Options.hpp>
 
 /***************** USING NAMESPACE ******************/
 using namespace MALT;
@@ -26,6 +27,7 @@ int main(int argc, char ** argv)
 {
 	//init internal allocator
 	gblInternaAlloc = new SimpleAllocator(true);
+	gblOptions = new Options;
 	
 	// This allows the user to override the flag on the command line.
 	::testing::InitGoogleTest(&argc, argv);
