@@ -28,5 +28,14 @@ detectNodeJS()
 #check node
 detectNodeJS
 
+######################################################
+#Check passwod file
+if [ ! -f $HOME/.malt.passwd ]; then
+	echo "!!! You need to setup a user/password to secure access to the web GUI !!!"
+	printf "User : "
+	read user
+	"@CMAKE_INSTALL_PREFIX@/bin/malt-passwd" "$user" || exit 1
+fi
+
 #call node on main script
-"$NODE" "@CMAKE_INSTALL_PREFIX@/share/malt/webview/malt-webserver.js" "$@"
+"$NODE" "@CMAKE_INSTALL_PREFIX@/share/malt/webview/malt-webserver.js" "$@" || exit 1

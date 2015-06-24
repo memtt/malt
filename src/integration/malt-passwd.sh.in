@@ -1,0 +1,39 @@
+#!/bin/sh
+######################################################
+#            PROJECT  : MALT                         #
+#            VERSION  : 0.2.0                        #
+#            DATE     : 04/2015                      #
+#            AUTHOR   : Valat Sébastien              #
+#            LICENSE  : CeCILL-C                     #
+######################################################
+
+######################################################
+NODE=""
+detectNodeJS()
+{
+	if which nodejs 2>/dev/null >/dev/null; then
+		NODE='nodejs'
+	elif which node 2>/dev/null >/dev/null; then
+		NODE='node'
+	elif [ ! -z "$MALT_NODEJS" ]; then
+		NODE="$MALT_NODEJS"
+	else
+		echo "ERROR : Cannot find NodeJS executable, please install 'node' or 'nodejs' package for your system or check your PATH." 1>&2
+		echo "You can also define the MALT_NODEJS environnement variable to point the NodeJS executable." 1>&2
+		exit 1
+	fi
+}
+
+######################################################
+if [ -z "$*" ]; then
+	echo "Error, missing arguement, provide a user as parameter" 1>&2
+	echo "$0 {USER}" 1>&2
+	exit 1
+fi
+
+######################################################
+#check node
+detectNodeJS
+
+#call node on main script
+"$NODE" "@CMAKE_INSTALL_PREFIX@/share/malt/webview/node_modules/.bin/htpasswd" "-c" "$HOME/.malt.passwd" "$@" || exit 1
