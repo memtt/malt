@@ -7,7 +7,7 @@
 ######################################################
 
 ######################################################
-set(MALT_LIB_TOOLS_SRC NMCmdReader.cpp BacktraceLibunwind.cpp Backtrace.cpp)
+set(MALT_LIB_TOOLS_SRC NMCmdReader.cpp BacktraceLibunwind.cpp Backtrace.cpp ProcPagemapReader.cpp)
                  
 ######################################################
 #Optional sources
