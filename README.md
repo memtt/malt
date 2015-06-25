@@ -82,10 +82,15 @@ Using webview
 
 You can use the webview by calling command `malt-webview` as :
 
-	malt-webview [-p PORT] -i malt-YOUR_PROGRAM-1234.json
+	malt-webview [-p PORT] [--no-auth] -i malt-YOUR_PROGRAM-1234.json
 
 It will open a server listening localy on port 8080 so you can open your web browser
 to connect to the web interface via http://localhost:8080.
+
+On first usage malt-wbview will create the password file `$HOME/.malt.passwd` and ask you a
+protection password for http authentification. You can change it at any time with
+
+	malt-passwd {USER}
 
 If you are running the view remotly thought SSH you can redirect the ports by using :
 
