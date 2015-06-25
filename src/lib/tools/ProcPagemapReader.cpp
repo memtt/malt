@@ -50,6 +50,16 @@ void ProcPageMapReader::init ( void )
 }
 
 /*******************  FUNCTION  *********************/
+bool ProcPageMapReader::hasProcPagemap ( void )
+{
+	//init
+	if (fd == 0)
+		init();
+	
+	return fd > 0;
+}
+
+/*******************  FUNCTION  *********************/
 size_t ProcPageMapReader::internalGetPhysicalSize ( void* ptr, size_t size )
 {
 	//check
@@ -76,8 +86,7 @@ size_t ProcPageMapReader::internalGetPhysicalSize ( void* ptr, size_t size )
 	size_t ret = 0;
 	for (int i = 0 ; i < pages ; i++)
 	{
-		fprintf(stderr,"%ld\n",entries[i].pfn);
-		if (entries[i].present)
+		if (entries[i].pfn != 0)
 			ret += PAGE_SIZE;
 	}
 	

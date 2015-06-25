@@ -27,7 +27,7 @@ struct ProcPageMapEntry
 	                        // Bits 0-4   swap type if swapped
 	                        // Bits 5-54  swap offset if swapped
     unsigned char dirty:1;  // Bit  55    pte is soft-dirty (see Documentation/vm/soft-dirty.txt)
-    unsigned char zero:4;   // Bits 56-60 zero
+    unsigned char zero:5;   // Bits 56-60 zero
     unsigned char file:1;   // Bit  61    page is file-page or shared-anon
     unsigned char swaped:1; // Bit  62    page swapped
     unsigned char present:1;// Bit  63    page present
@@ -38,6 +38,7 @@ class ProcPageMapReader
 {
 	public:
 		static size_t getPhysicalSize(void * ptr,size_t size);
+		static bool hasProcPagemap(void);
 	private:
 		static void init(void);
 		static size_t internalGetPhysicalSize(void * ptr,size_t size);
