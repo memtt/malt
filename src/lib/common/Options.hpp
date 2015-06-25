@@ -61,6 +61,7 @@ struct Options
 	bool outputJson;
 	bool outputCallgrind;
 	bool outputDumpConfig;
+	bool outputSilent;
 	//size map
 	bool distrAllocSize;
 	bool distrReallocJump;

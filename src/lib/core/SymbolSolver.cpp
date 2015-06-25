@@ -18,6 +18,7 @@
 #include <json/JsonState.h>
 #include <common/Debug.hpp>
 #include <common/Array.hpp>
+#include <common/Options.hpp>
 
 /*******************  NAMESPACE  ********************/
 namespace MALT
@@ -222,11 +223,13 @@ void SymbolSolver::solveNames(void)
 	//first try with maqao infos
 	if (!maqaoSites.empty())
 	{
-		fprintf(stderr,"MALT : Resolving symbols with maqao infos...\n");
+		if (!gblOptions->outputSilent)
+			fprintf(stderr,"MALT : Resolving symbols with maqao infos...\n");
 		this->solveMaqaoNames();
 	}
 	
-	fprintf(stderr,"MALT : Resolving symbols with addr2line...\n");
+	if (!gblOptions->outputSilent)
+		fprintf(stderr,"MALT : Resolving symbols with addr2line...\n");
 	
 	//avoid to LD_PRELOAD otherwise we will create fork bomb
 	setenv("LD_PRELOAD","",1);
@@ -292,6 +295,10 @@ void SymbolSolver::solveNames(LinuxProcMapEntry * procMapEntry)
 			lst.push_back(&it->second);
 		}
 	}
+	
+	//hide error if silent
+	if (gblOptions->outputSilent)
+		 addr2lineCmd << ' ' << "2>/dev/null";
 	
 	//if no extry, exit
 	if (!hasEntries)

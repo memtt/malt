@@ -44,6 +44,7 @@ Options::Options(void)
 	this->outputLua               = false;
 	this->outputCallgrind         = false;
 	this->outputDumpConfig        = false;
+	this->outputSilent            = false;
 	//max stack
 	this->maxStackEnabled         = true;
 	//maps
@@ -78,6 +79,7 @@ bool Options::operator==(const Options& value) const
 	if (this->outputLua != value.outputLua) return false;
 	if (this->outputCallgrind != value.outputCallgrind) return false;
 	if (this->outputDumpConfig != value.outputDumpConfig) return false;
+	if (this->outputSilent != value.outputSilent)  return false;
 	//max stack
 	if (this->maxStackEnabled != value.maxStackEnabled) return false;
 	//maps
@@ -188,6 +190,7 @@ void Options::loadFromIniDic ( dictionary* iniDic )
 	this->outputLua           = iniparser_getboolean(iniDic,"output:lua",this->outputLua);
 	this->outputCallgrind     = iniparser_getboolean(iniDic,"output:callgrind",this->outputCallgrind);
 	this->outputDumpConfig    = iniparser_getboolean(iniDic,"output:config",this->outputDumpConfig);
+	this->outputSilent        = iniparser_getboolean(iniDic,"output:silent",this->outputSilent);
 	
 	//max stack
 	this->maxStackEnabled     = iniparser_getboolean(iniDic,"max-stack:enabled",this->maxStackEnabled);
@@ -254,6 +257,7 @@ void convertToJson(htopml::JsonState & json,const Options & value)
 			json.printField("json",value.outputJson);
 			json.printField("lua",value.outputLua);
 			json.printField("name",value.outputName);
+			json.printField("silent",value.outputSilent);
 		json.closeFieldStruct("output");
 		
 		json.openFieldStruct("maxStack");
@@ -299,6 +303,7 @@ void Options::dumpConfig(const char* fname)
 	IniParserHelper::setEntry(dic,"output:callgrind",this->outputCallgrind);
 	IniParserHelper::setEntry(dic,"output:indent",this->outputIndent);
 	IniParserHelper::setEntry(dic,"output:config",this->outputDumpConfig);
+	IniParserHelper::setEntry(dic,"output:silent",this->outputSilent);
 	
 	//max stack
 	IniParserHelper::setEntry(dic,"max-stack:enabled",this->maxStackEnabled);

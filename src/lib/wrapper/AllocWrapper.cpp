@@ -289,7 +289,8 @@ void AllocWrapperGlobal::init(void )
 		gblState.profiler = new AllocStackProfiler(*gblState.options,mode,true);
 		
 		//print info
-		fprintf(stderr,"MALT : Start memory instrumentation of %s - %d by library override.\n",OS::getExeName().c_str(),OS::getPID());
+		if (!gblOptions->outputSilent)
+			fprintf(stderr,"MALT : Start memory instrumentation of %s - %d by library override.\n",OS::getExeName().c_str(),OS::getPID());
 
 		//register on exit
 		//TODO remove when ensure that the attribute method work

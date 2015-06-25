@@ -13,6 +13,7 @@
 #include <sstream>
 #include <cstdio>
 #include <common/Debug.hpp>
+#include <common/Options.hpp>
 #include <portability/Compiler.hpp>
 
 /*******************  NAMESPACE  ********************/
@@ -50,6 +51,10 @@ bool NMCmdReader::load(const std::string& binaryFile)
 	//prepare cmds
 	std::stringstream nmCmd;
 	nmCmd << "nm --print-size -n --line-numbers -P --no-demangle " << binaryFile;
+	
+	//hide error if silent
+	if (gblOptions->outputSilent)
+		 nmCmd << ' ' << "2>/dev/null";
 	
 	//start nm 1
 	FILE * fp = popen(nmCmd.str().c_str(),"r");

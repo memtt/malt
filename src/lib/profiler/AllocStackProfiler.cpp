@@ -637,7 +637,8 @@ ticks AllocStackProfiler::ticksPerSecond(void) const
 	//if too chost, sleep a little and return
 	if (delta.tv_sec == 0 && delta.tv_usec < 200000)
 	{
-		fprintf(stderr,"MALT : Using usleep to get better ticks <-> seconds conversion !\n");
+		if (!gblOptions->outputSilent)
+			fprintf(stderr,"MALT : Using usleep to get better ticks <-> seconds conversion !\n");
 		usleep(200000);
 		res = this->ticksPerSecond();
 	} else {

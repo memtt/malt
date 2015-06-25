@@ -52,6 +52,7 @@ maltShowHelp()
 	echo "           --mpi               Use MPI wrapper to get ranks in output file names."
 	echo "           --prep-mpi [mpicxx] Build the mpi wrapper into $HOME/.malt/libmaltmpi.so"
 	echo "   -s mode/--stack=mode        Select the stack tracking mode (backtrace|enter-exit)."
+	echo "   -q/--quiet                  Enable silent mode."
 	echo "   -t/--trace                  Enable the tracing mode."
 	echo "   -d/--dumpconfig             Enable the dump of config file at exit."
 	echo "   -o SEC:NAME=VAL;...         Override configuration values."
@@ -77,6 +78,10 @@ while true; do
 		;;
 		--trace|-t)
 			export MALT_OPTIONS="${MALT_OPTIONS};trace:enabled=true"
+			shift 1
+		;;
+		--quiet|-q)
+			export MALT_OPTIONS="${MALT_OPTIONS};output:silent=true"
 			shift 1
 		;;
 		--option|-o)
