@@ -25,6 +25,10 @@
 namespace MALT
 {
 
+/********************  GLOBALS  *********************/
+//to help unit test implementation
+extern unsigned long gblUseFakeIdInOutput;
+
 /*********************  CLASS  **********************/
 /**
  * Provide a simple stack storage based on STL hash map. We use a three level hash construct 
@@ -169,7 +173,10 @@ void convertToJson(htopml::JsonState& json, const StackSTLHashMap< U >& value)
 		json.printListSeparator();
 		json.openStruct();
 		json.printField("stack",*it->first.stack);
-		json.printField("stackId",(void*)it->first.stack);
+		if (gblUseFakeIdInOutput > 0) //for unit tests
+			json.printField("stackId",(void*)(gblUseFakeIdInOutput++));
+		else
+			json.printField("stackId",(void*)it->first.stack);
 		json.printField("infos",it->second);
 		json.closeStruct();
 	}

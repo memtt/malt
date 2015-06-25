@@ -19,9 +19,11 @@ void * CST_VALUE_1[] = {(void*)0x1,(void*)0x2,(void*)0x3,(void*)0x4};
 const char CST_VALUE_2[] = "{\n\
 	\"stats\":[{\n\
 		\"stack\":[\"0x1\", \"0x2\", \"0x3\"],\n\
+		\"stackId\":\"0x1\",\n\
 		\"infos\":10\n\
 	}, {\n\
 		\"stack\":[\"0x1\", \"0x2\", \"0x3\", \"0x4\"],\n\
+		\"stackId\":\"0x2\",\n\
 		\"infos\":11\n\
 	}],\n\
 	\"count\":2\n\
@@ -115,6 +117,9 @@ int main(int argc, char ** argv)
 {
 	//init internal allocator
 	gblInternaAlloc = new SimpleAllocator(true);
+	
+	//help unit test
+	gblUseFakeIdInOutput = 1;
 	
 	// This allows the user to override the flag on the command line.
 	::testing::InitGoogleTest(&argc, argv);

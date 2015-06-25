@@ -73,7 +73,7 @@ set(COMMON_OBJS $<TARGET_OBJECTS:htopml-json>
                 $<TARGET_OBJECTS:malt-valprof>
                 $<TARGET_OBJECTS:malt-profiler>
                 $<TARGET_OBJECTS:malt-thread-wrapper>
-                #$<TARGET_OBJECTS:malt-stack-trees>
+                $<TARGET_OBJECTS:malt-stack-trees>
                 $<TARGET_OBJECTS:malt-common>
                 $<TARGET_OBJECTS:malt-port>
                 $<TARGET_OBJECTS:iniparser>)
