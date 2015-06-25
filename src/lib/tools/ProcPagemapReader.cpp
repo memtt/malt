@@ -86,7 +86,7 @@ size_t ProcPageMapReader::internalGetPhysicalSize ( void* ptr, size_t size )
 	size_t ret = 0;
 	for (int i = 0 ; i < pages ; i++)
 	{
-		if (entries[i].pfn != 0)
+		if (entries[i].present)
 			ret += PAGE_SIZE;
 	}
 	

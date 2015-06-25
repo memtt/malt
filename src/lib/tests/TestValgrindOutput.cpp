@@ -47,12 +47,10 @@ fn=[0x2]\n\
 cob=unknown\n\
 cfi=unknown\n\
 cfn=[0x1]\n\
-calls=1 0\n\
 0 1 0 1 2 0 2 2\n\
 cob=unknown\n\
 cfi=unknown\n\
 cfn=[0x2]\n\
-calls=1 0\n\
 0 1 0 1 2 0 2 2\n\
 \n\
 ob=unknown\n\
@@ -62,7 +60,6 @@ fn=[0x3]\n\
 cob=unknown\n\
 cfi=unknown\n\
 cfn=[0x2]\n\
-calls=1 0\n\
 0 1 0 1 2 0 2 2\n\
 \n";
 
