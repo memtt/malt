@@ -3,6 +3,10 @@ Packaging
 
 This directory contain some files to help you to build a package on distributions, please read this file before using it.
 
+For quicker usage you can use the script in dev directory for root directory :
+
+	./dev/packaging.sh {debian|debian-pbuilder|fedora|rpm}
+
 I. UBUNTU / DEBIAN :
 --------------------
 
