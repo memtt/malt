@@ -37,3 +37,6 @@ detectNodeJS
 
 #call node on main script
 "$NODE" "@CMAKE_INSTALL_PREFIX@/share/malt/webview/node_modules/.bin/htpasswd" "-c" "$HOME/.malt.passwd" "$@" || exit 1
+
+#chmod file
+chmod go-r "$HOME/.malt.passwd"
