@@ -471,7 +471,8 @@ void AllocStackProfiler::onExit(void )
 		//valgrind out
 		if (options.outputCallgrind)
 		{
-			fprintf(stderr,"Prepare valgrind output...\n");
+			if (!options.outputSilent)
+				fprintf(stderr,"Prepare valgrind output...\n");
 			ValgrindOutput vout;
 			
 			for (StackSTLHashMap<CallStackInfo>::const_iterator itMap = stackTracker.begin() ; itMap != stackTracker.end() ; ++itMap)

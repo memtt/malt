@@ -223,12 +223,12 @@ void SymbolSolver::solveNames(void)
 	//first try with maqao infos
 	if (!maqaoSites.empty())
 	{
-		if (!gblOptions->outputSilent)
+		if (gblOptions != NULL && !gblOptions->outputSilent)
 			fprintf(stderr,"MALT : Resolving symbols with maqao infos...\n");
 		this->solveMaqaoNames();
 	}
 	
-	if (!gblOptions->outputSilent)
+	if (gblOptions != NULL && !gblOptions->outputSilent)
 		fprintf(stderr,"MALT : Resolving symbols with addr2line...\n");
 	
 	//avoid to LD_PRELOAD otherwise we will create fork bomb
@@ -297,7 +297,7 @@ void SymbolSolver::solveNames(LinuxProcMapEntry * procMapEntry)
 	}
 	
 	//hide error if silent
-	if (gblOptions->outputSilent)
+	if (gblOptions != NULL && gblOptions->outputSilent)
 		 addr2lineCmd << ' ' << "2>/dev/null";
 	
 	//if no extry, exit
