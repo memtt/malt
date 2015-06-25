@@ -87,7 +87,7 @@ You can use the webview by calling command `malt-webview` as :
 It will open a server listening localy on port 8080 so you can open your web browser
 to connect to the web interface via http://localhost:8080.
 
-On first usage malt-wbview will create the password file `$HOME/.malt.passwd` and ask you a
+On first usage malt-wbview will create the password file `$HOME/.malt/passwd` and ask you a
 protection password for http authentification. You can change it at any time with
 
 	malt-passwd {USER}

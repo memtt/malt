@@ -51,12 +51,12 @@ function getUserHome() {
 if (args.params.noauth == undefined)
 {
 	//log
-	console.log("Load http auth from ~/.malt.passwd, you can change your passwod with 'malt-passwd {user}' or disable auth with --no-auth\n");
+	console.log("Load http auth from ~/.malt/passwd, you can change your passwod with 'malt-passwd {user}' or disable auth with --no-auth\n");
 
 	//setup auth system
 	var basic = auth.basic({
 	    realm: "MALT web GUI.",
-	    file: getUserHome() + "/.malt.passwd"
+	    file: getUserHome() + "/.malt/passwd"
 	});
 	//inserto into express
 	app.use(auth.connect(basic));
