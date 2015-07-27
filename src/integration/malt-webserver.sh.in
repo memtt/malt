@@ -29,8 +29,18 @@ detectNodeJS()
 detectNodeJS
 
 ######################################################
+#check if have --no-auth
+HAVE_NO_AUTH="false"
+for arg in "$@"
+do
+	if [ "${arg}" == "--no-auth" ]; then
+		HAVE_NO_AUTH="true"
+	fi
+done
+
+######################################################
 #Check passwod file
-if [ ! -f $HOME/.malt.passwd ]; then
+if [ ! -f "${HOME}/.malt/passwd" ] && [ "$HAVE_NO_AUTH" == "false" ]; then
 	echo "!!! You need to setup a user/password to secure access to the web GUI !!!"
 	printf "User : "
 	read user

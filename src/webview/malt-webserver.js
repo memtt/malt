@@ -28,7 +28,7 @@ var maltCache = new Object();
 
 /****************************************************/
 //Manage args
-args = new Args('malt-webview', '1.0', 'Webiew for MALT based on Node.js','');
+args = new Args('malt-webserver', '1.0', 'Webiew for MALT based on Node.js','');
 //define args
 args.add({ name: 'input', desc: 'input file from MALT into JSON format', switches: [ '-i', '--input-file'], value: 'file', required: true });
 args.add({ name: 'port',  desc: 'Port to use to wait for HTTP requests', switches: [ '-p', '--port'],       value: 'port', required: false });
