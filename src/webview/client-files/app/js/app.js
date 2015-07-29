@@ -2,15 +2,15 @@ var maltApp = angular.module('malt.app', [
   'ngRoute',
   'malt.controlers',
   'malt.anim',
-//   'ui.codemirror',
-//   'malt.page.home',
-//   'malt.page.globalVars',
-//   'malt.page.allocSizeDistr',
-//   'malt.page.realloc',
-//   'malt.page.stackPeaks',
-//   'malt.page.timeline',
-//   'malt.page.sources',
-//   'ui.bootstrap'
+  'ui.codemirror',
+  'malt.page.home',
+  'malt.page.globalVars',
+  'malt.page.allocSizeDistr',
+  'malt.page.realloc',
+  'malt.page.stackPeaks',
+  'malt.page.timeline',
+  'malt.page.sources',
+  'ui.bootstrap'
 ]);
 
 maltApp.config(['$routeProvider',
