@@ -184,6 +184,13 @@ Elf_Scn* ElfReader::getSectionByType(size_t type)
 /*******************  FUNCTION  *********************/
 void ElfReader::loadGlobalVariables(ElfGlobalVariableVector& variables)
 {
+	//check errors
+	if (this->elf == NULL)
+	{
+		MALT_WARNING("Cuation, get NULL elf structure, ignore it and skip global variable extraction.");
+		return;
+	}
+	
 	//get section
 	Elf_Scn * sec = getSectionByType(SHT_SYMTAB);
 	if (sec == NULL)
