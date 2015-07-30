@@ -40,7 +40,7 @@ done
 
 ######################################################
 #Check passwod file
-if [ ! -f "${HOME}/.malt/passwd" ] && [ "$HAVE_NO_AUTH" == "false" ]; then
+if [ ! -f "$HOME/.malt/passwd" ] && [ "$HAVE_NO_AUTH" == "false" ]; then
 	echo "!!! You need to setup a user/password to secure access to the web GUI !!!"
 	printf "User : "
 	read user

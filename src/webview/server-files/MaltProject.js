@@ -734,7 +734,7 @@ function filterExtractStacksCandidate(detailedStack,filter)
 
 /****************************************************/
 /** Regexp to detect memory functions (new, new[], gnu and icc fortran alloc/free...). **/
-var allocFuncRegexp = /^((operator new)|(operator delete)|(_Zn[wa])|(g_malloc)|(g_realloc)|(g_free)|(for__get_vm)|(for__free_vm)|([mc]alloc)|(free)|(realloc)|(memalign)|(posix_memalign)|(for_(de)?alloc_allocatable)|(for_(de)?allocate))/
+var allocFuncRegexp = /^((__gnu_cxx::new_allocator)|(operator new)|(operator delete)|(_Zn[wa])|(g_malloc)|(g_realloc)|(g_free)|(for__get_vm)|(for__free_vm)|([mc]alloc)|(free)|(realloc)|(memalign)|(posix_memalign)|(for_(de)?alloc_allocatable)|(for_(de)?allocate))/
 
 /****************************************************/
 /** Quick check to detect memory functions. **/

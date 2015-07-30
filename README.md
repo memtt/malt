@@ -26,22 +26,26 @@ How to install
 MALT use CMake for the build system but provide a simple configure wrapper for users
 familiar with autotools packaging so you can install by following the procedure :
 
+```shell
 	mkdir build
 	cd build
 	../configure --prefix={YOUR_PREFIX}
 	make
 	make test
 	make install
+```
 
 If you want more advance usage you need to call cmake by yourself so you can install it 
 by following the procedure :
 
+```shell
 	mkdir build
 	cd build
 	cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX={YOUR_PREFIX}
 	make
 	make test
 	make install
+```
 
 Build options
 -------------
@@ -64,25 +68,33 @@ wrap the default memory allocator. It provide two basic instrumentation modes.
 
 By default MALT use backtrace to reconstruct you stack on malloc/free/... calls :
 
+```shell
 	{YOUR_PREFIX}/bin/malt {YOUR_PROGRAM} [OPTIONS]
+```
 
 You can get better performance but less detailed stack by using option 
 -finstrument-function or similar on your compiler. Then, you need to tel MALT to use
 the "enter-exit" stack mode :
 
+```shell
 	{YOUR_PREFIX}/bin/malt -m=enter-exit {YOUR_PROGRAM} [OPTIONS]
+```
 
 The malt script only provide a wrapper to automatically preload a dynamic library
 into the executable, you can also do it by hand in cas of issue :
 
+```shell
 	LD_PRELOAD={YOUR_PREFIX}/lib/libmalt.so {YOUR_PROGRAM} [OPTIONS]
+```
 
 Using webview
 -------------
 
 You can use the webview by calling command `malt-webview` as :
 
+```shell
 	malt-webview [-p PORT] [--no-auth] -i malt-YOUR_PROGRAM-1234.json
+```
 
 It will open a server listening localy on port 8080 so you can open your web browser
 to connect to the web interface via http://localhost:8080.
@@ -90,11 +102,15 @@ to connect to the web interface via http://localhost:8080.
 On first usage malt-wbview will create the password file `$HOME/.malt/passwd` and ask you a
 protection password for http authentification. You can change it at any time with
 
+```shell
 	malt-passwd {USER}
+```
 
 If you are running the view remotly thought SSH you can redirect the ports by using :
 
+```shell
 	ssh -L 8080:localhost:8080 user@ssh-server
+```
 
 To use the webview you need to install the nodeJS package on your system : http://nodejs.org/.
 
@@ -104,14 +120,19 @@ Config
 You can provide a config file to MALT to setup some features. This file use the INI
 format. With the malt script :
 
+```shell
 	{YOUR_PREFIX}/bin/malt -c=config.ini" {YOUR_PROGRAM} [OPTIONS]
+```
 
 By hand :
 
+```shell
 	MALT_CONFIG="config.ini" LD_PRELOAD=libmalt.so {YOUR_PROGRAM} [OPTIONS]
+```
 
 Example of config file :
 
+```ini
 	[time]
 	enabled=true          ; enable time profiles
 	points=1000           ; keep 1000 points
@@ -129,19 +150,24 @@ Example of config file :
 	json=true             ; enable json output
 	callgrind=true        ; enable callgrind output
 	config=true           ; dump current config
+```
 
 Option values can be override on the fly with command :
 
+```shell
 	{YOUR_PREFIX}/bin/malt -o "stack:enabled=true;output:indent=true;" {YOUR_PROGRAM} [OPTIONS]
+```
 
 Environnement variables
 -----------------------
 
 If you do not use the malt wrapper and use directly LD_PRELOAD you can use the Environnement variables :
 
+```shell
 	MALT_OPTIONS="stack:enabled=true;output:indent=true;"
 	MALT_CONFIG="config.ini"
 	MALT_STACK="libunwind"
+```
 
 About stacks
 ------------
@@ -150,15 +176,21 @@ MALT use two ways to rebuild stacks, the default one rely on glibc backtrace but
 segfaults on some intel tools such as Intel OpenMP and Intel MPI so we also provide a more robust 
 approach based on libunwind if present on your system at build time. You can provide it with :
 
+```shell
 	../configure --with-libunwind=PREFIX
-	
+```
+
 or on cmake :
 
+```shell
 	cmake -DLIBUNWIND_PREFIX=PREFIX ..
+```
 
 You now can use it with malt by using :
 
+```shell
 	malt -s libunwind {PROGRAM}
+```
 
 The alternative rely on function instrumentation by adding prove on start/end for each function.
 It can be done by using -finstrument-function on your compiler juste as described in "How to use" section
@@ -170,7 +202,9 @@ Tracking stack size
 Malt can also track the memorty used by stacks over time, but for this support it is required to
 enable a compiler flag :
 
+```shell
 	gcc -finstrument-functions {YOUR FILES}
+```
 
 Experimental pintool mode
 -------------------------

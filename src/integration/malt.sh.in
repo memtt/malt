@@ -127,9 +127,15 @@ done
 # if [ ! -z "$MALT_CONFIG" ]; then echo "MALT_CONFIG=$MALT_CONFIG"; fi
 
 ######################################################
+MALT_LIB="@CMAKE_INSTALL_PREFIX@/lib@LIBSUFFIX@/libmalt.so"
+if [ ! -f $MALT_LIB ]; then
+	MALT_LIB="@CMAKE_INSTALL_PREFIX@/lib64/libmalt.so"
+fi
+
+######################################################
 #run
 if [ "$ENABLE_MPI" = "true" ]; then
-	LD_PRELOAD="$MPI_WRAPPER_DIR/libmaltmpi.so @CMAKE_INSTALL_PREFIX@/lib/libmalt.so" "$@"
+	LD_PRELOAD="$MPI_WRAPPER_DIR/libmaltmpi.so $MALT_LIB" "$@"
 else
-	LD_PRELOAD="@CMAKE_INSTALL_PREFIX@/lib/libmalt.so" "$@"
+	LD_PRELOAD="$MALT_LIB" "$@"
 fi
