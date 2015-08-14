@@ -67,6 +67,32 @@ class Debug : public FormattedMessage
 		bool emitted;
 };
 
+/*********************  CLASS  **********************/
+/**
+ * Provide the same interface than Debug class but do nothing in implementation.
+ * It is used to ignore debug message at compile time if NDEBUG macro is enabled.
+**/
+class DebugDummy
+{
+	public:
+		DebugDummy(const char * format,const char * file,int line,DebugLevel level = MESSAGE_DEBUG, const char * category = NULL){};
+		DebugDummy(const char * format,DebugLevel level = MESSAGE_DEBUG,const char * category = NULL){};
+		static void enableCat(const std::string & cat){};
+		static void enableAll(void){};
+		static bool showCat(const char * cat){return false;};
+		static void showList(void){};
+		static void setVerbosity(const std::string & value){};
+		//from message class
+		template <class T> DebugDummy & arg(const T & value) {return *this;};
+		DebugDummy & arg(const std::string & value) {return *this;};
+		DebugDummy & arg(const char * value) {return *this;};
+		DebugDummy & argStrErrno(void) {return *this;};
+		DebugDummy & argUnit(unsigned long value,const char * unit = "") {return *this;};
+		std::string toString(void) const {return "";};
+		void toStream(std::ostream & out) const {};
+		void end(void){};
+};
+
 /********************  MACROS  **********************/
 /**
  * Helper to get current location (file and line).
@@ -93,11 +119,15 @@ inline Debug fatal(const char * format)   {return Debug(format,MESSAGE_FATAL);  
 
 /********************  MACROS  **********************/
 #define MALT_FATAL_ARG(x)   MALT::Debug(x,MALT_CODE_LOCATION,MESSAGE_FATAL  )
-#define MALT_DEBUG_ARG(x)   MALT::Debug(x,MALT_CODE_LOCATION,MESSAGE_DEBUG  )
 #define MALT_ERROR_ARG(x)   MALT::Debug(x,MALT_CODE_LOCATION,MESSAGE_ERROR  )
 #define MALT_WARNING_ARG(x) MALT::Debug(x,MALT_CODE_LOCATION,MESSAGE_WARNING)
 #define MALT_MESSAGE_ARG(x) MALT::Debug(x,MALT_CODE_LOCATION,MESSAGE_NORMAL )
 #define MALT_INFO_ARG(x)    MALT::Debug(x,MALT_CODE_LOCATION,MESSAGE_INFO )
+#ifdef NDEBUG
+	#define MALT_DEBUG_ARG(cat,x) MALT::DebugDummy(x,MALT_CODE_LOCATION,MALT::MESSAGE_DEBUG,cat)
+#else
+	#define MALT_DEBUG_ARG(cat,x) MALT::Debug(x,MALT_CODE_LOCATION,MALT::MESSAGE_DEBUG,cat)
+#endif
 
 /********************  MACROS  **********************/
 #define assume(check,message) do { if (!(check)) MALT_FATAL(message); } while(0)
