@@ -1,0 +1,14 @@
+test:
+  script:
+  - git submodule update --init
+  - ls -la
+  - rm -rfv build testinstall
+  - mkdir build
+  - cd build
+  - ../configure --enable-debug --prefix="$PWD/../testinstall"
+  - make
+  - make test
+  - make install
+  tags: 
+  except:
+  - tags
