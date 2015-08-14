@@ -1,7 +1,7 @@
 MALT : Malloc Tracker
 =====================
 
-[![Build status](http://ci.dev-progranet.homelinux.org/projects/2/status.png?ref=master)](http://ci.dev-progranet.homelinux.org/projects/2/status.png?ref=master)
+[![Build status](http://ci.dev-progranet.homelinux.org/projects/2/status.png?ref=master)](http://ci.dev-progranet.homelinux.org/projects/2?ref=master)
 
 What it is ?
 ------------
