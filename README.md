@@ -87,6 +87,26 @@ into the executable, you can also do it by hand in cas of issue :
 	LD_PRELOAD={YOUR_PREFIX}/lib/libmalt.so {YOUR_PROGRAM} [OPTIONS]
 ```
 
+How to use with MPI
+-------------------
+
+MALT also provide a lightweight support of MPI to generate profile files named with MPI rank ID instead of process ID.
+In order to support this you first need to compile the MPI interface on top of your MPI. It will generate a
+small library in you home directory.
+
+```shell
+	{YOUR_PREFIX}/bin/malt --prep-mpi [mpicxx]
+```
+
+Caution it will link malt to the current MPI version you are using, if you want to switch to another you will need to
+redo the previous command.
+
+Then to profile you mpi application proceed like :
+
+```shell
+	mpirun -np X {YOUR_PREFIX}/bin/malt --mpi {YOUR_PROGRAM} [OPTIONS]
+```
+
 Using webview
 -------------
 
