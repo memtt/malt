@@ -89,6 +89,15 @@ into the executable, you can also do it by hand in cas of issue :
 	LD_PRELOAD={YOUR_PREFIX}/lib/libmalt.so {YOUR_PROGRAM} [OPTIONS]
 ```
 
+Options to compile your program
+-------------------------------
+
+MALT work out of the box with your program but it required you to compile your program with 
+debug options (`-g`) to get access to the source code attached to each call sites.
+
+It might also be better to use `-O0` or use `-fno-inline` to disable inlining which might
+provide more accurate call stacks to you.
+
 How to use with MPI
 -------------------
 

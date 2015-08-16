@@ -21,6 +21,13 @@ If you run it remotly, you might need to forward the port through SSH by using c
 
 <pre>ssh user@foo -L8080:localhost:8080 </pre>
 
+<h1>Recommanded options to compile your code</h1>
+
+MALT work out of the box with your program but it required you to compile your program with 
+debug options (<i>-g</i>) to get access to the source code attached to each call sites.
+
+It might also be better to use <i>-O0</i> or use <i>-fno-inline</i> to disable inlining which might
+provide more accurate call stacks to you.
 
 <h1>Definition</h1>
 
