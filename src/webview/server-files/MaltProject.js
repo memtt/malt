@@ -55,8 +55,10 @@ MaltProject.prototype.loadFile = function(file)
 
 		//manage errors
 		if (err) {
-			console.log(err);
-			throw new Error(err);
+			console.error("Failed to open file "+file+", get error : "+err.code);
+			process.exit(1);
+// 			console.log(err);
+// 			throw new Error(err);
 		}
 		
 		//ok parse
