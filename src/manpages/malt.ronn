@@ -1,0 +1,193 @@
+malt(1) -- A memory profiling tool
+==================================
+
+## SYNOPSIS
+
+`malt` [MALT_OPTIONS...] {YOUR_PROGRAM} [YOUR_OPTIONS]
+
+## DESCRIPTION
+
+MALT is a memory profiling tool wrapping your system memory allocation and applying
+backtrace on each call. It will provide you a memory allocation profile which can 
+be view with malt-webview(1).
+
+MALT work out of the box but to profiling your application it might be better to compile
+it with debug symbols (`-g`) and also to disable inlining to get more accurate stacks 
+(`-O0` or `-fno-inline`).
+
+## OPTIONS
+
+ * `-c`, `--config`: 
+   Provide a config file as paramter with format described in the next part
+   of this manpage. You can also get a dump of the default configuration with `-d`.
+ * `-s`, `--stack`:
+   Select the stack tracking mode to use. It can be `backtrace` (default) to use the
+   backtrace function from glibc. If you compile with libunwind you can also use the 
+   libunwind function with `libunwind` in place of glibc backtrace. It fix some bugs
+   with programmes compiled with Intel compiler or using intel libraries (like intel OpenMP).
+   But it as a side effect as libunwind as an internal memory leak. The other apporach
+   is to instrument your code with `-finstrument-function` and in this case you need
+   to use the `enter-exit` to use it.
+ * `-q`, `--quiet`:
+   Make MALT silent to avoid to mix with default output of your program. Usefull if
+   you use the output to fead a script.
+ * `-d`, `--dumpconfig`:
+   Dump the current MALT configuration in a file with the same name than profile file.
+   It help for quick start in configuration by getting all the options and default value.
+ * `-o`:
+   Permit to pass some specific options from the config file in the command line.
+   The value is a list of options separated by commas and formatted like `SECTION:NAME=VALUE`.
+   See the configuration file format (INI format) to find the available sections and names.
+ * `--mpi`:
+   Enable MPI support to name the output files with rank IDs instead of process IDs.
+   MALT will LD_PRELOAD the library bridge from `~/.malt/libmaltmpi.so`.
+ * `--prep-mpi`:
+   Build the MPI bridge library : `~/.malt/libmaltmpi.so`. MALT require it to get access
+   to MPI_Comm_rank function depending on your MPI implementation. You need to do this
+   command each tome you switch you MPI implementation.
+ * `-h`, `--help`:
+   Display help message with list of available command line options.
+
+## USING ON MPI APPLICATIONS
+
+MALT natively provide a lightweight support of MPI application. Each process is tracked separately
+but MALT can help by numbering the output files with the task rank instead of process ID.
+To get this, you need to compile a small wrapper adapted to your current MPI implementation.
+You need to do it once :
+
+	malt --prep-mpi [mpicxx]
+
+Then take care of using the `--mpi` option on the profiling tool :
+
+	mpirun malt --mpi ./you_program
+
+## GET THE GUI
+
+With MALT you can use direcly `kcachegrind` if you enable the valgrind compatible format in configuration
+(output:callgrind). But by default MALT will generate a JSON file to be used with malt-webserver(1).
+
+## CONFIGURATION FILE
+
+You can get an example of this config file with `-d` option and setup the config file to use with `-c` one.
+The config file use INI format with sections and variables as in this example :
+
+	[time]
+	enabled                        = true
+	points                         = 512 
+	linear_index                   = false
+
+	[stack]
+	enabled                        = true
+	mode                           = backtrace
+	resolve                        = true
+	libunwind                      = false
+
+	[output]
+	name                           = malt-%1-%2.%3
+	lua                            = false
+	json                           = true
+	callgrind                      = false
+	indent                         = true
+	config                         = true
+	silent                         = false
+
+	[max-stack]
+	enabled                        = true
+
+	[distr]
+	alloc_size                     = true
+	realloc_jump                   = true
+
+	[trace]
+	enabled                        = false
+
+	[info]
+	hidden                         = false
+
+The `time` section support :
+
+ * `enabled`:
+   Enable support of tracking state values over time to build time charts.
+ * `points`:
+   Define the number of points used to discretized the exacution time of the application.
+ * `linear_index`:
+   Do not use time to index datas but a linear values incremented on each call (might be interesting
+   to not shrink intensive allocation steps on a long program which mostly not do allocation over the run.
+
+The `stack` section support :
+
+ * `enabled`:
+   Enable support of stack tracking.
+ * `mode`:
+   Override by `-s` option from command line, it set the stack tracking method to use. See `-s` documentation
+   for more details.
+ * `resolve`:
+   Enable symbol resolution at the end of execution to extrace full names and source location if debug options
+   is available.
+ * `libunwind`:
+   Use linunwind backtrace method instead of the one from glibc.
+
+The `output` section support :
+
+ * `name`:
+   Define the name of the profile file. %1 is replaced by the program name, %2 by the PID or MPI rank and %3 by extension.
+ * `lua`:
+   Enable output in LUA format (same structure than JSON file but in LUA).
+ * `json`:
+   Enable output of the default JSON file format.
+ * `callgrind`:
+   Enable outptu of the compatibility format with callgrind/kcachegrind. Cannot contain all datas but can be used
+   with compatible existing tools.
+ * `indent`: 
+   Enable indentation in the JSON/LUA files. Usefull for debugging but generate bigger files.
+ * `config`:
+   Dump the config INI file.
+ * `silent`:
+   Enable silent mode so that MALT will not write anything to the standard output of error output to not disturbe
+   streams sent to sctipts.
+
+The `max-stack` section support:
+
+ * `enabled`:
+   Enable or disable the tracking of stack size and memory used by functions on stack 
+   (require  `--finstrument-function` on your code to provide data).
+
+The `distr` section support:
+
+ * `alloc_size`:
+   Generate distrubtion of the allocated chunk size.
+ * `realloc_jump`:
+   Generate distrubtion of the realloc size jumps.
+
+The `trace` section support:
+
+ * `enabled`:
+   Enable or disable the tracing (currently not used by the GUI, work in progress).
+
+The `info` section support:
+
+ * `enabled`:
+   Enable hidding execution informations. This option remove some possibility sensitive informations
+   from the output file, like executable names, hostname and command options. It is still recommended
+   to take a look on the file for example to replace (sed(1)) the paths which might also be removed.
+   This option target some companies which might want to hide their internal applications when exchaning
+   with external parteners.
+
+## ENVIRONMENT
+
+You can also directly LD_PRELOAD the MALT library in your program if the wrapper script has some issues for you.
+
+	LD_PRELOAD={PREFIX}/lib/libmalt.so {YOUR_PROGRAM}
+
+In that case you can setup some environnement variables to configure MALT :
+
+ * `MALT_CONFIG`:
+   Define the configuration file to use (equivalent of `-c` option).
+ * `MALT_STACK`:
+   Define the stack mode to use (equivalent of `-s` option).
+ * `MALT_OPTIONS`:
+   List of options to transmit to MALT (equivalent of `-o` option, see its documentation for format).
+
+## SEE ALSO
+
+malt-webserver(1), malt-passwd(1)
