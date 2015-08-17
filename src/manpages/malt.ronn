@@ -188,6 +188,10 @@ In that case you can setup some environnement variables to configure MALT :
  * `MALT_OPTIONS`:
    List of options to transmit to MALT (equivalent of `-o` option, see its documentation for format).
 
+## VERSION
+
+   This is the manpage of MALT version 0.3.0.
+
 ## SEE ALSO
 
 malt-webserver(1), malt-passwd(1)

@@ -77,9 +77,14 @@ sed -i -r -e "s/${OLD_VERSION}/${version}/g" packaging/README.md
 sed -i -r -e "s/${OLD_VERSION}/${version}/g" dev/packaging.sh
 sed -i -r -e "s/${OLD_VERSION}/${version}/g" packaging/fedora/malt.spec
 sed -i -r -e "s/${OLD_VERSION}/${version}/g" packaging/debian/changelog
+sed -i -r -e "s/${OLD_VERSION}/${version}/g" src/manpages/*.ronn
+
+######################################################
+#Check if manpages need to be recompiled
+make -C ./src/manpages || exit 1
 
 ######################################################
 #serach not updated
 echo "=================== Check not updated list ======================"
-grep -RHn "$(echo "${OLD_VERSION}" | sed -e 's/\./\\./g')" ./ | grep -v node_modules | grep -v extern-deps | grep -v "\.git" | grep -v bower_components | grep "${OLD_VERSION}"
+grep -RHn "$(echo "${OLD_VERSION}" | sed -e 's/\./\\./g')" ./ | grep -v node_modules | grep -v extern-deps | grep -v "\.git" | grep -v bower_components | grep -v ChangeLog.md | grep "${OLD_VERSION}"
 echo "================================================================="

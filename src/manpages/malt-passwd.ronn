@@ -20,6 +20,10 @@ more details : https://www.npmjs.com/package/htpasswd.
  * `MALT_NODEJS`:
    Can be setup to tel which nodeJS to use if the script cannot find it by itself.
 
+## VERSION
+
+   This is the manpage of MALT version 0.3.0.
+
 ## SEE ALSO
 
 malt-webserver(1), malt(1)
