@@ -6,10 +6,10 @@ master
 
  - Add DebugDummy to avoid unneeded allocation in Release mode
  - Add help with MPI in README
- - Add manpahes for malt, malt-passwd and malt-webserver
+ - Add manpages for malt, malt-passwd and malt-webserver
 
-0.3.0
------
+0.3.0 - 16/06/2015
+------------------
 
  - Add http authentication to secure the web GUI.
  - Add silent option (-q/--quiet)
@@ -17,3 +17,17 @@ master
  - Add support for packaging (Fedora/Centos/Debian/Ubuntu...)
  - Fix error in unit tests
  - Fix bug in ELFReader
+
+0.2.0 - 29/04/2015
+------------------
+
+ - Add scatter chart on ralloc page.
+ - Get grunt script to generate shorter standalone version with compressed JS/CSS
+ - Add support for data export and svg export on some charts
+ - Bugfix: add missing modules in package.js
+ - Bugfix: index times on time charts
+
+0.1.0 - 26/03/2015
+------------------
+
+ - First tagged release don't list all new things.
