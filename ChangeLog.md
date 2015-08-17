@@ -6,6 +6,7 @@ master
 
  - Add DebugDummy to avoid unneeded allocation in Release mode
  - Add help with MPI in README
+ - Add manpahes for malt, malt-passwd and malt-webserver
 
 0.3.0
 -----

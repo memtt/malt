@@ -7,15 +7,25 @@
 ######################################################
 
 ######################################################
-add_subdirectory(lib)
-add_subdirectory(integration)
-add_subdirectory(trace-reader)
-add_subdirectory(manpages)
+RONN=ronn
+TARGETS=malt-passwd.1.bz2 malt-webserver.1.bz2 malt.1.bz2 malt-passwd.1.html malt-webserver.1.html malt.1.html
+RM=rm -f
+BZIP2=bzip2
 
 ######################################################
-check_nodejs()
+all: $(TARGETS)
 
 ######################################################
-# Install the webview into share directory
-INSTALL(DIRECTORY webview DESTINATION share/malt
-	PATTERN webview/client_v2/node_modules EXCLUDE)
+clean:
+	$(RM) $(TARGETS)
+
+######################################################
+%.1.bz2: %.ronn
+	$(RONN) -r --pipe $< | $(BZIP2) > $@
+
+######################################################
+%.1.html: %.ronn
+	$(RONN) -5 $<
+
+######################################################
+.PHONY: all clean

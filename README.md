@@ -258,3 +258,16 @@ Packaging
 You can find packaging instructions inside packagin/README.md.
 For quicker use you can use the dev/packagin.sh script which do
 the steps automatically.
+
+Installation in non standard directory
+--------------------------------------
+
+If you install MALT in a directory other than `/usr` and `/usr/local`, eg. in your home, you might
+be interested by setting some environnement variables to integrate it to your shell :
+
+```shell
+	export PATH=${PREFIX}/bin:$PATH
+	export MANPATH=${PREFIX}/share/man:$MANPATH
+```
+`LD_LIBRARY_PATH` is not required as the `malt` command will use full path to get access the 
+internal `.so` file.
