@@ -7,6 +7,7 @@ master
  - Add DebugDummy to avoid unneeded allocation in Release mode
  - Add help with MPI in README
  - Add manpages for malt, malt-passwd and malt-webserver
+ - Add packaging files for gentoo & archlinux
 
 0.3.0 - 16/06/2015
 ------------------

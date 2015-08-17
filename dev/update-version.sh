@@ -46,6 +46,8 @@ newversion="$V  : $(printf "%-16s" "$version")"
 
 ######################################################
 extract_old_version
+echo "New version is ${newversion}"
+echo "Date is ${newdate}"
 
 ######################################################
 find ./ | while read file
@@ -78,6 +80,16 @@ sed -i -r -e "s/${OLD_VERSION}/${version}/g" dev/packaging.sh
 sed -i -r -e "s/${OLD_VERSION}/${version}/g" packaging/fedora/malt.spec
 sed -i -r -e "s/${OLD_VERSION}/${version}/g" packaging/debian/changelog
 sed -i -r -e "s/${OLD_VERSION}/${version}/g" src/manpages/*.ronn
+sed -i -r -e "s/${OLD_VERSION}/${version}/g" packaging/gentoo/dev-util/malt/malt-*.ebuild
+sed -i -r -e "s/${OLD_VERSION}/${version}/g" packaging/archlinux/PKGBUILD
+
+######################################################
+#update date in debian changelog
+sed -i -r -e "s/ [A-Z][a-z]{2}, [0-9]+ [A-Z][a-z]{2} [0-9]+ [0-9]{2}:[0-9]{2}:[0-9]{2} \+[0-9]{4}$/$(LANG=C date -R)/g" packaging/debian/changelog
+
+######################################################
+#mv gentoo ebuild
+git mv packaging/gentoo/dev-util/malt/malt-${OLD_VERSION}.ebuild packaging/gentoo/dev-util/malt/malt-${version}.ebuild || exit 1
 
 ######################################################
 #Check if manpages need to be recompiled

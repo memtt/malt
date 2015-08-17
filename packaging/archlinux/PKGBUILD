@@ -1,0 +1,38 @@
+######################################################
+#            PROJECT  : MALT                         #
+#            VERSION  : 0.3.0                        #
+#            DATE     : 07/2015                      #
+#            AUTHOR   : Valat Sébastien              #
+#            LICENSE  : CeCILL-C                     #
+######################################################
+
+# Maintainer: Sebastien Valat <sebastien.valat-dev@orange.fr>
+pkgname=MALT
+pkgver=0.3.0
+pkgrel=1
+pkgdesc="Memory profiling tool to track memory allocations (malloc,free,realloc...)."
+arch=('i686' 'x86_64')
+url="https://github.com/svalat/MALT"
+license=('CeCILL-C')
+depends=('libunwind','libelf','nodejs')
+makedepends=('cmake' 'gcc' 'cmake' 'libunwind','libelf')
+options=()
+source=(https://github.com/downloads/svalat/MALT/$pkgname-$pkgver.tar.bz2)
+md5sums=('296e506b380a3a1483821b6e32c11102') #generate with 'makepkg -g'
+
+build() {
+	cd "$srcdir/$pkgname-$pkgver"
+
+	mkdir build
+	cd build
+	cmake ..
+	make
+	make test
+}
+
+package() {
+	cd "$srcdir/$pkgname-$pkgver"
+
+	cd build
+	make DESTDIR="$pkgdir/" install
+}
