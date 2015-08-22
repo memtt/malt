@@ -1,5 +1,5 @@
-malt(1) -- Password editor for MALT web GUI
-===========================================
+malt-passwd(1) -- Password editor for MALT web GUI
+==================================================
 
 ## SYNOPSIS
 

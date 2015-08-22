@@ -2,7 +2,7 @@
   "name": "malt-webview",
   "version": "0.3.0",
   "description": "Web view based on Node.js for MALT.",
-  "main": "index.html",
+  "main": "malt-electron.js",
   "node-main": "malt-webserver.js",
   "scripts": {
     "postinstall": "bower install",
