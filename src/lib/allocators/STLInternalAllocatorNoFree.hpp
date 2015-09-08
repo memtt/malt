@@ -10,6 +10,7 @@
 #define STL_INTERNAL_ALLOCATOR_NO_FREE_HPP
 
 /********************  HEADERS  *********************/
+#include <common/Debug.hpp>
 #include "NoFreeAllocator.hpp"
 
 /*******************  NAMESPACE  ********************/
@@ -54,6 +55,7 @@ class STLInternalAllocatorNoFree {
 			return reinterpret_cast<pointer>(gblNoFreeAllocator.allocate(cnt * sizeof(T))); 
 		}
 		inline void deallocate(pointer p, size_type) { 
+			MATT_WARNING("Caution, you are using deallocate on STLAllocatorNoFree !");
 			//gblInternaAlloc->free(p);
 		}
 

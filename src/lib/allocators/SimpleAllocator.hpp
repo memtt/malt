@@ -61,6 +61,9 @@ struct Chunk
 	//vars
 	/** Internal size of the allocated chunk, so it will not take in account the size of the chunk structure. **/
 	size_t size;
+	#ifndef NDEBUG
+	size_t canary;
+	#endif
 };
 
 /********************  STRUCT  **********************/

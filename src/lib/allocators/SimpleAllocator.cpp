@@ -90,6 +90,9 @@ void SimpleAllocator::requestSystemMemory(size_t size)
 	
 	//update chunk info
 	cur->size = size - sizeof(*cur);
+	#ifndef NDEBUG
+		cur->canary = 0x42;
+	#endif
 
 	//to be sure for all OS
 	touchMemory(cur->getBody(),cur->size);
@@ -407,6 +410,9 @@ void* SimpleAllocator::realloc(void * old,size_t size)
 Chunk::Chunk(size_t size)
 {
 	this->size = size;
+	#ifndef NDEBUG
+		this->canary = 0x42;
+	#endif
 }
 
 /*******************  FUNCTION  *********************/
@@ -415,6 +421,7 @@ Chunk::Chunk(size_t size)
 **/
 size_t Chunk::getTotalSize(void)
 {
+	assert(this->canary == 0x42);
 	return size + sizeof(*this);
 }
 
@@ -424,6 +431,7 @@ size_t Chunk::getTotalSize(void)
 **/
 bool Chunk::canContain(size_t size)
 {
+	assert(this->canary == 0x42);
 	return this->size >= size;
 }
 
@@ -434,9 +442,12 @@ bool Chunk::canContain(size_t size)
 void* Chunk::getBody(void)
 {
 	if (this == NULL)
+	{
 		return NULL;
-	else
+	} else {
+		assert(this->canary == 0x42);
 		return (void*)(this+1);
+	}
 }
 
 /*******************  FUNCTION  *********************/
@@ -449,9 +460,13 @@ void* Chunk::getBody(void)
 Chunk* Chunk::getFromBody(void* ptr)
 {
 	if (ptr == NULL)
+	{
 		return NULL;
-	else
-		return ((Chunk*)ptr)-1;
+	} else {
+		Chunk * chunk = ((Chunk*)ptr)-1;
+		assert(chunk->canary == 0x42);
+		return chunk;
+	}
 }
 
 /*******************  FUNCTION  *********************/
@@ -464,10 +479,14 @@ Chunk* Chunk::split(size_t size)
 	//check
 	assert(this->size - size  > MATT_ALLOC_SPLIT_THRESOLD);
 	assert(size % MATT_ALLOC_BASIC_ALIGN == 0);
+	assert(this->canary == 0x42);
 	
 	//split
 	Chunk * next = (Chunk*)((size_t)(this+1)+size);
 	next->size = this->size - size - sizeof(*this);
+	#ifndef NDEBUG
+		next->canary = 0x42;
+	#endif
 	
 	//check sum
 	assert(sizeof(*this) + size + next->size == this->size);
