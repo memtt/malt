@@ -12,7 +12,7 @@
 /********************  HEADERS  *********************/
 #include <map>
 #include <cstdlib>
-#include <allocators/STLInternalAllocator.hpp>
+#include <allocators/STLInternalAllocatorNoFree.hpp>
 
 /*********************  TYPES  **********************/
 namespace htopml {
@@ -24,7 +24,7 @@ namespace MATT
 {
 
 /*********************  TYPES  **********************/
-typedef std::map<size_t,size_t,std::less<size_t>,STLInternalAllocator<std::pair<size_t,size_t> > > AllocSizeDistributionMap;
+typedef std::map<size_t,size_t,std::less<size_t>,STLInternalAllocatorNoFree<std::pair<size_t,size_t> > > AllocSizeDistributionMap;
 
 /*********************  CLASS  **********************/
 class AllocSizeDistribution

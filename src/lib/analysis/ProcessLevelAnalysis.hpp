@@ -26,7 +26,7 @@
 #include <core/AllocTracer.hpp>
 #include <core/AllocSizeDistribution.hpp>
 #include <hooks/EnterExitFunctionHooks.hpp>
-#include <allocators/STLInternalAllocator.hpp>
+#include <allocators/STLInternalAllocatorNoFree.hpp>
 //current
 #include "ThreadLevelAnalysis.hpp"
 
@@ -34,7 +34,7 @@ namespace MATT
 {
 
 /*********************  TYPES  **********************/
-typedef std::vector<ThreadLevelAnalysis*,STLInternalAllocator<ThreadLevelAnalysis*> > ThreadLevelAnalysisVector;
+typedef std::vector<ThreadLevelAnalysis*,STLInternalAllocatorNoFree<ThreadLevelAnalysis*> > ThreadLevelAnalysisVector;
 
 /********************  ENUM  ************************/
 enum ProcessAnalysisIDS

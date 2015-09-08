@@ -14,7 +14,7 @@
 #include "EnterExitStack.hpp"
 #include "BacktraceStack.hpp"
 #include "RLockFreeTree.hpp"
-#include <allocators/STLInternalAllocator.hpp>
+#include <allocators/STLInternalAllocatorNoFree.hpp>
 #include <json/JsonState.h>
 
 
@@ -48,7 +48,7 @@ class StackTreeMap : public StackTree
 			
 		};
 		typedef std::pair<const Key,StackTreeStorage> Node;
-		typedef std::map<Key,StackTreeStorage,std::less<Key>,STLInternalAllocator< Node > > NodeMap;
+		typedef std::map<Key,StackTreeStorage,std::less<Key>,STLInternalAllocatorNoFree< Node > > NodeMap;
 	public:
 		StackTreeMap(bool backtrace = true,bool threadSafe = true);
 		~StackTreeMap(void);
