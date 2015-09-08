@@ -27,7 +27,7 @@ static const char * CST_VALUE_2 =   "{\n\
 static const char * CST_VALUE_3 =  "{\n\
 \t\"steps\":1,\n\
 \t\"stackIds\":[0, 1, -1, -1, -1, 5, 6, 7, 8],\n\
-\t\"a\":[0, 1, 1, 1, 1, 0, 1, 2, 3]\n}";
+\t\"a\":[0, 1, 0, 0, 0, 0, 1, 2, 3]\n}";
 static const char * CST_VALUE_4 = "{\n\
 \t\"steps\":1,\n\
 \t\"stackIds\":[0, 1, -1, -1, -1, 5, 6, 7, 8],\n\

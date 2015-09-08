@@ -7,6 +7,7 @@
 *****************************************************/
 
 /********************  HEADERS  *********************/
+#include <common/Debug.hpp>
 #include <common/Helpers.hpp>
 #include "UserSegmentTracker.hpp"
 
@@ -23,13 +24,12 @@ UserSegmentTracker::UserSegmentTracker ( bool threadSafe )
 /*******************  FUNCTION  *********************/
 void UserSegmentTracker::registerChunk ( void* ptr, size_t size, ticks birth, MATT::StackId stackId, int allocThreadId, MATT::StackTreeDataHandler dataHandler )
 {
-	UserSegment chunk;
+	UserSegment & chunk = map[ptr];
 	chunk.size = size;
 	chunk.birth = birth;
 	chunk.stackId = stackId;
 	chunk.allocThreadId =allocThreadId;
 	chunk.dataHandler = dataHandler;
-	map[ptr] = chunk;
 }
 
 /*******************  FUNCTION  *********************/
@@ -91,11 +91,11 @@ UserSegment UserSegmentTracker::unregister ( Clock & clock,void* ptr )
 	if (it == map.end())
 	{
 		UserSegment ret;
-		ret.size = 0;
+		ret.size = -1UL;
 		return ret;
 	} else {
 		UserSegment ret = it->second;
-		map.erase(ptr);
+		map.erase(it);
 		return ret;
 	}
 }

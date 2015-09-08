@@ -74,7 +74,7 @@ void Debug::end(void)
 		case MESSAGE_INFO:
 		case MESSAGE_NORMAL:
 			if (line != 0)
-				std::cout << std::endl << cstLevelPrefix[level] << "At " <<  file << ':' << line << " : \n";
+				std::cout << cstLevelPrefix[level] << "At " <<  file << ':' << line << " : \n";
 			std::cout << cstLevelPrefix[level] << *this << std::endl;
 			break;
 		case MESSAGE_ASSERT:
@@ -82,19 +82,19 @@ void Debug::end(void)
 				break;
 			#else
 				if (line != 0)
-					std::cout << std::endl << cstLevelPrefix[level] << "At " <<  file << ':' << line << " : \n";
+					std::cout << cstLevelPrefix[level] << "At " <<  file << ':' << line << " : \n";
 				std::cout << cstLevelPrefix[level] << *this << std::endl;
 				abort();
 			#endif
 		case MESSAGE_WARNING:
 		case MESSAGE_ERROR:
 			if (line != 0)
-				std::cerr << std::endl << cstLevelPrefix[level] << "At " <<  file << ':' << line << " : \n";
+				std::cerr << cstLevelPrefix[level] << "At " <<  file << ':' << line << " : \n";
 			std::cerr << cstLevelPrefix[level] << *this << std::endl;
 			break;
 		case MESSAGE_FATAL:
 			if (line != 0)
-				std::cerr << std::endl << cstLevelPrefix[level] << "At " <<  file << ':' << line << " : \n";
+				std::cerr << cstLevelPrefix[level] << "At " <<  file << ':' << line << " : \n";
 			std::cerr << cstLevelPrefix[level] << *this << std::endl;
 			abort();
 			break;

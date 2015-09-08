@@ -7,6 +7,9 @@
 ######################################################
 
 ######################################################
+include_directories(${CMAKE_SOURCE_DIR}/extern-deps/gmock-1.7.0/gtest/include)
+
+######################################################
 add_library(matt-init-fake OBJECT InitFake.cpp)
 SET_TARGET_PROPERTIES(matt-init-fake PROPERTIES COMPILE_FLAGS -fPIC)
 

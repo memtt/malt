@@ -203,9 +203,13 @@ void ProcessLevelAnalysis::onFree ( MallocHooksInfos& info, void* ptr )
 /*******************  FUNCTION  *********************/
 void ProcessLevelAnalysis::onFreeMem ( MallocHooksInfos& info, void* ptr )
 {
+	//ignore NULL
+	if (ptr == NULL)
+		return;
+	
 	Options & options = getOptions();
 	UserSegment segment = this->userSegmentTracker.unregister(mallocClock,ptr);
-	if (segment.size > 0)
+	if (segment.size != -1UL)
 	{
 		//track chunk lifetime and update on alloc stack info
 		ticks lifetime = this->mallocClock.getLastEventTime(CLOCK_TICKS) - segment.birth;

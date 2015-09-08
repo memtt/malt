@@ -28,6 +28,8 @@ AllocTracer::AllocTracer(const std::string& file,size_t bufferSize)
 {
 	this->bufferSize = bufferSize;
 	this->buffer = new AllocTracerChunk[bufferSize];
+	this->pos = 0;
+	this->fp = NULL;
 	
 	if ( ! file.empty() )
 		this->open(file);
@@ -130,7 +132,7 @@ void AllocTracer::flush(void)
 	assumeArg(size == pos,"Failed to write all datas with fwrite, check for interuption, need a loop here for some thread context. %1 != %2").arg(size).arg(pos).end();
 	
 	//reset pos
-	pos = 0;
+	this->pos = 0;
 }
 
 }

@@ -130,9 +130,14 @@ TEST(SimpleAllocator,getTotalAndInUseAndUnusedMemory)
 	EXPECT_EQ(0,alloc.getUnusedMemory());
 	EXPECT_EQ(0,alloc.getInuseMemory());
 	alloc.malloc(32);
+	#ifdef NDEBUG
+		int extra = 0;
+	#else
+		int extra = sizeof(size_t);
+	#endif
 	EXPECT_EQ(MATT_ALLOC_SYS_REQ_SIZE,alloc.getTotalMemory());
-	EXPECT_EQ(MATT_ALLOC_SYS_REQ_SIZE-32-sizeof(Chunk),alloc.getUnusedMemory());
-	EXPECT_EQ(32+sizeof(Chunk),alloc.getInuseMemory());
+	EXPECT_EQ(MATT_ALLOC_SYS_REQ_SIZE-32-sizeof(Chunk)-extra,alloc.getUnusedMemory());
+	EXPECT_EQ(32+sizeof(Chunk)+extra,alloc.getInuseMemory());
 }
 
 /*******************  FUNCTION  *********************/

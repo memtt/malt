@@ -116,8 +116,9 @@ void * SimpleAllocator::malloc(size_t size)
 	#else
 		size = alignOn(size,MATT_ALLOC_BASIC_ALIGN);
 		size += sizeof(size_t);
-		size_t * ptr = realMalloc(size);
+		size_t * ptr = (size_t*)realMalloc(size);
 		ptr[(size / sizeof(size_t))-1] = 0x42;
+		return ptr;
 	#endif
 }
 
@@ -125,7 +126,7 @@ void * SimpleAllocator::malloc(size_t size)
 void SimpleAllocator::checkCanary ( void* ptr, size_t size )
 {
 	//MATT_ASSERT((size_*)ptr[0]== 0x42);
-	MATT_ASSERT((size_*)ptr[(size/sizeof(size_t))-1]== 0x42);
+	MATT_ASSERT(((size_t*)ptr)[(size/sizeof(size_t))-1]== 0x42);
 }
 
 /*******************  FUNCTION  *********************/
@@ -147,23 +148,19 @@ void* SimpleAllocator::realMalloc(size_t size)
 {
 	assert(this != NULL);
 	
-	//rount to multiple of pointer size
-	size = alignOn(size,MATT_ALLOC_BASIC_ALIGN);
-
-	//timer
-	CODE_TIMING_FUNC_START("internalMalloc");
-		
 	//nothing to do
 	if (size == 0)
 		return NULL;
+
+	//timer
+	CODE_TIMING_FUNC_START("internalMalloc");
 	
 	//round to minimal
 	if (size < MATT_ALLOC_MIN_SIZE)
 		size = MATT_ALLOC_MIN_SIZE;
 	
-	//round to multiple of pointer size
-	if (size % sizeof(MATT_ALLOC_BASIC_ALIGN) != 0)
-		size += MATT_ALLOC_BASIC_ALIGN - (size % MATT_ALLOC_BASIC_ALIGN);
+	//rount to multiple of pointer size
+	size = alignOn(size,MATT_ALLOC_BASIC_ALIGN);
 	assert(size % MATT_ALLOC_BASIC_ALIGN == 0);
 	
 	//search in list
@@ -490,6 +487,7 @@ FreeChunk::FreeChunk(void)
 {
 	this->next = this;
 	this->prev = this;
+	this->chunk.size = 0;
 }
 
 /*******************  FUNCTION  *********************/
