@@ -59,7 +59,7 @@
 	<input type='button' ng-click='toogleSummaryDetails()' value='{{displaySummaryLevel == 1 ? "Show all details" : "Hide details"}}'/>
 	<input type='button' ng-click='displaySummaryHelp = !displaySummaryHelp' value='{{!displaySummaryHelp ? "Show help" : "Hide help"}}'/>
 	<table class='table table-bordered'>
-		<tr ng-repeat="entry in summaryViewEntries | summaryLevel:displaySummaryLevel:hasSummaryWarnings(entry.key)" ng-class="{'malt-has-warning': hasSummaryWarnings(entry.key)}">
+		<tr ng-repeat="entry in summaryViewEntries | summaryLevel:displaySummaryLevel:summaryData.summaryWarnings" ng-class="{'malt-has-warning': hasSummaryWarnings(entry.key)}">
 			<td class='malt-name'>{{entry.name}}</td>
 			<td class='malt-value'>
 				{{getFormattedValue(entry)}}

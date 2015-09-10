@@ -164,6 +164,12 @@ function MaltPageHome()
 			help:"Memory used by TLS variables (already multiplied by number of thread of execution).",
 			format: function(x) {return maltHelper.humanReadable(x,1,'B',false);}
 		},{
+			key:'numGblVar',
+			name:'Global variable count',
+			level: 2,
+			help:"Total number of global and TLS variables from your application and libraries.",
+			format: function(x) {return maltHelper.humanReadable(x,1,"",false);}
+		},{
 			type:'separator',
 			level: 2
 		},{
@@ -258,7 +264,7 @@ function MaltPageHome()
 			var res=[];
 			for (var i in input)
 			{
-				if (input[i].level == undefined || input[i].level <= level || hasSummaryWarnings)
+				if (input[i].level == undefined || input[i].level <= level || hasSummaryWarnings[input[i].key] != undefined)
 					res.push(input[i]);
 			}
 			return res;

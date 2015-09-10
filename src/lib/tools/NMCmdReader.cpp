@@ -50,7 +50,7 @@ bool NMCmdReader::load(const std::string& binaryFile)
 
 	//prepare cmds
 	std::stringstream nmCmd;
-	nmCmd << "nm --print-size -n --line-numbers -P --no-demangle " << binaryFile;
+	nmCmd << "nm --print-size -n -P --no-demangle " << binaryFile;
 	
 	//hide error if silent
 	if (gblOptions != NULL && gblOptions->outputSilent)

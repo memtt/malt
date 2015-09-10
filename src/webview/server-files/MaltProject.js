@@ -383,6 +383,7 @@ MaltProject.prototype.genSummaryWarnings = function(data)
 {
 	//vars
 	var ret = {};
+	var runtime = data.run.runtime / data.system.ticksPerSecond;
 	
 	//check too large recycling ratio
 	if (data.summary.recyclingRatio > 10)
@@ -390,11 +391,18 @@ MaltProject.prototype.genSummaryWarnings = function(data)
 		ret.recyclingRatio = ["Caution, you are heavily recycling your memory, it might hurt performance, check the allocation rate."];
 		ret.totalAllocatedMemory = ["Caution, you are heavily recycling your memory, it might hurt performance, check the allocation rate."];
 	}
-	if (data.summary.allocCount > 100000)
+	console.log(runtime + " => " + data.summary.allocCount / runtime);
+	if (data.summary.allocCount / runtime > 100000)
 		ret.allocCount = ["Caution, you are doing really large number of memory allocation, it might hurt performance."];
 	if (data.summary.leakMem > data.summary.peakRequestedMemory / 2)
 		ret.leakMem = ["Caution, half of your memory has leaked, it might not be an issue, but maybe you need to ensure the segments are used during the whole program life."]
-	
+	if (data.summary.globalVarMem > data.summary.peakRequestedMemory / 3 && data.summary.globalVarMem > 1024*1024)
+		ret.globalVarMem = ["Caution, a large part of your memory is consummed by global variables, check if it is normal."];
+	if (data.summary.tlsVarMem > data.summary.peakRequestedMemory / 3 && data.summary.tlsVarMem > 1024*1024)
+		ret.globalVarMem = ["Caution, a large part of your memory is consummed by TLS variables, check if it is normal."];
+	if (data.summary.numGblVar > 500)
+		ret.numGblVar = ["Caution, you get a realy big number of global variable, your code is likely to be buggy."];
+
 	return ret;
 }
 
@@ -478,17 +486,20 @@ MaltProject.prototype.getSummaryV2 = function()
 	//global vars
 	var tlsMem = 0;
 	var gblMem = 0;
+	var cntVars = 0;
 	var gvars = this.data.memStats.globalVariables;
 	for (var i in gvars)
 	{
 		for (var j in gvars[i])
 		{
+			cntVars++;
 			if (gvars[i][j].tls)
 				tlsMem += gvars[i][j].size;
 			else
 				gblMem += gvars[i][j].size;
 		}
 	}
+	ret.summary.numGblVar = cntVars;
 	ret.summary.globalVarMem = gblMem;
 	ret.summary.tlsVarMem = tlsMem;
 	
