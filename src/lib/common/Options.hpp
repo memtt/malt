@@ -71,6 +71,8 @@ struct Options
 	//info
 	bool infoHidden;
 	bool childs;
+	//filter
+	std::string exe;
 };
 
 /********************  GLOBALS  *********************/

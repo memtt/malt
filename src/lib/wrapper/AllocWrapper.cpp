@@ -245,6 +245,9 @@ void sigKillHandler(int s)
 **/
 void AllocWrapperGlobal::init(void )
 {
+	//skip if filtered exe
+	bool skip = false;
+
 	//secure in case of first call in threads
 	gblState.lock.lock();
 
@@ -287,9 +290,16 @@ void AllocWrapperGlobal::init(void )
 		
 		//ok do it
 		gblState.profiler = new AllocStackProfiler(*gblState.options,mode,true);
+
+		//filter exe
+		if (gblState.options->exe.empty() == false && OS::getExeName() != gblState.options->exe)
+		{
+			fprintf(stderr,"MALT: skip %s != %s\n",OS::getExeName().c_str(),gblState.options->exe.c_str());
+			skip = true;
+		}
 		
 		//print info
-		if (!gblOptions->outputSilent)
+		if (!gblOptions->outputSilent && !skip)
 			fprintf(stderr,"MALT : Start memory instrumentation of %s - %d by library override.\n",OS::getExeName().c_str(),OS::getPID());
 
 		//register on exit
@@ -302,6 +312,10 @@ void AllocWrapperGlobal::init(void )
 
 		//final state
 		gblState.status = ALLOC_WRAP_READY;
+
+		//skip
+		if (skip)
+			gblState.status = ALLOC_WRAP_FINISH;
 	}
 
 	//secure in case of first call in threads

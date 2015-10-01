@@ -55,6 +55,8 @@ Options::Options(void)
 	//info
 	this->infoHidden              = false;
 	this->childs                  = false;
+	//filter
+	this->exe                     = "";
 }
 
 /*******************  FUNCTION  *********************/
@@ -89,6 +91,8 @@ bool Options::operator==(const Options& value) const
 	if (this->traceEnabled != value.traceEnabled) return false;
 	//info
 	if (this->infoHidden != value.infoHidden) return false;
+	//exe
+	if (this->exe != value.exe) return false;
 	
 	return true;
 }
@@ -204,6 +208,9 @@ void Options::loadFromIniDic ( dictionary* iniDic )
 	
 	//info
 	this->infoHidden          = iniparser_getboolean(iniDic,"info:hidden",this->infoHidden);
+
+	//filter
+	this->exe                 = iniparser_getstring(iniDic,"filter:exe",(char*)this->exe.c_str());
 }
 
 /*******************  FUNCTION  *********************/
@@ -272,6 +279,10 @@ void convertToJson(htopml::JsonState & json,const Options & value)
 		json.openFieldStruct("info");
 			json.printField("hidden",value.infoHidden);
 		json.closeFieldStruct("info");
+
+		json.openFieldStruct("filter");
+			json.printField("exe",value.exe);
+		json.closeFieldStruct("filter");
 	json.closeStruct();
 }
 
@@ -317,6 +328,9 @@ void Options::dumpConfig(const char* fname)
 	
 	//info
 	IniParserHelper::setEntry(dic,"info:hidden",this->infoHidden);
+
+	//exe
+	IniParserHelper::setEntry(dic,"filter:exe",this->exe.c_str());
 	
 	//write
 	FILE * fp = fopen(fname,"w");
