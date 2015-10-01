@@ -70,9 +70,9 @@ struct Options
 	bool traceEnabled;
 	//info
 	bool infoHidden;
-	bool childs;
 	//filter
 	std::string exe;
+	bool childs;
 };
 
 /********************  GLOBALS  *********************/

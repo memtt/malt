@@ -184,6 +184,7 @@ Example of config file :
 
 	[filter]
 	exe=                  ; Only apply malt on given exe (empty for all)
+	childs=true           ; Instrument child processes or not
 ```
 
 Option values can be override on the fly with command :

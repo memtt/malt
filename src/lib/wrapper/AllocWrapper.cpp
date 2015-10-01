@@ -301,6 +301,10 @@ void AllocWrapperGlobal::init(void )
 		//print info
 		if (!gblOptions->outputSilent && !skip)
 			fprintf(stderr,"MALT : Start memory instrumentation of %s - %d by library override.\n",OS::getExeName().c_str(),OS::getPID());
+		
+		//disable childs
+		if (gblOptions->childs == false)
+			unsetenv("LD_PRELOAD");
 
 		//register on exit
 		//TODO remove when ensure that the attribute method work
