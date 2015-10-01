@@ -181,6 +181,9 @@ Example of config file :
 	json=true             ; enable json output
 	callgrind=true        ; enable callgrind output
 	config=true           ; dump current config
+
+	[filter]
+	exe=                  ; Only apply malt on given exe (empty for all)
 ```
 
 Option values can be override on the fly with command :

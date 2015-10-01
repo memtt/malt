@@ -104,6 +104,9 @@ The config file use INI format with sections and variables as in this example :
 	[info]
 	hidden                         = false
 
+	[filter]
+	exec                           = 
+
 The `time` section support :
 
  * `enabled`:
@@ -172,6 +175,12 @@ The `info` section support:
    to take a look on the file for example to replace (sed(1)) the paths which might also be removed.
    This option target some companies which might want to hide their internal applications when exchaning
    with external parteners.
+
+The `filter` section support:
+
+ * `exe`:
+   Enable filtering of executable to enable MALT and ignore otherwise. By default empty value enable
+   MALT on all executable.
 
 ## ENVIRONMENT
 
