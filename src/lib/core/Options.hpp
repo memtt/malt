@@ -11,11 +11,11 @@
 
 /********************  HEADERS  *********************/
 #include <string>
-#include <vector>
+#include <list>
 #include <cassert>
 
 /********************  HEADERS  *********************/
-#include <allocators/STLInternalAllocator.hpp>
+#include <allocators/STLInternalAllocatorNoFree.hpp>
 //iniparser
 extern "C" {
 #include <iniparser.h>
@@ -72,7 +72,7 @@ class OptionDef : public OptionDefGeneric
 };
 
 /*********************  TYPES  **********************/
-typedef std::vector<OptionDefGeneric*,STLInternalAllocator<OptionDefGeneric*> > OptionDefVector;
+typedef std::list<OptionDefGeneric*,STLInternalAllocatorNoFree<OptionDefGeneric*> > OptionDefVector;
 
 /********************  STRUCT  **********************/
 struct Options

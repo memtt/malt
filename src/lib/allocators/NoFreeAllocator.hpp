@@ -72,7 +72,7 @@ class NoFreeAllocator
 		size_t getMaxSize(void) const;
 		void printState(std::ostream & out = std::cerr) const;
 	private:
-		void setupNewSegment(void);
+		void setupNewSegment(bool useInitSegment = false);
 	private:
 		/** Keep track of the total memory allocated by the allocator. **/
 		size_t totalMem;
@@ -84,23 +84,26 @@ class NoFreeAllocator
 		Spinlock lock;
 		/** Enable locking **/
 		bool threadsafe;
+		/** first segment to be used to avoid first mmap so infinite loop at init **/
+		char initSegment[NO_FREE_ALLOC_SEG_SIZE];
 };
 
 /********************  GLOBALS  *********************/
 /** Static instance of the allocator for use in all MATT routines. **/
-extern NoFreeAllocator gblNoFreeAllocator;
+extern NoFreeAllocator * gblNoFreeAllocator;
 
 /*******************  FUNCTION  *********************/
 /** Function to init the global static allocator. **/
-static inline void doNoFreeAllocatorInit(void) {gblNoFreeAllocator.init();}
+void doNoFreeAllocatorInit(void);
 
 /*******************  FUNCTION  *********************/
 /** Short wrapper to ease desactivation of this allocator and usage of the standard one **/
-#define MATT_NO_FREE_MALLOC(x) gblNoFreeAllocator.allocate(x)
+#define MATT_NO_FREE_MALLOC(x) gblNoFreeAllocator->allocate(x)
+#define MATT_NO_FREE_NEW(x) new (MATT_NO_FREE_MALLOC(sizeof(x))) x
 
 /*******************  FUNCTION  *********************/
 /** Function to use the global allocator **/
-template <class T> T * noFreeMalloc(size_t cnt) {return (T*)gblNoFreeAllocator.allocate(sizeof(T)*cnt);};
+template <class T> T * noFreeMalloc(size_t cnt) {return (T*)gblNoFreeAllocator->allocate(sizeof(T)*cnt);};
 
 }
 

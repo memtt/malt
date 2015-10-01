@@ -127,13 +127,13 @@ void OptionDef<T>::setToDefault(void)
 Options::Options(void)
 {
 	//stack
-	options.push_back(new OptionDef<bool>        (&this->stackProfileEnabled,"stack"   ,"enabled"    ,true));
-	options.push_back(new OptionDef<bool>        (&this->stackResolve       ,"stack"   ,"resolve"    ,true));
-	options.push_back(new OptionDef<std::string> (&this->stackMode          ,"stack"   ,"mode"       ,"backtrace"));
-	options.push_back(new OptionDef<bool>        (&this->stackLibunwind     ,"stack"   ,"libunwind"  ,false));
+	options.push_back(MATT_NO_FREE_NEW( OptionDef<bool> )        (&this->stackProfileEnabled,"stack"   ,"enabled"    ,true));
+	options.push_back(MATT_NO_FREE_NEW( OptionDef<bool> )        (&this->stackResolve       ,"stack"   ,"resolve"    ,true));
+	options.push_back(MATT_NO_FREE_NEW( OptionDef<std::string> ) (&this->stackMode          ,"stack"   ,"mode"       ,"backtrace"));
+	options.push_back(MATT_NO_FREE_NEW( OptionDef<bool> )        (&this->stackLibunwind     ,"stack"   ,"libunwind"  ,false));
 	//time
-	options.push_back(new OptionDef<bool>        (&this->timeProfileEnabled,"time"    ,"enabled"    ,true));
-	options.push_back(new OptionDef<int>         (&this->timeProfilePoints ,"time"    ,"points"     ,512));
+	options.push_back(MATT_NO_FREE_NEW( OptionDef<bool> )        (&this->timeProfileEnabled,"time"    ,"enabled"    ,true));
+	options.push_back(MATT_NO_FREE_NEW( OptionDef<int>  )        (&this->timeProfilePoints ,"time"    ,"points"     ,512));
 	options.push_back(new OptionDef<bool>        (&this->timeProfileLinear ,"time"    ,"linear"     ,false));
 	//output
 	options.push_back(new OptionDef<std::string> (&this->outputName        ,"output"   ,"name"      ,"matt-%1-%2.%3"));
@@ -156,9 +156,17 @@ Options::Options(void)
 /*******************  FUNCTION  *********************/
 bool Options::operator==(const Options& value) const
 {
+	OptionDefVector::const_iterator it1 = options.begin();
+	OptionDefVector::const_iterator it2 = value.options.begin();
+	
 	for (int i = 0 ; i < options.size() ; i++)
-		if (options[i]->equal(*value.options[i]) == false)
+	{
+		if ((*it1)->equal(**it2) == false)
 			return false;
+		it1++;
+		it2++;
+	}
+
 	return true;
 }
 
@@ -196,17 +204,17 @@ void convertToJson(htopml::JsonState & json,const Options & value)
 {
 	//gen group list
 	std::deque<std::string> groups;
-	for (int i = 0 ; i < value.options.size() ; i++)
-		if (!groupContains(groups,value.options[i]->getSection()))
-			groups.push_back(value.options[i]->getSection());
+	for (OptionDefVector::const_iterator it = value.options.begin() ; it != value.options.end() ; ++it)
+		if (!groupContains((*it)->getSection()))
+			groups.push_back((*it)->getSection());
 	
 	json.openStruct();
 	for (std::deque<std::string>::iterator it = groups.begin() ; it != groups.end() ; ++it)
 	{
 		json.openFieldStruct(it->c_str());
-		for (int i = 0 ; i < value.options.size() ; i++)
-			if (value.options[i]->getSection() == *it)
-				value.options[i]->dump(json);
+		for (OptionDefVector::const_iterator it = value.options.begin() ; it != value.options.end() ; ++it)
+			if ((*it)->getSection() == *it)
+				(*it)->dump(json);
 		json.closeFieldStruct(it->c_str());
 		
 	}

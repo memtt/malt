@@ -29,7 +29,16 @@ namespace MATT
 
 /*******************  FUNCTION  *********************/
 /** Global instance to be used by all MATT functions. **/
-NoFreeAllocator gblNoFreeAllocator;
+NoFreeAllocator * gblNoFreeAllocator = NULL;
+/** Memory to allocate the initial no free allocator. We use this way to get spinlock init correctly **/
+char gblNoFreeAllocatorMem[sizeof(NoFreeAllocator)];
+
+/*******************  FUNCTION  *********************/
+void doNoFreeAllocatorInit ( void )
+{
+	gblNoFreeAllocator = new(gblNoFreeAllocatorMem) NoFreeAllocator();
+	gblNoFreeAllocator->init();
+}
 
 /*******************  FUNCTION  *********************/
 /**
@@ -47,17 +56,22 @@ void NoFreeAllocator::init( bool threadsafe )
 	this->threadsafe = true;
 	
 	//setup default memory
-	this->setupNewSegment();
+	this->setupNewSegment(true);
 }
 
 /*******************  FUNCTION  *********************/
 /**
  * Setup a new big segment.
 **/
-void NoFreeAllocator::setupNewSegment(void)
+void NoFreeAllocator::setupNewSegment( bool useInitSegment )
 {
 	//request to system
-	NoFreeAllocatorSegment * segment = (NoFreeAllocatorSegment *)OS::mmap(NO_FREE_ALLOC_SEG_SIZE,true);
+	NoFreeAllocatorSegment * segment;
+	
+	if (useInitSegment)
+		segment = (NoFreeAllocatorSegment *)initSegment;
+	else
+		segment = (NoFreeAllocatorSegment *)OS::mmap(NO_FREE_ALLOC_SEG_SIZE,true);
 	
 	//errors
 	assumeArg(segment!=NULL,"Failed to request memory from OS : %1 !").argStrErrno().end();

@@ -52,7 +52,7 @@ class STLInternalAllocatorNoFree {
 
 		//    memory allocation
 		inline pointer allocate(size_type cnt, typename std::allocator<void>::const_pointer = 0) { 
-			return reinterpret_cast<pointer>(gblNoFreeAllocator.allocate(cnt * sizeof(T))); 
+			return reinterpret_cast<pointer>(gblNoFreeAllocator->allocate(cnt * sizeof(T))); 
 		}
 		inline void deallocate(pointer p, size_type) { 
 			MATT_WARNING("Caution, you are using deallocate on STLAllocatorNoFree !");
@@ -61,7 +61,7 @@ class STLInternalAllocatorNoFree {
 
 		//    size
 		inline size_type max_size() const { 
-			return gblNoFreeAllocator.getMaxSize();
+			return gblNoFreeAllocator->getMaxSize();
 		}
 
 		//    construction/destruction

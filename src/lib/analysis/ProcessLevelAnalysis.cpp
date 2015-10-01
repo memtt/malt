@@ -263,7 +263,7 @@ void ProcessLevelAnalysis::updateMemStats ( MallocHooksInfos& info, void* ret, s
 	
 	//get virtual and physical
 	OSProcMemUsage mem = OS::getProcMemoryUsage();
-	size_t internalMem = gblInternaAlloc->getTotalMemory() + gblNoFreeAllocator.getTotalMemory();
+	size_t internalMem = gblInternaAlloc->getTotalMemory() + gblNoFreeAllocator->getTotalMemory();
 	size_t virtualMem = mem.virtualMemory - internalMem;
 	size_t physicalMem = mem.physicalMemory - internalMem;
 	

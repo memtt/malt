@@ -17,7 +17,7 @@ int main(int argc, char ** argv)
 {
 	//init internal allocator
 	MATT::doNoFreeAllocatorInit();
-	void * ptr = MATT::gblNoFreeAllocator.allocate(sizeof(MATT::SimpleAllocator));
+	void * ptr = MATT::gblNoFreeAllocator->allocate(sizeof(MATT::SimpleAllocator));
 	MATT::gblInternaAlloc = new (ptr) MATT::SimpleAllocator(true);
 	MATT::initGlobalOptions();
 	
