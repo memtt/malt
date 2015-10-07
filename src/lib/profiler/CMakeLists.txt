@@ -8,7 +8,8 @@
 
 ######################################################
 set(MALT_LIB_SRC AllocStackProfiler.cpp
-	             LocalAllocStackProfiler.cpp)
+                 LocalAllocStackProfiler.cpp
+                 ConverterToV2Tree.cpp)
 
 ######################################################
 add_library(malt-profiler OBJECT ${MALT_LIB_SRC})

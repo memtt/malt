@@ -280,6 +280,30 @@ void CallStackInfo::writeAsCallgrindEntry(int line, std::ostream& out) const
 }
 
 /*******************  FUNCTION  *********************/
+const SimpleQuantityHistory* CallStackInfo::getAllocInfo ( void ) const
+{
+	return &this->alloc;
+}
+
+/*******************  FUNCTION  *********************/
+const SimpleQuantityHistory* CallStackInfo::getFreeInfo ( void ) const
+{
+	return &this->free;
+}
+
+/*******************  FUNCTION  *********************/
+const SimpleQuantityHistory* CallStackInfo::getLifetime ( void ) const
+{
+	return &this->lifetime;
+}
+
+/*******************  FUNCTION  *********************/
+bool CallStackInfo::hasRealloc ( void ) const
+{
+	return reallocCount > 0;
+}
+
+/*******************  FUNCTION  *********************/
 /**
  * Dump as callgrind call entry.
 **/

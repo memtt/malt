@@ -70,6 +70,7 @@ set(COMMON_OBJS $<TARGET_OBJECTS:htopml-json>
                 $<TARGET_OBJECTS:malt-core>
                 $<TARGET_OBJECTS:malt-tools>
                 $<TARGET_OBJECTS:malt-stacks>
+                $<TARGET_OBJECTS:matt-stacks-v2>
                 $<TARGET_OBJECTS:malt-valprof>
                 $<TARGET_OBJECTS:malt-profiler>
                 $<TARGET_OBJECTS:malt-thread-wrapper>

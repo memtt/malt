@@ -29,6 +29,9 @@
 #include "LocalAllocStackProfiler.hpp"
 #include <tools/NMCmdReader.hpp>
 #include <wrapper/ThreadTracker.hpp>
+#include "ConverterToV2Tree.hpp"
+//from v2
+#include <stack-tree/from-v2/RLockFreeTree.hpp>
 
 /********************  MACROS  **********************/
 #define MALT_SKIP_DEPTH 3
@@ -513,7 +516,13 @@ void convertToJson(htopml::JsonState& json, const AllocStackProfiler& value)
 	json.printField("config",value.options);
 
 	if (value.options.stackProfileEnabled)
-		json.printField("stacks",value.stackTracker);
+	{
+// 		json.printField("stacks",value.stackTracker);
+		MALTV2::RLockFreeTree tree;		
+		convertToV2Tree(tree,value.stackTracker);
+		tree.prepareForOutput();
+		json.printField("stacks",tree);
+	}
 	
 	if (value.options.stackResolve)
 		json.printField("sites",value.symbolResolver);

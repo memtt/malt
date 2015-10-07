@@ -68,9 +68,15 @@ struct CallStackInfo
 		void writeAsCallgrindCallEntry(int line, std::ostream& out) const;
 		static void writeCallgrindEventDef(std::ostream & out);
 		void updatePeak(size_t peakId);
+		bool hasRealloc(void) const;
+		const SimpleQuantityHistory * getAllocInfo(void) const;
+		const SimpleQuantityHistory * getFreeInfo(void) const;
+		const SimpleQuantityHistory * getLifetime(void) const;
 	public:
 		friend void convertToJson(htopml::JsonState& json, const CallStackInfo& value);
 		friend std::ostream & operator << (std::ostream & out,const CallStackInfo & info);
+		friend void convert(class CallStackInfoGlobals & out,const CallStackInfo & in);
+		friend void convert(class CallStackInfoRealloc & out,const CallStackInfo & in);
 	private:
 		/** Track the min/max/sum/count of each memory allocation sizes. **/
 		SimpleQuantityHistory alloc;

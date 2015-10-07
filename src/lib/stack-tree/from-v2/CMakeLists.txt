@@ -1,22 +1,23 @@
 ######################################################
 #            PROJECT  : MALT                         #
-#            VERSION  : 0.3.0                        #
-#            DATE     : 07/2015                      #
+#            VERSION  : 0.0.0                        #
+#            DATE     : 02/2015                      #
 #            AUTHOR   : Valat Sébastien              #
 #            LICENSE  : CeCILL-C                     #
 ######################################################
 
 ######################################################
-set(MALT_STACK_TREES_SRC StackSTLHashMap.cpp)
+set(MALT_STACKS_SRC Stack.cpp
+                    BacktraceStack.cpp
+                    EnterExitStack.cpp
+                    RLockFreeTree.cpp
+                    StackTreeMap.cpp)
 
 ######################################################
-add_library(malt-stack-trees OBJECT ${MALT_STACK_TREES_SRC})
-SET_TARGET_PROPERTIES(malt-stack-trees PROPERTIES COMPILE_FLAGS -fPIC)
+add_library(matt-stacks-v2 OBJECT ${MALT_STACKS_SRC})
+SET_TARGET_PROPERTIES(matt-stacks-v2 PROPERTIES COMPILE_FLAGS -fPIC)
 
 ######################################################
 if (ENABLE_TESTS)
 	add_subdirectory(tests)
 endif (ENABLE_TESTS)
-
-######################################################
-add_subdirectory(from-v2)
