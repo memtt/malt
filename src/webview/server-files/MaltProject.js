@@ -879,12 +879,93 @@ function cleanupFunctionName(funcName)
 }
 
 /****************************************************/
+function rebuildChilds(finalStacks,stack,cur,data)
+{
+	//push data if has some
+	if (cur.dataId != undefined)
+	{
+		//extract infos
+		var globals = data.globals[cur.dataId];
+		var realloc = data.realloc[cur.dataId];
+		var alloc = data.alloc[cur.dataId];
+		var free = data.free[cur.dataId];
+		var lifetime = data.lifetime[cur.dataId];
+	
+		//fill
+		finalStacks.push({
+			stack: clone(stack),
+			stackId: 'TODO',
+			infos: {
+				countZeros: globals.zero,
+				maxAliveReq: globals.alive,
+				aliveReq: globals.alive,
+				globalPeak: globals.peak,
+				reallocCount: (realloc != undefined) ? realloc.count : 0,
+				reallocSumDelta: (realloc != undefined) ? realloc.delta : 0,
+				alloc: {
+					count: (alloc != undefined) ? alloc.count : 0,
+					min: (alloc != undefined) ? alloc.min : 0,
+					max: (alloc != undefined) ? alloc.max : 0,
+					sum: (alloc != undefined) ? alloc.sum : 0,
+				},
+				free: {
+					count: (free != undefined) ? free.count : 0,
+					min: (free != undefined) ? free.min : 0,
+					max: (free != undefined) ? free.max : 0,
+					sum: (free != undefined) ? free.sum : 0,
+				},
+				lifetime: {
+					count: (lifetime != undefined) ? lifetime.count : 0,
+					min: (lifetime != undefined) ? lifetime.min : 0,
+					max: (lifetime != undefined) ? lifetime.max : 0,
+					sum: (lifetime != undefined) ? lifetime.sum : 0,
+				},
+			}
+		})
+	}
+	
+	//childs
+	for (var i in cur)
+	{
+		if (i != "dataId")
+		{
+			stack.push(i);
+			rebuildChilds(finalStacks,stack,cur[i],data);
+			stack.pop();
+		}
+	}
+}
+
+/****************************************************/
+/**
+ * Reshape the stack structure to fit with the original version, ideally
+ * need to move all the gui code the the new one which seams better.
+ * But this way to convert seams faster as I don't have time (TODO).
+**/
+function rebuildStacks(data)
+{
+	var finalStacks = [];
+	for (var i in data.stacks.calltree)
+	{
+		var stack = [];
+		stack.push(i);
+		rebuildChilds(finalStacks,stack,data.stacks.calltree[i],data.stacks.data);
+		stack.pop();
+	}
+	data.stacks.stats = finalStacks;
+	console.log(finalStacks);
+}
+
+/****************************************************/
 /**
  * Reorganize a little but the datas to get quicker access on requests. Mosty re-established the
  * in memory references between call site addresses and their textual definitions (line, file...).
 **/
 function optimizeProjectDatas(data)
 {
+	//rebuild stack
+	rebuildStacks(data);
+	
 	//get some inside vars
 	var strings = data.sites.strings;
 	var instrs = data.sites.instr;

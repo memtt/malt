@@ -517,7 +517,7 @@ void convertToJson(htopml::JsonState& json, const AllocStackProfiler& value)
 
 	if (value.options.stackProfileEnabled)
 	{
-// 		json.printField("stacks",value.stackTracker);
+// 		json.printField("staDcks",value.stackTracker);
 		MALTV2::RLockFreeTree tree;		
 		convertToV2Tree(tree,value.stackTracker);
 		tree.prepareForOutput();
