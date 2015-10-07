@@ -8,6 +8,9 @@ master
  - Add help with MPI in README
  - Add manpages for malt, malt-passwd and malt-webserver
  - Add packaging files for gentoo & archlinux
+ - Use a more compress stack tree in json file
+ - Add filter to only instrument the given executable and disabling childs
+ - Add warnings about global varibales if the app use too many of them
 
 0.3.0 - 16/06/2015
 ------------------
