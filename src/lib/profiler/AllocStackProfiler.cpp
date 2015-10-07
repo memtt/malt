@@ -425,6 +425,9 @@ void AllocStackProfiler::loadGlobalVariables(void)
 void AllocStackProfiler::onExit(void )
 {
 	MALT_OPTIONAL_CRITICAL(lock,threadSafe)
+		//to not instrument childs
+		unsetenv("LD_PRELOAD");
+		
 		//solve symbols
 		if (options.stackResolve)
 			CODE_TIMING("solveSymbols",

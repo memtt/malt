@@ -315,9 +315,10 @@ void SymbolSolver::solveNames(LinuxProcMapEntry * procMapEntry)
 		return;
 	}
 	
-	//read all entries
-	char bufferFunc[2*4096];
-	char bufferFile[4096];
+	//read all entries (need big for some big template based C++ application, 
+	//seen at cern)
+	static char bufferFunc[200*4096];
+	static char bufferFile[20*4096];
 	size_t i = 0;
 	while (!feof(fp))
 	{
@@ -333,7 +334,7 @@ void SymbolSolver::solveNames(LinuxProcMapEntry * procMapEntry)
 
 		//check end of line and remove it
 		int endLine = strlen(bufferFunc);
-		assumeArg(bufferFunc[endLine-1] == '\n',"Missing \\n at end of line for the function or symbol name read from addr2line : %1.").arg(bufferFile).end();
+		assumeArg(bufferFunc[endLine-1] == '\n',"Missing \\n at end of line for the function or symbol name read from addr2line : %1.").arg(bufferFunc).end();
 		bufferFunc[endLine-1] = '\0';
 
 		//check errors
