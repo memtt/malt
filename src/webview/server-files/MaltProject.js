@@ -879,7 +879,7 @@ function cleanupFunctionName(funcName)
 }
 
 /****************************************************/
-function rebuildChilds(finalStacks,stack,cur,data)
+function rebuildChilds(finalStacks,stack,cur,data,addresses)
 {
 	//push data if has some
 	if (cur.dataId != undefined)
@@ -929,8 +929,8 @@ function rebuildChilds(finalStacks,stack,cur,data)
 	{
 		if (i != "dataId")
 		{
-			stack.push(i);
-			rebuildChilds(finalStacks,stack,cur[i],data);
+			stack.push(addresses[i]);
+			rebuildChilds(finalStacks,stack,cur[i],data,addresses);
 			stack.pop();
 		}
 	}
@@ -948,8 +948,8 @@ function rebuildStacks(data)
 	for (var i in data.stacks.calltree)
 	{
 		var stack = [];
-		stack.push(i);
-		rebuildChilds(finalStacks,stack,data.stacks.calltree[i],data.stacks.data);
+		stack.push(data.stacks.addresses[i]);
+		rebuildChilds(finalStacks,stack,data.stacks.calltree[i],data.stacks.data,data.stacks.addresses);
 		stack.pop();
 	}
 	data.stacks.stats = finalStacks;

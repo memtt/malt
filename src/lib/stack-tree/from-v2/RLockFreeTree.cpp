@@ -237,9 +237,34 @@ void* RLockFreeTree::getData ( StackTreeDataHandler dataHandler, int id )
 // }
 
 /*******************  FUNCTION  *********************/
+void convertToJson(htopml::JsonState& json, const std::map<void*,void*>  & value)
+{
+	char buffer[128];
+	json.openStruct();
+		for (std::map<void*,void*>::const_iterator it = value.begin() ; it != value.end() ; ++it)
+		{
+			sprintf(buffer,"%p",it->first);
+			json.printField(buffer,it->second);
+		}
+	json.closeStruct();
+}
+
+/*******************  FUNCTION  *********************/
 void convertToJson(htopml::JsonState& json, const RLockFreeTree& tree)
 {
+	char buffer[128];
 	json.openStruct();
+		json.openFieldStruct("addresses");
+			for (std::map<void*,void*>::const_iterator it = tree.addrToId.begin() ; it != tree.addrToId.end() ; ++it)
+			{
+				if (it->first != NULL)
+				{
+					sprintf(buffer,"%p",it->second);
+					json.printField(buffer,it->first);
+				}
+			}
+		json.closeFieldStruct("addresses");
+		
 		json.printField("calltree",tree.root);
 		json.openFieldStruct("data");
 		
@@ -339,6 +364,15 @@ void RLockFreeTree::markChildData ( RLockFreeTreeNode* node )
 	if (node == NULL)
 		node = &this->root;
 	
+	//update addree
+	std::map<void*,void*>::iterator it = addrToId.find(node->callSite);
+	void * id = (void*)addrToId.size();
+	if (it != addrToId.end())
+		id = addrToId[node->callSite];
+	else
+		addrToId[node->callSite] = id;
+	node->callSite = id;
+	
 	//check current
 	if (node->hasData())
 	{
@@ -362,6 +396,7 @@ void RLockFreeTree::markChildData ( RLockFreeTreeNode* node )
 /*******************  FUNCTION  *********************/
 void RLockFreeTree::prepareForOutput ( void )
 {
+	addrToId[NULL] = NULL;
 	markChildData();
 }
 

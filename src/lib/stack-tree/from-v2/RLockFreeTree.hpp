@@ -109,7 +109,11 @@ class RLockFreeTree : public StackTree
 		bool threadSafe;
 		RLockFreeTreeNode root;
 		int lastDataId;
+		std::map<void*,void*> addrToId;
 };
+
+/*******************  FUNCTION  *********************/
+void convertToJson(htopml::JsonState& json, const std::map<void*,void*> & value);
 
 }
 
