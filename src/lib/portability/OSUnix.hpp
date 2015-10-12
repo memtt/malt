@@ -63,6 +63,8 @@ class OSUnix
 		static std::string getCmdLine(void);
 		static void setSigKillHandler(void (*handler)(int s));
 		static std::string loadTextFile(const std::string & file);
+		static void * mmap(size_t size, bool populate = false);
+		static void munmap(void * ptr,size_t size);
 };
 
 }

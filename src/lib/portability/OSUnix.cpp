@@ -12,6 +12,7 @@
 #include <cstdlib>
 //unix specific files
 #include <sys/types.h>
+#include <sys/mman.h>
 #include <unistd.h>
 #include <libgen.h>
 #include <signal.h>
@@ -228,6 +229,26 @@ std::string OSUnix::loadTextFile(const std::string& file)
 	
 	//finish
 	return res;
+}
+
+/*******************  FUNCTION  *********************/
+void* OSUnix::mmap(size_t size, bool populate)
+{
+	void * res;
+	if (populate)
+			res = ::mmap(NULL,size,PROT_READ|PROT_WRITE,MAP_ANON|MAP_PRIVATE|MAP_POPULATE,0,0);
+	else
+			res = ::mmap(NULL,size,PROT_READ|PROT_WRITE,MAP_ANON|MAP_PRIVATE,0,0);
+	if (res == MAP_FAILED)
+			return NULL;
+	else
+			return res;
+}
+
+/*******************  FUNCTION  *********************/
+void OSUnix::munmap(void* ptr, size_t size)
+{
+	munmap(ptr,size);
 }
 
 }

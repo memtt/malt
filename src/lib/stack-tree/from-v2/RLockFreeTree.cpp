@@ -10,6 +10,7 @@
 #include "RLockFreeTree.hpp"
 #include <json/JsonState.h>
 #include <common/Debug.hpp>
+#include <common/NoFreeAllocator.hpp>
 // #include <core/SymbolRegistry.hpp>
 
 /*******************  NAMESPACE  ********************/
@@ -69,7 +70,7 @@ RLockFreeTreeNode * RLockFreeTree::addChild(RLockFreeTreeNode* node, void* calls
 			return child;
 		
 		//create a new one
-		child = new RLockFreeTreeNode(callsite);
+		child = MALT_NO_FREE_NEW(RLockFreeTreeNode)(callsite);
 		child->parent = node;
 		child->dataId = lastDataId++;
 		
@@ -222,6 +223,7 @@ void* RLockFreeTree::getData(StackTreeHandler handler, int id)
 /*******************  FUNCTION  *********************/
 void* RLockFreeTree::getData ( StackTreeDataHandler dataHandler, int id )
 {
+	assert(id < MALT_STACK_TREE_ENTRIES);
 	void * ret = (*dataHandler)[id];
 	if (ret == NULL)
 		ret = (*dataHandler)[id] = descriptors[id]->allocate();

@@ -11,7 +11,9 @@
 
 /********************  HEADERS  *********************/
 #include "Stack.hpp"
+#include <cassert>
 #include <json/JsonState.h>
+#include <common/NoFreeAllocator.hpp>
 
 /*******************  NAMESPACE  ********************/
 namespace MALTV2
@@ -26,8 +28,8 @@ class StackTreeStorage
 {
 	public:
 		StackTreeStorage() {for (int i = 0 ; i < MALT_STACK_TREE_ENTRIES ; i++) data[i] = NULL;};
-		void * & operator[](int id) {return data[id];};
-		void * operator[](int id) const {return (data[id]);};
+		void * & operator[](int id) {assert(id >= 0 && id < MALT_STACK_TREE_ENTRIES); return data[id];};
+		void * operator[](int id) const {assert(id >= 0 && id < MALT_STACK_TREE_ENTRIES); return (data[id]);};
 	private:
 		void* data [MALT_STACK_TREE_ENTRIES];
 };
@@ -40,6 +42,7 @@ class StackTreeTypeDescriptor
 		virtual void * allocate(void) = 0;
 		virtual void deallocate(void * ptr) = 0;
 		virtual void toJson(htopml::JsonState & json,const char * name,void * ptr) = 0;
+		virtual size_t typeSize(void) = 0;
 };
 
 /*********************  CLASS  **********************/
@@ -47,9 +50,10 @@ template <class T>
 class StackTreeTypeDescriptorTyped : public StackTreeTypeDescriptor
 {
 	public:
-		virtual void * allocate(void) {return new T;};
+		virtual void * allocate(void) {return MALT_NO_FREE_NEW(T);};
 		virtual void deallocate(void * ptr) {delete (T*)ptr;};
 		virtual void toJson(htopml::JsonState & json,const char * name,void * ptr) {json.printField(name,*(T*)ptr);};
+		virtual size_t typeSize(void) { return sizeof (T); };
 };
 
 /*********************  TYPES  **********************/
@@ -77,8 +81,8 @@ class StackTree
 		virtual StackTreeDataHandler getDataHandler(StackTreeHandler handler) = 0;
 		virtual StackId getStackId(StackTreeDataHandler handler) = 0;
 		virtual void prepareForOutput(void) = 0;
-		template <class T> T & getTypedData(StackTreeHandler handler,int id){return *(T*)getData(handler,id);};
-		template <class T> T & getTypedData(StackTreeDataHandler handler,int id){return *(T*)getData(handler,id);};
+		template <class T> T & getTypedData(StackTreeHandler handler,int id){assert(sizeof(T) == descriptors[id]->typeSize()); return *(T*)getData(handler,id);};
+		template <class T> T & getTypedData(StackTreeDataHandler handler,int id){assert(sizeof(T) == descriptors[id]->typeSize()); return *(T*)getData(handler,id);};
 		template <class T> int addDescriptor(const std::string & name) {return addDescriptor(name,new StackTreeTypeDescriptorTyped<T>());};
 		int addDescriptor(const std::string name, StackTreeTypeDescriptor * descriptor) {names[descriptorsCnt]=name;descriptors[descriptorsCnt]=descriptor;return descriptorsCnt++;};
 		virtual void toJson(htopml::JsonState & json, const StackTree & tree) const = 0;

@@ -30,6 +30,7 @@
 #include <tools/NMCmdReader.hpp>
 #include <wrapper/ThreadTracker.hpp>
 #include "ConverterToV2Tree.hpp"
+#include "common/NoFreeAllocator.hpp"
 //from v2
 #include <stack-tree/from-v2/RLockFreeTree.hpp>
 
@@ -521,7 +522,8 @@ void convertToJson(htopml::JsonState& json, const AllocStackProfiler& value)
 	if (value.options.stackProfileEnabled)
 	{
 // 		json.printField("staDcks",value.stackTracker);
-		MALTV2::RLockFreeTree tree;		
+		MALTV2::doNoFreeAllocatorInit();
+		MALTV2::RLockFreeTree tree;
 		convertToV2Tree(tree,value.stackTracker);
 		tree.prepareForOutput();
 		json.printField("stacks",tree);

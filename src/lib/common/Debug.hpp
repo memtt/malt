@@ -138,7 +138,7 @@ inline Debug fatal(const char * format)   {return Debug(format,MESSAGE_FATAL);  
 #ifdef NDEBUG
 	#define MALT_ASSERT(x)      do{} while(0)
 #else
-	#define MALT_ASSERT(x)      do{ if (!(x)) MALT::Debug(MALT_TO_STRING(x),MALT_CODE_LOCATION,MESSAGE_ASSERT).end(); } while(0)
+	#define MALT_ASSERT(x)      do{ if (!(x)) MALT::Debug(MALT_TO_STRING(x),MALT_CODE_LOCATION,MALT::MESSAGE_ASSERT).end(); } while(0)
 #endif
 
 }

@@ -82,8 +82,7 @@ StackTreeMap::~StackTreeMap(void)
 /*******************  FUNCTION  *********************/
 StackTreeHandler StackTreeMap::enterThread(void)
 {
-	void * ptr = MALT_MALLOC(sizeof(Handler));
-	Handler * handler = new(ptr) Handler;
+	Handler * handler = MALT_NO_FREE_NEW(Handler);
 	handler->storage = NULL;
 	return handler;
 }
