@@ -223,6 +223,14 @@ void testAllFuncs(void)
 }
 
 /*******************  FUNCTION  *********************/
+void testPeak(void)
+{
+	void * ptr = malloc(1024*1024);
+	testRecuseIntervedA(2);
+	free(ptr);
+}
+
+/*******************  FUNCTION  *********************/
 void testZero(void)
 {
 	void * ptr = malloc(0);
@@ -286,6 +294,7 @@ int main(void)
 	testAllFuncs();
 	testLeak();
 	testLeak2();
+	testPeak();
 	allocOnStack();
 	allocOnStackRecurse(10);
 	testParallelWithRecurse();

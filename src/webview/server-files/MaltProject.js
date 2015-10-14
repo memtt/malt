@@ -944,6 +944,14 @@ function rebuildChilds(finalStacks,stack,cur,data,addresses)
 **/
 function rebuildStacks(data)
 {
+	//don't need
+	if (data.stacks.stats != undefined)
+		return;
+	
+	//message
+	console.log("Start to convert tree representation to old flat for compat")
+
+	//run
 	var finalStacks = [];
 	for (var i in data.stacks.calltree)
 	{
@@ -953,7 +961,7 @@ function rebuildStacks(data)
 		stack.pop();
 	}
 	data.stacks.stats = finalStacks;
-	console.log(finalStacks);
+	//console.log(finalStacks);
 }
 
 /****************************************************/
