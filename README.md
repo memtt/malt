@@ -176,11 +176,12 @@ Example of config file :
 
 	[output]
 	name=malt-%1-%2.%3    ; base name for output, %1 = exe, %2 = PID, %3 = extension
-	indent=true           ; indent the output
+	indent=false          ; indent the output
 	lua=true              ; enable LUA output
 	json=true             ; enable json output
 	callgrind=true        ; enable callgrind output
 	config=true           ; dump current config
+	stackTree=false       ; store the call tree as a tree (smaller file, but need conversion)
 
 	[filter]
 	exe=                  ; Only apply malt on given exe (empty for all)
@@ -255,6 +256,24 @@ Experimental maqao mode
 MALT can also use binary instrumentation with MAQAO (http://maqao.org/). 
 
 Please check usage into src/maqao directory.
+
+Dealing with big files
+----------------------
+
+In some cases you might get really big files. I get up to 600 MB on one code. The issue is that you
+cannot load this kind of file into nodejs due to some limits into the string used to read the file
+into json parsor functions.
+
+The first alternative is to try to generate more compressed file by enabling usage of `stackTree` output
+option to store the stacks as a tree into the file. It is more efficient in term of space (in the 600 MB
+case it lower the file to 200 MB) but need an onfly conversion by the server to get back the supported format.
+
+```shell
+	malt -o "output:stackTree=true" ./PROGRAM
+```
+
+Currently you can still get cases where you cannot load the file into nodejs, I'm working on a workarround.
+Please provide me your files if it append. By compressing it in gzip you will get less than 30-40 MB.
 
 Packaging
 ---------

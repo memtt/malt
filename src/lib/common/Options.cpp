@@ -39,7 +39,7 @@ Options::Options(void)
 	this->timeProfileLinear       = false;
 	//output
 	this->outputName              = "malt-%1-%2.%3";
-	this->outputIndent            = true;
+	this->outputIndent            = false;
 	this->outputJson              = true;
 	this->outputLua               = false;
 	this->outputCallgrind         = false;

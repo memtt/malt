@@ -162,6 +162,7 @@ callgrind                      = false
 indent                         = true
 config                         = true
 silent                         = false
+stackTree                      = false
 
 [max-stack]
 enabled                        = true
@@ -178,6 +179,7 @@ hidden                         = false
 
 [filter]
 exec                           = 
+childs                         = true
 </code></pre>
 
 <p>The <code>time</code> section support :</p>
@@ -214,6 +216,9 @@ with compatible existing tools.</dd>
 <dt class="flush"><code>config</code></dt><dd>Dump the config INI file.</dd>
 <dt class="flush"><code>silent</code></dt><dd>Enable silent mode so that MALT will not write anything to the standard output of error output to not disturbe
 streams sent to sctipts.</dd>
+<dt><code>stackTree</code></dt><dd>Enable storage of the stacks as a tree inside the output file. It produce smaller files but require conversion
+at storage time and loading time to stay compatible with the basic expected format. You can use this option
+to get smaller file. In one case it lower a 600 MB file to 200 MB to give an idea.</dd>
 </dl>
 
 
@@ -256,6 +261,7 @@ with external parteners.</dd>
 <dl>
 <dt class="flush"><code>exe</code></dt><dd>Enable filtering of executable to enable MALT and ignore otherwise. By default empty value enable
 MALT on all executable.</dd>
+<dt class="flush"><code>childs</code></dt><dd>Enable instrumentation of childs processes or not. By default instrument all.</dd>
 </dl>
 
 

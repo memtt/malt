@@ -90,6 +90,7 @@ The config file use INI format with sections and variables as in this example :
 	indent                         = true
 	config                         = true
 	silent                         = false
+	stackTree                      = false
 
 	[max-stack]
 	enabled                        = true
@@ -149,6 +150,10 @@ The `output` section support :
  * `silent`:
    Enable silent mode so that MALT will not write anything to the standard output of error output to not disturbe
    streams sent to sctipts.
+ * `stackTree`:
+   Enable storage of the stacks as a tree inside the output file. It produce smaller files but require conversion
+   at storage time and loading time to stay compatible with the basic expected format. You can use this option
+   to get smaller file. In one case it lower a 600 MB file to 200 MB to give an idea.
 
 The `max-stack` section support:
 
