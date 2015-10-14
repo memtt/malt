@@ -32,6 +32,8 @@
 #include <core/SimpleStackTracker.hpp>
 #include <core/AllocTraceFile.hpp>
 #include <core/VmaTracker.hpp>
+//from v2
+#include <stack-tree/from-v2/RLockFreeTree.hpp>
 
 /*******************  NAMESPACE  ********************/
 namespace MALT
@@ -180,6 +182,7 @@ class AllocStackProfiler
 		TimeTrackSysMemory curSystemTimeline;
 		ProfiledValue<TimeTrackAllocBandwidth> memoryBandwidth;
 		VmaTracker vmaTracker;
+		MALTV2::RLockFreeTree * stackTree;
 };
 
 }

@@ -72,6 +72,8 @@ class StackSTLHashMap
 		const_iterator begin() const;
 		const_iterator end() const;
 		void solveSymbols(SymbolSolver & symbolResolver);
+		bool empty() const;
+		void remove(iterator & it);
 	public:
 		template <class U> friend void convertToJson(htopml::JsonState & json, const StackSTLHashMap<U> & value);
 	private:
@@ -228,6 +230,20 @@ void StackSTLHashMap<T>::Key::cloneStack(void)
 	assert(stack != NULL);
 	void * ptr = MALT_MALLOC(sizeof(Stack));
 	stack = new(ptr) Stack(*stack);
+}
+
+/*******************  FUNCTION  *********************/
+template <class T>
+bool StackSTLHashMap<T>::empty() const
+{
+	return map.empty();
+}
+
+/*******************  FUNCTION  *********************/
+template <class T>
+void StackSTLHashMap<T>::remove ( iterator& it )
+{
+	this->map.erase(it);
 }
 
 }

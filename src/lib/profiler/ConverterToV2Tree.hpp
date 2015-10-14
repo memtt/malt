@@ -52,7 +52,7 @@ void convertToJson(htopml::JsonState& json, const SimpleQuantityHistoryPtr& valu
 void convert(CallStackInfoGlobals & out,const CallStackInfo & in);
 void convert(CallStackInfoRealloc & out,const CallStackInfo & in);
 
-void convertToV2Tree( MALTV2::RLockFreeTree& tree, const MALT::StackSTLHashMap< MALT::CallStackInfo >& orig );
+void convertToV2Tree( MALTV2::RLockFreeTree& tree, MALT::StackSTLHashMap< MALT::CallStackInfo >& orig );
 
 }
 

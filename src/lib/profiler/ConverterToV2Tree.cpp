@@ -14,7 +14,7 @@
 namespace MALT
 {
 
-void convertToV2Tree ( MALTV2::RLockFreeTree& tree, const StackSTLHashMap< CallStackInfo >& orig )
+void convertToV2Tree ( MALTV2::RLockFreeTree& tree, StackSTLHashMap< CallStackInfo >& orig )
 {
 	//register entries
 	int id = tree.addDescriptor<CallStackInfoGlobals>("globals");
@@ -33,8 +33,10 @@ void convertToV2Tree ( MALTV2::RLockFreeTree& tree, const StackSTLHashMap< CallS
 	assumeArg(id == INFO_LIFETIME,"Do not get valid ID while registering descriptors : %1 != %2").arg(id).arg(INFO_LIFETIME).end();
 		
 	//fill
-	for (StackSTLHashMap<CallStackInfo>::const_iterator it = orig.begin() ; it != orig.end() ; ++it)
+	while (orig.empty() == false)
 	{
+		StackSTLHashMap<CallStackInfo>::iterator it = orig.begin();
+
 		//get handler
 		MALTV2::StackTreeHandler handler = MALT_STACK_TREE_NULL;
 		handler = tree.getFromStack(handler,*(it->first.stack));
@@ -66,6 +68,9 @@ void convertToV2Tree ( MALTV2::RLockFreeTree& tree, const StackSTLHashMap< CallS
 		tmp = it->second.getLifetime();
 		if (tmp->count > 0)
 			tree.getTypedData<SimpleQuantityHistoryPtr>(dataHandler,INFO_LIFETIME).ptr = tmp;
+		
+		//remove it to free memory
+		orig.remove(it);
 	}
 }
 

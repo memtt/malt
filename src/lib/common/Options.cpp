@@ -45,6 +45,7 @@ Options::Options(void)
 	this->outputCallgrind         = false;
 	this->outputDumpConfig        = false;
 	this->outputSilent            = false;
+	this->outputStackTree         = false;
 	//max stack
 	this->maxStackEnabled         = true;
 	//maps
@@ -82,6 +83,7 @@ bool Options::operator==(const Options& value) const
 	if (this->outputCallgrind != value.outputCallgrind) return false;
 	if (this->outputDumpConfig != value.outputDumpConfig) return false;
 	if (this->outputSilent != value.outputSilent)  return false;
+	if (this->outputStackTree != value.outputStackTree) return false;
 	//max stack
 	if (this->maxStackEnabled != value.maxStackEnabled) return false;
 	//maps
@@ -196,6 +198,7 @@ void Options::loadFromIniDic ( dictionary* iniDic )
 	this->outputCallgrind     = iniparser_getboolean(iniDic,"output:callgrind",this->outputCallgrind);
 	this->outputDumpConfig    = iniparser_getboolean(iniDic,"output:config",this->outputDumpConfig);
 	this->outputSilent        = iniparser_getboolean(iniDic,"output:silent",this->outputSilent);
+	this->outputStackTree     = iniparser_getboolean(iniDic,"output:stackTree",this->outputStackTree);
 	
 	//max stack
 	this->maxStackEnabled     = iniparser_getboolean(iniDic,"max-stack:enabled",this->maxStackEnabled);
@@ -267,6 +270,7 @@ void convertToJson(htopml::JsonState & json,const Options & value)
 			json.printField("lua",value.outputLua);
 			json.printField("name",value.outputName);
 			json.printField("silent",value.outputSilent);
+			json.printField("stackTree",value.outputStackTree);
 		json.closeFieldStruct("output");
 		
 		json.openFieldStruct("maxStack");
@@ -318,6 +322,7 @@ void Options::dumpConfig(const char* fname)
 	IniParserHelper::setEntry(dic,"output:indent",this->outputIndent);
 	IniParserHelper::setEntry(dic,"output:config",this->outputDumpConfig);
 	IniParserHelper::setEntry(dic,"output:silent",this->outputSilent);
+	IniParserHelper::setEntry(dic,"output:stackTree",this->outputStackTree);
 	
 	//max stack
 	IniParserHelper::setEntry(dic,"max-stack:enabled",this->maxStackEnabled);

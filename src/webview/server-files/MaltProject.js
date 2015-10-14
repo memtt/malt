@@ -929,9 +929,12 @@ function rebuildChilds(finalStacks,stack,cur,data,addresses)
 	{
 		if (i != "dataId")
 		{
+			//convert childs
 			stack.push(addresses[i]);
 			rebuildChilds(finalStacks,stack,cur[i],data,addresses);
 			stack.pop();
+			//free old memory
+			cur[i] = undefined
 		}
 	}
 }

@@ -31,8 +31,6 @@
 #include <wrapper/ThreadTracker.hpp>
 #include "ConverterToV2Tree.hpp"
 #include "common/NoFreeAllocator.hpp"
-//from v2
-#include <stack-tree/from-v2/RLockFreeTree.hpp>
 
 /********************  MACROS  **********************/
 #define MALT_SKIP_DEPTH 3
@@ -52,6 +50,7 @@ AllocStackProfiler::AllocStackProfiler(const Options & options,StackMode mode,bo
 	this->options = options;
 	this->largestStackSize = 0;
 	this->sharedLinearIndex = 0;
+	this->stackTree = NULL;
 	
 	//init internal alloc
 	if (gblInternaAlloc == NULL)
@@ -78,6 +77,10 @@ AllocStackProfiler::AllocStackProfiler(const Options & options,StackMode mode,bo
 	this->peakId = 0;
 	this->peak = 0;
 	this->curReq = 0;
+	
+	//if request stack tree for more compressed output prepare it
+	if (options.outputStackTree)
+		this->stackTree = new MALTV2::RLockFreeTree(false);
 }
 
 /*******************  FUNCTION  *********************/
@@ -449,6 +452,14 @@ void AllocStackProfiler::onExit(void )
 		systemTimeline.flush();
 		memoryBandwidth.flush();
 		
+		//if need stack tree for more compressed output
+		if (this->stackTree != NULL)
+		{
+			MALTV2::doNoFreeAllocatorInit();
+			convertToV2Tree(*stackTree,this->stackTracker);
+			stackTree->prepareForOutput();
+		}
+		
 		//open output file
 		//TODO manage errors
 		std::ofstream out;
@@ -521,12 +532,10 @@ void convertToJson(htopml::JsonState& json, const AllocStackProfiler& value)
 
 	if (value.options.stackProfileEnabled)
 	{
-// 		json.printField("staDcks",value.stackTracker);
-		MALTV2::doNoFreeAllocatorInit();
-		MALTV2::RLockFreeTree tree;
-		convertToV2Tree(tree,value.stackTracker);
-		tree.prepareForOutput();
-		json.printField("stacks",tree);
+		if (value.stackTree == NULL)
+			json.printField("staDcks",value.stackTracker);
+		else
+			json.printField("stacks",*value.stackTree);
 	}
 	
 	if (value.options.stackResolve)
