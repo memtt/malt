@@ -146,6 +146,7 @@ class AllocStackProfiler
 		void updatePeakInfoOfStacks(void);
 		void peakTracking(ssize_t delta);
 		void loadGlobalVariables(void);
+		void loopSuppress(void);
 	private:
 		//SimpleStackTracer stackTracer;
 		StackSTLHashMap<CallStackInfo> stackTracker;

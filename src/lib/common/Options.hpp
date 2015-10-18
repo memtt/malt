@@ -63,6 +63,7 @@ struct Options
 	bool outputDumpConfig;
 	bool outputSilent;
 	bool outputStackTree;
+	bool outputLoopSuppress;
 	//size map
 	bool distrAllocSize;
 	bool distrReallocJump;

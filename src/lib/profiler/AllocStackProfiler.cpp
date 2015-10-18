@@ -31,6 +31,7 @@
 #include <wrapper/ThreadTracker.hpp>
 #include "ConverterToV2Tree.hpp"
 #include "common/NoFreeAllocator.hpp"
+#include "stacks/StackLoopRemover.hpp"
 
 /********************  MACROS  **********************/
 #define MALT_SKIP_DEPTH 3
@@ -426,6 +427,28 @@ void AllocStackProfiler::loadGlobalVariables(void)
 }
 
 /*******************  FUNCTION  *********************/
+void AllocStackProfiler::loopSuppress(void)
+{
+	//search max size
+	int size = 0;
+	for (StackSTLHashMap<CallStackInfo>::iterator it = this->stackTracker.begin(); it != this->stackTracker.end() ; ++it)
+		if (it->first.stack->getSize() > size)
+			size = it->first.stack->getSize();
+
+	//allocate suppressor
+	StackLoopRemover suppressor(size);
+	
+	//apply
+	StackSTLHashMap<CallStackInfo>::iterator it = this->stackTracker.begin();
+	Stack s(*(it->first.stack));
+// 	while (it != this->stackTracker.end())
+// 	{
+// 		//copy
+// 		s = *(it->first.stack);
+// 	}
+}
+
+/*******************  FUNCTION  *********************/
 void AllocStackProfiler::onExit(void )
 {
 	MALT_OPTIONAL_CRITICAL(lock,threadSafe)
@@ -451,6 +474,10 @@ void AllocStackProfiler::onExit(void )
 		memoryTimeline.flush();
 		systemTimeline.flush();
 		memoryBandwidth.flush();
+		
+		//if enable loop suppression
+		if (this->options.outputLoopSuppress)
+			this->loopSuppress();
 		
 		//if need stack tree for more compressed output
 		if (this->stackTree != NULL)

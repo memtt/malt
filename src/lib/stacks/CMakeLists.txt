@@ -9,7 +9,8 @@
 ######################################################
 set(MALT_STACKS_SRC Stack.cpp
                     BacktraceStack.cpp
-                    EnterExitStack.cpp)
+                    EnterExitStack.cpp
+                    StackLoopRemover.cpp)
 
 ######################################################
 add_library(malt-stacks OBJECT ${MALT_STACKS_SRC})
