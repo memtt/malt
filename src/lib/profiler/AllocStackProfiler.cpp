@@ -441,11 +441,37 @@ void AllocStackProfiler::loopSuppress(void)
 	//apply
 	StackSTLHashMap<CallStackInfo>::iterator it = this->stackTracker.begin();
 	Stack s(*(it->first.stack));
-// 	while (it != this->stackTracker.end())
-// 	{
-// 		//copy
-// 		s = *(it->first.stack);
-// 	}
+	int cntRemovedCalls = 0;
+	int cntMerges = 0;
+	int cntCalls = 0;
+	int cntStacks = 0;
+	while (it != this->stackTracker.end())
+	{
+		cntStacks++;
+		cntCalls+= it->first.stack->getSize();
+		//copy
+		s = *(it->first.stack);
+		//apply loop suppress
+		suppressor.removeLoops(s);
+		//check if same
+		if (!(s == *(it->first.stack)))
+		{
+			//MALT_INFO_ARG("Suppress for : %1 -> %2").arg(*(it->first.stack)).arg(s).end();
+			//update counter for stats
+			cntMerges++;
+			cntRemovedCalls += it->first.stack->getSize() - s.getSize();
+			//search and merge
+			this->stackTracker[s].merge(it->second);
+			StackSTLHashMap<CallStackInfo>::iterator toRemove = it++;
+			//remove old
+			this->stackTracker.remove(toRemove);
+		} else {
+			++it;
+		}
+	}
+	
+	//debug stats
+	MALT_INFO_ARG("Loops suppress  : stackes : %1 / %2 , calls : %3 / %4").arg(cntMerges).arg(cntStacks).arg(cntRemovedCalls).arg(cntCalls).end();
 }
 
 /*******************  FUNCTION  *********************/

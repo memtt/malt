@@ -181,7 +181,7 @@ void StackLoopRemover::removeLoops(Stack& stack)
 	}
 	
 	//import
-	stack.set(rebuildStack,cnt,STACK_ORDER_DESC);
+	stack.set(rebuildStack,cnt,STACK_ORDER_ASC);
 }
 
 }
