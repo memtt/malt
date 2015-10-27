@@ -182,6 +182,7 @@ Example of config file :
 	callgrind=true        ; enable callgrind output
 	config=true           ; dump current config
 	stackTree=false       ; store the call tree as a tree (smaller file, but need conversion)
+	loopSuppress=false    ; Simplify recursive loop calls to get smaller profile file if too big
 
 	[filter]
 	exe=                  ; Only apply malt on given exe (empty for all)

@@ -4,6 +4,8 @@ Change log
 master
 ------
 
+ - Profile file is not anymore indented by default
+ - Add options to reduce size of output file (stackTree and loopSuppress). Not enabled by default.
  - Add DebugDummy to avoid unneeded allocation in Release mode
  - Add help with MPI in README
  - Add manpages for malt, malt-passwd and malt-webserver
