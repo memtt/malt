@@ -3,24 +3,24 @@ MALT : Malloc Tracker
 
 [![Build status](http://ci.dev-progranet.homelinux.org/projects/2/status.png?ref=master)](http://ci.dev-progranet.homelinux.org/projects/2?ref=master)
 
-What it is ?
+What is it ?
 ------------
 
-MALT is a memory tool to find where you allocate your memory. It also provide you some
+MALT is a memory tool to find where you allocate your memory. It also provides you some
 statistics about memory usage and help to find memory leaks.
 
 Dependencies
 ------------
 
-MALT depend on presence of :
+MALT depends on the presence of :
 
  - binutils (nm and add2line) to extract symbols. Tested version is 2.24.
 
-It optionaly depend on :
+It optionally depends on :
 
  - nodejs (http://nodejs.org/) to run the GUI webserver. Tested version is 0.10.30.
  - libelf (http://www.mr511.de/software/english.html) to extract global variable list from executables and libs. Tested version is 0.128.
- - libunwind (http://www.nongnu.org/libunwind/) as alternative implementation of glibc backtrace method. Tested version is 1.1.
+ - libunwind (http://www.nongnu.org/libunwind/) as an alternative implementation of glibc backtrace method. Tested version is 1.1.
 
 How to install
 --------------
@@ -37,7 +37,7 @@ familiar with autotools packaging so you can install by following the procedure 
 	make install
 ```
 
-If you want more advance usage you need to call cmake by yourself so you can install it 
+If you want more advance usage, you need to call cmake by yourself so you can install it 
 by following the procedure :
 
 ```shell
@@ -59,14 +59,14 @@ MALT build support several options to define with -D option of CMake :
  * -DENABLE_TEST={yes|no}        : Enable build of unit tests.
  * -DJUNIT_OUTPUT={yes|no}       : Enable generation of junit files for jenkins integration.
  * -DENABLE_VALGRIND={yes|no}    : Run unit tests inside valgrind memcheck and generate XML report.
- * -DPORTABILITY_OS={UNIX}       : Set portability build option to fix OS specific calls.
+ * -DPORTABILITY_OS={UNIX}       : Set portability build options to fix OS specific calls.
  * -DPORTABILITY_MUTEX={PTHREAD} : Set portability build option to select mutex implementation.
 
 How to use
 ----------
 
-MALT currently provide a dynamic library you need to preload in your application to
-wrap the default memory allocator. It provide two basic instrumentation modes.
+MALT currently provides a dynamic library you need to preload in your application to
+wrap the default memory allocator. It provides two basic instrumentation modes.
 
 By default MALT use backtrace to reconstruct you stack on malloc/free/... calls :
 
@@ -75,15 +75,15 @@ By default MALT use backtrace to reconstruct you stack on malloc/free/... calls 
 ```
 
 You can get better performance but less detailed stack by using option 
--finstrument-function or similar on your compiler. Then, you need to tel MALT to use
+-finstrument-function or similar for your compiler. Then, you need to tel MALT to use
 the "enter-exit" stack mode :
 
 ```shell
 	{YOUR_PREFIX}/bin/malt -m=enter-exit {YOUR_PROGRAM} [OPTIONS]
 ```
 
-The malt script only provide a wrapper to automatically preload a dynamic library
-into the executable, you can also do it by hand in cas of issue :
+The malt script only provides a wrapper to automatically preload a dynamic library
+into the executable, you can also do it by hand in cas of issues :
 
 ```shell
 	LD_PRELOAD={YOUR_PREFIX}/lib/libmalt.so {YOUR_PROGRAM} [OPTIONS]
@@ -101,9 +101,9 @@ provide more accurate call stacks to you.
 How to use with MPI
 -------------------
 
-MALT also provide a lightweight support of MPI to generate profile files named with MPI rank ID instead of process ID.
+MALT also provides a lightweight support of MPI to generate profile files named with MPI rank ID instead of process ID.
 In order to support this you first need to compile the MPI interface on top of your MPI. It will generate a
-small library in you home directory.
+small library in your home directory.
 
 ```shell
 	{YOUR_PREFIX}/bin/malt --prep-mpi [mpicxx]
@@ -127,17 +127,17 @@ You can use the webview by calling command `malt-webview` as :
 	malt-webview [-p PORT] [--no-auth] -i malt-YOUR_PROGRAM-1234.json
 ```
 
-It will open a server listening localy on port 8080 so you can open your web browser
+It will open a server listening locally on port 8080 so you can open your web browser
 to connect to the web interface via http://localhost:8080.
 
-On first usage malt-wbview will create the password file `$HOME/.malt/passwd` and ask you a
+At first usage malt-webview will create the password file `$HOME/.malt/passwd` and ask you a
 protection password for http authentification. You can change it at any time with
 
 ```shell
 	malt-passwd {USER}
 ```
 
-If you are running the view remotly thought SSH you can redirect the ports by using :
+If you are running the view remotely thought SSH you can redirect the ports by using :
 
 ```shell
 	ssh -L 8080:localhost:8080 user@ssh-server
@@ -148,7 +148,7 @@ To use the webview you need to install the nodeJS package on your system : http:
 Config
 ------
 
-You can provide a config file to MALT to setup some features. This file use the INI
+You can provide a config file to MALT to setup some features. This file uses the INI
 format. With the malt script :
 
 ```shell
@@ -168,12 +168,12 @@ Example of config file :
 	enabled=true          ; enable time profiles
 	points=1000           ; keep 1000 points
 	linar_index=false     ; use action ID instead of time
-
+	
 	[stack]
 	enabled=true          ; enable stack profiles
 	mode=backtrace        ; select stack tracing mode (backtrace|enter-exit)
-	resolve=true          ; Automatically resolve symbol with addr2line at exit.
-
+	resolve=true          ; Automatically resolve symbols with addr2line at exit.
+	
 	[output]
 	name=malt-%1-%2.%3    ; base name for output, %1 = exe, %2 = PID, %3 = extension
 	indent=false          ; indent the output
@@ -183,13 +183,13 @@ Example of config file :
 	config=true           ; dump current config
 	stackTree=false       ; store the call tree as a tree (smaller file, but need conversion)
 	loopSuppress=false    ; Simplify recursive loop calls to get smaller profile file if too big
-
+	
 	[filter]
 	exe=                  ; Only apply malt on given exe (empty for all)
 	childs=true           ; Instrument child processes or not
 ```
 
-Option values can be override on the fly with command :
+Option values can be overridden on the fly with command :
 
 ```shell
 	{YOUR_PREFIX}/bin/malt -o "stack:enabled=true;output:indent=true;" {YOUR_PROGRAM} [OPTIONS]
@@ -209,7 +209,7 @@ If you do not use the malt wrapper and use directly LD_PRELOAD you can use the E
 About stacks
 ------------
 
-MALT use two ways to rebuild stacks, the default one rely on glibc backtrace but we observe severals 
+MALT use two ways to rebuild stacks, the default one relies on glibc backtrace but we observe several 
 segfaults on some intel tools such as Intel OpenMP and Intel MPI so we also provide a more robust 
 approach based on libunwind if present on your system at build time. You can provide it with :
 
@@ -229,14 +229,14 @@ You now can use it with malt by using :
 	malt -s libunwind {PROGRAM}
 ```
 
-The alternative rely on function instrumentation by adding prove on start/end for each function.
-It can be done by using -finstrument-function on your compiler juste as described in "How to use" section
-or by using binary instrumentation tools juste as explained at the end of this document.
+The alternative relies on function instrumentation by adding prove on start/end for each function.
+It can be done by using -finstrument-function on your compiler just as described in "How to use" section
+or by using binary instrumentation tools just as explained at the end of this document.
 
 Tracking stack size
 -------------------
 
-Malt can also track the memorty used by stacks over time, but for this support it is required to
+Malt can also track the memory used by stacks over time, but for this support it is required to
 enable a compiler flag :
 
 ```shell
@@ -266,32 +266,34 @@ cannot load this kind of file into nodejs due to some limits into the string use
 into json parsor functions.
 
 The first alternative is to try to generate more compressed file by enabling usage of `stackTree` output
-option to store the stacks as a tree into the file. It is more efficient in term of space (in the 600 MB
-case it lower the file to 200 MB) but need an onfly conversion by the server to get back the supported format.
+options to store the stacks as a tree into the file. It is more efficient in terms of space (in the 600 MB
+case it lower the file to 200 MB) but need an on-fly conversion by the server to get back the supported format.
 
 ```shell
 	malt -o "output:stackTree=true" ./PROGRAM
 ```
 
-Currently you can still get cases where you cannot load the file into nodejs, I'm working on a workarround.
-Please provide me your files if it append. By compressing it in gzip you will get less than 30-40 MB.
+Currently you can still find cases where you cannot load the file into nodejs, I'm working on a workaround.
+Please provide me your files if it appends. By compressing it in gzip you will get less than 30-40 MB.
 
 Packaging
 ---------
 
-You can find packaging instructions inside packagin/README.md.
+You can find packaging instructions inside packaging/README.md.
 For quicker use you can use the dev/packagin.sh script which do
 the steps automatically.
 
-Installation in non standard directory
+Installation in non-standard directory
 --------------------------------------
 
 If you install MALT in a directory other than `/usr` and `/usr/local`, eg. in your home, you might
-be interested by setting some environnement variables to integrate it to your shell :
+be interested by setting some environment variables integrating it to your shell :
 
 ```shell
 	export PATH=${PREFIX}/bin:$PATH
 	export MANPATH=${PREFIX}/share/man:$MANPATH
 ```
-`LD_LIBRARY_PATH` is not required as the `malt` command will use full path to get access the 
+
+`LD_LIBRARY_PATH` is not required as the `malt` command will use the full path to get access the 
 internal `.so` file.
+
