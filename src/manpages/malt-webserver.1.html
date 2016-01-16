@@ -89,15 +89,15 @@ http://localhost:8080.</p>
 <dl>
 <dt><code>-i</code>, <code>--input-file</code></dt><dd>This option is required and provide the input profile file (json format) to explore.</dd>
 <dt><code>-n</code>, '--no-auth'</dt><dd>Disable usage of HTTP authentification to secure the pages of the GUI. Caution, all the
-user connected on the machine can access to the GUI so to your code.</dd>
+users connected on the machine can access the GUI so to your code.</dd>
 <dt><code>-o</code>, <code>--override</code></dt><dd>If you copy a profile file from a remote machine to your local one, your code might
-be stored into another place (not same user, not same path). Thanks to override option
+be stored into another place (not same user, not same path). Thanks to override options
 you can alias some paths to make it transparent to the GUI and be able to find your
 source code. The format is <em>src_path1:dest_path1,src_path2,dest_path2</em>. The easiest use
 is to override the root directory of your project.</dd>
 <dt><code>p</code>, <code>--port</code></dt><dd>Force to use another port than default 8080.</dd>
 <dt class="flush"><code>version</code></dt><dd>Display the current version of MALT you are using.</dd>
-<dt><code>-h</code>, <code>--help</code></dt><dd>Display a short help message to summurize the available options.</dd>
+<dt><code>-h</code>, <code>--help</code></dt><dd>Display a short help message to summarize the available options.</dd>
 </dl>
 
 
@@ -114,8 +114,7 @@ is to override the root directory of your project.</dd>
 it through ssh to get it on your local machine. You can achieve this port redirection with
 ssh options :</p>
 
-<pre><code>ssh {YOUR_HOST} -L 8080:localhost:8080
-</code></pre>
+<p> ssh {YOUR_HOST} -L 8080:localhost:8080</p>
 
 <p>Where the first 8080 is the local port and the second one the remote.</p>
 
@@ -130,7 +129,7 @@ ssh options :</p>
 
   <ol class='man-decor man-foot man foot'>
     <li class='tl'></li>
-    <li class='tc'>August 2015</li>
+    <li class='tc'>January 2016</li>
     <li class='tr'>malt-webserver(1)</li>
   </ol>
 

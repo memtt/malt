@@ -12,13 +12,13 @@ by `malt-passwd` command and stored into `~/.malt/passwd` file. It will be calle
 the first time you call `malt-webserver`.
 
 `malt-passwd` is essentially a wrapper to call a script provided by nodeJS module `htpasswd` so it
-also support all the options it provides. You can refer to the documentation of this module for
+also supports all the options it provides. You can refer to the documentation of this module for
 more details : https://www.npmjs.com/package/htpasswd.
 
 ## ENVIRONMENT
 
  * `MALT_NODEJS`:
-   Can be setup to tel which nodeJS to use if the script cannot find it by itself.
+   Can be setup to tell which nodeJS to use if the script cannot find it by itself.
 
 ## VERSION
 

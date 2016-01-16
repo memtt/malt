@@ -17,10 +17,10 @@ http://localhost:8080.
    This option is required and provide the input profile file (json format) to explore.
  * `-n`, '--no-auth':
    Disable usage of HTTP authentification to secure the pages of the GUI. Caution, all the
-   user connected on the machine can access to the GUI so to your code.
+   users connected on the machine can access the GUI so to your code.
  * `-o`, `--override`:
    If you copy a profile file from a remote machine to your local one, your code might
-   be stored into another place (not same user, not same path). Thanks to override option
+   be stored into another place (not same user, not same path). Thanks to override options
    you can alias some paths to make it transparent to the GUI and be able to find your
    source code. The format is *src_path1:dest_path1,src_path2,dest_path2*. The easiest use
    is to override the root directory of your project.
@@ -29,7 +29,7 @@ http://localhost:8080.
  * `version`:
    Display the current version of MALT you are using.
  * `-h`, `--help`:
-   Display a short help message to summurize the available options.
+   Display a short help message to summarize the available options.
 
 ## ENVIRONMENT
 
@@ -42,7 +42,7 @@ On clusters you might be interesting by launching the `malt-webserver` remotly a
 it through ssh to get it on your local machine. You can achieve this port redirection with
 ssh options :
 
-	ssh {YOUR_HOST} -L 8080:localhost:8080
+ ssh {YOUR_HOST} -L 8080:localhost:8080
 
 Where the first 8080 is the local port and the second one the remote.
 

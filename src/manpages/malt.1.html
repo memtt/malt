@@ -84,7 +84,7 @@
 
 <p>MALT is a memory profiling tool wrapping your system memory allocation and applying
 backtrace on each call. It will provide you a memory allocation profile which can
-be view with <span class="man-ref">malt-webview<span class="s">(1)</span></span>.</p>
+be viewed with <span class="man-ref">malt-webview<span class="s">(1)</span></span>.</p>
 
 <p>MALT work out of the box but to profiling your application it might be better to compile
 it with debug symbols (<code>-g</code>) and also to disable inlining to get more accurate stacks
@@ -93,45 +93,43 @@ it with debug symbols (<code>-g</code>) and also to disable inlining to get more
 <h2 id="OPTIONS">OPTIONS</h2>
 
 <dl>
-<dt><code>-c</code>, <code>--config</code></dt><dd>Provide a config file as paramter with format described in the next part
+<dt><code>-c</code>, <code>--config</code></dt><dd>Provide a config file as parameters with formats described in the next part
 of this manpage. You can also get a dump of the default configuration with <code>-d</code>.</dd>
 <dt><code>-s</code>, <code>--stack</code></dt><dd>Select the stack tracking mode to use. It can be <code>backtrace</code> (default) to use the
 backtrace function from glibc. If you compile with libunwind you can also use the
 libunwind function with <code>libunwind</code> in place of glibc backtrace. It fix some bugs
-with programmes compiled with Intel compiler or using intel libraries (like intel OpenMP).
-But it as a side effect as libunwind as an internal memory leak. The other apporach
+with programs compiled with Intel compiler or using Intel libraries (like Intel OpenMP).
+But it as a side effect as libunwind as an internal memory leak. The other approach
 is to instrument your code with <code>-finstrument-function</code> and in this case you need
 to use the <code>enter-exit</code> to use it.</dd>
-<dt><code>-q</code>, <code>--quiet</code></dt><dd>Make MALT silent to avoid to mix with default output of your program. Usefull if
+<dt><code>-q</code>, <code>--quiet</code></dt><dd>Make MALT silent to avoid mixing with default output of your program. Useful if
 you use the output to fead a script.</dd>
-<dt><code>-d</code>, <code>--dumpconfig</code></dt><dd>Dump the current MALT configuration in a file with the same name than profile file.
-It help for quick start in configuration by getting all the options and default value.</dd>
+<dt><code>-d</code>, <code>--dumpconfig</code></dt><dd>Dump the current MALT configuration in a file with the same name as profile file.
+It helps for quick start in the configuration by getting all the options and default value.</dd>
 <dt class="flush"><code>-o</code></dt><dd>Permit to pass some specific options from the config file in the command line.
 The value is a list of options separated by commas and formatted like <code>SECTION:NAME=VALUE</code>.
 See the configuration file format (INI format) to find the available sections and names.</dd>
 <dt class="flush"><code>--mpi</code></dt><dd>Enable MPI support to name the output files with rank IDs instead of process IDs.
 MALT will LD_PRELOAD the library bridge from <code>~/.malt/libmaltmpi.so</code>.</dd>
-<dt><code>--prep-mpi</code></dt><dd>Build the MPI bridge library : <code>~/.malt/libmaltmpi.so</code>. MALT require it to get access
+<dt><code>--prep-mpi</code></dt><dd>Build the MPI bridge library : <code>~/.malt/libmaltmpi.so</code>. MALT requires it to get access
 to MPI_Comm_rank function depending on your MPI implementation. You need to do this
-command each tome you switch you MPI implementation.</dd>
-<dt><code>-h</code>, <code>--help</code></dt><dd>Display help message with list of available command line options.</dd>
+command each tome you switch your MPI implementation.</dd>
+<dt><code>-h</code>, <code>--help</code></dt><dd>Display help message with a list of available command line options.</dd>
 </dl>
 
 
 <h2 id="USING-ON-MPI-APPLICATIONS">USING ON MPI APPLICATIONS</h2>
 
-<p>MALT natively provide a lightweight support of MPI application. Each process is tracked separately
+<p>MALT natively provides a lightweight support of MPI applications. Each process is tracked separately
 but MALT can help by numbering the output files with the task rank instead of process ID.
 To get this, you need to compile a small wrapper adapted to your current MPI implementation.
 You need to do it once :</p>
 
-<pre><code>malt --prep-mpi [mpicxx]
-</code></pre>
+<p> malt --prep-mpi [mpicxx]</p>
 
 <p>Then take care of using the <code>--mpi</code> option on the profiling tool :</p>
 
-<pre><code>mpirun malt --mpi ./you_program
-</code></pre>
+<p> mpirun malt --mpi ./you_program</p>
 
 <h2 id="GET-THE-GUI">GET THE GUI</h2>
 
@@ -143,52 +141,52 @@ You need to do it once :</p>
 <p>You can get an example of this config file with <code>-d</code> option and setup the config file to use with <code>-c</code> one.
 The config file use INI format with sections and variables as in this example :</p>
 
-<pre><code>[time]
-enabled                        = true
-points                         = 512 
-linear_index                   = false
+<p> [time]
+ enabled                        = true
+ points                         = 512
+ linear_index                   = false</p>
 
-[stack]
-enabled                        = true
-mode                           = backtrace
-resolve                        = true
-libunwind                      = false
+<p> [stack]
+ enabled                        = true
+ mode                           = backtrace
+ resolve                        = true
+ libunwind                      = false</p>
 
-[output]
-name                           = malt-%1-%2.%3
-lua                            = false
-json                           = true
-callgrind                      = false
-indent                         = true
-config                         = true
-silent                         = false
-stackTree                      = false
+<p> [output]
+ name                           = malt-%1-%2.%3
+ lua                            = false
+ json                           = true
+ callgrind                      = false
+ indent                         = true
+ config                         = true
+ silent                         = false
+ stackTree                      = false
+ loopSuppress                   = false</p>
 
-[max-stack]
-enabled                        = true
+<p> [max-stack]
+ enabled                        = true</p>
 
-[distr]
-alloc_size                     = true
-realloc_jump                   = true
+<p> [distr]
+ alloc_size                     = true
+ realloc_jump                   = true</p>
 
-[trace]
-enabled                        = false
+<p> [trace]
+ enabled                        = false</p>
 
-[info]
-hidden                         = false
+<p> [info]
+ hidden                         = false</p>
 
-[filter]
-exec                           = 
-childs                         = true
-</code></pre>
+<p> [filter]
+ exec                           =
+ childs                         = true</p>
 
 <p>The <code>time</code> section support :</p>
 
 <dl>
 <dt class="flush"><code>enabled</code></dt><dd>Enable support of tracking state values over time to build time charts.</dd>
-<dt class="flush"><code>points</code></dt><dd>Define the number of points used to discretized the exacution time of the application.</dd>
-<dt><code>linear_index</code></dt><dd>Do not use time to index datas but a linear values incremented on each call (might be interesting
-to not shrink intensive allocation steps on a long program which mostly not do allocation over the run.</dd>
+<dt class="flush"><code>points</code></dt><dd>Define the number of points used to discretized the execution time of the application.</dd>
+<dt><code>linear_index</code></dt><dd>Do not use time to index data but a linear value increased on each call (might be interesting
+not to shrink intensive allocation steps on a long program which mostly not do allocation over the run.</dd>
 </dl>
 
 
@@ -196,9 +194,9 @@ to not shrink intensive allocation steps on a long program which mostly not do a
 
 <dl>
 <dt class="flush"><code>enabled</code></dt><dd>Enable support of stack tracking.</dd>
-<dt class="flush"><code>mode</code></dt><dd>Override by <code>-s</code> option from command line, it set the stack tracking method to use. See <code>-s</code> documentation
+<dt class="flush"><code>mode</code></dt><dd>Override by <code>-s</code> option from the command line, it set the stack tracking method to use. See <code>-s</code> documentation
 for more details.</dd>
-<dt class="flush"><code>resolve</code></dt><dd>Enable symbol resolution at the end of execution to extrace full names and source location if debug options
+<dt class="flush"><code>resolve</code></dt><dd>Enable symbol resolution at the end of execution to extract full names and source location if debug options
 is available.</dd>
 <dt><code>libunwind</code></dt><dd>Use linunwind backtrace method instead of the one from glibc.</dd>
 </dl>
@@ -208,24 +206,29 @@ is available.</dd>
 
 <dl>
 <dt class="flush"><code>name</code></dt><dd>Define the name of the profile file. %1 is replaced by the program name, %2 by the PID or MPI rank and %3 by extension.</dd>
-<dt class="flush"><code>lua</code></dt><dd>Enable output in LUA format (same structure than JSON file but in LUA).</dd>
+<dt class="flush"><code>lua</code></dt><dd>Enable output in LUA format (same structure as JSON files but in LUA).</dd>
 <dt class="flush"><code>json</code></dt><dd>Enable output of the default JSON file format.</dd>
-<dt><code>callgrind</code></dt><dd>Enable outptu of the compatibility format with callgrind/kcachegrind. Cannot contain all datas but can be used
+<dt><code>callgrind</code></dt><dd>Enable output of the compatibility format with callgrind/kcachegrind. Cannot contain all data but can be used
 with compatible existing tools.</dd>
-<dt class="flush"><code>indent</code></dt><dd>Enable indentation in the JSON/LUA files. Usefull for debugging but generate bigger files.</dd>
+<dt class="flush"><code>indent</code></dt><dd>Enable indentations in the JSON/LUA files. Useful for debugging but generate bigger files.</dd>
 <dt class="flush"><code>config</code></dt><dd>Dump the config INI file.</dd>
-<dt class="flush"><code>silent</code></dt><dd>Enable silent mode so that MALT will not write anything to the standard output of error output to not disturbe
-streams sent to sctipts.</dd>
-<dt><code>stackTree</code></dt><dd>Enable storage of the stacks as a tree inside the output file. It produce smaller files but require conversion
+<dt class="flush"><code>silent</code></dt><dd>Enable silent mode so that MALT will not write anything to the standard output of errors output not to disturb
+streams sent to scripts.</dd>
+<dt><code>stackTree</code></dt><dd>Enable storage of the stacks as a tree inside the output file. It produces smaller files but require conversion
 at storage time and loading time to stay compatible with the basic expected format. You can use this option
-to get smaller file. In one case it lower a 600 MB file to 200 MB to give an idea.</dd>
+to get smaller files. In one case it lowers a 600 MB file to 200 MB to give an idea.</dd>
+<dt><code>loopSuppress</code></dt><dd>Enable recursive loop calls to remove them and provide a more simplified equivalent call stack. It helps
+to reduce the size of profiles from applications using intensively this kind of call chain. In one case it lowers
+file from 200 MB to 85 MB. It can help if nodejs failed to load the fail because of the size. This parameter
+can also provide more readable stacks as you don't care to much how many times you cycle to call loops you
+just want to see one of them.</dd>
 </dl>
 
 
 <p>The <code>max-stack</code> section support:</p>
 
 <dl>
-<dt class="flush"><code>enabled</code></dt><dd>Enable or disable the tracking of stack size and memory used by functions on stack
+<dt class="flush"><code>enabled</code></dt><dd>Enable or disable the tracking of stack size and memory used by functions on stacks
 (require  <code>--finstrument-function</code> on your code to provide data).</dd>
 </dl>
 
@@ -233,8 +236,8 @@ to get smaller file. In one case it lower a 600 MB file to 200 MB to give an ide
 <p>The <code>distr</code> section support:</p>
 
 <dl>
-<dt><code>alloc_size</code></dt><dd>Generate distrubtion of the allocated chunk size.</dd>
-<dt><code>realloc_jump</code></dt><dd>Generate distrubtion of the realloc size jumps.</dd>
+<dt><code>alloc_size</code></dt><dd>Generate distribution of the allocated chunk size.</dd>
+<dt><code>realloc_jump</code></dt><dd>Generate distribution of the realloc size jumps.</dd>
 </dl>
 
 
@@ -248,11 +251,11 @@ to get smaller file. In one case it lower a 600 MB file to 200 MB to give an ide
 <p>The <code>info</code> section support:</p>
 
 <dl>
-<dt class="flush"><code>enabled</code></dt><dd>Enable hidding execution informations. This option remove some possibility sensitive informations
+<dt class="flush"><code>enabled</code></dt><dd>Enable hiding execution information. This option remove some possibility sensitive information
 from the output file, like executable names, hostname and command options. It is still recommended
-to take a look on the file for example to replace (<span class="man-ref">sed<span class="s">(1)</span></span>) the paths which might also be removed.
-This option target some companies which might want to hide their internal applications when exchaning
-with external parteners.</dd>
+taking a look at the file for example to replace (<span class="man-ref">sed<span class="s">(1)</span></span>) the paths which might also be removed.
+This option target some companies which might want to hide their internal applications when exchanging
+with external partners.</dd>
 </dl>
 
 
@@ -261,7 +264,7 @@ with external parteners.</dd>
 <dl>
 <dt class="flush"><code>exe</code></dt><dd>Enable filtering of executable to enable MALT and ignore otherwise. By default empty value enable
 MALT on all executable.</dd>
-<dt class="flush"><code>childs</code></dt><dd>Enable instrumentation of childs processes or not. By default instrument all.</dd>
+<dt class="flush"><code>childs</code></dt><dd>Enable instrumentation of children processes or not. By default instruments all.</dd>
 </dl>
 
 
@@ -269,10 +272,9 @@ MALT on all executable.</dd>
 
 <p>You can also directly LD_PRELOAD the MALT library in your program if the wrapper script has some issues for you.</p>
 
-<pre><code>LD_PRELOAD={PREFIX}/lib/libmalt.so {YOUR_PROGRAM}
-</code></pre>
+<p> LD_PRELOAD={PREFIX}/lib/libmalt.so {YOUR_PROGRAM}</p>
 
-<p>In that case you can setup some environnement variables to configure MALT :</p>
+<p>In that case you can setup some environment variables to configure MALT :</p>
 
 <dl>
 <dt><code>MALT_CONFIG</code></dt><dd>Define the configuration file to use (equivalent of <code>-c</code> option).</dd>
@@ -292,7 +294,7 @@ MALT on all executable.</dd>
 
   <ol class='man-decor man-foot man foot'>
     <li class='tl'></li>
-    <li class='tc'>October 2015</li>
+    <li class='tc'>January 2016</li>
     <li class='tr'>malt(1)</li>
   </ol>
 

@@ -1,4 +1,4 @@
-MALT output format
+MALT Output Format
 ==================
 
 MALT support two output format, a first one compatible with callgrind/kcachegrind syntax
@@ -8,25 +8,25 @@ is based on JSON and related to MALT.
 Global structure
 ----------------
 
-The json file contain major structures as :
+The json file contains major structures as :
 
-	{
+	 {
 		run: {}      /* Provide some global informations about the run. */
 		config: {}   /* Provide a dump of the MALT configuration. */
 		stacks: {}   /* Provide profile projected on call stacks */
-		sites: {}    /* Provide informations to map addresses to source code. */
+		sites: {}    /* Provide information to map addresses to source code. */
 		globals: {}  /* Provide some global metric related to the run. */
-		leaks: {}    /* Provide the list of leaks seen at end of execution (blocks still allocated). */
+		leaks: {}    /* Provide the list of leaks seen at the end of execution (blocks still allocated). */
 		memStats: {} /* Some statistic represented by distributions about memory allocations . */
 		threads: {}  /* Provide per thread metrics. */
 		timeline: {} /* Provide metrics profile over time. */
 		globalVariables{} /* Memory used by the global variables of the program. */
-	}
-	
+	 }
+ 
 Details about run
 -----------------
 
-	"run":{
+	 "run":{
 		"formatVersion":1,
 		"tool":"malt-0.0.0",
 		"date":"2014-11-01 18:56",
@@ -34,16 +34,16 @@ Details about run
 		"exe":"simple-case-finstr-linked",
 		"command":"./simple-case-finstr-linked",
 		"hostname":"sebv4"
-	},
+	 },
 
 
 
 Details about stacks
 --------------------
 
-The "stacks" entry contain structure like :
+The "stacks" entry contains structure like :
 
-	{
+	 {
 		stats: [                            /* List of stacks with data */
 			{
 				stack : ['0xa','0xb'],      /* Stacks with 0xb called by 0xa */
@@ -52,7 +52,7 @@ The "stacks" entry contain structure like :
 			},
 			....
 		]
-	}
+	 }
 
 Details about map
 -----------------
@@ -76,7 +76,7 @@ Details about map
 	}
 
 
-Details about timeline
+Details about the timeline
 ----------------------
 
 	{
@@ -88,10 +88,10 @@ Details about timeline
 		physicalMem: {}
 		requestedMem: {}
 	}
-	
+ 
 All of them follow :
 
-	{
+	 {
 		min: [],                 /* Min value on each interval */
 		max: [],                 /* Max value on each interval */
 		index: [],               /* Last linear index of interval */
@@ -100,15 +100,15 @@ All of them follow :
 		peakTimesteamp:
 		peakIndex:
 		linearIndex: false|true
-	}
+	 }
 
 _______________________________________________________________
  - reallocJump : Provide the stats about realloc sizes
  - sizeMap : Provide the stats about sizes requested by user.
  
  - map
-	- instr
-	- strings
-	- sites
+ - instr
+ - strings
+ - sites
  
 TODO move ticks per seconds in globals.
