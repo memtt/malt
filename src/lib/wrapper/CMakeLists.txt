@@ -17,3 +17,10 @@ set(MALT_THREAD_WRAPPER_SRC ThreadTracker.cpp)
 add_library(malt-thread-wrapper OBJECT ${MALT_THREAD_WRAPPER_SRC})
 SET_TARGET_PROPERTIES(malt-thread-wrapper PROPERTIES COMPILE_FLAGS -fPIC)
 
+######################################################
+add_library(malt-fake-controler OBJECT FakeControler.c)
+SET_TARGET_PROPERTIES(malt-fake-controler PROPERTIES COMPILE_FLAGS -fPIC)
+
+######################################################
+INSTALL(FILES Controler.h
+	DESTINATION include/malt)

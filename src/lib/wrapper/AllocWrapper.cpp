@@ -25,6 +25,8 @@
 #include <core/StackSizeTracker.hpp>
 #include <profiler/AllocStackProfiler.hpp>
 #include <profiler/LocalAllocStackProfiler.hpp>
+//locals
+#include "Controler.h"
 
 /***************** USING NAMESPACE ******************/
 using namespace MALT;
@@ -105,6 +107,8 @@ enum AllocWrapperGlobalStatus
 	ALLOC_WRAP_INIT_PROFILER,
 	/** Ready for use. **/
 	ALLOC_WRAP_READY,
+	/** This is used by enable/disable functions on TLS state to ignore part of the code in threads **/
+	ALLOC_WRAP_DISABLED,
 	/** Now finish, ignore future calls to not instrument them after call of atexit(). **/
 	ALLOC_WRAP_FINISH
 };
@@ -236,6 +240,44 @@ void sigKillHandler(int s)
 {
 	fprintf(stderr,"MALT: Capture signal KILL, dump profile and exit.");
 	exit(1);
+}
+
+/*******************  FUNCTION  *********************/
+int maltInitStatus(void)
+{
+	return 1;
+}
+
+/*******************  FUNCTION  *********************/
+extern "C" {
+	
+void maltEnable(void)
+{
+	/*get addr localy to avoid to read the TLS every time*/
+	ThreadLocalState & localState = tlsState;
+
+	/*check init */ 
+	if ( localState.status == ALLOC_WRAP_NOT_READY )
+		localState.init();
+	
+	if(localState.status == ALLOC_WRAP_DISABLED)
+		localState.status = ALLOC_WRAP_READY;
+}
+
+/*******************  FUNCTION  *********************/
+void maltDisable(void)
+{
+	/*get addr localy to avoid to read the TLS every time*/
+	ThreadLocalState & localState = tlsState;
+
+	/*check init */ 
+	if ( localState.status == ALLOC_WRAP_NOT_READY )
+		localState.init();
+	
+	if(localState.status == ALLOC_WRAP_READY)
+		localState.status = ALLOC_WRAP_DISABLED;
+}
+	
 }
 
 /*******************  FUNCTION  *********************/
@@ -376,7 +418,10 @@ void ThreadLocalState::init(void)
 	tlsState.profiler = gblState.profiler->createLocalStackProfiler(true);
 	
 	//mark ready
-	tlsState.status = ALLOC_WRAP_READY;
+	if (gblOptions->enabled)
+		tlsState.status = ALLOC_WRAP_READY;
+	else
+		tlsState.status = ALLOC_WRAP_DISABLED;
 }
 
 /*******************  FUNCTION  *********************/
@@ -698,7 +743,7 @@ void __cyg_profile_func_enter (void *this_fn,void *call_site)
 	MALT_WRAPPER_LOCAL_STATE_INIT
 	
 	//stack tracking
-	if (tlsState.status == ALLOC_WRAP_READY)
+	if (tlsState.status == ALLOC_WRAP_READY || tlsState.status == ALLOC_WRAP_DISABLED)
 		localState.profiler->onEnterFunc(this_fn,call_site);
 }
 
@@ -720,7 +765,7 @@ void __cyg_profile_func_exit  (void *this_fn,void *call_site)
 	MALT_WRAPPER_LOCAL_STATE_INIT
 	
 	//stack tracking
-	if (tlsState.status == ALLOC_WRAP_READY)
+	if (tlsState.status == ALLOC_WRAP_READY || tlsState.status == ALLOC_WRAP_DISABLED)
 		localState.profiler->onExitFunc(this_fn,call_site);
 }
 

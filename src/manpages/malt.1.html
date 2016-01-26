@@ -61,6 +61,7 @@
     <a href="#GET-THE-GUI">GET THE GUI</a>
     <a href="#CONFIGURATION-FILE">CONFIGURATION FILE</a>
     <a href="#ENVIRONMENT">ENVIRONMENT</a>
+    <a href="#ON-SUB-PART-OF-YOUR-PROGRAM">ON SUB-PART OF YOUR PROGRAM</a>
     <a href="#VERSION">VERSION</a>
     <a href="#SEE-ALSO">SEE ALSO</a>
   </div>
@@ -141,44 +142,45 @@ You need to do it once :</p>
 <p>You can get an example of this config file with <code>-d</code> option and setup the config file to use with <code>-c</code> one.
 The config file use INI format with sections and variables as in this example :</p>
 
-<p> [time]
- enabled                        = true
- points                         = 512
- linear_index                   = false</p>
+<pre><code>[time]
+enabled                        = true
+points                         = 512 
+linear_index                   = false
 
-<p> [stack]
- enabled                        = true
- mode                           = backtrace
- resolve                        = true
- libunwind                      = false</p>
+[stack]
+enabled                        = true
+mode                           = backtrace
+resolve                        = true
+libunwind                      = false
 
-<p> [output]
- name                           = malt-%1-%2.%3
- lua                            = false
- json                           = true
- callgrind                      = false
- indent                         = true
- config                         = true
- silent                         = false
- stackTree                      = false
- loopSuppress                   = false</p>
+[output]
+name                           = malt-%1-%2.%3
+lua                            = false
+json                           = true
+callgrind                      = false
+indent                         = true
+config                         = true
+silent                         = false
+stackTree                      = false
+loopSuppress                   = false
 
-<p> [max-stack]
- enabled                        = true</p>
+[max-stack]
+enabled                        = true
 
-<p> [distr]
- alloc_size                     = true
- realloc_jump                   = true</p>
+[distr]
+alloc_size                     = true
+realloc_jump                   = true
 
-<p> [trace]
- enabled                        = false</p>
+[trace]
+enabled                        = false
 
-<p> [info]
- hidden                         = false</p>
+[info]
+hidden                         = false
 
-<p> [filter]
- exec                           =
- childs                         = true</p>
+[filter]
+exec                           = 
+childs                         = true
+</code></pre>
 
 <p>The <code>time</code> section support :</p>
 
@@ -282,6 +284,33 @@ MALT on all executable.</dd>
 <dt><code>MALT_OPTIONS</code></dt><dd>List of options to transmit to MALT (equivalent of <code>-o</code> option, see its documentation for format).</dd>
 </dl>
 
+
+<h2 id="ON-SUB-PART-OF-YOUR-PROGRAM">ON SUB-PART OF YOUR PROGRAM</h2>
+
+<p>If you run on a really big program doing millions of allocation you might get a big overhead, and maybe
+you are just interested in a sub-part of the program. You can do it by including <code>malt/Controler.h</code> in
+your files and use <code>maltEnable()</code> an <code>maltDisable()</code> to controle MALT on each thread. It is also a nice
+way to detect leaks of sub-parts of your code.</p>
+
+<pre><code>#include &lt;malt/controler.h&gt;
+
+int main() 
+{
+    maltDisable();
+    //ignored
+    malloc(16);
+
+    maltEnable();
+    //tracked
+    malloc(16);
+}
+</code></pre>
+
+<p>You will need to link the <code>libmalt-controler.so</code> to get the default fake symbols when not using MALT.
+You can also just provide the two empty functions in your own dynamic library (not static).</p>
+
+<p>If you have some allocation not under you control before your first call you disable MALT by default
+on threads then enable it by hand using the <code>filter:enabled</code> option.</p>
 
 <h2 id="VERSION">VERSION</h2>
 

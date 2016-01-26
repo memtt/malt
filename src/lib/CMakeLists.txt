@@ -88,6 +88,9 @@ add_library(malt SHARED ${COMMON_OBJS} $<TARGET_OBJECTS:malt-libc-wrapper>)
 target_link_libraries(malt ${LIB_MALT_DEPS})
 
 ######################################################
+add_library(malt-controler SHARED $<TARGET_OBJECTS:malt-fake-controler>)
+
+######################################################
 add_subdirectory(core)
 add_subdirectory(tools)
 add_subdirectory(common)
@@ -113,6 +116,6 @@ else()
 endif()
 
 ######################################################
-INSTALL(TARGETS malt malt-base 
+INSTALL(TARGETS malt malt-base malt-controler
 	ARCHIVE DESTINATION lib${LIBSUFFIX}
 	LIBRARY DESTINATION lib${LIBSUFFIX})

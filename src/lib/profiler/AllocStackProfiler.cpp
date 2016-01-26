@@ -586,7 +586,7 @@ void convertToJson(htopml::JsonState& json, const AllocStackProfiler& value)
 	if (value.options.stackProfileEnabled)
 	{
 		if (value.stackTree == NULL)
-			json.printField("staDcks",value.stackTracker);
+			json.printField("stacks",value.stackTracker);
 		else
 			json.printField("stacks",*value.stackTree);
 	}

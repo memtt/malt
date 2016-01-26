@@ -75,6 +75,7 @@ struct Options
 	//filter
 	std::string exe;
 	bool childs;
+	bool enabled;
 };
 
 /********************  GLOBALS  *********************/

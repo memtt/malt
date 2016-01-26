@@ -187,6 +187,7 @@ Example of config file :
 	[filter]
 	exe=                  ; Only apply malt on given exe (empty for all)
 	childs=true           ; Instrument child processes or not
+	enabled=true          ; Enable or disable MALT when threads start
 ```
 
 Option values can be overridden on the fly with command :
@@ -205,6 +206,35 @@ If you do not use the malt wrapper and use directly LD_PRELOAD you can use the E
 	MALT_CONFIG="config.ini"
 	MALT_STACK="libunwind"
 ```
+
+Analysing sub-parts
+-------------------
+
+If you run on a really big program doing millions of allocation you might get a big overhead, and maybe
+you are just interested in a sub-part of the program. You can do it by including `malt/Controler.h` in
+your files and use `maltEnable()` an `maltDisable()` to controle MALT on each thread. It is also a nice
+way to detect leaks of sub-parts of your code.
+
+```c
+	#include <malt/controler.h>
+	
+	int main()
+	{
+		maltDisable();
+		//ignored
+		malloc(16);
+		
+		maltEnable();
+		//tracked
+		malloc(16);
+	}
+```
+
+You will need to link the `libmalt-controler.so` to get the default fake symbols when not using MALT.
+You can also just provide the two empty functions in your own dynamic library (not static).
+
+If you have some allocation not under you control before your first call you disable MALT by default
+on threads then enable it by hand using the `filter:enabled` option.
 
 About stacks
 ------------

@@ -62,5 +62,10 @@ SET_TARGET_PROPERTIES(test-fragmentation PROPERTIES COMPILE_FLAGS -finstrument-f
 target_link_libraries(test-fragmentation malt)
 
 ######################################################
+add_executable(test-controler test-controler.cpp)
+SET_TARGET_PROPERTIES(test-controler PROPERTIES COMPILE_FLAGS -finstrument-functions)
+target_link_libraries(test-controler malt-controler)
+
+######################################################
 add_executable(test-pthread-tracking test-pthread-tracking.cpp)
 target_link_libraries(test-pthread-tracking malt)

@@ -59,6 +59,7 @@ Options::Options(void)
 	//filter
 	this->exe                     = "";
 	this->childs                  = true;
+	this->enabled                 = true;
 }
 
 /*******************  FUNCTION  *********************/
@@ -98,6 +99,7 @@ bool Options::operator==(const Options& value) const
 	//exe
 	if (this->exe != value.exe) return false;
 	if (this->childs != value.childs) return false;
+	if (this->enabled != value.enabled) return false;
 	
 	return true;
 }
@@ -219,6 +221,7 @@ void Options::loadFromIniDic ( dictionary* iniDic )
 	//filter
 	this->exe                 = iniparser_getstring(iniDic,"filter:exe",(char*)this->exe.c_str());
 	this->childs              = iniparser_getboolean(iniDic,"filter:childs",this->childs);
+	this->enabled             = iniparser_getboolean(iniDic,"filter:enabled",this->enabled);
 }
 
 /*******************  FUNCTION  *********************/
@@ -293,6 +296,7 @@ void convertToJson(htopml::JsonState & json,const Options & value)
 		json.openFieldStruct("filter");
 			json.printField("exe",value.exe);
 			json.printField("childs",value.childs);
+			json.printField("enabled",value.enabled);
 		json.closeFieldStruct("filter");
 	json.closeStruct();
 }
@@ -345,6 +349,7 @@ void Options::dumpConfig(const char* fname)
 	//exe
 	IniParserHelper::setEntry(dic,"filter:exe",this->exe.c_str());
 	IniParserHelper::setEntry(dic,"filter:childs",this->childs);
+	IniParserHelper::setEntry(dic,"filter:enabled",this->enabled);
 	
 	//write
 	FILE * fp = fopen(fname,"w");

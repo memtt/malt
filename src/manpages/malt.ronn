@@ -71,44 +71,44 @@ With MALT you can use direcly `kcachegrind` if you enable the valgrind compatibl
 You can get an example of this config file with `-d` option and setup the config file to use with `-c` one.
 The config file use INI format with sections and variables as in this example :
 
- [time]
- enabled                        = true
- points                         = 512 
- linear_index                   = false
+	[time]
+	enabled                        = true
+	points                         = 512 
+	linear_index                   = false
 
- [stack]
- enabled                        = true
- mode                           = backtrace
- resolve                        = true
- libunwind                      = false
+	[stack]
+	enabled                        = true
+	mode                           = backtrace
+	resolve                        = true
+	libunwind                      = false
 
- [output]
- name                           = malt-%1-%2.%3
- lua                            = false
- json                           = true
- callgrind                      = false
- indent                         = true
- config                         = true
- silent                         = false
- stackTree                      = false
- loopSuppress                   = false
+	[output]
+	name                           = malt-%1-%2.%3
+	lua                            = false
+	json                           = true
+	callgrind                      = false
+	indent                         = true
+	config                         = true
+	silent                         = false
+	stackTree                      = false
+	loopSuppress                   = false
 
- [max-stack]
- enabled                        = true
+	[max-stack]
+	enabled                        = true
 
- [distr]
- alloc_size                     = true
- realloc_jump                   = true
+	[distr]
+	alloc_size                     = true
+	realloc_jump                   = true
 
- [trace]
- enabled                        = false
+	[trace]
+	enabled                        = false
 
- [info]
- hidden                         = false
+	[info]
+	hidden                         = false
 
- [filter]
- exec                           = 
- childs                         = true
+	[filter]
+	exec                           = 
+	childs                         = true
 
 The `time` section support :
 
@@ -211,6 +211,32 @@ In that case you can setup some environment variables to configure MALT :
    Define the stack mode to use (equivalent of `-s` option).
  * `MALT_OPTIONS`:
    List of options to transmit to MALT (equivalent of `-o` option, see its documentation for format).
+
+## ON SUB-PART OF YOUR PROGRAM
+
+If you run on a really big program doing millions of allocation you might get a big overhead, and maybe
+you are just interested in a sub-part of the program. You can do it by including `malt/Controler.h` in
+your files and use `maltEnable()` an `maltDisable()` to controle MALT on each thread. It is also a nice
+way to detect leaks of sub-parts of your code.
+
+	#include <malt/controler.h>
+
+	int main() 
+	{
+		maltDisable();
+		//ignored
+		malloc(16);
+	
+		maltEnable();
+		//tracked
+		malloc(16);
+	}
+
+You will need to link the `libmalt-controler.so` to get the default fake symbols when not using MALT.
+You can also just provide the two empty functions in your own dynamic library (not static).
+
+If you have some allocation not under you control before your first call you disable MALT by default
+on threads then enable it by hand using the `filter:enabled` option.
 
 ## VERSION
 
