@@ -42,7 +42,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_bindir}/*
 %{_libdir}/*
 %{_datadir}/*
-#%{_includedir}/*
+%{_includedir}/*
 %doc
 
 %changelog
