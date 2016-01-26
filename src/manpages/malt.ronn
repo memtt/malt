@@ -235,8 +235,8 @@ way to detect leaks of sub-parts of your code.
 You will need to link the `libmalt-controler.so` to get the default fake symbols when not using MALT.
 You can also just provide the two empty functions in your own dynamic library (not static).
 
-If you have some allocation not under you control before your first call you disable MALT by default
-on threads then enable it by hand using the `filter:enabled` option.
+If you have some allocation not under your control before your first call you can disable MALT by default
+on threads using the `filter:enabled` option, then enable it by hand.
 
 ## VERSION
 
