@@ -51,7 +51,8 @@ class Scatter2DValues
 	private:
 		bool needResize(size_t x,size_t y);
 		void resize(size_t x,size_t y);
-		size_t getIndex(size_t value,Scatter2DValuesAxis & axis);
+		size_t getIndex(size_t value, const MALT::Scatter2DValuesAxis& axis) const;
+		size_t getValue(size_t index, const MALT::Scatter2DValuesAxis& axis) const;
 		void incr(size_t * values,size_t x,size_t y,size_t inc = 1);
 	private:
 		/** Parameters for x axis **/

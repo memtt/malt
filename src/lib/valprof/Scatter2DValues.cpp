@@ -84,12 +84,21 @@ void Scatter2DValues::push(size_t x, size_t y)
 }
 
 /*******************  FUNCTION  *********************/
-size_t Scatter2DValues::getIndex(size_t value, Scatter2DValuesAxis& axis)
+size_t Scatter2DValues::getIndex(size_t value, const Scatter2DValuesAxis& axis) const
 {
 	if (axis.log)
 		return (size_t) (double)(axis.size * log2(value) / log2(axis.max));
 	else
 		return value / (axis.max / axis.size);
+}
+
+/*******************  FUNCTION  *********************/
+size_t Scatter2DValues::getValue(size_t index, const Scatter2DValuesAxis& axis) const
+{
+	if (axis.log)
+		return pow(2,log2(axis.max) *(double)index/(double)axis.size);
+	else
+		return index * (axis.max / axis.size);
 }
 
 /*******************  FUNCTION  *********************/
@@ -118,24 +127,9 @@ void Scatter2DValues::resize(size_t x, size_t y)
 	{
 		for (size_t i = 0 ; i < oldXAxis.size ; i++)
 		{
-			//X value
-			size_t vx = i * (oldXAxis.max / oldXAxis.size);
-			if (xAxis.log)
-			{
-				vx = pow(2,log2(oldXAxis.max) *(double)i/(double)oldXAxis.size);
-				//assert(getIndex(vx,oldXAxis) == i);
-			}
-			
-			
-			//Y value
-			size_t vy = j * (oldYAxis.max / oldYAxis.size);
-			if (yAxis.log)
-			{
-				vy = pow(2,log2(oldYAxis.max) *(double)j/(double)oldYAxis.size);
-				//assert(getIndex(vy,oldYAxis) == j);
-			}
-			
-			//v
+			//axtract
+			size_t vx = getValue(i,oldXAxis);
+			size_t vy = getValue(j,oldYAxis);
 			size_t v = oldValues[j * oldXAxis.size + i];
 			
 			//fill again
@@ -175,8 +169,8 @@ void convertToJson(htopml::JsonState& json, const Scatter2DValues& value)
 					{
 						json.printListSeparator();
 						json.openStruct();
-							json.printField("x",x);
-							json.printField("y",y);
+							json.printField("x",value.getValue(x,value.xAxis));
+							json.printField("y",value.getValue(y,value.yAxis));
 							json.printField("v",v);
 						json.closeStruct();
 					}
