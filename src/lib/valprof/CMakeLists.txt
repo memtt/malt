@@ -7,7 +7,7 @@
 ######################################################
 
 ######################################################
-set(MALT_VALPROF_SRC ProfiledStateValue.cpp)
+set(MALT_VALPROF_SRC ProfiledStateValue.cpp Scatter2DValues.cpp)
 
 ######################################################
 add_library(malt-valprof OBJECT ${MALT_VALPROF_SRC})

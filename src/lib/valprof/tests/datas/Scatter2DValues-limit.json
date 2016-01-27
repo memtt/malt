@@ -1,0 +1,19 @@
+{
+	"infos":{
+		"xAxis":{
+			"max":2048,
+			"size":1024,
+			"log":false
+		},
+		"yAxis":{
+			"max":2048,
+			"size":1024,
+			"log":false
+		}
+	},
+	"points":[{
+		"x":512,
+		"y":512,
+		"v":1
+	}]
+}

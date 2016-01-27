@@ -14,7 +14,11 @@ include_directories(../)
 ######################################################
 set(TEST_NAMES TestProfiledStateValue  
                TestProfiledCumulValue
-               TestProfiledValue)
+               TestProfiledValue
+               TestScatter2DValues)
+               
+######################################################
+add_definitions(-DTEST_DATA_PATH="${CMAKE_CURRENT_SOURCE_DIR}/datas")
 
 ######################################################
 FOREACH(test_name ${TEST_NAMES})
