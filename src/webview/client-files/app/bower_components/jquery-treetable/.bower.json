@@ -49,6 +49,5 @@
   },
   "_source": "git://github.com/ludo/jquery-treetable.git",
   "_target": "~3.2.0",
-  "_originalSource": "jquery-treetable",
-  "_direct": true
+  "_originalSource": "jquery-treetable"
 }

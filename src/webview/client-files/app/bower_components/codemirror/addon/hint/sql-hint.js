@@ -31,14 +31,14 @@
     return string.toUpperCase() === sub.toUpperCase();
   }
 
-  function addMatches(result, search, wordlist, formalter) {
+  function addMatches(result, search, wordlist, formatter) {
     for (var word in wordlist) {
       if (!wordlist.hasOwnProperty(word)) continue;
       if (Array.isArray(wordlist)) {
         word = wordlist[word];
       }
       if (match(search, word)) {
-        result.push(formalter(word));
+        result.push(formatter(word));
       }
     }
   }
