@@ -4,6 +4,7 @@ Change log
 master
 ------
 
+ - Add scatter plots (lifetime,size) and (size,time).
  - Add maltEnable/maltDisable to limit to sub-part of a program.
  - Profile file is not anymore indented by default
  - Add options to reduce size of output file (stackTree and loopSuppress). Not enabled by default.

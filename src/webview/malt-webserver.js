@@ -245,6 +245,14 @@ app.get('/proc-map-distr.json',function(req,res) {
 });
 
 /****************************************************/
+//export scatter info
+app.get('/scatter.json',function (req,res){
+	var tmp = maltProject.getScatter();
+	res.write(JSON.stringify(tmp,null));
+	res.end();
+});
+
+/****************************************************/
 app.get('/size-map.json',function(req,res) {
 	var tmp = maltProject.getSizeMap();
 	res.write(JSON.stringify(tmp,null,'\t'));

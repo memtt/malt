@@ -35,7 +35,107 @@ function MaltPageAllocSizeDistr()
 			cur.setupMostUsedChart('malt-most-used-sizes',data);
 			cur.plotLogHisto('malt-size-distr-hist',data);
 		});
+		
+		maltDataSource.getScatter($http,function(data) {
+			cur.plotXY('malt-scatter-size-over-time',data.sizeOverTime,false,true);
+			cur.plotYX('malt-scatter-lifetime-over-size',data.lifetimeOverSize,true,true);
+		});
 	}]);
+}
+
+MaltPageAllocSizeDistr.prototype.genXYData = function(data,logX,logY)
+{
+	var ret = [];
+	
+	ret.push({
+      key: 'Alloc',
+      values: []
+    });
+	
+	for (var i in data.points)
+	{
+		ret[0].values.push({
+			x: logX? Math.log2(data.points[i].x): data.points[i].x,
+			y: logY? Math.log2(data.points[i].y): data.points[i].y,
+			size: 2*Math.log(data.points[i].v),
+			shape:'circle'
+		});
+	}
+	return ret;
+}
+
+MaltPageAllocSizeDistr.prototype.plotXY = function(domId,data,logX,logY)
+{
+	var cur = this;
+	nv.addGraph(function() {
+		var chart = nv.models.scatterChart()
+						.showDistX(true)    //showDist, when true, will display those little distribution lines on the axis.
+						.showDistY(true)
+						.transitionDuration(350)
+						.color(d3.scale.category10().range());
+
+		//Configure how the tooltip looks.
+		chart.tooltipContent(function(key,a,b,c) {
+			return key+" : ("+b+ " , "+a+") => "+data.points[c.pointIndex].v;
+		});
+
+		//Axis settings
+		chart.xAxis
+			.axisLabel('Time (cycles)')
+			.tickFormat(function(d) { return maltHelper.humanReadable(logX?Math.pow(2,d):d,1,'C',false); });
+		chart.yAxis
+			.axisLabel('Size (Bytes)')
+			.tickFormat(function(d) { return maltHelper.humanReadable(logY?Math.pow(2,d):d,1,'B',false); });
+		chart.scatter.onlyCircles(true);
+
+		d3.select('#'+domId+' svg')
+			.datum(cur.genXYData(data,logX,logY))
+			.call(chart);
+
+		nv.utils.windowResize(chart.update);
+
+		return chart;
+		});
+}
+
+MaltPageAllocSizeDistr.prototype.plotYX = function(domId,data,logX,logY)
+{
+	var cur = this;
+	nv.addGraph(function() {
+		var chart = nv.models.scatterChart()
+						.showDistX(true)    //showDist, when true, will display those little distribution lines on the axis.
+						.showDistY(true)
+						.transitionDuration(350)
+						.color(d3.scale.category10().range());
+
+		//Configure how the tooltip looks.
+		chart.tooltipContent(function(key,a,b,c) {
+			return key+" : ("+b+ " , "+a+") => "+data.points[c.pointIndex].v;
+		});
+		
+		//log
+// 		if (logX)
+// 			chart.xScale( d3.scale.log() );
+// 		if (logY)
+// 			chart.yScale( d3.scale.log() );
+
+		//Axis settings
+		chart.yAxis
+			.axisLabel('Lifetime (Cycles)')
+			.tickFormat(function(d) { return maltHelper.humanReadable(logY?Math.pow(2,d):d,1,'C',false); });
+		chart.xAxis
+			.axisLabel('Size (Bytes)')
+			.tickFormat(function(d) { return maltHelper.humanReadable(logX?Math.pow(2,d):d,1,'B',false); });
+		chart.scatter.onlyCircles(true);
+
+		d3.select('#'+domId+' svg')
+			.datum(cur.genXYData(data,logX,logY))
+			.call(chart);
+
+		nv.utils.windowResize(chart.update);
+
+		return chart;
+		});
 }
 
 MaltPageAllocSizeDistr.prototype.buildLog2Histo = function(data)

@@ -45,8 +45,8 @@ namespace MALT
 AllocStackProfiler::AllocStackProfiler(const Options & options,StackMode mode,bool threadSafe)
 	:largestStack(STACK_ORDER_DESC)
 	,memoryBandwidth(1024,true)
-	,sizeOverTime(1024,768,false,true)
-	,lifetimeOverSize(1024,768,true,false)
+	,sizeOverTime(1024,1024,false,true)
+	,lifetimeOverSize(1024,1024,true,true)
 {
 	this->mode = mode;
 	this->threadSafe = threadSafe;

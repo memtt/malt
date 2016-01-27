@@ -296,6 +296,12 @@ MaltProject.prototype.getProcMapDistr = function()
 }
 
 /****************************************************/
+MaltProject.prototype.getScatter = function()
+{
+	return this.data.scatter;
+}
+
+/****************************************************/
 MaltProject.prototype.getSizeMap = function()
 {
 	return this.data.memStats.sizeMap;

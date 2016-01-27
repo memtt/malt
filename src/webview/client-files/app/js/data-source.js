@@ -24,6 +24,12 @@ MaltDataSourceNodeJS.prototype.loadTimedData = function($http,handler)
 	$http.get('/timed.json').success(handler);
 }
 
+//wrapper to fetch timed data [page-alloc-size-distr.js]
+MaltDataSourceNodeJS.prototype.getScatter = function($http,handler)
+{
+	$http.get('/scatter.json').success(handler);
+}
+
 //wrapper to fetch stack data [page-stack-peak.js]
 MaltDataSourceNodeJS.prototype.loadStackData = function($http,handler)
 {
@@ -171,6 +177,12 @@ MaltDataSourceClientSide.prototype.getSizeDistr = function($http,handler)
 {
 // 	$http.get('/size-map.json').success($http,handler);
 	handler(this.project.getSizeMap());
+}
+
+MaltDataSourceClientSide.prototype.getScatter = function($http,handler)
+{
+// 	$http.get('/scatter.json').success($http,handler);
+	handler(this.project.getScatter());
 }
 
 MaltDataSourceClientSide.prototype.getCallStackDataFileLine = function(file,line,handler)
