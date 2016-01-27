@@ -45,6 +45,8 @@ namespace MALT
 AllocStackProfiler::AllocStackProfiler(const Options & options,StackMode mode,bool threadSafe)
 	:largestStack(STACK_ORDER_DESC)
 	,memoryBandwidth(1024,true)
+	,sizeOverTime(1024,768,false,true)
+	,lifetimeOverSize(1024,768,true,false)
 {
 	this->mode = mode;
 	this->threadSafe = threadSafe;
@@ -201,6 +203,7 @@ void AllocStackProfiler::onAllocEvent(void* ptr, size_t size,Stack* userStack,MM
 					curMemoryTimeline.virtualMem = mem.virtualMemory - gblInternaAlloc->getTotalMemory();
 					curMemoryTimeline.physicalMem = mem.physicalMemory - gblInternaAlloc->getTotalMemory();
 				}
+				sizeOverTime.push(t-trefTicks,size);
 			);
 		}
 	
@@ -282,6 +285,9 @@ size_t AllocStackProfiler::onFreeEvent(void* ptr, MALT::Stack* userStack, MMCall
 		
 		if (options.stackProfileEnabled)
 		{
+			//chart
+			lifetimeOverSize.push(size,lifetime);
+			
 			//search call stack info if not provided
 			if (!callStackNode->valid())
 				*callStackNode = getStackNode(userStack);
@@ -601,6 +607,10 @@ void convertToJson(htopml::JsonState& json, const AllocStackProfiler& value)
 			json.printField("systemTimeline",value.systemTimeline);
 			json.printField("memoryBandwidth",value.memoryBandwidth);
 		json.closeFieldStruct("timeline");
+		json.openFieldStruct("scatter");
+			json.printField("sizeOverTime",value.sizeOverTime);
+			json.printField("lifetimeOverSize",value.lifetimeOverSize);
+		json.closeFieldStruct("scatter");
 	}
 	
 	if (value.options.maxStackEnabled)

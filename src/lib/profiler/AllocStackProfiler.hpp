@@ -26,6 +26,7 @@
 #include <valprof/ProfiledStateValue.hpp>
 #include <valprof/ProfiledCumulValue.hpp>
 #include <valprof/ProfiledValue.hpp>
+#include <valprof/Scatter2DValues.hpp>
 #include <tools/ELFReader.hpp>
 #include <core/SegmentTracker.hpp>
 #include <core/StackSizeTracker.hpp>
@@ -184,6 +185,8 @@ class AllocStackProfiler
 		ProfiledValue<TimeTrackAllocBandwidth> memoryBandwidth;
 		VmaTracker vmaTracker;
 		MALTV2::RLockFreeTree * stackTree;
+		Scatter2DValues sizeOverTime;
+		Scatter2DValues lifetimeOverSize;
 };
 
 }
