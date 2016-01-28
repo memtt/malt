@@ -54,8 +54,8 @@ MaltPagePerThread.prototype.buildPerThreadChart = function(data,d3Selection,metr
 			.y(function(d) { return d.value })
 			.margin({top: 30, right: 20, bottom: 50, left: 175})
 			.showValues(true)           //Show bar value next to each bar.
-			.tooltips(true)             //Show tooltips on hover.
-			.transitionDuration(350)
+// 			.tooltips(true)             //Show tooltips on hover.
+// 			.transitionDuration(350)
 			.showControls(true)
 			.stacked(true)        //Allow user to switch between "Grouped" and "Stacked" mode.
 // 			.tooltipContent(function(serieName,name,value,e,graph) {
@@ -98,6 +98,7 @@ MaltPagePerThread.prototype.buildPerThreadChart = function(data,d3Selection,metr
 
 		d3.select(d3Selection)
 			.datum(formattedData)
+			.transition().duration(350)
 			.call(chart);
 		
 		nv.utils.windowResize(chart.update);

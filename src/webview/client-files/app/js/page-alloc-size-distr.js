@@ -39,6 +39,18 @@ function MaltPageAllocSizeDistr()
 		maltDataSource.getScatter($http,function(data) {
 			cur.plotXY('malt-scatter-size-over-time',data.sizeOverTime,false,true);
 			cur.plotYX('malt-scatter-lifetime-over-size',data.lifetimeOverSize,true,true);
+			cur.plotScatter('malt-scatter-size-over-time-2',data.sizeOverTime,{
+				xaxis: {
+					title: "Time (cycles)",
+					unit: "C",
+					log: false
+				},
+				yaxis: {
+					title: "Size (bytes)",
+					unit: "B",
+					log: true
+				}
+			});
 		});
 	}]);
 }
@@ -64,6 +76,86 @@ MaltPageAllocSizeDistr.prototype.genXYData = function(data,logX,logY)
 	return ret;
 }
 
+/** 
+ * config {
+ * 	xaxis: {
+ * 		title: "blob",
+ * 		unit: "B",
+ * 		log:true
+ * 	},
+ * 	yaxis: {
+ * 		title: "blob",
+ * 		unit: "C"
+ * 		log: false
+ * 	}
+ * }
+**/
+MaltPageAllocSizeDistr.prototype.plotScatter = function(domId,data,config)
+{
+	//get nodes
+	var div = d3.select("#"+domId);
+	var svg = div.select("svg");
+	var canvas = div.select("canvas");
+	var context = canvas.node().getContext('2d');
+	
+	//pos
+	svg.style("position","absolute");
+// 	canvas.style("position","absolute");
+	
+	//sizes
+	var margin = {top: 20, right: 150, bottom: 30, left: 70};
+	var width = parseInt(svg.style("width")) - margin.left - margin.right;
+    var height = parseInt(svg.style("height")) - margin.top - margin.bottom;
+	
+	//canvas size
+	canvas.attr("width",svg.style("width"));
+	canvas.attr("height",svg.style("height"));
+// 	canvas.style("padding",[margin.top,margin.left,margin.bottom,margin.right].join("px ")+"px");
+	
+	//scales
+	//var x = d3.scale.log().base(2).range([0, width]);
+	var x = d3.scale.linear().range([0,width]);
+	var y = d3.scale.log().base(2).range([height, 0]);
+	
+	//axis
+	var xAxis = d3.svg.axis().scale(x).orient("bottom");
+	var yAxis = d3.svg.axis().scale(y).orient("left");
+	
+	//domains
+	x.domain([0, d3.max(data.points, function(d) { return d.x; })]);
+	y.domain([1, d3.max(data.points, function(d) { return d.y; })]);
+	
+	//group
+	svg = svg.append("g")
+		.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+	
+	svg.append("g")
+		.attr("class", "x axis")
+		.attr("transform", "translate(0," + height + ")")
+		.call(xAxis);
+
+	svg.append("g")
+		.attr("class", "y axis")
+		.call(yAxis);
+// 		.append("text")
+// 		.attr("transform", "rotate(-90)")
+// 		.attr("y", 6)
+// 		.attr("dy", ".71em")
+// 		.style("text-anchor", "end")
+// 		.text("Price ($)");
+		
+	//draw points
+	data.points.map(function(d) {
+		context.beginPath();
+		context.arc(x(d.x)+margin.left, y(d.y)+margin.top, 2+Math.log(d.v), 0, 2 * Math.PI, false);
+		context.fillStyle = '#5555FF';
+		context.fill();
+		context.lineWidth = 1;
+		context.strokeStyle = '#000033';
+		context.stroke();
+	});
+}
+
 MaltPageAllocSizeDistr.prototype.plotXY = function(domId,data,logX,logY)
 {
 	var cur = this;
@@ -71,13 +163,13 @@ MaltPageAllocSizeDistr.prototype.plotXY = function(domId,data,logX,logY)
 		var chart = nv.models.scatterChart()
 						.showDistX(true)    //showDist, when true, will display those little distribution lines on the axis.
 						.showDistY(true)
-						.transitionDuration(350)
+// 						.transitionDuration(350)
 						.color(d3.scale.category10().range());
 
 		//Configure how the tooltip looks.
-		chart.tooltipContent(function(key,a,b,c) {
-			return key+" : ("+b+ " , "+a+") => "+data.points[c.pointIndex].v;
-		});
+// 		chart.tooltipContent(function(key,a,b,c) {
+// 			return key+" : ("+b+ " , "+a+") => "+data.points[c.pointIndex].v;
+// 		});
 
 		//Axis settings
 		chart.xAxis
@@ -86,7 +178,7 @@ MaltPageAllocSizeDistr.prototype.plotXY = function(domId,data,logX,logY)
 		chart.yAxis
 			.axisLabel('Size (Bytes)')
 			.tickFormat(function(d) { return maltHelper.humanReadable(logY?Math.pow(2,d):d,1,'B',false); });
-		chart.scatter.onlyCircles(true);
+// 		chart.scatter.onlyCircles(true);
 
 		d3.select('#'+domId+' svg')
 			.datum(cur.genXYData(data,logX,logY))
@@ -105,13 +197,13 @@ MaltPageAllocSizeDistr.prototype.plotYX = function(domId,data,logX,logY)
 		var chart = nv.models.scatterChart()
 						.showDistX(true)    //showDist, when true, will display those little distribution lines on the axis.
 						.showDistY(true)
-						.transitionDuration(350)
+// 						.transitionDuration(350)
 						.color(d3.scale.category10().range());
 
 		//Configure how the tooltip looks.
-		chart.tooltipContent(function(key,a,b,c) {
-			return key+" : ("+b+ " , "+a+") => "+data.points[c.pointIndex].v;
-		});
+// 		chart.tooltipContent(function(key,a,b,c) {
+// 			return key+" : ("+b+ " , "+a+") => "+data.points[c.pointIndex].v;
+// 		});
 		
 		//log
 // 		if (logX)
@@ -126,7 +218,7 @@ MaltPageAllocSizeDistr.prototype.plotYX = function(domId,data,logX,logY)
 		chart.xAxis
 			.axisLabel('Size (Bytes)')
 			.tickFormat(function(d) { return maltHelper.humanReadable(logX?Math.pow(2,d):d,1,'B',false); });
-		chart.scatter.onlyCircles(true);
+// 		chart.scatter.onlyCircles(true);
 
 		d3.select('#'+domId+' svg')
 			.datum(cur.genXYData(data,logX,logY))

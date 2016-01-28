@@ -70,7 +70,7 @@ MaltPageStackPeaks.prototype.plotSelectedStackSize = function(domId,data,threadI
 		chart = nv.models.lineChart()
 			.margin({top: 30, right: 20, bottom: 50, left: 200})
 			.useInteractiveGuideline(true) //We want nice looking tooltips and a guideline!
-			.transitionDuration(500) //how fast do you want the lines to transition?
+// 			.transitionDuration(500) //how fast do you want the lines to transition?
 			.showLegend(true) //Show the legend, allowing users to turn on/off line series.
 			.showYAxis(true) //Show the y-axis
 			.showXAxis(true) //Show the x-axis
@@ -123,8 +123,8 @@ MaltPageStackPeaks.prototype.plotStackMemOfFuncs = function(domId,threadId,onEle
 			.y(function(d) { return d.mem })
 			.margin({top: 30, right: 20, bottom: 50, left: 200})
 			.showValues(true)           //Show bar value next to each bar.
-			.tooltips(true)             //Show tooltips on hover.
-			.transitionDuration(350)
+// 			.tooltips(true)             //Show tooltips on hover.
+// 			.transitionDuration(350)
 			.showControls(false)
 			.stacked(true)  ;      //Allow user to switch between "Grouped" and "Stacked" mode.
 // 			.tooltipContent(function(serieName,name,value,e,graph) {
@@ -225,8 +225,8 @@ MaltPageStackPeaks.prototype.plotStackPeak = function(domId,data,onElementClick)
 			.y(function(d) { return d.size })
 			.margin({top: 30, right: 20, bottom: 50, left: 40})
 			.showValues(true)           //Show bar value next to each bar.
-			.tooltips(true)             //Show tooltips on hover.
-			.transitionDuration(350)
+// 			.tooltips(true)             //Show tooltips on hover.
+// 			.transitionDuration(350)
 			.showControls(false)
 			.stacked(true)  ;      //Allow user to switch between "Grouped" and "Stacked" mode.
 // 			.tooltipContent(function(serieName,name,value,e,graph) {

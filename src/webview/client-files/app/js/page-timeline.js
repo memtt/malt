@@ -23,7 +23,7 @@ function MaltPageTimeline()
 	{
 		nv.addGraph(function() {
 			var chart = nv.models.stackedAreaChart()
-				.transitionDuration(350)
+// 				.transitionDuration(350)
 // 				.reduceXTicks(true)   //If 'false', every single x-axis tick label will be rendered.
 // 				.rotateLabels(0)      //Angle to rotate x-axis labels.
 // 				.showControls(true)   //Allow user to switch between 'Grouped' and 'Stacked' mode.
@@ -65,7 +65,7 @@ function MaltPageTimeline()
 			var chart = nv.models.lineChart()
 				.margin({left: 100}) //Adjust chart margins to give the x-axis some breathing room.
 				.useInteractiveGuideline(true) //We want nice looking tooltips and a guideline!
-				.transitionDuration(500) //how fast do you want the lines to transition?
+// 				.transitionDuration(500) //how fast do you want the lines to transition?
 				.showLegend(true) //Show the legend, allowing users to turn on/off line series.
 				.showYAxis(true) //Show the y-axis
 				.showXAxis(true) //Show the x-axis

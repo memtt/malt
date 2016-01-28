@@ -216,8 +216,17 @@ MaltPageGlobalVars.prototype.buildDonutGraph = function(d3Selection,data)
 		.labelType("percent") //Configure what type of data to show in the label. Can be "key", "value" or "percent"
 		.donut(true)          //Turn on Donut mode. Makes pie chart look tasty!
 		.donutRatio(0.35)     //Configure how big you want the donut hole size to be.
-		.tooltipContent(function(key,y,e,graph) {
+		/*.tooltip(function(key,y,e,graph) {
 			var d = data[e.pointIndex];
+			var pos = "";
+			if (d.file != undefined && d.file != '')
+				pos = "<br/>" + d.file + ":" + d.line;
+			return "<div style='text-align:center'><h3>"+d.name+"</h3>"+maltHelper.humanReadable(d.value,1,'B',false)+pos+'</div>';
+		})*/;
+		
+// 		chart.tooltip.valueFormatter(function (d) { return maltHelper.humanReadable(d,1,'B',false); });
+		chart.tooltip.contentGenerator(function(obj) {
+			var d = obj.data;
 			var pos = "";
 			if (d.file != undefined && d.file != '')
 				pos = "<br/>" + d.file + ":" + d.line;
@@ -391,11 +400,11 @@ MaltPageGlobalVars.prototype.buildMultiBarChart = function($scope,d3Selection,da
 			.y(function(d) { return d.value })
 			.margin({top: 30, right: 20, bottom: 50, left: 175})
 			.showValues(true)           //Show bar value next to each bar.
-			.tooltips(true)             //Show tooltips on hover.
-			.transitionDuration(350)
+// 			.tooltips(true)             //Show tooltips on hover.
+// 			.transitionDuration(350)
 			.showControls(true)
 			.stacked(true)        //Allow user to switch between "Grouped" and "Stacked" mode.
-			.tooltipContent(function(serieName,name,value,e,graph) {
+			/*.tooltip(function(serieName,name,value,e,graph) {
 				var d = e.series.values[e.pointIndex];
 				var pos = "";
 				var tls = "";
@@ -407,7 +416,24 @@ MaltPageGlobalVars.prototype.buildMultiBarChart = function($scope,d3Selection,da
 				//console.log(data);
 				//console.log(e);
 				return "<div style='text-align:center'><h3>"+d.name+"</h3>"+maltHelper.humanReadable(d.value,1,'B',false)+tls+ratio+pos+'</div>';
-			});
+			})*/;
+			
+		var tlsInstances = cur.getTLSInstances(data);
+		chart.tooltip.contentGenerator(function (obj) {
+				console.log(obj);
+				var d = obj.data;
+				var pos = "";
+				var tls = "";
+				if (d.file != undefined && d.file != '')
+					pos = "<br/>" + d.file + ":" + d.line;
+				if (d.key == "TLS variables")
+					tls = " [ "+tlsInstances+" * "+maltHelper.humanReadable(d.value/tlsInstances,1,'B',false) +" ] ";
+// 				var ratio = " ( "+(100*d.value/e.series.total).toFixed(2)+"% ) ";
+				var ratio = "";
+				//console.log(data);
+				//console.log(e);
+				return "<div style='text-align:center'><h3>"+d.name+"</h3>"+maltHelper.humanReadable(d.value,1,'B',false)+tls+ratio+pos+'</div>';
+		});
 
 		$scope.chart = chart;
 		chart.yAxis

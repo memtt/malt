@@ -64,14 +64,14 @@ MaltPageRealloc.prototype.plotXY = function(domId,data)
 		var chart = nv.models.scatterChart()
 						.showDistX(true)    //showDist, when true, will display those little distribution lines on the axis.
 						.showDistY(true)
-						.transitionDuration(350)
+// 						.transitionDuration(350)
 						.color(d3.scale.category10().range());
 
 		//Configure how the tooltip looks.
-		chart.tooltipContent(function(key,a,b,c) {
-			console.log(c);
-			return key+" : "+b+ " -> "+a;
-		});
+// 		chart.tooltipContent(function(key,a,b,c) {
+// 			console.log(c);
+// 			return key+" : "+b+ " -> "+a;
+// 		});
 
 		//Axis settings
 		chart.xAxis
@@ -80,7 +80,7 @@ MaltPageRealloc.prototype.plotXY = function(domId,data)
 		chart.yAxis
 			.axisLabel('New size')
 			.tickFormat(function(d) { return maltHelper.humanReadable(d,1,'B',false); });
-		chart.scatter.onlyCircles(true);
+// 		chart.scatter.onlyCircles(true);
 
 		d3.select('#'+domId+' svg')
 			.datum(cur.genXYData(data))
@@ -103,7 +103,7 @@ MaltPageRealloc.prototype.plotMostUsed = function(domId,data,maxNb)
 			.y(function(d) { return d.count })
 // 			.margin({top: 30, right: 20, bottom: 50, left: 175})
 // 			.showValues(true)           //Show bar value next to each bar.
-			.tooltips(true)             //Show tooltips on hover.
+// 			.tooltips(true)             //Show tooltips on hover.
 // 			.transitionDuration(350)
 			.showControls(false)
 			.reduceXTicks(false)
