@@ -22,14 +22,14 @@ Filter::Filter()
 {
 	this->at = 0;
 	this->filterSize = 0;
-	this->filterStack = NULL;
+	this->filterStack = 0;
 }
 
 /*******************  FUNCTION  *********************/
 bool Filter::accept(MATT::AllocTracerChunk& chunk)
 {
 	return (filterSize == 0 || filterSize == chunk.size) 
-	    && (filterStack == NULL || filterStack == chunk.allocStackId)
+	    && (filterStack == 0 || filterStack == chunk.allocStackId)
 		&& (at == 0 || (chunk.timestamp <= at && chunk.timestamp + chunk.lifetime >= at));
 }
 
