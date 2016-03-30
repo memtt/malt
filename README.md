@@ -79,7 +79,7 @@ You can get better performance but less detailed stack by using option
 the "enter-exit" stack mode :
 
 ```shell
-	{YOUR_PREFIX}/bin/malt -m=enter-exit {YOUR_PROGRAM} [OPTIONS]
+	{YOUR_PREFIX}/bin/malt -s=enter-exit {YOUR_PROGRAM} [OPTIONS]
 ```
 
 The malt script only provides a wrapper to automatically preload a dynamic library
@@ -262,6 +262,19 @@ You now can use it with malt by using :
 The alternative relies on function instrumentation by adding prove on start/end for each function.
 It can be done by using -finstrument-function on your compiler just as described in "How to use" section
 or by using binary instrumentation tools just as explained at the end of this document.
+
+If you want to use the source instrumentation appraoch, you need to recompiler your program
+and the interesting libraries with :
+
+```
+	gcc -finstrument-functions
+```
+
+Then running malt with :
+
+```
+	${YOUR_PREFIX}/bin/malt -s enter-exit {YOUR_PROGRAM}
+```
 
 Tracking stack size
 -------------------
