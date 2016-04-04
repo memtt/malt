@@ -21,7 +21,7 @@
 
 
 /*******************  NAMESPACE  ********************/
-namespace MALT
+namespace MATT
 {
 
 /*******************  FUNCTION  *********************/
@@ -92,7 +92,7 @@ void JsonReader::parse ( void )
 	assert(this->raw != NULL);
 	
 	//ensure init of stack alloc
-	MALTV2::doNoFreeAllocatorInit();
+	MATT::doNoFreeAllocatorInit();
 	
 	//forward
 	this->root.loadFromData(this->raw,true);
@@ -101,7 +101,7 @@ void JsonReader::parse ( void )
 /*******************  FUNCTION  *********************/
 void JsonReader::ungzip ( void )
 {
-	MALT_FATAL("Not supported");
+	MATT_FATAL("Not supported");
 }
 
 /*******************  FUNCTION  *********************/

@@ -1,5 +1,5 @@
 /*****************************************************
-             PROJECT  : MALT
+             PROJECT  : MATT
              VERSION  : 0.3.0
              DATE     : 07/2015
              AUTHOR   : Valat Sébastien
@@ -11,7 +11,7 @@
 #include "JsonReader.hpp"
 
 /**********************  USING  *********************/
-using namespace MALT;
+using namespace MATT;
 
 /*********************  CONSTS  *********************/
 const char * test = "{ 'float' : 12.5 , \"emptyObject\" : { }, 'escape\\'':{}, 'string': 'value' , 'null': , 'string2': \"value\", 'bootTrue': true, 'boolFalse': false, 'array':[12, {}, true, false, 'text',,] }";

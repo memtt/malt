@@ -21,8 +21,10 @@ add_executable(malt-profile-reader main.cpp
                                    JsonNode.cpp
                                    JsonReader.cpp
                                    JsonNodeLoader.cpp
-                                   $<TARGET_OBJECTS:malt-common> 
+                                   $<TARGET_OBJECTS:matt-common>
+                                   $<TARGET_OBJECTS:matt-allocators>
+                                   $<TARGET_OBJECTS:matt-port>
                                    $<TARGET_OBJECTS:htopml-json> 
-                                   $<TARGET_OBJECTS:iniparser> 
-                                   $<TARGET_OBJECTS:malt-port>)
+                                   $<TARGET_OBJECTS:iniparser>)
 target_link_libraries(malt-profile-reader pthread)
+target_link_libraries(malt-profile-reader dl)

@@ -21,7 +21,7 @@
 
 
 /*******************  NAMESPACE  ********************/
-namespace MALT
+namespace MATT
 {
 
 /*******************  FUNCTION  *********************/
@@ -73,11 +73,11 @@ void JsonNodeLoader::loadFromData ( JsonLoaderState& state, JsonNodeLoader * par
 			break;
 		case '}':
 			//mistake
-			MALT_FATAL_ARG("Get unexpecte '}' at position %1").arg(state).end();
+			MATT_FATAL_ARG("Get unexpecte '}' at position %1").arg(state).end();
 			break;
 		case ']':
 			//mistake
-			MALT_FATAL_ARG("Get unexpecte ']' at position %1").arg(state).end();
+			MATT_FATAL_ARG("Get unexpecte ']' at position %1").arg(state).end();
 			break;
 		case '"':
 		case '\'':
@@ -104,7 +104,7 @@ void JsonNodeLoader::loadFromData ( JsonLoaderState& state, JsonNodeLoader * par
 			break;
 		default:
 			//load as string value
-			MALT_FATAL("TODO");
+			MATT_FATAL("TODO");
 			break;
 	}
 }
@@ -127,7 +127,7 @@ void JsonNodeLoader::loadFromDataAsBool ( JsonLoaderState& state, JsonNodeLoader
 		for(int i = 0 ; i < 10 ; i++)
 			++state;
 		state.markEnd();
-		MALT_FATAL_ARG("Expect true of false at %1, but get %2").arg(start).arg(start.get()).end();
+		MATT_FATAL_ARG("Expect true of false at %1, but get %2").arg(start).arg(start.get()).end();
 	}
 	
 	//check end

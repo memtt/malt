@@ -1,13 +1,13 @@
 /*****************************************************
-             PROJECT  : MALT
+             PROJECT  : MATT
              VERSION  : 0.3.0
              DATE     : 07/2015
              AUTHOR   : Valat Sébastien
              LICENSE  : CeCILL-C
 *****************************************************/
 
-#ifndef MALT_JSON_NODE_LOADER_HPP
-#define MALT_JSON_NODE_LOADER_HPP
+#ifndef MATT_JSON_NODE_LOADER_HPP
+#define MATT_JSON_NODE_LOADER_HPP
 
 /********************  HEADERS  *********************/
 //std
@@ -16,7 +16,7 @@
 #include "JsonNode.hpp"
 
 /*******************  NAMESPACE  ********************/
-namespace MALT
+namespace MATT
 {
 
 /*********************  STRUCT  *********************/
@@ -42,13 +42,13 @@ class JsonNodeLoader : public JsonNode
 	public:
 		void loadFromData(char * raw,bool usedStackAllocator);
 	protected:
-		void loadFromData( MALT::JsonLoaderState& state, MALT::JsonNodeLoader* parent );
-		void loadFromDataAsObject(MALT::JsonLoaderState& state, MALT::JsonNodeLoader* parent );
-		void loadFromDataAsNumber(MALT::JsonLoaderState& state, MALT::JsonNodeLoader* parent );
-		void loadFromDataAsString(MALT::JsonLoaderState& state, MALT::JsonNodeLoader* parent );
-		void loadFromDataAsBool(MALT::JsonLoaderState& state, MALT::JsonNodeLoader* parent );
-		void loadFromDataAsArray(MALT::JsonLoaderState& state, MALT::JsonNodeLoader* parent );
-		char * loadStringFromData(MALT::JsonLoaderState& state);
+		void loadFromData( MATT::JsonLoaderState& state, MATT::JsonNodeLoader* parent );
+		void loadFromDataAsObject(MATT::JsonLoaderState& state, MATT::JsonNodeLoader* parent );
+		void loadFromDataAsNumber(MATT::JsonLoaderState& state, MATT::JsonNodeLoader* parent );
+		void loadFromDataAsString(MATT::JsonLoaderState& state, MATT::JsonNodeLoader* parent );
+		void loadFromDataAsBool(MATT::JsonLoaderState& state, MATT::JsonNodeLoader* parent );
+		void loadFromDataAsArray(MATT::JsonLoaderState& state, MATT::JsonNodeLoader* parent );
+		char * loadStringFromData(MATT::JsonLoaderState& state);
 };
 
 /*******************  FUNCTION  *********************/
@@ -56,4 +56,4 @@ std::ostream & operator << (std::ostream& out,const JsonLoaderState & state);
 
 }
 
-#endif //MALT_JSON_NODE_LOADER_HPP
+#endif //MATT_JSON_NODE_LOADER_HPP

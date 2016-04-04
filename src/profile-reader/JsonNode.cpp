@@ -1,5 +1,5 @@
 /*****************************************************
-             PROJECT  : MALT
+             PROJECT  : MATT
              VERSION  : 0.3.0
              DATE     : 07/2015
              AUTHOR   : Valat Sébastien
@@ -9,15 +9,16 @@
 /********************  HEADERS  *********************/
 //core
 #include <common/Debug.hpp>
-#include <common/NoFreeAllocator.hpp>
+#include <allocators/NoFreeAllocator.hpp>
 //std
 #include <cstring>
 #include <cstdio>
 //internal
 #include "JsonNode.hpp"
+#include "../../extern-deps/from-htopml/json/JsonState.h"
 
 /*******************  NAMESPACE  ********************/
-namespace MALT
+namespace MATT
 {
 
 /*********************  CONSTS  *********************/
@@ -48,7 +49,7 @@ JsonNode::JsonNode ( const JsonNode& orig )
 		this->content.pointer = orig.content.pointer;
 		this->content.pointer->countRef++;
 	} else {
-		MALT_FATAL("TODO");
+		MATT_FATAL("TODO");
 	}
 }
 
@@ -80,7 +81,7 @@ void JsonNode::freeContent ( void )
 	} else if (this->type == JSON_NODE_NULL || this->type == JSON_NODE_ROOT) {
 		//nothing to do
 	} else {
-		MALT_FATAL("Invalid type combination");
+		MATT_FATAL("Invalid type combination");
 	}
 }
 
@@ -110,7 +111,7 @@ JsonNode& JsonNode::append ( void )
 	//setup
 	char buffer[64];
 	sprintf(buffer,"%lu",size);
-	char * key = (char*)MALT_NO_FREE_MALLOC(strlen(buffer)+1);
+	char * key = (char*)MATT_NO_FREE_MALLOC(strlen(buffer)+1);
 	strcpy(key,buffer);
 	return (*this)[key];
 }
@@ -134,7 +135,7 @@ void JsonNode::mutateAs(JsonNodeType nodeType)
 		case JSON_NODE_ARRAY:
 		case JSON_NODE_OBJECT:
 			if (this->usedStackAllocator)
-				this->content.mapNoFree = MALT_NO_FREE_NEW(JsonNodeMapNoFree);
+				this->content.mapNoFree = MATT_NO_FREE_NEW(JsonNodeMapNoFree);
 			else
 				this->content.map = new JsonNodeMap;
 			break;
@@ -143,55 +144,55 @@ void JsonNode::mutateAs(JsonNodeType nodeType)
 			break;
 // 		case JSON_NODE_ARRAY:
 // 			if (this->usedStackAllocator)
-// 				this->content.arrayNoFree = MALT_NO_FREE_NEW(JsonNodeVectorNoFree);
+// 				this->content.arrayNoFree = MATT_NO_FREE_NEW(JsonNodeVectorNoFree);
 // 			else
 // 				this->content.array = new JsonNodeVector;
 // 			break;
 		default:
-			MALT_FATAL("Unsupported type");
+			MATT_FATAL("Unsupported type");
 	};
 }
 
 /*******************  FUNCTION  *********************/
 JsonNode::iterator JsonNode::begin ( void )
 {
-	MALT_FATAL("TODO");
+	MATT_FATAL("TODO");
 }
 
 /*******************  FUNCTION  *********************/
 JsonNode::iterator JsonNode::end ( void )
 {
-	MALT_FATAL("TODO");
+	MATT_FATAL("TODO");
 }
 
 /*******************  FUNCTION  *********************/
 bool JsonNode::getAsBool ( bool defaultValue ) const
 {
-	MALT_FATAL("TODO");
+	MATT_FATAL("TODO");
 }
 
 /*******************  FUNCTION  *********************/
 float JsonNode::getAsFloat ( float defaultValue ) const
 {
-	MALT_FATAL("TODO");
+	MATT_FATAL("TODO");
 }
 
 /*******************  FUNCTION  *********************/
 int JsonNode::getAsInt ( int defaultValue ) const
 {
-	MALT_FATAL("TODO");
+	MATT_FATAL("TODO");
 }
 
 /*******************  FUNCTION  *********************/
 long int JsonNode::getAsLong ( long int defaultValue ) const
 {
-	MALT_FATAL("TODO");
+	MATT_FATAL("TODO");
 }
 
 /*******************  FUNCTION  *********************/
 const char* JsonNode::getAsString ( const char* defaultValue ) const
 {
-	MALT_FATAL("TODO");
+	MATT_FATAL("TODO");
 }
 
 /*******************  FUNCTION  *********************/
@@ -203,19 +204,19 @@ JsonNodeType JsonNode::getType ( void ) const
 /*******************  FUNCTION  *********************/
 bool JsonNode::isArray ( void ) const
 {
-	MALT_FATAL("TODO");
+	MATT_FATAL("TODO");
 }
 
 /*******************  FUNCTION  *********************/
 bool JsonNode::isObject ( void ) const
 {
-	MALT_FATAL("TODO");
+	MATT_FATAL("TODO");
 }
 
 /*******************  FUNCTION  *********************/
 bool JsonNode::isValue ( void ) const
 {
-	MALT_FATAL("TODO");
+	MATT_FATAL("TODO");
 }
 
 /*******************  FUNCTION  *********************/
@@ -240,7 +241,7 @@ const JsonNode& JsonNode::operator[] ( const char* key ) const
 	} else if (this->type == JSON_NODE_POINTER) {
 		return (*this->content.pointer)[key];
 	} else {
-		MALT_FATAL_ARG("Operator [] cannot be used on none Array or Object, you get %1").arg(type).end();
+		MATT_FATAL_ARG("Operator [] cannot be used on none Array or Object, you get %1").arg(type).end();
 	}
 }
 
@@ -264,20 +265,42 @@ JsonNode& JsonNode::operator[] ( const char* key )
 // 		else
 // 			return (*this->content.array)[id];
 	} else {
-		MALT_FATAL_ARG("Operator [] cannot be used on none Array or Object, you get %1").arg(type).end();
+		MATT_FATAL_ARG("Operator [] cannot be used on none Array or Object, you get %1").arg(type).end();
 	}
 }
 
 /*******************  FUNCTION  *********************/
 int JsonNode::size ( void ) const
 {
-	MALT_FATAL("TODO");
+	MATT_FATAL("TODO");
 }
 
 /*******************  FUNCTION  *********************/
 void JsonNode::unrefChilds ( void )
 {
-	MALT_FATAL("TODO");
+	MATT_FATAL("TODO");
+}
+
+/*******************  FUNCTION  *********************/
+void convertToJson(htopml::JsonState& json, const JsonNode& node)
+{
+	switch (node.type)
+	{
+		case JSON_NODE_NULL:
+			json.openStruct();
+			json.closeStruct();
+			break;
+		case JSON_NODE_VALUE:
+			
+			break;
+	}
+// JSON_NODE_NULL,
+// 	JSON_NODE_VALUE,
+// 	JSON_NODE_ROOT,
+// 	JSON_NODE_ARRAY,
+// 	JSON_NODE_OBJECT,
+// 	JSON_NODE_POINTER,
+// 	JSON_NODE_TYPE_COUNT
 }
 
 /*******************  FUNCTION  *********************/
@@ -289,57 +312,65 @@ std::ostream& operator<< ( std::ostream& out, const JsonNodeType& value )
 }
 
 /*******************  FUNCTION  *********************/
+std::ostream& operator<<(std::ostream& out, const JsonNode& node)
+{
+	htopml::JsonState json(&out);
+	convertToJson(json,node);
+	return out;
+}
+
+/*******************  FUNCTION  *********************/
 JsonNodeIterator::JsonNodeIterator ( JsonNodeIterator& ref )
 {
-	MALT_FATAL("TODO");
+	MATT_FATAL("TODO");
 }
 
 /*******************  FUNCTION  *********************/
 JsonNodeIterator::JsonNodeIterator ( JsonNode* node )
 {
-	MALT_FATAL("TODO");
+	MATT_FATAL("TODO");
 }
 
 /*******************  FUNCTION  *********************/
 bool JsonNodeIterator::operator!= ( const JsonNodeIterator& ref ) const
 {
-	MALT_FATAL("TODO");
+	MATT_FATAL("TODO");
 }
 
 /*******************  FUNCTION  *********************/
 JsonNode& JsonNodeIterator::operator* ( void )
 {
-	MALT_FATAL("TODO");
+	MATT_FATAL("TODO");
 }
 
 /*******************  FUNCTION  *********************/
 JsonNodeIterator& JsonNodeIterator::operator++ ( int )
 {
-	MALT_FATAL("TODO");
+	MATT_FATAL("TODO");
 }
 
 /*******************  FUNCTION  *********************/
 JsonNodeIterator& JsonNodeIterator::operator++ ( void )
 {
-	MALT_FATAL("TODO");
+	MATT_FATAL("TODO");
 }
 
 /*******************  FUNCTION  *********************/
 JsonNode& JsonNodeIterator::operator-> ( void )
 {
-	MALT_FATAL("TODO");
+	MATT_FATAL("TODO");
 }
 
 /*******************  FUNCTION  *********************/
 JsonNodeIterator& JsonNodeIterator::operator= ( const JsonNodeIterator& ref )
 {
-	MALT_FATAL("TODO");
+	MATT_FATAL("TODO");
 }
 
 /*******************  FUNCTION  *********************/
 bool JsonNodeIterator::operator== ( const JsonNodeIterator& ref ) const
 {
-	MALT_FATAL("TODO");
+	MATT_FATAL("TODO");
 }
 
 /*******************  FUNCTION  *********************/

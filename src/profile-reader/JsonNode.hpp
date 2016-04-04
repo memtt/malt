@@ -1,13 +1,13 @@
 /*****************************************************
-             PROJECT  : MALT
+             PROJECT  : MATT
              VERSION  : 0.3.0
              DATE     : 07/2015
              AUTHOR   : Valat Sébastien
              LICENSE  : CeCILL-C
 *****************************************************/
 
-#ifndef MALT_JSON_NODE_HPP
-#define MALT_JSON_NODE_HPP
+#ifndef MATT_JSON_NODE_HPP
+#define MATT_JSON_NODE_HPP
 
 /********************  HEADERS  *********************/
 //std
@@ -16,10 +16,12 @@
 #include <vector>
 #include <ostream>
 //from malt core
-#include "../lib/common/STLInternalAllocatorNoFree.hpp"
+#include "../lib/allocators/STLInternalAllocatorNoFree.hpp"
+//htopm htopml
+#include "../../extern-deps/from-htopml/json/ConvertToJson.h"
 
 /*******************  NAMESPACE  ********************/
-namespace MALT
+namespace MATT
 {
 
 /********************  ENUM  ************************/
@@ -46,8 +48,8 @@ struct StringPtr
 class JsonNode;
 typedef std::map<std::string,JsonNode> JsonNodeMap;
 typedef std::vector<JsonNode> JsonNodeVector;
-typedef std::map<StringPtr,JsonNode,std::less<StringPtr>,MALTV2::STLInternalAllocatorNoFree< JsonNode > > JsonNodeMapNoFree;
-typedef std::vector<JsonNode,MALTV2::STLInternalAllocatorNoFree< JsonNode > > JsonNodeVectorNoFree;
+typedef std::map<StringPtr,JsonNode,std::less<StringPtr>,MATT::STLInternalAllocatorNoFree< JsonNode > > JsonNodeMapNoFree;
+typedef std::vector<JsonNode,MATT::STLInternalAllocatorNoFree< JsonNode > > JsonNodeVectorNoFree;
 
 /*********************  CLASS  **********************/
 class JsonNodeIterator
@@ -109,6 +111,7 @@ class JsonNode
 		iterator begin(void);
 		iterator end(void);
 		JsonNode & operator=(const JsonNode & orig);
+		friend void convertToJson(htopml::JsonState & json,const JsonNode & node);
 	protected:
 		void unrefChilds(void);
 		void mutateAs(JsonNodeType nodeType);
@@ -124,8 +127,9 @@ class JsonNode
 
 /*******************  FUNCTION  *********************/
 std::ostream & operator << (std::ostream & out, const JsonNodeType & value);
+std::ostream & operator << (std::ostream & out, const JsonNode & node);
 bool operator < (const StringPtr & a,const StringPtr & b);
 
 }
 
-#endif //MALT_JSON_NODE_HPP
+#endif //MATT_JSON_NODE_HPP

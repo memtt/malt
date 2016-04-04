@@ -1,13 +1,13 @@
 /*****************************************************
-             PROJECT  : MALT
+             PROJECT  : MATT
              VERSION  : 0.3.0
              DATE     : 07/2015
              AUTHOR   : Valat Sébastien
              LICENSE  : CeCILL-C
 *****************************************************/
 
-#ifndef MALT_JSON_READER_HPP
-#define MALT_JSON_READER_HPP
+#ifndef MATT_JSON_READER_HPP
+#define MATT_JSON_READER_HPP
 
 /********************  HEADERS  *********************/
 //std
@@ -16,7 +16,7 @@
 #include "JsonNode.hpp"
 
 /*******************  NAMESPACE  ********************/
-namespace MALT
+namespace MATT
 {
 
 /*********************  STRUCT  *********************/
@@ -32,7 +32,7 @@ class JsonNodeLoader : public JsonNode
 {
 	public:
 		void loadFromData(char * raw,bool usedStackAllocator);
-		void loadFromData( MALT::JsonLoaderState& state, MALT::JsonNodeLoader* parent );
+		void loadFromData( MATT::JsonLoaderState& state, MATT::JsonNodeLoader* parent );
 		void skipWhite(JsonLoaderState & state);
 };
 
@@ -56,4 +56,4 @@ class JsonReader
 
 }
 
-#endif //MALT_JSON_READER_HPP
+#endif //MATT_JSON_READER_HPP
