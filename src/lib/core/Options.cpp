@@ -205,16 +205,16 @@ void convertToJson(htopml::JsonState & json,const Options & value)
 	//gen group list
 	std::deque<std::string> groups;
 	for (OptionDefVector::const_iterator it = value.options.begin() ; it != value.options.end() ; ++it)
-		if (!groupContains((*it)->getSection()))
+		if (!groupContains(groups,(*it)->getSection()))
 			groups.push_back((*it)->getSection());
 	
 	json.openStruct();
 	for (std::deque<std::string>::iterator it = groups.begin() ; it != groups.end() ; ++it)
 	{
 		json.openFieldStruct(it->c_str());
-		for (OptionDefVector::const_iterator it = value.options.begin() ; it != value.options.end() ; ++it)
-			if ((*it)->getSection() == *it)
-				(*it)->dump(json);
+		for (OptionDefVector::const_iterator it2 = value.options.begin() ; it2 != value.options.end() ; ++it2)
+			if ((*it2)->getSection() == *it)
+				(*it2)->dump(json);
 		json.closeFieldStruct(it->c_str());
 		
 	}
@@ -228,8 +228,8 @@ void Options::dumpConfig(const char* fname)
 	assert(fname != NULL);
 	dictionary * dic = dictionary_new(10);
 	
-	for (int i = 0 ; i < options.size() ; i++)
-		options[i]->dump(dic);
+	for (OptionDefVector::iterator it = options.begin() ; it != options.end() ; ++it)
+		(*it)->dump(dic);
 	
 	//write
 	FILE * fp = fopen(fname,"w");
@@ -281,8 +281,8 @@ void Options::loadFromIniDic ( dictionary* iniDic )
 	//errors
 	assert(iniDic != NULL);
 	
-	for (int i = 0 ; i < options.size() ; i++)
-		options[i]->load(iniDic);
+	for (OptionDefVector::iterator it = options.begin() ; it != options.end() ; ++it)
+		(*it)->load(iniDic);
 }
 
 /*******************  FUNCTION  *********************/

@@ -22,7 +22,7 @@ Filter::Filter()
 {
 	this->at = 0;
 	this->filterSize = 0;
-	this->filterStack = NULL;
+	this->filterStack = 0;
 }
 
 /*******************  FUNCTION  *********************/
