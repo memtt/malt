@@ -8,22 +8,28 @@
 
 /********************  HEADERS  *********************/
 #include <unistd.h>
-#include "JsonReader.hpp"
+#include <iostream>
+#include "ProfileReader.hpp"
 
 /**********************  USING  *********************/
 using namespace MATT;
 
 /*********************  CONSTS  *********************/
-const char * test = "{ 'float' : 12.5 , \"emptyObject\" : { }, 'escape\\'':{}, 'string': 'value' , 'null': , 'string2': \"value\", 'bootTrue': true, 'boolFalse': false, 'array':[12, {}, true, false, 'text',,] }";
+const char * test = "{ 'float' : 12.5 , \"emptyObject\" : { }, 'escape\\'':{}, 'string': 'value' , 'null': , 'string2': \"value\", 'bootTrue': true, 'boolFalse': false, 'array':[12, {}, true, false, 'text',,], 'child': {'value':19} }";
 
 /*******************  FUNCTION  *********************/
 int main(int argc, char ** argv)
 {
-	JsonReader reader;
 	
 	if (argc > 1)
-		reader.load(argv[1]);
-	else
+	{
+		ProfileReader reader(argv[1]);
+		JsonNode & node = reader.getNode(argv[2]);
+	} else {
+		JsonReader reader;
 		reader.loadString(test);
+		JsonNode & node = reader.getRoot().getChild("");
+		htopml::convertToJson(std::cout,node);
+	}
 	return EXIT_SUCCESS;
 }

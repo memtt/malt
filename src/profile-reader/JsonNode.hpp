@@ -55,15 +55,17 @@ typedef std::vector<JsonNode,MATT::STLInternalAllocatorNoFree< JsonNode > > Json
 class JsonNodeIterator
 {
 	public:
-		JsonNodeIterator(JsonNode * node);
-		JsonNodeIterator(JsonNodeIterator & ref);
+		JsonNodeIterator(MATT::JsonNode* node, bool end);
 		JsonNode & operator*(void);
 		JsonNode & operator->(void);
 		JsonNodeIterator & operator++(void);
-		JsonNodeIterator & operator++(int);
+		JsonNodeIterator operator++(int);
 		bool operator == (const JsonNodeIterator & ref) const;
 		bool operator != (const JsonNodeIterator & ref) const;
 		JsonNodeIterator & operator = (const JsonNodeIterator & ref);
+		  const std::string index(void);
+	private:
+		void setup(MATT::JsonNode* node, bool end);
 	private:
 		JsonNode * node;
 		JsonNodeMap::iterator mapIt;
@@ -107,6 +109,7 @@ class JsonNode
 		JsonNode & operator[] (const char * key);
 		const JsonNode & operator[] (const char * key) const;
 		JsonNode & append(void);
+		JsonNode & getChild(const std::string & path);
 		//iterators
 		iterator begin(void);
 		iterator end(void);

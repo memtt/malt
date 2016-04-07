@@ -156,13 +156,15 @@ void JsonNode::mutateAs(JsonNodeType nodeType)
 /*******************  FUNCTION  *********************/
 JsonNode::iterator JsonNode::begin ( void )
 {
-	MATT_FATAL("TODO");
+	JsonNode::iterator it(this,false);
+	return it;
 }
 
 /*******************  FUNCTION  *********************/
 JsonNode::iterator JsonNode::end ( void )
 {
-	MATT_FATAL("TODO");
+	JsonNode::iterator it(this,true);
+	return it;
 }
 
 /*******************  FUNCTION  *********************/
@@ -192,7 +194,16 @@ long int JsonNode::getAsLong ( long int defaultValue ) const
 /*******************  FUNCTION  *********************/
 const char* JsonNode::getAsString ( const char* defaultValue ) const
 {
-	MATT_FATAL("TODO");
+	switch(type)
+	{
+		case JSON_NODE_NULL:
+			return defaultValue;
+		case JSON_NODE_VALUE:
+			return this->content.value;
+		default:
+			MATT_FATAL("Invalid use of getAsString on non scalar value");
+			break;
+	}
 }
 
 /*******************  FUNCTION  *********************/
@@ -282,8 +293,10 @@ void JsonNode::unrefChilds ( void )
 }
 
 /*******************  FUNCTION  *********************/
-void convertToJson(htopml::JsonState& json, const JsonNode& node)
+void convertToJson(htopml::JsonState& json, const JsonNode& nodeCst)
 {
+	//TODO clenaup this const cast
+	JsonNode & node = (JsonNode &)nodeCst;
 	switch (node.type)
 	{
 		case JSON_NODE_NULL:
@@ -291,8 +304,22 @@ void convertToJson(htopml::JsonState& json, const JsonNode& node)
 			json.closeStruct();
 			break;
 		case JSON_NODE_VALUE:
-			
+			json.printValue(node.getAsString(""));
 			break;
+		case JSON_NODE_ARRAY:
+			json.openArray();
+			for (JsonNode::iterator it = node.begin() ; it != node.end() ; ++it)
+				json.printValue(*it);
+			json.closeArray();
+			break;
+		case JSON_NODE_OBJECT:
+			json.openStruct();
+			for (JsonNode::iterator it = node.begin() ; it != node.end() ; ++it)
+				json.printField(it.index().c_str(),*it);
+			json.closeStruct();
+			break;
+		default:
+			MATT_FATAL("Invalid node type");
 	}
 // JSON_NODE_NULL,
 // 	JSON_NODE_VALUE,
@@ -320,57 +347,258 @@ std::ostream& operator<<(std::ostream& out, const JsonNode& node)
 }
 
 /*******************  FUNCTION  *********************/
-JsonNodeIterator::JsonNodeIterator ( JsonNodeIterator& ref )
+JsonNodeIterator::JsonNodeIterator ( JsonNode* node, bool end )
 {
-	MATT_FATAL("TODO");
+	this->setup(node,end);
 }
 
 /*******************  FUNCTION  *********************/
-JsonNodeIterator::JsonNodeIterator ( JsonNode* node )
+void JsonNodeIterator::setup(JsonNode* node,bool end)
 {
-	MATT_FATAL("TODO");
+	assert(node != NULL);
+	this->node = node;
+	switch(node->type)
+	{
+		case JSON_NODE_NULL:
+			MATT_FATAL("Cannot iterate on NULL json node");
+			break;
+		case JSON_NODE_VALUE:
+			MATT_FATAL("cannot iterate on json value");
+			break;
+		case JSON_NODE_ROOT:
+		case JSON_NODE_OBJECT:
+			if (node->usedStackAllocator)
+				this->mapNfIt = end ? node->content.mapNoFree->end() : node->content.mapNoFree->begin();
+			else
+				this->mapIt = end ? node->content.map->end() : node->content.map->begin();
+			break;
+		case JSON_NODE_ARRAY:
+			if (node->usedStackAllocator)
+				this->vecNfIt = end ? node->content.arrayNoFree->end() : node->content.arrayNoFree->begin();
+			else
+				this->vecIt = end ? node->content.array->end() : node->content.array->begin();
+			break;
+		case JSON_NODE_POINTER:
+			this->setup(node->content.pointer,end);
+			break;
+		default:
+		case JSON_NODE_TYPE_COUNT:
+			MATT_FATAL("Invalid node type");
+			break;
+	}
 }
 
 /*******************  FUNCTION  *********************/
 bool JsonNodeIterator::operator!= ( const JsonNodeIterator& ref ) const
 {
-	MATT_FATAL("TODO");
+	//trivial
+	if (this->node != ref.node)
+		return true;
+	
+	//detail check
+	switch(node->type)
+	{
+		case JSON_NODE_NULL:
+			MATT_FATAL("Cannot iterate on NULL json node");
+			break;
+		case JSON_NODE_VALUE:
+			MATT_FATAL("cannot iterate on json value");
+			break;
+		case JSON_NODE_ROOT:
+		case JSON_NODE_OBJECT:
+			if (node->usedStackAllocator)
+				return this->mapNfIt != ref.mapNfIt;
+			else
+				return this->mapIt != ref.mapIt;;
+			break;
+		case JSON_NODE_ARRAY:
+			if (node->usedStackAllocator)
+				return this->vecNfIt != ref.vecNfIt;
+			else
+				return this->vecIt != ref.vecIt;
+			break;
+		case JSON_NODE_POINTER:
+		case JSON_NODE_TYPE_COUNT:
+			MATT_FATAL("Invalid node type");
+			break;
+	}
 }
 
 /*******************  FUNCTION  *********************/
 JsonNode& JsonNodeIterator::operator* ( void )
 {
-	MATT_FATAL("TODO");
+	//detail check
+	switch(node->type)
+	{
+		case JSON_NODE_NULL:
+			MATT_FATAL("Cannot iterate on NULL json node");
+			break;
+		case JSON_NODE_VALUE:
+			MATT_FATAL("cannot iterate on json value");
+			break;
+		case JSON_NODE_ROOT:
+		case JSON_NODE_OBJECT:
+			if (node->usedStackAllocator)
+				return this->mapNfIt->second;
+			else
+				return this->mapIt->second;
+			break;
+		case JSON_NODE_ARRAY:
+			if (node->usedStackAllocator)
+				return *(this->vecNfIt);
+			else
+				return *(this->vecIt);
+			break;
+		case JSON_NODE_POINTER:
+		case JSON_NODE_TYPE_COUNT:
+			MATT_FATAL("Invalid node type");
+			break;
+	}
 }
 
 /*******************  FUNCTION  *********************/
-JsonNodeIterator& JsonNodeIterator::operator++ ( int )
+JsonNodeIterator JsonNodeIterator::operator++ ( int )
 {
-	MATT_FATAL("TODO");
+	JsonNodeIterator it = *this;
+	
+	//detail check
+	switch(node->type)
+	{
+		case JSON_NODE_NULL:
+			MATT_FATAL("Cannot iterate on NULL json node");
+			break;
+		case JSON_NODE_VALUE:
+			MATT_FATAL("cannot iterate on json value");
+			break;
+		case JSON_NODE_ROOT:
+		case JSON_NODE_OBJECT:
+			if (node->usedStackAllocator)
+				++(it.mapNfIt);
+			else
+				++(it.mapIt);
+			break;
+		case JSON_NODE_ARRAY:
+			if (node->usedStackAllocator)
+				++(it.vecNfIt);
+			else
+				++(it.vecIt);
+			break;
+		case JSON_NODE_POINTER:
+		case JSON_NODE_TYPE_COUNT:
+			MATT_FATAL("Invalid node type");
+			break;
+	}
+	return it;
 }
 
 /*******************  FUNCTION  *********************/
 JsonNodeIterator& JsonNodeIterator::operator++ ( void )
 {
-	MATT_FATAL("TODO");
+	//detail check
+	switch(node->type)
+	{
+		case JSON_NODE_NULL:
+			MATT_FATAL("Cannot iterate on NULL json node");
+			break;
+		case JSON_NODE_VALUE:
+			MATT_FATAL("cannot iterate on json value");
+			break;
+		case JSON_NODE_ROOT:
+		case JSON_NODE_OBJECT:
+			if (node->usedStackAllocator)
+				++(this->mapNfIt);
+			else
+				++(this->mapIt);
+			break;
+		case JSON_NODE_ARRAY:
+			if (node->usedStackAllocator)
+				++(this->vecNfIt);
+			else
+				++(this->vecIt);
+			break;
+		case JSON_NODE_POINTER:
+		case JSON_NODE_TYPE_COUNT:
+			MATT_FATAL("Invalid node type");
+			break;
+	}
+	return *this;
+}
+
+/*******************  FUNCTION  *********************/
+const std::string JsonNodeIterator::index(void)
+{
+	//detail check
+	switch(node->type)
+	{
+		case JSON_NODE_NULL:
+			MATT_FATAL("Cannot iterate on NULL json node");
+			break;
+		case JSON_NODE_VALUE:
+			MATT_FATAL("cannot iterate on json value");
+			break;
+		case JSON_NODE_ROOT:
+		case JSON_NODE_OBJECT:
+			if (node->usedStackAllocator)
+				return (this->mapNfIt->first.value);
+			else
+				return (this->mapIt->first);
+			break;
+		case JSON_NODE_ARRAY:
+			MATT_FATAL("Not supported on array");
+			break;
+		case JSON_NODE_POINTER:
+		case JSON_NODE_TYPE_COUNT:
+			MATT_FATAL("Invalid node type");
+			break;
+	}
 }
 
 /*******************  FUNCTION  *********************/
 JsonNode& JsonNodeIterator::operator-> ( void )
 {
-	MATT_FATAL("TODO");
+	return **this;
 }
 
 /*******************  FUNCTION  *********************/
 JsonNodeIterator& JsonNodeIterator::operator= ( const JsonNodeIterator& ref )
 {
-	MATT_FATAL("TODO");
+	*this = ref;
 }
 
 /*******************  FUNCTION  *********************/
 bool JsonNodeIterator::operator== ( const JsonNodeIterator& ref ) const
 {
-	MATT_FATAL("TODO");
+	//trivial
+	if (this->node != ref.node)
+		return false;
+	
+	//detail check
+	switch(node->type)
+	{
+		case JSON_NODE_NULL:
+			MATT_FATAL("Cannot iterate on NULL json node");
+			break;
+		case JSON_NODE_VALUE:
+			MATT_FATAL("cannot iterate on json value");
+			break;
+		case JSON_NODE_ROOT:
+		case JSON_NODE_OBJECT:
+			if (node->usedStackAllocator)
+				return this->mapNfIt == ref.mapNfIt;
+			else
+				return this->mapIt == ref.mapIt;;
+			break;
+		case JSON_NODE_ARRAY:
+			if (node->usedStackAllocator)
+				return this->vecNfIt == ref.vecNfIt;
+			else
+				return this->vecIt == ref.vecIt;
+			break;
+		case JSON_NODE_POINTER:
+		case JSON_NODE_TYPE_COUNT:
+			MATT_FATAL("Invalid node type");
+			break;
+	}
 }
 
 /*******************  FUNCTION  *********************/
@@ -398,5 +626,26 @@ JsonNode& JsonNode::operator= ( const JsonNode& orig )
 	this->initNull();
 }
 
+/*******************  FUNCTION  *********************/
+JsonNode& JsonNode::getChild(const std::string& path)
+{
+	//vars
+	char * tmp = new char[path.size()+1];
+	strcpy(tmp,path.c_str());
+	char * token = strtok(tmp,".");
+	JsonNode * node = this;
+	
+	//loop on all
+	while (token != NULL)
+	{
+		if (*token != '\0')
+		{
+			node = &(*node)[token];
+			token = strtok(NULL,".");
+		}
+	}
+	
+	return *node;
+}
 
 }

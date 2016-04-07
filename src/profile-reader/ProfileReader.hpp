@@ -16,7 +16,7 @@
 #include "JsonReader.hpp"
 
 /*******************  NAMESPACE  ********************/
-namespace MALT
+namespace MATT
 {
 
 /*********************  CLASS  **********************/
@@ -25,6 +25,7 @@ class ProfileReader
 	public:
 		ProfileReader(const std::string & file);
 		~ProfileReader(void);
+		JsonNode& getNode(const std::string& path);
 	protected:
 		JsonReader reader;
 };

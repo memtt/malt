@@ -20,6 +20,7 @@ malt_enable_cxx_11()
 add_executable(malt-profile-reader main.cpp 
                                    JsonNode.cpp
                                    JsonReader.cpp
+                                   ProfileReader.cpp
                                    JsonNodeLoader.cpp
                                    $<TARGET_OBJECTS:matt-common>
                                    $<TARGET_OBJECTS:matt-allocators>

@@ -9,9 +9,10 @@
 /********************  HEADERS  *********************/
 //std
 #include "ProfileReader.hpp"
+#include <cstring>
 
 /*******************  NAMESPACE  ********************/
-namespace MALT
+namespace MATT
 {
 
 /*******************  FUNCTION  *********************/
@@ -24,6 +25,12 @@ ProfileReader::ProfileReader(const std::string& file)
 ProfileReader::~ProfileReader(void)
 {
 
+}
+
+/*******************  FUNCTION  *********************/
+JsonNode & ProfileReader::getNode(const std::string& path)
+{
+	return reader.getRoot().getChild(path);
 }
 
 }
