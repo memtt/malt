@@ -164,7 +164,7 @@ void JsonNodeLoader::loadFromDataAsNumber ( JsonLoaderState& state, JsonNodeLoad
 	char * res = start.get();
 	
 	//read all
-	while ((*state >= '0' && *state <= '9') || *state == '.')
+	while ((*state >= '0' && *state <= '9') || *state == '.' || *state == '-' || *state == '+' || *state == 'E')
 		++state;
 	
 	//check end

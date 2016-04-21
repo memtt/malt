@@ -33,4 +33,11 @@ JsonNode & ProfileReader::getNode(const std::string& path)
 	return reader.getRoot().getChild(path);
 }
 
+/*******************  FUNCTION  *********************/
+void ProfileReader::mapReduce(MapReduceHandler& handler, const std::string& path)
+{
+	JsonNode & root = getNode(path);
+	JsonNodeStack stack;
+}
+
 }

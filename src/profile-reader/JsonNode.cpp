@@ -300,6 +300,7 @@ void convertToJson(htopml::JsonState& json, const JsonNode& nodeCst)
 	switch (node.type)
 	{
 		case JSON_NODE_NULL:
+			json.printListSeparator();
 			json.openStruct();
 			json.closeStruct();
 			break;
@@ -307,12 +308,14 @@ void convertToJson(htopml::JsonState& json, const JsonNode& nodeCst)
 			json.printValue(node.getAsString(""));
 			break;
 		case JSON_NODE_ARRAY:
+			json.printListSeparator();
 			json.openArray();
 			for (JsonNode::iterator it = node.begin() ; it != node.end() ; ++it)
-				json.printValue(*it);
+				convertToJson(json,*it);
 			json.closeArray();
 			break;
 		case JSON_NODE_OBJECT:
+			json.printListSeparator();
 			json.openStruct();
 			for (JsonNode::iterator it = node.begin() ; it != node.end() ; ++it)
 				json.printField(it.index().c_str(),*it);
@@ -374,9 +377,9 @@ void JsonNodeIterator::setup(JsonNode* node,bool end)
 			break;
 		case JSON_NODE_ARRAY:
 			if (node->usedStackAllocator)
-				this->vecNfIt = end ? node->content.arrayNoFree->end() : node->content.arrayNoFree->begin();
+				this->mapNfIt = end ? node->content.mapNoFree->end() : node->content.mapNoFree->begin();
 			else
-				this->vecIt = end ? node->content.array->end() : node->content.array->begin();
+				this->mapIt = end ? node->content.map->end() : node->content.map->begin();
 			break;
 		case JSON_NODE_POINTER:
 			this->setup(node->content.pointer,end);
@@ -413,9 +416,9 @@ bool JsonNodeIterator::operator!= ( const JsonNodeIterator& ref ) const
 			break;
 		case JSON_NODE_ARRAY:
 			if (node->usedStackAllocator)
-				return this->vecNfIt != ref.vecNfIt;
+				return this->mapNfIt != ref.mapNfIt;
 			else
-				return this->vecIt != ref.vecIt;
+				return this->mapIt != ref.mapIt;
 			break;
 		case JSON_NODE_POINTER:
 		case JSON_NODE_TYPE_COUNT:
@@ -445,9 +448,9 @@ JsonNode& JsonNodeIterator::operator* ( void )
 			break;
 		case JSON_NODE_ARRAY:
 			if (node->usedStackAllocator)
-				return *(this->vecNfIt);
+				return this->mapNfIt->second;
 			else
-				return *(this->vecIt);
+				return this->mapIt->second;
 			break;
 		case JSON_NODE_POINTER:
 		case JSON_NODE_TYPE_COUNT:
@@ -479,9 +482,9 @@ JsonNodeIterator JsonNodeIterator::operator++ ( int )
 			break;
 		case JSON_NODE_ARRAY:
 			if (node->usedStackAllocator)
-				++(it.vecNfIt);
+				++(it.mapNfIt);
 			else
-				++(it.vecIt);
+				++(it.mapIt);
 			break;
 		case JSON_NODE_POINTER:
 		case JSON_NODE_TYPE_COUNT:
@@ -512,9 +515,9 @@ JsonNodeIterator& JsonNodeIterator::operator++ ( void )
 			break;
 		case JSON_NODE_ARRAY:
 			if (node->usedStackAllocator)
-				++(this->vecNfIt);
+				++(this->mapNfIt);
 			else
-				++(this->vecIt);
+				++(this->mapIt);
 			break;
 		case JSON_NODE_POINTER:
 		case JSON_NODE_TYPE_COUNT:
@@ -590,9 +593,9 @@ bool JsonNodeIterator::operator== ( const JsonNodeIterator& ref ) const
 			break;
 		case JSON_NODE_ARRAY:
 			if (node->usedStackAllocator)
-				return this->vecNfIt == ref.vecNfIt;
+				return this->mapNfIt == ref.mapNfIt;
 			else
-				return this->vecIt == ref.vecIt;
+				return this->mapIt == ref.mapIt;
 			break;
 		case JSON_NODE_POINTER:
 		case JSON_NODE_TYPE_COUNT:
