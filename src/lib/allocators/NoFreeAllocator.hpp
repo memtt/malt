@@ -101,6 +101,7 @@ void doNoFreeAllocatorInit(void);
 #define MATT_NO_FREE_MALLOC(x) gblNoFreeAllocator->allocate(x)
 #define MATT_NO_FREE_NEW(x) new (MATT_NO_FREE_MALLOC(sizeof(x))) x
 
+
 /*******************  FUNCTION  *********************/
 /** Function to use the global allocator **/
 template <class T> T * noFreeMalloc(size_t cnt) {return (T*)gblNoFreeAllocator->allocate(sizeof(T)*cnt);};

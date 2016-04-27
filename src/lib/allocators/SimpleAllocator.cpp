@@ -120,7 +120,11 @@ void * SimpleAllocator::malloc(size_t size)
 		size = alignOn(size,MATT_ALLOC_BASIC_ALIGN);
 		size += sizeof(size_t);
 		size_t * ptr = (size_t*)realMalloc(size);
-		ptr[(size / sizeof(size_t))-1] = 0x42;
+		
+		//checking
+		Chunk * chunk = Chunk::getFromBody(ptr);
+		ptr[(chunk->size / sizeof(size_t))-1] = 0x42;
+		checkCanary(ptr,chunk->size);
 		return ptr;
 	#endif
 }

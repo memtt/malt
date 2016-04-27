@@ -212,9 +212,9 @@ void convertToJson(htopml::JsonState & json,const Options & value)
 	for (std::deque<std::string>::iterator itSec = groups.begin() ; itSec != groups.end() ; ++itSec)
 	{
 		json.openFieldStruct(itSec->c_str());
-		for (OptionDefVector::const_iterator it = value.options.begin() ; it != value.options.end() ; ++it)
+		for (OptionDefVector::const_iterator it2 = value.options.begin() ; it2 != value.options.end() ; ++it2)
 			if ((*it)->getSection() == *itSec)
-				(*it)->dump(json);
+				(*it2)->dump(json);
 		json.closeFieldStruct(itSec->c_str());
 		
 	}
