@@ -73,6 +73,7 @@ class OptionDef : public OptionDefGeneric
 
 /*********************  TYPES  **********************/
 typedef std::list<OptionDefGeneric*,STLInternalAllocatorNoFree<OptionDefGeneric*> > OptionDefVector;
+typedef std::basic_string<char,std::char_traits<char>,STLInternalAllocatorNoFree<char> > stringNf;
 
 /********************  STRUCT  **********************/
 struct Options

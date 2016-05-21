@@ -71,7 +71,7 @@ ThreadHooks * threadHookInit(void)
 MallocHooks * mallocHookInit(void)
 {
 	if (gblIsInInit)
-		return &gblMallocHooksNone;
+		return NULL;
 	if (gblReachExit)
 		return NULL;
 	ThreadLevelAnalysis * tls = tlsMatt;

@@ -36,8 +36,26 @@ JsonNode & ProfileReader::getNode(const std::string& path)
 /*******************  FUNCTION  *********************/
 void ProfileReader::mapReduce(MapReduceHandler& handler, const std::string& path)
 {
-	JsonNode & root = getNode(path);
+	JsonNode & tail = getNode(path);
 	JsonNodeStack stack;
+	MapReduceHandler * mapHandler = handler.allocate();
+	stack.push(&tail);
+	mapReduceInternal(handler,*mapHandler,reader.getRoot(),stack,tail);
+	delete mapHandler;
+}
+
+/*******************  FUNCTION  *********************/
+void ProfileReader::mapReduceInternal(MapReduceHandler& handler, MapReduceHandler& mapHandler, JsonNode& root, JsonNodeStack& stack, JsonNode& tail)
+{
+	stack.push(&tail);
+	if (handler.filter(root,stack,tail))
+	{
+		mapHandler.map(root,stack,tail);
+		handler.reduce(mapHandler);
+	}
+	for (auto & child : tail)
+		mapReduceInternal(handler,mapHandler,root,stack,child);
+	stack.pop();
 }
 
 }

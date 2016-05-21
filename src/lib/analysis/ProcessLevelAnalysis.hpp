@@ -34,7 +34,7 @@ namespace MATT
 {
 
 /*********************  TYPES  **********************/
-typedef std::vector<ThreadLevelAnalysis*,STLInternalAllocatorNoFree<ThreadLevelAnalysis*> > ThreadLevelAnalysisVector;
+typedef std::list<ThreadLevelAnalysis*,STLInternalAllocatorNoFree<ThreadLevelAnalysis*> > ThreadLevelAnalysisVector;
 
 /********************  ENUM  ************************/
 enum ProcessAnalysisIDS

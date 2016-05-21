@@ -213,7 +213,7 @@ void convertToJson(htopml::JsonState & json,const Options & value)
 	{
 		json.openFieldStruct(itSec->c_str());
 		for (OptionDefVector::const_iterator it2 = value.options.begin() ; it2 != value.options.end() ; ++it2)
-			if ((*it)->getSection() == *itSec)
+			if ((*it2)->getSection() == *itSec)
 				(*it2)->dump(json);
 		json.closeFieldStruct(itSec->c_str());
 		

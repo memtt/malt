@@ -29,7 +29,7 @@ namespace MATT
 	if (!reenter)\
 		hooks = MATT::mallocHookInit();\
 \
-	if (MATT::gblMallocWrapperState.status == MATT::ALLOC_WRAP_NOT_INIT)\
+	if (MATT::gblMallocWrapperState.status == MATT::ALLOC_WRAP_NOT_INIT || MATT::gblMallocWrapperState.status == MATT::ALLOC_WRAP_INIT_HOOKS)\
 		MATT::mallocWrapperInit();\
 \
 	/*run the default function*/\
@@ -93,7 +93,10 @@ void mallocWrapperInit(void)
 
 		//init profiler
 		gblMallocWrapperState.status = ALLOC_WRAP_INIT_HOOKS;
-
+	}
+	
+	if (mallocHookInit() != NULL && gblMallocWrapperState.status == ALLOC_WRAP_INIT_HOOKS)
+	{
 		//final state
 		gblMallocWrapperState.status = ALLOC_WRAP_READY;
 		
