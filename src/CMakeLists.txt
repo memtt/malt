@@ -11,6 +11,7 @@ add_subdirectory(lib)
 add_subdirectory(integration)
 add_subdirectory(trace-reader)
 add_subdirectory(profile-reader)
+add_subdirectory(manpages)
 
 ######################################################
 # Install the webview into share directory

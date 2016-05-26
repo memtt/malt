@@ -26,6 +26,7 @@ static __thread ThreadLevelAnalysis * tlsMatt = NULL;
 static bool gblIsInInit = false;
 static GlobalHooksNone gblMallocHooksNone;
 static bool gblReachExit = false;
+static bool gblSkip = false;
 // static MallocHooksFake gblMallocHooksNone;
 
 /*******************  FUNCTION  *********************/
@@ -55,12 +56,25 @@ void doGlobalInit(void)
 	void * ptr = MATT_NO_FREE_MALLOC(sizeof(ProcessLevelAnalysis));
 	gblMatt = new(ptr) ProcessLevelAnalysis();
 	gblIsInInit = false;
+		
+	//filter exe
+	Options & options = initGlobalOptions();
+	if (options.exe.empty() == false && OS::getExeName() != options.exe)
+	{
+		fprintf(stderr,"MALT: skip %s != %s\n",OS::getExeName().c_str(),options.exe.c_str());
+		gblSkip = true;
+	}
+	
+	//disable childs
+	//TODO make a cleaner remove instead of erase all
+	if (options->childs == false)
+		unsetenv("LD_PRELOAD");
 }
 
 /*******************  FUNCTION  *********************/
 ThreadHooks * threadHookInit(void)
 {
-	if (gblIsInInit || gblReachExit)
+	if (gblIsInInit || gblReachExit || gblSkip)
 		return NULL;
 	if (gblMatt == NULL)
 		doGlobalInit();
@@ -70,7 +84,7 @@ ThreadHooks * threadHookInit(void)
 /*******************  FUNCTION  *********************/
 MallocHooks * mallocHookInit(void)
 {
-	if (gblIsInInit)
+	if (gblIsInInit || gblSkip)
 		return NULL;
 	if (gblReachExit)
 		return NULL;
@@ -87,7 +101,7 @@ MallocHooks * mallocHookInit(void)
 /*******************  FUNCTION  *********************/
 MmapHooks * mmapHookInit(void)
 {
-	if (gblIsInInit || gblReachExit)
+	if (gblIsInInit || gblReachExit || gblSkip)
 		return NULL;
 	if (gblMatt == NULL)
 		doGlobalInit();
@@ -97,7 +111,7 @@ MmapHooks * mmapHookInit(void)
 /*******************  FUNCTION  *********************/
 ExitHooks * exitHookInit(void)
 {
-	if (gblIsInInit || gblReachExit)
+	if (gblIsInInit || gblReachExit || gblSkip)
 		return NULL;
 	if (gblMatt == NULL)
 		doGlobalInit();
@@ -108,7 +122,7 @@ ExitHooks * exitHookInit(void)
 /*******************  FUNCTION  *********************/
 EnterExitFunctionHooks * enterExitFunctionHookInit(void)
 {
-	if (gblIsInInit || gblReachExit)
+	if (gblIsInInit || gblReachExit || gblSkip)
 		return NULL;
 	ThreadLevelAnalysis * tls = tlsMatt;
 	if (gblMatt == NULL)

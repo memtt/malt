@@ -1,0 +1,55 @@
+malt-webserver(1) -- Webserver for the MALT web GUI
+===================================================
+
+## SYNOPSIS
+
+`malt-webserver` [OPTIONS] -i {malt-profile.json}
+
+## DESCRIPTION
+
+The MALT web GUI is hosted by a nodeJS script managed by `malt-webserver` command. It will
+by default open a socket listening on `localhost` and port `8080` so reachable with address
+http://localhost:8080.
+
+## OPTIONS
+
+ * `-i`, `--input-file`:
+   This option is required and provide the input profile file (json format) to explore.
+ * `-n`, '--no-auth':
+   Disable usage of HTTP authentification to secure the pages of the GUI. Caution, all the
+   users connected on the machine can access the GUI so to your code.
+ * `-o`, `--override`:
+   If you copy a profile file from a remote machine to your local one, your code might
+   be stored into another place (not same user, not same path). Thanks to override options
+   you can alias some paths to make it transparent to the GUI and be able to find your
+   source code. The format is *src_path1:dest_path1,src_path2,dest_path2*. The easiest use
+   is to override the root directory of your project.
+ * `p`, `--port`:
+   Force to use another port than default 8080.
+ * `version`:
+   Display the current version of MALT you are using.
+ * `-h`, `--help`:
+   Display a short help message to summarize the available options.
+
+## ENVIRONMENT
+
+ * `MALT_NODEJS`:
+   Can be setup to tel which nodeJS to use if the script cannot find it by itself.
+
+## REMOTE USAGE THROUGH SSH
+
+On clusters you might be interesting by launching the `malt-webserver` remotly and forward
+it through ssh to get it on your local machine. You can achieve this port redirection with
+ssh options :
+
+ ssh {YOUR_HOST} -L 8080:localhost:8080
+
+Where the first 8080 is the local port and the second one the remote.
+
+## VERSION
+
+   This is the manpage of MALT version 0.3.0.
+
+## SEE ALSO
+
+malt-passwd(1), malt(1)

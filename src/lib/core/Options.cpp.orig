@@ -151,9 +151,6 @@ Options::Options(void)
 	options.push_back(new OptionDef<bool>        (&this->traceEnabled      ,"trace"    ,"enabled"    ,true));
 	//info
 	options.push_back(new OptionDef<bool>        (&this->infoHidden        ,"info"     ,"hidden"     ,false));
-	//filter
-	options.push_back(new OptionDef<std::string> (&this->exe               ,"filter"   ,"exe"        ,""));
-	options.push_back(new OptionDef<bool>        (&this->childs            ,"filter"   ,"childs"     ,true));
 }
 
 /*******************  FUNCTION  *********************/
@@ -162,7 +159,7 @@ bool Options::operator==(const Options& value) const
 	OptionDefVector::const_iterator it1 = options.begin();
 	OptionDefVector::const_iterator it2 = value.options.begin();
 	
-	for (size_t i = 0 ; i < options.size() ; i++)
+	for (int i = 0 ; i < options.size() ; i++)
 	{
 		if ((*it1)->equal(**it2) == false)
 			return false;
@@ -214,11 +211,19 @@ void convertToJson(htopml::JsonState & json,const Options & value)
 	json.openStruct();
 	for (std::deque<std::string>::iterator itSec = groups.begin() ; itSec != groups.end() ; ++itSec)
 	{
+<<<<<<< HEAD
 		json.openFieldStruct(itSec->c_str());
-		for (OptionDefVector::const_iterator it2 = value.options.begin() ; it2 != value.options.end() ; ++it2)
-			if ((*it2)->getSection() == *itSec)
-				(*it2)->dump(json);
+		for (OptionDefVector::const_iterator it = value.options.begin() ; it != value.options.end() ; ++it)
+			if ((*it)->getSection() == *itSec)
+				(*it)->dump(json);
 		json.closeFieldStruct(itSec->c_str());
+=======
+		json.openFieldStruct(it->c_str());
+		for (OptionDefVector::const_iterator it2 = value.options.begin() ; it2 != value.options.end() ; ++it2)
+			if ((*it2)->getSection() == *it)
+				(*it2)->dump(json);
+		json.closeFieldStruct(it->c_str());
+>>>>>>> ac90f09dc2c902ba5a27e01ea05fcd92606b150e
 		
 	}
 	json.closeStruct();
@@ -231,7 +236,11 @@ void Options::dumpConfig(const char* fname)
 	assert(fname != NULL);
 	dictionary * dic = dictionary_new(10);
 	
+<<<<<<< HEAD
 	for (OptionDefVector::const_iterator it = options.begin() ; it != options.end() ; ++it)
+=======
+	for (OptionDefVector::iterator it = options.begin() ; it != options.end() ; ++it)
+>>>>>>> ac90f09dc2c902ba5a27e01ea05fcd92606b150e
 		(*it)->dump(dic);
 	
 	//write

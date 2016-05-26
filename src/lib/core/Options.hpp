@@ -111,6 +111,9 @@ struct Options
 	bool traceEnabled;
 	//info
 	bool infoHidden;
+	//filter
+	std::string exe;
+	bool childs;
 };
 
 /*******************  FUNCTION  *********************/

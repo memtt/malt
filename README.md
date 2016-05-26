@@ -86,6 +86,39 @@ Example of config file :
 	json=true             ; enable json output
 	callgrind=true        ; enable callgrind output
 	config=true           ; dump current config
+	
+	[filter]
+	exe=                  ; Only apply malt on given exe (empty for all)
+	childs=true           ; Instrument child processes or not
+
+Options to compile your program
+-------------------------------
+
+MALT work out of the box with your program but it required you to compile your program with 
+debug options (`-g`) to get access to the source code attached to each call sites.
+
+It might also be better to use `-O0` or use `-fno-inline` to disable inlining which might
+provide more accurate call stacks to you.
+
+How to use with MPI
+-------------------
+
+MALT also provide a lightweight support of MPI to generate profile files named with MPI rank ID instead of process ID.
+In order to support this you first need to compile the MPI interface on top of your MPI. It will generate a
+small library in you home directory.
+
+```shell
+	{YOUR_PREFIX}/bin/malt --prep-mpi [mpicxx]
+```
+
+Caution it will link malt to the current MPI version you are using, if you want to switch to another you will need to
+redo the previous command.
+
+Then to profile you mpi application proceed like :
+
+```shell
+	mpirun -np X {YOUR_PREFIX}/bin/malt --mpi {YOUR_PROGRAM} [OPTIONS]
+```
 
 Using webview
 -------------

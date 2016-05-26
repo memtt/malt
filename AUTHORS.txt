@@ -1,3 +1,10 @@
 Please add you name here if you contribute to this project.
 
- - Valat Sébastien <sebastien.valat@exascale-computing.eu> | <sebastien.valat@gmail.com>
+ - Valat Sébastien <sebastien.valat@cern.ch>
+
+Special thanks to original finance plan :
+
+ - This project was originaly developped by Sébastien Valat at Exascale Computing Reaserch Lab 
+   http://www.exascale-computing.eu/. This lab is financed by CEA, Genci, Intel and UVSQ. 
+   The project was part of the MAQAO team : http://www.maqao.org/ managed by Andrés S. Charif-Rubial 
+   and William Jalby. Thanks to all of them.
