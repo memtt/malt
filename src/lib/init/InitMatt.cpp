@@ -58,16 +58,15 @@ void doGlobalInit(void)
 	gblIsInInit = false;
 		
 	//filter exe
-	Options & options = initGlobalOptions();
-	if (options.exe.empty() == false && OS::getExeName() != options.exe)
+	if (gblOptions->exe.empty() == false && OS::getExeName() != gblOptions->exe)
 	{
-		fprintf(stderr,"MALT: skip %s != %s\n",OS::getExeName().c_str(),options.exe.c_str());
+		fprintf(stderr,"MALT: skip %s != %s\n",OS::getExeName().c_str(),gblOptions->exe.c_str());
 		gblSkip = true;
 	}
 	
 	//disable childs
 	//TODO make a cleaner remove instead of erase all
-	if (options->childs == false)
+	if (gblOptions->childs == false)
 		unsetenv("LD_PRELOAD");
 }
 
