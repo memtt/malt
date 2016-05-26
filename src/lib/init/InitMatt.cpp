@@ -49,7 +49,7 @@ void doGlobalInit(void)
 	if (gblInternaAlloc == NULL)
 	{
 		void * ptr = MATT_NO_FREE_MALLOC(sizeof(SimpleAllocator));
-		gblInternaAlloc = new(ptr) SimpleAllocator();
+		gblInternaAlloc = new(ptr) SimpleAllocator(true);
 	}
 	optionsInit();
 	void * ptr = MATT_NO_FREE_MALLOC(sizeof(ProcessLevelAnalysis));
