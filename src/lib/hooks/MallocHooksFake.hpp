@@ -37,6 +37,6 @@ class MallocHooksFake : public MallocHooks
 		virtual bool mallocCallEnterExit(void);
 };
 
-};
+}
 
 #endif //MATT_MALLOC_HOOKS_FAKE_HPP

@@ -126,9 +126,9 @@ TEST(SimpleAllocator,refillNonMultiple)
 TEST(SimpleAllocator,getTotalAndInUseAndUnusedMemory)
 {
 	SimpleAllocator alloc;
-	EXPECT_EQ(0,alloc.getTotalMemory());
-	EXPECT_EQ(0,alloc.getUnusedMemory());
-	EXPECT_EQ(0,alloc.getInuseMemory());
+	EXPECT_EQ(0ul,alloc.getTotalMemory());
+	EXPECT_EQ(0ul,alloc.getUnusedMemory());
+	EXPECT_EQ(0ul,alloc.getInuseMemory());
 	alloc.malloc(32);
 	#ifdef NDEBUG
 		int extra = 0;

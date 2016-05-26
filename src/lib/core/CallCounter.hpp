@@ -51,6 +51,6 @@ class CallTimeSizeCounter : protected CallCounter
 		size_t sumSize;
 };
 
-};
+}
 
 #endif //MATT_CALL_COUNTER_HPP

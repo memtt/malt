@@ -100,5 +100,5 @@ UserSegment UserSegmentTracker::unregister ( Clock & clock,void* ptr )
 	}
 }
 
-};
+}
 

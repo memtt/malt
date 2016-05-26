@@ -22,7 +22,7 @@ namespace MATT
 
 /********************  MACROS  **********************/
 /** Default memory size to request to system when internal memory is full. **/
-#define MATT_ALLOC_SYS_REQ_SIZE (256*1024)
+#define MATT_ALLOC_SYS_REQ_SIZE (256*1024ul)
 /** 
  * Minimal size of allocated chunk (depend on header size for chunk and free chunk handler). 
  * Size is defined as usable size without takking accound of chunk header size.
@@ -150,6 +150,6 @@ class SimpleAllocator
 **/
 extern SimpleAllocator * gblInternaAlloc;
 
-};
+}
 
 #endif //MATT_SIMPLE_ALLOCATOR_HPP

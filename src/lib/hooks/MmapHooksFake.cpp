@@ -68,4 +68,4 @@ void MmapHooksFake::onMmapExitFunction ( MmapHooksInfos& info )
 	MATT_INFO_ARG("mmapExitFunction( %1 , %2 )").arg(info.retaddr).arg(info.func).end();
 }
 
-};
+}

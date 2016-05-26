@@ -93,4 +93,4 @@ void convertToJson ( htopml::JsonState& json, const StackPeakTracker& value )
 	json.closeStruct();
 }
 
-};
+}

@@ -28,6 +28,6 @@ class EnterExitFunctionHooksFake : public EnterExitFunctionHooks
 		virtual bool isEnterExitFunction ( void );
 };
 
-};
+}
 
 #endif //MATT_ENTER_EXIT_FUNCTION_HOOKS_FAKE_HPP

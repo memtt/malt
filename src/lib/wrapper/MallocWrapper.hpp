@@ -55,7 +55,7 @@ enum AllocWrapperStatus
 	/** Intermediate state when initilazing profiler object. **/
 	ALLOC_WRAP_INIT_HOOKS,
 	/** Ready for use. **/
-	ALLOC_WRAP_READY,
+	ALLOC_WRAP_READY
 };
 
 /********************  STRUCT  **********************/

@@ -24,13 +24,13 @@ struct Helpers
 {
 	static void printValue(std::ostream & out,double value, const char* unit = "");
 	static int getFileId(void);
-	template <class T> static void permut(T & a,T & b) {T tmp = a;a = b;b=tmp;};
+	template <class T> static void permut(T & a,T & b) {T tmp = a;a = b;b=tmp;}
 };
 
 /********************  MACRO  ***********************/
 #define foreach(type,list,it) for(type::iterator it = (list).begin() ; it != (list).end ; ++it)
 #define foreachConst(type,list,it) for(type::const_iterator it = (list).begin() ; it != (list).end() ; ++it)
 
-};
+}
 
 #endif //MATT_HELPERS_HPP

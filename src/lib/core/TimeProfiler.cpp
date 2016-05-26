@@ -89,7 +89,7 @@ void TimeProfiler::reshape ( ticks time )
 	this->reset();
 	
 	//fill
-	for (size_t i = 0 ; i < this->size ; i++)
+	for (int i = 0 ; i < this->size ; i++)
 		for (int j = 0 ; j < entries ; j++)
 			if (oldTouched[j * size + i])
 				this->push(i,oldStackIds[i],j,oldValues[j * size + i]);
@@ -152,7 +152,7 @@ void convertToJson ( htopml::JsonState& json, const TimeProfiler & value )
 		{
 			json.openFieldArray(value.entryNames[j].c_str());
 				TimeProfiler::ValueType last = 0;
-				for (int i = 0 ; i < maxId ; i++)
+				for (size_t i = 0 ; i < maxId ; i++)
 				{
 					if (bandwidth || value.touched[j*value.size+i])
 						last = value.values[j*value.size+i];
@@ -170,4 +170,4 @@ void TimeProfiler::registerEntry ( int id, const char* name )
 	entryNames[id]=name;
 }
 
-};
+}

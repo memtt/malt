@@ -67,7 +67,7 @@ class OSUnix
 		static void * mmap(size_t size, bool populate = false);
 		static void munmap(void * ptr,size_t size);
 		static void * dlsymNextGeneric(const char * name);
-		template <class T> static T dlsymNext(const char * name) {return (T)(dlsymNextGeneric(name));};
+		template <class T> static T dlsymNext(const char * name) {return (T)(dlsymNextGeneric(name));}
 };
 
 }

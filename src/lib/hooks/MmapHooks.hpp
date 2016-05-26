@@ -40,6 +40,6 @@ class MmapHooks
 /*******************  FUNCTION  *********************/
 MmapHooks * mmapHookInit(void);
 
-};
+}
 
 #endif //MATT_MMAP_HOOKS_HPP

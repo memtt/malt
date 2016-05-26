@@ -30,8 +30,8 @@ namespace MATT
 /********************** CONSTS **********************/
 //Init static values of CodeTiming
 ticks CodeTiming::globalStart = 0;
-int CodeTiming::globalCntTimers = 0;
-int CodeTiming::globalCntTimersFinished = 0;
+size_t CodeTiming::globalCntTimers = 0;
+size_t CodeTiming::globalCntTimersFinished = 0;
 CodeTiming * CodeTiming::globalTimers[64];
 
 /*******************  FUNCTION  *********************/

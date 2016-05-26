@@ -115,9 +115,9 @@ class CodeTiming
 		/** Store the global reference time to compute global cost ratios. **/
 		static ticks globalStart;
 		/** Numbers of registered timers **/
-		static int globalCntTimers;
+		static size_t globalCntTimers;
 		/** Number of finished timers **/
-		static int globalCntTimersFinished;
+		static size_t globalCntTimersFinished;
 		/** Store pointers to registered timers for final print. **/
 		static CodeTiming * globalTimers[64];
 };

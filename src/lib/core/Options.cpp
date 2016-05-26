@@ -159,7 +159,7 @@ bool Options::operator==(const Options& value) const
 	OptionDefVector::const_iterator it1 = options.begin();
 	OptionDefVector::const_iterator it2 = value.options.begin();
 	
-	for (int i = 0 ; i < options.size() ; i++)
+	for (size_t i = 0 ; i < options.size() ; i++)
 	{
 		if ((*it1)->equal(**it2) == false)
 			return false;

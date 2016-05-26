@@ -104,7 +104,7 @@ void doNoFreeAllocatorInit(void);
 
 /*******************  FUNCTION  *********************/
 /** Function to use the global allocator **/
-template <class T> T * noFreeMalloc(size_t cnt) {return (T*)gblNoFreeAllocator->allocate(sizeof(T)*cnt);};
+template <class T> T * noFreeMalloc(size_t cnt) {return (T*)gblNoFreeAllocator->allocate(sizeof(T)*cnt);}
 
 }
 

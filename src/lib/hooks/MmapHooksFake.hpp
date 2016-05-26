@@ -29,6 +29,6 @@ class MmapHooksFake : public MmapHooks
 		virtual void onMmapExitFunction ( MmapHooksInfos& info );
 };
 
-};
+}
 
 #endif //MATT_MMAP_HOOKS_FAKE_HPP

@@ -29,6 +29,6 @@ class EnterExitFunctionHooks
 /*******************  FUNCTION  *********************/
 EnterExitFunctionHooks * enterExitFunctionHookInit(void);
 
-};
+}
 
 #endif //MATT_ENTER_EXIT_FUNCTION_HOOKS_HPP

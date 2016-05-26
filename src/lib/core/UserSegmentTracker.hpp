@@ -62,6 +62,6 @@ class UserSegmentTracker
 		UserSegmentInfoMap map;
 };
 
-};
+}
 
 #endif //MATT_CHUNK_TRACKER_HPP

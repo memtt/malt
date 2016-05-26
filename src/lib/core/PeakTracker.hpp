@@ -50,6 +50,6 @@ class StackPeakTracker : public PeakTracker
 		size_t onGlobalPeak;
 };
 
-};
+}
 
 #endif //MATT_PEAK_TRACKER_HPP

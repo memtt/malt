@@ -42,7 +42,7 @@ enum ProcessAnalysisIDS
 	MATT_ANA_ID_ALLOC = 0,
 	MATT_ANA_ID_FREE = 1,
 	MATT_ANA_ID_LIFETIME = 2,
-	MATT_ANA_ID_PEAK = 3,
+	MATT_ANA_ID_PEAK = 3
 };
 
 /********************  ENUM  ************************/

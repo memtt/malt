@@ -25,6 +25,6 @@ class ThreadHooks
 /*******************  FUNCTION  *********************/
 ThreadHooks * threadHookInit(void);
 
-};
+}
 
 #endif //MATT_THREAD_HOOKS_HPP

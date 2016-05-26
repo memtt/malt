@@ -27,6 +27,6 @@ class ExitHooks
 /*******************  FUNCTION  *********************/
 ExitHooks * exitHookInit(void);
 
-};
+}
 
 #endif //MATT_EXIT_HOOKS_HPP

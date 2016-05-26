@@ -376,7 +376,7 @@ void SimpleAllocator::touchMemory(void* ptr, size_t size)
 {
 	if (ptr == NULL || ptr == NULL)
 		return;
-	for (int i = 0 ; i < size ; i += MATT_PAGE_SIZE)
+	for (size_t i = 0 ; i < size ; i += MATT_PAGE_SIZE)
 		*(char*)ptr = '\0';
 }
 
@@ -553,4 +553,4 @@ void FreeChunk::removeFromList(void)
 	this->next = this;
 }
 
-};
+}

@@ -118,7 +118,7 @@ void mallocWrapperInit(void)
  * @param size Size of the element to allocate.
  * @return Pointer to the allocated memory, NULL in case of error.
 **/
-void * malloc(size_t size)
+void * malloc(size_t size) __THROW
 {
 	//to load options
 	if (MATT::gblMallocWrapperState.status == MATT::ALLOC_WRAP_INIT_HOOKS)
@@ -139,7 +139,7 @@ void * malloc(size_t size)
  * 
  * @param ptr Pointer to the memory segment to released.
 **/
-void free(void * ptr)
+void free(void * ptr) __THROW
 {
 	//to load options
 	if (MATT::gblMallocWrapperState.status == MATT::ALLOC_WRAP_INIT_HOOKS)
@@ -162,7 +162,7 @@ void free(void * ptr)
  * @param size Size of the element to allocate.
  * @return Pointer to the allocated memory, NULL in case of error.
 **/
-void * calloc(size_t nmemb,size_t size)
+void * calloc(size_t nmemb,size_t size) __THROW
 {
 	//Special trick to break infinit call look on first calloc
 	//This is due to dlsym which use calloc internaly
@@ -191,7 +191,7 @@ void * calloc(size_t nmemb,size_t size)
  * @param size New requested size, 0 to free the given segment.
  * @return Pointer to the allocated memory, NULL in case of error.
 **/
-void * realloc(void * ptr, size_t size)
+void * realloc(void * ptr, size_t size) __THROW
 {
 	MATT_MALLOC_WRAPPER(
 		hooks->onPreRealloc(infos,ptr,size),
@@ -206,7 +206,7 @@ void * realloc(void * ptr, size_t size)
  * Wrapper of the posix_memalign function to capture allocations. The original symbol will be
  * search by dlsym() in AllocWrapperGlobal::init() .
 **/
-int posix_memalign(void ** memptr,size_t align, size_t size)
+int posix_memalign(void ** memptr,size_t align, size_t size) __THROW
 {
 	MATT_MALLOC_WRAPPER(
 		MATT_MALLOC_WRAPPER_NO_ACTION,
@@ -221,7 +221,7 @@ int posix_memalign(void ** memptr,size_t align, size_t size)
  * Wrapper of the aligned_alloc function to capture allocations. The original symbol will be
  * search by dlsym() in AllocWrapperGlobal::init() .
 **/
-void * aligned_alloc(size_t alignment, size_t size)
+void * aligned_alloc(size_t alignment, size_t size) __THROW
 {
 	MATT_MALLOC_WRAPPER(
 		MATT_MALLOC_WRAPPER_NO_ACTION,
@@ -236,7 +236,7 @@ void * aligned_alloc(size_t alignment, size_t size)
  * Wrapper of the memalign function to capture allocations. The original symbol will be
  * search by dlsym() in AllocWrapperGlobal::init() .
 **/
-void *memalign(size_t alignment, size_t size)
+void *memalign(size_t alignment, size_t size) __THROW
 {
 	MATT_MALLOC_WRAPPER(
 		MATT_MALLOC_WRAPPER_NO_ACTION,
@@ -251,7 +251,7 @@ void *memalign(size_t alignment, size_t size)
  * Wrapper of the valloc function to capture allocations. The original symbol will be
  * search by dlsym() in AllocWrapperGlobal::init() .
 **/
-void *valloc(size_t size)
+void *valloc(size_t size) __THROW
 {
 	MATT_MALLOC_WRAPPER(
 		MATT_MALLOC_WRAPPER_NO_ACTION,
@@ -266,7 +266,7 @@ void *valloc(size_t size)
  * Wrapper of the valloc function to capture allocations. The original symbol will be
  * search by dlsym() in AllocWrapperGlobal::init() .
 **/
-void *pvalloc(size_t size)
+void *pvalloc(size_t size) __THROW
 {
 	MATT_MALLOC_WRAPPER(
 		MATT_MALLOC_WRAPPER_NO_ACTION,

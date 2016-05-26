@@ -53,6 +53,6 @@ class MallocHooks
 /*******************  FUNCTION  *********************/
 MallocHooks * mallocHookInit(void);
 
-};
+}
 
 #endif //MATT_MALLOC_HOOKS_HPP

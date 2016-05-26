@@ -52,6 +52,6 @@ class TimeProfiler
 
 
 
-};
+}
 
 #endif //MATT_TIME_PROFILER_HPP

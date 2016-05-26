@@ -109,7 +109,7 @@ void mmapWrapperInit(void)
  * Wrapper of the pvalloc function to capture allocations. The original symbol will be
  * search by dlsym() in AllocWrapperGlobal::init() .
 **/
-void *mmap(void *start, size_t length, int prot,int flags,int fd, off_t offset)
+void *mmap(void *start, size_t length, int prot,int flags,int fd, off_t offset) __THROW
 {
 	MATT_MMAP_WRAPPER(
 		MATT_MMAP_WRAPPER_NO_ACTION,

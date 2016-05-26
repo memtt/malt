@@ -69,7 +69,7 @@ void * pthreadWrapperStartRoutine(void * arg)
 /**
  * Wrapper of thread_create method.
 **/
-int pthread_create(pthread_t *thread, const pthread_attr_t *attr,void *(*start_routine) (void *), void *arg)
+int pthread_create(pthread_t *thread, const pthread_attr_t *attr,void *(*start_routine) (void *), void *arg) __THROW
 {
 	//init
 	if (MATT::gblWrapperData.pthread_create == NULL)

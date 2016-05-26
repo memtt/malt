@@ -26,6 +26,6 @@ class ExitHooksFake : public ExitHooks
 		virtual void onExit(void);
 };
 
-};
+}
 
 #endif //MATT_EXIT_HOOKS_FAKE_HPP

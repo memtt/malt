@@ -16,7 +16,7 @@ using namespace MATT;
 /*******************  FUNCTION  *********************/
 void testFunction(void)
 {
-};
+}
 
 /*******************  FUNCTION  *********************/
 TEST(LinuxProcMapReader,constructor)
