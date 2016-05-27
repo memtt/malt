@@ -64,7 +64,6 @@ class StackTreeMap : public StackTree
 		virtual int getStackId ( StackTreeDataHandler handler );
 		virtual void prepareForOutput ( void );
 		virtual void registerSymbols ( MATT::SymbolRegistry& registry ) const;
-		void setLoopSuppress(void);
 	public:
 		friend void convertToJson(htopml::JsonState & json, const StackTreeMap & tree);
 	protected:
@@ -78,7 +77,6 @@ class StackTreeMap : public StackTree
 		bool backtrace;
 		NodeMap map;
 		int nextId;
-		bool loopSuppress;
 };
 
 }

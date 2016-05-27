@@ -106,12 +106,6 @@ StackTreeHandler StackTreeMap::exitFunction(StackTreeHandler handler, void* call
 }
 
 /*******************  FUNCTION  *********************/
-void StackTreeMap::setLoopSuppress(void)
-{
-	this->loopSuppress = true;
-}
-
-/*******************  FUNCTION  *********************/
 StackTreeHandler StackTreeMap::enterFunction(StackTreeHandler handler, void* callsite)
 {
 	//assume(!backtrace,"Try to use exitFunction with backtrace mode enabled !");

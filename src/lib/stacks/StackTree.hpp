@@ -65,6 +65,7 @@ class StackTree
 	public:
 		StackTree(void){
 			descriptorsCnt = 0;
+			loopSuppress = false;
 			for (int i = 0 ; i < MATT_STACK_TREE_ENTRIES ; i++)
 				descriptors[i] = NULL;
 		};
@@ -86,6 +87,7 @@ class StackTree
 		virtual void toJson(htopml::JsonState & json, const StackTree & tree) const = 0;
 		virtual void registerSymbols(SymbolRegistry & solver) const = 0;
 		friend void convertToJson(htopml::JsonState & json, const StackTree & tree) {tree.toJson(json,tree);};
+		void setLoopSuppress(void) {loopSuppress = true;};
 	protected:
 		virtual void * getData(StackTreeHandler handler,int id) = 0;
 		virtual void * getData(StackTreeDataHandler handler,int id)  = 0;
@@ -94,6 +96,7 @@ class StackTree
 		std::string names[MATT_STACK_TREE_ENTRIES];
 		StackTreeTypeDescriptor * descriptors[MATT_STACK_TREE_ENTRIES];
 		int descriptorsCnt;
+		bool loopSuppress;
 };
 
 }

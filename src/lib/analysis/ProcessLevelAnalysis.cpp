@@ -159,6 +159,8 @@ void ProcessLevelAnalysis::onExit ( void )
 		registry.solveNames();
 		
 		//preapre for output
+		if (options.outputLoopSuppress)
+			stackTree->setLoopSuppress();
 		stackTree->prepareForOutput();
 		
 		//load global variables
