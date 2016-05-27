@@ -137,7 +137,7 @@ Options::Options(void)
 	options.push_back(new OptionDef<bool>        (&this->timeProfileLinear ,"time"    ,"linear"     ,false));
 	//output
 	options.push_back(new OptionDef<std::string> (&this->outputName        ,"output"   ,"name"      ,"matt-%1-%2.%3"));
-	options.push_back(new OptionDef<bool>        (&this->outputIndent      ,"output"   ,"indent"    ,true));
+	options.push_back(new OptionDef<bool>        (&this->outputIndent      ,"output"   ,"indent"    ,false));
 	options.push_back(new OptionDef<bool>        (&this->outputJson        ,"output"   ,"json"      ,true));
 	options.push_back(new OptionDef<bool>        (&this->outputLua         ,"output"   ,"lua"       ,false));
 	options.push_back(new OptionDef<bool>        (&this->outputCallgrind   ,"output"   ,"callgrind" ,false));
@@ -148,7 +148,7 @@ Options::Options(void)
 	options.push_back(new OptionDef<bool>        (&this->distrAllocSize    ,"distr"    ,"alloc_size",true));
 	options.push_back(new OptionDef<bool>        (&this->distrAllocSize    ,"distr"    ,"realloc_jump",true));
 	//trace
-	options.push_back(new OptionDef<bool>        (&this->traceEnabled      ,"trace"    ,"enabled"    ,true));
+	options.push_back(new OptionDef<bool>        (&this->traceEnabled      ,"trace"    ,"enabled"    ,false));
 	//info
 	options.push_back(new OptionDef<bool>        (&this->infoHidden        ,"info"     ,"hidden"     ,false));
 	//filter

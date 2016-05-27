@@ -81,7 +81,7 @@ Example of config file :
 
 	[output]
 	name=matt-%1-%2.%3    ; base name for output, %1 = exe, %2 = PID, %3 = extension
-	indent=true           ; indent the output
+	indent=false          ; indent the output
 	lua=true              ; enable LUA output
 	json=true             ; enable json output
 	callgrind=true        ; enable callgrind output
