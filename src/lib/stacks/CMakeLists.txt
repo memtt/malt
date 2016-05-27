@@ -11,7 +11,8 @@ set(MATT_STACKS_SRC Stack.cpp
                     BacktraceStack.cpp
                     EnterExitStack.cpp
                     RLockFreeTree.cpp
-                    StackTreeMap.cpp)
+                    StackTreeMap.cpp
+                    StackLoopRemover.cpp)
 
 ######################################################
 add_library(matt-stacks OBJECT ${MATT_STACKS_SRC})

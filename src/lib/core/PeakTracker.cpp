@@ -73,6 +73,13 @@ void StackPeakTracker::update ( ticks time, ssize_t delta, const PeakTracker& tr
 }
 
 /*******************  FUNCTION  *********************/
+StackPeakTracker& StackPeakTracker::operator+=(const StackPeakTracker& obj)
+{
+	assert(this->lastGlobalPeakId == obj.lastGlobalPeakId);
+	this->onGlobalPeak += obj.onGlobalPeak;
+}
+
+/*******************  FUNCTION  *********************/
 void StackPeakTracker::updateOnGlobalPeak ( const PeakTracker& tracker )
 {
 	if (tracker.getPeakId() > this->lastGlobalPeakId)

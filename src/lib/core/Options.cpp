@@ -141,7 +141,8 @@ Options::Options(void)
 	options.push_back(new OptionDef<bool>        (&this->outputJson        ,"output"   ,"json"      ,true));
 	options.push_back(new OptionDef<bool>        (&this->outputLua         ,"output"   ,"lua"       ,false));
 	options.push_back(new OptionDef<bool>        (&this->outputCallgrind   ,"output"   ,"callgrind" ,false));
-	options.push_back(new OptionDef<bool>        (&this->outputDumpConfig  ,"output"   ,"config"    ,true));
+	options.push_back(new OptionDef<bool>        (&this->outputDumpConfig  ,"output"   ,"config"    ,false));
+	options.push_back(new OptionDef<bool>        (&this->outputLoopSuppress,"output"   ,"loopSuppress",false));
 	//max stack
 	options.push_back(new OptionDef<bool>        (&this->maxStackEnabled   ,"max-stack","enabled"   ,true));
 	//maps

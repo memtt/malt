@@ -153,23 +153,23 @@ void ProcessLevelAnalysis::onExit ( void )
 		//close trace
 		tracer.close();
 		
-		//preapre for output
-		stackTree->prepareForOutput();
-		
 		//solve symbols
 		registry.loadProcMap();
 		stackTree->registerSymbols(registry);
 		registry.solveNames();
+		
+		//preapre for output
+		stackTree->prepareForOutput();
 		
 		//load global variables
 		globalVariables.load();
 		
 		
 		//config
-// 		if (options.outputDumpConfig)
-// 		{
-// 			options.dumpConfig(FormattedMessage(options.outputName).arg(OS::getExeName()).arg(Helpers::getFileId()).arg("ini").toString().c_str());
-// 		}
+		if (options.outputDumpConfig)
+		{
+			options.dumpConfig(FormattedMessage(options.outputName).arg(OS::getExeName()).arg(Helpers::getFileId()).arg("ini").toString().c_str());
+		}
 		
 		//lua
 // 		if (options.outputLua)
@@ -180,12 +180,12 @@ void ProcessLevelAnalysis::onExit ( void )
 // 		}
 
 		//json
-// 		if (options.outputJson)
-// 		{
+		if (options.outputJson)
+		{
 			out.open(FormattedMessage(options.outputName).arg(OS::getExeName()).arg(Helpers::getFileId()).arg("json").toString().c_str());
 			CODE_TIMING("outputJson",htopml::convertToJson(out,*this,options.outputIndent));
 			out.close();
-// 		}
+		}
 
 		//print timings
 		#ifdef MATT_ENABLE_CODE_TIMING

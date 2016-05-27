@@ -39,6 +39,7 @@ class StackTreeTypeDescriptor
 		virtual ~StackTreeTypeDescriptor(void) {};
 		virtual void * allocate(void) = 0;
 		virtual void deallocate(void * ptr) = 0;
+		virtual void reduce(void * a, const void * b) = 0;
 		virtual void toJson(htopml::JsonState & json,const char * name,void * ptr) = 0;
 };
 
@@ -49,6 +50,7 @@ class StackTreeTypeDescriptorTyped : public StackTreeTypeDescriptor
 	public:
 		virtual void * allocate(void) {return new T;};
 		virtual void deallocate(void * ptr) {delete (T*)ptr;};
+		virtual void reduce(void * a, const void * b) {*(T*)a += *(const T*)b;};
 		virtual void toJson(htopml::JsonState & json,const char * name,void * ptr) {json.printField(name,*(T*)ptr);};
 };
 

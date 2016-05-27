@@ -43,6 +43,7 @@ class StackPeakTracker : public PeakTracker
 		StackPeakTracker(void);	
 		void update( ticks time, ssize_t delta ,const PeakTracker & tracker);
 		friend void convertToJson( htopml::JsonState& json, const StackPeakTracker& value );
+		StackPeakTracker & operator += (const StackPeakTracker & obj);
 	protected:
 		void updateOnGlobalPeak(const PeakTracker & tracker);
 	protected:

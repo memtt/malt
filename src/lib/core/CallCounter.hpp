@@ -31,6 +31,7 @@ class CallCounter
 		void call(ticks t);
 		friend void convertToJson(htopml::JsonState & json,const CallCounter & value);
 		friend void convertToJson(htopml::JsonState & json,const class CallTimeSizeCounter & value);
+		CallCounter & operator += (const CallCounter & obj);
 	private:
 		size_t count;
 		ticks min;

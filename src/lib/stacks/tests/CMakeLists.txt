@@ -16,7 +16,8 @@ set(TEST_NAMES TestStack
                TestBacktraceStack
                TestEnterExitStack
                TestRLockFreeTree
-               TestStackTreeMap)
+               TestStackTreeMap
+               TestStackLoopRemover)
 
 ######################################################
 FOREACH(test_name ${TEST_NAMES})

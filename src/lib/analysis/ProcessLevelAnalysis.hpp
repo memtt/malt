@@ -135,6 +135,7 @@ class ProcessLevelAnalysis : public ExitHooks, public MmapHooks, public ThreadHo
 		friend void convertToJson ( htopml::JsonState& json, const ProcessLevelAnalysis& value );
 	protected:
 		void runInfoToJson( htopml::JsonState& json ) const;
+		void loopSuppress(void);
 	private:
 		bool threadSafe;
 		Spinlock lock;

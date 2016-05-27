@@ -103,6 +103,7 @@ struct Options
 	bool outputJson;
 	bool outputCallgrind;
 	bool outputDumpConfig;
+	bool outputLoopSuppress;
 	//size map
 	bool distrAllocSize;
 	bool distrReallocJump;

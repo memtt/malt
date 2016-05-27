@@ -24,6 +24,17 @@ CallCounter::CallCounter ( void )
 }
 
 /*******************  FUNCTION  *********************/
+CallCounter& CallCounter::operator+=(const CallCounter& obj)
+{
+	this->sum += obj.sum;
+	this->count += obj.count;
+	if (obj.max > this->max)
+		this->max = obj.max;
+	if (obj.min < this->min)
+		this->min = obj.min;
+}
+
+/*******************  FUNCTION  *********************/
 void CallCounter::call ( ticks t )
 {
 	this->count++;

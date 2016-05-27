@@ -12,6 +12,7 @@
 #include "BacktraceStack.hpp"
 #include "EnterExitStack.hpp"
 #include "RLockFreeTree.hpp"
+#include "StackLoopRemover.hpp"
 #include <common/Debug.hpp>
 #include <common/Helpers.hpp>
 #include <allocators/NoFreeAllocator.hpp>
@@ -71,6 +72,7 @@ StackTreeMap::StackTreeMap(bool backtrace,bool threadsafe)
 	this->backtrace = backtrace;
 	this->threadSafe = threadsafe;
 	this->nextId = 0;
+	this->loopSuppress = false;
 }
 
 /*******************  FUNCTION  *********************/
@@ -101,6 +103,12 @@ StackTreeHandler StackTreeMap::exitFunction(StackTreeHandler handler, void* call
 	} else {
 		return handler;
 	}
+}
+
+/*******************  FUNCTION  *********************/
+void StackTreeMap::setLoopSuppress(void)
+{
+	this->loopSuppress = true;
 }
 
 /*******************  FUNCTION  *********************/
@@ -252,10 +260,33 @@ void convertToJson(htopml::JsonState& json, const StackTreeMap& tree)
 	for (int i = 0 ; i < MATT_STACK_TREE_ENTRIES ; i++)
 		if (tree.descriptors[i] != NULL)
 			otree.addDescriptor(tree.names[i],tree.descriptors[i]);
-		
-	//copy values
-	foreachConst(StackTreeMap::NodeMap,tree.map,it)
-		otree.copyData(*it->first.stack,it->second,it->first.dataId);
+	
+	if (tree.loopSuppress)
+	{
+		//search max size
+		int maxSize = 0;
+		foreachConst(StackTreeMap::NodeMap,tree.map,it)
+		{
+			const Stack * stack = it->first.stack;
+			if (stack->getSize() > maxSize)
+				maxSize = stack->getSize();
+		}
+	
+		//apply loop loopSuppress
+		StackLoopRemover remover(maxSize);
+		Stack tmpStack(STACK_ORDER_ASC);
+		foreachConst(StackTreeMap::NodeMap,tree.map,it)
+		{
+			const Stack * stack = it->first.stack;
+			tmpStack = *stack;
+			remover.removeLoops(tmpStack);
+			otree.mergeData(tmpStack,it->second,it->first.dataId);
+		}
+	} else {
+		//copy values
+		foreachConst(StackTreeMap::NodeMap,tree.map,it)
+			otree.copyData(*it->first.stack,it->second,it->first.dataId);
+	}
 	
 	otree.exitThread(handler);
 	otree.prepareForOutput();
