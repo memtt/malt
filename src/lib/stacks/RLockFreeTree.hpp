@@ -27,6 +27,9 @@ namespace htopml
 namespace MATT
 {
 
+/*********************  TYPES  **********************/
+typedef std::map<void*,void*> TreeAddressMap;
+
 /*********************  CLASS  **********************/
 /**
  * Define the node for RLockFreeTree.
@@ -57,6 +60,7 @@ struct RLockFreeTreeNode
 
 /*******************  FUNCTION  *********************/
 void convertToJson(htopml::JsonState & json, const RLockFreeTreeNode & tree);
+void convertToJson(htopml::JsonState & json, const TreeAddressMap & addrMap);
 
 /*********************  CLASS  **********************/
 /**
@@ -102,11 +106,13 @@ class RLockFreeTree : public StackTree
 		virtual void insertChild(RLockFreeTreeNode * parent,RLockFreeTreeNode * child);
 		void printData(htopml::JsonState & json,const RLockFreeTreeNode * node,int i) const;
 		void printData(htopml::JsonState & json,int i) const;
+		void computeAddrMap(MATT::RLockFreeTreeNode* node = NULL);
 	protected:
 		Spinlock lock;
 		bool threadSafe;
 		RLockFreeTreeNode root;
 		int lastDataId;
+		TreeAddressMap addrMap;
 };
 
 }

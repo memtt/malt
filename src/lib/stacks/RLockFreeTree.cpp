@@ -10,6 +10,7 @@
 #include "RLockFreeTree.hpp"
 #include <json/JsonState.h>
 #include <common/Debug.hpp>
+#include <common/Helpers.hpp>
 #include <core/SymbolRegistry.hpp>
 
 /*******************  NAMESPACE  ********************/
@@ -223,9 +224,31 @@ void* RLockFreeTree::getData ( StackTreeDataHandler dataHandler, int id )
 // }
 
 /*******************  FUNCTION  *********************/
+void convertToJson(htopml::JsonState & json, const TreeAddressMap & addrMap)
+{
+	json.openStruct();
+		foreachConst(TreeAddressMap,addrMap,it)
+		{
+			char buffer[64];
+			sprintf(buffer,"0x%p",it->first);
+			json.printField(buffer,it->second);
+		}
+	json.closeStruct();
+}
+
+/*******************  FUNCTION  *********************/
 void convertToJson(htopml::JsonState& json, const RLockFreeTree& tree)
 {
 	json.openStruct();
+		json.openFieldStruct("addrMap");
+			char buffer[64];
+			foreachConst(TreeAddressMap,tree.addrMap,it)
+			{
+				sprintf(buffer,"0x%p",it->first);
+				json.printField(buffer,it->second);
+			}
+		json.closeFieldStruct("addrMap");
+	
 		json.printField("calltree",tree.root);
 		json.openFieldStruct("data");
 		
@@ -319,6 +342,32 @@ bool RLockFreeTreeNode::hasData ( void )
 }
 
 /*******************  FUNCTION  *********************/
+void RLockFreeTree::computeAddrMap(RLockFreeTreeNode* node)
+{
+	//set root
+	if (node == NULL)
+		node = &this->root;
+	
+	//replace addr
+	void * addr = node->callSite;
+	void * finalAddr;
+	TreeAddressMap::iterator it = addrMap.find(addr);
+	if (it == addrMap.end())
+		finalAddr = addrMap[addr] = (void*)addrMap.size();
+	else
+		finalAddr = it->second;
+	node->callSite = finalAddr;
+	
+	//childs
+	RLockFreeTreeNode * cur = node->firstChild;
+	while(cur != NULL)
+	{
+		computeAddrMap(cur);
+		cur = cur->next;
+	}
+}
+
+/*******************  FUNCTION  *********************/
 void RLockFreeTree::markChildData ( MATT::RLockFreeTreeNode* node )
 {
 	//set root
@@ -349,6 +398,7 @@ void RLockFreeTree::markChildData ( MATT::RLockFreeTreeNode* node )
 void RLockFreeTree::prepareForOutput ( void )
 {
 	markChildData();
+	computeAddrMap();
 }
 
 /*******************  FUNCTION  *********************/
