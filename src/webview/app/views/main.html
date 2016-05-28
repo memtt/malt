@@ -1,23 +1,85 @@
-<div class="jumbotron">
-  <h1>'Allo, 'Allo!</h1>
-  <p class="lead">
-    <img src="images/yeoman.png" alt="I'm Yeoman"><br>
-    Always a pleasure scaffolding your apps.
-  </p>
-  <p><a class="btn btn-lg btn-success" ng-href="#/">Splendid!<span class="glyphicon glyphicon-ok"></span></a></p>
-</div>
+<div class="home">
 
-<div class="row marketing">
-  <h4>HTML5 Boilerplate</h4>
-  <p>
-    HTML5 Boilerplate is a professional front-end template for building fast, robust, and adaptable web apps or sites.
-  </p>
+	<div width='100%' height=''>
+		<div class="runinfo runinfo-time">
+			<div class='name'>Execution time</div>
+			<div class='value'>{{getFormattedExecTime()}}</div>
+		</div>
 
-  <h4>Angular</h4>
-  <p>
-    AngularJS is a toolset for building the framework most suited to your application development.
-  </p>
+	
+		<div class="runinfo runinfo-program">
+			<div class='name'>Allocation count</div>
+			<div class='value'>{{getFormattedValueFromKey('allocCount')}}</div>
+		</div>
 
-  <h4>Karma</h4>
-  <p>Spectacular Test Runner for JavaScript.</p>
+		<div class="runinfo runinfo-avail-mem">
+			<div class='name'>Virtual / Requested / Physical memory peak</div>
+			<div class='value'>{{getFormattedValueFromKey('peakVirtualMemory')}} / {{getFormattedValueFromKey('peakRequestedMemory')}} / {{getFormattedValueFromKey('peakPhysicalMemory')}}</div>
+		</div>
+		
+		<div class="runinfo runinfo-used-mem">
+			<div class='name'>Available physical memory</div>
+			<div class='value'>{{getFormattedTotalMemory()}}</div>
+		</div>
+		<!-- To clear float issue -->
+		<div width='100%' style='clear:both;'></div>
+	</div>
+
+	<h2>Run description</h2>
+	
+	
+	<table class='table table-bordered'>
+			<tr>
+				<td>Executable :</td>
+				<td>{{summaryData.run.exe}}</td>
+			</tr><tr>
+				<td>Commande :</td>
+				<td><pre>{{summaryData.run.command}}</pre></td>
+			</tr><tr>
+				<td>Tool :</td>
+				<td>{{summaryData.run.tool}}</td>
+			</tr><tr>
+				<td>Host :</td>
+				<td>{{summaryData.run.hostname}}</td>
+			</tr>
+			</tr><tr>
+				<td>Date :</td>
+				<td>{{summaryData.run.date}}</td>
+			</tr><tr>
+				<td>Execution time :</td>
+				<td>{{getFormattedExecTime()}}</td>
+			</tr><tr>
+				<td>Ticks frequency :</td>
+				<td>{{getFormattedCpuFreq()}}</td>
+			</tr>
+		</table>
+
+	<h2>Global statistics</h2>
+
+	<input type='button' ng-click='toogleSummaryDetails()' value='{{displaySummaryLevel == 1 ? "Show all details" : "Hide details"}}'/>
+	<input type='button' ng-click='displaySummaryHelp = !displaySummaryHelp' value='{{!displaySummaryHelp ? "Show help" : "Hide help"}}'/>
+	<table class='table table-bordered'>
+		<tr ng-repeat="entry in summaryViewEntries | summaryLevel:displaySummaryLevel:summaryData.summaryWarnings" ng-class="{'matt-has-warning': hasSummaryWarnings(entry.key)}">
+			<td class='matt-name'>{{entry.name}}</td>
+			<td class='matt-value'>
+				{{getFormattedValue(entry)}}
+				<img src='http://www.pinsound.org/wp-content/uploads/2013/07/warning.png' ng-repeat="warning in summaryData.summaryWarnings[entry.key]" title="{{warning}}" data-container="body" data-content="{{warning}}" width='24px'/>
+				<!--<button class='btn btn-lg popover-dismiss' ng-repeat="warning in summaryData.summaryWarnings[entry.key]" data-trigger="hover" data-toggle="popover" data-container="body" data-content="{{warning}}" title="test">text</button>-->
+			</td>
+			<td class='matt-help' ng-class="{'matt-hidden': !displaySummaryHelp}">{{entry.help}}</td><tr>
+		</tr>
+	</table>
+	
+	<h2>Allocation count</h2>
+	<matthomefunclist metric='alloc.count' inclusive='false' functions='functions' limit='5'></matthomefunclist>
+	
+	<h2>Cumulated allocations</h2>
+	<matthomefunclist metric='alloc.sum' inclusive='false' functions='functions' limit='5'></matthomefunclist>
+	
+	<h2>Memory usage on peak</h2>
+	<matthomefunclist metric='peakmem.global' inclusive='false' functions='functions' limit='5'></matthomefunclist>
+	
+	<h2>Leaks</h2>
+	<matthomefunclist metric='leaks' inclusive='false' functions='functions' limit='5'></matthomefunclist>
+
 </div>
