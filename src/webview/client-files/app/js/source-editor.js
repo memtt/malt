@@ -24,7 +24,7 @@ function MaltSourceEditor(containerId,selector)
 	this.selector = selector;
 
 	//make rendering
-	this.initRentering();
+	// this.initRentering();
 }
 
 /********************************************************************/
@@ -35,33 +35,37 @@ MaltSourceEditor.prototype.onClick = function(infos)
 }
 
 /********************************************************************/
-MaltSourceEditor.prototype.initRentering = function()
-{
-	//create code mirror
-	this.editor = CodeMirror(this.container,{
-		value: "//Failed to load file\n",
-		mode:  "clike",
-		lineNumbers: true,
-		//theme:'lesser-dark',
-		theme:'eclipse',
-		indentWithTabs:true,
-		fixedGutter:true,
-		readOnly:true,
-		styleActiveLine: true,
-		gutters: ["malt-annotations","CodeMirror-linenumbers"]
-	});
-}
+// MaltSourceEditor.prototype.initRentering = function()
+// {
+// 	//create code mirror
+// 	this.editor = CodeMirror(this.container,{
+// 		value: "//Failed to load file\n",
+// 		mode:  "clike",
+// 		lineNumbers: true,
+// 		//theme:'lesser-dark',
+// 		theme:'eclipse',
+// 		indentWithTabs:true,
+// 		fixedGutter:true,
+// 		readOnly:true,
+// 		styleActiveLine: true,
+// 		gutters: ["malt-annotations","CodeMirror-linenumbers"]
+// 	});
+// }
 
 /********************************************************************/
 MaltSourceEditor.prototype.doPostMove = function()
 {
 	if (this.postMove.type == 'line' && this.postMove.line != -1)
 	{
-		this.editor.setCursor(this.postMove.line-1);
+		// this.editor.setCursor(this.postMove.line-1);
+		Prism.plugins.codeAnnotator.scrollToAndHighlight(
+			document.getElementById("malt-source-editor-box"), this.postMove.line);
 	} else if (this.postMove.type == 'func') {
 		var line = this.findLargestAnnot(this.file,this.postMove.func);
 		if (line != -1)
-			this.editor.setCursor(line-1);
+			Prism.plugins.codeAnnotator.scrollToAndHighlight(
+				document.getElementById("malt-source-editor-box"), line);
+
 	}
 }
 
@@ -102,19 +106,33 @@ MaltSourceEditor.prototype.moveToFile = function(file)
 		this.doPostMove();
 		return;
 	}
+
+	var tagsToReplace = {
+	    '&': '&amp;',
+	    '<': '&lt;',
+	    '>': '&gt;'
+	};
+
+	function replaceTag(tag) {
+	    return tagsToReplace[tag] || tag;
+	}
+
+	function safe_tags_replace(str) {
+	    return str.replace(/[&<>]/g, replaceTag);
+	}
 	
 	//load the new file in editor
 	if(file == '??' || file == '' || file == undefined)
 	{
-		this.editor.setValue("//Uknown source file, maybe debug informations are missing !\n");
-		this.editor.setCursor(1);
-		this.file = null;
+		this.file = file;
+		alert("No source file found.");
 	} else {
 		var cur = this;
 		maltDataSource.loadSourceFile(file,function(data){
-			cur.editor.setOption("mode",cur.getColorationType(file));
-			cur.editor.setValue(data);
-			cur.editor.setCursor(1);
+			document.getElementById("malt-source-editor").innerHTML = '<pre class="line-numbers"><code id="malt-source-editor-box" class="language-cpp">' +
+				safe_tags_replace(data) + '</code></pre>';
+			cur.syntaxHighlighterEle = document.getElementById("malt-source-editor-box");
+			Prism.highlightElement(cur.syntaxHighlighterEle);
 			cur.file = file;
 			cur.updateAnotations();
 		});
@@ -122,14 +140,14 @@ MaltSourceEditor.prototype.moveToFile = function(file)
 }
 
 /********************************************************************/
-MaltSourceEditor.prototype.moveToFileLine = function(file,line)
-{
-	if (line != -1)
-		this.postMove = {type:'line',line:line};
-	else
-		this.postMove = {};
-	this.moveToFile(file);
-}
+// MaltSourceEditor.prototype.moveToFileLine = function(file,line)
+// {
+// 	if (line != -1)
+// 		this.postMove = {type:'line',line:line};
+// 	else
+// 		this.postMove = {};
+// 	this.moveToFile(file);
+// }
 
 /********************************************************************/
 MaltSourceEditor.prototype.findLargestAnnot = function(file,func)
@@ -210,93 +228,93 @@ MaltSourceEditor.prototype.internalComputeTotal = function(value)
 
 /********************************************************************/
 //extract max
-MaltSourceEditor.prototype.extractMax = function(data)
-{
-	//setup some vars
-	var max = 0;
-// 	var mode = this.selector.mode;
-// 	var metric = this.selector.getMetric();
+// MaltSourceEditor.prototype.extractMax = function(data)
+// {
+// 	//setup some vars
+// 	var max = 0;
+// // 	var mode = this.selector.mode;
+// // 	var metric = this.selector.getMetric();
 
-	//loop on all datas
-	for (var i in data)
-	{
-		//var value = data[i][mode];
-		var value = this.selector.getValue(data[i]);
-		if (value != undefined)
-		{
-			//var value = metric.extractor(value);
-			if (value != undefined && value > max)
-				max = value;
-		}
-	}
+// 	//loop on all datas
+// 	for (var i in data)
+// 	{
+// 		//var value = data[i][mode];
+// 		var value = this.selector.getValue(data[i]);
+// 		if (value != undefined)
+// 		{
+// 			//var value = metric.extractor(value);
+// 			if (value != undefined && value > max)
+// 				max = value;
+// 		}
+// 	}
 	
-	//return max
-	return max;
-}
+// 	//return max
+// 	return max;
+// }
 
 /********************************************************************/
 /**
  * Build a marker HTML DOM do be insert as annotations into codemirror
 **/
-MaltSourceEditor.prototype.makeMarker = function(data,max,colorScale) {
+// MaltSourceEditor.prototype.makeMarker = function(data,max,colorScale) {
 
-	//some local vars
-// 	var mode = this.selector.mode;
-// 	var metric = this.selector.getMetric();
+// 	//some local vars
+// // 	var mode = this.selector.mode;
+// // 	var metric = this.selector.getMetric();
 	
-	//no data
-// 	if (data[mode] == undefined)
-// 		return null;
+// 	//no data
+// // 	if (data[mode] == undefined)
+// // 		return null;
 		
-	//extract value
-	//var value = metric.extractor(data[mode]);
-	var value = this.selector.getValue(data);
-	if (value == undefined || value == 0)
-		return null;
+// 	//extract value
+// 	//var value = metric.extractor(data[mode]);
+// 	var value = this.selector.getValue(data);
+// 	if (value == undefined || value == 0)
+// 		return null;
 
-	//create marker DIV
-	var marker = document.createElement("div");
+// 	//create marker DIV
+// 	var marker = document.createElement("div");
 	
-	//select basic 3 colors (TO REMOVE)
-	if (value < max / 3.0)
-		marker.className = 'malt-annotation-small';
-	else if (value < 2.0 * max / 3.0 )
-		marker.className = 'malt-annotation-medium';
-	else
-		marker.className = 'malt-annotation-large';
+// 	//select basic 3 colors (TO REMOVE)
+// 	if (value < max / 3.0)
+// 		marker.className = 'malt-annotation-small';
+// 	else if (value < 2.0 * max / 3.0 )
+// 		marker.className = 'malt-annotation-medium';
+// 	else
+// 		marker.className = 'malt-annotation-large';
 	
-	//apply color gradiant
-	marker.style = "background-color:"+colorScale(value);
+// 	//apply color gradiant
+// 	marker.style = "background-color:"+colorScale(value);
 	
-	//setup values
-	//marker.innerHTML = this.maltHumanValue(value,metric.unit);
-	marker.innerHTML = this.selector.getFormattedValue(data);
-	marker.maltData = data;
+// 	//setup values
+// 	//marker.innerHTML = this.maltHumanValue(value,metric.unit);
+// 	marker.innerHTML = this.selector.getFormattedValue(data);
+// 	marker.maltData = data;
 	
-	//manage onclick
-	var cur = this;
-	marker.onclick = function() {
-		cur.onClick(this.maltData);
-	};
+// 	//manage onclick
+// 	var cur = this;
+// 	marker.onclick = function() {
+// 		cur.onClick(this.maltData);
+// 	};
 	
-	//ok return
-	return marker;
-}
+// 	//ok return
+// 	return marker;
+// }
 
 /********************************************************************/
-var MALT_POWER = ['&nbsp;','K','M','G','T','P'];
-MaltSourceEditor.prototype.maltHumanValue = function(value,unit)
-{
-	var power = 0;
-	while (value >= 1024)
-	{
-		power++;
-		value /= 1024;
-	}
+// var MALT_POWER = ['&nbsp;','K','M','G','T','P'];
+// MaltSourceEditor.prototype.maltHumanValue = function(value,unit)
+// {
+// 	var power = 0;
+// 	while (value >= 1024)
+// 	{
+// 		power++;
+// 		value /= 1024;
+// 	}
 
-	//return value.toFixed(1) + " " + MALT_POWER[power] + data.unit;
-	return Math.round(value) + " " + MALT_POWER[power] + unit;
-}
+// 	//return value.toFixed(1) + " " + MALT_POWER[power] + data.unit;
+// 	return Math.round(value) + " " + MALT_POWER[power] + unit;
+// }
 
 /********************************************************************/
 //update anotations
@@ -329,17 +347,29 @@ MaltSourceEditor.prototype.updateAnotations = function()
 MaltSourceEditor.prototype.redrawAnnotations = function()
 {
 	//clear old
-	this.editor.clearGutter();
+	// this.editor.clearGutter();
 	
 	//search max to compute color gradiant
-	var max = this.extractMax(this.data);
+	// var max = this.extractMax(this.data);
 	
 	//use D3JS for color gradiant from blue -> red
-	var colorScale = d3.scale.linear()
-		.range(["#397EBA","#FF9595"])
-		.domain([0,max]);
+	// var colorScale = d3.scale.linear()
+	// 	.range(["#397EBA","#FF9595"])
+	// 	.domain([0,max]);
 	
 	//insert all markers
-	for (var i in this.data)
-		this.editor.setGutterMarker(this.data[i].line-1, "malt-annotations",this.makeMarker(this.data[i],max,colorScale));
+	var cur = this;
+	for (var i in this.data) {
+		Prism.plugins.codeAnnotator.add(this.syntaxHighlighterEle, {
+			line: this.data[i].line, 
+			text: this.selector.getFormattedValue(this.data[i]), 
+			class: "line-annotate-small",
+			onClick: function(ele, data) {
+				// console.log("bru bru bru");
+				cur.onClick(data.data)
+			},
+			data: this.data[i]
+		});
+		// this.editor.setGutterMarker(this.data[i].line-1, "malt-annotations",this.makeMarker(this.data[i],max,colorScale));
+	}
 }
