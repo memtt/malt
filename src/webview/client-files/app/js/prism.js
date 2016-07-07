@@ -914,6 +914,7 @@ Prism.plugins.codeAnnotator = {
 		line.innerHTML = "<span>" + data.text + "</span>";
 		line.className = (data.class || '') + ' line-annotate';
 		line.style.top = (data.line - offset - 1) * lineHeight + 'px';
+		data.color && (line.style.backgroundColor = data.color);
 		data.onClick && line.addEventListener("click", this.__clickEventHandler);
 	    element.appendChild(line);
 
@@ -948,8 +949,6 @@ Prism.plugins.codeAnnotator = {
 		var parseMethod = isLineHeightRounded() ? parseInt : parseFloat;
 		var lineHeight = parseMethod(getComputedStyle(pre).lineHeight);
 		var preScroll = (lineNo - offset - 1) * lineHeight;
-		console.log(preScroll);
-		console.log(pre);
 		pre.scrollTop = preScroll;
 	},
 

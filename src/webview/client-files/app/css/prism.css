@@ -241,6 +241,11 @@ pre.line-numbers > code {
     line-height: 1.2em;
 }
 
+.line-annotate:hover, .line-annotate:focus {
+    color: #ffffff;
+	text-decoration: none;
+}
+
 .line-annotate > span {
 	font-size: 0.8em;
 	font-weight: bold;

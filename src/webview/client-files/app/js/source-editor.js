@@ -22,9 +22,6 @@ function MaltSourceEditor(containerId,selector)
 	this.data = null;
 	this.postMove = null;
 	this.selector = selector;
-
-	//make rendering
-	// this.initRentering();
 }
 
 /********************************************************************/
@@ -33,24 +30,6 @@ MaltSourceEditor.prototype.onClick = function(infos)
 {
 	alert(JSON.stringify(infos,null,'\t'));
 }
-
-/********************************************************************/
-// MaltSourceEditor.prototype.initRentering = function()
-// {
-// 	//create code mirror
-// 	this.editor = CodeMirror(this.container,{
-// 		value: "//Failed to load file\n",
-// 		mode:  "clike",
-// 		lineNumbers: true,
-// 		//theme:'lesser-dark',
-// 		theme:'eclipse',
-// 		indentWithTabs:true,
-// 		fixedGutter:true,
-// 		readOnly:true,
-// 		styleActiveLine: true,
-// 		gutters: ["malt-annotations","CodeMirror-linenumbers"]
-// 	});
-// }
 
 /********************************************************************/
 MaltSourceEditor.prototype.doPostMove = function()
@@ -70,7 +49,7 @@ MaltSourceEditor.prototype.doPostMove = function()
 }
 
 /********************************************************************/
-MaltSourceEditor.prototype.getColorationType = function(filename)
+MaltSourceEditor.prototype.getLanguage = function(filename)
 {
 	//set mode
 	var ext = (/[.]/.exec(filename)) ? /[^.]+$/.exec(filename) : undefined;
@@ -82,7 +61,7 @@ MaltSourceEditor.prototype.getColorationType = function(filename)
 		case 'f':
 		case 'f90':
 		case 'f77':
-			return "fortran";
+			return "Fortran";
 		case 'c':
 		case 'h':
 		case 'cxx':
@@ -91,9 +70,28 @@ MaltSourceEditor.prototype.getColorationType = function(filename)
 		case 'h++':
 		case 'hpp':
 		case 'ainsic':
-			return "clike";
+			return "C++";
+		case 'py':
+			return "Python";
 		default:
-			return "clike";
+			return "C++";
+	}
+}
+
+/********************************************************************/
+MaltSourceEditor.prototype.getLanguageClassForHighlighter = function(name) {
+	name = name.toLowerCase();
+	switch(name) 
+	{
+		case 'fortan':
+			return 'language-fortran';
+		case 'c':
+		case 'c++':
+			return 'language-cpp';
+		case 'python':
+			return 'language-python';
+		default:
+			return '';
 	}
 }
 
@@ -125,11 +123,13 @@ MaltSourceEditor.prototype.moveToFile = function(file)
 	if(file == '??' || file == '' || file == undefined)
 	{
 		this.file = file;
-		alert("No source file found.");
+		// alert("No source file found.");
 	} else {
 		var cur = this;
 		maltDataSource.loadSourceFile(file,function(data){
-			document.getElementById("malt-source-editor").innerHTML = '<pre class="line-numbers"><code id="malt-source-editor-box" class="language-cpp">' +
+			document.getElementById("malt-source-editor").innerHTML = 
+				'<pre class="line-numbers"><code id="malt-source-editor-box" class="' + 
+				cur.getLanguageClassForHighlighter(cur.getLanguage(file)) + '">' +
 				safe_tags_replace(data) + '</code></pre>';
 			cur.syntaxHighlighterEle = document.getElementById("malt-source-editor-box");
 			Prism.highlightElement(cur.syntaxHighlighterEle);
@@ -140,21 +140,9 @@ MaltSourceEditor.prototype.moveToFile = function(file)
 }
 
 /********************************************************************/
-// MaltSourceEditor.prototype.moveToFileLine = function(file,line)
-// {
-// 	if (line != -1)
-// 		this.postMove = {type:'line',line:line};
-// 	else
-// 		this.postMove = {};
-// 	this.moveToFile(file);
-// }
-
-/********************************************************************/
 MaltSourceEditor.prototype.findLargestAnnot = function(file,func)
 {
 	var line = -1;
-// 	var metric = this.selector.metric;
-// 	var mode = this.selector.mode;
 	var max = 0;
 
 	for (var i in this.data)
@@ -164,7 +152,6 @@ MaltSourceEditor.prototype.findLargestAnnot = function(file,func)
 
 		if (value != undefined && this.data[i].file == file && this.data[i].function == func)
 		{
-			//value = metric.extractor(value);
 			if (value > max)
 			{
 				max = value;
@@ -228,93 +215,25 @@ MaltSourceEditor.prototype.internalComputeTotal = function(value)
 
 /********************************************************************/
 //extract max
-// MaltSourceEditor.prototype.extractMax = function(data)
-// {
-// 	//setup some vars
-// 	var max = 0;
-// // 	var mode = this.selector.mode;
-// // 	var metric = this.selector.getMetric();
+MaltSourceEditor.prototype.extractMax = function(data)
+{
+	//setup some vars
+	var max = 0;
 
-// 	//loop on all datas
-// 	for (var i in data)
-// 	{
-// 		//var value = data[i][mode];
-// 		var value = this.selector.getValue(data[i]);
-// 		if (value != undefined)
-// 		{
-// 			//var value = metric.extractor(value);
-// 			if (value != undefined && value > max)
-// 				max = value;
-// 		}
-// 	}
+	//loop on all datas
+	for (var i in data)
+	{
+		var value = this.selector.getValue(data[i]);
+		if (value != undefined)
+		{
+			if (value != undefined && value > max)
+				max = value;
+		}
+	}
 	
-// 	//return max
-// 	return max;
-// }
-
-/********************************************************************/
-/**
- * Build a marker HTML DOM do be insert as annotations into codemirror
-**/
-// MaltSourceEditor.prototype.makeMarker = function(data,max,colorScale) {
-
-// 	//some local vars
-// // 	var mode = this.selector.mode;
-// // 	var metric = this.selector.getMetric();
-	
-// 	//no data
-// // 	if (data[mode] == undefined)
-// // 		return null;
-		
-// 	//extract value
-// 	//var value = metric.extractor(data[mode]);
-// 	var value = this.selector.getValue(data);
-// 	if (value == undefined || value == 0)
-// 		return null;
-
-// 	//create marker DIV
-// 	var marker = document.createElement("div");
-	
-// 	//select basic 3 colors (TO REMOVE)
-// 	if (value < max / 3.0)
-// 		marker.className = 'malt-annotation-small';
-// 	else if (value < 2.0 * max / 3.0 )
-// 		marker.className = 'malt-annotation-medium';
-// 	else
-// 		marker.className = 'malt-annotation-large';
-	
-// 	//apply color gradiant
-// 	marker.style = "background-color:"+colorScale(value);
-	
-// 	//setup values
-// 	//marker.innerHTML = this.maltHumanValue(value,metric.unit);
-// 	marker.innerHTML = this.selector.getFormattedValue(data);
-// 	marker.maltData = data;
-	
-// 	//manage onclick
-// 	var cur = this;
-// 	marker.onclick = function() {
-// 		cur.onClick(this.maltData);
-// 	};
-	
-// 	//ok return
-// 	return marker;
-// }
-
-/********************************************************************/
-// var MALT_POWER = ['&nbsp;','K','M','G','T','P'];
-// MaltSourceEditor.prototype.maltHumanValue = function(value,unit)
-// {
-// 	var power = 0;
-// 	while (value >= 1024)
-// 	{
-// 		power++;
-// 		value /= 1024;
-// 	}
-
-// 	//return value.toFixed(1) + " " + MALT_POWER[power] + data.unit;
-// 	return Math.round(value) + " " + MALT_POWER[power] + unit;
-// }
+	//return max
+	return max;
+}
 
 /********************************************************************/
 //update anotations
@@ -346,16 +265,13 @@ MaltSourceEditor.prototype.updateAnotations = function()
 /********************************************************************/
 MaltSourceEditor.prototype.redrawAnnotations = function()
 {
-	//clear old
-	// this.editor.clearGutter();
-	
 	//search max to compute color gradiant
-	// var max = this.extractMax(this.data);
+	var max = this.extractMax(this.data);
 	
 	//use D3JS for color gradiant from blue -> red
-	// var colorScale = d3.scale.linear()
-	// 	.range(["#397EBA","#FF9595"])
-	// 	.domain([0,max]);
+	var colorScale = d3.scale.linear()
+		.range(["#397EBA","#FF9595"])
+		.domain([0,max]);
 	
 	//insert all markers
 	var cur = this;
@@ -363,13 +279,12 @@ MaltSourceEditor.prototype.redrawAnnotations = function()
 		Prism.plugins.codeAnnotator.add(this.syntaxHighlighterEle, {
 			line: this.data[i].line, 
 			text: this.selector.getFormattedValue(this.data[i]), 
-			class: "line-annotate-small",
+			// class: "line-annotate-small",
+			color: colorScale(this.selector.getValue(this.data[i])),
 			onClick: function(ele, data) {
-				// console.log("bru bru bru");
 				cur.onClick(data.data)
 			},
-			data: this.data[i]
+			data: this.data[i],
 		});
-		// this.editor.setGutterMarker(this.data[i].line-1, "malt-annotations",this.makeMarker(this.data[i],max,colorScale));
 	}
 }
