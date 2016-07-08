@@ -2,7 +2,6 @@ var maltApp = angular.module('malt.app', [
   'ngRoute',
   'malt.controlers',
   'malt.anim',
-  'ui.codemirror',
   'malt.page.home',
   'malt.page.globalVars',
   'malt.page.allocSizeDistr',
