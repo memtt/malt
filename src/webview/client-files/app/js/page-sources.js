@@ -31,7 +31,8 @@ function MaltPageTimeline()
 		
 		$scope.hasSources = function() 
 		{
-			return ($scope.file == "No source file..." || $scope.file == "??");
+			return ($scope.file == "No source file..." || $scope.file == "??" 
+				|| $scope.file == '' || $scope.file == undefined);
 		}
 		
 		$scope.orderBtnStatus = function()

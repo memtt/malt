@@ -967,15 +967,6 @@ Prism.plugins.codeAnnotator = {
 		line.textContent = " ";
 		line.className = 'line-highlight';
 
-	    //if the line-numbers plugin is enabled, then there is no reason for this plugin to display the line numbers
-	    if(!hasClass(pre, 'line-numbers')) {
-	      line.setAttribute('data-start', start);
-
-	      if(end > start) {
-	        line.setAttribute('data-end', end);
-	      }
-	    }
-
 		line.style.top = (lineNo - 1) * lineHeight + 'px';
 
 	    //allow this to play nicely with the line-numbers plugin

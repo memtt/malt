@@ -12,6 +12,7 @@ function MaltSourceEditor(containerId,selector)
 	//setup container
 	this.containerId = containerId;
 	this.container = document.getElementById(containerId);
+	this.syntaxHighlighterEle = null;
 	
 	//check and link
 	//maltHelper.assert(this.container != undefined);
@@ -38,12 +39,12 @@ MaltSourceEditor.prototype.doPostMove = function()
 	{
 		// this.editor.setCursor(this.postMove.line-1);
 		Prism.plugins.codeAnnotator.scrollToAndHighlight(
-			document.getElementById("malt-source-editor-box"), this.postMove.line);
+			this.syntaxHighlighterEle, this.postMove.line);
 	} else if (this.postMove.type == 'func') {
 		var line = this.findLargestAnnot(this.file,this.postMove.func);
 		if (line != -1)
 			Prism.plugins.codeAnnotator.scrollToAndHighlight(
-				document.getElementById("malt-source-editor-box"), line);
+				this.syntaxHighlighterEle, line);
 
 	}
 }
@@ -122,16 +123,15 @@ MaltSourceEditor.prototype.moveToFile = function(file)
 	//load the new file in editor
 	if(file == '??' || file == '' || file == undefined)
 	{
-		this.file = file;
-		// alert("No source file found.");
+		return;
 	} else {
 		var cur = this;
 		maltDataSource.loadSourceFile(file,function(data){
-			document.getElementById("malt-source-editor").innerHTML = 
-				'<pre class="line-numbers"><code id="malt-source-editor-box" class="' + 
+			cur.container.innerHTML = 
+				'<pre class="line-numbers"><code class="' + 
 				cur.getLanguageClassForHighlighter(cur.getLanguage(file)) + '">' +
 				safe_tags_replace(data) + '</code></pre>';
-			cur.syntaxHighlighterEle = document.getElementById("malt-source-editor-box");
+			cur.syntaxHighlighterEle = cur.container.getElementsByTagName("code")[0];
 			Prism.highlightElement(cur.syntaxHighlighterEle);
 			cur.file = file;
 			cur.updateAnotations();
