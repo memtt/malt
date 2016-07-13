@@ -94,6 +94,7 @@ MaltCallStacksView.prototype.updateFunc = function(func)
 			var tree = cur.buildCallTree(data);
 			cur.addToTree(tree);
 			cur.tree = tree;
+
 		}
 	});
 }

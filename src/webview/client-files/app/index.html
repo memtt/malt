@@ -39,6 +39,10 @@
 	<!-- File saver -->
 	<script type="text/javascript" src="bower_components/file-saver/FileSaver.min.js"></script>
 	
+	<!-- File saver -->
+	<link rel="stylesheet" type="text/css" href="bower_components/vis/dist/vis.min.css">
+	<script type="text/javascript" src="bower_components/vis/dist/vis.min.js"></script>
+	
 	<!-- use of d3js/nvd3 for graphs -->
 	<script src="bower_components/d3/d3.min.js"></script>
 	<script src="bower_components/nvd3/build/nv.d3.min.js"></script>
@@ -67,6 +71,7 @@
 	<script src="js/page-timeline.js"></script>
 	<script src="js/page-sources.js"></script>
 	<script src="js/page-per-thread.js"></script>
+	<script src="js/page-calltree.js"></script>
 	
 	<!-- MALT OLD CSS -->
 	<link href='css/old-style-to-cleanup.css' rel="stylesheet">
@@ -95,6 +100,7 @@
 					<li ng-class="{ active: route.current.pageKey == 'per-thread'}"><a href="#/per-thread">Threads</a></li>
 <!-- 					<li><a href="/source-profile.html">Alloc sites</a></li> -->
 					<li ng-class="{ active: route.current.pageKey == 'sources'}"><a href="#/sources">Sources</a></li>
+					<li ng-class="{ active: route.current.pageKey == 'calltree'}"><a href="#/calltree">Calltree</a></li>
 					<li ng-class="{ active: route.current.pageKey == 'timeline'}"><a href="#/timeline">Timeline analysis</a></li>
 <!-- 					<li><a href="/max-stack.html">Stack</a></li> -->
 					<li ng-class="{ active: route.current.pageKey == 'stackPeaks'}"><a href="#/stackPeaks">Stack memory</a></li>
