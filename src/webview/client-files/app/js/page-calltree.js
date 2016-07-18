@@ -131,12 +131,34 @@ function MaltPageCallTree()
 			vertices = treeDataSet.edges;
 		var nodesArr = [], verticeArr = [];
 		for (var i = 0; i < nodes.length; i++) {
-			nodesArr.push("node" + nodes[i].id + "[shape=record,label=\"" + nodes[i].label.trim() + " | " + nodes[i].score +"\"]");
+			nodesArr.push("node" + nodes[i].id + "[shape=record,label=\"" + nodes[i].label.trim() + " | " + nodes[i].score +"\",style=filled,color=white,fontcolor=white,fillcolor=\"" + nodes[i].color +"\"]");
 		}
 		for (var i = 0; i < vertices.length; i++) {
 			verticeArr.push("node" + vertices[i].from + " -> node" + vertices[i].to);
 		}
 		return "digraph G {\nnode[shape=\"box\",fontname=\"Courier New\", fontsize=\"12\"];\n" + nodesArr.join(";\n") + ";\n" + verticeArr.join(";\n") + ";\}";
+	}
+
+	function addColorCodes(dataset) {
+		var nodes = dataset.nodes;
+		var max = -1;
+
+		// find max
+		for (var i = 0; i < nodes.length; i++) {
+			if(nodes[i].score > max) {
+				max = nodes[i].score;
+			}
+		}
+
+		// generate a mapping function from [0-max] onto [#397EBA,#FF9595]
+		var colorScale = d3.scale.linear()
+			.range(["#397EBA","#ab4141"])
+			.domain([0,max]);
+
+		// assign colors
+		for (var i = 0; i < nodes.length; i++) {
+			nodes[i].color = colorScale(nodes[i].score);
+		}
 	}
 
 	maltCtrl.controller('malt.page.calltree.ctrl',['$scope','$routeParams','$http', function($scope,$routeParams,$http) {
@@ -153,6 +175,7 @@ function MaltPageCallTree()
 				dataset.nodes[i].label = dataset.nodes[i].label + '\n';
 			}
 
+			addColorCodes(dataset);
 			var src = generateDotCode(dataset);
 			console.log(src);
 			var result = Viz(src, { format:"svg", engine:"dot" });
