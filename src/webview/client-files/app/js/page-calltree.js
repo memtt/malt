@@ -1,6 +1,31 @@
 function MaltPageCallTree() 
 {
-	/****************************************************/
+	function SimpleCache() {
+		this.cache = [];
+		this.id = 1;
+
+		this.exists = function(value) {
+			if(this.cache[value] === undefined)
+				return false;
+			return true;
+		}
+
+		this.put = function(value) {
+			if(this.exists(value))
+				return this.cache[value];
+			this.cache[value] = this.id++;
+			return this.cache[value];
+		}
+
+		this.get = function(value) {
+			if(!this.exists(value))
+				return false;
+			return this.cache[value];
+		}
+
+		return this;
+	}
+
 	function reduceStat(node,info)
 	{
 		if(node.info == undefined)
@@ -9,7 +34,6 @@ function MaltPageCallTree()
 			maltHelper.mergeStackInfoDatas(node.info,info);
 	}
 
-	/****************************************************/
 	function buildCallTree(data)
 	{
 		var tree = {childs:{},id:null};
@@ -39,41 +63,61 @@ function MaltPageCallTree()
 				+ location.line;
 	}
 
-	function generateNodesAndVertices(tree, level, nodes, vertices, cache)
+	function generateNodesAndVertices(tree, level, nodes, vertices, nodeCache, vertCache)
 	{
 		var identifier = null;
+		var currentId = null;
+
 
 		if(tree.location) {
+			// Remove libmalt.so related functions captured in call tree
+			if(tree.location.binary.endsWith("libmalt.so"))
+				return null;
+
+			// Remove useless nodes
+			if(tree.info.alloc.count == 0)
+				return null;
+
 			identifier = getIdentifier(tree.location);
 
-			// if(cache[identifier] === undefined) {
+			// Add node to node-list if this is a new node
+			if(!nodeCache.exists(identifier)) {
+				currentId = nodeCache.put(identifier);
+				
 				nodes.push({
-					id: tree.id,
+					id: currentId,
 					label: tree.location.function,
 					level: level,
 					score: tree.info.alloc.count
 				});
+			} else {
+				currentId = nodeCache.get(identifier);
+			}
+		} 
 
-			// 	cache[identifier] = true;	
-			// }
-		}
-
+		// Create edge from this node to all its children
 		for (var i in tree.childs) {
 			if(identifier !=  null) {
-				vertices.push({
-					from: tree.id,
-					to: tree.childs[i].id
-				});
+				var childId = generateNodesAndVertices(tree.childs[i], level + 1, nodes, vertices, nodeCache, vertCache);
+				if(childId != null && !vertCache.exists(currentId + "," + childId)) {
+					vertCache.put(currentId + "," + childId);
+					vertices.push({
+						from: currentId,
+						to: childId
+					});					
+				}
+			} else {
+				generateNodesAndVertices(tree.childs[i], level + 1, nodes, vertices, nodeCache, vertCache);
 			}
-
-			generateNodesAndVertices(tree.childs[i], level + 1, nodes, vertices, cache);
 		}
+
+		return currentId;
 	}
 
 	function generateTreeDataSet(tree) 
 	{
 		var nodes = [], vertices= [];
-		generateNodesAndVertices(tree, 0, nodes, vertices, []);
+		generateNodesAndVertices(tree, 0, nodes, vertices, new SimpleCache(), new SimpleCache());
 
 		return {
 			nodes: nodes, 
@@ -81,54 +125,21 @@ function MaltPageCallTree()
 		};
 	}
 
+	function generateDotCode(treeDataSet)
+	{
+		var nodes = treeDataSet.nodes,
+			vertices = treeDataSet.edges;
+		var nodesArr = [], verticeArr = [];
+		for (var i = 0; i < nodes.length; i++) {
+			nodesArr.push("node" + nodes[i].id + "[shape=record,label=\"" + nodes[i].label.trim() + " | " + nodes[i].score +"\"]");
+		}
+		for (var i = 0; i < vertices.length; i++) {
+			verticeArr.push("node" + vertices[i].from + " -> node" + vertices[i].to);
+		}
+		return "digraph G {\nnode[shape=\"box\",fontname=\"Courier New\", fontsize=\"12\"];\n" + nodesArr.join(";\n") + ";\n" + verticeArr.join(";\n") + ";\}";
+	}
+
 	maltCtrl.controller('malt.page.calltree.ctrl',['$scope','$routeParams','$http', function($scope,$routeParams,$http) {
-		$scope.hellotext = "meow";
-
-		var options = {
-			nodes: {
-				shape: 'box',
-				shapeProperties: {
-					"borderRadius": 1
-				},
-				font: {
-					"size": 14,
-					"face": '"Lucida Console", Monaco, monospace'
-				},     
-				"shadow": {
-					"enabled": true,
-					"color": "rgba(0,0,0,0.2)",
-					"size": 2,
-					"x": 4,
-					"y": 4
-				}, 
-			},
-			edges: {
-				smooth: {
-					type: 'cubicBezier',
-					forceDirection: 'vertical',
-					roundness: 0.4
-				},
-				arrows: {
-					to: {
-						enabled: true,
-						scaleFactor: 0.6
-					}
-				},
-			},
-			layout: {
-				hierarchical: {
-					direction: 'UD',
-					nodeSpacing: 130
-				}
-			},
-			physics:{
-			    enabled: false,
-			}
-
-		};
-
-
-
 		maltDataSource.getCallStackDataFunc("_start",function(data) {
 			var tree = buildCallTree(data);
 			console.log("tree", tree);
@@ -142,28 +153,21 @@ function MaltPageCallTree()
 				dataset.nodes[i].label = dataset.nodes[i].label + '\n';
 			}
 
-			var visdata = {nodes: new vis.DataSet(dataset.nodes), edges: new vis.DataSet(dataset.edges)};
-			var network = new vis.Network(container, visdata, options);
+			var src = generateDotCode(dataset);
+			console.log(src);
+			var result = Viz(src, { format:"svg", engine:"dot" });
+			var parser = new DOMParser();
+			var svg = parser.parseFromString(result, "image/svg+xml");
+			svg.documentElement.id = "svggraph";
+       		document.getElementById("mynetwork").appendChild(svg.documentElement);
 
-			// network.on("beforeDrawing", function (ctx) {
-			//   // var nodeId = '_start';
-			//   // var nodePosition = network.getPositions([nodeId]);
-			//   // ctx.strokeStyle = '#A6D5F7';
-			//   // ctx.fillStyle = '#294475';
-			//   // ctx.circle(nodePosition[nodeId].x, nodePosition[nodeId].y,50);
-			//   // ctx.fill();
-			//   // ctx.stroke();
-			// });
-			network.on("afterDrawing", function (ctx) {
-				visdata.nodes.forEach(function(d) {
-					var nodeId = d.id;
-					var nodePosition = network.getPositions([nodeId]);
-					ctx.font = "10px Arial";
-					ctx.fillText(d.score, nodePosition[nodeId].x, nodePosition[nodeId].y + 10); 
-				})
-			});
+       		svgPanZoom('#svggraph', {
+	          zoomEnabled: true,
+	          controlIconsEnabled: false,
+	          fit: true,
+	          center: true,
+	        });
 		});
-
 
 	}]);
 }
