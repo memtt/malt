@@ -43,9 +43,15 @@ function MaltPageCallTree()
 		maltDataSource.getCallStackDataFunc("_start",function(data) {
 			var tree = new CallTreeAdapter(data);
 			// tree.filterDescendants(17);
+			// tree.filterAncestors(4, 2);
 			// tree.filterAncestors(17);
 			// tree.filterNodeLine(17);
-			tree.filterNodeLine(30);
+			// tree.filterNodeLine(13);
+			// tree.filterNodeLine(6);
+			// tree.filterNodeLine(6, 2, 1);
+			// tree.filterNodeLine(4); // edges on focal node repeat
+			// tree.filterDescendants(2, 2);
+
 			var src = getDotCodeForTree(tree);
 
 			var result = Viz(src, { format:"svg", engine:"dot" });
