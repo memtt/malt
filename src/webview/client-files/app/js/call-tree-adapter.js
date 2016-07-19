@@ -167,7 +167,6 @@ function CallTreeAdapter(stacktree)
 	var tree = generateTreeDataSet(buildCallTree(stacktree));
 	var fulltree = tree;
 	addColorCodes(tree);
-	console.log(tree);
 	
 	/**
 	 * Get edges for the Call-tree
@@ -185,16 +184,21 @@ function CallTreeAdapter(stacktree)
 		return tree.nodes;
 	}
 
+	/**
+	 * Filter a tree to have only decendants of a particular node.
+	 * @param  {int} nodeId  Node id of the focal node
+	 * @param  {object} nodeSet Set of nodes already in graph
+	 * @param  {array} edges   Set of edges already in graph
+	 * @param  {int} depth   Depth to limit the tree to. Defaults to unlimited.
+	 */
 	function filterDescendantsRecurse(nodeId, nodeSet, edges, depth) {
 		nodeSet["" + nodeId] = true;
 
 		for (var i = 0; i < fulltree.edges.length; i++) {
 			if(fulltree.edges[i].from == nodeId) {
-				// console.log(fulltree.edges[i]);
 				if(!(("" + fulltree.edges[i].to) in nodeSet)) {
 					if(depth !== 0) {
 						nodeSet["" + fulltree.edges[i].to] = true;
-						// console.log("entering node", fulltree.edges[i].to)
 
 						filterDescendantsRecurse(fulltree.edges[i].to, nodeSet, edges, depth - 1);
 					}
@@ -207,15 +211,20 @@ function CallTreeAdapter(stacktree)
 		}
 	}
 
+	/**
+	 * Filter a tree to have only ancestors of a particular node.
+	 * @param  {int} nodeId  Node id of the focal node
+	 * @param  {object} nodeSet Set of nodes already in graph
+	 * @param  {array} edges   Set of edges already in graph
+	 * @param  {int} height   height to limit the tree to. Defaults to unlimited.
+	 */
 	function filterAncestorsRecurse(nodeId, nodeSet, edges, height) {
 		nodeSet["" + nodeId] = true;
 		for (var i = 0; i < fulltree.edges.length; i++) {
 			if(fulltree.edges[i].to == nodeId) {
-				// console.log(fulltree.edges[i]);
 				if(!(("" + fulltree.edges[i].from) in nodeSet)) {
 					if(height !== 0) {
 						nodeSet["" + fulltree.edges[i].from] = true;
-						// console.log("entering node", fulltree.edges[i].to)
 						filterAncestorsRecurse(fulltree.edges[i].from, nodeSet, edges, height - 1);
 					}
 
@@ -228,26 +237,40 @@ function CallTreeAdapter(stacktree)
 		}
 	}
 
+	/**
+	 * Filter a tree to have only decendants of a particular node.
+	 * @param  {int} nodeId  Node id of the focal node
+	 * @param  {int} depth   Depth to limit the tree to. Defaults to unlimited.
+	 */
 	this.filterDescendants = function(nodeId, depth) {
 		var nodeSet = {}, nodeList = [], edgeList = [];
 		filterDescendantsRecurse(nodeId, nodeSet, edgeList, depth || -1);
-		// console.log(nodeSet)
 		for(var i in nodeSet) {
 			nodeList.push(fulltree.nodes[i-1]);
 		}
 		tree = {nodes: nodeList, edges: edgeList};
 	}
 
+	/**
+	 * Filter a tree to have only ancestors of a particular node.
+	 * @param  {int} nodeId  Node id of the focal node
+	 * @param  {int} height   Height to limit the tree to. Defaults to unlimited.
+	 */
 	this.filterAncestors = function(nodeId, height) {
 		var nodeSet = {}, nodeList = [], edgeList = [];
 		filterAncestorsRecurse(nodeId, nodeSet, edgeList, height || -1);
-		// console.log(nodeSet)
 		for(var i in nodeSet) {
 			nodeList.push(fulltree.nodes[i-1]);
 		}
 		tree = {nodes: nodeList, edges: edgeList};
 	}
 
+	/**
+	 * Filter a tree to have only the ancestors and decendants for a particular node.
+	 * @param  {int} nodeId Node id of focal node
+	 * @param  {int} depth  Depth to limit to. Defaults to unlimited.
+	 * @param  {int} height Height to limit to. Defaults to unlimited. 
+	 */
 	this.filterNodeLine = function(nodeId, depth, height) {
 		this.filterDescendants(nodeId, depth);
 		var descs = tree;
@@ -266,14 +289,15 @@ function CallTreeAdapter(stacktree)
 			edgeList.push(edgeSet[i]);
 		}
 		tree = {nodes: descs.nodes.concat(ancs.nodes), edges: edgeList};
-		console.log(tree);
 	}
 
+	/**
+	 * Remove filters and reset tree to full view.
+	 */
 	this.resetFilters = function() {
 		tree = fulltree;
 	}
 
-	// console.log(this.filterDescendants(17));
 
 	return this;
 }
