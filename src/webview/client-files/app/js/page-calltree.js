@@ -42,6 +42,10 @@ function MaltPageCallTree()
 	maltCtrl.controller('malt.page.calltree.ctrl',['$scope','$routeParams','$http', function($scope,$routeParams,$http) {
 		maltDataSource.getCallStackDataFunc("_start",function(data) {
 			var tree = new CallTreeAdapter(data);
+			// tree.filterDescendants(17);
+			// tree.filterAncestors(17);
+			// tree.filterNodeLine(17);
+			tree.filterNodeLine(30);
 			var src = getDotCodeForTree(tree);
 
 			var result = Viz(src, { format:"svg", engine:"dot" });

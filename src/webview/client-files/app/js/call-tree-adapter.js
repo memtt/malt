@@ -165,7 +165,9 @@ function CallTreeAdapter(stacktree)
 	}
 
 	var tree = generateTreeDataSet(buildCallTree(stacktree));
+	var fulltree = tree;
 	addColorCodes(tree);
+	console.log(tree);
 	
 	/**
 	 * Get edges for the Call-tree
@@ -182,6 +184,72 @@ function CallTreeAdapter(stacktree)
 	this.getNodes = function() {
 		return tree.nodes;
 	}
+
+	function filterDescendantsRecurse(nodeId, nodeSet, edges) {
+		nodeSet["" + nodeId] = true;
+		for (var i = 0; i < fulltree.edges.length; i++) {
+			if(fulltree.edges[i].from == nodeId) {
+				edges.push(fulltree.edges[i]);
+				// console.log(fulltree.edges[i]);
+				if(!(("" + fulltree.edges[i].to) in nodeSet)) {
+					nodeSet["" + fulltree.edges[i].to] = true;
+					// console.log("entering node", fulltree.edges[i].to)
+					filterDescendantsRecurse(fulltree.edges[i].to, nodeSet, edges);
+				}
+			}
+		}
+	}
+
+	function filterAncestorsRecurse(nodeId, nodeSet, edges) {
+		nodeSet["" + nodeId] = true;
+		for (var i = 0; i < fulltree.edges.length; i++) {
+			if(fulltree.edges[i].to == nodeId) {
+				edges.push(fulltree.edges[i]);
+				// console.log(fulltree.edges[i]);
+				if(!(("" + fulltree.edges[i].from) in nodeSet)) {
+					nodeSet["" + fulltree.edges[i].from] = true;
+					// console.log("entering node", fulltree.edges[i].to)
+					filterAncestorsRecurse(fulltree.edges[i].from, nodeSet, edges);
+				}
+			}
+		}
+	}
+
+	this.filterDescendants = function(nodeId) {
+		var nodeSet = {}, nodeList = [], edgeList = [];
+		filterDescendantsRecurse(nodeId, nodeSet, edgeList);
+		// console.log(nodeSet)
+		for(var i in nodeSet) {
+			nodeList.push(fulltree.nodes[i-1]);
+		}
+		tree = {nodes: nodeList, edges: edgeList};
+	}
+
+	this.filterAncestors = function(nodeId) {
+		var nodeSet = {}, nodeList = [], edgeList = [];
+		filterAncestorsRecurse(nodeId, nodeSet, edgeList);
+		// console.log(nodeSet)
+		for(var i in nodeSet) {
+			nodeList.push(fulltree.nodes[i-1]);
+		}
+		tree = {nodes: nodeList, edges: edgeList};
+	}
+
+	this.filterNodeLine = function(nodeId) {
+		this.filterDescendants(nodeId);
+		var descs = tree;
+		this.resetFilters();
+		this.filterAncestors(nodeId);
+		var ancs = tree;
+		tree = {nodes: descs.nodes.concat(ancs.nodes), edges: descs.edges.concat(ancs.edges)};
+		console.log(tree);
+	}
+
+	this.resetFilters = function() {
+		tree = fulltree;
+	}
+
+	// console.log(this.filterDescendants(17));
 
 	return this;
 }
