@@ -254,7 +254,18 @@ function CallTreeAdapter(stacktree)
 		this.resetFilters();
 		this.filterAncestors(nodeId, height);
 		var ancs = tree;
-		tree = {nodes: descs.nodes.concat(ancs.nodes), edges: descs.edges.concat(ancs.edges)};
+		var edgeSet = {};
+		for (var i = 0; i < descs.edges.length; i++) {
+			edgeSet[descs.edges[i].from + ',' + descs.edges[i].to] = descs.edges[i];
+		}
+		for (var i = 0; i < ancs.edges.length; i++) {
+			edgeSet[ancs.edges[i].from + ',' + ancs.edges[i].to] = ancs.edges[i];
+		}
+		var edgeList = [];
+		for(var i in edgeSet) {
+			edgeList.push(edgeSet[i]);
+		}
+		tree = {nodes: descs.nodes.concat(ancs.nodes), edges: edgeList};
 		console.log(tree);
 	}
 
