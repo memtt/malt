@@ -164,10 +164,6 @@ function CallTreeAdapter(stacktree)
 		}
 	}
 
-	var tree = generateTreeDataSet(buildCallTree(stacktree));
-	var fulltree = tree;
-	addColorCodes(tree);
-	
 	/**
 	 * Get edges for the Call-tree
 	 * @return {array} Array of edges {from, to}
@@ -292,12 +288,49 @@ function CallTreeAdapter(stacktree)
 	}
 
 	/**
+	 * Filter a tree to have only nodes with score greater than the given cost.
+	 * @param  {number} costPercentage Minimum cost
+	 */
+	this.filterNodeCost = function(costPercentage) {
+		var max = -1;
+		var cost = costPercentage/100.0;
+		var nodeSet = {};
+
+		// find max
+		for (var i = 0; i < tree.nodes.length; i++) {
+			if(tree.nodes[i].score > max) {
+				max = tree.nodes[i].score;
+			}
+		}
+
+		for (var i = 0; i < tree.nodes.length; i++) {
+			if(tree.nodes[i].score/max < cost) {
+				nodeSet["" + tree.nodes[i].id] = true;
+				tree.nodes.splice(i, 1);
+				i--;
+			}
+		}
+
+		for (var i = 0; i < tree.edges.length; i++) {
+			if(("" + tree.edges[i].from) in nodeSet ||
+				("" + tree.edges[i].to) in nodeSet) {
+				tree.edges.splice(i, 1);
+				i--;
+			}
+		}
+	}
+
+	/**
 	 * Remove filters and reset tree to full view.
 	 */
 	this.resetFilters = function() {
-		tree = fulltree;
+		tree =  JSON.parse(JSON.stringify(fulltree));;
 	}
 
+	var tree = generateTreeDataSet(buildCallTree(stacktree));
+	var fulltree = tree;
+	addColorCodes(tree);
+	console.log(tree);
 
 	return this;
 }
