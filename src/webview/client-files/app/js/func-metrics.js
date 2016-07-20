@@ -1,5 +1,9 @@
 //declare metrics
-var maltMetrics = {
+function MaltFuncMetrics()
+{
+}
+
+MaltFuncMetrics.prototype.maltMetrics = {
 	'alloc.sum': {
 		name: 'Allocated mem.',
 		extractor: function(x) {return x.alloc.sum;},
@@ -100,16 +104,12 @@ var maltMetrics = {
 	},
 };
 
-function MaltFuncMetrics()
-{
-}
-
 MaltFuncMetrics.prototype.getMetricList = function()
 {
 	var ret = [];
-	for (var i in maltMetrics)
+	for (var i in this.maltMetrics)
 	{
-		ret.push({name:maltMetrics[i].name,key:i});
+		ret.push({name:this.maltMetrics[i].name,key:i});
 	}
 	return ret;
 }
@@ -117,14 +117,14 @@ MaltFuncMetrics.prototype.getMetricList = function()
 MaltFuncMetrics.prototype.getMetricNames = function()
 {
 	var res = [];
-	for (var i in maltMetrics)
-		res.push(maltMetrics[i].name);
+	for (var i in this.maltMetrics)
+		res.push(this.maltMetrics[i].name);
 	return res;
 }
 
 MaltFuncMetrics.prototype.getValue = function(dataElement,metricName,inclusive)
 {
-	var metric = maltMetrics[metricName];
+	var metric = this.maltMetrics[metricName];
 
 	if (dataElement == undefined)
 	{
@@ -140,7 +140,7 @@ MaltFuncMetrics.prototype.getValue = function(dataElement,metricName,inclusive)
 
 MaltFuncMetrics.prototype.getFormattedValue = function(dataElement,metricName,inclusive)
 {
-	return maltMetrics[metricName].formalter(this.getValue(dataElement,metricName,inclusive));
+	return this.maltMetrics[metricName].formalter(this.getValue(dataElement,metricName,inclusive));
 }
 
 MaltFuncMetrics.prototype.getValueRatio = function(dataElement,metricName,inclusive)
@@ -160,13 +160,13 @@ MaltFuncMetrics.prototype.getRef = function(data,metricName)
 MaltFuncMetrics.prototype.buildRefs = function(data)
 {
 	this.refs = {};
-	for (var i in maltMetrics)
-		this.refs[i] = this.computeRef(data,maltMetrics[i]);
+	for (var i in this.maltMetrics)
+		this.refs[i] = this.computeRef(data,this.maltMetrics[i]);
 }
 
 MaltFuncMetrics.prototype.computeRef = function(data,metricName)
 {
-	var metric = maltMetrics[metricName];
+	var metric = this.maltMetrics[metricName];
 	var res = 0;
 	switch(metric.ref)
 	{
@@ -188,113 +188,4 @@ MaltFuncMetrics.prototype.computeRef = function(data,metricName)
 	}
 
 	return res;
-}
-
-function MaltSelector()
-{
-	this.funcMetrics = new MaltFuncMetrics();
-	this.metric = 'alloc.count';
-	this.inclusive = true;
-	this.limit = 10;
-	this.ratio = false;
-	this.query='';
-	this.order = maltMetrics[this.metric].defaultOrder;
-	this.functions = [];
-	this.currentPage = 1;
-	this.perPage = 10;
-	this.totalElements = 0;
-}
-
-MaltSelector.prototype.setData = function(data)
-{
-	this.functions = data;
-	this.onInternalChange();
-}
-
-MaltSelector.prototype.onInternalChange = function()
-{
-	var cnt = 0;
-	for(var i in this.functions)
-	{
-		if (this.filter(this.functions[i]))
-			cnt++;
-	}
-	this.totalElements = cnt;
-	console.log(cnt);
-	this.onChange();
-}
-
-MaltSelector.prototype.getValue = function(x)
-{
-	return this.funcMetrics.getValue(x,this.metric,this.inclusive);
-}
-
-MaltSelector.prototype.computeRef = function() 
-{
-	return this.funcMetrics.getRef(this.functions,this.metric);
-}
-
-MaltSelector.prototype.getValueRatio = function(x) 
-{
-	return (100 *this.getValue(x)) / this.computeRef();
-}
-
-MaltSelector.prototype.getFormattedValue = function(x) 
-{
-	if (this.ratio)
-	{
-		return this.getValueRatio(x).toFixed(1)+"%";
-	} else {
-		return this.funcMetrics.getFormattedValue(x,this.metric,this.inclusive);
-	}
-}
-
-MaltSelector.prototype.filter = function(x) 
-{
-	return (this.getValue(x) > 0 && (this.query == '' || x.function.indexOf(this.query) > -1));
-}
-
-MaltSelector.prototype.isReversedOrder = function () 
-{
-	return (this.order == 'desc');
-}
-
-MaltSelector.prototype.accepted = function(x)
-{
-	return (this.getValue(x) > 0 && (this.query == '' || x.function.indexOf(this.query) > -1));
-}
-
-MaltSelector.prototype.toogleOrder = function()
-{
-	this.order = (this.order == 'asc')?'desc':'asc';
-	this.onInternalChange();
-}
-
-MaltSelector.prototype.toogleRatio = function()
-{
-	this.ratio =  !this.ratio;
-	this.onInternalChange();
-}
-
-MaltSelector.prototype.toogleInclusive = function()
-{
-	this.inclusive = !this.inclusive;
-	this.onInternalChange();
-}
-
-MaltSelector.prototype.getCurMetricName = function()
-{
-	return maltMetrics[this.metric].name;
-}
-
-MaltSelector.prototype.selectMetric = function(metric)
-{
-	this.metric = metric.key;
-	this.order = maltMetrics[this.metric].defaultOrder;
-	this.onInternalChange();
-}
-
-MaltSelector.prototype.onChange = function()
-{
-	
 }

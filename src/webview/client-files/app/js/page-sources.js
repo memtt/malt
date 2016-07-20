@@ -22,7 +22,7 @@ function MaltPageTimeline()
 		
 		$scope.ratio = false;
 		$scope.query='';
-		$scope.order = maltMetrics[$scope.metric].defaultOrder;
+		$scope.order = $scope.funcMetrics.maltMetrics[$scope.metric].defaultOrder;
 		$scope.metricList = $scope.funcMetrics.getMetricList();
 		$scope.file = "No source file...";
 		$scope.selector = new MaltSelector();
@@ -57,7 +57,7 @@ function MaltPageTimeline()
 		
 		$scope.getCurMetricName = function()
 		{
-			return maltMetrics[$scope.metric].name;
+			return $scope.funcMetrics.maltMetrics[$scope.metric].name;
 		}
 		
 		$scope.selectMetric = function(metric)
