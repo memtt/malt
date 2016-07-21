@@ -93,7 +93,8 @@ function CallTreeAdapter(stacktree)
 					id: currentId,
 					label: tree.location.function,
 					level: level,
-					score: tree.info.alloc.count
+					score: tree.info.alloc.count,
+					data: tree
 				});
 			} else {
 				currentId = nodeCache.get(identifier);
@@ -178,6 +179,17 @@ function CallTreeAdapter(stacktree)
 	 */
 	this.getNodes = function() {
 		return tree.nodes;
+	}
+
+	this.getNodeByFunctionAndFileName = function(func, file, tree) 
+	{
+		var nodes = fulltree.nodes;
+		for (var i = 0; i < nodes.length; i++) {
+			if(nodes[i].data.location.function == func && nodes[i].data.location.file == file) {
+				return nodes[i];
+			}
+		}
+		return null;
 	}
 
 	/**
