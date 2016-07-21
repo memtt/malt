@@ -1,5 +1,6 @@
 var maltApp = angular.module('malt.app', [
   'ngRoute',
+  'malt.directives',
   'malt.controlers',
   'malt.anim',
   'ui.codemirror',

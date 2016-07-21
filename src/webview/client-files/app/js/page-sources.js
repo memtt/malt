@@ -8,76 +8,28 @@ function MaltPageTimeline()
 	
 	//main controler of the page
 	var pageCtrl = maltCtrl.controller('malt.page.sources.ctrl',['$scope','$routeParams','$http',function($scope,$routeParams,$http) {
-		//manage function list view
 		$scope.functions = [];
-		$scope.funcMetrics = new MaltFuncMetrics();
-		$scope.metric = 'alloc.count';
-		$scope.inclusive = true;
-		$scope.limit = 15;
-		
-		$scope.currentPage = 1;
-		$scope.totalItems = 20;
-		$scope.maxSize = 8;
-		$scope.maxSize = 4;
-		
-		$scope.ratio = false;
-		$scope.query='';
-		$scope.order = $scope.funcMetrics.maltMetrics[$scope.metric].defaultOrder;
-		$scope.metricList = $scope.funcMetrics.getMetricList();
 		$scope.file = "No source file...";
+		$scope.function = "";
+		$scope.selectedDetails = null;
 		$scope.selector = new MaltSelector();
 		$scope.editor = new MaltSourceEditor('malt-source-editor',$scope.selector);
 		$scope.callStacks = new MaltCallStacksView('malt-alloc-stacks-tree',$scope.selector);
-		
+
+		// Is the source file present? Was it found?
 		$scope.hasSources = function() 
 		{
 			return ($scope.file == "No source file..." || $scope.file == "??");
 		}
 		
-		$scope.orderBtnStatus = function()
-		{
-			return ($scope.selector.order == 'asc');
-		}
-		
-		//buttons
-		$scope.toogleOrder = function()
-		{
-			$scope.order = ($scope.order == 'asc')?'desc':'asc';
-		}
-		
-		$scope.toogleRatio = function()
-		{
-			$scope.ratio =  !$scope.ratio;
-		}
-		
-		$scope.toogleInclusive = function()
-		{
-			$scope.inclusive = !$scope.inclusive;
-		}
-		
-		$scope.getCurMetricName = function()
-		{
-			return $scope.funcMetrics.maltMetrics[$scope.metric].name;
-		}
-		
-		$scope.selectMetric = function(metric)
-		{
-			$scope.metric = metric.key;
-		}
-		
-		//click on function
-		$scope.$on('selectFunctionFromFuncList',function(event,e) {
-			console.log(e);
-// 			$scope.editor.
-			$scope.file = e.file;
-			$scope.function = e.function;
-			$scope.editor.moveToFileFunction(e.file,e.function);
-			$scope.callStacks.updateFunc(e.function);
-			$scope.selectedDetails = e;
-// 			detailView.render(details);
-// 			//callStacks.updateFunc(details.function);
-// 			callStacks.clear();
-		});
+		// Event handler for maltFunctionSelector onSelect event
+		$scope.onFunctionSelectEvent = function(data) {
+			$scope.file = data.file;
+			$scope.function = data.function;
+			$scope.editor.moveToFileFunction(data.file,data.function);
+			$scope.callStacks.updateFunc(data.function);
+			$scope.selectedDetails = data;
+		};
 		
 		$scope.hasExlusiveValues = function()
 		{
@@ -97,7 +49,6 @@ function MaltPageTimeline()
 
 		$scope.formatRoundedRatio = function(value,divider,unit)
 		{
-			//console.log(value);
 			if (value == undefined || divider == undefined || divider == 0)
 				return maltHelper.humanReadable(0,1,unit,false);
 			else
@@ -125,9 +76,6 @@ function MaltPageTimeline()
 		//distpatch click on stack tree
 		$scope.callStacks.onClick = function(location,info)
 		{
-			console.log("click on call stack");
-			console.log(location);
-			console.log(info);
 // 			alert(JSON.stringify(info));
 // 			$("#malt-source-filename").text(location.file);
 			$scope.editor.moveToFileFunction(location.file,location.function);
@@ -144,88 +92,12 @@ function MaltPageTimeline()
 			{
 				for (var i in data)
 					if (data[i].function == $routeParams.func)
-						$scope.$broadcast('selectFunctionFromFuncList',data[i]);
+						$scope.onFunctionSelectEvent(data[i]);
 			}
 			if ($routeParams.metric != undefined)
 				$scope.selector.selectMetric({key:$routeParams.metric});
 		});
 	}]);
-	
-	pageCtrl.filter('pagination', function() {
-		return function(input, start)
-		{
-			start = +start;
-			return input.slice(start);
-		};
-	});
-	
-	//directive to print function lists
-	pageCtrl.directive('maltsourcefunclist',function() {
-		return {
-			restrict: 'EA',
-			templateUrl: 'partials/source-func-list.html',
-			replace: true,
-			scope: {
-				functions: '=',
-				metric: '=',
-				limit: '=',
-				inclusive: '=',
-				order:'=',
-				ratio:'=',
-				query:'=',
-				selector:'='
-			},
-			link: function ($scope) {
-				$scope.funcMetrics = new MaltFuncMetrics();
-				
-				//select values for sort
-				$scope.getValue = function (x) {
-					return $scope.selector.getValue(x);
-				}
-
-				$scope.computeRef = function() {
-					return $scope.funcMetrics.getRef($scope.functions,$scope.metric);
-				}
-				
-				$scope.isSelectedFunc = function(x) {
-					return (x.function == $scope.$parent.function);
-				}
-				
-				$scope.getValueRatio = function(x) {
-					return $scope.selector.getValueRatio(x);
-// 					return (100 *$scope.getValue(x)) / $scope.computeRef();
-				}
-	
-				//format value for print
-				$scope.getFormattedValue = function(x) {
-					if ($scope.ratio)
-					{
-						return $scope.getValueRatio(x).toFixed(1)+"%";
-					} else {
-						return $scope.funcMetrics.getFormattedValue(x,$scope.metric,$scope.inclusive);
-					}
-				}
-				
-				//check reverse
-				$scope.isReversedOrder = function () {
-					return ($scope.selector.isReversedOrder());
-				}
-				
-				$scope.useHiddenClass = function (x)  {
-					return ($scope.getValue(x) == 0);
-				}
-		
-				$scope.viewFilter = function(x)
-				{
-					return $scope.selector.filter(x);
-				}
-				
-				$scope.selectFunc = function(x) {
-					$scope.$parent.$broadcast('selectFunctionFromFuncList',x);
-				}
-			}
-		};
-	});
 }
 
 var maltPageTimeline = new MaltPageTimeline();
