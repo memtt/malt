@@ -4,7 +4,7 @@
  */
 function MaltPageCallTree() 
 {
-	function getDotCodeForTree(tree)
+	function getDotCodeForTree(tree, focusedNode)
 	{
 		var nodes = tree.getNodes(),
 			vertices = tree.getEdges();
@@ -25,7 +25,8 @@ function MaltPageCallTree()
 						shape: 'record', 
 						label: nodes[i].label.trim() + ' | ' + nodes[i].score, 
 						style: 'filled',
-						color: 'white',
+						color: nodes[i].id == focusedNode ? '#2b2b2b' : 'white',
+						penwidth: nodes[i].id == focusedNode ? 3.5 : 1,
 						fontcolor: 'white',
 						fillcolor: nodes[i].color
 					});
@@ -38,8 +39,8 @@ function MaltPageCallTree()
 			.toCode();
 	}
 
-	function createSvgGraphForTree(tree) {
-		var src = getDotCodeForTree(tree);
+	function createSvgGraphForTree(tree, focusedNode) {
+		var src = getDotCodeForTree(tree, focusedNode);
 
 		var result = Viz(src, { format:"svg", engine:"dot" });
 		var parser = new DOMParser();
@@ -51,8 +52,8 @@ function MaltPageCallTree()
    		svgPanZoom('#svggraph', {
             zoomEnabled: true,
             controlIconsEnabled: false,
-            // fit: true,
-            // center: true,
+            fit: true,
+            center: true,
         });
 	}
 
@@ -75,7 +76,7 @@ function MaltPageCallTree()
 			} else {
 				tree.resetFilters();
 				tree.filterNodeLine(node.id, 3, 3);
-				createSvgGraphForTree(tree);
+				createSvgGraphForTree(tree, node.id);
 			}
 		};
 
