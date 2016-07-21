@@ -121,12 +121,12 @@ MaltSourceEditor.prototype.moveToFile = function(file)
 	}
 	
 	//load the new file in editor
-	if(file == '??' || file == '' || file == undefined)
-	{
+	if(file == '??' || file == '' || file == undefined) {
 		return;
 	} else {
 		var cur = this;
 		maltDataSource.loadSourceFile(file,function(data){
+			// File loaded, now highlight it
 			cur.container.innerHTML = 
 				'<pre class="line-numbers"><code class="' + 
 				cur.getLanguageClassForHighlighter(cur.getLanguage(file)) + '">' +
@@ -135,6 +135,18 @@ MaltSourceEditor.prototype.moveToFile = function(file)
 			Prism.highlightElement(cur.syntaxHighlighterEle);
 			cur.file = file;
 			cur.updateAnotations();
+		}, function() {
+			// XHR fails to load file, show error message
+			cur.container.innerHTML = 
+				'<pre class="line-numbers"><code>Source for the file, ' 
+				+ file + ', could not be loaded.</code></pre>';
+			cur.syntaxHighlighterEle = cur.container.getElementsByTagName("code")[0];
+			Prism.highlightElement(cur.syntaxHighlighterEle);
+			Prism.plugins.codeAnnotator.add(cur.syntaxHighlighterEle, {
+				line: 1, 
+				text: "Error", 
+				class: "line-annotate-large"
+			});
 		});
 	}
 }

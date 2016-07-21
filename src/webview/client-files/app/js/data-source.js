@@ -7,9 +7,11 @@ function MaltDataSourceNodeJS()
 }
 
 //wrapper to fetch source files from remote server [source-editor.js]
-MaltDataSourceNodeJS.prototype.loadSourceFile = function(file,handler)
+MaltDataSourceNodeJS.prototype.loadSourceFile = function(file,handler,fail)
 {
-	$.get("/app-sources"+file,handler);
+	$.get("/app-sources"+file)
+		.done(handler)
+		.fail(fail);
 }
 
 //wrapper to getch annotation of source files [source-editor.js]
