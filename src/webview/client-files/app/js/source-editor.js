@@ -285,9 +285,13 @@ MaltSourceEditor.prototype.redrawAnnotations = function()
 		.range(["#397EBA","#FF9595"])
 		.domain([0,max]);
 	
+	//clear
+	Prism.plugins.codeAnnotator.removeAll(this.syntaxHighlighterEle);
+
 	//insert all markers
 	var cur = this;
 	for (var i in this.data) {
+		if (this.selector.getValue(this.data[i]) != 0)
 		Prism.plugins.codeAnnotator.add(this.syntaxHighlighterEle, {
 			line: this.data[i].line, 
 			text: this.selector.getFormattedValue(this.data[i]), 
