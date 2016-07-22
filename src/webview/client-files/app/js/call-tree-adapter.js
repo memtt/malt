@@ -181,7 +181,13 @@ function CallTreeAdapter(stacktree)
 		return tree.nodes;
 	}
 
-	this.getNodeByFunctionAndFileName = function(func, file, tree) 
+	/**
+	 * Get a node by function and file name
+	 * @param  {string} func Function name
+	 * @param  {string} file Filename
+	 * @return {object}      Node if found, otherwise null
+	 */
+	this.getNodeByFunctionAndFileName = function(func, file) 
 	{
 		var nodes = fulltree.nodes;
 		for (var i = 0; i < nodes.length; i++) {

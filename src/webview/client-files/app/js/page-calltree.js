@@ -64,6 +64,13 @@ function MaltPageCallTree()
 		$scope.function = null;
 		$scope.functions = [];
 		$scope.selector = new MaltSelector();
+		$scope.totalNodes = 0;
+		$scope.visibleNodes = 0;
+
+		$scope.filterHeight = "-1";
+		$scope.filterDepth = "3";
+		$scope.filterNodeId = "1";
+		$scope.filterNodeCost = "1";
 
 		$scope.onFunctionSelectEvent = function(data) {
 			var prvFunc = $scope.function, prvFile = $scope.file;
@@ -75,7 +82,9 @@ function MaltPageCallTree()
 					alert("Could not find the selected function.");
 			} else {
 				tree.resetFilters();
+				$scope.totalNodes = tree.getNodes().length;
 				tree.filterNodeLine(node.id, 3, 3);
+				$scope.visibleNodes = tree.getNodes().length;
 				createSvgGraphForTree(tree, node.id);
 			}
 		};
