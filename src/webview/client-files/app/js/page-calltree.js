@@ -69,8 +69,19 @@ function MaltPageCallTree()
 
 		$scope.filterHeight = "-1";
 		$scope.filterDepth = "3";
-		$scope.filterNodeId = "1";
+		$scope.filterNodeId = 1;
 		$scope.filterNodeCost = "1";
+
+		function redrawGraph() {
+			if(!tree)
+				return;
+			tree.resetFilters();
+			$scope.totalNodes = tree.getNodes().length;
+			tree.filterNodeLine($scope.filterNodeId, parseInt($scope.filterDepth), parseInt($scope.filterHeight));
+			tree.filterNodeCost(parseInt($scope.filterNodeCost));
+			$scope.visibleNodes = tree.getNodes().length;
+			createSvgGraphForTree(tree, $scope.filterNodeId);
+		}
 
 		$scope.onFunctionSelectEvent = function(data) {
 			var prvFunc = $scope.function, prvFile = $scope.file;
@@ -78,16 +89,17 @@ function MaltPageCallTree()
 			$scope.file = data.file;
 			var node = tree.getNodeByFunctionAndFileName(data.function, data.file, tree);
 			if(node == null) {
-				if(prvFunc != $scope.function && prvFile != $scope.file)
+				if(prvFunc != $scope.function || prvFile != $scope.file)
 					alert("Could not find the selected function.");
 			} else {
-				tree.resetFilters();
-				$scope.totalNodes = tree.getNodes().length;
-				tree.filterNodeLine(node.id, 3, 3);
-				$scope.visibleNodes = tree.getNodes().length;
-				createSvgGraphForTree(tree, node.id);
+				$scope.filterNodeId = node.id;
+				redrawGraph();
 			}
 		};
+
+		$scope.$watch('filterHeight', redrawGraph);
+		$scope.$watch('filterDepth', redrawGraph);
+		$scope.$watch('filterNodeCost', redrawGraph);
 
 		maltDataSource.loadFlatFunctionStats($http,function(data) {
 			$scope.functions = data;
@@ -107,7 +119,7 @@ function MaltPageCallTree()
 			$scope.file = '??';
 
 			tree = new CallTreeAdapter(data);
-			createSvgGraphForTree(tree);
+			redrawGraph();
 		});
 
 	}]);
