@@ -41,7 +41,7 @@ function MaltPageCallTree()
 
 	function createSvgGraphForTree(tree, focusedNode) {
 		var src = getDotCodeForTree(tree, focusedNode);
-
+		console.log(src);
 		var result = Viz(src, { format:"svg", engine:"dot" });
 		var parser = new DOMParser();
 		var svg = parser.parseFromString(result, "image/svg+xml");

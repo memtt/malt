@@ -58,18 +58,16 @@ function CallTreeAdapter(stacktree)
 				+ location.line;
 	}
 
-	var tagsToReplace = {
-	    '&': '&amp;',
-	    '<': '&lt;',
-	    '>': '&gt;'
-	};
-
-	function replaceTag(tag) {
-	    return tagsToReplace[tag] || tag;
-	}
-
-	function safe_tags_replace(str) {
-	    return str.replace(/[&<>]/g, replaceTag);
+	/**
+	 * Replace unsafe tags with HTML escape chars
+	 * @param  {string} str Input string
+	 * @return {string}     Escaped string Output
+	 */
+	function safeTagsReplace(str) {
+	    return str.replace(/[&<>]/g, function (tag) {
+			var tagsToReplace = {'&': '&amp;', '<': '&lt;', '>': '&gt;'};
+		    return tagsToReplace[tag] || tag;
+		});
 	}
 
 	/**
@@ -105,7 +103,7 @@ function CallTreeAdapter(stacktree)
 				
 				nodes.push({
 					id: currentId,
-					label: safe_tags_replace(tree.location.function),
+					label: safeTagsReplace(tree.location.function),
 					level: level,
 					score: tree.info.alloc.count,
 					data: tree,
