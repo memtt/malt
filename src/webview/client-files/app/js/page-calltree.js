@@ -75,12 +75,18 @@ function MaltPageCallTree()
 		function redrawGraph() {
 			if(!tree)
 				return;
+			var t1 = performance.now();
 			tree.resetFilters();
+			var t2 = performance.now();
+			console.log("copy time", t2 - t1);
 			$scope.totalNodes = tree.getNodes().length;
 			tree.filterNodeLine($scope.filterNodeId, parseInt($scope.filterDepth), parseInt($scope.filterHeight));
-			tree.filterNodeCost(parseInt($scope.filterNodeCost));
+			// tree.filterNodeCost(parseInt($scope.filterNodeCost));
+			var t3 = performance.now();
+			console.log("filtering time", t3 - t2);
 			$scope.visibleNodes = tree.getNodes().length;
 			createSvgGraphForTree(tree, $scope.filterNodeId);
+			console.log("graphing time", performance.now() - t3);
 		}
 
 		$scope.onFunctionSelectEvent = function(data) {

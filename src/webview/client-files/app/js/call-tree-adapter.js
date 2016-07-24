@@ -58,6 +58,20 @@ function CallTreeAdapter(stacktree)
 				+ location.line;
 	}
 
+	var tagsToReplace = {
+	    '&': '&amp;',
+	    '<': '&lt;',
+	    '>': '&gt;'
+	};
+
+	function replaceTag(tag) {
+	    return tagsToReplace[tag] || tag;
+	}
+
+	function safe_tags_replace(str) {
+	    return str.replace(/[&<>]/g, replaceTag);
+	}
+
 	/**
 	 * Traverse call tree and generate nodes and edges
 	 * @param  {object} tree      Hierarchical Call-tree object
@@ -91,10 +105,12 @@ function CallTreeAdapter(stacktree)
 				
 				nodes.push({
 					id: currentId,
-					label: tree.location.function,
+					label: safe_tags_replace(tree.location.function),
 					level: level,
 					score: tree.info.alloc.count,
-					data: tree
+					data: tree,
+					outEdges: [],
+					inEdges: []
 				});
 			} else {
 				currentId = nodeCache.get(identifier);
@@ -107,6 +123,8 @@ function CallTreeAdapter(stacktree)
 				var childId = generateNodesAndVertices(tree.childs[i], level + 1, nodes, vertices, nodeCache, vertCache);
 				if(childId != null && !vertCache.exists(currentId + "," + childId)) {
 					vertCache.put(currentId + "," + childId);
+					nodes[currentId-1].outEdges.push(childId);
+					nodes[childId-1].inEdges.push(currentId);
 					vertices.push({
 						from: currentId,
 						to: childId
@@ -208,19 +226,18 @@ function CallTreeAdapter(stacktree)
 	function filterDescendantsRecurse(nodeId, nodeSet, edges, depth) {
 		nodeSet["" + nodeId] = true;
 
-		for (var i = 0; i < fulltree.edges.length; i++) {
-			if(fulltree.edges[i].from == nodeId) {
-				if(!(("" + fulltree.edges[i].to) in nodeSet)) {
-					if(depth !== 0) {
-						nodeSet["" + fulltree.edges[i].to] = true;
+		var currentEdges = fulltree.nodes[nodeId-1].outEdges;
+		for (var i = 0; i < currentEdges.length; i++) {
+			if(!(("" + currentEdges[i]) in nodeSet)) {
+				if(depth !== 0) {
+					nodeSet["" + currentEdges[i]] = true;
 
-						filterDescendantsRecurse(fulltree.edges[i].to, nodeSet, edges, depth - 1);
-					}
+					filterDescendantsRecurse(currentEdges[i], nodeSet, edges, depth - 1);
 				}
-				
-				if(("" + fulltree.edges[i].to) in nodeSet) {
-					edges.push(fulltree.edges[i]);
-				}
+			}
+			
+			if(("" + currentEdges[i]) in nodeSet) {
+				edges.push({from: nodeId, to: currentEdges[i] });
 			}
 		}
 	}
@@ -234,19 +251,18 @@ function CallTreeAdapter(stacktree)
 	 */
 	function filterAncestorsRecurse(nodeId, nodeSet, edges, height) {
 		nodeSet["" + nodeId] = true;
-		for (var i = 0; i < fulltree.edges.length; i++) {
-			if(fulltree.edges[i].to == nodeId) {
-				if(!(("" + fulltree.edges[i].from) in nodeSet)) {
-					if(height !== 0) {
-						nodeSet["" + fulltree.edges[i].from] = true;
-						filterAncestorsRecurse(fulltree.edges[i].from, nodeSet, edges, height - 1);
-					}
-
+		var currentEdges = fulltree.nodes[nodeId-1].inEdges;
+		for (var i = 0; i < currentEdges.length; i++) {
+			if(!(("" + currentEdges[i]) in nodeSet)) {
+				if(height !== 0) {
+					nodeSet["" + currentEdges[i]] = true;
+					filterAncestorsRecurse(currentEdges[i], nodeSet, edges, height - 1);
 				}
 
-				if(("" + fulltree.edges[i].from) in nodeSet) {
-					edges.push(fulltree.edges[i]);
-				}
+			}
+
+			if(("" + currentEdges[i]) in nodeSet) {
+				edges.push({from: currentEdges[i], to: nodeId});
 			}
 		}
 	}
@@ -342,7 +358,8 @@ function CallTreeAdapter(stacktree)
 	 * Remove filters and reset tree to full view.
 	 */
 	this.resetFilters = function() {
-		tree =  JSON.parse(JSON.stringify(fulltree));;
+		tree = fulltree;
+		// tree =  JSON.parse(JSON.stringify(fulltree));;
 	}
 
 	var tree = generateTreeDataSet(buildCallTree(stacktree));
