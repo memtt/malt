@@ -222,17 +222,21 @@ function CallTreeAdapter(stacktree)
 	 * @param  {object} nodeSet Set of nodes already in graph
 	 * @param  {array} edges   Set of edges already in graph
 	 * @param  {int} depth   Depth to limit the tree to. Defaults to unlimited.
+	 * @param  {float} costFilter   Mimimum cost for node to be included.
 	 */
-	function filterDescendantsRecurse(nodeId, nodeSet, edges, depth) {
+	function filterDescendantsRecurse(nodeId, nodeSet, edges, depth, costFilter) {
 		nodeSet["" + nodeId] = true;
 
 		var currentEdges = fulltree.nodes[nodeId-1].outEdges;
 		for (var i = 0; i < currentEdges.length; i++) {
 			if(!(("" + currentEdges[i]) in nodeSet)) {
 				if(depth !== 0) {
+					if(fulltree.nodes[currentEdges[i]-1].score < costFilter)
+						return;
+
 					nodeSet["" + currentEdges[i]] = true;
 
-					filterDescendantsRecurse(currentEdges[i], nodeSet, edges, depth - 1);
+					filterDescendantsRecurse(currentEdges[i], nodeSet, edges, depth - 1, costFilter);
 				}
 			}
 			
@@ -248,15 +252,20 @@ function CallTreeAdapter(stacktree)
 	 * @param  {object} nodeSet Set of nodes already in graph
 	 * @param  {array} edges   Set of edges already in graph
 	 * @param  {int} height   height to limit the tree to. Defaults to unlimited.
+	 * @param  {float} costFilter   Mimimum cost for node to be included.
 	 */
-	function filterAncestorsRecurse(nodeId, nodeSet, edges, height) {
+	function filterAncestorsRecurse(nodeId, nodeSet, edges, height, costFilter) {
 		nodeSet["" + nodeId] = true;
+
 		var currentEdges = fulltree.nodes[nodeId-1].inEdges;
 		for (var i = 0; i < currentEdges.length; i++) {
 			if(!(("" + currentEdges[i]) in nodeSet)) {
+				if(fulltree.nodes[currentEdges[i]-1].score < costFilter)
+					return;
+
 				if(height !== 0) {
 					nodeSet["" + currentEdges[i]] = true;
-					filterAncestorsRecurse(currentEdges[i], nodeSet, edges, height - 1);
+					filterAncestorsRecurse(currentEdges[i], nodeSet, edges, height - 1, costFilter);
 				}
 
 			}
@@ -271,10 +280,11 @@ function CallTreeAdapter(stacktree)
 	 * Filter a tree to have only decendants of a particular node.
 	 * @param  {int} nodeId  Node id of the focal node
 	 * @param  {int} depth   Depth to limit the tree to. Defaults to unlimited.
+	 * @param  {float} costFilter   Mimimum cost for node to be included.
 	 */
-	this.filterDescendants = function(nodeId, depth) {
+	this.filterDescendants = function(nodeId, depth, costFilter) {
 		var nodeSet = {}, nodeList = [], edgeList = [];
-		filterDescendantsRecurse(nodeId, nodeSet, edgeList, depth || -1);
+		filterDescendantsRecurse(nodeId, nodeSet, edgeList, depth || -1, costFilter || 0);
 		for(var i in nodeSet) {
 			nodeList.push(fulltree.nodes[i-1]);
 		}
@@ -285,10 +295,11 @@ function CallTreeAdapter(stacktree)
 	 * Filter a tree to have only ancestors of a particular node.
 	 * @param  {int} nodeId  Node id of the focal node
 	 * @param  {int} height   Height to limit the tree to. Defaults to unlimited.
+	 * @param  {float} costFilter   Mimimum cost for node to be included.
 	 */
-	this.filterAncestors = function(nodeId, height) {
+	this.filterAncestors = function(nodeId, height, costFilter) {
 		var nodeSet = {}, nodeList = [], edgeList = [];
-		filterAncestorsRecurse(nodeId, nodeSet, edgeList, height || -1);
+		filterAncestorsRecurse(nodeId, nodeSet, edgeList, height || -1, costFilter || 0);
 		for(var i in nodeSet) {
 			nodeList.push(fulltree.nodes[i-1]);
 		}
@@ -300,12 +311,22 @@ function CallTreeAdapter(stacktree)
 	 * @param  {int} nodeId Node id of focal node
 	 * @param  {int} depth  Depth to limit to. Defaults to unlimited.
 	 * @param  {int} height Height to limit to. Defaults to unlimited. 
+	 * @param  {float} costFilterPercentage Minimum cost in percentage for node to be included.
 	 */
-	this.filterNodeLine = function(nodeId, depth, height) {
-		this.filterDescendants(nodeId, depth);
+	this.filterNodeLine = function(nodeId, depth, height, costFilterPercentage) {
+		var max = -1;
+		for (var i = 0; i < fulltree.nodes.length; i++) {
+			if(fulltree.nodes[i].score > max) {
+				max = fulltree.nodes[i].score;
+			}
+		}
+		var costFilter = costFilterPercentage/100.0 * max;
+		console.log("costFilter", costFilter);
+
+		this.filterDescendants(nodeId, depth, costFilter);
 		var descs = tree;
 		this.resetFilters();
-		this.filterAncestors(nodeId, height);
+		this.filterAncestors(nodeId, height, costFilter);
 		var ancs = tree;
 		var edgeSet = {};
 		for (var i = 0; i < descs.edges.length; i++) {
@@ -319,39 +340,6 @@ function CallTreeAdapter(stacktree)
 			edgeList.push(edgeSet[i]);
 		}
 		tree = {nodes: descs.nodes.concat(ancs.nodes), edges: edgeList};
-	}
-
-	/**
-	 * Filter a tree to have only nodes with score greater than the given cost.
-	 * @param  {number} costPercentage Minimum cost
-	 */
-	this.filterNodeCost = function(costPercentage) {
-		var max = -1;
-		var cost = costPercentage/100.0;
-		var nodeSet = {};
-
-		// find max
-		for (var i = 0; i < tree.nodes.length; i++) {
-			if(tree.nodes[i].score > max) {
-				max = tree.nodes[i].score;
-			}
-		}
-
-		for (var i = 0; i < tree.nodes.length; i++) {
-			if(tree.nodes[i].score/max < cost) {
-				nodeSet["" + tree.nodes[i].id] = true;
-				tree.nodes.splice(i, 1);
-				i--;
-			}
-		}
-
-		for (var i = 0; i < tree.edges.length; i++) {
-			if(("" + tree.edges[i].from) in nodeSet ||
-				("" + tree.edges[i].to) in nodeSet) {
-				tree.edges.splice(i, 1);
-				i--;
-			}
-		}
 	}
 
 	/**

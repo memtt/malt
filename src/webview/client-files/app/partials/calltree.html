@@ -60,6 +60,7 @@
 									<label for="depthCnt" class="col-sm-3 control-label">Depth</label>
 									<div class="col-sm-9">
 										<select ng-model="filterDepth" id="depthCnt" class="form-control">
+										  <option value="-1">Unlimited</option>
 										  <option value="1">1</option>
 										  <option value="2">2</option>
 										  <option value="3" selected>3</option>
@@ -72,6 +73,7 @@
 									<label for="nodeCostCnt" class="col-sm-3 control-label">Node Cost</label>
 									<div class="col-sm-9">
 										<select ng-model="filterNodeCost" id="nodeCostCnt" class="form-control">
+										  <option value="0" selected>None</option>
 										  <option value="1" selected>1%</option>
 										  <option value="2">2%</option>
 										  <option value="3">3%</option>
