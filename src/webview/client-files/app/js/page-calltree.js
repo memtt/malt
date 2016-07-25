@@ -48,7 +48,7 @@ function MaltPageCallTree()
 		document.getElementById("svggraph") && document.getElementById("svggraph").remove();
    		document.getElementById("mynetwork").appendChild(svg.documentElement);
 
-   		svgPanZoom('#svggraph', {
+   		return svgPanZoom('#svggraph', {
             zoomEnabled: true,
             controlIconsEnabled: false,
             fit: true,
@@ -59,8 +59,10 @@ function MaltPageCallTree()
 
 	maltCtrl.controller('malt.page.calltree.ctrl',['$scope','$routeParams','$http', function($scope,$routeParams,$http) {
 		var tree = null;
+		var panZoomControls = null;
 
 		$scope.navigationHistory = [];
+		$scope.navigationFwdHistory = [];
 		$scope.file = null;
 		$scope.function = null;
 		$scope.functions = [];
@@ -74,12 +76,23 @@ function MaltPageCallTree()
 		$scope.filterNodeCost = "1";
 
 		function navigateTo(nodeId) {
-			$scope.navigationHistory.push(nodeId);
+			$scope.navigationHistory.push({
+				nodeId: nodeId,
+				pan: panZoomControls.getPan(),
+				zoom: panZoomControls.getZoom()
+			});
+			$scope.navigationFwdHistory = [];
 		}
 
 		function navigateBack() {
-			$scope.navigationHistory.pop();
+			$scope.navigationFwdHistory.push($scope.navigationHistory.pop());
 			return $scope.navigationHistory[$scope.navigationHistory.length - 1];
+		}
+
+		function navigateForward() {
+			var state = $scope.navigationFwdHistory.pop();
+			$scope.navigationHistory.push(state);
+			return state;
 		}
 
 		function redrawGraph() {
@@ -95,7 +108,7 @@ function MaltPageCallTree()
 			console.log("filtering time", t3 - t2);
 			$scope.visibleNodes = tree.getNodes().length;
 			// $scope.$apply();
-			createSvgGraphForTree(tree, $scope.filterNodeId);
+			panZoomControls = createSvgGraphForTree(tree, $scope.filterNodeId);
 			console.log("graphing time", performance.now() - t3);
 
 			$('.node').on('dblclick', function(e) {
@@ -116,11 +129,27 @@ function MaltPageCallTree()
 		$scope.onNavigateBackEvent = function() {
 			if(!tree)
 				return;
-			$scope.filterNodeId = navigateBack();
+			var state = navigateBack();
+			$scope.filterNodeId = state.nodeId;
 			var node = tree.getNodeById($scope.filterNodeId);
 			$scope.file = node.data.location.file;
 			$scope.function = node.data.location.function;
 			redrawGraph();
+			// panZoomControls.pan(state.pan);
+			// panZoomControls.zoom(state.zoom);
+		}
+
+		$scope.onNavigateForwardEvent = function() {
+			if(!tree)
+				return;
+			var state = navigateForward();
+			$scope.filterNodeId = state.nodeId;
+			var node = tree.getNodeById($scope.filterNodeId);
+			$scope.file = node.data.location.file;
+			$scope.function = node.data.location.function;
+			redrawGraph();
+			// panZoomControls.pan(state.pan);
+			// panZoomControls.zoom(state.zoom);
 		}
 
 		$scope.onFunctionSelectEvent = function(data) {
@@ -160,11 +189,14 @@ function MaltPageCallTree()
 			$scope.$apply(function() {
 				$scope.function = '_start';
 				$scope.file = '??';
-				navigateTo($scope.filterNodeId);				
 			});
 
 			tree = new CallTreeAdapter(data);
 			redrawGraph();
+
+			$scope.$apply(function() {
+				navigateTo($scope.filterNodeId);				
+			})
 		});
 
 	}]);

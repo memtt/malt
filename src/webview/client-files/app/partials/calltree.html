@@ -24,6 +24,10 @@
 				<button class="btn btn-default" ng-disabled="navigationHistory.length - 1 == 0" ng-click="onNavigateBackEvent()">
 					<span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
 					 Go Back
+				</button>				
+				<button class="btn btn-default" ng-disabled="navigationFwdHistory.length == 0" ng-click="onNavigateForwardEvent()">
+					 Go Forward
+					<span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
 				</button>
 			</div>
 			<br>
