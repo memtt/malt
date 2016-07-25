@@ -31,30 +31,6 @@ function MaltPageTimeline()
 			$scope.selectedDetails = data;
 		};
 		
-		$scope.hasExlusiveValues = function()
-		{
-			if ($scope.selectedDetails == undefined || $scope.selectedDetails.own == undefined)
-				return true;
-			else
-				return !($scope.selectedDetails.own.alloc.count > 0 && $scope.selectedDetails.own.alloc.count > 0);
-		}
-		
-		$scope.formatValue = function(value,unit)
-		{
-			if (value == undefined)
-				return maltHelper.humanReadable(0,1,unit,false);
-			else
-				return maltHelper.humanReadable(value,1,unit,false);
-		}
-
-		$scope.formatRoundedRatio = function(value,divider,unit)
-		{
-			if (value == undefined || divider == undefined || divider == 0)
-				return maltHelper.humanReadable(0,1,unit,false);
-			else
-				return $scope.formatValue(Math.round(value/divider),unit);
-		}
-		
 		//dispatch update of view mode (metric...)
 		$scope.selector.onChange = function()
 		{

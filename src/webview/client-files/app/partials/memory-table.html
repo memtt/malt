@@ -32,7 +32,7 @@
 			<td> [ {{formatValue(selectedDetails.total.lifetime.min,'')}} , {{formatRoundedRatio(selectedDetails.total.lifetime.sum , selectedDetails.total.lifetime.count,'')}} , {{formatValue(selectedDetails.total.lifetime.max ,'')}} ] (cycles)</td>
 		</tr>
 	</table>
-	<table class="table table-condensed table-striped table-bordered" ng-show="showExclusive" style="width:100%">
+	<table class="table table-condensed table-striped table-bordered" ng-hide="hasExlusiveValues()" style="width:100%">
 		<tr>
 			<th colspan="2">Exclusive</th>
 		</tr>

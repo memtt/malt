@@ -122,8 +122,7 @@
 			templateUrl: 'partials/memory-table.html',
 			replace: true,
 			scope: {
-				selectedDetails: '=details',
-				showExclusive: '='
+				selectedDetails: '=details'
 			},
 			link: function ($scope) {
 				$scope.formatValue = function(value,unit) {
@@ -138,6 +137,13 @@
 						return maltHelper.humanReadable(0,1,unit,false);
 					else
 						return $scope.formatValue(Math.round(value/divider),unit);
+				}
+
+				$scope.hasExlusiveValues = function() {
+					if ($scope.selectedDetails == undefined || $scope.selectedDetails.own == undefined)
+						return true;
+					else
+						return !($scope.selectedDetails.own.alloc.count > 0 && $scope.selectedDetails.own.alloc.count > 0);
 				}
 			}
 		}

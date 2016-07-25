@@ -69,6 +69,7 @@ function MaltPageCallTree()
 		$scope.selector = new MaltSelector();
 		$scope.totalNodes = 0;
 		$scope.visibleNodes = 0;
+		$scope.selectedDetails = null;
 
 		$scope.filterHeight = "-1";
 		$scope.filterDepth = "3";
@@ -107,6 +108,7 @@ function MaltPageCallTree()
 			var t3 = performance.now();
 			console.log("filtering time", t3 - t2);
 			$scope.visibleNodes = tree.getNodes().length;
+			// $scope.selectedDetails = tree.getNodeById($scope.filterNodeId).data;
 			// $scope.$apply();
 			panZoomControls = createSvgGraphForTree(tree, $scope.filterNodeId);
 			console.log("graphing time", performance.now() - t3);
@@ -156,6 +158,7 @@ function MaltPageCallTree()
 			var prvFunc = $scope.function, prvFile = $scope.file;
 			$scope.function = data.function;
 			$scope.file = data.file;
+			$scope.selectedDetails = data;
 			var node = tree.getNodeByFunctionAndFileName(data.function, data.file, tree);
 			if(prvFunc != $scope.function || prvFile != $scope.file) {
 				if(node == null) {
