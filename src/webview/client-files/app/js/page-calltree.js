@@ -41,7 +41,6 @@ function MaltPageCallTree()
 
 	function createSvgGraphForTree(tree, focusedNode) {
 		var src = getDotCodeForTree(tree, focusedNode);
-		console.log(src);
 		var result = Viz(src, { format:"svg", engine:"dot" });
 		var parser = new DOMParser();
 		var svg = parser.parseFromString(result, "image/svg+xml");
@@ -54,12 +53,14 @@ function MaltPageCallTree()
             controlIconsEnabled: false,
             fit: true,
             center: true,
+            dblClickZoomEnabled: false
         });
 	}
 
 	maltCtrl.controller('malt.page.calltree.ctrl',['$scope','$routeParams','$http', function($scope,$routeParams,$http) {
 		var tree = null;
 
+		$scope.navigationHistory = [];
 		$scope.file = null;
 		$scope.function = null;
 		$scope.functions = [];
@@ -71,6 +72,15 @@ function MaltPageCallTree()
 		$scope.filterDepth = "3";
 		$scope.filterNodeId = 1;
 		$scope.filterNodeCost = "1";
+
+		function navigateTo(nodeId) {
+			$scope.navigationHistory.push(nodeId);
+		}
+
+		function navigateBack() {
+			$scope.navigationHistory.pop();
+			return $scope.navigationHistory[$scope.navigationHistory.length - 1];
+		}
 
 		function redrawGraph() {
 			if(!tree)
@@ -84,8 +94,33 @@ function MaltPageCallTree()
 			var t3 = performance.now();
 			console.log("filtering time", t3 - t2);
 			$scope.visibleNodes = tree.getNodes().length;
+			// $scope.$apply();
 			createSvgGraphForTree(tree, $scope.filterNodeId);
 			console.log("graphing time", performance.now() - t3);
+
+			$('.node').on('dblclick', function(e) {
+				var nodeId = parseInt($(this).find('title').html().substr(4));
+				var node = tree.getNodeById(nodeId);
+				if($scope.filterNodeId != nodeId) {
+					$scope.$apply(function() {
+						$scope.filterNodeId = nodeId;
+						$scope.file = node.data.location.file;
+						$scope.function = node.data.location.function;
+						navigateTo(nodeId);
+					});
+					redrawGraph();
+				}
+			});
+		}
+
+		$scope.onNavigateBackEvent = function() {
+			if(!tree)
+				return;
+			$scope.filterNodeId = navigateBack();
+			var node = tree.getNodeById($scope.filterNodeId);
+			$scope.file = node.data.location.file;
+			$scope.function = node.data.location.function;
+			redrawGraph();
 		}
 
 		$scope.onFunctionSelectEvent = function(data) {
@@ -93,12 +128,14 @@ function MaltPageCallTree()
 			$scope.function = data.function;
 			$scope.file = data.file;
 			var node = tree.getNodeByFunctionAndFileName(data.function, data.file, tree);
-			if(node == null) {
-				if(prvFunc != $scope.function || prvFile != $scope.file)
+			if(prvFunc != $scope.function || prvFile != $scope.file) {
+				if(node == null) {
 					alert("Could not find the selected function.");
-			} else {
-				$scope.filterNodeId = node.id;
-				redrawGraph();
+				} else {
+					$scope.filterNodeId = node.id;
+					navigateTo(node.id);
+					redrawGraph();
+				}
 			}
 		};
 
@@ -120,8 +157,11 @@ function MaltPageCallTree()
 		});
 
 		maltDataSource.getCallStackDataFunc("_start",function(data) {
-			$scope.function = '_start';
-			$scope.file = '??';
+			$scope.$apply(function() {
+				$scope.function = '_start';
+				$scope.file = '??';
+				navigateTo($scope.filterNodeId);				
+			});
 
 			tree = new CallTreeAdapter(data);
 			redrawGraph();

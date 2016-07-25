@@ -215,6 +215,15 @@ function CallTreeAdapter(stacktree)
 	}
 
 	/**
+	 * Get a node by its node id
+	 * @param  {int} nodeId Node id to search for
+	 * @return {object}        Node
+	 */
+	this.getNodeById = function(nodeId) {
+		return fulltree.nodes[nodeId-1];
+	}
+
+	/**
 	 * Filter a tree to have only decendants of a particular node.
 	 * @param  {int} nodeId  Node id of the focal node
 	 * @param  {object} nodeSet Set of nodes already in graph
