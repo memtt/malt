@@ -13,7 +13,7 @@
 		};
 	});
 	
-	// directive to print function lists
+	// Directive to print function lists
 	directives.directive('maltsourcefunclist',function() {
 		return {
 			restrict: 'EA',
@@ -114,4 +114,32 @@
 			}
 		};
 	})
+
+	// Directive to show a memory table for a selected function or line
+	directives.directive('maltMemoryTable', function() {
+		return {
+			restrict: 'EA',
+			templateUrl: 'partials/memory-table.html',
+			replace: true,
+			scope: {
+				selectedDetails: '=details',
+				showExclusive: '='
+			},
+			link: function ($scope) {
+				$scope.formatValue = function(value,unit) {
+					if (value == undefined)
+						return maltHelper.humanReadable(0,1,unit,false);
+					else
+						return maltHelper.humanReadable(value,1,unit,false);
+				}
+
+				$scope.formatRoundedRatio = function(value,divider,unit) {
+					if (value == undefined || divider == undefined || divider == 0)
+						return maltHelper.humanReadable(0,1,unit,false);
+					else
+						return $scope.formatValue(Math.round(value/divider),unit);
+				}
+			}
+		}
+	});
 })();
