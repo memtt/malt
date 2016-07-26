@@ -37,13 +37,13 @@
 		<!-- Source editor -->
 		<div class="col-sm-7 col-md-8 col-lg-9 main">
 			<span id='malt-source-filename'>
-				{{file}} | {{function}}
+				{{nodeData.file}} | {{nodeData.function}}
 				<div class="pull-right">
-					<span ng-show="visibleNodes == totalNodes">
+					<span ng-show="nodeData.visibleNodes == nodeData.totalNodes">
 						Showing all nodes.
 					</span>
-					<span ng-hide="visibleNodes == totalNodes">
-						Showing {{visibleNodes}} out of {{totalNodes}} nodes.
+					<span ng-hide="nodeData.visibleNodes == nodeData.totalNodes">
+						Showing {{nodeData.visibleNodes}} out of {{nodeData.totalNodes}} nodes.
 					</span>
 				</div>
 			</span>

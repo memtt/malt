@@ -280,6 +280,13 @@ app.get('/data/summary.json',function(req,res) {
 	res.end();
 });
 
+app.get('/calltree.json', function(req, res) {
+	maltProject.getCallTree(req.query.nodeid, req.query.depth, 
+		req.query.height, req.query.mincost, req.query.func, function(data) {
+			res.json(data);
+		});
+});
+
 /****************************************************/
 app.get('/',function(eq,res,next){
 	res.redirect('app/index.html');

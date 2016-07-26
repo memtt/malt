@@ -3,6 +3,8 @@
 var fs    = require('fs');
 var clone = require('clone');
 var path  = require('path');
+var CallTreeAdapter = require("./CallTreeAdapter.js");
+var GraphGenerator = require("./GraphGenerator.js");
 
 /****************************************************/
 /**
@@ -713,6 +715,55 @@ MaltProject.prototype.getFullTree = function()
 	}
 	
 	return tree;
+}
+
+MaltProject.prototype.getCallTree = function(nodeId, depth, height, minCost, func, callback) {
+	// Response object
+	var resp = {};
+
+	// If tree object hasnt been created, create and cache it
+	if(!this.calltreeCache) {
+		this.calltreeCache = new CallTreeAdapter(this.getFilterdStacksOnSymbol("_start"));
+	}
+
+	// If nodeId not provided, get node id by function name
+	if(!nodeId) {
+		var tmpnode = this.calltreeCache.getNodeByFunctionName(func);
+
+		if(tmpnode == null) {
+			callback({error: "Node not found."});
+			return;
+		}
+
+		nodeId = tmpnode.id;
+	}
+
+	// Filter tree and get the focal node
+	var filteredTree = this.calltreeCache.filterNodeLine(nodeId, depth, height, minCost);
+	var node = this.calltreeCache.getNodeById(nodeId);
+
+	// Build output object
+	resp.totalNodes = this.calltreeCache.getNodes().length;
+	resp.visibleNodes = filteredTree.nodes.length;
+	resp.nodeId = nodeId;
+	resp.file = node.data.location.file;
+	resp.function = node.data.location.function;
+	resp.dotCode = GraphGenerator.getDotCodeForTree(filteredTree, nodeId);
+	resp.svg = null;
+	
+	// Generate SVG code from Dot code if GraphViz is installed
+	if(GraphGenerator.isInstalled()) {
+		GraphGenerator.convertDotToSvg(resp.dotCode, function(svg, err) {
+			if(err) {
+				resp.svg = "Could not generate SVG code.";
+			} else {
+				resp.svg = svg;
+			}
+			callback(resp);
+		});
+	} else {
+		callback(resp);
+	}
 }
 
 /****************************************************/
