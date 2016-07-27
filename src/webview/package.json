@@ -27,7 +27,8 @@
     "express": "3.4.x",
     "extend": "^3.0.0",
     "htpasswd": "^2.2.0",
-    "http-auth": "^2.2.8"
+    "http-auth": "^2.2.8",
+    "lodash.union": "^4.5.0"
   },
   "devDependencies": {
     "browserify": "^9.0.3",

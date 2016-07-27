@@ -1,5 +1,6 @@
 var d3scale = require("d3-scale");
 var extend = require("extend");
+var union = require('lodash.union');
 var SimpleIdCache = require("./SimpleIdCache.js");
 var MaltHelper = require("../client-files/app/js/helper.js");
 
@@ -365,7 +366,7 @@ function CallTreeAdapter(stacktree)
 		for(var i in edgeSet) {
 			edgeList.push(edgeSet[i]);
 		}
-		return {nodes: descs.nodes.concat(ancs.nodes), edges: edgeList};
+		return {nodes: union(descs.nodes, ancs.nodes), edges: edgeList};
 	}
 
 	var fulltree = generateTreeDataSet(buildCallTree(stacktree));
