@@ -16,7 +16,8 @@ function MaltPageCallTree()
             controlIconsEnabled: false,
             fit: true,
             center: true,
-            dblClickZoomEnabled: false
+            dblClickZoomEnabled: false,
+            maxZoom: 1000
         });
 	}
 

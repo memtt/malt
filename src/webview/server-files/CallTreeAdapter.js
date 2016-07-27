@@ -351,10 +351,11 @@ function CallTreeAdapter(stacktree)
 				max = fulltree.nodes[i].score;
 			}
 		}
-		var costFilter = costFilterPercentage/100.0 * max;
+		var parentCostFilter = costFilterPercentage/100.0 * max;
+		var childrenCostFilter = costFilterPercentage/100.0 * fulltree.nodes[nodeId-1].score;
 
-		var descs = this.filterDescendants(nodeId, depth, costFilter);
-		var ancs = this.filterAncestors(nodeId, height, costFilter);
+		var descs = this.filterDescendants(nodeId, depth, childrenCostFilter);
+		var ancs = this.filterAncestors(nodeId, height, parentCostFilter);
 		var edgeSet = {};
 		for (var i = 0; i < descs.edges.length; i++) {
 			edgeSet[descs.edges[i].from + ',' + descs.edges[i].to] = descs.edges[i];
