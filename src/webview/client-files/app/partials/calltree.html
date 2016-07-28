@@ -1,11 +1,17 @@
 <style type="text/css">
-	#mynetwork {
+	#networkcontainer {
 		border: 1px solid #ddd;
+		min-height: 500px;
+		position: relative;
+		margin-top: 2px;
 	}
 	#svggraph {
 		width: 100%;
 		height: 500px;
 		cursor: grab;
+	}
+	#svggraph a:hover {
+		text-decoration: none;
 	}
 	.node {
 		fill: black;
@@ -47,7 +53,26 @@
 					</span>
 				</div>
 			</span>
-			<div id="mynetwork"></div>
+			<div id="networkcontainer">
+				<div class="loader">
+					<div class="sk-overlay"></div>
+					<div class="sk-circle">
+					  <div class="sk-circle1 sk-child"></div>
+					  <div class="sk-circle2 sk-child"></div>
+					  <div class="sk-circle3 sk-child"></div>
+					  <div class="sk-circle4 sk-child"></div>
+					  <div class="sk-circle5 sk-child"></div>
+					  <div class="sk-circle6 sk-child"></div>
+					  <div class="sk-circle7 sk-child"></div>
+					  <div class="sk-circle8 sk-child"></div>
+					  <div class="sk-circle9 sk-child"></div>
+					  <div class="sk-circle10 sk-child"></div>
+					  <div class="sk-circle11 sk-child"></div>
+					  <div class="sk-circle12 sk-child"></div>
+					</div>
+				</div>
+				<div id="mynetwork"></div>
+			</div>
 			<br>
 			<div>
 				<div class="row">

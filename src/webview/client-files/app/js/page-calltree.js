@@ -37,6 +37,16 @@ function MaltPageCallTree()
 		$scope.filterDepth = "3";
 		$scope.filterNodeCost = "1";
 
+		showLoader();
+
+		function showLoader() {
+			$('.loader').show();
+		}
+
+		function hideLoader() {
+			$('.loader').hide();
+		}
+
 		function navigateTo(nodeId) {
 			$scope.navigationHistory.push({
 				nodeId: nodeId,
@@ -59,8 +69,10 @@ function MaltPageCallTree()
 			if(!$scope.nodeData)
 				return;
 
+			showLoader();
 			maltDataSource.getCallTreeData($scope.nodeData.nodeId, $scope.filterDepth, 
 				$scope.filterHeight, $scope.filterNodeCost, null, function(data) {
+					hideLoader();
 					$scope.$apply(function() {
 						$scope.nodeData = data;
 					});
@@ -76,8 +88,10 @@ function MaltPageCallTree()
 
 			$('.node').on('dblclick', function(e) {
 				var nodeId = parseInt($(this).find('title').html().substr(4));
+				showLoader();
 				maltDataSource.getCallTreeData(nodeId, $scope.filterDepth, 
 					$scope.filterHeight, $scope.filterNodeCost, null, function(data) {
+						hideLoader();
 						$scope.$apply(function() {
 							$scope.nodeData = data;
 							navigateTo(nodeId);
@@ -85,14 +99,20 @@ function MaltPageCallTree()
 						redrawGraph();
 					});
 			});
+
+			$('.node a').on('click', function(e) {
+				e.preventDefault();
+			})
 		}
 
 		$scope.onNavigateBackEvent = function() {
 			if(!$scope.nodeData)
 				return;
 			var state = navigateBack();
+			showLoader();
 			maltDataSource.getCallTreeData(state.nodeId, $scope.filterDepth, 
 				$scope.filterHeight, $scope.filterNodeCost, null, function(data) {
+					hideLoader();
 					$scope.$apply(function() {
 						$scope.nodeData = data;
 					});
@@ -104,8 +124,10 @@ function MaltPageCallTree()
 			if(!$scope.nodeData)
 				return;
 			var state = navigateForward();
+			showLoader();
 			maltDataSource.getCallTreeData(state.nodeId, $scope.filterDepth, 
 				$scope.filterHeight, $scope.filterNodeCost, null, function(data) {
+					hideLoader();
 					$scope.$apply(function() {
 						$scope.nodeData = data;
 					});
@@ -120,8 +142,10 @@ function MaltPageCallTree()
 				prvFunc = data.function;
 
 			$scope.selectedDetails = data;
+			showLoader();
 			maltDataSource.getCallTreeData(null, $scope.filterDepth, 
 				$scope.filterHeight, $scope.filterNodeCost, data.function, function(nodata) {
+					hideLoader();
 					if(nodata.error) {
 						alert("Could not find the selected function.");
 					} else {
@@ -139,6 +163,7 @@ function MaltPageCallTree()
 		$scope.$watch('filterNodeCost', reloadGraph);
 
 		maltDataSource.loadFlatFunctionStats($http,function(data) {
+			globalMeow = data;
 			$scope.functions = data;
 			$scope.selector.setData(data);
 			if ($routeParams.func != undefined)
@@ -151,8 +176,10 @@ function MaltPageCallTree()
 				$scope.selector.selectMetric({key:$routeParams.metric});
 		});
 
+		showLoader();
 		maltDataSource.getCallTreeData(null, $scope.filterDepth, 
 			$scope.filterHeight, $scope.filterNodeCost, '_start', function(data) {
+				hideLoader();
 				$scope.nodeData = data;
 				redrawGraph();
 				navigateTo($scope.nodeData.nodeId);

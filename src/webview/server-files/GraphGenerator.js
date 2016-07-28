@@ -17,7 +17,7 @@ var graphGenerator = {
 				d.node({
 					shape: 'box',
 					fontname: 'Courier New',
-					fontsize: '12'
+					fontsize: '10'
 				}).edge({
 					color: '#868a8f',
 					penwidth: 1.5
@@ -27,6 +27,7 @@ var graphGenerator = {
 					d.node('node' + nodes[i].id, {
 						shape: 'record', 
 						label: nodes[i].label.trim() + ' | ' + nodes[i].score, 
+						tooltip: nodes[i].tooltip.trim(),
 						style: 'filled',
 						color: nodes[i].id == focusedNode ? '#2b2b2b' : 'white',
 						penwidth: nodes[i].id == focusedNode ? 3.5 : 1,

@@ -3,6 +3,7 @@ var extend = require("extend");
 var union = require('lodash.union');
 var SimpleIdCache = require("./SimpleIdCache.js");
 var MaltHelper = require("../client-files/app/js/helper.js");
+var CppDeclParser = require("./CppDeclParser.js");
 
 /**
  * Malt helper class object
@@ -118,7 +119,9 @@ function CallTreeAdapter(stacktree)
 				
 				nodes.push({
 					id: currentId,
-					label: safeTagsReplace(tree.location.function),
+					label: safeTagsReplace(CppDeclParser.getShortName(
+						CppDeclParser.parseCppPrototype(tree.location.function))),
+					tooltip: safeTagsReplace(tree.location.function),
 					level: level,
 					score: tree.info.alloc.count,
 					data: tree,
