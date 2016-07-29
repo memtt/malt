@@ -43,7 +43,8 @@
 		<!-- Source editor -->
 		<div class="col-sm-7 col-md-8 col-lg-9 main">
 			<span id='malt-source-filename'>
-				{{nodeData.file}} | {{nodeData.function}}
+				<span title="{{nodeData.file}}">{{nodeData.fileShort}}</span> | 
+				<span title="{{nodeData.function}}">{{nodeData.functionShort}}</span>
 				<div class="pull-right">
 					<span ng-show="nodeData.visibleNodes == nodeData.totalNodes">
 						Showing all nodes.

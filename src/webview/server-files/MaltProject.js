@@ -747,7 +747,9 @@ MaltProject.prototype.getCallTree = function(nodeId, depth, height, minCost, fun
 	resp.visibleNodes = filteredTree.nodes.length;
 	resp.nodeId = nodeId;
 	resp.file = node.data.location.file;
+	resp.fileShort = (resp.file.length > 40) ? '.../' + resp.file.replace(/^.*[\\\/]/, '') : resp.file;
 	resp.function = node.data.location.function;
+	resp.functionShort = (resp.function.length > 40) ? node.label : resp.function;
 	resp.dotCode = GraphGenerator.getDotCodeForTree(filteredTree, nodeId);
 	resp.svg = null;
 	
