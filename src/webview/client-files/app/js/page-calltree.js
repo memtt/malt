@@ -65,22 +65,38 @@ function MaltPageCallTree()
 			return state;
 		}
 
-		function reloadGraph() {
-			if(!$scope.nodeData)
+		function loadGraph(nodeId, shouldNavigate, shouldUpdateDetails) {
+			if(!nodeId && !$scope.nodeData)
 				return;
 
+			nodeId = nodeId || $scope.nodeData.nodeId;
 			showLoader();
-			maltDataSource.getCallTreeData($scope.nodeData.nodeId, $scope.filterDepth, 
+
+			maltDataSource.getCallTreeData(nodeId, $scope.filterDepth, 
 				$scope.filterHeight, $scope.filterNodeCost, null, function(data) {
 					hideLoader();
+
 					$scope.$apply(function() {
 						$scope.nodeData = data;
+						if(shouldNavigate)
+							navigateTo(nodeId);
 					});
-					redrawGraph();
-				});			
+
+					drawGraph();
+
+					if(shouldUpdateDetails) {
+						for (var i = 0; i < $scope.functions.length; i++) {
+							if($scope.functions[i].function == data.function) {
+								$scope.$apply(function() {
+									$scope.selectedDetails = $scope.functions[i];
+								});
+							}
+						}
+					}
+				});
 		}
 
-		function redrawGraph() {
+		function drawGraph() {
 			if(!$scope.nodeData)
 				return;
 
@@ -88,16 +104,7 @@ function MaltPageCallTree()
 
 			$('.node').on('dblclick', function(e) {
 				var nodeId = parseInt($(this).find('title').html().substr(4));
-				showLoader();
-				maltDataSource.getCallTreeData(nodeId, $scope.filterDepth, 
-					$scope.filterHeight, $scope.filterNodeCost, null, function(data) {
-						hideLoader();
-						$scope.$apply(function() {
-							$scope.nodeData = data;
-							navigateTo(nodeId);
-						});
-						redrawGraph();
-					});
+				loadGraph(nodeId, true, true);
 			});
 
 			$('.node a').on('click', function(e) {
@@ -109,30 +116,14 @@ function MaltPageCallTree()
 			if(!$scope.nodeData)
 				return;
 			var state = navigateBack();
-			showLoader();
-			maltDataSource.getCallTreeData(state.nodeId, $scope.filterDepth, 
-				$scope.filterHeight, $scope.filterNodeCost, null, function(data) {
-					hideLoader();
-					$scope.$apply(function() {
-						$scope.nodeData = data;
-					});
-					redrawGraph();
-				});
+			loadGraph(state.nodeId, false, true);
 		}
 
 		$scope.onNavigateForwardEvent = function() {
 			if(!$scope.nodeData)
 				return;
 			var state = navigateForward();
-			showLoader();
-			maltDataSource.getCallTreeData(state.nodeId, $scope.filterDepth, 
-				$scope.filterHeight, $scope.filterNodeCost, null, function(data) {
-					hideLoader();
-					$scope.$apply(function() {
-						$scope.nodeData = data;
-					});
-					redrawGraph();
-				});
+			loadGraph(state.nodeId, false, true);
 		}
 
 		$scope.onFunctionSelectEvent = function(data) {
@@ -153,27 +144,28 @@ function MaltPageCallTree()
 							$scope.nodeData = nodata;
 						});
 						navigateTo($scope.nodeData.nodeId);
-						redrawGraph();
+						drawGraph();
 					}
 				});
 		};
 
-		$scope.$watch('filterHeight', reloadGraph);
-		$scope.$watch('filterDepth', reloadGraph);
-		$scope.$watch('filterNodeCost', reloadGraph);
+		$scope.$watch('filterHeight', function() { loadGraph(); });
+		$scope.$watch('filterDepth', function() { loadGraph(); });
+		$scope.$watch('filterNodeCost', function() { loadGraph(); });
 
+		var deferredArray = [new $.Deferred(), new $.Deferred()];
 		maltDataSource.loadFlatFunctionStats($http,function(data) {
-			globalMeow = data;
 			$scope.functions = data;
 			$scope.selector.setData(data);
-			if ($routeParams.func != undefined)
-			{
-				for (var i in data)
-					if (data[i].function == $routeParams.func)
-						$scope.onFunctionSelectEvent(data[i]);
-			}
-			if ($routeParams.metric != undefined)
-				$scope.selector.selectMetric({key:$routeParams.metric});
+			deferredArray[0].resolve();
+			// if ($routeParams.func != undefined)
+			// {
+			// 	for (var i in data)
+			// 		if (data[i].function == $routeParams.func)
+			// 			$scope.onFunctionSelectEvent(data[i]);
+			// }
+			// if ($routeParams.metric != undefined)
+			// 	$scope.selector.selectMetric({key:$routeParams.metric});
 		});
 
 		showLoader();
@@ -181,9 +173,25 @@ function MaltPageCallTree()
 			$scope.filterHeight, $scope.filterNodeCost, '_start', function(data) {
 				hideLoader();
 				$scope.nodeData = data;
-				redrawGraph();
+				drawGraph();
 				navigateTo($scope.nodeData.nodeId);
+				deferredArray[1].resolve();
 			});
+
+		$.when(deferredArray).then(function() {
+			console.log("hello", $scope.functions);
+			for (var i = 0; i < $scope.functions.length; i++) {
+				console.log("se", $scope.functions[i].function, $scope.nodeData.function);
+				if($scope.functions[i].function == $scope.nodeData.function) {
+					$scope.$apply(function() {
+						$scope.selectedDetails = $scope.functions[i];
+					});
+					console.log("found");
+					return;
+				}
+			}
+		});
+
 	}]);
 }
 

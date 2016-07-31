@@ -1,6 +1,18 @@
 var childProcess = require('child_process');
 var DotCode = require('./DotCode.js');
 
+/**
+ * Replace unsafe tags with HTML escape chars
+ * @param  {string} str Input string
+ * @return {string}     Escaped string Output
+ */
+function safeTagsReplace(str) {
+    return str.replace(/[&<>]/g, function (tag) {
+		var tagsToReplace = {'&': '&amp;', '<': '&lt;', '>': '&gt;'};
+	    return tagsToReplace[tag] || tag;
+	});
+}
+
 var graphGenerator = {
 	/**
 	 * Generate dot code for a tree
@@ -26,8 +38,8 @@ var graphGenerator = {
 				for (var i = 0; i < nodes.length; i++) {
 					d.node('node' + nodes[i].id, {
 						shape: 'record', 
-						label: nodes[i].label.trim() + ' | ' + nodes[i].score, 
-						tooltip: nodes[i].tooltip.trim(),
+						label: safeTagsReplace(nodes[i].label.trim()) + ' | ' + nodes[i].score, 
+						tooltip: safeTagsReplace(nodes[i].tooltip.trim()),
 						style: 'filled',
 						color: nodes[i].id == focusedNode ? '#2b2b2b' : 'white',
 						penwidth: nodes[i].id == focusedNode ? 3.5 : 1,

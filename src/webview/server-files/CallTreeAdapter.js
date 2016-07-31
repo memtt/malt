@@ -75,18 +75,6 @@ function CallTreeAdapter(stacktree)
 	}
 
 	/**
-	 * Replace unsafe tags with HTML escape chars
-	 * @param  {string} str Input string
-	 * @return {string}     Escaped string Output
-	 */
-	function safeTagsReplace(str) {
-	    return str.replace(/[&<>]/g, function (tag) {
-			var tagsToReplace = {'&': '&amp;', '<': '&lt;', '>': '&gt;'};
-		    return tagsToReplace[tag] || tag;
-		});
-	}
-
-	/**
 	 * Traverse call tree and generate nodes and edges
 	 * @param  {object} tree      Hierarchical Call-tree object
 	 * @param  {int} level        Current depth
@@ -119,9 +107,8 @@ function CallTreeAdapter(stacktree)
 				
 				nodes.push({
 					id: currentId,
-					label: safeTagsReplace(CppDeclParser.getShortName(
-						CppDeclParser.parseCppPrototype(tree.location.function))),
-					tooltip: safeTagsReplace(tree.location.function),
+					label: CppDeclParser.getShortName(CppDeclParser.parseCppPrototype(tree.location.function)),
+					tooltip: tree.location.function,
 					level: level,
 					score: tree.info.alloc.count,
 					data: tree,
