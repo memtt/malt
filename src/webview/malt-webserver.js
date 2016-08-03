@@ -283,7 +283,12 @@ app.get('/data/summary.json',function(req,res) {
 app.get('/calltree.json', function(req, res) {
 	maltProject.getCallTree(req.query.nodeid, req.query.depth, 
 		req.query.height, req.query.mincost, req.query.func, function(data) {
-			res.json(data);
+			if(req.query.format == 'svg') {
+				res.send(data.svg);
+				res.end();
+			} else {
+				res.json(data);
+			}
 		});
 });
 

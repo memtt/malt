@@ -306,7 +306,7 @@ function MaltPageHome()
 				
 				//check reverse
 				$scope.getReverse = function () {
-					return (maltMetrics[$scope.metric].defaultOrder == 'desc');
+					return ($scope.funcMetrics.maltMetrics[$scope.metric].defaultOrder == 'desc');
 				}
 				
 				$scope.useHiddenClass = function (x)  {
