@@ -363,6 +363,12 @@ function CallTreeAdapter(stacktree)
 	var fulltree = generateTreeDataSet(buildCallTree(stacktree));
 	addColorCodes(fulltree);
 
+	// for (var i = 0; i < fulltree.nodes.length; i++) {
+	// 	if(fulltree.nodes[i].inEdges.length == 0) {
+	// 		console.log("root found", fulltree.nodes[i]);
+	// 	}
+	// }
+
 	return this;
 }
 

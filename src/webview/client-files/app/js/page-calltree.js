@@ -179,14 +179,11 @@ function MaltPageCallTree()
 			});
 
 		$.when(deferredArray).then(function() {
-			console.log("hello", $scope.functions);
 			for (var i = 0; i < $scope.functions.length; i++) {
-				console.log("se", $scope.functions[i].function, $scope.nodeData.function);
 				if($scope.functions[i].function == $scope.nodeData.function) {
 					$scope.$apply(function() {
 						$scope.selectedDetails = $scope.functions[i];
 					});
-					console.log("found");
 					return;
 				}
 			}

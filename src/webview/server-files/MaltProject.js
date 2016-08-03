@@ -723,7 +723,8 @@ MaltProject.prototype.getCallTree = function(nodeId, depth, height, minCost, fun
 
 	// If tree object hasnt been created, create and cache it
 	if(!this.calltreeCache) {
-		this.calltreeCache = new CallTreeAdapter(this.getFilterdStacksOnSymbol("_start"));
+		this.calltreeCache = new CallTreeAdapter(this.getFilterdStacks(true));
+		// this.calltreeCache = new CallTreeAdapter(this.getFilterdStacksOnSymbol("_start"));
 	}
 
 	// If nodeId not provided, get node id by function name
