@@ -45,9 +45,8 @@ function CallTreeAdapter(stacktree)
 			var call = data[i];
 			var cur = tree;
 			reduceStat(cur,call.info);
-			var tmp = call.stack.reverse();
-			for(var x in tmp) {
-				var loc = tmp[x];
+			for (var i = call.stack.length - 1; i >= 0; i--) {
+				var loc = call.stack[i];
 				if (cur.childs[loc.function] == undefined)
 					cur.childs[loc.function] = {childs:{},id:id++,location:loc};
 				cur = cur.childs[loc.function];
