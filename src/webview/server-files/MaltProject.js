@@ -723,7 +723,10 @@ MaltProject.prototype.getCallTree = function(nodeId, depth, height, minCost, fun
 
 	// If tree object hasnt been created, create and cache it
 	if(!this.calltreeCache) {
-		this.calltreeCache = new CallTreeAdapter(this.getFilterdStacks(true));
+		// console.time("filteredStack");
+		var filteredStack = this.getFilterdStacks(true);
+		// console.timeEnd("filteredStack");
+		this.calltreeCache = new CallTreeAdapter(filteredStack);
 		// this.calltreeCache = new CallTreeAdapter(this.getFilterdStacksOnSymbol("_start"));
 	}
 
@@ -740,23 +743,45 @@ MaltProject.prototype.getCallTree = function(nodeId, depth, height, minCost, fun
 	}
 
 	// Filter tree and get the focal node
-	var filteredTree = this.calltreeCache.filterNodeLine(nodeId, depth, height, minCost);
+	// console.time("filterNodeLine");
+	var filteredTree = null;
+	if(nodeId == -1) {
+		filteredTree = this.calltreeCache.filterRootLines(depth, minCost);
+	} else {
+		filteredTree = this.calltreeCache.filterNodeLine(nodeId, depth, height, minCost);
+	}
+	// console.timeEnd("filterNodeLine");
+
+	// console.time("getNodeById");
 	var node = this.calltreeCache.getNodeById(nodeId);
+	// console.timeEnd("getNodeById");
 
 	// Build output object
 	resp.totalNodes = this.calltreeCache.getNodes().length;
 	resp.visibleNodes = filteredTree.nodes.length;
-	resp.nodeId = nodeId;
-	resp.file = node.data.location.file;
-	resp.fileShort = (resp.file.length > 40) ? '.../' + resp.file.replace(/^.*[\\\/]/, '') : resp.file;
-	resp.function = node.data.location.function;
-	resp.functionShort = (resp.function.length > 40) ? node.label : resp.function;
+	if(nodeId == -1) {
+		resp.nodeId = -1;
+		resp.file = "Root nodes";
+		resp.fileShort = resp.file;
+		resp.function = "Filtering might hide some nodes";
+		resp.functionShort = resp.function;		
+	} else {
+		resp.nodeId = nodeId;
+		resp.file = node.data.location.file;
+		resp.fileShort = (resp.file.length > 40) ? '.../' + resp.file.replace(/^.*[\\\/]/, '') : resp.file;
+		resp.function = node.data.location.function;
+		resp.functionShort = (resp.function.length > 40) ? node.label : resp.function;
+	}
+	// console.time("getDotCodeForTree");
 	resp.dotCode = GraphGenerator.getDotCodeForTree(filteredTree, nodeId);
+	// console.timeEnd("getDotCodeForTree");
 	resp.svg = null;
 	
 	// Generate SVG code from Dot code if GraphViz is installed
 	if(GraphGenerator.isInstalled()) {
+		// console.time("convertDotToSvg");
 		GraphGenerator.convertDotToSvg(resp.dotCode, function(svg, err) {
+			// console.timeEnd("convertDotToSvg");
 			if(err) {
 				resp.svg = "Could not generate SVG code.";
 			} else {

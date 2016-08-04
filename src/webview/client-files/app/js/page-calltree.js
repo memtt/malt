@@ -84,7 +84,7 @@ function MaltPageCallTree()
 
 					drawGraph();
 
-					if(shouldUpdateDetails) {
+					if(shouldUpdateDetails && nodeId != -1) {
 						for (var i = 0; i < $scope.functions.length; i++) {
 							if($scope.functions[i].function == data.function) {
 								$scope.$apply(function() {
@@ -92,6 +92,12 @@ function MaltPageCallTree()
 								});
 							}
 						}
+					}
+
+					if(nodeId == -1) {
+						$scope.$apply(function() {
+							$scope.selectedDetails = null;
+						});
 					}
 				});
 		}
@@ -142,8 +148,8 @@ function MaltPageCallTree()
 					} else {
 						$scope.$apply(function() {
 							$scope.nodeData = nodata;
+							navigateTo($scope.nodeData.nodeId);
 						});
-						navigateTo($scope.nodeData.nodeId);
 						drawGraph();
 					}
 				});
@@ -169,8 +175,8 @@ function MaltPageCallTree()
 		});
 
 		showLoader();
-		maltDataSource.getCallTreeData(null, $scope.filterDepth, 
-			$scope.filterHeight, $scope.filterNodeCost, '_start', function(data) {
+		maltDataSource.getCallTreeData(-1, $scope.filterDepth, 
+			$scope.filterHeight, $scope.filterNodeCost, null, function(data) {
 				hideLoader();
 				$scope.nodeData = data;
 				drawGraph();

@@ -67,10 +67,11 @@ function CallTreeAdapter(stacktree)
 		if(!location)
 			return null;
 
-		return location.binary + '\\' 
-				+ location.file + '\\'
-				+ location.function + '\\'
-				+ location.line;
+		// return location.binary + '\\' 
+		// 		+ location.file + '\\'
+		// 		+ location.function + '\\'
+		// 		+ location.line;
+		return location.function;
 	}
 
 	/**
@@ -91,8 +92,8 @@ function CallTreeAdapter(stacktree)
 
 		if(tree.location) {
 			// Remove libmalt.so related functions captured in call tree
-			if(tree.location.binary.endsWith("libmalt.so"))
-				return null;
+			// if(tree.location.binary.endsWith("libmalt.so"))
+			// 	return null;
 
 			// Remove useless nodes
 			if(tree.info.alloc.count == 0)
@@ -103,7 +104,6 @@ function CallTreeAdapter(stacktree)
 			// Add node to node-list if this is a new node
 			if(!nodeCache.exists(identifier)) {
 				currentId = nodeCache.put(identifier);
-				
 				nodes.push({
 					id: currentId,
 					label: CppDeclParser.getShortName(CppDeclParser.parseCppPrototype(tree.location.function)),
@@ -359,14 +359,41 @@ function CallTreeAdapter(stacktree)
 		return {nodes: union(descs.nodes, ancs.nodes), edges: edgeList};
 	}
 
-	var fulltree = generateTreeDataSet(buildCallTree(stacktree));
-	addColorCodes(fulltree);
+	this.filterRootLines = function(depth, costFilterPercentage) {
+		var nodeSet = {}, edgeList = [];
+		for (var i = 0; i < fulltree.nodes.length; i++) {
+			if(fulltree.nodes[i].inEdges.length == 0) {
+				var childrenCostFilter = costFilterPercentage/100.0 * fulltree.nodes[i].score;
+				filterDescendantsRecurse(fulltree.nodes[i].id, nodeSet, edgeList, depth, childrenCostFilter);
+			}
+		}
+		
+		var edgeSet = {};
+		var edges = [];
+		var nodes = [];
+		for (var i = 0; i < edgeList.length; i++) {
+			edgeSet[edgeList[i].from + ',' + edgeList[i].to] = edgeList[i];
+		}
+		for(var i in edgeSet) {
+			edges.push(edgeSet[i]);
+		}
+		for(var i in nodeSet) {
+			nodes.push(fulltree.nodes[i-1]);
+		}
+		return {nodes: nodes, edges: edges};
+	}
 
-	// for (var i = 0; i < fulltree.nodes.length; i++) {
-	// 	if(fulltree.nodes[i].inEdges.length == 0) {
-	// 		console.log("root found", fulltree.nodes[i]);
-	// 	}
-	// }
+	// console.time("buildCallTree");
+	var calltree = buildCallTree(stacktree);
+	// console.timeEnd("buildCallTree");
+
+	// console.time("generateTreeDataSet");
+	var fulltree = generateTreeDataSet(calltree);
+	// console.timeEnd("generateTreeDataSet");
+
+	// console.time("addColorCodes");
+	addColorCodes(fulltree);
+	// console.timeEnd("addColorCodes");
 
 	return this;
 }
