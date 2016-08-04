@@ -5,6 +5,9 @@
 function MaltPageCallTree() 
 {
 	function createSvgGraphForTree(svg, focusedNode) {
+		if(!svg)
+			return;
+		
 		var parser = new DOMParser();
 		var svg = parser.parseFromString(svg, "image/svg+xml");
 		svg.documentElement.id = "svggraph";

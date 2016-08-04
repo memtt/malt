@@ -20,6 +20,15 @@
 	.edge {
 		fill: #bbb;
 	}
+	#nosvg {
+		font-size: 24px;
+		color: #ddd;
+		text-align: center;
+		margin: 200px 0 200px 0;
+	}
+	#nosvg span {
+		font-size: 80px;
+	}
 </style>
 
 <div class="home">
@@ -71,6 +80,11 @@
 					  <div class="sk-circle11 sk-child"></div>
 					  <div class="sk-circle12 sk-child"></div>
 					</div>
+				</div>
+				<div id="nosvg" ng-show="nodeData &amp;&amp; nodeData.error.svgGenerationError">
+					<span class="glyphicon glyphicon-remove-sign"></span>
+					<br>
+					{{ nodeData.error.svgGenerationError }}
 				</div>
 				<div id="mynetwork"></div>
 			</div>

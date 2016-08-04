@@ -783,13 +783,14 @@ MaltProject.prototype.getCallTree = function(nodeId, depth, height, minCost, fun
 		GraphGenerator.convertDotToSvg(resp.dotCode, function(svg, err) {
 			// console.timeEnd("convertDotToSvg");
 			if(err) {
-				resp.svg = "Could not generate SVG code.";
+				resp.error = {svgGenerationError: "Could not generate graph."};
 			} else {
 				resp.svg = svg;
 			}
 			callback(resp);
 		});
 	} else {
+		resp.error = {svgGenerationError: "Please install GraphViz to enable graph generation."};
 		callback(resp);
 	}
 }
