@@ -38,7 +38,7 @@ var graphGenerator = {
 				for (var i = 0; i < nodes.length; i++) {
 					d.node('node' + nodes[i].id, {
 						shape: 'record', 
-						label: safeTagsReplace(nodes[i].label.trim()) + ' | ' + nodes[i].score, 
+						label: safeTagsReplace(nodes[i].label.trim()) + ' | ' + nodes[i].scoreReadable, 
 						tooltip: safeTagsReplace(nodes[i].tooltip.trim()),
 						style: 'filled',
 						color: nodes[i].id == focusedNode ? '#2b2b2b' : 'white',

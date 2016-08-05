@@ -3,6 +3,7 @@ var extend = require("extend");
 var union = require('lodash.union');
 var SimpleIdCache = require("./SimpleIdCache.js");
 var MaltHelper = require("../client-files/app/js/helper.js");
+var MaltFuncMetrics = require("../client-files/app/js/func-metrics.js");
 var CppDeclParser = require("./CppDeclParser.js");
 
 /**
@@ -110,12 +111,15 @@ function CallTreeAdapter(stacktree)
 					tooltip: tree.location.function,
 					level: level,
 					score: tree.info.alloc.count,
+					scoreReadable: maltHelper.humanReadable(tree.info.alloc.count, 1, '', false),
 					data: tree,
 					outEdges: [],
 					inEdges: []
 				});
 			} else {
 				currentId = nodeCache.get(identifier);
+				nodes[currentId - 1].score += tree.info.alloc.count;
+				nodes[currentId - 1].scoreReadable = maltHelper.humanReadable(nodes[currentId - 1].score, 1, '', false);
 			}
 		} 
 

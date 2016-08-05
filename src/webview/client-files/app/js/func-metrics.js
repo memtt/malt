@@ -189,3 +189,9 @@ MaltFuncMetrics.prototype.computeRef = function(data,metricName)
 
 	return res;
 }
+
+// If this is ran on server-side, we export the class as a module
+// Otherwise, we create a globally shared object for this class
+if(typeof exports !== 'undefined') {
+	module.exports = MaltFuncMetrics;
+}
