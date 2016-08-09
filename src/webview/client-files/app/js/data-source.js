@@ -75,13 +75,14 @@ MaltDataSourceNodeJS.prototype.getCallStackDataFunc = function(func,handler)
 	$.getJSON("/stacks.json?func="+encodeURIComponent(func),handler);
 }
 
-MaltDataSourceNodeJS.prototype.getCallTreeData = function(nodeid, depth, height, mincost, func, handler)
+MaltDataSourceNodeJS.prototype.getCallTreeData = function(nodeid, depth, height, mincost, func, metric, handler)
 {
 	$.getJSON("/calltree.json?"
 		+ (func ? "func=" + encodeURIComponent(func) : "nodeid=" + encodeURIComponent(nodeid))
 		+ "&depth=" + encodeURIComponent(depth)
 		+ "&height=" + encodeURIComponent(height)
-		+ "&mincost=" + encodeURIComponent(mincost), handler);
+		+ "&mincost=" + encodeURIComponent(mincost)
+		+ "&metric=" + encodeURIComponent(metric), handler);
 }
 
 MaltDataSourceNodeJS.prototype.loadProcMaps = function(func,handler)

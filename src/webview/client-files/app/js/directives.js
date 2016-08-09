@@ -90,11 +90,11 @@
 			scope: {
 				selector: '=',
 				functions: '=',
+				metric: '=',
 				onSelect: '&'
 			},
 			link: function ($scope) {
 				var funcMetric = new MaltFuncMetrics();
-				$scope.metric = 'alloc.count';
 				$scope.metricList = funcMetric.getMetricList();
 				$scope.inclusive = true;
 				$scope.limit = 15;
@@ -111,6 +111,10 @@
 					$scope.onSelect({data: data});
 				};
 
+				$scope.metricSelectEvent = function(data) {
+					$scope.metric = data.key;
+					$scope.selector.selectMetric(data);
+				};
 			}
 		};
 	})

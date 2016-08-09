@@ -35,6 +35,7 @@ function MaltPageCallTree()
 		$scope.functions = [];
 		$scope.selector = new MaltSelector();
 		$scope.selectedDetails = null;
+		$scope.selectedMetric = 'alloc.count';
 
 		$scope.filterHeight = "-1";
 		$scope.filterDepth = "3";
@@ -76,7 +77,8 @@ function MaltPageCallTree()
 			showLoader();
 
 			maltDataSource.getCallTreeData(nodeId, $scope.filterDepth, 
-				$scope.filterHeight, $scope.filterNodeCost, null, function(data) {
+				$scope.filterHeight, $scope.filterNodeCost, null, $scope.selectedMetric, 
+				function(data) {
 					hideLoader();
 
 					$scope.$apply(function() {
@@ -144,7 +146,8 @@ function MaltPageCallTree()
 			$scope.selectedDetails = data;
 			showLoader();
 			maltDataSource.getCallTreeData(null, $scope.filterDepth, 
-				$scope.filterHeight, $scope.filterNodeCost, data.function, function(nodata) {
+				$scope.filterHeight, $scope.filterNodeCost, data.function, $scope.selectedMetric, 
+				function(nodata) {
 					hideLoader();
 					if(nodata.error) {
 						alert("Could not find the selected function.");
@@ -161,6 +164,7 @@ function MaltPageCallTree()
 		$scope.$watch('filterHeight', function() { loadGraph(); });
 		$scope.$watch('filterDepth', function() { loadGraph(); });
 		$scope.$watch('filterNodeCost', function() { loadGraph(); });
+		$scope.$watch('selectedMetric', function() { loadGraph(); });
 
 		var deferredArray = [new $.Deferred(), new $.Deferred()];
 		maltDataSource.loadFlatFunctionStats($http,function(data) {
@@ -179,7 +183,8 @@ function MaltPageCallTree()
 
 		showLoader();
 		maltDataSource.getCallTreeData(-1, $scope.filterDepth, 
-			$scope.filterHeight, $scope.filterNodeCost, null, function(data) {
+			$scope.filterHeight, $scope.filterNodeCost, null, $scope.selectedMetric,
+			function(data) {
 				hideLoader();
 				$scope.nodeData = data;
 				drawGraph();

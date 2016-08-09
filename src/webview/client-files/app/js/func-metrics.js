@@ -1,3 +1,7 @@
+if(typeof maltHelper === 'undefined') {
+	maltHelper = new (require('./helper.js'))();
+}
+
 //declare metrics
 function MaltFuncMetrics()
 {

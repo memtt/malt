@@ -11,6 +11,7 @@ var CppDeclParser = require("./CppDeclParser.js");
  * @type {MaltHelper}
  */
 var maltHelper = new MaltHelper();
+var maltFuncMetrics = new MaltFuncMetrics();
 
 /**
  * An adapter class that encapsulates a stack-tree and exposes
@@ -68,10 +69,6 @@ function CallTreeAdapter(stacktree)
 		if(!location)
 			return null;
 
-		// return location.binary + '\\' 
-		// 		+ location.file + '\\'
-		// 		+ location.function + '\\'
-		// 		+ location.line;
 		return location.function;
 	}
 
@@ -110,16 +107,14 @@ function CallTreeAdapter(stacktree)
 					label: CppDeclParser.getShortName(CppDeclParser.parseCppPrototype(tree.location.function)),
 					tooltip: tree.location.function,
 					level: level,
-					score: tree.info.alloc.count,
-					scoreReadable: maltHelper.humanReadable(tree.info.alloc.count, 1, '', false),
+					stats: extend(true, {}, tree.info),
 					data: tree,
 					outEdges: [],
 					inEdges: []
 				});
 			} else {
 				currentId = nodeCache.get(identifier);
-				nodes[currentId - 1].score += tree.info.alloc.count;
-				nodes[currentId - 1].scoreReadable = maltHelper.humanReadable(nodes[currentId - 1].score, 1, '', false);
+				maltHelper.mergeStackInfoDatas(nodes[currentId - 1].stats, tree.info);
 			}
 		} 
 
@@ -160,6 +155,11 @@ function CallTreeAdapter(stacktree)
 		};
 	}
 
+	/**
+	 * Convert RGB string to HEX color string
+	 * @param  {string} rgb RGB color string
+	 * @return {string}     HEX color string
+	 */
 	function convertRgbStringToHex(rgb) {
 		var a = rgb.split("(")[1].split(")")[0];
 		a = a.split(",");
@@ -196,6 +196,18 @@ function CallTreeAdapter(stacktree)
 		// assign colors
 		for (var i = 0; i < nodes.length; i++) {
 			nodes[i].color = convertRgbStringToHex(colorScale(nodes[i].score));
+		}
+	}
+
+	/**
+	 * Add score attribute to nodes
+	 * @param {array} nodes  Node list
+	 * @param {string} metric Type of metric to use as score
+	 */
+	function addScores(nodes, metric) {
+		for (var i = 0; i < nodes.length; i++) {
+			nodes[i].score = maltFuncMetrics.maltMetrics[metric].extractor(nodes[i].stats);
+			nodes[i].scoreReadable = maltFuncMetrics.maltMetrics[metric].formalter(nodes[i].score);
 		}
 	}
 
@@ -305,6 +317,7 @@ function CallTreeAdapter(stacktree)
 	 * @param  {int} nodeId  Node id of the focal node
 	 * @param  {int} depth   Depth to limit the tree to. Defaults to unlimited.
 	 * @param  {float} costFilter   Mimimum cost for node to be included.
+	 * @return {object}                      A tree object containing 'nodes' and 'edges'.
 	 */
 	this.filterDescendants = function(nodeId, depth, costFilter) {
 		var nodeSet = {}, nodeList = [], edgeList = [];
@@ -320,6 +333,7 @@ function CallTreeAdapter(stacktree)
 	 * @param  {int} nodeId  Node id of the focal node
 	 * @param  {int} height   Height to limit the tree to. Defaults to unlimited.
 	 * @param  {float} costFilter   Mimimum cost for node to be included.
+	 * @return {object}                      A tree object containing 'nodes' and 'edges'.
 	 */
 	this.filterAncestors = function(nodeId, height, costFilter) {
 		var nodeSet = {}, nodeList = [], edgeList = [];
@@ -336,8 +350,12 @@ function CallTreeAdapter(stacktree)
 	 * @param  {int} depth  Depth to limit to. Defaults to unlimited.
 	 * @param  {int} height Height to limit to. Defaults to unlimited. 
 	 * @param  {float} costFilterPercentage Minimum cost in percentage for node to be included.
+	 * @param  {string} metric               Type of metric to use as score.
+	 * @return {object}                      A tree object containing 'nodes' and 'edges'.
 	 */
-	this.filterNodeLine = function(nodeId, depth, height, costFilterPercentage) {
+	this.filterNodeLine = function(nodeId, depth, height, costFilterPercentage, metric) {
+		addScores(fulltree.nodes, metric);
+		addColorCodes(fulltree);
 		var max = -1;
 		for (var i = 0; i < fulltree.nodes.length; i++) {
 			if(fulltree.nodes[i].score > max) {
@@ -360,10 +378,20 @@ function CallTreeAdapter(stacktree)
 		for(var i in edgeSet) {
 			edgeList.push(edgeSet[i]);
 		}
-		return {nodes: union(descs.nodes, ancs.nodes), edges: edgeList};
+		var nodesUnioned = union(descs.nodes, ancs.nodes);
+		return {nodes: nodesUnioned, edges: edgeList};
 	}
 
-	this.filterRootLines = function(depth, costFilterPercentage) {
+	/**
+	 * Filter a tree to get all root nodes plus their descendants
+	 * @param  {int}    depth                Depth to limit to. Defaults to unlimited.
+	 * @param  {int}    costFilterPercentage Minimum cost in percentage for node to be included.
+	 * @param  {string} metric               Type of metric to use as score.
+	 * @return {object}                      A tree object containing 'nodes' and 'edges'.
+	 */
+	this.filterRootLines = function(depth, costFilterPercentage, metric) {
+		addScores(fulltree.nodes, metric);
+		addColorCodes(fulltree);
 		var nodeSet = {}, edgeList = [];
 		for (var i = 0; i < fulltree.nodes.length; i++) {
 			if(fulltree.nodes[i].inEdges.length == 0) {
@@ -396,7 +424,6 @@ function CallTreeAdapter(stacktree)
 	// console.timeEnd("generateTreeDataSet");
 
 	// console.time("addColorCodes");
-	addColorCodes(fulltree);
 	// console.timeEnd("addColorCodes");
 
 	return this;
