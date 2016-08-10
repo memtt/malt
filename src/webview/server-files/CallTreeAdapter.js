@@ -117,7 +117,7 @@ function CallTreeAdapter(stacktree)
 	 * @param  {SimpleIdCache} vertCache Cache to track edge
 	 * @return {int}              Id for current tree
 	 */
-	function generateNodesAndVertices(tree, level, nodes, vertices, nodeCache, vertCache)
+	function generateNodesAndVertices(parent, tree, level, nodes, vertices, nodeCache, vertCache)
 	{
 		var identifier = null;
 		var currentId = null;
@@ -149,14 +149,16 @@ function CallTreeAdapter(stacktree)
 				});
 			} else {
 				currentId = nodeCache.get(identifier);
-				maltHelper.mergeStackInfoDatas(nodes[currentId - 1].stats, tree.info);
+				// console.log(parent, currentId);
+				if(parent != currentId)
+					maltHelper.mergeStackInfoDatas(nodes[currentId - 1].stats, tree.info);
 			}
 		} 
 
 		// Create edge from this node to all its children
 		for (var i in tree.childs) {
 			if(identifier !=  null) {
-				var childId = generateNodesAndVertices(tree.childs[i], level + 1, nodes, vertices, nodeCache, vertCache);
+				var childId = generateNodesAndVertices(currentId, tree.childs[i], level + 1, nodes, vertices, nodeCache, vertCache);
 				if(childId != null && !vertCache.exists(currentId + "," + childId)) {
 					vertCache.put(currentId + "," + childId);
 					nodes[currentId-1].outEdges.push(childId);
@@ -167,7 +169,7 @@ function CallTreeAdapter(stacktree)
 					});					
 				}
 			} else {
-				generateNodesAndVertices(tree.childs[i], level + 1, nodes, vertices, nodeCache, vertCache);
+				generateNodesAndVertices(null, tree.childs[i], level + 1, nodes, vertices, nodeCache, vertCache);
 			}
 		}
 
@@ -182,7 +184,7 @@ function CallTreeAdapter(stacktree)
 	function generateTreeDataSet(tree) 
 	{
 		var nodes = [], vertices= [];
-		generateNodesAndVertices(tree, 0, nodes, vertices, new SimpleIdCache(), new SimpleIdCache());
+		generateNodesAndVertices(null, tree, 0, nodes, vertices, new SimpleIdCache(), new SimpleIdCache());
 
 		return {
 			nodes: nodes, 
