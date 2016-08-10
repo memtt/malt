@@ -727,7 +727,6 @@ MaltProject.prototype.getCallTree = function(nodeId, depth, height, minCost, fun
 		var filteredStack = this.getFilterdStacks(true);
 		// console.timeEnd("filteredStack");
 		this.calltreeCache = new CallTreeAdapter(filteredStack);
-		// this.calltreeCache = new CallTreeAdapter(this.getFilterdStacksOnSymbol("_start"));
 	}
 
 	// If nodeId not provided, get node id by function name

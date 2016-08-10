@@ -21,6 +21,41 @@ var maltFuncMetrics = new MaltFuncMetrics();
  */
 function CallTreeAdapter(stacktree)
 {
+
+	/**
+	 * Creates a cost filter function
+	 * @param {float} cost   Cost to be used for comparison
+	 * @param {string} metric Type of metric; determines whether we need > or < comparison
+	 */
+	function CostFilter(cost, minMax, metric) {
+		var comparators = {
+			lt: function(left, right) {
+				return left <= right;
+			},
+			gt: function(left, right) {
+				return left >= right;
+			}
+		};
+
+		var minima = minMax[0], maxima = minMax[1], costValue;
+		var comparator = maltFuncMetrics.maltMetrics[metric].defaultOrder == 'asc' ? comparators.lt : comparators.gt;
+
+		if(minMax.length == 3) {
+			minima = maltFuncMetrics.maltMetrics[metric].defaultOrder == 'asc' ? minMax[1] : minMax[0];
+			maxima = maltFuncMetrics.maltMetrics[metric].defaultOrder == 'asc' ? minMax[2] : minMax[1];
+		}
+
+		if(maltFuncMetrics.maltMetrics[metric].defaultOrder == 'asc') {
+			costValue = maxima - (maxima - minima) * (cost / 100.0);
+		} else {
+			costValue = (maxima - minima) * (cost / 100.0) + minima;
+		}
+
+		return function(value) {
+			return comparator(value, costValue);
+		}
+	}
+
 	/**
 	 * Reduce child and parent statistics
 	 * @param  {object} node Child node
@@ -267,7 +302,7 @@ function CallTreeAdapter(stacktree)
 		for (var i = 0; i < currentEdges.length; i++) {
 			if(!(("" + currentEdges[i]) in nodeSet)) {
 				if(depth !== 0) {
-					if(fulltree.nodes[currentEdges[i]-1].score < costFilter)
+					if(!costFilter(fulltree.nodes[currentEdges[i]-1].score))
 						return;
 
 					nodeSet["" + currentEdges[i]] = true;
@@ -296,7 +331,7 @@ function CallTreeAdapter(stacktree)
 		var currentEdges = fulltree.nodes[nodeId-1].inEdges;
 		for (var i = 0; i < currentEdges.length; i++) {
 			if(!(("" + currentEdges[i]) in nodeSet)) {
-				if(fulltree.nodes[currentEdges[i]-1].score < costFilter)
+				if(!costFilter(fulltree.nodes[currentEdges[i]-1].score))
 					return;
 
 				if(height !== 0) {
@@ -319,9 +354,9 @@ function CallTreeAdapter(stacktree)
 	 * @param  {float} costFilter   Mimimum cost for node to be included.
 	 * @return {object}                      A tree object containing 'nodes' and 'edges'.
 	 */
-	this.filterDescendants = function(nodeId, depth, costFilter) {
+	function filterDescendants(nodeId, depth, costFilter) {
 		var nodeSet = {}, nodeList = [], edgeList = [];
-		filterDescendantsRecurse(nodeId, nodeSet, edgeList, depth || -1, costFilter || 0);
+		filterDescendantsRecurse(nodeId, nodeSet, edgeList, depth || -1, costFilter);
 		for(var i in nodeSet) {
 			nodeList.push(fulltree.nodes[i-1]);
 		}
@@ -335,9 +370,9 @@ function CallTreeAdapter(stacktree)
 	 * @param  {float} costFilter   Mimimum cost for node to be included.
 	 * @return {object}                      A tree object containing 'nodes' and 'edges'.
 	 */
-	this.filterAncestors = function(nodeId, height, costFilter) {
+	function filterAncestors (nodeId, height, costFilter) {
 		var nodeSet = {}, nodeList = [], edgeList = [];
-		filterAncestorsRecurse(nodeId, nodeSet, edgeList, height || -1, costFilter || 0);
+		filterAncestorsRecurse(nodeId, nodeSet, edgeList, height || -1, costFilter);
 		for(var i in nodeSet) {
 			nodeList.push(fulltree.nodes[i-1]);
 		}
@@ -356,17 +391,25 @@ function CallTreeAdapter(stacktree)
 	this.filterNodeLine = function(nodeId, depth, height, costFilterPercentage, metric) {
 		addScores(fulltree.nodes, metric);
 		addColorCodes(fulltree);
+
 		var max = -1;
 		for (var i = 0; i < fulltree.nodes.length; i++) {
 			if(fulltree.nodes[i].score > max) {
 				max = fulltree.nodes[i].score;
 			}
 		}
-		var parentCostFilter = costFilterPercentage/100.0 * max;
-		var childrenCostFilter = costFilterPercentage/100.0 * fulltree.nodes[nodeId-1].score;
+		var min = max + 1;
+		for (var i = 0; i < fulltree.nodes.length; i++) {
+			if(fulltree.nodes[i].score < min) {
+				min = fulltree.nodes[i].score;
+			}
+		}
 
-		var descs = this.filterDescendants(nodeId, depth, childrenCostFilter);
-		var ancs = this.filterAncestors(nodeId, height, parentCostFilter);
+		var childrenCostFilter = new CostFilter(costFilterPercentage, [min, fulltree.nodes[nodeId-1].score, max], metric);
+		var parentCostFilter = new CostFilter(costFilterPercentage, [min, max], metric);
+		var descs = filterDescendants(nodeId, depth, childrenCostFilter);
+		var ancs = filterAncestors(nodeId, height, parentCostFilter);
+
 		var edgeSet = {};
 		for (var i = 0; i < descs.edges.length; i++) {
 			edgeSet[descs.edges[i].from + ',' + descs.edges[i].to] = descs.edges[i];
@@ -374,12 +417,13 @@ function CallTreeAdapter(stacktree)
 		for (var i = 0; i < ancs.edges.length; i++) {
 			edgeSet[ancs.edges[i].from + ',' + ancs.edges[i].to] = ancs.edges[i];
 		}
+
 		var edgeList = [];
 		for(var i in edgeSet) {
 			edgeList.push(edgeSet[i]);
 		}
-		var nodesUnioned = union(descs.nodes, ancs.nodes);
-		return {nodes: nodesUnioned, edges: edgeList};
+
+		return {nodes: union(descs.nodes, ancs.nodes), edges: edgeList};
 	}
 
 	/**
@@ -392,10 +436,24 @@ function CallTreeAdapter(stacktree)
 	this.filterRootLines = function(depth, costFilterPercentage, metric) {
 		addScores(fulltree.nodes, metric);
 		addColorCodes(fulltree);
+
+		var max = -1;
+		for (var i = 0; i < fulltree.nodes.length; i++) {
+			if(fulltree.nodes[i].score > max) {
+				max = fulltree.nodes[i].score;
+			}
+		}
+		var min = max + 1;
+		for (var i = 0; i < fulltree.nodes.length; i++) {
+			if(fulltree.nodes[i].score < min) {
+				min = fulltree.nodes[i].score;
+			}
+		}
+
 		var nodeSet = {}, edgeList = [];
 		for (var i = 0; i < fulltree.nodes.length; i++) {
 			if(fulltree.nodes[i].inEdges.length == 0) {
-				var childrenCostFilter = costFilterPercentage/100.0 * fulltree.nodes[i].score;
+				var childrenCostFilter = new CostFilter(costFilterPercentage, [min, fulltree.nodes[i].score, max], metric);
 				filterDescendantsRecurse(fulltree.nodes[i].id, nodeSet, edgeList, depth, childrenCostFilter);
 			}
 		}
@@ -412,6 +470,7 @@ function CallTreeAdapter(stacktree)
 		for(var i in nodeSet) {
 			nodes.push(fulltree.nodes[i-1]);
 		}
+
 		return {nodes: nodes, edges: edges};
 	}
 
