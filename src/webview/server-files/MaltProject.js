@@ -717,7 +717,7 @@ MaltProject.prototype.getFullTree = function()
 	return tree;
 }
 
-MaltProject.prototype.getCallTree = function(nodeId, depth, height, minCost, func, metric, callback) {
+MaltProject.prototype.getCallTree = function(nodeId, depth, height, minCost, func, metric, isRatio, callback) {
 	// Response object
 	var resp = {};
 
@@ -744,10 +744,11 @@ MaltProject.prototype.getCallTree = function(nodeId, depth, height, minCost, fun
 	// Filter tree and get the focal node
 	// console.time("filterNodeLine");
 	var filteredTree = null;
+	var ratio = isRatio === 'true' ? true : false;
 	if(nodeId == -1) {
-		filteredTree = this.calltreeCache.filterRootLines(depth, minCost, metric);
+		filteredTree = this.calltreeCache.filterRootLines(depth, minCost, metric, ratio);
 	} else {
-		filteredTree = this.calltreeCache.filterNodeLine(nodeId, depth, height, minCost, metric);
+		filteredTree = this.calltreeCache.filterNodeLine(nodeId, depth, height, minCost, metric, ratio);
 	}
 	// console.timeEnd("filterNodeLine");
 

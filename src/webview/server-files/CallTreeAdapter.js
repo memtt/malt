@@ -238,11 +238,24 @@ function CallTreeAdapter(stacktree)
 	 * Add score attribute to nodes
 	 * @param {array} nodes  Node list
 	 * @param {string} metric Type of metric to use as score
+	 * @param {boolean} isRatio Should the score be calculated as percentages?
 	 */
-	function addScores(nodes, metric) {
-		for (var i = 0; i < nodes.length; i++) {
-			nodes[i].score = maltFuncMetrics.maltMetrics[metric].extractor(nodes[i].stats);
-			nodes[i].scoreReadable = maltFuncMetrics.maltMetrics[metric].formalter(nodes[i].score);
+	function addScores(nodes, metric, isRatio) {
+		if(isRatio) {
+			var max = -1;
+			for (var i = 0; i < nodes.length; i++) {
+				if(maltFuncMetrics.maltMetrics[metric].extractor(nodes[i].stats) > max)
+					max = maltFuncMetrics.maltMetrics[metric].extractor(nodes[i].stats);
+			}
+			for (var i = 0; i < nodes.length; i++) {
+				nodes[i].score = maltFuncMetrics.maltMetrics[metric].extractor(nodes[i].stats)/max*100.0;
+				nodes[i].scoreReadable = Math.round(nodes[i].score*100)/100 + '%';
+			}
+		} else {
+			for (var i = 0; i < nodes.length; i++) {
+				nodes[i].score = maltFuncMetrics.maltMetrics[metric].extractor(nodes[i].stats);
+				nodes[i].scoreReadable = maltFuncMetrics.maltMetrics[metric].formalter(nodes[i].score);
+			}
 		}
 	}
 
@@ -388,8 +401,8 @@ function CallTreeAdapter(stacktree)
 	 * @param  {string} metric               Type of metric to use as score.
 	 * @return {object}                      A tree object containing 'nodes' and 'edges'.
 	 */
-	this.filterNodeLine = function(nodeId, depth, height, costFilterPercentage, metric) {
-		addScores(fulltree.nodes, metric);
+	this.filterNodeLine = function(nodeId, depth, height, costFilterPercentage, metric, isRatio) {
+		addScores(fulltree.nodes, metric, isRatio);
 		addColorCodes(fulltree);
 
 		var max = -1;
@@ -433,8 +446,8 @@ function CallTreeAdapter(stacktree)
 	 * @param  {string} metric               Type of metric to use as score.
 	 * @return {object}                      A tree object containing 'nodes' and 'edges'.
 	 */
-	this.filterRootLines = function(depth, costFilterPercentage, metric) {
-		addScores(fulltree.nodes, metric);
+	this.filterRootLines = function(depth, costFilterPercentage, metric, isRatio) {
+		addScores(fulltree.nodes, metric, isRatio);
 		addColorCodes(fulltree);
 
 		var max = -1;

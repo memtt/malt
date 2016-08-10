@@ -78,7 +78,7 @@ function MaltPageCallTree()
 
 			maltDataSource.getCallTreeData(nodeId, $scope.filterDepth, 
 				$scope.filterHeight, $scope.filterNodeCost, null, $scope.selectedMetric, 
-				function(data) {
+				$scope.selector.ratio, function(data) {
 					hideLoader();
 
 					$scope.$apply(function() {
@@ -147,7 +147,7 @@ function MaltPageCallTree()
 			showLoader();
 			maltDataSource.getCallTreeData(null, $scope.filterDepth, 
 				$scope.filterHeight, $scope.filterNodeCost, data.function, $scope.selectedMetric, 
-				function(nodata) {
+				$scope.selector.ratio, function(nodata) {
 					hideLoader();
 					if(nodata.error) {
 						alert("Could not find the selected function.");
@@ -165,6 +165,7 @@ function MaltPageCallTree()
 		$scope.$watch('filterDepth', function() { loadGraph(); });
 		$scope.$watch('filterNodeCost', function() { loadGraph(); });
 		$scope.$watch('selectedMetric', function() { loadGraph(); });
+		$scope.$watch('selector.ratio', function() { loadGraph(); });
 
 		var deferredArray = [new $.Deferred(), new $.Deferred()];
 		maltDataSource.loadFlatFunctionStats($http,function(data) {
@@ -184,7 +185,7 @@ function MaltPageCallTree()
 		showLoader();
 		maltDataSource.getCallTreeData(-1, $scope.filterDepth, 
 			$scope.filterHeight, $scope.filterNodeCost, null, $scope.selectedMetric,
-			function(data) {
+			$scope.selector.ratio, function(data) {
 				hideLoader();
 				$scope.nodeData = data;
 				drawGraph();
