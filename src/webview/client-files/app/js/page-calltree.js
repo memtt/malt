@@ -36,6 +36,8 @@ function MaltPageCallTree()
 		$scope.selector = new MaltSelector();
 		$scope.selectedDetails = null;
 		$scope.selectedMetric = 'alloc.count';
+		$scope.contextMenuNodeId = -1;
+		$scope.contextMenuFunction = null;
 
 		$scope.filterHeight = "-1";
 		$scope.filterDepth = "3";
@@ -118,9 +120,38 @@ function MaltPageCallTree()
 				loadGraph(nodeId, true, true);
 			});
 
+			$('.node').on('contextmenu', function(e) {
+				var dis = $(this);
+				$scope.$apply(function() {
+					$scope.contextMenuNodeId = parseInt(dis.find('title').html().substr(4));;
+					$scope.contextMenuFunction = dis.find('a').attr('xlink:title');
+				});
+
+				$("#contextMenu").css({
+					display: "block",
+					left: e.pageX,
+					top: e.pageY - $(".navbar").outerHeight() - 5
+			    });
+
+			    $(document).mouseup(function (e) {
+			    	if(e.which == 3)
+			    		return;
+
+			        var container = $("#contextMenu");
+
+			        // if (!container.is(e.target) // if the target of the click isn't the container...
+			        //     && container.has(e.target).length === 0) // ... nor a descendant of the container
+			        // {
+			            container.hide();
+			        // }
+			    });
+
+			    return false;
+			});
+
 			$('.node a').on('click', function(e) {
 				e.preventDefault();
-			})
+			});
 		}
 
 		$scope.onNavigateBackEvent = function() {
@@ -160,6 +191,29 @@ function MaltPageCallTree()
 					}
 				});
 		};
+
+		$scope.downloadSVGLink = function() {
+			if(!$scope.nodeData)
+				return "javascript:;";
+			// return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent($scope.nodeData.svg);
+			return maltDataSource.getCallTreeFormatLink($scope.nodeData.nodeId, $scope.filterDepth, 
+				$scope.filterHeight, $scope.filterNodeCost, null, $scope.selectedMetric,
+				$scope.selector.ratio, "svg");
+		};
+
+		$scope.downloadDotLink = function() {
+			if(!$scope.nodeData)
+				return "javascript:;";
+			// return 'data:text/vnd.graphviz;charset=utf-8,' + encodeURIComponent($scope.nodeData.dotCode);
+			return maltDataSource.getCallTreeFormatLink($scope.nodeData.nodeId, $scope.filterDepth, 
+				$scope.filterHeight, $scope.filterNodeCost, null, $scope.selectedMetric,
+				$scope.selector.ratio, "dot");
+
+		};
+
+		$scope.selectNodeEvent = function() {
+			loadGraph($scope.contextMenuNodeId, true, true);
+		}
 
 		$scope.$watch('filterHeight', function() { loadGraph(); });
 		$scope.$watch('filterDepth', function() { loadGraph(); });

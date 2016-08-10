@@ -98,7 +98,7 @@
 				$scope.metricList = funcMetric.getMetricList();
 				$scope.inclusive = true;
 				$scope.limit = 15;
-				$scope.order = funcMetric.maltMetrics[$scope.metric].defaultOrder;
+				$scope.order = funcMetric.maltMetrics[$scope.metric || 'alloc.count'].defaultOrder;
 				$scope.ratio = false;
 				$scope.query='';
 				$scope.maxSize = 4;

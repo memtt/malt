@@ -280,13 +280,18 @@ app.get('/data/summary.json',function(req,res) {
 	res.end();
 });
 
-app.get('/calltree.json', function(req, res) {
+app.get('/calltree', function(req, res) {
 	maltProject.getCallTree(req.query.nodeid, req.query.depth, 
 		req.query.height, req.query.mincost, req.query.func, req.query.metric, 
 		req.query.isratio, function(data) {
 			if(req.query.format == 'svg') {
+				res.header("Content-Type", "image/svg+xml");
 				res.send(data.svg);
 				res.end();
+			} else if (req.query.format == 'dot') {
+				res.header("Content-Type", "text/vnd.graphviz");
+				res.send(data.dotCode);
+				res.end();				
 			} else {
 				res.json(data);
 			}

@@ -29,6 +29,10 @@
 	#nosvg span {
 		font-size: 80px;
 	}
+	#contextMenu {
+	  	position: absolute;
+	  	display:none;
+	}
 </style>
 
 <div class="home">
@@ -151,4 +155,14 @@
 			</div>
 		</div>
 	</div>
+</div>
+
+<div id="contextMenu" class="dropdown clearfix">
+ 	<ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu" style="display:block;position:static;margin-bottom:5px;">
+    	<li><a tabindex="-1" href="javascript:;" ng-click="selectNodeEvent()"><span class="glyphicon glyphicon-screenshot"></span> &nbsp;Select Function</a></li>
+    	<li><a tabindex="-1" href="#sources?func={{ contextMenuFunction }}&amp;metric={{ selectedMetric }}"><span class="glyphicon glyphicon-align-left"></span> &nbsp;View Function Source</a></li>
+    	<li class="divider"></li>
+    	<li><a tabindex="-1" href="{{ downloadSVGLink() }}"><span class="glyphicon glyphicon-picture"></span> &nbsp;Download SVG</a></li>
+    	<li><a tabindex="-1" href="{{ downloadDotLink() }}"><span class="glyphicon glyphicon-download-alt"></span> &nbsp;Download Dot</a></li>
+  	</ul>
 </div>
