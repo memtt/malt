@@ -43,6 +43,56 @@ function MaltPageCallTree()
 		$scope.filterDepth = "3";
 		$scope.filterNodeCost = "1";
 
+		// TODO Refactor into a directive
+		// Perhaps we should now create a directive for the draggable graph
+		// because this is getting messy. Plus, altering the DOM directly
+		// from a class is a big no no. 
+		
+	    $(document).mouseup(function (e) {
+	    	if(e.which == 3)
+	    		return;
+	        $("#contextMenu").hide();
+	        $("#contextMenuGeneral").hide();
+	    });
+
+	    $('#mynetwork').on('dblclick', '.node', function(e) {
+	    	var nodeId = parseInt($(this).find('title').html().substr(4));
+	    	loadGraph(nodeId, true, true);
+	    });
+
+	    $('#mynetwork').on('contextmenu', '.node', function(e) {
+	    	var dis = $(this);
+	    	$scope.$apply(function() {
+	    		$scope.contextMenuNodeId = parseInt(dis.find('title').html().substr(4));;
+	    		$scope.contextMenuFunction = dis.find('a').attr('xlink:title');
+	    	});
+
+	        $("#contextMenuGeneral").hide();
+	    	$("#contextMenu").css({
+	    		display: "block",
+	    		left: e.pageX,
+	    		top: e.pageY - $(".navbar").outerHeight() - 10
+	        });
+
+	        return false;
+	    });
+
+	    $('#mynetwork').on('contextmenu', function(e) {
+	        $("#contextMenu").hide();
+    		$("#contextMenuGeneral").css({
+    			display: "block",
+    			left: e.pageX,
+    			top: e.pageY - $(".navbar").outerHeight() - 10
+    	    });
+    	    return false;
+	    });
+
+	    $('#mynetwork').on('click', '.node a', function(e) {
+	    	e.preventDefault();
+	    });
+
+		// End of TODO Refactor into a directive
+
 		showLoader();
 
 		function showLoader() {
@@ -114,44 +164,6 @@ function MaltPageCallTree()
 				return;
 
 			panZoomControls = createSvgGraphForTree($scope.nodeData.svg, $scope.nodeData.nodeId);
-
-			$('.node').on('dblclick', function(e) {
-				var nodeId = parseInt($(this).find('title').html().substr(4));
-				loadGraph(nodeId, true, true);
-			});
-
-			$('.node').on('contextmenu', function(e) {
-				var dis = $(this);
-				$scope.$apply(function() {
-					$scope.contextMenuNodeId = parseInt(dis.find('title').html().substr(4));;
-					$scope.contextMenuFunction = dis.find('a').attr('xlink:title');
-				});
-
-				$("#contextMenu").css({
-					display: "block",
-					left: e.pageX,
-					top: e.pageY - $(".navbar").outerHeight() - 5
-			    });
-
-			    $(document).mouseup(function (e) {
-			    	if(e.which == 3)
-			    		return;
-
-			        var container = $("#contextMenu");
-
-			        // if (!container.is(e.target) // if the target of the click isn't the container...
-			        //     && container.has(e.target).length === 0) // ... nor a descendant of the container
-			        // {
-			            container.hide();
-			        // }
-			    });
-
-			    return false;
-			});
-
-			$('.node a').on('click', function(e) {
-				e.preventDefault();
-			});
 		}
 
 		$scope.onNavigateBackEvent = function() {
@@ -213,6 +225,11 @@ function MaltPageCallTree()
 
 		$scope.selectNodeEvent = function() {
 			loadGraph($scope.contextMenuNodeId, true, true);
+		}
+
+		$scope.fitGraphEvent = function() {
+			panZoomControls.fit();
+			panZoomControls.center();
 		}
 
 		$scope.$watch('filterHeight', function() { loadGraph(); });
