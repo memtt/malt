@@ -25,6 +25,7 @@ function CallTreeAdapter(stacktree)
 	/**
 	 * Creates a cost filter function
 	 * @param {float} cost   Cost to be used for comparison
+	 * @param {array} minMax An array containing either [min, max] or [min, middle, max]
 	 * @param {string} metric Type of metric; determines whether we need > or < comparison
 	 */
 	function CostFilter(cost, minMax, metric) {
@@ -115,16 +116,17 @@ function CallTreeAdapter(stacktree)
 	 * @param  {array} vertices   Edges array
 	 * @param  {SimpleIdCache} nodeCache Cache to track node ids
 	 * @param  {SimpleIdCache} vertCache Cache to track edge
+	 * @param {array} stack Stack of previous nodes
 	 * @return {int}              Id for current tree
 	 */
-	function generateNodesAndVertices(parent, tree, level, nodes, vertices, nodeCache, vertCache)
+	function generateNodesAndVertices(tree, level, nodes, vertices, nodeCache, vertCache, stack)
 	{
 		var identifier = null;
 		var currentId = null;
 
 
 		if(tree.location) {
-			// Remove libmalt.so related functions captured in call tree
+			// [WIP Disabled for now] Remove libmalt.so related functions captured in call tree
 			// if(tree.location.binary.endsWith("libmalt.so"))
 			// 	return null;
 
@@ -143,22 +145,25 @@ function CallTreeAdapter(stacktree)
 					tooltip: tree.location.function,
 					level: level,
 					stats: extend(true, {}, tree.info),
-					data: tree,
+					data: tree, 
 					outEdges: [],
 					inEdges: []
 				});
 			} else {
 				currentId = nodeCache.get(identifier);
-				// console.log(parent, currentId);
-				if(parent != currentId)
+				if(stack.indexOf(currentId) == -1)
 					maltHelper.mergeStackInfoDatas(nodes[currentId - 1].stats, tree.info);
 			}
 		} 
 
+		// Add current node to stack
+		if(currentId)
+			stack.push(currentId);
+
 		// Create edge from this node to all its children
 		for (var i in tree.childs) {
 			if(identifier !=  null) {
-				var childId = generateNodesAndVertices(currentId, tree.childs[i], level + 1, nodes, vertices, nodeCache, vertCache);
+				var childId = generateNodesAndVertices(tree.childs[i], level + 1, nodes, vertices, nodeCache, vertCache, stack.slice(0, level));
 				if(childId != null && !vertCache.exists(currentId + "," + childId)) {
 					vertCache.put(currentId + "," + childId);
 					nodes[currentId-1].outEdges.push(childId);
@@ -169,7 +174,7 @@ function CallTreeAdapter(stacktree)
 					});					
 				}
 			} else {
-				generateNodesAndVertices(null, tree.childs[i], level + 1, nodes, vertices, nodeCache, vertCache);
+				generateNodesAndVertices(tree.childs[i], level + 1, nodes, vertices, nodeCache, vertCache, stack.slice(0, level));
 			}
 		}
 
@@ -184,7 +189,7 @@ function CallTreeAdapter(stacktree)
 	function generateTreeDataSet(tree) 
 	{
 		var nodes = [], vertices= [];
-		generateNodesAndVertices(null, tree, 0, nodes, vertices, new SimpleIdCache(), new SimpleIdCache());
+		generateNodesAndVertices(tree, 0, nodes, vertices, new SimpleIdCache(), new SimpleIdCache(), []);
 
 		return {
 			nodes: nodes, 
@@ -259,47 +264,6 @@ function CallTreeAdapter(stacktree)
 				nodes[i].scoreReadable = maltFuncMetrics.maltMetrics[metric].formalter(nodes[i].score);
 			}
 		}
-	}
-
-	/**
-	 * Get edges for the Call-tree
-	 * @return {array} Array of edges {from, to}
-	 */
-	this.getEdges = function() {
-		return fulltree.edges;
-	}
-
-	/**
-	 * Get nodes for the call-tree
-	 * @return {array} Array of nodes {id, label, level, score}
-	 */
-	this.getNodes = function() {
-		return fulltree.nodes;
-	}
-
-	/**
-	 * Get a node by function name
-	 * @param  {string} func Function name
-	 * @return {object}      Node if found, otherwise null
-	 */
-	this.getNodeByFunctionName = function(func) 
-	{
-		var nodes = fulltree.nodes;
-		for (var i = 0; i < nodes.length; i++) {
-			if(nodes[i].data.location.function == func) {
-				return nodes[i];
-			}
-		}
-		return null;
-	}
-
-	/**
-	 * Get a node by its node id
-	 * @param  {int} nodeId Node id to search for
-	 * @return {object}        Node
-	 */
-	this.getNodeById = function(nodeId) {
-		return fulltree.nodes[nodeId-1];
 	}
 
 	/**
@@ -395,12 +359,54 @@ function CallTreeAdapter(stacktree)
 	}
 
 	/**
+	 * Get edges for the Call-tree
+	 * @return {array} Array of edges {from, to}
+	 */
+	this.getEdges = function() {
+		return fulltree.edges;
+	}
+
+	/**
+	 * Get nodes for the call-tree
+	 * @return {array} Array of nodes {id, label, level, score}
+	 */
+	this.getNodes = function() {
+		return fulltree.nodes;
+	}
+
+	/**
+	 * Get a node by function name
+	 * @param  {string} func Function name
+	 * @return {object}      Node if found, otherwise null
+	 */
+	this.getNodeByFunctionName = function(func) 
+	{
+		var nodes = fulltree.nodes;
+		for (var i = 0; i < nodes.length; i++) {
+			if(nodes[i].data.location.function == func) {
+				return nodes[i];
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * Get a node by its node id
+	 * @param  {int} nodeId Node id to search for
+	 * @return {object}        Node
+	 */
+	this.getNodeById = function(nodeId) {
+		return fulltree.nodes[nodeId-1];
+	}
+
+	/**
 	 * Filter a tree to have only the ancestors and decendants for a particular node.
 	 * @param  {int} nodeId Node id of focal node
 	 * @param  {int} depth  Depth to limit to. Defaults to unlimited.
 	 * @param  {int} height Height to limit to. Defaults to unlimited. 
 	 * @param  {float} costFilterPercentage Minimum cost in percentage for node to be included.
 	 * @param  {string} metric               Type of metric to use as score.
+	 * @param {boolean} isRatio Should the node scores be calculated as percentages?
 	 * @return {object}                      A tree object containing 'nodes' and 'edges'.
 	 */
 	this.filterNodeLine = function(nodeId, depth, height, costFilterPercentage, metric, isRatio) {
@@ -446,6 +452,7 @@ function CallTreeAdapter(stacktree)
 	 * @param  {int}    depth                Depth to limit to. Defaults to unlimited.
 	 * @param  {int}    costFilterPercentage Minimum cost in percentage for node to be included.
 	 * @param  {string} metric               Type of metric to use as score.
+	 * @param {boolean} isRatio Should the node scores be calculated as percentages?
 	 * @return {object}                      A tree object containing 'nodes' and 'edges'.
 	 */
 	this.filterRootLines = function(depth, costFilterPercentage, metric, isRatio) {
