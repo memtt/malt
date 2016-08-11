@@ -316,7 +316,7 @@ function CallTreeAdapter(stacktree)
 			if(!(("" + currentEdges[i].id) in nodeSet)) {
 				if(depth !== 0) {
 					if(!costFilter(fulltree.nodes[currentEdges[i].id-1].score))
-						return;
+						continue;
 
 					nodeSet["" + currentEdges[i].id] = true;
 
