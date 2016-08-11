@@ -286,10 +286,12 @@ app.get('/calltree', function(req, res) {
 		req.query.isratio, function(data) {
 			if(req.query.format == 'svg') {
 				res.header("Content-Type", "image/svg+xml");
+				res.setHeader('Content-disposition', 'attachment; filename=calltree.svg');
 				res.send(data.svg);
 				res.end();
 			} else if (req.query.format == 'dot') {
 				res.header("Content-Type", "text/vnd.graphviz");
+				res.setHeader('Content-disposition', 'attachment; filename=calltree.dot');
 				res.send(data.dotCode);
 				res.end();				
 			} else {

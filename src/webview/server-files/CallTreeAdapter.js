@@ -166,8 +166,8 @@ function CallTreeAdapter(stacktree)
 				var childId = generateNodesAndVertices(tree.childs[i], level + 1, nodes, vertices, nodeCache, vertCache, stack.slice(0, level));
 				if(childId != null && !vertCache.exists(currentId + "," + childId)) {
 					vertCache.put(currentId + "," + childId);
-					nodes[currentId-1].outEdges.push(childId);
-					nodes[childId-1].inEdges.push(currentId);
+					nodes[currentId-1].outEdges.push({id: childId, stats: extend(true, {}, tree.childs[i].info)});
+					nodes[childId-1].inEdges.push({id: currentId, stats: extend(true, {}, tree.childs[i].info)});
 					vertices.push({
 						from: currentId,
 						to: childId
@@ -213,9 +213,10 @@ function CallTreeAdapter(stacktree)
 	}
 
 	/**
-	 * Calculates color codes for nodes based on a metric
+	 * Calculates color codes for nodes and edges. based on a metric
 	 *
-	 * Color is added as the 'color' property on each node
+	 * Color is added as the 'color' property on each node and edge.
+	 * 'Thickness' is also added to the edges.
 	 * 
 	 * @param {dataset} dataset Call-Tree dataset
 	 */
@@ -235,9 +236,22 @@ function CallTreeAdapter(stacktree)
 			.range(["#397EBA","#ab4141"])
 			.domain([0,max]);
 
+		// generate a mapping function from [0-max] onto [1,4]
+		var thicknessScale = d3scale.scaleLinear()
+			.range([0.8, 4.2])
+			.domain([0,max]);
+
 		// assign colors
 		for (var i = 0; i < nodes.length; i++) {
 			nodes[i].color = convertRgbStringToHex(colorScale(nodes[i].score));
+			for (var j = 0; j < nodes[i].inEdges.length; j++) {
+				nodes[i].inEdges[j].color = convertRgbStringToHex(colorScale(nodes[i].inEdges[j].score));
+				nodes[i].inEdges[j].thickness = thicknessScale(nodes[i].inEdges[j].score);
+			}
+			for (var j = 0; j < nodes[i].outEdges.length; j++) {
+				nodes[i].outEdges[j].color = convertRgbStringToHex(colorScale(nodes[i].outEdges[j].score));
+				nodes[i].outEdges[j].thickness = thicknessScale(nodes[i].outEdges[j].score);
+			}
 		}
 	}
 
@@ -248,20 +262,40 @@ function CallTreeAdapter(stacktree)
 	 * @param {boolean} isRatio Should the score be calculated as percentages?
 	 */
 	function addScores(nodes, metric, isRatio) {
+		var extractValue = maltFuncMetrics.maltMetrics[metric].extractor;
+		var formatValue = maltFuncMetrics.maltMetrics[metric].formalter;
 		if(isRatio) {
 			var max = -1;
 			for (var i = 0; i < nodes.length; i++) {
 				if(maltFuncMetrics.maltMetrics[metric].extractor(nodes[i].stats) > max)
-					max = maltFuncMetrics.maltMetrics[metric].extractor(nodes[i].stats);
+					max = extractValue(nodes[i].stats);
 			}
 			for (var i = 0; i < nodes.length; i++) {
-				nodes[i].score = maltFuncMetrics.maltMetrics[metric].extractor(nodes[i].stats)/max*100.0;
+				nodes[i].score = extractValue(nodes[i].stats)/max*100.0;
 				nodes[i].scoreReadable = Math.round(nodes[i].score*100)/100 + '%';
+
+				for (var j = 0; j < nodes[i].inEdges.length; j++) {
+					nodes[i].inEdges[j].score = extractValue(nodes[i].inEdges[j].stats)/max*100.0;
+					nodes[i].inEdges[j].scoreReadable = Math.round(nodes[i].inEdges[j].score*100)/100 + '%';
+				}
+				for (var j = 0; j < nodes[i].outEdges.length; j++) {
+					nodes[i].outEdges[j].score = extractValue(nodes[i].outEdges[j].stats)/max*100.0;
+					nodes[i].outEdges[j].scoreReadable = Math.round(nodes[i].outEdges[j].score*100)/100 + '%';
+				}
 			}
 		} else {
 			for (var i = 0; i < nodes.length; i++) {
-				nodes[i].score = maltFuncMetrics.maltMetrics[metric].extractor(nodes[i].stats);
-				nodes[i].scoreReadable = maltFuncMetrics.maltMetrics[metric].formalter(nodes[i].score);
+				nodes[i].score = extractValue(nodes[i].stats);
+				nodes[i].scoreReadable = formatValue(nodes[i].score);
+
+				for (var j = 0; j < nodes[i].inEdges.length; j++) {
+					nodes[i].inEdges[j].score = extractValue(nodes[i].inEdges[j].stats);
+					nodes[i].inEdges[j].scoreReadable = formatValue(nodes[i].inEdges[j].score);
+				}
+				for (var j = 0; j < nodes[i].outEdges.length; j++) {
+					nodes[i].outEdges[j].score = extractValue(nodes[i].outEdges[j].stats);
+					nodes[i].outEdges[j].scoreReadable = formatValue(nodes[i].outEdges[j].score);
+				}
 			}
 		}
 	}
@@ -279,19 +313,25 @@ function CallTreeAdapter(stacktree)
 
 		var currentEdges = fulltree.nodes[nodeId-1].outEdges;
 		for (var i = 0; i < currentEdges.length; i++) {
-			if(!(("" + currentEdges[i]) in nodeSet)) {
+			if(!(("" + currentEdges[i].id) in nodeSet)) {
 				if(depth !== 0) {
-					if(!costFilter(fulltree.nodes[currentEdges[i]-1].score))
+					if(!costFilter(fulltree.nodes[currentEdges[i].id-1].score))
 						return;
 
-					nodeSet["" + currentEdges[i]] = true;
+					nodeSet["" + currentEdges[i].id] = true;
 
-					filterDescendantsRecurse(currentEdges[i], nodeSet, edges, depth - 1, costFilter);
+					filterDescendantsRecurse(currentEdges[i].id, nodeSet, edges, depth - 1, costFilter);
 				}
 			}
 			
-			if(("" + currentEdges[i]) in nodeSet) {
-				edges.push({from: nodeId, to: currentEdges[i] });
+			if(("" + currentEdges[i].id) in nodeSet) {
+				edges.push({
+					from: nodeId, 
+					to: currentEdges[i].id, 
+					score: currentEdges[i].scoreReadable, 
+					color: currentEdges[i].color,
+					thickness: currentEdges[i].thickness
+				});
 			}
 		}
 	}
@@ -309,19 +349,25 @@ function CallTreeAdapter(stacktree)
 
 		var currentEdges = fulltree.nodes[nodeId-1].inEdges;
 		for (var i = 0; i < currentEdges.length; i++) {
-			if(!(("" + currentEdges[i]) in nodeSet)) {
-				if(!costFilter(fulltree.nodes[currentEdges[i]-1].score))
+			if(!(("" + currentEdges[i].id) in nodeSet)) {
+				if(!costFilter(fulltree.nodes[currentEdges[i].id-1].score))
 					return;
 
 				if(height !== 0) {
-					nodeSet["" + currentEdges[i]] = true;
-					filterAncestorsRecurse(currentEdges[i], nodeSet, edges, height - 1, costFilter);
+					nodeSet["" + currentEdges[i].id] = true;
+					filterAncestorsRecurse(currentEdges[i].id, nodeSet, edges, height - 1, costFilter);
 				}
 
 			}
 
-			if(("" + currentEdges[i]) in nodeSet) {
-				edges.push({from: currentEdges[i], to: nodeId});
+			if(("" + currentEdges[i].id) in nodeSet) {
+				edges.push({
+					from: currentEdges[i].id, 
+					to: nodeId, 
+					score: currentEdges[i].scoreReadable,
+					color: currentEdges[i].color,
+					thickness: currentEdges[i].thickness
+				});
 			}
 		}
 	}

@@ -4,7 +4,7 @@
  */
 function MaltPageCallTree() 
 {
-	function createSvgGraphForTree(svg, focusedNode) {
+	function createSvgGraphForTree(svg) {
 		if(!svg)
 			return;
 		
@@ -163,7 +163,7 @@ function MaltPageCallTree()
 			if(!$scope.nodeData)
 				return;
 
-			panZoomControls = createSvgGraphForTree($scope.nodeData.svg, $scope.nodeData.nodeId);
+			panZoomControls = createSvgGraphForTree($scope.nodeData.svg);
 		}
 
 		$scope.onNavigateBackEvent = function() {

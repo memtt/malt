@@ -31,8 +31,8 @@ var graphGenerator = {
 					fontname: 'Courier New',
 					fontsize: '10'
 				}).edge({
-					color: '#868a8f',
-					penwidth: 1.5
+					fontname: 'Courier New',
+					fontsize: '9'
 				});
 
 				for (var i = 0; i < nodes.length; i++) {
@@ -49,7 +49,12 @@ var graphGenerator = {
 				}
 
 				for (var i = 0; i < vertices.length; i++) {
-					d.edge('node' + vertices[i].from, 'node' + vertices[i].to);
+					d.edge('node' + vertices[i].from, 'node' + vertices[i].to, {
+						label: '  ' + vertices[i].score,
+						color: vertices[i].color,
+						penwidth: vertices[i].thickness,
+						fontcolor: vertices[i].color
+					});
 				}
 			})
 			.toCode();
