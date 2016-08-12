@@ -173,7 +173,7 @@
 				name += '()';
 			}
 
-			return name;
+			return funcDescription.full.length > name.length ? name : funcDescription.full;
 		}
 	}
 

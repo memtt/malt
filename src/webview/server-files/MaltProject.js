@@ -5,6 +5,7 @@ var clone = require('clone');
 var path  = require('path');
 var CallTreeAdapter = require("./CallTreeAdapter.js");
 var GraphGenerator = require("./GraphGenerator.js");
+var CppDeclParser = require("./CppDeclParser.js");
 
 /****************************************************/
 /**
@@ -253,6 +254,9 @@ MaltProject.prototype.getFlatFunctionProfile = function(total)
 		true,                                        //accept all
 		['function','line','file'],                  //export only line info
 		total);
+	for (var i = res.length - 1; i >= 0; i--) {
+		res[i].functionShort = CppDeclParser.getShortName(CppDeclParser.parseCppPrototype(res[i].function));
+	}
 	return res;
 }
 

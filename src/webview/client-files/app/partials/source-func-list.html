@@ -7,7 +7,8 @@
 				</div>
 			</div>
 			<span class='size'>{{selector.getFormattedValue(func)}}</span>
-			<span class='func'>{{func.function}}</span>
+			<span class='func' ng-hide="compact">{{func.function}}</span>
+			<span class='func' ng-show="compact">{{func.functionShort}}</span>
 		</a>
 	</li>
 </ul>

@@ -28,6 +28,7 @@
 				ratio:'=',
 				query:'=',
 				selector:'=',
+				compact: '@',
 				onSelect:'&'
 			},
 			link: function ($scope) {
