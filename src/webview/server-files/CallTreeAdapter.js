@@ -164,14 +164,27 @@ function CallTreeAdapter(stacktree)
 		for (var i in tree.childs) {
 			if(identifier !=  null) {
 				var childId = generateNodesAndVertices(tree.childs[i], level + 1, nodes, vertices, nodeCache, vertCache, stack.slice(0, level));
-				if(childId != null && !vertCache.exists(currentId + "," + childId)) {
+				if(childId != null && !vertCache.exists(currentId + "," + childId)
+					&& stack.slice(0, level-1).indexOf(childId) == -1) {
+					// Create edge and copy edge stats
 					vertCache.put(currentId + "," + childId);
-					nodes[currentId-1].outEdges.push({id: childId, stats: extend(true, {}, tree.childs[i].info)});
-					nodes[childId-1].inEdges.push({id: currentId, stats: extend(true, {}, tree.childs[i].info)});
+					var edgeInfo = extend(true, {}, tree.childs[i].info);
+					nodes[currentId-1].outEdges.push({id: childId, stats: edgeInfo});
+					nodes[childId-1].inEdges.push({id: currentId, stats: edgeInfo});
 					vertices.push({
 						from: currentId,
 						to: childId
 					});					
+				} else if(childId != null && vertCache.exists(currentId + "," + childId) 
+					&& stack.slice(0, level-1).indexOf(currentId) == -1
+					&& stack.slice(0, level-1).indexOf(childId) == -1) {
+					// Find existing edge and merge stats
+					for (var j = nodes[currentId-1].outEdges.length - 1; j >= 0; j--) {
+						if(nodes[currentId-1].outEdges[j].id == childId) {
+							maltHelper.mergeStackInfoDatas(nodes[currentId-1].outEdges[j].stats, tree.childs[i].info);
+							break;
+						}
+					}
 				}
 			} else {
 				generateNodesAndVertices(tree.childs[i], level + 1, nodes, vertices, nodeCache, vertCache, stack.slice(0, level));
@@ -351,7 +364,7 @@ function CallTreeAdapter(stacktree)
 		for (var i = 0; i < currentEdges.length; i++) {
 			if(!(("" + currentEdges[i].id) in nodeSet)) {
 				if(!costFilter(fulltree.nodes[currentEdges[i].id-1].score))
-					return;
+					continue;
 
 				if(height !== 0) {
 					nodeSet["" + currentEdges[i].id] = true;
