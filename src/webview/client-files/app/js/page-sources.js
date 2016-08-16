@@ -19,7 +19,8 @@ function MaltPageTimeline()
 		// Is the source file present? Was it found?
 		$scope.hasSources = function() 
 		{
-			return ($scope.file == "No source file..." || $scope.file == "??");
+			return ($scope.file == "No source file..." || $scope.file == "??" 
+				|| $scope.file == '' || $scope.file == undefined);
 		}
 		
 		// Event handler for maltFunctionSelector onSelect event
