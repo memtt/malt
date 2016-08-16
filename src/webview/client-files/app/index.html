@@ -40,6 +40,9 @@
 	<!-- File saver -->
 	<script type="text/javascript" src="bower_components/file-saver/FileSaver.min.js"></script>
 	
+	<!-- Pan-zoom library for svg -->
+	<script type="text/javascript" src="bower_components/svg-pan-zoom/dist/svg-pan-zoom.min.js"></script>
+
 	<!-- use of d3js/nvd3 for graphs -->
 	<script src="bower_components/d3/d3.min.js"></script>
 	<script src="bower_components/nvd3/build/nv.d3.min.js"></script>
@@ -48,12 +51,14 @@
   
 	<!-- MALT logic -->
 	<script src="js/helper.js"></script>
+	<script src="js/directives.js"></script>
 	<script src="js/app.js"></script>
 	<script src="js/controlers.js"></script>
 	<script src="js/animations.js"></script>
 	
 	<!-- MALT objs -->
 	<script src="js/func-metrics.js"></script>
+	<script src="js/selector.js"></script>
 	<script src="js/source-editor.js"></script>
 	<script src="js/call-stack-view.js"></script>
 	
@@ -68,6 +73,7 @@
 	<script src="js/page-timeline.js"></script>
 	<script src="js/page-sources.js"></script>
 	<script src="js/page-per-thread.js"></script>
+	<script src="js/page-calltree.js"></script>
 	
 	<!-- MALT OLD CSS -->
 	<link href='css/old-style-to-cleanup.css' rel="stylesheet">
@@ -99,6 +105,7 @@
 					<li ng-class="{ active: route.current.pageKey == 'per-thread'}"><a href="#/per-thread">Threads</a></li>
 <!-- 					<li><a href="/source-profile.html">Alloc sites</a></li> -->
 					<li ng-class="{ active: route.current.pageKey == 'sources'}"><a href="#/sources">Sources</a></li>
+					<li ng-class="{ active: route.current.pageKey == 'calltree'}"><a href="#/calltree">Calltree</a></li>
 					<li ng-class="{ active: route.current.pageKey == 'timeline'}"><a href="#/timeline">Timeline analysis</a></li>
 <!-- 					<li><a href="/max-stack.html">Stack</a></li> -->
 					<li ng-class="{ active: route.current.pageKey == 'stackPeaks'}"><a href="#/stackPeaks">Stack memory</a></li>

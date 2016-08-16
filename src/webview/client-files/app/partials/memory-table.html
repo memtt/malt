@@ -1,0 +1,68 @@
+<div>
+	<table class="table table-condensed table-striped table-bordered" style="width:100%">
+		<tr>
+			<th colspan="2">Inclusive</th>
+		</tr>
+		<tr>
+			<td>Allocated memory</td>
+			<td> {{formatValue(selectedDetails.total.alloc.sum,'B')}}</td>
+		</tr>
+		<tr>
+			<td>Freed memory</td>
+			<td>{{formatValue(selectedDetails.total.free.sum,'B')}}</td>
+		</tr>
+		<tr>
+			<td>Local peak</td>
+			<td> {{formatValue(selectedDetails.total.maxAliveReq,'B')}}</td>
+		</tr>
+		<tr>
+			<td>Leaks</td>
+			<td>{{selectedDetails.total.aliveReq}}</td>
+		</tr>
+		<tr>
+			<td>{{formatValue(selectedDetails.total.alloc.count,'')}} alloc</td>
+			<td> [ {{formatValue(selectedDetails.total.alloc.min,'B')}} , {{formatRoundedRatio(selectedDetails.total.alloc.sum , selectedDetails.total.alloc.count,'B')}} , {{formatValue(selectedDetails.total.alloc.max,'B')}} ]</td>
+		</tr>
+		<tr>
+			<td>{{formatValue(selectedDetails.total.free.count,'')}} free</td>
+			<td> [ {{formatValue(selectedDetails.total.free.min,'B')}} , {{formatRoundedRatio(selectedDetails.total.free.sum , selectedDetails.total.free.count,'B')}} , {{formatValue(selectedDetails.total.free.max,'B')}} ]</td>
+		</tr>
+		<tr>
+			<td>Lifetime</td>
+			<td> [ {{formatValue(selectedDetails.total.lifetime.min,'')}} , {{formatRoundedRatio(selectedDetails.total.lifetime.sum , selectedDetails.total.lifetime.count,'')}} , {{formatValue(selectedDetails.total.lifetime.max ,'')}} ] (cycles)</td>
+		</tr>
+	</table>
+	<table class="table table-condensed table-striped table-bordered" ng-hide="hasExlusiveValues()" style="width:100%">
+		<tr>
+			<th colspan="2">Exclusive</th>
+		</tr>
+		<tr>
+			<td>Allocated memory</td>
+			<td> {{formatValue(selectedDetails.own.alloc.sum,'B')}}</td>
+		</tr>
+		<tr>
+			<td>Freed memory</td>
+			<td>{{formatValue(selectedDetails.own.free.sum,'B')}}</td>
+		</tr>
+		<tr>
+			<td>Local peak</td>
+			<td> {{formatValue(selectedDetails.own.maxAliveReq,'B')}}</td>
+		</tr>
+		<tr>
+			<td>Leaks</td>
+			<td>{{selectedDetails.own.aliveReq}}</td>
+		</tr>
+		<tr>
+			<td>{{formatValue(selectedDetails.own.alloc.count,'')}} alloc</td>
+			<td> [ {{formatValue(selectedDetails.own.alloc.min,'B')}} , {{formatRoundedRatio(selectedDetails.own.alloc.sum , selectedDetails.own.alloc.count,'B')}} , {{formatValue(selectedDetails.own.alloc.max,'B')}} ]</td>
+		</tr>
+		<tr>
+			<td>{{formatValue(selectedDetails.own.free.count,'')}} free</td>
+			<td> [ {{formatValue(selectedDetails.own.free.min,'B')}} , {{formatRoundedRatio(selectedDetails.own.free.sum , selectedDetails.own.free.count,'B')}} , {{formatValue(selectedDetails.own.free.max,'B')}} ]</td>
+		</tr>
+		<tr>
+			<td>Lifetime</td>
+			<td> [ {{formatValue(selectedDetails.own.lifetime.min,'')}} , {{formatRoundedRatio(selectedDetails.own.lifetime.sum , selectedDetails.own.lifetime.count,'')}} , {{formatValue(selectedDetails.own.lifetime.max ,'')}} ] (cycles)</td>
+		</tr>
+	</table>
+</div>

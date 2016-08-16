@@ -1,0 +1,176 @@
+<style type="text/css">
+	#networkcontainer {
+		border: 1px solid #ddd;
+		min-height: 500px;
+		position: relative;
+		margin-top: 2px;
+	}
+	#svggraph {
+		width: 100%;
+		height: 500px;
+		cursor: grab;
+	}
+	#svggraph a:hover {
+		text-decoration: none;
+	}
+	.node {
+		fill: black;
+		cursor: pointer;
+	}
+	.edge {
+		fill: #bbb;
+	}
+	#nosvg {
+		font-size: 24px;
+		color: #ddd;
+		text-align: center;
+		margin: 200px 0 200px 0;
+	}
+	#nosvg span {
+		font-size: 80px;
+	}
+	#contextMenu, #contextMenuGeneral {
+	  	position: absolute;
+	  	display:none;
+	}
+</style>
+
+<div class="home">
+
+	<div class="row">
+		<div class="col-sm-5 col-md-4 col-lg-3 sidebar">
+			<div>
+				<button class="btn btn-default" ng-disabled="navigationHistory.length - 1 == 0" ng-click="onNavigateBackEvent()">
+					<span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+					 Go Back
+				</button>				
+				<button class="btn btn-default" ng-disabled="navigationFwdHistory.length == 0" ng-click="onNavigateForwardEvent()">
+					 Go Forward
+					<span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+				</button>
+			</div>
+			<br>
+			<malt-function-selector selector="selector" metric="selectedMetric" functions="functions" on-select="onFunctionSelectEvent(data)" />
+		</div>
+
+		<!-- Source editor -->
+		<div class="col-sm-7 col-md-8 col-lg-9 main">
+			<span id='malt-source-filename'>
+				<span title="{{nodeData.file}}">{{nodeData.fileShort}}</span> | 
+				<span title="{{nodeData.function}}">{{nodeData.functionShort}}</span>
+				<div class="pull-right">
+					<span ng-show="nodeData.visibleNodes == nodeData.totalNodes">
+						Showing all nodes.
+					</span>
+					<span ng-hide="nodeData.visibleNodes == nodeData.totalNodes">
+						Showing {{nodeData.visibleNodes}} out of {{nodeData.totalNodes}} nodes.
+					</span>
+				</div>
+			</span>
+			<div id="networkcontainer">
+				<div class="loader">
+					<div class="sk-overlay"></div>
+					<div class="sk-circle">
+					  <div class="sk-circle1 sk-child"></div>
+					  <div class="sk-circle2 sk-child"></div>
+					  <div class="sk-circle3 sk-child"></div>
+					  <div class="sk-circle4 sk-child"></div>
+					  <div class="sk-circle5 sk-child"></div>
+					  <div class="sk-circle6 sk-child"></div>
+					  <div class="sk-circle7 sk-child"></div>
+					  <div class="sk-circle8 sk-child"></div>
+					  <div class="sk-circle9 sk-child"></div>
+					  <div class="sk-circle10 sk-child"></div>
+					  <div class="sk-circle11 sk-child"></div>
+					  <div class="sk-circle12 sk-child"></div>
+					</div>
+				</div>
+				<div id="nosvg" ng-show="nodeData &amp;&amp; nodeData.error.svgGenerationError">
+					<span class="glyphicon glyphicon-remove-sign"></span>
+					<br>
+					{{ nodeData.error.svgGenerationError }}
+				</div>
+				<div id="mynetwork"></div>
+			</div>
+			<br>
+			<div>
+				<div class="row">
+					<div class="col-md-6">
+						<div class="panel panel-default">
+						  <div class="panel-heading">Filter Graph Nodes</div>
+						  <div class="panel-body">
+							<form class="form-horizontal">
+								<div class="form-group">
+									<label for="heightCnt" class="col-sm-3 control-label">Height</label>
+									<div class="col-sm-9">
+										<select ng-model="filterHeight" id="heightCnt" class="form-control">
+										  <option value="-1" selected>Unlimited</option>
+										  <option value="1">1</option>
+										  <option value="2">2</option>
+										  <option value="3">3</option>
+										  <option value="4">4</option>
+										  <option value="5">5</option>
+										</select>
+									</div>
+								</div>
+								<div class="form-group">
+									<label for="depthCnt" class="col-sm-3 control-label">Depth</label>
+									<div class="col-sm-9">
+										<select ng-model="filterDepth" id="depthCnt" class="form-control">
+										  <option value="-1">Unlimited</option>
+										  <option value="1">1</option>
+										  <option value="2">2</option>
+										  <option value="3" selected>3</option>
+										  <option value="4">4</option>
+										  <option value="5">5</option>
+										</select>
+									</div>
+								</div>
+								<div class="form-group">
+									<label for="nodeCostCnt" class="col-sm-3 control-label">Node Cost</label>
+									<div class="col-sm-9">
+										<select ng-model="filterNodeCost" id="nodeCostCnt" class="form-control">
+										  <option value="0" selected>None</option>
+										  <option value="1" selected>1%</option>
+										  <option value="2">2%</option>
+										  <option value="3">3%</option>
+										  <option value="5">5%</option>
+										  <option value="10">10%</option>
+										  <option value="15">15%</option>
+										  <option value="20">20%</option>
+										  <option value="30">30%</option>
+										  <option value="50">50%</option>
+										</select>
+									</div>
+								</div>
+							</form>
+						  </div>
+						</div>
+						
+					</div>
+					<div class="col-md-6">
+						<malt-memory-table details="selectedDetails" show-exclusive="false"></malt-memory-table>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div id="contextMenu" class="dropdown clearfix">
+ 	<ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu" style="display:block;position:static;margin-bottom:5px;">
+    	<li><a tabindex="-1" href="javascript:;" ng-click="selectNodeEvent()"><span class="glyphicon glyphicon-screenshot"></span> &nbsp;Select Function</a></li>
+    	<li><a tabindex="-1" href="#sources?func={{ contextMenuFunction }}&amp;metric={{ selectedMetric }}"><span class="glyphicon glyphicon-align-left"></span> &nbsp;View Function Source</a></li>
+    	<li class="divider"></li>
+    	<li><a tabindex="-1" href="javascript:;" ng-click="fitGraphEvent()"><span class="glyphicon glyphicon-resize-full"></span> &nbsp;Resize to Fit</a></li>
+    	<li><a tabindex="-1" href="{{ downloadSVGLink() }}"><span class="glyphicon glyphicon-picture"></span> &nbsp;Download as SVG</a></li>
+    	<li><a tabindex="-1" href="{{ downloadDotLink() }}"><span class="glyphicon glyphicon-download-alt"></span> &nbsp;Download as Dot</a></li>
+  	</ul>
+</div>
+<div id="contextMenuGeneral" class="dropdown clearfix">
+ 	<ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu" style="display:block;position:static;margin-bottom:5px;">
+    	<li><a tabindex="-1" href="javascript:;" ng-click="fitGraphEvent()"><span class="glyphicon glyphicon-resize-full"></span> &nbsp;Resize to Fit</a></li>
+    	<li><a tabindex="-1" href="{{ downloadSVGLink() }}"><span class="glyphicon glyphicon-picture"></span> &nbsp;Download as SVG</a></li>
+    	<li><a tabindex="-1" href="{{ downloadDotLink() }}"><span class="glyphicon glyphicon-download-alt"></span> &nbsp;Download as Dot</a></li>
+  	</ul>
+</div>

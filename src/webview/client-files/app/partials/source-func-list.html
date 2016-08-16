@@ -1,13 +1,18 @@
-<ul class="nav nav-sidebar" id='malt-func-list'>
-	<li ng-repeat="func in functions | filter:viewFilter | orderBy:getValue:isReversedOrder() | pagination: ((selector.currentPage-1) * selector.perPage) | limitTo:selector.perPage" ng-click="selectFunc(func)" ng-class='{"malt-hidden": useHiddenClass(func), "malt-selected":isSelectedFunc(func)}' title="{{func.function}}">
+<ul class="nav nav-sidebar" id='malt-func-list' ng-class="{compact: compact}">
+	<li ng-repeat="func in functions | filter:viewFilter | orderBy:getValue:isReversedOrder() | pagination: ((selector.currentPage-1) * selector.perPage) | limitTo:selector.perPage" ng-click="selectFunc(func)" ng-class='{"malt-hidden": useHiddenClass(func), "malt-selected":isSelectedFunc(func)}' popover-placement="right" uib-popover-template="'partials/source-popover.html'" popover-trigger="mouseenter">
 		<a ng-click="selectFunc(func)" href=''>
 			<div class='progress'>
 				<div class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: {{selector.getValueRatio(func)}}%;">
 					<span class="sr-only">60% Complete</span>
 				</div>
 			</div>
-			<span class='size'>{{selector.getFormattedValue(func)}}</span>
-			<span class='func'>{{func.function}}</span>
+			<span class='size'>
+				{{selector.getFormattedValue(func)}}
+				<div class="progress-fg" style="width: {{selector.getValueRatio(func)}}%;"></div>
+				<div class="progress-bg"></div>
+			</span>
+			<span class='func' ng-hide="compact">{{func.function}}</span>
+			<span class='func' ng-show="compact">{{func.functionShort}}</span>
 		</a>
 	</li>
 </ul>

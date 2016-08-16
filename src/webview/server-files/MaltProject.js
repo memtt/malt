@@ -3,6 +3,9 @@
 var fs    = require('fs');
 var clone = require('clone');
 var path  = require('path');
+var CallTreeAdapter = require("./CallTreeAdapter.js");
+var GraphGenerator = require("./GraphGenerator.js");
+var CppDeclParser = require("./CppDeclParser.js");
 
 /****************************************************/
 /**
@@ -251,6 +254,9 @@ MaltProject.prototype.getFlatFunctionProfile = function(total)
 		true,                                        //accept all
 		['function','line','file'],                  //export only line info
 		total);
+	for (var i = res.length - 1; i >= 0; i--) {
+		res[i].functionShort = CppDeclParser.getShortName(CppDeclParser.parseCppPrototype(res[i].function));
+	}
 	return res;
 }
 
@@ -713,6 +719,84 @@ MaltProject.prototype.getFullTree = function()
 	}
 	
 	return tree;
+}
+
+MaltProject.prototype.getCallTree = function(nodeId, depth, height, minCost, func, metric, isRatio, callback) {
+	// Response object
+	var resp = {};
+
+	// If tree object hasnt been created, create and cache it
+	if(!this.calltreeCache) {
+		// console.time("filteredStack");
+		var filteredStack = this.getFilterdStacks(true);
+		// console.timeEnd("filteredStack");
+		this.calltreeCache = new CallTreeAdapter(filteredStack);
+	}
+
+	// If nodeId not provided, get node id by function name
+	if(!nodeId) {
+		var tmpnode = this.calltreeCache.getNodeByFunctionName(func);
+
+		if(tmpnode == null) {
+			callback({error: "Node not found."});
+			return;
+		}
+
+		nodeId = tmpnode.id;
+	}
+
+	// Filter tree and get the focal node
+	// console.time("filterNodeLine");
+	var filteredTree = null;
+	var ratio = isRatio === 'true' ? true : false;
+	if(nodeId == -1) {
+		filteredTree = this.calltreeCache.filterRootLines(depth, minCost, metric, ratio);
+	} else {
+		filteredTree = this.calltreeCache.filterNodeLine(nodeId, depth, height, minCost, metric, ratio);
+	}
+	// console.timeEnd("filterNodeLine");
+
+	// console.time("getNodeById");
+	var node = this.calltreeCache.getNodeById(nodeId);
+	// console.timeEnd("getNodeById");
+
+	// Build output object
+	resp.totalNodes = this.calltreeCache.getNodes().length;
+	resp.visibleNodes = filteredTree.nodes.length;
+	if(nodeId == -1) {
+		resp.nodeId = -1;
+		resp.file = "Root nodes";
+		resp.fileShort = resp.file;
+		resp.function = "Filtering might hide some nodes";
+		resp.functionShort = resp.function;		
+	} else {
+		resp.nodeId = nodeId;
+		resp.file = node.data.location.file;
+		resp.fileShort = (resp.file.length > 40) ? '.../' + resp.file.replace(/^.*[\\\/]/, '') : resp.file;
+		resp.function = node.data.location.function;
+		resp.functionShort = (resp.function.length > 40) ? node.label : resp.function;
+	}
+	// console.time("getDotCodeForTree");
+	resp.dotCode = GraphGenerator.getDotCodeForTree(filteredTree, nodeId);
+	// console.timeEnd("getDotCodeForTree");
+	resp.svg = null;
+	
+	// Generate SVG code from Dot code if GraphViz is installed
+	if(GraphGenerator.isInstalled()) {
+		// console.time("convertDotToSvg");
+		GraphGenerator.convertDotToSvg(resp.dotCode, function(svg, err) {
+			// console.timeEnd("convertDotToSvg");
+			if(err) {
+				resp.error = {svgGenerationError: "Could not generate graph."};
+			} else {
+				resp.svg = svg;
+			}
+			callback(resp);
+		});
+	} else {
+		resp.error = {svgGenerationError: "Please install GraphViz to enable graph generation."};
+		callback(resp);
+	}
 }
 
 /****************************************************/

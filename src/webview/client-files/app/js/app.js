@@ -1,5 +1,6 @@
 var maltApp = angular.module('malt.app', [
   'ngRoute',
+  'malt.directives',
   'malt.controlers',
   'malt.anim',
   'malt.page.home',
@@ -63,6 +64,11 @@ maltApp.config(['$routeProvider',
 			templateUrl: 'partials/sources.html',
 			controller: 'malt.page.sources.ctrl',
 			pageKey: 'sources'
+		}).
+		when('/calltree', {
+			templateUrl: 'partials/calltree.html',
+			controller: 'malt.page.calltree.ctrl',
+			pageKey: 'calltree'
 		})
 		.otherwise({
 			redirectTo: '/home'

@@ -2,32 +2,7 @@
 
 	<div class="row">
 			<div class="col-sm-5 col-md-4 col-lg-3 sidebar">
-				<!-- Selection -->
-				<div id='malt-func-list-selector'>
-					<div class="btn-group">
-						<button type="button" class="btn btn-default" ng-click="selector.toogleOrder()" title='Sort order.'><span class='glyphicon' ng-class="{'glyphicon-sort-by-attributes':orderBtnStatus(),'glyphicon-sort-by-attributes-alt':!orderBtnStatus()}"/> </button>
-						<button type="button" class="btn btn-default" ng-class="{'active': selector.ratio}" ng-click="selector.toogleRatio()" title='Show ratio to reference (max or sum) or absolute value.'><b>%</b></button>
-						<button type="button" class="btn btn-default" ng-class="{'active': selector.inclusive}" ng-click="selector.toogleInclusive()" title='Show inclusive or exclusive costs.'><b>I</b></button>
-<!-- 						<span class='dropdown'> -->
-							<button type="button" class="btn btn-default dropdown-toggle" type='button' data-toggle="dropdown" id='dropdownMenu1' title="Select metric.">
-								<span>{{selector.getCurMetricName()}}</span>
-								<span class="caret"></span>
-							</button>
-							<ul class="dropdown-menu" id='malt-selector-list' role='menu' aria-labelledby='dropdownMenu1'>
-								<li ng-repeat="m in metricList" ng-click="selector.selectMetric(m)"><a href="">{{m.name}}</a></li>
-							</ul>
-<!-- 						</span> -->
-					</div>
-					<div class="input-group">
-						<input class="form-control col-lg-8" type="text" placeholder="Search" id="malt-input-search" ng-model="selector.query"></input>
-					</div>
-				</div>
-
-				<!-- Func lis -->
-				<div class="nav nav-sidebar" id='malt-func-list'>
-					<maltsourcefunclist metric='metric' inclusive='inclusive' functions='functions' limit='limit' order='order' ratio='ratio' query='query' selector='selector'></maltsourcefunclist>
-					<uib-pagination items-per-page="selector.perPage" direction-links="true" max-size="maxSize" rotate="false" boundary-links="false" total-items="selector.totalElements" ng-model="selector.currentPage" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;"></uib-pagination>
-				</div>
+				<malt-function-selector selector="selector" functions="functions" on-select="onFunctionSelectEvent(data)" />
 			</div>
 			
 			<!-- Source editor -->
@@ -44,60 +19,7 @@
 				</div>
 				
 				<div id='malt-alloc-info' style="width:50%;float:left;">
-					<table style="width:100%">
-						<tr>
-							<td colspan="2"><b>Inclusive :</b></td>
-						</tr>
-						<tr>
-							<td>Allocated memory : </td><td> {{formatValue(selectedDetails.total.alloc.sum,'B')}}</td>
-						</tr>
-						<tr>
-							<td>Freed memory : </td><td>{{formatValue(selectedDetails.total.free.sum,'B')}}</td>
-						</tr>
-						<tr>
-							<td>Local peak : </td><td> {{formatValue(selectedDetails.total.maxAliveReq,'B')}}</td>
-						</tr>
-						<tr>
-							<td>Leaks : </td><td>{{selectedDetails.total.aliveReq}}</td>
-						</tr>
-						<tr>
-							<td>{{formatValue(selectedDetails.total.alloc.count,'')}} alloc : </td><td> [ {{formatValue(selectedDetails.total.alloc.min,'B')}} , {{formatRoundedRatio(selectedDetails.total.alloc.sum , selectedDetails.total.alloc.count,'B')}} , {{formatValue(selectedDetails.total.alloc.max,'B')}} ]</td>
-						</tr>
-						<tr>
-							<td>{{formatValue(selectedDetails.total.free.count,'')}} free : </td><td> [ {{formatValue(selectedDetails.total.free.min,'B')}} , {{formatRoundedRatio(selectedDetails.total.free.sum , selectedDetails.total.free.count,'B')}} , {{formatValue(selectedDetails.total.free.max,'B')}} ]</td>
-						</tr>
-						<tr>
-							<td>Lifetime : </td><td> [ {{formatValue(selectedDetails.total.lifetime.min,'')}} , {{formatRoundedRatio(selectedDetails.total.lifetime.sum , selectedDetails.total.lifetime.count,'')}} , {{formatValue(selectedDetails.total.lifetime.max ,'')}} ] (cycles)</div>
-						</tr>
-					</table>
-					<br/>
-					<table ng-hide="hasExlusiveValues()" style="width:100%">
-						<tr>
-							<td colspan="2"><b>Exclusive :</b></td>
-						</tr>
-						<tr>
-							<td>Allocated memory : </td><td> {{formatValue(selectedDetails.own.alloc.sum,'B')}}</td>
-						</tr>
-						<tr>
-							<td>Freed memory : </td><td>{{formatValue(selectedDetails.own.free.sum,'B')}}</td>
-						</tr>
-						<tr>
-							<td>Local peak : </td><td> {{formatValue(selectedDetails.own.maxAliveReq,'B')}}</td>
-						</tr>
-						<tr>
-							<td>Leaks : </td><td>{{selectedDetails.own.aliveReq}}</td>
-						</tr>
-						<tr>
-							<td>{{formatValue(selectedDetails.own.alloc.count,'')}} alloc : </td><td> [ {{formatValue(selectedDetails.own.alloc.min,'B')}} , {{formatRoundedRatio(selectedDetails.own.alloc.sum , selectedDetails.own.alloc.count,'B')}} , {{formatValue(selectedDetails.own.alloc.max,'B')}} ]</td>
-						</tr>
-						<tr>
-							<td>{{formatValue(selectedDetails.own.free.count,'')}} free : </td><td> [ {{formatValue(selectedDetails.own.free.min,'B')}} , {{formatRoundedRatio(selectedDetails.own.free.sum , selectedDetails.own.free.count,'B')}} , {{formatValue(selectedDetails.own.free.max,'B')}} ]</td>
-						</tr>
-						<tr>
-							<td>Lifetime : </td><td> [ {{formatValue(selectedDetails.own.lifetime.min,'')}} , {{formatRoundedRatio(selectedDetails.own.lifetime.sum , selectedDetails.own.lifetime.count,'')}} , {{formatValue(selectedDetails.own.lifetime.max ,'')}} ] (cycles)</div>
-						</tr>
-					</table>
-				
+					<malt-memory-table details="selectedDetails"></malt-memory-table>
 				</div>
 				<div id='malt-alloc-stacks' style="width:50%;float:left;">
 					<table id='malt-alloc-stacks-tree'>
@@ -109,23 +31,23 @@
 						</thead>
 						<tbody>
 							<!--<tr class="branch expanded" data-tt-id="000">
-			<td><span style="padding-left: 0px;" class="indenter"></span>app</td>
-			</tr>
-			<tr class="branch expanded" data-tt-id="100" data-tt-parent-id="000">
-			<td><span style="padding-left: 19px;" class="indenter"></span>controllers</td>
-			</tr>
-			<tr class="leaf expanded" data-tt-id="500" data-tt-parent-id="100">
-			<td><span style="padding-left: 38px;" class="indenter"></span>application_controller.rb</td>
-			</tr>
-			<tr class="leaf expanded" data-tt-id="200" data-tt-parent-id="000">
-			<td><span style="padding-left: 19px;" class="indenter"></span>helpers</td>
-			</tr>
-			<tr class="leaf expanded" data-tt-id="300" data-tt-parent-id="000">
-			<td><span style="padding-left: 19px;" class="indenter"></span>models</td>
-			</tr>
-			<tr class="leaf expanded" data-tt-id="400" data-tt-parent-id="000">
-			<td><span style="padding-left: 19px;" class="indenter"></span>views</td>
-			</tr>-->
+							<td><span style="padding-left: 0px;" class="indenter"></span>app</td>
+							</tr>
+							<tr class="branch expanded" data-tt-id="100" data-tt-parent-id="000">
+							<td><span style="padding-left: 19px;" class="indenter"></span>controllers</td>
+							</tr>
+							<tr class="leaf expanded" data-tt-id="500" data-tt-parent-id="100">
+							<td><span style="padding-left: 38px;" class="indenter"></span>application_controller.rb</td>
+							</tr>
+							<tr class="leaf expanded" data-tt-id="200" data-tt-parent-id="000">
+							<td><span style="padding-left: 19px;" class="indenter"></span>helpers</td>
+							</tr>
+							<tr class="leaf expanded" data-tt-id="300" data-tt-parent-id="000">
+							<td><span style="padding-left: 19px;" class="indenter"></span>models</td>
+							</tr>
+							<tr class="leaf expanded" data-tt-id="400" data-tt-parent-id="000">
+							<td><span style="padding-left: 19px;" class="indenter"></span>views</td>
+							</tr>-->
 						</tbody>
 					</table>
 				</div>

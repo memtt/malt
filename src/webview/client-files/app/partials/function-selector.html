@@ -1,0 +1,27 @@
+<div><!-- Selection -->
+	<div id='malt-func-list-selector'>
+		<div class="btn-group">
+			<button type="button" class="btn btn-default" ng-click="selector.toogleOrder()" title='Sort order.'><span class='glyphicon' ng-class="{'glyphicon-sort-by-attributes':orderBtnStatus(),'glyphicon-sort-by-attributes-alt':!orderBtnStatus()}"/> </button>
+			<button type="button" class="btn btn-default" ng-class="{'active': selector.ratio}" ng-click="selector.toogleRatio()" title='Show ratio to reference (max or sum) or absolute value.'><b>%</b></button>
+			<button type="button" class="btn btn-default" ng-class="{'active': selector.inclusive}" ng-click="selector.toogleInclusive()" title='Show inclusive or exclusive costs.'><b>I</b></button>
+			<!-- 						<span class='dropdown'> -->
+			<button type="button" class="btn btn-default dropdown-toggle" type='button' data-toggle="dropdown" id='dropdownMenu1' title="Select metric.">
+				<span>{{selector.getCurMetricName()}}</span>
+				<span class="caret"></span>
+			</button>
+			<ul class="dropdown-menu" id='malt-selector-list' role='menu' aria-labelledby='dropdownMenu1'>
+				<li ng-repeat="m in metricList" ng-click="metricSelectEvent(m)"><a href="">{{m.name}}</a></li>
+			</ul>
+			<!-- 						</span> -->
+		</div>
+		<div class="input-group">
+			<input class="form-control col-lg-8" type="text" placeholder="Search" id="malt-input-search" ng-model="selector.query"></input>
+		</div>
+	</div>
+
+	<!-- Func lis -->
+	<div class="nav nav-sidebar" id='malt-func-list'>
+		<maltsourcefunclist metric='metric' inclusive='inclusive' functions='functions' limit='limit' order='order' ratio='ratio' query='query' selector='selector' compact="true" on-select="functionSelectEvent(data)"></maltsourcefunclist>
+		<uib-pagination items-per-page="selector.perPage" direction-links="true" max-size="maxSize" rotate="false" boundary-links="false" total-items="selector.totalElements" ng-model="selector.currentPage" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;"></uib-pagination>
+	</div>
+</div>

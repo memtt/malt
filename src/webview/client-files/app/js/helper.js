@@ -173,4 +173,11 @@ MaltHelper.prototype.mergeStackInfoDatas = function(onto,value)
 }
 
 /**********************************************************************/
-maltHelper = new MaltHelper();
+
+// If this is ran on server-side, we export the class as a module
+// Otherwise, we create a globally shared object for this class
+if(typeof exports === 'undefined') {
+	maltHelper = new MaltHelper();
+} else {
+	module.exports = MaltHelper;
+}

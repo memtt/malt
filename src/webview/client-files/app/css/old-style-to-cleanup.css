@@ -149,6 +149,48 @@
 	ellipsis;max-width:51%;
 }
 
+/**
+ * Compact function list styling
+ */
+
+#malt-func-list.compact .progress {
+	display: none;
+}
+
+#malt-func-list.compact .size, #malt-func-list.compact .func {
+	font-size: 12px;
+}
+
+#malt-func-list.compact .func {
+	padding-top: 4px;
+	font-family: Menlo,Monaco,Consolas,"Courier New",monospace;
+	max-width: 75%;
+}
+
+#malt-func-list.compact .size {
+	width: 25%;
+}
+
+#malt-func-list.compact .size .progress-fg {
+	content: '';
+	display: block;
+	height: 4px;
+	background-color: #337ab7;
+	position: relative;
+	top: 4px;
+	width: attr(progress);
+	border-radius: 2px;
+}
+
+#malt-func-list.compact .size .progress-bg {
+	content: '';
+	height: 4px;
+	display: block;
+	border-radius: 2px;
+	background-color: #d8d8d8;
+	box-shadow: inset 0 1px 1px rgba(0,0,0,.1);
+}
+
 /*.malt-chart svg g rect {
 	background:red;
 }
