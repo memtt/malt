@@ -12,6 +12,8 @@ var CppDeclParser = require("./CppDeclParser.js");
  */
 var maltHelper = new MaltHelper();
 var maltFuncMetrics = new MaltFuncMetrics();
+var allocFuncRegexp = /^((__gnu_cxx::new_allocator)|(operator new)|(operator delete)|(_Zn[wa])|(g_malloc)|(g_realloc)|(g_free)|(for__get_vm)|(for__free_vm)|([mc]alloc)|(free)|(realloc)|(memalign)|(posix_memalign)|(for_(de)?alloc_allocatable)|(for_(de)?allocate))/
+
 
 /**
  * An adapter class that encapsulates a stack-tree and exposes
@@ -133,6 +135,9 @@ function CallTreeAdapter(stacktree)
 			// Remove useless nodes
 			// if(tree.info.alloc.count == 0)
 			// 	return null;
+				
+			if(allocFuncRegexp.test(tree.location.function))
+				return null;
 
 			identifier = getIdentifier(tree.location);
 
