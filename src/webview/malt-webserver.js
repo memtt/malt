@@ -300,6 +300,12 @@ app.get('/calltree', function(req, res) {
 		});
 });
 
+app.get('/active-chunks', function(req, res) {
+	maltProject.getActiveChunks(req.query.timestamp, function(result) {
+		res.json(result);
+	});
+});
+
 /****************************************************/
 app.get('/',function(eq,res,next){
 	res.redirect('app/index.html');
