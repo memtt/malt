@@ -12,6 +12,8 @@ var CppDeclParser = require("./CppDeclParser.js");
  */
 var maltHelper = new MaltHelper();
 var maltFuncMetrics = new MaltFuncMetrics();
+var allocFuncRegexp = /^((__gnu_cxx::new_allocator)|(operator new)|(operator delete)|(_Zn[wa])|(g_malloc)|(g_realloc)|(g_free)|(for__get_vm)|(for__free_vm)|([mc]alloc)|(free)|(realloc)|(memalign)|(posix_memalign)|(for_(de)?alloc_allocatable)|(for_(de)?allocate))/
+
 
 /**
  * An adapter class that encapsulates a stack-tree and exposes
@@ -131,7 +133,10 @@ function CallTreeAdapter(stacktree)
 			// 	return null;
 
 			// Remove useless nodes
-			if(tree.info.alloc.count == 0)
+			// if(tree.info.alloc.count == 0)
+			// 	return null;
+				
+			if(allocFuncRegexp.test(tree.location.function))
 				return null;
 
 			identifier = getIdentifier(tree.location);
@@ -251,7 +256,7 @@ function CallTreeAdapter(stacktree)
 
 		// generate a mapping function from [0-max] onto [1,4]
 		var thicknessScale = d3scale.scaleLinear()
-			.range([0.8, 4.2])
+			.range([0.8, 8])
 			.domain([0,max]);
 
 		// assign colors
@@ -278,10 +283,16 @@ function CallTreeAdapter(stacktree)
 		var extractValue = maltFuncMetrics.maltMetrics[metric].extractor;
 		var formatValue = maltFuncMetrics.maltMetrics[metric].formalter;
 		if(isRatio) {
-			var max = -1;
-			for (var i = 0; i < nodes.length; i++) {
-				if(maltFuncMetrics.maltMetrics[metric].extractor(nodes[i].stats) > max)
-					max = extractValue(nodes[i].stats);
+			var max = 0;
+			for (var i = 0; i < fulltree.nodes.length; i++) {
+				if(fulltree.nodes[i].inEdges.length == 0) {
+					var val = maltFuncMetrics.maltMetrics[metric].extractor(fulltree.nodes[i].stats);
+					if(maltFuncMetrics.maltMetrics[metric].ref == 'sum') {
+						max += val;
+					} else {
+						max = val > max? val : max;
+					}
+				}
 			}
 			for (var i = 0; i < nodes.length; i++) {
 				nodes[i].score = extractValue(nodes[i].stats)/max*100.0;

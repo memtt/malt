@@ -190,7 +190,6 @@ MaltFuncMetrics.prototype.computeRef = function(data,metricName)
 			console.log("Invalid value for ref mode for metric "+metricName+" : "+metric.ref);
 			res = 1;
 	}
-
 	return res;
 }
 
