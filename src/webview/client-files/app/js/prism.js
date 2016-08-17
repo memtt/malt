@@ -926,6 +926,9 @@ Prism.plugins.codeAnnotator = {
 	},
 
 	removeAll: function(element) {
+		if(!element)
+			return;
+		
 		element = element.parentNode;
 
 		if(!this.__annotations[element]) {
