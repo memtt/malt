@@ -104,6 +104,11 @@ MaltDataSourceNodeJS.prototype.loadProcMaps = function(func,handler)
 	$.getJSON("/procmaps.json",handler);
 }
 
+MaltDataSourceNodeJS.prototype.getActiveChunks = function(timestamp, handler)
+{
+	$.getJSON("/active-chunks?timestamp=" + encodeURIComponent(timestamp), handler);
+}
+
 /////////////////////////////////////////////////////////////////////////
 
 //SImple class to wrap all access to remote data, it might be easier to change or remove the server
