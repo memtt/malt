@@ -801,23 +801,29 @@ MaltProject.prototype.getCallTree = function(nodeId, depth, height, minCost, fun
 }
 
 MaltProject.prototype.getActiveChunks = function(timestamp, callback) {
-	// Check if timestamp is a valid number to prevent RCE attacks on server
+	// Always check if timestamp is a valid number to prevent RCE attacks on server
 	if(!(!isNaN(timestamp) && (function(x) { return (x | 0) === x; })(parseFloat(timestamp)))) {
-		callback({error: "Timestamp value is not a valid integer."});
+		callback({
+			error: "Timestamp value is not a valid integer."
+		});
 		return;
 	}
 
-	// TODO put error message here
 	var traceFileName = this.getTraceFilename();
 	if(!traceFileName) {
-		callback({error: "Trace file was not generated during profile time."});
+		callback({
+			error: "Trace file was not generated during profile time."
+		});
 		return;
 	}
 
+	var data = this.data.stacksById;
+
 	var trace = childProcess.execFile('malt-trace-reader', ['--filter', 'at='+timestamp, traceFileName], function(err, stdout, stderr) {
-		// TODO put error message here
 		if(err) {
-			callback({error: "Could not get trace data from trace file."});
+			callback({
+				error: "Could not get trace data from trace file."
+			});
 			return;
 		}
 
@@ -826,9 +832,9 @@ MaltProject.prototype.getActiveChunks = function(timestamp, callback) {
 			stdout = stdout.substr(stdout.indexOf('\n')).trim().replace(/'/g, "\"");
 			rawTraceData = JSON.parse(stdout);
 		} catch (e) {
-			// TODO put error message here
-			callback({error: "Could not parse data got from the trace file."});
-			console.log(stdout, e);
+			callback({
+				error: "Could not parse data got from the trace file."
+			});
 			return;
 		}
 
@@ -837,14 +843,18 @@ MaltProject.prototype.getActiveChunks = function(timestamp, callback) {
 			traceData.push({
 				chunkId: rawTraceData[i][0],
 				stackId: rawTraceData[i][1],
-				stackInfo: this.stacksById[rawTraceData[i][1]],
+				stack: data[rawTraceData[i][1]],
 				chunkSize: rawTraceData[i][2],
 				chunkTimestamp: rawTraceData[i][3],
 				chunkLifetime: rawTraceData[i][4],
 			});
 		}
 
-		callback(traceData);
+		callback({
+			timestamp: timestamp, 
+			resultCount: traceData.length, 
+			result: traceData
+		});
 	});
 }
 
@@ -1158,7 +1168,6 @@ function optimizeProjectDatas(data)
 	{
 		stackIdMap[data.stacks.stats[i].stackId] = data.stacks.stats[i].detailedStack;
 	}
-	console.log(stackIdMap);
 	data.stacksById = stackIdMap;
 
 	//same for leaks
