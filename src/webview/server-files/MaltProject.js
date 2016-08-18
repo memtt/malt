@@ -829,7 +829,6 @@ MaltProject.prototype.getActiveChunks = function(timestamp, callback) {
 
 		var rawTraceData = null;
 		try {
-			stdout = stdout.substr(stdout.indexOf('\n')).trim().replace(/'/g, "\"");
 			rawTraceData = JSON.parse(stdout);
 		} catch (e) {
 			callback({
