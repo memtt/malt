@@ -90,4 +90,28 @@
 			}
 		}
 	</script>
+	<script type="text/ng-template" id="myModalContent.html">
+	    <div class="modal-header">
+	        <h3 class="modal-title" id="modal-title">Allocated Chunks</h3>
+	    </div>
+	    <div class="modal-body" id="modal-body">
+	        <table class="table table-bordered table-condensed">
+	        	<tr>
+	        		<th>Stack</th>
+	        		<th>Chunk size</th>
+	        	</tr>
+	        	<tr ng-repeat="chunk in $ctrl.data.result">
+	        		<td>
+	        			<span ng-repeat="stackItem in chunk.stack">
+		        			<a href="#/sources?func={{ stackItem.function }}&amp;metric=alloc.count">
+		        				<code>{{ stackItem.function }}</code>
+		        			</a>
+		        			<span style="color: #eae9e9;" ng-hide="$last" class="glyphicon glyphicon-chevron-right"></span>
+	        			</span>
+	        		</td>
+	        		<td>{{ chunk.chunkSize }}</td>
+	        	</tr>
+	        </table>
+	    </div>
+	</script>
 </div>

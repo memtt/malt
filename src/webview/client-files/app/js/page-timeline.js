@@ -59,7 +59,7 @@ function MaltPageTimeline()
 		});
 	}
 
-	function maltNVDGraph(divId,data,ylabel,stacked,unit)
+	function maltNVDGraph(divId,data,ylabel,stacked,unit, callback)
 	{
 		nv.addGraph(function() {
 			var chart = nv.models.lineChart()
@@ -100,6 +100,9 @@ function MaltPageTimeline()
 			//Update the chart when window resizes.
 			nv.utils.windowResize(function() { chart.update() });
 			return chart;
+		}, function() {
+			if(callback)
+				callback();
 		});
 	}
 	
@@ -324,7 +327,7 @@ function MaltPageTimeline()
 	var cur = this;
 	
 	//main controler of the page
-	var pageCtrl = maltCtrl.controller('malt.page.timeline.ctrl',['$scope','$http',function($scope,$http) {
+	var pageCtrl = maltCtrl.controller('malt.page.timeline.ctrl',['$scope','$http', '$uibModal', function($scope,$http, $uibModal) {
 		
 		$scope.onExportData = function(dataName,format)
 		{
@@ -369,13 +372,51 @@ function MaltPageTimeline()
 		maltDataSource.loadTimedData($http,function(data) {
 			$scope.data = data;
 
-			maltNVDGraph("malt-mem-timeline",maltConvertData(data),'B','Memory','B');
+			maltNVDGraph("malt-mem-timeline",maltConvertData(data),'B','Memory','B', function() {
+				////////////////////////
+				// Experimental stuff //
+				////////////////////////
+				$("#malt-mem-timeline .nv-background").on("dblclick", function(e) {
+					var $this = $(this);
+					setTimeout(function(){
+						var time = (e.pageX - $this.position().left) / parseInt($this.find('rect').attr('width'), 10) 
+							* data.memoryTimeline.values.length * data.memoryTimeline.perPoints;
+						console.log('Tick clicked', time, time/data.ticksPerSecond);
+						maltDataSource.getActiveChunks(Math.round(time), function(data) {
+							$uibModal.open({
+								templateUrl: 'myModalContent.html',
+								controller: 'malt.modal.allocatedChunks.ctrl',
+								resolve: {
+									items: function() {
+										return data;
+									}
+								},
+								controllerAs: '$ctrl'
+							});
+							console.log(data);
+						});
+					},0);
+				});
+			});
+
 			maltNVDGraph("malt-alive-chunks-timeline",maltConvertCnt(data),'Alive chunks','Allocations','');
 			maltNVDGraph2("malt-alloc-rate-size-timeline",maltConvertSizeRate2(data),'Allocation rate B','Memory rate (B)','B');
 			maltNVDGraph2("malt-alloc-rate-count-timeline",maltConvertCountRate2(data),'Allocation rate op','Memory rate (ops)','');
 			maltNVDGraph("malt-sys-free-mem-timeline",maltConvertSysData(data),"System free mem (B)","Memory",'B');
 		});
 	}]);
+
+	maltCtrl.controller('malt.modal.allocatedChunks.ctrl', function($scope, $uibModalInstance, items) {
+		// console.log($uibModalInstance, items);
+		this.data = items;
+		// for (var i = 0; i < items.result.length; i++) {
+		// 	items.result[i].stack.reverse();
+		// }
+		this.pad = function(count) {
+			console.log(count);
+			return Array(count+1).join(" ");
+		}
+	});
 }
 
 function maltTimelineSaveAsSVG(id)
