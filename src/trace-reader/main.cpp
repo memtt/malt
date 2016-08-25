@@ -16,6 +16,7 @@
 #include "TraceReaderHisto.hpp"
 #include "TraceReaderStackAllocs.hpp"
 #include "TraceReaderFragmentation.hpp"
+#include "TraceReaderStats.hpp"
 
 /**********************  USING  *********************/
 using namespace MALT;
@@ -27,6 +28,7 @@ MODE : \n\
    --frag   {t1} {t2}\n\
    --mem\n\
    --print\n\
+   --stats\n\
 \n\
 FILTER : \n\
    --filter size=SIZE\n\
@@ -40,7 +42,8 @@ enum Mode
 	MODE_HISTO,
 	MODE_AT_TIME,
 	MODE_FRAGMENTATION,
-	MODE_FRAGMENTATION_DETAILS
+	MODE_FRAGMENTATION_DETAILS,
+	MODE_STATS
 };
 
 /*******************  FUNCTION  *********************/
@@ -67,6 +70,9 @@ int main(int argc, char ** argv)
 		if (strcmp(argv[i],"--print") == 0 || strcmp(argv[i],"-p") == 0)
 		{
 			mode = MODE_PRINT;
+		} else if (strcmp(argv[i],"--stats") == 0)
+		{
+			mode = MODE_STATS;
 		} else if (strcmp(argv[i],"--filter") == 0)
 		{
 			if (argc - 1 == i)
@@ -159,6 +165,9 @@ int main(int argc, char ** argv)
 			break;
 		case MODE_FRAGMENTATION_DETAILS:
 			reader = new TraceReaderFragmentation(t1,t2,true,&filter);
+			break;
+		case MODE_STATS:
+			reader = new TraceReaderStats(&filter);
 			break;
 		default:
 			fprintf(stderr,"Invalid mode : %d\n",mode);

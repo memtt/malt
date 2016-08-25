@@ -16,4 +16,5 @@ add_executable(malt-trace-reader main.cpp
                                  TraceReaderPrint.cpp
                                  TraceReaderHisto.cpp
                                  TraceReaderStackAllocs.cpp
-                                 TraceReaderFragmentation.cpp)
+                                 TraceReaderFragmentation.cpp
+                                 TraceReaderStats.cpp)
