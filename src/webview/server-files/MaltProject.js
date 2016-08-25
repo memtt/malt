@@ -738,7 +738,7 @@ MaltProject.prototype.getCallTree = function(nodeId, depth, height, minCost, fun
 		var tmpnode = this.calltreeCache.getNodeByFunctionName(func);
 
 		if(tmpnode == null) {
-			callback({error: "Node not found."});
+			callback({error: {nodeNotFoundError: "Node not found."}});
 			return;
 		}
 
@@ -784,15 +784,20 @@ MaltProject.prototype.getCallTree = function(nodeId, depth, height, minCost, fun
 	// Generate SVG code from Dot code if GraphViz is installed
 	if(GraphGenerator.isInstalled()) {
 		// console.time("convertDotToSvg");
-		GraphGenerator.convertDotToSvg(resp.dotCode, function(svg, err) {
-			// console.timeEnd("convertDotToSvg");
-			if(err) {
-				resp.error = {svgGenerationError: "Could not generate graph."};
-			} else {
-				resp.svg = svg;
-			}
+		if(filteredTree.nodes.length > 1000) {
+			resp.error = {filterError: "Too many nodes selected at once."};
 			callback(resp);
-		});
+		} else {
+			GraphGenerator.convertDotToSvg(resp.dotCode, function(svg, err) {
+				// console.timeEnd("convertDotToSvg");
+				if(err) {
+					resp.error = {svgGenerationError: "Could not generate graph."};
+				} else {
+					resp.svg = svg;
+				}
+				callback(resp);
+			});
+		}
 	} else {
 		resp.error = {svgGenerationError: "Please install GraphViz to enable graph generation."};
 		callback(resp);

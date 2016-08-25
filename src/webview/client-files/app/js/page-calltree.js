@@ -192,7 +192,7 @@ function MaltPageCallTree()
 				$scope.filterHeight, $scope.filterNodeCost, data.function, $scope.selectedMetric, 
 				$scope.selector.ratio, function(nodata) {
 					hideLoader();
-					if(nodata.error) {
+					if(nodata.error && nodata.error.nodeNotFoundError) {
 						alert("Could not find the selected function.");
 					} else {
 						$scope.$apply(function() {
@@ -262,6 +262,10 @@ function MaltPageCallTree()
 				drawGraph();
 				navigateTo($scope.nodeData.nodeId);
 				deferredArray[1].resolve();
+			}, function() {
+				hideLoader();
+				$scope.nodeData = {error: {networkError: 'Could not get data from the server.'}};
+				deferredArray[1].resolve();				
 			});
 
 		$.when(deferredArray).then(function() {
