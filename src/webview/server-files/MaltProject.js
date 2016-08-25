@@ -819,7 +819,7 @@ MaltProject.prototype.getActiveChunks = function(timestamp, callback) {
 
 	var data = this.data.stacksById;
 
-	var trace = childProcess.execFile('malt-trace-reader', ['--filter', 'at='+timestamp, traceFileName], function(err, stdout, stderr) {
+	var trace = childProcess.execFile('malt-trace-reader', ['--stats', '--filter', 'at=' + timestamp, traceFileName], function(err, stdout, stderr) {
 		if(err) {
 			callback({
 				error: "Could not get trace data from trace file."
@@ -840,12 +840,12 @@ MaltProject.prototype.getActiveChunks = function(timestamp, callback) {
 		var traceData = [];
 		for (var i = 0; i < rawTraceData.length; i++) {
 			traceData.push({
-				chunkId: rawTraceData[i][0],
-				stackId: rawTraceData[i][1],
-				stack: data[rawTraceData[i][1]],
-				chunkSize: rawTraceData[i][2],
-				chunkTimestamp: rawTraceData[i][3],
-				chunkLifetime: rawTraceData[i][4],
+				stackId: rawTraceData[i][0],
+				chunkCount: rawTraceData[i][1],
+				chunkTotalSize: rawTraceData[i][2],
+				chunkMinSize: rawTraceData[i][3],
+				chunkMaxSize: rawTraceData[i][4],
+				stack: data[rawTraceData[i][0]],
 			});
 		}
 

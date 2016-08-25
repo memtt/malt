@@ -98,7 +98,8 @@
 	        <table class="table table-bordered table-condensed">
 	        	<tr>
 	        		<th>Stack</th>
-	        		<th>Chunk size</th>
+	        		<th>Count</th>
+	        		<th>Total</th>
 	        	</tr>
 	        	<tr ng-repeat="chunk in $ctrl.data.result">
 	        		<td>
@@ -109,7 +110,8 @@
 		        			<span style="color: #eae9e9;" ng-hide="$last" class="glyphicon glyphicon-chevron-right"></span>
 	        			</span>
 	        		</td>
-	        		<td>{{ chunk.chunkSize }}</td>
+	        		<td>{{ chunk.chunkCount }}</td>
+	        		<td>{{ chunk.chunkTotalSize }}</td>
 	        	</tr>
 	        </table>
 	    </div>
