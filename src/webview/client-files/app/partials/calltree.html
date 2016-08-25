@@ -20,13 +20,13 @@
 	.edge {
 		fill: #bbb;
 	}
-	#nosvg {
+	.nosvg {
 		font-size: 24px;
 		color: #ddd;
 		text-align: center;
 		margin: 200px 0 200px 0;
 	}
-	#nosvg span {
+	.nosvg span {
 		font-size: 80px;
 	}
 	#contextMenu, #contextMenuGeneral {
@@ -85,12 +85,22 @@
 					  <div class="sk-circle12 sk-child"></div>
 					</div>
 				</div>
-				<div id="nosvg" ng-show="nodeData &amp;&amp; nodeData.error.svgGenerationError">
+				<div class="nosvg" ng-show="nodeData &amp;&amp; nodeData.error.svgGenerationError">
 					<span class="glyphicon glyphicon-remove-sign"></span>
 					<br>
 					{{ nodeData.error.svgGenerationError }}
+				</div>				
+				<div class="nosvg" ng-show="nodeData &amp;&amp; nodeData.error.filterError">
+					<span class="glyphicon glyphicon glyphicon-eye-close"></span>
+					<br>
+					{{ nodeData.error.filterError }}
 				</div>
-				<div id="mynetwork"></div>
+				<div class="nosvg" ng-show="nodeData &amp;&amp; nodeData.error.networkError">
+					<span class="glyphicon glyphicon-warning-sign"></span>
+					<br>
+					{{ nodeData.error.networkError }}
+				</div>
+				<div id="mynetwork" ng-hide="nodeData.error"></div>
 			</div>
 			<br>
 			<div>
