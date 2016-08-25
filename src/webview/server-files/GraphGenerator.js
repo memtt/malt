@@ -26,9 +26,14 @@ var graphGenerator = {
 
 		return new DotCode()
 			.digraph('G', function(d) {
+				// Common styling for all nodes and edges
 				d.node({
-					shape: 'box',
+					shape: 'record',
 					fontname: 'Courier New',
+					style: 'filled',
+					fontcolor: 'white',
+					penwidth: 1,
+					color: 'white',
 					fontsize: '10'
 				}).edge({
 					fontname: 'Courier New',
@@ -36,18 +41,23 @@ var graphGenerator = {
 				});
 
 				for (var i = 0; i < nodes.length; i++) {
-					d.node('node' + nodes[i].id, {
-						shape: 'record', 
+					var nodeDat = {
 						label: safeTagsReplace(nodes[i].label.trim()) + ' | ' + nodes[i].scoreReadable, 
 						tooltip: safeTagsReplace(nodes[i].tooltip.trim()),
-						style: 'filled',
-						color: nodes[i].id == focusedNode ? '#2b2b2b' : 'white',
-						penwidth: nodes[i].id == focusedNode ? 3.5 : 1,
-						fontcolor: 'white',
 						fillcolor: nodes[i].color
-					});
+					};
+
+					// If focused node, highlight it
+					if(nodes[i].id == focusedNode) {
+						nodeDat.penwidth = 3.5;
+						nodeDat.color = '#2b2b2b';
+					}
+
+					// Add node to dot code
+					d.node('node' + nodes[i].id, nodeDat);
 				}
 
+				// Add all edges to dot code
 				for (var i = 0; i < vertices.length; i++) {
 					d.edge('node' + vertices[i].from, 'node' + vertices[i].to, {
 						label: '  ' + vertices[i].score,
