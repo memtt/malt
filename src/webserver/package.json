@@ -1,0 +1,17 @@
+{
+  "name": "malt-webserver",
+  "version": "1.0.0",
+  "description": "Web server to run the matt analysis tool and export data to the browser",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Sébastien Valat",
+  "license": "CECILL-C",
+  "dependencies": {
+    "arg-parser": "^1.2.0",
+    "clone": "^1.0.2",
+    "express": "^4.13.4",
+    "http-auth": "^2.3.6"
+  }
+}
