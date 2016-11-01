@@ -39,7 +39,7 @@ MaltProject.prototype.loadData = function(data)
 
 	//optimize data
 	console.log("Optimizing datas for requests...");
-	optimizeProjectDatas(data);
+// 	optimizeProjectDatas(data);
 	console.log("Data optimization done.");
 }
 

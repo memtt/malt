@@ -82,14 +82,14 @@ if (args.params.override != undefined)
 var maltProject = new MaltProject(args.params.input);
 
 /****************************************************/
-app.get('/flat.json',function(req,res) {
+app.get('/api/flat.json',function(req,res) {
 	res.write('ok');
 	res.end();
 });
 
 /****************************************************/
 //export static deps
-app.use('/',Express.static(__dirname+'/client-files'));
+app.use('/',Express.static(__dirname+'/../webview/dist'));
 app.use('/deps/',Express.static(__dirname+'/bower_components/'));
 
 /****************************************************/

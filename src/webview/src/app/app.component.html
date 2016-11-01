@@ -1,3 +1,19 @@
-<h1>
-  {{title}}
-</h1>
+<header id="header">
+  <h1 id="logo">
+    <a [routerLink]="['/Home']"></a>
+  </h1>
+
+  <div id="nav">
+    <a [routerLink]="['/home']" routerLinkActive="active">Home</a>
+    <a [routerLink]="['/threads']" routerLinkActive="active">Threads</a>
+  </div>
+
+  <div class="color"></div>
+  <div class="clear"></div>
+</header>
+
+<div class="shadow"></div>
+
+<div id="container">
+  <router-outlet></router-outlet>
+</div>
