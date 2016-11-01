@@ -183,7 +183,7 @@ void Options::loadFromFile(const char* fname)
 	iniDic = iniparser_load(fname);
 	
 	//errors
-	assumeArg(iniDic != NULL,"Failed to load config file : %1 !").arg(fname);
+	assumeArg(iniDic != NULL,"Failed to load config file : %1 !").arg(fname).end();
 	
 	this->loadFromIniDic(iniDic);
 	

@@ -1,0 +1,20 @@
+{
+  "name": "malt-webserver",
+  "description": "Web server to run the matt analysis tool and export data to the browser",
+  "main": "index.js",
+  "authors": [
+    "Sébastien Valat"
+  ],
+  "license": "CECILL-C",
+  "homepage": "",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap": "^3.3.7"
+  }
+}
