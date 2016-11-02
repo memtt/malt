@@ -50,4 +50,20 @@
 			<td>{{getFormattedCpuFreq()}}</td>
 		</tr>
 	</table>
+
+	<h2>Global statistics</h2>
+
+	<input type='button' (click)='toogleSummaryDetails()' value='{{displaySummaryLevel == 1 ? "Show all details" : "Hide details"}}'/>
+	<input type='button' (click)='displaySummaryHelp = !displaySummaryHelp' value='{{!displaySummaryHelp ? "Show help" : "Hide help"}}'/>
+	<table class='table table-bordered'>
+		<tr *ngFor="let entry of getSummaryViewEntries()">
+			<td class='malt-name'>{{entry.name}}</td>
+			<td class='malt-value'>
+				{{getFormattedValue(entry)}}
+				<!--<img src='http://www.pinsound.org/wp-content/uploads/2013/07/warning.png' *ngFor="warning in summaryData.summaryWarnings[entry.key]" title="{{warning}}" data-container="body" data-content="{{warning}}" width='24px'/>-->
+				<!--<button class='btn btn-lg popover-dismiss' ng-repeat="warning in summaryData.summaryWarnings[entry.key]" data-trigger="hover" data-toggle="popover" data-container="body" data-content="{{warning}}" title="test">text</button>-->
+			</td>
+			<td class='malt-help' *ngIf="displaySummaryHelp">{{entry.help}}</td><tr>
+		</tr>
+	</table>
 </div>

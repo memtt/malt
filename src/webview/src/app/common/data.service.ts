@@ -14,4 +14,9 @@ export class DataService {
 		return this.http.get(this.baseUrl+"/run-infos.json")
 			.map(resp => resp.json());
 	}
+
+	getSummaryInfo() : Observable<any> {
+		return this.http.get(this.baseUrl+"/summary-infos.json")
+			.map(resp => resp.json());
+	}
 }
