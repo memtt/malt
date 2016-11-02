@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import {DataService,MattRunInfo} from '../common/data.service';
+import {DataService} from '../common/data.service';
 import * as d3 from 'd3';
+import {HelperService} from '../common/helper.service';
 
 @Component({
 	selector: 'app-home',
@@ -10,9 +11,31 @@ import * as d3 from 'd3';
 
 export class HomeComponent implements OnInit {
 	errorMessage: string;
-	runInfo: MattRunInfo;
+	runInfo: any = {
+		"run": {
+			"formatVersion": 1,
+			"tool": "",
+			"date": "",
+			"runtime": 0,
+			"exe": "",
+			"command": "",
+			"hostname": ""
+		},
+		"globals": {
+			"ticksPerSecond": 1,
+			"peak": {
+				"finalValue": 0,
+				"peakTime": 0,
+				"peak": 0
+			},
+			"totalSysMem": 0,
+			"freeMemoryAtStart": 0,
+			"cachedMemoryAtStart": 0,
+			"maxThreads": 8
+		}
+	};
 
-	constructor(private dataService: DataService) { }
+	constructor(private dataService: DataService, private helper: HelperService) { }
 
 	ngOnInit() {
 		this.getData();
@@ -32,10 +55,11 @@ export class HomeComponent implements OnInit {
 
 	//TODO
 	getFormattedExecTime() {
-		if (this.runInfo)
-			return this.runInfo.executionTime;
-		else
-			return 0;
+		return this.helper.ticksToHourMinSec(this.runInfo.run.runtime,this.runInfo.globals.ticksPerSecond);
+	}
+
+	getFormatedAllocationPeak() {
+		return this.helper.humanReadable(this.runInfo.globals.peak.peak,1,"B",false);
 	}
 
 	getFormattedValueFromKey() {
@@ -47,6 +71,6 @@ export class HomeComponent implements OnInit {
 	}
 
 	getFormattedCpuFreq() {
-		return 0;
+		return this.helper.humanReadable(this.runInfo.globals.ticksPerSecond,1,'Hz',false);
 	}
 }

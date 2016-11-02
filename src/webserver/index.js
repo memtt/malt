@@ -83,7 +83,7 @@ var maltProject = new MaltProject(args.params.input);
 
 /****************************************************/
 app.get('/api/run-infos.json',function(req,res) {
-	res.write('{"executionTime":100}');
+	res.write(JSON.stringify(maltProject.getRunInfos(),null,"\t"));
 	res.end();
 });
 

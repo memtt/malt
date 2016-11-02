@@ -69,8 +69,23 @@ MaltProject.prototype.loadFile = function(file)
 		//ok parse
 		var data = JSON.parse(buffer);
 
+		//check version
+		if (data.run.formatVersion != 1) {
+			console.error("Invalid file formar version. Expect 1 !");
+			process.exit(1);
+		}
+
 		cur.loadData(data);
 	});
+}
+
+/****************************************************/
+MaltProject.prototype.getRunInfos = function()
+{
+	return {
+		"run": this.data.run,
+		"globals": this.data.globals
+	};
 }
 
 /****************************************************/

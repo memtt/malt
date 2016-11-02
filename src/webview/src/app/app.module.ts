@@ -9,6 +9,7 @@ import { RouterModule }   from '@angular/router';
 import { ThreadsComponent } from './threads/threads.component';
 
 import {DataService} from './common/data.service';
+import {HelperService} from './common/helper.service';
 
 @NgModule({
   declarations: [
@@ -28,7 +29,7 @@ import {DataService} from './common/data.service';
       { path: '**', component: HomeComponent }
     ])
   ],
-  providers: [DataService],
+  providers: [DataService,HelperService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

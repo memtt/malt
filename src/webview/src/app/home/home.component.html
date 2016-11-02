@@ -7,18 +7,18 @@
 	</div>
 
 	<div class="runinfo runinfo-second">
-		<div class='name'>Physical memory peak</div>
-		<div class='value'>{{getFormattedValueFromKey('peakPhysicalMemory')}}</div>
+		<div class='name'>Allocation peak</div>
+		<div class='value'>{{getFormatedAllocationPeak()}}</div>
 	</div>
 
 	<div class="runinfo runinfo-third">
-		<div class='name'>Allocation count</div>
-		<div class='value'>{{getFormattedValueFromKey('allocCount')}}</div>
+		<div class='name'>Physical memory peak</div>
+		<div class='value'>{{getFormattedValueFromKey('physPeak')}}</div>
 	</div>
 
 	<div class="runinfo runinfo-fourth">
-		<div class='name'>Available physical memory</div>
-		<div class='value'>{{getFormattedTotalMemory()}}</div>
+		<div class='name'>Allocation count</div>
+		<div class='value'>{{getFormattedValueFromKey('allocCount')}}</div>
 	</div>
 	<!-- To clear float issue -->
 	<div width='100%' style='clear:both;'></div>
@@ -29,25 +29,25 @@
 	<table class='table table-bordered'>
 		<tr>
 			<td>Executable :</td>
-			<td>summaryData.run.exe</td>
+			<td>{{runInfo.run.exe}}</td>
 		</tr><tr>
 			<td>Commande :</td>
-			<td><pre>summaryData.run.command</pre></td>
+			<td><pre>{{runInfo.run.command}}</pre></td>
 		</tr><tr>
 			<td>Tool :</td>
-			<td>summaryData.run.tool</td>
+			<td>{{runInfo.run.tool}}</td>
 		</tr><tr>
 			<td>Host :</td>
-			<td>summaryData.run.hostname</td>
+			<td>{{runInfo.run.hostname}}</td>
 		</tr><tr>
 			<td>Date :</td>
-			<td>summaryData.run.date</td>
+			<td>{{runInfo.run.date}}</td>
 		</tr><tr>
 			<td>Execution time :</td>
-			<td>getFormattedExecTime()</td>
+			<td>{{getFormattedExecTime()}}</td>
 		</tr><tr>
 			<td>Ticks frequency :</td>
-			<td>getFormattedCpuFreq()</td>
+			<td>{{getFormattedCpuFreq()}}</td>
 		</tr>
 	</table>
 </div>
