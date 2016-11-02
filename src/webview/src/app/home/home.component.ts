@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import {DataService} from '../common/data.service';
+import {DataService,MattRunInfo} from '../common/data.service';
 import * as d3 from 'd3';
 
 @Component({
@@ -9,16 +9,44 @@ import * as d3 from 'd3';
 })
 
 export class HomeComponent implements OnInit {
-	message: string;
+	errorMessage: string;
+	runInfo: MattRunInfo;
 
-	constructor(private _dataService: DataService) { }
+	constructor(private dataService: DataService) { }
 
 	ngOnInit() {
-		this.message = this._dataService.getMessage();
+		this.getData();
 	}
-	
+
+	getData() {
+		this.dataService.getRunInfo().subscribe(
+			resp => this.runInfo = resp,
+			error => this.errorMessage = <any>error
+		);
+	}
+
 	ngAfterViewInit(){
 		console.log("afterViewInit() called");
 		d3.selectAll("h1").style("background-color", "yellow");
+	}
+
+	//TODO
+	getFormattedExecTime() {
+		if (this.runInfo)
+			return this.runInfo.executionTime;
+		else
+			return 0;
+	}
+
+	getFormattedValueFromKey() {
+		return 0;
+	}
+
+	getFormattedTotalMemory() {
+		return 0;
+	}
+
+	getFormattedCpuFreq() {
+		return 0;
 	}
 }

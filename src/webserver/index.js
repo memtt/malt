@@ -82,8 +82,8 @@ if (args.params.override != undefined)
 var maltProject = new MaltProject(args.params.input);
 
 /****************************************************/
-app.get('/api/flat.json',function(req,res) {
-	res.write('ok');
+app.get('/api/run-infos.json',function(req,res) {
+	res.write('{"executionTime":100}');
 	res.end();
 });
 

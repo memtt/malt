@@ -1,14 +1,21 @@
 import {Injectable} from '@angular/core';
+import { Http, Response } from '@angular/http';
+import { Observable }     from 'rxjs/Observable';
+import 'rxjs/add/operator/map';
+
+export class MattRunInfo {
+	executionTime: number;
+};
 
 @Injectable()
 export class DataService {
-	private _message = 'Hello Message';
+	private baseUrl = "/api";
 
-	getMessage(): string {
-		return this._message;
-	};
+	constructor(private http: Http) {
+	}
 
-	setMessage(newMessage: string): void {
-		this._message = newMessage;
-	};
+	getRunInfo() : Observable<MattRunInfo> {
+		return this.http.get(this.baseUrl+"/run-infos.json")
+			.map(resp => resp.json());
+	}
 }

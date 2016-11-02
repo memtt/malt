@@ -1,19 +1,19 @@
-<header id="header">
-  <h1 id="logo">
-    <a [routerLink]="['/Home']"></a>
-  </h1>
 
-  <div id="nav">
-    <a [routerLink]="['/home']" routerLinkActive="active">Home</a>
-    <a [routerLink]="['/threads']" routerLinkActive="active">Threads</a>
-  </div>
+	<nav class="navbar navbar-dark bg-inverse">
+	<button class="navbar-toggler hidden-sm-up" type="button" data-toggle="collapse" data-target="#navbar-header" aria-controls="navbar-header" aria-expanded="false" aria-label="Toggle navigation"></button>
+	<div class="collapse navbar-toggleable-xs" id="navbar-header">
+	  <a class="navbar-brand" href="#">Malt-Webview</a>
+	  <ul class="nav navbar-nav">
+	      <li class="nav-item"><a class="nav-link" [routerLink]="['/home']" routerLinkActive="active">Home</a></li>
+	      <li class="nav-item"><a class="nav-link" [routerLink]="['/threads']" routerLinkActive="active">Threads</a></li>
+	  </ul>
+	</div>
+	</nav> <!-- /navbar -->
 
-  <div class="color"></div>
-  <div class="clear"></div>
-</header>
+<div class="container">
+	<!-- Main component for a primary marketing message or call to action -->
+	<div class='view-container container-fluid'>
+		<router-outlet></router-outlet>
+	</div>
 
-<div class="shadow"></div>
-
-<div id="container">
-  <router-outlet></router-outlet>
-</div>
+</div> <!-- /container -->
