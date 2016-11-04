@@ -249,6 +249,7 @@ void convertToJson(htopml::JsonState& json, const StackTreeMap& tree)
 {
 	RLockFreeTree otree;
 	StackTreeHandler handler = otree.enterThread();
+// 	std::map< StackId, StackId > idmap;
 	
 	//copy descr
 	for (int i = 0 ; i < MATT_STACK_TREE_ENTRIES ; i++)
@@ -275,6 +276,13 @@ void convertToJson(htopml::JsonState& json, const StackTreeMap& tree)
 			tmpStack = *stack;
 			remover.removeLoops(tmpStack);
 			otree.mergeData(tmpStack,it->second,it->first.dataId);
+/*			
+			StackTreeHandler ohandler;
+			ohandler = otree.getFromStack(handler,tmpStack);
+			StackTreeDataHandler oDataHandler = otree.getDataHandler(ohandler);
+			StackId oid = otree.getStackId(oDataHandler);
+			
+			idmap[it->first.dataId] = oid;*/
 		}
 	} else {
 		//copy values
@@ -286,6 +294,15 @@ void convertToJson(htopml::JsonState& json, const StackTreeMap& tree)
 	otree.prepareForOutput();
 	
 	convertToJson(json,otree);
+	
+// 	json.openFieldStruct("stackIds");
+// 		for(std::map<StackId,StackId>::const_iterator it = idmap.begin() ; it != idmap.end() ; ++it)
+// 		{
+// 			char buffer[256];
+// 			sprintf(buffer,"%lu",it->first);
+// 			json.printField(buffer,it->second);
+// 		}
+// 	json.closeFieldStruct("stackIds");
 }
 
 /*******************  FUNCTION  *********************/

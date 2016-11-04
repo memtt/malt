@@ -262,7 +262,7 @@ void ProcessLevelAnalysis::updateMemStats ( MallocHooksInfos& info, void* ret, s
 {
 	//fetch some locals
 	ticks time = mallocClock.get(CLOCK_TICKS);
-	int dataId = info.dataId;
+	StackId dataId = info.dataId;
 	//assert(dataId == stackTree->getStackId(info.dataHandler));
 	
 	//get virtual and physical
