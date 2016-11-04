@@ -163,9 +163,11 @@ void ProcessLevelAnalysis::onExit ( void )
 			stackTree->setLoopSuppress();
 		stackTree->prepareForOutput();
 		
+		//leak summary
+		userSegmentTracker.buildLeakSummary(this->leakSummary);
+		
 		//load global variables
 		globalVariables.load();
-		
 		
 		//config
 		if (options.outputDumpConfig)
@@ -516,6 +518,7 @@ void convertToJson ( htopml::JsonState& json, const ProcessLevelAnalysis& value 
 			json.printField("systemStats",value.systemStats);
 			json.printField("opsBandwidth",value.opsBandwidth);
 		json.closeFieldStruct("timeline");
+		json.printField("leaks",value.leakSummary);
 	json.closeStruct();
 }
 

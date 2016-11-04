@@ -227,7 +227,7 @@ StackTreeDataHandler RLockFreeTree::getDataHandler ( StackTreeHandler handler )
 }
 
 /*******************  FUNCTION  *********************/
-int RLockFreeTree::getStackId ( StackTreeDataHandler handler )
+StackId RLockFreeTree::getStackId ( StackTreeDataHandler handler )
 {
 	Handler typedHandler = (Handler)handler;
 	assert(typedHandler->dataId != -1);

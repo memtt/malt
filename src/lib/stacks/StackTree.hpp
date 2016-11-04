@@ -57,7 +57,7 @@ class StackTreeTypeDescriptorTyped : public StackTreeTypeDescriptor
 /*********************  TYPES  **********************/
 typedef void * StackTreeHandler;
 typedef StackTreeStorage * StackTreeDataHandler;
-typedef int StackId;
+typedef unsigned long StackId;
 
 /*********************  CLASS  **********************/
 class StackTree

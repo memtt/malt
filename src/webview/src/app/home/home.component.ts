@@ -37,7 +37,7 @@ export class HomeComponent implements OnInit {
 
 	private displaySummaryLevel:number = 1;
 	private displaySummaryHelp: boolean = false;
-	private summaryData = {summary:{},summaryWarnings:[]};
+	private summaryData = {};
 
 	//declare summary view entries
 	private summaryViewEntries: any = [];
@@ -76,7 +76,9 @@ export class HomeComponent implements OnInit {
 	}
 
 	getFormattedValue(entry:any) {
-		if (entry == undefined || entry.type == 'separator' || entry.key == undefined || this.summaryData.summary[entry.key] == undefined)
+		console.log(this.summaryData);
+		console.log(this.summaryData[entry.key]);
+		if (entry == undefined || entry.type == 'separator' || entry.key == undefined || this.summaryData[entry.key] == undefined)
 			return '';
 		else
 			return entry.format(this.summaryData[entry.key]);
@@ -211,6 +213,9 @@ export class HomeComponent implements OnInit {
 				level: 1,
 				help:"Memory used by the largest stack seen during execution of threads.",
 				format: function(x) {return self.helper.humanReadable(x,1,'B',false);}
+			},{
+				type:'separator',
+				level: 2
 			},{
 				key:'globalVarMem',
 				name:'Global variables',

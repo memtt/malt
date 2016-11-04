@@ -128,7 +128,7 @@ void StackTreeMap::exitThread(StackTreeHandler handler)
 }
 
 /*******************  FUNCTION  *********************/
-int StackTreeMap::getStackId ( StackTreeDataHandler handler )
+StackId StackTreeMap::getStackId ( MATT::StackTreeDataHandler handler )
 {
 	Handler * typedHandler = (Handler*)handler;
 	return typedHandler->stackId;

@@ -183,8 +183,10 @@ void ThreadLevelAnalysis::onPreRealloc ( MallocHooksInfos& info, void* ptr, size
 void convertToJson ( htopml::JsonState& json, const ThreadLevelAnalysis& value )
 {
 	json.openStruct();
-		for (int i = 0 ; i < MEM_FUNC_COUNT ; i++)
-			json.printField(gblMemFuncNames[i],value.counters[i]);
+		json.openFieldStruct("stats");
+			for (int i = 0 ; i < MEM_FUNC_COUNT ; i++)
+				json.printField(gblMemFuncNames[i],value.counters[i]);
+		json.closeFieldStruct("stats");
 	json.closeStruct();
 }
 

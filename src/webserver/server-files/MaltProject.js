@@ -89,5 +89,130 @@ MaltProject.prototype.getRunInfos = function()
 }
 
 /****************************************************/
+function getTimelineMax(data,subtree,entry)
+{
+	var local = data.timeline;
+	if (local == undefined)
+		return 0;
+	local = local[subtree];
+	if (local == undefined)
+		return 0;
+	local = local[entry];
+	if (local == undefined)
+		return 0;
+	return Math.max.apply(null,local)
+}
+
+/****************************************************/
+function getMaxRate(data,entry)
+{
+	//get max
+	var max = getTimelineMax(data,"opsBandwidth",entry);
+	return (max / data.timeline['opsBandwidth'].steps) * data.globals.ticksPerSecond;
+}
+
+/****************************************************/
+var allocfuncs = ['malloc','calloc','realloc','memalign','posix_memalign','valloc','pvalloc','aligned_alloc'];
+function getThreadSum(data,entry)
+{
+	var res = 0;
+	for (var thread in data.threads)
+		for(var func in allocfuncs)
+			res += data.threads[thread][allocfuncs[func]][entry];
+	return res;
+}
+
+/****************************************************/
+function getThreadMinMax(data,entry,mode)
+{
+	var res = -1;
+	for (var thread in data.threads) {
+		for(var func in allocfuncs) {
+			var val = data.threads[thread][allocfuncs[func]][entry];
+			if (mode == 'min') {
+				if ((val < res || res == -1) && val != 0)
+					res = val;
+			} else if (mode == 'max') {
+				if ((val > res || res == -1) && val != 0)
+					res = val;
+			}
+		}
+	}
+
+	return res;
+}
+
+/****************************************************/
+function getGlobalVarCount(data)
+{
+	var cnt = 0;
+	for (var i in data.globalVariables)
+		cnt += data.globalVariables[i].length;
+	return cnt;
+}
+
+/****************************************************/
+function getGlobalVarMem(data,tls)
+{
+	var ret = 0;
+	for (var i in data.globalVariables)
+		for (var j in data.globalVariables[i])
+			if (data.globalVariables[i][j].tls == tls)
+				ret += data.globalVariables[i][j].size;
+	return ret;
+}
+
+/****************************************************/
+MaltProject.prototype.getSummaryInfos = function()
+{
+	var ret = {};
+
+	//summary
+	ret.peakPhysicalMemory = getTimelineMax(this.data,'memStats','processPhysical');
+	ret.peakVirtualMemory = getTimelineMax(this.data,'memStats','processVirtual');
+	ret.peakRequestedMemory = getTimelineMax(this.data,'memStats','requestedByMalloc');
+	ret.peakInternalMemory = getTimelineMax(this.data,'memStats','mattInternalMalloc');
+	ret.peakSegmentCount = getTimelineMax(this.data,'memStats','mallocSegments');
+
+	//rates
+	ret.peakAllocRate = getMaxRate(this.data,'allocSize');
+	ret.peakAllocCountRate = getMaxRate(this.data,'allocCount');
+
+	//sum
+	ret.totalAllocatedMemory = getThreadSum(this.data,'sumSize');
+	ret.recyclingRatio = ret.totalAllocatedMemory / ret.peakRequestedMemory;
+	ret.allocCount = getThreadSum(this.data,'count');
+	ret.minAllocSize = getThreadMinMax(this.data,'minSize','min');
+
+	//mean
+	ret.meanAllocSize = ret.totalAllocatedMemory / ret.allocCount;
+
+	//min/max
+	ret.minAllocSize = getThreadMinMax(this.data,"minSize","min");
+	ret.maxAllocSize = getThreadMinMax(this.data,"maxSize","max");
+
+	//leaks
+	var count = 0;
+	var mem = 0;
+	for (var i in this.data.leaks)
+	{
+		count += this.data.leaks[i].count;
+		mem += this.data.leaks[i].mem;
+	}
+	this.leakedMem = mem;
+	this.leakedCount = count;
+
+	//stacks TODO
+
+	//global variables
+	ret.numGblVar = getGlobalVarCount(this.data);
+	ret.globalVarMem = getGlobalVarMem(this.data,false);
+	ret.tlsVarMem = getGlobalVarMem(this.data,true);
+
+	//ok return
+	return ret;
+}
+
+/****************************************************/
 //export definition
 module.exports = MaltProject;

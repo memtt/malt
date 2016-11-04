@@ -157,6 +157,7 @@ class ProcessLevelAnalysis : public ExitHooks, public MmapHooks, public ThreadHo
 		int maxThreads;
 		size_t freeMemoryAtStart;
 		size_t cachedMemoryAtStart;
+		LeakSummaryMap leakSummary;
 };
 
 }

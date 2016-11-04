@@ -66,6 +66,19 @@ void convertToJson ( htopml::JsonState& json, const LeakSummary& value )
 }
 
 /*******************  FUNCTION  *********************/
+void convertToJson( htopml::JsonState& json, const MATT::LeakSummaryMap& value )
+{
+	json.openStruct();
+		for (LeakSummaryMap::const_iterator it = value.begin() ; it != value.end() ; ++it)
+		{
+			char buffer[256];
+			sprintf(buffer,"%lu",it->first);
+			json.printField(buffer,it->second);
+		}
+	json.closeStruct();
+}
+
+/*******************  FUNCTION  *********************/
 void UserSegmentTracker::buildLeakSummary ( LeakSummaryMap& leakSummaryMap )
 {
 	for (UserSegmentInfoMap::const_iterator it = this->map.begin() ; it != this->map.end() ; ++it)

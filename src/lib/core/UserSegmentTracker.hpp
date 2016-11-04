@@ -46,6 +46,7 @@ typedef std::map<StackId,LeakSummary,std::less<StackId>,STLInternalAllocator<std
 /*******************  FUNCTION  *********************/
 void convertToJson( htopml::JsonState& json, const MATT::UserSegment& value );
 void convertToJson( htopml::JsonState& json, const MATT::LeakSummary& value );
+void convertToJson( htopml::JsonState& json, const MATT::LeakSummaryMap& value );
 
 /*********************  CLASS  **********************/
 class UserSegmentTracker
