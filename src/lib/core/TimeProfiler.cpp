@@ -64,7 +64,7 @@ void TimeProfiler::reset ( void )
 {
 	for (int i = 0 ; i < this->size ; i++)
 	{
-		this->stackIds[i] = -1;
+		this->stackIds[i] = (StackId)-1;
 		for (int j = 0 ; j < this->entries ; j++)
 		{
 			this->touched[j*size + i] = false;
@@ -141,13 +141,26 @@ void convertToJson ( htopml::JsonState& json, const TimeProfiler & value )
 	size_t maxId = value.getMaxTouchedId();
 	bool bandwidth = value.bandwidth;
 	
+	//stack ids
+	StackId * ids = new StackId[maxId];
+	StackId lastId = (StackId)-1;
+	for (size_t i = 0 ; i < maxId ; i++)
+	{
+		if (value.stackIds[i] == (StackId)-1) {
+			ids[i] = lastId;
+		} else {
+			lastId = value.stackIds[i];
+			ids[i] = lastId;
+		}
+	}
+	
 	//check names
 	for (int i = 0 ; i < value.entries ; i++)
 		assumeArg(value.entryNames[i].empty() == false,"Missing entryName in TimeProfiler object for ID %1 !").arg(i).end();
 	
 	json.openStruct();
 		json.printField("steps",value.steps);
-		json.printFieldArray("stackIds",value.stackIds,maxId);
+		json.printFieldArray("stackIds",ids,maxId);
 		for (int j = 0 ; j < value.entries ; j++)
 		{
 			json.openFieldArray(value.entryNames[j].c_str());
@@ -161,6 +174,9 @@ void convertToJson ( htopml::JsonState& json, const TimeProfiler & value )
 			json.closeFieldArray(value.entryNames[j].c_str());
 		}
 	json.closeStruct();
+	
+	//free mem
+	delete [] ids;
 }
 
 /*******************  FUNCTION  *********************/

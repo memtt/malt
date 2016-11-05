@@ -87,6 +87,7 @@ StackTreeHandler StackTreeMap::enterThread(void)
 	void * ptr = MATT_NO_FREE_MALLOC(sizeof(Handler));
 	Handler * handler = new(ptr) Handler;
 	handler->storage = NULL;
+	handler->stackId = -1;
 	return handler;
 }
 
@@ -99,6 +100,7 @@ StackTreeHandler StackTreeMap::exitFunction(StackTreeHandler handler, void* call
 		Handler * typedHandler = (Handler*)handler;
 		typedHandler->enterExitStack.exitFunction(callsite);
 		typedHandler->storage = NULL;
+		typedHandler->stackId = -1;
 		return handler;
 	} else {
 		return handler;
@@ -114,6 +116,7 @@ StackTreeHandler StackTreeMap::enterFunction(StackTreeHandler handler, void* cal
 		Handler * typedHandler = (Handler*)handler;
 		typedHandler->enterExitStack.enterFunction(callsite);
 		typedHandler->storage = NULL;
+		typedHandler->stackId = -1;
 		return handler;
 	} else {
 		return handler;
@@ -128,7 +131,7 @@ void StackTreeMap::exitThread(StackTreeHandler handler)
 }
 
 /*******************  FUNCTION  *********************/
-StackId StackTreeMap::getStackId ( MATT::StackTreeDataHandler handler )
+StackId StackTreeMap::getStackId ( MATT::StackTreeHandler handler )
 {
 	Handler * typedHandler = (Handler*)handler;
 	return typedHandler->stackId;
@@ -249,7 +252,7 @@ void convertToJson(htopml::JsonState& json, const StackTreeMap& tree)
 {
 	RLockFreeTree otree;
 	StackTreeHandler handler = otree.enterThread();
-// 	std::map< StackId, StackId > idmap;
+	std::map< StackId, StackId > idmap;
 	
 	//copy descr
 	for (int i = 0 ; i < MATT_STACK_TREE_ENTRIES ; i++)
@@ -276,33 +279,45 @@ void convertToJson(htopml::JsonState& json, const StackTreeMap& tree)
 			tmpStack = *stack;
 			remover.removeLoops(tmpStack);
 			otree.mergeData(tmpStack,it->second,it->first.dataId);
-/*			
-			StackTreeHandler ohandler;
-			ohandler = otree.getFromStack(handler,tmpStack);
+			
+			StackTreeHandler ohandler = otree.enterThread();
+			ohandler = otree.getFromStack(ohandler,tmpStack);
 			StackTreeDataHandler oDataHandler = otree.getDataHandler(ohandler);
 			StackId oid = otree.getStackId(oDataHandler);
 			
-			idmap[it->first.dataId] = oid;*/
+			idmap[it->first.dataId] = oid;
 		}
 	} else {
 		//copy values
 		foreachConst(StackTreeMap::NodeMap,tree.map,it)
-			otree.copyData(*it->first.stack,it->second,it->first.dataId);
+		{
+			if (it->second.hasData())
+			{
+				otree.copyData(*it->first.stack,it->second,it->first.dataId);
+				
+				StackTreeHandler ohandler = otree.enterThread();
+				ohandler = otree.getFromStack(ohandler,*it->first.stack);
+				StackId oid = otree.getStackId(ohandler);
+				
+				idmap[it->first.dataId] = oid;
+			}
+		}
 	}
 	
 	otree.exitThread(handler);
 	otree.prepareForOutput();
 	
-	convertToJson(json,otree);
-	
-// 	json.openFieldStruct("stackIds");
-// 		for(std::map<StackId,StackId>::const_iterator it = idmap.begin() ; it != idmap.end() ; ++it)
-// 		{
-// 			char buffer[256];
-// 			sprintf(buffer,"%lu",it->first);
-// 			json.printField(buffer,it->second);
-// 		}
-// 	json.closeFieldStruct("stackIds");
+	json.openStruct();
+		json.printField("tree",otree);
+	 	json.openFieldStruct("stackIds");
+			for(std::map<StackId,StackId>::const_iterator it = idmap.begin() ; it != idmap.end() ; ++it)
+			{
+				char buffer[256];
+				sprintf(buffer,"%lu",it->first);
+				json.printField(buffer,it->second);
+			}
+		json.closeFieldStruct("stackIds");
+	json.closeStruct();
 }
 
 /*******************  FUNCTION  *********************/

@@ -61,7 +61,7 @@ class StackTreeMap : public StackTree
 		virtual bool isEnterExit ( void ) const;
 		virtual void toJson ( htopml::JsonState& json, const StackTree& tree ) const;
 		virtual StackTreeDataHandler getDataHandler ( StackTreeHandler handler );
-		virtual StackId getStackId ( StackTreeDataHandler handler );
+		virtual StackId getStackId ( StackTreeHandler handler );
 		virtual void prepareForOutput ( void );
 		virtual void registerSymbols ( MATT::SymbolRegistry& registry ) const;
 	public:

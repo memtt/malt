@@ -28,6 +28,12 @@ class StackTreeStorage
 		StackTreeStorage() {for (int i = 0 ; i < MATT_STACK_TREE_ENTRIES ; i++) data[i] = NULL;};
 		void * & operator[](int id) {return data[id];};
 		void * operator[](int id) const {return (data[id]);};
+		bool hasData(void) const {
+				for (int i = 0 ; i < MATT_STACK_TREE_ENTRIES ; i++)
+					if(data[i] != NULL)
+						return true;
+				return false;
+		};
 	private:
 		void* data [MATT_STACK_TREE_ENTRIES];
 };
@@ -78,7 +84,7 @@ class StackTree
 		virtual void exitThread(StackTreeHandler handler) = 0;
 		virtual bool isEnterExit(void) const = 0;
 		virtual StackTreeDataHandler getDataHandler(StackTreeHandler handler) = 0;
-		virtual StackId getStackId(StackTreeDataHandler handler) = 0;
+		virtual StackId getStackId(StackTreeHandler handler) = 0;
 		virtual void prepareForOutput(void) = 0;
 		template <class T> T & getTypedData(StackTreeHandler handler,int id){return *(T*)getData(handler,id);}
 		template <class T> T & getTypedData(StackTreeDataHandler handler,int id){return *(T*)getData(handler,id);}

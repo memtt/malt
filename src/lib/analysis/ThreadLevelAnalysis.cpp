@@ -217,7 +217,7 @@ void ThreadLevelAnalysis::setupStack ( MallocHooksInfos& info, int skip )
 		stackTreeHandler = stackTree->getFromStack(stackTreeHandler,skip+1);
 	info.handler = stackTreeHandler;
 	info.dataHandler = stackTree->getDataHandler(info.handler);
-	info.dataId = stackTree->getStackId(info.dataHandler);
+	info.dataId = stackTree->getStackId(info.handler);
 }
 
 }

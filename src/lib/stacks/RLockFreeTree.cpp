@@ -171,8 +171,9 @@ void RLockFreeTree::copyData(const MATT::Stack& stack, const MATT::StackTreeStor
 			has = true;
 	
 	//skip
-	if (!has)
+	if (!has) {
 		return;
+	}
 		
 	//fill
 	StackTreeHandler handler = enterThread();
@@ -227,7 +228,7 @@ StackTreeDataHandler RLockFreeTree::getDataHandler ( StackTreeHandler handler )
 }
 
 /*******************  FUNCTION  *********************/
-StackId RLockFreeTree::getStackId ( StackTreeDataHandler handler )
+StackId RLockFreeTree::getStackId ( MATT::StackTreeHandler handler )
 {
 	Handler typedHandler = (Handler)handler;
 	assert(typedHandler->dataId != -1);
