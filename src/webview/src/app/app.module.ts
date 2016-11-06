@@ -12,24 +12,24 @@ import {DataService} from './common/data.service';
 import {HelperService} from './common/helper.service';
 
 @NgModule({
-  declarations: [
-    AppComponent,
-    HomeComponent,
-    ThreadsComponent
-  ],
-  imports: [
-    BrowserModule,
-    FormsModule,
-    HttpModule,
-    JsonpModule,
-    RouterModule.forRoot([
-      { path: 'home', component: HomeComponent },
-      { path: 'threads', component: ThreadsComponent },
-      { path: '', component: HomeComponent },
-      { path: '**', component: HomeComponent }
-    ])
-  ],
-  providers: [DataService,HelperService],
-  bootstrap: [AppComponent]
+	declarations: [
+		AppComponent,
+		HomeComponent,
+		ThreadsComponent
+ 	],
+	imports: [
+		BrowserModule,
+		FormsModule,
+		HttpModule,
+		JsonpModule,
+		RouterModule.forRoot([
+			{ path: 'home', component: HomeComponent },
+			{ path: 'threads', component: ThreadsComponent },
+			{ path: '', component: HomeComponent },
+			{ path: '**', component: HomeComponent }
+		])
+	],
+	providers: [DataService,HelperService],
+	bootstrap: [AppComponent]
 })
 export class AppModule { }

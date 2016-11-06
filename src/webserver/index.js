@@ -94,6 +94,12 @@ app.get('/api/summary-infos.json',function(req,res) {
 });
 
 /****************************************************/
+app.get('/api/thread-stats.json',function(req,res) {
+	res.write(JSON.stringify(maltProject.getThreadStats(),null,"\t"));
+	res.end();
+});
+
+/****************************************************/
 //export static deps
 app.use('/',Express.static(__dirname+'/../webview/dist'));
 app.use('/deps/',Express.static(__dirname+'/bower_components/'));

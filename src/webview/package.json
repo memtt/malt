@@ -20,15 +20,14 @@
     "@angular/platform-browser": "~2.1.0",
     "@angular/platform-browser-dynamic": "~2.1.0",
     "@angular/router": "~3.1.0",
+    "@types/d3": "^4.2.38",
     "bootstrap": "^4.0.0-alpha.5",
     "core-js": "^2.4.1",
-    "d3": "^4.3.0",
     "rxjs": "5.0.0-beta.12",
     "ts-helpers": "^1.1.1",
     "zone.js": "^0.6.23"
   },
   "devDependencies": {
-    "@types/d3": "^4.2.38",
     "@types/jasmine": "^2.2.30",
     "@types/node": "^6.0.42",
     "angular-cli": "1.0.0-beta.19-3",

@@ -163,6 +163,18 @@ function getGlobalVarMem(data,tls)
 }
 
 /****************************************************/
+function getLargestStack(data)
+{
+	var max = 0;
+	for (var i in data.threads)
+	{
+		var tmp = Math.max.apply(null,data.threads[i].stackSize.size);
+		max = Math.max(max,tmp);
+	}
+	return max;
+}
+
+/****************************************************/
 MaltProject.prototype.getSummaryInfos = function()
 {
 	var ret = {};
@@ -202,7 +214,8 @@ MaltProject.prototype.getSummaryInfos = function()
 	ret.leakedMem = mem;
 	ret.leakedCount = count;
 
-	//stacks TODO
+	//stacks
+	ret.largestStack = getLargestStack(this.data);
 
 	//global variables
 	ret.numGblVar = getGlobalVarCount(this.data);
@@ -210,6 +223,15 @@ MaltProject.prototype.getSummaryInfos = function()
 	ret.tlsVarMem = getGlobalVarMem(this.data,true);
 
 	//ok return
+	return ret;
+}
+
+/****************************************************/
+MaltProject.prototype.getThreadStats = function()
+{
+	var ret = [];
+	for (var i in this.data.threads)
+		ret.push(this.data.threads[i].stats);
 	return ret;
 }
 

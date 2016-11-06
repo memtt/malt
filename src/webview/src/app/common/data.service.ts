@@ -19,4 +19,9 @@ export class DataService {
 		return this.http.get(this.baseUrl+"/summary-infos.json")
 			.map(resp => resp.json());
 	}
+
+	getThreadsStats() : Observable<any> {
+		return this.http.get(this.baseUrl+"/thread-stats.json")
+			.map(resp => resp.json());
+	}
 }
