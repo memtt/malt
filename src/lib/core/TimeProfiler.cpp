@@ -96,6 +96,14 @@ void TimeProfiler::reshape ( ticks time )
 }
 
 /*******************  FUNCTION  *********************/
+void TimeProfiler::offset(int id, ssize_t offset)
+{
+	for (int i = 0 ; i < this->size ; i++)
+		if (oldTouched[id * size + i])
+			values[id * size + i] += offset;
+}
+
+/*******************  FUNCTION  *********************/
 void TimeProfiler::push ( ticks time, StackId stackId,int entryId, const ValueType & value )
 {
 	assumeArg(entryId < entries,"Invalid entry ID : %1, must be lower than %2 !").arg(entryId).arg(entries).end();

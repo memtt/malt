@@ -17,6 +17,9 @@
 #include <hooks/EnterExitFunctionHooks.hpp>
 #include <core/CallCounter.hpp>
 #include <stacks/StackTree.hpp>
+#include <core/TimeProfiler.hpp>
+#include <core/Options.hpp>
+#include <core/Clock.hpp>
 
 namespace MATT
 {
@@ -35,6 +38,12 @@ enum MemoryFunction
 	MEM_FUNC_ALIGNED_ALLOC,
 	//Caution must be last element
 	MEM_FUNC_COUNT
+};
+
+/********************  ENUM  ************************/
+enum StackSizeTrackingEntry
+{
+	STACk_SIZE_TRAKING = 0
 };
 
 /*********************  TYPES  **********************/
@@ -68,12 +77,18 @@ class ThreadLevelAnalysis : public MallocHooks, public EnterExitFunctionHooks
 		void setupStack( MATT::MallocHooksInfos& info, int skip );
 		bool isInUse(void);
 		void setInUse(bool status);
+	private:
+		void setupStackProfiler(void);
 	protected:
 		CallTimeSizeCounter counters[MEM_FUNC_COUNT];
 		bool inUse;
 		ProcessLevelAnalysis * processLevel;
 		StackTreeHandler stackTreeHandler;
 		StackTree * stackTree;
+		TimeProfiler * stackSizeProfiler;
+		size_t stackBaseAddr;
+		Options * options;
+		Clock clock;
 };
 
 }

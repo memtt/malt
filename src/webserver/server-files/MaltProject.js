@@ -118,7 +118,7 @@ function getThreadSum(data,entry)
 	var res = 0;
 	for (var thread in data.threads)
 		for(var func in allocfuncs)
-			res += data.threads[thread][allocfuncs[func]][entry];
+			res += data.threads[thread].stats[allocfuncs[func]][entry];
 	return res;
 }
 
@@ -128,7 +128,7 @@ function getThreadMinMax(data,entry,mode)
 	var res = -1;
 	for (var thread in data.threads) {
 		for(var func in allocfuncs) {
-			var val = data.threads[thread][allocfuncs[func]][entry];
+			var val = data.threads[thread].stats[allocfuncs[func]][entry];
 			if (mode == 'min') {
 				if ((val < res || res == -1) && val != 0)
 					res = val;
@@ -199,8 +199,8 @@ MaltProject.prototype.getSummaryInfos = function()
 		count += this.data.leaks[i].count;
 		mem += this.data.leaks[i].mem;
 	}
-	this.leakedMem = mem;
-	this.leakedCount = count;
+	ret.leakedMem = mem;
+	ret.leakedCount = count;
 
 	//stacks TODO
 

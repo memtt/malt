@@ -144,7 +144,7 @@ Options::Options(void)
 	options.push_back(new OptionDef<bool>        (&this->outputDumpConfig  ,"output"   ,"config"    ,false));
 	options.push_back(new OptionDef<bool>        (&this->outputLoopSuppress,"output"   ,"loopSuppress",false));
 	//max stack
-	options.push_back(new OptionDef<bool>        (&this->maxStackEnabled   ,"max-stack","enabled"   ,true));
+	options.push_back(new OptionDef<bool>        (&this->stackSizeTracking ,"stack-size","enabled"   ,true));
 	//maps
 	options.push_back(new OptionDef<bool>        (&this->distrAllocSize    ,"distr"    ,"alloc_size",true));
 	options.push_back(new OptionDef<bool>        (&this->distrAllocSize    ,"distr"    ,"realloc_jump",true));
@@ -295,7 +295,7 @@ void Options::loadFromIniDic ( dictionary* iniDic )
  * 
  * It expect string format like :
  * 
- * SEC1:NAME1=VALUE1;SEC2:NAME2=VALUE2;
+ * SEC1:NAME1=VALUE1,SEC2:NAME2=VALUE2;
  * 
  * @param value Define the string to load as a config file.
 **/
@@ -311,7 +311,7 @@ void Options::loadFromString ( const char* value )
 	//copy string
 	char * dump = strdup(value);
 	
-	//loop on separators ';'
+	//loop on separators ','
 	char * cur = dump;
 	while (*cur != '\0')
 	{
@@ -319,8 +319,8 @@ void Options::loadFromString ( const char* value )
 		char * start = cur;
 		char * sep = NULL;
 		
-		//search ';' or '\0'
-		while (*cur != ';' && *cur != '\0')
+		//search ',' or '\0'
+		while (*cur != ',' && *cur != '\0')
 		{
 			if (*cur == '=')
 				sep = cur;

@@ -95,7 +95,7 @@ struct Options
 	int timeProfilePoints;
 	bool timeProfileLinear;
 	//max stack
-	bool maxStackEnabled;
+	bool stackSizeTracking;
 	//output
 	std::string outputName;
 	bool outputIndent;

@@ -30,6 +30,7 @@ class TimeProfiler
 		void push(ticks time,StackId stackId,int id,const ValueType & value);
 		friend void convertToJson( htopml::JsonState& json, const TimeProfiler & value );
 		bool isNewPoint(ticks time, int id) const;
+		void offset(int id, ssize_t offset);
 	protected:
 		void reshape(ticks time);
 		void reset(void);
