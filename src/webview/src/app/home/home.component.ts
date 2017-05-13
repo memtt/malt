@@ -64,7 +64,6 @@ export class HomeComponent implements OnInit {
 
 	ngAfterViewInit(){
 		console.log("afterViewInit() called");
-		this.d3.selectAll("h1").style("background-color", "yellow");
 	}
 
 	//TODO

@@ -9,12 +9,16 @@ import { RouterModule }   from '@angular/router';
 
 import {DataService} from './common/data.service';
 import {HelperService} from './common/helper.service';
-import { D3Service } from 'd3-ng2-service'; 
+import { D3Service } from 'd3-ng2-service';
+import { ThreadsComponent } from './threads/threads.component';
+import { TimelineComponent } from './timeline/timeline.component'; 
 
 @NgModule({
   declarations: [
     AppComponent,
-    HomeComponent
+    HomeComponent,
+    ThreadsComponent,
+    TimelineComponent
   ],
   imports: [
     BrowserModule,
@@ -22,6 +26,8 @@ import { D3Service } from 'd3-ng2-service';
     HttpModule,
     RouterModule.forRoot([
         { path: 'home', component: HomeComponent },
+        { path: 'threads', component: ThreadsComponent },
+        { path: 'timeline', component: TimelineComponent },
             { path: '', component: HomeComponent },
             { path: '**', component: HomeComponent }
     ])
