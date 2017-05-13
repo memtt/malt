@@ -1,6 +1,6 @@
 import { Component, OnInit} from '@angular/core';
 import {DataService} from '../common/data.service';
-import * as d3 from 'd3';
+import { D3Service, D3, Selection } from 'd3-ng2-service';
 import {HelperService} from '../common/helper.service';
 
 @Component({
@@ -35,6 +35,7 @@ export class HomeComponent implements OnInit {
 		}
 	};
 
+	private d3: D3;
 	private displaySummaryLevel:number = 1;
 	private displaySummaryHelp: boolean = false;
 	private summaryData = {};
@@ -63,7 +64,7 @@ export class HomeComponent implements OnInit {
 
 	ngAfterViewInit(){
 		console.log("afterViewInit() called");
-		d3.selectAll("h1").style("background-color", "yellow");
+		this.d3.selectAll("h1").style("background-color", "yellow");
 	}
 
 	//TODO

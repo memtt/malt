@@ -1,6 +1,6 @@
-import { browser, element, by } from 'protractor';
+import { browser, by, element } from 'protractor';
 
-export class MattWebviewPage {
+export class WebviewPage {
   navigateTo() {
     return browser.get('/');
   }

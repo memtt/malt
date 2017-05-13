@@ -1,19 +1,32 @@
 
-	<nav class="navbar navbar-dark bg-inverse">
-	<button class="navbar-toggler hidden-sm-up" type="button" data-toggle="collapse" data-target="#navbar-header" aria-controls="navbar-header" aria-expanded="false" aria-label="Toggle navigation"></button>
-	<div class="collapse navbar-toggleable-xs" id="navbar-header">
-	  <a class="navbar-brand" href="#">Malt-Webview</a>
-	  <ul class="nav navbar-nav">
-	      <li class="nav-item"><a class="nav-link" [routerLink]="['/home']" routerLinkActive="active">Home</a></li>
-	      <li class="nav-item"><a class="nav-link" [routerLink]="['/threads']" routerLinkActive="active">Threads</a></li>
-	  </ul>
-	</div>
-	</nav> <!-- /navbar -->
+<nav class="navbar navbar-inverse">
+  <div class="container-fluid">
+    <!-- Brand and toggle get grouped for better mobile display -->
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="#">MATT-Webview</a>
+    </div>
 
-<div class="container">
-	<!-- Main component for a primary marketing message or call to action -->
-	<div class='view-container container-fluid'>
-		<router-outlet></router-outlet>
-	</div>
+    <!-- Collect the nav links, forms, and other content for toggling -->
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+        <li><a [routerLink]="['/home']" routerLinkActive="active">Home</a></li>
+        <li><a [routerLink]="['/threads']" routerLinkActive="active">Threads</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
 
+<div class="matt">
+	<div class="container">
+		<!-- Main component for a primary marketing message or call to action -->
+		<div class='view-container container-fluid'>
+			<router-outlet></router-outlet>
+		</div>
+	</div>
 </div> <!-- /container -->

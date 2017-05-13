@@ -1,10 +1,10 @@
-import { MattWebviewPage } from './app.po';
+import { WebviewPage } from './app.po';
 
-describe('matt-webview App', function() {
-  let page: MattWebviewPage;
+describe('webview App', () => {
+  let page: WebviewPage;
 
   beforeEach(() => {
-    page = new MattWebviewPage();
+    page = new WebviewPage();
   });
 
   it('should display message saying app works', () => {
