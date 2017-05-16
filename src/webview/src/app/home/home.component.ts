@@ -1,6 +1,5 @@
 import { Component, OnInit} from '@angular/core';
 import {DataService} from '../common/data.service';
-import { D3Service, D3, Selection } from 'd3-ng2-service';
 import {HelperService} from '../common/helper.service';
 
 @Component({
@@ -35,7 +34,6 @@ export class HomeComponent implements OnInit {
 		}
 	};
 
-	private d3: D3;
 	private displaySummaryLevel:number = 1;
 	private displaySummaryHelp: boolean = false;
 	private summaryData = {};

@@ -9,30 +9,57 @@ import { RouterModule }   from '@angular/router';
 
 import {DataService} from './common/data.service';
 import {HelperService} from './common/helper.service';
-import { D3Service } from 'd3-ng2-service';
+//import { D3Service } from 'd3-ng2-service';
+import { NvD3Module } from 'angular2-nvd3';
+
 import { ThreadsComponent } from './threads/threads.component';
-import { TimelineComponent } from './timeline/timeline.component'; 
+import { TimelineComponent } from './timeline/timeline.component';
+import { SourcesComponent } from './sources/sources.component';
+import { CalltreeComponent } from './calltree/calltree.component';
+import { StacksComponent } from './stacks/stacks.component';
+import { SizesComponent } from './sizes/sizes.component';
+import { ReallocComponent } from './realloc/realloc.component';
+import { GlobalsComponent } from './globals/globals.component';
+import { HelpComponent } from './help/help.component'; 
 
 @NgModule({
   declarations: [
     AppComponent,
     HomeComponent,
     ThreadsComponent,
-    TimelineComponent
+    TimelineComponent,
+    SourcesComponent,
+    CalltreeComponent,
+    StacksComponent,
+    SizesComponent,
+    ReallocComponent,
+    GlobalsComponent,
+    HelpComponent
   ],
   imports: [
     BrowserModule,
     FormsModule,
     HttpModule,
+    NvD3Module,
     RouterModule.forRoot([
         { path: 'home', component: HomeComponent },
         { path: 'threads', component: ThreadsComponent },
         { path: 'timeline', component: TimelineComponent },
+        { path: 'stacks', component: StacksComponent },
+        { path: 'realloc', component: ReallocComponent },
+        { path: 'help', component: HelpComponent },
+        { path: 'sizes', component: SizesComponent },
+        { path: 'calltree', component: CalltreeComponent },
+        { path: 'sources', component: SourcesComponent },
             { path: '', component: HomeComponent },
             { path: '**', component: HomeComponent }
     ])
   ],
-  providers: [D3Service,DataService,HelperService],
+  providers: [
+    //D3Service,
+    DataService,
+    HelperService
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
