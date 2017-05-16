@@ -106,6 +106,20 @@ MaltFuncMetrics.prototype.maltMetrics = {
 		defaultOrder: 'desc',
 		ref: 'max'
 	},
+	'realloc.count': {
+		name: 'Realloc count',
+		extractor: function(x) {return x.reallocCount;},
+		formalter: function(x) {return maltHelper.humanReadable(x,1,'',false);},
+		defaultOrder: 'desc',
+		ref: 'sum'
+	},
+	'realloc.sum': {
+		name: 'Realloc sum',
+		extractor: function(x) {return x.reallocSumDelta;},
+		formalter: function(x) {return maltHelper.humanReadable(x,1,'',false);},
+		defaultOrder: 'desc',
+		ref: 'max'
+	}
 };
 
 MaltFuncMetrics.prototype.getMetricList = function()

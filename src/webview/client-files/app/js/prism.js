@@ -952,8 +952,8 @@ Prism.plugins.codeAnnotator = {
 		var parseMethod = isLineHeightRounded() ? parseInt : parseFloat;
 		var lineHeight = parseMethod(getComputedStyle(pre).lineHeight);
 		var preScroll = (lineNo - offset - 1) * lineHeight;
-		// pre.scrollTop = preScroll;
-		$(pre).scrollTo(preScroll, {duration:400});
+		pre.scrollTop = preScroll;
+// 		$(pre).scrollTo(preScroll, {duration:400});
 	},
 
 	highlight: function(element, lineNo) {
