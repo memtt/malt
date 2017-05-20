@@ -11,6 +11,7 @@ import {DataService} from './common/data.service';
 import {HelperService} from './common/helper.service';
 //import { D3Service } from 'd3-ng2-service';
 import { NvD3Module } from 'angular2-nvd3';
+import { BootstrapModalModule } from 'ng2-bootstrap-modal';
 
 import { ThreadsComponent } from './threads/threads.component';
 import { TimelineComponent } from './timeline/timeline.component';
@@ -21,6 +22,8 @@ import { SizesComponent } from './sizes/sizes.component';
 import { ReallocComponent } from './realloc/realloc.component';
 import { GlobalsComponent } from './globals/globals.component';
 import { HelpComponent } from './help/help.component'; 
+import { ConfirmComponent } from './common/confirm.component';
+
 
 @NgModule({
   declarations: [
@@ -34,13 +37,15 @@ import { HelpComponent } from './help/help.component';
     SizesComponent,
     ReallocComponent,
     GlobalsComponent,
-    HelpComponent
+    HelpComponent,
+    ConfirmComponent
   ],
   imports: [
     BrowserModule,
     FormsModule,
     HttpModule,
     NvD3Module,
+    BootstrapModalModule,
     RouterModule.forRoot([
         { path: 'home', component: HomeComponent },
         { path: 'threads', component: ThreadsComponent },
@@ -59,6 +64,9 @@ import { HelpComponent } from './help/help.component';
     //D3Service,
     DataService,
     HelperService
+  ],
+  entryComponents: [
+    ConfirmComponent
   ],
   bootstrap: [AppComponent]
 })

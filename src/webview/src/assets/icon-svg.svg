@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="32"
+   height="32"
+   viewBox="0 0 31.999999 31.999998"
+   id="svg2"
+   version="1.1"
+   inkscape:version="0.91 r13725"
+   sodipodi:docname="icon-svg.svg"
+   inkscape:export-filename="/home/sebv/Projects/malt/src/webview/src/assets/icon-svg.png"
+   inkscape:export-xdpi="360"
+   inkscape:export-ydpi="360"
+   enable-background="new">
+  <defs
+     id="defs4">
+    <filter
+       inkscape:collect="always"
+       style="color-interpolation-filters:sRGB"
+       id="filter4345">
+      <feBlend
+         inkscape:collect="always"
+         mode="multiply"
+         in2="BackgroundImage"
+         id="feBlend4347" />
+    </filter>
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="15.839192"
+     inkscape:cx="10.802671"
+     inkscape:cy="21.450763"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     units="px"
+     inkscape:window-width="1920"
+     inkscape:window-height="1012"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1" />
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Calque 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(0,-1020.3622)"
+     style="opacity:0.96;filter:url(#filter4345)">
+    <path
+       style="opacity:1;fill:none;stroke:#800080;stroke-width:2.12708569;stroke-miterlimit:6;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       d="m 6.8386845,1021.581 c -0.7156881,0 -1.2921935,0.573 -1.2921935,1.2844 l 0,27.1464 c 0,0.7114 0.5765054,1.2843 1.2921935,1.2843 l 19.6854915,0 c 0.715689,0 1.292194,-0.5729 1.292194,-1.2843 l 0,-20.3655 -6.693144,-8.0653 -14.2845415,0 z"
+       id="rect4136"
+       inkscape:connector-curvature="0" />
+    <path
+       style="opacity:1;fill:#800080;fill-opacity:1;stroke:#800080;stroke-width:0.94988942;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       d="m 20.590788,1022.2597 c -0.128996,0.1949 -0.222459,0.4154 -0.222459,0.6671 l 0,5.6877 c 0,0.6851 0.555321,1.237 1.244632,1.237 l 4.606478,0 c 0.194805,0 0.373128,-0.053 0.536976,-0.1315 l -6.165627,-7.4603 z"
+       id="rect4144"
+       inkscape:connector-curvature="0" />
+    <rect
+       style="opacity:1;fill:#800080;fill-opacity:1;stroke:#800080;stroke-width:0.97889817;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect4151"
+       width="21.883047"
+       height="7.7016883"
+       x="1.4460412"
+       y="1033.6627"
+       ry="1.2366512"
+       rx="0.061991632" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:42.77067947px;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="4.3719525"
+       y="1043.4949"
+       id="text4153"
+       sodipodi:linespacing="125%"
+       transform="scale(1.0030639,0.99694546)"><tspan
+         sodipodi:role="line"
+         id="tspan4155"
+         x="4.3719525"
+         y="1043.4949"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:8.01950169px;font-family:sans-serif;-inkscape-font-specification:'sans-serif Bold';fill:#ffffff">SVG</tspan></text>
+  </g>
+</svg>

@@ -232,7 +232,10 @@ MaltProject.prototype.getThreadStats = function()
 	var ret = [];
 	for (var i in this.data.threads)
 		ret.push(this.data.threads[i].stats);
-	return ret;
+	return { 
+		data:ret,
+		ticksPerSecond: this.data.globals.ticksPerSecond
+	};
 }
 
 /****************************************************/

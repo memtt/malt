@@ -34,8 +34,8 @@ export class HomeComponent implements OnInit {
 		}
 	};
 
-	private displaySummaryLevel:number = 1;
-	private displaySummaryHelp: boolean = false;
+	public displaySummaryLevel:number = 1;
+	public displaySummaryHelp: boolean = false;
 	private summaryData = {};
 
 	//declare summary view entries

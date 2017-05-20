@@ -45,3 +45,37 @@
 	margin:20px;
 	padding:10px;
 }
+
+.matt h2 {
+	border-bottom:1px  solid black;
+}
+
+/****************************** Buttons **************************************/
+.btn-csv {
+	width:32px;
+	height:32px; 
+	border:none;
+	background: url("assets/icon-csv.png");
+	background-size:32px 32px;
+}
+
+.btn-svg {
+	width:32px;
+	height:32px; 
+	border:none;
+	background: url("assets/icon-svg.png");
+	background-size:32px 32px;
+}
+
+.btn-json {
+	width:32px;
+	height:32px; 
+	border:none;
+	background: url("assets/icon-json.png");
+	background-size:32px 32px;
+}
+
+.btn-div {
+	width:120px;
+	margin-left:auto;margin-right:0px;
+}

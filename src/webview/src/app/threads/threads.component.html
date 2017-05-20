@@ -2,11 +2,26 @@
 	<p class="error" *ngIf="errorMessage">{{errorMessage}}</p>
 
 	<h2>Call per thread</h2>
-	<div><app-nvd3 [options]="options" [data]="dataCount"></app-nvd3></div>
+	<div id="chartCount"><app-nvd3 [options]="optionsCount" [data]="dataCount"></app-nvd3></div>
+	<div class="btn-div">
+		<button class="btn-csv" (click)="showDataCSV('Call count per thread','count')"></button>
+		<button class="btn-json" (click)="showDataJSON('Call count per thread','count')"></button>
+		<button class="btn-svg" (click)="showDataSVG('chartCount')"></button>
+	</div>
 
 	<h2>Time per thread</h2>
-	<div><app-nvd3 [options]="options" [data]="dataTime"></app-nvd3></div>
+	<div id="chartTime"><app-nvd3 [options]="optionsTime" [data]="dataTime"></app-nvd3></div>
+	<div class="btn-div">
+		<button class="btn-csv" (click)="showDataCSV('Time per thread','sumTime')"></button>
+		<button class="btn-json" (click)="showDataJSON('Time per thread','sumTime')"></button>
+		<button class="btn-svg" (click)="showDataSVG('chartTime')"></button>
+	</div>
 
 	<h2>Cumulated memory per thread</h2>
-	<div><app-nvd3 [options]="options" [data]="dataSum"></app-nvd3></div>
+	<div id="chartSum"><app-nvd3 [options]="optionsSum" [data]="dataSum"></app-nvd3></div>
+	<div class="btn-div">
+		<button class="btn-csv" (click)="showDataCSV('Time per thread','sumSize')"></button>
+		<button class="btn-json" (click)="showDataJSON('Time per thread','sumSize')"></button>
+		<button class="btn-svg" (click)="showDataSVG('chartSum')"></button>
+	</div>
 <div>
