@@ -1,11 +1,12 @@
-import { Component, OnInit } from '@angular/core';
 declare var d3: any;
 declare var saveAs: any;
+
+import { Component, OnInit } from '@angular/core';
 import { NvD3Module } from 'angular2-nvd3';
-import {DataService} from '../common/data.service';
+import { DataService } from '../common/data.service';
 import { ConfirmComponent } from '../common/confirm.component';
 import { DialogService } from "ng2-bootstrap-modal";
-import {HelperService} from '../common/helper.service';
+import { HelperService } from '../common/helper.service';
 
 @Component({
   selector: 'app-threads',
@@ -29,7 +30,7 @@ export class ThreadsComponent implements OnInit {
 		this.d3 = d3;
 		this.allocFuncs = ["malloc","free","calloc","realloc","posix_memalign","aligned_alloc","memalign","valloc","pvalloc"];
 	}
-	
+
 	genData(data:any,metric:string) {
 		var formattedData = [];
 		var allocFuncs = this.allocFuncs;
@@ -43,7 +44,7 @@ export class ThreadsComponent implements OnInit {
 					value: data[j][allocFuncs[i]][metric]
 				});
 			}
-			
+
 			formattedData.push({
 				key: allocFuncs[i],
 				values: values
@@ -52,7 +53,7 @@ export class ThreadsComponent implements OnInit {
 		console.log(formattedData);
 		return formattedData;
 	}
-	
+
 	genCSV(entry:string) {
 		var out = "threadId";
 		for (var i in this.allocFuncs)
@@ -64,7 +65,7 @@ export class ThreadsComponent implements OnInit {
 		}
 		return out;
 	}
-	
+
 	genJSON(entry:string) {
 		var out = [];
 		for (var i in this.data) {
@@ -74,19 +75,19 @@ export class ThreadsComponent implements OnInit {
 		}
 		return JSON.stringify(out,null,'\t');
 	}
-	
+
 	showDataCSV(title:string,entry:string) {
 		let disposable = this.dialogService.addDialog(ConfirmComponent, {
-			title:title, 
+			title:title,
 			message:this.genCSV(entry)})
 	}
-	
+
 	showDataJSON(title:string,entry:string) {
 		let disposable = this.dialogService.addDialog(ConfirmComponent, {
-			title:title, 
+			title:title,
 			message:this.genJSON(entry)})
 	}
-	
+
 	showDataSVG(id:string) {
 		// Get the d3js SVG element
 		var tmp = document.getElementById(id);
@@ -97,7 +98,7 @@ export class ThreadsComponent implements OnInit {
 		var blob = new Blob([svg_xml], {type: "image/svg+xml"});
 		saveAs(blob, id+".svg");
 	}
-	
+
 	getData() {
 		this.dataService.getThreadsStats().subscribe(
 			resp => {
@@ -122,9 +123,9 @@ export class ThreadsComponent implements OnInit {
 					y: (d) => {return d.value},
 					height: 300,
 					margin: {
-						top: 20, 
+						top: 20,
 						right: 50,
-						bottom: 40, 
+						bottom: 40,
 						left: 75
 					},
 					showValues: true,
@@ -137,8 +138,8 @@ export class ThreadsComponent implements OnInit {
 						axisLabel: "Calls"
 					}
 				}
-			}
-		
+			};
+
 		this.optionsTime = {
 				chart: {
 					type: 'multiBarHorizontalChart',
@@ -146,9 +147,9 @@ export class ThreadsComponent implements OnInit {
 					y: (d) => {return d.value},
 					height: 300,
 					margin: {
-						top: 20, 
+						top: 20,
 						right: 50,
-						bottom: 40, 
+						bottom: 40,
 						left: 75
 					},
 					showValues: true,
@@ -161,8 +162,8 @@ export class ThreadsComponent implements OnInit {
 						axisLabel: "Time (cycles)"
 					}
 				}
-			}
-		
+			};
+
 		this.optionsSum = {
 				chart: {
 					type: 'multiBarHorizontalChart',
@@ -170,9 +171,9 @@ export class ThreadsComponent implements OnInit {
 					y: (d) => {return d.value},
 					height: 300,
 					margin: {
-						top: 20, 
+						top: 20,
 						right: 50,
-						bottom: 40, 
+						bottom: 40,
 						left: 75
 					},
 					showValues: true,
@@ -185,7 +186,7 @@ export class ThreadsComponent implements OnInit {
 						axisLabel: "Sum"
 					}
 				}
-			}
+			};
 
 		this.dataSum = [];
 		this.dataTime = [];
