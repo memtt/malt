@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 declare var d3: any;
 import { NvD3Module } from 'angular2-nvd3';
+import {DataService} from '../common/data.service';
 
 @Component({
   selector: 'app-threads',
@@ -8,124 +9,76 @@ import { NvD3Module } from 'angular2-nvd3';
   styleUrls: ['./threads.component.css']
 })
 export class ThreadsComponent implements OnInit {
-
+	errorMessage: string;
 	private d3: any;
 	public options:any;
-	public data:any;
+	public dataCount:any;
+	public dataSum:any;
+	public dataTime:any;
 
-	constructor() {
+	constructor(private dataService: DataService) {
 		this.d3 = d3;
-		
+	}
 	
+	genData(data:any,metric:string) {
+		var formattedData = [];
+		var allocFuncs = ["malloc","free","calloc","realloc","posix_memalign","aligned_alloc","memalign","valloc","pvalloc"];
+		for (var i in allocFuncs)
+		{
+			var values = [];
+			for (var j in data)
+			{
+				values.push({
+					name:"Thread "+j,
+					value: data[j][allocFuncs[i]][metric]
+				});
+			}
+			
+			formattedData.push({
+				key: allocFuncs[i],
+				values: values
+			});
+		}
+		console.log(formattedData);
+		return formattedData;
+	}
+	
+	getData() {
+		this.dataService.getThreadsStats().subscribe(
+			resp => {
+				this.dataCount = this.genData(resp,"count");
+				this.dataSum = this.genData(resp,"sumSize");
+				this.dataTime = this.genData(resp,"sumTime");
+				this.options.chart.height = 30 * resp.length;
+			},
+			error => this.errorMessage = <any>error
+		);
 	}
 
-  ngOnInit() {
-  
-	this.options = {
-			chart: {
-				type: 'multiBarHorizontalChart',
-				x: (d) => {return d.label},
-				y: (d) => {return d.value},
-				height: 500,
-				margin: {
-					top: 20,
-					right: 20,
-					bottom: 40,
-					left: 55
-				},
-				showValues: true,
-				tooltips: true,
-				transitionDuration: 350,
-				showControls:true
+	ngOnInit() {
+		this.options = {
+				chart: {
+					type: 'multiBarHorizontalChart',
+					x: (d) => {return d.name},
+					y: (d) => {return d.value},
+					height: 300,
+					margin: {
+						top: 30, 
+						right: 0,
+						bottom: 50, 
+						left: 0
+					},
+					showValues: true,
+					tooltips: true,
+					transitionDuration: 350,
+					showControls:false,
+					stacked: true
+				}
 			}
-		}
 
-			this.data = [
-  {
-    "key": "Series 1",
-    "color": "#d67777",
-    "values": [
-      { 
-        "label" : "Group A" ,
-        "value" : -1.8746444827653
-      } , 
-      { 
-        "label" : "Group B" ,
-        "value" : -8.0961543492239
-      } , 
-      { 
-        "label" : "Group C" ,
-        "value" : -0.57072943117674
-      } , 
-      { 
-        "label" : "Group D" ,
-        "value" : -2.4174010336624
-      } , 
-      {
-        "label" : "Group E" ,
-        "value" : -0.72009071426284
-      } , 
-      { 
-        "label" : "Group F" ,
-        "value" : -0.77154485523777
-      } , 
-      { 
-        "label" : "Group G" ,
-        "value" : -0.90152097798131
-      } , 
-      {
-        "label" : "Group H" ,
-        "value" : -0.91445417330854
-      } , 
-      { 
-        "label" : "Group I" ,
-        "value" : -0.055746319141851
-      }
-    ]
-  },
-  {
-    "key": "Series 2",
-    "color": "#4f99b4",
-    "values": [
-      { 
-        "label" : "Group A" ,
-        "value" : 25.307646510375
-      } , 
-      { 
-        "label" : "Group B" ,
-        "value" : 16.756779544553
-      } , 
-      { 
-        "label" : "Group C" ,
-        "value" : 18.451534877007
-      } , 
-      { 
-        "label" : "Group D" ,
-        "value" : 8.6142352811805
-      } , 
-      {
-        "label" : "Group E" ,
-        "value" : 7.8082472075876
-      } , 
-      { 
-        "label" : "Group F" ,
-        "value" : 5.259101026956
-      } , 
-      { 
-        "label" : "Group G" ,
-        "value" : 0.30947953487127
-      } , 
-      { 
-        "label" : "Group H" ,
-        "value" : 0
-      } , 
-      { 
-        "label" : "Group I" ,
-        "value" : 0 
-      }
-    ]
-  }
-];
-  }
-
+		this.dataSum = [];
+		this.dataTime = [];
+		this.dataCount = [];
+		this.getData();
+	}
 }
