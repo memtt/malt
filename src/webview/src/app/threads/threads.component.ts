@@ -23,58 +23,109 @@ export class ThreadsComponent implements OnInit {
   
 	this.options = {
 			chart: {
-				type: 'lineChart',
-				useInteractiveGuideline: true,
-				height: 450,
-				transitionDuration: 350,
-				showLegend: false,
+				type: 'multiBarHorizontalChart',
+				x: (d) => {return d.label},
+				y: (d) => {return d.value},
+				height: 500,
 				margin: {
-				top: 20,
-				right: 20,
-				bottom: 40,
-				left: 55
+					top: 20,
+					right: 20,
+					bottom: 40,
+					left: 55
 				},
-				x: (d) => { return d.x; },
-				y: (d) => { return d.y; },
-				xScale: this.d3.time.scale(),
-				xAxis: {
-				ticks: this.d3.time.months,
-				tickFormat: (d) => {
-					return this.d3.time.format('%b')(new Date(d));
-				}
-				},
-				yAxis: {
-				axisLabel: 'Gross volume',
-				tickFormat: (d) => {
-					if (d == null) {
-						return 0;
-					}
-					return this.d3.format('.02f')(d);
-				},
-				axisLabelDistance: 400
-				}
+				showValues: true,
+				tooltips: true,
+				transitionDuration: 350,
+				showControls:true
 			}
-			}
+		}
 
 			this.data = [
-			{
-				key: "Cumulative Return",
-				values: [
-				{
-					"label" : "A" ,
-					"value" : -29.765957771107
-				} ,
-				{
-					"label" : "B" ,
-					"value" : 0
-				} ,
-				{
-					"label" : "C" ,
-					"value" : 32.807804682612
-				} ,
-				]
-			}
-			];
+  {
+    "key": "Series 1",
+    "color": "#d67777",
+    "values": [
+      { 
+        "label" : "Group A" ,
+        "value" : -1.8746444827653
+      } , 
+      { 
+        "label" : "Group B" ,
+        "value" : -8.0961543492239
+      } , 
+      { 
+        "label" : "Group C" ,
+        "value" : -0.57072943117674
+      } , 
+      { 
+        "label" : "Group D" ,
+        "value" : -2.4174010336624
+      } , 
+      {
+        "label" : "Group E" ,
+        "value" : -0.72009071426284
+      } , 
+      { 
+        "label" : "Group F" ,
+        "value" : -0.77154485523777
+      } , 
+      { 
+        "label" : "Group G" ,
+        "value" : -0.90152097798131
+      } , 
+      {
+        "label" : "Group H" ,
+        "value" : -0.91445417330854
+      } , 
+      { 
+        "label" : "Group I" ,
+        "value" : -0.055746319141851
+      }
+    ]
+  },
+  {
+    "key": "Series 2",
+    "color": "#4f99b4",
+    "values": [
+      { 
+        "label" : "Group A" ,
+        "value" : 25.307646510375
+      } , 
+      { 
+        "label" : "Group B" ,
+        "value" : 16.756779544553
+      } , 
+      { 
+        "label" : "Group C" ,
+        "value" : 18.451534877007
+      } , 
+      { 
+        "label" : "Group D" ,
+        "value" : 8.6142352811805
+      } , 
+      {
+        "label" : "Group E" ,
+        "value" : 7.8082472075876
+      } , 
+      { 
+        "label" : "Group F" ,
+        "value" : 5.259101026956
+      } , 
+      { 
+        "label" : "Group G" ,
+        "value" : 0.30947953487127
+      } , 
+      { 
+        "label" : "Group H" ,
+        "value" : 0
+      } , 
+      { 
+        "label" : "Group I" ,
+        "value" : 0 
+      }
+    ]
+  }
+];
   }
 
 }
