@@ -40,6 +40,7 @@ export class TimelineComponent implements OnInit {
 		this.dataSysMem = [];
 		this.optionSysMem = [];
 		this.optionMaltMem = [];
+		this.dataMaltMem = [];
 	}
 
 	genMemOverTime(data) {
