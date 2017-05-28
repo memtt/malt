@@ -46,6 +46,12 @@ function getUserHome() {
 }
 
 /****************************************************/
+function formatJson(value) {
+	//return JSON.stringify(value,null,"\t")
+	return JSON.stringify(value);
+}
+
+/****************************************************/
 //Setup http auth if enabled
 if (args.params.noauth == undefined) {
 	//log
@@ -83,21 +89,27 @@ var maltProject = new MaltProject(args.params.input);
 
 /****************************************************/
 app.get('/api/run-infos.json',function(req,res) {
-	res.write(JSON.stringify(maltProject.getRunInfos(),null,"\t"));
+	res.write(formatJson(maltProject.getRunInfos()));
 	res.end();
 });
 
 /****************************************************/
 app.get('/api/summary-infos.json',function(req,res) {
-	res.write(JSON.stringify(maltProject.getSummaryInfos(),null,"\t"));
+	res.write(formatJson(maltProject.getSummaryInfos()));
 	res.end();
 });
 
 /****************************************************/
 app.get('/api/thread-stats.json',function(req,res) {
-	res.write(JSON.stringify(maltProject.getThreadStats(),null,"\t"));
+	res.write(formatJson(maltProject.getThreadStats()));
 	res.end();
 });
+
+/****************************************************/
+app.get('/api/timeline.json', function(req,res){
+	res.write(formatJson(maltProject.getTimeline()));
+	res.end();
+})
 
 /****************************************************/
 //export static deps

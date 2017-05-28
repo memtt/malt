@@ -232,8 +232,17 @@ MaltProject.prototype.getThreadStats = function()
 	var ret = [];
 	for (var i in this.data.threads)
 		ret.push(this.data.threads[i].stats);
-	return { 
+	return {
 		data:ret,
+		ticksPerSecond: this.data.globals.ticksPerSecond
+	};
+}
+
+/****************************************************/
+MaltProject.prototype.getTimeline = function()
+{
+	return {
+		data:this.data.timeline,
 		ticksPerSecond: this.data.globals.ticksPerSecond
 	};
 }

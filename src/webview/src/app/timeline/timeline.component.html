@@ -1,3 +1,51 @@
-<p>
-  timeline works!
-</p>
+<div>
+	<p class="error" *ngIf="errorMessage">{{errorMessage}}</p>
+
+	<h2>Memory allocated over time</h2>
+	<div id="chartMemOverTime"><app-nvd3 [options]="optionMemOverTime" [data]="dataMemOverTime"></app-nvd3></div>
+	<div class="btn-div">
+		<button class="btn-csv" (click)="showDataCSV('Memory over time','memOverTime')"></button>
+		<button class="btn-json" (click)="showDataJSON('Memory over time','memOverTime')"></button>
+		<button class="btn-svg" (click)="showDataSVG('chartMemOverTime')"></button>
+	</div>
+
+	<h2>Allive chunks</h2>
+	<div id="chartAliveChunks"><app-nvd3 [options]="optionAliveChunks" [data]="dataAliveChunks"></app-nvd3></div>
+	<div class="btn-div">
+		<button class="btn-csv" (click)="showDataCSV('Chunks over time','aliveChunks')"></button>
+		<button class="btn-json" (click)="showDataJSON('Chunks over time','aliveChunks')"></button>
+		<button class="btn-svg" (click)="showDataSVG('chartAliveChunks')"></button>
+	</div>
+
+	<h2>Allocation rate (memory size)</h2>
+	<div id="chartRateSize"><app-nvd3 [options]="optionRateSize" [data]="dataRateSize"></app-nvd3></div>
+	<div class="btn-div">
+		<button class="btn-csv" (click)="showDataCSV('Allocation rate (size)','rateSize')"></button>
+		<button class="btn-json" (click)="showDataJSON('Allocation rate (size)','rateSize')"></button>
+		<button class="btn-svg" (click)="showDataSVG('chartRateSize')"></button>
+	</div>
+
+	<h2>Allocation rate (operations)</h2>
+	<div id="chartRateOps"><app-nvd3 [options]="optionRateOps" [data]="dataRateOps"></app-nvd3></div>
+	<div class="btn-div">
+		<button class="btn-csv" (click)="showDataCSV('Allocation rate (operations)','rateOps')"></button>
+		<button class="btn-json" (click)="showDataJSON('Allocation rate (operations)','rateOps')"></button>
+		<button class="btn-svg" (click)="showDataSVG('chartRateOps')"></button>
+	</div>
+
+	<h2>System memory</h2>
+	<div id="chartSysMem"><app-nvd3 [options]="optionSysMem" [data]="dataSysMem"></app-nvd3></div>
+	<div class="btn-div">
+		<button class="btn-csv" (click)="showDataCSV('System memory','sysMem')"></button>
+		<button class="btn-json" (click)="showDataJSON('System memory','sysMem')"></button>
+		<button class="btn-svg" (click)="showDataSVG('chartSysMem')"></button>
+	</div>
+
+	<h2>MALT memory</h2>
+	<div id="chartMaltMem"><app-nvd3 [options]="optionMaltMem" [data]="dataMaltMem"></app-nvd3></div>
+	<div class="btn-div">
+		<button class="btn-csv" (click)="showDataCSV('MALT memory','maltMem')"></button>
+		<button class="btn-json" (click)="showDataJSON('MALT memory','maltMem')"></button>
+		<button class="btn-svg" (click)="showDataSVG('chartMaltMem')"></button>
+	</div>
+</div>

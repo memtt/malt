@@ -24,4 +24,9 @@ export class DataService {
 		return this.http.get(this.baseUrl+"/thread-stats.json")
 			.map(resp => resp.json());
 	}
+
+	getTimeline() : Observable<any> {
+		return this.http.get(this.baseUrl+"/timeline.json")
+			.map(resp => resp.json());
+	}
 }
