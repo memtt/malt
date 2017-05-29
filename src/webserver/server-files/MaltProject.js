@@ -76,7 +76,27 @@ MaltProject.prototype.loadFile = function(file)
 		}
 
 		cur.loadData(data);
+		cur.reshape();
 	});
+}
+
+/****************************************************/
+MaltProject.prototype.reshapeTimelineZeroRef = function()
+{
+	var keys = ["memStats","systemStats","opsBandwidth"];
+	for (var i in this.data.timeline) {
+		var entry = this.data.timeline[i];
+		for (var j in entry) {
+			if (j != "steps")
+				entry[j].push(0);
+		}
+	}
+}
+
+/****************************************************/
+MaltProject.prototype.reshape = function()
+{
+	this.reshapeTimelineZeroRef();
 }
 
 /****************************************************/
@@ -224,6 +244,17 @@ MaltProject.prototype.getSummaryInfos = function()
 
 	//ok return
 	return ret;
+}
+
+/****************************************************/
+MaltProject.prototype.getStackSize = function()
+{
+	var out = [];
+	for (var i in this.data.threads) {
+		var thread = this.data.threads[i];
+		out.push(thread.stackSize);
+	}
+	return out;
 }
 
 /****************************************************/

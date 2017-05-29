@@ -29,4 +29,9 @@ export class DataService {
 		return this.http.get(this.baseUrl+"/timeline.json")
 			.map(resp => resp.json());
 	}
+
+	getStackSize() : Observable<any> {
+		return this.http.get(this.baseUrl+"/stack-size.json")
+			.map(resp => resp.json());
+	}
 }

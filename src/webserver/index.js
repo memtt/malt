@@ -112,6 +112,12 @@ app.get('/api/timeline.json', function(req,res){
 })
 
 /****************************************************/
+app.get('/api/stack-size.json', function(req,res){
+	res.write(formatJson(maltProject.getStackSize()));
+	res.end();
+})
+
+/****************************************************/
 //export static deps
 app.use('/',Express.static(__dirname+'/../webview/dist'));
 app.use('/deps/',Express.static(__dirname+'/bower_components/'));

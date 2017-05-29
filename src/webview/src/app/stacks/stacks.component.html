@@ -1,3 +1,24 @@
-<p>
-  stacks works!
-</p>
+<p class="error" *ngIf="errorMessage">{{errorMessage}}</p>
+
+<div width='100%' height=''>
+	<div class="runinfo runinfo-first">
+		<div class='name'>Largest stack</div>
+		<div class='value'>{{largestStack}}</div>
+	</div>
+
+	<div class="runinfo runinfo-second">
+		<div class='name'>Threads</div>
+		<div class='value'>{{threadCnt}}</div>
+	</div>
+
+	<!-- To clear float issue -->
+	<div width='100%' style='clear:both;'></div>
+
+	<h2>Stack peaks</h2>
+	<div id="threadStacks"><app-nvd3 [options]="optionThreadStacks" [data]="dataThreadStacks"></app-nvd3></div>
+	<div class="btn-div">
+		<button class="btn-csv" (click)="showDataCSV('ThreadStacks','threadStacks')"></button>
+		<button class="btn-json" (click)="showDataJSON('ThreadStacks','threadStacks')"></button>
+		<button class="btn-svg" (click)="showDataSVG('threadStacks')"></button>
+	</div>
+</div>

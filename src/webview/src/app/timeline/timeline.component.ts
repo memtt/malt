@@ -357,7 +357,7 @@ export class TimelineComponent implements OnInit {
 	}
 
 	genCSV(entry:string) {
-		var out = "Time";
+		var out = "#Time";
 		var data = [];
 
 		switch(entry) {
