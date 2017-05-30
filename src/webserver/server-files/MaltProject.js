@@ -94,9 +94,19 @@ MaltProject.prototype.reshapeTimelineZeroRef = function()
 }
 
 /****************************************************/
+MaltProject.prototype.reshapeStackTime = function()
+{
+	for (var i in this.data.threads) {
+		this.data.threads[i].stackSize.stackIds.push(0);
+		this.data.threads[i].stackSize.size.push(0);
+	}
+}
+
+/****************************************************/
 MaltProject.prototype.reshape = function()
 {
 	this.reshapeTimelineZeroRef();
+	this.reshapeStackTime();
 }
 
 /****************************************************/
@@ -254,7 +264,10 @@ MaltProject.prototype.getStackSize = function()
 		var thread = this.data.threads[i];
 		out.push(thread.stackSize);
 	}
-	return out;
+	return {
+		data:out,
+		ticksPerSecond: this.data.globals.ticksPerSecond
+	};
 }
 
 /****************************************************/
