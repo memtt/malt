@@ -191,48 +191,81 @@ export class StacksComponent implements OnInit {
 		);
 	}
 
-	genCSV(entry:string) {
-		if (entry == "threadStacks") {
-			var out = "#ThreadID	Stack\n";
-			for (var i in this.threadMax)
-				out+=i+"\t"+this.threadMax[i]+"\n";
-			return out;
-		} else if (entry == "time") {
-			var out = "#Time";
-			for (var i in this.dataTime)
-				out += " "+this.dataTime[i].key;
-			out += "\n";
-			var tmp = {};
-			for (var i in this.dataTime)
-				for (var j in this.dataTime[i].values) {
-					var d = this.dataTime[i];
-					if (tmp[d.values[j].x] == undefined)
-						tmp[d.values[j].x] = {};
-					tmp[d.values[j].x][i] = d.values[j].y;
-				}
-			var last = {};
-			for (var i in tmp) {
-				out += (+i/this.ticksPerSecond)+"\t";
-				for (var j in tmp[i]) {
-					if (tmp[i][j] == undefined) {
-						if (last[j] == undefined)
-							out += "\t1";
-						else
-							out += "\t"+last[j];
-					} else {
-						out += "\t"+tmp[i][j];
-						last[j] = tmp[i][j];
-					}
-				}
-				out += "\n";
+	genCSVThreadStack() {
+		var out = "#ThreadID	Stack\n";
+		for (var i in this.threadMax)
+			out+=i+"\t"+this.threadMax[i]+"\n";
+		return out;
+	}
+
+	genJsonTime() {
+		//build data with common merged ids
+		var tmp = {};
+		for (var i in this.dataTime)
+			for (var j in this.dataTime[i].values) {
+				var d = this.dataTime[i];
+				if (tmp[d.values[j].x] == undefined)
+					tmp[d.values[j].x] = {};
+				tmp[d.values[j].x][i] = d.values[j].y;
 			}
-			return out;
+
+		//fill missing and gen data lines
+		var last = {};
+		for (var i in tmp) {
+			var local = [];
+			for (var j in this.dataTime) {
+				if (tmp[i][j] == undefined) {
+					if (last[j] == undefined)
+						tmp[i][j] = 0;
+					else
+						tmp[i][j] = last[j];
+				} else {
+					last[j] = tmp[i][j];
+				}
+				local.push(tmp[i][j]);
+			}
+			tmp[i] = local;
+		}
+
+		return tmp;
+	}
+
+	genCSVTime() {
+		//setup titles
+		var out = "#Time";
+		for (var i in this.dataTime)
+			out += " "+this.dataTime[i].key;
+		out += "\n";
+
+		//get data
+		var tmp = this.genJsonTime();
+
+		//gen lines
+		for (var i in tmp) {
+			out += (+i/this.ticksPerSecond)+"\t";
+			for (var j in tmp[i])
+				out+="\t"+tmp[i][j];
+			out += "\n";
+		}
+
+		return out;
+	}
+
+	genCSV(entry:string) {
+		switch (entry) {
+			case "threadStacks":
+				return this.genCSVThreadStack();
+			case "time":
+				return this.genCSVTime();
 		}
 	}
 
 	genJSON(entry:string) {
-		if (entry == "threadStacks") {
-			return JSON.stringify(this.threadMax,null,'\t');
+		switch(entry) {
+			case "threadStacks":
+				return JSON.stringify(this.threadMax,null,'\t');
+			case "time":
+				return JSON.stringify(this.genJsonTime(),null,'\t');
 		}
 	}
 
