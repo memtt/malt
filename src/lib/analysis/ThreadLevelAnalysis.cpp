@@ -42,6 +42,7 @@ ThreadLevelAnalysis::ThreadLevelAnalysis ( ProcessLevelAnalysis * processLevel )
 	this->stackSizeProfiler = NULL;
 	this->stackBaseAddr = 0;
 	this->options = &getOptions();
+	this->maxStackSize = 0;
 }
 
 /*******************  FUNCTION  *********************/
@@ -199,6 +200,11 @@ void convertToJson ( htopml::JsonState& json, const ThreadLevelAnalysis& value )
 		json.closeFieldStruct("stats");
 		if (value.stackSizeProfiler != NULL)
 			json.printField("stackSize",*value.stackSizeProfiler);
+		json.openFieldStruct("max");
+			json.printField("size",value.maxStackSize);
+			json.printField("id",value.maxStackSizeStack);
+			json.printField("mem",value.stackSizeMax);
+		json.closeFieldStruct("max");
 	json.closeStruct();
 }
 
@@ -210,21 +216,30 @@ bool ThreadLevelAnalysis::isEnterExitFunction ( void )
 
 /*******************  FUNCTION  *********************/
 void ThreadLevelAnalysis::onEnterFunction ( void* caller, void* function )
-{
-	//stack size traking
-	if (options->stackSizeTracking)
-	{
-		if (stackSizeProfiler == NULL)
-			setupStackProfiler();
-		if ((size_t)caller < stackBaseAddr || stackBaseAddr == 0){
-			stackSizeProfiler->offset(0,stackBaseAddr - (size_t)caller);
-			stackBaseAddr = (size_t)caller;
-		}
-		stackSizeProfiler->push(clock.get(CLOCK_TICKS),0,STACk_SIZE_TRAKING,(size_t)caller - stackBaseAddr);
-	}
-	
+{	
 	stackTreeHandler = stackTree->enterFunction(stackTreeHandler,function);
 	//processLevel->onEnterFunction(caller,function);
+	
+	if (options->stackSizeTracking) {
+		if (stackSizeProfiler == NULL)
+			setupStackProfiler();
+		
+		stackSizeTracker.enter();
+		size_t size = stackSizeTracker.getSize();
+		
+		stackSizeProfiler->push(clock.get(CLOCK_TICKS),0,STACk_SIZE_TRAKING,size);
+		
+		if (size > maxStackSize) {
+			maxStackSize = size;
+			stackSizeMax = stackSizeTracker;
+			
+			if (isEnterExitFunction() == false)
+				stackTreeHandler = stackTree->getFromStack(stackTreeHandler,1);
+
+			StackTreeHandler handler = stackTreeHandler;
+			maxStackSizeStack = stackTree->getStackId(handler);
+		}
+	}
 }
 
 /*******************  FUNCTION  *********************/
@@ -235,11 +250,8 @@ void ThreadLevelAnalysis::onExitFunction ( void* caller, void* function )
 	{
 		if (stackSizeProfiler == NULL)
 			setupStackProfiler();
-		if ((size_t)caller < stackBaseAddr || stackBaseAddr == 0){
-			stackSizeProfiler->offset(0,stackBaseAddr - (size_t)caller);
-			stackBaseAddr = (size_t)caller;
-		}
-		stackSizeProfiler->push(clock.get(CLOCK_TICKS),0,STACk_SIZE_TRAKING,(size_t)caller - stackBaseAddr);
+		stackSizeTracker.exit();
+		//stackSizeProfiler->push(clock.get(CLOCK_TICKS),0,STACk_SIZE_TRAKING,size);
 	}
 	
 	stackTreeHandler = stackTree->exitFunction(stackTreeHandler,function);

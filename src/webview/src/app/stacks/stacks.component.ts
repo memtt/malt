@@ -24,8 +24,10 @@ export class StacksComponent implements OnInit {
 	private optionTime: any;
 	private dataTime: any;
 	private ticksPerSecond: number;
-	private timeSelectThread: string;
+	private selectedThread: string;
 	private data: any;
+	private dataStack : any;
+	private optionStack: any;
 
 	constructor(
 		private dataService: DataService,
@@ -38,7 +40,8 @@ export class StacksComponent implements OnInit {
 		this.getData();
 		this.dataThreadStacks = [];
 		this.dataTime = [];
-		this.timeSelectThread = "";
+		this.dataStack = [];
+		this.selectedThread = "";
 		this.setupCharts();
 	}
 
@@ -70,9 +73,11 @@ export class StacksComponent implements OnInit {
 						chart.multibar.dispatch.on('elementClick', function(e){
 							cur.zone.run(() => {
 								//console.log('elementClick in callback', e.data);
-								cur.timeSelectThread = e.data.name;
+								cur.selectedThread = e.data.name;
 								console.log(e.data.name);
 								cur.dataTime = cur.getTimeData();
+								console.log("===============");
+								cur.getThreadDetils(+cur.selectedThread);
 							});
 						});
 					}
@@ -103,6 +108,38 @@ export class StacksComponent implements OnInit {
 						}
 					}
 				};
+
+			this.optionStack = {
+					chart: {
+						type: 'multiBarHorizontalChart',
+						x: (d) => {return d.name},
+						y: (d) => {return d.value},
+						height: 300,
+						margin: {
+							top: 20,
+							right: 50,
+							bottom: 40,
+							left: 150
+						},
+						showValues: true,
+						tooltips: true,
+						transitionDuration: 350,
+						showControls:false,
+						stacked: true,
+						yAxis: {
+							tickFormat: (d) => {return this.helper.humanReadable(d,1,"B",false)},
+							axisLabel: "Calls"
+						},
+						//thanks to https://bridge360blog.com/2016/03/07/adding-and-handling-click-events-for-nvd3-graph-elements-in-angular-applications/
+						callback: (chart) => {
+							chart.multibar.dispatch.on('elementClick', function(e){
+								cur.zone.run(() => {
+									console.log('elementClick in callback', e.data);
+								});
+							});
+						}
+					}
+				};
 	}
 
 	genThreadMaxData() {
@@ -130,17 +167,8 @@ export class StacksComponent implements OnInit {
 		var max = 0;
 
 		//scan all threads
-		for (var i in this.threads) {
-			var localMax = 0;
-			var sizeArray = this.threads[i].size;
-			for (var j in  sizeArray)
-				if (sizeArray[j] > localMax)
-					localMax = sizeArray[j];
-			this.threadMax[i] = localMax;
-			if (localMax > max) {
-				max = localMax;
-			}
-		}
+		for (var i in this.data.max)
+			this.threadMax[i] = this.data.max[i].size;
 
 		//compute largest stack
 		this.largestStack = this.helper.humanReadable(max,1,"B",false);
@@ -160,8 +188,8 @@ export class StacksComponent implements OnInit {
 			for (var j in d.size)
 				points.push({x: (+j)*(+steps), y: d.size[j]});
 
-			if (i == this.timeSelectThread || this.timeSelectThread == "") {
-				console.log("add "+i+" => "+this.timeSelectThread);
+			if (i == this.selectedThread || this.selectedThread == "") {
+				console.log("add "+i+" => "+this.selectedThread);
 				out.push({
 					key: i,
 					values: points,
@@ -177,6 +205,27 @@ export class StacksComponent implements OnInit {
 		return out;
 	}
 
+	getThreadDetils(threadId:number) {
+		console.log("Details of threadId : "+threadId);
+		var cur = this;
+		this.dataService.getStackSizeDetails(threadId).subscribe(
+			resp => {
+				cur.zone.run(() => {
+					var formatted = [];
+					for (var i in resp.mem)
+						formatted.push({name:i,value:resp.mem[i]});
+					cur.dataStack = [
+							{
+								"key": "Stack functions",
+								"values": formatted
+							}
+					  ];
+				});
+		  },
+		  error => { cur.zone.run(() => this.errorMessage = <any>error); }
+		);
+	}
+
 	getData() {
 		this.dataService.getStackSize().subscribe(
 			resp => {
@@ -186,6 +235,7 @@ export class StacksComponent implements OnInit {
 				this.extract();
 				this.dataTime = this.getTimeData();
 				this.dataThreadStacks = this.genThreadMaxData();
+				this.getThreadDetils(0);
 		  },
 		  error => this.errorMessage = <any>error
 		);

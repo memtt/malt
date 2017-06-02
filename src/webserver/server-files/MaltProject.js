@@ -260,13 +260,24 @@ MaltProject.prototype.getSummaryInfos = function()
 MaltProject.prototype.getStackSize = function()
 {
 	var out = [];
+	var max = [];
 	for (var i in this.data.threads) {
 		var thread = this.data.threads[i];
 		out.push(thread.stackSize);
+		max.push(thread.max);
 	}
 	return {
 		data:out,
+		max:max,
 		ticksPerSecond: this.data.globals.ticksPerSecond
+	};
+}
+
+/****************************************************/
+MaltProject.prototype.getStackSizeDetails = function(threadId)
+{
+	return {
+		mem: this.data.threads[threadId].max.mem
 	};
 }
 

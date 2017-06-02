@@ -20,6 +20,7 @@
 #include <core/TimeProfiler.hpp>
 #include <core/Options.hpp>
 #include <core/Clock.hpp>
+#include <core/StackSizeTracker.hpp>
 
 namespace MATT
 {
@@ -89,6 +90,10 @@ class ThreadLevelAnalysis : public MallocHooks, public EnterExitFunctionHooks
 		size_t stackBaseAddr;
 		Options * options;
 		Clock clock;
+		size_t maxStackSize;
+		StackId maxStackSizeStack;
+		StackSizeTracker stackSizeTracker;
+		StackSizeTracker stackSizeMax;
 };
 
 }

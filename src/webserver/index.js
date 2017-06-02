@@ -118,6 +118,13 @@ app.get('/api/stack-size.json', function(req,res){
 })
 
 /****************************************************/
+app.get('/api/stack-size-details.json', function(req,res){
+	var threadId = req.query.threadId;
+	res.write(formatJson(maltProject.getStackSizeDetails(threadId)));
+	res.end();
+})
+
+/****************************************************/
 //export static deps
 app.use('/',Express.static(__dirname+'/../webview/dist'));
 app.use('/deps/',Express.static(__dirname+'/bower_components/'));

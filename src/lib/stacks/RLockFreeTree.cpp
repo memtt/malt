@@ -284,7 +284,7 @@ void convertToJson(htopml::JsonState& json, const RLockFreeTree& tree)
 			char buffer[64];
 			foreachConst(TreeAddressMap,tree.addrMap,it)
 			{
-				sprintf(buffer,"0x%p",it->first);
+				sprintf(buffer,"%p",it->first);
 				json.printField(buffer,it->second);
 			}
 		json.closeFieldStruct("addrMap");

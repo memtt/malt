@@ -29,4 +29,7 @@
 		<button class="btn-json" (click)="showDataJSON('Stacks over time','time')"></button>
 		<button class="btn-svg" (click)="showDataSVG('time')"></button>
 	</div>
+
+	<h2>Stack detail for thread {{selectedThread}}</h2>
+	<div id="time"><app-nvd3 [options]="optionStack" [data]="dataStack"></app-nvd3></div>
 </div>

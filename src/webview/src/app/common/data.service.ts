@@ -34,4 +34,9 @@ export class DataService {
 		return this.http.get(this.baseUrl+"/stack-size.json")
 			.map(resp => resp.json());
 	}
+
+	getStackSizeDetails(threadId:number) : Observable<any> {
+		return this.http.get(this.baseUrl+"/stack-size-details.json?threadId="+threadId)
+			.map(resp => resp.json());
+	}
 }

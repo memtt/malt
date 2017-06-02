@@ -15,7 +15,8 @@ add_library(matt-core OBJECT CallCounter.cpp
                              SymbolRegistry.cpp
                              GlobalVariables.cpp
                              AllocTracer.cpp
-                             AllocSizeDistribution.cpp)
+                             AllocSizeDistribution.cpp
+                             StackSizeTracker)
 SET_TARGET_PROPERTIES(matt-core PROPERTIES COMPILE_FLAGS -fPIC)
 
 ######################################################
