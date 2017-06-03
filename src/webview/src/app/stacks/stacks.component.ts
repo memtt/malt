@@ -28,6 +28,8 @@ export class StacksComponent implements OnInit {
 	private data: any;
 	private dataStack : any;
 	private optionStack: any;
+	private optionStackBar: any;
+	private dataStackBar:any;
 
 	constructor(
 		private dataService: DataService,
@@ -41,6 +43,7 @@ export class StacksComponent implements OnInit {
 		this.dataThreadStacks = [];
 		this.dataTime = [];
 		this.dataStack = [];
+		this.dataStackBar = [];
 		this.selectedThread = "";
 		this.setupCharts();
 	}
@@ -130,11 +133,30 @@ export class StacksComponent implements OnInit {
 						tooltips: true,
 						transitionDuration: 350,
 						showControls:false,
-						stacked: true,
-						yAxis: {
-							tickFormat: (d) => {return this.helper.humanReadable(d,1,"B",false)},
-							axisLabel: "Stack memory"
-						}
+						stacked: true
+					}
+				};
+			this.optionStackBar = {
+					chart: {
+						type: 'multiBarHorizontalChart',
+							x: (d) => {return d.name},
+							y: (d) => {return d.value},
+							height: 300,
+							margin: {
+								top: 20,
+								right: 50,
+								bottom: 40,
+								left: 150
+							},
+							showValues: true,
+							tooltips: true,
+							transitionDuration: 350,
+							showControls:false,
+							stacked: true,
+							yAxis: {
+								tickFormat: (d) => {return this.helper.humanReadable(d,1,"B",false)},
+								axisLabel: "Stack memory"
+							}
 					}
 				};
 	}
@@ -214,7 +236,18 @@ export class StacksComponent implements OnInit {
 					var formatted = [];
 					for (var i in resp)
 						formatted.push({name:resp[i].location.function,value:resp[i].mem,location:resp[i].location});
+
+					//donut
 					cur.dataStack = formatted;
+
+					//bar chart
+					cur.dataStackBar = [
+							{
+								"key": "Stack functions",
+								"values": formatted
+							}
+					  ];
+					 cur.optionStackBar.chart.height = 70 * resp.length;
 				});
 		  },
 		  error => { cur.zone.run(() => this.errorMessage = <any>error); }

@@ -30,6 +30,9 @@
 		<button class="btn-svg" (click)="showDataSVG('time')"></button>
 	</div>
 
-	<h2>Stack detail for thread {{selectedThread}}</h2>
-	<div id="time"><app-nvd3 [options]="optionStack" [data]="dataStack"></app-nvd3></div>
+	<h2>Stack details for thread {{selectedThread}}</h2>
+	<div id="donut"><app-nvd3 [options]="optionStack" [data]="dataStack"></app-nvd3></div>
+
+	<h2>Stack details for thread {{selectedThread}}</h2>
+	<div id="stackDetails"><app-nvd3 [options]="optionStackBar" [data]="dataStackBar"></app-nvd3></div>
 </div>
