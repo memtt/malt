@@ -128,7 +128,7 @@ export class StacksComponent implements OnInit {
 						stacked: true,
 						yAxis: {
 							tickFormat: (d) => {return this.helper.humanReadable(d,1,"B",false)},
-							axisLabel: "Calls"
+							axisLabel: "Stack memory"
 						},
 						//thanks to https://bridge360blog.com/2016/03/07/adding-and-handling-click-events-for-nvd3-graph-elements-in-angular-applications/
 						callback: (chart) => {
@@ -167,8 +167,11 @@ export class StacksComponent implements OnInit {
 		var max = 0;
 
 		//scan all threads
-		for (var i in this.data.max)
+		for (var i in this.data.max) {
 			this.threadMax[i] = this.data.max[i].size;
+			if (this.threadMax[i] > max)
+				max = this.threadMax[i];
+		}
 
 		//compute largest stack
 		this.largestStack = this.helper.humanReadable(max,1,"B",false);
@@ -220,6 +223,7 @@ export class StacksComponent implements OnInit {
 								"values": formatted
 							}
 					  ];
+					 this.optionStack.chart.height = 70 * resp.length;
 				});
 		  },
 		  error => { cur.zone.run(() => this.errorMessage = <any>error); }
