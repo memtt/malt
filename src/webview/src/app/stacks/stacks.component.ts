@@ -111,10 +111,15 @@ export class StacksComponent implements OnInit {
 
 			this.optionStack = {
 					chart: {
-						type: 'multiBarHorizontalChart',
+						type: 'pieChart',
 						x: (d) => {return d.name},
 						y: (d) => {return d.value},
-						height: 300,
+						height: 400,
+						showLabels: true,
+						labelThreshold: .05,
+						labelType: "value",
+						donut: true,
+						donutRatio: 0.35,
 						margin: {
 							top: 20,
 							right: 50,
@@ -129,14 +134,6 @@ export class StacksComponent implements OnInit {
 						yAxis: {
 							tickFormat: (d) => {return this.helper.humanReadable(d,1,"B",false)},
 							axisLabel: "Stack memory"
-						},
-						//thanks to https://bridge360blog.com/2016/03/07/adding-and-handling-click-events-for-nvd3-graph-elements-in-angular-applications/
-						callback: (chart) => {
-							chart.multibar.dispatch.on('elementClick', function(e){
-								cur.zone.run(() => {
-									console.log('elementClick in callback', e.data);
-								});
-							});
 						}
 					}
 				};
@@ -217,13 +214,7 @@ export class StacksComponent implements OnInit {
 					var formatted = [];
 					for (var i in resp)
 						formatted.push({name:resp[i].location.function,value:resp[i].mem,location:resp[i].location});
-					cur.dataStack = [
-							{
-								"key": "Stack functions",
-								"values": formatted
-							}
-					  ];
-					 this.optionStack.chart.height = 70 * resp.length;
+					cur.dataStack = formatted;
 				});
 		  },
 		  error => { cur.zone.run(() => this.errorMessage = <any>error); }
