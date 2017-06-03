@@ -47,8 +47,8 @@ function getUserHome() {
 
 /****************************************************/
 function formatJson(value) {
-	//return JSON.stringify(value,null,"\t")
-	return JSON.stringify(value);
+	return JSON.stringify(value,null,"\t")
+	//return JSON.stringify(value);
 }
 
 /****************************************************/
@@ -120,8 +120,14 @@ app.get('/api/stack-size.json', function(req,res){
 /****************************************************/
 app.get('/api/stack-size-details.json', function(req,res){
 	var threadId = req.query.threadId;
-	res.write(formatJson(maltProject.getStackSizeDetails(threadId)));
-	res.end();
+	if (threadId == undefined) {
+		var msg = "Missing threadId parameter on /api/stack-size-details.json";
+		console.error(msg);
+		res.status(500).send(msg);
+	} else {
+		res.write(formatJson(maltProject.getStackSizeDetails(threadId)));
+		res.end();
+	}
 })
 
 /****************************************************/

@@ -156,6 +156,8 @@ void ProcessLevelAnalysis::onExit ( void )
 		//solve symbols
 		registry.loadProcMap();
 		stackTree->registerSymbols(registry);
+		for (ThreadLevelAnalysisVector::const_iterator it = threads.begin() ; it != threads.end() ; ++it)
+			(*it)->getMaxStack().registerSymbols(registry);
 		registry.solveNames();
 		
 		//preapre for output

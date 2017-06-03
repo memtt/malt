@@ -20,6 +20,7 @@
 #include <core/TimeProfiler.hpp>
 #include <core/Options.hpp>
 #include <core/Clock.hpp>
+#include <stacks/EnterExitStack.hpp>
 #include <core/StackSizeTracker.hpp>
 
 namespace MATT
@@ -78,6 +79,7 @@ class ThreadLevelAnalysis : public MallocHooks, public EnterExitFunctionHooks
 		void setupStack( MATT::MallocHooksInfos& info, int skip );
 		bool isInUse(void);
 		void setInUse(bool status);
+		const Stack & getMaxStack(void);
 	private:
 		void setupStackProfiler(void);
 	protected:
@@ -91,7 +93,8 @@ class ThreadLevelAnalysis : public MallocHooks, public EnterExitFunctionHooks
 		Options * options;
 		Clock clock;
 		size_t maxStackSize;
-		StackId maxStackSizeStack;
+		EnterExitStack maxStack;
+		EnterExitStack stack;
 		StackSizeTracker stackSizeTracker;
 		StackSizeTracker stackSizeMax;
 };

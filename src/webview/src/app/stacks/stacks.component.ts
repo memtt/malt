@@ -212,8 +212,8 @@ export class StacksComponent implements OnInit {
 			resp => {
 				cur.zone.run(() => {
 					var formatted = [];
-					for (var i in resp.mem)
-						formatted.push({name:i,value:resp.mem[i]});
+					for (var i in resp)
+						formatted.push({name:resp[i].location.function,value:resp[i].mem,location:resp[i].location});
 					cur.dataStack = [
 							{
 								"key": "Stack functions",

@@ -191,6 +191,12 @@ void ThreadLevelAnalysis::onPreRealloc ( MallocHooksInfos& info, void* ptr, size
 }
 
 /*******************  FUNCTION  *********************/
+const Stack & ThreadLevelAnalysis::getMaxStack(void)
+{
+	return this->maxStack;
+}
+
+/*******************  FUNCTION  *********************/
 void convertToJson ( htopml::JsonState& json, const ThreadLevelAnalysis& value )
 {
 	json.openStruct();
@@ -202,7 +208,7 @@ void convertToJson ( htopml::JsonState& json, const ThreadLevelAnalysis& value )
 			json.printField("stackSize",*value.stackSizeProfiler);
 		json.openFieldStruct("max");
 			json.printField("size",value.maxStackSize);
-			json.printField("id",value.maxStackSizeStack);
+			json.printField("stack",(const Stack)(value.maxStack));
 			json.printField("mem",value.stackSizeMax);
 		json.closeFieldStruct("max");
 	json.closeStruct();
@@ -221,6 +227,7 @@ void ThreadLevelAnalysis::onEnterFunction ( void* caller, void* function )
 	//processLevel->onEnterFunction(caller,function);
 	
 	if (options->stackSizeTracking) {
+		stack.enterFunction(caller);
 		if (stackSizeProfiler == NULL)
 			setupStackProfiler();
 		
@@ -237,7 +244,7 @@ void ThreadLevelAnalysis::onEnterFunction ( void* caller, void* function )
 				stackTreeHandler = stackTree->getFromStack(stackTreeHandler,1);
 
 			StackTreeHandler handler = stackTreeHandler;
-			maxStackSizeStack = stackTree->getStackId(handler);
+			maxStack = stack;
 		}
 	}
 }
@@ -248,6 +255,7 @@ void ThreadLevelAnalysis::onExitFunction ( void* caller, void* function )
 	//stack size traking
 	if (options->stackSizeTracking)
 	{
+		stack.exitFunction(caller);
 		if (stackSizeProfiler == NULL)
 			setupStackProfiler();
 		stackSizeTracker.exit();

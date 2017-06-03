@@ -94,6 +94,15 @@ MaltProject.prototype.reshapeTimelineZeroRef = function()
 }
 
 /****************************************************/
+MaltProject.prototype.reshapeAddrMap = function()
+{
+	this.addrMap = {};
+	var map = this.data.stacks.tree.addrMap;
+	for (var i in map)
+		this.addrMap[map[i]] = i;
+}
+
+/****************************************************/
 MaltProject.prototype.reshapeStackTime = function()
 {
 	for (var i in this.data.threads) {
@@ -103,10 +112,52 @@ MaltProject.prototype.reshapeStackTime = function()
 }
 
 /****************************************************/
+MaltProject.prototype.reshapeBuildStackListRecurse = function(stack,pointer)
+{
+	//check if add content
+	if (pointer.dataId != undefined) {
+		this.stacksByDataId[pointer.dataId] = clone(stack);
+	}
+
+	var pos = stack.length;
+	stack.push(0);
+	for (var i in pointer) {
+		if (i != "dataId") {
+			stack[pos] = i;
+			this.reshapeBuildStackListRecurse(stack,pointer[i]);
+		}
+	}
+	stack.pop();
+}
+
+/****************************************************/
+MaltProject.prototype.reshapeBuildStackList = function()
+{
+	this.stacksByDataId = {};
+	var stack = [];
+	this.reshapeBuildStackListRecurse(stack,this.data.stacks.tree.calltree);
+}
+
+/****************************************************/
+MaltProject.prototype.reshapeInstrStrings = function()
+{
+	var strings = this.data.symbols.strings;
+	for (var i in this.data.symbols.instr) {
+		var sym = this.data.symbols.instr[i];
+		sym.file = strings[sym.file];
+		sym.function = strings[sym.function];
+		sym.binary = strings[sym.binary];
+	}
+}
+
+/****************************************************/
 MaltProject.prototype.reshape = function()
 {
 	this.reshapeTimelineZeroRef();
 	this.reshapeStackTime();
+	this.reshapeAddrMap();
+	this.reshapeBuildStackList();
+	this.reshapeInstrStrings();
 }
 
 /****************************************************/
@@ -276,9 +327,43 @@ MaltProject.prototype.getStackSize = function()
 /****************************************************/
 MaltProject.prototype.getStackSizeDetails = function(threadId)
 {
-	return {
-		mem: this.data.threads[threadId].max.mem
-	};
+	//get data
+	var mem = this.data.threads[threadId].max.mem;
+	var stack = this.genDetailedStack(this.data.threads[threadId].max.stack);
+
+	//reshape
+	var out = {};
+	for (var i in mem) {
+		if (stack[i] != undefined) {
+			if (out[stack[i].function] == undefined) {
+				out[stack[i].function] = {
+					location:stack[i],
+					mem:+mem[i]
+				}
+			} else {
+				out[stack[i].function].mem += mem[i];
+			}
+		}
+	}
+
+	//build array
+	var outFinal = [];
+	for (var i in out)
+		outFinal.push(out[i]);
+
+	//sort
+	outFinal.sort(function(a,b){a.mem - b.mem});
+
+	return outFinal;
+}
+
+/****************************************************/
+MaltProject.prototype.genDetailedStack = function(stack) {
+	var out = [];
+	stack.forEach( el => {
+		out.push(this.data.symbols.instr[el]);
+	})
+	return out;
 }
 
 /****************************************************/
