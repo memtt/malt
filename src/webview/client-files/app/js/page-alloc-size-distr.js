@@ -39,7 +39,7 @@ function MaltPageAllocSizeDistr()
 		maltDataSource.getScatter($http,function(data) {
 			cur.plotXY('malt-scatter-size-over-time',data.sizeOverTime,false,true);
 			cur.plotYX('malt-scatter-lifetime-over-size',data.lifetimeOverSize,true,true);
-			cur.plotScatter('malt-scatter-size-over-time-2',data.sizeOverTime,{
+			/*cur.plotScatter('malt-scatter-size-over-time-2',data.sizeOverTime,{
 				xaxis: {
 					title: "Time (cycles)",
 					unit: "C",
@@ -50,7 +50,7 @@ function MaltPageAllocSizeDistr()
 					unit: "B",
 					log: true
 				}
-			});
+			});*/
 		});
 	}]);
 }
