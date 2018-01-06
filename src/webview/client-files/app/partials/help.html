@@ -102,11 +102,13 @@ free(a);                  //Total virtual = 0,   physical = 0
 
 <h2>About chunk lifetime</h2>
 
-Chunk lifetime correspond to the time between malloc and free.
+Chunk lifetime correspond to the time between malloc and free. Ideally it need to be as long as possible as short lifetime linked to lot of allocation can lead to performance issues.
 
-<h2>About fragmentation</h2>
+<!--<h2>About fragmentation</h2>-->
 
 <h2>Allocation rates</h2>
+
+Allocation rate are related to number of allocation in a short period. It can pin point performance overhead due to operating system memory management functions.
 
 <h1>Thanks</h1>
 
