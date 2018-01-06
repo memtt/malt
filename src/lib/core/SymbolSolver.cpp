@@ -276,7 +276,7 @@ void SymbolSolver::solveNames(LinuxProcMapEntry * procMapEntry)
 	std::stringstream addr2lineCmd;
 	addr2lineCmd << "addr2line -C -f -e " << procMapEntry->file;
 	std::vector<CallSite*> lst;
-	bool isSharedLib = false;
+	bool isSharedLib = true;
 	
 	//check if shared lib or exe
 	if (procMapEntry->file.substr(procMapEntry->file.size()-3) == ".so")
@@ -295,6 +295,8 @@ void SymbolSolver::solveNames(LinuxProcMapEntry * procMapEntry)
 			lst.push_back(&it->second);
 		}
 	}
+	
+	printf("%s\n",addr2lineCmd.str().c_str());
 	
 	//hide error if silent
 	if (gblOptions != NULL && gblOptions->outputSilent)
