@@ -4,10 +4,6 @@ TODO
 Might be trivial
 ----------------
 
- * Remove indentation for json output format of MALT
-   This is just an option on the Json output class, made it optional as it help for debug to get more readable files.
- * Migrate /XXX.json dynamic files into a /data/ subdirectory to be more clean
- * Update help of config file in readme.md
  * Use a dynamic lib to load tracer reader into node instead of using process output forward, might bt ok by using nodejs c++ wrappers
 
 Not so much work
@@ -43,9 +39,3 @@ Need work
     - possibility to get the time chart of a specific call site
     - possibility to get size distribution of a specific call site and maybe timestep
  * Need to add integration of trace system into webview
-
- 
- 
- 
- 
-MALT_OPTIONS="stack:enabled=true;output:kcachgrind=true;" MALT_STACK="" LD_PRELOAD="malt.so"
