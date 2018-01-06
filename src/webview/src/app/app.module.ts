@@ -23,6 +23,7 @@ import { ReallocComponent } from './realloc/realloc.component';
 import { GlobalsComponent } from './globals/globals.component';
 import { HelpComponent } from './help/help.component'; 
 import { ConfirmComponent } from './common/confirm.component';
+import { PlotMostUsedsizeComponent } from './components/plot-most-usedsize/plot-most-usedsize.component';
 
 
 @NgModule({
@@ -38,7 +39,8 @@ import { ConfirmComponent } from './common/confirm.component';
     ReallocComponent,
     GlobalsComponent,
     HelpComponent,
-    ConfirmComponent
+    ConfirmComponent,
+    PlotMostUsedsizeComponent
   ],
   imports: [
     BrowserModule,

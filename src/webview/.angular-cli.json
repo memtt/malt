@@ -29,7 +29,8 @@
 	"../node_modules/jquery/dist/jquery.min.js",
         "../node_modules/bootstrap/dist/js/bootstrap.min.js",
         "../node_modules/d3/d3.min.js",
-	"../node_modules/file-saver/FileSaver.min.js"
+	"../node_modules/file-saver/FileSaver.min.js",
+	"../node_modules/d3-tip/index.js"
       ],
       "environmentSource": "environments/environment.ts",
       "environments": {

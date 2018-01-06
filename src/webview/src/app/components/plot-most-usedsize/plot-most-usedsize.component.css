@@ -1,0 +1,67 @@
+/*********************** charts of size distr page **************************/
+.malt-size-plot .axis text {
+  font: 12px sans-serif;
+}
+
+.malt-size-plot .axis path,
+.malt-size-plot .axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.malt-size-plot .bar {
+  fill: steelblue;
+  fill-opacity: .9;
+}
+
+.malt-size-plot .bar:hover {
+  fill: orangered ;
+}
+
+.malt-size-plot .x.axis path {
+  display: none;
+}
+
+.malt-size-plot label {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+}
+
+.malt-size-plot .grid .tick {
+    stroke: lightgrey;
+    opacity: 0.7;
+}
+.malt-size-plot .grid path {
+      stroke-width: 0;
+}
+
+.d3-tip {
+  line-height: 1;
+  font-weight: bold;
+  padding: 12px;
+  background: rgba(0, 0, 0, 0.8);
+  color: #fff;
+  border-radius: 2px;
+}
+
+/* Creates a small triangle extender for the tooltip */
+.d3-tip:after {
+  box-sizing: border-box;
+  display: inline;
+  font-size: 10px;
+  width: 100%;
+  line-height: 1;
+  color: rgba(0, 0, 0, 0.8);
+  content: "\25BC";
+  position: absolute;
+  text-align: center;
+}
+
+/* Style northward tooltips differently */
+.d3-tip.n:after {
+  margin: -1px 0 0 0;
+  top: 100%;
+  left: 0;
+}

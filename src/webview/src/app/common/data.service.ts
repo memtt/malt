@@ -39,4 +39,9 @@ export class DataService {
 		return this.http.get(this.baseUrl+"/stack-size-details.json?threadId="+threadId)
 			.map(resp => resp.json());
 	}
+
+	getAllocSizeDistr() : Observable<any> {
+		return this.http.get(this.baseUrl+"/alloc-size-distr.json")
+			.map(resp => resp.json());
+	}
 }

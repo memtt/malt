@@ -131,6 +131,12 @@ app.get('/api/stack-size-details.json', function(req,res){
 })
 
 /****************************************************/
+app.get('/api/alloc-size-distr.json', function(req,res){
+	res.write(formatJson(maltProject.getAllocSizeDistr()));
+	res.end();
+})
+
+/****************************************************/
 //export static deps
 app.use('/',Express.static(__dirname+'/../webview/dist'));
 app.use('/deps/',Express.static(__dirname+'/bower_components/'));

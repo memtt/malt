@@ -1,3 +1,34 @@
-<p>
-  sizes works!
-</p>
+<div width='100%' height=''>
+	<div class="runinfo runinfo-first">
+		<div class='name'>Mean size</div>
+		<div class='value'>{{summary.meanSize}}</div>
+	</div>
+
+	<div class="runinfo runinfo-second">
+		<div class='name'>Most used</div>
+		<div class='value'>{{summary.mostUsedSize}}</div>
+	</div>
+
+	<div class="runinfo runinfo-third">
+		<div class='name'>Smallest size</div>
+		<div class='value'>{{summary.smallestSize}}</div>
+	</div>
+
+	<div class="runinfo runinfo-fourth">
+		<div class='name'>Lartest size</div>
+		<div class='value'>{{summary.largestSize}}</div>
+	</div>
+
+	<!-- To clear float issue -->
+	<div width='100%' style='clear:both;'></div>
+
+	<p class="error" *ngIf="errorMessage">{{errorMessage}}</p>
+
+	<h2>Most used sizes</h2>
+	<div id="charMostUsed"><app-plot-most-usedsize [data]="dataMostUsed"></app-plot-most-usedsize></div>
+	<div class="btn-div">
+		<button class="btn-csv" (click)="showDataCSV('Most used sizes','charMostUsed')"></button>
+		<button class="btn-json" (click)="showDataJSON('Most used sizes','charMostUsed')"></button>
+		<button class="btn-svg" (click)="showDataSVG('charMostUsed')"></button>
+	</div>
+</div>

@@ -325,6 +325,12 @@ MaltProject.prototype.getStackSize = function()
 }
 
 /****************************************************/
+MaltProject.prototype.getAllocSizeDistr = function()
+{
+	return this.data.allocSizeDistr;
+}
+
+/****************************************************/
 MaltProject.prototype.getStackSizeDetails = function(threadId)
 {
 	//get data
