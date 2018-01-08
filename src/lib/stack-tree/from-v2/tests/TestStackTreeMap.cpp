@@ -16,23 +16,8 @@
 using namespace MALTV2;
 
 void * CST_VALUE_1[] = {(void*)0x1,(void*)0x2,(void*)0x3,(void*)0x4};
-const char CST_VALUE_2[] =  "{\n\
-\t\"calltree\":{\n\
-\t\t\"0xbbb\":{\n\
-\t\t\t\"0xccc\":{\n\
-\t\t\t\t\"dataId\":2\n\
-\t\t\t}\n\
-\t\t},\n\
-\t\t\"0xaaa\":{\n\
-\t\t\t\"dataId\":0\n\
-\t\t}\n\
-\t},\n\
-\t\"data\":{\n\
-\t\t\"test-counter\":{\n\
-\t\t\t\"2\":11,\n\
-\t\t\t\"0\":10\n\
-\t\t}\n\
-\t}\n}";
+const char CST_VALUE_2[] = "{\n\t\"addresses\":{\n\t\t\"0x3\":\"0xaaa\",\n\t\t\"0x1\":\"0xbbb\",\n\t\t\"0x2\":\"0xccc\"\n\t},\n\t\"calltree\":{\n\t\t\"0x1\":{\n\t\t\t\"0x2\":{\n\t\t\t\t\"dataId\":2\n\t\t\t}\n\t\t},\n\t\t\"0x3\":{\n\t\t\t\"dataId\":0\n\t\t}\n\t},\n\t\"data\":{\n\t\t\"test-counter\":{\n\t\t\t\"2\":11,\n\t\t\t\"0\":10\n\t\t}\n\t}\n}"
+;
 
 /*******************  FUNCTION  *********************/
 TEST(StackTreeMap,constructor)
@@ -119,3 +104,16 @@ TEST(StackTreeMap,testDataHandler)
 	
 	EXPECT_EQ(10,map.getTypedData<int>(dataHandler,0));
 }
+
+/*******************  FUNCTION  *********************/
+int main(int argc, char ** argv)
+{
+	//init internal allocator
+	MALT::initInternalAlloc();
+	doNoFreeAllocatorInit();
+	
+	// This allows the user to override the flag on the command line.
+	::testing::InitGoogleTest(&argc, argv);
+	return RUN_ALL_TESTS();
+}
+

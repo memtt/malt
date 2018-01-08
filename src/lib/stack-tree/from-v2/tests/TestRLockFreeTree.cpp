@@ -11,28 +11,13 @@
 #include <json/ConvertToJson.h>
 #include <common/SimpleAllocator.hpp>
 #include <stack-tree/from-v2/RLockFreeTree.hpp>
+#include <common/NoFreeAllocator.hpp>
 
 /***************** USING NAMESPACE ******************/
 using namespace MALTV2;
 
 void * CST_VALUE_1[] = {(void*)0x1,(void*)0x2,(void*)0x3,(void*)0x4};
-const char CST_VALUE_2[] =  "{\n\
-\t\"calltree\":{\n\
-\t\t\"0xbbb\":{\n\
-\t\t\t\"0xccc\":{\n\
-\t\t\t\t\"dataId\":2\n\
-\t\t\t}\n\
-\t\t},\n\
-\t\t\"0xaaa\":{\n\
-\t\t\t\"dataId\":0\n\
-\t\t}\n\
-\t},\n\
-\t\"data\":{\n\
-\t\t\"test-counter\":{\n\
-\t\t\t\"2\":11,\n\
-\t\t\t\"0\":10\n\
-\t\t}\n\
-\t}\n}";
+const char CST_VALUE_2[] = "{\n\t\"addresses\":{\n\t\t\"0x3\":\"0xaaa\",\n\t\t\"0x1\":\"0xbbb\",\n\t\t\"0x2\":\"0xccc\"\n\t},\n\t\"calltree\":{\n\t\t\"0x1\":{\n\t\t\t\"0x2\":{\n\t\t\t\t\"dataId\":2\n\t\t\t}\n\t\t},\n\t\t\"0x3\":{\n\t\t\t\"dataId\":0\n\t\t}\n\t},\n\t\"data\":{\n\t\t\"test-counter\":{\n\t\t\t\"2\":11,\n\t\t\t\"0\":10\n\t\t}\n\t}\n}";
 
 /*******************  FUNCTION  *********************/
 TEST(TypedRLockFreeTree,constructor)
@@ -126,5 +111,17 @@ TEST(TypedRLockFreeTree,parallelUse)
 				handler = tree.enterFunction(handler,(void*)(size_t)(i+1));
 		}
 	}
+}
+
+/*******************  FUNCTION  *********************/
+int main(int argc, char ** argv)
+{
+	//init internal allocator
+	MALT::initInternalAlloc();
+	doNoFreeAllocatorInit();
+	
+	// This allows the user to override the flag on the command line.
+	::testing::InitGoogleTest(&argc, argv);
+	return RUN_ALL_TESTS();
 }
 
