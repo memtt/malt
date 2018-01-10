@@ -9,7 +9,7 @@ malt(1) -- A memory profiling tool
 
 MALT is a memory profiling tool wrapping your system memory allocation and applying
 backtrace on each call. It will provide you a memory allocation profile which can 
-be viewed with malt-webview(1).
+be viewed with malt-webserver(1).
 
 MALT work out of the box but to profiling your application it might be better to compile
 it with debug symbols (`-g`) and also to disable inlining to get more accurate stacks 

@@ -121,16 +121,16 @@ Then to profile you mpi application proceed like :
 Using webview
 -------------
 
-You can use the webview by calling command `malt-webview` as :
+You can use the webview by calling command `malt-webserver` as :
 
 ```shell
-	malt-webview [-p PORT] [--no-auth] -i malt-YOUR_PROGRAM-1234.json
+	malt-webserver [-p PORT] [--no-auth] -i malt-YOUR_PROGRAM-1234.json
 ```
 
 It will open a server listening locally on port 8080 so you can open your web browser
 to connect to the web interface via http://localhost:8080.
 
-At first usage malt-webview will create the password file `$HOME/.malt/passwd` and ask you a
+At first usage malt-webserver will create the password file `$HOME/.malt/passwd` and ask you a
 protection password for http authentification. You can change it at any time with
 
 ```shell
