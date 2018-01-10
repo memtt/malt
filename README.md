@@ -211,7 +211,7 @@ Analysing sub-parts
 -------------------
 
 If you run on a really big program doing millions of allocation you might get a big overhead, and maybe
-you are just interested in a sub-part of the program. You can do it by including `malt/Controler.h` in
+you are just interested in a sub-part of the program. You can do it by including `malt/malt.h` in
 your files and use `maltEnable()` an `maltDisable()` to controle MALT on each thread. It is also a nice
 way to detect leaks of sub-parts of your code.
 

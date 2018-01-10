@@ -26,7 +26,7 @@
 #include <profiler/AllocStackProfiler.hpp>
 #include <profiler/LocalAllocStackProfiler.hpp>
 //locals
-#include "Controler.h"
+#include "malt.h"
 
 /***************** USING NAMESPACE ******************/
 using namespace MALT;

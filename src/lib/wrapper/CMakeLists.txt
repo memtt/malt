@@ -22,5 +22,5 @@ add_library(malt-fake-controler OBJECT FakeControler.c)
 SET_TARGET_PROPERTIES(malt-fake-controler PROPERTIES COMPILE_FLAGS -fPIC)
 
 ######################################################
-INSTALL(FILES Controler.h
+INSTALL(FILES malt.h
 	DESTINATION include/malt)

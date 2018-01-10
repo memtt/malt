@@ -10,7 +10,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
-#include <wrapper/Controler.h>
+#include <wrapper/malt.h>
 
 /*******************  FUNCTION  *********************/
 int main(void)
