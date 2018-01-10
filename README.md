@@ -340,3 +340,33 @@ be interested by setting some environment variables integrating it to your shell
 `LD_LIBRARY_PATH` is not required as the `malt` command will use the full path to get access the 
 internal `.so` file.
 
+Similar tools
+-------------
+
+If you search similar tools all over the web you might find:
+
+ * Profiler provided with google allocator : [Google Heap Profiler](https://code.google.com/p/gperftools/wiki/GooglePerformanceTools)
+ * [Valgrind memcheck](http://valgrind.org/)
+ * Valgrind massif : [Valgrind massif](http://valgrind.org/) with [Massif visualizer](https://projects.kde.org/projects/extragear/sdk/massif-visualizer)
+ * [Dr. Memory](http://www.drmemory.org/)
+ * Commercial tool, [Parasoft Insure++](https://www.parasoft.com/product/insure/)
+ * Commercial tool, [Unicom PurifyPlus](http://unicomsi.com/products/purifyplus/) (previously IBM)
+ * [Tau](https://www.cs.uoregon.edu/research/tau/home.php) is more a communication profiling tool for HPC apps, but it offers a [memory module](https://www.cs.uoregon.edu/research/tau/docs/old/bk05ch04.html)
+ * Similar approach than MALT for the backend : [IgProf](http://igprof.org/)
+ * A debug malloc library : [Dmalloc](http://dmalloc.com/)
+ * Profiling and leak detection : [MemProf](http://people.redhat.com/otaylor/memprof/)
+ * [Malloc count](http://panthema.net/2013/malloc_count/)
+ * [mpatrol](http://mpatrol.sourceforge.net/)
+ * Tracing tool for parallel programs : [EZTrace](http://eztrace.gforge.inria.fr/)
+ * Find Obsolete Memory : [FOM Tools](https://gitlab.cern.ch/fom/FOM-tools/wikis/home)
+
+Parallel allocators
+-------------------
+
+If you search some parallel memory allocators, you can find those one on the net:
+
+ * [Jemalloc (facebook, firefox)](http://www.canonware.com/jemalloc/)
+ * [TCMalloc (google)](https://github.com/gperftools/gperftools)
+ * [Hoard](http://www.hoard.org/)
+ * [Lockless allocator](http://locklessinc.com/downloads/)
+ * [MPC](http://mpc.hpcframework.paratools.com/) memory allocator (look into mpcframework/MPC_Allocator)

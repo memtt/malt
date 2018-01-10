@@ -1,6 +1,7 @@
 Please add you name here if you contribute to this project.
 
- - Valat Sébastien <sebastien.valat@cern.ch> [2014-*]
+ - Valat Sébastien <sebastien.valat@exascale-computing.eu>   [2014]
+ - Valat Sébastien <sebastien.valat@cern.ch>                 [2015-*]
  - Syed Mehdi Raza Jaffery <syed.mehdi.raza.jaffery@cern.ch> [2016]
 
 Special thanks to original finance plan :
