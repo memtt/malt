@@ -21,12 +21,12 @@ https://wiki.ubuntu.com/PbuilderHowto or https://wiki.debian.org/IntroDebianPack
 
 If you work with git version you can build the archive with :
 
-	git archive --prefix=-0.3.0/ 0.3.0 | gzip > _0.3.0.orig.tar.gz
+	git archive --prefix=malt-0.3.0/ v0.3.0 | gzip > malt_0.3.0.orig.tar.gz
 
 Go to your directory and extract _0.3.0.orig.tar.gz with and go in the directory.
 
-	tar -xvzf -0.3.0.orig.tar.gz
-	cd -0.3.0
+	tar -xvzf malt_0.3.0.orig.tar.gz
+	cd malt-0.3.0
 
 Now go to the -0.0.1 directory and copy the packaging/debian into debian :
 

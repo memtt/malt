@@ -18,7 +18,7 @@ set -x
 function debian_common()
 {
 	#gen archive
-	git archive --prefix=malt-${VERSION}/ ${VERSION} | gzip > malt_${VERSION}.orig.tar.gz
+	git archive --prefix=malt-${VERSION}/ v${VERSION} | gzip > malt_${VERSION}.orig.tar.gz
 	#extract archive
 	tar -xzf malt_${VERSION}.orig.tar.gz
 	#go to directory
