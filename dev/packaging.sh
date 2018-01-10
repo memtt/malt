@@ -63,7 +63,7 @@ function fedora_packaging()
 	#rpm tree
 	rpmdev-setuptree
 	#gen archive
-	git archive --prefix=malt-0.3.0/ 0.3.0 | bzip2 > ~/rpmbuild/SOURCES/malt-0.3.0.tar.bz2
+	git archive --prefix=malt-0.3.0/ HEAD | bzip2 > ~/rpmbuild/SOURCES/malt-0.3.0.tar.bz2
 	#build
 	rpmbuild -ba packaging/fedora/malt.spec
 	#move here
