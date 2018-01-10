@@ -9,6 +9,7 @@
 
 #setup version
 VERSION=0.3.0
+VERSION=$(echo $VERSION | cut -f 1 -d '-')
 
 #exit on error
 set -e
