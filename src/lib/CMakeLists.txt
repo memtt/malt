@@ -82,13 +82,19 @@ set(COMMON_OBJS $<TARGET_OBJECTS:htopml-json>
 ######################################################
 add_library(malt-base SHARED ${COMMON_OBJS})
 target_link_libraries(malt-base ${LIB_MALT_DEPS})
+set_target_properties(malt-base PROPERTIES VERSION 0.3.0
+                                           SOVERSION 1)
 
 ######################################################
 add_library(malt SHARED ${COMMON_OBJS} $<TARGET_OBJECTS:malt-libc-wrapper>)
 target_link_libraries(malt ${LIB_MALT_DEPS})
+set_target_properties(malt PROPERTIES VERSION 0.3.0
+                                      SOVERSION 1)
 
 ######################################################
 add_library(malt-controler SHARED $<TARGET_OBJECTS:malt-fake-controler>)
+set_target_properties(malt-controler PROPERTIES VERSION 0.3.0
+                                                SOVERSION 1)
 
 ######################################################
 add_subdirectory(core)
