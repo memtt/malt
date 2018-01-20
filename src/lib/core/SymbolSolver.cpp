@@ -276,10 +276,17 @@ void SymbolSolver::solveNames(LinuxProcMapEntry * procMapEntry)
 	std::stringstream addr2lineCmd;
 	addr2lineCmd << "addr2line -C -f -e " << procMapEntry->file;
 	std::vector<CallSite*> lst;
+	
+	//Gentoo now enable -fPIE by default on executable so we need to detect the case
+	//and if enable consider the address relative to the mapping as for .so files.
+	//We know on x86_64 that binary are by default map at 0x00400000, if not then
+	//we consider -fPIE enabled and apply shift.
 	bool isSharedLib = false;
 	
 	//check if shared lib or exe
-	if (procMapEntry->file.substr(procMapEntry->file.size()-3) == ".so")
+	if (procMapEntry->file.substr(procMapEntry->file.size()-3) == ".so" || procMapEntry->file.find(".so.") != std::string::npos)
+		isSharedLib = true;
+	else if (procMapEntry->lower != (void*)0x00400000)//check if -fPIE on x86_64
 		isSharedLib = true;
 	
 	//preate addr2line args
