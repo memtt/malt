@@ -286,8 +286,10 @@ void SymbolSolver::solveNames(LinuxProcMapEntry * procMapEntry)
 	//check if shared lib or exe
 	if (procMapEntry->file.substr(procMapEntry->file.size()-3) == ".so" || procMapEntry->file.find(".so.") != std::string::npos)
 		isSharedLib = true;
-	else if (procMapEntry->lower != (void*)0x00400000)//check if -fPIE on x86_64
-		isSharedLib = true;
+	#ifdef __x86_64__
+		else if (procMapEntry->lower != (void*)0x00400000)//check if -fPIE on x86_64
+			isSharedLib = true;
+	#endif
 	
 	//preate addr2line args
 	for (CallSiteMap::iterator it = callSiteMap.begin() ; it != callSiteMap.end() ; ++it)
