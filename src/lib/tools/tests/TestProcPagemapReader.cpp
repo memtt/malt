@@ -17,7 +17,7 @@ using namespace MALT;
 /*******************  FUNCTION  *********************/
 TEST(ProcPagemapReader,structSize)
 {
-	EXPECT_EQ(8,sizeof(ProcPageMapEntry));
+	EXPECT_EQ(8ul,sizeof(ProcPageMapEntry));
 }
 
 /*******************  FUNCTION  *********************/
@@ -25,7 +25,7 @@ TEST(ProcPagemapReader,small)
 {
 	char buffer[1024];
 	size_t phys = ProcPageMapReader::getPhysicalSize(buffer,sizeof(buffer));
-	EXPECT_EQ(1024,phys);
+	EXPECT_EQ(1024lu,phys);
 }
 
 /*******************  FUNCTION  *********************/
@@ -34,7 +34,7 @@ TEST(ProcPagemapReader,medium)
 	char buffer[4096+1024];
 	memset(buffer,0,sizeof(buffer));
 	size_t phys = ProcPageMapReader::getPhysicalSize(buffer,sizeof(buffer));
-	EXPECT_EQ(4096+1024,phys);
+	EXPECT_EQ(4096ul+1024ul,phys);
 }
 
 /*******************  FUNCTION  *********************/

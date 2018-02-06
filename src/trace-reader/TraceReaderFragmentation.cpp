@@ -115,8 +115,8 @@ void TraceReaderFragmentation::checkForSharedPages(void)
 		for (FragmentationChunkMap::iterator it2 = chunks.begin() ; it2 != chunks.end() ; ++it2)
 		{
 			bool noSamePresent = (it->second.presentAtStep2 != it2->second.presentAtStep2);
-			bool sharedPages   = (((size_t)it->first & PAGE_MASK) == ((size_t)it2->first + it2->second.chunk.size & PAGE_MASK))
-			                    ||(((size_t)it2->first & PAGE_MASK) == ((size_t)it->first + it->second.chunk.size & PAGE_MASK));
+			bool sharedPages   = (((size_t)it->first & PAGE_MASK) == ((size_t)it2->first + (it2->second.chunk.size & PAGE_MASK)))
+			                    ||(((size_t)it2->first & PAGE_MASK) == ((size_t)it->first + (it->second.chunk.size & PAGE_MASK)));
 			if (noSamePresent && sharedPages)
 				it->second.haveSharedPage = it2->second.haveSharedPage = true;
 		}
