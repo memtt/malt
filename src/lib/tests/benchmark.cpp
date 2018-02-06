@@ -79,7 +79,7 @@ ticks BenchTiming::getTicksPerSecond(void) const
 	double tf = (double)t.tv_sec + (double)t.tv_usec / 1000000.0;
 	
 	return (double)(t1-t0) / tf;
-};
+}
 
 void BenchTiming::start(const char* name, int duration)
 {

@@ -75,22 +75,22 @@ class Debug : public FormattedMessage
 class DebugDummy
 {
 	public:
-		DebugDummy(const char * format,const char * file,int line,DebugLevel level = MESSAGE_DEBUG, const char * category = NULL){};
-		DebugDummy(const char * format,DebugLevel level = MESSAGE_DEBUG,const char * category = NULL){};
-		static void enableCat(const std::string & cat){};
-		static void enableAll(void){};
-		static bool showCat(const char * cat){return false;};
-		static void showList(void){};
-		static void setVerbosity(const std::string & value){};
+		DebugDummy(const char * format,const char * file,int line,DebugLevel level = MESSAGE_DEBUG, const char * category = NULL){}
+		DebugDummy(const char * format,DebugLevel level = MESSAGE_DEBUG,const char * category = NULL){}
+		static void enableCat(const std::string & cat){}
+		static void enableAll(void){}
+		static bool showCat(const char * cat){return false;}
+		static void showList(void){}
+		static void setVerbosity(const std::string & value){}
 		//from message class
-		template <class T> DebugDummy & arg(const T & value) {return *this;};
-		DebugDummy & arg(const std::string & value) {return *this;};
-		DebugDummy & arg(const char * value) {return *this;};
-		DebugDummy & argStrErrno(void) {return *this;};
-		DebugDummy & argUnit(unsigned long value,const char * unit = "") {return *this;};
-		std::string toString(void) const {return "";};
-		void toStream(std::ostream & out) const {};
-		void end(void){};
+		template <class T> DebugDummy & arg(const T & value) {return *this;}
+		DebugDummy & arg(const std::string & value) {return *this;}
+		DebugDummy & arg(const char * value) {return *this;}
+		DebugDummy & argStrErrno(void) {return *this;}
+		DebugDummy & argUnit(unsigned long value,const char * unit = "") {return *this;}
+		std::string toString(void) const {return "";}
+		void toStream(std::ostream & out) const {}
+		void end(void){}
 };
 
 /********************  MACROS  **********************/

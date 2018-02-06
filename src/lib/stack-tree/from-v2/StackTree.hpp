@@ -81,13 +81,13 @@ class StackTree
 		virtual StackTreeDataHandler getDataHandler(StackTreeHandler handler) = 0;
 		virtual StackId getStackId(StackTreeDataHandler handler) = 0;
 		virtual void prepareForOutput(void) = 0;
-		template <class T> T & getTypedData(StackTreeHandler handler,int id){assert(sizeof(T) == descriptors[id]->typeSize()); return *(T*)getData(handler,id);};
-		template <class T> T & getTypedData(StackTreeDataHandler handler,int id){assert(sizeof(T) == descriptors[id]->typeSize()); return *(T*)getData(handler,id);};
-		template <class T> int addDescriptor(const std::string & name) {return addDescriptor(name,new StackTreeTypeDescriptorTyped<T>());};
-		int addDescriptor(const std::string name, StackTreeTypeDescriptor * descriptor) {names[descriptorsCnt]=name;descriptors[descriptorsCnt]=descriptor;return descriptorsCnt++;};
+		template <class T> T & getTypedData(StackTreeHandler handler,int id){assert(sizeof(T) == descriptors[id]->typeSize()); return *(T*)getData(handler,id);}
+		template <class T> T & getTypedData(StackTreeDataHandler handler,int id){assert(sizeof(T) == descriptors[id]->typeSize()); return *(T*)getData(handler,id);}
+		template <class T> int addDescriptor(const std::string & name) {return addDescriptor(name,new StackTreeTypeDescriptorTyped<T>());}
+		int addDescriptor(const std::string name, StackTreeTypeDescriptor * descriptor) {names[descriptorsCnt]=name;descriptors[descriptorsCnt]=descriptor;return descriptorsCnt++;}
 		virtual void toJson(htopml::JsonState & json, const StackTree & tree) const = 0;
 		virtual void registerSymbols(SymbolRegistry & solver) const = 0;
-		friend void convertToJson(htopml::JsonState & json, const StackTree & tree) {tree.toJson(json,tree);};
+		friend void convertToJson(htopml::JsonState & json, const StackTree & tree) {tree.toJson(json,tree);}
 	protected:
 		virtual void * getData(StackTreeHandler handler,int id) = 0;
 		virtual void * getData(StackTreeDataHandler handler,int id)  = 0;

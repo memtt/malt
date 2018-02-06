@@ -81,7 +81,7 @@ int main(int argc, char ** argv)
 				return -1;
 			}
 			
-			if (sscanf(argv[i+1],"stack=%p",&(filter.filterStack)) == 1) {
+			if (sscanf(argv[i+1],"stack=%p",(void**)&(filter.filterStack)) == 1) {
 			} else if (sscanf(argv[i+1],"size=%lu",&(filter.filterSize)) == 1) {
 			} else if (sscanf(argv[i+1],"at=%llu",&(filter.at)) == 1) {
 			} else {

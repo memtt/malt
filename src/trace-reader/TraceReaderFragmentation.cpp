@@ -93,7 +93,7 @@ void TraceReaderFragmentation::printDetails(void)
 	{
 		FragmentationChunk & info = it->second;
 		if (info.haveSharedPage && info.presentAtStep2)
-			printf("\t\t{\"addr\":\"%p\",\"size\":\"%lu\",\"lifetime\":\"%llu\",\"stack\":\"%p\"},\n",info.chunk.addr,info.chunk.size,info.chunk.lifetime,info.chunk.allocStack);
+			printf("\t\t{\"addr\":\"%p\",\"size\":\"%lu\",\"lifetime\":\"%llu\",\"stack\":\"%p\"},\n",info.chunk.addr,info.chunk.size,info.chunk.lifetime,(void*)info.chunk.allocStack);
 	}
 	printf("\t],\n");
 	printf("\tfreed:[\n");
@@ -101,7 +101,7 @@ void TraceReaderFragmentation::printDetails(void)
 	{
 		FragmentationChunk & info = it->second;
 		if (info.haveSharedPage && ! info.presentAtStep2)
-			printf("\t\t{\"addr\":\"%p\",\"size\":\"%lu\",\"lifetime\":\"%llu\",\"stack\":\"%p\"},\n",info.chunk.addr,info.chunk.size,info.chunk.lifetime,info.chunk.allocStack);
+			printf("\t\t{\"addr\":\"%p\",\"size\":\"%lu\",\"lifetime\":\"%llu\",\"stack\":\"%p\"},\n",info.chunk.addr,info.chunk.size,info.chunk.lifetime,(void*)info.chunk.allocStack);
 	}
 	printf("\t],\n");
 	printf("}\n");
@@ -162,7 +162,7 @@ void FragmentationChunkPerCallStack::push(size_t size, ticks lifetime)
 void FragmentationChunkPerCallStack::print(const Stack * stack) const
 {
 	printf("\t\t{\"stack\":\"%p\",\"count\":%lu,\"sum\":%lu,\"min\":%lu,\"max\":%lu,\"sumLifetime\":%llu},\n",
-		   stack,this->count,this->sum,this->min,this->max,this->sumLifetime);
+		   (void*)stack,this->count,this->sum,this->min,this->max,this->sumLifetime);
 }
 
 }

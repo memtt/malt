@@ -14,9 +14,9 @@
 using namespace MALT;
 
 /*******************  FUNCTION  *********************/
-void test1(void) {};
-void test2(void) {};
-void test3(void) {};
+void test1(void) {}
+void test2(void) {}
+void test3(void) {}
 
 /********************** CONSTS **********************/
 void *CST_STACK_1[] = {(void*)0x1,(void*)0x2,(void*)0x2,(void*)0x2,(void*)0x2,(void*)0x2,(void*)0x3};

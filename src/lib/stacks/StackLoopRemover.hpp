@@ -41,13 +41,13 @@ class StackLoopNode
 class StackLoopRemover
 {
 	public:
-		StackLoopRemover(size_t maxSize);
+		StackLoopRemover(int maxSize);
 		~StackLoopRemover(void);
 		void removeLoops(Stack & stack);
 		void reset(void);
 	private:
 		StackLoopNode * nodes;
-		size_t maxSize;
+		int maxSize;
 		void ** rebuildStack;
 };
 

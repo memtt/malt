@@ -493,4 +493,4 @@ void initInternalAlloc(bool threadSafe)
 		gblInternaAlloc = new SimpleAllocator(threadSafe);
 }
 
-};
+}

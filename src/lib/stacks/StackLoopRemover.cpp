@@ -87,7 +87,7 @@ void StackLoopNode::reset(void )
 }
 
 /*******************  FUNCTION  *********************/
-StackLoopRemover::StackLoopRemover(size_t maxSize)
+StackLoopRemover::StackLoopRemover(int maxSize)
 {
 	assert(maxSize > 0);
 	this->nodes = new StackLoopNode[maxSize];

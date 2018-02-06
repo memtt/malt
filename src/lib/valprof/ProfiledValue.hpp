@@ -126,10 +126,10 @@ template <class T>
 struct ProfilableMaxScalar
 {
 	T value;
-	ProfilableMaxScalar(void) {};
-	ProfilableMaxScalar(const T & value) {this->value = value;};
-	bool reduce(const ProfilableMaxScalar<T> & v) {if (v.value > this->value) {this->value = v.value;return true;} else {return false;}};
-	template <class U> friend void convertToJson(htopml::JsonState& json, const ProfilableMaxScalar<U> & value) {json.getStream() << value.value;};
+	ProfilableMaxScalar(void) {}
+	ProfilableMaxScalar(const T & value) {this->value = value;}
+	bool reduce(const ProfilableMaxScalar<T> & v) {if (v.value > this->value) {this->value = v.value;return true;} else {return false;}}
+	template <class U> friend void convertToJson(htopml::JsonState& json, const ProfilableMaxScalar<U> & value) {json.getStream() << value.value;}
 };
 
 /*********************  CLASS  **********************/

@@ -29,6 +29,6 @@ struct Helpers
 	static int getFileId(void);
 };
 
-};
+}
 
 #endif //MALT_HELPERS_HPP

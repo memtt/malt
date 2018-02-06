@@ -37,7 +37,7 @@ void TraceReaderStats::onEnd(void)
 
 	for (TraceReaderStatsMap::const_iterator it = stats.begin() ; it != stats.end() ; ++it) {
 		StackChunkStats item = it->second;
-		printf("\t[\"%p\", %lu, %lu, %lu, %lu]", item.stackId, item.count, item.totalSize, item.minSize, item.maxSize);
+		printf("\t[\"%p\", %lu, %lu, %lu, %lu]", (void*)item.stackId, item.count, item.totalSize, item.minSize, item.maxSize);
 
 		TraceReaderStatsMap::const_iterator final_iter = stats.end();
 		--final_iter;

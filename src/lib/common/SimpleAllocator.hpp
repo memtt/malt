@@ -147,6 +147,6 @@ extern SimpleAllocator * gblInternaAlloc;
 /*******************  FUNCTION  *********************/
 void initInternalAlloc(bool threadSafe = true);
 
-};
+}
 
 #endif //MALT_SIMPLE_ALLOCATOR_HPP
