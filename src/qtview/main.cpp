@@ -82,7 +82,7 @@ int main(int argc, char *argv[])
 	QStringList authFileArgs;
 	authFileArgs << "-bc" << authFile.fileName() << user << pass;
 	QProcess passwd;
-	qDebug() << MALT_PREFIX "/bin/malt-passwd" << authFileArgs;
+	//qDebug() << MALT_PREFIX "/bin/malt-passwd" << authFileArgs;
 	passwd.setProcessChannelMode(QProcess::ForwardedChannels);
 	passwd.start(MALT_PREFIX "/bin/malt-passwd",authFileArgs);
 	bool status = passwd.waitForFinished();
@@ -99,8 +99,8 @@ int main(int argc, char *argv[])
 		serverArgs << argv[i];
     QProcess server;
 	server.setProcessChannelMode(QProcess::ForwardedChannels);
-	qDebug() << MALT_PREFIX "/bin/malt-webserver" << serverArgs;
-    server.start(MALT_PREFIX "/bin/malt-webserver", serverArgs);
+	//qDebug() << MALT_PREFIX "/bin/malt-webview" << serverArgs;
+    server.start(MALT_PREFIX "/bin/malt-webview", serverArgs);
 	
 	//wait server
 	QTcpSocket socket;

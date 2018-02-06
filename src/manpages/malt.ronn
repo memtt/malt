@@ -9,7 +9,7 @@ malt(1) -- A memory profiling tool
 
 MALT is a memory profiling tool wrapping your system memory allocation and applying
 backtrace on each call. It will provide you a memory allocation profile which can 
-be viewed with malt-webserver(1).
+be viewed with malt-webview(1).
 
 MALT work out of the box but to profiling your application it might be better to compile
 it with debug symbols (`-g`) and also to disable inlining to get more accurate stacks 
@@ -64,7 +64,7 @@ Then take care of using the `--mpi` option on the profiling tool :
 ## GET THE GUI
 
 With MALT you can use direcly `kcachegrind` if you enable the valgrind compatible format in configuration
-(output:callgrind). But by default MALT will generate a JSON file to be used with malt-webserver(1).
+(output:callgrind). But by default MALT will generate a JSON file to be used with malt-webview(1).
 
 ## CONFIGURATION FILE
 
@@ -244,4 +244,4 @@ on threads using the `filter:enabled` option, then enable it by hand.
 
 ## SEE ALSO
 
-malt-webserver(1), malt-passwd(1)
+malt-webview(1), malt-qt5(1), malt-passwd(1)

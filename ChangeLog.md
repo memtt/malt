@@ -15,6 +15,7 @@ master
  - Use a more compress stack tree in json file
  - Add filter to only instrument the given executable and disabling childs
  - Add warnings about global varibales if the app use too many of them
+ - Add QT5 webkit webview wrapper.
 
 0.3.0 - 16/06/2015
 ------------------

@@ -18,7 +18,7 @@ MALT depends on the presence of :
 
 It optionally depends on :
 
- - nodejs (http://nodejs.org/) to run the GUI webserver. Tested version is 0.10.30.
+ - nodejs (http://nodejs.org/) to run the webview GUI. Tested version is 0.10.30.
  - libelf (http://www.mr511.de/software/english.html) to extract global variable list from executables and libs. Tested version is 0.128.
  - libunwind (http://www.nongnu.org/libunwind/) as an alternative implementation of glibc backtrace method. Tested version is 1.1.
 
@@ -121,16 +121,16 @@ Then to profile you mpi application proceed like :
 Using webview
 -------------
 
-You can use the webview by calling command `malt-webserver` as :
+You can use the webview by calling command `malt-webview` as :
 
 ```shell
-	malt-webserver [-p PORT] [--no-auth] -i malt-YOUR_PROGRAM-1234.json
+	malt-webview [-p PORT] [--no-auth] -i malt-YOUR_PROGRAM-1234.json
 ```
 
 It will open a server listening locally on port 8080 so you can open your web browser
 to connect to the web interface via http://localhost:8080.
 
-At first usage malt-webserver will create the password file `$HOME/.malt/passwd` and ask you a
+At first usage malt-webview will create the password file `$HOME/.malt/passwd` and ask you a
 protection password for http authentification. You can change it at any time with
 
 ```shell

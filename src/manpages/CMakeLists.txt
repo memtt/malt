@@ -24,5 +24,5 @@
 
 ######################################################
 #install
-install(FILES malt.1.bz2 malt-passwd.1.bz2 malt-webserver.1.bz2
+install(FILES malt.1.bz2 malt-passwd.1.bz2 malt-webview.1.bz2
         DESTINATION share/man/man1)
