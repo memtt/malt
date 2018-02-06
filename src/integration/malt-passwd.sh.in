@@ -59,4 +59,6 @@ else
 fi
 
 #chmod file
-chmod go-r "$HOME/.malt/passwd"
+if [ -f "$HOME/.malt/passwd" ]; then
+	chmod go-r "$HOME/.malt/passwd"
+fi
