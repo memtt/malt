@@ -34,6 +34,7 @@ args.add({ name: 'input', desc: 'input file from MALT into JSON format', switche
 args.add({ name: 'port',  desc: 'Port to use to wait for HTTP requests', switches: [ '-p', '--port'],       value: 'port', required: false });
 args.add({ name: 'override',  desc: 'Override source dirs. Format is src1:dest1,src2:dest2...', switches: [ '-o', '--override'],       value: 'redirections', required: false });
 args.add({ name: 'noauth',    desc: 'Disable http authentification', switches: ['-n', '--no-auth'], required: false });
+args.add({ name: 'authfile',    desc: 'Use custom authentification file', switches: ['-A', '--authfile'], value:'file', required: false });
 if (!args.parse()) 
 {
 	console.error("Invalid parameters, please check with -h");
@@ -50,13 +51,18 @@ function getUserHome() {
 //Setup http auth if enabled
 if (args.params.noauth == undefined)
 {
+	//fil
+	var file = getUserHome() + "/.malt/passwd";
+	if (args.params.authfile != undefined)
+		file = args.params.authfile;
+	
 	//log
-	console.log("Load http auth from ~/.malt/passwd, you can change your passwod with 'malt-passwd {user}' or disable auth with --no-auth\n");
+	console.log("Load http auth from "+file+", you can change your passwod with 'malt-passwd {user}' or disable auth with --no-auth\n");
 
 	//setup auth system
 	var basic = auth.basic({
 	    realm: "MALT web GUI.",
-	    file: getUserHome() + "/.malt/passwd"
+	    file: file
 	});
 	//inserto into express
 	app.use(auth.connect(basic));

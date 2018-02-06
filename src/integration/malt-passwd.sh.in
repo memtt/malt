@@ -41,8 +41,22 @@ if [ ! -d "$HOME/.malt" ]; then
 	mkdir "$HOME/.malt"
 fi
 
+######################################################
+for arg in "$@"
+do
+	case $arg in
+		-b*)
+			HAVE_OPT="true"
+			;;
+	esac
+done
+
 #call node on main script
-"$NODE" "@CMAKE_INSTALL_PREFIX@/share/malt/webview/node_modules/.bin/htpasswd" "-c" "$HOME/.malt/passwd" "$@" || exit 1
+if [ -z "$HAVE_OPT" ]; then
+	"$NODE" "@CMAKE_INSTALL_PREFIX@/share/malt/webview/node_modules/.bin/htpasswd" "-c" "$HOME/.malt/passwd" "$@" || exit 1
+else
+	"$NODE" "@CMAKE_INSTALL_PREFIX@/share/malt/webview/node_modules/.bin/htpasswd" "$@" || exit 1
+fi
 
 #chmod file
 chmod go-r "$HOME/.malt/passwd"

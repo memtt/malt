@@ -31,21 +31,41 @@ detectNodeJS
 ######################################################
 #check if have --no-auth
 HAVE_NO_AUTH="false"
+HAVE_CUSTOME_AUTH="false"
 for arg in "$@"
 do
-	if [ "$arg" = "--no-auth" ]; then
-		HAVE_NO_AUTH="true"
-	fi
+	case $arg in
+		--no-auth)
+			HAVE_NO_AUTH="true"
+			;;
+		--authfile|-A)
+			HAVE_CUSTOME_AUTH="true"
+			;;
+	esac
 done
 
 ######################################################
 #Check passwod file
-if [ ! -f "$HOME/.malt/passwd" ] && [ "$HAVE_NO_AUTH" = "false" ]; then
+if [ ! -f "$HOME/.malt/passwd" ] && [ "$HAVE_NO_AUTH" = "false" ] && [ "$HAVE_CUSTOME_AUTH" = "false" ]; then
 	echo "!!! You need to setup a user/password to secure access to the web GUI !!!"
 	printf "User : "
 	read user
 	"@CMAKE_INSTALL_PREFIX@/bin/malt-passwd" "$user" || exit 1
 fi
 
+######################################################
+function forwardSigterm()
+{
+	#echo "Send KILL to python $CHILD !"
+	kill $CHILD
+}
+
+######################################################
+trap forwardSigterm SIGTERM
+trap forwardSigterm SIGINT
+
 #call node on main script
-"$NODE" "@CMAKE_INSTALL_PREFIX@/share/malt/webview/malt-webserver.js" "$@" || exit 1
+"$NODE" "@CMAKE_INSTALL_PREFIX@/share/malt/webview/malt-webserver.js" "$@" &
+CHILD=$!
+wait $!
+exit $?
