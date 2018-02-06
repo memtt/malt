@@ -1,7 +1,7 @@
 MALT : Malloc Tracker
 =====================
 
-[![Build status](http://ci.dev-progranet.homelinux.org/projects/2/status.png?ref=master)](http://ci.dev-progranet.homelinux.org/projects/2?ref=master)
+[![Build Status](https://travis-ci.org/memtt/malt.svg?branch=master)](https://travis-ci.org/memtt/malt)
 
 What is it ?
 ------------
