@@ -1,7 +1,7 @@
 ######################################################
 #            PROJECT  : MALT                         #
-#            VERSION  : 0.3.0                        #
-#            DATE     : 07/2015                      #
+#            VERSION  : 1.0.0                        #
+#            DATE     : 02/2018                      #
 #            AUTHOR   : Valat Sébastien              #
 #            LICENSE  : CeCILL-C                     #
 ######################################################
@@ -13,7 +13,7 @@ inherit cmake-utils
 RESTRICT="primaryuri"
 DESCRIPTION="Memory profiling tool to track memory allocations (malloc,free,realloc...)."
 HOMEPAGE="https://github.com/svalat/malt"
-SRC_URI="https://github.com/downloads/svalat/malt/malt-0.3.0.tar.bz2"
+SRC_URI="https://github.com/downloads/svalat/malt/malt-1.0.0.tar.bz2"
 
 LICENSE="CeCILL-C"
 SLOT="0"

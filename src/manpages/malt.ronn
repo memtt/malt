@@ -240,7 +240,7 @@ on threads using the `filter:enabled` option, then enable it by hand.
 
 ## VERSION
 
-   This is the manpage of MALT version 0.3.0.
+   This is the manpage of MALT version 1.0.0.
 
 ## SEE ALSO
 
