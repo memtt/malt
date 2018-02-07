@@ -15,7 +15,9 @@ COLOR_RESET="$(printf "\033[0m")"
 function extract_old_version()
 {
 	OLD_VERSION=$(cat configure | grep VERSION | xargs echo | cut -d " " -f 4)
-	echo "Old version is ${OLD_VERSION}"
+	OLD_SHORT_VERSION=$(echo $OLD_VERSION | sed -e 's/-dev//g')
+	OLD_SHORT_VERSION_PROTECTED=$(echo $OLD_SHORT_VERSION | sed -e 's/\./\\./g')
+	echo "Old version is ${OLD_VERSION}, short is ${OLD_SHORT_VERSION}"
 }
 
 ######################################################
@@ -40,6 +42,7 @@ fi
 
 ######################################################
 version="$1"
+shortVersion="$(echo $1 | sed -e 's/-dev//g')"
 newdate="DATE     : $(date +%m/%Y)"
 V="VERSION"
 newversion="$V  : $(printf "%-16s" "$version")"
@@ -78,16 +81,18 @@ done
 
 ######################################################
 #update bower and package
-sed -i -r -e "s/\"version\": \"[0-9A-Za-z.-]+\"/\"version\": \"${version}\"/g" src/webview/bower.json
-sed -i -r -e "s/\"version\": \"[0-9A-Za-z.-]+\"/\"version\": \"${version}\"/g" src/webview/package.json
+sed -i -r -e "s/\"version\": \"[0-9A-Za-z.-]+\"/\"version\": \"${shortVersion}\"/g" src/webview/bower.json
+sed -i -r -e "s/\"version\": \"[0-9A-Za-z.-]+\"/\"version\": \"${shortVersion}\"/g" src/webview/package.json
 sed -i -r -e "s/^version=[0-9A-Za-z.-]+$/version=${version}/g" dev/gen-archive.sh
-sed -i -r -e "s/${OLD_VERSION}/${version}/g" packaging/README.md
-sed -i -r -e "s/${OLD_VERSION}/${version}/g" dev/packaging.sh
-sed -i -r -e "s/${OLD_VERSION}/${version}/g" packaging/fedora/malt.spec
-sed -i -r -e "s/${OLD_VERSION}/${version}/g" packaging/debian/changelog
-sed -i -r -e "s/${OLD_VERSION}/${version}/g" src/manpages/*.ronn
-sed -i -r -e "s/${OLD_VERSION}/${version}/g" packaging/gentoo/dev-util/malt/malt-*.ebuild
-sed -i -r -e "s/${OLD_VERSION}/${version}/g" packaging/archlinux/PKGBUILD
+sed -i -r -e "s/${OLD_SHORT_VERSION_PROTECTED}/${shortVersion}/g" packaging/README.md
+sed -i -r -e "s/${OLD_SHORT_VERSION_PROTECTED}/${shortVersion}/g" dev/packaging.sh
+sed -i -r -e "s/${OLD_SHORT_VERSION_PROTECTED}/${shortVersion}/g" packaging/fedora/malt.spec
+sed -i -r -e "s/${OLD_SHORT_VERSION_PROTECTED}/${shortVersion}/g" packaging/debian/changelog
+sed -i -r -e "s/${OLD_SHORT_VERSION_PROTECTED}/${shortVersion}/g" src/manpages/*.ronn
+sed -i -r -e "s/${OLD_SHORT_VERSION_PROTECTED}/${shortVersion}/g" packaging/gentoo/dev-util/malt/malt-*.ebuild
+sed -i -r -e "s/${OLD_SHORT_VERSION_PROTECTED}/${shortVersion}/g" packaging/archlinux/PKGBUILD
+sed -i -r -e "s/${OLD_SHORT_VERSION_PROTECTED}/${shortVersion}/g" Doxyfile
+sed -i -r -e "s/${OLD_SHORT_VERSION_PROTECTED}/${shortVersion}/g" ./src/lib/CMakeLists.txt
 
 ######################################################
 #update date in debian changelog
@@ -104,5 +109,8 @@ make -C ./src/manpages || exit 1
 ######################################################
 #serach not updated
 echo "=================== Check not updated list ======================"
-grep -RHn "$(echo "${OLD_VERSION}" | sed -e 's/\./\\./g')" ./ | grep -v node_modules | grep -v extern-deps | grep -v "\.git" | grep -v bower_components | grep -v ChangeLog.md | grep "${OLD_VERSION}"
+grep -RHn "$(echo "${OLD_VERSION}" | sed -e 's/\./\\./g')" ./ | grep -v node_modules | grep -v extern-deps | grep -v "\.git" | grep -v bower_components | grep -v ChangeLog.md | grep -v build | grep "${OLD_VERSION}"
+if [ "$shortVerison" != "$OLD_SHORT_VERSION" ]; then
+	grep -RHn "${OLD_SHORT_VERSION_PROTECTED}" ./ | grep -v node_modules | grep -v extern-deps | grep -v "\.git" | grep -v bower_components | grep -v ChangeLog.md | grep -v build | grep "${OLD_SHORT_VERSION}"
+fi
 echo "================================================================="
