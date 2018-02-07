@@ -1,8 +1,8 @@
 Change log
 ==========
 
-master
-------
+1.0.0 - 07/02/2018
+------------------
 
  - Add scatter plots (lifetime,size) and (size,time).
  - Add maltEnable/maltDisable to limit to sub-part of a program.
