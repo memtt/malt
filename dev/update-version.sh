@@ -1,7 +1,7 @@
 #!/bin/bash
 ######################################################
 #            PROJECT  : MATT                         #
-#            VERSION  : 1.0.0                        #
+#            VERSION  : 1.1.0-dev                    #
 #            DATE     : 02/2018                      #
 #            AUTHOR   : Valat Sébastien              #
 #            LICENSE  : CeCILL-C                     #
@@ -15,6 +15,7 @@ COLOR_RESET="$(printf "\033[0m")"
 function extract_old_version()
 {
 	OLD_VERSION=$(cat configure | grep VERSION | xargs echo | cut -d " " -f 4)
+	OLD_VERSION_PROTECTED=$(echo $OLD_VERSION | sed -e 's/\./\\./g')
 	OLD_SHORT_VERSION=$(echo $OLD_VERSION | sed -e 's/-dev//g')
 	OLD_SHORT_VERSION_PROTECTED=$(echo $OLD_SHORT_VERSION | sed -e 's/\./\\./g')
 	echo "Old version is ${OLD_VERSION}, short is ${OLD_SHORT_VERSION}"
@@ -81,6 +82,7 @@ done
 
 ######################################################
 #update bower and package
+set -i -r -e "s/$OLD_VERSION_PROTECTED/${version}/g" src/integration/malt.sh.in
 sed -i -r -e "s/\"version\": \"[0-9A-Za-z.-]+\"/\"version\": \"${shortVersion}\"/g" src/webview/bower.json
 sed -i -r -e "s/\"version\": \"[0-9A-Za-z.-]+\"/\"version\": \"${shortVersion}\"/g" src/webview/package.json
 sed -i -r -e "s/^version=[0-9A-Za-z.-]+$/version=${version}/g" dev/gen-archive.sh

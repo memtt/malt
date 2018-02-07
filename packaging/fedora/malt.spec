@@ -1,13 +1,13 @@
 ######################################################
 #            PROJECT  : MALT                         #
-#            VERSION  : 1.0.0                        #
+#            VERSION  : 1.1.0-dev                    #
 #            DATE     : 02/2018                      #
 #            AUTHOR   : Valat Sébastien              #
 #            LICENSE  : CeCILL-C                     #
 ######################################################
 
 Name: malt
-Version: 1.0.0
+Version: 1.1.0
 Release: 1%{?dist}
 Summary: Memory profiling tool to track memory allocations (malloc, realloc, free...)
 

@@ -1,6 +1,6 @@
 ######################################################
 #            PROJECT  : MALT                         #
-#            VERSION  : 1.0.0                        #
+#            VERSION  : 1.1.0-dev                    #
 #            DATE     : 02/2018                      #
 #            AUTHOR   : Valat Sébastien              #
 #            LICENSE  : CeCILL-C                     #
@@ -82,18 +82,18 @@ set(COMMON_OBJS $<TARGET_OBJECTS:htopml-json>
 ######################################################
 add_library(malt-base SHARED ${COMMON_OBJS})
 target_link_libraries(malt-base ${LIB_MALT_DEPS})
-set_target_properties(malt-base PROPERTIES VERSION 1.0.0
+set_target_properties(malt-base PROPERTIES VERSION 1.1.0
                                            SOVERSION 1)
 
 ######################################################
 add_library(malt SHARED ${COMMON_OBJS} $<TARGET_OBJECTS:malt-libc-wrapper>)
 target_link_libraries(malt ${LIB_MALT_DEPS})
-set_target_properties(malt PROPERTIES VERSION 1.0.0
+set_target_properties(malt PROPERTIES VERSION 1.1.0
                                       SOVERSION 1)
 
 ######################################################
 add_library(malt-controler SHARED $<TARGET_OBJECTS:malt-fake-controler>)
-set_target_properties(malt-controler PROPERTIES VERSION 1.0.0
+set_target_properties(malt-controler PROPERTIES VERSION 1.1.0
                                                 SOVERSION 1)
 
 ######################################################
