@@ -17,8 +17,8 @@ URL: https://github.com/downloads/svalat/svUnitTest/%{name}-%{version}.tar.bz2
 Source0: %{name}-%{version}.tar.bz2
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
-BuildRequires: cmake, gcc-c++ libunwind-devel elfutils-devel
-Requires: libunwind elfutils-libelf binutils nodejs qt5-qtwebkit-devel
+BuildRequires: cmake, gcc-c++ libunwind-devel elfutils-devel qt5-qtwebkit-devel
+Requires: libunwind elfutils-libelf binutils nodejs qt5-qtwebkit
 
 %description
 Memory profiling tool to track memory allocations (malloc, realloc, free...)
