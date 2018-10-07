@@ -18,7 +18,7 @@ Source0: %{name}-%{version}.tar.bz2
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires: cmake, gcc-c++ libunwind-devel elfutils-devel qt5-qtwebkit-devel
-Requires: libunwind elfutils-libelf binutils nodejs qt5-qtwebkit
+Requires: libunwind elfutils-libelf binutils nodejs qt5-qtwebkit graphviz
 
 %description
 Memory profiling tool to track memory allocations (malloc, realloc, free...)
