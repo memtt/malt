@@ -370,3 +370,13 @@ If you search some parallel memory allocators, you can find those one on the net
  * [Hoard](http://www.hoard.org/)
  * [Lockless allocator](http://locklessinc.com/downloads/)
  * [MPC](http://mpc.hpcframework.paratools.com/) memory allocator (look into mpcframework/MPC_Allocator)
+
+License
+-------
+
+MALT is distributed under CeCILL-C license (LGPL compatible).
+
+Discussion
+----------
+
+You can join the google group to exchange ideas and ask questions : https://groups.google.com/forum/#!forum/memtt-malt.
