@@ -9,6 +9,8 @@ What is it ?
 MALT is a memory tool to find where you allocate your memory. It also provides you some
 statistics about memory usage and help to find memory leaks.
 
+![MALT GUI](https://memtt.github.io/malt/images/screenshots/screenshot-12.png)
+
 Dependencies
 ------------
 
