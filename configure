@@ -2,8 +2,8 @@
 ######################################################
 #            PROJECT  : MALT                         #
 #            VERSION  : 1.1.0-dev                    #
-#            DATE     : 02/2018                      #
-#            AUTHOR   : Valat Sébastien              #
+#            DATE     : 10/2018                      #
+#            AUTHOR   : Sebastien Valat              #
 #            LICENSE  : CeCILL-C                     #
 ######################################################
 
@@ -14,30 +14,439 @@
 # known ./configure & make & make install procedure.
 
 ######################################################
+#help debug
+#set -e
+
+######################################################
+#where to load optinos
+CFG_OPTIONS_FILE='options'
 #script setup
-PROJECT_NAME='MALT : Memory Allocations Tracking Tool'
+CFG_PROJECT_NAME="`dirname $PWD`"
+CFG_DEFAULT_BUILD_TYPE='Release'
+CFG_DEFAULT_PREFIX='/usr/local'
+#compiler default flags
+CFG_EXTRA_CC=''
+CFG_EXTRA_CXX=''
+CFG_EXTRA_CFLAGS="${CFLAGS}"
+CFG_EXTRA_CXXFLAGS="${CXXFLAGS}"
+CFG_EXTRA_LDFLAGS="${LDFLAGS}"
 # State variables
-PREFIX='/usr/local'
-CMAKE='cmake'
-EXTRA_CC=''
-EXTRA_CXX=''
-EXTRA_CFLAGS=''
-EXTRA_CXXFLAGS=''
-EXTRA_LDFLAGS=''
-BUILD_TYPE='Release'
-#features
-ENABLE_GCC_COVERAGE=''
-ENABLE_JUNIT_OUT=''
-ENABLE_VALGRIND=''
-LIB_SUFFIX=''
-LIBUNWIND_PREFIX=''
+CFG_CMAKE_COMMAND='cmake'
+#help formatting
+CFG_HELP_OPT_LENGTH=23
+#to be redifined by user if needed
+CFG_CUSTOM_HELP=''
+#colors
+CFG_ENABLE_COLOR="false"
+CFG_COLOR_RED="\e[31m"
+CFG_COLOR_YELLOW="\e[33m"
+CFG_COLOR_CYAN="\e[36m"
+CFG_COLOR_RESET="\e[0m"
+
+######################################################
+CFG_TMP='/tmp'
+CFG_FEATURES_HELP_FILE="`mktemp ${CFG_TMP}/configure_help_enable_disable.XXXXXXXXXX`"
+CFG_WITH_HELP_FILE="`mktemp ${CFG_TMP}/configure_help_with_without.XXXXXXXXXX`"
+CFG_CASE_PARSE_OPT_FILE="`mktemp ${CFG_TMP}/configure_case_parse_opt.XXXXXXXXXX`"
+CFG_CMAKE_OPTS_FILE="`mktemp ${CFG_TMP}/configure_cmake_opts.XXXXXXXXXX`"
 
 ######################################################
 #Find default source dir
-SOURCE_DIR="`dirname \"$0\"`"
+CFG_SOURCE_DIR="$PWD/`dirname \"$0\"`"
 
 ######################################################
-HELP_MESSAGE="'configure' is a cmake wrapper to build ${PROJECT_NAME}
+#function defining all the options available to configure the project
+cfg_setup_options()
+{
+	#add standard one
+	#debug
+	cfg_add_enable_option --name='debug' \
+							--on-enable='-DCMAKE_BUILD_TYPE=Debug' \
+							--on-disable='-DCMAKE_BUILD_TYPE=Release' \
+							--doc='Enable debugging support (-DCMAKE_BUILD_TYPE=Debug).'
+	#debug
+	cfg_add_enable_option --name='release-debug' \
+							--on-enable='-DCMAKE_BUILD_TYPE=RelWithDebug' \
+							--on-disable='-DCMAKE_BUILD_TYPE=Release' \
+							--doc='Enable debugging support (-DCMAKE_BUILD_TYPE=RelWithDebug).'
+	#ninja
+	cfg_add_enable_option --name='ninja' \
+							--on-enable='-GNinja' \
+							--doc='Enable usage of Ninja with cmake instead of Make.' \
+							--only=enable
+
+	#load user one
+	. "${CFG_SOURCE_DIR}/${CFG_OPTIONS_FILE}"
+}
+
+######################################################
+#Set project name for help string
+# - $1 : project name
+cfg_set_projet()
+{
+	CFG_PROJECT_NAME="${1}"
+}
+
+######################################################
+cfg_exit()
+{
+	#cat "${CFG_CASE_PARSE_OPT_FILE}"
+	#cat "${CFG_CMAKE_OPTS_FILE}"
+	rm -f "${CFG_WITH_HELP_FILE}"
+	rm -f "${CFG_FEATURES_HELP_FILE}"
+	rm -f "${CFG_CASE_PARSE_OPT_FILE}"
+	rm -f "${CFG_CMAKE_OPTS_FILE}"
+	exit $1
+}
+
+######################################################
+cfg_hint()
+{
+	for tmp in "$@"
+	do
+		echo "${CFG_COLOR_CYAN}${tmp}${CFG_COLOR_RESET}" 1>&2
+	done
+}
+
+######################################################
+cfg_error()
+{
+	for tmp in "$@"
+	do
+		echo "${CFG_COLOR_RED}${tmp}${CFG_COLOR_RESET}" 1>&2
+	done
+}
+
+######################################################
+cfg_fail()
+{
+	for tmp in "$@"
+	do
+		echo "${CFG_COLOR_RED}${tmp}${CFG_COLOR_RESET}" 1>&2
+	done
+	cfg_exit 1
+}
+
+######################################################
+# add value to variable with space as separator
+#  - $1 : variable name
+#  - $2 : value to add
+cfg_add_to_var()
+{
+	#vars
+	var="${1}"
+	value="${2}"
+	eval "cur=\"\$${var}\""
+
+	#concat
+	if test -z "${cur}"; then
+		final="${value}"
+	else
+		final="${cur} ${value}"
+	fi
+
+	#export
+	eval "${var}=\"${final}\""
+}
+
+######################################################
+#check /tmp
+cfg_check_tmp()
+{
+	if ! test -d "${CFG_TMP}"; then
+		CFG_TMP="./"
+	fi
+}
+
+######################################################
+#Check if colors could be enabled if not piped
+cfg_auto_enable_color()
+{
+	#check
+	if [ -t 1 ]; then
+		ncolors=$(tput colors)
+		if test -n "$ncolors" && test $ncolors -ge 8; then
+			CFG_ENABLE_COLOR='true'
+		fi
+	fi
+
+	#do
+	if test "${CFG_ENABLE_COLOR}" = "false"; then
+		CFG_COLOR_RESET=""
+		CFG_COLOR_RED=""
+		CFG_COLOR_YELLOW=""
+		CFG_COLOR_CYAN=""
+	fi
+}
+
+######################################################
+# Add an --enable-*|--disable-* option to the list of available options.
+# The command take a command line like parameters to setup the option :
+#
+# Params:
+#  --name={NAME}           Provide option name (will be added to --enable-{NAME} and --disable-{NAME})
+#  --doc={DOC}             Provide documentation string for --help
+#  --on-enable={OPT}       Add a cmake option to the option list when --enable-{NAME} is triggered
+#  --on-disable={OPT}      Add a cmake option to the option list when --enable-{NAME} is triggered
+#  --on={-DVAR=${ON}}      Setup the given cmake variable to ON/OFF depending on the enable/disable.
+#  --on-enable-inherit={}  List of inherited configure option to trigger when used.
+#  --on-disable-inherit={} List of inherited configure option to trigger when used.
+#  --invert-help           In help message, do it for disable instead of enable.
+#  --only={enable|disable} Provide only one of the two command.
+#  --custom                Call a custom user sh function to handle.
+#
+# In commands you can use variables :
+#  ${ON}                   Will be 'ON' on enable and 'OFF' on disable
+#  ${OFF}                  Will be 'OFF' on enable and 'ON' on disable
+#  ${ENABLE}               Will be 'ENABLE' on enable and 'DISABLE' on disable
+#  ${DISABLE}              Will be 'DISABLE' on enable and 'ENABLE' on disable
+#  ${WITH}                 Will be 'WITH' on enabled and 'WITHOUT' on disable
+#  ${WITHOUT}              Will be 'WITHOUT' on enabled and 'WITH' on disable
+cfg_add_enable_option()
+{
+	#vars
+	opt_help_mode='enable'
+	opt_mode='both'
+	opt_enable=''
+	opt_disable=''
+
+	#scan options
+	for opt in "$@"
+	do
+		#extract
+		v=`echo $opt | cut -f 2- -d =`
+
+		#case
+		case $opt in
+			--name=*)
+				opt_name="${v}"
+				;;
+			--doc=*)
+				opt_doc="${v}"
+				;;
+			--custom=*)
+				on_enable="${v}"
+				on_disable="${v}"
+				;;
+			--on-enable=*)
+				opt_enable="cfg_push_cmake_opt \"${v}\""
+				;;
+			--on-disable=*)
+				opt_disable="cfg_push_cmake_opt \"${v}\""
+				;;
+			--on=*)
+				opt_enable="cfg_push_cmake_opt \"${v}\""
+				opt_disable="cfg_push_cmake_opt \"${v}\""
+				;;
+			--on-enable-inherit=*)
+				opt_enable="cfg_parse_global_args ${v}"
+				;;
+			--on-disable-inherit=*)
+				opt_disable="cfg_parse_global_args ${v}"
+				;;
+			--invert-help)
+				opt_help_mode='disable'
+				;;
+			--only=enable|--only=disable)
+				opt_help_mode="${v}"
+				opt_mode="${v}"
+				;;
+			*)
+				cfg_fail "Invalid internal option to build enable option ${opt} while calling cfg_add_enable_option()"
+				;;
+		esac
+	done
+
+	#generate doc
+	printf "   --%-${CFG_HELP_OPT_LENGTH}s %s\n" "${opt_help_mode}-${opt_name}" "${opt_doc}" >> ${CFG_FEATURES_HELP_FILE}
+
+	#generate enable action
+	if test ! -z "${opt_enable}"; then
+		if test "${opt_mode}" = "both" || test "${opt_mode}" = "enable"; then
+			echo "			--enable-${opt_name})" >> ${CFG_CASE_PARSE_OPT_FILE}
+			echo "				${opt_enable}" >> ${CFG_CASE_PARSE_OPT_FILE}
+			echo "				;;" >> ${CFG_CASE_PARSE_OPT_FILE}
+		fi
+	fi
+
+	#generate disable action
+	if test ! -z "${opt_disable}"; then
+		if test "${opt_mode}" = "both" || test "${opt_mode}" = "disable"; then
+			echo "			--disable-${opt_name})" >> ${CFG_CASE_PARSE_OPT_FILE}
+			echo "				${opt_disable}" >> ${CFG_CASE_PARSE_OPT_FILE}
+			echo "				;;" >> ${CFG_CASE_PARSE_OPT_FILE}
+		fi
+	fi
+}
+
+######################################################
+# Add an --with-*|--without-* option to the list of available options.
+# The command take a command line like parameters to setup the option :
+#
+# Params:
+#  --name={NAME}           Provide option name (will be added to --with-{NAME} and --without-{NAME})
+#  --doc={DOC}             Provide documentation string for --help
+#  --on-with={OPT}         Add a cmake option to the option list when --with-{NAME} is triggered
+#  --on-without={OPT}      Add a cmake option to the option list when --without-{NAME} is triggered
+#  --on={-DVAR=${ON}}      Setup the given cmake variable to ON/OFF depending on the with/without
+#  --on-with-inherit={}    List of inherited configure option to trigger when used
+#  --on-without-inherit={} List of inherited configure option to trigger when used
+#  --invert-help           In help message, do it for disable instead of enable
+#  --only={with|without}   Provide only one of the two command
+#  --var={var}             Cmake variable to setup
+#  --custom                Call a custom user sh function to handle
+#  --type={value}          In help which type of value we wait on with mode
+#  --enum={a|b|cz}         List authozied values
+#  --allow-no-value        Will consider call with ${val}='ON' if with-X is provided without value.
+#
+# In commands you can use variables :
+#  ${ON}                   Will be 'ON' on enable and 'OFF' on disable
+#  ${OFF}                  Will be 'OFF' on enable and 'ON' on disable
+#  ${ENABLE}               Will be 'ENABLE' on enable and 'DISABLE' on disable
+#  ${DISABLE}              Will be 'DISABLE' on enable and 'ENABLE' on disable
+#  ${WITH}                 Will be 'WITH' on enabled and 'WITHOUT' on disable
+#  ${WITHOUT}              Will be 'WITHOUT' on enabled and 'WITH' on disable
+cfg_add_with_option()
+{
+	#vars
+	opt_help_mode='with'
+	opt_mode='both'
+	opt_with=''
+	opt_without=''
+	opt_type='path'
+	opt_enum=''
+	opt_no_value='false'
+
+	#scan options
+	for opt in "$@"
+	do
+		#extract
+		v=`echo $opt | cut -f 2- -d =`
+
+		#case
+		case $opt in
+			--name=*)
+				opt_name="${v}"
+				;;
+			--doc=*)
+				opt_doc="${v}"
+				;;
+			--var=*)
+				opt_with="cfg_push_cmake_opt \"-D${v}=\${val}\""
+				opt_without="cfg_push_cmake_opt -D${v}=OFF"
+				;;
+			--custom=*)
+				on_with="${v}"
+				on_without="${v}"
+				;;
+			--on-with=*)
+				opt_with="cfg_push_cmake_opt \"${v}\""
+				;;
+			--on-without=*)
+				opt_without="cfg_push_cmake_opt \"${v}\""
+				;;
+			--on=*)
+				opt_with="cfg_push_cmake_opt \"${v}\""
+				opt_without="cfg_push_cmake_opt \"${v}\""
+				;;
+			--on-with-inherit=*)
+				opt_with="cfg_parse_global_args ${v}"
+				;;
+			--on-without-inherit=*)
+				opt_without="cfg_parse_global_args ${v}"
+				;;
+			--invert-help)
+				opt_help_mode='without'
+				;;
+			--only=with|--only=without)
+				opt_help_mode="${v}"
+				opt_mode="${v}"
+				;;
+			--type=*)
+				opt_type="${v}"
+				;;
+			--enum=*)
+				opt_enum="${v}"
+				;;
+			--allow-no-value)
+				opt_no_value='true'
+				;;
+			*)
+				cfg_fail "Invalid internal option to build with/without option ${opt} while calling cfg_add_with_option()"
+				;;
+		esac
+	done
+
+	#generate doc
+	printf "   --%-${CFG_HELP_OPT_LENGTH}s %s\n" "${opt_help_mode}-${opt_name}={${opt_type}}" "${opt_doc}" >> ${CFG_WITH_HELP_FILE}
+
+	#generate with action
+	if test ! -z "${opt_with}"; then
+		if test "${opt_mode}" = "both" || test "${opt_mode}" = "with"; then
+			#no value case
+			if test "${opt_no_value}" = 'true'; then
+				echo "			--with-${opt_name})" >> ${CFG_CASE_PARSE_OPT_FILE}
+				echo "				val='ON'" >> ${CFG_CASE_PARSE_OPT_FILE}
+				echo "				${opt_with}" >> ${CFG_CASE_PARSE_OPT_FILE}
+				echo "				;;" >> ${CFG_CASE_PARSE_OPT_FILE}
+			fi
+			
+			#value case
+			if test -z "${opt_enum}"; then
+				#std case		
+				echo "			--with-${opt_name}=*)" >> ${CFG_CASE_PARSE_OPT_FILE}
+				echo "				${opt_with}" >> ${CFG_CASE_PARSE_OPT_FILE}
+				echo "				;;" >> ${CFG_CASE_PARSE_OPT_FILE}
+			else
+				#make selection for each value of enum
+				for entry in `echo ${opt_enum} | sed -e 's/[|]/ /g'`; do
+					echo "			--with-${opt_name}=${entry})" >> ${CFG_CASE_PARSE_OPT_FILE}
+					echo "				${opt_with}" >> ${CFG_CASE_PARSE_OPT_FILE}
+					echo "				;;" >> ${CFG_CASE_PARSE_OPT_FILE}
+				done
+			fi
+		fi
+	fi
+
+	#generate without action
+	if test ! -z "${opt_without}"; then
+		if test "${opt_mode}" = "both" || test "${opt_mode}" = "without"; then
+			echo "			--without-${opt_name})" >> ${CFG_CASE_PARSE_OPT_FILE}
+			echo "				${opt_without}" >> ${CFG_CASE_PARSE_OPT_FILE}
+			echo "				;;" >> ${CFG_CASE_PARSE_OPT_FILE}
+		fi
+	fi
+}
+
+######################################################
+CFG_PARSE_OPT_HEADER="#!/bin/sh
+
+cfg_parse_user_opts()
+{
+	for user_opt in \"\$@\"
+	do
+		case \$user_opt in"
+CFG_PARSE_OPT_FOOTER="
+			*)
+				return 1
+				;;
+		esac
+	done
+}
+"
+
+######################################################
+cfg_gen_help_string()
+{
+	#add lines
+	if ! test -z "${CFG_CUSTOM_HELP}"; then
+		line="\n"
+	else
+		line=""
+	fi
+
+	#gen message
+CFG_HELP_MESSAGE="'configure' is a cmake wrapper to build ${CFG_PROJECT_NAME}
 For more control, prefer to use cmake directely, this wrapper only aims
 to ease your life for standard cases.
 
@@ -49,32 +458,30 @@ VAR=VALUE.  See below for descriptions of some of the useful variables.
 Defaults for the options are specified in brackets.
 
 Configuration:
-  -h, --help              display this help and exit
-      --srcdir=DIR        find the sources in DIR [configure dir or '${SOURCE_DIR}']
+  -h, --help                 display this help and exit
+      --srcdir=DIR           find the sources in DIR [configure dir or '${CFG_SOURCE_DIR}']
 
 Installation directories:
-   --prefix=PREFIX         install files in PREFIX [${PREFIX}]
-   --lib-suffix=SUFFIX     used to force suffix for lib directory. [empty].
+   --prefix=PREFIX           install files in PREFIX [${CFG_DEFAULT_PREFIX}]
+   --lib-suffix=SUFFIX       used to force suffix for lib directory eg. lib64. [empty].
 
 By default, 'make install' will install all the files in
 '/usr/local/bin', '/usr/local/lib' etc.  You can specify
 an installation prefix other than '/usr/local' using '--prefix',
-for instance '--prefix=$HOME'.
+for instance '--prefix=$HOME/usr'.
 
 Optional Features:
-   --enable-debug          Enable debugging support (-DCMAKE_BUILD_TYPE=Debug).
-   --enable-gcc-coverage   Enable GCC option to generate test coverage of the lib.
-   --enable-junit-output   Save test output in JUnit format (only in self-test mode).
-   --enable-valgrind       Enable valgrind on unit tests (-DENABLE_VALGRIND=yes).
-   --disable-tests         Disable unit tests of the lib (-DENABLE_TESTS=no).
-   --enable-jenkins        Enable all checking modes (unit, valgrind, coverage...).
+`cat ${CFG_FEATURES_HELP_FILE}`
 
 To find libs and commands :
-   --with-cmake={command}  Define the cmake command to use [cmake].
-   --with-libunwind=...    Define the prefix of libunwind if wanted (-DLIBUNWIND_PREFIX=...)
+   --with-cmake={command}    Define the cmake command to use [cmake].
+`cat ${CFG_WITH_HELP_FILE}`
 
 To get the generated cmake command :
    --show                  Display the cmake command and didn't execute it.
+${line}${CFG_CUSTOM_HELP}${line}
+Extra cmake option:
+   -D{VARNAME}={VALUE}       Transmit direct cmake options in cmake format.
 
 Some influential environment variables:
    LDFLAGS     linker flags, e.g. -L<lib dir> if you have libraries in a
@@ -83,159 +490,236 @@ Some influential environment variables:
    CFLAGS      C compiler flags
    CXX         C++ compiler command
    CXXFLAGS    C++ compiler flags"
-
-######################################################
-#Function to extract value from args. It split on equals
-#Params :
-#  $1 : user argument with option
-#  $2 : Option (--prefix)
-get_arg_value()
-{
-	echo "$1" | sed -e "s/^$2=//g"
 }
 
 ######################################################
-#Convert enable/disable options into yes/no status
-#  $1 : user arguement (--enable-.... or --disable-....)
-#  $2 : Optional argument. Use value INVERT to permut yes/no mapping.
-enabl_disabl_to_yes_no()
+cfg_push_cmake_opt()
 {
-	case "$1" in
-		--enable-*)
-			if [ "$2" = 'INVERT' ]; then echo 'no'; else echo 'yes'; fi
-			;;
-		--disable-*)
-			if [ "$2" = 'INVERT' ]; then echo 'yes'; else echo 'no'; fi
-			;;
-		*)
-			echo "Invalid value in enabl_disabl_to_yes_no(), require --disable-* or --enable-*." 1>&2
-			echo 'unknown'
-			;;
-	esac
+	echo "$@" >> ${CFG_CMAKE_OPTS_FILE}
 }
 
 ######################################################
 #parse arguments
-for arg in "$@"
-do
-	case "$arg" in
-		-h | --help)
-			echo "$HELP_MESSAGE"
-			exit 0
-			;;
-		--prefix=*)
-			PREFIX="-DCMAKE_INSTALL_PREFIX=`get_arg_value \"$arg\" --prefix`"
-			;;
-		--srcdir=*)
-			SOURCE_DIR="`get_arg_value \"$arg\" --srcdir`"
-			;;
-		--lib-suffix=*)
-			LIB_SUFFIX="`get_arg_value \"$arg\" --lib-suffix`"
-			if [ ! -z "${LIB_SUFFIX}" ]; then LIB_SUFFIX="-DLIB_SUFFIX=${LIB_SUFFIX}"; fi
-			;;
-		--with-cmake=*)
-			CMAKE="`get_arg_value \"$arg\" --with-cmake`"
-			;;
-		--with-libunwind=*)
-			LIBUNWIND_PREFIX="-DLIBUNWIND_PREFIX=`get_arg_value \"$arg\" --with-libunwind`"
-			;;
-		####################################################################
-		#--with-openpa=*)
-		#	OPENPA_PREFIX="-DOPENPA_PREFIX=`get_arg_value \"$arg\" --with-openpa`"
-		#	;;
-		####################################################################
-		--enable-debug)
-			BUILD_TYPE='Debug'
-			;;
-		--enable-gcc-coverage | --disable-gcc-coverage)
-			ENABLE_GCC_COVERAGE="-DENABLE_GCC_COVERAGE=`enabl_disabl_to_yes_no $arg`"
-			;;
-		--enable-junit-output | --disable-junit-output)
-			ENABLE_JUNIT_OUT="-DENABLE_JUNIT_OUTPUT=`enabl_disabl_to_yes_no $arg`"
-			;;
-		--enable-valgrind | --disable-valgrind)
-			ENABLE_VALGRIND="-DENABLE_VALGRIND=`enabl_disabl_to_yes_no $arg`"
-			;;
-		--disable-tests | --enable-tests)
-			DISABLE_TESTS="-DENABLE_TESTS=`enabl_disabl_to_yes_no $arg`";
-			;;
-		--enable-jenkins)
-			ENABLE_JUNIT_OUT='-DENABLE_JUNIT_OUTPUT=yes'
-			ENABLE_VALGRIND='-DENABLE_VALGRIND=yes'
-			BUILD_TYPE='Debug'
-			EXTRA_CXXFLAGS="${EXTRA_CXXFLAGS} -Wall -fprofile-arcs -ftest-coverage"
-			;;
-		--show)
-			ENABLE_DISPLAY_COMMAND='true'
-			;;
-		CC=*)
-			EXTRA_CC="`get_arg_value \"$arg\" CC`"
-			;;
-		CFLAGS=*)
-			EXTRA_CFLAGS="`get_arg_value \"$arg\" CFLAGS`"
-			;;
-		CXX=*)
-			EXTRA_CXX="`get_arg_value \"$arg\" CXX`"
-			;;
-		CXXFLAGS=*)
-			EXTRA_CXXFLAGS="${EXTRA_CXXFLAGS} `get_arg_value \"$arg\" CXXFLAGS`"
-			;;
-		LDFLAGS=*)
-			EXTRA_LDFLAGS="${EXTRA_CFLAGS} `get_arg_value \"$arg\" LDFLAGS`"
-			;;
-		*)
-			echo "Invalid argument : $arg, please check in --help." 1>&2
-			exit 1
-			;;
-	esac
-done
+cfg_parse_global_args()
+{
+	for arg in "$@"
+	do
+		#extract
+		val="`echo \"$arg\" | cut -f 2- -d =`"
+		case $arg in
+			--enable-*)
+				ON='ON'
+				OFF='OFF'
+				WITH='WITH'
+				WITHOUT='WITHOUT'
+				;;
+			--disable-*)
+				ON='OFF'
+				OFF='ON'
+				WITH='WITHOUT'
+				WITHOUT='WITH'
+				;;
+			--with-*)
+				ON='ON'
+				OFF='OFF'
+				WITH='WITH'
+				WITHOUT='WITHOUT'
+				;;
+			--without-*)
+				ON='OFF'
+				OFF='ON'
+				WITH='WITHOUT'
+				WITHOUT='WITH'
+				;;
+		esac
+
+		#loop on args
+		case "$arg" in
+			-h | --help)
+				echo "$CFG_HELP_MESSAGE"
+				cfg_exit 0
+				;;
+			--prefix=*)
+				cfg_push_cmake_opt "-DCMAKE_INSTALL_PREFIX=${val}"
+				;;
+			--srcdir=*)
+				SOURCE_DIR="${val}"
+				;;
+			--with-cmake=*)
+				CMAKE="${val}"
+				;;
+			--show)
+				ENABLE_DISPLAY_COMMAND='true'
+				;;
+			CC=*)
+				EXTRA_CC="${val}"
+				;;
+			CXX=*)
+				CFG_EXTRA_CXX="${val}"
+				;;
+			CFLAGS=*)
+				cfg_add_to_var CFG_EXTRA_CFLAGS "${val}"
+				;;
+			CXXFLAGS=*)
+				cfg_add_to_var CFG_EXTRA_CXXFLAGS "${val}"
+				;;
+			LDFLAGS=*)
+				cfg_add_to_var CFG_EXTRA_LDFLAGS "${val}"
+				;;
+			*)
+				cfg_parse_user_opts "${arg}" || cfg_parse_custom_opts "${arg}" || cfg_fail "Invalid argument : ${arg}, please check in --help."
+				;;
+		esac
+	done
+}
+
+######################################################
+cfg_push_defaults()
+{
+	cfg_push_cmake_opt "-DCMAKE_INSTALL_PREFIX=${CFG_DEFAULT_PREFIX}"
+	cfg_push_cmake_opt "-DCMAKE_BUILD_TYPE=${CFG_DEFAULT_BUILD_TYPE}"
+}
+
+######################################################
+# emulate tac in a portable way with awk
+cfg_portable_tac()
+{
+	awk '{a[i++]=$0} END {for (j=i-1; j>=0;) print a[j--] }'
+}
+
+######################################################
+# clean options by removing double definitions and keep only the
+# last one. To proceed we reverse the file and keep definition
+# only if not already seen
+# - $1 : File to clean
+cfg_remove_dup()
+{
+	#vars
+	file="${1}"
+	tmpfile="${file}.tmp"
+
+	#prep
+	touch "${tmpfile}"
+
+	#loop on reversed file
+	cat "${file}" | cfg_portable_tac | while read line
+	do
+		var=$(echo "${line}" | cut -f 1 -d =)
+
+		#check if not already seen
+		if ! egrep -q "^${var}=" "${tmpfile}" ; then
+			echo "${line}" >> "${tmpfile}"
+		fi
+	done
+
+	#reverback the file and replace orig
+	cat "${tmpfile}" | cfg_portable_tac > "${file}"
+}
+
+######################################################
+# Gen final command
+#  - $1 : true of false to enable or disable args quote protection
+cfg_gen_final_command_lines()
+{
+	#set protection
+	quote=''
+	if test "${1}" = "true"; then
+		quote="\""
+	fi
+
+	#protect all and output
+	cat "${CFG_CMAKE_OPTS_FILE}" | while read line; do
+		echo "${quote}${line}${quote}"
+	done
+	echo ".."
+}
+
+######################################################
+# custom pre check function to be replaced by user function
+# to perform some checks
+# All cmake -DVAR will be loaded into shell script by
+# being named prefixed by 'OPT_', eg OPT_CMAKE_C_COMPILER
+cfg_custom_pre_check()
+{
+	return 0
+}
+
+######################################################
+# custom option parse to be replaced by user function
+# in setup file
+# here we can parse our own options if we want
+# Vars available are :
+#  - $arg : full argument (eg. --with-gcc=gcc)
+#  - $val : value after first '=', egg 'gcc'
+#  - $ON $OFF, $ENABLE, $DISABLE, $WIDTH, $WITHOUT
+cfg_parse_custom_opts()
+{
+	return 1
+}
+
+######################################################
+# load vars into shell script to we can performe some
+# extra checking actions into the cfg_custom_pre_check function
+# which can be overloaded by project options.
+cfg_load_vars()
+{
+	eval "`cat ${CFG_CMAKE_OPTS_FILE} | sed -e 's/^-D/OPT_/g'`"
+}
+
+######################################################
+#setup colors and check tmp
+cfg_check_tmp
+cfg_auto_enable_color
+
+######################################################
+#build configuration
+echo "${CFG_PARSE_OPT_HEADER}" > ${CFG_CASE_PARSE_OPT_FILE}
+cfg_setup_options
+echo "${CFG_PARSE_OPT_FOOTER}" >> ${CFG_CASE_PARSE_OPT_FILE}
+#load the generated swtich case to parse user args
+. ${CFG_CASE_PARSE_OPT_FILE}
+#gen help
+cfg_gen_help_string
+
+######################################################
+#push defults
+cfg_push_defaults
+#parse
+cfg_parse_global_args "$@"
+#clean
+cfg_remove_dup "${CFG_CMAKE_OPTS_FILE}"
+#load and check
+cfg_load_vars
+cfg_custom_pre_check
 
 ######################################################
 #Check current directory
 if [ -f 'CMakeLists.txt' ] && [ -f 'configure' ]; then
-	echo "ERROR : CMake isn't adapted to support build directely in source"
-	echo "directory. Prefer to create a subdirectory to build."
-	echo ""
-	echo "Example : mkdir build && cd build && ../configure"
-	exit 1
+	cfg_fail "ERROR : CMake isn't adapted to support build directely in source"
+	         "directory. Prefer to create a subdirectory to build."
+	         ""
+	         "Example : mkdir build && cd build && ../configure"
 fi
 
 ######################################################
 #Gen CC/CXX/LDFLAGS commands
-if [ ! -z "$EXTRA_CC" ];       then EXTRA_CC="-DCMAKE_C_COMPILER=${EXTRA_CC}"                 ; fi
-if [ ! -z "$EXTRA_CFLAGS" ];   then EXTRA_CFLAGS="-DCMAKE_C_FLAGS=${EXTRA_CFLAGS}"         ; fi
-if [ ! -z "$EXTRA_CXX" ];      then EXTRA_CXX="-DCMAKE_CXX_COMPILER=${EXTRA_CXX}"             ; fi
-if [ ! -z "$EXTRA_CXXFLAGS" ]; then EXTRA_CXXFLAGS="-DCMAKE_CXX_FLAGS=${EXTRA_CXXFLAGS}"      ; fi
-if [ ! -z "$EXTRA_LDFLAGS" ];  then EXTRA_LDFLAGS="-DCMAKE_EXE_LINKER_FLAGS=${EXTRA_LDFLAGS}" ; fi
-
-######################################################
-#Function to gen clean command
-#Params : {command} [args...]
-gen_clean_command()
-{
-	res=""
-	for tmp in "$@"
-	do
-		if [ ! -z "${tmp}" ]; then
-			res="${res} '${tmp}'"
-		fi
-	done
-	echo "${res}"
-}
-
-######################################################
-#Gen final command
-COMMAND="`gen_clean_command "${CMAKE}" "-DCMAKE_BUILD_TYPE=${BUILD_TYPE}" "${PREFIX}" "${EXTRA_CXX}" \
-	"${EXTRA_CXXFLAGS}" "${EXTRA_LDFLAGS}" "${EXTRA_CC}" "${EXTRA_CFLAGS}" \
-	"${ENABLE_SELF_TEST}" "${ENABLE_JUNIT_OUT}" "${ENABLE_VALGRIND}" "${ENABLE_GCC_COVERAGE}" "${DISABLE_TESTS}" \
-	"${LIB_SUFFIX}" "${SOURCE_DIR}" "${LIBUNWIND_PREFIX}"`"
+if [ ! -z "$CFG_EXTRA_CC" ];       then cfg_push_cmake_opt "-DCMAKE_C_COMPILER=${CFG_EXTRA_CC}"               ; fi
+if [ ! -z "$CFG_EXTRA_CFLAGS" ];   then cfg_push_cmake_opt "-DCMAKE_C_FLAGS=${CFG_EXTRA_CFLAGS}"              ; fi
+if [ ! -z "$CFG_EXTRA_CXX" ];      then cfg_push_cmake_opt "-DCMAKE_CXX_COMPILER=${CFG_EXTRA_CXX}"            ; fi
+if [ ! -z "$CFG_EXTRA_CXXFLAGS" ]; then cfg_push_cmake_opt "-DCMAKE_CXX_FLAGS=${CFG_EXTRA_CXXFLAGS}"          ; fi
+if [ ! -z "$CFG_EXTRA_LDFLAGS" ];  then cfg_push_cmake_opt "-DCMAKE_EXE_LINKER_FLAGS=${CFG_EXTRA_LDFLAGS}"    ; fi
+if [ ! -z "$CFG_EXTRA_LDFLAGS" ];  then cfg_push_cmake_opt "-DCMAKE_SHARED_LINKER_FLAGS=${CFG_EXTRA_LDFLAGS}" ; fi
+if [ ! -z "$CFG_EXTRA_LDFLAGS" ];  then cfg_push_cmake_opt "-DCMAKE_STATIC_LINKER_FLAGS=${CFG_EXTRA_LDFLAGS}" ; fi
 
 ######################################################
 #execute or display
 if [ "${ENABLE_DISPLAY_COMMAND}" = 'true' ]; then
-	echo "${COMMAND}"
+	cfg_gen_final_command_lines true | xargs -d "\n" echo "${CFG_CMAKE_COMMAND}"
+	cfg_exit 0
 else
-	echo ">>${COMMAND}"
-	eval "${COMMAND}"
-	exit $?
+	printf "${CFG_COLOR_YELLOW}"
+	cfg_gen_final_command_lines true | xargs -d "\n" echo ">>> ${CFG_CMAKE_COMMAND}"
+	printf "${CFG_COLOR_RESET}"
+	cfg_gen_final_command_lines | xargs -d "\n" "${CFG_CMAKE_COMMAND}"
+	cfg_exit $?
 fi

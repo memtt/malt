@@ -1,6 +1,12 @@
 Change log
 ==========
 
+master
+------
+
+ - New configure script from NUMAPROF to be more generic and reusable.
+ - Fixes in rpm packaging
+
 1.0.0 - 07/02/2018
 ------------------
 

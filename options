@@ -1,0 +1,77 @@
+#!/bin/sh
+######################################################
+#            PROJECT  : numaprof                     #
+#            VERSION  : 1.1.0-dev                    #
+#            DATE     : 10/2018                      #
+#            AUTHOR   : Sébastien Valat              #
+#            LICENSE  : CeCILL-C                     #
+######################################################
+
+######################################################
+#set project name
+cfg_set_projet "MALT"
+
+######################################################
+#test
+cfg_add_enable_option --name='test' \
+						--on='-DENABLE_TESTS=${ON}' \
+						--doc='Disable unit tests' \
+						--invert-help
+#gcc test coverage
+cfg_add_enable_option --name='gcc-coverage'  \
+						--on='-DENABLE_GCC_COVERAGE=${ON}' \
+						--doc='Enable GCC option to generate test coverage of the lib' \
+#junit xml out
+cfg_add_enable_option --name='junit-output'  \
+						--on='-DENABLE_JUNIT_OUTPUT=${ON}' \
+						--doc='Save test output in JUnit format (only in self-test mode)' 
+#valgrind
+cfg_add_enable_option --name='valgrind' \
+						--on='-DENABLE_VALGRIND=${ON}' \
+						--doc='Enable running unit tests into valgrind to generate reports'
+#jenkins full features
+cfg_add_enable_option --name='jenkins' \
+						--on-enable-inherit='--enable-valgrind --enable-junit-output --enable-debug "CXXFLAGS=-Wall -fprofile-arcs -ftest-coverage"' \
+						--doc='Enable all checking modes (unit, valgrind, coverage...)' \
+						--only='enable'
+
+######################################################
+#libsuffix
+cfg_add_with_option --name='lib-suffix' \
+						--doc='Used to force suffix for lib directory eg. lib64. [empty]' \
+						--var='LIB_SUFFIX' \
+						--only='with' \
+						--type='dir'
+
+#libunwind
+cfg_add_with_option --name='libunwind' \
+						--doc='Define prefix to find libunwind [/usr]' \
+						--var='LIBUNWIND_PREFIX'
+
+#libelf
+cfg_add_with_option --name='libelf' \
+						--doc='Define prefix to find libelf [/usr]'
+						--var='LIBELF_PREFIX'
+
+######################################################
+#If we want to document extra options
+#CFG_CUSTOM_HELP="My custom options:"
+
+######################################################
+# here we can parse our own options if we want
+# Vars available are :
+#  - $arg : full argument (eg. --with-gcc=gcc)
+#  - $val : value after first '=', egg 'gcc'
+#  - $ON $OFF, $ENABLE, $DISABLE, $WIDTH, $WITHOUT
+#cfg_parse_custom_opts()
+#{
+#	return 1
+#}
+
+######################################################
+#pre check to ease error messages
+#All cmake vars are loaded in memory as OPT_* (OPT_CMAKE_C_FLAGS)
+#cfg_custom_pre_check()
+#{
+#	return 1
+#}
