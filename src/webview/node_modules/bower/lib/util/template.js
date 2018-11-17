@@ -1,14 +1,14 @@
 var path = require('path');
-var fs = require('graceful-fs');
+var fs = require('./fs');
 var Handlebars = require('handlebars');
 var mout = require('mout');
-var helpers = require('../../templates/helpers');
+var helpers = require('../templates/helpers');
 
-var templatesDir = path.resolve(__dirname, '../../templates');
+var templatesDir = path.resolve(__dirname, '../templates');
 var cache = {};
 
 // Register helpers
-mout.object.forOwn(helpers, function (register) {
+mout.object.forOwn(helpers, function(register) {
     register(Handlebars);
 });
 

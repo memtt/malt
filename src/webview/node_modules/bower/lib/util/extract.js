@@ -1,5 +1,5 @@
 var path = require('path');
-var fs = require('graceful-fs');
+var fs = require('./fs');
 var zlib = require('zlib');
 var DecompressZip = require('decompress-zip');
 var tar = require('tar-fs');
@@ -7,6 +7,9 @@ var Q = require('q');
 var mout = require('mout');
 var junk = require('junk');
 var createError = require('./createError');
+var createWriteStream = require('fs-write-stream-atomic');
+var destroy = require('destroy');
+var tmp = require('tmp');
 
 // This forces the default chunk size to something small in an attempt
 // to avoid issue #314
@@ -35,13 +38,13 @@ function extractZip(archive, dst) {
     var deferred = Q.defer();
 
     new DecompressZip(archive)
-    .on('error', deferred.reject)
-    .on('extract', deferred.resolve.bind(deferred, dst))
-    .extract({
-        path: dst,
-        follow: false,           // Do not follow symlinks (#699)
-        filter: filterSymlinks   // Filter symlink files
-    });
+        .on('error', deferred.reject)
+        .on('extract', deferred.resolve.bind(deferred, dst))
+        .extract({
+            path: dst,
+            follow: false, // Do not follow symlinks (#699)
+            filter: filterSymlinks // Filter symlink files
+        });
 
     return deferred.promise;
 }
@@ -49,15 +52,27 @@ function extractZip(archive, dst) {
 function extractTar(archive, dst) {
     var deferred = Q.defer();
 
-    fs.createReadStream(archive)
-    .on('error', deferred.reject)
-    .pipe(tar.extract(dst, {
-        ignore: isSymlink, // Filter symlink files
-        dmode: 0555,       // Ensure dirs are readable
-        fmode: 0444        // Ensure files are readable
-    }))
-    .on('error', deferred.reject)
-    .on('finish', deferred.resolve.bind(deferred, dst));
+    var stream = fs.createReadStream(archive);
+
+    var reject = function(error) {
+        destroy(stream);
+        deferred.reject(error);
+    };
+
+    stream
+        .on('error', reject)
+        .pipe(
+            tar.extract(dst, {
+                ignore: isSymlink, // Filter symlink files
+                dmode: 0555, // Ensure dirs are readable
+                fmode: 0444 // Ensure files are readable
+            })
+        )
+        .on('error', reject)
+        .on('finish', function(result) {
+            destroy(stream);
+            deferred.resolve(dst);
+        });
 
     return deferred.promise;
 }
@@ -65,17 +80,29 @@ function extractTar(archive, dst) {
 function extractTarGz(archive, dst) {
     var deferred = Q.defer();
 
-    fs.createReadStream(archive)
-    .on('error', deferred.reject)
-    .pipe(zlib.createGunzip())
-    .on('error', deferred.reject)
-    .pipe(tar.extract(dst, {
-        ignore: isSymlink, // Filter symlink files
-        dmode: 0555,       // Ensure dirs are readable
-        fmode: 0444        // Ensure files are readable
-    }))
-    .on('error', deferred.reject)
-    .on('finish', deferred.resolve.bind(deferred, dst));
+    var stream = fs.createReadStream(archive);
+
+    var reject = function(error) {
+        destroy(stream);
+        deferred.reject(error);
+    };
+
+    stream
+        .on('error', reject)
+        .pipe(zlib.createGunzip())
+        .on('error', reject)
+        .pipe(
+            tar.extract(dst, {
+                ignore: isSymlink, // Filter symlink files
+                dmode: 0555, // Ensure dirs are readable
+                fmode: 0444 // Ensure files are readable
+            })
+        )
+        .on('error', reject)
+        .on('finish', function(result) {
+            destroy(stream);
+            deferred.resolve(dst);
+        });
 
     return deferred.promise;
 }
@@ -83,13 +110,22 @@ function extractTarGz(archive, dst) {
 function extractGz(archive, dst) {
     var deferred = Q.defer();
 
-    fs.createReadStream(archive)
-    .on('error', deferred.reject)
-    .pipe(zlib.createGunzip())
-    .on('error', deferred.reject)
-    .pipe(fs.createWriteStream(dst))
-    .on('error', deferred.reject)
-    .on('close', deferred.resolve.bind(deferred, dst));
+    var stream = fs.createReadStream(archive);
+
+    var reject = function(error) {
+        destroy(stream);
+        deferred.reject(error);
+    };
+    stream
+        .on('error', reject)
+        .pipe(zlib.createGunzip())
+        .on('error', reject)
+        .pipe(createWriteStream(dst))
+        .on('error', reject)
+        .on('finish', function(result) {
+            destroy(stream);
+            deferred.resolve(dst);
+        });
 
     return deferred.promise;
 }
@@ -107,7 +143,7 @@ function getExtractor(archive) {
     // This ensures that upper-cased extensions work
     archive = archive.toLowerCase();
 
-    var type = mout.array.find(extractorTypes, function (type) {
+    var type = mout.array.find(extractorTypes, function(type) {
         return mout.string.endsWith(archive, type);
     });
 
@@ -115,8 +151,7 @@ function getExtractor(archive) {
 }
 
 function isSingleDir(dir) {
-    return Q.nfcall(fs.readdir, dir)
-    .then(function (files) {
+    return Q.nfcall(fs.readdir, dir).then(function(files) {
         var singleDir;
 
         // Remove any OS specific files from the files array
@@ -129,32 +164,27 @@ function isSingleDir(dir) {
 
         singleDir = path.join(dir, files[0]);
 
-        return Q.nfcall(fs.stat, singleDir)
-        .then(function (stat) {
+        return Q.nfcall(fs.stat, singleDir).then(function(stat) {
             return stat.isDirectory() ? singleDir : false;
         });
     });
 }
 
-function moveSingleDirContents(dir) {
-    var destDir = path.dirname(dir);
+function moveDirectory(srcDir, destDir) {
+    return Q.nfcall(fs.readdir, srcDir)
+        .then(function(files) {
+            var promises = files.map(function(file) {
+                var src = path.join(srcDir, file);
+                var dst = path.join(destDir, file);
 
-    return Q.nfcall(fs.readdir, dir)
-    .then(function (files) {
-        var promises;
+                return Q.nfcall(fs.rename, src, dst);
+            });
 
-        promises = files.map(function (file) {
-            var src = path.join(dir, file);
-            var dst = path.join(destDir, file);
-
-            return Q.nfcall(fs.rename, src, dst);
+            return Q.all(promises);
+        })
+        .then(function() {
+            return Q.nfcall(fs.rmdir, srcDir);
         });
-
-        return Q.all(promises);
-    })
-    .then(function () {
-        return Q.nfcall(fs.rmdir, dir);
-    });
 }
 
 // -----------------------------
@@ -184,48 +214,64 @@ function extract(src, dst, opts) {
 
     // If extractor is null, then the archive type is unknown
     if (!extractor) {
-        return Q.reject(createError('File ' + src + ' is not a known archive', 'ENOTARCHIVE'));
+        return Q.reject(
+            createError(
+                'File ' + src + ' is not a known archive',
+                'ENOTARCHIVE'
+            )
+        );
     }
 
-    // Check archive file size
-    promise = Q.nfcall(fs.stat, src)
-    .then(function (stat) {
-        if (stat.size <= 8) {
-            throw createError('File ' + src + ' is an invalid archive', 'ENOTARCHIVE');
-        }
-
-        // Extract archive
-        return extractor(src, dst);
-    });
-
-    // TODO: There's an issue here if the src and dst are the same and
-    //       The zip name is the same as some of the zip file contents
-    //       Maybe create a temp directory inside dst, unzip it there,
-    //       unlink zip and then move contents
-
-    // Remove archive
-    if (!opts.keepArchive) {
-        promise = promise
-        .then(function () {
-            return Q.nfcall(fs.unlink, src);
-        });
-    }
-
-    // Move contents if a single directory was extracted
-    if (!opts.keepStructure) {
-        promise = promise
-        .then(function () {
-            return isSingleDir(dst);
+    // Extract to a temporary directory in case of file name clashes
+    return Q.nfcall(tmp.dir, {
+        template: dst + '-XXXXXX',
+        mode: 0777 & ~process.umask()
+    })
+        .then(function(tempDir) {
+            // nfcall may return multiple callback arguments as an array
+            return Array.isArray(tempDir) ? tempDir[0] : tempDir;
         })
-        .then(function (singleDir) {
-            return singleDir ? moveSingleDirContents(singleDir) : null;
-        });
-    }
+        .then(function(tempDir) {
+            // Check archive file size
+            promise = Q.nfcall(fs.stat, src).then(function(stat) {
+                if (stat.size <= 8) {
+                    throw createError(
+                        'File ' + src + ' is an invalid archive',
+                        'ENOTARCHIVE'
+                    );
+                }
 
-    // Resolve promise to the dst dir
-    return promise.then(function () {
-        return dst;
-    });
+                // Extract archive
+                return extractor(src, tempDir);
+            });
+
+            // Remove archive
+            if (!opts.keepArchive) {
+                promise = promise.then(function() {
+                    return Q.nfcall(fs.unlink, src);
+                });
+            }
+
+            // Move contents from the temporary directory
+            // If the contents are a single directory (and we're not preserving structure),
+            // move its contents directly instead.
+            promise = promise
+                .then(function() {
+                    return isSingleDir(tempDir);
+                })
+                .then(function(singleDir) {
+                    if (singleDir && !opts.keepStructure) {
+                        return moveDirectory(singleDir, dst);
+                    } else {
+                        return moveDirectory(tempDir, dst);
+                    }
+                });
+
+            // Resolve promise to the dst dir
+            return promise.then(function() {
+                return dst;
+            });
+        });
 }
 
 module.exports = extract;
