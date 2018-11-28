@@ -21,7 +21,7 @@
 #where to load optinos
 CFG_OPTIONS_FILE='options'
 #script setup
-CFG_PROJECT_NAME="`dirname $PWD`"
+CFG_PROJECT_NAME="`basename $PWD`"
 CFG_DEFAULT_BUILD_TYPE='Release'
 CFG_DEFAULT_PREFIX='/usr/local'
 #compiler default flags
@@ -52,7 +52,7 @@ CFG_CMAKE_OPTS_FILE="`mktemp ${CFG_TMP}/configure_cmake_opts.XXXXXXXXXX`"
 
 ######################################################
 #Find default source dir
-CFG_SOURCE_DIR="$PWD/`dirname \"$0\"`"
+CFG_SOURCE_DIR="`dirname \"$0\"`"
 
 ######################################################
 #function defining all the options available to configure the project
@@ -631,7 +631,7 @@ cfg_gen_final_command_lines()
 	cat "${CFG_CMAKE_OPTS_FILE}" | while read line; do
 		echo "${quote}${line}${quote}"
 	done
-	echo ".."
+	echo "${CFG_SOURCE_DIR}"
 }
 
 ######################################################
