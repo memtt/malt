@@ -110,6 +110,9 @@ The config file use INI format with sections and variables as in this example :
 	exec                           = 
 	childs                         = true
 
+	[dump]
+	onSignal                       = 
+
 The `time` section support :
 
  * `enabled`:
@@ -196,6 +199,13 @@ The `filter` section support:
    MALT on all executable.
  * `childs`:
    Enable instrumentation of children processes or not. By default instruments all.
+
+The `dump` section permit to dump the profile whenever you want:
+
+ * `onSignal`:
+   Will dump on given signal. Can be on or comma separated list of: `SIGINT`, `SIGUSR1`, `SIGUSR2`.
+   Notice profiling will currently stop from this point app will continue without profiling.
+   To be fixed latter.
 
 ## ENVIRONMENT
 

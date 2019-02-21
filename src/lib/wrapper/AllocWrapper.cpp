@@ -17,6 +17,8 @@
 #include <dlfcn.h>
 //glibc
 #include <malloc.h>
+//signal
+#include <signal.h>
 //intenrals
 #include <common/Debug.hpp>
 #include <portability/OS.hpp>
@@ -236,20 +238,64 @@ static StackMode getStackMode(Options & options)
 }
 
 /*******************  FUNCTION  *********************/
-void sigKillHandler(int s)
+static void maltSigKillHandler(int s)
 {
 	fprintf(stderr,"MALT: Capture signal KILL, dump profile and exit.");
 	exit(1);
 }
 
 /*******************  FUNCTION  *********************/
-int maltInitStatus(void)
+static void maltSigUsr1Handler(int signum)
 {
-	return 1;
+	//twik print
+	int val = -1;
+	if (signum == SIGUSR1)
+		val = 1;
+	else if (signum == SIGUSR2)
+		val = 2;
+	else
+		assert(false);
+
+	//print
+	fprintf(stderr,"MALT: Capture signal SIGUSR1, dump profile and continue without profiling.");
+
+	//stop instr & dump
+	gblState.status = ALLOC_WRAP_FINISH;
+	gblState.profiler->onExit();
+
+	//TODO restore to pursue profiling
+}
+
+/*******************  FUNCTION  *********************/
+void maltSetupSigHandler(const Options & options)
+{
+	//get list
+	std::istringstream split(options.dumpOnSignal);
+	std::vector<std::string> tokens;
+	for (std::string each; std::getline(split, each, ','); tokens.push_back(each));
+
+	//loop on all
+	for (auto & it: tokens)
+	{
+		if (it == "SIGINT")
+			OS::setSigHandler(maltSigKillHandler,SIGINT);
+		else if (it == "SIGUSR1")
+			OS::setSigHandler(maltSigUsr1Handler,SIGUSR1);
+		else if (it == "SIGUSR2")
+			OS::setSigHandler(maltSigUsr1Handler,SIGUSR1);
+		else
+			MALT_FATAL_ARG("Invalid signal to attach handler for dummping profile: %1").arg(it).end();
+	}
 }
 
 /*******************  FUNCTION  *********************/
 extern "C" {
+
+/*******************  FUNCTION  *********************/
+int maltInitStatus(void)
+{
+	return 1;
+}
 	
 void maltEnable(void)
 {
@@ -354,7 +400,7 @@ void AllocWrapperGlobal::init(void )
 		//atexit(AllocWrapperGlobal::onExit);
 		
 		//register sigkill handler
-		OS::setSigKillHandler(sigKillHandler);
+		maltSetupSigHandler(*gblOptions);
 
 		//final state
 		gblState.status = ALLOC_WRAP_READY;

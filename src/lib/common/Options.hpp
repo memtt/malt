@@ -29,6 +29,10 @@ namespace htopml {
 namespace MALT
 {
 
+/********************  MACROS  **********************/
+/** Disable dumping on signal **/
+#define MALT_NO_DUMP_SIGNAL ""
+
 /********************  STRUCT  **********************/
 /**
  * Structure to manage the MALT options. It manage loading status from a config 
@@ -76,6 +80,8 @@ struct Options
 	std::string exe;
 	bool childs;
 	bool enabled;
+	//dump
+	std::string dumpOnSignal;
 };
 
 /********************  GLOBALS  *********************/

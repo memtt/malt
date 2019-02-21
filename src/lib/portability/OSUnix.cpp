@@ -157,13 +157,18 @@ std::string OSUnix::getExeName(void)
 }
 
 /*******************  FUNCTION  *********************/
-void OSUnix::setSigKillHandler(void (*handler)(int) )
+void OSUnix::setSigHandler(void (*handler)(int), int sigid )
 {
+	//setup
 	struct sigaction sigIntHandler;
 	sigIntHandler.sa_handler = handler;
 	sigemptyset(&sigIntHandler.sa_mask);
 	sigIntHandler.sa_flags = 0;
 	sigaction(SIGINT, &sigIntHandler, NULL);
+
+	//setup
+	int status = sigaction(sigid, &sigIntHandler, NULL);
+	assumeArg(status == 0, "Fail to install signal: %1").argStrErrno().end();
 }
 
 /*******************  FUNCTION  *********************/
