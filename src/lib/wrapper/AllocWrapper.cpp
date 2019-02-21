@@ -13,7 +13,7 @@
 #include <cassert>
 #include <cstring>
 #include <iostream>
-#include <thread>
+//#include <thread>
 //libc POSIX.1, here we use GNU specific RTLD_NEXT (need _GNU_SOURCE)
 #include <dlfcn.h>
 //glibc
@@ -286,43 +286,60 @@ void maltSetupSigHandler(const Options & options)
 	for (std::string each; std::getline(split, each, ','); tokens.push_back(each));
 
 	//loop on all
-	for (auto & it: tokens)
+	for (std::vector<std::string>::const_iterator it = tokens.begin() ; it != tokens.end() ; ++it)
 	{
-		if (it == "SIGINT")
+		if (*it == "SIGINT")
 			OS::setSigHandler(maltSigKillHandler,SIGINT);
-		else if (it == "SIGUSR1")
+		else if (*it == "SIGUSR1")
 			OS::setSigHandler(maltSigUsr1Handler,SIGUSR1);
-		else if (it == "SIGUSR2")
+		else if (*it == "SIGUSR2")
 			OS::setSigHandler(maltSigUsr1Handler,SIGUSR1);
 		else
-			MALT_FATAL_ARG("Invalid signal to attach handler for dummping profile: %1").arg(it).end();
+			MALT_FATAL_ARG("Invalid signal to attach handler for dummping profile: %1").arg(*it).end();
 	}
+}
+
+/*******************  FUNCTION  *********************/
+void * maltDumpAfterSecondsThreadMain(void * arg)
+{
+	//extract
+	int secs = (size_t)arg;
+
+	//we will need it latter to onExit
+	tlsState.init();
+
+	//wait
+	sleep(secs);
+
+	//dump
+	maltDumpOnEvent();
+
+	//done
+	return NULL;
 }
 
 /*******************  FUNCTION  *********************/
 void maltDumpAfterSecondsThread(const Options & options)
 {
 	//extract
-	int secs = options.dumpAfterSeconds;
+	size_t secs = options.dumpAfterSeconds;
 
 	//check
 	if (secs == 0)
 		return;
 	
-	//spaw thread
-	std::thread th([secs] { 
-		//we will need it latter to onExit
-		tlsState.init();
+	//spawn thread (c++11 style)
+	/*std::thread th([secs] { 
+		maltDumpAfterSecondsThreadMain();
+	});*/
 
-		//wait
-		sleep(secs);
+	//detach (c+11 style)
+	//th.detach();
 
-		//dump
-		maltDumpOnEvent();
-	});
-
-	//detach
-	th.detach();
+	//spawn threads
+	pthread_t th;
+	int rc = pthread_create(&th, NULL, maltDumpAfterSecondsThreadMain, (void*)secs);
+	assumeArg(rc == 0, "Fail to start sleep thread for timeout dump: %1").argStrErrno().end();
 }
 
 /*******************  FUNCTION  *********************/

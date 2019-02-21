@@ -16,6 +16,7 @@ Dependencies
 
 MALT depends on the presence of :
 
+ - C++11 compiler support.
  - binutils (nm and add2line) to extract symbols. Tested version is 2.24.
 
 It optionally depends on :

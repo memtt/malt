@@ -26,6 +26,7 @@ include(${CMAKE_SOURCE_DIR}/cmake/unittest-macros.cmake)
 
 ######################################################
 #Some global setup
+#malt_enable_cxx_11()
 setup_internal_gmock_and_gtest()
 if (ENABLE_GCC_COVERAGE)
 	malt_enable_gcc_coverage()
