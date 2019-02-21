@@ -190,6 +190,10 @@ Example of config file :
 	exe=                  ; Only apply malt on given exe (empty for all)
 	childs=true           ; Instrument child processes or not
 	enabled=true          ; Enable or disable MALT when threads start
+
+	[dump]
+	onSignal=             ; Dump on signal. Can be comma separated list from SIGINT, SIGUSR1, SIGUSR2 (limited to only one time)
+	afterSeconds=0        ; Dump after X seconds (limited to only one time)
 ```
 
 Option values can be overridden on the fly with command :
