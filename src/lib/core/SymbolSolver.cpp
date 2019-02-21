@@ -305,7 +305,8 @@ void SymbolSolver::solveNames(LinuxProcMapEntry * procMapEntry)
 		}
 	}
 	
-	printf("%s\n",addr2lineCmd.str().c_str());
+	//debug
+	//printf("%s\n",addr2lineCmd.str().c_str());
 	
 	//hide error if silent
 	if (gblOptions != NULL && gblOptions->outputSilent)

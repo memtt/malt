@@ -318,7 +318,6 @@ void maltDumpAfterSecondsThread(const Options & options)
 		sleep(secs);
 
 		//dump
-		fprintf(stderr,"Timout\n");
 		maltDumpOnEvent();
 	});
 

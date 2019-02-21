@@ -187,7 +187,7 @@ void ElfReader::loadGlobalVariables(ElfGlobalVariableVector& variables)
 	//check errors
 	if (this->elf == NULL)
 	{
-		MALT_WARNING("Cuation, get NULL elf structure, ignore it and skip global variable extraction.");
+		MALT_WARNING("Caution, get NULL elf structure, ignore it and skip global variable extraction.");
 		return;
 	}
 	
