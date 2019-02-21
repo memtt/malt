@@ -89,8 +89,9 @@ void Debug::end(void)
 				abort();
 			#endif
 		case MESSAGE_WARNING:
-			if (gblOptions->outputSilent)
-				break;
+			if (gblOptions != NULL)
+				if (gblOptions->outputSilent)
+					break;
 		case MESSAGE_ERROR:
 			if (line != 0)
 				std::cerr << std::endl << cstLevelPrefix[level] << "At " <<  file << ':' << line << " : \n";
