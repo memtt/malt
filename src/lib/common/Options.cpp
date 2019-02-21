@@ -62,6 +62,7 @@ Options::Options(void)
 	this->enabled                 = true;
 	//dump
 	this->dumpOnSignal            = MALT_NO_DUMP_SIGNAL;
+	this->dumpAfterSeconds        = 0;
 }
 
 /*******************  FUNCTION  *********************/
@@ -104,6 +105,7 @@ bool Options::operator==(const Options& value) const
 	if (this->enabled != value.enabled) return false;
 	//dump
 	if (this->dumpOnSignal != value.dumpOnSignal) return false;
+	if (this->dumpAfterSeconds != value.dumpAfterSeconds) return false;
 	
 	return true;
 }
@@ -229,6 +231,7 @@ void Options::loadFromIniDic ( dictionary* iniDic )
 
 	//dump
 	this->dumpOnSignal        = iniparser_getstring(iniDic,"dump:onSignal",(char*)this->dumpOnSignal.c_str());
+	this->dumpAfterSeconds    = iniparser_getint(iniDic,"dump:afterSeconds",this->dumpAfterSeconds);
 }
 
 /*******************  FUNCTION  *********************/
@@ -308,6 +311,7 @@ void convertToJson(htopml::JsonState & json,const Options & value)
 
 		json.openFieldStruct("dump");
 			json.printField("onSignal", value.dumpOnSignal);
+			json.printField("afterSeconds", value.dumpAfterSeconds);
 		json.closeFieldStruct("dump");
 	json.closeStruct();
 }
@@ -364,6 +368,7 @@ void Options::dumpConfig(const char* fname)
 
 	//dump
 	IniParserHelper::setEntry(dic,"dump:onSignal",this->dumpOnSignal.c_str());
+	IniParserHelper::setEntry(dic,"dump:afterSeconds",this->dumpAfterSeconds);
 	
 	//write
 	FILE * fp = fopen(fname,"w");

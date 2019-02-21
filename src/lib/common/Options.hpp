@@ -82,6 +82,7 @@ struct Options
 	bool enabled;
 	//dump
 	std::string dumpOnSignal;
+	int dumpAfterSeconds;
 };
 
 /********************  GLOBALS  *********************/

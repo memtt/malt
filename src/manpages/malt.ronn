@@ -30,7 +30,7 @@ it with debug symbols (`-g`) and also to disable inlining to get more accurate s
    to use the `enter-exit` to use it.
  * `-q`, `--quiet`:
    Make MALT silent to avoid mixing with default output of your program. Useful if
-   you use the output to fead a script.
+   you use the output to feed a script.
  * `-d`, `--dumpconfig`:
    Dump the current MALT configuration in a file with the same name as profile file.
    It helps for quick start in the configuration by getting all the options and default value.
@@ -112,6 +112,7 @@ The config file use INI format with sections and variables as in this example :
 
 	[dump]
 	onSignal                       = 
+	afterSeconds                   = 0
 
 The `time` section support :
 
@@ -204,6 +205,10 @@ The `dump` section permit to dump the profile whenever you want:
 
  * `onSignal`:
    Will dump on given signal. Can be on or comma separated list of: `SIGINT`, `SIGUSR1`, `SIGUSR2`.
+   Notice profiling will currently stop from this point app will continue without profiling.
+   To be fixed latter.
+ * `afterSeconds`:
+   Will dump profile after X seconds.
    Notice profiling will currently stop from this point app will continue without profiling.
    To be fixed latter.
 

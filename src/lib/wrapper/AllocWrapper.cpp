@@ -13,6 +13,7 @@
 #include <cassert>
 #include <cstring>
 #include <iostream>
+#include <thread>
 //libc POSIX.1, here we use GNU specific RTLD_NEXT (need _GNU_SOURCE)
 #include <dlfcn.h>
 //glibc
@@ -238,6 +239,19 @@ static StackMode getStackMode(Options & options)
 }
 
 /*******************  FUNCTION  *********************/
+static void maltDumpOnEvent(void)
+{
+	//stop instr & dump
+	if (gblState.status == ALLOC_WRAP_READY)
+	{
+		gblState.status = ALLOC_WRAP_FINISH;
+		gblState.profiler->onExit();
+
+		//TODO restore to pursue profiling
+	}
+}
+
+/*******************  FUNCTION  *********************/
 static void maltSigKillHandler(int s)
 {
 	fprintf(stderr,"MALT: Capture signal KILL, dump profile and exit.");
@@ -259,11 +273,8 @@ static void maltSigUsr1Handler(int signum)
 	//print
 	fprintf(stderr,"MALT: Capture signal SIGUSR1, dump profile and continue without profiling.");
 
-	//stop instr & dump
-	gblState.status = ALLOC_WRAP_FINISH;
-	gblState.profiler->onExit();
-
-	//TODO restore to pursue profiling
+	//dump
+	maltDumpOnEvent();
 }
 
 /*******************  FUNCTION  *********************/
@@ -286,6 +297,33 @@ void maltSetupSigHandler(const Options & options)
 		else
 			MALT_FATAL_ARG("Invalid signal to attach handler for dummping profile: %1").arg(it).end();
 	}
+}
+
+/*******************  FUNCTION  *********************/
+void maltDumpAfterSecondsThread(const Options & options)
+{
+	//extract
+	int secs = options.dumpAfterSeconds;
+
+	//check
+	if (secs == 0)
+		return;
+	
+	//spaw thread
+	std::thread th([secs] { 
+		//we will need it latter to onExit
+		tlsState.init();
+
+		//wait
+		sleep(secs);
+
+		//dump
+		fprintf(stderr,"Timout\n");
+		maltDumpOnEvent();
+	});
+
+	//detach
+	th.detach();
 }
 
 /*******************  FUNCTION  *********************/
@@ -399,8 +437,9 @@ void AllocWrapperGlobal::init(void )
 		//This line tend to create deadlock due to reentrance for some libs (openmpi for example)
 		//atexit(AllocWrapperGlobal::onExit);
 		
-		//register sigkill handler
+		//register sigkill handler & dump sleep
 		maltSetupSigHandler(*gblOptions);
+		maltDumpAfterSecondsThread(*gblOptions);
 
 		//final state
 		gblState.status = ALLOC_WRAP_READY;
