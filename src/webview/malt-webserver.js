@@ -31,6 +31,7 @@ var maltCache = new Object();
 args = new Args('malt-webserver', '1.0', 'Webiew for MALT based on Node.js','');
 //define args
 args.add({ name: 'input', desc: 'input file from MALT into JSON format', switches: [ '-i', '--input-file'], value: 'file', required: true });
+args.add({ name: 'host',  desc: 'Host to bind to locally', switches: [ '-H', '--host'], value: 'host', required: false });
 args.add({ name: 'port',  desc: 'Port to use to wait for HTTP requests', switches: [ '-p', '--port'],       value: 'port', required: false });
 args.add({ name: 'override',  desc: 'Override source dirs. Format is src1:dest1,src2:dest2...', switches: [ '-o', '--override'],       value: 'redirections', required: false });
 args.add({ name: 'noauth',    desc: 'Disable http authentification', switches: ['-n', '--no-auth'], required: false });
@@ -67,6 +68,11 @@ if (args.params.noauth == undefined)
 	//inserto into express
 	app.use(auth.connect(basic));
 }
+
+/****************************************************/
+var host = 'localhost';
+if (args.params.host != undefined)
+	host = args.params.host;
 
 /****************************************************/
 var port = 8080;
@@ -370,5 +376,5 @@ app.use('/deps/angular-route',Express.static(__dirname+'/bower_components/angula
 
 /****************************************************/
 //run express
-console.log("\n\nStarting server on http://localhost:" + port+"\n\n");
-app.listen(port,'localhost');
+console.log("\n\nStarting server on http://"+host+":" + port+"\n\n");
+app.listen(port,host);
