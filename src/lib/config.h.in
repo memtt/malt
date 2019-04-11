@@ -1,6 +1,11 @@
 #ifndef CONFIG_H
 #define CONFIG_H
 
+//versions
+#cmakedefine MALT_VERSION "@MALT_VERSION@"
+#cmakedefine MALT_VERSION_NOTE "@MALT_VERSION_NOTE@"
+#cmakedefine MALT_JSON_FORMAT_VERSION "@MALT_JSON_FORMAT_VERSION@"
+
 //select one of the spinlock mode
 #cmakedefine MALT_PORTABILITY_SPINLOCK_PTHREAD
 #cmakedefine MALT_PORTABILITY_SPINLOCK_DUMMY

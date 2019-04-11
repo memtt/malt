@@ -428,8 +428,8 @@ void convertToJson(htopml::JsonState& json, const CallSite& value)
 			json.printField("function",value.function);
 		if (value.line != 0)
 			json.printField("line",value.line);
-		if (value.mapEntry != NULL)
-			json.printField("binary",value.mapEntry->file);
+		if (value.file != -1)
+			json.printField("binary",value.file);
 		json.closeStruct();
 	}
 }

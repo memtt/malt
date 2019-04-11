@@ -11,6 +11,7 @@
 ENABLE_MPI=false
 MPI_WRAPPER_DIR="$HOME/.malt"
 MALT_OPTIONS=""
+MALT_VERSION="@MALT_VERSION@@MALT_VERSION_NOTE@"
 
 ######################################################
 maltCheckArgs()
@@ -76,7 +77,7 @@ maltShowHelp()
 while true; do
 	case "$1" in
 		--version)
-			echo "1.1.0-dev"
+			echo "${MALT_VERSION}"
 			exit 0
 		;;
 		--help|-h)

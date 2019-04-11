@@ -577,8 +577,8 @@ void convertToJson(htopml::JsonState& json, const AllocStackProfiler& value)
 	json.openStruct();
 	
 	json.openFieldStruct("run");
-		json.printField("formatVersion",1.0f);
-		json.printField("tool","malt-0.0.0");
+		json.printField("formatVersion", MALT_JSON_FORMAT_VERSION);
+		json.printField("tool","malt-" MALT_VERSION MALT_VERSION_NOTE);
 		json.printField("date",OS::getDateTime());
 		json.printField("runtime",getticks() - value.trefTicks);
 		if (value.getOptions()->traceEnabled)

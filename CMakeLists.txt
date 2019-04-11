@@ -12,6 +12,13 @@ cmake_minimum_required(VERSION 2.8.8)
 project(MALT)
 
 ######################################################
+#set versions to dispatch in code
+set(MALT_VERSION "1.1.0")
+set(MALT_VERSION_NOTE "-dev")
+set(MALT_SO_VERSION "1")
+set(MALT_JSON_FORMAT_VERSION "1.1")
+
+######################################################
 #global setup
 enable_testing()
 
