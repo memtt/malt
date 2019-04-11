@@ -90,7 +90,7 @@ void Debug::end(void)
 			#endif
 		case MESSAGE_WARNING:
 			if (gblOptions != NULL)
-				if (gblOptions->outputSilent)
+				if (gblOptions->outputVerbosity <= MALT_VERBOSITY_DEFAULT)
 					break;
 		case MESSAGE_ERROR:
 			if (line != 0)

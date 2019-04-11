@@ -441,8 +441,8 @@ void AllocWrapperGlobal::init(void )
 		}
 		
 		//print info
-		if (!gblOptions->outputSilent && !skip)
-			fprintf(stderr,"MALT : Start memory instrumentation of %s - %d by library override.\n",OS::getExeName().c_str(),OS::getPID());
+		if (gblOptions->outputVerbosity >= MALT_VERBOSITY_DEFAULT && !skip)
+			fprintf(stderr,"MALT: Start memory instrumentation of %s - %d by library override.\n",OS::getExeName().c_str(),OS::getPID());
 		
 		//disable childs
 		if (gblOptions->childs == false)

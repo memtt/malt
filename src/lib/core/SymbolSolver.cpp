@@ -223,12 +223,12 @@ void SymbolSolver::solveNames(void)
 	//first try with maqao infos
 	if (!maqaoSites.empty())
 	{
-		if (gblOptions != NULL && !gblOptions->outputSilent)
+		if (gblOptions != NULL && gblOptions->outputVerbosity >= MALT_VERBOSITY_DEFAULT)
 			fprintf(stderr,"MALT : Resolving symbols with maqao infos...\n");
 		this->solveMaqaoNames();
 	}
 	
-	if (gblOptions != NULL && !gblOptions->outputSilent)
+	if (gblOptions != NULL && gblOptions->outputVerbosity >= MALT_VERBOSITY_DEFAULT)
 		fprintf(stderr,"MALT : Resolving symbols with addr2line...\n");
 	
 	//avoid to LD_PRELOAD otherwise we will create fork bomb
@@ -306,10 +306,11 @@ void SymbolSolver::solveNames(LinuxProcMapEntry * procMapEntry)
 	}
 	
 	//debug
-	//printf("%s\n",addr2lineCmd.str().c_str());
+	if (gblOptions != NULL && gblOptions->outputVerbosity >= MALT_VERBOSITY_VERBOSE)
+		printf("MALT: %s\n",addr2lineCmd.str().c_str());
 	
 	//hide error if silent
-	if (gblOptions != NULL && gblOptions->outputSilent)
+	if (gblOptions != NULL && gblOptions->outputVerbosity <= MALT_VERBOSITY_DEFAULT)
 		 addr2lineCmd << ' ' << "2>/dev/null";
 	
 	//if no extry, exit

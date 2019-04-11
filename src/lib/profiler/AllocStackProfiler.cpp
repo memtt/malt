@@ -394,7 +394,7 @@ void AllocStackProfiler::loadGlobalVariables(void)
 {
 	//if not have libelf
 	if (!ElfReader::hasLibElf())
-		fprintf(stderr,"MALT : warning, malt was compiled without libelf, you will not get global variable memory usage !\n");
+		fprintf(stderr,"MALT: warning, malt was compiled without libelf, you will not get global variable memory usage !\n");
 	
 	//load /proc/map
 	LinuxProcMapReader map;
@@ -548,8 +548,8 @@ void AllocStackProfiler::onExit(void )
 		//valgrind out
 		if (options.outputCallgrind)
 		{
-			if (!options.outputSilent)
-				fprintf(stderr,"Prepare valgrind output...\n");
+			if (options.outputVerbosity >= MALT_VERBOSITY_DEFAULT)
+				fprintf(stderr,"MALT: Prepare valgrind output...\n");
 			ValgrindOutput vout;
 			
 			for (StackSTLHashMap<CallStackInfo>::const_iterator itMap = stackTracker.begin() ; itMap != stackTracker.end() ; ++itMap)
@@ -558,6 +558,10 @@ void AllocStackProfiler::onExit(void )
 			//stackTracer.fillValgrindOut(vout,symbolResolver);
 			CODE_TIMING("outputCallgrind",vout.writeAsCallgrind(FormattedMessage(options.outputName).arg(OS::getExeName()).arg(Helpers::getFileId()).arg("callgrind").toString(),symbolResolver));
 		}
+
+		//To know it has been done
+		if (options.outputVerbosity >= MALT_VERBOSITY_DEFAULT)
+			fprintf(stderr,"MALT: profile dump done...\n");
 
 		//print timings
 		#ifdef MALT_ENABLE_CODE_TIMING
@@ -724,8 +728,8 @@ ticks AllocStackProfiler::ticksPerSecond(void) const
 	//if too chost, sleep a little and return
 	if (delta.tv_sec == 0 && delta.tv_usec < 200000)
 	{
-		if (!gblOptions->outputSilent)
-			fprintf(stderr,"MALT : Using usleep to get better ticks <-> seconds conversion !\n");
+		if (options.outputVerbosity >= MALT_VERBOSITY_DEFAULT)
+			fprintf(stderr,"MALT: Using usleep to get better ticks <-> seconds conversion !\n");
 		usleep(200000);
 		res = this->ticksPerSecond();
 	} else {

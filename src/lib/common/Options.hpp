@@ -33,6 +33,18 @@ namespace MALT
 /** Disable dumping on signal **/
 #define MALT_NO_DUMP_SIGNAL ""
 
+/**********************  ENUM  **********************/
+/**
+ * To express MALT verbosity level.
+**/
+enum Verbosity
+{
+	MALT_VERBOSITY_SILENT,
+	MALT_VERBOSITY_DEFAULT,
+	MALT_VERBOSITY_VERBOSE,
+	MALT_VERBOSITY_COUNT,
+};
+
 /********************  STRUCT  **********************/
 /**
  * Structure to manage the MALT options. It manage loading status from a config 
@@ -65,7 +77,7 @@ struct Options
 	bool outputJson;
 	bool outputCallgrind;
 	bool outputDumpConfig;
-	bool outputSilent;
+	Verbosity outputVerbosity;
 	bool outputStackTree;
 	bool outputLoopSuppress;
 	//size map
@@ -102,6 +114,10 @@ static inline const Options & getGlobalOptions(void)
 
 /*******************  FUNCTION  *********************/
 Options & initGlobalOptions(void);
+Verbosity verbosityFromString(const std::string & value);
+const char * verbosityToString(Verbosity value);
+Verbosity iniparser_getverbosity(dictionary * d, const char * key, Verbosity notfound);
+std::ostream & operator << (std::ostream & out, Verbosity value);
 
 /*******************  FUNCTION  *********************/
 /** Safer function to access to the option, with check in debug mode.**/

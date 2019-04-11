@@ -175,17 +175,32 @@ Example of config file :
 	enabled=true          ; enable stack profiles
 	mode=backtrace        ; select stack tracing mode (backtrace|enter-exit)
 	resolve=true          ; Automatically resolve symbols with addr2line at exit.
+	libunwind=false       ; Enable of disable usage of libunwind to backtrace.
 	
 	[output]
 	name=malt-%1-%2.%3    ; base name for output, %1 = exe, %2 = PID, %3 = extension
-	indent=false          ; indent the output
 	lua=true              ; enable LUA output
 	json=true             ; enable json output
 	callgrind=true        ; enable callgrind output
+	indent=false          ; indent the output profile files
 	config=true           ; dump current config
+	verbosity=default     ; malt verbosity level (silent, default, verbose)
 	stackTree=false       ; store the call tree as a tree (smaller file, but need conversion)
 	loopSuppress=false    ; Simplify recursive loop calls to get smaller profile file if too big
+
+	[max-stack]
+	enabled=true          ; enable of disable strack size tracking (require -finstrument-functions)
 	
+	[distr]
+	alloc_size=true       ; generate distribution of allocation size
+	realloc_jump=true     ; generate distribution of realloc jumps
+
+	[trace]
+	enable=false          ; enable dumping allocation event tracing (not yet used by GUI)
+
+	[info]
+	hidden=false          ; try to hide possible sensible names from profile (exe, hostname...)
+
 	[filter]
 	exe=                  ; Only apply malt on given exe (empty for all)
 	childs=true           ; Instrument child processes or not

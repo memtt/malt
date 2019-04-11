@@ -22,6 +22,16 @@ namespace MALT
 /********************  GLOBALS  *********************/
 Options * gblOptions = NULL;
 
+/********************  CONSTS  **********************/
+/**
+ * To convert MALT verbosity level.
+**/
+static const char * cstVerbosityLevels[MALT_VERBOSITY_COUNT] = {
+	"silent",
+	"default",
+	"verbose"
+};
+
 /*******************  FUNCTION  *********************/
 /**
  * Constructor to setup the default values for each options
@@ -44,7 +54,7 @@ Options::Options(void)
 	this->outputLua               = false;
 	this->outputCallgrind         = false;
 	this->outputDumpConfig        = false;
-	this->outputSilent            = false;
+	this->outputVerbosity         = MALT_VERBOSITY_DEFAULT;
 	this->outputStackTree         = false;
 	this->outputLoopSuppress      = false;
 	//max stack
@@ -87,7 +97,7 @@ bool Options::operator==(const Options& value) const
 	if (this->outputLua != value.outputLua) return false;
 	if (this->outputCallgrind != value.outputCallgrind) return false;
 	if (this->outputDumpConfig != value.outputDumpConfig) return false;
-	if (this->outputSilent != value.outputSilent)  return false;
+	if (this->outputVerbosity != value.outputVerbosity)  return false;
 	if (this->outputStackTree != value.outputStackTree) return false;
 	if (this->outputLoopSuppress != value.outputLoopSuppress) return false;
 	//max stack
@@ -207,7 +217,7 @@ void Options::loadFromIniDic ( dictionary* iniDic )
 	this->outputLua           = iniparser_getboolean(iniDic,"output:lua",this->outputLua);
 	this->outputCallgrind     = iniparser_getboolean(iniDic,"output:callgrind",this->outputCallgrind);
 	this->outputDumpConfig    = iniparser_getboolean(iniDic,"output:config",this->outputDumpConfig);
-	this->outputSilent        = iniparser_getboolean(iniDic,"output:silent",this->outputSilent);
+	this->outputVerbosity     = iniparser_getverbosity(iniDic,"output:verbosity",this->outputVerbosity);
 	this->outputStackTree     = iniparser_getboolean(iniDic,"output:stackTree",this->outputStackTree);
 	this->outputLoopSuppress  = iniparser_getboolean(iniDic,"output:loopSuppress",this->outputLoopSuppress);
 	
@@ -285,7 +295,7 @@ void convertToJson(htopml::JsonState & json,const Options & value)
 			json.printField("json",value.outputJson);
 			json.printField("lua",value.outputLua);
 			json.printField("name",value.outputName);
-			json.printField("silent",value.outputSilent);
+			json.printField("verbosity",verbosityToString(value.outputVerbosity));
 			json.printField("stackTree",value.outputStackTree);
 			json.printField("loopSuppress",value.outputLoopSuppress);
 		json.closeFieldStruct("output");
@@ -344,7 +354,7 @@ void Options::dumpConfig(const char* fname)
 	IniParserHelper::setEntry(dic,"output:callgrind",this->outputCallgrind);
 	IniParserHelper::setEntry(dic,"output:indent",this->outputIndent);
 	IniParserHelper::setEntry(dic,"output:config",this->outputDumpConfig);
-	IniParserHelper::setEntry(dic,"output:silent",this->outputSilent);
+	IniParserHelper::setEntry(dic,"output:verbosity",verbosityToString(this->outputVerbosity));
 	IniParserHelper::setEntry(dic,"output:stackTree",this->outputStackTree);
 	IniParserHelper::setEntry(dic,"output:loopSuppress",this->outputLoopSuppress);
 	
@@ -444,6 +454,55 @@ Options& initGlobalOptions ( void )
 	assume (gblOptions == NULL,"initGlobalOptions was used previously, gblOptions is already init ! ");
 	gblOptions = new Options();
 	return *gblOptions;
+}
+
+/*******************  FUNCTION  *********************/
+/**
+ * Convert verbosity level from string.
+**/
+Verbosity verbosityFromString(const std::string & value)
+{
+	//search match
+	for (int i = 0 ; i < MALT_VERBOSITY_COUNT ; i++)
+		if (value == cstVerbosityLevels[i])
+			return (Verbosity)i;
+
+	//error
+	MALT_FATAL_ARG("Invalid verbosity level: '%1'").arg(value).end();
+	return MALT_VERBOSITY_DEFAULT;
+}
+
+/*******************  FUNCTION  *********************/
+/**
+ * Convert verbosity level to string.
+**/
+const char * verbosityToString(Verbosity value)
+{
+	assert(value < MALT_VERBOSITY_COUNT);
+	return cstVerbosityLevels[value];
+}
+
+/*******************  FUNCTION  *********************/
+Verbosity iniparser_getverbosity(dictionary * dic, const char * key, Verbosity notFound)
+{
+	//tansmit
+	char * tmp = iniparser_getstring(dic,key,(char*)verbosityToString(notFound));
+
+	//convert back
+	Verbosity res = verbosityFromString(tmp);
+
+	//ok
+	return res;
+}
+
+/*******************  FUNCTION  *********************/
+/**
+ * Dump to stream to be used for json output.
+**/
+std::ostream & operator << (std::ostream & out, Verbosity value)
+{
+	out << verbosityToString(value);
+	return out;
 }
 
 }

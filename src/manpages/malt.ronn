@@ -31,6 +31,8 @@ it with debug symbols (`-g`) and also to disable inlining to get more accurate s
  * `-q`, `--quiet`:
    Make MALT silent to avoid mixing with default output of your program. Useful if
    you use the output to feed a script.
+ * `-v`, `--verbose`:
+   Add more infos about MALT running.
  * `-d`, `--dumpconfig`:
    Dump the current MALT configuration in a file with the same name as profile file.
    It helps for quick start in the configuration by getting all the options and default value.
@@ -89,7 +91,7 @@ The config file use INI format with sections and variables as in this example :
 	callgrind                      = false
 	indent                         = true
 	config                         = true
-	silent                         = false
+	verbosity                      = default
 	stackTree                      = false
 	loopSuppress                   = false
 
@@ -109,6 +111,7 @@ The config file use INI format with sections and variables as in this example :
 	[filter]
 	exec                           = 
 	childs                         = true
+	enabled                        = true
 
 	[dump]
 	onSignal                       = 
@@ -152,9 +155,10 @@ The `output` section support :
    Enable indentations in the JSON/LUA files. Useful for debugging but generate bigger files.
  * `config`:
    Dump the config INI file.
- * `silent`:
-   Enable silent mode so that MALT will not write anything to the standard output of errors output not to disturb
-   streams sent to scripts.
+ * `verbosity`:
+   Set the verbosity mode of MALT. By `default` it print at start and end. You can use `silent` mode to disable any ouptput for 
+   example if you instrument shell script parsing the output of child processes. You can also use `verbose` to have more 
+   debugging infos in case if does not work as expected, mostly at the symbol extraction step while dumping outputs.
  * `stackTree`:
    Enable storage of the stacks as a tree inside the output file. It produces smaller files but require conversion
    at storage time and loading time to stay compatible with the basic expected format. You can use this option
@@ -200,6 +204,9 @@ The `filter` section support:
    MALT on all executable.
  * `childs`:
    Enable instrumentation of children processes or not. By default instruments all.
+ * `enabled`:
+   Enable profiling by default. Can be disable to be able to activate via C function call in the app 
+   when you want.
 
 The `dump` section permit to dump the profile whenever you want:
 

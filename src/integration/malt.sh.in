@@ -62,6 +62,7 @@ maltShowHelp()
 	echo "           --prep-mpi [mpicxx] Build the mpi wrapper into $HOME/.malt/libmaltmpi.so"
 	echo "   -s mode/--stack=mode        Select the stack tracking mode (backtrace|enter-exit)."
 	echo "   -q/--quiet                  Enable silent mode."
+	echo "   -v/--verbose                Enable verbose mode."
 	echo "   -t/--trace                  Enable the tracing mode."
 	echo "   -d/--dumpconfig             Enable the dump of config file at exit."
 	echo "   -o SEC:NAME=VAL;...         Override configuration values."
@@ -97,7 +98,11 @@ while true; do
 			shift 1
 		;;
 		--quiet|-q)
-			export MALT_OPTIONS="${MALT_OPTIONS};output:silent=true"
+			export MALT_OPTIONS="${MALT_OPTIONS};output:verbosity=silent"
+			shift 1
+		;;
+		--verbose|-v)
+			export MALT_OPTIONS="${MALT_OPTIONS};output:verbosity=verbose"
 			shift 1
 		;;
 		--option|-o)

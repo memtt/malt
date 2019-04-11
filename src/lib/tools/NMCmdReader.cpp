@@ -53,7 +53,7 @@ bool NMCmdReader::load(const std::string& binaryFile)
 	nmCmd << "nm --print-size -n -P --no-demangle " << binaryFile;
 	
 	//hide error if silent
-	if (gblOptions != NULL && gblOptions->outputSilent)
+	if (gblOptions != NULL && gblOptions->outputVerbosity <= MALT_VERBOSITY_DEFAULT)
 		 nmCmd << ' ' << "2>/dev/null";
 	
 	//start nm 1
