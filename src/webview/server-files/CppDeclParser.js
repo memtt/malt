@@ -8,6 +8,15 @@
  */
 (function() {
 	/**
+	 * Provide fallback because endsWidth() is not available without extra node options
+	 * for old nodejs still in use on old redhat release.
+	 * https://stackoverflow.com/questions/27599537/string-prototype-in-node-v0-10-25-does-not-have-endswith
+	 */
+	String.prototype.endsWith = String.prototype.endsWith || function(str){
+		return new RegExp(str + "$").test(str);
+	}
+
+	/**
 	 * Get the type parameter start index for a CPP prototype string
 	 * @param  {string} func Prototype declaration string
 	 * @return {int}         Start index
