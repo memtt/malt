@@ -50,7 +50,7 @@ cfg_add_with_option --name='libunwind' \
 
 #libelf
 cfg_add_with_option --name='libelf' \
-						--doc='Define prefix to find libelf [/usr]'
+						--doc='Define prefix to find libelf [/usr]' \
 						--var='LIBELF_PREFIX'
 
 ######################################################
