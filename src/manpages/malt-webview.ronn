@@ -28,6 +28,8 @@ http://localhost:8080.
    Force to use another port than default 8080.
  * `version`:
    Display the current version of MALT you are using.
+ * `-H`, `--host`:
+   Permit to provide the host to listen on if not want default one (localhost).
  * `-h`, `--help`:
    Display a short help message to summarize the available options.
 
