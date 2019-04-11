@@ -259,7 +259,7 @@ static void maltSigKillHandler(int s)
 }
 
 /*******************  FUNCTION  *********************/
-static void maltSigUsr1Handler(int signum)
+static void maltSigUsrHandler(int signum)
 {
 	//twik print
 	int val = -1;
@@ -271,7 +271,7 @@ static void maltSigUsr1Handler(int signum)
 		assert(false);
 
 	//print
-	fprintf(stderr,"MALT: Capture signal SIGUSR1, dump profile and continue without profiling.");
+	fprintf(stderr,"MALT: Capture signal SIGUSR%d, dump profile and continue without profiling.\n", signum);
 
 	//dump
 	maltDumpOnEvent();
@@ -291,9 +291,9 @@ void maltSetupSigHandler(const Options & options)
 		if (*it == "SIGINT")
 			OS::setSigHandler(maltSigKillHandler,SIGINT);
 		else if (*it == "SIGUSR1")
-			OS::setSigHandler(maltSigUsr1Handler,SIGUSR1);
+			OS::setSigHandler(maltSigUsrHandler,SIGUSR1);
 		else if (*it == "SIGUSR2")
-			OS::setSigHandler(maltSigUsr1Handler,SIGUSR1);
+			OS::setSigHandler(maltSigUsrHandler,SIGUSR2);
 		else
 			MALT_FATAL_ARG("Invalid signal to attach handler for dummping profile: %1").arg(*it).end();
 	}
