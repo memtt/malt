@@ -91,6 +91,8 @@ class SymbolSolver
 		int getString(const char* value);
 		void solveMissings(void);
 		static char * extractSymbolName(char * value);
+		size_t extractElfVaddr(const std::string & obj) const;
+		bool hasASLREnabled(void) const;
 	private:
 		FuncNameDicMap nameMap;
 		LinuxProcMap procMap;

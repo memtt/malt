@@ -7,18 +7,24 @@
 *****************************************************/
 
 /********************  HEADERS  *********************/
+//c++
 #include <cassert>
-#include <dlfcn.h>
 #include <cstdlib>
-#include <execinfo.h>
 #include <cstring>
 #include <cstdio>
 #include <iostream>
-#include "SymbolSolver.hpp"
+//uniw
+#include <dlfcn.h>
+#include <execinfo.h>
+//externals
 #include <json/JsonState.h>
+//malt
 #include <common/Debug.hpp>
 #include <common/Array.hpp>
 #include <common/Options.hpp>
+#include <portability/OS.hpp>
+//current
+#include "SymbolSolver.hpp"
 
 /*******************  NAMESPACE  ********************/
 namespace MALT
@@ -184,6 +190,80 @@ void SymbolSolver::loadProcMap(void)
 }
 
 /*******************  FUNCTION  *********************/
+/**
+ * If ASLR is enabled in addition to usage of fPIE or dynamic libraries there
+ * is an offset to extract to get real offset to use with addr2line to extract
+ * symboles. This offset is obtained by reading header of elf file.
+ *
+ * We currently do it using readelf because it does not required libelf which
+ * does not always have headers installed on HPC systems. 
+ *
+ * @todo Implement a fallback using directly libelf when available has we
+ * already use it for optional features.
+**/
+size_t SymbolSolver::extractElfVaddr(const std::string & obj) const
+{
+	//vars
+	size_t res = 0;
+
+	//check
+	assert(obj.empty() == false);
+
+	//build command
+	std::stringstream readelfcmd;
+	readelfcmd << "LC_ALL='C' readelf -h " << obj;
+
+	//debug
+	if (gblOptions->outputVerbosity >= MALT_VERBOSITY_VERBOSE)
+		fprintf(stderr, "MALT: %s\n", readelfcmd.str().c_str());
+	else
+		readelfcmd << " 2> /dev/null";
+
+	//call and read content
+	//@todo make a function to run and extract content as used many times
+	FILE * fp = popen(readelfcmd.str().c_str(),"r");
+	assumeArg(fp != NULL,"Failed to read vaddr via readelf in %1 : %2.").arg(obj).argStrErrno().end();
+
+	//read content
+	char buffer[4096];
+	const char key[] = "  Entry point address:";
+	while (res == 0 && !feof(fp)) {
+		//get next line
+		char * tmp = fgets(buffer, sizeof(buffer), fp);
+
+		//parse
+		if (tmp != NULL) {
+			if (sscanf(buffer, "  Entry point address:               %zx", &res) == 1) {
+				break;
+			}
+		}
+	}
+
+	//close
+	fclose(fp);
+
+	//warn
+	if (res == 0)
+		MALT_WARNING_ARG("Do not get ELF entry point (vaddr) to be used for ASLR + fPIE/fPIC correction. This might lead to issues to extract source location on %1.")
+			.arg(obj)
+			.end();
+
+	//debug
+	//if (gblOptions->outputVerbosity >= MALT_VERBOSITY_VERBOSE)
+	//	fprintf(stderr, "MALT: vaddr is 0x%lx\n", res);
+
+	//ok
+	return res;
+}
+
+/*******************  FUNCTION  *********************/
+bool SymbolSolver::hasASLREnabled(void) const
+{
+	std::string tmp = OS::loadTextFile("/proc/sys/kernel/randomize_va_space");
+	return ! (tmp.empty() || tmp == "0");
+}
+
+/*******************  FUNCTION  *********************/
 void convertToJson(htopml::JsonState& json, const LinuxProcMapEntry& value)
 {
 	json.openStruct();
@@ -273,8 +353,9 @@ void SymbolSolver::solveNames(LinuxProcMapEntry * procMapEntry)
 {
 	//prepare command
 	bool hasEntries = false;
+	const std::string elfFile = procMapEntry->file;
 	std::stringstream addr2lineCmd;
-	addr2lineCmd << "addr2line -C -f -e " << procMapEntry->file;
+	addr2lineCmd << "addr2line -C -f -e " << elfFile;
 	std::vector<CallSite*> lst;
 	
 	//Gentoo now enable -fPIE by default on executable so we need to detect the case
@@ -282,23 +363,36 @@ void SymbolSolver::solveNames(LinuxProcMapEntry * procMapEntry)
 	//We know on x86_64 that binary are by default map at 0x00400000, if not then
 	//we consider -fPIE enabled and apply shift.
 	bool isSharedLib = false;
+	bool isFPIE = false;
 	
 	//check if shared lib or exe
-	if (procMapEntry->file.substr(procMapEntry->file.size()-3) == ".so" || procMapEntry->file.find(".so.") != std::string::npos)
+	if (elfFile.substr(elfFile.size()-3) == ".so" || elfFile.find(".so.") != std::string::npos)
 		isSharedLib = true;
-	#ifdef __x86_64__
-		else if (procMapEntry->lower != (void*)0x00400000)//check if -fPIE on x86_64
-			isSharedLib = true;
-	#endif
 	
-	//preate addr2line args
+	//check if -fPIE on x86_64
+	#ifdef __x86_64__
+		if (isSharedLib == false && procMapEntry->lower != (void*)0x00400000) { 
+			isSharedLib = true;
+			isFPIE = true;
+		}
+	#endif
+
+	//Need to handle ASLR + fPIE/fPIC case
+	//https://jvns.ca/blog/2018/01/09/resolving-symbol-addresses/
+	size_t elfVaddr = 0;
+	if (isFPIE && hasASLREnabled())
+		elfVaddr = extractElfVaddr(elfFile);
+	
+	//create addr2line args
 	for (CallSiteMap::iterator it = callSiteMap.begin() ; it != callSiteMap.end() ; ++it)
 	{
 		if (it->second.mapEntry == procMapEntry)
 		{
 			hasEntries = true;
-			if (isSharedLib)
-				addr2lineCmd << ' '  << (void*)((size_t)it->first - (size_t)procMapEntry->lower);
+			if (isSharedLib && isFPIE)
+				addr2lineCmd << ' '  << (void*)(((size_t)it->first - (size_t)procMapEntry->lower));
+			else if (isSharedLib)
+				addr2lineCmd << ' '  << (void*)(((size_t)it->first - (size_t)procMapEntry->lower) + elfVaddr);
 			else
 				addr2lineCmd << ' '  << (void*)((size_t)it->first);
 			lst.push_back(&it->second);
@@ -324,7 +418,7 @@ void SymbolSolver::solveNames(LinuxProcMapEntry * procMapEntry)
 	//check error, skip resolution
 	if (fp == NULL)
 	{
-		MALT_ERROR_ARG("Fail to use addr2line on %1 to load symbols : %2.").arg(procMapEntry->file).argStrErrno().end();
+		MALT_ERROR_ARG("Fail to use addr2line on %1 to load symbols : %2.").arg(elfFile).argStrErrno().end();
 		return;
 	}
 	
@@ -382,12 +476,12 @@ void SymbolSolver::solveNames(LinuxProcMapEntry * procMapEntry)
 	int res = pclose(fp);
 	if (res != 0)
 	{
-		MALT_ERROR_ARG("Get error while using addr2line on %1 to load symbols : %2.").arg(procMapEntry->file).argStrErrno().end();
+		MALT_ERROR_ARG("Get error while using addr2line on %1 to load symbols : %2.").arg(elfFile).argStrErrno().end();
 		return;
 	}
 
 	//error
-	assumeArg(i == lst.size(),"Some entries are missing from addr2line, get %1, but expect %2. (%3)").arg(i).arg(lst.size()).arg(procMapEntry->file).end();
+	assumeArg(i == lst.size(),"Some entries are missing from addr2line, get %1, but expect %2. (%3)").arg(i).arg(lst.size()).arg(elfFile).end();
 }
 
 /*******************  FUNCTION  *********************/
