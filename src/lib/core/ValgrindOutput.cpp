@@ -11,6 +11,7 @@
 #include <fstream>
 #include <iostream>
 #include <cstring>
+#include <config.h>
 #include "ValgrindOutput.hpp"
 #include <portability/OS.hpp>
 
@@ -136,7 +137,7 @@ void ValgrindOutput::writeAsCallgrind(ostream& out, const SymbolSolver& dic)
 	
 	//header
 	out << "version: 1" << LINE_BREAK;
-	out << "creator: ATT-0.0.0" << LINE_BREAK;
+	out << "creator: MALT-" << MALT_VERSION << MALT_VERSION_NOTE << LINE_BREAK;
 	out << "pid: " << OS::getPID() << LINE_BREAK;
 	out << "cmd: " << OS::getExeName() << LINE_BREAK;
 	out << "part: 1" << LINE_BREAK;

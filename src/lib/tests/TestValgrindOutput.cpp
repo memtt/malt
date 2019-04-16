@@ -8,6 +8,7 @@
 
 /********************  HEADERS  *********************/
 #include <gtest/gtest.h>
+#include <common/Options.hpp>
 #include <core/ValgrindOutput.hpp>
 
 /***************** USING NAMESPACE ******************/
@@ -21,7 +22,7 @@ void test3(void) {}
 /********************** CONSTS **********************/
 void *CST_STACK_1[] = {(void*)0x1,(void*)0x2,(void*)0x2,(void*)0x2,(void*)0x2,(void*)0x2,(void*)0x3};
 const char CST_VALUE_1[] =  "version: 1\n\
-creator: ATT-0.0.0\n\
+creator: MALT-1.1.0-dev\n\
 pid: 1\n\
 cmd: TestValgrindOutput\n\
 part: 1\n\
@@ -97,6 +98,9 @@ int main(int argc, char ** argv)
 {
 	//init internal allocator
 	gblInternaAlloc = new SimpleAllocator(true);
+
+	//init options
+	initGlobalOptions();
 	
 	// This allows the user to override the flag on the command line.
 	::testing::InitGoogleTest(&argc, argv);
