@@ -169,7 +169,7 @@ Example of config file :
 	[time]
 	enabled=true          ; enable time profiles
 	points=1000           ; keep 1000 points
-	linar_index=false     ; use action ID instead of time
+	linar-index=false     ; use action ID instead of time
 	
 	[stack]
 	enabled=true          ; enable stack profiles
@@ -185,15 +185,15 @@ Example of config file :
 	indent=false          ; indent the output profile files
 	config=true           ; dump current config
 	verbosity=default     ; malt verbosity level (silent, default, verbose)
-	stackTree=false       ; store the call tree as a tree (smaller file, but need conversion)
-	loopSuppress=false    ; Simplify recursive loop calls to get smaller profile file if too big
+	stack-tree=false       ; store the call tree as a tree (smaller file, but need conversion)
+	loop-suppress=false    ; Simplify recursive loop calls to get smaller profile file if too big
 
 	[max-stack]
 	enabled=true          ; enable of disable strack size tracking (require -finstrument-functions)
 	
 	[distr]
-	alloc_size=true       ; generate distribution of allocation size
-	realloc_jump=true     ; generate distribution of realloc jumps
+	alloc-size=true       ; generate distribution of allocation size
+	realloc-jump=true     ; generate distribution of realloc jumps
 
 	[trace]
 	enable=false          ; enable dumping allocation event tracing (not yet used by GUI)
@@ -207,8 +207,8 @@ Example of config file :
 	enabled=true          ; Enable or disable MALT when threads start
 
 	[dump]
-	onSignal=             ; Dump on signal. Can be comma separated list from SIGINT, SIGUSR1, SIGUSR2 (limited to only one time)
-	afterSeconds=0        ; Dump after X seconds (limited to only one time)
+	on-signal=             ; Dump on signal. Can be comma separated list from SIGINT, SIGUSR1, SIGUSR2 (limited to only one time)
+	after-seconds=0        ; Dump after X seconds (limited to only one time)
 ```
 
 Option values can be overridden on the fly with command :

@@ -202,7 +202,7 @@ void Options::loadFromIniDic ( dictionary* iniDic )
 	//load values for time profiling
 	this->timeProfileEnabled  = iniparser_getboolean(iniDic,"time:enabled",this->timeProfileEnabled);
 	this->timeProfilePoints   = iniparser_getint(iniDic,"time:points",this->timeProfilePoints);
-	this->timeProfileLinear   = iniparser_getboolean(iniDic,"time:linear_index",this->timeProfileLinear);
+	this->timeProfileLinear   = iniparser_getboolean(iniDic,"time:linear-index",this->timeProfileLinear);
 	
 	//load values for stack profiling
 	this->stackResolve        = iniparser_getboolean(iniDic,"stack:resolve",this->stackResolve);
@@ -218,15 +218,15 @@ void Options::loadFromIniDic ( dictionary* iniDic )
 	this->outputCallgrind     = iniparser_getboolean(iniDic,"output:callgrind",this->outputCallgrind);
 	this->outputDumpConfig    = iniparser_getboolean(iniDic,"output:config",this->outputDumpConfig);
 	this->outputVerbosity     = iniparser_getverbosity(iniDic,"output:verbosity",this->outputVerbosity);
-	this->outputStackTree     = iniparser_getboolean(iniDic,"output:stackTree",this->outputStackTree);
-	this->outputLoopSuppress  = iniparser_getboolean(iniDic,"output:loopSuppress",this->outputLoopSuppress);
+	this->outputStackTree     = iniparser_getboolean(iniDic,"output:stack-tree",this->outputStackTree);
+	this->outputLoopSuppress  = iniparser_getboolean(iniDic,"output:loop-suppress",this->outputLoopSuppress);
 	
 	//max stack
 	this->maxStackEnabled     = iniparser_getboolean(iniDic,"max-stack:enabled",this->maxStackEnabled);
 	
 	//maps
-	this->distrAllocSize      = iniparser_getboolean(iniDic,"distr:alloc_size",this->distrAllocSize);
-	this->distrReallocJump    = iniparser_getboolean(iniDic,"distr:realloc_jump",this->distrReallocJump);
+	this->distrAllocSize      = iniparser_getboolean(iniDic,"distr:alloc-size",this->distrAllocSize);
+	this->distrReallocJump    = iniparser_getboolean(iniDic,"distr:realloc-jump",this->distrReallocJump);
 	
 	//trace
 	this->traceEnabled        = iniparser_getboolean(iniDic,"trace:enabled",this->traceEnabled);
@@ -240,8 +240,8 @@ void Options::loadFromIniDic ( dictionary* iniDic )
 	this->enabled             = iniparser_getboolean(iniDic,"filter:enabled",this->enabled);
 
 	//dump
-	this->dumpOnSignal        = iniparser_getstring(iniDic,"dump:onSignal",(char*)this->dumpOnSignal.c_str());
-	this->dumpAfterSeconds    = iniparser_getint(iniDic,"dump:afterSeconds",this->dumpAfterSeconds);
+	this->dumpOnSignal        = iniparser_getstring(iniDic,"dump:on-signal",(char*)this->dumpOnSignal.c_str());
+	this->dumpAfterSeconds    = iniparser_getint(iniDic,"dump:after-seconds",this->dumpAfterSeconds);
 }
 
 /*******************  FUNCTION  *********************/
@@ -339,7 +339,7 @@ void Options::dumpConfig(const char* fname)
 	//fill
 	IniParserHelper::setEntry(dic,"time:enabled",this->timeProfileEnabled);
 	IniParserHelper::setEntry(dic,"time:points",this->timeProfilePoints);
-	IniParserHelper::setEntry(dic,"time:linear_index",this->timeProfileLinear);
+	IniParserHelper::setEntry(dic,"time:linear-index",this->timeProfileLinear);
 	
 	//stack
 	IniParserHelper::setEntry(dic,"stack:enabled",this->timeProfileEnabled);
@@ -355,15 +355,15 @@ void Options::dumpConfig(const char* fname)
 	IniParserHelper::setEntry(dic,"output:indent",this->outputIndent);
 	IniParserHelper::setEntry(dic,"output:config",this->outputDumpConfig);
 	IniParserHelper::setEntry(dic,"output:verbosity",verbosityToString(this->outputVerbosity));
-	IniParserHelper::setEntry(dic,"output:stackTree",this->outputStackTree);
-	IniParserHelper::setEntry(dic,"output:loopSuppress",this->outputLoopSuppress);
+	IniParserHelper::setEntry(dic,"output:stack-tree",this->outputStackTree);
+	IniParserHelper::setEntry(dic,"output:loop-suppress",this->outputLoopSuppress);
 	
 	//max stack
 	IniParserHelper::setEntry(dic,"max-stack:enabled",this->maxStackEnabled);
 	
 	//maps
-	IniParserHelper::setEntry(dic,"distr:alloc_size",this->distrAllocSize);
-	IniParserHelper::setEntry(dic,"distr:realloc_jump",this->distrReallocJump);
+	IniParserHelper::setEntry(dic,"distr:alloc-size",this->distrAllocSize);
+	IniParserHelper::setEntry(dic,"distr:realloc-jump",this->distrReallocJump);
 	
 	//trace
 	IniParserHelper::setEntry(dic,"trace:enabled",this->traceEnabled);
@@ -377,8 +377,8 @@ void Options::dumpConfig(const char* fname)
 	IniParserHelper::setEntry(dic,"filter:enabled",this->enabled);
 
 	//dump
-	IniParserHelper::setEntry(dic,"dump:onSignal",this->dumpOnSignal.c_str());
-	IniParserHelper::setEntry(dic,"dump:afterSeconds",this->dumpAfterSeconds);
+	IniParserHelper::setEntry(dic,"dump:on-signal",this->dumpOnSignal.c_str());
+	IniParserHelper::setEntry(dic,"dump:after-seconds",this->dumpAfterSeconds);
 	
 	//write
 	FILE * fp = fopen(fname,"w");

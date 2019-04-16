@@ -92,15 +92,15 @@ The config file use INI format with sections and variables as in this example :
 	indent                         = true
 	config                         = true
 	verbosity                      = default
-	stackTree                      = false
-	loopSuppress                   = false
+	stack-tree                     = false
+	loop-suppress                  = false
 
 	[max-stack]
 	enabled                        = true
 
 	[distr]
-	alloc_size                     = true
-	realloc_jump                   = true
+	alloc-size                     = true
+	realloc-jump                   = true
 
 	[trace]
 	enabled                        = false
@@ -114,8 +114,8 @@ The config file use INI format with sections and variables as in this example :
 	enabled                        = true
 
 	[dump]
-	onSignal                       = 
-	afterSeconds                   = 0
+	on-signal                      = 
+	after-seconds                  = 0
 
 The `time` section support :
 
@@ -159,11 +159,11 @@ The `output` section support :
    Set the verbosity mode of MALT. By `default` it print at start and end. You can use `silent` mode to disable any ouptput for 
    example if you instrument shell script parsing the output of child processes. You can also use `verbose` to have more 
    debugging infos in case if does not work as expected, mostly at the symbol extraction step while dumping outputs.
- * `stackTree`:
+ * `stack-tree`:
    Enable storage of the stacks as a tree inside the output file. It produces smaller files but require conversion
    at storage time and loading time to stay compatible with the basic expected format. You can use this option
    to get smaller files. In one case it lowers a 600 MB file to 200 MB to give an idea.
- * `loopSuppress`:
+ * `loop-suppress`:
    Enable recursive loop calls to remove them and provide a more simplified equivalent call stack. It helps
    to reduce the size of profiles from applications using intensively this kind of call chain. In one case it lowers
    file from 200 MB to 85 MB. It can help if nodejs failed to load the fail because of the size. This parameter
@@ -178,9 +178,9 @@ The `max-stack` section support:
 
 The `distr` section support:
 
- * `alloc_size`:
+ * `alloc-size`:
    Generate distribution of the allocated chunk size.
- * `realloc_jump`:
+ * `realloc-jump`:
    Generate distribution of the realloc size jumps.
 
 The `trace` section support:
@@ -210,11 +210,11 @@ The `filter` section support:
 
 The `dump` section permit to dump the profile whenever you want:
 
- * `onSignal`:
+ * `on-signal`:
    Will dump on given signal. Can be on or comma separated list of: `SIGINT`, `SIGUSR1`, `SIGUSR2`.
    Notice profiling will currently stop from this point app will continue without profiling.
    To be fixed latter.
- * `afterSeconds`:
+ * `after-seconds`:
    Will dump profile after X seconds.
    Notice profiling will currently stop from this point app will continue without profiling.
    To be fixed latter.
