@@ -64,6 +64,7 @@ struct Options
 	bool stackResolve;
 	bool stackLibunwind;
 	std::string stackMode;
+	int stackSkip;
 	//vars for time profiging
 	bool timeProfileEnabled;
 	int timeProfilePoints;

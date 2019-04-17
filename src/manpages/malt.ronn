@@ -83,6 +83,7 @@ The config file use INI format with sections and variables as in this example :
 	mode                           = backtrace
 	resolve                        = true
 	libunwind                      = false
+	skip                           = 4
 
 	[output]
 	name                           = malt-%1-%2.%3
@@ -139,6 +140,16 @@ The `stack` section support :
    is available.
  * `libunwind`:
    Use linunwind backtrace method instead of the one from glibc.
+ * `skip`:
+   In backtrace mode, the backtrace is called inside our instrumentation function itself called by malloc/free....
+   In order to skip our internal code we need to remove them. But on some compilers or distros, inlining and LTO
+   configuration make wrong detection. This can be fixed by playing with this value to keep malloc/free/calloc
+   as leaf for every calltree extracted by MALT.
+   If you don't see malloc as leaf, you should increase this value. Decrease if you start to see MALT internal
+   function inside.
+   Notice in some cases (Gentoo, Gcc-8) we start to see LTO trashing totaly the malloc/free call in O3 mode 
+   normaly seen via backtrace. There is currently no other solution except recompiling in O0/O1 to avoid
+   or maybe disable LTO optimizations or consider not having the exact location of the malloc itself.
 
 The `output` section support :
 

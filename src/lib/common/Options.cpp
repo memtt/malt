@@ -21,6 +21,14 @@ namespace MALT
 
 /********************  GLOBALS  *********************/
 Options * gblOptions = NULL;
+/**
+ * To be used in LocalAllocStackProfiler to cut MALT internal function calls
+ * when backtracing and stop exactly at malloc/free level.
+ * Made as an option as I already had serveral time issues depending on compiler
+ * inlining operations so in case it append to someone he can fix without
+ * recompiling.
+**/
+static const int cstDefaultStackSkip = 5;
 
 /********************  CONSTS  **********************/
 /**
@@ -43,6 +51,7 @@ Options::Options(void)
 	this->stackResolve            = true;
 	this->stackLibunwind          = false;
 	this->stackMode               = "backtrace";
+	this->stackSkip               = cstDefaultStackSkip;
 	//time
 	this->timeProfileEnabled      = true;
 	this->timeProfilePoints       = 512;
@@ -86,6 +95,7 @@ bool Options::operator==(const Options& value) const
 	if (stackResolve != value.stackResolve) return false;
 	if (stackMode != value.stackMode) return false;
 	if (stackLibunwind != value.stackLibunwind) return false;
+	if (stackSkip != value.stackSkip) return false;
 	//time
 	if (this->timeProfileEnabled != value.timeProfileEnabled) return false;
 	if (this->timeProfilePoints != value.timeProfilePoints) return false;
@@ -209,6 +219,7 @@ void Options::loadFromIniDic ( dictionary* iniDic )
 	this->stackProfileEnabled = iniparser_getboolean(iniDic,"stack:enabled",this->stackProfileEnabled);
 	this->stackLibunwind      = iniparser_getboolean(iniDic,"stack:libunwind",this->stackLibunwind);
 	this->stackMode           = iniparser_getstring(iniDic,"stack:mode",(char*)this->stackMode.c_str());
+	this->stackSkip           = iniparser_getint(iniDic,"stack:skip",this->stackSkip);
 	
 	//load values for output
 	this->outputName          = iniparser_getstring(iniDic,"output:name",(char*)this->outputName.c_str());
@@ -286,6 +297,7 @@ void convertToJson(htopml::JsonState & json,const Options & value)
 			json.printField("mode",value.stackMode.c_str());
 			json.printField("resolve",value.stackResolve);
 			json.printField("libunwind",value.stackLibunwind);
+			json.printField("stackSkip",value.stackSkip);
 		json.closeFieldStruct("stack");
 		
 		json.openFieldStruct("output");
@@ -346,6 +358,7 @@ void Options::dumpConfig(const char* fname)
 	IniParserHelper::setEntry(dic,"stack:mode",this->stackMode.c_str());
 	IniParserHelper::setEntry(dic,"stack:resolve",this->stackResolve);
 	IniParserHelper::setEntry(dic,"stack:libunwind",this->stackLibunwind);
+	IniParserHelper::setEntry(dic,"stack:skip",this->stackSkip);
 	
 	//output
 	IniParserHelper::setEntry(dic,"output:name",this->outputName.c_str());
