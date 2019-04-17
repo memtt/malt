@@ -366,20 +366,27 @@ Similar tools
 
 If you search similar tools all over the web you might find:
 
-- Profiler provided with google allocator : [Google Heap Profiler](https://code.google.com/p/gperftools/wiki/GooglePerformanceTools)
+- Heaptrack: A Heap Memory Profiler for Linux: KDE/heaptrack: <https://github.com/KDE/heaptrack>
+- Memoro: A detailed Heap Profiler : <https://epfl-vlsc.github.io/memoro/>
+- Memtrail: <https://github.com/jrfonseca/memtrail>
+- MTuner: <https://milostosic.github.io/MTuner/>
+- Profiler provided with google allocator: [Google Heap Profiler](https://code.google.com/p/gperftools/wiki/GooglePerformanceTools)
 - [Valgrind memcheck](http://valgrind.org/)
-- Valgrind massif : [Valgrind massif](http://valgrind.org/) with [Massif visualizer](https://projects.kde.org/projects/extragear/sdk/massif-visualizer)
+- Valgrind massif: [Valgrind massif](http://valgrind.org/) with [Massif visualizer](https://projects.kde.org/projects/extragear/sdk/massif-visualizer)
 - [Dr. Memory](http://www.drmemory.org/)
 - Commercial tool, [Parasoft Insure++](https://www.parasoft.com/product/insure/)
 - Commercial tool, [Unicom PurifyPlus](http://unicomsi.com/products/purifyplus/) (previously IBM)
 - [Tau](https://www.cs.uoregon.edu/research/tau/home.php) is more a communication profiling tool for HPC apps, but it offers a [memory module](https://www.cs.uoregon.edu/research/tau/docs/old/bk05ch04.html)
-- Similar approach than MALT for the backend : [IgProf](http://igprof.org/)
-- A debug malloc library : [Dmalloc](http://dmalloc.com/)
-- Profiling and leak detection : [MemProf](http://people.redhat.com/otaylor/memprof/)
+- Similar approach than MALT for the backend: [IgProf](http://igprof.org/)
+- A debug malloc library: [Dmalloc](http://dmalloc.com/)
+- Profiling and leak detection: [MemProf](http://people.redhat.com/otaylor/memprof/)
 - [Malloc count](http://panthema.net/2013/malloc_count/)
 - [mpatrol](http://mpatrol.sourceforge.net/)
-- Tracing tool for parallel programs : [EZTrace](http://eztrace.gforge.inria.fr/)
-- Find Obsolete Memory : [FOM Tools](https://gitlab.cern.ch/fom/FOM-tools/wikis/home)
+- Tracing tool for parallel programs: [EZTrace](http://eztrace.gforge.inria.fr/)
+- Find Obsolete Memory: [FOM Tools](https://gitlab.cern.ch/fom/FOM-tools/wikis/home)
+
+If ever I missed new ones, you can also look on the repos of this person keeping an up-to-date list:
+<https://github.com/MattPD/cpplinks/blob/master/performance.tools.md>
 
 Parallel allocators
 -------------------
