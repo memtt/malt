@@ -222,9 +222,10 @@ The `filter` section support:
 The `dump` section permit to dump the profile whenever you want:
 
  * `on-signal`:
-   Will dump on given signal. Can be on or comma separated list of: `SIGINT`, `SIGUSR1`, `SIGUSR2`.
+   Will dump on given signal. Can be on or comma separated list of: `SIGINT`, `SIGUSR1`, `SIGUSR2`, ...
    Notice profiling will currently stop from this point app will continue without profiling.
    To be fixed latter.
+   You can get the list of availble list by using `help` or `avail` in place of name.
  * `after-seconds`:
    Will dump profile after X seconds.
    Notice profiling will currently stop from this point app will continue without profiling.

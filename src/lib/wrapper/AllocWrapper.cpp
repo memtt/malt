@@ -259,19 +259,13 @@ static void maltSigKillHandler(int s)
 }
 
 /*******************  FUNCTION  *********************/
-static void maltSigUsrHandler(int signum)
+static void maltSigHandler(int signum)
 {
 	//twik print
-	int val = -1;
-	if (signum == SIGUSR1)
-		val = 1;
-	else if (signum == SIGUSR2)
-		val = 2;
-	else
-		assert(false);
+	std::string name = OS::getSignalName(signum);
 
 	//print
-	fprintf(stderr,"MALT: Capture signal SIGUSR%d, dump profile and continue without profiling.\n", signum);
+	fprintf(stderr,"MALT: Capture signal %s, dump profile and continue without profiling.\n", name.c_str());
 
 	//dump
 	maltDumpOnEvent();
@@ -288,14 +282,17 @@ void maltSetupSigHandler(const Options & options)
 	//loop on all
 	for (std::vector<std::string>::const_iterator it = tokens.begin() ; it != tokens.end() ; ++it)
 	{
-		if (*it == "SIGINT")
-			OS::setSigHandler(maltSigKillHandler,SIGINT);
-		else if (*it == "SIGUSR1")
-			OS::setSigHandler(maltSigUsrHandler,SIGUSR1);
-		else if (*it == "SIGUSR2")
-			OS::setSigHandler(maltSigUsrHandler,SIGUSR2);
+		//debug
+		if (gblOptions->outputVerbosity != MALT_VERBOSITY_SILENT)
+			fprintf(stderr, "MALT: will dump on signal %s (caution, can do only one dump, bugfix in dev !)\n", it->c_str());
+		
+		//setup
+		if (*it == "help" || *it == "avail")
+			OS::printAvailSigs();
+		else if (*it == "SIGINT")
+			OS::setSigHandler(maltSigKillHandler,SIGINT);//TODO check if we keep this !
 		else
-			MALT_FATAL_ARG("Invalid signal to attach handler for dummping profile: %1").arg(*it).end();
+			OS::setSigHandler(maltSigHandler,*it);
 	}
 }
 

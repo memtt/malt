@@ -16,6 +16,7 @@
 #include <unistd.h>
 #include <libgen.h>
 #include <signal.h>
+#include <string.h>
 //internals
 #include <common/Debug.hpp>
 #include "Mutex.hpp"
@@ -25,10 +26,39 @@
 namespace MALT
 {
 
+/*********************  MACROS  *********************/
+#define MALT_DEF_SIGNAL(x) { #x, x }
+
+/********************  STRUCT  **********************/
+struct SigNamesEntry
+{
+	const char * name;
+	int sig;
+};
+
 /*********************  CONSTS  *********************/
 static const char * cstMeminfoFile = "/proc/meminfo";
 static const char * cstStatmFile = "/proc/self/statm";
 static const char * cstExeFile = "/proc/self/exe";
+static const int cstSigCnt = 16;
+static SigNamesEntry cstSigNames[cstSigCnt] = {
+	MALT_DEF_SIGNAL(SIGUSR1),
+	MALT_DEF_SIGNAL(SIGUSR2),
+	MALT_DEF_SIGNAL(SIGINT),
+	MALT_DEF_SIGNAL(SIGQUIT),
+	MALT_DEF_SIGNAL(SIGILL),
+	MALT_DEF_SIGNAL(SIGABRT),
+	MALT_DEF_SIGNAL(SIGKILL),
+	MALT_DEF_SIGNAL(SIGSEGV),
+	MALT_DEF_SIGNAL(SIGPIPE),
+	MALT_DEF_SIGNAL(SIGALRM),
+	MALT_DEF_SIGNAL(SIGTERM),
+	MALT_DEF_SIGNAL(SIGCHLD),
+	MALT_DEF_SIGNAL(SIGCONT),
+	MALT_DEF_SIGNAL(SIGSTOP),
+	MALT_DEF_SIGNAL(SIGTSTP),
+	MALT_DEF_SIGNAL(SIGFPE),
+};
 
 /*******************  FUNCTION  *********************/
 OSMemUsage OSUnix::getMemoryUsage(void)
@@ -157,6 +187,51 @@ std::string OSUnix::getExeName(void)
 }
 
 /*******************  FUNCTION  *********************/
+std::string OSUnix::getSignalName(int sig)
+{
+	//search to convert
+	for (int i = 0 ; i < cstSigCnt ; i++) {
+		if (cstSigNames[i].sig == sig) {
+			return cstSigNames[i].name;
+		}
+	}
+
+	//not found
+	return "UNKNOWN";
+}
+
+/*******************  FUNCTION  *********************/
+int OSUnix::getSignalFromName(const std::string & signame)
+{
+	//search to convert
+	for (int i = 0 ; i < cstSigCnt ; i++) {
+		if (signame == cstSigNames[i].name) {
+			return cstSigNames[i].sig;
+		}
+	}
+
+	//fail
+	MALT_FATAL_ARG("Invalid signal to attach handler for dummping profile: %1").arg(signame).end();
+	return -1;
+}
+
+/*******************  FUNCTION  *********************/
+void OSUnix::printAvailSigs(void)
+{
+	for (int i = 0 ; i < cstSigCnt ; i++) {
+		fprintf(stderr, "MALT: supported signal: %s (%d)\n", cstSigNames[i].name, cstSigNames[i].sig);
+	}
+}
+
+/*******************  FUNCTION  *********************/
+void OSUnix::setSigHandler(void (*handler)(int), const std::string & signame )
+{
+	//convert and call
+	int sig = getSignalFromName(signame);
+	setSigHandler(handler, sig);
+}
+
+/*******************  FUNCTION  *********************/
 void OSUnix::setSigHandler(void (*handler)(int), int sigid )
 {
 	//setup
@@ -168,7 +243,7 @@ void OSUnix::setSigHandler(void (*handler)(int), int sigid )
 
 	//setup
 	int status = sigaction(sigid, &sigIntHandler, NULL);
-	assumeArg(status == 0, "Fail to install signal: %1").argStrErrno().end();
+	assumeArg(status == 0, "Fail to install signal %1: %2").arg(getSignalName(sigid)).argStrErrno().end();
 }
 
 /*******************  FUNCTION  *********************/

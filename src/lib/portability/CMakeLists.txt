@@ -18,3 +18,8 @@ list(APPEND MALT_PORT_SRC CompilerGNU.cpp)
 ######################################################
 add_library(malt-port OBJECT ${MALT_PORT_SRC})
 SET_TARGET_PROPERTIES(malt-port PROPERTIES COMPILE_FLAGS -fPIC)
+
+######################################################
+if (ENABLE_TESTS)
+	add_subdirectory(tests)
+endif (ENABLE_TESTS)
