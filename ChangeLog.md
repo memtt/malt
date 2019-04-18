@@ -6,6 +6,15 @@ master
 
  - New configure script from NUMAPROF to be more generic and reusable.
  - Fixes in rpm packaging
+ - Improve packaging fixing qt-webkit deps in RPM
+ - Support dumping profile on demand via signal, to be enabled by user
+ - Add option to dump every X second, implementation still ongoing
+ - Fix quiet/silent mode and improve verbosity handling
+ - Webvew listen on demand on other than localhost
+ - Fix missing function on old NodeJS from redhat 7
+ - Improve fPIE + ASLR symbol resolution (Gentoo, Centos, Redhat)
+ - Improve backtrace level cutting to better support clang LTO in O3
+ - Fix naming convention in .ini config file.
 
 1.0.0 - 07/02/2018
 ------------------
