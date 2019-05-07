@@ -352,6 +352,7 @@ app.use('/app-sources/',function(req,res,next){
 		console.log("Source file request :",realPath);
 		req.path = realPath;
 		req.url = realPath;
+		res.header("Content-Type", "text/plain");
 		return staticSourceServer(req,res,next);
 	} else {
 		//invalid source request
