@@ -111,14 +111,14 @@ app.get('/flat.json',function(req,res) {
 	}
 	
 	//ok flush to user
-	res.write(JSON.stringify(tmp,null,"\t"));
+	res.json(tmp);
 	res.end();
 });
 
 /****************************************************/
 app.get('/summary.json',function(req,res) {
 	var tmp = maltProject.getSummary();
-	res.write(JSON.stringify(tmp,null));
+	res.json(tmp);
 	res.end();
 });
 
@@ -126,7 +126,7 @@ app.get('/summary.json',function(req,res) {
 //export timed value to build charts
 app.get('/timed.json',function(req,res) {
 	var tmp = maltProject.getTimedValues();
-	res.write(JSON.stringify(tmp,null));
+	res.json(tmp);
 	res.end();
 });
 
@@ -134,7 +134,7 @@ app.get('/timed.json',function(req,res) {
 //export max stack info
 app.get('/max-stack-infos.json',function (req,res){
 	var tmp = maltProject.getMaxStack();
-	res.write(JSON.stringify(tmp,null));
+	res.json(tmp);
 	res.end();
 });
 
@@ -142,7 +142,7 @@ app.get('/max-stack-infos.json',function (req,res){
 //export max stack info
 app.get('/stacks-mem.json',function (req,res){
 	var tmp = maltProject.getStacksMem();
-	res.write(JSON.stringify(tmp,null));
+	res.json(tmp);
 	res.end();
 });
 
@@ -150,7 +150,7 @@ app.get('/stacks-mem.json',function (req,res){
 //export max stack info
 app.get('/procmap.json',function (req,res){
 	var tmp = maltProject.getProcMap();
-	res.write(JSON.stringify(tmp,null));
+	res.json(tmp);
 	res.end();
 });
 
@@ -158,7 +158,7 @@ app.get('/procmap.json',function (req,res){
 //export max stack info
 app.get('/global-variables.json',function (req,res){
 	var tmp = maltProject.getGlobalVariables();
-	res.write(JSON.stringify(tmp,null));
+	res.json(tmp);
 	res.end();
 });
 
@@ -174,11 +174,11 @@ app.get('/stacks.json',function(req,res){
 	{
 		console.log("extract stacks for : "+file+" +"+line);
 		var tmp = maltProject.getFilterdStacksOnFileLine(file,line);
-		res.write(JSON.stringify(tmp,null,"\t"));
+		res.json(tmp);
 	} else if (func != undefined) {
 		console.log("extract stacks for : "+func);
 		var tmp = maltProject.getFilterdStacksOnSymbol(func);
-		res.write(JSON.stringify(tmp,null,"\t"));
+		res.json(tmp);
 	} else {
 		res.send(500, 'Missing file or line GET parameter !');
 	}
@@ -203,7 +203,7 @@ app.get('/memtrace-at.json',function(req,res) {
 			console.log(stdout);
 			var data = JSON.parse(stdout);
 			var data = maltProject.completeMemtraceAt(data);
-			res.write(JSON.stringify(data));
+			res.json(data);
 			res.end();
 		});  
 	}
@@ -223,12 +223,14 @@ app.get('/file-infos.json',function(req,res) {
 	{
 		res.send(500, 'Missing file GET parameter !');
 	} else if (maltCache['file-infos.json'][file] != undefined) {
+		res.type('json');
 		res.write(maltCache['file-infos.json'][file]);
 	} else {
 		console.log("extract alloc info of file : "+file);
 		var tmp = maltProject.getFileLinesFlatProfile(file,false);
 		tmp = JSON.stringify(tmp,null,'\t');
 		maltCache['file-infos.json'][file] = tmp;
+		res.type('json');
 		res.write(tmp);
 	}
 	res.end();
@@ -237,7 +239,7 @@ app.get('/file-infos.json',function(req,res) {
 /****************************************************/
 app.get('/max-stack.json',function(req,res) {
 	var tmp = maltProject.getMaxStackInfoOnFunction();
-	res.write(JSON.stringify(tmp,null,'\t'));
+	res.json(tmp);
 	res.end();
 });
 
@@ -245,14 +247,14 @@ app.get('/max-stack.json',function(req,res) {
 app.get('/stack.json',function(req,res) {
 	var id = req.query.id;
 	var tmp = maltProject.getStackInfoOnFunction(id);
-	res.write(JSON.stringify(tmp,null,'\t'));
+	res.json(tmp);
 	res.end();
 });
 
 /****************************************************/
 app.get('/proc-map-distr.json',function(req,res) {
 	var tmp = maltProject.getProcMapDistr();
-	res.write(JSON.stringify(tmp,null,'\t'));
+	res.json(tmp);
 	res.end();
 });
 
@@ -260,35 +262,35 @@ app.get('/proc-map-distr.json',function(req,res) {
 //export scatter info
 app.get('/scatter.json',function (req,res){
 	var tmp = maltProject.getScatter();
-	res.write(JSON.stringify(tmp,null));
+	res.json(tmp);
 	res.end();
 });
 
 /****************************************************/
 app.get('/size-map.json',function(req,res) {
 	var tmp = maltProject.getSizeMap();
-	res.write(JSON.stringify(tmp,null,'\t'));
+	res.json(tmp);
 	res.end();
 });
 
 /****************************************************/
 app.get('/realloc-map.json',function(req,res) {
 	var tmp = maltProject.getReallocMap();
-	res.write(JSON.stringify(tmp,null,'\t'));
+	res.json(tmp);
 	res.end();
 });
 
 /****************************************************/
 app.get('/debug-stack-list.json',function(req,res) {
 	var tmp = maltProject.getDebugStackList();
-	res.write(JSON.stringify(tmp,null,'\t'));
+	res.json(tmp);
 	res.end();
 });
 
 /****************************************************/
 app.get('/data/summary.json',function(req,res) {
 	var tmp = maltProject.getSummaryV2();
-	res.write(JSON.stringify(tmp,null,'\t'));
+	res.json(tmp);
 	res.end();
 });
 
@@ -350,6 +352,7 @@ app.use('/app-sources/',function(req,res,next){
 		console.log("Source file request :",realPath);
 		req.path = realPath;
 		req.url = realPath;
+		res.header("Content-Type", "text/plain");
 		return staticSourceServer(req,res,next);
 	} else {
 		//invalid source request
