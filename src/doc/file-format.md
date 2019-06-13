@@ -10,7 +10,7 @@ Global structure
 
 The json file contains major structures as :
 
-```json
+```json5
 {
     /* Provide some global informations about the run. */
     "run": {},
@@ -40,7 +40,7 @@ Details about run
 
 This section provide a global summary to give meta informations about the run.
 
-```json
+```json5
 "run":{
     /* MALT json format version */
     "formatVersion":"1.1",
@@ -66,7 +66,7 @@ This section provide a dump of the config setup used to configure MALT for the
 run. This is more for debugging purpose but can also be used to keep track
 of valid options for cases.
 
-```json
+```json5
 "config": {
     "time": {
       "enabled": true,
@@ -96,7 +96,7 @@ key.
 with what we can dump with 0 cost into the trace mode (not yet propagated
 to the view but done in backen).
 
-```json
+```json5
 /* Stack root object */
 "stacks": {
     /* List of stack stats */
@@ -180,7 +180,7 @@ and identified by the address of the function.
 
 This section contain many sub sections.
 
-```json
+```json5
 {
     /*
     Dump in a json format of /proc/self/maps to reconstruct addresses
@@ -205,7 +205,7 @@ Details about sites.map
 
 List of entries of `/prof/self/maps`.
 
-```json
+```json5
 [
     {
         /* base address of the section */
@@ -233,7 +233,7 @@ reduce a lot the size of the profile file.
 The index in the array is the key identifying the string and being used into
 the `instr` section entries just silimarly to a pointer.
 
-```json
+```json5
 [
     /* The first one is always this one to be used for unknown values. */
     "??",
@@ -258,7 +258,7 @@ Notice strings are identified as a key to be found in the `sites.strings`
 section in order to reduce the size of the section avoiding them copying
 to many time and get a smaller file.
 
-```json
+```json5
 {
     "0x1": {
         "function": 71
