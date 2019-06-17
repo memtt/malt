@@ -4,7 +4,7 @@ compiler:
   - gcc
 
 before_install:
-   - sudo apt-get install -y node libqt5webkit5-dev
+   - sudo apt-get install -y nodejs libqt5webkit5-dev
 #  - pip install --user cpp-coveralls
 
 script: 
