@@ -130,11 +130,17 @@ struct ProfilableMaxScalar
 	ProfilableMaxScalar(const T & value) {this->value = value;}
 	bool reduce(const ProfilableMaxScalar<T> & v) {if (v.value > this->value) {this->value = v.value;return true;} else {return false;}}
 	template <class U> friend void convertToJson(htopml::JsonState& json, const ProfilableMaxScalar<U> & value) {json.getStream() << value.value;}
+	//meta description
+	static const char * selfDescribeFields[1];
 };
 
 /*********************  CLASS  **********************/
 typedef ProfiledValue< ProfilableMaxScalar<double> > ProfiledStateMaxReal;
 typedef ProfiledValue< ProfilableMaxScalar<size_t> > ProfiledStateMaxInt;
+
+/**********************  CONST  *********************/
+template <class T>
+const char * ProfilableMaxScalar<T>::selfDescribeFields[1] = {"max"};
 
 /*******************  FUNCTION  *********************/
 template <class T>
@@ -407,9 +413,13 @@ void convertToJson(htopml::JsonState& json, const ProfiledValue<T>& value)
 
 	//export struct
 	json.openStruct();
+
+	//tmp
+	size_t fieldCnt = sizeof(T::selfDescribeFields) / sizeof(char*);
 	
 	//global infos
 	json.printField("start",value.start);
+	json.printFieldArray("fields",T::selfDescribeFields,fieldCnt);
 	json.printField("perPoints",value.perPoints);
 	json.printField("peak",value.peak);
 	

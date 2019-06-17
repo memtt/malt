@@ -80,6 +80,8 @@ struct TimeTrackMemory
 	size_t virtualMem;
 	size_t internalMem;
 	size_t segments;
+	//meta description
+	static const char * selfDescribeFields[5];
 };
 
 /*********************  STRUCT  *********************/
@@ -93,6 +95,8 @@ struct TimeTrackSysMemory
 	size_t freeMemory;
 	size_t cachedMemory;
 	size_t swapMemory;
+	//meta description
+	static const char * selfDescribeFields[3];
 };
 
 /*********************  STRUCT  *********************/
@@ -102,11 +106,13 @@ struct TimeTrackAllocBandwidth
 	TimeTrackAllocBandwidth & operator += (const TimeTrackAllocBandwidth & value);
 	friend void convertToJson(htopml::JsonState& json, const TimeTrackAllocBandwidth & value);
 	bool reduce(const TimeTrackAllocBandwidth & v);
-// 	friend TimeTrackAllocBandwidth operator 
+	//friend TimeTrackAllocBandwidth operator 
 	size_t allocMem;
 	size_t allocCount;
 	size_t freeMem;
 	size_t freeCount;
+	//meta description
+	static const char * selfDescribeFields[4];
 };
 
 /*********************  CLASS  **********************/

@@ -41,6 +41,30 @@
 namespace MALT
 {
 
+/*********************  CONST ***********************/
+const char * TimeTrackMemory::selfDescribeFields[5] = {
+	"requestedMem",
+	"physicalMem",
+	"virtualMem",
+	"internalMem",
+	"segments",
+};
+
+/*********************  CONST ***********************/
+const char * TimeTrackSysMemory::selfDescribeFields[3] = {
+	"freeMemory",
+	"cachedMemory",
+	"swapMemory",
+};
+
+/*********************  CONST ***********************/
+const char * TimeTrackAllocBandwidth::selfDescribeFields[4] = {
+	"allocMem",
+	"allocCount",
+	"freeMem",
+	"freeCount",
+};
+
 /*******************  FUNCTION  *********************/
 AllocStackProfiler::AllocStackProfiler(const Options & options,StackMode mode,bool threadSafe)
 	:largestStack(STACK_ORDER_DESC)
