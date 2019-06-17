@@ -260,14 +260,214 @@ to many time and get a smaller file.
 
 ```json5
 {
+    /* Instruction indentified by its address */
     "0x1": {
         "function": 71
     },
     "0x402320": {
+        /* ID in 'site.strings' of file path */
         "file": 1,
+        /* ID in 'site.strings' of function name */
         "function": 3,
+        /* Line in file */
         "line": 124,
+        /* ID in 'site.strings' of binary file path */
         "binary": 1
     }
+}
+```
+
+Details about timeline
+----------------------
+
+This section contain the dynamic aspects of the malloc tracking via time
+lines by sampling malloc calls over time ranges.
+
+The global abstract representation of those data is based on a sampling
+of the total execution to split it into a vertain number of points which
+is configured by config file (`time.points` being 512 by default).
+
+Here all clocks will be based on CPU ticks, this not the more previse
+and monotonic source but is fine enougth to permit to get fast acces
+to a precise clock. The conversion frequency can be found in the
+`global.ticksPerSecond` section to make conversion.
+
+*Experimental*: Noticed that on each interval we kept the max observed values,
+eg max allocated memory, not the exact value. You will also
+noticed the json provide the callsite being currently experimental
+to be able to say what was the called function called when we
+reached to peak in order to know which portion of the code
+triggered it. This is not yet reported into the GUI.
+
+The global content layout of this section correspond to:
+
+```json5
+{
+    /* Memory timeline section */
+    "memoryTimeline": {
+        /*
+        Remember absolute start point, this is more if ever the user
+        want latter to compare with multiple runs on the same machine
+        but that does not consider reboot of other server which might
+        have a different value.
+        */
+        "start": 52892167387036,
+        /* Number of cycles considered between two time points. */
+        "perPoints": 57728,
+        /* Peak measurement to get larget values obversed over the run. */
+        "peak": [
+            /* Requested memory */
+            1146605,
+            /* Physical memory */
+            515485696,
+            /* Virtual meomry */
+            6369280,
+            /* Internal memory */
+            97144,
+            /* Number of active segements */
+            163
+        ],
+        /*
+        Now the timed value, each sub entry is a time step with all attached
+        values.
+        */
+        "values": [
+            [
+                /* Requested memory */
+                72704,
+                /* Physical memory */
+                16171008,
+                /* Virtual meomry */
+                4112384,
+                /* Internal memory */
+                20704,
+                /* Number of active segements */
+                1
+            ],
+        ],
+        /* Callsite triggering the max value on each interval (experimental) */
+        "callsite": [
+            "0x7f36c0fd9f60",
+            "(nil)",
+            "0x7f36c0fe1258",
+        ]
+    }
+}
+```
+
+The `systemTimeline` provide very similar information by tracking the state
+of the global memory available or used by the full system.
+
+```json5
+{
+    "systemTimeline": {
+        "start":...,
+        "perPoints":...,
+        "peak": [
+            /* Free memory */
+            4573065216,
+            /* Cached (FS) memory */
+            0,
+            /* Swaped memory */
+            8713916416
+        ],
+        "values": [
+            [
+                4573065216,
+                0,
+                8713916416
+            ],
+            [],
+            [],
+        ]
+    }
+}
+```
+
+The `memoryBandwidth` provide some metrics about how much memory we
+allocate/deallocate per second of number of memory managment operations
+we are doing per seconds. This permits detecting possibly bad patterns
+pushing too much presure to the underlying operating system.
+
+```json5
+{
+    "systemTimeline": {
+        "start":...,
+        "perPoints":...,
+        "peak": [
+            /* Allocated memory */
+            382,
+            /* Allocation count */
+            3931828,
+            /* Freed memory */
+            107,
+            /* Freed segments */
+            2134292
+        ],
+        "values": [
+            [
+                1,
+                72704,
+                0,
+                0
+            ],
+            [],
+            [],
+        ]
+    }
+}
+
+About the scatter section
+-------------------------
+
+This section try to extract 2D representation of the memory parameter space
+by extraction two axis information in a sampled way based by default
+on logarithmic sampled region. It provides multiple data sets.
+
+It splitts in multiple sub-sections:
+
+ * `sizeOverTime`: Provide allocation sizes used over time to detect
+if there is phases with small then large allocations...
+ * `lifetimeOverSize`: Provide allocation lifetimes over size to know
+if we allocate mostly large chunks with long life of small with short
+or... to better found wrong performance pattern.
+
+In both case, the content follow the given structuration:
+
+```json5
+{
+    "sizeOverTime": {
+        /* Meta informations to interpret datas */
+        "infos": {
+            /* Infos on X axis */
+            "xAxis": {
+                /* Value range goes from 0 to max */
+                "max": 67108864,
+                /* Numver of entries on X axis is 64 */
+                "size": 64,
+                /* Ranges are built with log2 base, not linear. */
+                "log": false
+            },
+            /* Same for Y axis*/
+            "yAxis": {
+                "max": 2097152,
+                "size": 64,
+                "log": true
+            }
+        },
+        /* List of 2D points to cover space (only if no 0) */
+        "points": [
+            /* Define a new point */
+            {
+                /* X axis location */
+                "x": 13631488,
+                /* y axis location */
+                "y": 1,
+                /* value attached to the location */
+                "v": 1
+            },
+            {},
+        ],
+    },
 }
 ```
