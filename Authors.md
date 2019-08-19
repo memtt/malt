@@ -23,5 +23,7 @@ Special thanks to original finance plan :
 Ponctual bugfix contributors:
 -----------------------------
 
+ * Luca Barbato (gentoo.org) [2019]
+ * Federico Fissore [2019]
  * Derek Buitenhuis [2019]
  * Tru Huynh (pasteur.fr) [2018]
