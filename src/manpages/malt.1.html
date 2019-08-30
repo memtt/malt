@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta http-equiv='content-type' value='text/html;charset=utf8'>
-  <meta name='generator' value='Ronn/v0.7.3 (http://github.com/rtomayko/ronn/tree/0.7.3)'>
+  <meta http-equiv='content-type' content='text/html;charset=utf8'>
+  <meta name='generator' content='Ronn-NG/v0.8.0 (http://github.com/apjanke/ronn-ng/tree/0.8.0)'>
   <title>malt(1) - A memory profiling tool</title>
   <style type='text/css' media='all'>
   /* style: man */
@@ -72,11 +72,12 @@
     <li class='tr'>malt(1)</li>
   </ol>
 
-  <h2 id="NAME">NAME</h2>
+  
+
+<h2 id="NAME">NAME</h2>
 <p class="man-name">
   <code>malt</code> - <span class="man-whatis">A memory profiling tool</span>
 </p>
-
 <h2 id="SYNOPSIS">SYNOPSIS</h2>
 
 <p><code>malt</code> [MALT_OPTIONS...] {YOUR_PROGRAM} [YOUR_OPTIONS]</p>
@@ -94,28 +95,50 @@ it with debug symbols (<code>-g</code>) and also to disable inlining to get more
 <h2 id="OPTIONS">OPTIONS</h2>
 
 <dl>
-<dt><code>-c</code>, <code>--config</code></dt><dd>Provide a config file as parameters with formats described in the next part
+<dt>
+<code>-c</code>, <code>--config</code>
+</dt>
+<dd>Provide a config file as parameters with formats described in the next part
 of this manpage. You can also get a dump of the default configuration with <code>-d</code>.</dd>
-<dt><code>-s</code>, <code>--stack</code></dt><dd>Select the stack tracking mode to use. It can be <code>backtrace</code> (default) to use the
+<dt>
+<code>-s</code>, <code>--stack</code>
+</dt>
+<dd>Select the stack tracking mode to use. It can be <code>backtrace</code> (default) to use the
 backtrace function from glibc. If you compile with libunwind you can also use the
 libunwind function with <code>libunwind</code> in place of glibc backtrace. It fix some bugs
 with programs compiled with Intel compiler or using Intel libraries (like Intel OpenMP).
 But it as a side effect as libunwind as an internal memory leak. The other approach
 is to instrument your code with <code>-finstrument-function</code> and in this case you need
 to use the <code>enter-exit</code> to use it.</dd>
-<dt><code>-q</code>, <code>--quiet</code></dt><dd>Make MALT silent to avoid mixing with default output of your program. Useful if
-you use the output to fead a script.</dd>
-<dt><code>-d</code>, <code>--dumpconfig</code></dt><dd>Dump the current MALT configuration in a file with the same name as profile file.
+<dt>
+<code>-q</code>, <code>--quiet</code>
+</dt>
+<dd>Make MALT silent to avoid mixing with default output of your program. Useful if
+you use the output to feed a script.</dd>
+<dt>
+<code>-v</code>, <code>--verbose</code>
+</dt>
+<dd>Add more infos about MALT running.</dd>
+<dt>
+<code>-d</code>, <code>--dumpconfig</code>
+</dt>
+<dd>Dump the current MALT configuration in a file with the same name as profile file.
 It helps for quick start in the configuration by getting all the options and default value.</dd>
-<dt class="flush"><code>-o</code></dt><dd>Permit to pass some specific options from the config file in the command line.
+<dt><code>-o</code></dt>
+<dd>Permit to pass some specific options from the config file in the command line.
 The value is a list of options separated by commas and formatted like <code>SECTION:NAME=VALUE</code>.
 See the configuration file format (INI format) to find the available sections and names.</dd>
-<dt class="flush"><code>--mpi</code></dt><dd>Enable MPI support to name the output files with rank IDs instead of process IDs.
+<dt><code>--mpi</code></dt>
+<dd>Enable MPI support to name the output files with rank IDs instead of process IDs.
 MALT will LD_PRELOAD the library bridge from <code>~/.malt/libmaltmpi.so</code>.</dd>
-<dt><code>--prep-mpi</code></dt><dd>Build the MPI bridge library : <code>~/.malt/libmaltmpi.so</code>. MALT requires it to get access
+<dt><code>--prep-mpi</code></dt>
+<dd>Build the MPI bridge library : <code>~/.malt/libmaltmpi.so</code>. MALT requires it to get access
 to MPI_Comm_rank function depending on your MPI implementation. You need to do this
 command each tome you switch your MPI implementation.</dd>
-<dt><code>-h</code>, <code>--help</code></dt><dd>Display help message with a list of available command line options.</dd>
+<dt>
+<code>-h</code>, <code>--help</code>
+</dt>
+<dd>Display help message with a list of available command line options.</dd>
 </dl>
 
 
@@ -152,6 +175,7 @@ enabled                        = true
 mode                           = backtrace
 resolve                        = true
 libunwind                      = false
+skip                           = 4
 
 [output]
 name                           = malt-%1-%2.%3
@@ -160,16 +184,16 @@ json                           = true
 callgrind                      = false
 indent                         = true
 config                         = true
-silent                         = false
-stackTree                      = false
-loopSuppress                   = false
+verbosity                      = default
+stack-tree                     = false
+loop-suppress                  = false
 
 [max-stack]
 enabled                        = true
 
 [distr]
-alloc_size                     = true
-realloc_jump                   = true
+alloc-size                     = true
+realloc-jump                   = true
 
 [trace]
 enabled                        = false
@@ -180,14 +204,22 @@ hidden                         = false
 [filter]
 exec                           = 
 childs                         = true
+enabled                        = true
+
+[dump]
+on-signal                      = 
+after-seconds                  = 0
 </code></pre>
 
 <p>The <code>time</code> section support :</p>
 
 <dl>
-<dt class="flush"><code>enabled</code></dt><dd>Enable support of tracking state values over time to build time charts.</dd>
-<dt class="flush"><code>points</code></dt><dd>Define the number of points used to discretized the execution time of the application.</dd>
-<dt><code>linear_index</code></dt><dd>Do not use time to index data but a linear value increased on each call (might be interesting
+<dt><code>enabled</code></dt>
+<dd>Enable support of tracking state values over time to build time charts.</dd>
+<dt><code>points</code></dt>
+<dd>Define the number of points used to discretized the execution time of the application.</dd>
+<dt><code>linear_index</code></dt>
+<dd>Do not use time to index data but a linear value increased on each call (might be interesting
 not to shrink intensive allocation steps on a long program which mostly not do allocation over the run.</dd>
 </dl>
 
@@ -195,31 +227,55 @@ not to shrink intensive allocation steps on a long program which mostly not do a
 <p>The <code>stack</code> section support :</p>
 
 <dl>
-<dt class="flush"><code>enabled</code></dt><dd>Enable support of stack tracking.</dd>
-<dt class="flush"><code>mode</code></dt><dd>Override by <code>-s</code> option from the command line, it set the stack tracking method to use. See <code>-s</code> documentation
+<dt><code>enabled</code></dt>
+<dd>Enable support of stack tracking.</dd>
+<dt><code>mode</code></dt>
+<dd>Override by <code>-s</code> option from the command line, it set the stack tracking method to use. See <code>-s</code> documentation
 for more details.</dd>
-<dt class="flush"><code>resolve</code></dt><dd>Enable symbol resolution at the end of execution to extract full names and source location if debug options
+<dt><code>resolve</code></dt>
+<dd>Enable symbol resolution at the end of execution to extract full names and source location if debug options
 is available.</dd>
-<dt><code>libunwind</code></dt><dd>Use linunwind backtrace method instead of the one from glibc.</dd>
+<dt><code>libunwind</code></dt>
+<dd>Use linunwind backtrace method instead of the one from glibc.</dd>
+<dt><code>skip</code></dt>
+<dd>In backtrace mode, the backtrace is called inside our instrumentation function itself called by malloc/free....
+In order to skip our internal code we need to remove them. But on some compilers or distros, inlining and LTO
+configuration make wrong detection. This can be fixed by playing with this value to keep malloc/free/calloc
+as leaf for every calltree extracted by MALT.
+If you don't see malloc as leaf, you should increase this value. Decrease if you start to see MALT internal
+function inside.
+Notice in some cases (Gentoo, Gcc-8) we start to see LTO trashing totaly the malloc/free call in O3 mode
+normaly seen via backtrace. There is currently no other solution except recompiling in O0/O1 to avoid
+or maybe disable LTO optimizations or consider not having the exact location of the malloc itself.</dd>
 </dl>
 
 
 <p>The <code>output</code> section support :</p>
 
 <dl>
-<dt class="flush"><code>name</code></dt><dd>Define the name of the profile file. %1 is replaced by the program name, %2 by the PID or MPI rank and %3 by extension.</dd>
-<dt class="flush"><code>lua</code></dt><dd>Enable output in LUA format (same structure as JSON files but in LUA).</dd>
-<dt class="flush"><code>json</code></dt><dd>Enable output of the default JSON file format.</dd>
-<dt><code>callgrind</code></dt><dd>Enable output of the compatibility format with callgrind/kcachegrind. Cannot contain all data but can be used
+<dt><code>name</code></dt>
+<dd>Define the name of the profile file. %1 is replaced by the program name, %2 by the PID or MPI rank and %3 by extension.</dd>
+<dt><code>lua</code></dt>
+<dd>Enable output in LUA format (same structure as JSON files but in LUA).</dd>
+<dt><code>json</code></dt>
+<dd>Enable output of the default JSON file format.</dd>
+<dt><code>callgrind</code></dt>
+<dd>Enable output of the compatibility format with callgrind/kcachegrind. Cannot contain all data but can be used
 with compatible existing tools.</dd>
-<dt class="flush"><code>indent</code></dt><dd>Enable indentations in the JSON/LUA files. Useful for debugging but generate bigger files.</dd>
-<dt class="flush"><code>config</code></dt><dd>Dump the config INI file.</dd>
-<dt class="flush"><code>silent</code></dt><dd>Enable silent mode so that MALT will not write anything to the standard output of errors output not to disturb
-streams sent to scripts.</dd>
-<dt><code>stackTree</code></dt><dd>Enable storage of the stacks as a tree inside the output file. It produces smaller files but require conversion
+<dt><code>indent</code></dt>
+<dd>Enable indentations in the JSON/LUA files. Useful for debugging but generate bigger files.</dd>
+<dt><code>config</code></dt>
+<dd>Dump the config INI file.</dd>
+<dt><code>verbosity</code></dt>
+<dd>Set the verbosity mode of MALT. By <code>default</code> it print at start and end. You can use <code>silent</code> mode to disable any ouptput for
+example if you instrument shell script parsing the output of child processes. You can also use <code>verbose</code> to have more
+debugging infos in case if does not work as expected, mostly at the symbol extraction step while dumping outputs.</dd>
+<dt><code>stack-tree</code></dt>
+<dd>Enable storage of the stacks as a tree inside the output file. It produces smaller files but require conversion
 at storage time and loading time to stay compatible with the basic expected format. You can use this option
 to get smaller files. In one case it lowers a 600 MB file to 200 MB to give an idea.</dd>
-<dt><code>loopSuppress</code></dt><dd>Enable recursive loop calls to remove them and provide a more simplified equivalent call stack. It helps
+<dt><code>loop-suppress</code></dt>
+<dd>Enable recursive loop calls to remove them and provide a more simplified equivalent call stack. It helps
 to reduce the size of profiles from applications using intensively this kind of call chain. In one case it lowers
 file from 200 MB to 85 MB. It can help if nodejs failed to load the fail because of the size. This parameter
 can also provide more readable stacks as you don't care to much how many times you cycle to call loops you
@@ -230,7 +286,8 @@ just want to see one of them.</dd>
 <p>The <code>max-stack</code> section support:</p>
 
 <dl>
-<dt class="flush"><code>enabled</code></dt><dd>Enable or disable the tracking of stack size and memory used by functions on stacks
+<dt><code>enabled</code></dt>
+<dd>Enable or disable the tracking of stack size and memory used by functions on stacks
 (require  <code>--finstrument-function</code> on your code to provide data).</dd>
 </dl>
 
@@ -238,22 +295,26 @@ just want to see one of them.</dd>
 <p>The <code>distr</code> section support:</p>
 
 <dl>
-<dt><code>alloc_size</code></dt><dd>Generate distribution of the allocated chunk size.</dd>
-<dt><code>realloc_jump</code></dt><dd>Generate distribution of the realloc size jumps.</dd>
+<dt><code>alloc-size</code></dt>
+<dd>Generate distribution of the allocated chunk size.</dd>
+<dt><code>realloc-jump</code></dt>
+<dd>Generate distribution of the realloc size jumps.</dd>
 </dl>
 
 
 <p>The <code>trace</code> section support:</p>
 
 <dl>
-<dt class="flush"><code>enabled</code></dt><dd>Enable or disable the tracing (currently not used by the GUI, work in progress).</dd>
+<dt><code>enabled</code></dt>
+<dd>Enable or disable the tracing (currently not used by the GUI, work in progress).</dd>
 </dl>
 
 
 <p>The <code>info</code> section support:</p>
 
 <dl>
-<dt class="flush"><code>enabled</code></dt><dd>Enable hiding execution information. This option remove some possibility sensitive information
+<dt><code>enabled</code></dt>
+<dd>Enable hiding execution information. This option remove some possibility sensitive information
 from the output file, like executable names, hostname and command options. It is still recommended
 taking a look at the file for example to replace (<span class="man-ref">sed<span class="s">(1)</span></span>) the paths which might also be removed.
 This option target some companies which might want to hide their internal applications when exchanging
@@ -264,9 +325,29 @@ with external partners.</dd>
 <p>The <code>filter</code> section support:</p>
 
 <dl>
-<dt class="flush"><code>exe</code></dt><dd>Enable filtering of executable to enable MALT and ignore otherwise. By default empty value enable
+<dt><code>exe</code></dt>
+<dd>Enable filtering of executable to enable MALT and ignore otherwise. By default empty value enable
 MALT on all executable.</dd>
-<dt class="flush"><code>childs</code></dt><dd>Enable instrumentation of children processes or not. By default instruments all.</dd>
+<dt><code>childs</code></dt>
+<dd>Enable instrumentation of children processes or not. By default instruments all.</dd>
+<dt><code>enabled</code></dt>
+<dd>Enable profiling by default. Can be disable to be able to activate via C function call in the app
+when you want.</dd>
+</dl>
+
+
+<p>The <code>dump</code> section permit to dump the profile whenever you want:</p>
+
+<dl>
+<dt><code>on-signal</code></dt>
+<dd>Will dump on given signal. Can be on or comma separated list of: <code>SIGINT</code>, <code>SIGUSR1</code>, <code>SIGUSR2</code>, ...
+Notice profiling will currently stop from this point app will continue without profiling.
+To be fixed latter.
+You can get the list of availble list by using <code>help</code> or <code>avail</code> in place of name.</dd>
+<dt><code>after-seconds</code></dt>
+<dd>Will dump profile after X seconds.
+Notice profiling will currently stop from this point app will continue without profiling.
+To be fixed latter.</dd>
 </dl>
 
 
@@ -279,9 +360,12 @@ MALT on all executable.</dd>
 <p>In that case you can setup some environment variables to configure MALT :</p>
 
 <dl>
-<dt><code>MALT_CONFIG</code></dt><dd>Define the configuration file to use (equivalent of <code>-c</code> option).</dd>
-<dt><code>MALT_STACK</code></dt><dd>Define the stack mode to use (equivalent of <code>-s</code> option).</dd>
-<dt><code>MALT_OPTIONS</code></dt><dd>List of options to transmit to MALT (equivalent of <code>-o</code> option, see its documentation for format).</dd>
+<dt><code>MALT_CONFIG</code></dt>
+<dd>Define the configuration file to use (equivalent of <code>-c</code> option).</dd>
+<dt><code>MALT_STACK</code></dt>
+<dd>Define the stack mode to use (equivalent of <code>-s</code> option).</dd>
+<dt><code>MALT_OPTIONS</code></dt>
+<dd>List of options to transmit to MALT (equivalent of <code>-o</code> option, see its documentation for format).</dd>
 </dl>
 
 
@@ -320,10 +404,9 @@ on threads using the <code>filter:enabled</code> option, then enable it by hand.
 
 <p><span class="man-ref">malt-webview<span class="s">(1)</span></span>, <span class="man-ref">malt-qt5<span class="s">(1)</span></span>, <span class="man-ref">malt-passwd<span class="s">(1)</span></span></p>
 
-
   <ol class='man-decor man-foot man foot'>
     <li class='tl'></li>
-    <li class='tc'>February 2018</li>
+    <li class='tc'>August 2019</li>
     <li class='tr'>malt(1)</li>
   </ol>
 
