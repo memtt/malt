@@ -11,7 +11,7 @@ I. UBUNTU / DEBIAN :
 --------------------
 
 This project support the debian packing to build .dev files. To build such package you may use the files in packaging/debian.
-First create a directory in your home dir, place the project archive in it and rename it to _1.1.0.orig.tar.gz.
+First create a directory in your home dir, place the project archive in it and rename it to _1.2.0.orig.tar.gz.
 
 To setup your working environneemnt, you will found documentation on 
 https://wiki.ubuntu.com/PbuilderHowto or https://wiki.debian.org/IntroDebianPackaging. We mosly need :
@@ -21,12 +21,12 @@ https://wiki.ubuntu.com/PbuilderHowto or https://wiki.debian.org/IntroDebianPack
 
 If you work with git version you can build the archive with :
 
-	git archive --prefix=malt-1.1.0/ v1.1.0 | gzip > malt_1.1.0.orig.tar.gz
+	git archive --prefix=malt-1.2.0/ v1.2.0 | gzip > malt_1.2.0.orig.tar.gz
 
-Go to your directory and extract _1.1.0.orig.tar.gz with and go in the directory.
+Go to your directory and extract _1.2.0.orig.tar.gz with and go in the directory.
 
-	tar -xvzf malt_1.1.0.orig.tar.gz
-	cd malt-1.1.0
+	tar -xvzf malt_1.2.0.orig.tar.gz
+	cd malt-1.2.0
 
 Now go to the -0.0.1 directory and copy the packaging/debian into debian :
 
@@ -61,7 +61,7 @@ First ensure to get the required tools :
 
 Now generate the archive file (or download it from internet) :
 
-	git archive --prefix=-1.1.0/ 1.1.0 | bzip2 > ~/rpmbuild/SOURCES/-1.1.0.tar.bz2
+	git archive --prefix=-1.2.0/ 1.2.0 | bzip2 > ~/rpmbuild/SOURCES/-1.2.0.tar.bz2
 
 And build the package :
 
@@ -88,25 +88,25 @@ Now get the project archive and place it in /usr/portage/distfiles (or correspon
 you work on the git version, you can build the project archive with :
 
 --------------------------------------------------------------------
-$user> git archive --prefix=malt-1.1.0/ v1.1.0 | gzip > malt-1.1.0.tar.gz
+$user> git archive --prefix=malt-1.2.0/ v1.2.0 | gzip > malt-1.2.0.tar.gz
 --------------------------------------------------------------------
 
 Now got to the /usr/local/portage/myoverlay/dev-libs and build the Manifest file :
 
 --------------------------------------------------------------------
-#root> ebuild /usr/local/portage/myoverlay/dev-libs/malt-1.1.0.ebuild manifest
+#root> ebuild /usr/local/portage/myoverlay/dev-libs/malt-1.2.0.ebuild manifest
 --------------------------------------------------------------------
 
 Ok now you can test the build septs one by one :
 
 --------------------------------------------------------------------
-#root> ebuild /usr/local/portage/myoverlay/dev-libs/malt-1.1.0.ebuild clean
-#root> ebuild /usr/local/portage/myoverlay/dev-libs/malt-1.1.0.ebuild fetch
-#root> ebuild /usr/local/portage/myoverlay/dev-libs/malt-1.1.0.ebuild unpack
-#root> ebuild /usr/local/portage/myoverlay/dev-libs/malt-1.1.0.ebuild prepare
-#root> ebuild /usr/local/portage/myoverlay/dev-libs/malt-1.1.0.ebuild configure
-#root> ebuild /usr/local/portage/myoverlay/dev-libs/malt-1.1.0.ebuild compile
-#root> ebuild /usr/local/portage/myoverlay/dev-libs/malt-1.1.0.ebuild test
+#root> ebuild /usr/local/portage/myoverlay/dev-libs/malt-1.2.0.ebuild clean
+#root> ebuild /usr/local/portage/myoverlay/dev-libs/malt-1.2.0.ebuild fetch
+#root> ebuild /usr/local/portage/myoverlay/dev-libs/malt-1.2.0.ebuild unpack
+#root> ebuild /usr/local/portage/myoverlay/dev-libs/malt-1.2.0.ebuild prepare
+#root> ebuild /usr/local/portage/myoverlay/dev-libs/malt-1.2.0.ebuild configure
+#root> ebuild /usr/local/portage/myoverlay/dev-libs/malt-1.2.0.ebuild compile
+#root> ebuild /usr/local/portage/myoverlay/dev-libs/malt-1.2.0.ebuild test
 --------------------------------------------------------------------
 
 ... (I don't do install here bu you also can do preinst, install, postinst, qmerge (maybe qmerge is not a goot idea for the 
@@ -115,6 +115,6 @@ fist testings steps).
 Or you can simply run :
 
 --------------------------------------------------------------------
-#root> echo "=dev-libs/malt-1.1.0" >> /etc/portage/package.keywords
+#root> echo "=dev-libs/malt-1.2.0" >> /etc/portage/package.keywords
 #root> emerge -a malt
 --------------------------------------------------------------------

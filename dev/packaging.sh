@@ -1,14 +1,14 @@
 #!/bin/bash
 ######################################################
 #            PROJECT  : MATT                         #
-#            VERSION  : 1.1.0                        #
+#            VERSION  : 1.2.0-dev                    #
 #            DATE     : 08/2019                      #
 #            AUTHOR   : Valat Sébastien              #
 #            LICENSE  : CeCILL-C                     #
 ######################################################
 
 #setup version
-VERSION=1.1.0
+VERSION=1.2.0
 VERSION=$(echo $VERSION | cut -f 1 -d '-')
 
 #exit on error
@@ -64,11 +64,11 @@ function fedora_packaging()
 	#rpm tree
 	rpmdev-setuptree
 	#gen archive
-	git archive --prefix=malt-1.1.0/ HEAD | bzip2 > ~/rpmbuild/SOURCES/malt-1.1.0.tar.bz2
+	git archive --prefix=malt-1.2.0/ HEAD | bzip2 > ~/rpmbuild/SOURCES/malt-1.2.0.tar.bz2
 	#build
 	rpmbuild -ba packaging/fedora/malt.spec
 	#move here
-	mv ~/rpmbuild/SRPMS/malt-1.1.0*.src.rpm .
+	mv ~/rpmbuild/SRPMS/malt-1.2.0*.src.rpm .
 	mv ~/rpmbuild/RPMS/*/malt-*.rpm .
 }
 

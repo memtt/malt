@@ -4,6 +4,9 @@ Change log
 master
 ------
 
+1.1.0 - 30/08/2019
+------------------
+
  - New configure script from NUMAPROF to be more generic and reusable.
  - Improve packaging fixing qt-webkit deps in RPM
  - Support dumping profile on demand via signal, to be enabled by user

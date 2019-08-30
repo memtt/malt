@@ -1,7 +1,7 @@
 #!/bin/bash
 ######################################################
 #            PROJECT  : MATT                         #
-#            VERSION  : 1.1.0                        #
+#            VERSION  : 1.2.0-dev                    #
 #            DATE     : 08/2019                      #
 #            AUTHOR   : Valat Sébastien              #
 #            LICENSE  : CeCILL-C                     #
@@ -149,3 +149,5 @@ update_all_files
 update_special_sed
 update_manpages
 post_check
+
+echo "TODO: Think to update changelog date or automate"
