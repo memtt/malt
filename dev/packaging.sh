@@ -34,7 +34,28 @@ function debian_packaging()
 	#gen and extract archive
 	debian_common
 	#call debuild
-	debuild -uc -us
+	debuild -uc -us || echo "deb-build has errors, continue"
+}
+
+function debian_build_docker()
+{
+	tag=${1}
+	cp packaging/Dockerfile-debian ./ Dockerfile
+	docker build --tag ${tag} .
+}
+
+#generate debian via docker
+function debian_docker_packaging()
+{
+	#args
+	local distro=${1}
+
+	#gen tag
+	local tag=malt-build-${distro/:/-}
+
+	#make
+	docker image ls | grep -q ${tag} || debian_build_docker ${tag}
+	docker run -v $PWD:/workdir ${tag} ./dev/packaging.sh debian
 }
 
 #generate with pbuilder
@@ -72,16 +93,42 @@ function fedora_packaging()
 	mv ~/rpmbuild/RPMS/*/malt-*.rpm .
 }
 
+function fedora_build_docker()
+{
+	tag=${1}
+	cp packaging/Dockerfile-fedora ./ Dockerfile
+	docker build --tag ${tag} .
+}
+
+function fedora_docker_packaging()
+{
+	#args
+	local distro=${1}
+
+	#gen tag
+	local tag=malt-build-${distro/:/-}
+
+	#make
+	docker image ls | grep -q ${tag} || fedora_build_docker ${tag} .
+	docker run -v $PWD:/workdir ${tag} ./dev/packaging.sh fedora
+}
+
 #select mode
 case $1 in
 	'debian')
 		debian_packaging
+		;;
+	'debian-docker')
+		debian_docker_packaging "debian:jessie"
 		;;
 	'debian-pbuilder')
 		debian_pbuilder_packaging
 		;;
 	'fedora'|'rpm')
 		fedora_packaging
+		;;
+	'fedora-docker'|'rpm-docker')
+		fedora_docker_packaging "fedora:30"
 		;;
 	''|'help'|'list')
 		show_help
