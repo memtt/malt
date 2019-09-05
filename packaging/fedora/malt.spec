@@ -39,10 +39,26 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(-,root,root,-)
-%{_bindir}/*
+%{_bindir}/malt
+%{_bindir}/malt-webview
+%{_bindir}/malt-passwd
 %{_libdir}/*
 %{_datadir}/*
 %{_includedir}/*
 %doc
 
 %changelog
+
+#sub package for QT5
+%package qt5
+Requires: malt qt5-qtwebkit
+Summary: Provide the QT5 based view if you do not want to run your browser.
+
+%description qt5
+Provide the QT5 based view if you do not want to run your browser.
+
+%files qt5
+%defattr(-,root,root,-)
+%{_bindir}/malt-qt5
+%doc
+

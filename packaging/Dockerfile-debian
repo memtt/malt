@@ -1,0 +1,15 @@
+#distri we want
+FROM debian:jessie
+
+#workdir
+WORKDIR /workdir
+ENV IN_DOCKER yes
+
+#get list of packages
+RUN apt-get update
+
+#install deps
+RUN apt-get install -y build-essential make gcc cmake g++ git
+RUN apt-get install -y libunwind-dev libelf-dev libqt5webkit5-dev
+RUN apt-get install -y pbuilder debootstrap devscripts cdbs debhelper
+
