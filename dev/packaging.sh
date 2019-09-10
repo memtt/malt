@@ -26,6 +26,8 @@ function debian_common()
 	cd malt-${VERSION}
 	#copy debian directory
 	cp -r packaging/debian debian
+	#build manpages
+	update_manpages
 }
 
 #generate debian package from current install
@@ -84,12 +86,23 @@ function fedora_packaging()
 {
 	#rpm tree
 	rpmdev-setuptree
+
 	#gen archive
-	git archive --prefix=malt-1.2.0/ HEAD | bzip2 > ~/rpmbuild/SOURCES/malt-1.2.0.tar.bz2
+	git archive --prefix=malt-${VERSION}/ HEAD | bzip2 > ./malt-${VERSION}.tar.bz2
+	#extract archive
+	tar -xzf malt-${VERSION}.tar.bz2
+	#go to directory
+	cd malt-${VERSION}
+	#build manpages
+	update_manpages
+	#gen archive
+	tar -cvjf ~/rpmbuild/SOURCES/malt-${VERSION}.tar.bz2 ./malt-${VERSION}
+	#rm
+	rm -rfd ./malt-${VERSION}
 	#build
 	rpmbuild -ba packaging/fedora/malt.spec
 	#move here
-	mv ~/rpmbuild/SRPMS/malt-1.2.0*.src.rpm .
+	mv ~/rpmbuild/SRPMS/malt-${VERSION}*.src.rpm .
 	mv ~/rpmbuild/RPMS/*/malt-*.rpm .
 }
 
@@ -111,6 +124,11 @@ function fedora_docker_packaging()
 	#make
 	docker image ls | grep -q ${tag} || fedora_build_docker ${tag} .
 	docker run -v $PWD:/workdir ${tag} ./dev/packaging.sh fedora
+}
+
+update_manpages()
+{
+	make -C ./src/manpages || echo "WARNING: Manpages not generated probably because you do not have Ronn installed !"
 }
 
 #select mode
