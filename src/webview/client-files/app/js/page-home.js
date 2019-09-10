@@ -225,6 +225,11 @@ function MaltPageHome()
 		$scope.getFormattedCpuFreq = function() {
 			return maltHelper.humanReadable($scope.summaryData.system.ticksPerSecond,1,'Hz',false);
 		}
+
+		//return allocator, we can later extrat name from lib
+		$scope.getAllocator = function() {
+			return $scope.summaryData.run.allocator;
+		}
 		
 		//convert CPU freq
 		$scope.getFormattedTotalMemory = function() {
