@@ -111,6 +111,12 @@ AllocStackProfiler::AllocStackProfiler(const Options & options,StackMode mode,bo
 }
 
 /*******************  FUNCTION  *********************/
+void AllocStackProfiler::setRealMallocAddr(MallocFuncPtr realMallocFunc)
+{
+	this->realMallocAddr = realMallocFunc;
+}
+
+/*******************  FUNCTION  *********************/
 void AllocStackProfiler::onMalloc(void* ptr, size_t size,Stack * userStack)
 {
 	onAllocEvent(ptr,size,userStack);
@@ -520,6 +526,14 @@ void AllocStackProfiler::onExit(void )
 				this->symbolResolver.solveNames()
 			);
 		
+		//check which allocator is in use
+		LinuxProcMapEntry * mallocProcMapEntry = this->symbolResolver.getMapEntry((void*)(this->realMallocAddr));
+		if (mallocProcMapEntry != NULL)
+			this->realMallocLib = mallocProcMapEntry->file;
+		else
+			this->realMallocLib = "Unknown";
+		
+
 		//update global peak info
 		updatePeakInfoOfStacks();
 		
@@ -605,6 +619,7 @@ void convertToJson(htopml::JsonState& json, const AllocStackProfiler& value)
 		json.printField("tool","malt-" MALT_VERSION MALT_VERSION_NOTE);
 		json.printField("date",OS::getDateTime());
 		json.printField("runtime",getticks() - value.trefTicks);
+		json.printField("allocator", value.realMallocLib);
 		if (value.getOptions()->traceEnabled)
 			json.printField("tracefile",value.traceFilename);
 		if (value.getOptions()->infoHidden == false)

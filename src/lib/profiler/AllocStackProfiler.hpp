@@ -115,6 +115,9 @@ struct TimeTrackAllocBandwidth
 	static const char * selfDescribeFields[4];
 };
 
+/*********************  TYPE  ************************/
+typedef void * (*MallocFuncPtr) (size_t size);
+
 /*********************  CLASS  **********************/
 class AllocStackProfiler
 {
@@ -142,6 +145,7 @@ class AllocStackProfiler
 		bool isEnterExit(void);
 		LocalAllocStackProfiler * createLocalStackProfiler(bool reentrant);
 		void destroyLocalStackProfiler(LocalAllocStackProfiler * localProfiler);
+		void setRealMallocAddr(MallocFuncPtr realMallocFunc);
 	public:
 		friend void convertToJson(htopml::JsonState& json, const AllocStackProfiler& value);
 	private:
@@ -193,6 +197,8 @@ class AllocStackProfiler
 		MALTV2::RLockFreeTree * stackTree;
 		Scatter2DValues sizeOverTime;
 		Scatter2DValues lifetimeOverSize;
+		MallocFuncPtr realMallocAddr;
+		std::string realMallocLib;
 };
 
 }

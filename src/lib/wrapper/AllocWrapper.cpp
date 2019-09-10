@@ -429,6 +429,7 @@ void AllocWrapperGlobal::init(void )
 		
 		//ok do it
 		gblState.profiler = new AllocStackProfiler(*gblState.options,mode,true);
+		gblState.profiler->setRealMallocAddr(gblState.malloc);
 
 		//filter exe
 		if (gblState.options->exe.empty() == false && OS::getExeName() != gblState.options->exe)

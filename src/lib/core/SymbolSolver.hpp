@@ -82,11 +82,11 @@ class SymbolSolver
 		bool isSameFuntion(const CallSite * s1,void * s2) const;
 		bool procMapIsLoaded(void) const;
 		void registerMaqaoFunctionSymbol(int funcId,const char * funcName,const char * file,int line);
+		LinuxProcMapEntry * getMapEntry(void * callSite);
 	public:
 		friend std::ostream & operator << (std::ostream & out,const SymbolSolver & dic);
 		friend void convertToJson(htopml::JsonState & json, const SymbolSolver & value);
 	private:
-		LinuxProcMapEntry * getMapEntry(void * callSite);
 		void solveNames(LinuxProcMapEntry * procMapEntry);
 		int getString(const char* value);
 		void solveMissings(void);
