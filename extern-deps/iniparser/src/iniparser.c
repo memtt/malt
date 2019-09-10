@@ -632,7 +632,7 @@ dictionary * iniparser_load(const char * ininame)
     char line    [ASCIILINESZ+1] ;
     char section [ASCIILINESZ+1] ;
     char key     [ASCIILINESZ+1] ;
-    char tmp     [ASCIILINESZ+1] ;
+    char tmp     [ASCIILINESZ+1+sizeof(key)] ;
     char val     [ASCIILINESZ+1] ;
 
     int  last=0 ;
