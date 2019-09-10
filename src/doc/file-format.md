@@ -61,7 +61,9 @@ This section provide a global summary to give meta informations about the run.
     /* Exact exacuted command with arguments */
     "command":"./simple-case-finstr-linked",
     /* Host where the run was done */
-    "hostname":"my-host"
+    "hostname":"my-host",
+    /* Library of allocator in use. */
+    "allocator": "/usr/lib/libc.so.2.6"
 },
 ```
 
