@@ -268,6 +268,9 @@ int main(void)
 	gblArray[0] = gblString[0];
 	gblStaticArray[0] = gblString[0];
 	tlsArray[0] = gblArray[0];
+
+	//memset
+	memset(gblStaticArray, 0, sizeof(gblStaticArray));
 	
 	//ensure no remove
 	printf("To not remove global variables for test : %s\n",gblString);

@@ -13,9 +13,10 @@
 #include <cstring>
 #include <cstdio>
 #include <iostream>
-//uniw
+//unix
 #include <dlfcn.h>
 #include <execinfo.h>
+#include <link.h>
 //externals
 #include <json/JsonState.h>
 //malt
@@ -358,45 +359,23 @@ void SymbolSolver::solveNames(LinuxProcMapEntry * procMapEntry)
 	addr2lineCmd << "addr2line -C -f -e " << elfFile;
 	std::vector<CallSite*> lst;
 	
-	//Gentoo now enable -fPIE by default on executable so we need to detect the case
-	//and if enable consider the address relative to the mapping as for .so files.
-	//We know on x86_64 that binary are by default map at 0x00400000, if not then
-	//we consider -fPIE enabled and apply shift.
-	bool isSharedLib = false;
-	bool isFPIE = false;
-	
-	//check if shared lib or exe
-	if (elfFile.substr(elfFile.size()-3) == ".so" || elfFile.find(".so.") != std::string::npos)
-		isSharedLib = true;
-	
-	//check if -fPIE on x86_64
-	#if defined(__x86_64__) || defined(__i386__)
-		if (isSharedLib == false && procMapEntry->lower != (void*)0x00400000) { 
-			isSharedLib = true;
-			isFPIE = true;
-		}
-	#else
-		#warning "Caution, no -fPIE support implemented for this architecture"
-	#endif
-
-	//Need to handle ASLR + fPIE/fPIC case
-	//https://jvns.ca/blog/2018/01/09/resolving-symbol-addresses/
-	size_t elfVaddr = 0;
-	//if (isFPIE && hasASLREnabled())
-	//	elfVaddr = extractElfVaddr(elfFile);
-	
 	//create addr2line args
 	for (CallSiteMap::iterator it = callSiteMap.begin() ; it != callSiteMap.end() ; ++it)
 	{
 		if (it->second.mapEntry == procMapEntry)
 		{
+			//From https://stackoverflow.com/questions/55066749/how-to-find-load-relocation-for-a-pie-binary
+			Dl_info info;
+			void *extra = NULL;
+			size_t elf2AddrOffset = 0;
+			if (dladdr1(it->first, &info, &extra, RTLD_DL_LINKMAP)) {
+				struct link_map *map = (struct link_map *)extra;
+				elf2AddrOffset = map->l_addr;
+			}
+
+			//printf("OFFSET %lx %lx %lx %lx\n", it->first, procMapEntry->lower, map->l_addr, elfVaddr);
+			addr2lineCmd << ' '  << (void*)(((size_t)it->first - elf2AddrOffset));
 			hasEntries = true;
-			if (isSharedLib && isFPIE)
-				addr2lineCmd << ' '  << (void*)(((size_t)it->first - (size_t)procMapEntry->lower));
-			else if (isSharedLib)
-				addr2lineCmd << ' '  << (void*)(((size_t)it->first - (size_t)procMapEntry->lower) + elfVaddr);
-			else
-				addr2lineCmd << ' '  << (void*)((size_t)it->first);
 			lst.push_back(&it->second);
 		}
 	}
