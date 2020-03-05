@@ -36,8 +36,15 @@ void StackSizeTracker::enter(void)
 	unsigned long crsp;
 	
 	//read counters
-	asm("movq %%rbp,%0" : "=r"(crbp));
-	asm("movq %%rsp,%0" : "=r"(crsp));
+	#ifdef __x86_64__
+		asm("movq %%rbp,%0" : "=r"(crbp));
+		asm("movq %%rsp,%0" : "=r"(crsp));
+	#elif __i386__
+		asm("mov %%ebp,%0" : "=r"(crbp));
+		asm("mov %%esp,%0" : "=r"(crsp));
+	#else
+		#warning "Arch not supported, stack size tracking will be ignored, all rest will work fine, this is optional."
+	#endif
 	
 	//push
 	this->stack.push_back(crsp);

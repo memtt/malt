@@ -20,6 +20,34 @@
 namespace MALT
 {
 
+/********************  MACROS  **********************/
+#ifdef __x86_64__
+	#define ElfArch_Ehdr Elf64_Ehdr
+	#define elfarch_getehdr(x) elf64_getehdr(x)
+	#define ElfArch_Shdr Elf64_Shdr
+	#define elfarch_getshdr(x) elf64_getshdr(x)
+	#define ElfArch_Sym Elf64_Sym
+	#define ELFARCH_ST_BIND(x) ELF64_ST_BIND(x)
+	#define ELFARCH_ST_TYPE(x) ELF64_ST_TYPE(x)
+#elif __i386__
+	#define ElfArch_Ehdr Elf32_Ehdr
+	#define elfarch_getehdr(x) elf32_getehdr(x)
+	#define ElfArch_Shdr Elf32_Shdr
+	#define elfarch_getshdr(x) elf32_getshdr(x)
+	#define ElfArch_Sym Elf32_Sym
+	#define ELFARCH_ST_BIND(x) ELF32_ST_BIND(x)
+	#define ELFARCH_ST_TYPE(x) ELF32_ST_TYPE(x)
+#else
+	#warning "Not tested archicture, using 64bit mode"
+	#define ElfArch_Ehdr Elf64_Ehdr
+	#define elfarch_getehdr(x) elf64_getehdr(x)
+	#define ElfArch_Shdr Elf64_Shdr
+	#define elfarch_getshdr(x) elf64_getshdr(x)
+	#define ElfArch_Sym Elf64_Sym
+	#define ELFARCH_ST_BIND(x) ELF64_ST_BIND(x)
+	#define ELFARCH_ST_TYPE(x) ELF64_ST_TYPE(x)
+#endif
+
 /*******************  FUNCTION  *********************/
 /**
  * Constructor of the elf reader. It will immediatly open
@@ -155,7 +183,7 @@ Elf_Scn* ElfReader::getSectionByType(size_t type)
 	assert(elf != NULL);
 	
 	//extract header
-	Elf64_Ehdr * header = elf64_getehdr(elf);
+	ElfArch_Ehdr * header = elfarch_getehdr(elf);
 	assert(header != NULL);
 	
 	//get sec number
@@ -168,7 +196,7 @@ Elf_Scn* ElfReader::getSectionByType(size_t type)
 		//get section
 		Elf_Scn * sec = elf_getscn(elf,s);
 		assert(sec != NULL);
-		Elf64_Shdr * secHeader = elf64_getshdr(sec);
+		ElfArch_Shdr * secHeader = elfarch_getshdr(sec);
 		assert(secHeader != NULL);
 		
 		//check type
@@ -198,18 +226,18 @@ void ElfReader::loadGlobalVariables(ElfGlobalVariableVector& variables)
 	assert(sec != NULL);
 	
 	//check header
-	Elf64_Shdr * secHeader = elf64_getshdr(sec);
+	ElfArch_Shdr * secHeader = elfarch_getshdr(sec);
 	assert(secHeader != NULL);
 	assert(secHeader->sh_type == SHT_SYMTAB || secHeader->sh_type == SHT_DYNSYM);
 	
 	//check entry type
-	assert(secHeader->sh_entsize == sizeof(Elf64_Sym));
+	assert(secHeader->sh_entsize == sizeof(ElfArch_Sym));
 	assert(secHeader->sh_size % secHeader->sh_entsize == 0);
 			
 	//load
 	Elf_Data * data = elf_getdata(sec,NULL);
 	assert(data != NULL);
-	Elf64_Sym * table = (Elf64_Sym*)data->d_buf;
+	ElfArch_Sym * table = (ElfArch_Sym*)data->d_buf;
 	assert((Elf_Data*)table != NULL);
 			
 	//count symbols
@@ -227,8 +255,8 @@ void ElfReader::loadGlobalVariables(ElfGlobalVariableVector& variables)
 		if (table[i].st_name != 0)
 		{
 			//extract types
-			int bind = ELF64_ST_BIND(table[i].st_info);
-			int type = ELF64_ST_TYPE(table[i].st_info);
+			int bind = ELFARCH_ST_BIND(table[i].st_info);
+			int type = ELFARCH_ST_TYPE(table[i].st_info);
 
 			//check type, only extract global and tls
 			if ((type == STT_OBJECT || type == STT_TLS) && (bind == STB_LOCAL || bind == STB_GLOBAL) && table[i].st_size > 0)
@@ -258,7 +286,7 @@ ElfStringTable ElfReader::getStringTable(int secId)
 	//get section
 	Elf_Scn * sec = elf_getscn(elf,secId);
 	assert(sec != NULL);
-	Elf64_Shdr * secHeader = elf64_getshdr(sec);
+	ElfArch_Shdr * secHeader = elfarch_getshdr(sec);
 	assert(secHeader != NULL);
 	
 	//check kind

@@ -370,18 +370,20 @@ void SymbolSolver::solveNames(LinuxProcMapEntry * procMapEntry)
 		isSharedLib = true;
 	
 	//check if -fPIE on x86_64
-	#ifdef __x86_64__
+	#if defined(__x86_64__) || defined(__i386__)
 		if (isSharedLib == false && procMapEntry->lower != (void*)0x00400000) { 
 			isSharedLib = true;
 			isFPIE = true;
 		}
+	#else
+		#warning "Caution, no -fPIE support implemented for this architecture"
 	#endif
 
 	//Need to handle ASLR + fPIE/fPIC case
 	//https://jvns.ca/blog/2018/01/09/resolving-symbol-addresses/
 	size_t elfVaddr = 0;
-	if (isFPIE && hasASLREnabled())
-		elfVaddr = extractElfVaddr(elfFile);
+	//if (isFPIE && hasASLREnabled())
+	//	elfVaddr = extractElfVaddr(elfFile);
 	
 	//create addr2line args
 	for (CallSiteMap::iterator it = callSiteMap.begin() ; it != callSiteMap.end() ; ++it)
