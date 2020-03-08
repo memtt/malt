@@ -43,6 +43,7 @@ void StackSizeTracker::enter(void)
 		asm("mov %%ebp,%0" : "=r"(crbp));
 		asm("mov %%esp,%0" : "=r"(crsp));
 	#else
+		MALT_FATAL("Enter-exit mode is not supported for this architecture !");
 		#warning "Arch not supported, stack size tracking will be ignored, all rest will work fine, this is optional."
 	#endif
 	

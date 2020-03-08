@@ -14,7 +14,7 @@ find_path(LIBUNWIND_INCLUDE_DIR libunwind.h
 	HINTS ${LIBUNWIND_PREFIX}/include)
 
 ######################################################
-find_library(LIBUNWIND_LIBRARY NAMES unwind-x86_64
+find_library(LIBUNWIND_LIBRARY NAMES unwind
 	HINTS ${LIBUNWIND_PREFIX}/lib)
 
 ######################################################
