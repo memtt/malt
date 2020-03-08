@@ -14,11 +14,20 @@ find_path(LIBUNWIND_INCLUDE_DIR libunwind.h
 	HINTS ${LIBUNWIND_PREFIX}/include)
 
 ######################################################
-find_library(LIBUNWIND_LIBRARY NAMES unwind-x86_64
+find_library(LIBUNWIND_LIBRARY NAMES unwind
 	HINTS ${LIBUNWIND_PREFIX}/lib)
 
 ######################################################
-set(LIBUNWIND_LIBRARIES ${LIBUNWIND_LIBRARY} )
+foreach(arch x86 x86_64 ppc ppc64)
+	find_library(LIBUNWIND_${arch} NAMES unwind-${arch}
+		HINTS ${LIBUNWIND_PREFIX}/lib)
+	if (LIBUNWIND_${arch})
+		list(APPEND LIBUNWIND_ARCH_LIBRARIES ${LIBUNWIND_${arch}})
+	endif()
+endforeach()
+
+######################################################
+set(LIBUNWIND_LIBRARIES ${LIBUNWIND_LIBRARY} ${LIBUNWIND_ARCH_LIBRARIES})
 set(LIBUNWIND_INCLUDE_DIRS ${LIBUNWIND_INCLUDE_DIR} )
 
 ######################################################

@@ -48,10 +48,10 @@ endif (ENABLE_GCC_COVERAGE)
 ######################################################
 set(LIB_MALT_DEPS pthread dl)
 if (LIBELF_FOUND)
-	list(APPEND LIB_MALT_DEPS elf)
+	list(APPEND LIB_MALT_DEPS ${LIBELF_LIBRARIES})
 endif (LIBELF_FOUND)
 if (LIBUNWIND_FOUND)
-	list(APPEND LIB_MALT_DEPS unwind-x86_64)
+	list(APPEND LIB_MALT_DEPS ${LIBUNWIND_LIBRARIES})
 endif (LIBUNWIND_FOUND)
 
 ######################################################
