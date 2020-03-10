@@ -32,6 +32,10 @@ include(${CMAKE_SOURCE_DIR}/cmake/macros.cmake)
 include(${CMAKE_SOURCE_DIR}/cmake/unittest-macros.cmake)
 
 ######################################################
+#check for lib/lib64 suffix
+include(GNUInstallDirs)
+
+######################################################
 #Some global setup
 #malt_enable_cxx_11()
 setup_internal_gmock_and_gtest()

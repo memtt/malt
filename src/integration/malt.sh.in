@@ -150,9 +150,9 @@ done
 # if [ ! -z "$MALT_CONFIG" ]; then echo "MALT_CONFIG=$MALT_CONFIG"; fi
 
 ######################################################
-MALT_LIB="@CMAKE_INSTALL_PREFIX@/lib@LIBSUFFIX@/libmalt.so"
+MALT_LIB="@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_LIBDIR@/libmalt.so"
 if [ ! -f "${MALT_LIB}" ]; then
-	MALT_LIB="@CMAKE_INSTALL_PREFIX@/lib64/libmalt.so"
+	MALT_LIB="@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_LIBDIR@/libmalt.so"
 fi
 
 ######################################################
