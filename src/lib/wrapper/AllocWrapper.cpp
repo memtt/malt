@@ -396,18 +396,18 @@ void AllocWrapperGlobal::init(void )
 		gblState.status = ALLOC_WRAP_INIT_SYM;
 		
 		//search addresses
-		gblState.mmap = (MmapFuncPtr)dlsym(RTLD_NEXT,"mmap");
-		gblState.munmap = (MunmapFuncPtr)dlsym(RTLD_NEXT,"munmap");
-		gblState.malloc = (MallocFuncPtr)dlsym(RTLD_NEXT,"malloc");
-		gblState.free = (FreeFuncPtr)dlsym(RTLD_NEXT,"free");
-		gblState.calloc = (CallocFuncPtr)dlsym(RTLD_NEXT,"calloc");
-		gblState.realloc = (ReallocFuncPtr)dlsym(RTLD_NEXT,"realloc");
-		gblState.posix_memalign = (PosixMemalignFuncPtr)dlsym(RTLD_NEXT,"posix_memalign");
-		gblState.aligned_alloc = (AlignedAllocFuncPtr)dlsym(RTLD_NEXT,"aligned_alloc");
-		gblState.valloc = (VallocFuncPtr)dlsym(RTLD_NEXT,"valloc");
-		gblState.memalign = (MemalignFuncPtr)dlsym(RTLD_NEXT,"memalign");
-		gblState.pvalloc = (PVallocFuncPtr)dlsym(RTLD_NEXT,"pvalloc");
-		gblState.mremap = (MremapFuncPtr)dlsym(RTLD_NEXT,"mremap");
+		gblState.mmap = (::MmapFuncPtr)dlsym(RTLD_NEXT,"mmap");
+		gblState.munmap = (::MunmapFuncPtr)dlsym(RTLD_NEXT,"munmap");
+		gblState.malloc = (::MallocFuncPtr)dlsym(RTLD_NEXT,"malloc");
+		gblState.free = (::FreeFuncPtr)dlsym(RTLD_NEXT,"free");
+		gblState.calloc = (::CallocFuncPtr)dlsym(RTLD_NEXT,"calloc");
+		gblState.realloc = (::ReallocFuncPtr)dlsym(RTLD_NEXT,"realloc");
+		gblState.posix_memalign = (::PosixMemalignFuncPtr)dlsym(RTLD_NEXT,"posix_memalign");
+		gblState.aligned_alloc = (::AlignedAllocFuncPtr)dlsym(RTLD_NEXT,"aligned_alloc");
+		gblState.valloc = (::VallocFuncPtr)dlsym(RTLD_NEXT,"valloc");
+		gblState.memalign = (::MemalignFuncPtr)dlsym(RTLD_NEXT,"memalign");
+		gblState.pvalloc = (::PVallocFuncPtr)dlsym(RTLD_NEXT,"pvalloc");
+		gblState.mremap = (::MremapFuncPtr)dlsym(RTLD_NEXT,"mremap");
 
 		//init profiler
 		gblState.status = ALLOC_WRAP_INIT_PROFILER;
