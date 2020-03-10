@@ -36,13 +36,6 @@ cfg_add_enable_option --name='jenkins' \
 						--only='enable'
 
 ######################################################
-#libsuffix
-cfg_add_with_option --name='lib-suffix' \
-						--doc='Used to force suffix for lib directory eg. lib64. [empty]' \
-						--var='LIB_SUFFIX' \
-						--only='with' \
-						--type='dir'
-
 #libunwind
 cfg_add_with_option --name='libunwind' \
 						--doc='Define prefix to find libunwind [/usr]' \
