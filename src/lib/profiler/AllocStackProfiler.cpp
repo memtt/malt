@@ -793,8 +793,10 @@ void AllocStackProfiler::memOpsLevels(void)
 		fprintf(stderr,"MALT: Already seen 10M memory operations, MALT certainly slows your program.\n");
 	else if (sharedLinearIndex == 1000000000)
 		fprintf(stderr,"MALT: Already seen 1G memory operations, MALT certainly slows your program.\n");
-	else if (sharedLinearIndex == 100000000000)
-		fprintf(stderr,"MALT: Already seen 100G memory operations, MALT certainly slows your program.\n");
+	#ifdef __x86_64__
+		else if (sharedLinearIndex == 100000000000)
+			fprintf(stderr,"MALT: Already seen 100G memory operations, MALT certainly slows your program.\n");
+	#endif //__x86_64__
 }
 
 /*******************  FUNCTION  *********************/

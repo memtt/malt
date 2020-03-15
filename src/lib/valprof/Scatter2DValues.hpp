@@ -12,6 +12,7 @@
 /********************  HEADERS  *********************/
 //std
 #include <cstdlib>
+#include <stdint.h>
 //extern deps
 #include <json/JsonState.h>
 
@@ -27,7 +28,7 @@ struct Scatter2DValuesAxis
 	/** Use log **/
 	bool log;
 	/** Max values **/
-	size_t max;
+	uint64_t max;
 };
 
 /*******************  FUNCTION  *********************/
@@ -45,15 +46,15 @@ class Scatter2DValues
 	public:
 		Scatter2DValues(size_t sizeX,size_t sizeY,bool logX,bool logY);
 		~Scatter2DValues(void);
-		void push(size_t x,size_t y);
+		void push(uint64_t x,uint64_t y);
 	public:
 		friend void convertToJson(htopml::JsonState& json, const Scatter2DValues & value);
 	private:
-		bool needResize(size_t x,size_t y);
-		void resize(size_t x,size_t y);
+		bool needResize(uint64_t x,uint64_t y);
+		void resize(uint64_t x,uint64_t y);
 		size_t getIndex(size_t value, const MALT::Scatter2DValuesAxis& axis) const;
 		size_t getValue(size_t index, const MALT::Scatter2DValuesAxis& axis) const;
-		void incr(size_t * values,size_t x,size_t y,size_t inc = 1);
+		void incr(size_t * values,uint64_t x,uint64_t y,size_t inc = 1);
 	private:
 		/** Parameters for x axis **/
 		Scatter2DValuesAxis xAxis;

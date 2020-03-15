@@ -53,13 +53,13 @@ Scatter2DValues::~Scatter2DValues(void)
 }
 
 /*******************  FUNCTION  *********************/
-bool Scatter2DValues::needResize(size_t x, size_t y)
+bool Scatter2DValues::needResize(uint64_t x, uint64_t y)
 {
 	return (x >= xAxis.max || y >= yAxis.max);
 }
 
 /*******************  FUNCTION  *********************/
-void Scatter2DValues::incr(size_t* values, size_t x, size_t y, size_t inc)
+void Scatter2DValues::incr(size_t* values, uint64_t x, uint64_t y, size_t inc)
 {
 	x = getIndex(x,xAxis);
 	y = getIndex(y,yAxis);
@@ -67,7 +67,7 @@ void Scatter2DValues::incr(size_t* values, size_t x, size_t y, size_t inc)
 }
 
 /*******************  FUNCTION  *********************/
-void Scatter2DValues::push(size_t x, size_t y)
+void Scatter2DValues::push(uint64_t x, uint64_t y)
 {
 	//fix 0
 	if (x == 0 && xAxis.log)
@@ -102,7 +102,7 @@ size_t Scatter2DValues::getValue(size_t index, const Scatter2DValuesAxis& axis) 
 }
 
 /*******************  FUNCTION  *********************/
-void Scatter2DValues::resize(size_t x, size_t y)
+void Scatter2DValues::resize(uint64_t x, uint64_t y)
 {
 	//reset
 	memset(this->oldValues,0,sizeof(size_t)*xAxis.size*yAxis.size);
@@ -160,9 +160,9 @@ void convertToJson(htopml::JsonState& json, const Scatter2DValues& value)
 		
 		//points
 		json.openFieldArray("points");
-			for (size_t y = 0 ; y < value.yAxis.size ; y++)
+			for (uint64_t y = 0 ; y < value.yAxis.size ; y++)
 			{
-				for (size_t x = 0 ; x < value.xAxis.size ; x++)
+				for (uint64_t x = 0 ; x < value.xAxis.size ; x++)
 				{
 					size_t v = value.values[y * value.yAxis.size + x];
 					if (v != 0)
