@@ -437,6 +437,10 @@ void AllocStackProfiler::loadGlobalVariables(void)
 		if (it->file.empty())
 			continue;
 		
+		//do not look into libmalt.so
+		if (it->file.find("libmalt.so") != std::string::npos)
+			continue;
+		
 		//file not found (TODO move to portability and used better method, or manage error in ElfReader)
 		FILE * fp = fopen(it->file.c_str(),"r");
 		if (fp == NULL)
