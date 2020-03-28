@@ -1,7 +1,7 @@
 #!/bin/bash
 ######################################################
 #            PROJECT  : MATT                         #
-#            VERSION  : 1.2.0                        #
+#            VERSION  : 1.3.0-dev                    #
 #            DATE     : 03/2020                      #
 #            AUTHOR   : Valat Sébastien              #
 #            LICENSE  : CeCILL-C                     #
@@ -14,7 +14,7 @@
 
 ######################################################
 #extract version
-version=1.2.0
+version=1.3.0-dev
 prefix=malt-${version}
 
 ######################################################
