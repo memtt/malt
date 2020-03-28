@@ -1,7 +1,7 @@
 /*****************************************************
              PROJECT  : MATT
-             VERSION  : 1.2.0-dev
-             DATE     : 08/2019
+             VERSION  : 1.2.0
+             DATE     : 03/2020
              AUTHOR   : Valat Sébastien
              LICENSE  : CeCILL-C
 *****************************************************/

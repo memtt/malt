@@ -38,7 +38,7 @@
 		"body": [
 			"/*****************************************************",
 			"             PROJECT  : MALT",
-			"             VERSION  : 1.2.0-dev",
+			"             VERSION  : 1.2.0",
 			"             DATE     : ${CURRENT_MONTH}/${CURRENT_YEAR}",
 			"             AUTHOR   : ${1:name}",
 			"             LICENSE  : CeCILL-C",

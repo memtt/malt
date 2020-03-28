@@ -1,8 +1,8 @@
 Change log
 ==========
 
-master
-------
+1.2.0 - 28/03/2019
+------------------
 
  - Fix address solving due to ASLR & fPIE
  - Remove gomp malloc/free/realloc from call stacks
