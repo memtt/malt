@@ -67,7 +67,7 @@ SimpleCallStackNode& SimpleStackTracker::getBacktraceInfo( const Stack& stack , 
 		SimpleCallStackNode * newEntry = new SimpleCallStackNode(stack,skipDepth);
 		CODE_TIMING("insertInVec",vec.push_back(newEntry));
 		if (vec.size() > 100)
-			fprintf(stderr,"warning get too much multiple in map sub-array, it may hust performances : %lu\n",vec.size());
+			fprintf(stderr,"warning get too much multiple in map sub-array, it may hust performances : %zu\n",vec.size());
 		return *newEntry;
 	}else {
 		return **resIt;

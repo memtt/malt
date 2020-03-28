@@ -69,7 +69,7 @@ bool NMCmdReader::load(const std::string& binaryFile)
 	while (!feof(fp))
 	{
 		//read first
-		//int res1 = fscanf(fp,"%s %c %lx %lx %s:%d\n",);
+		//int res1 = fscanf(fp,"%s %c %zx %zx %s:%d\n",);
 		bool status = readNMLine(fp,entry);
 		
 		//insert if ok
@@ -132,7 +132,7 @@ bool NMCmdReader::readNMLine(FILE * fp,NMCmdReaderEntry& entry)
 	if (bres == NULL)
 		return false;
 
-	int res = sscanf(bres,"%s %c %lx %lx %s\n",bufferName,&entry.type,&entry.offset,&entry.size,bufferFile);
+	int res = sscanf(bres,"%s %c %zx %zx %s\n",bufferName,&entry.type,&entry.offset,&entry.size,bufferFile);
 	if (res == 5)
 	{
 		char * l = strrchr(bufferFile,':');

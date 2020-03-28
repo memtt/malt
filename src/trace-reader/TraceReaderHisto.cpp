@@ -36,7 +36,7 @@ void TraceReaderHisto::onEnd(void)
 	
 	//print
 	for (TraceReaderHistoMap::const_iterator it = histo.begin() ; it != histo.end() ; ++it)
-		printf("	\"%llu\":%lu,\n",it->first,it->second);
+		printf("	\"%llu\":%zu,\n",it->first,it->second);
 	
 	//closejson array
 	printf("}\n");

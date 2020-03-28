@@ -97,22 +97,22 @@ OSMemUsage OSUnix::getMemoryUsage(void)
 			
 			//extract
 			size_t value;
-			if (sscanf(buffer,"MemTotal: %lu kB",&value) == 1)
+			if (sscanf(buffer,"MemTotal: %zu kB",&value) == 1)
 			{
 				finalRes.totalMemory = value * 1024;
-			} else if (sscanf(buffer,"MemFree: %lu kB",&value) == 1) {
+			} else if (sscanf(buffer,"MemFree: %zu kB",&value) == 1) {
 				finalRes.freeMemory = value * 1024;
-			} else if (sscanf(buffer,"buffers: %lu kB",&value) == 1) {
+			} else if (sscanf(buffer,"buffers: %zu kB",&value) == 1) {
 				finalRes.buffers = value * 1024;
-			} else if (sscanf(buffer,"Cached: %lu kB",&value) == 1) {
+			} else if (sscanf(buffer,"Cached: %zu kB",&value) == 1) {
 				finalRes.cached = value * 1024;
-			} else if (sscanf(buffer,"SwapTotal: %lu kB",&value) == 1) {
+			} else if (sscanf(buffer,"SwapTotal: %zu kB",&value) == 1) {
 				finalRes.totalSwap = value * 1024;
-			} else if (sscanf(buffer,"SwapFree: %lu kB",&value) == 1) {
+			} else if (sscanf(buffer,"SwapFree: %zu kB",&value) == 1) {
 				finalRes.swap = value * 1024;
-			} else if (sscanf(buffer,"DirectMap4k: %lu kB",&value) == 1) {
+			} else if (sscanf(buffer,"DirectMap4k: %zu kB",&value) == 1) {
 				finalRes.directMap4K = value * 1024;
-			} else if (sscanf(buffer,"DirectMap2M: %lu kB",&value) == 1) {
+			} else if (sscanf(buffer,"DirectMap2M: %zu kB",&value) == 1) {
 				finalRes.directMap2M = value * 1024;
 			}
 		}
@@ -148,7 +148,7 @@ OSProcMemUsage OSUnix::getProcMemoryUsage(void)
 		
 		//read
 		LinuxInternalStatm stat;
-		res = fscanf(fp,"%lu %lu %lu %lu %lu %lu %lu\n",
+		res = fscanf(fp,"%zu %zu %zu %zu %zu %zu %zu\n",
                &stat.size,&stat.resident, &stat.share, &stat.text, &stat.lib, &stat.data, &stat.dirty);
         assumeArg(res == 7,"Fail to read %1 entries, get only %2 entries where %3 is expected !").arg(cstStatmFile).arg(res).arg(7);
 		

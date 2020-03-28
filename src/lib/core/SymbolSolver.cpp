@@ -170,7 +170,7 @@ void SymbolSolver::loadProcMap(void)
 		if (res == buffer)
 		{
 			//parse
-			int cnt = sscanf(buffer,"%p-%p %s %p %s %lu %s\n",&(entry.lower),&(entry.upper),ignored,&(entry.offset),ignored,&ignored2,fileName);
+			int cnt = sscanf(buffer,"%p-%p %s %p %s %zu %s\n",&(entry.lower),&(entry.upper),ignored,&(entry.offset),ignored,&ignored2,fileName);
 			//printf("%s => %p - %p\n",buffer,entry.lower,entry.upper);
 			
 			//check args
@@ -227,7 +227,6 @@ size_t SymbolSolver::extractElfVaddr(const std::string & obj) const
 
 	//read content
 	char buffer[4096];
-	const char key[] = "  Entry point address:";
 	while (res == 0 && !feof(fp)) {
 		//get next line
 		char * tmp = fgets(buffer, sizeof(buffer), fp);
@@ -251,7 +250,7 @@ size_t SymbolSolver::extractElfVaddr(const std::string & obj) const
 
 	//debug
 	//if (gblOptions->outputVerbosity >= MALT_VERBOSITY_VERBOSE)
-	//	fprintf(stderr, "MALT: vaddr is 0x%lx\n", res);
+	//	fprintf(stderr, "MALT: vaddr is 0x%zx\n", res);
 
 	//ok
 	return res;
@@ -373,7 +372,7 @@ void SymbolSolver::solveNames(LinuxProcMapEntry * procMapEntry)
 				elf2AddrOffset = map->l_addr;
 			}
 
-			//printf("OFFSET %lx %lx %lx %lx\n", it->first, procMapEntry->lower, map->l_addr, elfVaddr);
+			//printf("OFFSET %zx %zx %zx %zx\n", it->first, procMapEntry->lower, map->l_addr, elfVaddr);
 			addr2lineCmd << ' '  << (void*)(((size_t)it->first - elf2AddrOffset));
 			hasEntries = true;
 			lst.push_back(&it->second);

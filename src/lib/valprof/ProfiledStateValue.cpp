@@ -70,7 +70,6 @@ ProfiledStateValue::ProfiledStateValue(size_t steps,bool useLinearIndex)
 	
 	//memory
 	this->entries = new ProfiledStateValueEntry[steps];
-	memset(this->entries,0,sizeof(ProfiledStateValueEntry)*steps);
 	
 	//peak
 	this->peak.min = 0;

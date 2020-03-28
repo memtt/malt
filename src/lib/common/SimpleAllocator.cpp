@@ -390,7 +390,9 @@ bool Chunk::canContain(size_t size)
 **/
 void* Chunk::getBody(void)
 {
-	if (this == NULL)
+	//tmp copy to avoid recent compiler warning
+	void * tmp = this;
+	if (tmp == NULL)
 		return NULL;
 	else
 		return (void*)(this+1);

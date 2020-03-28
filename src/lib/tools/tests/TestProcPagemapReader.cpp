@@ -55,8 +55,9 @@ TEST(ProcPagemapReader,largeHalfFull)
 	memset(buffer,0,size/2);
 	size_t phys = ProcPageMapReader::getPhysicalSize(buffer,size);
 	EXPECT_LT(size/2,phys);
-	if (ProcPageMapReader::hasProcPagemap())
+	if (ProcPageMapReader::hasProcPagemap()) {
 		EXPECT_GT(size,phys);
+	}
 }
 
 /*******************  FUNCTION  *********************/

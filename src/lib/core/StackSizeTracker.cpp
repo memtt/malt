@@ -60,7 +60,7 @@ void StackSizeTracker::enter(void)
 	//	this->loadMapping();
 	
 	//debug
-	//printf("malt %llu , %lu , %lu , %lu\n",getticks(),this->base,crsp,getSize());
+	//printf("malt %llu , %zu , %zu , %zu\n",getticks(),this->base,crsp,getSize());
 }
 
 /*******************  FUNCTION  *********************/

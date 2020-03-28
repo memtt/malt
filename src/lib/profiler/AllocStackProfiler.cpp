@@ -414,7 +414,7 @@ void AllocStackProfiler::solvePerThreadSymbols()
 /*******************  FUNCTION  *********************/
 void AllocStackProfiler::updatePeakInfoOfStacks(void)
 {
-	//fprintf(stderr,"peak = %lu , peakId = %lu\n",peak,peakId);
+	//fprintf(stderr,"peak = %zu , peakId = %zu\n",peak,peakId);
 	for (StackSTLHashMap<CallStackInfo>::iterator it = stackTracker.begin() ; it != stackTracker.end() ; ++it)
 		it->second.updatePeak(peakId);
 }
@@ -716,7 +716,7 @@ void convertToJson(htopml::JsonState& json, const AllocStackProfiler& value)
 	json.printField("leaks",value.segTracker);
 
 	json.closeStruct();
-	//fprintf(stderr,"peakId : %lu\n",value.peakId);
+	//fprintf(stderr,"peakId : %zu\n",value.peakId);
 }
 
 /*******************  FUNCTION  *********************/

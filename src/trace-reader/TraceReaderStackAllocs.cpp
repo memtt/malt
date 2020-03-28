@@ -36,7 +36,7 @@ void TraceReaderStackAllocs::onEnd(void)
 			printf(",");
 		else
 			first = false;
-		printf("\n\t\"%p\": [%lu,%lu]",(void*)it->first,it->second.count,it->second.size);
+		printf("\n\t\"%p\": [%zu,%zu]",(void*)it->first,it->second.count,it->second.size);
 	}
 	printf("\n}\n");
 }

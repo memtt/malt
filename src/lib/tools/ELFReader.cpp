@@ -271,7 +271,7 @@ void ElfReader::loadGlobalVariables(ElfGlobalVariableVector& variables)
 				
 				//push
 				variables.push_back(var);
-				//printf("symbol = %d = %s -> %lu\n",table[i].st_name,strings.get(table[i].st_name),table[i].st_size);
+				//printf("symbol = %d = %s -> %zu\n",table[i].st_name,strings.get(table[i].st_name),table[i].st_size);
 			}
 		}
 	}

@@ -68,7 +68,7 @@ static VOID afterMalloc(ADDRINT ret)
 	if (!gblState.inUse)
 	{
 		gblState.inUse = true;
-// 		fprintf(stderr,"%p = malloc(%lu)\n",(void*)ret,gblState.lastMallocSize);
+// 		fprintf(stderr,"%p = malloc(%zu)\n",(void*)ret,gblState.lastMallocSize);
 		gblState.profiler.onMalloc((void*)ret,gblState.lastMallocSize);
 		gblState.inUse = false;
 	} else {
@@ -105,7 +105,7 @@ static VOID beforeFree(ADDRINT ptr)
 	if (!gblState.inUse)
 	{
 		gblState.inUse = true;
-// 		fprintf(stderr,"free(%p) [%lu]\n",(void*)ptr,sizeof(ADDRINT));
+// 		fprintf(stderr,"free(%p) [%zu]\n",(void*)ptr,sizeof(ADDRINT));
 		gblState.profiler.onFree((void*)ptr);
 		gblState.inUse = false;
 	} else {

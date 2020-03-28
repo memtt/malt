@@ -150,7 +150,7 @@ void testRecuseIntervedA(int depth)
 {
 	//static size_t mem = 0;
 	//mem += 64;
-	//printf("testRecuseIntervedA = %lu\n",mem);
+	//printf("testRecuseIntervedA = %zu\n",mem);
 	
 	void * ptr = malloc(64);
 	*(char*)ptr='c';//required otherwise new compilers will remove malloc/free
@@ -163,7 +163,7 @@ void testRecuseIntervedB(int depth)
 {
 	//static size_t mem = 0;
 	//mem += 64;
-	//printf("testRecuseIntervedB = %lu\n",mem);
+	//printf("testRecuseIntervedB = %zu\n",mem);
 	
 	void * ptr = malloc(64);
 	*(char*)ptr='c';//required otherwise new compilers will remove malloc/free
