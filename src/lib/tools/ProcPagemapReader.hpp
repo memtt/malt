@@ -12,6 +12,7 @@
 /*******************  FUNCTION  *********************/
 //standard
 #include <cstdio>
+#include <stdint.h>
 //portability
 #include <portability/Mutex.hpp>
 
@@ -23,14 +24,14 @@ namespace MALT
 //Infos from https://www.kernel.org/doc/Documentation/vm/pagemap.txt
 struct ProcPageMapEntry
 {
-	unsigned long pfn:55;   // Bits 0-54  page frame number (PFN) if present
+	uint64_t pfn:55;        // Bits 0-54  page frame number (PFN) if present
 	                        // Bits 0-4   swap type if swapped
 	                        // Bits 5-54  swap offset if swapped
-    unsigned char dirty:1;  // Bit  55    pte is soft-dirty (see Documentation/vm/soft-dirty.txt)
-    unsigned char zero:5;   // Bits 56-60 zero
-    unsigned char file:1;   // Bit  61    page is file-page or shared-anon
-    unsigned char swaped:1; // Bit  62    page swapped
-    unsigned char present:1;// Bit  63    page present
+	unsigned char dirty:1;  // Bit  55    pte is soft-dirty (see Documentation/vm/soft-dirty.txt)
+	unsigned char zero:5;   // Bits 56-60 zero
+	unsigned char file:1;   // Bit  61    page is file-page or shared-anon
+	unsigned char swaped:1; // Bit  62    page swapped
+	unsigned char present:1;// Bit  63    page present
 };
 
 /*********************  CLASS  **********************/
