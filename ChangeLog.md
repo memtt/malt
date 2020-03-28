@@ -4,6 +4,13 @@ Change log
 master
 ------
 
+ - Fix address solving due to ASLR & fPIE
+ - Remove gomp malloc/free/realloc from call stacks
+ - Portability over i386 and power9
+ - Fix compiler warning
+ - Extract current memory allocator name
+ - Script to build deb & rpms with docker
+
 1.1.0 - 30/08/2019
 ------------------
 
