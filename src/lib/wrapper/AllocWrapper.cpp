@@ -840,8 +840,6 @@ void __cyg_profile_func_enter (void *this_fn,void *call_site)
 {
 	//get local TLS and check init
 	MALT_WRAPPER_LOCAL_STATE_INIT
-
-	printf("__cyg_profile_func_enter\n");
 	
 	//stack tracking
 	if (tlsState.status == ALLOC_WRAP_READY || tlsState.status == ALLOC_WRAP_DISABLED)
@@ -864,8 +862,6 @@ void __cyg_profile_func_exit  (void *this_fn,void *call_site)
 {
 	//get local TLS and check init
 	MALT_WRAPPER_LOCAL_STATE_INIT
-
-	printf("__cyg_profile_func_exit\n");
 	
 	//stack tracking
 	if (tlsState.status == ALLOC_WRAP_READY || tlsState.status == ALLOC_WRAP_DISABLED)
