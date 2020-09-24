@@ -30,4 +30,9 @@
 //if have libunwind
 #cmakedefine MALT_HAVE_LIBUNWIND
 
+//arm RDTSC port selection
+#cmakedefine HAVE_ARMV7A_PMCCNTR
+#cmakedefine HAVE_ARMV8_CNTVCT_EL0
+#cmakedefine HAVE_ARMV8_PMCCNTR_EL0
+
 #endif //CONFIG_H

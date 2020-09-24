@@ -55,6 +55,14 @@ if (LIBUNWIND_FOUND)
 endif (LIBUNWIND_FOUND)
 
 ######################################################
+# check arm compilation
+include(CheckCXXSourceCompiles)
+CHECK_CXX_SOURCE_COMPILES("uint32_t r; asm volatile(\"mrc p15, 0, %0, c9, c13, 0\" : \"=r\"(r) );" HAVE_ARMV7A_PMCCNTR)
+CHECK_CXX_SOURCE_COMPILES("int64_t Rt; asm volatile(\"mrs %0,  CNTVCT_EL0\" : \"=r\" (Rt));" HAVE_ARMV8_CNTVCT_EL0)
+CHECK_CXX_SOURCE_COMPILES("uint64_t cc = 0; asm volatile(\"mrs %0, PMCCNTR_EL0\" : \"=r\"(cc));" HAVE_ARMV8_PMCCNTR_EL0)
+
+
+######################################################
 #gen config.h
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config.h.in ${CMAKE_CURRENT_BINARY_DIR}/config.h)
 
