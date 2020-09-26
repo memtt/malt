@@ -8,6 +8,7 @@
 
 ######################################################
 include_directories(../lib)
+include_directories(${CMAKE_CURRENT_BINARY_DIR}/../lib)
 include_directories(../../extern-deps/from-fftw)
 
 ######################################################
