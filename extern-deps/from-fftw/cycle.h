@@ -78,6 +78,9 @@
 
 /***************************************************************************/
 
+//config
+#include <config.h>
+
 #if TIME_WITH_SYS_TIME
 # include <sys/time.h>
 # include <time.h>
@@ -515,7 +518,8 @@ INLINE_ELAPSED(inline)
 #endif
 #endif /* HAVE_MIPS_ZBUS_TIMER */
 
-#if defined(HAVE_ARMV7A_CNTVCT)
+#if defined(HAVE_ARMV7A_CNTVCT) && !defined(HAVE_TICK_COUNTER)
+#include <stdint.h>
 typedef uint64_t ticks;
 static inline ticks getticks(void)
 {
@@ -528,6 +532,7 @@ INLINE_ELAPSED(inline)
 #endif
 
 #if defined(HAVE_ARMV7A_PMCCNTR) && !defined(HAVE_TICK_COUNTER)
+#include <stdint.h>
 typedef uint64_t ticks;
 static inline ticks getticks(void)
 {
@@ -540,6 +545,7 @@ INLINE_ELAPSED(inline)
 #endif
 
 #if defined(__aarch64__) && defined(HAVE_ARMV8_CNTVCT_EL0) && !defined(HAVE_ARMV8_PMCCNTR_EL0) && !defined(HAVE_TICK_COUNTER)
+#include <stdint.h>
 typedef uint64_t ticks;
 static inline ticks getticks(void)
 {
@@ -552,6 +558,7 @@ INLINE_ELAPSED(inline)
 #endif
 
 #if defined(__aarch64__) && defined(HAVE_ARMV8_PMCCNTR_EL0) && !defined(HAVE_TICK_COUNTER)
+#include <stdint.h>
 typedef uint64_t ticks;
 static inline ticks getticks(void)
 {
