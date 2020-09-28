@@ -21,7 +21,7 @@ namespace MALT
 {
 
 /********************  MACROS  **********************/
-#ifdef __x86_64__
+#if defined(__x86_64__) || defined(__aarch64__)
 	#define ElfArch_Ehdr Elf64_Ehdr
 	#define elfarch_getehdr(x) elf64_getehdr(x)
 	#define ElfArch_Shdr Elf64_Shdr
@@ -29,7 +29,7 @@ namespace MALT
 	#define ElfArch_Sym Elf64_Sym
 	#define ELFARCH_ST_BIND(x) ELF64_ST_BIND(x)
 	#define ELFARCH_ST_TYPE(x) ELF64_ST_TYPE(x)
-#elif __i386__
+#elif defined(__i386__) || defined(__aarch__)
 	#define ElfArch_Ehdr Elf32_Ehdr
 	#define elfarch_getehdr(x) elf32_getehdr(x)
 	#define ElfArch_Shdr Elf32_Shdr

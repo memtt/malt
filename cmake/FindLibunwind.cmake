@@ -18,7 +18,7 @@ find_library(LIBUNWIND_LIBRARY NAMES unwind
 	HINTS ${LIBUNWIND_PREFIX}/lib)
 
 ######################################################
-foreach(arch x86 x86_64 ppc ppc64)
+foreach(arch x86 x86_64 ppc ppc64 aarch aarch64)
 	find_library(LIBUNWIND_${arch} NAMES unwind-${arch}
 		HINTS ${LIBUNWIND_PREFIX}/lib)
 	if (LIBUNWIND_${arch})
