@@ -9,6 +9,7 @@
 /********************  HEADERS  *********************/
 #include <cassert>
 #include <cstdio>
+#include <cstdint>
 #include "StackSizeTracker.hpp"
 #include <portability/LinuxProcMapReader.hpp>
 #include <cycle.h>
@@ -32,16 +33,15 @@ StackSizeTracker::StackSizeTracker(void)
 void StackSizeTracker::enter(void)
 {
 	//get stack size
-	unsigned long crbp;
 	unsigned long crsp;
 	
 	//read counters
-	#ifdef __x86_64__
-		asm("movq %%rbp,%0" : "=r"(crbp));
+	#if defined(__x86_64__)
 		asm("movq %%rsp,%0" : "=r"(crsp));
-	#elif __i386__
-		asm("mov %%ebp,%0" : "=r"(crbp));
+	#elif defined(__i386__)
 		asm("mov %%esp,%0" : "=r"(crsp));
+	#elif defined(__aarch__) || defined(__aarch64__)
+		asm("mov %0, sp" : "=r"(crsp));
 	#else
 		MALT_FATAL("Enter-exit mode is not supported for this architecture !");
 		#warning "Arch not supported, stack size tracking will be ignored, all rest will work fine, this is optional."
