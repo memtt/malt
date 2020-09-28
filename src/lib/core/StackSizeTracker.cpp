@@ -9,7 +9,6 @@
 /********************  HEADERS  *********************/
 #include <cassert>
 #include <cstdio>
-#include <cstdint>
 #include "StackSizeTracker.hpp"
 #include <portability/LinuxProcMapReader.hpp>
 #include <cycle.h>
