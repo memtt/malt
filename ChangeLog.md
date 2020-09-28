@@ -3,6 +3,7 @@ Change log
 
 master
 ------
+ - Build support for aarch64
 
 1.2.0 - 28/03/2019
 ------------------
