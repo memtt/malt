@@ -4,6 +4,7 @@ Change log
 master
 ------
  - Build support for aarch64
+ - Fix inlining issue with internal bactrace functions on recent GCC.
 
 1.2.0 - 28/03/2019
 ------------------
