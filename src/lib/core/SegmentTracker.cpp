@@ -17,6 +17,9 @@ namespace MALT
 {
 
 /*******************  FUNCTION  *********************/
+/**
+ * Constructor of the segment info object to init values.
+**/
 SegmentInfo::SegmentInfo(void)
 {
 	this->size = 0;
@@ -24,24 +27,51 @@ SegmentInfo::SegmentInfo(void)
 }
 
 /*******************  FUNCTION  *********************/
+/**
+ * Destructor of segment info.
+**/
 SegmentInfo::~SegmentInfo(void)
 {
 
 }
 
 /*******************  FUNCTION  *********************/
+/**
+ * Calculate the lifetime of the given segment comparing its allocation time
+ * to the current one.
+ * @return Return the lifetime in CPU cycles.
+**/
+ticks SegmentInfo::getLifetime(void ) const
+{
+	return getticks() - allocTime;
+}
+
+/*******************  FUNCTION  *********************/
+/**
+ * Constructor of segment tracker
+**/
 SegmentTracker::SegmentTracker(void)
 {
 	
 }
 
 /*******************  FUNCTION  *********************/
+/**
+ * Destructor of segment tracker.
+**/
 SegmentTracker::~SegmentTracker(void)
 {
 
 }
 
 /*******************  FUNCTION  *********************/
+/**
+ * Add a segment to be tracked.
+ * @param ptr Base address of the segment (returned by malloc).
+ * @param size Size of the segment (argument of malloc).
+ * @param callStack The call stack from where the allocation has been done.
+ * @return Return a pointer to the segment info.
+**/
 SegmentInfo* SegmentTracker::add(void* ptr, size_t size, MALT::MMCallStackNode callStack)
 {
 	//check errors
@@ -61,6 +91,11 @@ SegmentInfo* SegmentTracker::add(void* ptr, size_t size, MALT::MMCallStackNode c
 }
 
 /*******************  FUNCTION  *********************/
+/**
+ * Search in the tracked segment the one defined by its address.
+ * @param ptr Adress of the segment to search.
+ * @return Pointer to the segment informations.
+**/
 SegmentInfo* SegmentTracker::get(void* ptr)
 {
 	SegmentInfoMap::iterator it = map.find(ptr);
@@ -71,18 +106,21 @@ SegmentInfo* SegmentTracker::get(void* ptr)
 }
 
 /*******************  FUNCTION  *********************/
+/**
+ * Remove the segment identified by its address.
+ * @param ptr Base address of the segment to remove.
+**/
 void SegmentTracker::remove(void* ptr)
 {
 	map.erase(ptr);
 }
 
 /*******************  FUNCTION  *********************/
-ticks SegmentInfo::getLifetime(void ) const
-{
-	return getticks() - allocTime;
-}
-
-/*******************  FUNCTION  *********************/
+/**
+ * At the end of the execution, before dumping the allocation profile we can
+ * loop on the tracked segment to get all the leaks.
+ * @param leakMap Reference to the leak object to be used for profile dumping.
+**/
 void SegmentTracker::fillLeaks(LeakInfoMap& leakMap) const
 {
 	for(SegmentInfoMap::const_iterator it = map.begin() ; it != map.end() ; ++it)
@@ -94,6 +132,11 @@ void SegmentTracker::fillLeaks(LeakInfoMap& leakMap) const
 }
 
 /*******************  FUNCTION  *********************/
+/**
+ * Convert the current object to json format.
+ * @param json The json state to conver the current object.
+ * @param value Reference to the object to convert to json.
+**/
 void convertToJson(htopml::JsonState& json, const SegmentTracker& value)
 {
 	LeakInfoMap leaks;
@@ -102,6 +145,9 @@ void convertToJson(htopml::JsonState& json, const SegmentTracker& value)
 }
 
 /*******************  FUNCTION  *********************/
+/**
+ * Initilize the leak info object.
+**/
 LeakInfo::LeakInfo(void)
 {
 	mem = 0;
@@ -109,6 +155,11 @@ LeakInfo::LeakInfo(void)
 }
 
 /*******************  FUNCTION  *********************/
+/**
+ * Conver a leak info object to json.
+ * @param json The json state object to make the conversion.
+ * @param it Reference to the object to convert.
+**/
 void convertToJson(htopml::JsonState& json, const LeakInfoMap::const_iterator& it)
 {
 	json.openStruct();
@@ -119,6 +170,11 @@ void convertToJson(htopml::JsonState& json, const LeakInfoMap::const_iterator& i
 }
 
 /*******************  FUNCTION  *********************/
+/**
+ * Convert the leak info map to json to be exported in the profile file.
+ * @param json Define the json state object to use for the conversion.
+ * @param value Reference to the map to convert.
+**/
 void convertToJson(htopml::JsonState& json, const LeakInfoMap& value)
 {
 	json.openArray();
@@ -128,6 +184,13 @@ void convertToJson(htopml::JsonState& json, const LeakInfoMap& value)
 }
 
 /*******************  FUNCTION  *********************/
+/**
+ * Consider a munmap operation on the registered segement. If coverd by the
+ * munmap operation the segment will be removed. If munmap parially cover
+ * it we split it and keep the non unmapped part.
+ * @param ptr Base address of the munmap operation.
+ * @param size Size of the munmap operation.
+**/
 void SegmentTracker::munmap(void* ptr, size_t size)
 {
 	//search for strict equal
