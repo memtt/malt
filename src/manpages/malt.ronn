@@ -274,7 +274,7 @@ on threads using the `filter:enabled` option, then enable it by hand.
 
 ## VERSION
 
-   This is the manpage of MALT version 1.3.0.
+   This is the manpage of MALT version 1.2.1.
 
 ## SEE ALSO
 

@@ -1,13 +1,13 @@
 Change log
 ==========
 
-master
-------
+1.2.1 - 17/10/2020
+------------------
 
  - Build support for aarch64
  - Fix inlining issue with internal bactrace functions on recent GCC.
 
-1.2.0 - 28/03/2019
+1.2.0 - 28/03/2020
 ------------------
 
  - Fix address solving due to ASLR & fPIE
