@@ -1,6 +1,6 @@
 /*****************************************************
              PROJECT  : MALT
-             VERSION  : 1.2.1
+             VERSION  : 1.2.2
              DATE     : 10/2020
              AUTHOR   : Valat Sébastien
              LICENSE  : CeCILL-C
@@ -22,7 +22,7 @@ void test3(void) {}
 /********************** CONSTS **********************/
 void *CST_STACK_1[] = {(void*)0x1,(void*)0x2,(void*)0x2,(void*)0x2,(void*)0x2,(void*)0x2,(void*)0x3};
 const char CST_VALUE_1[] =  "version: 1\n\
-creator: MALT-1.2.1\n\
+creator: MALT-1.2.2\n\
 pid: 1\n\
 cmd: TestValgrindOutput\n\
 part: 1\n\

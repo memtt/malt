@@ -1,6 +1,6 @@
 ######################################################
 #            PROJECT  : MALT                         #
-#            VERSION  : 1.2.1                        #
+#            VERSION  : 1.2.2                        #
 #            DATE     : 10/2020                      #
 #            AUTHOR   : Valat Sébastien              #
 #            LICENSE  : CeCILL-C                     #
@@ -13,7 +13,7 @@ project(MALT)
 
 ######################################################
 #set versions to dispatch in code
-set(MALT_VERSION "1.2.1")
+set(MALT_VERSION "1.2.2")
 set(MALT_VERSION_NOTE "-dev")
 set(MALT_SO_VERSION "1")
 set(MALT_JSON_FORMAT_VERSION "1.1")

@@ -1,6 +1,6 @@
 /*****************************************************
              PROJECT  : MALT
-             VERSION  : 1.2.1
+             VERSION  : 1.2.2
              DATE     : 10/2020
              AUTHOR   : Jaffery, Mehdi Raza
              LICENSE  : CeCILL-C

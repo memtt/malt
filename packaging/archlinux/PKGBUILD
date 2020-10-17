@@ -1,6 +1,6 @@
 ######################################################
 #            PROJECT  : MALT                         #
-#            VERSION  : 1.2.1                        #
+#            VERSION  : 1.2.2                        #
 #            DATE     : 10/2020                      #
 #            AUTHOR   : Valat Sébastien              #
 #            LICENSE  : CeCILL-C                     #
@@ -8,7 +8,7 @@
 
 # Maintainer: Sebastien Valat <sebastien.valat-dev@orange.fr>
 pkgname=MALT
-pkgver=1.2.1
+pkgver=1.2.2
 pkgrel=1
 pkgdesc="Memory profiling tool to track memory allocations (malloc,free,realloc...)."
 arch=('i686' 'x86_64')
