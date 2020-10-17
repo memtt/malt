@@ -215,6 +215,13 @@ void SegmentTracker::munmap(void* ptr, size_t size)
 }
 
 /*******************  FUNCTION  *********************/
+/**
+ * If an munmap operation partialy copver a segment we need to split it
+ * the keep only the non unmapped part in the registry.
+ * @param it Iterator pointing the segment.
+ * @param ptr Base address of the munmap operation
+ * @param size Size of the munmap operation.
+**/
 void SegmentTracker::split(SegmentInfoMap::iterator it, void* ptr, size_t size)
 {
 	//copy info
