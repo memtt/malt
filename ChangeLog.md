@@ -3,6 +3,7 @@ Change log
 
 master
 ------
+
  - Build support for aarch64
  - Fix inlining issue with internal bactrace functions on recent GCC.
 
