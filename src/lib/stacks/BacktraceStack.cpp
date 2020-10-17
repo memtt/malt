@@ -15,6 +15,7 @@
 #include <common/Debug.hpp>
 //portability
 #include <tools/Backtrace.hpp>
+#include "../tools/BacktraceGlibc.hpp"
 //current
 #include <stacks/BacktraceStack.hpp>
 
@@ -83,6 +84,44 @@ void BacktraceStack::loadCurrentStack(void)
 	//of the previous instruction. addr2line is ok with non exact addresses under linux at least.
 	for (int i = 0 ; i < this->size ; i++)
 		this->stack[i] = (void*)((size_t)this->stack[i] - 1);
+}
+
+/*******************  FUNCTION  *********************/
+/**
+ * This function help to auto detect the compiler inlining which append on new
+ * GCC linker. Compare using the object bactrace function and the direct call
+ * to backtrace function so we can compare if it has been inlined or not.
+ * @return Return the delta to apply to the default value in AllocWrapper.cpp.
+**/
+int BacktraceStack::getBactraceSkipOptimDelta(void)
+{
+	//make backtrace
+	this->loadCurrentStack();
+	int sizeLoadCurrent = getSize();
+
+	//dirct call
+	int sizeDirect = BacktraceGlibc::backtrace(stack,memSize);
+
+	//calc delta
+	int delta = sizeLoadCurrent - sizeDirect;
+
+	//delta==1 => release mode with gcc linker level inlining
+	//delta==2 => debig mode without inlining
+	if (delta == 1) {
+		return 0;
+	} else if (delta == 2) {
+		return 2;
+	} else {
+		MALT_WARNING_ARG("Cannot determine compiler inlining type for backtrace"
+			"fix, got %1, you might have to adjust with -o stack:skip=X to find"
+			" the right value. Using a safe value of 0 for delta this might "
+			"capture malt internal details.")
+			.arg(delta)
+			.end();
+	}
+
+	//return
+	return 0;
 }
 
 }

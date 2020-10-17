@@ -28,7 +28,7 @@ Options * gblOptions = NULL;
  * inlining operations so in case it append to someone he can fix without
  * recompiling.
 **/
-static const int cstDefaultStackSkip = 5;
+static const int cstDefaultStackSkip = 3;
 
 /********************  CONSTS  **********************/
 /**

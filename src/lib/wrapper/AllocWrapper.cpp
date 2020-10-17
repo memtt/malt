@@ -424,6 +424,11 @@ void AllocWrapperGlobal::init(void )
 		if (envOptions != NULL)
 			gblState.options->loadFromString(envOptions);
 		
+		//adapt stack skip mode (to adapt malt to compiler inlinling)
+		BacktraceStack testStack;
+		int stackDelta = testStack.getBactraceSkipOptimDelta();
+		gblState.options->stackSkip += stackDelta;
+		
 		//extract stack mode and update options for libunwind if required
 		StackMode mode = getStackMode(*gblState.options);
 		

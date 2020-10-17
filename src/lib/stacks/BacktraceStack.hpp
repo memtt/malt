@@ -30,6 +30,7 @@ class BacktraceStack : public Stack
 	public:
 		BacktraceStack(void);
 		void loadCurrentStack(void);
+		int getBactraceSkipOptimDelta(void);
 };
 
 }
