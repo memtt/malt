@@ -7,8 +7,8 @@ malt-qt5(1) -- Webserver for the MALT web GUI
 
 ## DESCRIPTION
 
-The MALT QT web view embedded a QT webkit browser to display the web GUI is hosted by a nodeJS script 
-managed by `malt-webview` command. It will
+The MALT QT web view embedded a QT webkit browser to display the web GUI hosted by a nodeJS script 
+managed by `malt-webview` command.
 
 ## OPTIONS
 
