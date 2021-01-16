@@ -18,8 +18,11 @@ namespace MALT
 {
 
 /*******************  FUNCTION  *********************/
+/**
+ * Constructor of the stack size tracker.
+**/
 StackSizeTracker::StackSizeTracker(void)
-:stack(128,2048,32)
+                 :stack(128,2048,32)
 {
 	this->base = 0;
 	this->cur = 0;
@@ -29,6 +32,11 @@ StackSizeTracker::StackSizeTracker(void)
 }
 
 /*******************  FUNCTION  *********************/
+/**
+ * To be called when we enter in a function, it will use assembly instruction
+ * to extract the current stack pointer and compute the stack size consumed by
+ * the parent function.
+**/
 void StackSizeTracker::enter(void)
 {
 	//get stack size
@@ -63,6 +71,9 @@ void StackSizeTracker::enter(void)
 }
 
 /*******************  FUNCTION  *********************/
+/**
+ * Function used to extract mapLower and mapUpper from /proc/self/maps.
+**/
 void StackSizeTracker::loadMapping(void)
 {
 	//read proc map
@@ -84,18 +95,29 @@ void StackSizeTracker::loadMapping(void)
 }
 
 /*******************  FUNCTION  *********************/
+/**
+ * To be called when exiting a function to pop the stack size entry.
+**/
 void StackSizeTracker::exit(void)
 {
 	this->stack.pop();
 }
 
 /*******************  FUNCTION  *********************/
+/**
+ * Return the current size of the stack by a diff between the base address
+ * and the current one.
+**/
 long unsigned int StackSizeTracker::getSize(void) const
 {
 	return this->base - this->cur;
 }
 
 /*******************  FUNCTION  *********************/
+/**
+ * Copy operator.
+ * @param origin Reference to the original stack size tracker.
+**/
 StackSizeTracker& StackSizeTracker::operator=(const StackSizeTracker& orig)
 {
 	this->stack.set(orig.stack);
@@ -107,6 +129,11 @@ StackSizeTracker& StackSizeTracker::operator=(const StackSizeTracker& orig)
 }
 
 /*******************  FUNCTION  *********************/
+/**
+ * Conver the stack size tracker into json format for the final profile file.
+ * @param json Reference to the json state to make the conversion.
+ * @param value Reference to the object to convert.
+**/
 void convertToJson(htopml::JsonState& json, const StackSizeTracker& value)
 {
 	int size = value.stack.size();
@@ -122,6 +149,9 @@ void convertToJson(htopml::JsonState& json, const StackSizeTracker& value)
 }
 
 /*******************  FUNCTION  *********************/
+/**
+ * Return the total size using the mapUpper/mapLower from /proc/self/maps.
+**/
 long unsigned int StackSizeTracker::getTotalSize(void) const
 {
 	return mapUpper - mapLower;

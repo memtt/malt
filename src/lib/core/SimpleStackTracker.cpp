@@ -19,12 +19,18 @@ namespace MALT
 {
 
 /*******************  FUNCTION  *********************/
+/**
+ * Constructor of the stack tracker.
+**/
 SimpleStackTracker::SimpleStackTracker(void )
 {
 	this->count = 0;
 }
 
 /*******************  FUNCTION  *********************/
+/**
+ * Destructor of the stack tracker to clear the memory.
+**/
 SimpleStackTracker::~SimpleStackTracker(void )
 {
 	for (SimpleBacktraceVectorMap::const_iterator itMap = callmaps.begin() ; itMap != callmaps.end() ; ++itMap)
@@ -36,6 +42,13 @@ SimpleStackTracker::~SimpleStackTracker(void )
 }
 
 /*******************  FUNCTION  *********************/
+/**
+ * This function is used to get a reference to the call stack node from the call
+ * stack.
+ * @param stack Reference to the call stack to be used to identify the profiling
+ * infos.
+ * @param skipDepth Skip part of the stack before doing the search.
+**/
 SimpleCallStackNode& SimpleStackTracker::getBacktraceInfo( const Stack& stack , int skipDepth )
 {
 	assert(stack.isValid());
@@ -75,6 +88,12 @@ SimpleCallStackNode& SimpleStackTracker::getBacktraceInfo( const Stack& stack , 
 }
 
 /*******************  FUNCTION  *********************/
+/**
+ * Stream operator do to help debugging.
+ * @param out Reference to the output stream operator.
+ * @param tracer Reference to the tracer to dump.
+ * @return Reference to the output stream after used.
+**/
 std::ostream& operator<<(std::ostream& out, const SimpleStackTracker& tracer)
 {
 	for (SimpleBacktraceVectorMap::const_iterator itMap = tracer.callmaps.begin() ; itMap != tracer.callmaps.end() ; ++itMap)
@@ -88,6 +107,11 @@ std::ostream& operator<<(std::ostream& out, const SimpleStackTracker& tracer)
 }
 
 /*******************  FUNCTION  *********************/
+/**
+ * Use the symbol solver to resolve the symbols.
+ * @param symbolResolver Reference to the symbol resolver to be used on all the
+ * symbols tracked by the tracker.
+**/
 void SimpleStackTracker::solveSymbols(SymbolSolver & symbolResolver)
 {
 	for (SimpleBacktraceVectorMap::const_iterator itMap = callmaps.begin() ; itMap != callmaps.end() ; ++itMap)
@@ -99,6 +123,11 @@ void SimpleStackTracker::solveSymbols(SymbolSolver & symbolResolver)
 }
 
 /*******************  FUNCTION  *********************/
+/**
+ * Convert the tracker state into json format to create the final profile file.
+ * @param json Reference to the json state to make the conversion.
+ * @param value Reference to the tracker to convert.
+**/
 void convertToJson(htopml::JsonState& json, const SimpleStackTracker& value)
 {
 	json.openStruct();
@@ -115,6 +144,13 @@ void convertToJson(htopml::JsonState& json, const SimpleStackTracker& value)
 }
 
 /*******************  FUNCTION  *********************/
+/**
+ * Function usd to convert the tracker into the valgrind format.
+ * @param out Reference to the valgrind converter to fill it states with the
+ * tracked stacks.
+ * @param symbolResolber Reference to the symbolResolver to be used by the 
+ * valgrind converter.
+**/
 void SimpleStackTracker::fillValgrindOut(ValgrindOutput& out,SymbolSolver & symbolResolver) const
 {
 	for (SimpleBacktraceVectorMap::const_iterator itMap = callmaps.begin() ; itMap != callmaps.end() ; ++itMap)
@@ -124,8 +160,5 @@ void SimpleStackTracker::fillValgrindOut(ValgrindOutput& out,SymbolSolver & symb
 			out.pushStackInfo(**it,symbolResolver);
 	}
 }
-
-/*******************  FUNCTION  *********************/
-
 
 }

@@ -18,6 +18,9 @@ namespace MALT
 {
 
 /*********************  CLASS  **********************/
+/**
+ * @brief Class used to track the size of the stack of the current thread.
+**/
 class StackSizeTracker
 {
 	public:
@@ -32,10 +35,18 @@ class StackSizeTracker
 	private:
 		void loadMapping(void);
 	private:
+		/** Keep track of the stack size elements **/
 		Array<unsigned long> stack;
+		/** Current address of the stack pointer. **/
 		unsigned long cur;
+		/** 
+		 * Base address of the stack to be retained from the current address in
+		 * order to get the size.
+		**/
 		unsigned long base;
+		/** Real base address of the stack extracted from /proc/self/maps **/
 		unsigned long mapLower;
+		/** Real upper address of the stack extracted from /proc/self/maps **/
 		unsigned long mapUpper;
 };
 

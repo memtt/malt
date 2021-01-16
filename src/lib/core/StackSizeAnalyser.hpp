@@ -21,6 +21,10 @@
 namespace MALT
 {
 
+/*********************  CLASS  **********************/
+/**
+ * @brief Class used to track the stack size and keep the largest stack seen.
+**/
 class StackSizeAnalyser
 {
 	public:
@@ -46,6 +50,10 @@ class StackSizeAnalyser
 };
 
 /*******************  FUNCTION  *********************/
+/**
+ * Function to be used when we enter in function.
+ * @param funcAddr Function pointer to the function we enter in.
+**/
 inline void StackSizeAnalyser::onEnterFunc(void* funcAddr)
 {
 	//update current
@@ -68,6 +76,10 @@ inline void StackSizeAnalyser::onEnterFunc(void* funcAddr)
 }
 
 /*******************  FUNCTION  *********************/
+/**
+ * Function to be used when we exit from a function.
+ * @param funcAddr Function pointer to the function we exit.
+**/
 inline void StackSizeAnalyser::onExitFunc(void* funcAddr)
 {
 	//update current

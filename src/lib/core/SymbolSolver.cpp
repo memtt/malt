@@ -32,12 +32,18 @@ namespace MALT
 {
 
 /*******************  FUNCTION  *********************/
+/**
+ * Constructor of the symbol solver.
+**/
 SymbolSolver::SymbolSolver(void )
 {
 	strings.push_back("??");
 }
 
 /*******************  FUNCTION  *********************/
+/**
+ * Destructor of the symbol solver.
+**/
 SymbolSolver::~SymbolSolver(void )
 {
 	for (FuncNameDicMap::const_iterator it = nameMap.begin() ; it != nameMap.end() ; ++it)
@@ -45,6 +51,11 @@ SymbolSolver::~SymbolSolver(void )
 }
 
 /*******************  FUNCTION  *********************/
+/**
+ * Get the symbol name from the call site raw address.
+ * @param callsite Raw address of the call site.
+ * @return The symbol name.
+**/
 const char* SymbolSolver::getName(void* callSite)
 {
 	//errors
@@ -63,6 +74,10 @@ const char* SymbolSolver::getName(void* callSite)
 }
 
 /*******************  FUNCTION  *********************/
+/**
+ * Register a new raw address.
+ * @param callsite Raw address of the callsite to convert with detailed informations.
+**/
 void SymbolSolver::registerAddress(void* callSite)
 {
 	//check if present, if true, nothing to do
@@ -78,6 +93,10 @@ void SymbolSolver::registerAddress(void* callSite)
 }
 
 /*******************  FUNCTION  *********************/
+/**
+ * Setup a new entry in the call site map with symbols name.
+ * @param callsite Raw address of the call site we need to symbol name.
+**/
 const char* SymbolSolver::setupNewEntry(void* callSite)
 {
 	//errors
@@ -99,6 +118,12 @@ const char* SymbolSolver::setupNewEntry(void* callSite)
 }
 
 /*******************  FUNCTION  *********************/
+/**
+ * Dump the symbol solver into the output stream for debugging.
+ * @param out Reference to the output stream to use.
+ * @param dic Reference to the symbol solber to dump.
+ * @return Reference to the output stream after dump.
+**/
 std::ostream& operator<<(std::ostream& out, const SymbolSolver& dic)
 {
 	for (FuncNameDicMap::const_iterator it = dic.nameMap.begin() ; it != dic.nameMap.end() ; ++it)
@@ -107,6 +132,11 @@ std::ostream& operator<<(std::ostream& out, const SymbolSolver& dic)
 }
 
 /*******************  FUNCTION  *********************/
+/**
+ * Convert the symbol solver to json format.
+ * @param json Reference to the json state to make the conversion.
+ * @param value Reference to the symbol solver to convert.
+**/
 void convertToJson(htopml::JsonState& json, const SymbolSolver& value)
 {
 	json.openStruct();
@@ -121,6 +151,12 @@ void convertToJson(htopml::JsonState& json, const SymbolSolver& value)
 }
 
 /*******************  FUNCTION  *********************/
+/**
+ * Add a new entry for the given call site to the symbol name map.
+ * @param callsite Raw address of the call site.
+ * @param name Default symbol name to register if it is a new entry.
+ * @return Symbol name as a C string.
+**/
 const char* SymbolSolver::setupNewEntry(void* callSite, const std::string& name)
 {
 	//search in map
@@ -138,12 +174,19 @@ const char* SymbolSolver::setupNewEntry(void* callSite, const std::string& name)
 }
 
 /*******************  FUNCTION  *********************/
+/**
+ * Check is the /proc/self/maps has been loaded of not.
+ * @return True if loaded, false otherwise.
+**/
 bool SymbolSolver::procMapIsLoaded(void) const
 {
 	return (procMap.empty() == false);
 }
 
 /*******************  FUNCTION  *********************/
+/**
+ * Load the /proc/self/maps entry.
+**/
 void SymbolSolver::loadProcMap(void)
 {
 	//errors
@@ -257,6 +300,9 @@ size_t SymbolSolver::extractElfVaddr(const std::string & obj) const
 }
 
 /*******************  FUNCTION  *********************/
+/**
+ * Test is ASLR is enabled to know how to resolve symbols.
+**/
 bool SymbolSolver::hasASLREnabled(void) const
 {
 	std::string tmp = OS::loadTextFile("/proc/sys/kernel/randomize_va_space");
@@ -264,6 +310,11 @@ bool SymbolSolver::hasASLREnabled(void) const
 }
 
 /*******************  FUNCTION  *********************/
+/**
+ * Convert the proc map entry to json format.
+ * @param json Reference to the json state to make the conversion.
+ * @param value Reference to the proc map entry object to convert.
+**/
 void convertToJson(htopml::JsonState& json, const LinuxProcMapEntry& value)
 {
 	json.openStruct();
@@ -275,6 +326,11 @@ void convertToJson(htopml::JsonState& json, const LinuxProcMapEntry& value)
 }
 
 /*******************  FUNCTION  *********************/
+/**
+ * Constructor of the call site. It sets default line/function/file values to
+ * unknown.
+ * @param mapEntry Pointer to the related /proc/self/maps entry.
+**/
 CallSite::CallSite(LinuxProcMapEntry* mapEntry)
 {
 	this->mapEntry = mapEntry;
@@ -284,6 +340,11 @@ CallSite::CallSite(LinuxProcMapEntry* mapEntry)
 }
 
 /*******************  FUNCTION  *********************/
+/**
+ * Get the linux proc map entry from the call site raw address.
+ * @param callsite Raw address of the call site.
+ * @return Return a pointer to the struct representing the /proc/self/maps entry. NULL if not found.
+**/
 LinuxProcMapEntry* SymbolSolver::getMapEntry(void* callSite)
 {
 	//search in map by checking intervals
@@ -298,6 +359,10 @@ LinuxProcMapEntry* SymbolSolver::getMapEntry(void* callSite)
 }
 
 /*******************  FUNCTION  *********************/
+/**
+ * Solve de symbols which have been registered by registerAddress().
+ * Symbols are soved with the addr2line tool.
+**/
 void SymbolSolver::solveNames(void)
 {
 	//first try with maqao infos
@@ -326,6 +391,10 @@ void SymbolSolver::solveNames(void)
 }
 
 /*******************  FUNCTION  *********************/
+/**
+ * Solve de symbols which have been registered by registerAddress().
+ * Symbols are solved via maqao.
+**/
 void SymbolSolver::solveMaqaoNames(void)
 {
 	for (CallSiteMap::iterator it = callSiteMap.begin() ; it != callSiteMap.end() ; ++it)
@@ -342,13 +411,17 @@ void SymbolSolver::solveMaqaoNames(void)
 }
 
 /*******************  FUNCTION  *********************/
-/*
+/* 
  * Some links :
  * man proc & man addr2line
  * http://stackoverflow.com/a/7557756/257568
  * ​http://libglim.googlecode.com/svn/trunk/exception.hpp
  * ​http://stackoverflow.com/questions/10452847/backtrace-function-inside-shared-libraries 
 */
+/**
+ * Solve the symbol names using addr2line for the given /proc/self/maps entry.
+ * @param procMapEntry Pointer to the proc map entry to be solved.
+**/
 void SymbolSolver::solveNames(LinuxProcMapEntry * procMapEntry)
 {
 	//prepare command
@@ -465,6 +538,12 @@ void SymbolSolver::solveNames(LinuxProcMapEntry * procMapEntry)
 }
 
 /*******************  FUNCTION  *********************/
+/**
+ * Return the string ID of the given value. If not already registered it register it
+ * and assign an ID.
+ * @param value The C string for which we want the string ID.
+ * @return The string ID.
+**/
 int SymbolSolver::getString(const char * value)
 {
 	int id = 0;
@@ -481,6 +560,13 @@ int SymbolSolver::getString(const char * value)
 }
 
 /*******************  FUNCTION  *********************/
+/**
+ * Register the maqao symbol.
+ * @param funcId Function ID from maqao.
+ * @param funcName The function name.
+ * @param file The file of the call ste..
+ * @param line Line of the call site.
+**/
 void SymbolSolver::registerMaqaoFunctionSymbol(int funcId, const char* funcName, const char* file, int line)
 {
 	MaqaoSite & site = maqaoSites[(void*)(size_t)funcId];
@@ -491,6 +577,11 @@ void SymbolSolver::registerMaqaoFunctionSymbol(int funcId, const char* funcName,
 }
 
 /*******************  FUNCTION  *********************/
+/**
+ * Convert a call site to json format.
+ * @param json Reference to the json state to make the conversion
+ * @param value Reference to the call site to convert.
+**/
 void convertToJson(htopml::JsonState& json, const CallSite& value)
 {
 	if (value.mapEntry != NULL || value.line != 0 || value.function != -1 || value.file != -1)
@@ -509,6 +600,11 @@ void convertToJson(htopml::JsonState& json, const CallSite& value)
 }
 
 /*******************  FUNCTION  *********************/
+/**
+ * Get the call site infos from the site raw address.
+ * @param site The raw address of the symbol to solve.
+ * @return Pointer to the call site.
+**/
 const CallSite* SymbolSolver::getCallSiteInfo(void* site) const
 {
 	CallSiteMap::const_iterator it = callSiteMap.find(site);
@@ -519,6 +615,11 @@ const CallSite* SymbolSolver::getCallSiteInfo(void* site) const
 }
 
 /*******************  FUNCTION  *********************/
+/**
+ * Return the string from its ID.
+ * @param id Define the ID of the string we want.
+ * @return The string matching the given ID.
+**/
 const std::string& SymbolSolver::getString(int id) const
 {
 	assert((size_t)id < strings.size());
@@ -556,6 +657,11 @@ void SymbolSolver::solveMissings(void)
 }
 
 /*******************  FUNCTION  *********************/
+/**
+ * Extract the symbol name from the backtrace_symbols().
+ * @param value Value returned by backtrace_symbols()
+ * @return The symbol name.
+**/
 char * SymbolSolver::extractSymbolName(char* value)
 {
 	//Vars
@@ -600,6 +706,12 @@ char * SymbolSolver::extractSymbolName(char* value)
 }
 
 /*******************  FUNCTION  *********************/
+/**
+ * Check if it is the same function.
+ * @param s1 Pointer to the call site.
+ * @param s2 Raw address of the call site.
+ * @return True if the resolved symbol match.
+**/
 bool SymbolSolver::isSameFuntion(const CallSite* s1, void* s2) const
 {
 	if (s1 == NULL || s2 == NULL)

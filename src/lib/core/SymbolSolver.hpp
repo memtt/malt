@@ -28,12 +28,6 @@
 /** Define a function dictionnary to store addresses and related symboles. **/
 typedef std::map<void *,const char*> FuncNameDicMap;
 
-/*********************  TYPES  **********************/
-namespace htopml
-{
-	class JsonState;
-}
-
 /*******************  NAMESPACE  ********************/
 namespace MALT
 {
@@ -46,25 +40,43 @@ namespace MALT
 struct CallSite
 {
 	CallSite(LinuxProcMapEntry * mapEntry = NULL);
+	/** Define the line of the call site. **/
 	int line;
+	/** Define the file ID (pointing the string) of the call site. **/
 	int file;
+	/** Define the function ID (pointing the string) of the call site. **/
 	int function;
+	/** Pointer to the proc map entry related to the call site. **/
 	LinuxProcMapEntry * mapEntry;
 };
 
 /********************  STRUCT  **********************/
+/**
+ * Define a call site from the MAQAO view point.
+**/
 struct MaqaoSite
 {
+	/** File of the call site as string. **/
 	const char * file;
+	/** Function name of the call site as string. **/
 	const char * function;
+	/** Line of the call site. **/
 	int line;
 };
 
 /*********************  TYPES  **********************/
+/** Map to join a raw address to a callsite description **/
 typedef std::map<void*,CallSite> CallSiteMap;
+/** Map to join a raw address to a mapqao call site. It uses the internal allocator as used while running. **/
 typedef std::map<void*,MaqaoSite,std::less<void*>,STLInternalAllocator<std::pair<void*,MaqaoSite> > > MaqaoSiteMap;
 
 /*********************  CLASS  **********************/
+/**
+ * This class is used to solve the symbols at the end of the execution before
+ * dumping the profile file.
+ * 
+ * @brief Class to solve symboles.
+**/
 class SymbolSolver
 {
 	public:
@@ -94,10 +106,15 @@ class SymbolSolver
 		size_t extractElfVaddr(const std::string & obj) const;
 		bool hasASLREnabled(void) const;
 	private:
+		/** Dictionnary of symbols. **/
 		FuncNameDicMap nameMap;
+		/** Linux proc map extraction. **/
 		LinuxProcMap procMap;
+		/** Call site map to join raw addresses to call site infos. **/
 		CallSiteMap callSiteMap;
+		/** Dictionnary of strings (function names and file paths). **/
 		std::vector<std::string> strings;
+		/** Maqo call site map. **/
 		MaqaoSiteMap maqaoSites;
 };
 
@@ -106,6 +123,11 @@ void convertToJson(htopml::JsonState & state,const LinuxProcMapEntry & entry);
 void convertToJson(htopml::JsonState & state,const CallSite & entry);
 
 /*******************  FUNCTION  *********************/
+/**
+ * Convert a map to json file.
+ * @param json Reference to the json state to make conversion.
+ * @param iterable Reference to the map to dump.
+**/
 template <class T> void convertToJson(htopml::JsonState & json, const std::map<void*,T> & iterable)
 {
 	json.openStruct();
