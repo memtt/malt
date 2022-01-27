@@ -126,6 +126,15 @@ void CallStackInfo::updatePeak(size_t peakId)
 
 /*******************  FUNCTION  *********************/
 /**
+ * Return the memory consumption at peak time.
+**/
+size_t CallStackInfo::getPeak(void) const
+{
+	return this->peak;
+}
+
+/*******************  FUNCTION  *********************/
+/**
  * Register a free event on the call stack info object.
  * @param value Define the size of the chunk we allocate.
  * @param peakId Define the ID of the last global peak seen by the caller. If larger
@@ -280,21 +289,21 @@ void CallStackInfo::writeAsCallgrindEntry(int line, std::ostream& out) const
 }
 
 /*******************  FUNCTION  *********************/
-const SimpleQuantityHistory* CallStackInfo::getAllocInfo ( void ) const
+const SimpleQuantityHistory & CallStackInfo::getAllocInfo ( void ) const
 {
-	return &this->alloc;
+	return this->alloc;
 }
 
 /*******************  FUNCTION  *********************/
-const SimpleQuantityHistory* CallStackInfo::getFreeInfo ( void ) const
+const SimpleQuantityHistory & CallStackInfo::getFreeInfo ( void ) const
 {
-	return &this->free;
+	return this->free;
 }
 
 /*******************  FUNCTION  *********************/
-const SimpleQuantityHistory* CallStackInfo::getLifetime ( void ) const
+const SimpleQuantityHistory & CallStackInfo::getLifetime ( void ) const
 {
-	return &this->lifetime;
+	return this->lifetime;
 }
 
 /*******************  FUNCTION  *********************/

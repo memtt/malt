@@ -74,9 +74,10 @@ struct CallStackInfo
 		static void writeCallgrindEventDef(std::ostream & out);
 		void updatePeak(size_t peakId);
 		bool hasRealloc(void) const;
-		const SimpleQuantityHistory * getAllocInfo(void) const;
-		const SimpleQuantityHistory * getFreeInfo(void) const;
-		const SimpleQuantityHistory * getLifetime(void) const;
+		const SimpleQuantityHistory & getAllocInfo(void) const;
+		const SimpleQuantityHistory & getFreeInfo(void) const;
+		const SimpleQuantityHistory & getLifetime(void) const;
+		size_t getPeak(void) const;
 	public:
 		friend void convertToJson(htopml::JsonState& json, const CallStackInfo& value);
 		friend std::ostream & operator << (std::ostream & out,const CallStackInfo & info);

@@ -54,20 +54,19 @@ void convertToV2Tree ( MALTV2::RLockFreeTree& tree, StackSTLHashMap< CallStackIn
 		}
 		
 		//copy malloc info if need
-		const SimpleQuantityHistory * tmp;
-		tmp = it->second.getAllocInfo();
-		if (tmp->count > 0)
-			tree.getTypedData<SimpleQuantityHistoryPtr>(dataHandler,INFO_ALLOC).ptr = tmp;
+		const SimpleQuantityHistory & allocInfos = it->second.getAllocInfo();
+		if (allocInfos.count > 0)
+			tree.getTypedData<SimpleQuantityHistoryPtr>(dataHandler,INFO_ALLOC).ptr = &allocInfos;
 		
 		//copy free info if need
-		tmp = it->second.getFreeInfo();
-		if (tmp->count > 0)
-			tree.getTypedData<SimpleQuantityHistoryPtr>(dataHandler,INFO_FREE).ptr = tmp;
+		const SimpleQuantityHistory & freeInfo = it->second.getFreeInfo();
+		if (freeInfo.count > 0)
+			tree.getTypedData<SimpleQuantityHistoryPtr>(dataHandler,INFO_FREE).ptr = &freeInfo;
 		
 		//copy lifetime info if need
-		tmp = it->second.getLifetime();
-		if (tmp->count > 0)
-			tree.getTypedData<SimpleQuantityHistoryPtr>(dataHandler,INFO_LIFETIME).ptr = tmp;
+		const SimpleQuantityHistory & lifeInfos = it->second.getLifetime();
+		if (lifeInfos.count > 0)
+			tree.getTypedData<SimpleQuantityHistoryPtr>(dataHandler,INFO_LIFETIME).ptr = &lifeInfos;
 		
 		//remove it to free memory
 		orig.remove(it);

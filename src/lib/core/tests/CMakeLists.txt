@@ -12,7 +12,12 @@ include_directories(${GTEST_INCLUDE_DIRS} ${GMOCK_INCLUDE_DIRS})
 include_directories(../)
 
 #####################################################
-set(TEST_NAMES TestVmaTracker TestSegmentTracker TestSymbolSolver TestAllocTraceFile)
+set(TEST_NAMES TestVmaTracker 
+               TestSegmentTracker
+               TestSymbolSolver
+               TestAllocTraceFile
+               TestCallStackInfo
+)
 
 #####################################################
 add_library(TestSymbolSolverLib SHARED TestSymbolSolverLib.cpp)
