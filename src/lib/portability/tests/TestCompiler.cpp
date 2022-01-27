@@ -18,7 +18,6 @@
 using namespace MALT;
 using namespace testing;
 
-
 /*******************  FUNCTION  *********************/
 extern "C" {
 	int notMangledCFunction(bool p1, int p2)

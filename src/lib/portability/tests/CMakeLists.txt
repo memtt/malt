@@ -15,7 +15,7 @@ include_directories(../)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g")
 
 #####################################################
-set(TEST_NAMES TestOS TestCompiler)
+set(TEST_NAMES TestOS TestCompiler TestProcMapReader)
 
 #####################################################
 FOREACH(test_name ${TEST_NAMES})
