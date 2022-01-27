@@ -44,6 +44,14 @@ if (COMMAND set_up_hermetic_build)
   set_up_hermetic_build()
 endif()
 
+######################################################
+# disable one warning on new gcc to avoid somes from 1.7.0 version of google mock.
+include(CheckCXXCompilerFlag)
+check_cxx_compiler_flag(-Wno-deprecated-copy HAS_NO_DEPRECATED_COPY)
+if (HAS_NO_DEPRECATED_COPY)
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-deprecated-copy")
+endif (HAS_NO_DEPRECATED_COPY)
+
 # Instructs CMake to process Google Test's CMakeLists.txt and add its
 # targets to the current scope.  We are placing Google Test's binary
 # directory in a subdirectory of our own as VC compilation may break
