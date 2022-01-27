@@ -27,7 +27,8 @@ AllocTraceFile::AllocTraceFile(const std::string& file,size_t bufferSize)
 {
 	this->bufferSize = bufferSize;
 	this->buffer = new AllocTracerChunk[bufferSize];
-	
+	this->pos = 0;
+	this->fp = NULL;
 	if ( ! file.empty() )
 		this->open(file);
 }
