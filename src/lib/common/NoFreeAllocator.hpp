@@ -64,7 +64,7 @@ struct NoFreeAllocatorSegment
 class NoFreeAllocator
 {
 	public:
-		void init(bool threadsafe = true);
+		void init(bool threadsafe = true, bool useInitSegment = false);
 		void * allocate(size_t size);
 		size_t getTotalMemory(void);
 		size_t getUnusedMemory(void);

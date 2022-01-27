@@ -18,6 +18,7 @@
 
 /***************** USING NAMESPACE ******************/
 using namespace std;
+using namespace MALT;
 
 /*******************  NAMESPACE  ********************/
 namespace MALTV2
@@ -50,7 +51,7 @@ void doNoFreeAllocatorInit ( void )
  * approach we explicitly call the init function when the first MATT hook is used.
  * @param threadsafe Enable internal locking to be thread safe.
 **/
-void NoFreeAllocator::init( bool threadsafe )
+void NoFreeAllocator::init( bool threadsafe, bool useInitSegment )
 {
 	//defaut state
 	this->cur = NULL;
@@ -59,7 +60,7 @@ void NoFreeAllocator::init( bool threadsafe )
 	this->threadsafe = true;
 	
 	//setup default memory
-	this->setupNewSegment(true);
+	this->setupNewSegment(useInitSegment);
 }
 
 /*******************  FUNCTION  *********************/
@@ -180,9 +181,9 @@ void NoFreeAllocator::printState(std::ostream & out) const
 {
 	out << "=============================================================== MATT MEMORY =====================================================================" << endl;
 	out << "Internal memory : allocated = ";
-	out << "TODO" << endl;//Helpers::printValue(out,totalMem,"o");
+	Helpers::printValue(out,totalMem,"B");
 	out << " , unused = ";
-	out << "TODO" << endl;//Helpers::printValue(out,totalMem - inUseMem,"o");
+	Helpers::printValue(out,totalMem - inUseMem,"B");
 	out << endl;
 	out << "=================================================================================================================================================" << endl;
 }

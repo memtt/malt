@@ -19,6 +19,7 @@ set(TEST_NAMES TestArray
                TestFormattedMessage
                TestCodeTiming
                TestDebug
+               TestNoFreeAllocator
    )
 
 ######################################################
