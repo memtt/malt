@@ -46,7 +46,7 @@ void CodeTiming::registerTimer(CodeTiming* timer)
 {
 	assert(timer != NULL);
 	if (globalStart == 0)
-		globalStart = getticks();
+		globalStart = mockableGetTicks();
 	assert((size_t)globalCntTimers < sizeof(globalTimers)/sizeof(globalTimers[0]));
 	globalTimers[globalCntTimers++] = timer;
 }
@@ -86,19 +86,28 @@ int CodeTiming::compare(const void* a, const void* b)
 /**
  * Static function to print final restults of all registered timers. This function
  * will order the results on asc order based on the total cost (sum).
- * It will print on std::cerr.
+ * It will print on std::out.
 **/
-void CodeTiming::printAll(void)
+void CodeTiming::printAll(std::ostream & out, bool force)
 {
+	//set default
+	bool doIt = force;
+
+	//force if enabled at compile time
 	#ifdef MALT_ENABLE_CODE_TIMING
-		cerr << "=============================================================== MALT TIMINGS ====================================================================" << endl;
+		doIt = true;
+	#endif
+
+	//apply
+	if (doIt) {
+		out << "=============================================================== MALT TIMINGS ====================================================================" << endl;
 		qsort(globalTimers,globalCntTimers,sizeof(globalTimers[0]),CodeTiming::compare);
 		for (int i = 0 ; i < globalCntTimers ; i++)
 		{	
-			globalTimers[i]->finalPrint();
+			globalTimers[i]->finalPrint(out, force);
 		}
-		cerr << "=================================================================================================================================================" << endl;
-	#endif
+		out << "=================================================================================================================================================" << endl;
+	}
 }
 
 /*******************  FUNCTION  *********************/
@@ -107,16 +116,20 @@ void CodeTiming::printAll(void)
  * into global registry.
  * @param name Define the name of the current timer.
 **/
-CodeTiming::CodeTiming(const char* name)
+CodeTiming::CodeTiming(const char* name, bool registerToGlob)
 {
 	this->name = name;
 	this->count = 0;
 	this->max = 0;
 	this->min = 0;
 	this->sum = 0;
-	#ifdef MALT_ENABLE_CODE_TIMING
+	if (registerToGlob) {
 		registerTimer(this);
-	#endif
+	} else {
+		#ifdef MALT_ENABLE_CODE_TIMING
+			registerTimer(this);
+		#endif
+	}
 }
 
 /*******************  FUNCTION  *********************/
@@ -131,23 +144,32 @@ CodeTiming::~CodeTiming(void)
 }
 
 /*******************  FUNCTION  *********************/
-void CodeTiming::finalPrint(void) const
+void CodeTiming::finalPrint(std::ostream & out, bool force) const
 {
+	//force for unit tests
+	bool doIt = force;
+
+	//enable really
 	#ifdef MALT_ENABLE_CODE_TIMING
-		ticks wholeExec = getticks() - globalStart;
-		double ratio = (double)(100*sum) / (double)wholeExec;
-		cerr << "TIMING OF " << std::setw(32) << std::left << this->name << " => [ ";
-		Helpers::printValue(cerr,min);
-		cerr << " , ";
-		Helpers::printValue(cerr,(double)sum / (double)count);
-		cerr << " , ";
-		Helpers::printValue(cerr,max);
-		cerr << " ] => TOTAL ( calls : ";
-		Helpers::printValue(cerr,count);
-		cerr << " , time : ";
-		Helpers::printValue(cerr,sum);
-		cerr << " , " << "ratio : ~ " << std::setprecision( 2 ) << setw(8) << std::left << ratio << "% )" << endl;
+		doIt = true;
 	#endif
+
+	//apply
+	if (doIt) {
+		ticks wholeExec = mockableGetTicks() - globalStart;
+		double ratio = (double)(100*sum) / (double)wholeExec;
+		out << "TIMING OF " << std::setw(32) << std::left << this->name << " => [ ";
+		Helpers::printValue(out,min);
+		out << " , ";
+		Helpers::printValue(out,(double)sum / (double)count);
+		out << " , ";
+		Helpers::printValue(out,max);
+		out << " ] => TOTAL ( calls : ";
+		Helpers::printValue(out,count);
+		out << " , time : ";
+		Helpers::printValue(out,sum);
+		out << " , " << "ratio : ~ " << std::setprecision( 2 ) << setw(8) << std::left << ratio << "% )" << endl;
+	}
 }
 
 /*******************  FUNCTION  *********************/
@@ -155,10 +177,14 @@ void CodeTiming::finalPrint(void) const
  * @return Return the number of ticks per seconds on the current CPU.
  * The measurement is done by mixing informations from getticks and gettimeofday.
 **/
-ticks ticksPerSecond(void)
+ticks ticksPerSecond(ticks forceValue)
 {
 	//remember the value to not measure it every time
 	static ticks alreadyMeasured = 0;
+
+	//force
+	if (forceValue != 0)
+		alreadyMeasured = forceValue;
 	
 	//measure if required
 	if (alreadyMeasured == 0)
@@ -168,7 +194,7 @@ ticks ticksPerSecond(void)
 		ticks t0,t1;
 		gettimeofday(&ts0,NULL);
 		t0 = getticks();
-// 		sleep(1);
+ 		usleep(1000);
 		t1 = getticks();
 		gettimeofday(&ts1,NULL);
 		
@@ -180,6 +206,16 @@ ticks ticksPerSecond(void)
 	
 	//final return
 	return alreadyMeasured;
+}
+
+/*******************  FUNCTION  *********************/
+/**
+ * Provide a non inlined getticks function to be mockable for
+ * unit tests.
+**/
+ticks mockableGetTicks(void)
+{
+	return getticks();
 }
 
 }

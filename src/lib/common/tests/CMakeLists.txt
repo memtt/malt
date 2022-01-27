@@ -17,6 +17,7 @@ set(TEST_NAMES TestArray
                TestSimpleAllocator
                TestSTLInternalAllocator
                TestFormattedMessage
+               TestCodeTiming
    )
 
 ######################################################

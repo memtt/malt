@@ -13,6 +13,8 @@
 //standards
 #include <string>
 #include <cstdlib>
+#include <ostream>
+#include <iostream>
 //from fftw (copied into extern-deps)
 #include <cycle.h>
 //internal
@@ -89,13 +91,13 @@ void yourFun(void)
 class CodeTiming
 {
 	public:
-		CodeTiming(const char * name);
+		CodeTiming(const char * name, bool registerToGlob = false);
 		~CodeTiming(void);
 		ticks start(void);
-		void end(ticks value);
-		void finalPrint(void) const;
+		void end(ticks start, ticks end = 0);
+		void finalPrint(std::ostream & out = std::cerr, bool force = false) const;
 		const char * getName(void) const {return name;};
-		static void printAll(void);
+		static void printAll(std::ostream & out = std::cerr, bool force = false);
 	private:
 		static int compare(const void * a,const void * b);
 		static void registerTimer(CodeTiming * timer);
@@ -134,12 +136,20 @@ inline ticks CodeTiming::start(void)
 
 /*******************  FUNCTION  *********************/
 /** End measurement of the current call to your code. **/
-inline void CodeTiming::end(ticks start)
+inline void CodeTiming::end(ticks start, ticks end)
 {
+	bool doIt = false;
+	if (end > 0)
+		doIt = true;
 	#ifdef MALT_ENABLE_CODE_TIMING
+		doIt = true;
+	#endif
+	if (doIt) {
 		//get time
-		ticks t =getticks() - start;
-		
+		if (end == 0)
+			end = getticks();
+		ticks t = end - start;
+
 		//update min/max
 		if (count == 0)
 		{
@@ -152,11 +162,12 @@ inline void CodeTiming::end(ticks start)
 		//update global sums
 		count++;
 		sum += t;
-	#endif
+	}
 }
 
 /*******************  FUNCTION  *********************/
-ticks ticksPerSecond(void);
+ticks ticksPerSecond(ticks forceValue = 0);
+ticks mockableGetTicks(void);
 
 }
 
