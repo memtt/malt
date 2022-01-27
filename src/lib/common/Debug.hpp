@@ -10,6 +10,7 @@
 #define ATT_DEBUG_HPP
 
 /********************  HEADERS  *********************/
+#include <ostream>
 #include "FormattedMessage.hpp"
 
 /*******************  NAMESPACE  ********************/
@@ -55,7 +56,12 @@ class Debug : public FormattedMessage
 		Debug(const char * format,const char * file,int line,DebugLevel level = MESSAGE_DEBUG);
 		Debug(const char * format,DebugLevel level = MESSAGE_DEBUG);
 		virtual ~Debug(void);
+		virtual void end(std::ostream & cout, std::ostream & cerr);
 		virtual void end(void);
+		Debug & enableFakeAbort(void);
+		bool aborted(void) const;
+	protected:
+		void abort();
 	protected:
 		/** Store the message level for end() method. **/
 		DebugLevel level;
@@ -65,6 +71,8 @@ class Debug : public FormattedMessage
 		int line;
 		/** To check is message is emitted at exit (only for debug purpose). **/
 		bool emitted;
+		/** to skip abort in unit tests. **/
+		bool fakeAbort;
 };
 
 /*********************  CLASS  **********************/
@@ -91,6 +99,7 @@ class DebugDummy
 		std::string toString(void) const {return "";}
 		void toStream(std::ostream & out) const {}
 		void end(void){}
+		DebugDummy & enableFakeAbort(void){return *this;}
 };
 
 /********************  MACROS  **********************/
@@ -111,7 +120,7 @@ inline Debug fatal(const char * format)   {return Debug(format,MESSAGE_FATAL);  
 
 /********************  MACROS  **********************/
 #define MALT_FATAL(x)   MALT_FATAL_ARG(x).end()
-#define MALT_DEBUG(x)   MALT_DEBUG_ARG(x).end()
+#define MALT_DEBUG(cat, x)   MALT_DEBUG_ARG(cat, x).end()
 #define MALT_ERROR(x)   MALT_ERROR_ARG(x).end()
 #define MALT_WARNING(x) MALT_WARNING_ARG(x).end()
 #define MALT_MESSAGE(x) MALT_MESSAGE_ARG(x).end()
@@ -126,7 +135,7 @@ inline Debug fatal(const char * format)   {return Debug(format,MESSAGE_FATAL);  
 #ifdef NDEBUG
 	#define MALT_DEBUG_ARG(cat,x) MALT::DebugDummy(x,MALT_CODE_LOCATION,MALT::MESSAGE_DEBUG,cat)
 #else
-	#define MALT_DEBUG_ARG(cat,x) MALT::Debug(x,MALT_CODE_LOCATION,MALT::MESSAGE_DEBUG,cat)
+	#define MALT_DEBUG_ARG(cat,x) MALT::Debug(x,MALT_CODE_LOCATION,MALT::MESSAGE_DEBUG)
 #endif
 
 /********************  MACROS  **********************/

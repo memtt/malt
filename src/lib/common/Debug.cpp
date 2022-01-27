@@ -46,6 +46,7 @@ Debug::Debug(const char* format, const char* file, int line, MALT::DebugLevel le
 	this->line = line;
 	this->level = level;
 	this->emitted = false;
+	this->fakeAbort = false;
 }
 
 /*******************  FUNCTION  *********************/
@@ -58,13 +59,42 @@ Debug::Debug(const char* format, DebugLevel level)
 	this->file = "??";
 	this->line = 0;
 	this->emitted = false;
+	this->level = level;
+}
+
+/*******************  FUNCTION  *********************/
+void Debug::abort(void)
+{
+	if (this->fakeAbort)
+		this->fakeAbort = false;
+	else
+		::abort();
+}
+
+/*******************  FUNCTION  *********************/
+Debug & Debug::enableFakeAbort(void)
+{
+	this->fakeAbort = true;
+	return *this;
+}
+
+/*******************  FUNCTION  *********************/
+bool Debug::aborted(void) const
+{
+	return this->fakeAbort == false;
+}
+
+/*******************  FUNCTION  *********************/
+void Debug::end(void)
+{
+	this->end(std::cout, std::cerr);
 }
 
 /*******************  FUNCTION  *********************/
 /**
  * Emit the message.
 **/
-void Debug::end(void)
+void Debug::end(std::ostream & out, std::ostream & err)
 {
 	this->emitted = true;
 	switch(level)
@@ -76,17 +106,18 @@ void Debug::end(void)
 		case MESSAGE_INFO:
 		case MESSAGE_NORMAL:
 			if (line != 0)
-				std::cout << std::endl << cstLevelPrefix[level] << "At " <<  file << ':' << line << " : \n";
-			std::cout << cstLevelPrefix[level] << *this << std::endl;
+				out << std::endl << cstLevelPrefix[level] << "At " <<  file << ':' << line << " : \n";
+			out << cstLevelPrefix[level] << *this << std::endl;
 			break;
 		case MESSAGE_ASSERT:
 			#ifdef NDEBUG
 				break;
 			#else
 				if (line != 0)
-					std::cout << std::endl << cstLevelPrefix[level] << "At " <<  file << ':' << line << " : \n";
-				std::cout << cstLevelPrefix[level] << *this << std::endl;
-				abort();
+					err << std::endl << cstLevelPrefix[level] << "At " <<  file << ':' << line << " : \n";
+				err << cstLevelPrefix[level] << *this << std::endl;
+				this->abort();
+				break;
 			#endif
 		case MESSAGE_WARNING:
 			if (gblOptions != NULL)
@@ -94,14 +125,14 @@ void Debug::end(void)
 					break;
 		case MESSAGE_ERROR:
 			if (line != 0)
-				std::cerr << std::endl << cstLevelPrefix[level] << "At " <<  file << ':' << line << " : \n";
-			std::cerr << cstLevelPrefix[level] << *this << std::endl;
+				err << std::endl << cstLevelPrefix[level] << "At " <<  file << ':' << line << " : \n";
+			err << cstLevelPrefix[level] << *this << std::endl;
 			break;
 		case MESSAGE_FATAL:
 			if (line != 0)
-				std::cerr << std::endl << cstLevelPrefix[level] << "At " <<  file << ':' << line << " : \n";
-			std::cerr << cstLevelPrefix[level] << *this << std::endl;
-			abort();
+				err << std::endl << cstLevelPrefix[level] << "At " <<  file << ':' << line << " : \n";
+			err << cstLevelPrefix[level] << *this << std::endl;
+			this->abort();
 			break;
 	}
 }
