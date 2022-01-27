@@ -34,7 +34,7 @@ set(LIBUNWIND_INCLUDE_DIRS ${LIBUNWIND_INCLUDE_DIR} )
 include(FindPackageHandleStandardArgs)
 # handle the QUIETLY and REQUIRED arguments and set LIBUNWIND_FOUND to TRUE
 # if all listed variables are TRUE
-find_package_handle_standard_args(libunwind  DEFAULT_MSG
+find_package_handle_standard_args(Libunwind  DEFAULT_MSG
 	LIBUNWIND_LIBRARY LIBUNWIND_INCLUDE_DIR)
 
 ######################################################
