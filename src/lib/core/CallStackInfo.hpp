@@ -48,6 +48,11 @@ struct SimpleQuantityHistory
 	ssize_t sum;
 };
 
+/*********************  STRUCT  *********************/
+//pre-declaration to avoid head loop inclusion
+struct CallStackInfoGlobals;
+struct CallStackInfoRealloc;
+
 /*********************  CLASS  **********************/
 /**
  * @brief Structure to define the informations we tracked for each call site.
@@ -75,8 +80,8 @@ struct CallStackInfo
 	public:
 		friend void convertToJson(htopml::JsonState& json, const CallStackInfo& value);
 		friend std::ostream & operator << (std::ostream & out,const CallStackInfo & info);
-		friend void convert(class CallStackInfoGlobals & out,const CallStackInfo & in);
-		friend void convert(class CallStackInfoRealloc & out,const CallStackInfo & in);
+		friend void convert(CallStackInfoGlobals & out,const CallStackInfo & in);
+		friend void convert(CallStackInfoRealloc & out,const CallStackInfo & in);
 	private:
 		/** Track the min/max/sum/count of each memory allocation sizes. **/
 		SimpleQuantityHistory alloc;

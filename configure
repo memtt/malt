@@ -552,7 +552,7 @@ cfg_parse_global_args()
 				ENABLE_DISPLAY_COMMAND='true'
 				;;
 			CC=*)
-				EXTRA_CC="${val}"
+				CFG_EXTRA_CC="${val}"
 				;;
 			CXX=*)
 				CFG_EXTRA_CXX="${val}"

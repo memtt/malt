@@ -19,6 +19,7 @@
 /********************  MACRO  ***********************/
 #define BUFFER_SIZE 1024
 #define PAGE_SIZE 4096
+#define MALT_UNUSED(x) ((void)(x))
 
 /*******************  NAMESPACE  ********************/
 namespace MALT
@@ -81,6 +82,7 @@ size_t ProcPageMapReader::internalGetPhysicalSize ( void* ptr, size_t size )
 	ProcPageMapEntry entries[BUFFER_SIZE];
 	size_t tmp = read(fd,entries,sizeof(ProcPageMapEntry) * pages);
 	MALT_ASSERT(tmp == sizeof(ProcPageMapEntry) * pages);
+	MALT_UNUSED(tmp);
 	
 	//count physical
 	size_t ret = 0;

@@ -205,11 +205,14 @@ int Array<T>::getBufferSize(void) const
 template <class T>
 T& Array<T>::operator[](int id)
 {
-	assert(id >= 0 && id < activSize);
-	if (id >= 0 && id < activSize)
-		return buffer[id];
-	else
-		return *(T*)NULL;
+	//checks
+	assumeArg(id >= 0 && id < activSize, "Invalid index (%1) to access an array of size %2 !")
+		.arg(id)
+		.arg(activSize)
+		.end();
+	
+	//ok
+	return buffer[id];
 }
 
 /*******************  FUNCTION  *********************/
@@ -221,11 +224,14 @@ T& Array<T>::operator[](int id)
 template <class T>
 const T& Array<T>::operator[](int id) const
 {
-	assert(id >= 0 && id < activSize);
-	if (id >= 0 && id < activSize)
-		return buffer[id];
-	else
-		return *(T*)NULL;
+	//checks
+	assumeArg(id >= 0 && id < activSize, "Invalid index (%1) to access an array of size %2 !")
+		.arg(id)
+		.arg(activSize)
+		.end();
+
+	//ok can return
+	return buffer[id];
 }
 
 /*******************  FUNCTION  *********************/
