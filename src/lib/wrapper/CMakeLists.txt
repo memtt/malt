@@ -24,3 +24,8 @@ SET_TARGET_PROPERTIES(malt-fake-controler PROPERTIES COMPILE_FLAGS -fPIC)
 ######################################################
 INSTALL(FILES malt.h
 	DESTINATION include/malt)
+
+######################################################
+if (ENABLE_TESTS)
+	add_subdirectory(tests)
+endif (ENABLE_TESTS)
