@@ -15,7 +15,10 @@ include_directories(../)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g")
 
 #####################################################
-set(TEST_NAMES TestOS TestCompiler TestProcMapReader)
+add_definitions(-DCURRENT_SOURCE_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}\")
+
+#####################################################
+set(TEST_NAMES TestOS TestCompiler TestProcMapReader TestMutex)
 
 #####################################################
 FOREACH(test_name ${TEST_NAMES})

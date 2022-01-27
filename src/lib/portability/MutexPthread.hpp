@@ -60,7 +60,7 @@ inline void StaticMutexPthread::unlock(void )
 /*******************  FUNCTION  *********************/
 inline bool StaticMutexPthread::tryLock(void)
 {
-	return pthread_mutex_trylock(&mutex);
+	return pthread_mutex_trylock(&mutex) == 0;
 }
 
 /*******************  FUNCTION  *********************/
@@ -90,7 +90,7 @@ inline void MutexPthread::unlock(void )
 /*******************  FUNCTION  *********************/
 inline bool MutexPthread::tryLock(void )
 {
-	return pthread_mutex_trylock(&mutex);
+	return pthread_mutex_trylock(&mutex) == 0;
 }
 
 }

@@ -216,10 +216,10 @@ int OSUnix::getSignalFromName(const std::string & signame)
 }
 
 /*******************  FUNCTION  *********************/
-void OSUnix::printAvailSigs(void)
+void OSUnix::printAvailSigs(std::ostream & out)
 {
 	for (int i = 0 ; i < cstSigCnt ; i++) {
-		fprintf(stderr, "MALT: supported signal: %s (%d)\n", cstSigNames[i].name, cstSigNames[i].sig);
+		out << "MALT: supported signal: " << cstSigNames[i].name << " (" << cstSigNames[i].sig << ")" << std::endl;
 	}
 }
 
@@ -328,7 +328,7 @@ void* OSUnix::mmap(size_t size, bool populate)
 /*******************  FUNCTION  *********************/
 void OSUnix::munmap(void* ptr, size_t size)
 {
-	munmap(ptr,size);
+	::munmap(ptr,size);
 }
 
 }

@@ -4,4 +4,4 @@ src/webview/node_modules/.bin/grunt
 src/webview/node_modules/.bin/browserify
 src/webview/dist
 src/webview/build
-build
+/build*

@@ -13,6 +13,7 @@
 //standard
 #include <string>
 #include <cstdlib>
+#include <iostream>
 
 /*******************  NAMESPACE  ********************/
 namespace MALT
@@ -62,7 +63,7 @@ class OSUnix
 		static std::string getDateTime(void);
 		static std::string getCmdLine(void);
 		static std::string getSignalName(int sig);
-		static void printAvailSigs(void);
+		static void printAvailSigs(std::ostream & out = std::cout);
 		static int getSignalFromName(const std::string & signame);
 		static void setSigHandler(void (*handler)(int s), const std::string & signame);
 		static void setSigHandler(void (*handler)(int s), int sigid);
