@@ -5,7 +5,6 @@
   "main": "malt-electron.js",
   "node-main": "malt-webserver.js",
   "scripts": {
-    "postinstall": "bower install",
     "test": "main.js"
   },
   "keywords": [
@@ -21,7 +20,6 @@
   "licence": "CeCILL-C",
   "dependencies": {
     "arg-parser": "1.0.x",
-    "bower": "^1.8.4",
     "clone": "0.1.11",
     "d3-scale": "^1.0.1",
     "express": "4.16.x",
@@ -29,5 +27,8 @@
     "htpasswd": "^2.2.0",
     "http-auth": "^2.2.8",
     "lodash.union": "^4.5.0"
+  },
+  "devDependencies": {
+    "bower": "^1.8.13"
   }
 }
