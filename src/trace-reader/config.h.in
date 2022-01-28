@@ -1,0 +1,15 @@
+#ifndef MALT_CONFIG_H
+#define MALT_CONFIG_H
+
+//versions
+#cmakedefine MALT_VERSION "@MALT_VERSION@"
+#cmakedefine MALT_VERSION_NOTE "@MALT_VERSION_NOTE@"
+#cmakedefine MALT_JSON_FORMAT_VERSION "@MALT_JSON_FORMAT_VERSION@"
+
+//arm RDTSC port selection
+#cmakedefine HAVE_ARMV7A_CNTVCT
+#cmakedefine HAVE_ARMV7A_PMCCNTR
+#cmakedefine HAVE_ARMV8_CNTVCT_EL0
+#cmakedefine HAVE_ARMV8_PMCCNTR_EL0
+
+#endif //MALT_CONFIG_H

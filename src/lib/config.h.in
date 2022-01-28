@@ -1,5 +1,5 @@
-#ifndef CONFIG_H
-#define CONFIG_H
+#ifndef MALT_CONFIG_H
+#define MALT_CONFIG_H
 
 //versions
 #cmakedefine MALT_VERSION "@MALT_VERSION@"
@@ -36,4 +36,4 @@
 #cmakedefine HAVE_ARMV8_CNTVCT_EL0
 #cmakedefine HAVE_ARMV8_PMCCNTR_EL0
 
-#endif //CONFIG_H
+#endif //MALT_CONFIG_H

@@ -12,6 +12,11 @@
 cfg_set_projet "MALT"
 
 ######################################################
+#profiler
+cfg_add_enable_option --name='profiler' \
+						--on='-DENABLE_PROFILER=${ON}' \
+						--doc='Disable the profiler and only install the GUI.' \
+						--invert-help
 #test
 cfg_add_enable_option --name='test' \
 						--on='-DENABLE_TESTS=${ON}' \

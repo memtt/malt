@@ -44,6 +44,11 @@ if (ENABLE_GCC_COVERAGE)
 endif(ENABLE_GCC_COVERAGE)
 
 ######################################################
+set(ENABLE_PROFILER "yes" CACHE BOOL "Enable the installation of the profiler.")
+
+######################################################
 #build subdirs
 add_subdirectory(src)
-add_subdirectory(extern-deps)
+if (ENABLE_PROFILER)
+	add_subdirectory(extern-deps)
+endif(ENABLE_PROFILER)

@@ -23,6 +23,11 @@
 # endif (${CMAKE_CURRENT_SOURCE_DIR}/malt-webserver.ronn IS_NEWER_THAN ${CMAKE_CURRENT_SOURCE_DIR}/malt-webserver.1.bz2)
 
 ######################################################
+if (ENABLE_PROFILER)
+install(FILES malt.1.bz2 DESTINATION share/man/man1)
+endif (ENABLE_PROFILER)
+
+######################################################
 #install
-install(FILES malt.1.bz2 malt-passwd.1.bz2 malt-webview.1.bz2
+install(FILES malt-passwd.1.bz2 malt-webview.1.bz2
         DESTINATION share/man/man1)
