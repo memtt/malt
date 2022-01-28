@@ -14,7 +14,10 @@ include_directories(${GTEST_INCLUDE_DIRS} ${GMOCK_INCLUDE_DIRS})
 add_definitions(-DTEST_BIN_DIR="${CMAKE_CURRENT_BINARY_DIR}")
 
 ######################################################
-set(TEST_NAMES TestElfReader TestProcPagemapReader)
+set(TEST_NAMES TestElfReader TestProcPagemapReader TestNMCmdReader)
+
+######################################################
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O0")
 
 ######################################################
 FOREACH(test_name ${TEST_NAMES})

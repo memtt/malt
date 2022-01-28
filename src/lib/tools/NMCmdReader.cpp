@@ -50,7 +50,7 @@ bool NMCmdReader::load(const std::string& binaryFile)
 
 	//prepare cmds
 	std::stringstream nmCmd;
-	nmCmd << "nm --print-size -n -P --no-demangle " << binaryFile;
+	nmCmd << "nm --print-size -l -n -P --no-demangle " << binaryFile;
 	
 	//hide error if silent
 	if (gblOptions != NULL && gblOptions->outputVerbosity <= MALT_VERBOSITY_DEFAULT)
@@ -70,10 +70,10 @@ bool NMCmdReader::load(const std::string& binaryFile)
 	{
 		//read first
 		//int res1 = fscanf(fp,"%s %c %zx %zx %s:%d\n",);
-		bool status = readNMLine(fp,entry);
+		bool status = readNMLine(fp, entry);
 		
 		//insert if ok
-		if (status && (entry.type == 'B' || entry.type == 'b'))
+		if (status && (entry.type == 'B' || entry.type == 'b' || entry.type == 'D' || entry.type == 'd'))
 			entries.push_back(entry);
 	}
 
@@ -102,11 +102,16 @@ void NMCmdReader::findSourcesAndDemangle(ElfGlobalVariableVector& vars) const
 		{
 			it->line = entry->line;
 			it->file = entry->file;
-			//fprintf(stderr,"NMEntry for %s : %s - %s - %d\n",it->name.c_str(),entry->name.c_str(),entry->file.c_str(),entry->line);
 		}
+
+		//get short name to cut on recent GCC (eg. _ZSt4cout@GLIBCXX_3.4)
+		std::string shortName = it->name;
+		int pos = shortName.find("@");
+		if (pos != std::string::npos)
+			shortName = shortName.substr(0, pos);
 		
 		//demangle namespace
-		it->name = Compiler::demangleCppNames(it->name);
+		it->name = Compiler::demangleCppNames(shortName);
 	}
 }
 
@@ -122,7 +127,7 @@ const NMCmdReaderEntry* NMCmdReader::getEntry(const std::string& name) const
 }
 
 /*******************  FUNCTION  *********************/
-bool NMCmdReader::readNMLine(FILE * fp,NMCmdReaderEntry& entry)
+bool NMCmdReader::readNMLine(FILE * fp, NMCmdReaderEntry& entry)
 {
 	char bufferName[4096];
 	char bufferFile[2*4096];
@@ -132,10 +137,10 @@ bool NMCmdReader::readNMLine(FILE * fp,NMCmdReaderEntry& entry)
 	if (bres == NULL)
 		return false;
 
-	int res = sscanf(bres,"%s %c %zx %zx %s\n",bufferName,&entry.type,&entry.offset,&entry.size,bufferFile);
+	int res = sscanf(bres, "%s %c %zx %zx\t%s\n", bufferName, &entry.type, &entry.offset, &entry.size, bufferFile);
 	if (res == 5)
 	{
-		char * l = strrchr(bufferFile,':');
+		char * l = strrchr(bufferFile, ':');
 		if (l != NULL)
 		{
 			*l = '\0';
@@ -144,12 +149,10 @@ bool NMCmdReader::readNMLine(FILE * fp,NMCmdReaderEntry& entry)
 		} else {
 			entry.line = -1;
 		}
-		//fprintf(stderr,"lines %s",bres);
 		entry.name = bufferName;
 		entry.file = bufferFile;
 		return true;
 	} else {
-		//fprintf(stderr,"ignore lines %s",bres);
 		return false;
 	}
 }
