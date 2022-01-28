@@ -155,7 +155,10 @@ FormattedMessage& FormattedMessage::arg(const std::string& value)
 **/
 FormattedMessage& FormattedMessage::arg(const char* value)
 {
-	entries.push_back(value);
+	if (value == NULL)
+		entries.push_back("(null)");
+	else
+		entries.push_back(value);
 	return *this;
 }
 
