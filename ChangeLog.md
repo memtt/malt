@@ -4,7 +4,12 @@ Change log
 1.2.2 - XXXXXXXXXX
 ------------------
 
-
+ - Add --disable-profiler on configure script to build only the webview.
+ - Fix bugs reported by the new unit tests.
+ - Fix build warnings on recent gcc & clang (debian 11).
+ - Fix bug when using CC='' on configure script.
+ - Upgrade the npm modules and fix usage of versions with security issues.
+ - Improve unit testing of the profiler library.
 
 1.2.1 - 17/10/2020
 ------------------
