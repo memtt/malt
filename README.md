@@ -16,13 +16,13 @@ Dependencies
 
 MALT depends on the presence of :
 
-- binutils (nm and add2line) to extract symbols. Tested version is 2.24.
+- binutils (nm and add2line) to extract symbols. Tested version is 2.24 - 2.35.2.
 
 It optionally depends on :
 
-- nodejs (<http://nodejs.org/>) to run the webview GUI. Tested version is 0.10.30.
-- libelf (<http://www.mr511.de/software/english.html>) to extract global variable list from executables and libs. Tested version is 0.128.
-- libunwind (<http://www.nongnu.org/libunwind/>) as an alternative implementation of glibc backtrace method. Tested version is 1.1.
+- nodejs (<http://nodejs.org/>) to run the webview GUI. Tested version is 0.10.30 - 12.22.5.
+- libelf (<http://www.mr511.de/software/english.html>) to extract global variable list from executables and libs. Tested version is 0.128 - 0.183.
+- libunwind (<http://www.nongnu.org/libunwind/>) as an alternative implementation of glibc backtrace method. Tested version is 1.1 - 1.3.2.
 
 How to install
 --------------
