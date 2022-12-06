@@ -25,7 +25,7 @@
     "express": "4.16.x",
     "extend": "^3.0.0",
     "htpasswd": "^2.2.0",
-    "http-auth": "^2.2.8",
+    "http-auth": "^2.4.11",
     "lodash.union": "^4.5.0"
   },
   "devDependencies": {
