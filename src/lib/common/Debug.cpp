@@ -143,6 +143,8 @@ void Debug::end(std::ostream & out, std::ostream & err)
 **/
 Debug::~Debug(void)
 {
+	if (!emitted)
+		this->end();
 	assert(emitted);
 }
 

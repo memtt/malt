@@ -265,6 +265,7 @@ size_t SymbolSolver::extractElfVaddr(const std::string & obj) const
 
 	//call and read content
 	//@todo make a function to run and extract content as used many times
+	setenv("LD_PRELOAD", "", 1);
 	FILE * fp = popen(readelfcmd.str().c_str(),"r");
 	assumeArg(fp != NULL,"Failed to read vaddr via readelf in %1 : %2.").arg(obj).argStrErrno().end();
 

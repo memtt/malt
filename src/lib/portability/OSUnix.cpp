@@ -148,9 +148,13 @@ OSProcMemUsage OSUnix::getProcMemoryUsage(void)
 		
 		//read
 		LinuxInternalStatm stat;
-		res = fscanf(fp,"%zu %zu %zu %zu %zu %zu %zu\n",
-               &stat.size,&stat.resident, &stat.share, &stat.text, &stat.lib, &stat.data, &stat.dirty);
-        assumeArg(res == 7,"Fail to read %1 entries, get only %2 entries where %3 is expected !").arg(cstStatmFile).arg(res).arg(7);
+		res = fscanf(fp,"%zu %zu %zu %zu %zu %zu %zu\n", &stat.size,&stat.resident, &stat.share, &stat.text, &stat.lib, &stat.data, &stat.dirty);
+		if (res != 7)
+		{
+			finalRes.virtualMemory  = 0;
+			finalRes.physicalMemory = 0;
+		}
+		//assumeArg(res == 7,"Fail to read %1 entries, get only %2 entries where %3 is expected !").arg(cstStatmFile).arg(res).arg(7).end();i
 		
 		//extract values
 		finalRes.virtualMemory  = stat.size * 4096UL;
