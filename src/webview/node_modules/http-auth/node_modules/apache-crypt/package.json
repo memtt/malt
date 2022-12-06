@@ -1,0 +1,47 @@
+{
+  "name": "apache-crypt",
+  "description": "Node.js module for Apache style password encryption using crypt(3).",
+  "version": "1.1.2",
+  "author": "Gevorg Harutyunyan (http://github.com/gevorg)",
+  "maintainers": [
+    {
+      "name": "gevorg",
+      "email": "gevorg.ha@gmail.com"
+    }
+  ],
+  "homepage": "http://github.com/http-auth/apache-crypt",
+  "repository": {
+    "type": "git",
+    "url": "http://github.com/http-auth/apache-crypt.git"
+  },
+  "main": "./gensrc/index.js",
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "http://github.com/http-auth/apache-crypt/blob/master/LICENSE"
+    }
+  ],
+  "license": "MIT",
+  "bugs": {
+    "url": "http://github.com/http-auth/apache-crypt/issues"
+  },
+  "dependencies": {
+    "unix-crypt-td-js": "^1.0.0"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.9.0",
+    "babel-preset-es2015": "^6.9.0",
+    "mocha": "^2.5.3",
+    "chai": "^3.5.0"
+  },
+  "engines": {
+    "node": ">=5"
+  },
+  "scripts": {
+    "test": "mocha --compilers js:babel-core/register",
+    "compile": "babel src -d gensrc",
+    "prepublish": "npm run compile",
+    "pretest": "npm run compile"
+  },
+  "keywords": ["apache", "crypt", "password", "htpasswd"]
+}
