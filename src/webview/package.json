@@ -24,8 +24,8 @@
     "d3-scale": "^1.0.1",
     "express": "4.16.x",
     "extend": "^3.0.0",
-    "htpasswd": "^2.2.0",
-    "http-auth": "^2.2.8",
+    "htpasswd": "^2.4.6",
+    "http-auth": "^2.4.11",
     "lodash.union": "^4.5.0"
   },
   "devDependencies": {
