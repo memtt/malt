@@ -165,8 +165,8 @@ function MaltPageTimeline()
 		{
 			//if (data.startTime + data.scale*i <= data.endTime)
 // 			console.log(data.perPoints + " => " +data.values.length + " => " + i + " => "+(i+1)*data.perPoints/ticksPerSecond + " => "+data.values[i][id]);
-			//res.push({x:(scale*(i+1)),y:((data.values[i][id])/(data.perPoints/ticksPerSecond))});
-			res.push({x:(scale*(i+1)),y:((data.values[i][id]))});
+			res.push({x:(scale*(i+1)),y:((data.values[i][id])/(data.perPoints/ticksPerSecond))});
+			//res.push({x:(scale*(i+1)),y:((data.values[i][id]))});
 		}
 		console.log(res);
 		return res;
@@ -400,8 +400,8 @@ function MaltPageTimeline()
 			});
 
 			maltNVDGraph("malt-alive-chunks-timeline",maltConvertCnt(data),'Alive chunks','Allocations','');
-			maltNVDGraph2("malt-alloc-rate-size-timeline",maltConvertSizeRate2(data),'Allocation rate B','Memory rate (B)','B');
-			maltNVDGraph2("malt-alloc-rate-count-timeline",maltConvertCountRate2(data),'Allocation rate op','Memory rate (ops)','');
+			maltNVDGraph2("malt-alloc-rate-size-timeline",maltConvertSizeRate2(data),'Allocation rate B','Memory rate (B/s)','B/s');
+			maltNVDGraph2("malt-alloc-rate-count-timeline",maltConvertCountRate2(data),'Allocation rate op','Memory rate (op/s)','op/s');
 			maltNVDGraph("malt-sys-free-mem-timeline",maltConvertSysData(data),"System free mem (B)","Memory",'B');
 		});
 	}]);
