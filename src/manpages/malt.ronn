@@ -47,6 +47,14 @@ it with debug symbols (`-g`) and also to disable inlining to get more accurate s
    Build the MPI bridge library : `~/.malt/libmaltmpi.so`. MALT requires it to get access
    to MPI_Comm_rank function depending on your MPI implementation. You need to do this
    command each tome you switch your MPI implementation.
+ * `--wrap`:
+   Permit to wrap and capture a custom memory allocator. The wrap option expect a list of function
+   to wrap separated by commas (or call multiple time). The values should provide the type of function
+   (`malloc`, `free`, `realloc`, `calloc`...) and the symbol to wrap on the form : `{type}:{symbol}`.
+ * `--wrap-prefix`
+   Automatically wrap all the memory managment functions under the given prefix. You can list
+   several prefixes separated by comma. For exemple giving `je_` will wrap all the `je_malloc`,
+   `je_free`, `je_realloc`... functions.
  * `-h`, `--help`:
    Display help message with a list of available command line options.
 
@@ -271,6 +279,25 @@ You can also just provide the two empty functions in your own dynamic library (n
 
 If you have some allocation not under your control before your first call you can disable MALT by default
 on threads using the `filter:enabled` option, then enable it by hand.
+
+## WRAPPING A CUSTOM ALLOCATOR
+
+If your application use a custom allocator with a different namespce than the default `malloc`, `free`...
+you can use the `--wrap` or `--wrap-prefix` options.
+
+You can select in details the function by doing:
+
+	malt --wrap malloc:je_malloc ./prgm
+	malt --wrap malloc:je_malloc,free:je_free,calloc:je_calloc,malloc:another_custom_malloc ./prgm
+
+You can also simply use a common prefix for all by using (typically usefull if you embed jemalloc
+with a custom symbol prefix):
+
+	malt --wrap-prefix je_
+	malt --wrap-prefix je_,another_custom_
+
+Remark: In the profiler GUI those functions will appears as standard malloc and you will currently not be
+able to distinguish them from the default allocator.
 
 ## VERSION
 

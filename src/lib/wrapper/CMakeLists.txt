@@ -23,7 +23,8 @@ SET_TARGET_PROPERTIES(malt-fake-controler PROPERTIES COMPILE_FLAGS -fPIC)
 
 ######################################################
 INSTALL(FILES malt.h
-	DESTINATION include/malt)
+              AllocWrapperExtend.hpp
+        DESTINATION include/malt)
 
 ######################################################
 if (ENABLE_TESTS)

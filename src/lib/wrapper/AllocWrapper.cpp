@@ -385,6 +385,9 @@ void AllocWrapperGlobal::init(void )
 
 		//init profiler
 		gblState.status = ALLOC_WRAP_INIT_PROFILER;
+
+		//load extended 
+		malt_wrap_extended_symbols();
 		
 		//init internal alloc
 		initInternalAlloc(true);
@@ -444,6 +447,12 @@ void AllocWrapperGlobal::init(void )
 
 	//secure in case of first call in threads
 	gblState.lock.unlock();
+}
+
+/*******************  FUNCTION  *********************/
+void MALT::malt_wrap_extended_symbols(void)
+{
+	//default impl to be overriden by LD_PRELOAD for custom symbols
 }
 
 /*******************  FUNCTION  *********************/
