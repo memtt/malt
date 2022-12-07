@@ -30,6 +30,7 @@
 #include <profiler/LocalAllocStackProfiler.hpp>
 //locals
 #include "malt.h"
+#include "AllocWrapperExtend.hpp"
 
 /***************** USING NAMESPACE ******************/
 using namespace MALT;
@@ -51,10 +52,9 @@ using namespace MALT;
 
 /********************  MACRO  ***********************/
 /** Check init status of local and global state and call enter/exit methods, then do requested action. **/
-#define MALT_WRAPPER_LOCAL_STATE_ACTION(action)  \
+#define MALT_WRAPPER_LOCAL_STATE_ACTION(action, retAddr)  \
 	if (gblState.status == ALLOC_WRAP_READY && tlsState.status == ALLOC_WRAP_READY) \
 	{ \
-		void * retAddr;\
 		if (isEnterExit)\
 		{\
 			retAddr =__builtin_extract_return_addr(__builtin_return_address(0)); \
@@ -64,32 +64,6 @@ using namespace MALT;
 		if (isEnterExit) \
 			localState.profiler->onExitFunc((void*)__func__,retAddr,true); \
 	}
-
-/*******************  FUNCTION  *********************/
-/** Prototype of malloc function to get it into function pointer. **/
-typedef void * (*MallocFuncPtr) (size_t size);
-/** Prototype of free function to get it into function pointer. **/
-typedef void   (*FreeFuncPtr)   (void * ptr);
-/** Prototype of calloc function to get it into function pointer. **/
-typedef void * (*CallocFuncPtr) (size_t nmemb,size_t size);
-/** Prototype of realloc function to get it into function pointer. **/
-typedef void * (*ReallocFuncPtr)(void * ptr,size_t size);
-/** Prototype of posix_memalign function to get it into function pointer. **/
-typedef int (*PosixMemalignFuncPtr)(void **memptr, size_t alignment, size_t size);
-/** Prototype of aligned_alloc function to get it into function pointer. **/
-typedef void *(*AlignedAllocFuncPtr)(size_t alignment, size_t size);
-/** Prototype of valloc function to get it into function pointer. **/
-typedef void *(*VallocFuncPtr)(size_t size);
-/** Prototype of memalign function to get it into function pointer. **/
-typedef void *(*MemalignFuncPtr)(size_t alignment, size_t size);
-/** Prototype of pvalloc function to get it into function pointer. **/
-typedef void *(*PVallocFuncPtr)(size_t size);
-/** Prototype of mmap function to get it into function pointer. **/
-typedef void *(*MmapFuncPtr)(void *start,size_t length,int prot,int flags,int fd,off_t offset);
-/** Prototype of munmap function to get it into function pointer. **/
-typedef int (*MunmapFuncPtr)(void *start,size_t length);
-/** Prototype of mremap function to get it into function pointer. **/
-typedef int (*MremapFuncPtr)(void *old_address, size_t old_size , size_t new_size, int flags);
 
 
 /********************  ENUM  ************************/
@@ -538,6 +512,12 @@ void ThreadLocalState::init(void)
 **/
 void * malloc(size_t size)
 {
+	return malt_wrap_malloc(size, gblState.malloc, MALT_RETADDR);
+}
+
+/*******************  FUNCTION  *********************/
+void * MALT::malt_wrap_malloc(size_t size, const MallocFuncPtr & real_malloc, void * retaddr)
+{
 	//get local TLS and check init
 	MALT_WRAPPER_LOCAL_STATE_INIT
 
@@ -545,11 +525,11 @@ void * malloc(size_t size)
 	assert(gblState.status > ALLOC_WRAP_INIT_SYM);
 	
 	ticks t = getticks();
-	void * res = gblState.malloc(size);
+	void * res = real_malloc(size);
 	t = getticks() - t;
 
 	//profile
-	MALT_WRAPPER_LOCAL_STATE_ACTION(localState.profiler->onMalloc(res,size,t,MALLOC_KIND_MALLOC));
+	MALT_WRAPPER_LOCAL_STATE_ACTION(localState.profiler->onMalloc(res,size,t,MALLOC_KIND_MALLOC), retaddr);
 
 	//return segment to user
 	return res;
@@ -564,15 +544,21 @@ void * malloc(size_t size)
 **/
 void free(void * ptr)
 {
+	return malt_wrap_free(ptr, gblState.free, MALT_RETADDR);
+}
+
+/*******************  FUNCTION  *********************/
+void MALT::malt_wrap_free(void * ptr, const FreeFuncPtr & real_free, void * retaddr)
+{
 	//get local TLS and check init
 	MALT_WRAPPER_LOCAL_STATE_INIT;
 
 	//profile
-	MALT_WRAPPER_LOCAL_STATE_ACTION(localState.profiler->onFree(ptr,0));
+	MALT_WRAPPER_LOCAL_STATE_ACTION(localState.profiler->onFree(ptr,0), retaddr);
 
 	//run the default function
 	assert(gblState.status > ALLOC_WRAP_INIT_SYM);
-	gblState.free(ptr);
+	real_free(ptr);
 }
 
 /*******************  FUNCTION  *********************/
@@ -585,6 +571,12 @@ void free(void * ptr)
  * @return Pointer to the allocated memory, NULL in case of error.
 **/
 void * calloc(size_t nmemb,size_t size)
+{
+	return malt_wrap_calloc(nmemb, size, gblState.calloc, MALT_RETADDR);
+}
+
+/*******************  FUNCTION  *********************/
+void * MALT::malt_wrap_calloc(size_t nmemb,size_t size, const CallocFuncPtr & real_calloc, void * retaddr)
 {
 	//get local TLS and check init
 	MALT_WRAPPER_LOCAL_STATE_INIT
@@ -601,11 +593,11 @@ void * calloc(size_t nmemb,size_t size)
 	assert(gblState.status > ALLOC_WRAP_INIT_SYM);
 	
 	ticks t = getticks();
-	void * res = gblState.calloc(nmemb,size);
+	void * res = real_calloc(nmemb,size);
 	t = getticks() - t;
 
 	//profile
-	MALT_WRAPPER_LOCAL_STATE_ACTION(localState.profiler->onCalloc(res,nmemb,size,t));
+	MALT_WRAPPER_LOCAL_STATE_ACTION(localState.profiler->onCalloc(res,nmemb,size,t), retaddr);
 
 	//return result to user
 	return res;
@@ -622,6 +614,12 @@ void * calloc(size_t nmemb,size_t size)
 **/
 void * realloc(void * ptr, size_t size)
 {
+	return malt_wrap_realloc(ptr, size, gblState.realloc, MALT_RETADDR);
+}
+
+/*******************  FUNCTION  *********************/
+void * MALT::malt_wrap_realloc(void * ptr,size_t size, const ReallocFuncPtr & real_realloc, void * retaddr)
+{
 	//get local TLS and check init
 	MALT_WRAPPER_LOCAL_STATE_INIT
 
@@ -629,11 +627,11 @@ void * realloc(void * ptr, size_t size)
 	assert(gblState.status > ALLOC_WRAP_INIT_SYM);
 	
 	ticks t = getticks();
-	void * res = gblState.realloc(ptr,size);
+	void * res = real_realloc(ptr,size);
 	t = getticks() - t;
 	
 	//profile
-	MALT_WRAPPER_LOCAL_STATE_ACTION(localState.profiler->onRealloc(ptr,res,size,t));
+	MALT_WRAPPER_LOCAL_STATE_ACTION(localState.profiler->onRealloc(ptr,res,size,t), retaddr);
 	
 	return res;
 }
@@ -645,6 +643,12 @@ void * realloc(void * ptr, size_t size)
 **/
 int posix_memalign(void ** memptr,size_t align, size_t size)
 {
+	return malt_wrap_posix_memalign(memptr, align, size, gblState.posix_memalign, MALT_RETADDR);
+}
+
+/*******************  FUNCTION  *********************/
+int MALT::malt_wrap_posix_memalign(void **memptr, size_t alignment, size_t size, const PosixMemalignFuncPtr & real_mem_align, void * retaddr)
+{
 	//get local TLS and check init
 	MALT_WRAPPER_LOCAL_STATE_INIT
 
@@ -652,11 +656,11 @@ int posix_memalign(void ** memptr,size_t align, size_t size)
 	assert(gblState.status > ALLOC_WRAP_INIT_SYM);
 	
 	ticks t = getticks();
-	int res = gblState.posix_memalign(memptr,align,size);
+	int res = real_mem_align(memptr, alignment, size);
 	t = getticks() - t;
 
 	//profile
-	MALT_WRAPPER_LOCAL_STATE_ACTION(localState.profiler->onMalloc(*memptr,size,t,MALLOC_KIND_POSIX_MEMALIGN));
+	MALT_WRAPPER_LOCAL_STATE_ACTION(localState.profiler->onMalloc(*memptr,size,t,MALLOC_KIND_POSIX_MEMALIGN), retaddr);
 
 	//return segment to user
 	return res;
@@ -669,6 +673,12 @@ int posix_memalign(void ** memptr,size_t align, size_t size)
 **/
 void * aligned_alloc(size_t alignment, size_t size)
 {
+	return malt_wrap_aligned_alloc(alignment, size, gblState.aligned_alloc, MALT_RETADDR);
+}
+
+/*******************  FUNCTION  *********************/
+void * MALT::malt_wrap_aligned_alloc(size_t alignment, size_t size, const AlignedAllocFuncPtr & real_aligned_alloc, void * retaddr)
+{
 	//get local TLS and check init
 	MALT_WRAPPER_LOCAL_STATE_INIT
 
@@ -676,11 +686,11 @@ void * aligned_alloc(size_t alignment, size_t size)
 	assert(gblState.status > ALLOC_WRAP_INIT_SYM);
 	
 	ticks t = getticks();
-	void * res = gblState.aligned_alloc(alignment,size);
+	void * res = real_aligned_alloc(alignment,size);
 	t = getticks() - t;
 
 	//profile
-	MALT_WRAPPER_LOCAL_STATE_ACTION(localState.profiler->onMalloc(res,size,t,MALLOC_KIND_ALIGNED_ALLOC));
+	MALT_WRAPPER_LOCAL_STATE_ACTION(localState.profiler->onMalloc(res,size,t,MALLOC_KIND_ALIGNED_ALLOC), retaddr);
 
 	//return segment to user
 	return res;
@@ -693,6 +703,12 @@ void * aligned_alloc(size_t alignment, size_t size)
 **/
 void *memalign(size_t alignment, size_t size)
 {
+	return malt_wrap_memalign(alignment, size, gblState.memalign, MALT_RETADDR);
+}
+
+/*******************  FUNCTION  *********************/
+void *MALT::malt_wrap_memalign(size_t alignment, size_t size, const MemalignFuncPtr & real_memalign, void * retaddr)
+{
 	//get local TLS and check init
 	MALT_WRAPPER_LOCAL_STATE_INIT
 
@@ -700,11 +716,11 @@ void *memalign(size_t alignment, size_t size)
 	assert(gblState.status > ALLOC_WRAP_INIT_SYM);
 	
 	ticks t = getticks();
-	void * res = gblState.memalign(alignment,size);
+	void * res = real_memalign(alignment,size);
 	t = getticks() - t;
 
 	//profile
-	MALT_WRAPPER_LOCAL_STATE_ACTION(localState.profiler->onMalloc(res,size,t,MALLOC_KIND_POSIX_MEMALIGN));
+	MALT_WRAPPER_LOCAL_STATE_ACTION(localState.profiler->onMalloc(res,size,t,MALLOC_KIND_POSIX_MEMALIGN), retaddr);
 
 	//return segment to user
 	return res;
@@ -717,6 +733,12 @@ void *memalign(size_t alignment, size_t size)
 **/
 void *valloc(size_t size)
 {
+	return malt_wrap_valloc(size, gblState.valloc, MALT_RETADDR);
+}
+
+/*******************  FUNCTION  *********************/
+void * MALT::malt_wrap_valloc(size_t size, const VallocFuncPtr & real_aligned_valloc, void * retaddr)
+{
 	//get local TLS and check init
 	MALT_WRAPPER_LOCAL_STATE_INIT
 
@@ -724,11 +746,11 @@ void *valloc(size_t size)
 	assert(gblState.status > ALLOC_WRAP_INIT_SYM);
 	
 	ticks t = getticks();
-	void * res = gblState.valloc(size);
+	void * res = real_aligned_valloc(size);
 	t = getticks() - t;
 
 	//profile
-	MALT_WRAPPER_LOCAL_STATE_ACTION(localState.profiler->onMalloc(res,size,t,MALLOC_KIND_VALLOC));
+	MALT_WRAPPER_LOCAL_STATE_ACTION(localState.profiler->onMalloc(res,size,t,MALLOC_KIND_VALLOC), retaddr);
 
 	//return segment to user
 	return res;
@@ -741,6 +763,12 @@ void *valloc(size_t size)
 **/
 void *pvalloc(size_t size)
 {
+	return malt_wrap_pvalloc(size, gblState.pvalloc, MALT_RETADDR);
+}
+
+/*******************  FUNCTION  *********************/
+void *MALT::malt_wrap_pvalloc(size_t size, const PVallocFuncPtr & real_pvalloc, void * retaddr)
+{
 	//get local TLS and check init
 	MALT_WRAPPER_LOCAL_STATE_INIT
 
@@ -748,11 +776,11 @@ void *pvalloc(size_t size)
 	assert(gblState.status > ALLOC_WRAP_INIT_SYM);
 	
 	ticks t = getticks();
-	void * res = gblState.pvalloc(size);
+	void * res = real_pvalloc(size);
 	t = getticks() - t;
 
 	//profile
-	MALT_WRAPPER_LOCAL_STATE_ACTION(localState.profiler->onMalloc(res,size,t,MALLOC_KIND_PVALLOC));
+	MALT_WRAPPER_LOCAL_STATE_ACTION(localState.profiler->onMalloc(res,size,t,MALLOC_KIND_PVALLOC), retaddr);
 
 	//return segment to user
 	return res;
@@ -765,12 +793,18 @@ void *pvalloc(size_t size)
 **/
 void *mmap(void *start, size_t length, int prot,int flags,int fd, off_t offset)
 {
+	return malt_wrap_mmap(start, length, prot, flags, fd, offset, gblState.mmap, MALT_RETADDR);
+}
+
+/*******************  FUNCTION  *********************/
+void * MALT::malt_wrap_mmap(void *start,size_t length,int prot,int flags,int fd,off_t offset, const MmapFuncPtr & real_mmap, void * retaddr)
+{
 	//get local TLS and check init
 	MALT_WRAPPER_LOCAL_STATE_INIT
 
 	//run the default function
 	assert(gblState.status > ALLOC_WRAP_INIT_SYM);
-	void * res = gblState.mmap(start,length,prot,flags,fd,offset);
+	void * res = real_mmap(start,length,prot,flags,fd,offset);
 
 	//profile
 	//MALT_WRAPPER_LOCAL_STATE_ACTION(localState.profiler->onMmap(res,length,flags,fd));
@@ -786,12 +820,18 @@ void *mmap(void *start, size_t length, int prot,int flags,int fd, off_t offset)
 **/
 int munmap(void *start, size_t length)
 {
+	return malt_wrap_munmap(start, length, gblState.munmap, MALT_RETADDR);
+}
+
+/*******************  FUNCTION  *********************/
+int MALT::malt_wrap_munmap(void * start, size_t length, const MunmapFuncPtr & real_munmap, void * retaddr)
+{
 	//get local TLS and check init
 	MALT_WRAPPER_LOCAL_STATE_INIT
 
 	//run the default function
 	assert(gblState.status > ALLOC_WRAP_INIT_SYM);
-	int res = gblState.munmap(start,length);
+	int res = real_munmap(start,length);
 
 	//profile
 	//MALT_WRAPPER_LOCAL_STATE_ACTION(localState.profiler->onMalloc(res,size));
@@ -805,14 +845,20 @@ int munmap(void *start, size_t length)
  * Wrapper of the pvalloc function to capture allocations. The original symbol will be
  * search by dlsym() in AllocWrapperGlobal::init() .
 **/
-int mremap(void *old_address, size_t old_size , size_t new_size, int flags)
+void * mremap(void *old_address, size_t old_size , size_t new_size, int flags)
+{
+	return malt_wrap_mremap(old_address, old_size, new_size, flags, gblState.mremap, MALT_RETADDR);
+}
+
+/*******************  FUNCTION  *********************/
+void * MALT::malt_wrap_mremap(void *old_address, size_t old_size , size_t new_size, int flags, const MremapFuncPtr & real_mremap, void * retaddr)
 {
 	//get local TLS and check init
 	MALT_WRAPPER_LOCAL_STATE_INIT
 
 	//run the default function
 	assert(gblState.status > ALLOC_WRAP_INIT_SYM);
-	int res = gblState.mremap(old_address,old_size,new_size,flags);
+	void * res = real_mremap(old_address,old_size,new_size,flags);
 
 	//profile
 	//MALT_WRAPPER_LOCAL_STATE_ACTION(localState.profiler->onMalloc(res,size));

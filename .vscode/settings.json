@@ -1,5 +1,6 @@
 {
 	"files.associations": {
+		"*.cdeps": "shellscript",
 		"array": "cpp",
 		"atomic": "cpp",
 		"hash_map": "cpp",
@@ -57,6 +58,8 @@
 		"typeinfo": "cpp",
 		"variant": "cpp",
 		"ranges": "cpp",
-		"condition_variable": "cpp"
+		"condition_variable": "cpp",
+		"__locale": "cpp",
+		"__string": "cpp"
 	}
 }
