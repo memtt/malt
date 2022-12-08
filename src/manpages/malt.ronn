@@ -296,9 +296,6 @@ with a custom symbol prefix):
 	malt --wrap-prefix je_
 	malt --wrap-prefix je_,another_custom_
 
-Remark: In the profiler GUI those functions will appears as standard malloc and you will currently not be
-able to distinguish them from the default allocator.
-
 ## VERSION
 
    This is the manpage of MALT version 1.2.2.

@@ -195,6 +195,7 @@ maltBuildCustomAllocWrapper()
 	# header
 	echo "#define _GNU_SOURCE" >> ${source_file}
 	echo "#include <malt/AllocWrapperExtend.hpp>" > ${source_file}
+	echo "#include <stdio.h>" >> ${source_file}
 	echo "//libc POSIX.1, here we use GNU specific RTLD_NEXT (need _GNU_SOURCE)" >> ${source_file}
 	echo "#include <dlfcn.h>" >> ${source_file}
 	echo "" >> ${source_file}
@@ -204,6 +205,7 @@ maltBuildCustomAllocWrapper()
 	# parts
 	echo "//Declare real function pointers" > ${tmp_decl}
 	echo "//Define wrappers" > ${tmp_wrappers}
+	echo "extern \"C\" {" >> ${tmp_wrappers}
 	echo "//Load symbols on init" > ${tmp_dlsym}
 	echo "void MALT::malt_wrap_extended_symbols(void)" >> ${tmp_dlsym}
 	echo "{" >> ${tmp_dlsym}
@@ -217,9 +219,14 @@ maltBuildCustomAllocWrapper()
 			local func_to_wrap=${BASH_REMATCH[2]}
 			local sym_var="real_symbol_${func_to_wrap}"
 			local ptr_type=$(maltGetWrapType ${semantic_func})
+			local print=''
+			if [ "${MALT_WRAPPER_LOG}" == 'true' ]; then
+				print="printf(\"MALT: Call wrapper of ${func_to_wrap}\\n\");"
+			fi
 			echo "MALT: Will wrap custom symbol : ${func_to_wrap} (as ${semantic_func})" 1>&2
 			echo "static ${ptr_type} ${sym_var} = NULL;" >> ${tmp_decl}
-			echo "$(maltGetWrapProto ${semantic_func} ${func_to_wrap}){return malt_wrap_${semantic_func}($(maltGetWrapArgs ${semantic_func}), ${sym_var}, MALT_RETADDR);};" >> ${tmp_wrappers}
+			echo "	$(maltGetWrapProto ${semantic_func} ${func_to_wrap})" >> ${tmp_wrappers}
+			echo "		{${print} return malt_wrap_${semantic_func}($(maltGetWrapArgs ${semantic_func}), ${sym_var}, MALT_RETADDR);};" >> ${tmp_wrappers}
 			echo "	${sym_var} = (${ptr_type})dlsym(RTLD_NEXT, \"${func_to_wrap}\");" >> ${tmp_dlsym}
 		else
 			echo "MALT: Invalid custom wrapper pattern : ${wrap}, expect something like: 'malloc:je_malloc'" 1>&2
@@ -230,6 +237,7 @@ maltBuildCustomAllocWrapper()
 	# close
 	echo "}" >> ${tmp_dlsym}
 	echo "" >> ${tmp_decl}
+	echo "}" >> ${tmp_wrappers}
 	echo "" >> ${tmp_wrappers}
 	echo "" >> ${tmp_dlsym}
 
@@ -242,7 +250,7 @@ maltBuildCustomAllocWrapper()
 	rm -f ${tmp_decl} ${tmp_wrappers} ${tmp_dlsym}
 
 	# build
-	if [ "${MALT_SHOW_WRAPPER}" == "true" ]; then
+	if [ "${MALT_WRAPPER_SHOW}" == "true" ]; then
 		echo "================ CUSTOM WRAPPER =================="
 		cat ${source_file}
 		echo "=================================================="
