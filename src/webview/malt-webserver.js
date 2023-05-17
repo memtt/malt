@@ -334,8 +334,8 @@ app.get('/data.json',function(eq,res,next){
 /****************************************************/
 var staticSourceServer = Express.static('/');
 app.use('/app-sources/',function(req,res,next){
-	
-	var realPath = req.path;
+	var reqPath = req.path.replace('/%7B.%7D/','./');
+	var realPath = reqPath;
 
 	//check for redirect
 	for (var i in redirs)
@@ -343,11 +343,11 @@ app.use('/app-sources/',function(req,res,next){
 		if (realPath.indexOf(redirs[i].source) == 0)
 		{
 			realPath = realPath.replace(redirs[i].source,redirs[i].dest)
-			console.log("Apply redirection with override : " + req.path+" -> "+realPath);
+			console.log("Apply redirection with override : " + reqPath+" -> "+realPath);
 		}
 	}
 	
-	if (maltProject.isSourceFile(req.path))
+	if (maltProject.isSourceFile(reqPath))
 	{
 		console.log("Source file request :",realPath);
 		req.path = realPath;

@@ -9,6 +9,9 @@ function MaltDataSourceNodeJS()
 //wrapper to fetch source files from remote server [source-editor.js]
 MaltDataSourceNodeJS.prototype.loadSourceFile = function(file,handler,fail)
 {
+	//handle relative paths which otherwise are suppressed by URL parsing.
+	file = file.replace('./','/{.}/');
+	//call
 	$.get("/app-sources"+file)
 		.done(handler)
 		.fail(fail);
@@ -147,7 +150,8 @@ function MaltDataSourceClientSideData(data)
 //wrapper to fetch source files from remote server [source-editor.js]
 MaltDataSourceClientSide.prototype.loadSourceFile = function(file,handler)
 {
-	$.get("/app-sources"+file,handler);
+	file = file.replace('./','{.}/');
+	$.get("/app-sources/"+file,handler);
 }
 
 //wrapper to getch annotation of source files [source-editor.js]

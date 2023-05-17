@@ -10,6 +10,7 @@ Change log
  - Fix bug when using CC='' on configure script.
  - Upgrade the npm modules and fix usage of versions with security issues.
  - Improve unit testing of the profiler library.
+ - Fix issue about binary files pointing relative source paths.
 
 1.2.1 - 17/10/2020
 ------------------
