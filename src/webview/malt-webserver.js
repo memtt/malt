@@ -36,7 +36,7 @@ args.add({ name: 'port',  desc: 'Port to use to wait for HTTP requests', switche
 args.add({ name: 'override',  desc: 'Override source dirs. Format is src1:dest1,src2:dest2...', switches: [ '-o', '--override'],       value: 'redirections', required: false });
 args.add({ name: 'noauth',    desc: 'Disable http authentification', switches: ['-n', '--no-auth'], required: false });
 args.add({ name: 'authfile',    desc: 'Use custom authentification file', switches: ['-A', '--authfile'], value:'file', required: false });
-if (!args.parse()) 
+if (!args.parse())
 {
 	console.error("Invalid parameters, please check with -h");
 	process.exit(1);
@@ -56,7 +56,7 @@ if (args.params.noauth == undefined)
 	var file = getUserHome() + "/.malt/passwd";
 	if (args.params.authfile != undefined)
 		file = args.params.authfile;
-	
+
 	//log
 	console.log("Load http auth from "+file+", you can change your passwod with 'malt-passwd {user}' or disable auth with --no-auth\n");
 
@@ -109,7 +109,7 @@ app.get('/flat.json',function(req,res) {
 		tmp = maltProject.getFlatFunctionProfile();
 		maltCache['flat.json'] = tmp;
 	}
-	
+
 	//ok flush to user
 	res.json(tmp);
 	res.end();
@@ -168,7 +168,7 @@ app.get('/stacks.json',function(req,res){
 	var file = req.query.file;
 	var line = req.query.line;
 	var func = req.query.func;
-	
+
 	//return error
 	if (file != undefined || line != undefined)
 	{
@@ -205,7 +205,7 @@ app.get('/memtrace-at.json',function(req,res) {
 			var data = maltProject.completeMemtraceAt(data);
 			res.json(data);
 			res.end();
-		});  
+		});
 	}
 });
 
@@ -213,11 +213,11 @@ app.get('/memtrace-at.json',function(req,res) {
 app.get('/file-infos.json',function(req,res) {
 	//extract file from request
 	var file = req.query.file;
-	
+
 	//setup cache root entry
 	if (maltCache['file-infos.json'] == undefined)
 		maltCache['file-infos.json'] = new Object();
-	
+
 	//return error
 	if (file == undefined)
 	{
@@ -307,7 +307,7 @@ app.get('/calltree', function(req, res) {
 				res.header("Content-Type", "text/vnd.graphviz");
 				res.setHeader('Content-disposition', 'attachment; filename=calltree.dot');
 				res.send(data.dotCode);
-				res.end();				
+				res.end();
 			} else {
 				res.json(data);
 			}
@@ -346,7 +346,7 @@ app.use('/app-sources/',function(req,res,next){
 			console.log("Apply redirection with override : " + reqPath+" -> "+realPath);
 		}
 	}
-	
+
 	if (maltProject.isSourceFile(reqPath))
 	{
 		console.log("Source file request :",realPath);

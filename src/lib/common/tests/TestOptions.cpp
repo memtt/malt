@@ -27,7 +27,7 @@ const char cstJson[] = "\
 		\"mode\":\"backtrace\",\n\
 		\"resolve\":true,\n\
 		\"libunwind\":false,\n\
-		\"stackSkip\":3\n\
+		\"stackSkip\":4\n\
 	},\n\
 	\"output\":{\n\
 		\"callgrind\":false,\n\

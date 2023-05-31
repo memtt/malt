@@ -31,7 +31,11 @@ TEST(Debug,debug)
 	std::stringstream out;
 	std::stringstream err;
 	debug.end(out, err);
-	EXPECT_EQ("\nDebug : At source.cpp:10 : \nDebug : message value\n", out.str());
+	#ifndef NDEBUG
+		EXPECT_EQ("\nDebug : At source.cpp:10 : \nDebug : message value\n", out.str());
+	#else
+		EXPECT_EQ("", out.str());
+	#endif
 	EXPECT_EQ("", err.str());
 }
 

@@ -18,7 +18,7 @@ var allocFuncRegexp = /^((__gnu_cxx::new_allocator)|(operator new)|(operator del
 /**
  * An adapter class that encapsulates a stack-tree and exposes
  * it as nodes and edges, suitable for making a calltree graph.
- * 
+ *
  * @param {object} stacktree Stack tree object
  */
 function CallTreeAdapter(stacktree)
@@ -93,7 +93,7 @@ function CallTreeAdapter(stacktree)
 				reduceStat(cur,call.info);
 			}
 		}
-		
+
 		return tree;
 	}
 
@@ -102,7 +102,7 @@ function CallTreeAdapter(stacktree)
 	 * @param  {object} location Location object for a function
 	 * @return {string}          Identifier
 	 */
-	function getIdentifier(location) 
+	function getIdentifier(location)
 	{
 		if(!location)
 			return null;
@@ -135,7 +135,7 @@ function CallTreeAdapter(stacktree)
 			// Remove useless nodes
 			// if(tree.info.alloc.count == 0)
 			// 	return null;
-				
+
 			if(allocFuncRegexp.test(tree.location.function))
 				return null;
 
@@ -150,7 +150,7 @@ function CallTreeAdapter(stacktree)
 					tooltip: tree.location.function,
 					level: level,
 					stats: extend(true, {}, tree.info),
-					data: tree, 
+					data: tree,
 					outEdges: [],
 					inEdges: []
 				});
@@ -159,7 +159,7 @@ function CallTreeAdapter(stacktree)
 				if(stack.indexOf(currentId) == -1)
 					maltHelper.mergeStackInfoDatas(nodes[currentId - 1].stats, tree.info);
 			}
-		} 
+		}
 
 		// Add current node to stack
 		if(currentId)
@@ -179,8 +179,8 @@ function CallTreeAdapter(stacktree)
 					vertices.push({
 						from: currentId,
 						to: childId
-					});					
-				} else if(childId != null && vertCache.exists(currentId + "," + childId) 
+					});
+				} else if(childId != null && vertCache.exists(currentId + "," + childId)
 					&& stack.slice(0, level-1).indexOf(currentId) == -1
 					&& stack.slice(0, level-1).indexOf(childId) == -1) {
 					// Find existing edge and merge stats
@@ -204,13 +204,13 @@ function CallTreeAdapter(stacktree)
 	 * @param  {object} tree Call-tree
 	 * @return {object}      Contains nodes and edges
 	 */
-	function generateTreeDataSet(tree) 
+	function generateTreeDataSet(tree)
 	{
 		var nodes = [], vertices= [];
 		generateNodesAndVertices(tree, 0, nodes, vertices, new SimpleIdCache(), new SimpleIdCache(), []);
 
 		return {
-			nodes: nodes, 
+			nodes: nodes,
 			edges: vertices
 		};
 	}
@@ -235,7 +235,7 @@ function CallTreeAdapter(stacktree)
 	 *
 	 * Color is added as the 'color' property on each node and edge.
 	 * 'Thickness' is also added to the edges.
-	 * 
+	 *
 	 * @param {dataset} dataset Call-Tree dataset
 	 */
 	function addColorCodes(dataset) {
@@ -347,12 +347,12 @@ function CallTreeAdapter(stacktree)
 					filterDescendantsRecurse(currentEdges[i].id, nodeSet, edges, depth - 1, costFilter);
 				}
 			}
-			
+
 			if(("" + currentEdges[i].id) in nodeSet) {
 				edges.push({
-					from: nodeId, 
-					to: currentEdges[i].id, 
-					score: currentEdges[i].scoreReadable, 
+					from: nodeId,
+					to: currentEdges[i].id,
+					score: currentEdges[i].scoreReadable,
 					color: currentEdges[i].color,
 					thickness: currentEdges[i].thickness
 				});
@@ -386,8 +386,8 @@ function CallTreeAdapter(stacktree)
 
 			if(("" + currentEdges[i].id) in nodeSet) {
 				edges.push({
-					from: currentEdges[i].id, 
-					to: nodeId, 
+					from: currentEdges[i].id,
+					to: nodeId,
 					score: currentEdges[i].scoreReadable,
 					color: currentEdges[i].color,
 					thickness: currentEdges[i].thickness
@@ -449,7 +449,7 @@ function CallTreeAdapter(stacktree)
 	 * @param  {string} func Function name
 	 * @return {object}      Node if found, otherwise null
 	 */
-	this.getNodeByFunctionName = function(func) 
+	this.getNodeByFunctionName = function(func)
 	{
 		var nodes = fulltree.nodes;
 		for (var i = 0; i < nodes.length; i++) {
@@ -473,7 +473,7 @@ function CallTreeAdapter(stacktree)
 	 * Filter a tree to have only the ancestors and decendants for a particular node.
 	 * @param  {int} nodeId Node id of focal node
 	 * @param  {int} depth  Depth to limit to. Defaults to unlimited.
-	 * @param  {int} height Height to limit to. Defaults to unlimited. 
+	 * @param  {int} height Height to limit to. Defaults to unlimited.
 	 * @param  {float} costFilterPercentage Minimum cost in percentage for node to be included.
 	 * @param  {string} metric               Type of metric to use as score.
 	 * @param {boolean} isRatio Should the node scores be calculated as percentages?
@@ -549,7 +549,7 @@ function CallTreeAdapter(stacktree)
 				filterDescendantsRecurse(fulltree.nodes[i].id, nodeSet, edgeList, depth, childrenCostFilter);
 			}
 		}
-		
+
 		var edgeSet = {};
 		var edges = [];
 		var nodes = [];

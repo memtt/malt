@@ -3,7 +3,7 @@
  *
  * Tracks objects by assigning unique numeric ids to them.
  */
-function SimpleIdCache() 
+function SimpleIdCache()
 {
 	this.cache = [];
 	this.id = 1;
@@ -20,11 +20,11 @@ function SimpleIdCache()
 	}
 
 	/**
-	 * Put an object into the cache and returns its unique id. 
-	 * 
-	 * If the object already exists in the cache, just 
+	 * Put an object into the cache and returns its unique id.
+	 *
+	 * If the object already exists in the cache, just
 	 * returns the id of the object.
-	 * 
+	 *
 	 * @param  {string} value Value to put into the cache
 	 * @return {int}          Unique id for this value
 	 */
@@ -39,9 +39,9 @@ function SimpleIdCache()
 	 * Get the unique id for an object.
 	 *
 	 * If the object is not in the cache, returns false.
-	 * 
+	 *
 	 * @param  {string} value Value to check in the cache
-	 * @return {int|boolean}  Returns the unqiue id or 
+	 * @return {int|boolean}  Returns the unqiue id or
 	 *                        false if value is not found.
 	 */
 	this.get = function(value) {

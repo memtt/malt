@@ -2,12 +2,12 @@ var extend = require('extend');
 
 /**
  * Generate dot code via a fluent style
- * 
+ *
  * Dot code is compatible with Graphviz. Currently only
- * a limited language is supported for the use-case of 
+ * a limited language is supported for the use-case of
  * generating a simple tree diagram.
  *
- * For reference, see www.graphviz.org/doc/info/lang.html 
+ * For reference, see www.graphviz.org/doc/info/lang.html
  */
 function DotCode()
 {
@@ -67,7 +67,7 @@ function DotCode()
 	 * First argument is optional. If the user just provides a
 	 * property list, then it is used to set the properties of
 	 * all the nodes in general.
-	 * 
+	 *
 	 * @param  {string} id   Name of node
 	 * @param  {map} prop    Property map for node
 	 * @return {DotCode}     Current instance
@@ -91,7 +91,7 @@ function DotCode()
 	 * First argument is optional. If the user just provides a
 	 * property list, then it is used to set the properties of
 	 * all the edges in general.
-	 * 
+	 *
 	 * @param  {string} from Name of start node
 	 * @param  {string} to   Name of end node
 	 * @param  {map} prop    Property map for edge

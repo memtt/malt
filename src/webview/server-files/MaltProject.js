@@ -17,7 +17,7 @@ function MaltProject(file)
 	//declare internal stats to get a short list in same place
 	this.data = null;//store data tree
 	this.file = null;//more for debug to remember the related data file
-	
+
 	//load file
 	if (file != undefined)
 	{
@@ -42,7 +42,7 @@ MaltProject.prototype.loadData = function(data)
 
 	//setup current data
 	this.data = data;
-	
+
 	//this is more to debug
 // 	this.data.stacks = this.getFullTree();
 // 	console.log(JSON.stringify(data));
@@ -64,7 +64,7 @@ MaltProject.prototype.loadFile = function(file)
 	this.data = null;
 	this.file = file;
 	var cur = this;
-	
+
 	//read from FS
 	fs.readFile(args.params.input, 'utf8', function (err, buffer) {
 		console.log("Loading file : " + args.params.input);
@@ -76,10 +76,10 @@ MaltProject.prototype.loadFile = function(file)
 // 			console.log(err);
 // 			throw new Error(err);
 		}
-		
+
 		//ok parse
 		var data = JSON.parse(buffer);
-		
+
 		cur.loadData(data);
 	});
 }
@@ -98,13 +98,13 @@ MaltProject.prototype.completeMemtraceAt = function(data)
 {
 	var stats = this.data.stacks.stats;
 	var out = [];
-	
+
 	for(var i in stats)
 	{
 		//extract some short refs
 		var statsEntry = stats[i];
 		var stack = statsEntry.stack;
-		
+
 		console.log(statsEntry.stackId + " -> " + data[statsEntry.stackId]);
 		if (data[statsEntry.stackId] != undefined)
 			out.push({stack:statsEntry.detailedStack,info:data[statsEntry.stackId]});
@@ -114,7 +114,7 @@ MaltProject.prototype.completeMemtraceAt = function(data)
 
 /****************************************************/
 /**
- * Just to get the trace filename if available. 
+ * Just to get the trace filename if available.
 **/
 MaltProject.prototype.getTraceFilename = function()
 {
@@ -165,7 +165,7 @@ MaltProject.prototype.getDebugStackList = function()
 **/
 MaltProject.prototype.getGlobalVariables = function()
 {
-	return { 
+	return {
 		vars: this.data.memStats.globalVariables,
 		maxThreadCount: this.data.globals.maxThreadCount
 	};
@@ -188,7 +188,7 @@ MaltProject.prototype.getFlatProfile = function(mapping,accept,fields,total)
 	var cur = null;
 	if (total == false)
 		callers = "childs";
-	
+
 	for(var i in stats)
 	{
 		//extract some short refs
@@ -196,7 +196,7 @@ MaltProject.prototype.getFlatProfile = function(mapping,accept,fields,total)
 		var detailedStack = statsEntry.detailedStack;
 		var infos = statsEntry.infos;
 		var stack = statsEntry.stack;
-		
+
 		//skip C++ operators
 		var skip = 0;
 		while (skip < detailedStack.length && isAllocFunction(detailedStack[skip].function)) skip++;
@@ -205,12 +205,12 @@ MaltProject.prototype.getFlatProfile = function(mapping,accept,fields,total)
 			console.log("Warning : get call stacks with only allocation function ??? : "+JSON.stringify(detailedStack) +" -> "+JSON.stringify(statsEntry));
 			continue;
 		}
-		
+
 		//update internal values
 		cur = detailedStack[skip];
 		if (accept == true || accept(cur,infos) == true)
 			mergeStackInfo(res,cur,stack[skip],"own",infos,mapping,fields);
-		
+
 		//childs
 		var done = new Object;
 		for (var j in stack)
@@ -218,7 +218,7 @@ MaltProject.prototype.getFlatProfile = function(mapping,accept,fields,total)
 			//skip firsts for 'own' mode, otherwise keep them
 			if (total == false && j <= skip)
 				continue;
-			
+
 			//extract some quick refs
 			cur = detailedStack[j];
 			var key = mapping(cur);
@@ -230,12 +230,12 @@ MaltProject.prototype.getFlatProfile = function(mapping,accept,fields,total)
 			}
 		}
 	}
-	
+
 	//convert to simple list
 	var finalRes = new Array();
 	for (var i in res)
 		finalRes.push(res[i]);
-	
+
 	//ok return
 	return finalRes;
 }
@@ -289,14 +289,14 @@ MaltProject.prototype.getProcMapDistr = function()
 	{
 		//compte mem
 		var mem = (parseInt(map[i].upper,16) - parseInt(map[i].lower,16));
-		
+
 		//check goal
 		var file = map[i].file;
 		if (file == '')
 			file = 'anonymous';
 		if (checkStack.test(file))
 			file = 'stack';
-		
+
 		//sum
 		if (res[file] == undefined)
 		{
@@ -342,19 +342,19 @@ MaltProject.prototype.getFilterdStacks = function(filter)
 	//get some refs
 	var stats = this.data.stacks.stats;
 	var res = new Array();	
-	
+
 	//loop on stat entries
 	for(var i in stats)
 	{
 		//extract some short pointers
 		var detailedStack = stats[i].detailedStack;
 		var info = stats[i].infos;
-		
+
 		//check if conteain
 		if (filterExtractStacksCandidate(detailedStack,filter))
 			res.push({stack:detailedStack,info:info});
 	}
-	
+
 	return res;
 }
 
@@ -409,7 +409,7 @@ MaltProject.prototype.genSummaryWarnings = function(data)
 	//vars
 	var ret = {};
 	var runtime = data.run.runtime / data.system.ticksPerSecond;
-	
+
 	//check too large recycling ratio
 	if (data.summary.recyclingRatio > 10)
 	{
@@ -438,15 +438,15 @@ MaltProject.prototype.genSummaryWarnings = function(data)
 MaltProject.prototype.getSummaryV2 = function()
 {
 	var ret = {};
-	
+
 	//extract run info
 	ret.run = this.data.run;
-	
+
 	//extract system info
 	ret.system = {};
 	ret.system.totalMemory = this.data.globals.totalMemory
 	ret.system.ticksPerSecond = this.data.globals.ticksPerSecond;
-	
+
 	//summary
 	ret.summary = {};
 	ret.summary.peakPhysicalMemory = this.data.timeline.memoryTimeline.peak[2];//this.data.timeline.physicalMem.peakMemory;
@@ -454,14 +454,14 @@ MaltProject.prototype.getSummaryV2 = function()
 	ret.summary.peakRequestedMemory = this.data.timeline.memoryTimeline.peak[0];//this.data.timeline.requestedMem.peakMemory;
 	ret.summary.peakInternalMemory = this.data.timeline.memoryTimeline.peak[3];//this.data.timeline.internalMem.peakMemory;
 	ret.summary.peakSegmentCount = this.data.timeline.memoryTimeline.peak[4];//this.data.timeline.segments.peakMemory;
-	
+
 	//rates
 	var p = 0;
 	for (var i in this.data.timeline.memoryBandwidth.values)
 		if (this.data.timeline.memoryBandwidth.values[i][1] > p)
 			p = this.data.timeline.memoryBandwidth.values[i][1];
 	ret.summary.peakAllocRate = (p / this.data.timeline.memoryBandwidth.perPoints) * this.data.globals.ticksPerSecond;
-	
+
 	p = 0;
 	for (var i in this.data.timeline.memoryBandwidth.values)
 		if (this.data.timeline.memoryBandwidth.values[i][3] > p)
@@ -484,7 +484,7 @@ MaltProject.prototype.getSummaryV2 = function()
 		count += info.alloc.count;
 		sum += info.alloc.sum;
 	}
-	
+
 	//gen
 	ret.summary.totalAllocatedMemory = sum;
 	ret.summary.recyclingRatio = sum / ret.summary.peakRequestedMemory;
@@ -492,7 +492,7 @@ MaltProject.prototype.getSummaryV2 = function()
 	ret.summary.minAllocSize = min;
 	ret.summary.meanAllocSize = sum / count;
 	ret.summary.maxAllocSize = max;
-	
+
 	//leaks
 	var leakCount = 0;
 	var leakMem = 0;
@@ -504,10 +504,10 @@ MaltProject.prototype.getSummaryV2 = function()
 	}
 	ret.summary.leakedMem = leakMem;
 	ret.summary.leakedCount = leakCount;
-	
+
 	//stacks
 	ret.summary.largestStack = this.getMaxStack().size;
-	
+
 	//global vars
 	var tlsMem = 0;
 	var gblMem = 0;
@@ -527,10 +527,10 @@ MaltProject.prototype.getSummaryV2 = function()
 	ret.summary.numGblVar = cntVars;
 	ret.summary.globalVarMem = gblMem;
 	ret.summary.tlsVarMem = tlsMem;
-	
+
 	//summary warnings
 	ret.summaryWarnings = this.genSummaryWarnings(ret);
-	
+
 	//thread stats
 	ret.threadStats = [];
 	for (var i in this.data.threads)
@@ -555,7 +555,7 @@ MaltProject.prototype.getSummary = function()
 	ret.globalStats.requestedMem = this.data.timeline.memoryTimeline.peak[0];//this.data.timeline.requestedMem.peakMemory;
 	ret.globalStats.internalMemory = this.data.timeline.memoryTimeline.peak[4];//this.data.timeline.internalMem.peakMemory;
 	ret.globalStats.segments = this.data.timeline.memoryTimeline.peak[3];//this.data.timeline.segments.peakMemory;
-	
+
 	//search min/max/count size
 	var min = -1;
 	var max = -1;
@@ -572,7 +572,7 @@ MaltProject.prototype.getSummary = function()
 		count += info.alloc.count;
 		sum += info.alloc.sum;
 	}
-	
+
 	//extract
 	ret.globalStats.minChunkSize = min;
 	ret.globalStats.maxChunkSize = max;
@@ -588,11 +588,11 @@ MaltProject.prototype.getStacksMem = function()
 {
 	//prepare array
 	var res = new Array();
-	
+
 	//copy informations
 	for (var i in this.data.threads)
 		res.push(this.data.threads[i].stackMem);
-	
+
 	//ok return
 	return {stacks:res,ticksPerSecond:this.data.globals.ticksPerSecond};
 }
@@ -605,7 +605,7 @@ MaltProject.prototype.getMaxStack = function()
 {
 	//get first to start
 	var res = this.data.threads[0].stackMem;
-	
+
 	//loop
 	for (var i in this.data.threads)
 	{
@@ -631,7 +631,7 @@ MaltProject.prototype.getFlattenMaxStackInfo = function(mapping,accept,stack)
 	//var maxStack = this.data.maxStack;
 	//var maxStack = this.getMaxStack();
 	var maxStack = stack;
-	
+
 	//loop on all entries
 	for (var i = 0 ; i < maxStack.stack.length ; i++)
 	{
@@ -644,7 +644,7 @@ MaltProject.prototype.getFlattenMaxStackInfo = function(mapping,accept,stack)
 			key = mapping(info);
 		else
 			info = {function:addr};
-		
+
 		//check filter
 		if (accept == true || accept(info))
 		{
@@ -658,12 +658,12 @@ MaltProject.prototype.getFlattenMaxStackInfo = function(mapping,accept,stack)
 			}
 		}
 	}
-	
+
 	//remove keys
 	var finalRes = [];
 	for (var i in ret)
 		finalRes.push(ret[i]);
-	
+
 	//ok return
 	return {details:finalRes,totalMem:maxStack.size};
 }
@@ -709,7 +709,7 @@ MaltProject.prototype.getFullTree = function()
 {
 	var tree = {};
 	var data = this.data;
-	
+
 	for (var i in data.stacks.stats)
 	{
 		var cur = tree;
@@ -724,13 +724,13 @@ MaltProject.prototype.getFullTree = function()
 			}
 			cur = cur[stack[j]];
 		}
-		
+
 		if (cur.infos == undefined)
 			cur.infos = clone(infos);
 		else
 			mergeStackInfoDatas(cur.infos,infos);
 	}
-	
+
 	return tree;
 }
 
@@ -781,7 +781,7 @@ MaltProject.prototype.getCallTree = function(nodeId, depth, height, minCost, fun
 		resp.file = "Root nodes";
 		resp.fileShort = resp.file;
 		resp.function = "Filtering might hide some nodes";
-		resp.functionShort = resp.function;		
+		resp.functionShort = resp.function;
 	} else {
 		resp.nodeId = nodeId;
 		resp.file = node.data.location.file;
@@ -793,7 +793,7 @@ MaltProject.prototype.getCallTree = function(nodeId, depth, height, minCost, fun
 	resp.dotCode = GraphGenerator.getDotCodeForTree(filteredTree, nodeId);
 	// console.timeEnd("getDotCodeForTree");
 	resp.svg = null;
-	
+
 	// Generate SVG code from Dot code if GraphViz is installed
 	if(GraphGenerator.isInstalled()) {
 		// console.time("convertDotToSvg");
@@ -867,8 +867,8 @@ MaltProject.prototype.getActiveChunks = function(timestamp, callback) {
 		}
 
 		callback({
-			timestamp: timestamp, 
-			resultCount: traceData.length, 
+			timestamp: timestamp,
+			resultCount: traceData.length,
 			result: traceData
 		});
 	});
@@ -879,9 +879,9 @@ MaltProject.prototype.toCallgrindFormat = function()
 {
 	//obj to store infos pre-sorted for output
 	var res = {
-		
+
 	};
-	
+
 	//loop on each stacks
 	console.log(this);
 	for (var i in this.data.stacks.stats)
@@ -889,7 +889,6 @@ MaltProject.prototype.toCallgrindFormat = function()
 		var stack = this.data.stacks.stats[i];
 		var callerCallee = this.getStackCallerCalle(stack);
 
-		
 	}
 	return res;
 }
@@ -898,7 +897,7 @@ MaltProject.prototype.toCallgrindFormat = function()
 MaltProject.prototype.getStackCallerCalle = function(stack)
 {
 	console.log(stack);
-	//leafCallee = 
+	//leafCallee =
 }
 
 /****************************************************/
@@ -960,11 +959,11 @@ function mergeStackInfo(into,detailedStackEntry,addr,subKey,infos,mapping,fields
 	{
 		//not exist -> create
 		cur = new Object();
-	
+
 		//copy user requested fields
 		for (var i in fields)
 			cur[fields[i]] = detailedStackEntry[fields[i]];
-		
+
 		//add
 		into[key] = cur;
 	} else {
@@ -972,7 +971,7 @@ function mergeStackInfo(into,detailedStackEntry,addr,subKey,infos,mapping,fields
 		if (detailedStackEntry.line != 0 && detailedStackEntry.line != -1 && (detailedStackEntry.line < cur.line || cur.line == -1 || cur.line == 0))
 			cur.line = detailedStackEntry.line;
 	}
-	
+
 	//check for subkey (own or total) and clone or merge
 	if (cur[subKey] == undefined)
 		cur[subKey] = clone(infos);
@@ -1011,7 +1010,7 @@ function genDetailedStack(instrs,stack)
 {
 	//create final array
 	var res = new Array();
-	
+
 	//loop on entries and match
 	for (var i in stack)
 	{
@@ -1019,11 +1018,11 @@ function genDetailedStack(instrs,stack)
 		var details = instrs[stack[i]];
 		if (details == undefined)
 			throw Error("Cannot find details for instruction " + stack[i]);
-		
+
 		//push into detailed stack
 		res.push(details);
 	}
-	
+
 	//ok return
 	return res;
 }
@@ -1055,7 +1054,7 @@ function rebuildChilds(finalStacks,stack,cur,data,addresses)
 		var alloc = data.alloc[cur.dataId];
 		var free = data.free[cur.dataId];
 		var lifetime = data.lifetime[cur.dataId];
-	
+
 		//fill
 		finalStacks.push({
 			stack: clone(stack),
@@ -1088,7 +1087,7 @@ function rebuildChilds(finalStacks,stack,cur,data,addresses)
 			}
 		})
 	}
-	
+
 	//childs
 	for (var i in cur)
 	{
@@ -1115,7 +1114,7 @@ function rebuildStacks(data)
 	//don't need
 	if (data.stacks.stats != undefined)
 		return;
-	
+
 	//message
 	console.log("Start to convert tree representation to old flat for compat")
 
@@ -1141,16 +1140,16 @@ function optimizeProjectDatas(data)
 {
 	//rebuild stack
 	rebuildStacks(data);
-	
+
 	//get some inside vars
 	var strings = data.sites.strings;
 	var instrs = data.sites.instr;
-	
+
 	//TODO remove
 	for (var i in strings)
 		if (strings[i] == '')
 			console.log("???????????? => "+i+" -> "+strings.length);
-	
+
 	//do for stacks/instr section
 	//avoid to jump to string table every time
 	console.log("Optimizing sites.instr...");
@@ -1169,7 +1168,7 @@ function optimizeProjectDatas(data)
 		if (site.line == undefined)
 			site.line = -1;
 	}
-	
+
 	//add detailedStack field to entries from stckInfo.stats and leaks
 	//avoid to jump to instr table every time
 	console.log("Optimizing access to stack details...");
