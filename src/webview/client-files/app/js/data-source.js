@@ -3,7 +3,7 @@
 //itself
 function MaltDataSourceNodeJS()
 {
-	
+
 }
 
 //wrapper to fetch source files from remote server [source-editor.js]
@@ -126,7 +126,7 @@ function MaltDataSourceClientSide()
 	this.data = {};
 // 	var MaltProject = require("MaltProject");
 	this.project = new MaltProject();
-	
+
 	$.getJSON("/data.json",function(data) {
 		cur.data = data;
 		cur.project.loadData(data);
@@ -143,7 +143,7 @@ function MaltDataSourceClientSideData(data)
 	this.data = {};
 // 	var MaltProject = require("MaltProject");
 	this.project = new MaltProject();
-	
+
 	cur.project.loadData(data);
 }
 

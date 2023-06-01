@@ -5,7 +5,7 @@ function MaltPageTimeline()
 	var maltModule = angular.module('malt.page.sources',[]);
 	var svgId = 0;
 	var cur = this;
-	
+
 	//main controler of the page
 	var pageCtrl = maltCtrl.controller('malt.page.sources.ctrl',['$scope','$routeParams','$http',function($scope,$routeParams,$http) {
 		$scope.functions = [];
@@ -22,7 +22,7 @@ function MaltPageTimeline()
 			return ($scope.file == "No source file..." || $scope.file == "??" 
 				|| $scope.file == '' || $scope.file == undefined);
 		}
-		
+
 		// Event handler for maltFunctionSelector onSelect event
 		$scope.onFunctionSelectEvent = function(data) {
 			$scope.file = data.file;
@@ -31,7 +31,7 @@ function MaltPageTimeline()
 			$scope.callStacks.updateFunc(data.function);
 			$scope.selectedDetails = data;
 		};
-		
+
 		//dispatch update of view mode (metric...)
 		$scope.selector.onChange = function()
 		{
@@ -39,7 +39,7 @@ function MaltPageTimeline()
 			$scope.callStacks.updateFunc($scope.function);
 			$scope.editor.redrawAnnotations();
 		}
-		
+
 		//dispatch click on annotations
 		$scope.editor.onClick = function(details)
 		{
@@ -49,7 +49,7 @@ function MaltPageTimeline()
 			$scope.selectedDetails = details;
 			$scope.$apply();
 		}
-		
+
 		//distpatch click on stack tree
 		$scope.callStacks.onClick = function(location,info)
 		{
@@ -60,7 +60,7 @@ function MaltPageTimeline()
 			$scope.function = location.function;
 			$scope.$apply();
 		}
-		
+
 		//fetch function list datas
 		maltDataSource.loadFlatFunctionStats($http,function(data) {
 			$scope.functions = data;

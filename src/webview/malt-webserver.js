@@ -14,6 +14,8 @@ var Express     = require('express');
 var clone       = require('clone');
 var child       = require('child_process');
 var auth        = require('http-auth');
+var process     = require('process');
+var path        = require('path');
 
 //internal classes
 var MaltProject = require('./server-files/MaltProject.js');
@@ -334,7 +336,7 @@ app.get('/data.json',function(eq,res,next){
 /****************************************************/
 var staticSourceServer = Express.static('/');
 app.use('/app-sources/',function(req,res,next){
-	var reqPath = req.path.replace('/%7B.%7D/','./');
+	var reqPath = req.path.replace('/%7B.%7D/','./').replace("//","/").replace(/[/]+$/, "");
 	var realPath = reqPath;
 
 	//check for redirect
@@ -342,17 +344,29 @@ app.use('/app-sources/',function(req,res,next){
 	{
 		if (realPath.indexOf(redirs[i].source) == 0)
 		{
-			realPath = realPath.replace(redirs[i].source,redirs[i].dest)
+			realPath = realPath.replace(redirs[i].source,redirs[i].dest);
 			console.log("Apply redirection with override : " + reqPath+" -> "+realPath);
 		}
 	}
 
+	//check if valid source file (not to send full home !)
 	if (maltProject.isSourceFile(reqPath))
 	{
+		//display
 		console.log("Source file request :",realPath);
+
+		//make abs if relative
+		if (realPath[0] != '/') {
+			realPath = path.resolve(realPath);
+			console.log("Source file request made absolute :", realPath);
+		}
+
+		//patch request
 		req.path = realPath;
 		req.url = realPath;
 		res.header("Content-Type", "text/plain");
+
+		//send file
 		return staticSourceServer(req,res,next);
 	} else {
 		//invalid source request

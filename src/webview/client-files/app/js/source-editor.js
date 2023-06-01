@@ -8,16 +8,16 @@ function MaltSourceEditor(containerId,selector)
 {
 	//errors
 	//maltHelper.assert(selector != undefined && selector instanceof MaltSelector);
-	
+
 	//setup container
 	this.containerId = containerId;
 	this.container = document.getElementById(containerId);
 	this.syntaxHighlighterEle = null;
-	
+
 	//check and link
 	//maltHelper.assert(this.container != undefined);
 	this.container.malt = this;
-	
+
 	//defaults
 	this.file = null;
 	this.data = null;
@@ -119,7 +119,7 @@ MaltSourceEditor.prototype.moveToFile = function(file)
 	function safe_tags_replace(str) {
 	    return str.replace(/[&<>]/g, replaceTag);
 	}
-	
+
 	//load the new file in editor
 	if(file == '??' || file == '' || file == undefined) {
 		return;
@@ -127,8 +127,8 @@ MaltSourceEditor.prototype.moveToFile = function(file)
 		var cur = this;
 		maltDataSource.loadSourceFile(file,function(data){
 			// File loaded, now highlight it
-			cur.container.innerHTML = 
-				'<pre class="line-numbers"><code class="' + 
+			cur.container.innerHTML =
+				'<pre class="line-numbers"><code class="' +
 				cur.getLanguageClassForHighlighter(cur.getLanguage(file)) + '">' +
 				safe_tags_replace(data) + '</code></pre>';
 			cur.syntaxHighlighterEle = cur.container.getElementsByTagName("code")[0];
@@ -137,14 +137,14 @@ MaltSourceEditor.prototype.moveToFile = function(file)
 			cur.updateAnotations();
 		}, function() {
 			// XHR fails to load file, show error message
-			cur.container.innerHTML = 
-				'<pre class="line-numbers"><code>Source for the file, ' 
+			cur.container.innerHTML =
+				'<pre class="line-numbers"><code>Source for the file, '
 				+ file + ', could not be loaded.</code></pre>';
 			cur.syntaxHighlighterEle = cur.container.getElementsByTagName("code")[0];
 			Prism.highlightElement(cur.syntaxHighlighterEle);
 			Prism.plugins.codeAnnotator.add(cur.syntaxHighlighterEle, {
-				line: 1, 
-				text: "Error", 
+				line: 1,
+				text: "Error",
 				class: "line-annotate-large"
 			});
 		});
@@ -242,7 +242,7 @@ MaltSourceEditor.prototype.extractMax = function(data)
 				max = value;
 		}
 	}
-	
+
 	//return max
 	return max;
 }
@@ -254,7 +254,7 @@ MaltSourceEditor.prototype.updateAnotations = function()
 	//keep track of current this
 	var cur = this;
 	var file = this.file;
-	
+
 	//fetch flat profile of current file
 	maltDataSource.loadSourceFileAnnotations(file,function(data) {
 
@@ -265,10 +265,10 @@ MaltSourceEditor.prototype.updateAnotations = function()
 			data[i].file = cur.file;
 			cur.internalComputeTotal(data[i]);
 		}
-		
+
 		//draw annotations
 		cur.redrawAnnotations();
-		
+
 		//move
 		cur.doPostMove();
 	});
@@ -279,12 +279,12 @@ MaltSourceEditor.prototype.redrawAnnotations = function()
 {
 	//search max to compute color gradiant
 	var max = this.extractMax(this.data);
-	
+
 	//use D3JS for color gradiant from blue -> red
 	var colorScale = d3.scale.linear()
 		.range(["#397EBA","#FF9595"])
 		.domain([0,max]);
-	
+
 	//clear
 	Prism.plugins.codeAnnotator.removeAll(this.syntaxHighlighterEle);
 
@@ -293,8 +293,8 @@ MaltSourceEditor.prototype.redrawAnnotations = function()
 	for (var i in this.data) {
 		if (this.selector.getValue(this.data[i]) != 0)
 		Prism.plugins.codeAnnotator.add(this.syntaxHighlighterEle, {
-			line: this.data[i].line, 
-			text: this.selector.getFormattedValue(this.data[i]), 
+			line: this.data[i].line,
+			text: this.selector.getFormattedValue(this.data[i]),
 			// class: "line-annotate-small",
 			color: colorScale(this.selector.getValue(this.data[i])),
 			onClick: function(ele, data) {
