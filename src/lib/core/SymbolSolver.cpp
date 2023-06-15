@@ -394,6 +394,30 @@ void SymbolSolver::solveNames(void)
 
 /*******************  FUNCTION  *********************/
 /**
+ * Just search for the ASLR offset for each proc map entry used so we
+ * can eventually solve again the symbole in post-mortem.
+*/
+void SymbolSolver::solveAslrOffsets(void)
+{
+	//loop on assemblies to extract names
+	for (LinuxProcMap::iterator it = procMap.begin() ; it != procMap.end() ; ++it)
+	{
+		if (!(it->file.empty() || it->file[0] == '['))
+		{
+			//create addr2line args
+			for (CallSiteMap::iterator it2 = callSiteMap.begin() ; it2 != callSiteMap.end() ; ++it2)
+			{
+				if (it2->second.mapEntry == &*it) {
+					it->aslrOffset = this->getASRLOffset(it2->first);
+					break;
+				}
+			}
+		}
+	}
+}
+
+/*******************  FUNCTION  *********************/
+/**
  * Solve de symbols which have been registered by registerAddress().
  * Symbols are solved via maqao.
 **/

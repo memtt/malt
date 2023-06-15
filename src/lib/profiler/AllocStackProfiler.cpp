@@ -522,14 +522,16 @@ void AllocStackProfiler::onExit(void )
 		unsetenv("LD_PRELOAD");
 		
 		//solve symbols
-		if (options.stackResolve)
-			CODE_TIMING("solveSymbols",
-				this->symbolResolver.loadProcMap();
-				this->solvePerThreadSymbols();
-				this->stackTracker.solveSymbols(symbolResolver);
-				this->symbolResolver.solveNames()
-			);
-		
+		CODE_TIMING("solveSymbols",
+			this->symbolResolver.loadProcMap();
+			this->solvePerThreadSymbols();
+			this->stackTracker.solveSymbols(symbolResolver);
+			if (options.stackResolve)
+				this->symbolResolver.solveNames();
+			else
+				this->symbolResolver.solveAslrOffsets();
+		);
+	
 		//check which allocator is in use
 		LinuxProcMapEntry * mallocProcMapEntry = this->symbolResolver.getMapEntry((void*)(this->realMallocAddr));
 		if (mallocProcMapEntry != NULL)
