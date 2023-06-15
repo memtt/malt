@@ -24,6 +24,7 @@ struct LinuxProcMapEntry
 	void * lower;
 	void * upper;
 	void * offset;
+	void * aslrOffset;
 	std::string file;
 };
 

@@ -1,6 +1,7 @@
 #include <mpi.h>
 #include <sys/types.h>
 #include <unistd.h>
+#include <cstdio>
 
 namespace MALT
 {
@@ -37,7 +38,7 @@ int MPI_Init(int *argc, char ***argv)
 	
 	//extract rank
 	MPI_Comm_rank(MPI_COMM_WORLD,&MALT::mpiRank);
-	
+
 	return res;
 }
 

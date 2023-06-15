@@ -322,6 +322,7 @@ void convertToJson(htopml::JsonState& json, const LinuxProcMapEntry& value)
 	json.printField("lower",value.lower);
 	json.printField("upper",value.upper);
 	json.printField("offset",value.offset);
+	json.printField("aslrOffset", value.aslrOffset);
 	json.printField("file",value.file);
 	json.closeStruct();
 }
@@ -412,6 +413,25 @@ void SymbolSolver::solveMaqaoNames(void)
 }
 
 /*******************  FUNCTION  *********************/
+/**
+ * Determine the offset to remove from the effective addres to get the address
+ * in the binary file. It might need some tricks when ASLR is enabled which
+ * is obtained by getaddr().
+*/
+void * SymbolSolver::getASRLOffset(void * instrAddr) const
+{
+	//From https://stackoverflow.com/questions/55066749/how-to-find-load-relocation-for-a-pie-binary
+	Dl_info info;
+	void *extra = NULL;
+	size_t elf2AddrOffset = 0;
+	if (dladdr1(instrAddr, &info, &extra, RTLD_DL_LINKMAP)) {
+		struct link_map *map = (struct link_map *)extra;
+		elf2AddrOffset = map->l_addr;
+	}
+	return (void*)elf2AddrOffset;
+}
+
+/*******************  FUNCTION  *********************/
 /* 
  * Some links :
  * man proc & man addr2line
@@ -433,21 +453,18 @@ void SymbolSolver::solveNames(LinuxProcMapEntry * procMapEntry)
 	std::vector<CallSite*> lst;
 	
 	//create addr2line args
+	bool firstNeedAslrScan = true;
 	for (CallSiteMap::iterator it = callSiteMap.begin() ; it != callSiteMap.end() ; ++it)
 	{
 		if (it->second.mapEntry == procMapEntry)
 		{
-			//From https://stackoverflow.com/questions/55066749/how-to-find-load-relocation-for-a-pie-binary
-			Dl_info info;
-			void *extra = NULL;
-			size_t elf2AddrOffset = 0;
-			if (dladdr1(it->first, &info, &extra, RTLD_DL_LINKMAP)) {
-				struct link_map *map = (struct link_map *)extra;
-				elf2AddrOffset = map->l_addr;
+			if (firstNeedAslrScan) {
+				procMapEntry->aslrOffset = this->getASRLOffset(it->first);
+				firstNeedAslrScan = false;
 			}
 
 			//printf("OFFSET %zx %zx %zx %zx\n", it->first, procMapEntry->lower, map->l_addr, elfVaddr);
-			addr2lineCmd << ' '  << (void*)(((size_t)it->first - elf2AddrOffset));
+			addr2lineCmd << ' '  << (void*)(((size_t)it->first - (size_t)procMapEntry->aslrOffset));
 			hasEntries = true;
 			lst.push_back(&it->second);
 		}
