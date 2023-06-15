@@ -626,9 +626,9 @@ void SymbolSolver::registerMaqaoFunctionSymbol(int funcId, const char* funcName,
 **/
 void convertToJson(htopml::JsonState& json, const CallSite& value)
 {
+	json.openStruct();
 	if (value.mapEntry != NULL || value.line != 0 || value.function != -1 || value.file != -1)
 	{
-		json.openStruct();
 		if (value.file != -1)// && *value.file != "??")
 			json.printField("file",value.file);
 		if (value.function != -1)// && *value.function != "??")
@@ -637,8 +637,8 @@ void convertToJson(htopml::JsonState& json, const CallSite& value)
 			json.printField("line",value.line);
 		if (value.file != -1)
 			json.printField("binary",value.file);
-		json.closeStruct();
 	}
+	json.closeStruct();
 }
 
 /*******************  FUNCTION  *********************/

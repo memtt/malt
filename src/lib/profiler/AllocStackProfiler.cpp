@@ -646,8 +646,7 @@ void convertToJson(htopml::JsonState& json, const AllocStackProfiler& value)
 			json.printField("stacks",*value.stackTree);
 	}
 	
-	if (value.options.stackResolve)
-		json.printField("sites",value.symbolResolver);
+	json.printField("sites",value.symbolResolver);
 
 	if (value.options.timeProfileEnabled)
 	{

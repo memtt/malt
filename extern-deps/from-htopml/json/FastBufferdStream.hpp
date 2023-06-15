@@ -225,7 +225,11 @@ inline FastBufferedStream& operator<<(FastBufferedStream& out, void * value)
 
 	if (out.availSize() < 32)
 		out.flush();
-	int size = snprintf(out.buffer+out.position,out.availSize(),"%p",value);
+	int size = 0;
+	if (value == NULL)
+		size = snprintf(out.buffer+out.position,out.availSize(),"0x0");
+	else
+		size = snprintf(out.buffer+out.position,out.availSize(),"%p",value);
 	out.position += size;
 	return out;
 }
