@@ -37,7 +37,7 @@ TEST(TestOS,getProcMemUsage)
 {
 	//increase the mem usage
 	const size_t size = 100*1024*1024;
-	void * ptr = malloc(size);
+	void * ptr = OS::mmap(size, false);
 
 	//call
 	OSProcMemUsage mem1 = OS::getProcMemoryUsage();
@@ -50,7 +50,7 @@ TEST(TestOS,getProcMemUsage)
 	EXPECT_GE(mem2.physicalMemory, size);
 
 	//ok
-	free(ptr);
+	OS::munmap(ptr, size);
 }
 
 /*******************  FUNCTION  *********************/
