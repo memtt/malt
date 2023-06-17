@@ -119,10 +119,12 @@ void ElfReader::openFile(const std::string& file)
 	this->elf = elf_begin(fileno(fp),ELF_C_READ,NULL);
 	if (this->elf == NULL)
 	{
+		//caution, elf_errno reset the error gbl var to 0, not call it twice.
+		const int errId = elf_errno();
 		MALT_WARNING_ARG("Failed to open ELF file : %1. Error %2 : %3")
 			.arg(file)
-			.arg(elf_errno())
-			.arg(elf_errmsg(elf_errno()))
+			.arg(errId)
+			.arg(elf_errmsg(errId))
 			.end();
 		goto err_elf_begin;
 	}
