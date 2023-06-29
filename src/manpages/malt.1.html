@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta http-equiv='content-type' content='text/html;charset=utf8'>
-  <meta name='generator' content='Ronn-NG/v0.8.0 (http://github.com/apjanke/ronn-ng/tree/0.8.0)'>
+  <meta name='generator' content='Ronn-NG/v0.9.1 (http://github.com/apjanke/ronn-ng/tree/0.9.1)'>
   <title>malt(1) - A memory profiling tool</title>
   <style type='text/css' media='all'>
   /* style: man */
@@ -62,6 +62,7 @@
     <a href="#CONFIGURATION-FILE">CONFIGURATION FILE</a>
     <a href="#ENVIRONMENT">ENVIRONMENT</a>
     <a href="#ON-SUB-PART-OF-YOUR-PROGRAM">ON SUB-PART OF YOUR PROGRAM</a>
+    <a href="#WRAPPING-A-CUSTOM-ALLOCATOR">WRAPPING A CUSTOM ALLOCATOR</a>
     <a href="#VERSION">VERSION</a>
     <a href="#SEE-ALSO">SEE ALSO</a>
   </div>
@@ -85,62 +86,68 @@
 <h2 id="DESCRIPTION">DESCRIPTION</h2>
 
 <p>MALT is a memory profiling tool wrapping your system memory allocation and applying
-backtrace on each call. It will provide you a memory allocation profile which can
+backtrace on each call. It will provide you a memory allocation profile which can 
 be viewed with <span class="man-ref">malt-webview<span class="s">(1)</span></span>.</p>
 
 <p>MALT work out of the box but to profiling your application it might be better to compile
-it with debug symbols (<code>-g</code>) and also to disable inlining to get more accurate stacks
+it with debug symbols (<code>-g</code>) and also to disable inlining to get more accurate stacks 
 (<code>-O0</code> or <code>-fno-inline</code>).</p>
 
 <h2 id="OPTIONS">OPTIONS</h2>
 
-<dl>
-<dt>
-<code>-c</code>, <code>--config</code>
-</dt>
-<dd>Provide a config file as parameters with formats described in the next part
-of this manpage. You can also get a dump of the default configuration with <code>-d</code>.</dd>
-<dt>
-<code>-s</code>, <code>--stack</code>
-</dt>
-<dd>Select the stack tracking mode to use. It can be <code>backtrace</code> (default) to use the
-backtrace function from glibc. If you compile with libunwind you can also use the
+<ul>
+  <li>
+<code>-c</code>, <code>--config</code>: 
+Provide a config file as parameters with formats described in the next part
+of this manpage. You can also get a dump of the default configuration with <code>-d</code>.</li>
+  <li>
+<code>-s</code>, <code>--stack</code>:
+Select the stack tracking mode to use. It can be <code>backtrace</code> (default) to use the
+backtrace function from glibc. If you compile with libunwind you can also use the 
 libunwind function with <code>libunwind</code> in place of glibc backtrace. It fix some bugs
 with programs compiled with Intel compiler or using Intel libraries (like Intel OpenMP).
 But it as a side effect as libunwind as an internal memory leak. The other approach
 is to instrument your code with <code>-finstrument-function</code> and in this case you need
-to use the <code>enter-exit</code> to use it.</dd>
-<dt>
-<code>-q</code>, <code>--quiet</code>
-</dt>
-<dd>Make MALT silent to avoid mixing with default output of your program. Useful if
-you use the output to feed a script.</dd>
-<dt>
-<code>-v</code>, <code>--verbose</code>
-</dt>
-<dd>Add more infos about MALT running.</dd>
-<dt>
-<code>-d</code>, <code>--dumpconfig</code>
-</dt>
-<dd>Dump the current MALT configuration in a file with the same name as profile file.
-It helps for quick start in the configuration by getting all the options and default value.</dd>
-<dt><code>-o</code></dt>
-<dd>Permit to pass some specific options from the config file in the command line.
+to use the <code>enter-exit</code> to use it.</li>
+  <li>
+<code>-q</code>, <code>--quiet</code>:
+Make MALT silent to avoid mixing with default output of your program. Useful if
+you use the output to feed a script.</li>
+  <li>
+<code>-v</code>, <code>--verbose</code>:
+Add more infos about MALT running.</li>
+  <li>
+<code>-d</code>, <code>--dumpconfig</code>:
+Dump the current MALT configuration in a file with the same name as profile file.
+It helps for quick start in the configuration by getting all the options and default value.</li>
+  <li>
+<code>-o</code>:
+Permit to pass some specific options from the config file in the command line.
 The value is a list of options separated by commas and formatted like <code>SECTION:NAME=VALUE</code>.
-See the configuration file format (INI format) to find the available sections and names.</dd>
-<dt><code>--mpi</code></dt>
-<dd>Enable MPI support to name the output files with rank IDs instead of process IDs.
-MALT will LD_PRELOAD the library bridge from <code>~/.malt/libmaltmpi.so</code>.</dd>
-<dt><code>--prep-mpi</code></dt>
-<dd>Build the MPI bridge library : <code>~/.malt/libmaltmpi.so</code>. MALT requires it to get access
+See the configuration file format (INI format) to find the available sections and names.</li>
+  <li>
+<code>--mpi</code>:
+Enable MPI support to name the output files with rank IDs instead of process IDs.
+MALT will LD_PRELOAD the library bridge from <code>~/.malt/libmaltmpi.so</code>.</li>
+  <li>
+<code>--prep-mpi</code>:
+Build the MPI bridge library : <code>~/.malt/libmaltmpi.so</code>. MALT requires it to get access
 to MPI_Comm_rank function depending on your MPI implementation. You need to do this
-command each tome you switch your MPI implementation.</dd>
-<dt>
-<code>-h</code>, <code>--help</code>
-</dt>
-<dd>Display help message with a list of available command line options.</dd>
-</dl>
-
+command each tome you switch your MPI implementation.</li>
+  <li>
+<code>--wrap</code>:
+Permit to wrap and capture a custom memory allocator. The wrap option expect a list of function
+to wrap separated by commas (or call multiple time). The values should provide the type of function
+(<code>malloc</code>, <code>free</code>, <code>realloc</code>, <code>calloc</code>...) and the symbol to wrap on the form : <code>{type}:{symbol}</code>.</li>
+  <li>
+<code>--wrap-prefix</code>
+Automatically wrap all the memory managment functions under the given prefix. You can list
+several prefixes separated by comma. For exemple giving <code>je_</code> will wrap all the <code>je_malloc</code>,
+<code>je_free</code>, <code>je_realloc</code>... functions.</li>
+  <li>
+<code>-h</code>, <code>--help</code>:
+Display help message with a list of available command line options.</li>
+</ul>
 
 <h2 id="USING-ON-MPI-APPLICATIONS">USING ON MPI APPLICATIONS</h2>
 
@@ -149,11 +156,11 @@ but MALT can help by numbering the output files with the task rank instead of pr
 To get this, you need to compile a small wrapper adapted to your current MPI implementation.
 You need to do it once :</p>
 
-<p> malt --prep-mpi [mpicxx]</p>
+<p>malt --prep-mpi [mpicxx]</p>
 
 <p>Then take care of using the <code>--mpi</code> option on the profiling tool :</p>
 
-<p> mpirun malt --mpi ./you_program</p>
+<p>mpirun malt --mpi ./you_program</p>
 
 <h2 id="GET-THE-GUI">GET THE GUI</h2>
 
@@ -223,7 +230,6 @@ after-seconds                  = 0
 not to shrink intensive allocation steps on a long program which mostly not do allocation over the run.</dd>
 </dl>
 
-
 <p>The <code>stack</code> section support :</p>
 
 <dl>
@@ -244,53 +250,59 @@ configuration make wrong detection. This can be fixed by playing with this value
 as leaf for every calltree extracted by MALT.
 If you don't see malloc as leaf, you should increase this value. Decrease if you start to see MALT internal
 function inside.
-Notice in some cases (Gentoo, Gcc-8) we start to see LTO trashing totaly the malloc/free call in O3 mode
+Notice in some cases (Gentoo, Gcc-8) we start to see LTO trashing totaly the malloc/free call in O3 mode 
 normaly seen via backtrace. There is currently no other solution except recompiling in O0/O1 to avoid
 or maybe disable LTO optimizations or consider not having the exact location of the malloc itself.</dd>
 </dl>
 
-
 <p>The <code>output</code> section support :</p>
 
-<dl>
-<dt><code>name</code></dt>
-<dd>Define the name of the profile file. %1 is replaced by the program name, %2 by the PID or MPI rank and %3 by extension.</dd>
-<dt><code>lua</code></dt>
-<dd>Enable output in LUA format (same structure as JSON files but in LUA).</dd>
-<dt><code>json</code></dt>
-<dd>Enable output of the default JSON file format.</dd>
-<dt><code>callgrind</code></dt>
-<dd>Enable output of the compatibility format with callgrind/kcachegrind. Cannot contain all data but can be used
-with compatible existing tools.</dd>
-<dt><code>indent</code></dt>
-<dd>Enable indentations in the JSON/LUA files. Useful for debugging but generate bigger files.</dd>
-<dt><code>config</code></dt>
-<dd>Dump the config INI file.</dd>
-<dt><code>verbosity</code></dt>
-<dd>Set the verbosity mode of MALT. By <code>default</code> it print at start and end. You can use <code>silent</code> mode to disable any ouptput for
-example if you instrument shell script parsing the output of child processes. You can also use <code>verbose</code> to have more
-debugging infos in case if does not work as expected, mostly at the symbol extraction step while dumping outputs.</dd>
-<dt><code>stack-tree</code></dt>
-<dd>Enable storage of the stacks as a tree inside the output file. It produces smaller files but require conversion
+<ul>
+  <li>
+<code>name</code>:
+Define the name of the profile file. %1 is replaced by the program name, %2 by the PID or MPI rank and %3 by extension.</li>
+  <li>
+<code>lua</code>:
+Enable output in LUA format (same structure as JSON files but in LUA).</li>
+  <li>
+<code>json</code>:
+Enable output of the default JSON file format.</li>
+  <li>
+<code>callgrind</code>:
+Enable output of the compatibility format with callgrind/kcachegrind. Cannot contain all data but can be used
+with compatible existing tools.</li>
+  <li>
+<code>indent</code>: 
+Enable indentations in the JSON/LUA files. Useful for debugging but generate bigger files.</li>
+  <li>
+<code>config</code>:
+Dump the config INI file.</li>
+  <li>
+<code>verbosity</code>:
+Set the verbosity mode of MALT. By <code>default</code> it print at start and end. You can use <code>silent</code> mode to disable any ouptput for 
+example if you instrument shell script parsing the output of child processes. You can also use <code>verbose</code> to have more 
+debugging infos in case if does not work as expected, mostly at the symbol extraction step while dumping outputs.</li>
+  <li>
+<code>stack-tree</code>:
+Enable storage of the stacks as a tree inside the output file. It produces smaller files but require conversion
 at storage time and loading time to stay compatible with the basic expected format. You can use this option
-to get smaller files. In one case it lowers a 600 MB file to 200 MB to give an idea.</dd>
-<dt><code>loop-suppress</code></dt>
-<dd>Enable recursive loop calls to remove them and provide a more simplified equivalent call stack. It helps
+to get smaller files. In one case it lowers a 600 MB file to 200 MB to give an idea.</li>
+  <li>
+<code>loop-suppress</code>:
+Enable recursive loop calls to remove them and provide a more simplified equivalent call stack. It helps
 to reduce the size of profiles from applications using intensively this kind of call chain. In one case it lowers
 file from 200 MB to 85 MB. It can help if nodejs failed to load the fail because of the size. This parameter
 can also provide more readable stacks as you don't care to much how many times you cycle to call loops you
-just want to see one of them.</dd>
-</dl>
-
+just want to see one of them.</li>
+</ul>
 
 <p>The <code>max-stack</code> section support:</p>
 
 <dl>
 <dt><code>enabled</code></dt>
-<dd>Enable or disable the tracking of stack size and memory used by functions on stacks
+<dd>Enable or disable the tracking of stack size and memory used by functions on stacks 
 (require  <code>--finstrument-function</code> on your code to provide data).</dd>
 </dl>
-
 
 <p>The <code>distr</code> section support:</p>
 
@@ -301,14 +313,12 @@ just want to see one of them.</dd>
 <dd>Generate distribution of the realloc size jumps.</dd>
 </dl>
 
-
 <p>The <code>trace</code> section support:</p>
 
 <dl>
 <dt><code>enabled</code></dt>
 <dd>Enable or disable the tracing (currently not used by the GUI, work in progress).</dd>
 </dl>
-
 
 <p>The <code>info</code> section support:</p>
 
@@ -321,7 +331,6 @@ This option target some companies which might want to hide their internal applic
 with external partners.</dd>
 </dl>
 
-
 <p>The <code>filter</code> section support:</p>
 
 <dl>
@@ -331,10 +340,9 @@ MALT on all executable.</dd>
 <dt><code>childs</code></dt>
 <dd>Enable instrumentation of children processes or not. By default instruments all.</dd>
 <dt><code>enabled</code></dt>
-<dd>Enable profiling by default. Can be disable to be able to activate via C function call in the app
+<dd>Enable profiling by default. Can be disable to be able to activate via C function call in the app 
 when you want.</dd>
 </dl>
-
 
 <p>The <code>dump</code> section permit to dump the profile whenever you want:</p>
 
@@ -350,12 +358,11 @@ Notice profiling will currently stop from this point app will continue without p
 To be fixed latter.</dd>
 </dl>
 
-
 <h2 id="ENVIRONMENT">ENVIRONMENT</h2>
 
 <p>You can also directly LD_PRELOAD the MALT library in your program if the wrapper script has some issues for you.</p>
 
-<p> LD_PRELOAD={PREFIX}/lib/libmalt.so {YOUR_PROGRAM}</p>
+<p>LD_PRELOAD={PREFIX}/lib/libmalt.so {YOUR_PROGRAM}</p>
 
 <p>In that case you can setup some environment variables to configure MALT :</p>
 
@@ -368,7 +375,6 @@ To be fixed latter.</dd>
 <dd>List of options to transmit to MALT (equivalent of <code>-o</code> option, see its documentation for format).</dd>
 </dl>
 
-
 <h2 id="ON-SUB-PART-OF-YOUR-PROGRAM">ON SUB-PART OF YOUR PROGRAM</h2>
 
 <p>If you run on a really big program doing millions of allocation you might get a big overhead, and maybe
@@ -380,13 +386,13 @@ way to detect leaks of sub-parts of your code.</p>
 
 int main() 
 {
-    maltDisable();
-    //ignored
-    malloc(16);
+	maltDisable();
+	//ignored
+	malloc(16);
 
-    maltEnable();
-    //tracked
-    malloc(16);
+	maltEnable();
+	//tracked
+	malloc(16);
 }
 </code></pre>
 
@@ -396,9 +402,27 @@ You can also just provide the two empty functions in your own dynamic library (n
 <p>If you have some allocation not under your control before your first call you can disable MALT by default
 on threads using the <code>filter:enabled</code> option, then enable it by hand.</p>
 
+<h2 id="WRAPPING-A-CUSTOM-ALLOCATOR">WRAPPING A CUSTOM ALLOCATOR</h2>
+
+<p>If your application use a custom allocator with a different namespce than the default <code>malloc</code>, <code>free</code>...
+you can use the <code>--wrap</code> or <code>--wrap-prefix</code> options.</p>
+
+<p>You can select in details the function by doing:</p>
+
+<pre><code>malt --wrap malloc:je_malloc ./prgm
+malt --wrap malloc:je_malloc,free:je_free,calloc:je_calloc,malloc:another_custom_malloc ./prgm
+</code></pre>
+
+<p>You can also simply use a common prefix for all by using (typically usefull if you embed jemalloc
+with a custom symbol prefix):</p>
+
+<pre><code>malt --wrap-prefix je_
+malt --wrap-prefix je_,another_custom_
+</code></pre>
+
 <h2 id="VERSION">VERSION</h2>
 
-<p>   This is the manpage of MALT version 1.2.2.</p>
+<p>This is the manpage of MALT version 1.2.2.</p>
 
 <h2 id="SEE-ALSO">SEE ALSO</h2>
 
@@ -406,7 +430,7 @@ on threads using the <code>filter:enabled</code> option, then enable it by hand.
 
   <ol class='man-decor man-foot man foot'>
     <li class='tl'></li>
-    <li class='tc'>October 2020</li>
+    <li class='tc'>June 2023</li>
     <li class='tr'>malt(1)</li>
   </ol>
 

@@ -1,7 +1,7 @@
 Change log
 ==========
 
-1.2.2 - XXXXXXXXXX
+1.2.2 - 28/06/2023
 ------------------
 
  - Add --disable-profiler on configure script to build only the webview.
