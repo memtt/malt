@@ -51,6 +51,12 @@ make test
 make install
 ```
 
+If you are a user of spack you can also install it easily by using :
+
+```shell
+spack install malt
+```
+
 Build options
 -------------
 
