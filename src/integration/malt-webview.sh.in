@@ -7,6 +7,8 @@
 #            LICENSE  : CeCILL-C                     #
 ######################################################
 
+MALT_ROOT="$(cd $(dirname $0)/.. && pwd)"
+
 ######################################################
 NODE=""
 detectNodeJS()
@@ -50,7 +52,7 @@ if [ ! -f "$HOME/.malt/passwd" ] && [ "$HAVE_NO_AUTH" = "false" ] && [ "$HAVE_CU
 	echo "!!! You need to setup a user/password to secure access to the web GUI !!!"
 	printf "User : "
 	read user
-	"@CMAKE_INSTALL_PREFIX@/bin/malt-passwd" "$user" || exit 1
+	"${MALT_ROOT}/bin/malt-passwd" "$user" || exit 1
 fi
 
 ######################################################
@@ -65,7 +67,7 @@ trap forwardSigterm SIGTERM
 trap forwardSigterm SIGINT
 
 #call node on main script
-"$NODE" "@CMAKE_INSTALL_PREFIX@/share/malt/webview/malt-webserver.js" "$@" &
+"$NODE" "${MALT_ROOT}/share/malt/webview/malt-webserver.js" "$@" &
 CHILD=$!
 wait $!
 exit $?

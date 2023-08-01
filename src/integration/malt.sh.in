@@ -19,6 +19,7 @@ MALT_OPTIONS=""
 MALT_VERSION="@MALT_VERSION@@MALT_VERSION_NOTE@"
 MALT_ALLOC_WRAPPER=""
 MALT_WRAP_DIR=""
+MALT_ROOT="$(cd $(dirname $0)/.. && pwd)"
 
 ######################################################
 maltCheckArgs()
@@ -256,7 +257,7 @@ maltBuildCustomAllocWrapper()
 		echo "=================================================="
 	fi
 
-	g++ -fPIC -Wall -Werror -shared -I@CMAKE_INSTALL_PREFIX@/include -o ${so_file} ${source_file} || exit 1
+	g++ -fPIC -Wall -Werror -shared -I${MALT_ROOT}/include -o ${so_file} ${source_file} || exit 1
 
 	# export
 	WRAP_SO_FILE="${so_file}"
@@ -307,8 +308,8 @@ maltPrepMPI()
 	fi
 
 	#compile file
-	echo "$mpicxx" '-shared' '-fPIC' "@CMAKE_INSTALL_PREFIX@/share/malt/MaltMPIRank.cpp" -o "$MPI_WRAPPER_DIR/libmaltmpi.so"
-	"$mpicxx" '-shared' '-fPIC' "@CMAKE_INSTALL_PREFIX@/share/malt/MaltMPIRank.cpp" -o "$MPI_WRAPPER_DIR/libmaltmpi.so"
+	echo "$mpicxx" '-shared' '-fPIC' "${MALT_ROOT}/share/malt/MaltMPIRank.cpp" -o "$MPI_WRAPPER_DIR/libmaltmpi.so"
+	"$mpicxx" '-shared' '-fPIC' "${MALT_ROOT}/share/malt/MaltMPIRank.cpp" -o "$MPI_WRAPPER_DIR/libmaltmpi.so"
 	
 	#finish
 	exit $?
@@ -425,9 +426,9 @@ done
 # if [ ! -z "$MALT_CONFIG" ]; then echo "MALT_CONFIG=$MALT_CONFIG"; fi
 
 ######################################################
-MALT_LIB="@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_LIBDIR@/libmalt.so"
+MALT_LIB="${MALT_ROOT}/@CMAKE_INSTALL_LIBDIR@/libmalt.so"
 if [ ! -f "${MALT_LIB}" ]; then
-	MALT_LIB="@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_LIBDIR@/libmalt.so"
+	MALT_LIB="${MALT_ROOT}/@CMAKE_INSTALL_LIBDIR@/libmalt.so"
 fi
 
 ######################################################
