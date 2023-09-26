@@ -1,7 +1,7 @@
 /*****************************************************
              PROJECT  : MALT
              VERSION  : 1.2.2
-             DATE     : 06/2023
+             DATE     : 10/2020
              AUTHOR   : Valat Sébastien
              LICENSE  : CeCILL-C
 *****************************************************/
@@ -336,7 +336,7 @@ app.get('/data.json',function(eq,res,next){
 /****************************************************/
 var staticSourceServer = Express.static('/');
 app.use('/app-sources/',function(req,res,next){
-	var reqPath = req.path.replace('/%7B.%7D/','./').replace("//","/").replace(/[/]+$/, "");
+	var reqPath = decodeURIComponent(req.path).replace('/{.}/','./').replace("//","/").replace(/[/]+$/, "");
 	var realPath = reqPath;
 
 	//check for redirect
