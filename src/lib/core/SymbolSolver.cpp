@@ -285,7 +285,7 @@ size_t SymbolSolver::extractElfVaddr(const std::string & obj) const
 
 		//parse
 		if (tmp != NULL) {
-			if (sscanf(buffer, "  Entry point address:		 %zx", &res) == 1) {
+			if (sscanf(buffer, "  Entry point address:               %zx", &res) == 1) {
 				break;
 			}
 		}
