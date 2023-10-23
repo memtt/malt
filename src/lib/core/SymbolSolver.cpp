@@ -1,9 +1,9 @@
 /*****************************************************
-             PROJECT  : MALT
-             VERSION  : 1.2.2
-             DATE     : 06/2023
-             AUTHOR   : Valat Sébastien
-             LICENSE  : CeCILL-C
+	      PROJECT  : MALT
+	      VERSION  : 1.2.2
+	      DATE     : 06/2023
+	      AUTHOR   : Valat Sébastien
+	      LICENSE  : CeCILL-C
 *****************************************************/
 
 /********************  HEADERS  *********************/
@@ -489,11 +489,17 @@ void SymbolSolver::solveNames(LinuxProcMapEntry * procMapEntry)
 
 	//create addr2line args
 	bool firstNeedAslrScan = true;
+
 	for (CallSiteMap::iterator it = callSiteMap.begin() ; it != callSiteMap.end() ; ++it)
 	{
 		if (it->second.mapEntry == procMapEntry)
 		{
-			if (addr2lineCmd.str().length() > MAX_ARG_STRLEN-32) {
+			if (addr2lineCmd.str().length() > MAX_ARG_STRLEN-20) {
+				// Max length for each entry is 20 computed as follows:
+				// In the worst case, each entry is 19 characters long
+				// plus one for the newline in case it is the last entry.
+				// We get 19 as: 1 for space, 2 for "0x", and 16 for address
+
 				//hide error if silent
 				if (gblOptions != NULL && gblOptions->outputVerbosity <= MALT_VERBOSITY_DEFAULT)
 					addr2lineCmd << ' ' << "2>/dev/null";
@@ -503,7 +509,7 @@ void SymbolSolver::solveNames(LinuxProcMapEntry * procMapEntry)
 			}
 			if (firstNeedAslrScan) {
 				procMapEntry->aslrOffset = this->getASRLOffset(it->first);
-			        firstNeedAslrScan = false;
+				firstNeedAslrScan = false;
 			}
 
 			//printf("OFFSET %zx %zx %zx %zx\n", it->first, procMapEntry->lower, map->l_addr, elfVaddr);
@@ -518,16 +524,6 @@ void SymbolSolver::solveNames(LinuxProcMapEntry * procMapEntry)
 		    addr2lineCmd << ' ' << "2>/dev/null";
 	  theCommands.push_back(addr2lineCmd.str());
 	}
-
-	// Uncomment to see the command split
-	// for (auto &s : theCommands) {
-	//	   std::cerr << "__COMMAND_________________________________________" << std::endl;
-	//	   std::cerr << s << std::endl;
-	// }
-	
-
-
-	//printf("MALT: %s\n",addr2lineCmd.str().c_str());
 
 	//if no extry, exit
 	if (!hasEntries)
