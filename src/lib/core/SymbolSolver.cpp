@@ -481,9 +481,9 @@ void SymbolSolver::solveNames(LinuxProcMapEntry * procMapEntry)
 	bool hasEntries = false;
 	const std::string elfFile = procMapEntry->file;
 	std::stringstream addr2lineCmd;
-	const char *prefix = "addr2line -C -f -e ";
-	addr2lineCmd << prefix << elfFile;
-	const size_t prefixLen = addr2lineCmd.str().length();
+	const std::string prefix = std::string("addr2line -C -f -e ") + elfFile;
+	const size_t prefixLen = prefix.length();
+	addr2lineCmd << prefix;
 	std::vector<CallSite*> lst;
 	std::vector<std::string> theCommands;
 
@@ -502,11 +502,11 @@ void SymbolSolver::solveNames(LinuxProcMapEntry * procMapEntry)
 				// We get 19 as: 1 for space, 2 for "0x", and 16 for address
 
 				//hide error if silent
-				if (gblOptions != NULL gblOptions->outputVerbosity <= MALT_VERBOSITY_DEFAULT)
+				if (gblOptions != NULL && gblOptions->outputVerbosity <= MALT_VERBOSITY_DEFAULT)
 					addr2lineCmd << ' ' << "2>/dev/null";
 				theCommands.push_back(addr2lineCmd.str());
 				addr2lineCmd.str(std::string(""));
-				addr2lineCmd << prefix << elfFile;
+				addr2lineCmd << prefix;
 			}
 			if (firstNeedAslrScan)
 			{
