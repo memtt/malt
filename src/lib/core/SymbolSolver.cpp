@@ -1,9 +1,9 @@
 /*****************************************************
-	      PROJECT  : MALT
-	      VERSION  : 1.2.2
-	      DATE     : 06/2023
-	      AUTHOR   : Valat Sébastien
-	      LICENSE  : CeCILL-C
+             PROJECT  : MALT
+             VERSION  : 1.2.2
+             DATE     : 06/2023
+             AUTHOR   : Valat Sébastien
+             LICENSE  : CeCILL-C
 *****************************************************/
 
 /********************  HEADERS  *********************/
@@ -149,7 +149,7 @@ void convertToJson(htopml::JsonState& json, const SymbolSolver& value)
 {
 	json.openStruct();
 
-//	json.printField("entries",value.nameMap);
+// 	json.printField("entries",value.nameMap);
 
 	json.printField("map",value.procMap);
 	json.printField("strings",value.strings);
@@ -464,12 +464,12 @@ void * SymbolSolver::getASRLOffset(void * instrAddr) const
 }
 
 /*******************  FUNCTION  *********************/
-/*
+/* 
  * Some links :
  * man proc & man addr2line
  * http://stackoverflow.com/a/7557756/257568
  * ​http://libglim.googlecode.com/svn/trunk/exception.hpp
- * ​http://stackoverflow.com/questions/10452847/backtrace-function-inside-shared-libraries
+ * ​http://stackoverflow.com/questions/10452847/backtrace-function-inside-shared-libraries 
 */
 /**
  * Solve the symbol names using addr2line for the given /proc/self/maps entry.
@@ -485,7 +485,7 @@ void SymbolSolver::solveNames(LinuxProcMapEntry * procMapEntry)
 	addr2lineCmd << prefix << elfFile;
 	const size_t prefixLen = addr2lineCmd.str().length();
 	std::vector<CallSite*> lst;
-	std::vector <std::string> theCommands;
+	std::vector<std::string> theCommands;
 
 	//create addr2line args
 	bool firstNeedAslrScan = true;
@@ -494,20 +494,22 @@ void SymbolSolver::solveNames(LinuxProcMapEntry * procMapEntry)
 	{
 		if (it->second.mapEntry == procMapEntry)
 		{
-			if (addr2lineCmd.str().length() > MAX_ARG_STRLEN-20) {
+			if (addr2lineCmd.str().length() > MAX_ARG_STRLEN-20)
+			{
 				// Max length for each entry is 20 computed as follows:
 				// In the worst case, each entry is 19 characters long
 				// plus one for the newline in case it is the last entry.
 				// We get 19 as: 1 for space, 2 for "0x", and 16 for address
 
 				//hide error if silent
-				if (gblOptions != NULL && gblOptions->outputVerbosity <= MALT_VERBOSITY_DEFAULT)
+				if (gblOptions != NULL gblOptions->outputVerbosity <= MALT_VERBOSITY_DEFAULT)
 					addr2lineCmd << ' ' << "2>/dev/null";
 				theCommands.push_back(addr2lineCmd.str());
 				addr2lineCmd.str(std::string(""));
-				addr2lineCmd << prefix << elfFile ;
+				addr2lineCmd << prefix << elfFile;
 			}
-			if (firstNeedAslrScan) {
+			if (firstNeedAslrScan)
+			{
 				procMapEntry->aslrOffset = this->getASRLOffset(it->first);
 				firstNeedAslrScan = false;
 			}
@@ -518,11 +520,12 @@ void SymbolSolver::solveNames(LinuxProcMapEntry * procMapEntry)
 			lst.push_back(&it->second);
 		}
 	}
-	if ( addr2lineCmd.str().length() > prefixLen) {
-	  //hide error if silent
-	  if (gblOptions != NULL && gblOptions->outputVerbosity <= MALT_VERBOSITY_DEFAULT)
-		    addr2lineCmd << ' ' << "2>/dev/null";
-	  theCommands.push_back(addr2lineCmd.str());
+	if ( addr2lineCmd.str().length() > prefixLen)
+	{
+		//hide error if silent
+		if (gblOptions != NULL && gblOptions->outputVerbosity <= MALT_VERBOSITY_DEFAULT)
+			addr2lineCmd << ' ' << "2>/dev/null";
+		theCommands.push_back(addr2lineCmd.str());
 	}
 
 	//if no extry, exit
@@ -535,72 +538,73 @@ void SymbolSolver::solveNames(LinuxProcMapEntry * procMapEntry)
 	for (auto &cmd : theCommands) {
 		//debug
 		if (gblOptions != NULL && gblOptions->outputVerbosity >= MALT_VERBOSITY_VERBOSE)
-		  printf("MALT: %s\n",cmd.c_str());
+			printf("MALT: %s\n",cmd.c_str());
+
 		FILE * fp = popen(cmd.c_str(),"r");
 
 		//check error, skip resolution
 		if (fp == NULL)
-		  {
-		    MALT_ERROR_ARG("Fail to use addr2line on %1 to load symbols : %2.").arg(elfFile).argStrErrno().end();
-		    return;
-		  }
+		{
+			MALT_ERROR_ARG("Fail to use addr2line on %1 to load symbols : %2.").arg(elfFile).argStrErrno().end();
+			return;
+		}
 
 		//read all entries (need big for some big template based C++ application,
 		//seen at cern)
 		static char bufferFunc[200*4096];
 		static char bufferFile[20*4096];
 		while (!feof(fp))
-		  {
-		    //read the two lines
-		    char * funcRes = fgets(bufferFunc,sizeof(bufferFunc),fp);
-		    char * fileRes = fgets(bufferFile,sizeof(bufferFile),fp);
+		{
+			//read the two lines
+			char * funcRes = fgets(bufferFunc,sizeof(bufferFunc),fp);
+			char * fileRes = fgets(bufferFile,sizeof(bufferFile),fp);
 
-		    if (funcRes != bufferFunc || fileRes != bufferFile)
-		      break;
+			if (funcRes != bufferFunc || fileRes != bufferFile)
+				break;
 
-		    //std::cerr << bufferFunc;
-		    //std::cerr << bufferFile;
+			//std::cerr << bufferFunc;
+			//std::cerr << bufferFile;
 
-		    //check end of line and remove it
-		    int endLine = strlen(bufferFunc);
-		    assumeArg(bufferFunc[endLine-1] == '\n',"Missing \\n at end of line for the function or symbol name read from addr2line : %1.").arg(bufferFunc).end();
-		    bufferFunc[endLine-1] = '\0';
+			//check end of line and remove it
+			int endLine = strlen(bufferFunc);
+			assumeArg(bufferFunc[endLine-1] == '\n',"Missing \\n at end of line for the function or symbol name read from addr2line : %1.").arg(bufferFunc).end();
+			bufferFunc[endLine-1] = '\0';
 
-		    //check errors
-		    assume(i < lst.size(),"Overpass lst size.");
+			//check errors
+			assume(i < lst.size(),"Overpass lst size.");
 
-		    //search ':' separator at end of "file:line" string
-		    char * sep = strrchr(bufferFile,':');
-		    if (sep == NULL)
-		      {
-			MALT_WARNING_ARG("Fail to split source location on ':' : %1").arg(bufferFile).end();
-		      } else {
-		      *sep='\0';
+			//search ':' separator at end of "file:line" string
+			char * sep = strrchr(bufferFile,':');
+			if (sep == NULL)
+			{
+				MALT_WARNING_ARG("Fail to split source location on ':' : %1").arg(bufferFile).end();
+			} else {
+				*sep='\0';
 
-		      //extract line
-		      lst[i]->line = atoi(sep+1);
+				//extract line
+				lst[i]->line = atoi(sep+1);
 
-		      //get filename and function name address
-		      lst[i]->file = getString(bufferFile);
+				//get filename and function name address
+				lst[i]->file = getString(bufferFile);
 
-		      //if (strcmp(bufferFunc,"??") == 0)
-		      //      lst[i]->function = -1;
-		      //else
-		      lst[i]->function = getString(bufferFunc);
-		    }
+				//if (strcmp(bufferFunc,"??") == 0)
+				//      lst[i]->function = -1;
+				//else
+				lst[i]->function = getString(bufferFunc);
+			}
 
-		    //move next
-		    i++;
-		    //std::cerr<< std::endl;
-		  }
+			//move next
+			i++;
+			//std::cerr<< std::endl;
+		}
 
 		//close
 		int res = pclose(fp);
 		if (res != 0)
-		  {
-		    MALT_ERROR_ARG("Get error while using addr2line on %1 to load symbols : %2.").arg(elfFile).argStrErrno().end();
-		    return;
-		  }
+		{
+			MALT_ERROR_ARG("Get error while using addr2line on %1 to load symbols : %2.").arg(elfFile).argStrErrno().end();
+			return;
+		}
 	}
 
 	//error
