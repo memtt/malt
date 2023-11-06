@@ -19,7 +19,16 @@ MALT_OPTIONS=""
 MALT_VERSION="@MALT_VERSION@@MALT_VERSION_NOTE@"
 MALT_ALLOC_WRAPPER=""
 MALT_WRAP_DIR=""
+
+######################################################
+# calc MALT root dir relative to this script
 MALT_ROOT="$(cd $(dirname $0)/.. && pwd)"
+
+# Handle case where malt command is symlink (can arise is some tricks are applied).
+# check if support readlink -f (not on MacOSX & FreeBSD)
+if readlink -f / > /dev/null 2>/dev/null; then
+        MALT_ROOT="$(readlink -f $(dirname $0)/..)"
+fi
 
 ######################################################
 maltCheckArgs()
