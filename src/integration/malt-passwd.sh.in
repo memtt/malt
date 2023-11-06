@@ -7,6 +7,8 @@
 #            LICENSE  : CeCILL-C                     #
 ######################################################
 
+MALT_ROOT="$(cd $(dirname $0)/.. && pwd)"
+
 ######################################################
 NODE=""
 detectNodeJS()
@@ -53,9 +55,9 @@ done
 
 #call node on main script
 if [ -z "$HAVE_OPT" ]; then
-	"$NODE" "@CMAKE_INSTALL_PREFIX@/share/malt/webview/node_modules/.bin/htpasswd" "-c" "$HOME/.malt/passwd" "$@" || exit 1
+	"$NODE" "${MALT_ROOT}/share/malt/webview/node_modules/.bin/htpasswd" "-c" "$HOME/.malt/passwd" "$@" || exit 1
 else
-	"$NODE" "@CMAKE_INSTALL_PREFIX@/share/malt/webview/node_modules/.bin/htpasswd" "$@" || exit 1
+	"$NODE" "${MALT_ROOT}/share/malt/webview/node_modules/.bin/htpasswd" "$@" || exit 1
 fi
 
 #chmod file
