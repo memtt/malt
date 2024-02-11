@@ -9,7 +9,13 @@
 ######################################################
 #Usage of OBJECT keyword in add_library require 2.8.8 (or something like that, need to check)
 cmake_minimum_required(VERSION 2.8.12)
-project(MALT)
+# TODO we can remove this if/else when we do not use anymore centos7 and move up cmake req to 3.0
+if (CMAKE_VERSION VERSION_LESS 3.0)
+	project(MALT)	
+else()
+	cmake_policy(SET CMP0048 NEW)	
+	project(MALT VERSION 1.2.2)
+endif()
 
 ######################################################
 #set versions to dispatch in code
@@ -25,6 +31,10 @@ enable_testing()
 ######################################################
 #Add internal search path for scripts
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_SOURCE_DIR}/cmake/)
+
+######################################################
+# Options
+set(ENABLE_TESTS "yes" CACHE BOOL "Enable build of internal tests.")
 
 ######################################################
 #Delegate some cmake scripts

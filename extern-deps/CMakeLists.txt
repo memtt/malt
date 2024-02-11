@@ -7,6 +7,9 @@
 ######################################################
 
 ######################################################
-add_subdirectory(gmock-1.7.0)
 add_subdirectory(from-htopml)
 add_subdirectory(iniparser)
+# only required for testing
+if(ENABLE_TESTS)
+	add_subdirectory(googletest-1.14.0)
+endif(ENABLE_TESTS)

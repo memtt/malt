@@ -22,7 +22,6 @@ endif (LIBUNWIND_FOUND)
 ######################################################
 #Code options
 set(ENABLE_CODE_TIMING   "no"       CACHE BOOL   "Enable some tricks to quickly check timings of hostspots of MALT internal code.")
-set(ENABLE_TESTS         "yes"      CACHE BOOL   "Enable build of internal tests.")
 
 #select portability mode
 set(PORTABILITY_SPINLOCK  "PTHREAD"  CACHE STRING "Select spinlock implementation to use. Currently support : 'PTHREAD', 'DUMMY'.")
