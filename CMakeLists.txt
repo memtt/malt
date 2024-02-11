@@ -48,7 +48,7 @@ include(GNUInstallDirs)
 ######################################################
 #Some global setup
 #malt_enable_cxx_11()
-setup_internal_gmock_and_gtest()
+malt_setup_google_tests()
 if (ENABLE_GCC_COVERAGE)
 	malt_enable_gcc_coverage()
 endif(ENABLE_GCC_COVERAGE)

@@ -8,7 +8,7 @@
 
 ######################################################
 #Setup paths to gtest/gmock headers and library
-MACRO(setup_internal_gmock_and_gtest)
+MACRO(malt_setup_internal_gmock_and_gtest)
 	set(GMOCK_SOURCE_DIR ${CMAKE_SOURCE_DIR}/extern-deps/googletest-1.14.0)
 	set(GMOCK_INCLUDE_DIR ${GMOCK_SOURCE_DIR}/googlemock/include)
 	set(GMOCK_INCLUDE_DIRS ${GMOCK_SOURCE_DIR}/googlemock/include)
@@ -16,7 +16,22 @@ MACRO(setup_internal_gmock_and_gtest)
 	set(GTEST_BOTH_LIBRARIES gtest)
 	set(GTEST_INCLUDE_DIR ${GMOCK_SOURCE_DIR}/googletest//include/)
 	set(GTEST_INCLUDE_DIRS ${GMOCK_SOURCE_DIR}/googletest//include/)
-ENDMACRO(setup_internal_gmock_and_gtest)
+	set(GTEST_USE_EMBEDED "yes")
+ENDMACRO(malt_setup_internal_gmock_and_gtest)
+
+######################################################
+# Setup google test by either using the internal one of using the one is current system if avail
+MACRO(malt_setup_google_tests)
+	# search system on
+	find_package(GTest QUIET)
+
+	# if avail use the system one, otherwise use embeded one
+	if (NOT GTEST_FOUND)
+		malt_setup_internal_gmock_and_gtest()
+	else()
+		set(GTEST_USE_EMBEDED "no")
+	endif()
+ENDMACRO()
 
 ######################################################
 #Short macro to quicly declare some unit tests
