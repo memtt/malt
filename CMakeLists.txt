@@ -34,7 +34,7 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_SOURCE_DIR}/cmake/)
 
 ######################################################
 # Options
-set(ENABLE_TESTS "yes" CACHE BOOL "Enable build of internal tests.")
+set(ENABLE_TESTS "no" CACHE BOOL "Enable build of internal tests.")
 
 ######################################################
 #Delegate some cmake scripts

@@ -18,7 +18,7 @@ cfg_add_enable_option --name='profiler' \
 						--doc='Disable the profiler and only install the GUI.' \
 						--invert-help
 #test
-cfg_add_enable_option --name='test' \
+cfg_add_enable_option --name='tests' \
 						--on='-DENABLE_TESTS=${ON}' \
 						--doc='Disable unit tests' \
 						--invert-help
