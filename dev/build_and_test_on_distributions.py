@@ -34,6 +34,7 @@ import sys
 import shutil
 import subprocess
 import tempfile
+import multiprocessing
 from contextlib import contextmanager
 # docker
 import docker
@@ -88,9 +89,14 @@ class ContainerHandler:
         self.image = image
         self.client = docker.from_env()
         self.build_rules = []
+        self.container = None
 
     def add_build_run_rule(self, rule: str) -> None:
         self.build_rules.append(f"RUN {rule}")
+
+    def add_build_run_rules(self, rules: list) -> None:
+        for rule in rules:
+            self.build_rules.append(f"RUN {rule}")
 
     def build(self, base_image: str) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:
@@ -138,66 +144,136 @@ class ContainerHandler:
 def in_container(image: str):
     # handle return back afterward
     try:
+        # create container handler
         handler = ContainerHandler(image)
+
+        # start
+        handler.start()
+
+        # make action
         yield handler
     finally:
         handler.stop()
 
 ######################################################
-@pytest.mark.parametrize("dist_name_version", ["ubuntu:20.04", "ubuntu:22.04", "ubuntu:23.04", "ubuntu:24.04", "debian:10", "debian:11", "debian:12"])
-def test_distribution_gcc(dist_name_version: str):
-    with in_container(f"malt/{dist_name_version}") as container:
-        # to build the container if not exist yet
-        container.add_build_run_rule("apt update")
-        container.add_build_run_rule("apt install -y cmake g++ make libunwind-dev nodejs clang")
-
-        # build & start
-        container.build(dist_name_version)
-        container.start()
-
-        # to perform tests
-        container.assert_run("/mnt/malt-sources/configure --enable-debug --enable-tests CFLAGS=-Werror CXXFLAGS=-Werror")
-        container.assert_run("make -j8")
-        container.assert_run("make test")
+BUILD_PARAMETERS = {
+    "distributions": {
+        "ubuntu:20.04": [
+            "apt update",
+            "apt upgrade -y",
+            "apt install -y cmake g++ make libunwind-dev nodejs clang"
+        ],
+        "ubuntu:22.04": [
+            "apt update",
+            "apt upgrade -y",
+            "apt install -y cmake g++ make libunwind-dev nodejs clang"
+        ],
+        "ubuntu:23.04": [
+            "apt update",
+            "apt upgrade -y",
+            "apt install -y cmake g++ make libunwind-dev nodejs clang"
+        ],
+        "ubuntu:24.04": [
+            "apt update",
+            "apt upgrade -y",
+            "apt install -y cmake g++ make libunwind-dev nodejs clang"
+        ],
+        "debian:10": [
+            "apt update",
+            "apt upgrade -y",
+            "apt install -y cmake g++ make libunwind-dev nodejs clang"
+        ],
+        "debian:11": [
+            "apt update",
+            "apt upgrade -y",
+            "apt install -y cmake g++ make libunwind-dev nodejs clang"
+        ],
+        "debian:12": [
+            "apt update",
+            "apt upgrade -y",
+            "apt install -y cmake g++ make libunwind-dev nodejs clang"
+        ],
+    },
+    'compilers': {
+        "gcc": "CXX=g++ CC=gcc",
+        "clang": "CXX=clang++ CC=clang",
+    },
+    "variants": {
+        "debug": "--enable-debug",
+        "release": ""
+    }
+}
 
 ######################################################
-@pytest.mark.parametrize("dist_name_version", ["ubuntu:20.04", "ubuntu:22.04", "ubuntu:23.04", "ubuntu:24.04", "debian:10", "debian:11", "debian:12"])
-def test_distribution_clang(dist_name_version: str):
+def gen_distr_paramatrized():
+    params = []
+    for variant in BUILD_PARAMETERS['variants']:
+        for compiler in BUILD_PARAMETERS['compilers']:
+            for distr_name in BUILD_PARAMETERS['distributions']:
+                params.append((distr_name, compiler, variant))
+    return params
+
+######################################################
+@pytest.mark.parametrize("dist_name_version", BUILD_PARAMETERS['distributions'].keys())
+def test_prep_image(dist_name_version):
+    # to install
+    distr_install_cmds = BUILD_PARAMETERS['distributions'][dist_name_version]
+
+    # build
+    container = ContainerHandler(f"malt/{dist_name_version}")
+    container.add_build_run_rules(distr_install_cmds)
+    container.build(dist_name_version)
+
+######################################################
+@pytest.mark.parametrize("dist_name_version, compiler, variant", gen_distr_paramatrized())
+def test_distribution(dist_name_version: str, compiler:str, variant:str):
+    # extract options
+    compiler_options = BUILD_PARAMETERS['compilers'][compiler]
+    variant_options = BUILD_PARAMETERS['variants'][variant]
+
+    # infos
+    cores = multiprocessing.cpu_count()
+
+    # build & start container to run commands in
     with in_container(f"malt/{dist_name_version}") as container:
-        # to build the container if not exist yet
-        container.add_build_run_rule("apt update")
-        container.add_build_run_rule("apt install -y cmake g++ make libunwind-dev nodejs clang")
-
-        # build & start
-        container.build(dist_name_version)
-        container.start()
-
         # to perform tests
-        container.assert_run("/mnt/malt-sources/configure --enable-debug --enable-tests CXX=clang++ CC=clang CFLAGS=-Werror CXXFLAGS=-Werror")
-        container.assert_run("make -j8")
-        container.assert_run("make test")
+        container.assert_run(f"/mnt/malt-sources/configure --enable-tests {variant_options} {compiler_options}")
+        container.assert_run(f"make -j{cores}")
+        container.assert_run(f"ctest -j{cores}")
 
 ######################################################
 def test_current_host_debug_no_tests():
+    # get malt source path
+    sources = get_malt_source_path()
+
+    # infos
+    cores = multiprocessing.cpu_count()
+
     with tempfile.TemporaryDirectory() as tmpdir:
         with jump_in_dir(tmpdir):
-            sources = get_malt_source_path()
             assert_shell_command(f"{sources}/configure --enable-debug CFLAGS=-Werror CXXFLAGS=-Werror")
-            assert_shell_command("make -j8")
+            assert_shell_command(f"make -j{cores}")
 
 ######################################################
 def test_current_host_debug_disable_tests():
+    # get malt source path
+    sources = get_malt_source_path()
+
+    # infos
+    cores = multiprocessing.cpu_count()
+
     with tempfile.TemporaryDirectory() as tmpdir:
         with jump_in_dir(tmpdir):
-            sources = get_malt_source_path()
             assert_shell_command(f"{sources}/configure --enable-debug --disable-tests CFLAGS=-Werror CXXFLAGS=-Werror")
-            assert_shell_command("make -j8")
+            assert_shell_command(f"make -j{cores}")
 
 ######################################################
 def test_current_host_debug_tests():
+    # get malt source path
+    sources = get_malt_source_path()
+
     with tempfile.TemporaryDirectory() as tmpdir:
         with jump_in_dir(tmpdir):
-            sources = get_malt_source_path()
             assert_shell_command(f"{sources}/configure --enable-debug --enable-tests CFLAGS=-Werror CXXFLAGS=-Werror")
             assert_shell_command("make -j8")
             assert_shell_command("make test")
