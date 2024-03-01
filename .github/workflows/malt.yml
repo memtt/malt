@@ -25,15 +25,12 @@ jobs:
       - name: Install dependencies
         run: sudo apt-get install -y libunwind-dev nodejs cmake
 
-      - name: Build Project
+      - name: Build Project & test
         run: |
           mkdir build
           cd build
           ../configure --enable-tests --enable-debug --enable-junit-output
           make
-
-      - name: Test Project
-        run: |
           ctest
  
       - name: Publish Test Report
