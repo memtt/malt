@@ -1,23 +1,23 @@
 #!/bin/sh
-######################################################
-#            PROJECT  : MALT                         #
-#            VERSION  : 1.2.2                        #
-#            DATE     : 06/2023                      #
-#            AUTHOR   : Sebastien Valat              #
-#            LICENSE  : Apache 2.0                   #
-######################################################
+###########################################################
+#               PROJECT  : numaprof                       #
+#               VERSION  : 1.1.2                          #
+#               DATE     : 01/2022                        #
+#               AUTHOR   : Valat Sébastien                #
+#               LICENSE  : Apache 2.0                     #
+###########################################################
 
-######################################################
+###########################################################
 # This script provide a simple wrapper to cmake to fix
 # the missing --help equivalent to autotools. And it
 # may be more intuitive for users to use the well
 # known ./configure & make & make install procedure.
 
-######################################################
+###########################################################
 #help debug
 #set -e
 
-######################################################
+###########################################################
 #where to load optinos
 CFG_OPTIONS_FILE='options'
 #script setup
@@ -27,9 +27,11 @@ CFG_DEFAULT_PREFIX='/usr/local'
 #compiler default flags
 CFG_EXTRA_CC=''
 CFG_EXTRA_CXX=''
+CFG_EXTRA_FC=''
 CFG_EXTRA_CFLAGS="${CFLAGS}"
 CFG_EXTRA_CXXFLAGS="${CXXFLAGS}"
 CFG_EXTRA_LDFLAGS="${LDFLAGS}"
+CFG_EXTRA_FFLAGS="${FFLAGS}"
 # State variables
 CFG_CMAKE_COMMAND='cmake'
 #help formatting
@@ -43,18 +45,18 @@ CFG_COLOR_YELLOW="\e[33m"
 CFG_COLOR_CYAN="\e[36m"
 CFG_COLOR_RESET="\e[0m"
 
-######################################################
+###########################################################
 CFG_TMP='/tmp'
 CFG_FEATURES_HELP_FILE="`mktemp ${CFG_TMP}/configure_help_enable_disable.XXXXXXXXXX`"
 CFG_WITH_HELP_FILE="`mktemp ${CFG_TMP}/configure_help_with_without.XXXXXXXXXX`"
 CFG_CASE_PARSE_OPT_FILE="`mktemp ${CFG_TMP}/configure_case_parse_opt.XXXXXXXXXX`"
 CFG_CMAKE_OPTS_FILE="`mktemp ${CFG_TMP}/configure_cmake_opts.XXXXXXXXXX`"
 
-######################################################
+###########################################################
 #Find default source dir
 CFG_SOURCE_DIR="`dirname \"$0\"`"
 
-######################################################
+###########################################################
 #function defining all the options available to configure the project
 cfg_setup_options()
 {
@@ -79,7 +81,7 @@ cfg_setup_options()
 	. "${CFG_SOURCE_DIR}/${CFG_OPTIONS_FILE}"
 }
 
-######################################################
+###########################################################
 #Set project name for help string
 # - $1 : project name
 cfg_set_projet()
@@ -87,7 +89,7 @@ cfg_set_projet()
 	CFG_PROJECT_NAME="${1}"
 }
 
-######################################################
+###########################################################
 cfg_exit()
 {
 	#cat "${CFG_CASE_PARSE_OPT_FILE}"
@@ -99,7 +101,7 @@ cfg_exit()
 	exit $1
 }
 
-######################################################
+###########################################################
 cfg_hint()
 {
 	for tmp in "$@"
@@ -108,7 +110,7 @@ cfg_hint()
 	done
 }
 
-######################################################
+###########################################################
 cfg_error()
 {
 	for tmp in "$@"
@@ -117,7 +119,7 @@ cfg_error()
 	done
 }
 
-######################################################
+###########################################################
 cfg_fail()
 {
 	for tmp in "$@"
@@ -127,7 +129,7 @@ cfg_fail()
 	cfg_exit 1
 }
 
-######################################################
+###########################################################
 # add value to variable with space as separator
 #  - $1 : variable name
 #  - $2 : value to add
@@ -149,7 +151,7 @@ cfg_add_to_var()
 	eval "${var}=\"${final}\""
 }
 
-######################################################
+###########################################################
 #check /tmp
 cfg_check_tmp()
 {
@@ -158,7 +160,7 @@ cfg_check_tmp()
 	fi
 }
 
-######################################################
+###########################################################
 #Check if colors could be enabled if not piped
 cfg_auto_enable_color()
 {
@@ -179,7 +181,7 @@ cfg_auto_enable_color()
 	fi
 }
 
-######################################################
+###########################################################
 # Add an --enable-*|--disable-* option to the list of available options.
 # The command take a command line like parameters to setup the option :
 #
@@ -279,7 +281,7 @@ cfg_add_enable_option()
 	fi
 }
 
-######################################################
+###########################################################
 # Add an --with-*|--without-* option to the list of available options.
 # The command take a command line like parameters to setup the option :
 #
@@ -418,7 +420,7 @@ cfg_add_with_option()
 	fi
 }
 
-######################################################
+###########################################################
 CFG_PARSE_OPT_HEADER="#!/bin/sh
 
 cfg_parse_user_opts()
@@ -435,7 +437,7 @@ CFG_PARSE_OPT_FOOTER="
 }
 "
 
-######################################################
+###########################################################
 cfg_gen_help_string()
 {
 	#add lines
@@ -489,16 +491,18 @@ Some influential environment variables:
    CC          C compiler command
    CFLAGS      C compiler flags
    CXX         C++ compiler command
-   CXXFLAGS    C++ compiler flags"
+   CXXFLAGS    C++ compiler flags
+   FC          Fortran compiler
+   FFLAGS      Fortran compiler flags"
 }
 
-######################################################
+###########################################################
 cfg_push_cmake_opt()
 {
 	echo "$@" >> ${CFG_CMAKE_OPTS_FILE}
 }
 
-######################################################
+###########################################################
 #parse arguments
 cfg_parse_global_args()
 {
@@ -546,13 +550,19 @@ cfg_parse_global_args()
 				SOURCE_DIR="${val}"
 				;;
 			--with-cmake=*)
-				CMAKE="${val}"
+				CFG_CMAKE_COMMAND="${val}"
 				;;
 			--show)
 				ENABLE_DISPLAY_COMMAND='true'
 				;;
+			-D*)
+				cfg_push_cmake_opt "${arg}"
+				;;
 			CC=*)
 				CFG_EXTRA_CC="${val}"
+				;;
+			FC=*)
+				CFG_EXTRA_FC="${val}"
 				;;
 			CXX=*)
 				CFG_EXTRA_CXX="${val}"
@@ -562,6 +572,9 @@ cfg_parse_global_args()
 				;;
 			CXXFLAGS=*)
 				cfg_add_to_var CFG_EXTRA_CXXFLAGS "${val}"
+				;;
+			FFLAGS=*)
+				cfg_add_to_var CFG_EXTRA_FFLAGS "${val}"
 				;;
 			LDFLAGS=*)
 				cfg_add_to_var CFG_EXTRA_LDFLAGS "${val}"
@@ -573,21 +586,21 @@ cfg_parse_global_args()
 	done
 }
 
-######################################################
+###########################################################
 cfg_push_defaults()
 {
 	cfg_push_cmake_opt "-DCMAKE_INSTALL_PREFIX=${CFG_DEFAULT_PREFIX}"
 	cfg_push_cmake_opt "-DCMAKE_BUILD_TYPE=${CFG_DEFAULT_BUILD_TYPE}"
 }
 
-######################################################
+###########################################################
 # emulate tac in a portable way with awk
 cfg_portable_tac()
 {
 	awk '{a[i++]=$0} END {for (j=i-1; j>=0;) print a[j--] }'
 }
 
-######################################################
+###########################################################
 # clean options by removing double definitions and keep only the
 # last one. To proceed we reverse the file and keep definition
 # only if not already seen
@@ -616,7 +629,7 @@ cfg_remove_dup()
 	cat "${tmpfile}" | cfg_portable_tac > "${file}"
 }
 
-######################################################
+###########################################################
 # Gen final command
 #  - $1 : true of false to enable or disable args quote protection
 cfg_gen_final_command_lines()
@@ -634,7 +647,7 @@ cfg_gen_final_command_lines()
 	echo "${CFG_SOURCE_DIR}"
 }
 
-######################################################
+###########################################################
 # custom pre check function to be replaced by user function
 # to perform some checks
 # All cmake -DVAR will be loaded into shell script by
@@ -644,7 +657,7 @@ cfg_custom_pre_check()
 	return 0
 }
 
-######################################################
+###########################################################
 # custom option parse to be replaced by user function
 # in setup file
 # here we can parse our own options if we want
@@ -657,7 +670,7 @@ cfg_parse_custom_opts()
 	return 1
 }
 
-######################################################
+###########################################################
 # load vars into shell script to we can performe some
 # extra checking actions into the cfg_custom_pre_check function
 # which can be overloaded by project options.
@@ -666,12 +679,12 @@ cfg_load_vars()
 	eval "`cat ${CFG_CMAKE_OPTS_FILE} | sed -e 's/^-D/OPT_/g'`"
 }
 
-######################################################
+###########################################################
 #setup colors and check tmp
 cfg_check_tmp
 cfg_auto_enable_color
 
-######################################################
+###########################################################
 #build configuration
 echo "${CFG_PARSE_OPT_HEADER}" > ${CFG_CASE_PARSE_OPT_FILE}
 cfg_setup_options
@@ -681,7 +694,7 @@ echo "${CFG_PARSE_OPT_FOOTER}" >> ${CFG_CASE_PARSE_OPT_FILE}
 #gen help
 cfg_gen_help_string
 
-######################################################
+###########################################################
 #push defults
 cfg_push_defaults
 #parse
@@ -692,7 +705,7 @@ cfg_remove_dup "${CFG_CMAKE_OPTS_FILE}"
 cfg_load_vars
 cfg_custom_pre_check
 
-######################################################
+###########################################################
 #Check current directory
 if [ -f 'CMakeLists.txt' ] && [ -f 'configure' ]; then
 	cfg_fail "ERROR : CMake isn't adapted to support build directely in source"
@@ -701,25 +714,42 @@ if [ -f 'CMakeLists.txt' ] && [ -f 'configure' ]; then
 	         "Example : mkdir build && cd build && ../configure"
 fi
 
-######################################################
+###########################################################
 #Gen CC/CXX/LDFLAGS commands
-if [ ! -z "$CFG_EXTRA_CC" ];       then cfg_push_cmake_opt "-DCMAKE_C_COMPILER=${CFG_EXTRA_CC}"               ; fi
-if [ ! -z "$CFG_EXTRA_CFLAGS" ];   then cfg_push_cmake_opt "-DCMAKE_C_FLAGS=${CFG_EXTRA_CFLAGS}"              ; fi
-if [ ! -z "$CFG_EXTRA_CXX" ];      then cfg_push_cmake_opt "-DCMAKE_CXX_COMPILER=${CFG_EXTRA_CXX}"            ; fi
-if [ ! -z "$CFG_EXTRA_CXXFLAGS" ]; then cfg_push_cmake_opt "-DCMAKE_CXX_FLAGS=${CFG_EXTRA_CXXFLAGS}"          ; fi
-if [ ! -z "$CFG_EXTRA_LDFLAGS" ];  then cfg_push_cmake_opt "-DCMAKE_EXE_LINKER_FLAGS=${CFG_EXTRA_LDFLAGS}"    ; fi
-if [ ! -z "$CFG_EXTRA_LDFLAGS" ];  then cfg_push_cmake_opt "-DCMAKE_SHARED_LINKER_FLAGS=${CFG_EXTRA_LDFLAGS}" ; fi
-if [ ! -z "$CFG_EXTRA_LDFLAGS" ];  then cfg_push_cmake_opt "-DCMAKE_STATIC_LINKER_FLAGS=${CFG_EXTRA_LDFLAGS}" ; fi
+if [ ! -z "$CFG_EXTRA_CC"       ];  then cfg_push_cmake_opt "-DCMAKE_C_COMPILER=${CFG_EXTRA_CC}"               ; fi
+if [ ! -z "$CFG_EXTRA_CFLAGS"   ];  then cfg_push_cmake_opt "-DCMAKE_C_FLAGS=${CFG_EXTRA_CFLAGS}"              ; fi
+if [ ! -z "$CFG_EXTRA_CXX"      ];  then cfg_push_cmake_opt "-DCMAKE_CXX_COMPILER=${CFG_EXTRA_CXX}"            ; fi
+if [ ! -z "$CFG_EXTRA_CXXFLAGS" ];  then cfg_push_cmake_opt "-DCMAKE_CXX_FLAGS=${CFG_EXTRA_CXXFLAGS}"          ; fi
+if [ ! -z "$CFG_EXTRA_FFLAGS"   ];  then cfg_push_cmake_opt "-DCMAKE_Fortran_FLAGS=${CFG_EXTRA_FFLAGS}"        ; fi
+if [ ! -z "$CFG_EXTRA_LDFLAGS"  ];  then cfg_push_cmake_opt "-DCMAKE_EXE_LINKER_FLAGS=${CFG_EXTRA_LDFLAGS}"    ; fi
+if [ ! -z "$CFG_EXTRA_LDFLAGS"  ];  then cfg_push_cmake_opt "-DCMAKE_SHARED_LINKER_FLAGS=${CFG_EXTRA_LDFLAGS}" ; fi
+if [ ! -z "$CFG_EXTRA_LDFLAGS"  ];  then cfg_push_cmake_opt "-DCMAKE_STATIC_LINKER_FLAGS=${CFG_EXTRA_LDFLAGS}" ; fi
+if [ ! -z "$CFG_EXTRA_FC"       ];  then cfg_push_cmake_opt "-DCMAKE_Fortran_COMPILER=${CFG_EXTRA_FC}"         ; fi
 
-######################################################
+###########################################################
 #execute or display
 if [ "${ENABLE_DISPLAY_COMMAND}" = 'true' ]; then
+	# display raw
 	cfg_gen_final_command_lines true | xargs -d "\n" echo "${CFG_CMAKE_COMMAND}"
+
+	# status
 	cfg_exit 0
 else
+	# display in yellow (if color is enabled)
 	printf "${CFG_COLOR_YELLOW}"
 	cfg_gen_final_command_lines true | xargs -d "\n" echo ">>> ${CFG_CMAKE_COMMAND}"
 	printf "${CFG_COLOR_RESET}"
+
+	# dump in log
+	echo "----------- $(date) --------------" >> configure.log
+	echo >> configure.log
+	echo "$0 $@" >> configure.log
+	cfg_gen_final_command_lines true | xargs -d "\n" echo ">>> ${CFG_CMAKE_COMMAND}" >> configure.log
+	echo >> configure.log
+
+	# execute
 	cfg_gen_final_command_lines | xargs -d "\n" "${CFG_CMAKE_COMMAND}"
+
+	# status
 	cfg_exit $?
 fi
