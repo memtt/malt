@@ -28,10 +28,16 @@
 #include "SymbolSolver.hpp"
 
 #ifdef __linux__
-#include <sys/user.h>
-#include <linux/binfmts.h>
+	#include <sys/user.h>
+	#include <linux/binfmts.h>
+	#ifndef PAGE_SIZE
+		//@note: on some system MAX_ARG_STRLEN is defined to PAGE_SIZE
+		//@todo: Find a better fix by removing completely the usage of
+		//       MAX_ARG_STRLEN.
+		#define PAGE_SIZE 4096
+	#endif
 #else
-#define MAX_ARG_STRLEN 131072
+	#define MAX_ARG_STRLEN 131072
 #endif
 
 
