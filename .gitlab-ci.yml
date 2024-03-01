@@ -5,7 +5,7 @@ test:
   - rm -rfv build testinstall
   - mkdir build
   - cd build
-  - ../configure --enable-debug --prefix="$PWD/../testinstall"
+  - ../configure --enable-debug --enable-tests --prefix="$PWD/../testinstall" CXXFLAGS="-Werror" CFLAGS="-Werror"
   - make
   - make test
   - make install
