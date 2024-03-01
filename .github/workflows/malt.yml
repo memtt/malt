@@ -23,14 +23,10 @@ jobs:
         uses: actions/checkout@v4.1.1
 
       - name: Install dependencies
-        run: sudo apt-get install -y libunwind-dev nodejs
-
-      - name: Get cmake
-        uses: lukka/get-cmake@latest 
+        run: sudo apt-get install -y libunwind-dev nodejs cmake
 
       - name: Build Project
         run: |
-          cd part-1-malt-bug
           mkdir build
           cd build
           ../configure --enable-tests --enable-debug --enable-junit-output
@@ -38,7 +34,6 @@ jobs:
 
       - name: Test Project
         run: |
-          cd part-1-malt-bug/build
           ctest
  
       - name: Publish Test Report
