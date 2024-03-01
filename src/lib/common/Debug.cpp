@@ -145,7 +145,6 @@ Debug::~Debug(void)
 {
 	if (!emitted)
 		this->end();
-	assert(emitted);
 }
 
 }

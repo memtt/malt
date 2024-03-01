@@ -19,7 +19,7 @@ using namespace MALT;
 TEST(Debug,end_not_called)
 {
 	Debug * debug = new Debug("message", "source.cpp", 10);
-	ASSERT_DEATH(delete debug, ".*Assertion .* failed.*");
+	delete debug;
 }
 #endif
 
