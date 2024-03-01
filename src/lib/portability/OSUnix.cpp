@@ -319,14 +319,25 @@ std::string OSUnix::loadTextFile(const std::string& file)
 void* OSUnix::mmap(size_t size, bool populate)
 {
 	void * res;
-	if (populate)
+	if (populate) {
+		//MAP_POPULATE avail under Linux >= 2.6.23
+		//not avail on other unix & macosx
+		#ifdef MAP_POPULATE
 			res = ::mmap(NULL,size,PROT_READ|PROT_WRITE,MAP_ANON|MAP_PRIVATE|MAP_POPULATE,0,0);
-	else
+		#else
 			res = ::mmap(NULL,size,PROT_READ|PROT_WRITE,MAP_ANON|MAP_PRIVATE,0,0);
+			// touch one byte per page to force mapping (could also have done a full memset
+			// but should be faster that way)
+			for (size_t i = 0 ; i < size ; i+= PAGE_SIZE)
+				((char*)res)[0] = 0;
+		#endif
+	} else {
+		res = ::mmap(NULL,size,PROT_READ|PROT_WRITE,MAP_ANON|MAP_PRIVATE,0,0);
+	}
 	if (res == MAP_FAILED)
-			return NULL;
+		return NULL;
 	else
-			return res;
+		return res;
 }
 
 /*******************  FUNCTION  *********************/

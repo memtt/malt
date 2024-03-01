@@ -72,6 +72,9 @@ void NoFreeAllocator::setupNewSegment( bool useInitSegment )
 	//request to system
 	NoFreeAllocatorSegment * segment;
 	
+	//here we ask mmap to populate so we know by advance the exact physical
+	//memory consumption of MALT to substract it from the rest of the app
+	//instead of getting it randomly lower.
 	if (useInitSegment)
 		segment = (NoFreeAllocatorSegment *)initSegment;
 	else
