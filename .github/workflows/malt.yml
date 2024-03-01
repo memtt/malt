@@ -1,0 +1,46 @@
+######################################################
+#            PROJECT  : MALT                         #
+#            VERSION  : 1.2.2                        #
+#            DATE     : 06/2023                      #
+#            AUTHOR   : Sebastien Valat              #
+#            LICENSE  : Apache 2.0                   #
+######################################################
+
+name: Malt
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+jobs:
+  build-project:
+    name: Build & test MALT
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4.1.1
+
+      - name: Install dependencies
+        run: sudo apt-get install -y libunwind-dev nodejs
+
+      - name: Get cmake
+        uses: lukka/get-cmake@latest 
+
+      - name: Build Project
+        run: |
+          cd part-1-malt-bug
+          mkdir build
+          cd build
+          ../configure --enable-tests --enable-debug --enable-junit-output
+          make
+
+      - name: Test Project
+        run: |
+          cd part-1-malt-bug/build
+          ctest
+ 
+      - name: Publish Test Report
+        uses: mikepenz/action-junit-report@v4
+        if: failure()
