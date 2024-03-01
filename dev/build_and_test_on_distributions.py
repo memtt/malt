@@ -145,11 +145,11 @@ def in_container(image: str):
 
 ######################################################
 @pytest.mark.parametrize("dist_name_version", ["ubuntu:20.04", "ubuntu:22.04", "ubuntu:23.04", "ubuntu:24.04", "debian:10", "debian:11", "debian:12"])
-def test_distribution(dist_name_version: str):
+def test_distribution_gcc(dist_name_version: str):
     with in_container(f"malt/{dist_name_version}") as container:
         # to build the container if not exist yet
         container.add_build_run_rule("apt update")
-        container.add_build_run_rule("apt install -y cmake g++ make libunwind-dev nodejs")
+        container.add_build_run_rule("apt install -y cmake g++ make libunwind-dev nodejs clang")
 
         # build & start
         container.build(dist_name_version)
@@ -157,6 +157,23 @@ def test_distribution(dist_name_version: str):
 
         # to perform tests
         container.assert_run("/mnt/malt-sources/configure --enable-debug --enable-tests CFLAGS=-Werror CXXFLAGS=-Werror")
+        container.assert_run("make -j8")
+        container.assert_run("make test")
+
+######################################################
+@pytest.mark.parametrize("dist_name_version", ["ubuntu:20.04", "ubuntu:22.04", "ubuntu:23.04", "ubuntu:24.04", "debian:10", "debian:11", "debian:12"])
+def test_distribution_clang(dist_name_version: str):
+    with in_container(f"malt/{dist_name_version}") as container:
+        # to build the container if not exist yet
+        container.add_build_run_rule("apt update")
+        container.add_build_run_rule("apt install -y cmake g++ make libunwind-dev nodejs clang")
+
+        # build & start
+        container.build(dist_name_version)
+        container.start()
+
+        # to perform tests
+        container.assert_run("/mnt/malt-sources/configure --enable-debug --enable-tests CXX=clang++ CC=clang CFLAGS=-Werror CXXFLAGS=-Werror")
         container.assert_run("make -j8")
         container.assert_run("make test")
 
