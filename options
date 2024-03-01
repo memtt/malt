@@ -37,7 +37,7 @@ cfg_add_enable_option --name='valgrind' \
 #jenkins full features
 cfg_add_enable_option --name='jenkins' \
 						--on-enable-inherit='--enable-valgrind --enable-junit-output --enable-debug "CXXFLAGS=-Wall -fprofile-arcs -ftest-coverage"' \
-						--doc='Enable all checking modes (unit, valgrind, coverage...)' \
+						--doc='Enable all checking modes (unit, valgrind, coverage...)' \
 						--only='enable'
 
 ######################################################

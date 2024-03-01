@@ -680,6 +680,20 @@ cfg_load_vars()
 }
 
 ###########################################################
+# to adapt itself to the right command to use depending on the
+# encountered system.
+# - xargs under linux
+# - gxargs under macosx
+cfg_xargs_each_line()
+{
+	if which xargs > /dev/null 2>/dev/null; then
+		xargs -d "\n" "$@"
+	else
+		gxargs -d "\n" "$@"
+	fi
+}
+
+###########################################################
 #setup colors and check tmp
 cfg_check_tmp
 cfg_auto_enable_color
@@ -730,25 +744,25 @@ if [ ! -z "$CFG_EXTRA_FC"       ];  then cfg_push_cmake_opt "-DCMAKE_Fortran_COM
 #execute or display
 if [ "${ENABLE_DISPLAY_COMMAND}" = 'true' ]; then
 	# display raw
-	cfg_gen_final_command_lines true | xargs -d "\n" echo "${CFG_CMAKE_COMMAND}"
+	cfg_gen_final_command_lines true | cfg_xargs_each_line echo "${CFG_CMAKE_COMMAND}"
 
 	# status
 	cfg_exit 0
 else
 	# display in yellow (if color is enabled)
 	printf "${CFG_COLOR_YELLOW}"
-	cfg_gen_final_command_lines true | xargs -d "\n" echo ">>> ${CFG_CMAKE_COMMAND}"
+	cfg_gen_final_command_lines true | cfg_xargs_each_line echo ">>> ${CFG_CMAKE_COMMAND}"
 	printf "${CFG_COLOR_RESET}"
 
 	# dump in log
 	echo "----------- $(date) --------------" >> configure.log
 	echo >> configure.log
 	echo "$0 $@" >> configure.log
-	cfg_gen_final_command_lines true | xargs -d "\n" echo ">>> ${CFG_CMAKE_COMMAND}" >> configure.log
+	cfg_gen_final_command_lines true | cfg_xargs_each_line echo ">>> ${CFG_CMAKE_COMMAND}" >> configure.log
 	echo >> configure.log
 
 	# execute
-	cfg_gen_final_command_lines | xargs -d "\n" "${CFG_CMAKE_COMMAND}"
+	cfg_gen_final_command_lines | cfg_xargs_each_line "${CFG_CMAKE_COMMAND}"
 
 	# status
 	cfg_exit $?
