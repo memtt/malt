@@ -16,13 +16,17 @@ Dependencies
 
 MALT depends on the presence of :
 
-- binutils (nm and add2line) to extract symbols. Tested version is 2.24 - 2.35.2.
+- binutils (nm and add2line) to extract symbols. Tested version is 2.24 - 2.38.
 
 It optionally depends on :
 
-- nodejs (<http://nodejs.org/>) to run the webview GUI. Tested version is 0.10.30 - 12.22.5.
+- nodejs (<http://nodejs.org/>) to run the webview GUI. Tested version is 0.10.30 - 12.22.9.
 - libelf (<http://www.mr511.de/software/english.html>) to extract global variable list from executables and libs. Tested version is 0.128 - 0.183.
 - libunwind (<http://www.nongnu.org/libunwind/>) as an alternative implementation of glibc backtrace method. Tested version is 1.1 - 1.3.2.
+
+Supported system (known):
+
+ - Linux (Gentoo / Debian / Ubuntu / Centos / RedHat)
 
 How to install
 --------------
@@ -64,7 +68,7 @@ MALT build support several options to define with -D option of CMake :
 
 - `-DENABLE_CODE_TIMING={yes|no}` : Enable quick and dirty function to measure MALT internal
   performances.
-- `-DENABLE_TEST={yes|no}`        : Enable build of unit tests.
+- `-DENABLE_TESTS={yes|no}`        : Enable build of unit tests.
 - `-DJUNIT_OUTPUT={yes|no}`       : Enable generation of junit files for jenkins integration.
 - `-DENABLE_VALGRIND={yes|no}`    : Run unit tests inside valgrind memcheck and generate XML report.
 - `-DPORTABILITY_OS={UNIX}`       : Set portability build options to fix OS specific calls.
@@ -315,6 +319,27 @@ enable a compiler flag :
 gcc -finstrument-functions {YOUR FILES}
 ```
 
+Wrapping a custom allocator
+---------------------------
+
+If your application use a custom allocator with a different namespce than the default `malloc`, `free`...
+you can use the `--wrap` or `--wrap-prefix` options.
+
+You can select in details the function by doing:
+
+```sh
+malt --wrap malloc:je_malloc ./prgm
+malt --wrap malloc:je_malloc,free:je_free,calloc:je_calloc,malloc:another_custom_malloc ./prgm
+```
+
+You can also simply use a common prefix for all by using (typically usefull if you embed jemalloc
+with a custom symbol prefix):
+
+```sh
+malt --wrap-prefix je_
+malt --wrap-prefix je_,another_custom_
+```
+
 Experimental pintool mode
 -------------------------
 
@@ -392,6 +417,7 @@ If you search similar tools all over the web you might find:
 - [mpatrol](http://mpatrol.sourceforge.net/)
 - Tracing tool for parallel programs: [EZTrace](http://eztrace.gforge.inria.fr/)
 - Find Obsolete Memory: [FOM Tools](https://gitlab.cern.ch/fom/FOM-tools/wikis/home)
+- Memray: A memory profiler support C & python. <https://bloomberg.github.io/memray/>
 
 If ever I missed new ones, you can also look on the repos of this person keeping an up-to-date list:
 <https://github.com/MattPD/cpplinks/blob/master/performance.tools.md>
