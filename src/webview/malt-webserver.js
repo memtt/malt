@@ -336,7 +336,11 @@ app.get('/data.json',function(eq,res,next){
 /****************************************************/
 var staticSourceServer = Express.static('/');
 app.use('/app-sources/',function(req,res,next){
-	var reqPath = decodeURIComponent(req.path).replace('/{.}/','./').replace("//","/").replace(/[/]+$/, "");
+	var reqPath = decodeURIComponent(req.path)
+		.replace('/{..}/','../')
+		.replace('/{.}/','./')
+		.replace("//","/")
+		.replace(/[/]+$/, "");
 	var realPath = reqPath;
 
 	//check for redirect

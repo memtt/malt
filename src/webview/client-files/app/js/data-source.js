@@ -10,6 +10,7 @@ function MaltDataSourceNodeJS()
 MaltDataSourceNodeJS.prototype.loadSourceFile = function(file,handler,fail)
 {
 	//handle relative paths which otherwise are suppressed by URL parsing.
+	file = file.replace('../','/{..}/');
 	file = file.replace('./','/{.}/');
 	//call
 	$.get("/app-sources"+file)
@@ -151,6 +152,7 @@ function MaltDataSourceClientSideData(data)
 MaltDataSourceClientSide.prototype.loadSourceFile = function(file,handler)
 {
 	file = file.replace('./','{.}/');
+	file = file.replace('../','{..}/');
 	$.get("/app-sources/"+file,handler);
 }
 
