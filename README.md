@@ -74,6 +74,21 @@ MALT build support several options to define with -D option of CMake :
 - `-DPORTABILITY_OS={UNIX}`       : Set portability build options to fix OS specific calls.
 - `-DPORTABILITY_MUTEX={PTHREAD}` : Set portability build option to select mutex implementation.
 
+Note about Intel Compiler
+-------------------------
+
+MALT is written in C++ so you might possibly encounterd some issue with you build it with GCC and
+profile applications built with Intel Compiler. In most cases it should work out of the box without
+any issues.
+
+But, I got once an error report about that. In that case, try to compile MALT also with intel compiler
+instead if GCC to match the app :
+
+```sh
+../configure CC=icc CXX=icpc
+make
+```
+
 How to use
 ----------
 
