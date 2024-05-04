@@ -22,54 +22,51 @@ import argparse
 from git import Repo
 
 ######################################################
-MALT_VERSION="1.2.2"
-
-######################################################
-ORIGIN_FROM = {
-    'configure': {
-        'PROJECT': 'numaprof',
-        'VERSION': '1.1.2',
-        'DATE': '01/2022',
-        'AUTHOR': 'Valat Sébastien',
-        'LICENSE': 'Apache 2.0'
-    }
+config = {
+    "header_keys": {
+        "PROJECT": "MALT (MALoc Tracker)",
+        "VERSION": "1.2.2",
+        "DATE": "@LAST_EDIT_MONTH_YEAR@",
+        "LICENSE": "CeCILL-C"
+    },
+    "width": 55,
+    "specific": {
+        "configure": {
+            "origin": {
+                'PROJECT': 'numaprof',
+                'VERSION': '1.1.2',
+                'DATE': '01/2022',
+                'AUTHOR': 'Valat Sébastien (CERN) - 2017 - 2018',
+                'LICENSE': 'Apache 2.0',
+                'URL': 'https://memtt.github.io/numaprof/'
+            },
+            "override": {
+                "LICENSE": "Apache 2.0"
+            },
+            "width": 59
+        }
+    },
+    "authors_name_fixes": {
+        "dependabot[bot]": None,
+        "sebv":            "Sébastien Valat",
+        "Sebastien Valat": "Sébastien Valat",
+        "Valat Sébastien": "Sébastien Valat"
+    },
+    "affiliation_domains": {
+        '@atos.net': "ATOS",
+        '@cern.ch': "CERN",
+        '@inria.fr': "INRIA",
+        '@exascale-computing.eu': 'ECR',
+        '@gentoo.org': 'Gentoo',
+        '@rc.gc.ca': 'ECCC',
+        '@ddn.com': 'DDN',
+        '@lanl.gov': 'LANL',
+        '@parsteur.fr': 'Institut Pasteur'
+    },
+    "exclude_hashes": [
+        #'940423b7275caccb487a214acfe7abbd71b97aec',
+    ]
 }
-
-######################################################
-LICENSE_FIX = {
-    'configure': 'Apache 2.0'
-}
-
-######################################################
-# To fix some author names
-# Note: Use None to ignore
-AUTHORS_NAME_FIXES = {
-    "dependabot[bot]": None,
-    "sebv":            "Sébastien Valat",
-    "Sebastien Valat": "Sébastien Valat",
-    "Valat Sébastien": "Sébastien Valat"
-}
-
-######################################################
-# Some affiliation we want to see appear
-AFFILIATION_DOMAIN = {
-    '@atos.net': "ATOS",
-    '@cern.ch': "CERN",
-    '@inria.fr': "INRIA",
-    '@exascale-computing.eu': 'ECR',
-    '@gentoo.org': 'Gentoo',
-    '@rc.gc.ca': 'ECCC',
-    '@ddn.com': 'DDN',
-    '@lanl.gov': 'LANL',
-    '@parsteur.fr': 'Institut Pasteur',
-}
-
-######################################################
-# skip some hashes where Sebastien has touched all files to setup the initial
-# headers
-EXCLUDE_HASHES = [
-    #'940423b7275caccb487a214acfe7abbd71b97aec',
-]
 
 ######################################################
 def git_load_blame_log(file: str) -> list:
@@ -112,15 +109,17 @@ def git_load_blame_log(file: str) -> list:
 ######################################################
 def get_mail_affiliation(mail: str) -> (str|None):
     domain = '@' + mail[1:-1].split('@')[1]
-    if domain in AFFILIATION_DOMAIN:
-        return AFFILIATION_DOMAIN[domain]
+    affiliation_domains = config['affiliation_domains']
+    if domain in affiliation_domains:
+        return affiliation_domains[domain]
     else:
         None
 
 ######################################################
 def fix_name(name: str) -> str:
-    if name in AUTHORS_NAME_FIXES:
-        return AUTHORS_NAME_FIXES[name]
+    authors_name_fixes = config['authors_name_fixes']
+    if name in authors_name_fixes:
+        return authors_name_fixes[name]
     else:
         return name
 
@@ -128,11 +127,12 @@ def fix_name(name: str) -> str:
 def git_extract_authors_from_history(blame_log: list) -> dict:
     # build final storage
     authors = {}
+    exclude_hashes = config['exclude_hashes']
 
     # loop on all entries
     for entry in blame_log:
         # skip some
-        if entry['hash'] in EXCLUDE_HASHES:
+        if entry['hash'] in exclude_hashes:
             continue
         
         # build summary
@@ -184,18 +184,47 @@ def get_last_edit_month_year(blame_log: list) -> str:
     return f"{last_month:02d}/{last_year:04d}"
 
 ######################################################
-def build_new_file_header_shell(authors: dict, last_edit: str, origin) -> list:
+def build_infos(filename: str) -> dict:
+    # build default
+    infos = {
+        'header': config['header_keys'].copy(),
+        'origin': None,
+        'width': config['width']
+    }
+    
+    # set file
+    infos['header']['FILE'] = filename
+    
+    # apply specific for some files
+    if filename in config['specific']:
+        specific = config['specific'][filename]
+        # has external origin
+        if 'origin' in specific:
+            infos['origin'] = specific['origin']
+        # override value (license....)
+        if 'override' in specific:
+            for key, value in specific['override'].items():
+                infos['header'][key] = value
+        if 'width' in specific:
+            infos['width'] = specific['width']
+
+    # ok
+    return infos        
+
+######################################################
+def build_new_file_header_shell(authors_list: list, last_edit: str, infos: dict) -> list:   
     # build new header
     header_script = []
-    header_script.append( '######################################################\n')
-    header_script.append( '#    PROJECT  : MALT (MALoc Tracker)\n')
-    header_script.append(f'#    VERSION  : {MALT_VERSION}\n')
-    header_script.append(f'#    DATE     : {last_edit}\n')
-    header_script.append( '#    LICENSE  : CeCILL-C\n')
-    header_script.append( '#-----------------------------------------------------\n')
+    width = infos['width']
+    header_script.append( f'{"#"*width}\n')
+    for key, value in infos['header'].items():
+        fixed_value = value.replace('@LAST_EDIT_MONTH_YEAR@', last_edit)
+        header_script.append(f'#    {key: <8} : {fixed_value}\n')
+    header_script.append( f'#{"-"*(width-1)}\n')
 
     # add authors
-    for full_name, author in authors.items():
+    for author in authors_list:
+        full_name = author['full-name']
         start = author['year-start']
         end = author['year-end']
         if start == end:
@@ -205,42 +234,39 @@ def build_new_file_header_shell(authors: dict, last_edit: str, origin) -> list:
         header_script.append(f'#    AUTHOR   : {full_name} - {years}\n')
         
     # origin
-    if origin:
-        header_script.append( '#--------------------- ORIGIN ------------------------\n')
-        for key, value in origin.items():
+    if infos['origin']:
+        header_script.append( '#' + " ORIGIN ".center(width-1, '-')+'\n')
+        for key, value in infos['origin'].items():
             header_script.append(f'#    {key: <8} : {value}\n')
 
     # close
-    header_script.append( '######################################################\n')
+    header_script.append( f'{"#"*width}\n')
 
     # ok
     return header_script
 
 ######################################################
-def build_new_file_header(authors: dict, last_edit:str, filename: str) -> list:
-    origin = None
-    if (filename in ORIGIN_FROM):
-        origin = ORIGIN_FROM[filename]
+def build_new_file_header(authors_list: list, last_edit:str, infos: dict, filename: str) -> list:
 
     if filename.endswith(".sh"):
-        return build_new_file_header_shell(authors, last_edit, origin)
+        return build_new_file_header_shell(authors_list, last_edit, infos)
     elif os.path.basename(filename) in ["CMakeLists.txt", "options", "configure"]:
-        return build_new_file_header_shell(authors, last_edit, origin)
+        return build_new_file_header_shell(authors_list, last_edit, infos)
     if filename.endswith(".py"):
-        return build_new_file_header_shell(authors, last_edit, origin)
+        return build_new_file_header_shell(authors_list, last_edit, infos)
     else:
         raise Exception(f"Invalid file type : {filename}")
 
 ######################################################
-def patch_header_lines(origin_content: list, new_header: list) -> list:
+def patch_header_lines(origin_content: list, new_header: list, width: int) -> list:
     # build patched
     patched_content = None
 
     # loop on content to find the start of header
     for line, value in enumerate(origin_content):
-        if value == '######################################################\n' and ('#    PROJECT  : ' in origin_content[line + 1] or '#            PROJECT  : MA' in origin_content[line + 1]):
+        if value == f'{"#"*width}\n' and ('#    PROJECT  : ' in origin_content[line + 1] or '#            PROJECT  : MA' in origin_content[line + 1]):
             count = 1
-            while origin_content[line + count] != '######################################################\n':
+            while origin_content[line + count] != f'{"#"*width}\n':
                 count += 1
             del origin_content[line:line+count+1]
             patched_content = origin_content[0:line] + new_header + origin_content[line:]
@@ -260,6 +286,23 @@ def patch_header_lines(origin_content: list, new_header: list) -> list:
     return patched_content
 
 ######################################################
+def order_authors_by_date(authors: dict) -> list:
+    per_year = {}
+    for key, author in authors.items():
+        year = author['year-start']
+        if not year in per_year:
+            per_year[year] = []
+        per_year[year].append(author)
+        
+    result = []
+    for year in sorted(per_year.keys()):
+        auths = per_year[year]
+        for author in auths:
+            result.append(author)
+
+    return result
+
+######################################################
 def patch_header(file: str) -> None:
     # extract log
     blame_log = git_load_blame_log(file)
@@ -267,16 +310,22 @@ def patch_header(file: str) -> None:
     # extract authors
     authors = git_extract_authors_from_history(blame_log)
     last_edit = get_last_edit_month_year(blame_log)
+    
+    # as list
+    authors_list = order_authors_by_date(authors)
+    
+    # build infos
+    infos = build_infos(file)
 
     # build header as list of lines
-    header_script = build_new_file_header(authors, last_edit, file)
+    header_script = build_new_file_header(authors_list, last_edit, infos, file)
 
     # load file
     with open(file, 'r') as fp:
         original_content = fp.readlines()
 
     # patch
-    patched_content = patch_header_lines(original_content, header_script)
+    patched_content = patch_header_lines(original_content, header_script, infos['width'])
 
     # save again
     with open(file, 'w+') as fp:
