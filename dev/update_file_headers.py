@@ -17,10 +17,29 @@
 # python
 import re
 import os
+import fnmatch
 import datetime
 import argparse
 # git
 from git import Repo
+
+######################################################
+LANG_SHELL = {
+    'open_start': '',
+    'open_end': '',
+    'repeat': '#',
+    'info_open': '#',
+    'close_start': '',
+    'close_end': ''
+}
+LANG_C = {
+    'open_start': '/*',
+    'open_end': '',
+    'repeat': '*',
+    'info_open': '*',
+    'close_start': '',
+    'close_end': '*/'
+}
 
 ######################################################
 config = {
@@ -30,7 +49,7 @@ config = {
         "DATE": "@LAST_EDIT_MONTH_YEAR@",
         "LICENSE": "CeCILL-C"
     },
-    "width": 55,
+    "width": 60,
     "specific": {
         "configure": {
             "origin": {
@@ -69,6 +88,45 @@ config = {
     ],
     "exclude_summary_regexps": [
         re.compile(r"^\[version\]"),
+    ],
+    "lang": {
+        "shell": {
+            'open_start': '',
+            'open_end': '',
+            'repeat': '#',
+            'info_open': '#',
+            'close_start': '',
+            'close_end': '',
+            'apply_on': [
+                '*.py',
+                '*.sh',
+                "CMakeLists.txt",
+                "options",
+                "configure"
+            ]
+        },
+        "c": {
+            'open_start': '/*',
+            'open_end': '',
+            'repeat': '*',
+            'info_open': '*',
+            'close_start': '',
+            'close_end': '*/',
+            'apply_on': [
+                '*.c',
+                '*.cpp',
+                '*.cxx',
+                '*.h',
+                '*.hpp',
+                '*.hxx',
+            ]
+        }
+    },
+    "exclude_files": [
+        "extern-deps/from-fftw",
+        "extern-deps/from-htopml",
+        "extern-deps/googletest-1.14.0",
+        "extern-deps/iniparser",
     ]
 }
 
@@ -228,15 +286,25 @@ def build_infos(filename: str) -> dict:
     return infos        
 
 ######################################################
-def build_new_file_header_shell(authors_list: list, last_edit: str, infos: dict) -> list:   
+def build_new_file_header(authors_list: list, last_edit: str, infos: dict, lang: dict) -> list:   
+    # pattern
+    info_open = lang['info_open']
+    open_start = lang['open_start']
+    open_end = lang['open_end']
+    close_start = lang['close_start']
+    close_end = lang['close_end']
+    width = infos['width']
+    line_start = open_start + lang['repeat']*(width - len(open_start) - len(open_end)) + open_end
+    line_end = close_start + lang['repeat']*(width - len(close_start) - len(close_end)) + close_end
+    
     # build new header
     header_script = []
     width = infos['width']
-    header_script.append( f'{"#"*width}\n')
+    header_script.append( f'{line_start}\n')
     for key, value in infos['header'].items():
         fixed_value = value.replace('@LAST_EDIT_MONTH_YEAR@', last_edit)
-        header_script.append(f'#    {key: <8} : {fixed_value}\n')
-    header_script.append( f'#{"-"*(width-1)}\n')
+        header_script.append(f'{info_open}    {key: <8} : {fixed_value}\n')
+    header_script.append( f'{info_open}{"-"*(width-len(info_open))}\n')
 
     # add authors
     for author in authors_list:
@@ -247,42 +315,56 @@ def build_new_file_header_shell(authors_list: list, last_edit: str, infos: dict)
             years = str(start)
         else:
             years = f"{start} - {end}"
-        header_script.append(f'#    AUTHOR   : {full_name} - {years}\n')
+        header_script.append(f'{info_open}    AUTHOR   : {full_name} - {years}\n')
         
     # origin
     if infos['origin']:
-        header_script.append( '#' + " ORIGIN ".center(width-1, '-')+'\n')
+        header_script.append( info_open + " ORIGIN ".center(width-1, '-')+'\n')
         for key, value in infos['origin'].items():
-            header_script.append(f'#    {key: <8} : {value}\n')
+            header_script.append(f'{info_open}    {key: <8} : {value}\n')
 
     # close
-    header_script.append( f'{"#"*width}\n')
+    header_script.append( f'{line_end}\n')
 
     # ok
     return header_script
 
 ######################################################
-def build_new_file_header(authors_list: list, last_edit:str, infos: dict, filename: str) -> list:
+def calc_lang(filename: str) -> dict:
+    # get it
+    lang = config['lang']
+    fname = os.path.basename(filename)
 
-    if filename.endswith(".sh"):
-        return build_new_file_header_shell(authors_list, last_edit, infos)
-    elif os.path.basename(filename) in ["CMakeLists.txt", "options", "configure"]:
-        return build_new_file_header_shell(authors_list, last_edit, infos)
-    if filename.endswith(".py"):
-        return build_new_file_header_shell(authors_list, last_edit, infos)
-    else:
-        raise Exception(f"Invalid file type : {filename}")
+    # apply filters
+    for name, params in lang.items():
+        apply_on = params['apply_on']
+        for selector in apply_on:
+            if fnmatch.fnmatch(fname, selector):
+                print(f" - {filename} : apply type {name}")
+                return params
+
+    # not found
+    raise Exception(f"Invalid file type : {filename}")
 
 ######################################################
-def patch_header_lines(origin_content: list, new_header: list, width: int) -> list:
+def patch_header_lines(origin_content: list, new_header: list, width: int, lang: dict) -> list:
     # build patched
     patched_content = None
+    
+    # pattern
+    info_open = lang['info_open']
+    open_start = lang['open_start']
+    open_end = lang['open_end']
+    close_start = lang['close_start']
+    close_end = lang['close_end']
+    line_start = open_start + lang['repeat']*(width - len(open_start) - len(open_end)) + open_end
+    line_end = close_start + lang['repeat']*(width - len(close_start) - len(close_end)) + close_end
 
     # loop on content to find the start of header
     for line, value in enumerate(origin_content):
-        if value == f'{"#"*width}\n' and ('#    PROJECT  : ' in origin_content[line + 1] or '#            PROJECT  : MA' in origin_content[line + 1]):
+        if value == f'{line_start}\n' and (f'{info_open}    PROJECT  : ' in origin_content[line + 1] or '#            PROJECT  : MA' in origin_content[line + 1]):
             count = 1
-            while origin_content[line + count] != f'{"#"*width}\n':
+            while origin_content[line + count] != f'{line_end}\n':
                 count += 1
             del origin_content[line:line+count+1]
             patched_content = origin_content[0:line] + new_header + origin_content[line:]
@@ -332,16 +414,19 @@ def patch_header(file: str) -> None:
     
     # build infos
     infos = build_infos(file)
+    
+    # get lang
+    lang = calc_lang(file)
 
     # build header as list of lines
-    header_script = build_new_file_header(authors_list, last_edit, infos, file)
+    header_script = build_new_file_header(authors_list, last_edit, infos, lang)
 
     # load file
     with open(file, 'r') as fp:
         original_content = fp.readlines()
 
     # patch
-    patched_content = patch_header_lines(original_content, header_script, infos['width'])
+    patched_content = patch_header_lines(original_content, header_script, infos['width'], lang)
 
     # save again
     with open(file, 'w+') as fp:
@@ -349,6 +434,13 @@ def patch_header(file: str) -> None:
 
 ######################################################
 def patch_file(filename: str):
+    # if exclude
+    exclude = config['exclude_files']
+    for pattern in exclude:
+        if fnmatch.fnmatch(filename, pattern) or filename.startswith(pattern):
+            print(f"{filename} : IGNORED")
+            return
+    
     # apply
     patch_header(filename)
 
