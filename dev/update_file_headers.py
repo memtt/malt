@@ -15,6 +15,7 @@
 
 ######################################################
 # python
+import re
 import os
 import datetime
 import argparse
@@ -65,6 +66,9 @@ config = {
     },
     "exclude_hashes": [
         #'940423b7275caccb487a214acfe7abbd71b97aec',
+    ],
+    "exclude_summary_regexps": [
+        re.compile(r"^\[version\]"),
     ]
 }
 
@@ -86,14 +90,17 @@ def git_load_blame_log(file: str) -> list:
     commiter_name = 'INIT'
     commiter_time = 'INIT'
     commiter_zone = 'INIT'
+    summary = 'INIT'
 
     # loop on all entries to extract the infos
     for entry in blame:
         parts = entry.split(' ', maxsplit=1)
         key = parts[0]
-        if not ' ' in entry:
-            commit_hash = entry
-        if key == 'author-mail':
+        if len(key) == 40:
+            commit_hash = key
+        if key == 'summary':
+            summary = parts[1]
+        elif key == 'author-mail':
             commiter_mail = parts[1]
         if key == 'author':
             commiter_name = parts[1]
@@ -101,7 +108,7 @@ def git_load_blame_log(file: str) -> list:
             commiter_time = parts[1]
         elif key == 'author-tz':
             commiter_zone = parts[1]
-            log.append({'mail': commiter_mail, 'name': commiter_name, 'time': commiter_time, 'zone': commiter_zone, 'hash': commit_hash})
+            log.append({'mail': commiter_mail, 'name': commiter_name, 'time': commiter_time, 'zone': commiter_zone, 'hash': commit_hash, 'summary': summary})
 
     #ok
     return log
@@ -131,8 +138,17 @@ def git_extract_authors_from_history(blame_log: list) -> dict:
 
     # loop on all entries
     for entry in blame_log:
-        # skip some
+        # skip some based on hash
+        skip = False
         if entry['hash'] in exclude_hashes:
+            skip = True
+        # skip based on summary (not to get commit which push file headers update)        
+        for regexp in config['exclude_summary_regexps']:
+            if regexp.match(entry['summary']):
+                skip = True
+
+        # apply skip
+        if skip:
             continue
         
         # build summary
