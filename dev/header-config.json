@@ -1,0 +1,136 @@
+{
+	"header_keys": {
+		"PROJECT": "MALT (MALoc Tracker)",
+		"VERSION": "1.2.2",
+		"DATE": "@LAST_EDIT_MONTH_YEAR@",
+		"LICENSE": "CeCILL-C"
+	},
+	"width": 60,
+	"specific": {
+		"configure": {
+			"origin": {
+				"PROJECT": "numaprof",
+				"VERSION": "1.1.2",
+				"DATE": "01/2022",
+				"AUTHOR": "Valat Sébastien (CERN) - 2017 - 2018",
+				"LICENSE": "Apache 2.0",
+				"URL": "https://memtt.github.io/numaprof/"
+			},
+			"override": {
+				"LICENSE": "Apache 2.0"
+			},
+			"width": 59
+		}
+	},
+	"authors_name_fixes": {
+		"dependabot[bot]": null,
+		"sebv":            "Sébastien Valat",
+		"Sebastien Valat": "Sébastien Valat",
+		"Valat Sébastien": "Sébastien Valat"
+	},
+	"affiliation_domains": {
+		"@atos.net": "ATOS",
+		"@cern.ch": "CERN",
+		"@inria.fr": "INRIA",
+		"@exascale-computing.eu": "ECR",
+		"@gentoo.org": "Gentoo",
+		"@rc.gc.ca": "ECCC",
+		"@ddn.com": "DDN",
+		"@lanl.gov": "LANL",
+		"@parsteur.fr": "Institut Pasteur"
+	},
+	"exclude_hashes": [
+		"d1c2f8b61ae29207e4edcf8409a73ffbd06a268d",
+		"075bb57390f5627c0dd0e08a731cd562018a13bd",
+		"b56e40ec248ace19f96ed8f205ac74f0d09ea3bf",
+		"19d7fbfbbc25ac44f81d2cf41edd84e37f290fdb",
+		"527b3c20c061d19ae9c3cbad496f46f623ad4a77",
+		"db18608f37632adfd3972484702ee93a0c47ba24",
+		"e5a2abbac8c51ea88211262a529d03f28aaec3fc"
+	],
+	"exclude_summary_regexps": [
+		"^\\[version\\]"
+	],
+	"lang": {
+		"shell": {
+			"open_start": "",
+			"open_end": "",
+			"repeat": "#",
+			"info_open": "#",
+			"close_start": "",
+			"close_end": "",
+			"apply_on": [
+				"*.py",
+				"*.sh",
+				"*.cmake",
+				"*.spec",
+				"*.ebuild",
+				"*.sh.in",
+				"Dockerfile-*",
+				"CMakeLists.txt",
+				"options",
+				"configure",
+				"PKGBUILD",
+				"Makefile",
+				"makefile",
+				"makefile.rules"
+			]
+		},
+		"c": {
+			"open_start": "/*",
+			"open_end": "",
+			"repeat": "*",
+			"info_open": "*",
+			"close_start": "",
+			"close_end": "*/",
+			"apply_on": [
+				"*.c",
+				"*.cpp",
+				"*.cxx",
+				"*.h",
+				"*.hpp",
+				"*.hxx",
+				"*.h.in",
+				"*.js",
+				"*.css"
+			]
+		},
+		"html": {
+			"open_start": "<!--",
+			"open_end": "",
+			"repeat": "-",
+			"info_open": "|",
+			"close_start": "",
+			"close_end": "-->",
+			"apply_on": [
+				"*.html"
+			]
+		}
+	},
+	"exclude_files": [
+		"extern-deps/from-fftw",
+		"extern-deps/from-htopml",
+		"extern-deps/googletest-1.14.0",
+		"extern-deps/iniparser",
+		"*.yml",
+		".gitignore",
+		"*.json",
+		"*.md",
+		"Doxyfile",
+		"*.txt",
+		"*.xmi",
+		"*.ini",
+		"packaging/debian/changelog",
+		"packaging/debian/compat",
+		"packaging/debian/control",
+		"packaging/debian/copyright",
+		"packaging/debian/rules",
+		"*.bz2",
+		"*.ronn",
+		"src/manpages/*.html",
+		"src/maqao/malt.mil",
+		"*.bowerrc",
+		"src/webview/node_modules/",
+		"src/webview/client-files/app/bower_components"
+	]
+}
