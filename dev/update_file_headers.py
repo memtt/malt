@@ -20,6 +20,7 @@ import os
 import fnmatch
 import datetime
 import argparse
+import subprocess
 # git
 from git import Repo
 
@@ -448,13 +449,19 @@ def patch_file(filename: str):
 def main():
     # define arguments
     parser = argparse.ArgumentParser()
-    parser.add_argument('FILE', help='File to patch')
+    parser.add_argument('FILE', help='File to patch or source dir when using --git-all')
+    parser.add_argument('--git-all', '-g', help="Run on all file from GIT. FILE in this case give the GIT dir.", action="store_true")
 
     # parse
     options = parser.parse_args()
 
     # apply
-    patch_file(options.FILE)
+    if options.git_all:
+        files = subprocess.getoutput("git ls-files").split('\n')
+        for file in files:
+            patch_file(file)
+    else:
+        patch_file(options.FILE)
 
 ######################################################
 if __name__ == "__main__":
