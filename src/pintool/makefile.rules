@@ -1,3 +1,12 @@
+############################################################
+#    PROJECT  : MALT (MALoc Tracker)
+#    VERSION  : 1.2.2
+#    DATE     : 01/2014
+#    LICENSE  : CeCILL-C
+#    FILE     : src/pintool/makefile.rules
+#-----------------------------------------------------------
+#    AUTHOR   : Sébastien Valat (ECR) - 2014
+############################################################
 TOOL_ROOTS := mallocprof
 
 CST_SRC=../..

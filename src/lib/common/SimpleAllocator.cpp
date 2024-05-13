@@ -1,12 +1,15 @@
-/*****************************************************
-             PROJECT  : MALT
-             VERSION  : 1.2.2
-             DATE     : 06/2023
-             AUTHOR   : Valat Sébastien
-             LICENSE  : CeCILL-C
-*****************************************************/
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.2.2
+*    DATE     : 06/2023
+*    LICENSE  : CeCILL-C
+*    FILE     : src/lib/common/SimpleAllocator.cpp
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat (ECR) - 2014
+*    AUTHOR   : Sébastien Valat - 2014 - 2020
+***********************************************************/
 
-/********************  HEADERS  *********************/
+/**********************************************************/
 //std
 #include <cstdio>
 #include <cstring>
@@ -22,23 +25,23 @@
 #include "SimpleAllocator.hpp"
 #include <portability/OS.hpp>
 
-/*******************  NAMESPACE  ********************/
+/**********************************************************/
 /**
  * Define the page size we consider.
 **/
 #define MALT_PAGE_SIZE 4096
 
-/***************** USING NAMESPACE ******************/
+/**********************************************************/
 using namespace std;
 
-/*******************  NAMESPACE  ********************/
+/**********************************************************/
 namespace MALT
 {
 
-/********************* GLOBALS **********************/
+/**********************************************************/
 SimpleAllocator * gblInternaAlloc = NULL;
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Constructor of the simple allocator.
  * @param threadSafe Enable of disable thread locking.
@@ -61,7 +64,7 @@ SimpleAllocator::SimpleAllocator(bool threadSafe, size_t sysReqSize)
 	this->curSearchInList = NULL;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Request more memory from the OS.
  * It will register the current segment into free list and point the new one allocated with
@@ -95,7 +98,7 @@ void SimpleAllocator::requestSystemMemory(size_t size)
 	this->unusedMemory += size;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Short implementation of malloc. It search in free list for available segments.
  * If not found, try to split the current segment. If too small, it request a new one from
@@ -151,7 +154,7 @@ void* SimpleAllocator::malloc(size_t size)
 	return chunk->getBody();
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Free the given segment by registering it into the freelist.
  * In this simple allocator we do not do segment merging.
@@ -185,7 +188,7 @@ void SimpleAllocator::free(void* ptr)
 	CODE_TIMING_FUNC_STOP("internalFree");
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Try to get a segment from the system. It will automatically split it to the requested size.
  * @param size Requested segment size (body size without the extra header one).
@@ -203,7 +206,7 @@ Chunk* SimpleAllocator::getInSys(size_t size)
 	return getInCur(size);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Try to get a segment from the current active one by splitting it.
  * If to small the function return NULL, so you need to manually fallback to requestSystemMemory().
@@ -234,7 +237,7 @@ Chunk* SimpleAllocator::getInCur(size_t size)
 	return res;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Try to find a valid segment in the free list. If not found
  * the function return NULL so you need to manually fallback onto getInCur().
@@ -274,25 +277,25 @@ Chunk* SimpleAllocator::getInList(size_t size)
 	return res;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 size_t SimpleAllocator::getTotalMemory(void)
 {
 	return totalMemory;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 size_t SimpleAllocator::getUnusedMemory(void)
 {
 	return unusedMemory;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 size_t SimpleAllocator::getMaxSize(void) const
 {
 	return sysReqSize;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Print the current memory state of the allocator.
 **/
@@ -307,7 +310,7 @@ void SimpleAllocator::printState(std::ostream & out) const
 	out << "=================================================================================================================================================" << endl;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Return the total memory currently provided to the users of the allocator.
 **/
@@ -316,7 +319,7 @@ size_t SimpleAllocator::getInuseMemory(void)
 	return totalMemory - unusedMemory;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Touch the memory to ensure physical mapping. 
  * 
@@ -330,7 +333,7 @@ void SimpleAllocator::touchMemory(void* ptr, size_t size)
 		*(char*)ptr = '\0';
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Provide a short implement of realloc. It uses a basic method based on malloc/copy/free.
 **/
@@ -356,7 +359,7 @@ void* SimpleAllocator::realloc(void * old,size_t size)
 	return res;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Construct a memory chunk by setting-up his header struct.
  * @param size Requested segment size (body size without the extra header one).
@@ -366,7 +369,7 @@ Chunk::Chunk(size_t size)
 	this->size = size;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * @return Return the total memory size used by the segment (accounting the header structure size).
 **/
@@ -375,7 +378,7 @@ size_t Chunk::getTotalSize(void)
 	return size + sizeof(*this);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Check if the current chunk can contain at least size byte of data (body size).
 **/
@@ -384,7 +387,7 @@ bool Chunk::canContain(size_t size)
 	return this->size >= size;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Return the base address of the body part of the allocated segment.
 **/
@@ -398,7 +401,7 @@ void* Chunk::getBody(void)
 		return (void*)(this+1);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Find the header address from the body address of an allocated chunk.
  * It return NULL if ptr is NULL.
@@ -413,7 +416,7 @@ Chunk* Chunk::getFromBody(void* ptr)
 		return ((Chunk*)ptr)-1;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Split the current segment in two subsegments and return the address of the second one.
  * @param size Cut the current segment the keep only size byte for the body part of the first segment.
@@ -438,7 +441,7 @@ Chunk* Chunk::split(size_t size)
 	return next;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Init a free chunk header. It mostly init the list pointers added to the default chunk header.
 **/
@@ -448,7 +451,7 @@ FreeChunk::FreeChunk(void)
 	this->prev = this;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Insert a new free chunk after the current one.
 **/
@@ -469,7 +472,7 @@ void FreeChunk::insertNext(Chunk* chunk)
 	this->next = fchunk;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Remove the current segment from the list.
 **/
@@ -488,7 +491,7 @@ void FreeChunk::removeFromList(void)
 	this->next = this;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void initInternalAlloc(bool threadSafe)
 {
 	if (gblInternaAlloc == NULL)

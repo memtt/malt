@@ -1,3 +1,13 @@
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.2.2
+*    DATE     : 01/2016
+*    LICENSE  : CeCILL-C
+*    FILE     : src/webview/client-files/app/js/page-stack-peaks.js
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat (ECR) - 2014 - 2015
+*    AUTHOR   : Sébastien Valat - 2016
+***********************************************************/
 function MaltPageStackPeaks()
 {
 	//declare module to manage malt home page

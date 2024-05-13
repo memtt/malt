@@ -1,3 +1,13 @@
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.2.2
+*    DATE     : 06/2023
+*    LICENSE  : CeCILL-C
+*    FILE     : src/lib/portability/OSUnix.hpp
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat (ECR) - 2014
+*    AUTHOR   : Sébastien Valat - 2015 - 2019
+***********************************************************/
 /*****************************************************
              PROJECT  : MALT
              VERSION  : 1.2.2

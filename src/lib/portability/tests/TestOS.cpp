@@ -1,3 +1,13 @@
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.2.2
+*    DATE     : 06/2023
+*    LICENSE  : CeCILL-C
+*    FILE     : src/lib/portability/tests/TestOS.cpp
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat - 2019
+*    AUTHOR   : Sébastien Valat (INRIA) - 2023
+***********************************************************/
 /*****************************************************
              PROJECT  : MALT
              VERSION  : 1.2.2

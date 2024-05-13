@@ -1,3 +1,15 @@
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.2.2
+*    DATE     : 06/2023
+*    LICENSE  : CeCILL-C
+*    FILE     : src/webview/client-files/app/js/source-editor.js
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat (ECR) - 2014 - 2015
+*    AUTHOR   : Mehdi Raza Jaffery (CERN) - 2016
+*    AUTHOR   : Sébastien Valat (CERN) - 2016
+*    AUTHOR   : Sébastien Valat (INRIA) - 2023
+***********************************************************/
 /********************************************************************/
 /**
  * Provide a source code editor to annotate sources with profiled values.

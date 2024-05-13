@@ -1,6 +1,7 @@
 {
 	"files.associations": {
 		"*.cdeps": "shellscript",
+		"*.check": "shellscript",
 		"array": "cpp",
 		"atomic": "cpp",
 		"hash_map": "cpp",
@@ -60,6 +61,12 @@
 		"ranges": "cpp",
 		"condition_variable": "cpp",
 		"__locale": "cpp",
-		"__string": "cpp"
+		"__string": "cpp",
+		"forward_list": "cpp",
+		"unordered_set": "cpp",
+		"format": "cpp",
+		"span": "cpp",
+		"valarray": "cpp",
+		"cassert": "cpp"
 	}
 }

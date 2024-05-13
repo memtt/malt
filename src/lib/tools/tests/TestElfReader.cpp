@@ -1,3 +1,13 @@
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.2.2
+*    DATE     : 06/2023
+*    LICENSE  : CeCILL-C
+*    FILE     : src/lib/tools/tests/TestElfReader.cpp
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat (ECR) - 2014
+*    AUTHOR   : Sébastien Valat - 2020
+***********************************************************/
 /*****************************************************
              PROJECT  : MALT
              VERSION  : 1.2.2
