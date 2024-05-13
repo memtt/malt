@@ -36,8 +36,6 @@ import subprocess
 import tempfile
 import multiprocessing
 from contextlib import contextmanager
-# docker
-import docker
 # pytest
 import pytest
 
@@ -84,12 +82,17 @@ def get_malt_source_path() -> str:
     return os.path.abspath(os.path.join(__file__, '..', '..'))
 
 ###########################################################
-class ContainerHandler:
+class PodmanContainerHandler:
     def __init__(self, image: str):
+        self.check_podman()
         self.image = image
-        self.client = docker.from_env()
         self.build_rules = []
-        self.container = None
+        self.container_id = None
+
+    @staticmethod
+    def check_podman() -> None:
+        if not shutil.which("podman"):
+            raise Exception("'podman' command is missing !")
 
     def add_build_run_rule(self, rule: str) -> None:
         self.build_rules.append(f"RUN {rule}")
@@ -110,34 +113,37 @@ class ContainerHandler:
                 fp.flush()
 
                 # build image
-                self.client.images.build(path=tmpdir, tag=self.image)
+                assert_shell_command(f"podman build --tag {self.image} {tmpdir}")
 
     def start(self):
         host_sources_path = get_malt_source_path()
-        volumes = {
-            host_sources_path: {'bind': '/mnt/malt-sources', 'mode': 'rw'}
-        }
-        self.container = self.client.containers.run(self.image, "/bin/bash", volumes=volumes, remove=True, detach=True, tty=True)
+        cmd = ['podman', 'run', '--detach', '--volume', f'{host_sources_path}:/mnt/malt-sources:rw', '--rm', '--tty', self.image, "/bin/bash"]
+        print(f"Running : {cmd}")
+        self.container_id = subprocess.check_output(cmd).decode().split('\n')[0]
+        print(self.container_id)
         self.assert_run("mkdir /home/build", in_build=False)
 
     def assert_run(self, command: str, in_build = True):
         bash_command = f"/bin/bash -c \"{command}\""
         print("")
         print(f"- {bash_command}")
+        status: subprocess.CompletedProcess
         if in_build:
-            status = self.container.exec_run(bash_command, workdir="/home/build")
+            cmd = ['podman', 'exec', '-it', '-w', "/home/build", self.container_id, "/bin/bash", "-c", command]
         else:
-            status = self.container.exec_run(bash_command)
-        msg = status.output.decode('utf-8')
+            cmd = ['podman', 'exec', '-it',                      self.container_id, "/bin/bash", "-c", command]
+        print(f"Running {cmd}")
+        status = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        msg = status.stdout.decode('utf-8')
         output_dump = f"+++++++++++++++++++++++++++++++\n{msg}\n+++++++++++++++++++++++++++++++\n"
         #print(output_dump)
-        if status.exit_code != 0:
+        if status.returncode != 0:
             raise Exception(f"Fail to execute in image : {self.image}, command : {command}\n{output_dump}")
 
     def stop(self):
-        if self.container:
-            self.container.stop()
-        self.client.close()
+        if self.container_id:
+            print(self.container_id)
+            assert_shell_command(f'podman stop {self.container_id}')
 
 ###########################################################
 @contextmanager
@@ -145,7 +151,7 @@ def in_container(image: str):
     # handle return back afterward
     try:
         # create container handler
-        handler = ContainerHandler(image)
+        handler = PodmanContainerHandler(image)
 
         # start
         handler.start()
@@ -220,7 +226,7 @@ def test_prep_image(dist_name_version):
     distr_install_cmds = BUILD_PARAMETERS['distributions'][dist_name_version]
 
     # build
-    container = ContainerHandler(f"malt/{dist_name_version}")
+    container = PodmanContainerHandler(f"malt/{dist_name_version}")
     container.add_build_run_rules(distr_install_cmds)
     container.build(dist_name_version)
 
@@ -239,7 +245,7 @@ def test_distribution(dist_name_version: str, compiler:str, variant:str):
         # to perform tests
         container.assert_run(f"/mnt/malt-sources/configure --enable-tests {variant_options} {compiler_options}")
         container.assert_run(f"make -j{cores}")
-        container.assert_run(f"ctest -j{cores}")
+        container.assert_run(f"ctest --output-on-failure -j{cores}")
 
 ######################################################
 def test_current_host_debug_no_tests():
@@ -252,7 +258,7 @@ def test_current_host_debug_no_tests():
     with tempfile.TemporaryDirectory() as tmpdir:
         with jump_in_dir(tmpdir):
             assert_shell_command(f"{sources}/configure --enable-debug CFLAGS=-Werror CXXFLAGS=-Werror")
-            assert_shell_command(f"make -j{cores}")
+            assert_shell_command(f"make --output-on-failure -j{cores}")
 
 ######################################################
 def test_current_host_debug_disable_tests():
@@ -276,7 +282,7 @@ def test_current_host_debug_tests():
         with jump_in_dir(tmpdir):
             assert_shell_command(f"{sources}/configure --enable-debug --enable-tests CFLAGS=-Werror CXXFLAGS=-Werror")
             assert_shell_command("make -j8")
-            assert_shell_command("make test")
+            assert_shell_command("ctest --output-on-failure")
 
 ######################################################
 # To be able to run as a standard program directly and not call via pytest command
