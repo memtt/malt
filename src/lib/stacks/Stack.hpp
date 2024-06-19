@@ -99,6 +99,28 @@ class Stack
 		StackOrder order;
 };
 
-}
+//TODO: Make it in a single commit
+//TODO: #ifdef 32 bits
 
+/**
+ * To distinguish the type of the pointer in the Stack, either C address or a Python address.
+ */
+struct AddressType{
+	#if INTPTR_MAX == INT64_MAX /*64 Bits */
+
+		/* 0 if it's a normal C address 1 if it's a Python address */
+		int32_t domain:1;
+
+		/* The address, on 63 bits */
+		uint64_t address:63;
+
+	#elif INTPTR_MAX == INT32_MAX /* 32 Bits */
+		int32_t domain;
+		void* address;
+	#else
+		#error Unknown architecture
+	#endif
+};
+
+}
 #endif //MALT_STACK_H
