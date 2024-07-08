@@ -20,7 +20,7 @@ namespace MALT
 {
 
 /*********************  TYPES  **********************/
-typedef std::map<void*,CallStackInfo> ValgrindCalleeMap;
+typedef std::map<AddressType,CallStackInfo> ValgrindCalleeMap;
 
 /********************  STRUCT  **********************/
 struct ValgrindCaller
@@ -30,7 +30,7 @@ struct ValgrindCaller
 };
 
 /*********************  TYPES  **********************/
-typedef std::map<void*,ValgrindCaller> ValgrindCallerMap;
+typedef std::map<AddressType,ValgrindCaller> ValgrindCallerMap;
 
 /*********************  CLASS  **********************/
 class ValgrindOutput
@@ -41,8 +41,8 @@ class ValgrindOutput
 		void writeAsCallgrind(const std::string & filename,const SymbolSolver& dic);
 		void writeAsCallgrind(std::ostream & out, const SymbolSolver& dic);
 	protected:
-		void writeLocation(std::ostream& out, const SymbolSolver& dic, const CallSite * site, void * addr, bool call);
-		static bool isNewOperator(const SymbolSolver& symbols, void* addr);
+		void writeLocation(std::ostream& out, const SymbolSolver& dic, const CallSite * site, AddressType addr, bool call);
+		static bool isNewOperator(const SymbolSolver& symbols, AddressType addr);
 	private:
 		ValgrindCallerMap callers;
 };

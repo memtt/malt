@@ -34,7 +34,7 @@ TEST(StackTreeMap,getValueRef)
 	EXPECT_EQ(0,id);
 
 	//setup stack
-	Stack stack(CST_VALUE_1,4,STACK_ORDER_ASC);
+	Stack stack(CST_VALUE_1,4,STACK_ORDER_ASC,MALT::DOMAIN_C);
 	
 	//move to entry
 	StackTreeHandler handler = map.enterThread();
@@ -61,9 +61,9 @@ TEST(StackTreeMap,toJson)
 	static void * sstack2[] = {(void*)0xBBB,(void*)0xCCC,(void*)0xDDD};
 	
 	//setup stack
-	Stack stack1(sstack1,1,STACK_ORDER_ASC);
-	Stack stack2(sstack2,1,STACK_ORDER_ASC);
-	Stack stack3(sstack2,2,STACK_ORDER_ASC);
+	Stack stack1(sstack1,1,STACK_ORDER_ASC, MALT::DOMAIN_C);
+	Stack stack2(sstack2,1,STACK_ORDER_ASC, MALT::DOMAIN_C);
+	Stack stack3(sstack2,2,STACK_ORDER_ASC, MALT::DOMAIN_C);
 	
 	//setup
 	handler = map.getFromStack(handler,stack1);
@@ -93,7 +93,7 @@ TEST(StackTreeMap,testDataHandler)
 	static void * sstack1[] = {(void*)0xAAA,(void*)0xDDD};
 	
 	//setup stack
-	Stack stack1(sstack1,2,STACK_ORDER_ASC);
+	Stack stack1(sstack1,2,STACK_ORDER_ASC, MALT::DOMAIN_C);
 	handler = map.getFromStack(handler,stack1);
 	
 	//get data handler (eg. in malloc)

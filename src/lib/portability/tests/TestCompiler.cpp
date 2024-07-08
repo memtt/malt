@@ -35,7 +35,7 @@ std::string mangledCppFunction(bool p1, int p2)
 /*******************  FUNCTION  *********************/
 std::string getMangledName(void* addr)
 {
-	void * callsite = (void*)((size_t)addr + 1);
+	AddressType callsite(MALT::DOMAIN_C, (void*)((size_t)addr + 1));
 	SymbolSolver solver;
 	solver.registerAddress(callsite);
 	solver.solveNames();

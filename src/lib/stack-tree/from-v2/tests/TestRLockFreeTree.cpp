@@ -45,9 +45,9 @@ TEST(TypedRLockFreeTree,enterFunction)
 	tree.addDescriptor<int>("test-counter");
 
 	StackTreeHandler handler1 = tree.enterThread();
-	StackTreeHandler handler2 = tree.enterFunction(handler1,(void*)0xAAA);
-	StackTreeHandler handler3 = tree.enterFunction(handler1,(void*)0xAAA);
-	StackTreeHandler handler4 = tree.enterFunction(handler1,(void*)0xBBB);
+	StackTreeHandler handler2 = tree.enterFunction(handler1,MALT::AddressType(MALT::DOMAIN_C, (void*)0xAAA));
+	StackTreeHandler handler3 = tree.enterFunction(handler1,MALT::AddressType(MALT::DOMAIN_C, (void*)0xAAA));
+	StackTreeHandler handler4 = tree.enterFunction(handler1,MALT::AddressType(MALT::DOMAIN_C, (void*)0xBBB));
 	
 	EXPECT_EQ(handler2,handler3);
 	EXPECT_NE(handler1,handler2);
@@ -61,8 +61,8 @@ TEST(TypedRLockFreeTree,getData)
 	tree.addDescriptor<int>("test-counter");
 
 	StackTreeHandler handler1 = tree.enterThread();
-	StackTreeHandler handler2 = tree.enterFunction(handler1,(void*)0xAAA);
-	StackTreeHandler handler3 = tree.enterFunction(handler1,(void*)0xBBB);
+	StackTreeHandler handler2 = tree.enterFunction(handler1,MALT::AddressType(MALT::DOMAIN_C, (void*)0xAAA));
+	StackTreeHandler handler3 = tree.enterFunction(handler1,MALT::AddressType(MALT::DOMAIN_C, (void*)0xBBB));
 	
 	int * data21 = &tree.getTypedData<int>(handler2,0);
 	int * data22 = &tree.getTypedData<int>(handler2,0);
@@ -81,9 +81,9 @@ TEST(TypedRLockFreeTree,toJson)
 	tree.addDescriptor<int>("test-counter");
 
 	StackTreeHandler handler1 = tree.enterThread();
-	StackTreeHandler handler2 = tree.enterFunction(handler1,(void*)0xAAA);
-	StackTreeHandler handler3 = tree.enterFunction(handler1,(void*)0xBBB);
-	StackTreeHandler handler4 = tree.enterFunction(handler3,(void*)0xCCC);
+	StackTreeHandler handler2 = tree.enterFunction(handler1,MALT::AddressType(MALT::DOMAIN_C, (void*)0xAAA));
+	StackTreeHandler handler3 = tree.enterFunction(handler1,MALT::AddressType(MALT::DOMAIN_C, (void*)0xBBB));
+	StackTreeHandler handler4 = tree.enterFunction(handler3,MALT::AddressType(MALT::DOMAIN_C, (void*)0xCCC));
 	
 	tree.getTypedData<int>(handler2,0) = 10;
 	tree.getTypedData<int>(handler4,0) = 11;
@@ -108,7 +108,7 @@ TEST(TypedRLockFreeTree,parallelUse)
 			StackTreeHandler handler = tree.enterThread();
 			
 			for (int i = 0 ; i < 10 ; i++)
-				handler = tree.enterFunction(handler,(void*)(size_t)(i+1));
+				handler = tree.enterFunction(handler,MALT::AddressType(MALT::DOMAIN_C, (void*)(size_t)(i+1)));
 		}
 	}
 }

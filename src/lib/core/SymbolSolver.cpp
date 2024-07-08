@@ -92,13 +92,16 @@ const char* SymbolSolver::getName(void* callSite)
  * Register a new raw address.
  * @param callsite Raw address of the callsite to convert with detailed informations.
 **/
-void SymbolSolver::registerAddress(void* callSite)
+void SymbolSolver::registerAddress(AddressType callSite)
 {
+	assert(! callSite.isNULL());
 	//check if present, if true, nothing to do
 	CallSiteMap::const_iterator it = callSiteMap.find(callSite);
-	if (it != callSiteMap.end())
+	if (it != callSiteMap.end()){
+		assert(it->second.file != -1);
 		return;
-
+	}
+	
 	//search procmap entry
 	LinuxProcMapEntry * procMapEntry = getMapEntry(callSite);
 
@@ -361,15 +364,15 @@ CallSite::CallSite(LinuxProcMapEntry* mapEntry)
  * @param callsite Raw address of the call site.
  * @return Return a pointer to the struct representing the /proc/self/maps entry. NULL if not found.
 **/
-LinuxProcMapEntry* SymbolSolver::getMapEntry(void* callSite)
+LinuxProcMapEntry* SymbolSolver::getMapEntry(AddressType callSite)
 {
 	//search in map by checking intervals
 	for (LinuxProcMap::iterator it = procMap.begin() ; it != procMap.end() ; ++it)
-		if (callSite >= it->lower && callSite < it->upper)
+		if (callSite.getAddress() >= it->lower && callSite.getAddress() < it->upper)
 			return &(*it);
 
 	//check errors
-	if (callSite != (void*)0x1)
+	if (callSite.getAddress() != (void*)0x1)
 		MALT_WARNING_ARG("Caution, call site is not found in procMap : %1.").arg(callSite).end();
 	return NULL;
 }
@@ -422,7 +425,7 @@ void SymbolSolver::solveAslrOffsets(void)
 			for (CallSiteMap::iterator it2 = callSiteMap.begin() ; it2 != callSiteMap.end() ; ++it2)
 			{
 				if (it2->second.mapEntry == &*it) {
-					it->aslrOffset = this->getASRLOffset(it2->first);
+					it->aslrOffset = this->getASRLOffset(it2->first.getAddress());
 					break;
 				}
 			}
@@ -498,6 +501,9 @@ void SymbolSolver::solveNames(LinuxProcMapEntry * procMapEntry)
 
 	for (CallSiteMap::iterator it = callSiteMap.begin() ; it != callSiteMap.end() ; ++it)
 	{
+		//TODO: If C or Python
+		//TODO: If Python, just fill the CallSite object
+		//if (/* C code */ 1){
 		if (it->second.mapEntry == procMapEntry)
 		{
 			if (addr2lineCmd.str().length() > MAX_ARG_STRLEN-20)
@@ -516,16 +522,23 @@ void SymbolSolver::solveNames(LinuxProcMapEntry * procMapEntry)
 			}
 			if (firstNeedAslrScan)
 			{
-				procMapEntry->aslrOffset = this->getASRLOffset(it->first);
+				procMapEntry->aslrOffset = this->getASRLOffset(it->first.getAddress());
 				firstNeedAslrScan = false;
 			}
 
 			//printf("OFFSET %zx %zx %zx %zx\n", it->first, procMapEntry->lower, map->l_addr, elfVaddr);
-			addr2lineCmd << ' '  << (void*)(((size_t)it->first - (size_t)procMapEntry->aslrOffset));
+			addr2lineCmd << ' '  << (void*)((((size_t)it->first.getAddress()) - (size_t)procMapEntry->aslrOffset));
 			hasEntries = true;
 			lst.push_back(&it->second);
 		}
+		//}else{
+			/* Python code */ 
+			/* Fill the CallSite here */
+		//}
 	}
+
+
+
 	if ( addr2lineCmd.str().length() > prefixLen)
 	{
 		//hide error if silent
@@ -593,6 +606,7 @@ void SymbolSolver::solveNames(LinuxProcMapEntry * procMapEntry)
 				//get filename and function name address
 				lst[i]->file = getString(bufferFile);
 
+				assert(lst[i]->file != -1);
 				//if (strcmp(bufferFunc,"??") == 0)
 				//      lst[i]->function = -1;
 				//else
@@ -636,6 +650,7 @@ int SymbolSolver::getString(const char * value)
 	if (*value == '\0')
 		fprintf(stderr,"insert empty\n");
 	strings.push_back(value);
+	assert(strings.size() != 0);
 	return strings.size()-1;
 }
 
@@ -649,7 +664,8 @@ int SymbolSolver::getString(const char * value)
 **/
 void SymbolSolver::registerMaqaoFunctionSymbol(int funcId, const char* funcName, const char* file, int line)
 {
-	MaqaoSite & site = maqaoSites[(void*)(size_t)funcId];
+	AddressType addr = AddressType(DOMAIN_C, (void*)(size_t)funcId);
+	MaqaoSite & site = maqaoSites[addr];
 	site.function = funcName;
 	puts(file);
 	site.line = line;
@@ -685,7 +701,7 @@ void convertToJson(htopml::JsonState& json, const CallSite& value)
  * @param site The raw address of the symbol to solve.
  * @return Pointer to the call site.
 **/
-const CallSite* SymbolSolver::getCallSiteInfo(void* site) const
+const CallSite* SymbolSolver::getCallSiteInfo(AddressType site) const
 {
 	CallSiteMap::const_iterator it = callSiteMap.find(site);
 	if (it == callSiteMap.end())
@@ -718,9 +734,13 @@ void SymbolSolver::solveMissings(void)
 
 	//search
 	for (CallSiteMap::const_iterator it = callSiteMap.begin() ; it != callSiteMap.end() ; ++it)
-		if (it->second.function == -1 || getString(it->second.function) == "??")
-			toResolve.push_back(it->first);
-
+		if (it->second.function == -1 || getString(it->second.function) == "??"){
+			CallSite dummyCallSite = it->second;
+			assert(it->second.file != -1);
+			assert(it->first.domain == DOMAIN_C);
+			assert(it->first.getAddress() != nullptr);
+			toResolve.push_back(it->first.getAddress());
+		}
 	//nothing to do
 	if (toResolve.size() == 0)
 		return;
@@ -792,9 +812,9 @@ char * SymbolSolver::extractSymbolName(char* value)
  * @param s2 Raw address of the call site.
  * @return True if the resolved symbol match.
 **/
-bool SymbolSolver::isSameFuntion(const CallSite* s1, void* s2) const
+bool SymbolSolver::isSameFuntion(const CallSite* s1, AddressType s2) const
 {
-	if (s1 == NULL || s2 == NULL)
+	if (s1 == NULL || s2.isNULL())
 		return false;
 
 	const CallSite * ss2 = getCallSiteInfo(s2);

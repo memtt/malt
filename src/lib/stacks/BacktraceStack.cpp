@@ -56,7 +56,13 @@ void BacktraceStack::loadCurrentStack(void)
 		//try to load with current buffer
 		//int loadedSize = backtrace(this->stack,this->memSize);
 		//int loadedSize = GetStackTrace(this->stack,this->memSize,0);
-		int loadedSize = Backtrace::backtrace(this->stack,this->memSize);
+
+		//Check if the AddressType representation is the same as a C pointer representation? With the far left bit at zero.
+		assert(DOMAIN_C == 0);
+		assert(sizeof(AddressType) == sizeof(void*));
+		assert(sizeof(this->stack[0]) == sizeof(void*));
+		
+		int loadedSize = Backtrace::backtrace((void**)(this->stack),this->memSize);
 
 		assert(loadedSize <= this->memSize);
 		assert(loadedSize > 0);
@@ -83,7 +89,7 @@ void BacktraceStack::loadCurrentStack(void)
 	//fix addresses, backtrace return next instruction, by substracting 1 we go to the middle
 	//of the previous instruction. addr2line is ok with non exact addresses under linux at least.
 	for (int i = 0 ; i < this->size ; i++)
-		this->stack[i] = (void*)((size_t)this->stack[i] - 1);
+		this->stack[i].address = (uintptr_t)((size_t) this->stack[i].getAddress() - 1);
 }
 
 /*******************  FUNCTION  *********************/
@@ -99,8 +105,15 @@ int BacktraceStack::getBactraceSkipOptimDelta(void)
 	this->loadCurrentStack();
 	int sizeLoadCurrent = getSize();
 
+
+	//Check if the AddressType representation is the same as a C pointer representation? With the far left bit at zero.
+	assert(DOMAIN_C == 0);
+	assert(sizeof(AddressType) == sizeof(void*));
+	assert(sizeof(this->stack[0]) == sizeof(void*));
+		
+
 	//dirct call
-	int sizeDirect = BacktraceGlibc::backtrace(stack,memSize);
+	int sizeDirect = BacktraceGlibc::backtrace((void**) stack,memSize);
 
 	//calc delta
 	int delta = sizeLoadCurrent - sizeDirect;

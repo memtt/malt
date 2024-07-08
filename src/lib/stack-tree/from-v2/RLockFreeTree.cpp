@@ -18,7 +18,7 @@ namespace MALTV2
 {
 
 /*******************  FUNCTION  *********************/
-RLockFreeTreeNode::RLockFreeTreeNode(void * callsite)
+RLockFreeTreeNode::RLockFreeTreeNode(MALT::AddressType callsite)
 {
 	this->callSite = callsite;
 	this->next = NULL;
@@ -32,7 +32,7 @@ RLockFreeTreeNode::RLockFreeTreeNode(void * callsite)
 
 /*******************  FUNCTION  *********************/
 RLockFreeTree::RLockFreeTree(bool threadSafe)
-	:root(NULL)
+	:root(MALT::nullAddr)
 {
 	this->threadSafe = threadSafe;
 	this->lastDataId = 0;
@@ -56,7 +56,7 @@ void RLockFreeTree::exitThread(StackTreeHandler handler)
 }
 
 /*******************  FUNCTION  *********************/
-RLockFreeTreeNode * RLockFreeTree::addChild(RLockFreeTreeNode* node, void* callsite)
+RLockFreeTreeNode * RLockFreeTree::addChild(RLockFreeTreeNode* node, MALT::AddressType callsite)
 {
 	RLockFreeTreeNode * child = NULL;
 	assert(node != NULL);
@@ -82,7 +82,7 @@ RLockFreeTreeNode * RLockFreeTree::addChild(RLockFreeTreeNode* node, void* calls
 }
 
 /*******************  FUNCTION  *********************/
-RLockFreeTreeNode * RLockFreeTree::findChild(RLockFreeTreeNode* node, void* callsite)
+RLockFreeTreeNode * RLockFreeTree::findChild(RLockFreeTreeNode* node, MALT::AddressType callsite)
 {
 	//errors
 	assert(node != NULL);
@@ -175,7 +175,7 @@ RLockFreeTreeNode* RLockFreeTree::getNode(StackTreeHandler handler)
 }
 
 /*******************  FUNCTION  *********************/
-StackTreeHandler RLockFreeTree::enterFunction(StackTreeHandler handler, void* callsite)
+StackTreeHandler RLockFreeTree::enterFunction(StackTreeHandler handler, MALT::AddressType callsite)
 {
 	Handler node = findChild((Handler)handler,callsite);
 	
@@ -187,7 +187,7 @@ StackTreeHandler RLockFreeTree::enterFunction(StackTreeHandler handler, void* ca
 }
 
 /*******************  FUNCTION  *********************/
-StackTreeHandler RLockFreeTree::exitFunction(StackTreeHandler handler, void* callsite)
+StackTreeHandler RLockFreeTree::exitFunction(StackTreeHandler handler, MALT::AddressType callsite)
 {
 	Handler typedHandler = (Handler)handler;
 	typedHandler = typedHandler->parent;
@@ -257,12 +257,11 @@ void convertToJson(htopml::JsonState& json, const RLockFreeTree& tree)
 	char buffer[128];
 	json.openStruct();
 		json.openFieldStruct("addresses");
-			for (std::map<void*,void*>::const_iterator it = tree.addrToId.begin() ; it != tree.addrToId.end() ; ++it)
+			for (std::map<MALT::AddressType,MALT::AddressType>::const_iterator it = tree.addrToId.begin() ; it != tree.addrToId.end() ; ++it)
 			{
-				if (it->first != NULL)
+				if (it->first != MALT::nullAddr)
 				{
-					sprintf(buffer,"%p",it->second);
-					json.printField(buffer,it->first);
+					json.printField(it->second.toString().c_str(), it->first);
 				}
 			}
 		json.closeFieldStruct("addresses");
@@ -296,9 +295,8 @@ void convertToJson(htopml::JsonState& json, const RLockFreeTreeNode& tree)
 			RLockFreeTreeNode * cur = tree.firstChild;
 			while (cur != NULL)
 			{
-				sprintf(buffer,"%p",cur->callSite);
 				if (cur->hasChildData)
-					json.printField(buffer,*cur);
+					json.printField(cur->callSite.toString().c_str(),*cur);
 				cur = cur->next;
 			}
 		}
@@ -367,8 +365,9 @@ void RLockFreeTree::markChildData ( RLockFreeTreeNode* node )
 		node = &this->root;
 	
 	//update addree
-	std::map<void*,void*>::iterator it = addrToId.find(node->callSite);
-	void * id = (void*)addrToId.size();
+	std::map<MALT::AddressType,MALT::AddressType>::iterator it = addrToId.find(node->callSite);
+	//TODO: Create a third domain ID in AddressType
+	MALT::AddressType id(MALT::DOMAIN_C, (void*)addrToId.size());
 	if (it != addrToId.end())
 		id = addrToId[node->callSite];
 	else
@@ -398,7 +397,7 @@ void RLockFreeTree::markChildData ( RLockFreeTreeNode* node )
 /*******************  FUNCTION  *********************/
 void RLockFreeTree::prepareForOutput ( void )
 {
-	addrToId[NULL] = NULL;
+	addrToId[MALT::nullAddr] = MALT::nullAddr;
 	markChildData();
 }
 

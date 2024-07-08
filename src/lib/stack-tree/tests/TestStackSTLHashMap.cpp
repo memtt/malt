@@ -40,7 +40,7 @@ TEST(StackSTLHashMap,constructor)
 TEST(StackSTLHashMap,getValueRef)
 {
 	StackSTLHashMap<int> map;
-	Stack stack(CST_VALUE_1,4,STACK_ORDER_ASC);
+	Stack stack(CST_VALUE_1,4,STACK_ORDER_ASC, DOMAIN_C);
 	
 	map.getValueRef(stack) = 10;
 	EXPECT_EQ(10,map.getValueRef(stack));
@@ -50,7 +50,7 @@ TEST(StackSTLHashMap,getValueRef)
 TEST(StackSTLHashMap,operatorArray)
 {
 	StackSTLHashMap<int> map;
-	Stack stack(CST_VALUE_1,4,STACK_ORDER_ASC);
+	Stack stack(CST_VALUE_1,4,STACK_ORDER_ASC, DOMAIN_C);
 	
 	map[stack] = 10;
 	EXPECT_EQ(10,map[stack]);
@@ -60,9 +60,9 @@ TEST(StackSTLHashMap,operatorArray)
 TEST(StackSTLHashMap,toJson)
 {
 	StackSTLHashMap<int> map;
-	Stack stack1(CST_VALUE_1,3,STACK_ORDER_ASC);
+	Stack stack1(CST_VALUE_1,3,STACK_ORDER_ASC, DOMAIN_C);
 	map[stack1] = 10;
-	Stack stack2(CST_VALUE_1,4,STACK_ORDER_ASC);
+	Stack stack2(CST_VALUE_1,4,STACK_ORDER_ASC, DOMAIN_C);
 	map[stack2] = 11;
 	
 	std::stringstream out;
@@ -76,9 +76,9 @@ TEST(StackSTLHashMap,iterator)
 {
 	//fill
 	StackSTLHashMap<int> map;
-	Stack stack1(CST_VALUE_1,3,STACK_ORDER_ASC);
+	Stack stack1(CST_VALUE_1,3,STACK_ORDER_ASC, DOMAIN_C);
 	map[stack1] = 10;
-	Stack stack2(CST_VALUE_1,4,STACK_ORDER_ASC);
+	Stack stack2(CST_VALUE_1,4,STACK_ORDER_ASC, DOMAIN_C);
 	map[stack2] = 11;
 	
 	StackSTLHashMap<int>::iterator it = map.begin();
@@ -96,9 +96,9 @@ TEST(StackSTLHashMap,const_iterator)
 {
 	//fill
 	StackSTLHashMap<int> map;
-	Stack stack1(CST_VALUE_1,3,STACK_ORDER_ASC);
+	Stack stack1(CST_VALUE_1,3,STACK_ORDER_ASC, DOMAIN_C);
 	map[stack1] = 10;
-	Stack stack2(CST_VALUE_1,4,STACK_ORDER_ASC);
+	Stack stack2(CST_VALUE_1,4,STACK_ORDER_ASC, DOMAIN_C);
 	map[stack2] = 11;
 	
 	StackSTLHashMap<int>& cmap = map;

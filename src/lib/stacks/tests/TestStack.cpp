@@ -29,7 +29,7 @@ TEST(Stack,constructorDefault)
 /*******************  FUNCTION  *********************/
 TEST(Stack,constructorArg)
 {
-	Stack stack(CST_STACK_1,4,STACK_ORDER_ASC);
+	Stack stack(CST_STACK_1,4,STACK_ORDER_ASC, DOMAIN_C);
 	EXPECT_EQ(4,stack.getSize());
 }
 
@@ -38,7 +38,7 @@ TEST(Stack,isValid)
 {
 	Stack stack(STACK_ORDER_ASC);
 	EXPECT_FALSE(stack.isValid());
-	stack.set(CST_STACK_1,4,STACK_ORDER_ASC);
+	stack.set(CST_STACK_1,4,STACK_ORDER_ASC, DOMAIN_C);
 	EXPECT_EQ(4,stack.getSize());
 	EXPECT_TRUE(stack.isValid());
 }
@@ -46,52 +46,52 @@ TEST(Stack,isValid)
 /*******************  FUNCTION  *********************/
 TEST(Stack,getCalleeAsc)
 {
-	Stack stack(CST_STACK_1,4,STACK_ORDER_ASC);
-	EXPECT_EQ((void*)0x1,stack.getCallee());
+	Stack stack(CST_STACK_1,4,STACK_ORDER_ASC, DOMAIN_C);
+	EXPECT_EQ(AddressType(DOMAIN_C, (void*) 0x1),stack.getCallee());
 }
 
 /*******************  FUNCTION  *********************/
 TEST(Stack,getCalleeDesc)
 {
-	Stack stack(CST_STACK_1,4,STACK_ORDER_DESC);
-	EXPECT_EQ((void*)0x4,stack.getCallee());
+	Stack stack(CST_STACK_1,4,STACK_ORDER_DESC, DOMAIN_C);
+	EXPECT_EQ(AddressType(DOMAIN_C, (void*) 0x4),stack.getCallee());
 }
 
 /*******************  FUNCTION  *********************/
 TEST(Stack,getCallerAsc)
 {
-	Stack stack(CST_STACK_1,4,STACK_ORDER_ASC);
-	EXPECT_EQ((void*)0x2,stack.getCaller());
+	Stack stack(CST_STACK_1,4,STACK_ORDER_ASC, DOMAIN_C);
+	EXPECT_EQ(AddressType(DOMAIN_C, (void*) 0x2),stack.getCaller());
 }
 
 /*******************  FUNCTION  *********************/
 TEST(Stack,getCallerDesc)
 {
-	Stack stack(CST_STACK_1,4,STACK_ORDER_DESC);
-	EXPECT_EQ((void*)0x3,stack.getCaller());
+	Stack stack(CST_STACK_1,4,STACK_ORDER_DESC, DOMAIN_C);
+	EXPECT_EQ(AddressType(DOMAIN_C, (void*) 0x3),stack.getCaller());
 }
 
 /*******************  FUNCTION  *********************/
 TEST(Stack,operatorArrayAsc)
 {
-	Stack stack(CST_STACK_1,4,STACK_ORDER_ASC);
+	Stack stack(CST_STACK_1,4,STACK_ORDER_ASC, DOMAIN_C);
 	for (size_t i = 0 ; i < 4 ; i++)
-		EXPECT_EQ((void*)(i+1),stack[i]);
+		EXPECT_EQ(AddressType(DOMAIN_C, (void*) (i+1)),stack[i]);
 }
 
 /*******************  FUNCTION  *********************/
 TEST(Stack,operatorArrayDesc)
 {
-	Stack stack(CST_STACK_1,4,STACK_ORDER_DESC);
+	Stack stack(CST_STACK_1,4,STACK_ORDER_DESC, DOMAIN_C);
 	for (size_t i = 0 ; i < 4 ; i++)
-		EXPECT_EQ((void*)(4-i),stack[i]);
+		EXPECT_EQ(AddressType(DOMAIN_C, (void*) (4-i)),stack[i]);
 }
 
 /*******************  FUNCTION  *********************/
 TEST(Stack,partialCompareDesc1)
 {
-	Stack stack1(CST_STACK_1,4,STACK_ORDER_DESC);
-	Stack stack2(CST_STACK_1,4,STACK_ORDER_DESC);
+	Stack stack1(CST_STACK_1,4,STACK_ORDER_DESC, DOMAIN_C);
+	Stack stack2(CST_STACK_1,4,STACK_ORDER_DESC, DOMAIN_C);
 
 	EXPECT_TRUE(Stack::partialCompare(stack1,0,stack2,0));
 	EXPECT_TRUE(Stack::partialCompare(stack1,1,stack2,1));
@@ -101,9 +101,9 @@ TEST(Stack,partialCompareDesc1)
 /*******************  FUNCTION  *********************/
 TEST(Stack,partialCompareDesc2)
 {
-	Stack stack1(CST_STACK_1,3,STACK_ORDER_DESC);
-	Stack stack2(CST_STACK_1,4,STACK_ORDER_DESC);
-	Stack stack3(CST_STACK_1+1,3,STACK_ORDER_DESC);
+	Stack stack1(CST_STACK_1,3,STACK_ORDER_DESC, DOMAIN_C);
+	Stack stack2(CST_STACK_1,4,STACK_ORDER_DESC, DOMAIN_C);
+	Stack stack3(CST_STACK_1+1,3,STACK_ORDER_DESC, DOMAIN_C);
 
 	EXPECT_FALSE(Stack::partialCompare(stack1,0,stack2,0));
 	EXPECT_FALSE(Stack::partialCompare(stack1,1,stack2,1));
@@ -114,8 +114,8 @@ TEST(Stack,partialCompareDesc2)
 /*******************  FUNCTION  *********************/
 TEST(Stack,partialCompareAsc1)
 {
-	Stack stack1(CST_STACK_1,4,STACK_ORDER_ASC);
-	Stack stack2(CST_STACK_1,4,STACK_ORDER_ASC);
+	Stack stack1(CST_STACK_1,4,STACK_ORDER_ASC, DOMAIN_C);
+	Stack stack2(CST_STACK_1,4,STACK_ORDER_ASC, DOMAIN_C);
 
 	EXPECT_TRUE(Stack::partialCompare(stack1,0,stack2,0));
 	EXPECT_TRUE(Stack::partialCompare(stack1,1,stack2,1));
@@ -125,9 +125,9 @@ TEST(Stack,partialCompareAsc1)
 /*******************  FUNCTION  *********************/
 TEST(Stack,partialCompareAsc2)
 {
-	Stack stack1(CST_STACK_1,3,STACK_ORDER_ASC);
-	Stack stack2(CST_STACK_1,4,STACK_ORDER_ASC);
-	Stack stack3(CST_STACK_1+1,3,STACK_ORDER_ASC);
+	Stack stack1(CST_STACK_1,3,STACK_ORDER_ASC, DOMAIN_C);
+	Stack stack2(CST_STACK_1,4,STACK_ORDER_ASC, DOMAIN_C);
+	Stack stack3(CST_STACK_1+1,3,STACK_ORDER_ASC, DOMAIN_C);
 
 	EXPECT_FALSE(Stack::partialCompare(stack1,0,stack2,0));
 	EXPECT_FALSE(Stack::partialCompare(stack1,1,stack2,1));
@@ -138,7 +138,7 @@ TEST(Stack,partialCompareAsc2)
 /*******************  FUNCTION  *********************/
 TEST(Stack,operatorStreamAsc)
 {
-	Stack stack(CST_STACK_1,4,STACK_ORDER_ASC);
+	Stack stack(CST_STACK_1,4,STACK_ORDER_ASC, DOMAIN_C);
 
 	std::stringstream buffer;
 	buffer << stack;
@@ -149,7 +149,7 @@ TEST(Stack,operatorStreamAsc)
 /*******************  FUNCTION  *********************/
 TEST(Stack,operatorStreamDesc)
 {
-	Stack stack(CST_STACK_1,4,STACK_ORDER_DESC);
+	Stack stack(CST_STACK_1,4,STACK_ORDER_DESC, DOMAIN_C);
 
 	std::stringstream buffer;
 	buffer << stack;
@@ -160,7 +160,7 @@ TEST(Stack,operatorStreamDesc)
 /*******************  FUNCTION  *********************/
 TEST(Stack,convertToJsonAsc)
 {
-	Stack stack(CST_STACK_1,4,STACK_ORDER_ASC);
+	Stack stack(CST_STACK_1,4,STACK_ORDER_ASC, DOMAIN_C);
 	
 	std::stringstream buffer;
 	htopml::convertToJson(buffer,stack);
@@ -171,7 +171,7 @@ TEST(Stack,convertToJsonAsc)
 /*******************  FUNCTION  *********************/
 TEST(Stack,convertToJsonDesc)
 {
-	Stack stack(CST_STACK_1,4,STACK_ORDER_DESC);
+	Stack stack(CST_STACK_1,4,STACK_ORDER_DESC, DOMAIN_C);
 	
 	std::stringstream buffer;
 	htopml::convertToJson(buffer,stack);
@@ -182,7 +182,7 @@ TEST(Stack,convertToJsonDesc)
 /*******************  FUNCTION  *********************/
 TEST(Stack,copyConstructor)
 {
-	Stack stack(CST_STACK_1,4,STACK_ORDER_DESC);
+	Stack stack(CST_STACK_1,4,STACK_ORDER_DESC, DOMAIN_C);
 	Stack stack2(stack);
 	
 	EXPECT_EQ(stack,stack2);
@@ -191,7 +191,7 @@ TEST(Stack,copyConstructor)
 /*******************  FUNCTION  *********************/
 TEST(Stack,set)
 {
-	Stack stack(CST_STACK_1,4,STACK_ORDER_DESC);
+	Stack stack(CST_STACK_1,4,STACK_ORDER_DESC, DOMAIN_C);
 	Stack stack2(STACK_ORDER_DESC);
 	stack2.set(stack);
 	
@@ -201,30 +201,30 @@ TEST(Stack,set)
 /*******************  FUNCTION  *********************/
 TEST(Stack,partialCopyConstructor1)
 {
-	Stack stack(CST_STACK_1,4,STACK_ORDER_DESC);
+	Stack stack(CST_STACK_1,4,STACK_ORDER_DESC, DOMAIN_C);
 	Stack stack2(stack,2);
 	
 	EXPECT_EQ(2,stack2.getSize());
-	EXPECT_EQ((void*)0x2,stack2[0]);
-	EXPECT_EQ((void*)0x1,stack2[1]);
+	EXPECT_EQ(AddressType(DOMAIN_C, (void*) 0x2),stack2[0]);
+	EXPECT_EQ(AddressType(DOMAIN_C, (void*) 0x1),stack2[1]);
 }
 
 /*******************  FUNCTION  *********************/
 TEST(Stack,partialCopyConstructor)
 {
-	Stack stack(CST_STACK_1,4,STACK_ORDER_ASC);
+	Stack stack(CST_STACK_1,4,STACK_ORDER_ASC, DOMAIN_C);
 	Stack stack2(stack,2);
 	
 	EXPECT_EQ(2,stack2.getSize());
-	EXPECT_EQ((void*)0x3,stack2[0]);
-	EXPECT_EQ((void*)0x4,stack2[1]);
+	EXPECT_EQ(AddressType(DOMAIN_C, (void*) 0x3),stack2[0]);
+	EXPECT_EQ(AddressType(DOMAIN_C, (void*) 0x4),stack2[1]);
 }
 
 /*******************  FUNCTION  *********************/
 TEST(Stack,hash)
 {
-	Stack stack1(CST_STACK_1,4,STACK_ORDER_ASC);
-	Stack stack2(CST_STACK_2,4,STACK_ORDER_DESC);
+	Stack stack1(CST_STACK_1,4,STACK_ORDER_ASC, DOMAIN_C);
+	Stack stack2(CST_STACK_2,4,STACK_ORDER_DESC, DOMAIN_C);
 	
 	StackHash hash1 = stack1.hash();
 	StackHash hash2 = stack2.hash();
@@ -235,8 +235,8 @@ TEST(Stack,hash)
 /*******************  FUNCTION  *********************/
 TEST(Stack,hashPartial)
 {
-	Stack stack1(CST_STACK_1,4,STACK_ORDER_ASC);
-	Stack stack2(CST_STACK_2,4,STACK_ORDER_DESC);
+	Stack stack1(CST_STACK_1,4,STACK_ORDER_ASC, DOMAIN_C);
+	Stack stack2(CST_STACK_2,4,STACK_ORDER_DESC, DOMAIN_C);
 	
 	StackHash hash1 = stack1.hash(2);
 	StackHash hash2 = stack2.hash(2);
@@ -247,10 +247,10 @@ TEST(Stack,hashPartial)
 /*******************  FUNCTION  *********************/
 TEST(Stack,setReverse)
 {
-	Stack stack1(CST_STACK_1,4,STACK_ORDER_ASC);
+	Stack stack1(CST_STACK_1,4,STACK_ORDER_ASC, DOMAIN_C);
 	Stack stack2(STACK_ORDER_ASC);
 	
-	stack2.set(CST_STACK_2,4,STACK_ORDER_DESC);
+	stack2.set(CST_STACK_2,4,STACK_ORDER_DESC, DOMAIN_C);
 	
 	EXPECT_EQ(stack1,stack2);
 }
@@ -258,7 +258,7 @@ TEST(Stack,setReverse)
 /*******************  FUNCTION  *********************/
 TEST(Stack,operatorEqual)
 {
-	Stack stack1(CST_STACK_1,4,STACK_ORDER_ASC);
+	Stack stack1(CST_STACK_1,4,STACK_ORDER_ASC, DOMAIN_C);
 	Stack stack2(STACK_ORDER_ASC);
 	
 	stack2 = stack1;
@@ -287,10 +287,10 @@ TEST(Stack,grow)
 /*******************  FUNCTION  *********************/
 TEST(Stack,large)
 {
-	Stack stack1(CST_STACK_1,4,STACK_ORDER_ASC);
+	Stack stack1(CST_STACK_1,4,STACK_ORDER_ASC, DOMAIN_C);
 	
 	void ** tmp = new void*[1024*1024];
-	stack1.set(tmp,1024*1024,STACK_ORDER_ASC);
+	stack1.set(tmp,1024*1024,STACK_ORDER_ASC, DOMAIN_C);
 	
 	EXPECT_EQ(1024*1024,stack1.getSize());
 }
@@ -298,7 +298,7 @@ TEST(Stack,large)
 /*******************  FUNCTION  *********************/
 TEST(Stack,fastSkip1)
 {
-	Stack stack(CST_STACK_1,4,STACK_ORDER_ASC);
+	Stack stack(CST_STACK_1,4,STACK_ORDER_ASC, DOMAIN_C);
 	stack.fastSkip(1);
 
 	std::stringstream buffer;
@@ -310,7 +310,7 @@ TEST(Stack,fastSkip1)
 /*******************  FUNCTION  *********************/
 TEST(Stack,fastSkip2)
 {
-	Stack stack(CST_STACK_2,4,STACK_ORDER_DESC);
+	Stack stack(CST_STACK_2,4,STACK_ORDER_DESC, DOMAIN_C);
 	stack.fastSkip(1);
 
 	std::stringstream buffer;

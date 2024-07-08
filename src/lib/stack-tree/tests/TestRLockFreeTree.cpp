@@ -50,9 +50,9 @@ TEST(RLockFreeTree,getChild)
 {
 	RLockFreeTree<int> tree;
 	RLockFreeTree<int>::Handler handler1 = tree.getRoot();
-	RLockFreeTree<int>::Handler handler2 = tree.getChild(handler1,(void*)0xAAA);
-	RLockFreeTree<int>::Handler handler3 = tree.getChild(handler1,(void*)0xAAA);
-	RLockFreeTree<int>::Handler handler4 = tree.getChild(handler1,(void*)0xBBB);
+	RLockFreeTree<int>::Handler handler2 = tree.getChild(handler1,AddressType(DOMAIN_C, (void*)0xAAA));
+	RLockFreeTree<int>::Handler handler3 = tree.getChild(handler1,AddressType(DOMAIN_C, (void*)0xAAA));
+	RLockFreeTree<int>::Handler handler4 = tree.getChild(handler1,AddressType(DOMAIN_C, (void*)0xBBB));
 	
 	EXPECT_EQ(handler2,handler3);
 	EXPECT_NE(handler1,handler2);
@@ -64,8 +64,8 @@ TEST(RLockFreeTree,getData)
 {
 	RLockFreeTree<int> tree;
 	RLockFreeTree<int>::Handler handler1 = tree.getRoot();
-	RLockFreeTree<int>::Handler handler2 = tree.getChild(handler1,(void*)0xAAA);
-	RLockFreeTree<int>::Handler handler3 = tree.getChild(handler1,(void*)0xBBB);
+	RLockFreeTree<int>::Handler handler2 = tree.getChild(handler1,AddressType(DOMAIN_C, (void*)0xAAA));
+	RLockFreeTree<int>::Handler handler3 = tree.getChild(handler1,AddressType(DOMAIN_C, (void*)0xBBB));
 	
 	int * data21 = tree.getData(handler2);
 	int * data22 = tree.getData(handler2);
@@ -82,9 +82,9 @@ TEST(RLockFreeTree,toJson)
 {
 	RLockFreeTree<int> tree;
 	RLockFreeTree<int>::Handler handler1 = tree.getRoot();
-	RLockFreeTree<int>::Handler handler2 = tree.getChild(handler1,(void*)0xAAA);
-	RLockFreeTree<int>::Handler handler3 = tree.getChild(handler1,(void*)0xBBB);
-	RLockFreeTree<int>::Handler handler4 = tree.getChild(handler3,(void*)0xCCC);
+	RLockFreeTree<int>::Handler handler2 = tree.getChild(handler1,AddressType(DOMAIN_C, (void*)0xAAA));
+	RLockFreeTree<int>::Handler handler3 = tree.getChild(handler1,AddressType(DOMAIN_C, (void*)0xBBB));
+	RLockFreeTree<int>::Handler handler4 = tree.getChild(handler3,AddressType(DOMAIN_C, (void*)0xCCC));
 	
 	*tree.getData(handler2) = 10;
 	*tree.getData(handler4) = 11;
@@ -106,7 +106,7 @@ TEST(RLockFreeTree,parallelUse)
 			RLockFreeTree<int>::Handler handler = tree.getRoot();
 			
 			for (int i = 0 ; i < 10 ; i++)
-				handler = tree.getChild(handler,(void*)(size_t)(i+1));
+				handler = tree.getChild(handler,AddressType(DOMAIN_C, (void*)(size_t)(i+1)));
 		}
 	}
 }

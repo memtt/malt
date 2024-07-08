@@ -68,7 +68,7 @@ inline void EnterExitStack::enterFunction ( void* funcAddr )
 		this->grow();
 		
 	//update
-	this->stack[size++] = funcAddr;
+	this->stack[size++].set(MALT::DOMAIN_C, funcAddr);
 	
 	//errors
 	assert(size <= memSize);
@@ -90,7 +90,7 @@ inline void EnterExitStack::exitFunction ( void* funcAddr )
 	if (size > 0)
 		size--;
 
-	assert(funcAddr == stack[size]);
+	assert(funcAddr == stack[size].getAddress());
 }
 
 }

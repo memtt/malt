@@ -29,6 +29,34 @@
 namespace MALT
 {
 
+const AddressType nullAddr = {DOMAIN_C, 0};
+
+
+std::ostream &operator<<(std::ostream &out, const AddressType &addrType){
+	out << addrType.toString();
+	
+	return out;
+}
+
+
+std::string AddressType::toString() const {
+	std::string value;
+
+	if (this->domain == DOMAIN_PYTHON){
+		value += "PY-";
+	}
+
+	char buffer[64];
+	sprintf(buffer, "%p", (void*) this->address);
+	value += buffer;
+
+	return value;
+}
+
+
+void convertToJson(htopml::JsonState & json, const AddressType& addrType){
+	json.printValue(addrType.toString());
+}
 /*******************  FUNCTION  *********************/
 /**
  * Stack constructor to init the internal states.
@@ -48,7 +76,7 @@ Stack::Stack ( StackOrder order )
  * Import a stack from a raw C representation, typically the one obtained from the backtrace() function.
  * For the backtrace function, use STACK_ORDER_ASC ordering.
 **/
-Stack::Stack(void** stack, int size,StackOrder order)
+Stack::Stack(AddressType* stack, int size,StackOrder order)
 {
 	this->order   = order;
 	this->stack   = NULL;
@@ -56,6 +84,15 @@ Stack::Stack(void** stack, int size,StackOrder order)
 	this->size    = 0;
 	this->memSize = 0;
 	this->set(stack,size,order);
+}
+
+Stack::Stack(void **stack, int size, StackOrder order, DomainType domain){
+	this->order   = order;
+	this->stack   = NULL;
+	this->mem     = NULL;
+	this->size    = 0;
+	this->memSize = 0;
+	this->set(stack,size,order,DOMAIN_C);
 }
 
 /*******************  FUNCTION  *********************/
@@ -136,12 +173,12 @@ void Stack::set ( const Stack& orig )
  * Permit to replace the current stack content by the given one.
  * It can be feed by the raw representation provided by backtrace().
 **/
-void Stack::set ( void** stack, int size, StackOrder order )
+void Stack::set (AddressType* stack, int size, StackOrder order )
 {
 	//realloc if required
 	if (this->memSize < size)
 	{
-		this->mem     = (void**)MALT_REALLOC(this->mem,size * sizeof(void**));
+		this->mem     = (AddressType*)MALT_REALLOC(this->mem,size * sizeof(AddressType));
 		this->stack   = this->mem;
 		this->memSize = size;
 	}
@@ -149,10 +186,36 @@ void Stack::set ( void** stack, int size, StackOrder order )
 	//copy
 	if (this->order == order) 
 	{
-		memcpy(this->stack,stack,size * sizeof(void*));
+		memcpy(this->stack,stack,size * sizeof(AddressType));
 	} else {
 		for (int i = 0 ; i < size ; i++)
 			this->stack[i] = stack[size - 1 - i];
+	}
+	
+	//save size
+	this->size = size;
+}
+
+
+void Stack::set (void** stack, int size, StackOrder order, DomainType domain)
+{
+	//realloc if required
+	if (this->memSize < size)
+	{
+		this->mem     = (AddressType*)MALT_REALLOC(this->mem,size * sizeof(AddressType));
+		this->stack   = this->mem;
+		this->memSize = size;
+	}
+	
+	//copy
+	if (this->order == order) 
+	{
+		for (size_t i = 0; i < size; i++)
+			this->stack[i].set(domain, stack[i]);
+		
+	} else {
+		for (int i = 0 ; i < size ; i++)
+			this->stack[i].set(domain, stack[size - 1 - i]);
 	}
 	
 	//save size
@@ -185,7 +248,7 @@ StackHash Stack::hash ( int skipDepth ) const
 /**
  * Internal function to compute the hash.
 **/
-StackHash Stack::hash ( void** stack, int size ,StackOrder order)
+StackHash Stack::hash (AddressType* stack, int size ,StackOrder order)
 {
 	//errors
 	assert(stack != NULL);
@@ -205,7 +268,7 @@ StackHash Stack::hash ( void** stack, int size ,StackOrder order)
 			//calc hash by doing xor on each call addresses
 			for (int i = 0 ; i < hashSize ; i++)
 			{
-				StackHash cur = (StackHash)stack[i];
+				StackHash cur = (StackHash)stack[i].getAddress();
 				assert(cur != 0);
 // 				res ^= (StackHash)(cur+i+size);
 // 				res ^= (StackHash)(cur-i+size) << (i%32);
@@ -217,7 +280,7 @@ StackHash Stack::hash ( void** stack, int size ,StackOrder order)
 			//calc hash by doing xor on each call addresses
 			for (int i = size - 1 ; i >= size - hashSize ; i--)
 			{
-				StackHash cur = (StackHash)stack[i];
+				StackHash cur = (StackHash)stack[i].getAddress();
 				assert(cur != 0);
 // 				res ^= (StackHash)(cur+i+size);
 // 				res ^= (StackHash)(cur-i+size) << (i%32);
@@ -235,15 +298,15 @@ StackHash Stack::hash ( void** stack, int size ,StackOrder order)
  * Operator to read stack entries. It provide a uniq ordering by checking the internal one.
  * The external representation exposed to the user is by convention the backtrace one (ASC).
 **/
-void* Stack::operator[](int idx) const
+AddressType Stack::operator[](int idx) const
 {
 	//errors
 	assert(idx >= 0);
 	
 	//trivial
-	if (idx < 0 || idx >= size || stack == NULL)
-		return NULL;
-
+	if (idx < 0 || idx >= size || stack == NULL || stack->isNULL())
+		return nullAddr;
+		
 	//depend on order
 	switch(order)
 	{
@@ -252,7 +315,8 @@ void* Stack::operator[](int idx) const
 		case STACK_ORDER_DESC:
 			return stack[size - idx - 1];
 		default:
-			return NULL;
+			MALT_FATAL_ARG("Undefined order on Stack : %1").arg(this).end();
+			return nullAddr;
 	}
 }
 
@@ -260,7 +324,7 @@ void* Stack::operator[](int idx) const
 /**
  * Print the stack content with the backtrace ordering (ASC).
 **/
-std::ostream& operator<< ( std::ostream& out, const Stack& obj )
+std::ostream &operator<<(std::ostream &out, const Stack &obj)
 {
 	switch(obj.order)
 	{
@@ -328,8 +392,8 @@ bool Stack::partialCompare(const Stack& stack1, int skip1, const Stack& stack2, 
 		return false;
 	
 	//localy get the pointers
-	void ** s1 = stack1.stack;
-	void ** s2 = stack2.stack;
+	AddressType* s1 = stack1.stack;
+	AddressType* s2 = stack2.stack;
 	
 	//skip start for ASC mode
 	if (stack1.order == STACK_ORDER_ASC)
@@ -359,11 +423,11 @@ void convertToJson ( htopml::JsonState& json, const Stack& obj )
 	{
 		case STACK_ORDER_ASC:
 			for (int i = 0 ; i < obj.size ; i++)
-				json.printValue(obj.stack[i]);
+				json.printValue(obj.stack[i].toString());
 			break;
 		case STACK_ORDER_DESC:
 			for (int i = obj.size - 1 ; i >= 0 ; i--)
-				json.printValue(obj.stack[i]);
+				json.printValue(obj.stack[i].toString());
 			break;
 	}
 	json.closeArray();
@@ -384,7 +448,7 @@ void Stack::grow ( void )
 	//if not allocated
 	if (this->stack == NULL)
 	{
-		this->mem = (void**)MALT_MALLOC(sizeof(void*) * CALL_STACK_DEFAULT_SIZE);
+		this->mem = (AddressType*)MALT_MALLOC(sizeof(AddressType/* * */) * CALL_STACK_DEFAULT_SIZE);
 		this->memSize = CALL_STACK_DEFAULT_SIZE;
 		this->size = 0;
 	} else {
@@ -395,7 +459,7 @@ void Stack::grow ( void )
 			this->memSize += CALL_STACK_GROW_THRESHOLD;
 
 		//resize memory
-		this->mem = (void**)MALT_REALLOC(this->mem,this->memSize * sizeof(void*));
+		this->mem = (AddressType*)MALT_REALLOC(this->mem,this->memSize * sizeof(AddressType));
 	}
 	
 	//point stack on mem (no quick skip)
@@ -432,11 +496,11 @@ void Stack::solveSymbols ( SymbolSolver& dic ) const
 /**
  * Return the callee, the current active function when doing backtrace(). Return NULL if no stack.
 **/
-void* Stack::getCallee(void ) const
+AddressType Stack::getCallee(void ) const
 {
 	if (stack == NULL)
 	{
-		return NULL;
+		return nullAddr;
 	} else {
 		assert(size >= 1);
 		switch(order)
@@ -446,7 +510,8 @@ void* Stack::getCallee(void ) const
 			case STACK_ORDER_DESC:
 				return stack[size-1];
 			default:
-				return NULL;
+				MALT_FATAL("Undefined order on a stack");
+				return nullAddr;
 		}
 	}
 }
@@ -455,11 +520,11 @@ void* Stack::getCallee(void ) const
 /**
  * Return the caller of current function in call stack. Return NULL if no stack.
 **/
-void* Stack::getCaller(void ) const
+AddressType Stack::getCaller(void ) const
 {
 	if (stack == NULL)
 	{
-		return NULL;
+		return nullAddr;
 	} else {
 		assert(size >= 2);
 		switch(order)
@@ -469,7 +534,7 @@ void* Stack::getCaller(void ) const
 			case STACK_ORDER_DESC:
 				return stack[size-2];
 			default:
-				return NULL;
+				return nullAddr;
 		}
 	}
 }

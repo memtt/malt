@@ -30,7 +30,7 @@ TEST(SimpleStackTracer,constructor)
 TEST(SimpleStackTracer,findStackNodeAsc)
 {
 	SimpleStackTracker tracker;
-	Stack stack(CST_STACK_1,CST_STACK_1_SIZE,STACK_ORDER_ASC);
+	Stack stack(CST_STACK_1,CST_STACK_1_SIZE,STACK_ORDER_ASC, MALT::DOMAIN_C);
 	
 	SimpleCallStackNode & node1 = tracker.getBacktraceInfo(stack);
 	SimpleCallStackNode & node2 = tracker.getBacktraceInfo(stack);
@@ -42,7 +42,7 @@ TEST(SimpleStackTracer,findStackNodeAsc)
 TEST(SimpleStackTracer,findStackNodeSkipDepthAsc)
 {
 	SimpleStackTracker tracker;
-	Stack stack(CST_STACK_1,CST_STACK_1_SIZE,STACK_ORDER_ASC);
+	Stack stack(CST_STACK_1,CST_STACK_1_SIZE,STACK_ORDER_ASC, MALT::DOMAIN_C);
 	
 	SimpleCallStackNode & node1 = tracker.getBacktraceInfo(stack,5);
 	SimpleCallStackNode & node2 = tracker.getBacktraceInfo(stack,5);
@@ -54,7 +54,7 @@ TEST(SimpleStackTracer,findStackNodeSkipDepthAsc)
 TEST(SimpleStackTracer,findStackNodeDesc)
 {
 	SimpleStackTracker tracker;
-	Stack stack(CST_STACK_1,CST_STACK_1_SIZE,STACK_ORDER_DESC);
+	Stack stack(CST_STACK_1,CST_STACK_1_SIZE,STACK_ORDER_DESC, MALT::DOMAIN_C);
 	
 	SimpleCallStackNode & node1 = tracker.getBacktraceInfo(stack);
 	SimpleCallStackNode & node2 = tracker.getBacktraceInfo(stack);
@@ -66,7 +66,7 @@ TEST(SimpleStackTracer,findStackNodeDesc)
 TEST(SimpleStackTracer,findStackNodeSkipDepthDesc)
 {
 	SimpleStackTracker tracker;
-	Stack stack(CST_STACK_1,CST_STACK_1_SIZE,STACK_ORDER_DESC);
+	Stack stack(CST_STACK_1,CST_STACK_1_SIZE,STACK_ORDER_DESC, MALT::DOMAIN_C);
 	
 	SimpleCallStackNode & node1 = tracker.getBacktraceInfo(stack,5);
 	SimpleCallStackNode & node2 = tracker.getBacktraceInfo(stack,5);

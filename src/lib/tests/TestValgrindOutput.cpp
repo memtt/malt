@@ -75,7 +75,7 @@ pid_t getpid(void)
 TEST(ValgrindOutput,testRecursive)
 {
 	ValgrindOutput output;
-	Stack stack(CST_STACK_1,7,STACK_ORDER_ASC);
+	Stack stack(CST_STACK_1,7,STACK_ORDER_ASC, MALT::DOMAIN_C);
 	SimpleCallStackNode stackNode(stack);
 	stackNode.getInfo().onAllocEvent(2,0);
 	SymbolSolver symbols;

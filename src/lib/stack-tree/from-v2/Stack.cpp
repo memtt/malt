@@ -49,7 +49,7 @@ Stack::Stack ( StackOrder order )
  * Import a stack from a raw C representation, typically the one obtained from the backtrace() function.
  * For the backtrace function, use STACK_ORDER_ASC ordering.
 **/
-Stack::Stack(void** stack, int size,StackOrder order)
+Stack::Stack(MALT::AddressType* stack, int size,StackOrder order)
 {
 	this->order   = order;
 	this->stack   = NULL;
@@ -57,6 +57,23 @@ Stack::Stack(void** stack, int size,StackOrder order)
 	this->size    = 0;
 	this->memSize = 0;
 	this->set(stack,size,order);
+}
+
+Stack::Stack(void **stack, int size, StackOrder order, MALT::DomainType domain){
+	this->order   = order;
+	this->stack   = NULL;
+	this->mem     = NULL;
+	this->size    = 0;
+	this->memSize = 0;
+	this->set((MALT::AddressType*) stack,size,order);
+	//Apply domain on all addresses
+	for (size_t i = 0; i < size; i++){
+		this->stack[i].domain = domain;
+	}
+	//Check if the AddressType representation is the same as a C pointer representation? With the far left bit at zero.
+	assert(MALT::DOMAIN_C == 0);
+	assert(sizeof(MALT::AddressType) == sizeof(void*));
+	assert(sizeof(this->stack[0]) == sizeof(void*));
 }
 
 /*******************  FUNCTION  *********************/
@@ -137,12 +154,12 @@ void Stack::set ( const Stack& orig )
  * Permit to replace the current stack content by the given one.
  * It can be feed by the raw representation provided by backtrace().
 **/
-void Stack::set ( void** stack, int size, StackOrder order )
+void Stack::set (MALT::AddressType* stack, int size, StackOrder order )
 {
 	//realloc if required
 	if (this->memSize < size)
 	{
-		this->mem     = (void**)MALT_REALLOC(this->mem,size * sizeof(void**));
+		this->mem     = (MALT::AddressType*)MALT_REALLOC(this->mem,size * sizeof(MALT::AddressType));
 		this->stack   = this->mem;
 		this->memSize = size;
 	}
@@ -154,6 +171,32 @@ void Stack::set ( void** stack, int size, StackOrder order )
 	} else {
 		for (int i = 0 ; i < size ; i++)
 			this->stack[i] = stack[size - 1 - i];
+	}
+	
+	//save size
+	this->size = size;
+}
+
+
+void Stack::set (void** stack, int size, StackOrder order, MALT::DomainType domain)
+{
+	//realloc if required
+	if (this->memSize < size)
+	{
+		this->mem     = (MALT::AddressType*)MALT_REALLOC(this->mem,size * sizeof(MALT::AddressType));
+		this->stack   = this->mem;
+		this->memSize = size;
+	}
+	
+	//copy
+	if (this->order == order) 
+	{
+		for (size_t i = 0; i < size; i++)
+			this->stack[i].set(domain, stack[i]);
+		
+	} else {
+		for (int i = 0 ; i < size ; i++)
+			this->stack[i].set(domain, stack[size - 1 - i]);
 	}
 	
 	//save size
@@ -186,7 +229,7 @@ StackHash Stack::hash ( int skipDepth ) const
 /**
  * Internal function to compute the hash.
 **/
-StackHash Stack::hash ( void** stack, int size ,StackOrder order)
+StackHash Stack::hash (MALT::AddressType* stack, int size ,StackOrder order)
 {
 	//errors
 	assert(stack != NULL);
@@ -206,7 +249,7 @@ StackHash Stack::hash ( void** stack, int size ,StackOrder order)
 			//calc hash by doing xor on each call addresses
 			for (int i = 0 ; i < hashSize ; i++)
 			{
-				StackHash cur = (StackHash)stack[i];
+				StackHash cur = (StackHash)stack[i].getAddress();
 				assert(cur != 0);
 // 				res ^= (StackHash)(cur+i+size);
 // 				res ^= (StackHash)(cur-i+size) << (i%32);
@@ -218,7 +261,7 @@ StackHash Stack::hash ( void** stack, int size ,StackOrder order)
 			//calc hash by doing xor on each call addresses
 			for (int i = size - 1 ; i >= size - hashSize ; i--)
 			{
-				StackHash cur = (StackHash)stack[i];
+				StackHash cur = (StackHash)stack[i].getAddress();
 				assert(cur != 0);
 // 				res ^= (StackHash)(cur+i+size);
 // 				res ^= (StackHash)(cur-i+size) << (i%32);
@@ -236,14 +279,14 @@ StackHash Stack::hash ( void** stack, int size ,StackOrder order)
  * Operator to read stack entries. It provide a uniq ordering by checking the internal one.
  * The external representation exposed to the user is by convention the backtrace one (ASC).
 **/
-void* Stack::operator[](int idx) const
+MALT::AddressType Stack::operator[](int idx) const
 {
 	//errors
 	assert(idx >= 0);
 	
 	//trivial
 	if (idx < 0 || idx >= size || stack == NULL)
-		return NULL;
+		return MALT::nullAddr;
 
 	//depend on order
 	switch(order)
@@ -253,7 +296,7 @@ void* Stack::operator[](int idx) const
 		case STACK_ORDER_DESC:
 			return stack[size - idx - 1];
 		default:
-			return NULL;
+			return MALT::nullAddr;
 	}
 }
 
@@ -329,8 +372,8 @@ bool Stack::partialCompare(const Stack& stack1, int skip1, const Stack& stack2, 
 		return false;
 	
 	//localy get the pointers
-	void ** s1 = stack1.stack;
-	void ** s2 = stack2.stack;
+	MALT::AddressType* s1 = stack1.stack;
+	MALT::AddressType* s2 = stack2.stack;
 	
 	//skip start for ASC mode
 	if (stack1.order == STACK_ORDER_ASC)
@@ -360,11 +403,11 @@ void convertToJson ( htopml::JsonState& json, const Stack& obj )
 	{
 		case STACK_ORDER_ASC:
 			for (int i = 0 ; i < obj.size ; i++)
-				json.printValue(obj.stack[i]);
+				json.printValue(obj.stack[i].toString());
 			break;
 		case STACK_ORDER_DESC:
 			for (int i = obj.size - 1 ; i >= 0 ; i--)
-				json.printValue(obj.stack[i]);
+				json.printValue(obj.stack[i].toString());
 			break;
 	}
 	json.closeArray();
@@ -385,7 +428,7 @@ void Stack::grow ( void )
 	//if not allocated
 	if (this->stack == NULL)
 	{
-		this->mem = (void**)MALT_MALLOC(sizeof(void*) * CALL_STACK_DEFAULT_SIZE);
+		this->mem = (MALT::AddressType*)MALT_MALLOC(sizeof(MALT::AddressType*) * CALL_STACK_DEFAULT_SIZE);
 		this->memSize = CALL_STACK_DEFAULT_SIZE;
 		this->size = 0;
 	} else {
@@ -396,7 +439,7 @@ void Stack::grow ( void )
 			this->memSize += CALL_STACK_GROW_THRESHOLD;
 
 		//resize memory
-		this->mem = (void**)MALT_REALLOC(this->mem,this->memSize * sizeof(void*));
+		this->mem = (MALT::AddressType*)MALT_REALLOC(this->mem,this->memSize * sizeof(MALT::AddressType));
 	}
 	
 	//point stack on mem (no quick skip)
@@ -434,11 +477,11 @@ void Stack::registerSymbols ( SymbolRegistry& dic ) const
 /**
  * Return the callee, the current active function when doing backtrace(). Return NULL if no stack.
 **/
-void* Stack::getCallee(void ) const
+MALT::AddressType Stack::getCallee(void ) const
 {
 	if (stack == NULL)
 	{
-		return NULL;
+		return MALT::nullAddr;
 	} else {
 		assert(size >= 1);
 		switch(order)
@@ -448,7 +491,7 @@ void* Stack::getCallee(void ) const
 			case STACK_ORDER_DESC:
 				return stack[size-1];
 			default:
-				return NULL;
+				return MALT::nullAddr;
 		}
 	}
 }
@@ -457,11 +500,11 @@ void* Stack::getCallee(void ) const
 /**
  * Return the caller of current function in call stack. Return NULL if no stack.
 **/
-void* Stack::getCaller(void ) const
+MALT::AddressType Stack::getCaller(void ) const
 {
 	if (stack == NULL)
 	{
-		return NULL;
+		return MALT::nullAddr;
 	} else {
 		assert(size >= 2);
 		switch(order)
@@ -471,7 +514,7 @@ void* Stack::getCaller(void ) const
 			case STACK_ORDER_DESC:
 				return stack[size-2];
 			default:
-				return NULL;
+				return MALT::nullAddr;
 		}
 	}
 }

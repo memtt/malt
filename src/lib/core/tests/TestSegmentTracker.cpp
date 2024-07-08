@@ -27,7 +27,7 @@ ForceInit gblForceInit;
 static void * CST_STACK_1_CONTENT[] = {(void*)0x1,(void*)0x2,(void*)0x3};
 #define CST_STACK_1_SIZE (sizeof(CST_STACK_1_CONTENT)/sizeof(CST_STACK_1_CONTENT[0]))
 static void * CST_ADDR1 = ((void*)0x42);
-static Stack CST_STACK_1(CST_STACK_1_CONTENT,CST_STACK_1_SIZE,STACK_ORDER_ASC);
+static Stack CST_STACK_1(CST_STACK_1_CONTENT,CST_STACK_1_SIZE,STACK_ORDER_ASC,DOMAIN_C);
 static CallStackInfo CST_INFO_1;
 
 /********************  MACROS  **********************/

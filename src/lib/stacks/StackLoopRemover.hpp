@@ -25,14 +25,14 @@ class StackLoopNode
 {
 	public:
 		StackLoopNode(void);
-		StackLoopNode * getLink(void * targetAddr);
+		StackLoopNode * getLink(AddressType targetAddr);
 		void addLinkTo(StackLoopNode * target);
 		StackLoopNode * followNextUnused(void);
 		void reset(void);
-		void setAddr(void * addr);
-		void * getAddr(void);
+		void setAddr(AddressType addr);
+		AddressType getAddr(void);
 	private:
-		void * addr;
+		AddressType addr;
 		StackLoopNode * links[MALT_STACK_NODE_MAX_LINK];
 		bool used[MALT_STACK_NODE_MAX_LINK];
 };
@@ -48,7 +48,7 @@ class StackLoopRemover
 	private:
 		StackLoopNode * nodes;
 		int maxSize;
-		void ** rebuildStack;
+		AddressType* rebuildStack;
 };
 
 }

@@ -23,6 +23,8 @@
 #include <common/STLInternalAllocator.hpp>
 //internal portability
 #include <portability/LinuxProcMapReader.hpp>
+//Include Stack
+#include <stacks/Stack.hpp>
 
 /*******************  FUNCTION  *********************/
 /** Define a function dictionnary to store addresses and related symboles. **/
@@ -66,9 +68,9 @@ struct MaqaoSite
 
 /*********************  TYPES  **********************/
 /** Map to join a raw address to a callsite description **/
-typedef std::map<void*,CallSite> CallSiteMap;
+typedef std::map<AddressType,CallSite> CallSiteMap;
 /** Map to join a raw address to a mapqao call site. It uses the internal allocator as used while running. **/
-typedef std::map<void*,MaqaoSite,std::less<void*>,STLInternalAllocator<std::pair<void*,MaqaoSite> > > MaqaoSiteMap;
+typedef std::map<AddressType,MaqaoSite,std::less<AddressType>,STLInternalAllocator<std::pair<AddressType,MaqaoSite> > > MaqaoSiteMap;
 
 /*********************  CLASS  **********************/
 /**
@@ -83,18 +85,18 @@ class SymbolSolver
 		SymbolSolver(void);
 		~SymbolSolver(void);
 		const char * getName(void * callSite);
-		void registerAddress(void * callSite);
+		void registerAddress(AddressType callSite);
 		const char* setupNewEntry(void* callSite);
 		const char * setupNewEntry(void * callSite,const std::string & name);
 		void loadProcMap(void);
 		void solveNames(void);
 		void solveMaqaoNames(void);
-		const CallSite * getCallSiteInfo(void * site) const;
+		const CallSite * getCallSiteInfo(AddressType site) const;
 		const std::string & getString(int id) const;
-		bool isSameFuntion(const CallSite * s1,void * s2) const;
+		bool isSameFuntion(const CallSite * s1,AddressType s2) const;
 		bool procMapIsLoaded(void) const;
 		void registerMaqaoFunctionSymbol(int funcId,const char * funcName,const char * file,int line);
-		LinuxProcMapEntry * getMapEntry(void * callSite);
+		LinuxProcMapEntry * getMapEntry(AddressType callSite);
 		void solveAslrOffsets(void);
 	public:
 		friend std::ostream & operator << (std::ostream & out,const SymbolSolver & dic);
@@ -130,15 +132,13 @@ void convertToJson(htopml::JsonState & state,const CallSite & entry);
  * @param json Reference to the json state to make conversion.
  * @param iterable Reference to the map to dump.
 **/
-template <class T> void convertToJson(htopml::JsonState & json, const std::map<void*,T> & iterable)
+template <class T> void convertToJson(htopml::JsonState & json, const std::map<AddressType,T> & iterable)
 {
 	json.openStruct();
 
-	for (typename std::map<void*,T>::const_iterator it = iterable.begin() ; it != iterable.end() ; ++it)
+	for (typename std::map<AddressType,T>::const_iterator it = iterable.begin() ; it != iterable.end() ; ++it)
 	{
-		char buffer[64];
-		sprintf(buffer,"%p",it->first);
-		json.printField(buffer,it->second);
+		json.printField(it->first.toString().c_str(), it->second);
 	}
 
 	json.closeStruct();

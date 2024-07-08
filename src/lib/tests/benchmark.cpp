@@ -166,7 +166,7 @@ void initAsRandomStack(BacktraceStack & stack)
 	for (int i = 0 ; i < size ; i++)
 		buffer[i] = (void*)(unsigned long)rand();
 	
-	stack.set(buffer,size,STACK_ORDER_ASC);
+	stack.set(buffer,size,STACK_ORDER_ASC, DOMAIN_C);
 }
 
 void runTestFlat(BenchTiming & timing,StackSTLHashMap<CallStackInfo> & tracer,BacktraceStack * stacks, const char * name,int duration)

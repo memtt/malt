@@ -29,7 +29,7 @@ void ValgrindOutput::pushStackInfo(const MALT::Stack& stack, const MALT::CallSta
 	int shift = 0;
 	
 	//get addresses
-	void * leafCalleePtr = stack.getCallee();
+	AddressType leafCalleePtr = stack.getCallee();
 	
 	//shift if operator new
 	while (isNewOperator(symbols,leafCalleePtr))
@@ -43,8 +43,8 @@ void ValgrindOutput::pushStackInfo(const MALT::Stack& stack, const MALT::CallSta
 	for (int i = 1 + shift ; i < stack.getSize() ; i++)
 	{
 		//extrace callee/caller
-		void * callerPtr = stack[i];
-		void * calleePtr = stack[i-1];
+		AddressType callerPtr = stack[i];
+		AddressType calleePtr = stack[i-1];
 		
 		//get location info
 		const CallSite * callerSite = symbols.getCallSiteInfo(callerPtr);
@@ -84,7 +84,7 @@ void ValgrindOutput::pushStackInfo(SimpleCallStackNode& stackNode,const SymbolSo
 }
 
 /*******************  FUNCTION  *********************/
-bool ValgrindOutput::isNewOperator(const SymbolSolver& symbols, void* addr)
+bool ValgrindOutput::isNewOperator(const SymbolSolver& symbols, AddressType addr)
 {
 	const CallSite * leafInfo = symbols.getCallSiteInfo(addr);
 	if (leafInfo == NULL)
@@ -105,7 +105,7 @@ void ValgrindOutput::writeAsCallgrind(const std::string& filename, const SymbolS
 }
 
 /*******************  FUNCTION  *********************/
-void ValgrindOutput::writeLocation(ostream& out, const SymbolSolver& dic, const CallSite * site, void * addr, bool call)
+void ValgrindOutput::writeLocation(ostream& out, const SymbolSolver& dic, const CallSite * site, AddressType addr, bool call)
 {
 	const char * callPrefix = "";
 	if (call)
@@ -125,7 +125,7 @@ void ValgrindOutput::writeLocation(ostream& out, const SymbolSolver& dic, const 
 	
 	//function
 	if (site == NULL || site->function == -1)
-		out << callPrefix << "fn=" << addr << LINE_BREAK;
+		out << callPrefix << "fn=" << addr.toString() << LINE_BREAK;
 	else
 		out << callPrefix << "fn=" << dic.getString(site->function) << LINE_BREAK;
 }

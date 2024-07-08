@@ -71,8 +71,8 @@ class StackTree
 				descriptors[i] = NULL;
 		};
 		~StackTree(void){};
-		virtual StackTreeHandler enterFunction(StackTreeHandler handler,void * callsite) = 0;
-		virtual StackTreeHandler exitFunction(StackTreeHandler handler,void  * callsite) = 0;
+		virtual StackTreeHandler enterFunction(StackTreeHandler handler,MALT::AddressType callsite) = 0;
+		virtual StackTreeHandler exitFunction(StackTreeHandler handler,MALT::AddressType callsite) = 0;
 		virtual StackTreeHandler enterThread(void) = 0;
 		virtual StackTreeHandler getFromStack(StackTreeHandler handler,const Stack & stack) = 0;
 		virtual StackTreeHandler getFromStack(StackTreeHandler handler,int skip) = 0;

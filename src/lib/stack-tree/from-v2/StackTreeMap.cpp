@@ -88,13 +88,13 @@ StackTreeHandler StackTreeMap::enterThread(void)
 }
 
 /*******************  FUNCTION  *********************/
-StackTreeHandler StackTreeMap::exitFunction(StackTreeHandler handler, void* callsite)
+StackTreeHandler StackTreeMap::exitFunction(StackTreeHandler handler, MALT::AddressType callsite)
 {
 	//assume(!backtrace,"Try to use exitFunction with backtrace mode enabled !");
 	if (backtrace)
 	{
 		Handler * typedHandler = (Handler*)handler;
-		typedHandler->enterExitStack.exitFunction(callsite);
+		typedHandler->enterExitStack.exitFunction(callsite.getAddress());
 		typedHandler->storage = NULL;
 		return handler;
 	} else {
@@ -103,13 +103,13 @@ StackTreeHandler StackTreeMap::exitFunction(StackTreeHandler handler, void* call
 }
 
 /*******************  FUNCTION  *********************/
-StackTreeHandler StackTreeMap::enterFunction(StackTreeHandler handler, void* callsite)
+StackTreeHandler StackTreeMap::enterFunction(StackTreeHandler handler, MALT::AddressType callsite)
 {
 	//assume(!backtrace,"Try to use exitFunction with backtrace mode enabled !");
 	if (backtrace)
 	{
 		Handler * typedHandler = (Handler*)handler;
-		typedHandler->enterExitStack.enterFunction(callsite);
+		typedHandler->enterExitStack.enterFunction(callsite.getAddress());
 		typedHandler->storage = NULL;
 		return handler;
 	} else {

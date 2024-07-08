@@ -51,6 +51,8 @@ LocalAllocStackProfiler::~LocalAllocStackProfiler(void)
 }
 
 /*******************  FUNCTION  *********************/
+//TODO: Pass Stack*, may be nullptr for C CallStack
+//TODO: Pass Stack* to getStack()
 void LocalAllocStackProfiler::onMalloc(void* res, size_t size, ticks time, MallocKind kind)
 {
 	//old state
@@ -181,6 +183,7 @@ void LocalAllocStackProfiler::solveSymbols(SymbolSolver& symbolResolver) const
 }
 
 /*******************  FUNCTION  *********************/
+//TODO: getStack should receive a parameter iff it's a Python stack
 Stack* LocalAllocStackProfiler::getStack(void )
 {
 	//search with selected mode

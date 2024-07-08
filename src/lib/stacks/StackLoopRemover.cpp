@@ -55,7 +55,7 @@ StackLoopNode* StackLoopNode::followNextUnused(void )
 }
 
 /*******************  FUNCTION  *********************/
-StackLoopNode* StackLoopNode::getLink(void* targetAddr)
+StackLoopNode* StackLoopNode::getLink(AddressType targetAddr)
 {
 	for (int i = 0 ; i < MALT_STACK_NODE_MAX_LINK ; i++)
 	{
@@ -69,16 +69,16 @@ StackLoopNode* StackLoopNode::getLink(void* targetAddr)
 }
 
 /*******************  FUNCTION  *********************/
-void StackLoopNode::setAddr(void* addr)
+void StackLoopNode::setAddr(AddressType addr)
 {
-	assert(this->addr == NULL);
+	assert(this->addr == nullAddr);
 	this->addr = addr;
 }
 
 /*******************  FUNCTION  *********************/
 void StackLoopNode::reset(void )
 {
-	this->addr = NULL;
+	this->addr = nullAddr;
 	for (int i = 0 ; i < MALT_STACK_NODE_MAX_LINK ; i++)
 	{
 		links[i] = NULL;
@@ -91,7 +91,7 @@ StackLoopRemover::StackLoopRemover(int maxSize)
 {
 	assert(maxSize > 0);
 	this->nodes = new StackLoopNode[maxSize];
-	this->rebuildStack = new void*[maxSize];
+	this->rebuildStack = new AddressType[maxSize];
 	this->maxSize = maxSize;
 }
 
@@ -103,7 +103,7 @@ StackLoopRemover::~StackLoopRemover(void )
 }
 
 /*******************  FUNCTION  *********************/
-void* StackLoopNode::getAddr(void )
+AddressType StackLoopNode::getAddr(void )
 {
 	return addr;
 }
@@ -154,7 +154,7 @@ void StackLoopRemover::removeLoops(Stack& stack)
 		{
 			for (int j = 0 ; j < stack.getSize() ; j++)
 			{
-				if (nodes[j].getAddr() == NULL)
+				if (nodes[j].getAddr() == nullAddr)
 				{
 					n = &nodes[j];
 					n->setAddr(stack[i]);

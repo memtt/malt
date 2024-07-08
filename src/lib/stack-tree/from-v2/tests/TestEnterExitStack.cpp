@@ -25,7 +25,7 @@ TEST(Stack,test1)
 	stack.exitFunction((void*)0x5);
 	
 	for (int i = 0 ; i < 5 ; i++)
-		EXPECT_EQ((void*)(size_t)(4-i),stack[i]);
+		EXPECT_EQ(MALT::AddressType(MALT::DOMAIN_C, (void*)(size_t)(4-i)),stack[i]);
 }
 
 /*******************  FUNCTION  *********************/

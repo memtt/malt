@@ -34,7 +34,7 @@ namespace MALTV2
 **/
 struct RLockFreeTreeNode
 {
-	RLockFreeTreeNode(void*callSite);
+	RLockFreeTreeNode(MALT::AddressType callSite);
 	bool hasData(void);
 	virtual void registerSymbols ( SymbolRegistry& solver ) const;
 	/** Pointer to the next element on the same parent. NULL if none (last element). **/
@@ -44,7 +44,7 @@ struct RLockFreeTreeNode
 	/** Pointer to the first child of the current node. NULL if none. **/
 	RLockFreeTreeNode * firstChild;
 	/** Define the corresponding call site. **/
-	void * callSite;
+	MALT::AddressType callSite;
 	/** Optional data attached to the current node, NULL if none. **/
 	StackTreeStorage data;
 	/**
@@ -76,8 +76,8 @@ class RLockFreeTree : public StackTree
 	public:
 		RLockFreeTree(bool threadSafe = true);
 		~RLockFreeTree(void);
-		virtual StackTreeHandler enterFunction(StackTreeHandler handler, void* callsite);
-		virtual StackTreeHandler exitFunction(StackTreeHandler handler,void  * callsite);
+		virtual StackTreeHandler enterFunction(StackTreeHandler handler, MALT::AddressType callsite);
+		virtual StackTreeHandler exitFunction(StackTreeHandler handler,MALT::AddressType callsite);
 		virtual StackTreeHandler enterThread(void);
 		virtual StackTreeHandler setOnRoot(StackTreeHandler handler);
 		virtual void exitThread(StackTreeHandler handler);
@@ -99,8 +99,8 @@ class RLockFreeTree : public StackTree
 		virtual void * getData(StackTreeHandler handler,int id);
 		virtual void * getData ( StackTreeDataHandler dataHandler, int id );
 // 		virtual void setData(StackTreeHandler handler,int id, void* data);
-		Handler addChild(Handler node, void* callsite);
-		Handler findChild(Handler node, void* callsite);
+		Handler addChild(Handler node, MALT::AddressType callsite);
+		Handler findChild(Handler node, MALT::AddressType callsite);
 		virtual void insertChild(RLockFreeTreeNode * parent,RLockFreeTreeNode * child);
 		void printData(htopml::JsonState & json,const RLockFreeTreeNode * node,int i) const;
 		void printData(htopml::JsonState & json,int i) const;
@@ -109,11 +109,11 @@ class RLockFreeTree : public StackTree
 		bool threadSafe;
 		RLockFreeTreeNode root;
 		int lastDataId;
-		std::map<void*,void*> addrToId;
+		std::map<MALT::AddressType,MALT::AddressType> addrToId;
 };
 
 /*******************  FUNCTION  *********************/
-void convertToJson(htopml::JsonState& json, const std::map<void*,void*> & value);
+void convertToJson(htopml::JsonState& json, const std::map<MALT::AddressType,MALT::AddressType> & value);
 
 }
 
