@@ -1,0 +1,56 @@
+{
+  "name": "json-stream-stringify",
+  "description": "JSON.Stringify as a readable stream",
+  "version": "2.0.4",
+  "license": "MIT",
+  "author": "Faleij <faleij@gmail.com> (https://github.com/faleij)",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Faleij/json-stream-stringify.git"
+  },
+  "bugs": {
+    "url": "https://github.com/faleij/json-stream-stringify/issues"
+  },
+  "main": "./lib/umd.js",
+  "module": "./lib/module.js",
+  "browser": "./lib/umd.js",
+  "types": "./lib/JsonStreamStringify.d.ts",
+  "nyc": {
+    "sourceMap": true,
+    "instrument": true,
+    "exclude": [
+      "test-src/**/*"
+    ]
+  },
+  "scripts": {
+    "lint": "tslint -c tslint.json 'src/**/*.ts' && echo \"tslint: no lint errors\"",
+    "build": "rollup -c rollup.config.js ",
+    "build:watch": "npm run build -- --watch",
+    "test": "mocha --require source-map-support/register -R spec -b test/*.spec.js",
+    "coverage": "nyc npm test && nyc report --reporter=html",
+    "coveralls": "nyc report --reporter=text-lcov | coveralls"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.7.4",
+    "@babel/core": "^7.7.4",
+    "@babel/preset-env": "^7.7.4",
+    "@babel/preset-typescript": "^7.7.4",
+    "@types/mocha": "^5.2.5",
+    "clean-webpack-plugin": "^0.1.19",
+    "coveralls": "3.0.2",
+    "es-check": "^4.0.0",
+    "expect.js": "0.3.1",
+    "istanbul": "0.4.5",
+    "mocha": "3.5.3",
+    "nyc": "12.0.2",
+    "rollup": "1.26.3",
+    "rollup-plugin-babel": "^4.3.3",
+    "rollup-plugin-typescript2": "^0.25.2",
+    "source-map-support": "^0.5.9",
+    "ts-loader": "^6.2.1",
+    "tslint": "^5.11.0",
+    "tslint-config-airbnb": "^5.11.0",
+    "typescript": "^3.7.2",
+    "core-js": "^3.4.3"
+  }
+}

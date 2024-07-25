@@ -1,6 +1,7 @@
 /****************************************************/
 //deps
 var fs    = require('fs');
+var json  = require('big-json');
 var clone = require('clone');
 var path  = require('path');
 var CallTreeAdapter = require("./CallTreeAdapter.js");
@@ -65,23 +66,42 @@ MaltProject.prototype.loadFile = function(file)
 	this.file = file;
 	var cur = this;
 
-	//read from FS
-	fs.readFile(args.params.input, 'utf8', function (err, buffer) {
-		console.log("Loading file : " + args.params.input);
+	// create a read and a json-parser stream
+	const readStream = fs.createReadStream(args.params.input, { encoding: 'utf8' });
+	const parseStream = json.createParseStream();
 
-		//manage errors
-		if (err) {
-			console.error("Failed to open file "+file+", get error : "+err.code);
-			process.exit(1);
-// 			console.log(err);
-// 			throw new Error(err);
-		}
-
-		//ok parse
-		var data = JSON.parse(buffer);
-
+	// receive parsed JSON, and load it
+	parseStream.on('data', function(data) {
 		cur.loadData(data);
 	});
+
+	// handle end of file
+	parseStream.on('end', () => {
+		console.log('Finished processing JSON file');
+	});
+	readStream.on('end', () => {
+		console.log('Finished reading JSON file');
+	});
+
+	// handle errors
+	parseStream.on('error', (err) => {
+		console.error("Failed to parse file "+file+", get error : "+err.message);
+		process.exit(1);
+	//	console.log(err);
+	//	throw new Error(err);
+	});
+	readStream.on('error', (err) => {
+		console.error("Failed to read file "+file+", get error : "+err.message);
+		process.exit(1);
+	});
+
+	// handle start of the stream
+	readStream.on('resume', () => {
+		console.log("Loading file : " + args.params.input);
+	});
+
+	// Start reading
+	readStream.pipe(parseStream);
 }
 
 /****************************************************/

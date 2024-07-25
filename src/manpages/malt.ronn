@@ -73,7 +73,7 @@ Then take care of using the `--mpi` option on the profiling tool :
 
 ## GET THE GUI
 
-With MALT you can use direcly `kcachegrind` if you enable the valgrind compatible format in configuration
+With MALT you can use directly `kcachegrind` if you enable the valgrind compatible format in configuration
 (output:callgrind). But by default MALT will generate a JSON file to be used with malt-webview(1).
 
 ## CONFIGURATION FILE
