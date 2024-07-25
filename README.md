@@ -388,6 +388,11 @@ malt -o "output:stackTree=true" ./PROGRAM
 Currently you can still find cases where you cannot load the file into nodejs, I'm working on a workaround.
 Please provide me your files if it appends. By compressing it in gzip you will get less than 30-40 MB.
 
+As of 25/07/2024, the JSON are read and processed using streams, and thus, we by-pass the internal hard limit of NodeJs requiring string to be < 512 MB.
+However, keep in mind that such big files makes the web interface a bit less responsive. This was tested with files up to 1 GB.
+
+Due to another limitations, you may encounter the following error `FATAL ERROR: Reached heap limit Allocation failed - JavaScript heap out of memory`. You want to modify the heap size limit of nodeJs, with the following options `NODE_OPTIONS="--max-old-space-size=<SIZE>"` with `SIZE` in megabytes.
+
 Packaging
 ---------
 
