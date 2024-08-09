@@ -59,7 +59,7 @@
 		"variant": "cpp",
 		"ranges": "cpp",
 		"condition_variable": "cpp",
-		"__locale": "cpp",
-		"__string": "cpp"
-	}
+		"thread": "cpp"
+	},
+	"cmake.configureOnOpen": false
 }

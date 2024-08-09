@@ -53,6 +53,11 @@ struct ThreadTrackerData
 	pthread_mutex_t lock;
 	/** Keep track of pthread_key to use its destructor to be notified on thread exit. **/
 	pthread_key_t key;
+	/** 
+	 * Say if thread tracking should be active or not. (not is for exnt time and profile
+	 * dumping, not to self intruùent) 
+	**/
+	bool trackingIsEnabled;
 };
 
 /*********************  CLASS  **********************/
@@ -63,6 +68,7 @@ struct ThreadTracker
 {
 	static int getThreadCount(void);
 	static int getMaxThreadCount(void);
+	static void stopThreadTracking(void);
 };
 
 }

@@ -21,7 +21,7 @@ namespace MALT
 /**
  * Static instance of thread tracker data.
 **/
-static ThreadTrackerData gblThreadTrackerData = {1,1,NULL,PTHREAD_MUTEX_INITIALIZER};
+static ThreadTrackerData gblThreadTrackerData = {1,1,NULL,PTHREAD_MUTEX_INITIALIZER, true};
 
 /*******************  FUNCTION  *********************/
 /**
@@ -43,7 +43,7 @@ void pthreadWrapperOnExit(void *)
  * counters and call the real user function.
  * @param arg Muse get a pointer to newly allocated ThreadTrackerArg structure.
 **/
-void * pthreadWrapperStartRoutine(void * arg)
+static void * pthreadWrapperStartRoutine(void * arg)
 {
 	//update counters
 	pthread_mutex_lock(&(gblThreadTrackerData.lock));
@@ -86,6 +86,12 @@ int ThreadTracker::getThreadCount(void)
 	return gblThreadTrackerData.threadCount;
 }
 
+/*******************  FUNCTION  *********************/
+void ThreadTracker::stopThreadTracking(void)
+{
+	gblThreadTrackerData.trackingIsEnabled = false;
+}
+
 }
 
 /*******************  FUNCTION  *********************/
@@ -100,7 +106,13 @@ int pthread_create(pthread_t *thread, const pthread_attr_t *attr,void *(*start_r
 		 MALT::gblThreadTrackerData.pthread_create = (MALT::PthreadCreateFuncPtr)dlsym(RTLD_NEXT,"pthread_create");
 		 pthread_key_create(&MALT::gblThreadTrackerData.key,MALT::pthreadWrapperOnExit);
 	}
-	
+
+	// trivial no instrum
+	if (MALT::gblThreadTrackerData.trackingIsEnabled)
+	{
+		return MALT::gblThreadTrackerData.pthread_create(thread,attr,start_routine,arg);
+	}
+
 	//prepare args
 	MALT::ThreadTrackerArg * subarg = new MALT::ThreadTrackerArg;
 	subarg->arg = arg;
