@@ -92,13 +92,13 @@ function MaltPageHome()
 			key:'totalAllocatedMemory',
 			name:'Cumulated memory allocations',
 			level: 1,
-			help:"Sum of all dyanmic memory allocation throuth malloc, calloc, realloc....",
+			help:"Sum of all dynamic memory allocation througth malloc, calloc, realloc....",
 			format: function(x) {return maltHelper.humanReadable(x,1,'B',false);}
 		},{
 			key:'allocCount',
 			name:'Allocation count',
 			level: 1,
-			help:"Total number of all dyanmic memory allocation with malloc, calloc, realloc....",
+			help:"Total number of all dynamic memory allocation with malloc, calloc, realloc....",
 			format: function(x) {return maltHelper.humanReadable(x,1,'',false);}
 		},{
 			key:'recyclingRatio',

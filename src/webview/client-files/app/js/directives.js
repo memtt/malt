@@ -144,7 +144,7 @@
 						return $scope.formatValue(Math.round(value/divider),unit);
 				}
 
-				$scope.hasExlusiveValues = function() {
+				$scope.hasExclusiveValues = function() {
 					if ($scope.selectedDetails == undefined || $scope.selectedDetails.own == undefined)
 						return true;
 					else
