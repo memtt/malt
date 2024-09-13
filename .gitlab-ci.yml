@@ -7,7 +7,7 @@ test:
   - cd build
   - ../configure --enable-debug --enable-tests --prefix="$PWD/../testinstall" CXXFLAGS="-Werror" CFLAGS="-Werror"
   - make
-  - make test
+  - ctest --output-on-failure
   - make install
   tags: 
   except:
