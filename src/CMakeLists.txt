@@ -50,7 +50,4 @@ if (QT5_FOUND)
 	add_subdirectory(qtview)
 endif (QT5_FOUND)
 
-######################################################
-# Install the webview into share directory
-INSTALL(DIRECTORY webview DESTINATION share/malt
-	PATTERN webview/client_v2/node_modules EXCLUDE)
+add_subdirectory(webview)
