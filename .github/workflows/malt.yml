@@ -31,8 +31,8 @@ jobs:
           cd build
           ../configure --enable-tests --enable-debug --enable-junit-output
           make
-          ctest
- 
+          ctest --output-on-failure
+
       - name: Publish Test Report
         uses: mikepenz/action-junit-report@v4
         if: failure()
