@@ -1,11 +1,12 @@
 /***********************************************************
 *    PROJECT  : MALT (MALoc Tracker)
 *    VERSION  : 1.2.2
-*    DATE     : 03/2015
+*    DATE     : 09/2024
 *    LICENSE  : CeCILL-C
 *    FILE     : src/webview/client-files/test/unit/controllersSpec.js
 *-----------------------------------------------------------
 *    AUTHOR   : Sébastien Valat (ECR) - 2014 - 2015
+*    AUTHOR   : Sébastien Valat - 2024
 ***********************************************************/
 'use strict';
 

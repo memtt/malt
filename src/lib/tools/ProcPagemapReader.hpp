@@ -1,11 +1,11 @@
 /***********************************************************
 *    PROJECT  : MALT (MALoc Tracker)
 *    VERSION  : 1.2.2
-*    DATE     : 06/2023
+*    DATE     : 09/2024
 *    LICENSE  : CeCILL-C
 *    FILE     : src/lib/tools/ProcPagemapReader.hpp
 *-----------------------------------------------------------
-*    AUTHOR   : Sébastien Valat - 2015
+*    AUTHOR   : Sébastien Valat - 2015 - 2024
 ***********************************************************/
 
 #ifndef MALT_PROC_PAGEMAP_READER_HPP

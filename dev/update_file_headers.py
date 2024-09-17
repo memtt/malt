@@ -342,8 +342,12 @@ class HeaderPatcher:
         exclude = self.config['exclude_files']
         for pattern in exclude:
             if fnmatch.fnmatch(filename, pattern) or filename.startswith(pattern):
-                print(f" - {filename} : IGNORED")
-                return
+                # check if included
+                include = self.config['include_files']
+                for ipattern in include:
+                    if not(fnmatch.fnmatch(filename, ipattern) or filename.startswith(ipattern)):
+                        print(f" - {filename} : EXCLUDED")
+                        return
         
         # apply
         self.patch_header(filename)

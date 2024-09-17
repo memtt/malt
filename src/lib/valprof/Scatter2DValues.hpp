@@ -1,11 +1,11 @@
 /***********************************************************
 *    PROJECT  : MALT (MALoc Tracker)
 *    VERSION  : 1.2.2
-*    DATE     : 06/2023
+*    DATE     : 09/2024
 *    LICENSE  : CeCILL-C
 *    FILE     : src/lib/valprof/Scatter2DValues.hpp
 *-----------------------------------------------------------
-*    AUTHOR   : Sébastien Valat - 2016
+*    AUTHOR   : Sébastien Valat - 2016 - 2024
 ***********************************************************/
 
 #ifndef MALT_SCATTER_2D_VALUES_HPP

@@ -1,13 +1,14 @@
 /***********************************************************
 *    PROJECT  : MALT (MALoc Tracker)
 *    VERSION  : 1.2.2
-*    DATE     : 09/2019
+*    DATE     : 09/2024
 *    LICENSE  : CeCILL-C
 *    FILE     : src/webview/client-files/app/js/page-home.js
 *-----------------------------------------------------------
 *    AUTHOR   : Sébastien Valat (ECR) - 2014 - 2015
-*    AUTHOR   : Sébastien Valat - 2015 - 2019
+*    AUTHOR   : Sébastien Valat - 2015 - 2024
 *    AUTHOR   : Mehdi Raza Jaffery (CERN) - 2016
+*    AUTHOR   : Antoine Bernard - 2024
 ***********************************************************/
 function MaltPageHome()
 {

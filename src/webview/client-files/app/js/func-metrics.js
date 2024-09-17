@@ -1,13 +1,14 @@
 /***********************************************************
 *    PROJECT  : MALT (MALoc Tracker)
 *    VERSION  : 1.2.2
-*    DATE     : 05/2017
+*    DATE     : 09/2024
 *    LICENSE  : CeCILL-C
 *    FILE     : src/webview/client-files/app/js/func-metrics.js
 *-----------------------------------------------------------
 *    AUTHOR   : Sébastien Valat (ECR) - 2014 - 2015
 *    AUTHOR   : Mehdi Raza Jaffery (CERN) - 2016
 *    AUTHOR   : Sébastien Valat (CERN) - 2017
+*    AUTHOR   : Sébastien Valat - 2024
 ***********************************************************/
 if(typeof maltHelper === 'undefined') {
 	maltHelper = new (require('./helper.js'))();
