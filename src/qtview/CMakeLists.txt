@@ -7,21 +7,14 @@
 #-----------------------------------------------------------
 #    AUTHOR   : Sébastien Valat - 2018
 ############################################################
-######################################################
-#            PROJECT  : MALT                         #
-#            VERSION  : 1.2.2                        #
-#            DATE     : 06/2023                      #
-#            AUTHOR   : Valat Sébastien              #
-#            LICENSE  : CeCILL-C                     #
-######################################################
 
-######################################################
+############################################################
 # Find includes in corresponding build directories
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 # Instruct CMake to run moc automatically when needed.
 set(CMAKE_AUTOMOC OFF)
 
-######################################################
+############################################################
 
 #includes
 include_directories(${Qt5Widgets_INCLUDE_DIRS})
