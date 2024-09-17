@@ -14,7 +14,6 @@
 # python3 -m venv venv
 # source venv/bin/activate
 # pip install gitpython
-# for file in $(git ls-files); do ./dev/update_file_headers.py $file; done
 # ./dev/update_file_headers.py --git-all .
 # --------------------------------------------------------------------------------------------------
 
