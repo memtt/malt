@@ -1,31 +1,33 @@
-/*****************************************************
-             PROJECT  : MALT
-             VERSION  : 1.2.2
-             DATE     : 06/2023
-             AUTHOR   : Valat Sébastien
-             LICENSE  : CeCILL-C
-*****************************************************/
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.2.2
+*    DATE     : 06/2023
+*    LICENSE  : CeCILL-C
+*    FILE     : src/lib/common/FormattedMessage.hpp
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat (ECR) - 2014
+***********************************************************/
 
 #ifndef MALT_FORMALTED_MESSAGE_HPP
 #define MALT_FORMALTED_MESSAGE_HPP
 
-/********************  HEADERS  *********************/
+/**********************************************************/
 //standard
 #include <vector>
 #include <string>
 #include <sstream>
 
-/*******************  NAMESPACE  ********************/
+/**********************************************************/
 namespace MALT
 {
 
-/*********************  TYPES  **********************/
+/**********************************************************/
 /**
  * @brief Vector to store the values to replace into the formatted message. 
 **/
 typedef std::vector<std::string> FormattedMessageEntries;
 	
-/*********************  CLASS  **********************/
+/**********************************************************/
 /**
  * Provide a short class to use formatted message with full C++ stream operators support
  * and avoid to manually manage local fixed size buffers to use sprintf. Similar usage
@@ -57,7 +59,7 @@ class FormattedMessage
 		FormattedMessageEntries entries;
 };
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Setup argument value. First call will setup %1, second %2... All
  * values are converted to string by standard STL stream operator onto stringstream object.

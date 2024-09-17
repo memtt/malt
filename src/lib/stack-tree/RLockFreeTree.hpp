@@ -1,15 +1,17 @@
-/*****************************************************
-             PROJECT  : MALT
-             VERSION  : 1.2.2
-             DATE     : 06/2023
-             AUTHOR   : Valat Sébastien
-             LICENSE  : CeCILL-C
-*****************************************************/
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.2.2
+*    DATE     : 06/2023
+*    LICENSE  : CeCILL-C
+*    FILE     : src/lib/stack-tree/RLockFreeTree.hpp
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat (ECR) - 2014
+***********************************************************/
 
 #ifndef MALT_RLOCK_FREE_TREE_HPP
 #define MALT_RLOCK_FREE_TREE_HPP
 
-/********************  HEADERS  *********************/
+/**********************************************************/
 //std
 #include <cassert>
 //internal common
@@ -19,11 +21,11 @@
 #include <core/SymbolSolver.hpp>
 #include <json/JsonState.h>
 
-/*******************  NAMESPACE  ********************/
+/**********************************************************/
 namespace MALT
 {
 
-/*********************  CLASS  **********************/
+/**********************************************************/
 /**
  * Define the node for RLockFreeTree.
 **/
@@ -42,7 +44,7 @@ struct RLockFreeTreeNode
 	void * data;
 };
 
-/*********************  CLASS  **********************/
+/**********************************************************/
 /**
  * This class provide a basic tree based on nodes with childs and optional data attached to the nodes.
  * The child list is built with a simple linked list. As we do not consider node deletion we can access to all lists
@@ -77,7 +79,7 @@ class RLockFreeTree
 		bool threadSafe;
 };
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 inline RLockFreeTreeNode::RLockFreeTreeNode(void* callSite)
 {
 	this->data = NULL;
@@ -87,7 +89,7 @@ inline RLockFreeTreeNode::RLockFreeTreeNode(void* callSite)
 	this->firstChild = NULL;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 template <class T>
 RLockFreeTree<T>::RLockFreeTree(bool threadSafe)
 	:root(NULL)
@@ -95,7 +97,7 @@ RLockFreeTree<T>::RLockFreeTree(bool threadSafe)
 	this->threadSafe = threadSafe;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 template <class T>
 typename RLockFreeTree<T>::Handler RLockFreeTree<T>::addChild(RLockFreeTreeNode* node, void* callsite)
 {
@@ -121,7 +123,7 @@ typename RLockFreeTree<T>::Handler RLockFreeTree<T>::addChild(RLockFreeTreeNode*
 	return child;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * This function is lock free if we consider the locking of addChild and only insertion without deletion during use.
 **/
@@ -146,7 +148,7 @@ RLockFreeTreeNode* RLockFreeTree<T>::findChild(RLockFreeTreeNode* node, void* ca
 	return res;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 template <class T>
 void RLockFreeTree<T>::insertChild(RLockFreeTreeNode* parent, RLockFreeTreeNode* child)
 {
@@ -159,21 +161,21 @@ void RLockFreeTree<T>::insertChild(RLockFreeTreeNode* parent, RLockFreeTreeNode*
 	parent->firstChild = child;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 template <class T>
 typename RLockFreeTree<T>::Handler RLockFreeTree<T>::getRoot(void)
 {
 	return &root;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 template <class T>
 typename RLockFreeTree<T>::Handler RLockFreeTree<T>::getParent(RLockFreeTree::Handler handler)
 {
 	return handler->parent;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 template <class T>
 typename RLockFreeTree<T>::Handler RLockFreeTree<T>::getChild(RLockFreeTree::Handler handler, void* callsite)
 {
@@ -187,7 +189,7 @@ typename RLockFreeTree<T>::Handler RLockFreeTree<T>::getChild(RLockFreeTree::Han
 	return node;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 template <class T>
 T* RLockFreeTree<T>::getData(typename RLockFreeTree<T>::Handler handler)
 {
@@ -211,7 +213,7 @@ T* RLockFreeTree<T>::getData(typename RLockFreeTree<T>::Handler handler)
 	return (T*)data;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 template <class U> 
 void convertToJson(htopml::JsonState & json, const RLockFreeTreeNode * value,int & count)
 {
@@ -247,7 +249,7 @@ void convertToJson(htopml::JsonState & json, const RLockFreeTreeNode * value,int
 	}
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 template <class U> 
 void convertToJson(htopml::JsonState & json, const RLockFreeTree<U> & value)
 {
@@ -261,14 +263,14 @@ void convertToJson(htopml::JsonState & json, const RLockFreeTree<U> & value)
 	json.closeStruct();
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 template <class T>
 T* RLockFreeTree<T>::getDataFromStack(Stack& stack)
 {
 	return getData(getFromStack(stack));
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 template <class T>
 typename RLockFreeTree<T>::Handler RLockFreeTree<T>::getFromStack(Stack& stack)
 {

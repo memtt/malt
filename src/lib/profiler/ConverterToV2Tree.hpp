@@ -1,20 +1,22 @@
-/*****************************************************
-             PROJECT  : MALT
-             VERSION  : 1.2.2
-             DATE     : 06/2023
-             AUTHOR   : Valat Sébastien
-             LICENSE  : CeCILL-C
-*****************************************************/
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.2.2
+*    DATE     : 06/2023
+*    LICENSE  : CeCILL-C
+*    FILE     : src/lib/profiler/ConverterToV2Tree.hpp
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat - 2015
+***********************************************************/
 
 #ifndef MALT_CONVERT_TO_V2_TREE_HPP
 #define MALT_CONVERT_TO_V2_TREE_HPP
 
-/********************  HEADERS  *********************/
+/**********************************************************/
 //standard
 #include "./AllocStackProfiler.hpp"
 #include "./../stack-tree/from-v2/RLockFreeTree.hpp"
 
-/*******************  NAMESPACE  ********************/
+/**********************************************************/
 namespace MALT
 {
 	

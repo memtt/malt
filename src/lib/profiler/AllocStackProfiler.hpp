@@ -1,15 +1,18 @@
-/*****************************************************
-             PROJECT  : MALT
-             VERSION  : 1.2.2
-             DATE     : 06/2023
-             AUTHOR   : Valat Sébastien
-             LICENSE  : CeCILL-C
-*****************************************************/
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.2.2
+*    DATE     : 06/2023
+*    LICENSE  : CeCILL-C
+*    FILE     : src/lib/profiler/AllocStackProfiler.hpp
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat (ECR) - 2014
+*    AUTHOR   : Sébastien Valat - 2014 - 2019
+***********************************************************/
 
 #ifndef MALT_ALLOC_STACK_PROGILER_HPP
 #define MALT_ALLOC_STACK_PROGILER_HPP
 
-/********************  HEADERS  *********************/
+/**********************************************************/
 //standard
 #include <list>
 #include <cstdlib>
@@ -36,14 +39,14 @@
 //from v2
 #include <stack-tree/from-v2/RLockFreeTree.hpp>
 
-/*******************  NAMESPACE  ********************/
+/**********************************************************/
 namespace MALT
 {
 
-/*********************  TYPES  **********************/
+/**********************************************************/
 class LocalAllocStackProfiler;
 
-/********************  ENUM  ************************/
+/**********************************************************/
 enum StackMode
 {
 	STACK_MODE_BACKTRACE,
@@ -51,7 +54,7 @@ enum StackMode
 	STACK_MODE_USER
 };
 
-/********************  STRUCT  **********************/
+/**********************************************************/
 struct ReallocJump
 {
 	bool operator < (const ReallocJump & jump) const {return oldSize < jump.oldSize || (oldSize == jump.oldSize && newSize < jump.newSize);};
@@ -59,7 +62,7 @@ struct ReallocJump
 	size_t newSize;
 };
 
-/*********************  TYPES  **********************/
+/**********************************************************/
 typedef std::list<LocalAllocStackProfiler *,STLInternalAllocator<LocalAllocStackProfiler*> > LocalAllocStackProfilerList;
 typedef StackSTLHashMap<CallStackInfo> MMStackMap;
 typedef std::map<size_t,size_t> AllocSizeDistrMap;
@@ -67,7 +70,7 @@ typedef std::map<ReallocJump,size_t> ReallocJumpMap;
 typedef RLockFreeTree<CallStackInfo> AllocTreeStrackTracer;
 typedef std::map<std::string,ElfGlobalVariableVector> GlobalVariableMap;
 
-/*********************  STRUCT  *********************/
+/**********************************************************/
 struct TimeTrackMemory
 {
 	//constructor & usefull funcs
@@ -84,7 +87,7 @@ struct TimeTrackMemory
 	static const char * selfDescribeFields[5];
 };
 
-/*********************  STRUCT  *********************/
+/**********************************************************/
 struct TimeTrackSysMemory
 {
 	//constructor & usefull funcs
@@ -99,7 +102,7 @@ struct TimeTrackSysMemory
 	static const char * selfDescribeFields[3];
 };
 
-/*********************  STRUCT  *********************/
+/**********************************************************/
 struct TimeTrackAllocBandwidth
 {
 	TimeTrackAllocBandwidth();
@@ -115,10 +118,10 @@ struct TimeTrackAllocBandwidth
 	static const char * selfDescribeFields[4];
 };
 
-/*********************  TYPE  ************************/
+/**********************************************************/
 typedef void * (*MallocFuncPtr) (size_t size);
 
-/*********************  CLASS  **********************/
+/**********************************************************/
 class AllocStackProfiler
 {
 	public:

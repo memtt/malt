@@ -1,12 +1,15 @@
-/*****************************************************
-             PROJECT  : MALT
-             VERSION  : 1.2.2
-             DATE     : 06/2023
-             AUTHOR   : Valat Sébastien
-             LICENSE  : CeCILL-C
-*****************************************************/
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.2.2
+*    DATE     : 06/2023
+*    LICENSE  : CeCILL-C
+*    FILE     : src/lib/common/CodeTiming.cpp
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat (ECR) - 2014
+*    AUTHOR   : Sébastien Valat - 2014 - 2022
+***********************************************************/
 
-/********************  HEADERS  *********************/
+/**********************************************************/
 //extern
 #include <cstdlib>
 #include <cstring>
@@ -20,21 +23,21 @@
 #include "CodeTiming.hpp"
 #include "Helpers.hpp"
 
-/***************** USING NAMESPACE ******************/
+/**********************************************************/
 using namespace std;
 
-/*******************  NAMESPACE  ********************/
+/**********************************************************/
 namespace MALT
 {
 
-/********************** CONSTS **********************/
+/**********************************************************/
 //Init static values of CodeTiming
 ticks CodeTiming::globalStart = 0;
 int CodeTiming::globalCntTimers = 0;
 int CodeTiming::globalCntTimersFinished = 0;
 CodeTiming * CodeTiming::globalTimers[64];
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Used to register the timers (called from their constructor). All registered
  * timers will be print by the static function CodeTiming::printAll().
@@ -51,7 +54,7 @@ void CodeTiming::registerTimer(CodeTiming* timer)
 	globalTimers[globalCntTimers++] = timer;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Just follow the status of registered timers. This functions might be called
  * from CodeTiming destructor.
@@ -63,7 +66,7 @@ void CodeTiming::timerFinish(CodeTiming* timer)
 	globalCntTimersFinished++;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Compare function to be used into sort() to order timers before printing.
  * @param a Pointer to first timer (need to be CodeTiming).
@@ -82,7 +85,7 @@ int CodeTiming::compare(const void* a, const void* b)
 		return -1;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Static function to print final restults of all registered timers. This function
  * will order the results on asc order based on the total cost (sum).
@@ -110,7 +113,7 @@ void CodeTiming::printAll(std::ostream & out, bool force)
 	}
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Constructor of CodeTiming class. Only setup default parameters and register the object
  * into global registry.
@@ -132,7 +135,7 @@ CodeTiming::CodeTiming(const char* name, bool registerToGlob)
 	}
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * The destructor is in charge of printing the final results.
 **/
@@ -143,7 +146,7 @@ CodeTiming::~CodeTiming(void)
 	#endif
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void CodeTiming::finalPrint(std::ostream & out, bool force) const
 {
 	//force for unit tests
@@ -172,7 +175,7 @@ void CodeTiming::finalPrint(std::ostream & out, bool force) const
 	}
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * @return Return the number of ticks per seconds on the current CPU.
  * The measurement is done by mixing informations from getticks and gettimeofday.
@@ -208,7 +211,7 @@ ticks ticksPerSecond(ticks forceValue)
 	return alreadyMeasured;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Provide a non inlined getticks function to be mockable for
  * unit tests.

@@ -1,10 +1,14 @@
-/*****************************************************
-             PROJECT  : MALT
-             VERSION  : 1.2.2
-             DATE     : 06/2023
-             AUTHOR   : Valat Sébastien
-             LICENSE  : CeCILL-C
-*****************************************************/
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.2.2
+*    DATE     : 06/2023
+*    LICENSE  : CeCILL-C
+*    FILE     : src/trace-reader/main.cpp
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat (ECR) - 2014
+*    AUTHOR   : Sébastien Valat - 2014 - 2020
+*    AUTHOR   : Mehdi Raza Jaffery (CERN) - 2016
+***********************************************************/
 
 //std C++
 #include <cstdio>
@@ -18,10 +22,10 @@
 #include "TraceReaderFragmentation.hpp"
 #include "TraceReaderStats.hpp"
 
-/**********************  USING  *********************/
+/**********************************************************/
 using namespace MALT;
 
-/********************** CONSTS **********************/
+/**********************************************************/
 static const char * cstHelp = "Usage : %s [--help|-h] [MODE] [FILTER] {FILE.trace}\n\n\
 MODE : \n\
    --histo  {size|lifetime|time}\n\
@@ -35,7 +39,7 @@ FILTER : \n\
    --filter stack=STACKID\n\
    --filter at=TIMESTAMP\n";
 
-/*********************  ENUM  ***********************/
+/**********************************************************/
 enum Mode
 {
 	MODE_PRINT,
@@ -46,7 +50,7 @@ enum Mode
 	MODE_STATS
 };
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 int main(int argc, char ** argv)
 {
 	Mode mode = MODE_PRINT;

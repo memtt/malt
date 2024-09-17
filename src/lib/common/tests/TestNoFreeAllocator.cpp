@@ -1,20 +1,22 @@
-/*****************************************************
-             PROJECT  : MALT
-             VERSION  : 1.2.2
-             DATE     : 06/2023
-             AUTHOR   : Valat Sébastien
-             LICENSE  : CeCILL-C
-*****************************************************/
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.2.2
+*    DATE     : 06/2023
+*    LICENSE  : CeCILL-C
+*    FILE     : src/lib/common/tests/TestNoFreeAllocator.cpp
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat - 2022
+***********************************************************/
 
-/********************  HEADERS  *********************/
+/**********************************************************/
 #include <sstream>
 #include <gtest/gtest.h>
 #include "NoFreeAllocator.hpp"
 
-/***************** USING NAMESPACE ******************/
+/**********************************************************/
 using namespace MALTV2;
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(TestNoFreeAllocator,constructor)
 {
 	NoFreeAllocator alloc;
@@ -22,7 +24,7 @@ TEST(TestNoFreeAllocator,constructor)
 	ASSERT_EQ(2097120, alloc.getMaxSize());
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(TestNoFreeAllocator,allocate)
 {
 	NoFreeAllocator alloc;
@@ -34,7 +36,7 @@ TEST(TestNoFreeAllocator,allocate)
 	memset(ptr2, 0, 128);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(TestNoFreeAllocator,allocate_mmap)
 {
 	NoFreeAllocator alloc;
@@ -46,7 +48,7 @@ TEST(TestNoFreeAllocator,allocate_mmap)
 	memset(ptr2, 0, 128);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(TestNoFreeAllocator,stats)
 {
 	NoFreeAllocator alloc;
@@ -58,7 +60,7 @@ TEST(TestNoFreeAllocator,stats)
 	EXPECT_EQ(2097152, alloc.getTotalMemory());
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(TestNoFreeAllocator,printState)
 {
 	NoFreeAllocator alloc;

@@ -1,3 +1,12 @@
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.2.2
+*    DATE     : 03/2015
+*    LICENSE  : CeCILL-C
+*    FILE     : src/webview/client-files/app/js/controlers.js
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat (ECR) - 2014 - 2015
+***********************************************************/
 //decalre controlers for MALT
 var maltCtrl = angular.module('malt.controlers',[]);
 

@@ -1,20 +1,22 @@
-/*****************************************************
-             PROJECT  : MALT
-             VERSION  : 1.2.2
-             DATE     : 06/2023
-             AUTHOR   : Valat Sébastien
-             LICENSE  : CeCILL-C
-*****************************************************/
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.2.2
+*    DATE     : 06/2023
+*    LICENSE  : CeCILL-C
+*    FILE     : src/lib/portability/tests/TestMutex.cpp
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat - 2022
+***********************************************************/
 
-/********************  HEADERS  *********************/
+/**********************************************************/
 #include <gtest/gtest.h>
 #include "Mutex.hpp"
 
-/***************** USING NAMESPACE ******************/
+/**********************************************************/
 using namespace MALT;
 using namespace testing;
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(TestMutex, lock_unlock_basic)
 {
 	Mutex mutex;
@@ -22,7 +24,7 @@ TEST(TestMutex, lock_unlock_basic)
 	mutex.unlock();
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(TestMutex, try_lock)
 {
 	Mutex mutex;
@@ -31,7 +33,7 @@ TEST(TestMutex, try_lock)
 	mutex.unlock();
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(TestStaticMutex, lock_unlock_basic)
 {
 	StaticMutex mutex = MALT_STATIC_MUTEX_INIT;
@@ -39,7 +41,7 @@ TEST(TestStaticMutex, lock_unlock_basic)
 	mutex.unlock();
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(TestStaticMutex, try_lock)
 {
 	StaticMutex mutex = MALT_STATIC_MUTEX_INIT;

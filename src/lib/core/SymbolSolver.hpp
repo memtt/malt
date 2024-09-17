@@ -1,15 +1,20 @@
-/*****************************************************
-             PROJECT  : MALT
-             VERSION  : 1.2.2
-             DATE     : 06/2023
-             AUTHOR   : Valat Sébastien
-             LICENSE  : CeCILL-C
-*****************************************************/
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.2.2
+*    DATE     : 06/2023
+*    LICENSE  : CeCILL-C
+*    FILE     : src/lib/core/SymbolSolver.hpp
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat (ECR) - 2014
+*    AUTHOR   : Sébastien Valat - 2019 - 2021
+*    AUTHOR   : Sébastien Valat (ATOS) - 2019
+*    AUTHOR   : Sébastien Valat (INRIA) - 2023
+***********************************************************/
 
 #ifndef MALT_FUNC_NAME_DIC_HPP
 #define MALT_FUNC_NAME_DIC_HPP
 
-/********************  HEADERS  *********************/
+/**********************************************************/
 //STD C++
 #include <cstdio>
 //STL C++
@@ -24,15 +29,15 @@
 //internal portability
 #include <portability/LinuxProcMapReader.hpp>
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /** Define a function dictionnary to store addresses and related symboles. **/
 typedef std::map<void *,const char*> FuncNameDicMap;
 
-/*******************  NAMESPACE  ********************/
+/**********************************************************/
 namespace MALT
 {
 
-/********************  STRUCT  **********************/
+/**********************************************************/
 /**
  * Define a call site.
  * with its source informations extracted from debug symbols.
@@ -50,7 +55,7 @@ struct CallSite
 	LinuxProcMapEntry * mapEntry;
 };
 
-/********************  STRUCT  **********************/
+/**********************************************************/
 /**
  * Define a call site from the MAQAO view point.
 **/
@@ -64,13 +69,13 @@ struct MaqaoSite
 	int line;
 };
 
-/*********************  TYPES  **********************/
+/**********************************************************/
 /** Map to join a raw address to a callsite description **/
 typedef std::map<void*,CallSite> CallSiteMap;
 /** Map to join a raw address to a mapqao call site. It uses the internal allocator as used while running. **/
 typedef std::map<void*,MaqaoSite,std::less<void*>,STLInternalAllocator<std::pair<void*,MaqaoSite> > > MaqaoSiteMap;
 
-/*********************  CLASS  **********************/
+/**********************************************************/
 /**
  * This class is used to solve the symbols at the end of the execution before
  * dumping the profile file.
@@ -120,11 +125,11 @@ class SymbolSolver
 		MaqaoSiteMap maqaoSites;
 };
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void convertToJson(htopml::JsonState & state,const LinuxProcMapEntry & entry);
 void convertToJson(htopml::JsonState & state,const CallSite & entry);
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Convert a map to json file.
  * @param json Reference to the json state to make conversion.

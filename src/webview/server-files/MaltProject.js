@@ -1,3 +1,15 @@
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.2.2
+*    DATE     : 06/2023
+*    LICENSE  : CeCILL-C
+*    FILE     : src/webview/server-files/MaltProject.js
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat (ECR) - 2014 - 2015
+*    AUTHOR   : Sébastien Valat - 2015 - 2019
+*    AUTHOR   : Mehdi Raza Jaffery (CERN) - 2016
+*    AUTHOR   : Sébastien Valat (INRIA) - 2023
+***********************************************************/
 /****************************************************/
 //deps
 var fs    = require('fs');

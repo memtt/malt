@@ -1,15 +1,17 @@
-/*****************************************************
-             PROJECT  : MALT
-             VERSION  : 1.2.2
-             DATE     : 06/2023
-             AUTHOR   : Valat Sébastien
-             LICENSE  : CeCILL-C
-*****************************************************/
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.2.2
+*    DATE     : 06/2023
+*    LICENSE  : CeCILL-C
+*    FILE     : src/lib/stack-tree/from-v2/EnterExitStack.hpp
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat - 2015
+***********************************************************/
 
 #ifndef MALTV2_ENTER_EXIT_STACK_HPP
 #define MALTV2_ENTER_EXIT_STACK_HPP
 
-/********************  HEADERS  *********************/
+/**********************************************************/
 //standard
 #include <ostream>
 #include <cstdlib>
@@ -18,20 +20,20 @@
 #include "Stack.hpp"
 
 
-/********************  MACROS  **********************/
+/**********************************************************/
 #define MALT_MAX_STACK_SIZE (1024*1204)
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 namespace htopml
 {
 	class JsonState;
 }
 
-/*******************  NAMESPACE  ********************/
+/**********************************************************/
 namespace MALTV2
 {
 
-/*********************  CLASS  **********************/
+/**********************************************************/
 /**
  * Provide a specialized stack to manage the enter-exit mode to track stacks.
  * In this mode, the app need to notify the tool when on entry/exit point of each functions.
@@ -47,7 +49,7 @@ class EnterExitStack : public Stack
 		size_t realSize;
 };
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Notify function entry point.
  * It may produce a reallocation of the storage segment.
@@ -74,7 +76,7 @@ inline void EnterExitStack::enterFunction ( void* funcAddr )
 	assert(size <= memSize);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Notify a function exit to remove the last stack entry.
  * It will not free the related memory for future reuse.

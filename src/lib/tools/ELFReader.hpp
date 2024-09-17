@@ -1,30 +1,33 @@
-/*****************************************************
-             PROJECT  : MALT
-             VERSION  : 1.2.2
-             DATE     : 06/2023
-             AUTHOR   : Valat Sébastien
-             LICENSE  : CeCILL-C
-*****************************************************/
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.2.2
+*    DATE     : 06/2023
+*    LICENSE  : CeCILL-C
+*    FILE     : src/lib/tools/ELFReader.hpp
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat (ECR) - 2014
+*    AUTHOR   : Sébastien Valat - 2014
+***********************************************************/
 
 #ifndef MALT_ELF_READER_HPP
 #define MALT_ELF_READER_HPP
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 //standard
 #include <vector>
 #include <string>
 #include <cstdio>
 #include <json/JsonState.h>
 
-/*********************  TYPES  **********************/
+/**********************************************************/
 struct Elf;
 struct Elf_Scn;
 
-/*******************  NAMESPACE  ********************/
+/**********************************************************/
 namespace MALT
 {
 
-/********************  STRUCT  **********************/
+/**********************************************************/
 /**
  * Definition of a global variable extracted from libelf.
 **/
@@ -44,7 +47,7 @@ struct ElfGlobalVariable
 	int line;
 };
 
-/********************  STRUCT  **********************/
+/**********************************************************/
 /** Struct to point entries of the ELF string table. **/
 struct ElfStringTable
 {
@@ -54,13 +57,13 @@ struct ElfStringTable
 	size_t size;
 };
 
-/*********************  TYPES  **********************/
+/**********************************************************/
 /**
  * Define a vector container for global variables.
 **/
 typedef std::vector<ElfGlobalVariable> ElfGlobalVariableVector;
 
-/*********************  CLASS  **********************/
+/**********************************************************/
 /**
  * Wrapper of libelf to extract global variable list from binary file.
 **/
@@ -84,7 +87,7 @@ class ElfReader
 		FILE * fp;
 };
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void convertToJson(htopml::JsonState& json, const ElfGlobalVariable& value);
 // void convertToJson(htopml::JsonState& json, const ElfGlobalVariableVector & value);
 

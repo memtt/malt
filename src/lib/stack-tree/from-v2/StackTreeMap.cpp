@@ -1,12 +1,14 @@
-/*****************************************************
-             PROJECT  : MALT
-             VERSION  : 1.2.2
-             DATE     : 06/2023
-             AUTHOR   : Valat Sébastien
-             LICENSE  : CeCILL-C
-*****************************************************/
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.2.2
+*    DATE     : 06/2023
+*    LICENSE  : CeCILL-C
+*    FILE     : src/lib/stack-tree/from-v2/StackTreeMap.cpp
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat - 2015
+***********************************************************/
 
-/********************  HEADERS  *********************/
+/**********************************************************/
 #include <cassert>
 #include "StackTreeMap.hpp"
 #include "BacktraceStack.hpp"
@@ -17,11 +19,11 @@
 #include <common/SimpleAllocator.hpp>
 // #include <core/SymbolRegistry.hpp>
 
-/*******************  NAMESPACE  ********************/
+/**********************************************************/
 namespace MALTV2
 {
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 StackTreeMap::Key::Key(const Stack* stack,int dataId)
 {
 	//check
@@ -34,7 +36,7 @@ StackTreeMap::Key::Key(const Stack* stack,int dataId)
 	this->dataId =  dataId;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 bool StackTreeMap::Key::operator==(const Key& node) const
 {
 	if (!(hash == node.hash))
@@ -43,7 +45,7 @@ bool StackTreeMap::Key::operator==(const Key& node) const
 		return *stack == *node.stack;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 bool StackTreeMap::Key::operator<(const Key& node) const
 {
 	if (hash < node.hash)
@@ -56,7 +58,7 @@ bool StackTreeMap::Key::operator<(const Key& node) const
 	}
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void StackTreeMap::Key::cloneStack(void)
 {
 	assert(stack != NULL);
@@ -64,7 +66,7 @@ void StackTreeMap::Key::cloneStack(void)
 	stack = new(ptr) Stack(*stack);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 StackTreeMap::StackTreeMap(bool backtrace,bool threadsafe)
 	: StackTree()
 {
@@ -73,13 +75,13 @@ StackTreeMap::StackTreeMap(bool backtrace,bool threadsafe)
 	this->nextId = 0;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 StackTreeMap::~StackTreeMap(void)
 {
 
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 StackTreeHandler StackTreeMap::enterThread(void)
 {
 	Handler * handler = MALT_NO_FREE_NEW(Handler);
@@ -87,7 +89,7 @@ StackTreeHandler StackTreeMap::enterThread(void)
 	return handler;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 StackTreeHandler StackTreeMap::exitFunction(StackTreeHandler handler, void* callsite)
 {
 	//assume(!backtrace,"Try to use exitFunction with backtrace mode enabled !");
@@ -102,7 +104,7 @@ StackTreeHandler StackTreeMap::exitFunction(StackTreeHandler handler, void* call
 	}
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 StackTreeHandler StackTreeMap::enterFunction(StackTreeHandler handler, void* callsite)
 {
 	//assume(!backtrace,"Try to use exitFunction with backtrace mode enabled !");
@@ -117,21 +119,21 @@ StackTreeHandler StackTreeMap::enterFunction(StackTreeHandler handler, void* cal
 	}
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void StackTreeMap::exitThread(StackTreeHandler handler)
 {
 // 	Handler * typedHandler = (Handler*)handler;
 	//delete typedHandler;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 int StackTreeMap::getStackId ( StackTreeDataHandler handler )
 {
 	Handler * typedHandler = (Handler*)handler;
 	return typedHandler->stackId;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 StackTreeDataHandler StackTreeMap::getDataHandler ( StackTreeHandler handler )
 {
 	//get handler
@@ -152,7 +154,7 @@ StackTreeDataHandler StackTreeMap::getDataHandler ( StackTreeHandler handler )
 	return storage;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void* & StackTreeMap::internalGetData(StackTreeHandler handler, int id)
 {
 	assert(id < MALT_STACK_TREE_ENTRIES);
@@ -171,13 +173,13 @@ void* & StackTreeMap::internalGetData(StackTreeHandler handler, int id)
 	return entry;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void* StackTreeMap::getData(StackTreeHandler handler, int id)
 {
 	return internalGetData(handler,id);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void* StackTreeMap::getData ( StackTreeDataHandler handler, int id )
 {
 	//entry
@@ -191,7 +193,7 @@ void* StackTreeMap::getData ( StackTreeDataHandler handler, int id )
 	return (*handler)[id];
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 StackTreeHandler StackTreeMap::getFromStack(StackTreeHandler handler, const Stack& stack)
 {
 	//get handler
@@ -224,7 +226,7 @@ StackTreeHandler StackTreeMap::getFromStack(StackTreeHandler handler, const Stac
 	return handler;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 StackTreeHandler StackTreeMap::getFromStack(StackTreeHandler handler, int skip)
 {
 	assume(backtrace,"Invlid mode, require backtrace enabled !");
@@ -235,13 +237,13 @@ StackTreeHandler StackTreeMap::getFromStack(StackTreeHandler handler, int skip)
 	return getFromStack(handler,typedHandler->backtraceStack);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void StackTreeMap::prepareForOutput ( void )
 {
 
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void convertToJson(htopml::JsonState& json, const StackTreeMap& tree)
 {
 	RLockFreeTree otree;
@@ -262,19 +264,19 @@ void convertToJson(htopml::JsonState& json, const StackTreeMap& tree)
 	convertToJson(json,otree);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 bool StackTreeMap::isEnterExit ( void ) const
 {
 	return !backtrace;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void StackTreeMap::toJson ( htopml::JsonState& json, const StackTree& tree ) const
 {
 	convertToJson(json,dynamic_cast<const StackTreeMap&>(tree));
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void StackTreeMap::registerSymbols ( SymbolRegistry& registry ) const
 {
 	MALT_FATAL("Not supported in V1");

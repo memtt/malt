@@ -1,15 +1,18 @@
-/*****************************************************
-             PROJECT  : MALT
-             VERSION  : 1.2.2
-             DATE     : 06/2023
-             AUTHOR   : Valat Sébastien
-             LICENSE  : CeCILL-C
-*****************************************************/
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.2.2
+*    DATE     : 06/2023
+*    LICENSE  : CeCILL-C
+*    FILE     : src/lib/valprof/ProfiledValue.hpp
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat - 2014 - 2019
+*    AUTHOR   : Sébastien Valat (ECR) - 2014
+***********************************************************/
 
 #ifndef MALT_PROFILED_VALUE_HPP
 #define MALT_PROFILED_VALUE_HPP
 
-/********************  HEADERS  *********************/
+/**********************************************************/
 //std
 #include <cstdlib>
 #include <cassert>
@@ -21,18 +24,18 @@
 //internal
 #include <common/Debug.hpp>
 
-/********************  MACRO  ***********************/
+/**********************************************************/
 /**
  * Define how much steps to accumulate in a small buffer before starting to 
  * reduce the values.
 **/
 #define MALT_PROFILED_STATE_VALUE_FIRST_STEPS 10
 
-/********************  NAMESPACE  *******************/
+/**********************************************************/
 namespace MALT
 {
 
-/*********************  CLASS  **********************/
+/**********************************************************/
 /**
  * Class to manage time tracking of composed structures and to made reduction on them to maintain
  * a limited number of internal values.
@@ -118,7 +121,7 @@ class ProfiledValue
 		bool bandwidth;
 };
 
-/*********************  CLASS  **********************/
+/**********************************************************/
 /**
  * @brief Helper class to profiler simple scalars with max operator in ProfiledValue system.
 **/
@@ -134,15 +137,15 @@ struct ProfilableMaxScalar
 	static const char * selfDescribeFields[1];
 };
 
-/*********************  CLASS  **********************/
+/**********************************************************/
 typedef ProfiledValue< ProfilableMaxScalar<double> > ProfiledStateMaxReal;
 typedef ProfiledValue< ProfilableMaxScalar<size_t> > ProfiledStateMaxInt;
 
-/**********************  CONST  *********************/
+/**********************************************************/
 template <class T>
 const char * ProfilableMaxScalar<T>::selfDescribeFields[1] = {"max"};
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 template <class T>
 void swap(T & v1, T & v2)
 {
@@ -151,7 +154,7 @@ void swap(T & v1, T & v2)
 	v2 = tmp;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 template <class T>
 ProfiledValue<T>::ProfiledValue(int steps,bool bandwidth)
 {
@@ -185,7 +188,7 @@ ProfiledValue<T>::ProfiledValue(int steps,bool bandwidth)
 	}
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 template <class T>
 ProfiledValue<T>::~ProfiledValue(void )
 {
@@ -197,7 +200,7 @@ ProfiledValue<T>::~ProfiledValue(void )
 	delete [] this->oldLocations;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 template <class T>
 void ProfiledValue<T>::push(ticks t, const T& value,void * location)
 {
@@ -222,7 +225,7 @@ void ProfiledValue<T>::push(ticks t, const T& value,void * location)
 	this->flushed = false;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 template <class T>
 void ProfiledValue<T>::pushFirst(ticks t, const T& value,void * location)
 {
@@ -232,7 +235,7 @@ void ProfiledValue<T>::pushFirst(ticks t, const T& value,void * location)
 	this->cntFirstPoints++;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 template <class T>
 void ProfiledValue<T>::pushNext(ticks t, const T& value,void * location)
 {
@@ -259,7 +262,7 @@ void ProfiledValue<T>::pushNext(ticks t, const T& value,void * location)
 	}
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 template <class T>
 bool ProfiledValue<T>::isNewPoint(ticks t)
 {
@@ -273,7 +276,7 @@ bool ProfiledValue<T>::isNewPoint(ticks t)
 	return false;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 template <class T>
 void ProfiledValue<T>::firstShape(void )
 {
@@ -300,7 +303,7 @@ void ProfiledValue<T>::firstShape(void )
 		this->push(firstPointsTicks[i],firstPoints[i],firstLocations[i]);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 template <class T>
 void ProfiledValue<T>::updateStartEnd(ticks start, ticks end)
 {
@@ -319,7 +322,7 @@ void ProfiledValue<T>::updateStartEnd(ticks start, ticks end)
 	this->end = start + (steps * perPoints);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 template <class T>
 void ProfiledValue<T>::reshape(ticks t)
 {
@@ -356,7 +359,7 @@ void ProfiledValue<T>::reshape(ticks t)
 	}
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 template <class T>
 int ProfiledValue<T>::getLastTouchedId(void ) const
 {
@@ -369,7 +372,7 @@ int ProfiledValue<T>::getLastTouchedId(void ) const
 	return last;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 template <class T>
 void ProfiledValue<T>::flush(void )
 {
@@ -400,7 +403,7 @@ void ProfiledValue<T>::flush(void )
 	this->flushed = true;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 template <class T>
 void convertToJson(htopml::JsonState& json, const ProfiledValue<T>& value)
 {

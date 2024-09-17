@@ -1,20 +1,22 @@
-/*****************************************************
-             PROJECT  : MALT
-             VERSION  : 1.2.2
-             DATE     : 06/2023
-             AUTHOR   : Valat Sébastien
-             LICENSE  : CeCILL-C
-*****************************************************/
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.2.2
+*    DATE     : 06/2023
+*    LICENSE  : CeCILL-C
+*    FILE     : src/lib/stack-tree/from-v2/tests/TestEnterExitStack.cpp
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat - 2015
+***********************************************************/
 
-/********************  HEADERS  *********************/
+/**********************************************************/
 #include <gtest/gtest.h>
 #include <EnterExitStack.hpp>
 #include <common/SimpleAllocator.hpp>
 
-/***************** USING NAMESPACE ******************/
+/**********************************************************/
 using namespace MALTV2;
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(Stack,test1)
 {
 	EnterExitStack stack;
@@ -28,7 +30,7 @@ TEST(Stack,test1)
 		EXPECT_EQ((void*)(size_t)(4-i),stack[i]);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 int main(int argc, char ** argv)
 {
 	//init internal allocator

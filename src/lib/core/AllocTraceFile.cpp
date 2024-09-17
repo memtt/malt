@@ -1,22 +1,25 @@
-/*****************************************************
-             PROJECT  : MALT
-             VERSION  : 1.2.2
-             DATE     : 06/2023
-             AUTHOR   : Valat Sébastien
-             LICENSE  : CeCILL-C
-*****************************************************/
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.2.2
+*    DATE     : 06/2023
+*    LICENSE  : CeCILL-C
+*    FILE     : src/lib/core/AllocTraceFile.cpp
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat (ECR) - 2014
+*    AUTHOR   : Sébastien Valat - 2014 - 2022
+***********************************************************/
 
-/********************  HEADERS  *********************/
+/**********************************************************/
 #include <cstring>
 #include <cassert>
 #include <common/Debug.hpp>
 #include "AllocTraceFile.hpp"
 
-/*******************  NAMESPACE  ********************/
+/**********************************************************/
 namespace MALT
 {
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Constructor of the trace file manager. It mostly setup the local parameters
  * and open the trace file.
@@ -33,7 +36,7 @@ AllocTraceFile::AllocTraceFile(const std::string& file,size_t bufferSize)
 		this->open(file);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Destructor of the trace file manager, it mostly close the current trace file
  * and delete the local buffer.
@@ -44,7 +47,7 @@ AllocTraceFile::~AllocTraceFile(void)
 	delete [] buffer;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Function used to open and prepare the trace file.
  * @param file Define the file path to use.
@@ -64,7 +67,7 @@ void AllocTraceFile::open(const std::string& file)
 	this->pos = 0;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Close the trace file but take care of flushing the current buffer before
  * doing it.
@@ -80,7 +83,7 @@ void AllocTraceFile::close(void)
 	this->fp = NULL;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Add a trace event for the given memory chunk. It can generate a write() to the file
  * if the buffer is full.
@@ -111,7 +114,7 @@ void AllocTraceFile::traceChunk(const MALT::Stack* allocStack, const MALT::Stack
 		this->flush();
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Function responsible to flush the buffer content to the file and reset
  * the internal counter.

@@ -1,3 +1,13 @@
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.2.2
+*    DATE     : 05/2017
+*    LICENSE  : CeCILL-C
+*    FILE     : src/webview/client-files/app/js/prism.js
+*-----------------------------------------------------------
+*    AUTHOR   : Mehdi Raza Jaffery (CERN) - 2016
+*    AUTHOR   : Sébastien Valat (CERN) - 2017
+***********************************************************/
 /* http://prismjs.com/download.html?themes=prism&languages=clike+c+cpp+fortran+python&plugins=line-highlight+line-numbers */
 var _self = (typeof window !== 'undefined')
 	? window   // if in browser

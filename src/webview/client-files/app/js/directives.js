@@ -1,3 +1,12 @@
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.2.2
+*    DATE     : 08/2016
+*    LICENSE  : CeCILL-C
+*    FILE     : src/webview/client-files/app/js/directives.js
+*-----------------------------------------------------------
+*    AUTHOR   : Mehdi Raza Jaffery (CERN) - 2016
+***********************************************************/
 /**
  * This file contains all the directives needed across different pages.
  * This encourages reuse of components rather than repeating code across controllers.

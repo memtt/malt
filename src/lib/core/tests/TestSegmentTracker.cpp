@@ -1,20 +1,23 @@
-/*****************************************************
-             PROJECT  : MALT
-             VERSION  : 1.2.2
-             DATE     : 06/2023
-             AUTHOR   : Valat Sébastien
-             LICENSE  : CeCILL-C
-*****************************************************/
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.2.2
+*    DATE     : 06/2023
+*    LICENSE  : CeCILL-C
+*    FILE     : src/lib/core/tests/TestSegmentTracker.cpp
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat (ECR) - 2014
+*    AUTHOR   : Sébastien Valat - 2014
+***********************************************************/
 
-/********************  HEADERS  *********************/
+/**********************************************************/
 #include <gtest/gtest.h>
 #include <core/SegmentTracker.hpp>
 #include <stacks/Stack.hpp>
 
-/***************** USING NAMESPACE ******************/
+/**********************************************************/
 using namespace MALT;
 
-/********************* GLOBALS **********************/
+/**********************************************************/
 //for pre init of global allocator
 class ForceInit
 {
@@ -23,26 +26,26 @@ class ForceInit
 };
 ForceInit gblForceInit;
 
-/********************* GLOBALS **********************/
+/**********************************************************/
 static void * CST_STACK_1_CONTENT[] = {(void*)0x1,(void*)0x2,(void*)0x3};
 #define CST_STACK_1_SIZE (sizeof(CST_STACK_1_CONTENT)/sizeof(CST_STACK_1_CONTENT[0]))
 static void * CST_ADDR1 = ((void*)0x42);
 static Stack CST_STACK_1(CST_STACK_1_CONTENT,CST_STACK_1_SIZE,STACK_ORDER_ASC);
 static CallStackInfo CST_INFO_1;
 
-/********************  MACROS  **********************/
+/**********************************************************/
 #define EXPECT_NULL(x) EXPECT_EQ((void*)NULL,(x))
 #define EXPECT_NOT_NULL(x) EXPECT_NE((void*)NULL,(x))
 #define ASSERT_NULL(x) ASSERT_EQ((void*)NULL,(x))
 #define ASSERT_NOT_NULL(x) ASSERT_NE((void*)NULL,(x))
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(TestSegmentTracker,testConstructor)
 {
 	SegmentTracker tracker;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(TestSegmentTracker,testAdd)
 {
 	//setup objects
@@ -53,7 +56,7 @@ TEST(TestSegmentTracker,testAdd)
 	tracker.add(CST_ADDR1,64,stack);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(TestSegmentTracker,testGetOK)
 {
 	//setup objects
@@ -69,7 +72,7 @@ TEST(TestSegmentTracker,testGetOK)
 	EXPECT_EQ(64UL,info->size);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(TestSegmentTracker,testGetInvalid)
 {
 	//setup objects
@@ -83,7 +86,7 @@ TEST(TestSegmentTracker,testGetInvalid)
 	EXPECT_NULL(tracker.get((void*)0x41));
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(TestSegmentTracker,testRemoveOK)
 {
 	//setup objects
@@ -98,7 +101,7 @@ TEST(TestSegmentTracker,testRemoveOK)
 	EXPECT_NULL(tracker.get(CST_ADDR1));
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(TestSegmentTracker,testRemoveNotExist)
 {
 	//setup objects
@@ -110,7 +113,7 @@ TEST(TestSegmentTracker,testRemoveNotExist)
 	EXPECT_NULL(tracker.get(CST_ADDR1));
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(TestSegmentTracker,testMunmap1)
 {
 	//setup objects
@@ -128,7 +131,7 @@ TEST(TestSegmentTracker,testMunmap1)
 	EXPECT_EQ(0x100U,info->size);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(TestSegmentTracker,testMunmap2)
 {
 	//setup objects
@@ -146,7 +149,7 @@ TEST(TestSegmentTracker,testMunmap2)
 	EXPECT_EQ(0x100U,info->size);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(TestSegmentTracker,testMunmap3)
 {
 	//setup objects
@@ -167,7 +170,7 @@ TEST(TestSegmentTracker,testMunmap3)
 	EXPECT_EQ(0x080U,info->size);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(TestSegmentTracker,testMunmap4)
 {
 	//setup objects
@@ -188,7 +191,7 @@ TEST(TestSegmentTracker,testMunmap4)
 	EXPECT_EQ(0x080U,info->size);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(TestSegmentTracker,testMunmap5)
 {
 	//setup objects

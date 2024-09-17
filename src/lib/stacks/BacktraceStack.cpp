@@ -1,12 +1,15 @@
-/*****************************************************
-             PROJECT  : MALT
-             VERSION  : 1.2.2
-             DATE     : 06/2023
-             AUTHOR   : Valat Sébastien
-             LICENSE  : CeCILL-C
-*****************************************************/
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.2.2
+*    DATE     : 06/2023
+*    LICENSE  : CeCILL-C
+*    FILE     : src/lib/stacks/BacktraceStack.cpp
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat (ECR) - 2014
+*    AUTHOR   : Sébastien Valat - 2014 - 2020
+***********************************************************/
 
-/********************  HEADERS  *********************/
+/**********************************************************/
 //standard
 #include <cstdio>
 #include <cassert>
@@ -19,18 +22,18 @@
 //current
 #include <stacks/BacktraceStack.hpp>
 
-/********************  MACROS  **********************/
+/**********************************************************/
 /**
  * Limit the maximum size of the backtraces we extract to keep resonnable things.
  * @TODO Move this into the option class to support dynamic definition.
 **/
 #define MALT_CALL_STACK_MAX (128*1024)
 
-/*******************  NAMESPACE  ********************/
+/**********************************************************/
 namespace MALT 
 {
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Constructor to setup the ordering mode compatible with backtrace().
 **/
@@ -39,7 +42,7 @@ BacktraceStack::BacktraceStack(void)
 {
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Load the current backtrace. This function will automatically grow the internal buffer
  * to adapt to the size needed to store the full call depth.
@@ -86,7 +89,7 @@ void BacktraceStack::loadCurrentStack(void)
 		this->stack[i] = (void*)((size_t)this->stack[i] - 1);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * This function help to auto detect the compiler inlining which append on new
  * GCC linker. Compare using the object bactrace function and the direct call

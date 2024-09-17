@@ -1,22 +1,24 @@
-/*****************************************************
-             PROJECT  : MALT
-             VERSION  : 1.2.2
-             DATE     : 06/2023
-             AUTHOR   : Valat Sébastien
-             LICENSE  : CeCILL-C
-*****************************************************/
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.2.2
+*    DATE     : 06/2023
+*    LICENSE  : CeCILL-C
+*    FILE     : src/lib/common/STLInternalAllocator.hpp
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat (ECR) - 2014
+***********************************************************/
 
 #ifndef STL_INTERNAL_ALLOCATOR_HPP
 #define STL_INTERNAL_ALLOCATOR_HPP
 
-/********************  HEADERS  *********************/
+/**********************************************************/
 #include "SimpleAllocator.hpp"
 
-/*******************  NAMESPACE  ********************/
+/**********************************************************/
 namespace MALT
 {
 
-/*********************  CLASS  **********************/
+/**********************************************************/
 /**
  * Inspired from http://www.codeproject.com/Articles/4795/C-Standard-Allocator-An-Introduction-and-Implement
  * Thanks to Lai Shiaw San Kent

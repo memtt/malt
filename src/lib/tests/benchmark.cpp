@@ -1,11 +1,15 @@
-/*****************************************************
-             PROJECT  : MALT
-             VERSION  : 1.2.2
-             DATE     : 06/2023
-             AUTHOR   : Valat Sébastien
-             LICENSE  : CeCILL-C
-*****************************************************/
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.2.2
+*    DATE     : 06/2023
+*    LICENSE  : CeCILL-C
+*    FILE     : src/lib/tests/benchmark.cpp
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat (ECR) - 2014
+*    AUTHOR   : Sébastien Valat - 2014 - 2018
+***********************************************************/
 
+/**********************************************************/
 #include <cycle.h>
 #include <stacks/BacktraceStack.hpp>
 #include <profiler/AllocStackProfiler.hpp>
@@ -20,13 +24,16 @@
 #include <cstdio>
 #include <iomanip>
 
+/**********************************************************/
 using namespace std;
 using namespace MALT;
 
+/**********************************************************/
 #define MAX_STACKS 10000
 #define MAX_LOCAL_REUSE 5
 #define MAX_STACK_SIZE 1024
 
+/**********************************************************/
 class BenchTiming
 {
 	public:
@@ -51,6 +58,7 @@ class BenchTiming
 		ticks sumEvents;
 };
 
+/**********************************************************/
 BenchTiming::BenchTiming(void)
 {
 	this->perSeconds = getTicksPerSecond();
@@ -59,6 +67,7 @@ BenchTiming::BenchTiming(void)
 	cout << endl;
 }
 
+/**********************************************************/
 ticks BenchTiming::getTicksPerSecond(void) const
 {
 	timeval tv0;
@@ -81,6 +90,7 @@ ticks BenchTiming::getTicksPerSecond(void) const
 	return (double)(t1-t0) / tf;
 }
 
+/**********************************************************/
 void BenchTiming::start(const char* name, int duration)
 {
 	this->name = name;
@@ -94,16 +104,19 @@ void BenchTiming::start(const char* name, int duration)
 	this->expectedEnd = startTime + durationTicks;
 }
 
+/**********************************************************/
 bool BenchTiming::needRun(void) const
 {
 	return getticks() < expectedEnd;
 }
 
+/**********************************************************/
 void BenchTiming::eventStart(void)
 {
 	this->lastEventStart = getticks();
 }
 
+/**********************************************************/
 void BenchTiming::eventEnd(void)
 {
 	ticks t = getticks() - lastEventStart;
@@ -119,6 +132,7 @@ void BenchTiming::eventEnd(void)
 	this->sumEvents += t;
 }
 
+/**********************************************************/
 void BenchTiming::end(ostream& out)
 {
 	ticks t = getticks() - startTime;
@@ -135,6 +149,7 @@ void BenchTiming::end(ostream& out)
 	out << " ]" << endl;
 }
 
+/**********************************************************/
 static const char * units[] = {"","K","M","G","T","P"};
 void BenchTiming::printTime(ostream& out, ticks value)
 {
@@ -148,11 +163,13 @@ void BenchTiming::printTime(ostream& out, ticks value)
 	out << finalValue << " " << units[depth] << "cycles";
 }
 
+/**********************************************************/
 int getRand(int min,int max)
 {
 	return min + (rand() % (max-min));
 }
 
+/**********************************************************/
 void initAsRandomStack(BacktraceStack & stack)
 {
 	//vars
@@ -169,6 +186,7 @@ void initAsRandomStack(BacktraceStack & stack)
 	stack.set(buffer,size,STACK_ORDER_ASC);
 }
 
+/**********************************************************/
 void runTestFlat(BenchTiming & timing,StackSTLHashMap<CallStackInfo> & tracer,BacktraceStack * stacks, const char * name,int duration)
 {
 	timing.start(name,duration);
@@ -193,6 +211,7 @@ void runTestFlat(BenchTiming & timing,StackSTLHashMap<CallStackInfo> & tracer,Ba
 	timing.end(cout);
 }
 
+/**********************************************************/
 void runTestFlatOld(BenchTiming & timing,SimpleStackTracker & tracer,BacktraceStack * stacks, const char * name,int duration)
 {
 	timing.start(name,duration);
@@ -218,6 +237,7 @@ void runTestFlatOld(BenchTiming & timing,SimpleStackTracker & tracer,BacktraceSt
 }
 
 
+/**********************************************************/
 void runTestTree(BenchTiming & timing,RLockFreeTree<CallStackInfo> & tracer,BacktraceStack * stacks, const char * name,int duration)
 {
 	timing.start(name,duration);
@@ -242,6 +262,7 @@ void runTestTree(BenchTiming & timing,RLockFreeTree<CallStackInfo> & tracer,Back
 	timing.end(cout);
 }
 
+/**********************************************************/
 int main(void)
 {
 	//setup timings

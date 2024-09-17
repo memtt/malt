@@ -1,18 +1,20 @@
-/*****************************************************
-             PROJECT  : MALT
-             VERSION  : 1.2.2
-             DATE     : 06/2023
-             AUTHOR   : Valat Sébastien
-             LICENSE  : CeCILL-C
-*****************************************************/
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.2.2
+*    DATE     : 06/2023
+*    LICENSE  : CeCILL-C
+*    FILE     : src/lib/stack-tree/tests/TestStackSTLHashMap.cpp
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat (ECR) - 2014
+***********************************************************/
 
-/********************  HEADERS  *********************/
+/**********************************************************/
 #include <gtest/gtest.h>
 #include <json/ConvertToJson.h>
 #include <common/SimpleAllocator.hpp>
 #include <stack-tree/StackSTLHashMap.hpp>
 
-/***************** USING NAMESPACE ******************/
+/**********************************************************/
 using namespace MALT;
 
 void * CST_VALUE_1[] = {(void*)0x1,(void*)0x2,(void*)0x3,(void*)0x4};
@@ -30,13 +32,13 @@ const char CST_VALUE_2[] = "{\n\
 }";
 
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(StackSTLHashMap,constructor)
 {
 	StackSTLHashMap<int> map;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(StackSTLHashMap,getValueRef)
 {
 	StackSTLHashMap<int> map;
@@ -46,7 +48,7 @@ TEST(StackSTLHashMap,getValueRef)
 	EXPECT_EQ(10,map.getValueRef(stack));
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(StackSTLHashMap,operatorArray)
 {
 	StackSTLHashMap<int> map;
@@ -56,7 +58,7 @@ TEST(StackSTLHashMap,operatorArray)
 	EXPECT_EQ(10,map[stack]);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(StackSTLHashMap,toJson)
 {
 	StackSTLHashMap<int> map;
@@ -71,7 +73,7 @@ TEST(StackSTLHashMap,toJson)
 	EXPECT_EQ(CST_VALUE_2,out.str());
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(StackSTLHashMap,iterator)
 {
 	//fill
@@ -91,7 +93,7 @@ TEST(StackSTLHashMap,iterator)
 	EXPECT_EQ(map.end(),it);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(StackSTLHashMap,const_iterator)
 {
 	//fill
@@ -112,7 +114,7 @@ TEST(StackSTLHashMap,const_iterator)
 	EXPECT_EQ(cmap.end(),it);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 int main(int argc, char ** argv)
 {
 	//init internal allocator

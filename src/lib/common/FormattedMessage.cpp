@@ -1,12 +1,15 @@
-/*****************************************************
-             PROJECT  : MALT
-             VERSION  : 1.2.2
-             DATE     : 06/2023
-             AUTHOR   : Valat Sébastien
-             LICENSE  : CeCILL-C
-*****************************************************/
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.2.2
+*    DATE     : 06/2023
+*    LICENSE  : CeCILL-C
+*    FILE     : src/lib/common/FormattedMessage.cpp
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat (ECR) - 2014
+*    AUTHOR   : Sébastien Valat - 2014 - 2022
+***********************************************************/
 
-/********************  HEADERS  *********************/
+/**********************************************************/
 //standard
 #include <cerrno>
 #include <cstdio>
@@ -16,11 +19,11 @@
 //internals
 #include "FormattedMessage.hpp"
 
-/*******************  NAMESPACE  ********************/
+/**********************************************************/
 namespace MALT
 {
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Constructor of the class, only setup the local format value from the given one.
  * Values are defined by using syntaxe %1, %2, %3... To print %, just do like
@@ -33,7 +36,7 @@ FormattedMessage::FormattedMessage(const char* format)
 	this->format = format;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Constructor of the class, only setup the local format value from the given one.
  * Values are defined by using syntaxe %1, %2, %3... To print %, just do like
@@ -45,7 +48,7 @@ FormattedMessage::FormattedMessage(const std::string & format)
 	this->format = format;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Nothing to do, only provided for inheritance requirement for virtuel destructor.
 **/
@@ -54,7 +57,7 @@ FormattedMessage::~FormattedMessage(void)
 
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Nothing to do, only support for inheritance usage. This function can be extended
  * to provided error reporting (throw exception or print and exit program)
@@ -64,7 +67,7 @@ void FormattedMessage::end(void)
 	
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Apply the given values on format and flush into the given stream
 **/
@@ -106,7 +109,7 @@ void FormattedMessage::toStream(std::ostream& out) const
 	}
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Apply the given values on format and return the final string.
 **/
@@ -119,7 +122,7 @@ std::string FormattedMessage::toString(void) const
 	return buffer.str();
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Push the appropriate value depending on ID or report missing ID and abort.
  * We consider numbering from 1, not 0 which is invalid.
@@ -139,7 +142,7 @@ void FormattedMessage::pushValue(std::ostream & out,int id) const
 	}
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Specific implementation to avoid useless intermediated copies.
 **/
@@ -149,7 +152,7 @@ FormattedMessage& FormattedMessage::arg(const std::string& value)
 	return *this;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Specific implementation to avoid useless intermediated copies.
 **/
@@ -162,14 +165,14 @@ FormattedMessage& FormattedMessage::arg(const char* value)
 	return *this;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 std::ostream& operator<<(std::ostream& out, const FormattedMessage& message)
 {
 	message.toStream(out);
 	return out;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 FormattedMessage & FormattedMessage::argStrErrno(void)
 {
 	this->arg(strerror(errno));

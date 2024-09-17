@@ -1,12 +1,14 @@
-/*****************************************************
-             PROJECT  : MALT
-             VERSION  : 1.2.2
-             DATE     : 06/2023
-             AUTHOR   : Valat Sébastien
-             LICENSE  : CeCILL-C
-*****************************************************/
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.2.2
+*    DATE     : 06/2023
+*    LICENSE  : CeCILL-C
+*    FILE     : src/lib/valprof/Scatter2DValues.cpp
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat - 2016
+***********************************************************/
 
-/********************  HEADERS  *********************/
+/**********************************************************/
 //std
 #include <cstdlib>
 #include <cmath>
@@ -19,11 +21,11 @@
 //current
 #include "Scatter2DValues.hpp"
 
-/********************  NAMESPACE  *******************/
+/**********************************************************/
 namespace MALT
 {
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 Scatter2DValues::Scatter2DValues(size_t sizeX, size_t sizeY, bool logX, bool logY)
 {
 	//X
@@ -45,20 +47,20 @@ Scatter2DValues::Scatter2DValues(size_t sizeX, size_t sizeY, bool logX, bool log
 	memset(this->oldValues,0,sizeof(size_t)*sizeX*sizeY);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 Scatter2DValues::~Scatter2DValues(void)
 {
 	delete [] values;
 	delete [] oldValues;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 bool Scatter2DValues::needResize(uint64_t x, uint64_t y)
 {
 	return (x >= xAxis.max || y >= yAxis.max);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void Scatter2DValues::incr(size_t* values, uint64_t x, uint64_t y, size_t inc)
 {
 	x = getIndex(x,xAxis);
@@ -66,7 +68,7 @@ void Scatter2DValues::incr(size_t* values, uint64_t x, uint64_t y, size_t inc)
 	values[y * xAxis.size + x]+=inc;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void Scatter2DValues::push(uint64_t x, uint64_t y)
 {
 	//fix 0
@@ -83,7 +85,7 @@ void Scatter2DValues::push(uint64_t x, uint64_t y)
 	incr(values,x,y,1);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 size_t Scatter2DValues::getIndex(size_t value, const Scatter2DValuesAxis& axis) const
 {
 	if (axis.log)
@@ -92,7 +94,7 @@ size_t Scatter2DValues::getIndex(size_t value, const Scatter2DValuesAxis& axis) 
 		return value / (axis.max / axis.size);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 size_t Scatter2DValues::getValue(size_t index, const Scatter2DValuesAxis& axis) const
 {
 	if (axis.log)
@@ -101,7 +103,7 @@ size_t Scatter2DValues::getValue(size_t index, const Scatter2DValuesAxis& axis) 
 		return index * (axis.max / axis.size);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void Scatter2DValues::resize(uint64_t x, uint64_t y)
 {
 	//reset
@@ -138,7 +140,7 @@ void Scatter2DValues::resize(uint64_t x, uint64_t y)
 	}
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void convertToJson(htopml::JsonState& json, const Scatter2DValuesAxis& value)
 {
 	json.openStruct();
@@ -148,7 +150,7 @@ void convertToJson(htopml::JsonState& json, const Scatter2DValuesAxis& value)
 	json.closeStruct();
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void convertToJson(htopml::JsonState& json, const Scatter2DValues& value)
 {
 	json.openStruct();

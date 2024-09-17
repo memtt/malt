@@ -1,12 +1,15 @@
-/*****************************************************
-             PROJECT  : MALT
-             VERSION  : 1.2.2
-             DATE     : 06/2023
-             AUTHOR   : Valat Sébastien
-             LICENSE  : CeCILL-C
-*****************************************************/
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.2.2
+*    DATE     : 06/2023
+*    LICENSE  : CeCILL-C
+*    FILE     : src/lib/core/SimpleStackTracker.cpp
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat (ECR) - 2014
+*    AUTHOR   : Sébastien Valat - 2020 - 2021
+***********************************************************/
 
-/********************  HEADERS  *********************/
+/**********************************************************/
 #include <cassert>
 #include <cstdlib>
 #include <cstdio>
@@ -14,11 +17,11 @@
 #include <common/CodeTiming.hpp>
 #include "SimpleStackTracker.hpp"
 
-/*******************  NAMESPACE  ********************/
+/**********************************************************/
 namespace MALT
 {
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Constructor of the stack tracker.
 **/
@@ -27,7 +30,7 @@ SimpleStackTracker::SimpleStackTracker(void )
 	this->count = 0;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Destructor of the stack tracker to clear the memory.
 **/
@@ -41,7 +44,7 @@ SimpleStackTracker::~SimpleStackTracker(void )
 	}
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * This function is used to get a reference to the call stack node from the call
  * stack.
@@ -87,7 +90,7 @@ SimpleCallStackNode& SimpleStackTracker::getBacktraceInfo( const Stack& stack , 
 	}
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Stream operator do to help debugging.
  * @param out Reference to the output stream operator.
@@ -106,7 +109,7 @@ std::ostream& operator<<(std::ostream& out, const SimpleStackTracker& tracer)
 	return out;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Use the symbol solver to resolve the symbols.
  * @param symbolResolver Reference to the symbol resolver to be used on all the
@@ -122,7 +125,7 @@ void SimpleStackTracker::solveSymbols(SymbolSolver & symbolResolver)
 	}
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Convert the tracker state into json format to create the final profile file.
  * @param json Reference to the json state to make the conversion.
@@ -143,7 +146,7 @@ void convertToJson(htopml::JsonState& json, const SimpleStackTracker& value)
 	json.closeStruct();
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Function usd to convert the tracker into the valgrind format.
  * @param out Reference to the valgrind converter to fill it states with the

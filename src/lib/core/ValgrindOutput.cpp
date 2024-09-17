@@ -1,12 +1,15 @@
-/*****************************************************
-             PROJECT  : MALT
-             VERSION  : 1.2.2
-             DATE     : 06/2023
-             AUTHOR   : Valat Sébastien
-             LICENSE  : CeCILL-C
-*****************************************************/
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.2.2
+*    DATE     : 06/2023
+*    LICENSE  : CeCILL-C
+*    FILE     : src/lib/core/ValgrindOutput.cpp
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat (ECR) - 2014
+*    AUTHOR   : Sébastien Valat - 2014 - 2019
+***********************************************************/
 
-/********************  HEADERS  *********************/
+/**********************************************************/
 #include <cstring>
 #include <fstream>
 #include <iostream>
@@ -17,13 +20,13 @@
 
 using namespace std;
 
-/********************  MACROS  **********************/
+/**********************************************************/
 #define LINE_BREAK "\n"
 
 namespace MALT
 {
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void ValgrindOutput::pushStackInfo(const MALT::Stack& stack, const MALT::CallStackInfo& info, const MALT::SymbolSolver& symbols)
 {
 	int shift = 0;
@@ -77,13 +80,13 @@ void ValgrindOutput::pushStackInfo(const MALT::Stack& stack, const MALT::CallSta
 	}
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void ValgrindOutput::pushStackInfo(SimpleCallStackNode& stackNode,const SymbolSolver & symbols)
 {
 	pushStackInfo(stackNode.getCallStack(),stackNode.getInfo(),symbols);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 bool ValgrindOutput::isNewOperator(const SymbolSolver& symbols, void* addr)
 {
 	const CallSite * leafInfo = symbols.getCallSiteInfo(addr);
@@ -95,7 +98,7 @@ bool ValgrindOutput::isNewOperator(const SymbolSolver& symbols, void* addr)
 }
 
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void ValgrindOutput::writeAsCallgrind(const std::string& filename, const SymbolSolver & dic)
 {
 	ofstream out;
@@ -104,7 +107,7 @@ void ValgrindOutput::writeAsCallgrind(const std::string& filename, const SymbolS
 	out.close();
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void ValgrindOutput::writeLocation(ostream& out, const SymbolSolver& dic, const CallSite * site, void * addr, bool call)
 {
 	const char * callPrefix = "";
@@ -130,7 +133,7 @@ void ValgrindOutput::writeLocation(ostream& out, const SymbolSolver& dic, const 
 		out << callPrefix << "fn=" << dic.getString(site->function) << LINE_BREAK;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void ValgrindOutput::writeAsCallgrind(ostream& out, const SymbolSolver& dic)
 {
 	int line;

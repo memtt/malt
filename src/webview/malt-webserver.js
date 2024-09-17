@@ -1,12 +1,20 @@
-/*****************************************************
-             PROJECT  : MALT
-             VERSION  : 1.2.2
-             DATE     : 10/2020
-             AUTHOR   : Valat Sébastien
-             LICENSE  : CeCILL-C
-*****************************************************/
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.2.2
+*    DATE     : 03/2024
+*    LICENSE  : CeCILL-C
+*    FILE     : src/webview/malt-webserver.js
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat (ECR) - 2014 - 2015
+*    AUTHOR   : Sébastien Valat - 2014 - 2023
+*    AUTHOR   : Mehdi Raza Jaffery (CERN) - 2016
+*    AUTHOR   : Derek Buitenhuis - 2019
+*    AUTHOR   : Federico Fissore - 2019
+*    AUTHOR   : Luca Barbato (Gentoo) - 2019
+*    AUTHOR   : Sébastien Valat (INRIA) - 2023 - 2024
+***********************************************************/
 
-/****************************************************/
+/**********************************************************/
 //Deps
 var fs          = require('fs');
 var Args        = require('arg-parser');
@@ -20,15 +28,15 @@ var path        = require('path');
 //internal classes
 var MaltProject = require('./server-files/MaltProject.js');
 
-/****************************************************/
+/**********************************************************/
 //start express
 var app = Express();
 
-/****************************************************/
+/**********************************************************/
 //intenral cache for computed data which take a while to built
 var maltCache = new Object();
 
-/****************************************************/
+/**********************************************************/
 //Manage args
 args = new Args('malt-webserver', '1.0', 'Webiew for MALT based on Node.js','');
 //define args
@@ -44,13 +52,13 @@ if (!args.parse())
 	process.exit(1);
 }
 
-/****************************************************/
+/**********************************************************/
 //Get home dir
 function getUserHome() {
 	return process.env[(process.platform == 'win32') ? 'USERPROFILE' : 'HOME'];
 }
 
-/****************************************************/
+/**********************************************************/
 //Setup http auth if enabled
 if (args.params.noauth == undefined)
 {
@@ -71,17 +79,17 @@ if (args.params.noauth == undefined)
 	app.use(auth.connect(basic));
 }
 
-/****************************************************/
+/**********************************************************/
 var host = 'localhost';
 if (args.params.host != undefined)
 	host = args.params.host;
 
-/****************************************************/
+/**********************************************************/
 var port = 8080;
 if (args.params.port != undefined)
 	port = args.params.port;
 
-/****************************************************/
+/**********************************************************/
 var redirs = new Array();
 if (args.params.override != undefined)
 {
@@ -93,11 +101,11 @@ if (args.params.override != undefined)
 	}
 }
 
-/****************************************************/
+/**********************************************************/
 //load file
 var maltProject = new MaltProject(args.params.input);
 
-/****************************************************/
+/**********************************************************/
 app.get('/flat.json',function(req,res) {
 	var tmp = null;
 
@@ -117,14 +125,14 @@ app.get('/flat.json',function(req,res) {
 	res.end();
 });
 
-/****************************************************/
+/**********************************************************/
 app.get('/summary.json',function(req,res) {
 	var tmp = maltProject.getSummary();
 	res.json(tmp);
 	res.end();
 });
 
-/****************************************************/
+/**********************************************************/
 //export timed value to build charts
 app.get('/timed.json',function(req,res) {
 	var tmp = maltProject.getTimedValues();
@@ -132,7 +140,7 @@ app.get('/timed.json',function(req,res) {
 	res.end();
 });
 
-/****************************************************/
+/**********************************************************/
 //export max stack info
 app.get('/max-stack-infos.json',function (req,res){
 	var tmp = maltProject.getMaxStack();
@@ -140,7 +148,7 @@ app.get('/max-stack-infos.json',function (req,res){
 	res.end();
 });
 
-/****************************************************/
+/**********************************************************/
 //export max stack info
 app.get('/stacks-mem.json',function (req,res){
 	var tmp = maltProject.getStacksMem();
@@ -148,7 +156,7 @@ app.get('/stacks-mem.json',function (req,res){
 	res.end();
 });
 
-/****************************************************/
+/**********************************************************/
 //export max stack info
 app.get('/procmap.json',function (req,res){
 	var tmp = maltProject.getProcMap();
@@ -156,7 +164,7 @@ app.get('/procmap.json',function (req,res){
 	res.end();
 });
 
-/****************************************************/
+/**********************************************************/
 //export max stack info
 app.get('/global-variables.json',function (req,res){
 	var tmp = maltProject.getGlobalVariables();
@@ -164,7 +172,7 @@ app.get('/global-variables.json',function (req,res){
 	res.end();
 });
 
-/****************************************************/
+/**********************************************************/
 app.get('/stacks.json',function(req,res){
 	//extratc file from request
 	var file = req.query.file;
@@ -187,7 +195,7 @@ app.get('/stacks.json',function(req,res){
 	res.end();
 });
 
-/****************************************************/
+/**********************************************************/
 app.get('/memtrace-at.json',function(req,res) {
 	console.log("At : "+req.query.at);
 	console.log(maltProject.getTraceFilename());
@@ -211,7 +219,7 @@ app.get('/memtrace-at.json',function(req,res) {
 	}
 });
 
-/****************************************************/
+/**********************************************************/
 app.get('/file-infos.json',function(req,res) {
 	//extract file from request
 	var file = req.query.file;
@@ -238,14 +246,14 @@ app.get('/file-infos.json',function(req,res) {
 	res.end();
 });
 
-/****************************************************/
+/**********************************************************/
 app.get('/max-stack.json',function(req,res) {
 	var tmp = maltProject.getMaxStackInfoOnFunction();
 	res.json(tmp);
 	res.end();
 });
 
-/****************************************************/
+/**********************************************************/
 app.get('/stack.json',function(req,res) {
 	var id = req.query.id;
 	var tmp = maltProject.getStackInfoOnFunction(id);
@@ -253,14 +261,14 @@ app.get('/stack.json',function(req,res) {
 	res.end();
 });
 
-/****************************************************/
+/**********************************************************/
 app.get('/proc-map-distr.json',function(req,res) {
 	var tmp = maltProject.getProcMapDistr();
 	res.json(tmp);
 	res.end();
 });
 
-/****************************************************/
+/**********************************************************/
 //export scatter info
 app.get('/scatter.json',function (req,res){
 	var tmp = maltProject.getScatter();
@@ -268,28 +276,28 @@ app.get('/scatter.json',function (req,res){
 	res.end();
 });
 
-/****************************************************/
+/**********************************************************/
 app.get('/size-map.json',function(req,res) {
 	var tmp = maltProject.getSizeMap();
 	res.json(tmp);
 	res.end();
 });
 
-/****************************************************/
+/**********************************************************/
 app.get('/realloc-map.json',function(req,res) {
 	var tmp = maltProject.getReallocMap();
 	res.json(tmp);
 	res.end();
 });
 
-/****************************************************/
+/**********************************************************/
 app.get('/debug-stack-list.json',function(req,res) {
 	var tmp = maltProject.getDebugStackList();
 	res.json(tmp);
 	res.end();
 });
 
-/****************************************************/
+/**********************************************************/
 app.get('/data/summary.json',function(req,res) {
 	var tmp = maltProject.getSummaryV2();
 	res.json(tmp);
@@ -322,18 +330,18 @@ app.get('/active-chunks', function(req, res) {
 	});
 });
 
-/****************************************************/
+/**********************************************************/
 app.get('/',function(eq,res,next){
 	res.redirect('app/index.html');
 // 	res.render("page-summary",maltProject.getSummary());
 });
 
-/****************************************************/
+/**********************************************************/
 app.get('/data.json',function(eq,res,next){
 	res.sendfile(args.params.input);
 });
 
-/****************************************************/
+/**********************************************************/
 var staticSourceServer = Express.static('/');
 app.use('/app-sources/',function(req,res,next){
 	var reqPath = decodeURIComponent(req.path)
@@ -379,7 +387,7 @@ app.use('/app-sources/',function(req,res,next){
 	}
 });
 
-/****************************************************/
+/**********************************************************/
 //export static deps
 app.use('/',Express.static(__dirname+'/client_files'));
 app.use('/app',Express.static(__dirname+'/client-files/app'));
@@ -395,7 +403,7 @@ app.use('/deps/angular-route',Express.static(__dirname+'/bower_components/angula
 
 //console.log(JSON.stringify(maltProject.getFullTree(),null,'\t'));
 
-/****************************************************/
+/**********************************************************/
 //run express
 console.log("\n\nStarting server on http://"+host+":" + port+"\n\n");
 app.listen(port,host);

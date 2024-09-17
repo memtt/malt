@@ -1,3 +1,14 @@
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.2.2
+*    DATE     : 01/2022
+*    LICENSE  : CeCILL-C
+*    FILE     : src/lib/config.h.in
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat - 2014 - 2022
+*    AUTHOR   : Sébastien Valat (ECR) - 2014
+***********************************************************/
+
 #ifndef MALT_CONFIG_H
 #define MALT_CONFIG_H
 

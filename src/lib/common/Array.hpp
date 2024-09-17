@@ -1,15 +1,18 @@
-/*****************************************************
-             PROJECT  : MALT
-             VERSION  : 1.2.2
-             DATE     : 06/2023
-             AUTHOR   : Valat Sébastien
-             LICENSE  : CeCILL-C
-*****************************************************/
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.2.2
+*    DATE     : 06/2023
+*    LICENSE  : CeCILL-C
+*    FILE     : src/lib/common/Array.hpp
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat (ECR) - 2014
+*    AUTHOR   : Sébastien Valat - 2014 - 2022
+***********************************************************/
 
 #ifndef MALT_ARRAY_H
 #define MALT_ARRAY_H
 
-/********************  HEADERS  *********************/
+/**********************************************************/
 //standard
 #include <cstdlib>
 #include <cassert>
@@ -19,11 +22,11 @@
 //htopml json converter
 #include <json/JsonState.h>
 
-/*******************  NAMESPACE  ********************/
+/**********************************************************/
 namespace MALT
 {
 
-/*********************  CLASS  **********************/
+/**********************************************************/
 /**
  * Short class to implement iterators compatible with STL semantic.
 **/
@@ -42,7 +45,7 @@ class ArrayIterator
 		T * data;
 };
 
-/*********************  CLASS  **********************/
+/**********************************************************/
 /**
  * Provide a short implementation of dynamic arrays which can grow
  * exponentially until a certain limit then grow linearly.
@@ -97,7 +100,7 @@ class Array
 		int maxExpGrow;
 };
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Copy constructor.
  * @param orig Define the original array to copy on new one.
@@ -116,7 +119,7 @@ Array<T>::Array(const Array<T>& orig)
 	this->set(orig);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Array constructor. By default it does not allocate memory.
  * @param initialSize Define the memory to allocate on first add.
@@ -141,7 +144,7 @@ Array<T>::Array(int initialSize, int maxExpGrow,bool defaultAlloc)
 	}
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Destructor of array.
 **/
@@ -155,7 +158,7 @@ Array<T>::~Array(void)
 	bufferSize = 0;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * @return Return address of current buffer. Caution, it may change when adding
  * content to the array.
@@ -166,7 +169,7 @@ const T* Array<T>::getBuffer(void) const
 	return buffer;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * @return Number of active elements in array.
 **/
@@ -176,7 +179,7 @@ size_t Array<T>::size(void) const
 	return activSize;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * @return Number of active elements in array.
 **/
@@ -186,7 +189,7 @@ int Array<T>::getSize(void) const
 	return activSize;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * @return Current size (elements) of the internal buffer.
 **/
@@ -196,7 +199,7 @@ int Array<T>::getBufferSize(void) const
 	return bufferSize;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Permut usage of operator [], if will fail with NULL pointer dereference if
  * ID is invalid. In debug mode it will produce an assertion failure.
@@ -215,7 +218,7 @@ T& Array<T>::operator[](int id)
 	return buffer[id];
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Permut usage of operator [], if will fail with NULL pointer dereference if
  * ID is invalid. In debug mode it will produce an assertion failure.
@@ -234,7 +237,7 @@ const T& Array<T>::operator[](int id) const
 	return buffer[id];
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Insert a new element and end.
  * @param value New value to add to the array.
@@ -250,7 +253,7 @@ T & Array<T>::push_back(const T& value)
 	return *res;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Resize the array. It may induce reallocation of the internal buffer
  * if it is too small.
@@ -272,7 +275,7 @@ void Array<T>::setSize(size_t size)
 	}
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Same as setSize but by providing size variation as parameter.
 **/
@@ -282,7 +285,7 @@ void Array<T>::updateSize(ssize_t delta)
 	this->setSize(this->activSize+delta);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Remove the last element. It will not reduce the memory usage of the
  * internal buffer.
@@ -294,7 +297,7 @@ void Array<T>::pop(void)
 	this->updateSize(-1);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Change the content of the current array by copying the content from then
  * given one.
@@ -311,7 +314,7 @@ void Array<T>::set(const Array< T >& orig)
 		this->buffer[i] = orig.buffer[i];
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Manage conversion to JSON/LUA through htopml::convertToJson functions.
 **/
@@ -321,7 +324,7 @@ void convertToJson(htopml::JsonState& json, const Array< T >& value)
 	json.printArray(value.buffer,value.activSize);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Manage affectation through equal operator.
 **/

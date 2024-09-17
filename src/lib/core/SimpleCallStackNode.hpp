@@ -1,23 +1,26 @@
-/*****************************************************
-             PROJECT  : MALT
-             VERSION  : 1.2.2
-             DATE     : 06/2023
-             AUTHOR   : Valat Sébastien
-             LICENSE  : CeCILL-C
-*****************************************************/
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.2.2
+*    DATE     : 06/2023
+*    LICENSE  : CeCILL-C
+*    FILE     : src/lib/core/SimpleCallStackNode.hpp
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat (ECR) - 2014
+*    AUTHOR   : Sébastien Valat - 2014 - 2021
+***********************************************************/
 
 #ifndef MALT_SIMPLE_CALL_STACK_NODE_HPP
 #define MALT_SIMPLE_CALL_STACK_NODE_HPP
 
-/********************  HEADERS  *********************/
+/**********************************************************/
 #include "CallStackInfo.hpp"
 #include <stacks/Stack.hpp>
 
-/*******************  NAMESPACE  ********************/
+/**********************************************************/
 namespace MALT
 {
 
-/********************  STRUCT  **********************/
+/**********************************************************/
 /**
  * @brief Temporary struct to point ressources joining a stack with its profiling infos.
 **/
@@ -39,7 +42,7 @@ struct MMCallStackNode
 	CallStackInfo * infos;
 };
 
-/*********************  CLASS  **********************/
+/**********************************************************/
 /**
  * @brief Define a node joining a stack with its profiling infos.
 **/

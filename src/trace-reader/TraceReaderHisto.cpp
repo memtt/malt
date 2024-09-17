@@ -1,34 +1,37 @@
-/*****************************************************
-             PROJECT  : MALT
-             VERSION  : 1.2.2
-             DATE     : 06/2023
-             AUTHOR   : Valat Sébastien
-             LICENSE  : CeCILL-C
-*****************************************************/
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.2.2
+*    DATE     : 06/2023
+*    LICENSE  : CeCILL-C
+*    FILE     : src/trace-reader/TraceReaderHisto.cpp
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat - 2014 - 2020
+*    AUTHOR   : Sébastien Valat (ECR) - 2014
+***********************************************************/
 
-/********************  HEADERS  *********************/
+/**********************************************************/
 //STD
 #include <cstdio>
 //malt internals
 #include "TraceReaderHisto.hpp"
 
-/*******************  NAMESPACE  ********************/
+/**********************************************************/
 namespace MALT
 {
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TraceReaderHisto::TraceReaderHisto(HistoCriteria histCrit, Filter * filter): TraceReader(filter)
 {
 	this->histCrit = histCrit;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void TraceReaderHisto::onStart(void)
 {
 	this->histo.clear();
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void TraceReaderHisto::onEnd(void)
 {
 	//open json array
@@ -42,7 +45,7 @@ void TraceReaderHisto::onEnd(void)
 	printf("}\n");
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void TraceReaderHisto::onData(MALT::AllocTracerChunk& chunk)
 {
 	ticks indice;

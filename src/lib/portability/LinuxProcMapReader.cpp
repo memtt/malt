@@ -1,12 +1,15 @@
-/*****************************************************
-             PROJECT  : MALT
-             VERSION  : 1.2.2
-             DATE     : 06/2023
-             AUTHOR   : Valat Sébastien
-             LICENSE  : CeCILL-C
-*****************************************************/
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.2.2
+*    DATE     : 06/2023
+*    LICENSE  : CeCILL-C
+*    FILE     : src/lib/portability/LinuxProcMapReader.cpp
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat (ECR) - 2014
+*    AUTHOR   : Sébastien Valat (INRIA) - 2023
+***********************************************************/
 
-/********************  HEADERS  *********************/
+/**********************************************************/
 //standard
 #include <cstdio>
 #include <cassert>
@@ -15,11 +18,11 @@
 //locals
 #include "LinuxProcMapReader.hpp"
 
-/*******************  NAMESPACE  ********************/
+/**********************************************************/
 namespace MALT
 {
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void LinuxProcMapReader::load(void)
 {
 	//errors
@@ -66,7 +69,7 @@ void LinuxProcMapReader::load(void)
 	fclose(fp);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 const LinuxProcMapEntry * LinuxProcMapReader::getEntry(void* addr) const
 {
 	//search

@@ -1,12 +1,17 @@
-/*****************************************************
-             PROJECT  : MALT
-             VERSION  : 1.2.2
-             DATE     : 06/2023
-             AUTHOR   : Valat Sébastien
-             LICENSE  : CeCILL-C
-*****************************************************/
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.2.2
+*    DATE     : 06/2023
+*    LICENSE  : CeCILL-C
+*    FILE     : src/lib/tools/ELFReader.cpp
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat (ECR) - 2014
+*    AUTHOR   : Sébastien Valat - 2014 - 2020
+*    AUTHOR   : Sébastien Valat (CERN) - 2015
+*    AUTHOR   : Sébastien Valat (INRIA) - 2023
+***********************************************************/
 
-/********************  HEADERS  *********************/
+/**********************************************************/
 #include "ELFReader.hpp"
 //standard
 #include <cstdio>
@@ -16,11 +21,11 @@
 //from libelf (non standard)
 #include <libelf.h>
 
-/*******************  NAMESPACE  ********************/
+/**********************************************************/
 namespace MALT
 {
 
-/********************  MACROS  **********************/
+/**********************************************************/
 #if defined(__x86_64__) || defined(__aarch64__)
 	#define ElfArch_Ehdr Elf64_Ehdr
 	#define elfarch_getehdr(x) elf64_getehdr(x)
@@ -48,7 +53,7 @@ namespace MALT
 	#define ELFARCH_ST_TYPE(x) ELF64_ST_TYPE(x)
 #endif
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Constructor of the elf reader. It will immediatly open
  * the given file.
@@ -67,7 +72,7 @@ ElfReader::ElfReader(const std::string& file)
 	this->openFile(file);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Destructor of elf reader to automatically close libelf and file.
 **/
@@ -76,7 +81,7 @@ ElfReader::~ElfReader(void)
 	this->close();
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Close the libelf handler and related file handler.
 **/
@@ -97,7 +102,7 @@ void ElfReader::close(void)
 	}
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Open file and link with libelf to be ready for elf analysis.
  * @param file Define the file to open.
@@ -152,7 +157,7 @@ void ElfReader::openFile(const std::string& file)
 		fp = NULL;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Libelf need some initialization stuff to work so ensure it's done
  * at least once.
@@ -173,7 +178,7 @@ void ElfReader::libelfInit(void)
 	initDone = true;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Search the section corresponding to the given type.
  * @param type Type of section to return.
@@ -211,7 +216,7 @@ Elf_Scn* ElfReader::getSectionByType(size_t type)
 	
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void ElfReader::loadGlobalVariables(ElfGlobalVariableVector& variables)
 {
 	//check errors
@@ -279,7 +284,7 @@ void ElfReader::loadGlobalVariables(ElfGlobalVariableVector& variables)
 	}
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 ElfStringTable ElfReader::getStringTable(int secId)
 {
 	//res
@@ -310,7 +315,7 @@ ElfStringTable ElfReader::getStringTable(int secId)
 	return res;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void convertToJson(htopml::JsonState& json, const ElfGlobalVariable& value)
 {
 	json.openStruct();
@@ -326,7 +331,7 @@ void convertToJson(htopml::JsonState& json, const ElfGlobalVariable& value)
 	json.closeStruct();
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 bool ElfReader::hasLibElf(void)
 {
 	return true;

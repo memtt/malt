@@ -1,12 +1,17 @@
-/*****************************************************
-             PROJECT  : MALT
-             VERSION  : 1.2.2
-             DATE     : 06/2023
-             AUTHOR   : Valat Sébastien
-             LICENSE  : CeCILL-C
-*****************************************************/
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.2.2
+*    DATE     : 06/2023
+*    LICENSE  : CeCILL-C
+*    FILE     : src/lib/profiler/AllocStackProfiler.cpp
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat (ECR) - 2014
+*    AUTHOR   : Sébastien Valat - 2014 - 2020
+*    AUTHOR   : Sébastien Valat (CERN) - 2015
+*    AUTHOR   : Sébastien Valat (INRIA) - 2023
+***********************************************************/
 
-/********************  HEADERS  *********************/
+/**********************************************************/
 //standard
 #include <cstdio>
 #include <fstream>
@@ -33,15 +38,15 @@
 #include "common/NoFreeAllocator.hpp"
 #include "stacks/StackLoopRemover.hpp"
 
-/********************  MACROS  **********************/
+/**********************************************************/
 #define MALT_SKIP_DEPTH 3
 #define STACK_LOCATION_ID NULL
 
-/*******************  NAMESPACE  ********************/
+/**********************************************************/
 namespace MALT
 {
 
-/*********************  CONST ***********************/
+/**********************************************************/
 const char * TimeTrackMemory::selfDescribeFields[5] = {
 	"requestedMem",
 	"physicalMem",
@@ -50,14 +55,14 @@ const char * TimeTrackMemory::selfDescribeFields[5] = {
 	"segments",
 };
 
-/*********************  CONST ***********************/
+/**********************************************************/
 const char * TimeTrackSysMemory::selfDescribeFields[3] = {
 	"freeMemory",
 	"cachedMemory",
 	"swapMemory",
 };
 
-/*********************  CONST ***********************/
+/**********************************************************/
 const char * TimeTrackAllocBandwidth::selfDescribeFields[4] = {
 	"allocMem",
 	"allocCount",
@@ -65,7 +70,7 @@ const char * TimeTrackAllocBandwidth::selfDescribeFields[4] = {
 	"freeCount",
 };
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 AllocStackProfiler::AllocStackProfiler(const Options & options,StackMode mode,bool threadSafe)
 	:largestStack(STACK_ORDER_DESC)
 	,memoryBandwidth(1024,true)
@@ -110,44 +115,44 @@ AllocStackProfiler::AllocStackProfiler(const Options & options,StackMode mode,bo
 		this->stackTree = new MALTV2::RLockFreeTree(false);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void AllocStackProfiler::setRealMallocAddr(MallocFuncPtr realMallocFunc)
 {
 	this->realMallocAddr = realMallocFunc;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void AllocStackProfiler::onMalloc(void* ptr, size_t size,Stack * userStack)
 {
 	onAllocEvent(ptr,size,userStack);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void AllocStackProfiler::onCalloc(void* ptr, size_t nmemb, size_t size,Stack * userStack)
 {
 	onAllocEvent(ptr,size * nmemb,userStack);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void AllocStackProfiler::onFree(void* ptr,Stack * userStack)
 {
 	if (ptr != NULL)
 		onFreeEvent(ptr,userStack);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void AllocStackProfiler::registerMaqaoFunctionSymbol(int funcId, const char* funcName, const char* file, int line)
 {
 	symbolResolver.registerMaqaoFunctionSymbol(funcId,funcName,file,line);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void AllocStackProfiler::onPrepareRealloc(void* oldPtr,Stack * userStack)
 {
 	//nothing to unregister, skip
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 LocalAllocStackProfiler* AllocStackProfiler::createLocalStackProfiler(bool reentrant)
 {
 	LocalAllocStackProfiler* res = new LocalAllocStackProfiler(this,reentrant);
@@ -155,14 +160,14 @@ LocalAllocStackProfiler* AllocStackProfiler::createLocalStackProfiler(bool reent
 	return res;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void AllocStackProfiler::destroyLocalStackProfiler(LocalAllocStackProfiler* localProfiler)
 {
 	//TODO need to track used and unused to recycle, but never really delete as we need it to
 	//dump state at execution end. 
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 size_t AllocStackProfiler::onRealloc(void* oldPtr, void* ptr, size_t newSize,Stack * userStack)
 {
 	size_t oldSize = 0;
@@ -204,7 +209,7 @@ size_t AllocStackProfiler::onRealloc(void* oldPtr, void* ptr, size_t newSize,Sta
 	return oldSize;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void AllocStackProfiler::onAllocEvent(void* ptr, size_t size,Stack* userStack,MMCallStackNode * callStackNode,bool doLock)
 {
 	//locals
@@ -278,7 +283,7 @@ void AllocStackProfiler::onAllocEvent(void* ptr, size_t size,Stack* userStack,MM
 	MALT_END_CRITICAL
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 size_t AllocStackProfiler::onFreeEvent(void* ptr, MALT::Stack* userStack, MMCallStackNode* callStackNode, bool doLock)
 {
 	//locals
@@ -372,7 +377,7 @@ size_t AllocStackProfiler::onFreeEvent(void* ptr, MALT::Stack* userStack, MMCall
 	return size;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void AllocStackProfiler::onMmap ( void* ptr, size_t size, Stack* userStack )
 {
 	if (options.stackProfileEnabled)
@@ -384,7 +389,7 @@ void AllocStackProfiler::onMmap ( void* ptr, size_t size, Stack* userStack )
 	}
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void AllocStackProfiler::peakTracking(ssize_t delta)
 {
 	if (this->curReq > this->peak)
@@ -395,7 +400,7 @@ void AllocStackProfiler::peakTracking(ssize_t delta)
 		this->curReq += delta;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 MMCallStackNode AllocStackProfiler::getStackNode(Stack* userStack)
 {
 	MMStackMap::Node * node;
@@ -404,14 +409,14 @@ MMCallStackNode AllocStackProfiler::getStackNode(Stack* userStack)
 	return res;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void AllocStackProfiler::solvePerThreadSymbols()
 {
 	for (LocalAllocStackProfilerList::const_iterator it = perThreadProfiler.begin() ; it != perThreadProfiler.end() ; ++it)			
 		(*it)->solveSymbols(symbolResolver);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void AllocStackProfiler::updatePeakInfoOfStacks(void)
 {
 	//fprintf(stderr,"peak = %zu , peakId = %zu\n",peak,peakId);
@@ -419,7 +424,7 @@ void AllocStackProfiler::updatePeakInfoOfStacks(void)
 		it->second.updatePeak(peakId);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void AllocStackProfiler::loadGlobalVariables(void)
 {
 	//if not have libelf
@@ -466,7 +471,7 @@ void AllocStackProfiler::loadGlobalVariables(void)
 	}
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void AllocStackProfiler::loopSuppress(void)
 {
 	//search max size
@@ -514,7 +519,7 @@ void AllocStackProfiler::loopSuppress(void)
 	MALT_INFO_ARG("Loops suppress  : stackes : %1 / %2 , calls : %3 / %4").arg(cntMerges).arg(cntStacks).arg(cntRemovedCalls).arg(cntCalls).end();
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void AllocStackProfiler::onExit(void )
 {
 	MALT_OPTIONAL_CRITICAL(lock,threadSafe)
@@ -615,7 +620,7 @@ void AllocStackProfiler::onExit(void )
 	MALT_END_CRITICAL
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void convertToJson(htopml::JsonState& json, const AllocStackProfiler& value)
 {
 	json.openStruct();
@@ -720,7 +725,7 @@ void convertToJson(htopml::JsonState& json, const AllocStackProfiler& value)
 	//fprintf(stderr,"peakId : %zu\n",value.peakId);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void AllocStackProfiler::onLargerStackSize(const StackSizeTracker& stackSizes, const Stack& stack)
 {
 	//current is smaller
@@ -736,13 +741,13 @@ void AllocStackProfiler::onLargerStackSize(const StackSizeTracker& stackSizes, c
 	MALT_END_CRITICAL;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 const Options* AllocStackProfiler::getOptions(void) const
 {
 	return &options;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void AllocStackProfiler::registerPerThreadProfiler(LocalAllocStackProfiler* profiler)
 {
 	//errors
@@ -754,7 +759,7 @@ void AllocStackProfiler::registerPerThreadProfiler(LocalAllocStackProfiler* prof
 	MALT_END_CRITICAL;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 ticks AllocStackProfiler::ticksPerSecond(void) const
 {
 	timeval tSec;
@@ -783,13 +788,13 @@ ticks AllocStackProfiler::ticksPerSecond(void) const
 	return res;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 AllocTreeStrackTracer* AllocStackProfiler::getEnterExitStackTracer(void)
 {
 	return &treeStackTracker;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void AllocStackProfiler::memOpsLevels(void)
 {
 	if (sharedLinearIndex == 1000000)
@@ -804,7 +809,7 @@ void AllocStackProfiler::memOpsLevels(void)
 	#endif //__x86_64__
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TimeTrackMemory::TimeTrackMemory()
 {
 	this->internalMem = 0;
@@ -813,7 +818,7 @@ TimeTrackMemory::TimeTrackMemory()
 	this->segments = 0;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void convertToJson ( htopml::JsonState& json, const TimeTrackMemory& value)
 {
 // 	json.openStruct();
@@ -831,7 +836,7 @@ void convertToJson ( htopml::JsonState& json, const TimeTrackMemory& value)
 	json.closeArray();
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 bool TimeTrackMemory::reduce ( const TimeTrackMemory& v )
 {
 	bool hasUpdate = false;
@@ -863,7 +868,7 @@ bool TimeTrackMemory::reduce ( const TimeTrackMemory& v )
 	return hasUpdate;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TimeTrackSysMemory::TimeTrackSysMemory()
 {
 	this->freeMemory = 0;
@@ -871,7 +876,7 @@ TimeTrackSysMemory::TimeTrackSysMemory()
 	this->cachedMemory = 0;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 bool TimeTrackSysMemory::reduce(const TimeTrackSysMemory& v)
 {
 	bool hasUpdate = false;
@@ -893,7 +898,7 @@ bool TimeTrackSysMemory::reduce(const TimeTrackSysMemory& v)
 	return hasUpdate;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void convertToJson(htopml::JsonState& json, const TimeTrackSysMemory& value)
 {
 	json.openArray();
@@ -903,7 +908,7 @@ void convertToJson(htopml::JsonState& json, const TimeTrackSysMemory& value)
 	json.closeArray();
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TimeTrackAllocBandwidth::TimeTrackAllocBandwidth()
 {
 	this->allocCount = 0;
@@ -912,7 +917,7 @@ TimeTrackAllocBandwidth::TimeTrackAllocBandwidth()
 	this->freeMem = 0;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void convertToJson(htopml::JsonState& json, const TimeTrackAllocBandwidth& value)
 {
 	json.openArray();
@@ -923,7 +928,7 @@ void convertToJson(htopml::JsonState& json, const TimeTrackAllocBandwidth& value
 	json.closeArray();
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TimeTrackAllocBandwidth& TimeTrackAllocBandwidth::operator+=(const TimeTrackAllocBandwidth& value)
 {
 	allocCount += value.allocCount;
@@ -933,7 +938,7 @@ TimeTrackAllocBandwidth& TimeTrackAllocBandwidth::operator+=(const TimeTrackAllo
 	return *this;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 bool TimeTrackAllocBandwidth::reduce(const TimeTrackAllocBandwidth & v)
 {
 	allocCount += v.allocCount;

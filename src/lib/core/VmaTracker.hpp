@@ -1,29 +1,32 @@
- /*****************************************************
-             PROJECT  : MALT
-             VERSION  : 1.2.2
-             DATE     : 06/2023
-             AUTHOR   : Valat Sébastien
-             LICENSE  : CeCILL-C
-*****************************************************/
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.2.2
+*    DATE     : 06/2023
+*    LICENSE  : CeCILL-C
+*    FILE     : src/lib/core/VmaTracker.hpp
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat - 2014
+*    AUTHOR   : Sébastien Valat (ECR) - 2014
+***********************************************************/
 
 #ifndef MALT_VMA_TRACKER_HPP
 #define MALT_VMA_TRACKER_HPP
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 //standard
 
-/*******************  NAMESPACE  ********************/
+/**********************************************************/
 namespace MALT
 {
 
-/*********************  STRUCT  *********************/
+/**********************************************************/
 struct VmaInfo
 {
 	size_t start;
 	size_t end;
 };
 
-/*********************  CLASS  **********************/
+/**********************************************************/
 /**
  * Class used to track the state of each VMA (Virtual Memory Area) managed by
  * mmap/mremap/munmap. It permit to compute the memory exchange rate with the OS.

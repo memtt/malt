@@ -1,23 +1,25 @@
-/*****************************************************
-             PROJECT  : MALT
-             VERSION  : 1.2.2
-             DATE     : 06/2023
-             AUTHOR   : Jaffery, Mehdi Raza
-             LICENSE  : CeCILL-C
-*****************************************************/
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.2.2
+*    DATE     : 06/2023
+*    LICENSE  : CeCILL-C
+*    FILE     : src/trace-reader/TraceReaderStats.hpp
+*-----------------------------------------------------------
+*    AUTHOR   : Mehdi Raza Jaffery (CERN) - 2016
+***********************************************************/
 
 #ifndef MALT_TRACE_READER_STATS_HPP
 #define MALT_TRACE_READER_STATS_HPP
 
-/********************  HEADERS  *********************/
+/**********************************************************/
 #include <map>
 #include "TraceReader.hpp"
 
-/*******************  NAMESPACE  ********************/
+/**********************************************************/
 namespace MALT
 {
 
-/*********************  TYPES  **********************/
+/**********************************************************/
 class Stack;
 
 struct StackChunkStats
@@ -31,7 +33,7 @@ struct StackChunkStats
 
 typedef std::map<const Stack *, StackChunkStats> TraceReaderStatsMap;
 
-/*********************  CLASS  **********************/
+/**********************************************************/
 class TraceReaderStats : public TraceReader
 {
 	public:

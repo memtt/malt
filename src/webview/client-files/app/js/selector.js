@@ -1,3 +1,12 @@
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.2.2
+*    DATE     : 07/2016
+*    LICENSE  : CeCILL-C
+*    FILE     : src/webview/client-files/app/js/selector.js
+*-----------------------------------------------------------
+*    AUTHOR   : Mehdi Raza Jaffery (CERN) - 2016
+***********************************************************/
 function MaltSelector()
 {
 	this.funcMetrics = new MaltFuncMetrics();

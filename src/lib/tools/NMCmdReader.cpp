@@ -1,12 +1,15 @@
-/*****************************************************
-             PROJECT  : MALT
-             VERSION  : 1.2.2
-             DATE     : 06/2023
-             AUTHOR   : Valat Sébastien
-             LICENSE  : CeCILL-C
-*****************************************************/
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.2.2
+*    DATE     : 06/2023
+*    LICENSE  : CeCILL-C
+*    FILE     : src/lib/tools/NMCmdReader.cpp
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat (ECR) - 2014
+*    AUTHOR   : Sébastien Valat - 2019 - 2022
+***********************************************************/
 
-/********************  HEADERS  *********************/
+/**********************************************************/
 //standard
 #include "NMCmdReader.hpp"
 #include <cassert>
@@ -16,30 +19,30 @@
 #include <common/Options.hpp>
 #include <portability/Compiler.hpp>
 
-/*******************  NAMESPACE  ********************/
+/**********************************************************/
 namespace MALT
 {
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 NMCmdReader::NMCmdReader(void)
 {
 
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 NMCmdReader::~NMCmdReader(void)
 {
 	this->clear();
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void NMCmdReader::clear()
 {
 	this->binaryFile.clear();
 	this->entries.clear();
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 bool NMCmdReader::load(const std::string& binaryFile)
 {
 	//errors
@@ -86,7 +89,7 @@ bool NMCmdReader::load(const std::string& binaryFile)
 	return true;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void NMCmdReader::findSourcesAndDemangle(ElfGlobalVariableVector& vars) const
 {
 	//Errors
@@ -115,7 +118,7 @@ void NMCmdReader::findSourcesAndDemangle(ElfGlobalVariableVector& vars) const
 	}
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 const NMCmdReaderEntry* NMCmdReader::getEntry(const std::string& name) const
 {
 	for (NMCmdReaderEntryVector::const_iterator it = entries.begin() ; it != entries.end() ; ++it)
@@ -126,7 +129,7 @@ const NMCmdReaderEntry* NMCmdReader::getEntry(const std::string& name) const
 	return NULL;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 bool NMCmdReader::readNMLine(FILE * fp, NMCmdReaderEntry& entry)
 {
 	char bufferName[4096];
