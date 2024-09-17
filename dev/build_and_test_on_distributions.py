@@ -164,17 +164,17 @@ def in_container(image: str):
 ######################################################
 BUILD_PARAMETERS = {
     "distributions": {
-        "ubuntu:20.04": [
-            "apt update",
-            "apt upgrade -y",
-            "apt install -y cmake g++ make libunwind-dev nodejs clang"
-        ],
         "ubuntu:22.04": [
             "apt update",
             "apt upgrade -y",
             "apt install -y cmake g++ make libunwind-dev nodejs clang"
         ],
         "ubuntu:23.04": [
+            "apt update",
+            "apt upgrade -y",
+            "apt install -y cmake g++ make libunwind-dev nodejs clang"
+        ],
+        "ubuntu:23.10": [
             "apt update",
             "apt upgrade -y",
             "apt install -y cmake g++ make libunwind-dev nodejs clang"
