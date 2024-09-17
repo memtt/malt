@@ -1,14 +1,15 @@
 /***********************************************************
 *    PROJECT  : MALT (MALoc Tracker)
 *    VERSION  : 1.2.2
-*    DATE     : 06/2023
+*    DATE     : 09/2024
 *    LICENSE  : CeCILL-C
 *    FILE     : src/webview/server-files/MaltProject.js
 *-----------------------------------------------------------
 *    AUTHOR   : Sébastien Valat (ECR) - 2014 - 2015
-*    AUTHOR   : Sébastien Valat - 2015 - 2019
+*    AUTHOR   : Sébastien Valat - 2015 - 2024
 *    AUTHOR   : Mehdi Raza Jaffery (CERN) - 2016
 *    AUTHOR   : Sébastien Valat (INRIA) - 2023
+*    AUTHOR   : Antoine Bernard - 2024
 ***********************************************************/
 /****************************************************/
 //deps

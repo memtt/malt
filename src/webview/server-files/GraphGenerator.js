@@ -1,11 +1,12 @@
 /***********************************************************
 *    PROJECT  : MALT (MALoc Tracker)
 *    VERSION  : 1.2.2
-*    DATE     : 08/2016
+*    DATE     : 09/2024
 *    LICENSE  : CeCILL-C
 *    FILE     : src/webview/server-files/GraphGenerator.js
 *-----------------------------------------------------------
 *    AUTHOR   : Mehdi Raza Jaffery (CERN) - 2016
+*    AUTHOR   : Sébastien Valat - 2024
 ***********************************************************/
 var childProcess = require('child_process');
 var DotCode = require('./DotCode.js');

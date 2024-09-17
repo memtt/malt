@@ -1,12 +1,12 @@
 /***********************************************************
 *    PROJECT  : MALT (MALoc Tracker)
 *    VERSION  : 1.2.2
-*    DATE     : 06/2023
+*    DATE     : 09/2024
 *    LICENSE  : CeCILL-C
 *    FILE     : src/lib/core/StackSizeTracker.hpp
 *-----------------------------------------------------------
 *    AUTHOR   : Sébastien Valat (ECR) - 2014
-*    AUTHOR   : Sébastien Valat - 2021
+*    AUTHOR   : Sébastien Valat - 2021 - 2024
 ***********************************************************/
 
 #ifndef MALT_STACK_SIZE_TRACKER_H

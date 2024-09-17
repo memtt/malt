@@ -1,12 +1,13 @@
 /***********************************************************
 *    PROJECT  : MALT (MALoc Tracker)
 *    VERSION  : 1.2.2
-*    DATE     : 07/2016
+*    DATE     : 09/2024
 *    LICENSE  : CeCILL-C
 *    FILE     : src/webview/client-files/app/js/call-stack-view.js
 *-----------------------------------------------------------
 *    AUTHOR   : Sébastien Valat (ECR) - 2014 - 2015
 *    AUTHOR   : Mehdi Raza Jaffery (CERN) - 2016
+*    AUTHOR   : Sébastien Valat - 2024
 ***********************************************************/
 /********************************************************************/
 /**

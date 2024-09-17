@@ -1,3 +1,13 @@
+############################################################
+#    PROJECT  : MALT (MALoc Tracker)
+#    VERSION  : 1.2.2
+#    DATE     : 02/2024
+#    LICENSE  : CeCILL-C
+#    FILE     : extern-deps/googletest-1.14.0/googletest/CMakeLists.txt
+#-----------------------------------------------------------
+#    AUTHOR   : Sébastien Valat (ECR) - 2014
+#    AUTHOR   : Sébastien Valat (INRIA) - 2024
+############################################################
 ########################################################################
 # Note: CMake support is community-based. The maintainers do not use CMake
 # internally.

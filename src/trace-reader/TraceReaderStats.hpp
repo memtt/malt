@@ -1,11 +1,12 @@
 /***********************************************************
 *    PROJECT  : MALT (MALoc Tracker)
 *    VERSION  : 1.2.2
-*    DATE     : 06/2023
+*    DATE     : 09/2024
 *    LICENSE  : CeCILL-C
 *    FILE     : src/trace-reader/TraceReaderStats.hpp
 *-----------------------------------------------------------
 *    AUTHOR   : Mehdi Raza Jaffery (CERN) - 2016
+*    AUTHOR   : Sébastien Valat - 2024
 ***********************************************************/
 
 #ifndef MALT_TRACE_READER_STATS_HPP
