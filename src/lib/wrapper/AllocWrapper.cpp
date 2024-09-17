@@ -20,7 +20,7 @@
 #include <malloc.h>
 //signal
 #include <signal.h>
-//intenrals
+//internals
 #include <common/Debug.hpp>
 #include <portability/OS.hpp>
 #include <portability/Mutex.hpp>

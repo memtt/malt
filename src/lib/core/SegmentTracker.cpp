@@ -156,7 +156,7 @@ LeakInfo::LeakInfo(void)
 
 /*******************  FUNCTION  *********************/
 /**
- * Conver a leak info object to json.
+ * Convert a leak info object to json.
  * @param json The json state object to make the conversion.
  * @param it Reference to the object to convert.
 **/
