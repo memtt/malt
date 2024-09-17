@@ -1,20 +1,23 @@
-/*****************************************************
-             PROJECT  : MALT
-             VERSION  : 1.2.2
-             DATE     : 06/2023
-             AUTHOR   : Valat Sébastien
-             LICENSE  : CeCILL-C
-*****************************************************/
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.2.2
+*    DATE     : 06/2023
+*    LICENSE  : CeCILL-C
+*    FILE     : src/lib/common/tests/TestArray.cpp
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat (ECR) - 2014
+*    AUTHOR   : Sébastien Valat - 2014
+***********************************************************/
 
-/********************  HEADERS  *********************/
+/**********************************************************/
 #include <gtest/gtest.h>
 #include "Array.hpp"
 #include <json/ConvertToJson.h>
 
-/***************** USING NAMESPACE ******************/
+/**********************************************************/
 using namespace MALT;
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(Array,constructor)
 {
 	//check allocation of default size
@@ -23,7 +26,7 @@ TEST(Array,constructor)
 	EXPECT_EQ(10,array.getBufferSize());
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(Array,push_back)
 {
 	//prepare array
@@ -42,7 +45,7 @@ TEST(Array,push_back)
 		ASSERT_EQ(array[i],i);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(Array,getBuffer)
 {
 	//prepare array
@@ -56,7 +59,7 @@ TEST(Array,getBuffer)
 	EXPECT_EQ(buf1,buf2);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(Array,constOperatorArray)
 {
 	//prepare array
@@ -77,7 +80,7 @@ TEST(Array,constOperatorArray)
 		ASSERT_EQ(arrayCst[i],i);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(Array,grow)
 {
 	//prepare array
@@ -106,7 +109,7 @@ TEST(Array,grow)
 	EXPECT_EQ(64,array.getBufferSize());
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(Array,pop)
 {
 	//prepare array
@@ -120,7 +123,7 @@ TEST(Array,pop)
 	EXPECT_EQ(3,array.getSize());
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(Array,set)
 {
 	//prepare array
@@ -137,7 +140,7 @@ TEST(Array,set)
 		EXPECT_EQ(array[i],array2[i]);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(Array,operatorEqual)
 {
 	//prepare array
@@ -154,7 +157,7 @@ TEST(Array,operatorEqual)
 		EXPECT_EQ(array[i],array2[i]);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(Array,convertToJson)
 {
 	//prepare array
@@ -169,7 +172,7 @@ TEST(Array,convertToJson)
 	EXPECT_EQ("[0, 1, 2, 3]",out.str());
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 int main(int argc, char ** argv)
 {
 	//init internal allocator

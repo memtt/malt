@@ -1,25 +1,28 @@
-/*****************************************************
-             PROJECT  : MALT
-             VERSION  : 1.2.2
-             DATE     : 06/2023
-             AUTHOR   : Valat Sébastien
-             LICENSE  : CeCILL-C
-*****************************************************/
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.2.2
+*    DATE     : 06/2023
+*    LICENSE  : CeCILL-C
+*    FILE     : src/lib/tests/TestValgrindOutput.cpp
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat (ECR) - 2014
+*    AUTHOR   : Sébastien Valat - 2014 - 2018
+***********************************************************/
 
-/********************  HEADERS  *********************/
+/**********************************************************/
 #include <gtest/gtest.h>
 #include <common/Options.hpp>
 #include <core/ValgrindOutput.hpp>
 
-/***************** USING NAMESPACE ******************/
+/**********************************************************/
 using namespace MALT;
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void test1(void) {}
 void test2(void) {}
 void test3(void) {}
 
-/********************** CONSTS **********************/
+/**********************************************************/
 void *CST_STACK_1[] = {(void*)0x1,(void*)0x2,(void*)0x2,(void*)0x2,(void*)0x2,(void*)0x2,(void*)0x3};
 const char CST_VALUE_1[] =  "version: 1\n\
 creator: MALT-1.2.2\n\
@@ -64,14 +67,14 @@ cfn=[0x2]\n\
 0 1 0 1 2 0 2 2\n\
 \n";
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /** Override getpid() to return a fix value. **/
 pid_t getpid(void)
 {
 	return 1;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(ValgrindOutput,testRecursive)
 {
 	ValgrindOutput output;
@@ -93,7 +96,7 @@ TEST(ValgrindOutput,testRecursive)
 	test1();test2();test3();
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 int main(int argc, char ** argv)
 {
 	//init internal allocator

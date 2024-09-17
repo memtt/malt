@@ -2,7 +2,7 @@
 ############################################################
 #    PROJECT  : MALT (MALoc Tracker)
 #    VERSION  : 1.2.2
-#    DATE     : 05/2024
+#    DATE     : 09/2024
 #    LICENSE  : CeCILL-C
 #    FILE     : dev/update_file_headers.py
 #-----------------------------------------------------------
@@ -11,7 +11,11 @@
 
 # Usage : 
 # --------------------------------------------------------------------------------------------------
+# python3 -m venv venv
+# source venv/bin/activate
+# pip install gitpython
 # for file in $(git ls-files); do ./dev/update_file_headers.py $file; done
+# ./dev/update_file_headers.py --git-all .
 # --------------------------------------------------------------------------------------------------
 
 ############################################################

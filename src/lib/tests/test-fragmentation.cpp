@@ -1,3 +1,12 @@
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.2.2
+*    DATE     : 11/2014
+*    LICENSE  : CeCILL-C
+*    FILE     : src/lib/tests/test-fragmentation.cpp
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat (ECR) - 2014
+***********************************************************/
 /********************  HEADERS  *********************/
 #include <stdlib.h>
 #include <unistd.h>

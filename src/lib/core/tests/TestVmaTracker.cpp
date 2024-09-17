@@ -1,34 +1,37 @@
-/*****************************************************
-             PROJECT  : MALT
-             VERSION  : 1.2.2
-             DATE     : 06/2023
-             AUTHOR   : Valat Sébastien
-             LICENSE  : CeCILL-C
-*****************************************************/
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.2.2
+*    DATE     : 06/2023
+*    LICENSE  : CeCILL-C
+*    FILE     : src/lib/core/tests/TestVmaTracker.cpp
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat - 2014
+*    AUTHOR   : Sébastien Valat (ECR) - 2014
+***********************************************************/
 
-/********************  HEADERS  *********************/
+/**********************************************************/
 #include <gtest/gtest.h>
 #include <VmaTracker.hpp>
 #include <common/SimpleAllocator.hpp>
 #include <common/GTestHelper.hpp>
 
-/***************** USING NAMESPACE ******************/
+/**********************************************************/
 using namespace MALT;
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(TestVmaTracker,testConstructor)
 {
 	VmaTracker tracker;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(TestVmaTracker,testMmap)
 {
 	VmaTracker tracker;
 	tracker.mmap((void*)0xA00,100);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(TestVmaTracker,testMunmap_1)
 {
 	VmaTracker tracker;
@@ -36,7 +39,7 @@ TEST(TestVmaTracker,testMunmap_1)
 	EXPECT_EQ(0u,tracker.munmap((void*)0xAA,10));
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(TestVmaTracker,testMunmap_2)
 {
 	VmaTracker tracker;
@@ -44,7 +47,7 @@ TEST(TestVmaTracker,testMunmap_2)
 	EXPECT_EQ(100u,tracker.munmap((void*)0xA00,100));
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(TestVmaTracker,testMunmap_3)
 {
 	VmaTracker tracker;
@@ -53,7 +56,7 @@ TEST(TestVmaTracker,testMunmap_3)
 	EXPECT_EQ(10u,tracker.munmap((void*)0xA00,100));
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 int main(int argc, char ** argv)
 {
 	//init internal allocator

@@ -1,48 +1,21 @@
 {
-	"sep-function": {
-		"prefix": "sep-function",
-		"body": "/*******************  FUNCTION  *********************/",
-		"description": ""
-	},
-	"sep-consts": {
-		"prefix": "sep-consts",
-		"body":"/********************  CONSTS  **********************/",
-		"description": ""
-	},
-	"sep-using-namespace": {
-		"prefix": "sep-using-namespace",
-		"body":"/***************** USING NAMESPACE ******************/"
-	},
-	"sep-headers":{
-		"prefix": "sep-headers",
-		"body": "/********************  HEADERS  *********************/"
-	},
-	"sep-namespace": {
-		"prefix": "sep-namespace",
-		"body": "/********************  NAMESPACE  *******************/"
-	},
-	"sep-types": { 
-		"prefix": "sep-types",
-		"body": "/*********************  TYPES  **********************/"
-	},
-	"sep-class":{
-		"prefix": "sep-types",
-		"body": "/*********************  CLASS  **********************/"
-	},
-	"sep-struct": {
-		"prefix": "sep-struct",
-		"body": "/*********************  STRUCT  *********************/"
+	"sep": {
+		"prefix": "separator",
+		"body": "/**********************************************************/",
+		"description": "Separateur de zones de code"
 	},
 	"file-header": {
 		"prefix":"file-header",
 		"body": [
-			"/*****************************************************",
-			"             PROJECT  : MALT",
-			"             VERSION  : 1.2.2",
-			"             DATE     : ${CURRENT_MONTH}/${CURRENT_YEAR}",
-			"             AUTHOR   : ${1:name}",
-			"             LICENSE  : CeCILL-C",
-			"*****************************************************/"
+			"/***********************************************************",
+			"*    PROJECT  : MALT (MALoc Tracker)",
+			"*    VERSION  : 1.2.2",
+			"*    DATE     : ${CURRENT_MONTH}/${CURRENT_YEAR}",
+			"*    LICENSE  : CeCILL-C",
+			"*    FILE     : ${TM_DIRECTORY}/${TM_FILENAME}",
+			"*-----------------------------------------------------------",
+			"*    AUTHOR   : ${1:name}",
+			"***********************************************************/"
 		]
 	}
 }

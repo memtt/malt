@@ -1,13 +1,15 @@
 #!/usr/bin/env python3
-######################################################
-#            PROJECT  : MALT                         #
-#            VERSION  : 1.2.2                        #
-#            DATE     : 06/2023                      #
-#            AUTHOR   : Sebastien Valat              #
-#            LICENSE  : Apache 2.0                   #
-######################################################
+############################################################
+#    PROJECT  : MALT (MALoc Tracker)
+#    VERSION  : 1.2.2
+#    DATE     : 03/2024
+#    LICENSE  : CeCILL-C
+#    FILE     : dev/build_and_test_on_distributions.py
+#-----------------------------------------------------------
+#    AUTHOR   : Sébastien Valat (INRIA) - 2024
+############################################################
 
-######################################################
+############################################################
 '''
 Test building MALT + running unit tests on various distributions via
 docker/podman to validate it is still OK (or close to) on all.
@@ -27,7 +29,7 @@ pytest ./build_and_test_on_distributions.p
 ```
 '''
 
-######################################################
+############################################################
 # python
 import os
 import sys
@@ -39,7 +41,7 @@ from contextlib import contextmanager
 # pytest
 import pytest
 
-###########################################################
+############################################################
 @contextmanager
 def jump_in_dir(path: str, erase_first = False, create = False):
     '''
@@ -64,7 +66,7 @@ def jump_in_dir(path: str, erase_first = False, create = False):
     finally:
         os.chdir(oldpwd)
 
-###########################################################
+############################################################
 def assert_shell_command(command: str) -> None:
     '''
     An helper wrapper to just call a command and check status.
@@ -77,7 +79,7 @@ def assert_shell_command(command: str) -> None:
     if status.returncode != 0:
         raise Exception(f"Command failure (status={status.returncode}) while running : {command}")
 
-###########################################################
+############################################################
 def get_malt_source_path() -> str:
     return os.path.abspath(os.path.join(__file__, '..', '..'))
 
@@ -145,7 +147,7 @@ class PodmanContainerHandler:
             print(self.container_id)
             assert_shell_command(f'podman stop {self.container_id}')
 
-###########################################################
+############################################################
 @contextmanager
 def in_container(image: str):
     # handle return back afterward
@@ -161,7 +163,7 @@ def in_container(image: str):
     finally:
         handler.stop()
 
-######################################################
+############################################################
 BUILD_PARAMETERS = {
     "distributions": {
         "ubuntu:22.04": [
@@ -210,7 +212,7 @@ BUILD_PARAMETERS = {
     }
 }
 
-######################################################
+############################################################
 def gen_distr_paramatrized():
     params = []
     for variant in BUILD_PARAMETERS['variants']:
@@ -219,7 +221,7 @@ def gen_distr_paramatrized():
                 params.append((distr_name, compiler, variant))
     return params
 
-######################################################
+############################################################
 @pytest.mark.parametrize("dist_name_version", BUILD_PARAMETERS['distributions'].keys())
 def test_prep_image(dist_name_version):
     # to install
@@ -230,7 +232,7 @@ def test_prep_image(dist_name_version):
     container.add_build_run_rules(distr_install_cmds)
     container.build(dist_name_version)
 
-######################################################
+############################################################
 @pytest.mark.parametrize("dist_name_version, compiler, variant", gen_distr_paramatrized())
 def test_distribution(dist_name_version: str, compiler:str, variant:str):
     # extract options
@@ -247,7 +249,7 @@ def test_distribution(dist_name_version: str, compiler:str, variant:str):
         container.assert_run(f"make -j{cores}")
         container.assert_run(f"ctest --output-on-failure -j{cores}")
 
-######################################################
+############################################################
 def test_current_host_debug_no_tests():
     # get malt source path
     sources = get_malt_source_path()
@@ -260,7 +262,7 @@ def test_current_host_debug_no_tests():
             assert_shell_command(f"{sources}/configure --enable-debug CFLAGS=-Werror CXXFLAGS=-Werror")
             assert_shell_command(f"make --output-on-failure -j{cores}")
 
-######################################################
+############################################################
 def test_current_host_debug_disable_tests():
     # get malt source path
     sources = get_malt_source_path()
@@ -273,7 +275,7 @@ def test_current_host_debug_disable_tests():
             assert_shell_command(f"{sources}/configure --enable-debug --disable-tests CFLAGS=-Werror CXXFLAGS=-Werror")
             assert_shell_command(f"make -j{cores}")
 
-######################################################
+############################################################
 def test_current_host_debug_tests():
     # get malt source path
     sources = get_malt_source_path()
@@ -284,7 +286,7 @@ def test_current_host_debug_tests():
             assert_shell_command("make -j8")
             assert_shell_command("ctest --output-on-failure")
 
-######################################################
+############################################################
 # To be able to run as a standard program directly and not call via pytest command
 # (can still also)
 if __name__ == '__main__':

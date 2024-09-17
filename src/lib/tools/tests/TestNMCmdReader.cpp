@@ -1,29 +1,31 @@
-/*****************************************************
-             PROJECT  : MALT
-             VERSION  : 1.2.2
-             DATE     : 06/2023
-             AUTHOR   : Valat Sébastien
-             LICENSE  : CeCILL-C
-*****************************************************/
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.2.2
+*    DATE     : 06/2023
+*    LICENSE  : CeCILL-C
+*    FILE     : src/lib/tools/tests/TestNMCmdReader.cpp
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat - 2022
+***********************************************************/
 
-/********************  HEADERS  *********************/
+/**********************************************************/
 #include <gtest/gtest.h>
 #include "../NMCmdReader.hpp"
 #include "../ELFReader.hpp"
 
-/***************** USING NAMESPACE ******************/
+/**********************************************************/
 using namespace MALT;
 
-/********************* GLOBALS **********************/
+/**********************************************************/
 int gblVariable = 10;
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(TestNMCmdReader, constructor)
 {
 	NMCmdReader reader;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 bool hasVar(ElfGlobalVariableVector & vars, const std::string & name, bool acceptNoSource)
 {
 	for (auto & it : vars) {
@@ -37,7 +39,7 @@ bool hasVar(ElfGlobalVariableVector & vars, const std::string & name, bool accep
 	return false;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(TestNMCmdReader, load)
 {
 	//extract vars

@@ -1,23 +1,26 @@
-/*****************************************************
-             PROJECT  : MALT
-             VERSION  : 1.2.2
-             DATE     : 06/2023
-             AUTHOR   : Valat Sébastien
-             LICENSE  : CeCILL-C
-*****************************************************/
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.2.2
+*    DATE     : 06/2023
+*    LICENSE  : CeCILL-C
+*    FILE     : src/lib/core/StackSizeTracker.cpp
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat (ECR) - 2014
+*    AUTHOR   : Sébastien Valat - 2020 - 2021
+***********************************************************/
 
-/********************  HEADERS  *********************/
+/**********************************************************/
 #include <cassert>
 #include <cstdio>
 #include "StackSizeTracker.hpp"
 #include <portability/LinuxProcMapReader.hpp>
 #include <cycle.h>
 
-/*******************  NAMESPACE  ********************/
+/**********************************************************/
 namespace MALT
 {
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Constructor of the stack size tracker.
 **/
@@ -31,7 +34,7 @@ StackSizeTracker::StackSizeTracker(void)
 	this->stack.push_back(0);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * To be called when we enter in a function, it will use assembly instruction
  * to extract the current stack pointer and compute the stack size consumed by
@@ -70,7 +73,7 @@ void StackSizeTracker::enter(void)
 	//printf("malt %llu , %zu , %zu , %zu\n",getticks(),this->base,crsp,getSize());
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Function used to extract mapLower and mapUpper from /proc/self/maps.
 **/
@@ -94,7 +97,7 @@ void StackSizeTracker::loadMapping(void)
 	}
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * To be called when exiting a function to pop the stack size entry.
 **/
@@ -103,7 +106,7 @@ void StackSizeTracker::exit(void)
 	this->stack.pop();
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Return the current size of the stack by a diff between the base address
  * and the current one.
@@ -113,7 +116,7 @@ long unsigned int StackSizeTracker::getSize(void) const
 	return this->base - this->cur;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Copy operator.
  * @param origin Reference to the original stack size tracker.
@@ -128,7 +131,7 @@ StackSizeTracker& StackSizeTracker::operator=(const StackSizeTracker& orig)
 	return *this;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Conver the stack size tracker into json format for the final profile file.
  * @param json Reference to the json state to make the conversion.
@@ -148,7 +151,7 @@ void convertToJson(htopml::JsonState& json, const StackSizeTracker& value)
 	json.closeArray();
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Return the total size using the mapUpper/mapLower from /proc/self/maps.
 **/

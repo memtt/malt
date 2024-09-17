@@ -1,39 +1,41 @@
-/*****************************************************
-             PROJECT  : MALT
-             VERSION  : 1.2.2
-             DATE     : 06/2023
-             AUTHOR   : Valat Sébastien
-             LICENSE  : CeCILL-C
-*****************************************************/
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.2.2
+*    DATE     : 06/2023
+*    LICENSE  : CeCILL-C
+*    FILE     : src/lib/stack-tree/from-v2/tests/TestStack.cpp
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat - 2015
+***********************************************************/
 
-/********************  HEADERS  *********************/
+/**********************************************************/
 #include <gtest/gtest.h>
 #include <stacks/Stack.hpp>
 #include <common/SimpleAllocator.hpp>
 #include <json/ConvertToJson.h>
 
-/***************** USING NAMESPACE ******************/
+/**********************************************************/
 using namespace MALT;
 
-/********************** CONSTS **********************/
+/**********************************************************/
 void * CST_STACK_1[] = {(void*)0x1,(void*)0x2,(void*)0x3,(void*)0x4};
 void * CST_STACK_2[] = {(void*)0x4,(void*)0x3,(void*)0x2,(void*)0x1};
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(Stack,constructorDefault)
 {
 	Stack stack(STACK_ORDER_ASC);
 	EXPECT_EQ(0,stack.getSize());
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(Stack,constructorArg)
 {
 	Stack stack(CST_STACK_1,4,STACK_ORDER_ASC);
 	EXPECT_EQ(4,stack.getSize());
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(Stack,isValid)
 {
 	Stack stack(STACK_ORDER_ASC);
@@ -43,35 +45,35 @@ TEST(Stack,isValid)
 	EXPECT_TRUE(stack.isValid());
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(Stack,getCalleeAsc)
 {
 	Stack stack(CST_STACK_1,4,STACK_ORDER_ASC);
 	EXPECT_EQ((void*)0x1,stack.getCallee());
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(Stack,getCalleeDesc)
 {
 	Stack stack(CST_STACK_1,4,STACK_ORDER_DESC);
 	EXPECT_EQ((void*)0x4,stack.getCallee());
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(Stack,getCallerAsc)
 {
 	Stack stack(CST_STACK_1,4,STACK_ORDER_ASC);
 	EXPECT_EQ((void*)0x2,stack.getCaller());
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(Stack,getCallerDesc)
 {
 	Stack stack(CST_STACK_1,4,STACK_ORDER_DESC);
 	EXPECT_EQ((void*)0x3,stack.getCaller());
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(Stack,operatorArrayAsc)
 {
 	Stack stack(CST_STACK_1,4,STACK_ORDER_ASC);
@@ -79,7 +81,7 @@ TEST(Stack,operatorArrayAsc)
 		EXPECT_EQ((void*)(i+1),stack[i]);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(Stack,operatorArrayDesc)
 {
 	Stack stack(CST_STACK_1,4,STACK_ORDER_DESC);
@@ -87,7 +89,7 @@ TEST(Stack,operatorArrayDesc)
 		EXPECT_EQ((void*)(4-i),stack[i]);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(Stack,partialCompareDesc1)
 {
 	Stack stack1(CST_STACK_1,4,STACK_ORDER_DESC);
@@ -98,7 +100,7 @@ TEST(Stack,partialCompareDesc1)
 	EXPECT_FALSE(Stack::partialCompare(stack1,0,stack2,1));
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(Stack,partialCompareDesc2)
 {
 	Stack stack1(CST_STACK_1,3,STACK_ORDER_DESC);
@@ -111,7 +113,7 @@ TEST(Stack,partialCompareDesc2)
 	EXPECT_FALSE(Stack::partialCompare(stack3,0,stack2,1));
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(Stack,partialCompareAsc1)
 {
 	Stack stack1(CST_STACK_1,4,STACK_ORDER_ASC);
@@ -122,7 +124,7 @@ TEST(Stack,partialCompareAsc1)
 	EXPECT_FALSE(Stack::partialCompare(stack1,0,stack2,1));
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(Stack,partialCompareAsc2)
 {
 	Stack stack1(CST_STACK_1,3,STACK_ORDER_ASC);
@@ -135,7 +137,7 @@ TEST(Stack,partialCompareAsc2)
 	EXPECT_TRUE(Stack::partialCompare(stack3,0,stack2,1));
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(Stack,operatorStreamAsc)
 {
 	Stack stack(CST_STACK_1,4,STACK_ORDER_ASC);
@@ -146,7 +148,7 @@ TEST(Stack,operatorStreamAsc)
 	EXPECT_EQ("0x1 0x2 0x3 0x4 ",buffer.str());
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(Stack,operatorStreamDesc)
 {
 	Stack stack(CST_STACK_1,4,STACK_ORDER_DESC);
@@ -157,7 +159,7 @@ TEST(Stack,operatorStreamDesc)
 	EXPECT_EQ("0x4 0x3 0x2 0x1 ",buffer.str());
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(Stack,convertToJsonAsc)
 {
 	Stack stack(CST_STACK_1,4,STACK_ORDER_ASC);
@@ -168,7 +170,7 @@ TEST(Stack,convertToJsonAsc)
 	EXPECT_EQ("[\"0x1\", \"0x2\", \"0x3\", \"0x4\"]",buffer.str());
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(Stack,convertToJsonDesc)
 {
 	Stack stack(CST_STACK_1,4,STACK_ORDER_DESC);
@@ -179,7 +181,7 @@ TEST(Stack,convertToJsonDesc)
 	EXPECT_EQ("[\"0x4\", \"0x3\", \"0x2\", \"0x1\"]",buffer.str());
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(Stack,copyConstructor)
 {
 	Stack stack(CST_STACK_1,4,STACK_ORDER_DESC);
@@ -188,7 +190,7 @@ TEST(Stack,copyConstructor)
 	EXPECT_EQ(stack,stack2);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(Stack,set)
 {
 	Stack stack(CST_STACK_1,4,STACK_ORDER_DESC);
@@ -198,7 +200,7 @@ TEST(Stack,set)
 	EXPECT_EQ(stack,stack2);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(Stack,partialCopyConstructor1)
 {
 	Stack stack(CST_STACK_1,4,STACK_ORDER_DESC);
@@ -209,7 +211,7 @@ TEST(Stack,partialCopyConstructor1)
 	EXPECT_EQ((void*)0x1,stack2[1]);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(Stack,partialCopyConstructor)
 {
 	Stack stack(CST_STACK_1,4,STACK_ORDER_ASC);
@@ -220,7 +222,7 @@ TEST(Stack,partialCopyConstructor)
 	EXPECT_EQ((void*)0x4,stack2[1]);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(Stack,hash)
 {
 	Stack stack1(CST_STACK_1,4,STACK_ORDER_ASC);
@@ -232,7 +234,7 @@ TEST(Stack,hash)
 	EXPECT_EQ(hash1,hash2);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(Stack,hashPartial)
 {
 	Stack stack1(CST_STACK_1,4,STACK_ORDER_ASC);
@@ -244,7 +246,7 @@ TEST(Stack,hashPartial)
 	EXPECT_EQ(hash1,hash2);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(Stack,setReverse)
 {
 	Stack stack1(CST_STACK_1,4,STACK_ORDER_ASC);
@@ -255,7 +257,7 @@ TEST(Stack,setReverse)
 	EXPECT_EQ(stack1,stack2);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(Stack,operatorEqual)
 {
 	Stack stack1(CST_STACK_1,4,STACK_ORDER_ASC);
@@ -266,7 +268,7 @@ TEST(Stack,operatorEqual)
 	EXPECT_EQ(stack1,stack2);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(Stack,grow)
 {
 	Stack stack(STACK_ORDER_ASC);
@@ -284,7 +286,7 @@ TEST(Stack,grow)
 }
 
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(Stack,large)
 {
 	Stack stack1(CST_STACK_1,4,STACK_ORDER_ASC);
@@ -295,7 +297,7 @@ TEST(Stack,large)
 	EXPECT_EQ(1024*1024,stack1.getSize());
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(Stack,fastSkip1)
 {
 	Stack stack(CST_STACK_1,4,STACK_ORDER_ASC);
@@ -307,7 +309,7 @@ TEST(Stack,fastSkip1)
 	EXPECT_EQ("0x2 0x3 0x4 ",buffer.str());
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(Stack,fastSkip2)
 {
 	Stack stack(CST_STACK_2,4,STACK_ORDER_DESC);
@@ -319,7 +321,7 @@ TEST(Stack,fastSkip2)
 	EXPECT_EQ("0x2 0x3 0x4 ",buffer.str());
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 int main(int argc, char ** argv)
 {
 	//init internal allocator

@@ -1,36 +1,38 @@
-/*****************************************************
-             PROJECT  : MALT
-             VERSION  : 1.2.2
-             DATE     : 06/2023
-             AUTHOR   : Valat Sébastien
-             LICENSE  : CeCILL-C
-*****************************************************/
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.2.2
+*    DATE     : 06/2023
+*    LICENSE  : CeCILL-C
+*    FILE     : src/lib/common/tests/TestCodeTiming.cpp
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat - 2022
+***********************************************************/
 
-/********************  HEADERS  *********************/
+/**********************************************************/
 #include <sstream>
 #include <gtest/gtest.h>
 #include "CodeTiming.hpp"
 
-/***************** USING NAMESPACE ******************/
+/**********************************************************/
 using namespace MALT;
 
-/*******************  GLOBALS  **********************/
+/**********************************************************/
 static ticks gblTicks = 0;
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 ticks MALT::mockableGetTicks(void)
 {
 	return gblTicks;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(CodeTiming,constructor)
 {
 	CodeTiming timing("test");
 	EXPECT_EQ(timing.getName(), "test");
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(CodeTiming,cycle)
 {
 	CodeTiming timing("test");
@@ -39,7 +41,7 @@ TEST(CodeTiming,cycle)
 	timing.end(start);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(CodeTiming,printValue)
 {
 	gblTicks = 1000;
@@ -57,7 +59,7 @@ TEST(CodeTiming,printValue)
 	EXPECT_EQ(stream.str(), "TIMING OF test                             => [   1.0 K ,   1.0 K ,   1.0 K ] => TOTAL ( calls :   2.0   , time :   2.0 K , ratio : ~ 50      % )\n");
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(CodeTiming,printAll)
 {
 	gblTicks = 1000;

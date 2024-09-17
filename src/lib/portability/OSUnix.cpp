@@ -1,12 +1,16 @@
-/*****************************************************
-             PROJECT  : MALT
-             VERSION  : 1.2.2
-             DATE     : 06/2023
-             AUTHOR   : Valat Sébastien
-             LICENSE  : CeCILL-C
-*****************************************************/
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.2.2
+*    DATE     : 03/2024
+*    LICENSE  : CeCILL-C
+*    FILE     : src/lib/portability/OSUnix.cpp
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat (ECR) - 2014
+*    AUTHOR   : Sébastien Valat - 2014 - 2022
+*    AUTHOR   : Sébastien Valat (INRIA) - 2024
+***********************************************************/
 
-/********************  HEADERS  *********************/
+/**********************************************************/
 //standards
 #include <cstdio>
 #include <cstdlib>
@@ -22,21 +26,21 @@
 #include "Mutex.hpp"
 #include "OSUnix.hpp"
 
-/*******************  NAMESPACE  ********************/
+/**********************************************************/
 namespace MALT
 {
 
-/*********************  MACROS  *********************/
+/**********************************************************/
 #define MALT_DEF_SIGNAL(x) { #x, x }
 
-/********************  STRUCT  **********************/
+/**********************************************************/
 struct SigNamesEntry
 {
 	const char * name;
 	int sig;
 };
 
-/*********************  CONSTS  *********************/
+/**********************************************************/
 static const char * cstMeminfoFile = "/proc/meminfo";
 static const char * cstStatmFile = "/proc/self/statm";
 static const char * cstExeFile = "/proc/self/exe";
@@ -60,7 +64,7 @@ static SigNamesEntry cstSigNames[cstSigCnt] = {
 	MALT_DEF_SIGNAL(SIGFPE),
 };
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 OSMemUsage OSUnix::getMemoryUsage(void)
 {
 	//use some static to avoid many open/close
@@ -125,7 +129,7 @@ OSMemUsage OSUnix::getMemoryUsage(void)
 	return finalRes;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 OSProcMemUsage OSUnix::getProcMemoryUsage(void)
 {
 	//use some static 
@@ -165,13 +169,13 @@ OSProcMemUsage OSUnix::getProcMemoryUsage(void)
 	return finalRes;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 unsigned int OSUnix::getPID(void)
 {
 	return getpid();
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 std::string OSUnix::getExeName(void)
 {
 	//buffer to read link
@@ -190,7 +194,7 @@ std::string OSUnix::getExeName(void)
 	return name;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 std::string OSUnix::getSignalName(int sig)
 {
 	//search to convert
@@ -204,7 +208,7 @@ std::string OSUnix::getSignalName(int sig)
 	return "UNKNOWN";
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 int OSUnix::getSignalFromName(const std::string & signame)
 {
 	//search to convert
@@ -219,7 +223,7 @@ int OSUnix::getSignalFromName(const std::string & signame)
 	return -1;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void OSUnix::printAvailSigs(std::ostream & out)
 {
 	for (int i = 0 ; i < cstSigCnt ; i++) {
@@ -227,7 +231,7 @@ void OSUnix::printAvailSigs(std::ostream & out)
 	}
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void OSUnix::setSigHandler(void (*handler)(int), const std::string & signame )
 {
 	//convert and call
@@ -235,7 +239,7 @@ void OSUnix::setSigHandler(void (*handler)(int), const std::string & signame )
 	setSigHandler(handler, sig);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void OSUnix::setSigHandler(void (*handler)(int), int sigid )
 {
 	//setup
@@ -250,7 +254,7 @@ void OSUnix::setSigHandler(void (*handler)(int), int sigid )
 	assumeArg(status == 0, "Fail to install signal %1: %2").arg(getSignalName(sigid)).argStrErrno().end();
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 std::string OSUnix::getHostname(void)
 {
 	char buffer[4096];
@@ -259,7 +263,7 @@ std::string OSUnix::getHostname(void)
 	return buffer;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 std::string OSUnix::getDateTime(void)
 {
 	//vars
@@ -279,13 +283,13 @@ std::string OSUnix::getDateTime(void)
     return buffer;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 std::string OSUnix::getCmdLine(void)
 {
 	return loadTextFile("/proc/self/cmdline");
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 std::string OSUnix::loadTextFile(const std::string& file)
 {
 	char buffer[1025];
@@ -315,7 +319,7 @@ std::string OSUnix::loadTextFile(const std::string& file)
 	return res;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void* OSUnix::mmap(size_t size, bool populate)
 {
 	void * res;
@@ -340,7 +344,7 @@ void* OSUnix::mmap(size_t size, bool populate)
 		return res;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void OSUnix::munmap(void* ptr, size_t size)
 {
 	::munmap(ptr,size);

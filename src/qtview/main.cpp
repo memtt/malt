@@ -1,12 +1,14 @@
-/*****************************************************
-             PROJECT  : MALT
-             VERSION  : 1.2.2
-             DATE     : 06/2023
-             AUTHOR   : Valat Sébastien
-             LICENSE  : CeCILL-C
-*****************************************************/
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.2.2
+*    DATE     : 06/2023
+*    LICENSE  : CeCILL-C
+*    FILE     : src/qtview/main.cpp
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat - 2018
+***********************************************************/
 
-/*******************  HEADERS  **********************/
+/**********************************************************/
 #include <QApplication>
 #ifdef HAVE_QT5_WEB_ENGINE_WIDGETS
 	#include <QWebEngineView>
@@ -26,11 +28,11 @@
 #include <csignal>
 #include <cstdio>
 
-/********************  MACRO  ***********************/
+/**********************************************************/
 #define PORT_MIN 1025
 #define PORT_MAX 65535
 
-/********************  MACROS  **********************/
+/**********************************************************/
 #ifdef HAVE_QT5_WEB_ENGINE_WIDGETS
 	#define Browser QWebEngineView
 #elif defined(HAVE_QT5_WEBKIT_WIDGETS)
@@ -39,16 +41,16 @@
 	#error "Missing webkit headers !"
 #endif
 
-/*********************  CONSTS  *********************/
+/**********************************************************/
 const char gblChars[] = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 int randint(int min, int max)
 {
 	return (rand() % (max - min + 1)) + min;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 QString genPassString(int size)
 {
 	QString buffer;
@@ -57,7 +59,7 @@ QString genPassString(int size)
 	return buffer;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 int main(int argc, char *argv[])
 {
 	//select a port

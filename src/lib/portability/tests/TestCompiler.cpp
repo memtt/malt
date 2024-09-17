@@ -1,12 +1,14 @@
-/*****************************************************
-             PROJECT  : MALT
-             VERSION  : 1.2.2
-             DATE     : 06/2023
-             AUTHOR   : Valat Sébastien
-             LICENSE  : CeCILL-C
-*****************************************************/
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.2.2
+*    DATE     : 06/2023
+*    LICENSE  : CeCILL-C
+*    FILE     : src/lib/portability/tests/TestCompiler.cpp
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat - 2022
+***********************************************************/
 
-/********************  HEADERS  *********************/
+/**********************************************************/
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
 #include "Compiler.hpp"
@@ -14,11 +16,11 @@
 #include <common/SimpleAllocator.hpp>
 #include <core/SymbolSolver.hpp>
 
-/***************** USING NAMESPACE ******************/
+/**********************************************************/
 using namespace MALT;
 using namespace testing;
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 extern "C" {
 	int notMangledCFunction(bool p1, int p2)
 	{
@@ -26,13 +28,13 @@ extern "C" {
 	}
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 std::string mangledCppFunction(bool p1, int p2)
 {
 	return "ok";
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 std::string getMangledName(void* addr)
 {
 	void * callsite = (void*)((size_t)addr + 1);
@@ -43,7 +45,7 @@ std::string getMangledName(void* addr)
 	return solver.getString(funcId);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(TestCompiler,demangleCppNames_mangled)
 {
 	std::string mangled = getMangledName((void*)mangledCppFunction);
@@ -51,7 +53,7 @@ TEST(TestCompiler,demangleCppNames_mangled)
 	EXPECT_THAT(demangled, MatchesRegex("^mangledCppFunction(\\[.*\\])\\(bool, int\\)$")) << "mangled=" << mangled;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(TestCompiler,demangleCppNames_not_mangled)
 {
 	std::string mangled = getMangledName((void*)notMangledCFunction);
@@ -59,7 +61,7 @@ TEST(TestCompiler,demangleCppNames_not_mangled)
 	EXPECT_THAT(demangled, MatchesRegex("^notMangledCFunction()")) << "mangled=" << mangled;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 int main(int argc, char ** argv)
 {
 	//init internal allocator

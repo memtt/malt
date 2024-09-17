@@ -1,15 +1,17 @@
-/*****************************************************
-             PROJECT  : MALT
-             VERSION  : 1.2.2
-             DATE     : 06/2023
-             AUTHOR   : Valat Sébastien
-             LICENSE  : CeCILL-C
-*****************************************************/
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.2.2
+*    DATE     : 06/2023
+*    LICENSE  : CeCILL-C
+*    FILE     : src/lib/wrapper/ThreadTracker.hpp
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat (ECR) - 2014
+***********************************************************/
 
 #ifndef MALT_THREAD_TRACKER_HPP
 #define MALT_THREAD_TRACKER_HPP
 
-/********************  HEADERS  *********************/
+/**********************************************************/
 //standard
 #include <cstdlib>
 #include <pthread.h>
@@ -17,13 +19,13 @@
 namespace MALT
 {
 
-/*********************  TYPES  **********************/
+/**********************************************************/
 /**
  * Signature of pthread_create function to override it.
 **/
 typedef int (*PthreadCreateFuncPtr)(pthread_t *thread, const pthread_attr_t *attr,void *(*start_routine) (void *), void *arg);
 
-/********************  STRUCT  **********************/
+/**********************************************************/
 /**
  * Structure used to transmit arguments to the intermediate function used
  * to track pthread_create.
@@ -36,7 +38,7 @@ struct ThreadTrackerArg
 	void *(*routine) (void *);
 };
 
-/********************  STRUCT  **********************/
+/**********************************************************/
 /**
  * Structure to keep track of the global state monstly to remind active and 
  * maximum thread count.
@@ -60,7 +62,7 @@ struct ThreadTrackerData
 	bool trackingIsEnabled;
 };
 
-/*********************  CLASS  **********************/
+/**********************************************************/
 /**
  * Put user function in a sub namespace.
 **/

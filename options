@@ -1,17 +1,20 @@
 #!/bin/sh
-######################################################
-#            PROJECT  : numaprof                     #
-#            VERSION  : 1.2.2                        #
-#            DATE     : 06/2023                      #
-#            AUTHOR   : Sébastien Valat              #
-#            LICENSE  : CeCILL-C                     #
-######################################################
+#############################################################
+#    PROJECT  : MALT (MALoc Tracker)
+#    VERSION  : 1.2.2
+#    DATE     : 03/2024
+#    LICENSE  : CeCILL-C
+#    FILE     : options
+#-----------------------------------------------------------
+#    AUTHOR   : Sébastien Valat - 2018 - 2019
+#    AUTHOR   : Sébastien Valat (INRIA) - 2024
+#############################################################
 
-######################################################
+############################################################
 #set project name
 cfg_set_projet "MALT"
 
-######################################################
+############################################################
 #profiler
 cfg_add_enable_option --name='profiler' \
 						--on='-DENABLE_PROFILER=${ON}' \
@@ -40,7 +43,7 @@ cfg_add_enable_option --name='jenkins' \
 						--doc='Enable all checking modes (unit, valgrind, coverage...)' \
 						--only='enable'
 
-######################################################
+############################################################
 #libunwind
 cfg_add_with_option --name='libunwind' \
 						--doc='Define prefix to find libunwind [/usr]' \
@@ -51,11 +54,11 @@ cfg_add_with_option --name='libelf' \
 						--doc='Define prefix to find libelf [/usr]' \
 						--var='LIBELF_PREFIX'
 
-######################################################
+############################################################
 #If we want to document extra options
 #CFG_CUSTOM_HELP="My custom options:"
 
-######################################################
+############################################################
 # here we can parse our own options if we want
 # Vars available are :
 #  - $arg : full argument (eg. --with-gcc=gcc)
@@ -66,7 +69,7 @@ cfg_add_with_option --name='libelf' \
 #	return 1
 #}
 
-######################################################
+############################################################
 #pre check to ease error messages
 #All cmake vars are loaded in memory as OPT_* (OPT_CMAKE_C_FLAGS)
 #cfg_custom_pre_check()

@@ -1,29 +1,32 @@
-/*****************************************************
-             PROJECT  : MALT
-             VERSION  : 1.2.2
-             DATE     : 06/2023
-             AUTHOR   : Valat Sébastien
-             LICENSE  : CeCILL-C
-*****************************************************/
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.2.2
+*    DATE     : 06/2023
+*    LICENSE  : CeCILL-C
+*    FILE     : src/lib/tools/tests/TestElfReader.cpp
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat (ECR) - 2014
+*    AUTHOR   : Sébastien Valat - 2020
+***********************************************************/
 
-/********************  HEADERS  *********************/
+/**********************************************************/
 #include <gtest/gtest.h>
 #include <tools/ELFReader.hpp>
 #include <common/SimpleAllocator.hpp>
 
-/***************** USING NAMESPACE ******************/
+/**********************************************************/
 using namespace MALT;
 
-/********************* GLOBALS **********************/
+/**********************************************************/
 static const char CST_BINARY_FILE[] = TEST_BIN_DIR "/../../tests/simple-case-no-finstr"; 
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(ElfReader,constructor)
 {
 	ElfReader reader(CST_BINARY_FILE);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 bool hasVariable(ElfGlobalVariableVector & vars,std::string name,size_t size,bool tls)
 {
 	for (ElfGlobalVariableVector::const_iterator it = vars.begin() ; it != vars.end() ; ++it)
@@ -36,7 +39,7 @@ bool hasVariable(ElfGlobalVariableVector & vars,std::string name,size_t size,boo
 	return false;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(ElfReader,loadSimpleCaseGlobVars)
 {
 	ElfReader reader(CST_BINARY_FILE);
@@ -52,7 +55,7 @@ TEST(ElfReader,loadSimpleCaseGlobVars)
 	}
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 int main(int argc, char ** argv)
 {
 	//init internal allocator

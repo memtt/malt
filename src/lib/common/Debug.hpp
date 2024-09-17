@@ -1,23 +1,26 @@
-/*****************************************************
-             PROJECT  : MALT
-             VERSION  : 1.2.2
-             DATE     : 06/2023
-             AUTHOR   : Valat Sébastien
-             LICENSE  : CeCILL-C
-*****************************************************/
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.2.2
+*    DATE     : 06/2023
+*    LICENSE  : CeCILL-C
+*    FILE     : src/lib/common/Debug.hpp
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat (ECR) - 2014
+*    AUTHOR   : Sébastien Valat - 2015 - 2022
+***********************************************************/
 
 #ifndef ATT_DEBUG_HPP
 #define ATT_DEBUG_HPP
 
-/********************  HEADERS  *********************/
+/**********************************************************/
 #include <ostream>
 #include "FormattedMessage.hpp"
 
-/*******************  NAMESPACE  ********************/
+/**********************************************************/
 namespace MALT
 {
 
-/*********************  ENUM  ***********************/
+/**********************************************************/
 /**
  * @brief Define the debug message levels.
 **/
@@ -39,7 +42,7 @@ enum DebugLevel
 	MESSAGE_FATAL
 };
 
-/*********************  CLASS  **********************/
+/**********************************************************/
 /**
  * @brief Base class to manage errors.
  * 
@@ -75,7 +78,7 @@ class Debug : public FormattedMessage
 		bool fakeAbort;
 };
 
-/*********************  CLASS  **********************/
+/**********************************************************/
 /**
  * Provide the same interface than Debug class but do nothing in implementation.
  * It is used to ignore debug message at compile time if NDEBUG macro is enabled.
@@ -102,13 +105,13 @@ class DebugDummy
 		DebugDummy & enableFakeAbort(void){return *this;}
 };
 
-/********************  MACROS  **********************/
+/**********************************************************/
 /**
  * Helper to get current location (file and line).
 **/
 #define MALT_CODE_LOCATION __FILE__,__LINE__
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /** Short function to print debug static messages without arguments. **/
 inline Debug debug(const char * format)   {return Debug(format,MESSAGE_DEBUG);  }
 /** Short function to print warning static messages without arguments. **/
@@ -118,7 +121,7 @@ inline Debug error(const char * format)   {return Debug(format,MESSAGE_ERROR);  
 /** Short function to print fatal static messages without arguments. **/
 inline Debug fatal(const char * format)   {return Debug(format,MESSAGE_FATAL);  }
 
-/********************  MACROS  **********************/
+/**********************************************************/
 #define MALT_FATAL(x)   MALT_FATAL_ARG(x).end()
 #define MALT_DEBUG(cat, x)   MALT_DEBUG_ARG(cat, x).end()
 #define MALT_ERROR(x)   MALT_ERROR_ARG(x).end()
@@ -126,7 +129,7 @@ inline Debug fatal(const char * format)   {return Debug(format,MESSAGE_FATAL);  
 #define MALT_MESSAGE(x) MALT_MESSAGE_ARG(x).end()
 #define MALT_INFO(x)    MALT_INFO_ARG(x).end()
 
-/********************  MACROS  **********************/
+/**********************************************************/
 #define MALT_FATAL_ARG(x)   MALT::Debug(x,MALT_CODE_LOCATION,MALT::MESSAGE_FATAL  )
 #define MALT_ERROR_ARG(x)   MALT::Debug(x,MALT_CODE_LOCATION,MALT::MESSAGE_ERROR  )
 #define MALT_WARNING_ARG(x) MALT::Debug(x,MALT_CODE_LOCATION,MALT::MESSAGE_WARNING)
@@ -138,11 +141,11 @@ inline Debug fatal(const char * format)   {return Debug(format,MESSAGE_FATAL);  
 	#define MALT_DEBUG_ARG(cat,x) MALT::Debug(x,MALT_CODE_LOCATION,MALT::MESSAGE_DEBUG)
 #endif
 
-/********************  MACROS  **********************/
+/**********************************************************/
 #define assume(check,message) do { if (!(check)) MALT_FATAL(message); } while(0)
 #define assumeArg(check,message) if (!(check)) MALT_FATAL_ARG(message)
 
-/********************  MACROS  **********************/
+/**********************************************************/
 #define MALT_TO_STRING(x) #x
 #ifdef NDEBUG
 	#define MALT_ASSERT(x)      do{} while(0)

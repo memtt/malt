@@ -1,15 +1,17 @@
-/*****************************************************
-             PROJECT  : MALT
-             VERSION  : 1.2.2
-             DATE     : 06/2023
-             AUTHOR   : Valat Sébastien
-             LICENSE  : CeCILL-C
-*****************************************************/
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.2.2
+*    DATE     : 06/2023
+*    LICENSE  : CeCILL-C
+*    FILE     : src/lib/wrapper/AllocWrapperExtend.hpp
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat - 2022
+***********************************************************/
 
 #ifndef MALT_ALLOC_WRAPPER_EXTEND_HPP
 #define MALT_ALLOC_WRAPPER_EXTEND_HPP
 
-/********************  HEADERS  *********************/
+/**********************************************************/
 //standard
 #include <cstdlib>
 #include <pthread.h>

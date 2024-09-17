@@ -1,12 +1,15 @@
-/*****************************************************
-             PROJECT  : MALT
-             VERSION  : 1.2.2
-             DATE     : 06/2023
-             AUTHOR   : Valat Sébastien
-             LICENSE  : CeCILL-C
-*****************************************************/
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.2.2
+*    DATE     : 06/2023
+*    LICENSE  : CeCILL-C
+*    FILE     : src/pintool/mallocprof.cpp
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat (ECR) - 2014
+*    AUTHOR   : Sébastien Valat - 2020
+***********************************************************/
 
-/********************  HEADERS  *********************/
+/**********************************************************/
 #include <iostream>
 #include <cstdio>
 #include <json/ConvertToJson.h>
@@ -15,7 +18,7 @@
 
 using namespace std;
 
-/********************  GLOBALS  **********************/
+/**********************************************************/
 #if defined(TARGET_MAC)
 #define MALLOC "_malloc"
 #define CALLOC "_calloc"
@@ -26,7 +29,7 @@ using namespace std;
 #define FREE "free"
 #endif
 
-/*********************  STRUCT  *********************/
+/**********************************************************/
 struct ToolState
 {
 	//functions
@@ -41,10 +44,10 @@ struct ToolState
 	int depth;
 };
 
-/********************  GLOBALS  **********************/
+/**********************************************************/
 static ToolState gblState;
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 ToolState::ToolState(void )
 	:profiler(STACK_MODE_ENTER_EXIT_FUNC)
 {
@@ -53,7 +56,7 @@ ToolState::ToolState(void )
 	this->depth = 0;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 static VOID beforeMalloc(ADDRINT size)
 {
 	if (!gblState.inUse)
@@ -62,7 +65,7 @@ static VOID beforeMalloc(ADDRINT size)
 	}
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 static VOID afterMalloc(ADDRINT ret)
 {
 	if (!gblState.inUse)
@@ -76,7 +79,7 @@ static VOID afterMalloc(ADDRINT ret)
 	}
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 static VOID beforeCalloc(ADDRINT nmemb,ADDRINT size)
 {
 	if (!gblState.lastCallocNMemb)
@@ -86,7 +89,7 @@ static VOID beforeCalloc(ADDRINT nmemb,ADDRINT size)
 	}
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 static VOID afterCalloc(ADDRINT ret)
 {
 	if (!gblState.inUse)
@@ -99,7 +102,7 @@ static VOID afterCalloc(ADDRINT ret)
 	}
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 static VOID beforeFree(ADDRINT ptr)
 {
 	if (!gblState.inUse)
@@ -113,7 +116,7 @@ static VOID beforeFree(ADDRINT ptr)
 	}
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 static VOID instrImageMalloc(IMG img)
 {
 	// Instrument the malloc() and free() functions.  Print the input argument
@@ -138,7 +141,7 @@ static VOID instrImageMalloc(IMG img)
     }
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 static VOID instrImageCalloc(IMG img)
 {
 	// Instrument the malloc() and free() functions.  Print the input argument
@@ -164,7 +167,7 @@ static VOID instrImageCalloc(IMG img)
     }
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 static VOID instrImageFree(IMG img)
 {
 	// Instrument the malloc() and free() functions.  Print the input argument
@@ -184,7 +187,7 @@ static VOID instrImageFree(IMG img)
     }
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void beforeFunc(void * fctAddr)
 {
 // 	gblState.depth++;
@@ -194,7 +197,7 @@ void beforeFunc(void * fctAddr)
 // 	printf("[%d] Enter %p = %s\n",gblState.depth,fctAddr,gblState.names.getName(fctAddr));
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void beforeFuncPrint(void * fctAddr)
 {
 	for (int i = 0 ; i < gblState.depth ; i++)
@@ -202,7 +205,7 @@ void beforeFuncPrint(void * fctAddr)
 	printf("[%d] Enter2 %p = %s\n",gblState.depth,fctAddr,gblState.names.getName(fctAddr));
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void afterFunc(void * fctAddr)
 {
 // 	for (int i = 0 ; i < gblState.depth ; i++)
@@ -212,7 +215,7 @@ void afterFunc(void * fctAddr)
 // 	gblState.depth--;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 VOID instrFunctions(RTN rtn, VOID *v)
 {
 	RTN_Open(rtn);
@@ -274,7 +277,7 @@ VOID Trace(TRACE trace, VOID *v)
     }
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 //Inspirate from code exemple of pintool doc
 static VOID instrImage(IMG img, VOID *v)
 {
@@ -283,14 +286,14 @@ static VOID instrImage(IMG img, VOID *v)
 	instrImageFree(img);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 static VOID onExit(INT32 code, VOID *v)
 {
 	gblState.profiler.onExit();
 // 	htopml::convertToJson(std::cout,gblState.names);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 static INT32 usage()
 {
 	cerr << "This tool produces a trace of calls to malloc." << endl;
@@ -298,7 +301,7 @@ static INT32 usage()
 	return -1;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 int main(int argc, char *argv[])
 {
 	// Initialize pin & symbol manager

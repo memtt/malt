@@ -1,18 +1,20 @@
-/*****************************************************
-             PROJECT  : MALT
-             VERSION  : 1.2.2
-             DATE     : 06/2023
-             AUTHOR   : Valat Sébastien
-             LICENSE  : CeCILL-C
-*****************************************************/
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.2.2
+*    DATE     : 06/2023
+*    LICENSE  : CeCILL-C
+*    FILE     : src/lib/stack-tree/tests/TestRLockFreeTree.cpp
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat (ECR) - 2014
+***********************************************************/
 
-/********************  HEADERS  *********************/
+/**********************************************************/
 #include <gtest/gtest.h>
 #include <json/ConvertToJson.h>
 #include <common/SimpleAllocator.hpp>
 #include <stack-tree/RLockFreeTree.hpp>
 
-/***************** USING NAMESPACE ******************/
+/**********************************************************/
 using namespace MALT;
 
 void * CST_VALUE_1[] = {(void*)0x1,(void*)0x2,(void*)0x3,(void*)0x4};
@@ -28,13 +30,13 @@ const char CST_VALUE_2[] = "{\n\
 }";
 
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(RLockFreeTree,constructor)
 {
 	RLockFreeTree<int> tree;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(RLockFreeTree,getRoot)
 {
 	RLockFreeTree<int> tree;
@@ -45,7 +47,7 @@ TEST(RLockFreeTree,getRoot)
 	EXPECT_NE((void*)NULL,handler1);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(RLockFreeTree,getChild)
 {
 	RLockFreeTree<int> tree;
@@ -59,7 +61,7 @@ TEST(RLockFreeTree,getChild)
 	EXPECT_NE(handler1,handler4);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(RLockFreeTree,getData)
 {
 	RLockFreeTree<int> tree;
@@ -77,7 +79,7 @@ TEST(RLockFreeTree,getData)
 	EXPECT_NE(data21,data31);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(RLockFreeTree,toJson)
 {
 	RLockFreeTree<int> tree;
@@ -95,7 +97,7 @@ TEST(RLockFreeTree,toJson)
 	EXPECT_EQ(CST_VALUE_2,out.str());
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(RLockFreeTree,parallelUse)
 {
 	RLockFreeTree<int> tree;
@@ -111,7 +113,7 @@ TEST(RLockFreeTree,parallelUse)
 	}
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 int main(int argc, char ** argv)
 {
 	//init internal allocator

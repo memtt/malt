@@ -1,15 +1,17 @@
-/*****************************************************
-             PROJECT  : MALT
-             VERSION  : 1.2.2
-             DATE     : 06/2023
-             AUTHOR   : Valat Sébastien
-             LICENSE  : CeCILL-C
-*****************************************************/
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.2.2
+*    DATE     : 06/2023
+*    LICENSE  : CeCILL-C
+*    FILE     : src/lib/valprof/ProfiledCumulValue.hpp
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat (ECR) - 2014
+***********************************************************/
 
 #ifndef MALT_PROFILED_CUMUL_VALUE_HPP
 #define MALT_PROFILED_CUMUL_VALUE_HPP
 
-/********************  HEADERS  *********************/
+/**********************************************************/
 #include <cstdlib>
 #include <cycle.h>
 #include <json/ConvertToJson.h>
@@ -17,10 +19,10 @@
 namespace MALT
 {
 
-/********************  MACROS  **********************/
+/**********************************************************/
 #define MALT_PROFILED_CUMUL_VALUE_DEFAULT_STEPS 1024
 
-/*********************  CLASS  **********************/
+/**********************************************************/
 template <class T>
 class ProfiledCumulValue
 {
@@ -44,7 +46,7 @@ class ProfiledCumulValue
 		bool linearIndex;
 };
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 template <class T>
 ProfiledCumulValue<T>::ProfiledCumulValue(size_t steps,bool linearIndex,bool initMemset)
 {
@@ -64,7 +66,7 @@ ProfiledCumulValue<T>::ProfiledCumulValue(size_t steps,bool linearIndex,bool ini
 		startTime = getticks();
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 template <class T>
 ProfiledCumulValue<T>::~ProfiledCumulValue(void)
 {
@@ -77,7 +79,7 @@ ProfiledCumulValue<T>::~ProfiledCumulValue(void)
 	oldEntries = NULL;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 template <class T>
 void ProfiledCumulValue<T>::push(const T & delta)
 {
@@ -97,7 +99,7 @@ void ProfiledCumulValue<T>::push(const T & delta)
 	entries[id] += delta;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 template <class T>
 ticks ProfiledCumulValue<T>::getIndex()
 {
@@ -109,7 +111,7 @@ ticks ProfiledCumulValue<T>::getIndex()
 		return getticks();
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 template <class T>
 void ProfiledCumulValue<T>::reshape(ticks neededIndex)
 {
@@ -138,7 +140,7 @@ void ProfiledCumulValue<T>::reshape(ticks neededIndex)
 	this->ticksPerEntry = newTickPerEntry;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 template <class T>
 void convertToJson(htopml::JsonState& json, const ProfiledCumulValue<T>& value)
 {

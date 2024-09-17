@@ -1,12 +1,15 @@
-/*****************************************************
-             PROJECT  : MALT
-             VERSION  : 1.2.2
-             DATE     : 06/2023
-             AUTHOR   : Valat Sébastien
-             LICENSE  : CeCILL-C
-*****************************************************/
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.2.2
+*    DATE     : 06/2023
+*    LICENSE  : CeCILL-C
+*    FILE     : src/lib/stacks/Stack.cpp
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat (ECR) - 2014
+*    AUTHOR   : Sébastien Valat - 2014
+***********************************************************/
 
-/********************  HEADERS  *********************/
+/**********************************************************/
 //extern
 #include <cstdio>
 #include <cstring>
@@ -21,15 +24,15 @@
 //locals
 #include "Stack.hpp"
 
-/********************  MACROS  **********************/
+/**********************************************************/
 #define CALL_STACK_DEFAULT_SIZE   32
 #define CALL_STACK_GROW_THRESHOLD 1024
 
-/*******************  NAMESPACE  ********************/
+/**********************************************************/
 namespace MALT
 {
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Stack constructor to init the internal states.
  * @param order Define the element ordering depending on the instrumentation mode (backtrace of enter-exit).
@@ -43,7 +46,7 @@ Stack::Stack ( StackOrder order )
 	this->memSize = 0;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Import a stack from a raw C representation, typically the one obtained from the backtrace() function.
  * For the backtrace function, use STACK_ORDER_ASC ordering.
@@ -58,7 +61,7 @@ Stack::Stack(void** stack, int size,StackOrder order)
 	this->set(stack,size,order);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Copy constructor.
 **/
@@ -75,7 +78,7 @@ Stack::Stack ( const Stack& orig )
 	this->set(orig.stack,orig.size,orig.order);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Copy a part of the stack and skip the last elements (deepest elements).
  * This function take care of the element ordering.
@@ -106,7 +109,7 @@ Stack::Stack ( const Stack& orig , int skipDepth)
 	
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Stack descrutor to free internal memory.
 **/
@@ -122,7 +125,7 @@ Stack::~Stack ( void )
 	#endif
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Permit to replace the current stack content by the given one.
 **/
@@ -131,7 +134,7 @@ void Stack::set ( const Stack& orig )
 	this->set(orig.stack,orig.size,orig.order);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Permit to replace the current stack content by the given one.
  * It can be feed by the raw representation provided by backtrace().
@@ -159,7 +162,7 @@ void Stack::set ( void** stack, int size, StackOrder order )
 	this->size = size;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Compute a short hash of the stack. The returned hash take care of the ordering so
  * generate a uniq value which is valid for the two representation.
@@ -181,7 +184,7 @@ StackHash Stack::hash ( int skipDepth ) const
 	}
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Internal function to compute the hash.
 **/
@@ -230,7 +233,7 @@ StackHash Stack::hash ( void** stack, int size ,StackOrder order)
 	return res;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Operator to read stack entries. It provide a uniq ordering by checking the internal one.
  * The external representation exposed to the user is by convention the backtrace one (ASC).
@@ -256,7 +259,7 @@ void* Stack::operator[](int idx) const
 	}
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Print the stack content with the backtrace ordering (ASC).
 **/
@@ -276,7 +279,7 @@ std::ostream& operator<< ( std::ostream& out, const Stack& obj )
 	return out;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Compare two stacks. They must have the same internal ordering representation.
  * It first do fast check on size and ordering to give a quick answer and then
@@ -304,7 +307,7 @@ bool operator== ( const Stack& v1, const Stack& v2 )
 	return true;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Compare a part of the stacks. They must have the same internal representation.
  * For the outside point of view the skip parameters are given in the backtrace ordering (ASC).
@@ -347,7 +350,7 @@ bool Stack::partialCompare(const Stack& stack1, int skip1, const Stack& stack2, 
 	return true;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Manage json code generation by following the backtrace() ordering convention (ASC).
 **/
@@ -369,13 +372,13 @@ void convertToJson ( htopml::JsonState& json, const Stack& obj )
 	json.closeArray();
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 size_t Stack::getMemSize(void ) const
 {
 	return memSize;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Increase the internal memory use to store the stack.
 **/
@@ -402,7 +405,7 @@ void Stack::grow ( void )
 	this->stack = mem;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Check if the current stack if empty of not.
 **/
@@ -411,13 +414,13 @@ bool Stack::isValid ( void ) const
 	return (this->stack != NULL && this->size > 0);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 int Stack::getSize ( void ) const
 {
 	return size;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Loop on all symbols and register them into the symbol translator.
 **/
@@ -428,7 +431,7 @@ void Stack::solveSymbols ( SymbolSolver& dic ) const
 			dic.registerAddress(stack[i]);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Return the callee, the current active function when doing backtrace(). Return NULL if no stack.
 **/
@@ -451,7 +454,7 @@ void* Stack::getCallee(void ) const
 	}
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Return the caller of current function in call stack. Return NULL if no stack.
 **/
@@ -474,7 +477,7 @@ void* Stack::getCaller(void ) const
 	}
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Copy operator.
  * @param stack Define the stack to copy.
@@ -486,7 +489,7 @@ Stack& Stack::operator=(const Stack& stack)
 	return *this;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Skip the last N call in the stack to ignore wrappers inside MALT. It take in account
  * the internal element ordering.
@@ -508,7 +511,7 @@ void Stack::fastSkip(int depth)
 	}
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Ordering operator for stacks.
  * It first compare stack sizes for fast call then compare the full stack content.

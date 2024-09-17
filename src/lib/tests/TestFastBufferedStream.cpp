@@ -1,20 +1,22 @@
-/*****************************************************
-             PROJECT  : MALT
-             VERSION  : 1.2.2
-             DATE     : 06/2023
-             AUTHOR   : Valat Sébastien
-             LICENSE  : CeCILL-C
-*****************************************************/
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.2.2
+*    DATE     : 06/2023
+*    LICENSE  : CeCILL-C
+*    FILE     : src/lib/tests/TestFastBufferedStream.cpp
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat (ECR) - 2014
+***********************************************************/
 
-/********************  HEADERS  *********************/
+/**********************************************************/
 #include <gtest/gtest.h>
 #include <json/FastBufferdStream.hpp>
 
-/***************** USING NAMESPACE ******************/
+/**********************************************************/
 using namespace htopml;
 using namespace std;
 
-/*********************  CLASS  **********************/
+/**********************************************************/
 class TestFastBufferdStream : public testing::Test
 {
 	public:
@@ -25,39 +27,39 @@ class TestFastBufferdStream : public testing::Test
 		FastBufferedStream * bufferd;
 };
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 ostream & operator << (ostream & out, const TestFastBufferdStream & value)
 {
 	out << "TestFastBufferdStream";
 	return out;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void TestFastBufferdStream::SetUp(void)
 {
 	out = new stringstream;
 	bufferd = new FastBufferedStream(out,512);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void TestFastBufferdStream::TearDown(void)
 {
 	delete bufferd;
 	delete out;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST_F(TestFastBufferdStream,constructor)
 {
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST_F(TestFastBufferdStream,emptyFlush)
 {
 	bufferd->flush();
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST_F(TestFastBufferdStream,putChar)
 {
 	EXPECT_EQ("",out->str());
@@ -67,7 +69,7 @@ TEST_F(TestFastBufferdStream,putChar)
 	EXPECT_EQ("c",out->str());
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST_F(TestFastBufferdStream,putCStringShort)
 {
 	EXPECT_EQ("",out->str());
@@ -77,7 +79,7 @@ TEST_F(TestFastBufferdStream,putCStringShort)
 	EXPECT_EQ("hello",out->str());
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST_F(TestFastBufferdStream,putCStringLong)
 {
 	//setup long chain
@@ -99,7 +101,7 @@ TEST_F(TestFastBufferdStream,putCStringLong)
 	EXPECT_EQ(buffer,out->str());
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST_F(TestFastBufferdStream,putStringShort)
 {
 	EXPECT_EQ("",out->str());
@@ -109,7 +111,7 @@ TEST_F(TestFastBufferdStream,putStringShort)
 	EXPECT_EQ("hello",out->str());
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST_F(TestFastBufferdStream,putStringLong)
 {
 	string value;
@@ -123,7 +125,7 @@ TEST_F(TestFastBufferdStream,putStringLong)
 	EXPECT_EQ(value,out->str());
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST_F(TestFastBufferdStream,puInt)
 {
 	EXPECT_EQ("",out->str());
@@ -133,7 +135,7 @@ TEST_F(TestFastBufferdStream,puInt)
 	EXPECT_EQ("10",out->str());
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST_F(TestFastBufferdStream,putPtr)
 {
 	EXPECT_EQ("",out->str());
@@ -143,7 +145,7 @@ TEST_F(TestFastBufferdStream,putPtr)
 	EXPECT_EQ("0x10",out->str());
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST_F(TestFastBufferdStream,putFloat)
 {
 	EXPECT_EQ("",out->str());
@@ -153,7 +155,7 @@ TEST_F(TestFastBufferdStream,putFloat)
 	EXPECT_EQ("0.5",out->str());
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST_F(TestFastBufferdStream,putDouble)
 {
 	EXPECT_EQ("",out->str());
@@ -163,7 +165,7 @@ TEST_F(TestFastBufferdStream,putDouble)
 	EXPECT_EQ("0.5",out->str());
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST_F(TestFastBufferdStream,putUnsignedLong)
 {
 	EXPECT_EQ("",out->str());
@@ -173,7 +175,7 @@ TEST_F(TestFastBufferdStream,putUnsignedLong)
 	EXPECT_EQ("10",out->str());
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST_F(TestFastBufferdStream,putLong)
 {
 	EXPECT_EQ("",out->str());
@@ -183,7 +185,7 @@ TEST_F(TestFastBufferdStream,putLong)
 	EXPECT_EQ("-10",out->str());
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST_F(TestFastBufferdStream,putStreamObj)
 {
 	EXPECT_EQ("",out->str());

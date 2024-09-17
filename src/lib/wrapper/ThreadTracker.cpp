@@ -1,12 +1,14 @@
-/*****************************************************
-             PROJECT  : MALT
-             VERSION  : 1.2.2
-             DATE     : 06/2023
-             AUTHOR   : Valat Sébastien
-             LICENSE  : CeCILL-C
-*****************************************************/
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.2.2
+*    DATE     : 06/2023
+*    LICENSE  : CeCILL-C
+*    FILE     : src/lib/wrapper/ThreadTracker.cpp
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat (ECR) - 2014
+***********************************************************/
 
-/********************  HEADERS  *********************/
+/**********************************************************/
 //standard
 #include "ThreadTracker.hpp"
 #include <cstdio>
@@ -17,13 +19,13 @@
 namespace MALT
 {
 
-/********************* GLOBALS **********************/
+/**********************************************************/
 /**
  * Static instance of thread tracker data.
 **/
 static ThreadTrackerData gblThreadTrackerData = {1,1,NULL,PTHREAD_MUTEX_INITIALIZER, true};
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Function called on thread exit via pthread_key system.
  * Argument is not used, only defined for signature compatibility.
@@ -37,7 +39,7 @@ void pthreadWrapperOnExit(void *)
 	pthread_mutex_unlock(&(gblThreadTrackerData.lock));
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Function to be used as wrapper in pthread_create to capture the thread init, update
  * counters and call the real user function.
@@ -68,7 +70,7 @@ static void * pthreadWrapperStartRoutine(void * arg)
 	return res;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * @return Return the maximum number of alive thread during program exacution.
 **/
@@ -77,7 +79,7 @@ int ThreadTracker::getMaxThreadCount(void)
 	return gblThreadTrackerData.maxThreadCount;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * @return Return the current alive thread count.
 **/
@@ -86,7 +88,7 @@ int ThreadTracker::getThreadCount(void)
 	return gblThreadTrackerData.threadCount;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void ThreadTracker::stopThreadTracking(void)
 {
 	gblThreadTrackerData.trackingIsEnabled = false;
@@ -94,7 +96,7 @@ void ThreadTracker::stopThreadTracking(void)
 
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Wrapper of thread_create method.
 **/

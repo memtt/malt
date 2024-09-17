@@ -1,3 +1,13 @@
+<!----------------------------------------------------------
+|    PROJECT  : MALT (MALoc Tracker)
+|    VERSION  : 1.2.2
+|    DATE     : 08/2016
+|    LICENSE  : CeCILL-C
+|    FILE     : src/webview/client-files/app/partials/source-func-list.html
+|-----------------------------------------------------------
+|    AUTHOR   : Sébastien Valat (ECR) - 2014
+|    AUTHOR   : Mehdi Raza Jaffery (CERN) - 2016
+----------------------------------------------------------->
 <ul class="nav nav-sidebar" id='malt-func-list' ng-class="{compact: compact}">
 	<li ng-repeat="func in functions | filter:viewFilter | orderBy:getValue:isReversedOrder() | pagination: ((selector.currentPage-1) * selector.perPage) | limitTo:selector.perPage" ng-click="selectFunc(func)" ng-class='{"malt-hidden": useHiddenClass(func), "malt-selected":isSelectedFunc(func)}' popover-placement="right" uib-popover-template="'partials/source-popover.html'" popover-trigger="mouseenter">
 		<a ng-click="selectFunc(func)" href=''>

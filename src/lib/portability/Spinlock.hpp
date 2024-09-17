@@ -1,19 +1,21 @@
-/*****************************************************
-             PROJECT  : MALT
-             VERSION  : 1.2.2
-             DATE     : 06/2023
-             AUTHOR   : Valat Sébastien
-             LICENSE  : CeCILL-C
-*****************************************************/
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.2.2
+*    DATE     : 06/2023
+*    LICENSE  : CeCILL-C
+*    FILE     : src/lib/portability/Spinlock.hpp
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat (ECR) - 2014
+***********************************************************/
 
 #ifndef MALT_SPINLOCK_HPP
 #define MALT_SPINLOCK_HPP
 
-/********************  HEADERS  *********************/
+/**********************************************************/
 #include <common/TakeLock.hpp>
 #include <config.h>
 
-/*********************  TYPES  **********************/
+/**********************************************************/
 #if defined(MALT_PORTABILITY_SPINLOCK_PTHREAD)
 	//pthread mode
 	#include "SpinlockPthread.hpp"

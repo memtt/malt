@@ -1,32 +1,34 @@
-/*****************************************************
-             PROJECT  : MALT
-             VERSION  : 1.2.2
-             DATE     : 06/2023
-             AUTHOR   : Valat Sébastien
-             LICENSE  : CeCILL-C
-*****************************************************/
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.2.2
+*    DATE     : 06/2023
+*    LICENSE  : CeCILL-C
+*    FILE     : src/lib/portability/tests/TestProcMapReader.cpp
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat - 2022
+***********************************************************/
 
-/********************  HEADERS  *********************/
+/**********************************************************/
 #include <gtest/gtest.h>
 #include "LinuxProcMapReader.hpp"
 
-/***************** USING NAMESPACE ******************/
+/**********************************************************/
 using namespace MALT;
 using namespace testing;
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void localFunc(void)
 {
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(LinuxProcMapReader,load)
 {
 	LinuxProcMapReader reader;
 	reader.load();
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(LinuxProcMapReader,getEntry)
 {
 	LinuxProcMapReader reader;
@@ -36,7 +38,7 @@ TEST(LinuxProcMapReader,getEntry)
 	EXPECT_STREQ(basename(entry->file.c_str()), "TestProcMapReader");
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(LinuxProcMapReader,begin_end)
 {
 	LinuxProcMapReader reader;

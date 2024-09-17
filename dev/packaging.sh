@@ -1,20 +1,25 @@
 #!/bin/bash
-######################################################
-#            PROJECT  : MATT                         #
-#            VERSION  : 1.2.2                        #
-#            DATE     : 06/2023                      #
-#            AUTHOR   : Valat Sébastien              #
-#            LICENSE  : CeCILL-C                     #
-######################################################
+############################################################
+#    PROJECT  : MALT (MALoc Tracker)
+#    VERSION  : 1.2.2
+#    DATE     : 06/2023
+#    LICENSE  : CeCILL-C
+#    FILE     : dev/packaging.sh
+#-----------------------------------------------------------
+#    AUTHOR   : Sébastien Valat - 2015 - 2019
+############################################################
 
+############################################################
 #setup version
 VERSION=1.2.2
 VERSION=$(echo $VERSION | cut -f 1 -d '-')
 
+############################################################
 #exit on error
 set -e
 set -x
 
+############################################################
 #Generate debian common package
 function debian_common()
 {
@@ -30,6 +35,7 @@ function debian_common()
 	update_manpages
 }
 
+############################################################
 #generate debian package from current install
 function debian_packaging()
 {
@@ -39,6 +45,7 @@ function debian_packaging()
 	debuild -uc -us || echo "deb-build has errors, continue"
 }
 
+############################################################
 function debian_build_docker()
 {
 	tag=${1}
@@ -46,6 +53,7 @@ function debian_build_docker()
 	docker build --tag ${tag} .
 }
 
+############################################################
 #generate debian via docker
 function debian_docker_packaging()
 {
@@ -60,6 +68,7 @@ function debian_docker_packaging()
 	docker run -v $PWD:/workdir ${tag} ./dev/packaging.sh debian
 }
 
+############################################################
 #generate with pbuilder
 function debian_pbuilder_packaging()
 {
@@ -73,6 +82,7 @@ function debian_pbuilder_packaging()
 	cp /var/cache/pbuilder/result/malt_${VERSION}_*.deb ../
 }
 
+############################################################
 #help
 function show_help()
 {
@@ -81,6 +91,7 @@ function show_help()
 	exit 1
 }
 
+############################################################
 #rpm
 function fedora_packaging()
 {
@@ -106,6 +117,7 @@ function fedora_packaging()
 	mv ~/rpmbuild/RPMS/*/malt-*.rpm .
 }
 
+############################################################
 function fedora_build_docker()
 {
 	tag=${1}
@@ -113,6 +125,7 @@ function fedora_build_docker()
 	docker build --tag ${tag} .
 }
 
+############################################################
 function fedora_docker_packaging()
 {
 	#args
@@ -126,11 +139,13 @@ function fedora_docker_packaging()
 	docker run -v $PWD:/workdir ${tag} ./dev/packaging.sh fedora
 }
 
+############################################################
 update_manpages()
 {
 	make -C ./src/manpages || echo "WARNING: Manpages not generated probably because you do not have Ronn installed !"
 }
 
+############################################################
 #select mode
 case $1 in
 	'debian')

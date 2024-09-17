@@ -1,40 +1,43 @@
-/*****************************************************
-             PROJECT  : MALT
-             VERSION  : 1.2.2
-             DATE     : 06/2023
-             AUTHOR   : Valat Sébastien
-             LICENSE  : CeCILL-C
-*****************************************************/
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.2.2
+*    DATE     : 06/2023
+*    LICENSE  : CeCILL-C
+*    FILE     : src/lib/stacks/Stack.hpp
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat (ECR) - 2014
+*    AUTHOR   : Sébastien Valat - 2014
+***********************************************************/
 
 #ifndef MALT_STACK_H
 #define MALT_STACK_H
 
-/********************  HEADERS  *********************/
+/**********************************************************/
 //std c
 #include <stdint.h>
 //std c++
 #include <ostream>
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Define a hash of the stack.
 **/
 typedef uint64_t StackHash;
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 namespace htopml
 {
 	class JsonState;
 }
 
-/*******************  NAMESPACE  ********************/
+/**********************************************************/
 namespace MALT
 {
 
-/*********************  TYPES  **********************/
+/**********************************************************/
 class SymbolSolver;
 
-/*********************  ENUM  ***********************/
+/**********************************************************/
 /**
  * Define the ordering of the stack storage. The ordering is forced by the backtrace implementation
  * and for the enter-exit mode, it is more efficient to use a reversed representation to enlarge the segment
@@ -48,7 +51,7 @@ enum StackOrder
 	STACK_ORDER_DESC
 };
 
-/*********************  CLASS  **********************/
+/**********************************************************/
 /**
  * Provide a short reprensentation of a call stack as an array of instruction addresses.
  * This base class can be extended to build the backtrace stack representation of the enter-exit

@@ -1,15 +1,18 @@
-/*****************************************************
-             PROJECT  : MALT
-             VERSION  : 1.2.2
-             DATE     : 06/2023
-             AUTHOR   : Valat Sébastien
-             LICENSE  : CeCILL-C
-*****************************************************/
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.2.2
+*    DATE     : 06/2023
+*    LICENSE  : CeCILL-C
+*    FILE     : src/lib/core/StackSizeAnalyser.hpp
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat (ECR) - 2014
+*    AUTHOR   : Sébastien Valat - 2021
+***********************************************************/
 
 #ifndef MALT_STACK_SIZE_ANALYSER_HPP
 #define MALT_STACK_SIZE_ANALYSER_HPP
 
-/********************  HEADERS  *********************/
+/**********************************************************/
 //standard
 //locals
 #include <stacks/Stack.hpp>
@@ -17,11 +20,11 @@
 #include "StackSizeTracker.hpp"
 #include <stacks/EnterExitStack.hpp>
 
-/*******************  NAMESPACE  ********************/
+/**********************************************************/
 namespace MALT
 {
 
-/*********************  CLASS  **********************/
+/**********************************************************/
 /**
  * @brief Class used to track the stack size and keep the largest stack seen.
 **/
@@ -49,7 +52,7 @@ class StackSizeAnalyser
 		ProfiledStateValue timeProfile;
 };
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Function to be used when we enter in function.
  * @param funcAddr Function pointer to the function we enter in.
@@ -75,7 +78,7 @@ inline void StackSizeAnalyser::onEnterFunc(void* funcAddr)
 	}
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Function to be used when we exit from a function.
  * @param funcAddr Function pointer to the function we exit.

@@ -1,31 +1,34 @@
-/*****************************************************
-             PROJECT  : MALT
-             VERSION  : 1.2.2
-             DATE     : 06/2023
-             AUTHOR   : Valat Sébastien
-             LICENSE  : CeCILL-C
-*****************************************************/
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.2.2
+*    DATE     : 06/2023
+*    LICENSE  : CeCILL-C
+*    FILE     : src/trace-reader/TraceReaderStackAllocs.cpp
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat - 2014
+*    AUTHOR   : Sébastien Valat (ECR) - 2014
+***********************************************************/
 
-/********************  HEADERS  *********************/
+/**********************************************************/
 //internal
 #include "TraceReaderStackAllocs.hpp"
 
-/*******************  NAMESPACE  ********************/
+/**********************************************************/
 namespace MALT
 {
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TraceReaderStackAllocs::TraceReaderStackAllocs(Filter * filter): TraceReader(filter)
 {
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void TraceReaderStackAllocs::onStart(void)
 {
 	this->map.clear();
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void TraceReaderStackAllocs::onEnd(void)
 {
 	bool first = true;
@@ -41,7 +44,7 @@ void TraceReaderStackAllocs::onEnd(void)
 	printf("\n}\n");
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void TraceReaderStackAllocs::onData(MALT::AllocTracerChunk& chunk)
 {
 	AtTimeInfo & info = map[chunk.allocStack];

@@ -1,26 +1,28 @@
-/*****************************************************
-             PROJECT  : MALT
-             VERSION  : 1.2.2
-             DATE     : 06/2023
-             AUTHOR   : Valat Sébastien
-             LICENSE  : CeCILL-C
-*****************************************************/
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.2.2
+*    DATE     : 06/2023
+*    LICENSE  : CeCILL-C
+*    FILE     : src/lib/stack-tree/from-v2/BacktraceStack.hpp
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat - 2015
+***********************************************************/
 
 #ifndef MALTV2_BACKTRACE_STACK_HPP
 #define MALTV2_BACKTRACE_STACK_HPP
 
-/********************  HEADERS  *********************/
+/**********************************************************/
 //internal stacks
 #include "Stack.hpp"
 //internal core
 // #include <core/SymbolSolver.hpp>
 // #include <core/CallStackInfo.hpp>
 
-/*******************  NAMESPACE  ********************/
+/**********************************************************/
 namespace MALTV2
 {
 
-/*********************  CLASS  **********************/
+/**********************************************************/
 /**
  * Implement a specific class to provide backtrace integration on top of our internal
  * stack representation.

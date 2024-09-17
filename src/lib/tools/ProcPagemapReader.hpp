@@ -1,26 +1,28 @@
-/*****************************************************
-             PROJECT  : MALT
-             VERSION  : 1.2.2
-             DATE     : 06/2023
-             AUTHOR   : Valat Sébastien
-             LICENSE  : CeCILL-C
-*****************************************************/
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.2.2
+*    DATE     : 06/2023
+*    LICENSE  : CeCILL-C
+*    FILE     : src/lib/tools/ProcPagemapReader.hpp
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat - 2015
+***********************************************************/
 
 #ifndef MALT_PROC_PAGEMAP_READER_HPP
 #define MALT_PROC_PAGEMAP_READER_HPP
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 //standard
 #include <cstdio>
 #include <stdint.h>
 //portability
 #include <portability/Mutex.hpp>
 
-/*******************  NAMESPACE  ********************/
+/**********************************************************/
 namespace MALT
 {
 
-/********************  STRUCT  **********************/
+/**********************************************************/
 //Infos from https://www.kernel.org/doc/Documentation/vm/pagemap.txt
 struct ProcPageMapEntry
 {
@@ -34,7 +36,7 @@ struct ProcPageMapEntry
 	unsigned char present:1;// Bit  63    page present
 };
 
-/*********************  CLASS  **********************/
+/**********************************************************/
 class ProcPageMapReader
 {
 	public:

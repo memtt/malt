@@ -1,12 +1,14 @@
-/*****************************************************
-             PROJECT  : MALT
-             VERSION  : 1.2.2
-             DATE     : 06/2023
-             AUTHOR   : Valat Sébastien
-             LICENSE  : CeCILL-C
-*****************************************************/
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.2.2
+*    DATE     : 06/2023
+*    LICENSE  : CeCILL-C
+*    FILE     : src/lib/stack-tree/from-v2/EnterExitStack.cpp
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat - 2015
+***********************************************************/
 
-/********************  HEADERS  *********************/
+/**********************************************************/
 //standard
 #include <cstring>
 #include <cstdio>
@@ -15,11 +17,11 @@
 //internals
 #include "EnterExitStack.hpp"
 
-/*******************  NAMESPACE  ********************/
+/**********************************************************/
 namespace MALTV2
 {
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Constructor for the enter-exit mode. It mostly setup the DESC convention for the underlying
  * generic stack implementation.

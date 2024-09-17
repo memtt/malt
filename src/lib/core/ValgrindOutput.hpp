@@ -1,15 +1,17 @@
-/*****************************************************
-             PROJECT  : MALT
-             VERSION  : 1.2.2
-             DATE     : 06/2023
-             AUTHOR   : Valat Sébastien
-             LICENSE  : CeCILL-C
-*****************************************************/
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.2.2
+*    DATE     : 06/2023
+*    LICENSE  : CeCILL-C
+*    FILE     : src/lib/core/ValgrindOutput.hpp
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat (ECR) - 2014
+***********************************************************/
 
 #ifndef MALT_VALGRIND_OUTPUT_HPP
 #define MALT_VALGRIND_OUTPUT_HPP
 
-/********************  HEADERS  *********************/
+/**********************************************************/
 #include <cstdlib>
 #include <map>
 #include <string>
@@ -19,20 +21,20 @@
 namespace MALT
 {
 
-/*********************  TYPES  **********************/
+/**********************************************************/
 typedef std::map<void*,CallStackInfo> ValgrindCalleeMap;
 
-/********************  STRUCT  **********************/
+/**********************************************************/
 struct ValgrindCaller
 {
 	CallStackInfo info;
 	ValgrindCalleeMap callees;
 };
 
-/*********************  TYPES  **********************/
+/**********************************************************/
 typedef std::map<void*,ValgrindCaller> ValgrindCallerMap;
 
-/*********************  CLASS  **********************/
+/**********************************************************/
 class ValgrindOutput
 {
 	public:

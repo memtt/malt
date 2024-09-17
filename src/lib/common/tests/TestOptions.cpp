@@ -1,20 +1,24 @@
-/*****************************************************
-             PROJECT  : MALT
-             VERSION  : 1.2.2
-             DATE     : 06/2023
-             AUTHOR   : Valat Sébastien
-             LICENSE  : CeCILL-C
-*****************************************************/
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.2.2
+*    DATE     : 06/2023
+*    LICENSE  : CeCILL-C
+*    FILE     : src/lib/common/tests/TestOptions.cpp
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat - 2014
+*    AUTHOR   : Sébastien Valat (ECR) - 2014
+*    AUTHOR   : Sébastien Valat (INRIA) - 2023
+***********************************************************/
 
-/********************  HEADERS  *********************/
+/**********************************************************/
 #include <gtest/gtest.h>
 #include <json/JsonState.h>
 #include "Options.hpp"
 
-/***************** USING NAMESPACE ******************/
+/**********************************************************/
 using namespace MALT;
 
-/********************  CONST  ***********************/
+/**********************************************************/
 const char cstJson[] = "\
 {\n\
 	\"time\":{\n\
@@ -61,20 +65,20 @@ const char cstJson[] = "\
 	}\n\
 }";
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(TestOptions,constructor)
 {
 	Options options;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(TestOptions,save)
 {
 	Options options;
 	options.dumpConfig("test-config-dump.ini");
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(TestOptions,saveAndLoad)
 {
 	Options options;
@@ -86,7 +90,7 @@ TEST(TestOptions,saveAndLoad)
 	EXPECT_EQ(options,options2);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(TestOptions,loadFromString)
 {
 	//build
@@ -105,7 +109,7 @@ TEST(TestOptions,loadFromString)
 	EXPECT_EQ(options.outputName, "test");
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(TestOptions,toSJon)
 {
 	//build
@@ -115,7 +119,7 @@ TEST(TestOptions,toSJon)
 	EXPECT_EQ(out.str(), cstJson);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(TestVerbosity,ostream)
 {
 	std::stringstream out;

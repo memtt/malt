@@ -1,12 +1,15 @@
- /*****************************************************
-             PROJECT  : MALT
-             VERSION  : 1.2.2
-             DATE     : 06/2023
-             AUTHOR   : Valat Sébastien
-             LICENSE  : CeCILL-C
-*****************************************************/
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.2.2
+*    DATE     : 06/2023
+*    LICENSE  : CeCILL-C
+*    FILE     : src/lib/core/VmaTracker.cpp
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat - 2014
+*    AUTHOR   : Sébastien Valat (ECR) - 2014
+***********************************************************/
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 //std
 #include <cstring>
 //common
@@ -15,14 +18,14 @@
 //current
 #include "VmaTracker.hpp"
 
-/********************  MACRO  ***********************/
+/**********************************************************/
 #define MALT_VMA_TRACKER_DEFAULT_SIZE 1024
 
-/*******************  NAMESPACE  ********************/
+/**********************************************************/
 namespace MALT
 {
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 VmaTracker::VmaTracker ( void )
 {
 	this->count = 0;
@@ -32,13 +35,13 @@ VmaTracker::VmaTracker ( void )
 	memset(this->vmas,0,sizeof(VmaInfo)*this->size);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 VmaTracker::~VmaTracker ( void )
 {
 	MALT_FREE(this->vmas);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void VmaTracker::compact ( void )
 {
 	//cursors
@@ -59,7 +62,7 @@ void VmaTracker::compact ( void )
 	lastInsert = curWrite;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void VmaTracker::grow ( void )
 {
 	assert(count == size);
@@ -69,7 +72,7 @@ void VmaTracker::grow ( void )
 	memset(vmas+size/2,0,size/2);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void VmaTracker::mmap ( void* ptr, size_t size )
 {
 	//check resize and compact
@@ -97,7 +100,7 @@ void VmaTracker::mmap ( void* ptr, size_t size )
 	count++;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 size_t VmaTracker::munmap ( void* ptr, size_t size )
 {
 	size_t removed = 0;
@@ -137,7 +140,7 @@ size_t VmaTracker::munmap ( void* ptr, size_t size )
 	return removed;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 size_t VmaTracker::mremap ( void* oldPtr, size_t oldSize, void* newPtr, size_t newSize )
 {
 	size_t ret = munmap( oldPtr,oldSize);

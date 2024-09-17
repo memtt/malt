@@ -1,20 +1,22 @@
-/*****************************************************
-             PROJECT  : MALT
-             VERSION  : 1.2.2
-             DATE     : 06/2023
-             AUTHOR   : Valat Sébastien
-             LICENSE  : CeCILL-C
-*****************************************************/
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.2.2
+*    DATE     : 06/2023
+*    LICENSE  : CeCILL-C
+*    FILE     : src/lib/core/tests/TestCallStackInfo.cpp
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat - 2022
+***********************************************************/
 
-/********************  HEADERS  *********************/
+/**********************************************************/
 #include <gtest/gtest.h>
 #include <core/CallStackInfo.hpp>
 #include <json/JsonState.h>
 
-/***************** USING NAMESPACE ******************/
+/**********************************************************/
 using namespace MALT;
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(TestSimpleQuantityHistory, constructor)
 {
 	//build
@@ -27,7 +29,7 @@ TEST(TestSimpleQuantityHistory, constructor)
 	EXPECT_EQ(0, history.sum);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(TestSimpleQuantityHistory, addEvent)
 {
 	//build
@@ -45,7 +47,7 @@ TEST(TestSimpleQuantityHistory, addEvent)
 	EXPECT_EQ(128, history.sum);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(TestSimpleQuantityHistory, push)
 {
 	//build
@@ -71,7 +73,7 @@ TEST(TestSimpleQuantityHistory, push)
 	EXPECT_EQ(528, history.sum);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(TestSimpleQuantityHistory, getMean)
 {
 	//build
@@ -89,13 +91,13 @@ TEST(TestSimpleQuantityHistory, getMean)
 	EXPECT_EQ(42, history.getMean());
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(TestCallStackInfo, constructor)
 {
 	CallStackInfo info;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(TestCallStackInfo, onAllocEvent)
 {
 	//build
@@ -116,7 +118,7 @@ TEST(TestCallStackInfo, onAllocEvent)
 	EXPECT_EQ(256, history.sum);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(TestCallStackInfo, onFreeEvent)
 {
 	//build
@@ -138,7 +140,7 @@ TEST(TestCallStackInfo, onFreeEvent)
 	EXPECT_EQ(256, history.sum);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(TestCallStackInfo, onFreeLinkedMemory)
 {
 	//build
@@ -159,7 +161,7 @@ TEST(TestCallStackInfo, onFreeLinkedMemory)
 	EXPECT_EQ(5100, history.sum);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(TestCallStackInfo, merge)
 {
 	//build
@@ -210,7 +212,7 @@ TEST(TestCallStackInfo, merge)
 	EXPECT_EQ(10200, historyLife.sum);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(TestCallStackInfo, onReallocEvent)
 {
 	//build
@@ -227,7 +229,7 @@ TEST(TestCallStackInfo, onReallocEvent)
 	EXPECT_TRUE(info.hasRealloc());
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(TestCallStackInfo, writeAsCallgrindCallEntry)
 {
 	//build
@@ -250,7 +252,7 @@ TEST(TestCallStackInfo, writeAsCallgrindCallEntry)
 	EXPECT_EQ(out2.str(), "10 2 2 4 96 96 96 96");
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(TestCallStackInfo, updatePeak)
 {
 	//build
@@ -266,7 +268,7 @@ TEST(TestCallStackInfo, updatePeak)
 	EXPECT_EQ(info.getPeak(), 192);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(TestCallStackInfo, convertToJson)
 {
 	//build
