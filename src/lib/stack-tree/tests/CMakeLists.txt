@@ -8,23 +8,16 @@
 #    AUTHOR   : Sébastien Valat - 2014 - 2018
 #    AUTHOR   : Sébastien Valat (ECR) - 2014 - 2015
 ############################################################
-######################################################
-#            PROJECT  : MALT                         #
-#            VERSION  : 1.2.2                        #
-#            DATE     : 06/2023                      #
-#            AUTHOR   : Valat Sébastien              #
-#            LICENSE  : CeCILL-C                     #
-######################################################
 
-######################################################
+############################################################
 #Use gtest
 include_directories(${GTEST_INCLUDE_DIRS} ${GMOCK_INCLUDE_DIRS})
 include_directories(../)
 
-######################################################
+############################################################
 set(TEST_NAMES TestStackSTLHashMap TestRLockFreeTree)
 
-######################################################
+############################################################
 #Enable openMP if present to use paralle tests
 FIND_PACKAGE(OpenMP QUIET)
 if(OPENMP_FOUND)
@@ -34,7 +27,7 @@ if(OPENMP_FOUND)
 	set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${OpenMP_EXE_LINKER_FLAGS} -g")
 endif()
 
-######################################################
+############################################################
 FOREACH(test_name ${TEST_NAMES})
 	add_executable(${test_name} ${test_name}.cpp)
 	target_link_libraries(${test_name} ${GTEST_BOTH_LIBRARIES} ${GMOCK_BOTH_LIBRARIES} malt-base)

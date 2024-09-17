@@ -8,15 +8,8 @@
 #    AUTHOR   : Sébastien Valat - 2014 - 2022
 #    AUTHOR   : Sébastien Valat (ECR) - 2014 - 2015
 ############################################################
-######################################################
-#            PROJECT  : MALT                         #
-#            VERSION  : 1.2.2                        #
-#            DATE     : 06/2023                      #
-#            AUTHOR   : Valat Sébastien              #
-#            LICENSE  : CeCILL-C                     #
-######################################################
 
-######################################################
+############################################################
 #Use gtest
 include_directories(${GTEST_INCLUDE_DIRS} ${GMOCK_INCLUDE_DIRS})
 include_directories(../)
