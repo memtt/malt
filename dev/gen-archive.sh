@@ -25,5 +25,14 @@ fi
 ######################################################
 echo "Generate ${prefix}.tar.gz..."
 set -e
-git archive --format=tar --prefix=${prefix}/ HEAD | bzip2 > ./${prefix}.tar.bz2
+git archive --format=tar --prefix=${prefix}/ HEAD | bzip2 > /tmp/${prefix}.tar.bz2
+pushd /tmp
+tar -xf ${prefix}.tar.bz2
+pushd ${prefix}/src/webview
+./prepare.sh
+popd
+tar -cjf ${prefix}.tar.bz2 ${prefix}
+popd
+mv /tmp/${prefix}.tar.bz2 ./
+rm -rfvd /tmp/${prefix}
 echo "Finished"
