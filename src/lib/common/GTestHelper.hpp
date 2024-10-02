@@ -1,7 +1,7 @@
 /***********************************************************
 *    PROJECT  : MALT (MALoc Tracker)
-*    VERSION  : 1.2.2
-*    DATE     : 09/2024
+*    VERSION  : 1.2.3
+*    DATE     : 10/2024
 *    LICENSE  : CeCILL-C
 *    FILE     : src/lib/common/GTestHelper.hpp
 *-----------------------------------------------------------
