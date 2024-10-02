@@ -53,7 +53,8 @@
 		"e5a2abbac8c51ea88211262a529d03f28aaec3fc"
 	],
 	"exclude_summary_regexps": [
-		"^\\[version\\]"
+		"^\\[version\\]",
+		"^\\[release\\]"
 	],
 	"lang": {
 		"shell": {
