@@ -16,10 +16,13 @@
 
 ############################################################
 import os
+import sys
 import shutil
 import tempfile
+import traceback
 import subprocess
 from contextlib import contextmanager
+from termcolor import cprint
 
 ############################################################
 #extract version
@@ -29,7 +32,7 @@ PACKAGE_VERSION="1.2.3"
 ############################################################
 # Run command after logging it and intercept error
 def run_shell(cmd: str) -> None:
-    print(f"  + {cmd}")
+    cprint(f"  + {cmd}", "light_blue")
     subprocess.run(cmd, shell=True, check=True)
 
 ############################################################
@@ -77,12 +80,12 @@ def malt_dev_gen_archive(name: str = PACKAGE_NAME, version: str = PACKAGE_VERSIO
     print(f"Generate {prefix}.tar.bz2...")
 
     # gen native archive
-    run_shell("git archive --format=tar --prefix=${prefix}/ HEAD | bzip2 > /tmp/${prefix}.tar.bz2")
+    run_shell(f"git archive --format=tar --prefix={prefix}/ HEAD | bzip2 > /tmp/{prefix}.tar.bz2")
 
     # extract to fetch deps & regen
     origdir = os.getcwd()
     with jump_in_tmpdir() as dir:
-        run_shell(f"tar -xf {origdir}/{prefix}.tar.bz2")
+        run_shell(f"tar -xf /tmp/{prefix}.tar.bz2")
         with jump_in_dir(f"{prefix}/src/webview"):
             print("  --------------------------------------------")
             run_shell("./prepare.sh 2>&1 | sed -e 's/^/  /g'")
@@ -92,8 +95,25 @@ def malt_dev_gen_archive(name: str = PACKAGE_NAME, version: str = PACKAGE_VERSIO
         shutil.move(f"{prefix}.tar.bz2", f"{origdir}/{prefix}.tar.bz2")
 
     # log
-    print("Done")
+    print("")
+    cprint("Done", "green")
+
+##########################################################
+def print_exception(exception: Exception) -> None:
+    dir = os.getcwd()
+    cprint("-----------------------------------------------", 'red')
+    cprint(''.join(traceback.format_exception(exception)), 'dark_grey')
+    cprint("-----------------------------------------------", 'red')
+    cprint(f"Error from command : {' '.join(sys.argv)}", 'red')
+    cprint(f"Error from workdir : {dir}", 'red')
+    cprint("-----------------------------------------------", 'red')
+    cprint(str(exception), 'red')
+    cprint("-----------------------------------------------", 'red')
+    print("")
 
 ############################################################
 if __name__ == "__main__":
-    malt_dev_gen_archive()
+    try:
+        malt_dev_gen_archive()
+    except Exception as e:
+        print_exception(e)
