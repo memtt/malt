@@ -9,7 +9,7 @@
 		"body": [
 			"/***********************************************************",
 			"*    PROJECT  : MALT (MALoc Tracker)",
-			"*    VERSION  : 1.2.2",
+			"*    VERSION  : 1.2.3",
 			"*    DATE     : ${CURRENT_MONTH}/${CURRENT_YEAR}",
 			"*    LICENSE  : CeCILL-C",
 			"*    FILE     : ${TM_DIRECTORY}/${TM_FILENAME}",

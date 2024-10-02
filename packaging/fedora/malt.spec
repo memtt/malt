@@ -10,7 +10,7 @@
 ############################################################
 
 Name: malt
-Version: 1.2.2
+Version: 1.2.3
 Release: 1%{?dist}
 Summary: Memory profiling tool to track memory allocations (malloc, realloc, free...)
 

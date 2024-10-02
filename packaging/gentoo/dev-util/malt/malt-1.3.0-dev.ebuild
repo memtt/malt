@@ -15,7 +15,7 @@ inherit cmake-utils
 RESTRICT="primaryuri"
 DESCRIPTION="Memory profiling tool to track memory allocations (malloc,free,realloc...)."
 HOMEPAGE="https://github.com/svalat/malt"
-SRC_URI="https://github.com/downloads/svalat/malt/malt-1.2.2.tar.bz2"
+SRC_URI="https://github.com/downloads/svalat/malt/malt-1.2.3.tar.bz2"
 
 LICENSE="CeCILL-C"
 SLOT="0"
