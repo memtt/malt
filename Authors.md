@@ -23,6 +23,7 @@ Special thanks to original finance plan :
 Ponctual bugfix contributors:
 -----------------------------
 
+ * Antoine Bernard [2024]
  * Philippe Carphin [2023]
  * Sriram Swaminarayan [2023]
  * Luca Barbato (gentoo.org) [2019]

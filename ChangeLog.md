@@ -1,8 +1,8 @@
 Change log
 ==========
 
-Master
-------
+1.2.3 - 02/10/2024
+------------------
 
  - Remove javascript libs from the git repo, now download them and emed them at
    release time in distributed tarball.
