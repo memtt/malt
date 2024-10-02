@@ -4,18 +4,18 @@ Change log
 1.2.3 - 02/10/2024
 ------------------
 
- - Remove javascript libs from the git repo, now download them and emed them at
+ - Remove javascript libs from the git repo, now download them and embed them at
    release time in distributed tarball.
  - Add authors to all source headers.
- - Fix some typo in documenation.
+ - Fix some typo in documentation.
  - Webview now support big files.
  - Dev script to check portability over distributions via Podman.
  - Allow using malt webview forwarded via VSCode server.
  - Some fixes in ./configure
  - Use system google test if present.
- - Upgrade embeded version of google test.
+ - Upgrade embedded version of google test.
  - Fix ways of finding MALT_ROOT due to readlink -f not supported on FreeBSD (now optional)
- - Make MAKLT install dir relocalisable.
+ - Make MALT install dir re-localisable.
  - Some tuning of address translation to support better large executables / libs.
 
 1.2.2 - 28/06/2023
