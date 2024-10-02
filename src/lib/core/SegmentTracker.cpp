@@ -7,7 +7,7 @@
 *-----------------------------------------------------------
 *    AUTHOR   : Sébastien Valat - 2014 - 2024
 *    AUTHOR   : Sébastien Valat (ECR) - 2014
-*    AUTHOR   : Antoine Bernard - 2024
+*    AUTHOR   : Antoine Bernard (crans.org) - 2024
 ***********************************************************/
 
 /********************  HEADERS  *********************/

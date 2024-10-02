@@ -137,6 +137,8 @@
 		"src/webview/client-files/app/bower_components"
 	],
 	"include_files": [
-		"src/**/CMakeLists.txt"
+		"src/**/CMakeLists.txt",
+		".github/workflows/malt.yml",
+		".gitlab-ci.yml"
 	]
 }

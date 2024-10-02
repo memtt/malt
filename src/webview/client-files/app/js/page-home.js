@@ -8,7 +8,7 @@
 *    AUTHOR   : Sébastien Valat (ECR) - 2014 - 2015
 *    AUTHOR   : Sébastien Valat - 2015 - 2024
 *    AUTHOR   : Mehdi Raza Jaffery (CERN) - 2016
-*    AUTHOR   : Antoine Bernard - 2024
+*    AUTHOR   : Antoine Bernard (crans.org) - 2024
 ***********************************************************/
 function MaltPageHome()
 {
