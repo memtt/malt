@@ -23,7 +23,7 @@
     "big-json": "^3.2.0",
     "clone": "0.1.11",
     "d3-scale": "^1.0.1",
-    "express": "4.18.x",
+    "express": "4.20.x",
     "extend": "^3.0.0",
     "htpasswd": "^2.4.6",
     "http-auth": "^2.4.11",
