@@ -1,6 +1,11 @@
 Change log
 ==========
 
+master
+------
+
+ - Upgrade Express.JS used version due to security issue.
+
 1.2.3 - 02/10/2024
 ------------------
 
