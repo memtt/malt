@@ -26,7 +26,8 @@
 		"dependabot[bot]": null,
 		"sebv":            "Sébastien Valat",
 		"Sebastien Valat": "Sébastien Valat",
-		"Valat Sébastien": "Sébastien Valat"
+		"Valat Sébastien": "Sébastien Valat",
+		"bernarda78"     : "Antoine Bernard"
 	},
 	"affiliation_domains": {
 		"@atos.net": "ATOS",
@@ -37,7 +38,8 @@
 		"@rc.gc.ca": "ECCC",
 		"@ddn.com": "DDN",
 		"@lanl.gov": "LANL",
-		"@parsteur.fr": "Institut Pasteur"
+		"@parsteur.fr": "Institut Pasteur",
+		"@crans.org": "crans.org"
 	},
 	"exclude_hashes": [
 		"d1c2f8b61ae29207e4edcf8409a73ffbd06a268d",
@@ -49,7 +51,8 @@
 		"e5a2abbac8c51ea88211262a529d03f28aaec3fc"
 	],
 	"exclude_summary_regexps": [
-		"^\\[version\\]"
+		"^\\[version\\]",
+		"^\\[release\\]"
 	],
 	"lang": {
 		"shell": {
