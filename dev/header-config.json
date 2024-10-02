@@ -42,6 +42,8 @@
 		"@crans.org": "crans.org"
 	},
 	"exclude_hashes": [
+		"2a84369dd310fb12fd231292791e1677d922f24f",
+		"f4ad22b007ba43c838d2e87873a392a55acce541",
 		"d1c2f8b61ae29207e4edcf8409a73ffbd06a268d",
 		"075bb57390f5627c0dd0e08a731cd562018a13bd",
 		"b56e40ec248ace19f96ed8f205ac74f0d09ea3bf",
