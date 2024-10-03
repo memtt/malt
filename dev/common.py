@@ -38,6 +38,11 @@ def run_shell(cmd: str) -> None:
     subprocess.run(cmd, shell=True, check=True)
 
 ############################################################
+def run_shell_cmds(cmds: list) -> None:
+    for cmd in cmds:
+        run_shell(cmd)
+
+############################################################
 @contextmanager
 def jump_in_dir(path: str):
     '''
