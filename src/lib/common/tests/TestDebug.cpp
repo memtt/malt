@@ -1,6 +1,6 @@
 /***********************************************************
 *    PROJECT  : MALT (MALoc Tracker)
-*    VERSION  : 1.2.3
+*    VERSION  : 1.2.4
 *    DATE     : 10/2024
 *    LICENSE  : CeCILL-C
 *    FILE     : src/lib/common/tests/TestDebug.cpp

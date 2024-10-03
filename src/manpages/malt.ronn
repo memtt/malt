@@ -298,7 +298,7 @@ with a custom symbol prefix):
 
 ## VERSION
 
-   This is the manpage of MALT version 1.2.3.
+   This is the manpage of MALT version 1.2.4.
 
 ## SEE ALSO
 

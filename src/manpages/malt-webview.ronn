@@ -50,7 +50,7 @@ Where the first 8080 is the local port and the second one the remote.
 
 ## VERSION
 
-   This is the manpage of MALT version 1.2.3.
+   This is the manpage of MALT version 1.2.4.
 
 ## SEE ALSO
 

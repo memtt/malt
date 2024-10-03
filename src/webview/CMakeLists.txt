@@ -1,6 +1,6 @@
 ######################################################
 #            PROJECT  : MALT                         #
-#            VERSION  : 1.2.3                        #
+#            VERSION  : 1.2.4                        #
 #            DATE     : 10/2024                      #
 #            AUTHOR   : Valat Sébastien              #
 #            LICENSE  : CeCILL-C                     #

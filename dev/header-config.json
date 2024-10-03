@@ -1,7 +1,7 @@
 {
 	"header_keys": {
 		"PROJECT": "MALT (MALoc Tracker)",
-		"VERSION": "1.2.3",
+		"VERSION": "1.2.4",
 		"DATE": "@LAST_EDIT_MONTH_YEAR@",
 		"LICENSE": "CeCILL-C"
 	},
