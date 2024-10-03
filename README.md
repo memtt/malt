@@ -61,6 +61,24 @@ If you are a user of spack you can also install it easily by using :
 spack install malt
 ```
 
+Into distributions
+------------------
+
+**Gentoo**
+
+I provide an overlay containing both MALT & NUMAPROF, you can use it by calling :
+
+```sh
+# MALT using gentoo overlay memtt :
+sudo eselect repository add memtt git https://github.com/memtt/gentoo-memtt-overlay.git
+sudo eselect repository enable memtt
+sudo emerge -a malt numaprof
+```
+
+**Debian / Ubuntu / Centos / RedHat / Fedora / Arch**
+
+You can give a look into [packaging/README.md](packaging/README.md).
+
 Build options
 -------------
 
