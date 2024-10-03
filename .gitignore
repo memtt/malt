@@ -5,3 +5,10 @@ src/webview/node_modules/
 src/webview/dist
 src/webview/build
 /build*
+/venv
+
+# for convenience
+/UNTRACKED
+
+# python
+__pycache__
