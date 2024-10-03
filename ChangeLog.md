@@ -1,6 +1,13 @@
 Change log
 ==========
 
+1.2.4 - 03/10/2024
+------------------
+
+ - Fix issue in previous release making some unit tests broken (line numbers) by file header changing.
+ - Fix cmake issue with libunwind find package under Gentoo with x86_64 + x86.
+ - Add build summary in CMake script.
+
 1.2.3 - 02/10/2024
 ------------------
 
