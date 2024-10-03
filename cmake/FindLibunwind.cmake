@@ -26,16 +26,15 @@ find_path(LIBUNWIND_INCLUDE_DIR libunwind.h
 
 ############################################################
 find_library(LIBUNWIND_LIBRARY NAMES unwind
-	HINTS ${LIBUNWIND_PREFIX}/lib)
+	HINTS ${LIBUNWIND_PREFIX}/${LIBDIR})
 
 ############################################################
-foreach(arch x86 x86_64 ppc ppc64 aarch aarch64)
-	find_library(LIBUNWIND_${arch} NAMES unwind-${arch}
-		HINTS ${LIBUNWIND_PREFIX}/lib)
-	if (LIBUNWIND_${arch})
-		list(APPEND LIBUNWIND_ARCH_LIBRARIES ${LIBUNWIND_${arch}})
-	endif()
-endforeach()
+set(arch ${CMAKE_SYSTEM_PROCESSOR})
+find_library(LIBUNWIND_${arch} NAMES unwind-${arch}
+	HINTS ${LIBUNWIND_PREFIX}/${LIBDIR})
+if (LIBUNWIND_${arch})
+	list(APPEND LIBUNWIND_ARCH_LIBRARIES ${LIBUNWIND_${arch}})
+endif()
 
 ############################################################
 set(LIBUNWIND_LIBRARIES ${LIBUNWIND_LIBRARY} ${LIBUNWIND_ARCH_LIBRARIES})
@@ -46,7 +45,7 @@ include(FindPackageHandleStandardArgs)
 # handle the QUIETLY and REQUIRED arguments and set LIBUNWIND_FOUND to TRUE
 # if all listed variables are TRUE
 find_package_handle_standard_args(Libunwind  DEFAULT_MSG
-	LIBUNWIND_LIBRARY LIBUNWIND_INCLUDE_DIR)
+	LIBUNWIND_LIBRARY LIBUNWIND_LIBRARIES LIBUNWIND_INCLUDE_DIR)
 
 ############################################################
 mark_as_advanced(LIBUNWIND_INCLUDE_DIR LIBUNWIND_LIBRARY )

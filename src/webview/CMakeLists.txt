@@ -7,12 +7,6 @@
 ######################################################
 
 ######################################################
-# Check for npm if needed
-if (NOT IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/node_modules)
-	find_package(Npm REQUIRED)
-endif()
-
-######################################################
 # Install nodejs dependencies if needed
 # then install node_modules into share directory
 if (NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/node_modules)

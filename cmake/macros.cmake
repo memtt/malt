@@ -26,9 +26,6 @@ ENDMACRO(malt_setup_internal_gmock_and_gtest)
 ############################################################
 # Setup google test by either using the internal one of using the one is current system if avail
 MACRO(malt_setup_google_tests)
-	# search system on
-	find_package(GTest QUIET)
-
 	# if avail use the system one, otherwise use embeded one
 	if (NOT GTEST_FOUND)
 		malt_setup_internal_gmock_and_gtest()
@@ -71,3 +68,42 @@ MACRO(malt_enable_cxx_11)
 			message(FATAL_ERROR "The compiler ${CMAKE_CXX_COMPILER} has no C++11 support. Please use a different C++ compiler.")
 	endif()
 ENDMACRO(malt_enable_cxx_11)
+
+###########################################################
+# Print a summary status to help ensuring everything
+# is correct
+function(malt_print_status)
+	# Prepare some vars for printing
+	list(JOIN MALT_CXX_FLAGS " " MALT_CXX_FLAGS_STR)
+	string(TOUPPER "${CMAKE_BUILD_TYPE}" CMAKE_BUILD_TYPE_UPPER)
+	if (CMAKE_BUILD_TYPE STREQUAL "")
+		list(JOIN CMAKE_CXX_FLAGS " " CMAKE_BUILD_TYPE_FLAGS)
+	else()
+		list(JOIN CMAKE_CXX_FLAGS_${CMAKE_BUILD_TYPE_UPPER} " " CMAKE_BUILD_TYPE_FLAGS)
+	endif()
+
+	# Print summary
+	message(STATUS "==============================================================")
+	message(STATUS "|  OS               : ${CMAKE_HOST_SYSTEM_NAME}")
+	message(STATUS "|  Compiler familly : ${CMAKE_CXX_COMPILER_ID}")
+	message(STATUS "|  Compiler         : ${CMAKE_CXX_COMPILER}")
+	message(STATUS "--------------------------------------------------------------")
+	message(STATUS "|  tests            : ${ENABLE_TESTS}")
+	message(STATUS "|  profiler         : ${ENABLE_PROFILER}")
+	message(STATUS "|  gcc-coverage     : ${ENABLE_GCC_COVERAGE}")
+	message(STATUS "|  valgrind         : ${ENABLE_VALGRIND}")
+	message(STATUS "--------------------------------------------------------------")
+	message(STATUS "|  libunwind        : ${LIBUNWIND_LIBRARIES}")
+	message(STATUS "|  libelf           : ${LIBELF_LIBRARY}")
+	#message(STATUS "|  iniparser        : ${INIPARSER_LIBRARY}")
+	message(STATUS "|  gtest            : ${GTEST_INCLUDE_DIR}")
+	message(STATUS "|  qt5-widgets      : ${Qt5Widgets_INCLUDE_DIRS}")
+	message(STATUS "|  qt5-web-egnine   : ${Qt5WebEngineWidgets_INCLUDE_DIRS}")
+	message(STATUS "|  qt5-network      : ${Qt5Network_INCLUDE_DIRS}")
+	message(STATUS "--------------------------------------------------------------")
+	message(STATUS "|  CMake build type : ${CMAKE_BUILD_TYPE}")
+	message(STATUS "|  CMake cxxflags   : ${CMAKE_BUILD_TYPE_FLAGS}")
+	message(STATUS "|  User cxxflags    : ${CMAKE_CXX_FLAGS}")
+	message(STATUS "|  All cxxflags     : ${CMAKE_BUILD_TYPE_FLAGS} ${MALT_CXX_FLAGS_STR} ${CMAKE_CXX_FLAGS}")
+	message(STATUS "==============================================================")
+endfunction()

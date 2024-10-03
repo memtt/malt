@@ -32,7 +32,7 @@ find_path(INIPARSER_INCLUDE_DIR iniparser.h
 
 ############################################################
 find_library(INIPARSER_LIBRARY NAMES iniparser
-	HINTS ${PC_INIPARSER_LIBDIR} ${PC_INIPARSER_LIBRARY_DIRS} ${INIPARSER_PREFIX}/lib)
+	HINTS ${PC_INIPARSER_LIBDIR} ${PC_INIPARSER_LIBRARY_DIRS} ${INIPARSER_PREFIX}/${LIBDIR})
 
 ############################################################
 set(INIPARSER_LIBRARIES ${INIPARSER_LIBRARY} )

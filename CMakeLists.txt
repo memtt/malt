@@ -39,6 +39,7 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_SOURCE_DIR}/cmake/)
 ############################################################
 # Options
 set(ENABLE_TESTS "no" CACHE BOOL "Enable build of internal tests.")
+set(ENABLE_GCC_COVERAGE "no" CACHE BOOL "Enable coverage compile flags to be enabled.")
 
 ############################################################
 #Delegate some cmake scripts
@@ -61,8 +62,27 @@ endif(ENABLE_GCC_COVERAGE)
 set(ENABLE_PROFILER "yes" CACHE BOOL "Enable the installation of the profiler.")
 
 ############################################################
+# search deps
+find_package(GTest QUIET)
+FIND_PACKAGE(OpenMP QUIET)
+find_package(LibElf QUIET)
+find_package(Libunwind QUIET)
+find_package(Qt5Widgets QUIET)
+find_package(Qt5WebEngineWidgets QUIET)
+find_package(Qt5WebKitWidgets QUIET)
+find_package(Qt5Network QUIET)
+# Check for npm if needed
+if (NOT IS_DIRECTORY ${CMAKE_SOURCE_DIR}/src/webview/node_modules)
+	find_package(Npm REQUIRED)
+endif()
+
+############################################################
 #build subdirs
 add_subdirectory(src)
 if (ENABLE_PROFILER)
 	add_subdirectory(extern-deps)
 endif(ENABLE_PROFILER)
+
+############################################################
+# infos
+malt_print_status()

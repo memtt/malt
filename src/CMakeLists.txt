@@ -13,13 +13,6 @@
 check_nodejs()
 
 ############################################################
-# Find the QtWidgets library
-find_package(Qt5Widgets QUIET)
-find_package(Qt5WebEngineWidgets QUIET)
-find_package(Qt5WebKitWidgets QUIET)
-find_package(Qt5Network QUIET)
-
-############################################################
 if (Qt5WebEngineWidgets_FOUND OR Qt5WebKitWidgets_FOUND)
 	set(Qt5Webkit_FOUND OK)
 endif (Qt5WebEngineWidgets_FOUND OR Qt5WebKitWidgets_FOUND)

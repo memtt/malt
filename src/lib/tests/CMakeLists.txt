@@ -34,7 +34,6 @@ target_link_libraries(bench malt-base dl)
 
 ############################################################
 #Enable openMP if present to use paralle tests
-FIND_PACKAGE(OpenMP QUIET)
 if(OPENMP_FOUND)
 	message(STATUS "OpenMP found for unit tests")
 	set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS} -g")

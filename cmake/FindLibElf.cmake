@@ -26,7 +26,7 @@ find_path(LIBELF_INCLUDE_DIR libelf.h elf.h
 
 ############################################################
 find_library(LIBELF_LIBRARY NAMES elf
-	HINTS ${LIBELF_PREFIX}/lib)
+	HINTS ${LIBELF_PREFIX}/${LIBDIR})
 
 ############################################################
 set(LIBELF_LIBRARIES ${LIBELF_LIBRARY} )

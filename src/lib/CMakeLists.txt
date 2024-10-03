@@ -10,11 +10,6 @@
 ############################################################
 
 ############################################################
-#Find
-find_package(LibElf QUIET)
-find_package(Libunwind QUIET)
-
-############################################################
 #set default
 if (LIBUNWIND_FOUND)
 	set(MALT_HAVE_LIBUNWIND "yes")
