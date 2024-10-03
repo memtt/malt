@@ -49,7 +49,7 @@ function debian_packaging()
 function debian_build_docker()
 {
 	tag=${1}
-	cp packaging/Dockerfile-debian ./ Dockerfile
+	cp packaging/Dockerfile-debian ./Dockerfile
 	docker build --tag ${tag} .
 }
 
@@ -65,7 +65,7 @@ function debian_docker_packaging()
 
 	#make
 	docker image ls | grep -q ${tag} || debian_build_docker ${tag}
-	docker run -v $PWD:/workdir ${tag} ./dev/packaging.sh debian
+	docker run -rm -v $PWD:/workdir ${tag} ./dev/packaging.sh debian
 }
 
 ############################################################
@@ -87,7 +87,7 @@ function debian_pbuilder_packaging()
 function show_help()
 {
 	echo "Invalid argument, required build type as parameter" 1>&2
-	echo "   $0 {debian|debian-pbuilder|fedora|rpm}" 1>&2
+	echo "   $0 {debian|debian-pbuilder|debian-docker|fedora|rpm}" 1>&2
 	exit 1
 }
 
@@ -152,7 +152,7 @@ case $1 in
 		debian_packaging
 		;;
 	'debian-docker')
-		debian_docker_packaging "debian:jessie"
+		debian_docker_packaging "debian:bookworm"
 		;;
 	'debian-pbuilder')
 		debian_pbuilder_packaging
