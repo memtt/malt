@@ -77,7 +77,8 @@ sudo emerge -a malt numaprof
 
 **Debian / Ubuntu / Centos / RedHat / Fedora / Arch**
 
-You can give a look into [packaging/README.md](packaging/README.md).
+You can give a look into [packaging/README.md](packaging/README.md) if you want to yourself build
+packages for those distributions with the embeded scripts.
 
 Build options
 -------------
