@@ -664,6 +664,22 @@ void SymbolSolver::registerMaqaoFunctionSymbol(int funcId, const char* funcName,
 
 /**********************************************************/
 /**
+ * Register the symbol resolution, more for unit tests.
+ * @param addr The address to translate.
+ * @param funcName The function name.
+ * @param file The file of the call ste..
+ * @param line Line of the call site.
+**/
+void SymbolSolver::registerFunctionSymbol(void * addr, const char * funcName,const char * file,int line)
+{
+	auto & site = this->callSiteMap[addr];
+	site.file = getString(file);
+	site.function = getString(funcName);
+	site.line = line;
+}
+
+/**********************************************************/
+/**
  * Convert a call site to json format.
  * @param json Reference to the json state to make the conversion
  * @param value Reference to the call site to convert.

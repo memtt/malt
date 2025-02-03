@@ -99,6 +99,7 @@ class SymbolSolver
 		bool isSameFuntion(const CallSite * s1,void * s2) const;
 		bool procMapIsLoaded(void) const;
 		void registerMaqaoFunctionSymbol(int funcId,const char * funcName,const char * file,int line);
+		void registerFunctionSymbol(void * addr, const char * funcName,const char * file,int line);
 		LinuxProcMapEntry * getMapEntry(void * callSite);
 		void solveAslrOffsets(void);
 	public:
