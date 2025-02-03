@@ -39,7 +39,7 @@ def assert_shell_command(command: str) -> None:
 def print_exception(exception: Exception) -> None:
     dir = os.getcwd()
     cprint("-----------------------------------------------", 'red')
-    cprint(''.join(traceback.format_exception(exception)), 'dark_grey')
+    cprint(''.join(traceback.format_exception(exception)), 'grey')
     cprint("-----------------------------------------------", 'red')
     cprint(f"Error from command : {' '.join(sys.argv)}", 'red')
     cprint(f"Error from workdir : {dir}", 'red')
@@ -51,7 +51,7 @@ def print_exception(exception: Exception) -> None:
 ############################################################
 # Run command after logging it and intercept error
 def run_shell(cmd: str) -> None:
-    cprint(f"  + {cmd}", "light_blue")
+    cprint(f"  + {cmd}", "cyan")
     assert_shell_command(cmd)
 
 ############################################################
