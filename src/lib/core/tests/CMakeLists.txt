@@ -22,6 +22,7 @@ set(TEST_NAMES TestVmaTracker
                TestCallStackInfo
                TestSimpleCallStackNode
                TestSimpleCallStackTracker
+               TestStackSizeAnalyser
 )
 
 #####################################################
