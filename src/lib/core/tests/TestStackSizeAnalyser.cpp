@@ -93,11 +93,31 @@ TEST(TestStackSizeAnalyser, full_workflow)
 	ASSERT_EQ(out.str(), CST_REF_1);
 }
 
-/*
-StackSizeAnalyser(void);
-inline void onEnterFunc(void * funcAddr);
-inline void onExitFunc(void * funcAddr);
-void solveSymbols(SymbolSolver & symbolResolver) const;
-friend void convertToJson(htopml::JsonState& json, const StackSizeAnalyser& value);
+/**********************************************************/
+TEST(TestStackSizeAnalyser, solveSymbos)
+{
+	//reset clock
+	Clock::enableLineratTimingsForTests();
 
-*/
+	//build it
+	StackSizeAnalyser analyser;
+
+	//play
+	analyser.onEnterFunc((void*)0x100);
+	analyser.onEnterFunc((void*)0x200);
+	analyser.onExitFunc((void*)0x200);
+	analyser.onEnterFunc((void*)0x300);
+	analyser.onExitFunc((void*)0x300);
+	analyser.onExitFunc((void*)0x100);
+
+	//solve
+	SymbolSolver solver;
+	analyser.solveSymbols(solver);
+
+	//convert
+	std::stringstream out;
+	htopml::convertToJson(out, solver);
+
+	//check
+	ASSERT_EQ(out.str(), "{\n\t\"map\":[],\n\t\"strings\":[\"??\"],\n\t\"instr\":{\n\n\t}\n}");
+}
