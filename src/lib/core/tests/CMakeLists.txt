@@ -20,6 +20,8 @@ set(TEST_NAMES TestVmaTracker
                TestSymbolSolver
                TestAllocTraceFile
                TestCallStackInfo
+               TestSimpleCallStackNode
+               TestSimpleCallStackTracker
 )
 
 #####################################################
