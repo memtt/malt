@@ -41,6 +41,11 @@ class VmaTracker
 		void mmap(void * ptr,size_t size);
 		size_t mremap(void * oldPtr,size_t oldSize,void * newPtr,size_t newSize);
 		size_t munmap(void * ptr,size_t size);
+		std::vector<VmaInfo> getAsVector(void) const;
+		size_t getCount(void) const;
+		size_t getInsertPosition(void) const;
+	public:
+		friend std::ostream & operator<<(std::ostream & out, VmaTracker & tracker);
 	private:
 		void compact(void);
 		void grow(void);

@@ -19,7 +19,7 @@
 #include "VmaTracker.hpp"
 
 /**********************************************************/
-#define MALT_VMA_TRACKER_DEFAULT_SIZE 1024
+#define MALT_VMA_TRACKER_DEFAULT_SIZE 10
 
 /**********************************************************/
 namespace MALT
@@ -60,12 +60,13 @@ void VmaTracker::compact ( void )
 			curWrite++;
 	}
 	lastInsert = curWrite;
+	this->count = curWrite + 1;
 }
 
 /**********************************************************/
 void VmaTracker::grow ( void )
 {
-	assert(count == size);
+	assert(this->count == this->size);
 	
 	size *= 2;
 	vmas = (VmaInfo*)MALT_REALLOC(vmas,size);
@@ -76,9 +77,9 @@ void VmaTracker::grow ( void )
 void VmaTracker::mmap ( void* ptr, size_t size )
 {
 	//check resize and compact
-	if (lastInsert >= size)
+	if (lastInsert >= this->size)
 	{
-		if (count >= size)
+		if (this->count >= this->size)
 			grow();
 		compact();
 	}
@@ -146,6 +147,35 @@ size_t VmaTracker::mremap ( void* oldPtr, size_t oldSize, void* newPtr, size_t n
 	size_t ret = munmap( oldPtr,oldSize);
 	mmap(newPtr,newSize);
 	return ret;
+}
+
+/**********************************************************/
+std::vector<VmaInfo> VmaTracker::getAsVector(void) const
+{
+	std::vector<VmaInfo> result;
+	for (size_t i = 0 ; i < this->count ; i++)
+		result.push_back(this->vmas[i]);
+	return result;
+}
+
+/**********************************************************/
+size_t VmaTracker::getCount(void) const
+{
+	return this->count;
+}
+
+/**********************************************************/
+size_t VmaTracker::getInsertPosition(void) const
+{
+	return this->lastInsert;
+}
+
+/**********************************************************/
+std::ostream & operator<<(std::ostream & out, VmaTracker & tracker)
+{
+	for (size_t i = 0; i < tracker.count ; i++)
+		out << "[" << tracker.vmas[i].start << " - " << tracker.vmas[i].end << "]" << std::endl;
+	return out;
 }
 
 }
