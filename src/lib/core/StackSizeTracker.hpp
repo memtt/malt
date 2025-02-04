@@ -29,6 +29,7 @@ class StackSizeTracker
 	public:
 		StackSizeTracker(void);
 		void enter(void);
+		void enter(size_t stackPointer);
 		void exit(void);
 		unsigned long getSize(void) const;
 		unsigned long getTotalSize(void) const;

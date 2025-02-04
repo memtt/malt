@@ -37,6 +37,21 @@ const char * CST_REF_1 = "{\n\
 \t}\n\
 }";
 
+const char * CST_REF_2 = "{\n\
+\t\"map\":[],\n\
+\t\"strings\":[\"??\"],\n\
+\t\"instr\":{\n\
+\t\t\"0x1\":{\n\
+\n\
+\t\t},\n\
+\t\t\"0x100\":{\n\
+\n\t\t},\n\
+\t\t\"0x300\":{\n\
+\n\
+\t\t}\n\
+\t}\n\
+}";
+
 /**********************************************************/
 //for pre init of global allocator
 class ForceInit
@@ -103,10 +118,10 @@ TEST(TestStackSizeAnalyser, solveSymbos)
 	StackSizeAnalyser analyser;
 
 	//play
-	analyser.onEnterFunc((void*)0x100);
-	analyser.onEnterFunc((void*)0x200);
+	analyser.onEnterFunc((void*)0x100, 3000);
+	analyser.onEnterFunc((void*)0x200, 2000);
 	analyser.onExitFunc((void*)0x200);
-	analyser.onEnterFunc((void*)0x300);
+	analyser.onEnterFunc((void*)0x300, 1000);
 	analyser.onExitFunc((void*)0x300);
 	analyser.onExitFunc((void*)0x100);
 
@@ -119,5 +134,5 @@ TEST(TestStackSizeAnalyser, solveSymbos)
 	htopml::convertToJson(out, solver);
 
 	//check
-	ASSERT_EQ(out.str(), "{\n\t\"map\":[],\n\t\"strings\":[\"??\"],\n\t\"instr\":{\n\n\t}\n}");
+	ASSERT_EQ(out.str(), CST_REF_2);
 }

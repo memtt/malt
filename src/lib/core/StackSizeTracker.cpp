@@ -57,9 +57,18 @@ void StackSizeTracker::enter(void)
 		#warning "Arch not supported, stack size tracking will be ignored, all rest will work fine, this is optional."
 	#endif
 	
+	this->enter(crsp);
+}
+
+/**********************************************************/
+/**
+ * Enter in the stack by giving the stack size from the caller.
+ */
+void StackSizeTracker::enter(size_t stackPointer)
+{
 	//push
-	this->stack.push_back(crsp);
-	this->cur = crsp;
+	this->stack.push_back(stackPointer);
+	this->cur = stackPointer;
 	
 	//min
 	if (this->base == 0 || this->cur > this->base)
