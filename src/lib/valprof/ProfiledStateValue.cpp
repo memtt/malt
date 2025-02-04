@@ -60,7 +60,7 @@ ProfiledStateValue::ProfiledStateValue(size_t steps,bool useLinearIndex)
 	this->remoteLinearIndex = NULL;
 	
 	///setup vars
-	this->startTime = getticks();
+	this->startTime = Clock::getticks();
 	this->startIndex = getIndex();
 	this->currentId = 0;
 	this->steps = steps;
@@ -94,7 +94,7 @@ void ProfiledStateValue::onUpdateValue(size_t value,void * location)
 {
 	//get current
 	ticks index = getIndex();
-	ticks timestamp = getticks();
+	ticks timestamp = Clock::getticks();
 	this->value = value;
 	
 	if (location != NULL)
@@ -242,7 +242,7 @@ ticks ProfiledStateValue::getIndex() const
 {
 	if (useLinearIndex == false)
 	{
-		return ::getticks();
+		return Clock::getticks();
 	} else if (remoteLinearIndex == NULL) {
 		return linearIndex;
 	} else {

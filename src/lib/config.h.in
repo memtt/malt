@@ -35,6 +35,9 @@
 #cmakedefine MALT_PORTABILITY_BACKTRACE_GLIBC
 #cmakedefine MALT_PORTABILITY_BACKTRACE_LIBUNWIND
 
+//selec on of the clock
+#cmakedefine MALT_PORTABILITY_CLOCK_RDTSC
+
 //Use code timing to help optimizing MALT code
 #cmakedefine MALT_ENABLE_CODE_TIMING
 

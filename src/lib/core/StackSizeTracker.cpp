@@ -14,7 +14,7 @@
 #include <cstdio>
 #include "StackSizeTracker.hpp"
 #include <portability/LinuxProcMapReader.hpp>
-#include <cycle.h>
+#include <portability/Clock.hpp>
 
 /**********************************************************/
 namespace MALT
@@ -70,7 +70,7 @@ void StackSizeTracker::enter(void)
 	//	this->loadMapping();
 	
 	//debug
-	//printf("malt %llu , %zu , %zu , %zu\n",getticks(),this->base,crsp,getSize());
+	//printf("malt %llu , %zu , %zu , %zu\n",Clock::getticks(),this->base,crsp,getSize());
 }
 
 /**********************************************************/

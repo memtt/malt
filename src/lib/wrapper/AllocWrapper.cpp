@@ -538,9 +538,9 @@ void * MALT::malt_wrap_malloc(size_t size, const MallocFuncPtr & real_malloc, vo
 	//run the default function
 	assert(gblState.status > ALLOC_WRAP_INIT_SYM);
 	
-	ticks t = getticks();
+	ticks t = Clock::getticks();
 	void * res = real_malloc(size);
-	t = getticks() - t;
+	t = Clock::getticks() - t;
 
 	//profile
 	MALT_WRAPPER_LOCAL_STATE_ACTION(localState.profiler->onMalloc(res,size,t,MALLOC_KIND_MALLOC), retaddr);
@@ -606,9 +606,9 @@ void * MALT::malt_wrap_calloc(size_t nmemb,size_t size, const CallocFuncPtr & re
 	//run the default function
 	assert(gblState.status > ALLOC_WRAP_INIT_SYM);
 	
-	ticks t = getticks();
+	ticks t = Clock::getticks();
 	void * res = real_calloc(nmemb,size);
-	t = getticks() - t;
+	t = Clock::getticks() - t;
 
 	//profile
 	MALT_WRAPPER_LOCAL_STATE_ACTION(localState.profiler->onCalloc(res,nmemb,size,t), retaddr);
@@ -640,9 +640,9 @@ void * MALT::malt_wrap_realloc(void * ptr,size_t size, const ReallocFuncPtr & re
 	//run the default function
 	assert(gblState.status > ALLOC_WRAP_INIT_SYM);
 	
-	ticks t = getticks();
+	ticks t = Clock::getticks();
 	void * res = real_realloc(ptr,size);
-	t = getticks() - t;
+	t = Clock::getticks() - t;
 	
 	//profile
 	MALT_WRAPPER_LOCAL_STATE_ACTION(localState.profiler->onRealloc(ptr,res,size,t), retaddr);
@@ -669,9 +669,9 @@ int MALT::malt_wrap_posix_memalign(void **memptr, size_t alignment, size_t size,
 	//run the default function
 	assert(gblState.status > ALLOC_WRAP_INIT_SYM);
 	
-	ticks t = getticks();
+	ticks t = Clock::getticks();
 	int res = real_mem_align(memptr, alignment, size);
-	t = getticks() - t;
+	t = Clock::getticks() - t;
 
 	//profile
 	MALT_WRAPPER_LOCAL_STATE_ACTION(localState.profiler->onMalloc(*memptr,size,t,MALLOC_KIND_POSIX_MEMALIGN), retaddr);
@@ -699,9 +699,9 @@ void * MALT::malt_wrap_aligned_alloc(size_t alignment, size_t size, const Aligne
 	//run the default function
 	assert(gblState.status > ALLOC_WRAP_INIT_SYM);
 	
-	ticks t = getticks();
+	ticks t = Clock::getticks();
 	void * res = real_aligned_alloc(alignment,size);
-	t = getticks() - t;
+	t = Clock::getticks() - t;
 
 	//profile
 	MALT_WRAPPER_LOCAL_STATE_ACTION(localState.profiler->onMalloc(res,size,t,MALLOC_KIND_ALIGNED_ALLOC), retaddr);
@@ -729,9 +729,9 @@ void *MALT::malt_wrap_memalign(size_t alignment, size_t size, const MemalignFunc
 	//run the default function
 	assert(gblState.status > ALLOC_WRAP_INIT_SYM);
 	
-	ticks t = getticks();
+	ticks t = Clock::getticks();
 	void * res = real_memalign(alignment,size);
-	t = getticks() - t;
+	t = Clock::getticks() - t;
 
 	//profile
 	MALT_WRAPPER_LOCAL_STATE_ACTION(localState.profiler->onMalloc(res,size,t,MALLOC_KIND_POSIX_MEMALIGN), retaddr);
@@ -759,9 +759,9 @@ void * MALT::malt_wrap_valloc(size_t size, const VallocFuncPtr & real_aligned_va
 	//run the default function
 	assert(gblState.status > ALLOC_WRAP_INIT_SYM);
 	
-	ticks t = getticks();
+	ticks t = Clock::getticks();
 	void * res = real_aligned_valloc(size);
-	t = getticks() - t;
+	t = Clock::getticks() - t;
 
 	//profile
 	MALT_WRAPPER_LOCAL_STATE_ACTION(localState.profiler->onMalloc(res,size,t,MALLOC_KIND_VALLOC), retaddr);
@@ -789,9 +789,9 @@ void *MALT::malt_wrap_pvalloc(size_t size, const PVallocFuncPtr & real_pvalloc, 
 	//run the default function
 	assert(gblState.status > ALLOC_WRAP_INIT_SYM);
 	
-	ticks t = getticks();
+	ticks t = Clock::getticks();
 	void * res = real_pvalloc(size);
-	t = getticks() - t;
+	t = Clock::getticks() - t;
 
 	//profile
 	MALT_WRAPPER_LOCAL_STATE_ACTION(localState.profiler->onMalloc(res,size,t,MALLOC_KIND_PVALLOC), retaddr);

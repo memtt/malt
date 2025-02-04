@@ -17,7 +17,7 @@
 #include <ostream>
 #include <cstdlib>
 //from fftw (copied in extern-deps)
-#include <cycle.h>
+#include <portability/Clock.hpp>
 
 /**********************************************************/
 namespace htopml

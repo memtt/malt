@@ -27,7 +27,7 @@ namespace MALT
 SegmentInfo::SegmentInfo(void)
 {
 	this->size = 0;
-	this->allocTime = getticks();
+	this->allocTime = Clock::getticks();
 }
 
 /*******************  FUNCTION  *********************/
@@ -47,7 +47,7 @@ SegmentInfo::~SegmentInfo(void)
 **/
 ticks SegmentInfo::getLifetime(void ) const
 {
-	return getticks() - allocTime;
+	return Clock::getticks() - allocTime;
 }
 
 /*******************  FUNCTION  *********************/

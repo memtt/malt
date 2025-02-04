@@ -14,7 +14,7 @@
 
 /**********************************************************/
 #include <cstdlib>
-#include <cycle.h>
+#include <portability/Clock.hpp>
 #include <json/ConvertToJson.h>
 
 namespace MALT
@@ -64,7 +64,7 @@ ProfiledCumulValue<T>::ProfiledCumulValue(size_t steps,bool linearIndex,bool ini
 	if (linearIndex)
 		this->startTime = 0;
 	else
-		startTime = getticks();
+		startTime = Clock::getticks();
 }
 
 /**********************************************************/
@@ -109,7 +109,7 @@ ticks ProfiledCumulValue<T>::getIndex()
 	if (linearIndex)
 		return cur;
 	else
-		return getticks();
+		return Clock::getticks();
 }
 
 /**********************************************************/

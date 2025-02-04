@@ -13,7 +13,7 @@
 #include <cstdlib>
 #include <cmath>
 //from fftw
-#include <cycle.h>
+#include <portability/Clock.hpp>
 //extern deps
 #include <json/JsonState.h>
 //internal

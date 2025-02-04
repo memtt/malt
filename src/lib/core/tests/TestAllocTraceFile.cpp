@@ -37,7 +37,7 @@ TEST(TestAllocTraceFile, trace)
 	//build infos
 	BacktraceStack stack;
 	stack.loadCurrentStack();
-	ticks allocTime = getticks();
+	ticks allocTime = Clock::getticks();
 	ticks lifeTime = 10000;
 
 	//dump many

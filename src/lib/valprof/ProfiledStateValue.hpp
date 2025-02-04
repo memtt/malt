@@ -14,7 +14,7 @@
 
 /**********************************************************/
 #include <cstdlib>
-#include <cycle.h>
+#include <portability/Clock.hpp>
 #include <json/ConvertToJson.h>
 
 namespace MALT

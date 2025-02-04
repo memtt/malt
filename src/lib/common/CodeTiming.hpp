@@ -19,7 +19,7 @@
 #include <ostream>
 #include <iostream>
 //from fftw (copied into extern-deps)
-#include <cycle.h>
+#include <portability/Clock.hpp>
 //internal
 #include <config.h>
 
@@ -131,7 +131,7 @@ class CodeTiming
 inline ticks CodeTiming::start(void)
 {
 	#ifdef MALT_ENABLE_CODE_TIMING
-		return getticks();
+		return Clock::getticks();
 	#else
 		return 0;
 	#endif
@@ -150,7 +150,7 @@ inline void CodeTiming::end(ticks start, ticks end)
 	if (doIt) {
 		//get time
 		if (end == 0)
-			end = getticks();
+			end = Clock::getticks();
 		ticks t = end - start;
 
 		//update min/max

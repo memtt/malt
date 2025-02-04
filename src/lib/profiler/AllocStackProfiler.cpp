@@ -90,7 +90,7 @@ AllocStackProfiler::AllocStackProfiler(const Options & options,StackMode mode,bo
 	
 	//init tref to convert ticks in sec
 	gettimeofday(&trefSec,NULL);
-	trefTicks = getticks();
+	trefTicks = Clock::getticks();
 	
 	//open trace file
 	if (options.traceEnabled)
@@ -213,7 +213,7 @@ size_t AllocStackProfiler::onRealloc(void* oldPtr, void* ptr, size_t newSize,Sta
 void AllocStackProfiler::onAllocEvent(void* ptr, size_t size,Stack* userStack,MMCallStackNode * callStackNode,bool doLock)
 {
 	//locals
-	ticks t = getticks();
+	ticks t = Clock::getticks();
 	MMCallStackNode localCallStackNode;
 	if (callStackNode == NULL)
 		callStackNode = &localCallStackNode;
@@ -287,7 +287,7 @@ void AllocStackProfiler::onAllocEvent(void* ptr, size_t size,Stack* userStack,MM
 size_t AllocStackProfiler::onFreeEvent(void* ptr, MALT::Stack* userStack, MMCallStackNode* callStackNode, bool doLock)
 {
 	//locals
-	ticks t = getticks();
+	ticks t = Clock::getticks();
 	size_t size = 0;
 	MMCallStackNode localCallStackNode;
 	if (callStackNode == NULL)
@@ -629,7 +629,7 @@ void convertToJson(htopml::JsonState& json, const AllocStackProfiler& value)
 		json.printField("formatVersion", MALT_JSON_FORMAT_VERSION);
 		json.printField("tool","malt-" MALT_VERSION MALT_VERSION_NOTE);
 		json.printField("date",OS::getDateTime());
-		json.printField("runtime",getticks() - value.trefTicks);
+		json.printField("runtime",Clock::getticks() - value.trefTicks);
 		json.printField("allocator", value.realMallocLib);
 		if (value.getOptions()->traceEnabled)
 			json.printField("tracefile",value.traceFilename);
@@ -767,7 +767,7 @@ ticks AllocStackProfiler::ticksPerSecond(void) const
 	ticks res;
 	
 	//read
-	tTicks = getticks();
+	tTicks = Clock::getticks();
 	gettimeofday(&tSec,NULL);
 	
 	//compute delta and store

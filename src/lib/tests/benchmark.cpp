@@ -10,7 +10,7 @@
 ***********************************************************/
 
 /**********************************************************/
-#include <cycle.h>
+#include <portability/Clock.hpp>
 #include <stacks/BacktraceStack.hpp>
 #include <profiler/AllocStackProfiler.hpp>
 #include <stack-tree/RLockFreeTree.hpp>
@@ -77,9 +77,9 @@ ticks BenchTiming::getTicksPerSecond(void) const
 	
 	//measure
 	gettimeofday(&tv0,NULL);
-	t0 = getticks();
+	t0 = Clock::getticks();
 	sleep(1);
-	t1 = getticks();
+	t1 = Clock::getticks();
 	gettimeofday(&tv1,NULL);
 	
 	//compute
@@ -100,26 +100,26 @@ void BenchTiming::start(const char* name, int duration)
 	this->minEventTime = 0;
 	this->sumEvents = 0;
 	ticks durationTicks = (ticks)duration * (ticks)perSeconds;
-	this->startTime = getticks();
+	this->startTime = Clock::getticks();
 	this->expectedEnd = startTime + durationTicks;
 }
 
 /**********************************************************/
 bool BenchTiming::needRun(void) const
 {
-	return getticks() < expectedEnd;
+	return Clock::getticks() < expectedEnd;
 }
 
 /**********************************************************/
 void BenchTiming::eventStart(void)
 {
-	this->lastEventStart = getticks();
+	this->lastEventStart = Clock::getticks();
 }
 
 /**********************************************************/
 void BenchTiming::eventEnd(void)
 {
-	ticks t = getticks() - lastEventStart;
+	ticks t = Clock::getticks() - lastEventStart;
 	
 	if (this->cntEvents == 0)
 	{
@@ -135,8 +135,8 @@ void BenchTiming::eventEnd(void)
 /**********************************************************/
 void BenchTiming::end(ostream& out)
 {
-	ticks t = getticks() - startTime;
-	assert(getticks() > expectedEnd);
+	ticks t = Clock::getticks() - startTime;
+	assert(Clock::getticks() > expectedEnd);
 	
 	out << std::setw(20) << name << " : repeated = " << cntEvents << " duration : ";
 	printTime(out,t);

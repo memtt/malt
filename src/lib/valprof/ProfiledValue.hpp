@@ -18,7 +18,7 @@
 #include <cassert>
 #include <cstring>
 //from fftw
-#include <cycle.h>
+#include <portability/Clock.hpp>
 //extern deps
 #include <json/JsonState.h>
 //internal

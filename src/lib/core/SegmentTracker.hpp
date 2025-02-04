@@ -16,7 +16,7 @@
 //STD
 #include <map>
 //from fftw
-#include <cycle.h>
+#include <portability/Clock.hpp>
 //internals
 #include <common/STLInternalAllocator.hpp>
 #include "SimpleCallStackNode.hpp"

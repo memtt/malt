@@ -26,6 +26,7 @@ set(PORTABILITY_SPINLOCK  "PTHREAD"  CACHE STRING "Select spinlock implementatio
 set(PORTABILITY_MUTEX     "PTHREAD"  CACHE STRING "Select mutex implementation to use. Currently support : 'PTHREAD', 'DUMMY'.")
 set(PORTABILITY_OS        "UNIX"     CACHE STRING "Select OS implementation to use. Currently support : 'UNIX'.")
 set(PORTABILITY_COMPILER  "GNU"      CACHE STRING "Select compiler support to use. Currently support : 'GNU' (also valid intel).")
+set(PORTABILITY_CLOCK     "RDTSC"    CACHE STRING "Clock to be used to represent time in MALT.")
 
 ############################################################
 #select portability definitions
@@ -34,6 +35,7 @@ set(MALT_PORTABILITY_MUTEX_${PORTABILITY_MUTEX}        yes)
 set(MALT_PORTABILITY_OS_${PORTABILITY_OS}              yes)
 set(MALT_PORTABILITY_COMPILER_${PORTABILITY_COMPILER}  yes)
 set(MALT_PORTABILITY_BACKTRACE_${PORTABILITY_BACKTRACE}  yes)
+set(MALT_PORTABILITY_CLOCK_${PORTABILITY_CLOCK}        yes)
 #enabling features
 if (ENABLE_CODE_TIMING)
 	set(MALT_ENABLE_CODE_TIMING yes)

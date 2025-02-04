@@ -17,6 +17,7 @@ endif (MALT_PORTABILITY_OS_UNIX)
 ############################################################
 list(APPEND MALT_PORT_SRC LinuxProcMapReader.cpp)
 list(APPEND MALT_PORT_SRC CompilerGNU.cpp)
+list(APPEND MALT_PORT_SRC ClockRDTSC.cpp)
 
 ############################################################
 add_library(malt-port OBJECT ${MALT_PORT_SRC})
