@@ -134,6 +134,7 @@
 		"src/maqao/malt.mil",
 		"*.bowerrc",
 		"src/webview/node_modules/",
+		"src/webview/client-files/app/partials",
 		"src/webview/client-files/app/bower_components"
 	],
 	"include_files": [

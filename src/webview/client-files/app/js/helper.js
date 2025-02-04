@@ -83,6 +83,10 @@ MaltHelper.prototype.ticksToHourMinSec = function(t,ticksPerSec)
 /** Short helper to convert values to human readable format **/	
 MaltHelper.prototype.humanReadable = function(value,decimals,unit,protectedSpace)
 {
+	//error
+	if (value == undefined)
+		return "UNDEF";
+
 	var mul = 1000;
 	if (unit == 'B' || unit == 'B')
 		mul = 1024;
