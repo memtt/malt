@@ -38,10 +38,10 @@ function MaltPageStackPeaks()
 			
 			cur.plotStackPeak('malt-stack-peaks',data, function(svg,chart,e) {
 				console.log(e);
-				$scope.selectedThreadId = e.pointIndex;
+				$scope.selectedThreadId = e.index;
 				$scope.$apply();
-				selectedChart.update(data,e.pointIndex);
-				selectedChartDetails.update(e.pointIndex);
+				selectedChart.update(data,e.index);
+				selectedChartDetails.update(e.index);
 			});
 		});
 	}]);

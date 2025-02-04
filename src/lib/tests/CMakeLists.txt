@@ -46,9 +46,11 @@ add_executable(simple-case-no-finstr simple-case.cpp)
 
 ############################################################
 add_executable(simple-case-finstr simple-case.cpp)
+SET_TARGET_PROPERTIES(simple-case-finstr PROPERTIES COMPILE_FLAGS -finstrument-functions)
 
 ############################################################
 add_executable(simple-case-finstr-linked simple-case.cpp)
+SET_TARGET_PROPERTIES(simple-case-finstr-linked PROPERTIES COMPILE_FLAGS -finstrument-functions)
 target_link_libraries(simple-case-finstr-linked malt)
 
 ############################################################
