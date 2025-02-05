@@ -1,3 +1,13 @@
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.2.4
+*    DATE     : 10/2024
+*    LICENSE  : CeCILL-C
+*    FILE     : src/webview/client-files/test/karma.conf.js
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat (ECR) - 2014
+*    AUTHOR   : Sébastien Valat - 2024
+***********************************************************/
 module.exports = function(config){
   config.set({
 

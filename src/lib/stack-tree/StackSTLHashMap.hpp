@@ -1,15 +1,18 @@
-/*****************************************************
-             PROJECT  : MALT
-             VERSION  : 1.2.2
-             DATE     : 06/2023
-             AUTHOR   : Valat Sébastien
-             LICENSE  : CeCILL-C
-*****************************************************/
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.2.4
+*    DATE     : 10/2024
+*    LICENSE  : CeCILL-C
+*    FILE     : src/lib/stack-tree/StackSTLHashMap.hpp
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat (ECR) - 2014
+*    AUTHOR   : Sébastien Valat - 2015 - 2024
+***********************************************************/
 
 #ifndef MALT_STACK_STL_HASH_HPP
 #define MALT_STACK_STL_HASH_HPP
 
-/********************  HEADERS  *********************/
+/**********************************************************/
 //std
 #include <map>
 #include <cassert>
@@ -21,15 +24,15 @@
 #include <stacks/Stack.hpp>
 #include <core/SymbolSolver.hpp>
 
-/*******************  NAMESPACE  ********************/
+/**********************************************************/
 namespace MALT
 {
 
-/********************  GLOBALS  *********************/
+/**********************************************************/
 //to help unit test implementation
 extern unsigned long gblUseFakeIdInOutput;
 
-/*********************  CLASS  **********************/
+/**********************************************************/
 /**
  * Provide a simple stack storage based on STL hash map. We use a three level hash construct 
  * to quicly find the entries without reading the whole stack content to find it in map.
@@ -81,21 +84,21 @@ class StackSTLHashMap
 		InternalMap map;
 };
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 template <class T>
 StackSTLHashMap<T>::StackSTLHashMap(void)
 {
 
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 template <class T>
 StackSTLHashMap<T>::~StackSTLHashMap(void)
 {
 
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 template <class T>
 typename StackSTLHashMap<T>::Node & StackSTLHashMap<T>::getNode(const Stack& stack)
 {
@@ -117,21 +120,21 @@ typename StackSTLHashMap<T>::Node & StackSTLHashMap<T>::getNode(const Stack& sta
 	return (*it);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 template <class T>
 T& StackSTLHashMap<T>::getValueRef(const Stack& stack)
 {
 	return getNode(stack).second;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 template <class T>
 T& StackSTLHashMap<T>::operator[](const Stack& stack)
 {
 	return getNode(stack).second;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 template <class T>
 StackSTLHashMap<T>::Key::Key(const Stack* stack)
 {
@@ -140,7 +143,7 @@ StackSTLHashMap<T>::Key::Key(const Stack* stack)
 	this->hash = stack->hash();
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 template <class T>
 bool StackSTLHashMap<T>::Key::operator==(const Key& node) const
 {
@@ -150,7 +153,7 @@ bool StackSTLHashMap<T>::Key::operator==(const Key& node) const
 		return *stack == *node.stack;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 template <class T>
 bool StackSTLHashMap<T>::Key::operator<(const Key& node) const
 {
@@ -164,7 +167,7 @@ bool StackSTLHashMap<T>::Key::operator<(const Key& node) const
 	}
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 template <class U>
 void convertToJson(htopml::JsonState& json, const StackSTLHashMap< U >& value)
 {
@@ -187,35 +190,35 @@ void convertToJson(htopml::JsonState& json, const StackSTLHashMap< U >& value)
 	json.closeStruct();
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 template <class T>
 typename StackSTLHashMap<T>::iterator StackSTLHashMap<T>::begin()
 {
 	return map.begin();
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 template <class T>
 typename StackSTLHashMap<T>::iterator StackSTLHashMap<T>::end()
 {
 	return map.end();
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 template <class T>
 typename StackSTLHashMap<T>::const_iterator StackSTLHashMap<T>::begin() const
 {
 	return map.begin();
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 template <class T>
 typename StackSTLHashMap<T>::const_iterator StackSTLHashMap<T>::end() const
 {
 	return map.end();
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 template <class T>
 void StackSTLHashMap<T>::solveSymbols(SymbolSolver& symbolResolver)
 {
@@ -223,7 +226,7 @@ void StackSTLHashMap<T>::solveSymbols(SymbolSolver& symbolResolver)
 		it->first.stack->solveSymbols(symbolResolver);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 template <class T>
 void StackSTLHashMap<T>::Key::cloneStack(void)
 {
@@ -232,14 +235,14 @@ void StackSTLHashMap<T>::Key::cloneStack(void)
 	stack = new(ptr) Stack(*stack);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 template <class T>
 bool StackSTLHashMap<T>::empty() const
 {
 	return map.empty();
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 template <class T>
 void StackSTLHashMap<T>::remove ( iterator& it )
 {

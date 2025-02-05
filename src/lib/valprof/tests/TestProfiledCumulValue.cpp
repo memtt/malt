@@ -1,30 +1,33 @@
-/*****************************************************
-             PROJECT  : MALT
-             VERSION  : 1.2.2
-             DATE     : 06/2023
-             AUTHOR   : Valat Sébastien
-             LICENSE  : CeCILL-C
-*****************************************************/
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.2.4
+*    DATE     : 10/2024
+*    LICENSE  : CeCILL-C
+*    FILE     : src/lib/valprof/tests/TestProfiledCumulValue.cpp
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat - 2014 - 2024
+*    AUTHOR   : Sébastien Valat (ECR) - 2014
+***********************************************************/
 
-/********************  HEADERS  *********************/
+/**********************************************************/
 #include <sstream>
 #include <gtest/gtest.h>
 #include <valprof/ProfiledCumulValue.hpp>
 
-/***************** USING NAMESPACE ******************/
+/**********************************************************/
 using namespace MALT;
 
-/********************** CONSTS **********************/
+/**********************************************************/
 const char CST_STRING_1[] = "{\n\t\"startTime\":0,\n\t\"scale\":1,\n\t\"endTime\":6,\n\t\"values\":[10, 10, 10, 10, 10, 10, 10]\n}";
 const char CST_STRING_2[] = "{\n\t\"startTime\":0,\n\t\"scale\":16,\n\t\"endTime\":99,\n\t\"values\":[16, 16, 16, 16, 16, 16, 4]\n}";
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(ProfiledCumulValue,constructor)
 {
 	ProfiledCumulValue<size_t> profile(10,false,true);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(ProfiledCumulValue,test_1)
 {
 	ProfiledCumulValue<size_t> profile(10,true,true);
@@ -38,7 +41,7 @@ TEST(ProfiledCumulValue,test_1)
 	EXPECT_EQ(CST_STRING_1,buffer.str());
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(ProfiledCumulValue,test_2)
 {
 	ProfiledCumulValue<size_t> profile(10,true,true);

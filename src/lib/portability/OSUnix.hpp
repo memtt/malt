@@ -1,25 +1,28 @@
-/*****************************************************
-             PROJECT  : MALT
-             VERSION  : 1.2.2
-             DATE     : 06/2023
-             AUTHOR   : Valat Sébastien
-             LICENSE  : CeCILL-C
-*****************************************************/
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.2.4
+*    DATE     : 10/2024
+*    LICENSE  : CeCILL-C
+*    FILE     : src/lib/portability/OSUnix.hpp
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat (ECR) - 2014
+*    AUTHOR   : Sébastien Valat - 2015 - 2024
+***********************************************************/
 
 #ifndef MALT_OS_UNIX_HPP
 #define MALT_OS_UNIX_HPP
 
-/********************  HEADERS  *********************/
+/**********************************************************/
 //standard
 #include <string>
 #include <cstdlib>
 #include <iostream>
 
-/*******************  NAMESPACE  ********************/
+/**********************************************************/
 namespace MALT
 {
 
-/*********************  STRUCT  *********************/
+/**********************************************************/
 struct LinuxInternalStatm
 {
 	size_t size;
@@ -31,14 +34,14 @@ struct LinuxInternalStatm
 	size_t dirty;
 };
 
-/********************  STRUCT  **********************/
+/**********************************************************/
 struct OSProcMemUsage
 {
 	size_t virtualMemory;
 	size_t physicalMemory;
 };
 
-/********************  STRUCT  **********************/
+/**********************************************************/
 struct OSMemUsage
 {
 	size_t totalMemory;
@@ -51,7 +54,7 @@ struct OSMemUsage
 	size_t directMap2M;
 };
 
-/*********************  CLASS  **********************/
+/**********************************************************/
 class OSUnix
 {
 	public:

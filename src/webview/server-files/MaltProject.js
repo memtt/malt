@@ -1,6 +1,21 @@
-/****************************************************/
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.2.4
+*    DATE     : 10/2024
+*    LICENSE  : CeCILL-C
+*    FILE     : src/webview/server-files/MaltProject.js
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat (ECR) - 2014 - 2015
+*    AUTHOR   : Sébastien Valat - 2015 - 2024
+*    AUTHOR   : Mehdi Raza Jaffery (CERN) - 2016
+*    AUTHOR   : Sébastien Valat (INRIA) - 2023
+*    AUTHOR   : Antoine Bernard (crans.org) - 2024
+***********************************************************/
+
+/**********************************************************/
 //deps
 var fs    = require('fs');
+var json  = require('big-json');
 var clone = require('clone');
 var path  = require('path');
 var CallTreeAdapter = require("./CallTreeAdapter.js");
@@ -8,7 +23,7 @@ var GraphGenerator = require("./GraphGenerator.js");
 var CppDeclParser = require("./CppDeclParser.js");
 var childProcess = require('child_process');
 
-/****************************************************/
+/**********************************************************/
 /**
  * Construct a MaltProject by loading data in JSON format from given file.
 **/
@@ -26,7 +41,7 @@ function MaltProject(file)
 	}
 }
 
-/****************************************************/
+/**********************************************************/
 MaltProject.prototype.loadData = function(data)
 {
 	//check version compatibility
@@ -54,7 +69,7 @@ MaltProject.prototype.loadData = function(data)
 	console.log("Data optimization done.");
 }
 
-/****************************************************/
+/**********************************************************/
 /**
  * Function in charge of loading the json file.
 **/
@@ -65,32 +80,51 @@ MaltProject.prototype.loadFile = function(file)
 	this.file = file;
 	var cur = this;
 
-	//read from FS
-	fs.readFile(args.params.input, 'utf8', function (err, buffer) {
-		console.log("Loading file : " + args.params.input);
+	// create a read and a json-parser stream
+	const readStream = fs.createReadStream(args.params.input, { encoding: 'utf8' });
+	const parseStream = json.createParseStream();
 
-		//manage errors
-		if (err) {
-			console.error("Failed to open file "+file+", get error : "+err.code);
-			process.exit(1);
-// 			console.log(err);
-// 			throw new Error(err);
-		}
-
-		//ok parse
-		var data = JSON.parse(buffer);
-
+	// receive parsed JSON, and load it
+	parseStream.on('data', function(data) {
 		cur.loadData(data);
 	});
+
+	// handle end of file
+	parseStream.on('end', () => {
+		console.log('Finished processing JSON file');
+	});
+	readStream.on('end', () => {
+		console.log('Finished reading JSON file');
+	});
+
+	// handle errors
+	parseStream.on('error', (err) => {
+		console.error("Failed to parse file "+file+", get error : "+err.message);
+		process.exit(1);
+	//	console.log(err);
+	//	throw new Error(err);
+	});
+	readStream.on('error', (err) => {
+		console.error("Failed to read file "+file+", get error : "+err.message);
+		process.exit(1);
+	});
+
+	// handle start of the stream
+	readStream.on('resume', () => {
+		console.log("Loading file : " + args.params.input);
+	});
+
+	// Start reading
+	readStream.pipe(parseStream);
 }
 
-/****************************************************/
+/**********************************************************/
 MaltProject.prototype.getProcMap = function()
 {
 	return this.stacks.sites.map;
 }
 
-/****************************************************/
+/**********************************************************/
 /**
  * Add info about stack to data extracted from traces
 **/
@@ -112,7 +146,7 @@ MaltProject.prototype.completeMemtraceAt = function(data)
 	return out;
 }
 
-/****************************************************/
+/**********************************************************/
 /**
  * Just to get the trace filename if available.
 **/
@@ -134,7 +168,7 @@ MaltProject.prototype.getTraceFilename = function()
 	return ret;
 }
 
-/****************************************************/
+/**********************************************************/
 /**
  * Just for debug, print only stack with function names.
 **/
@@ -159,7 +193,7 @@ MaltProject.prototype.getDebugStackList = function()
 	return res;
 }
 
-/****************************************************/
+/**********************************************************/
 /**
  * Provide access to the list of global variables from executable and dynamic libs.
 **/
@@ -171,7 +205,7 @@ MaltProject.prototype.getGlobalVariables = function()
 	};
 }
 
-/****************************************************/
+/**********************************************************/
 /**
  * Produce a flat profile by projecting stats onto sumbols. You can get some simple examples by going to getFileLinesFlatProfile() or getFunctionFlatProfile()
  * @param mapping Provide a function whith prototype function(entry,info) which return one of the entry field 
@@ -240,7 +274,7 @@ MaltProject.prototype.getFlatProfile = function(mapping,accept,fields,total)
 	return finalRes;
 }
 
-/****************************************************/
+/**********************************************************/
 /**
  * Map memory informations from stack onto file lines.
  * @param total If 'true', produce 'own' and 'total', otherwise produce 'own' and 'childs'.
@@ -255,7 +289,7 @@ MaltProject.prototype.getFileLinesFlatProfile = function(file,total)
 	return res;
 }
 
-/****************************************************/
+/**********************************************************/
 /**
  * Map memory informations from stack on functions (symbols).
  * @param total If 'true', produce 'own' and 'total', otherwise produce 'own' and 'childs'.
@@ -273,7 +307,7 @@ MaltProject.prototype.getFlatFunctionProfile = function(total)
 	return res;
 }
 
-/****************************************************/
+/**********************************************************/
 /**
  * Return virtual memory distribution extracted from /proc/self/maps and execution end.
 **/
@@ -314,25 +348,25 @@ MaltProject.prototype.getProcMapDistr = function()
 	return res;
 }
 
-/****************************************************/
+/**********************************************************/
 MaltProject.prototype.getScatter = function()
 {
 	return this.data.scatter;
 }
 
-/****************************************************/
+/**********************************************************/
 MaltProject.prototype.getSizeMap = function()
 {
 	return this.data.memStats.sizeMap;
 }
 
-/****************************************************/
+/**********************************************************/
 MaltProject.prototype.getReallocMap = function()
 {
 	return this.data.memStats.reallocJump;
 }
 
-/****************************************************/
+/**********************************************************/
 /**
  * Extract a list of stacks containing elements which pass the given filter function.
  * @param filter A filter function which return a boolean and have prototype function(detailedStackEntry)
@@ -358,7 +392,7 @@ MaltProject.prototype.getFilterdStacks = function(filter)
 	return res;
 }
 
-/****************************************************/
+/**********************************************************/
 /**
  * Return the list of stacks (detailed) which contain location file:line.
 **/
@@ -369,7 +403,7 @@ MaltProject.prototype.getFilterdStacksOnFileLine = function(file,line)
 	});
 }
 
-/****************************************************/
+/**********************************************************/
 /**
  * Return the list of stacks (detailed) which contain location file:line.
 **/
@@ -380,7 +414,7 @@ MaltProject.prototype.getFilterdStacksOnSymbol = function(symbol)
 	});
 }
 
-/****************************************************/
+/**********************************************************/
 /**
  * Return all timed values to build graphs.
 **/
@@ -403,7 +437,7 @@ MaltProject.prototype.getTimedValues = function()
 	return tmp;
 }
 
-/****************************************************/
+/**********************************************************/
 MaltProject.prototype.genSummaryWarnings = function(data)
 {
 	//vars
@@ -431,7 +465,7 @@ MaltProject.prototype.genSummaryWarnings = function(data)
 	return ret;
 }
 
-/****************************************************/
+/**********************************************************/
 /**
  * Build a summary from the whole datas.
 **/
@@ -540,7 +574,7 @@ MaltProject.prototype.getSummaryV2 = function()
 	return ret;
 }
 
-/****************************************************/
+/**********************************************************/
 /**
  * Build a summary from the whole datas.
 **/
@@ -583,7 +617,7 @@ MaltProject.prototype.getSummary = function()
 	return ret;
 }
 
-/****************************************************/
+/**********************************************************/
 MaltProject.prototype.getStacksMem = function()
 {
 	//prepare array
@@ -597,7 +631,7 @@ MaltProject.prototype.getStacksMem = function()
 	return {stacks:res,ticksPerSecond:this.data.globals.ticksPerSecond};
 }
 
-/****************************************************/
+/**********************************************************/
 /**
  * Get info about the largest stack
 **/
@@ -620,7 +654,7 @@ MaltProject.prototype.getMaxStack = function()
 	return res;
 }
 
-/****************************************************/
+/**********************************************************/
 /**
  * Flatten datas about the largest stack and return as json tree.
 **/
@@ -668,7 +702,7 @@ MaltProject.prototype.getFlattenMaxStackInfo = function(mapping,accept,stack)
 	return {details:finalRes,totalMem:maxStack.size};
 }
 
-/****************************************************/
+/**********************************************************/
 /**
  * Flatten datas about the largest stack and return as json tree.
 **/
@@ -681,7 +715,7 @@ MaltProject.prototype.getMaxStackInfoOnFunction = function(mapping,accept)
 	);
 }
 
-/****************************************************/
+/**********************************************************/
 /**
  * Return true if the given path correspond to a source file of
  * the current project.
@@ -691,7 +725,7 @@ MaltProject.prototype.isSourceFile = function(path)
 	return (this.data.sourceFiles[path] == true)
 }
 
-/****************************************************/
+/**********************************************************/
 /**
  * Flatten datas about the largest stack and return as json tree.
 **/
@@ -704,7 +738,7 @@ MaltProject.prototype.getStackInfoOnFunction = function(id)
 	);
 }
 
-/****************************************************/
+/**********************************************************/
 MaltProject.prototype.getFullTree = function()
 {
 	var tree = {};
@@ -874,7 +908,7 @@ MaltProject.prototype.getActiveChunks = function(timestamp, callback) {
 	});
 }
 
-/****************************************************/
+/**********************************************************/
 MaltProject.prototype.toCallgrindFormat = function()
 {
 	//obj to store infos pre-sorted for output
@@ -893,14 +927,14 @@ MaltProject.prototype.toCallgrindFormat = function()
 	return res;
 }
 
-/****************************************************/
+/**********************************************************/
 MaltProject.prototype.getStackCallerCalle = function(stack)
 {
 	console.log(stack);
 	//leafCallee =
 }
 
-/****************************************************/
+/**********************************************************/
 function filterExtractStacksCandidate(detailedStack,filter)
 {
 	for (var i in detailedStack)
@@ -909,18 +943,18 @@ function filterExtractStacksCandidate(detailedStack,filter)
 	return false;
 }
 
-/****************************************************/
+/**********************************************************/
 /** Regexp to detect memory functions (new, new[], gnu and icc fortran alloc/free...). **/
 var allocFuncRegexp = /^((gomp_realloc)|(gomp_malloc)|(gomp_free)|(__gnu_cxx::new_allocator)|(operator new)|(operator delete)|(_Zn[wa])|(g_malloc)|(g_realloc)|(g_free)|(for__get_vm)|(for__free_vm)|([mc]alloc)|(free)|(realloc)|(memalign)|(posix_memalign)|(for_(de)?alloc_allocatable)|(for_(de)?allocate))/
 
-/****************************************************/
+/**********************************************************/
 /** Quick check to detect memory functions. **/
 function isAllocFunction(name)
 {
 	return allocFuncRegexp.test(name);
 }
 
-/****************************************************/
+/**********************************************************/
 function mergeStackMinMaxInfo(onto,value)
 {
 	onto.count += value.count;
@@ -931,7 +965,7 @@ function mergeStackMinMaxInfo(onto,value)
 		onto.max = value.max;
 }
 
-/****************************************************/
+/**********************************************************/
 function mergeStackInfoDatas(onto,value)
 {
 	onto.countZeros += value.countZeros;
@@ -945,7 +979,7 @@ function mergeStackInfoDatas(onto,value)
 	mergeStackMinMaxInfo(onto.lifetime,value.lifetime);
 }
 
-/****************************************************/
+/**********************************************************/
 function mergeStackInfo(into,detailedStackEntry,addr,subKey,infos,mapping,fields)
 {
 	//extract key by using mapping function
@@ -979,7 +1013,7 @@ function mergeStackInfo(into,detailedStackEntry,addr,subKey,infos,mapping,fields
 		mergeStackInfoDatas(cur[subKey],infos);
 }
 
-/****************************************************/
+/**********************************************************/
 /**
  * Short wrapper to get strings from data.stacks.strings section and to manage undefined files.
  * @param strings Must be the translation table from sites.strings
@@ -1000,7 +1034,7 @@ function getStringFromList(strings,id,defaultValue)
 	}
 }
 
-/****************************************************/
+/**********************************************************/
 /**
  * To help quick search into data, procude a stack with refs to internal details instead of
  * simple addresses.
@@ -1027,7 +1061,7 @@ function genDetailedStack(instrs,stack)
 	return res;
 }
 
-/****************************************************/
+/**********************************************************/
 var gccFortModRegex = /__([A-Za-z0-9_]+)_MOD_([A-Za-z0-9_]+)/;
 function cleanupFunctionName(funcName)
 {
@@ -1042,7 +1076,7 @@ function cleanupFunctionName(funcName)
 		return funcName;
 }
 
-/****************************************************/
+/**********************************************************/
 function rebuildChilds(finalStacks,stack,cur,data,addresses)
 {
 	//push data if has some
@@ -1103,7 +1137,7 @@ function rebuildChilds(finalStacks,stack,cur,data,addresses)
 	}
 }
 
-/****************************************************/
+/**********************************************************/
 /**
  * Reshape the stack structure to fit with the original version, ideally
  * need to move all the gui code the the new one which seams better.
@@ -1131,7 +1165,7 @@ function rebuildStacks(data)
 	//console.log(finalStacks);
 }
 
-/****************************************************/
+/**********************************************************/
 /**
  * Reorganize a little but the datas to get quicker access on requests. Mosty re-established the
  * in memory references between call site addresses and their textual definitions (line, file...).
@@ -1193,6 +1227,6 @@ function optimizeProjectDatas(data)
 	}
 }
 
-/****************************************************/
+/**********************************************************/
 //export definition
 module.exports = MaltProject;

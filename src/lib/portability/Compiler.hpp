@@ -1,18 +1,21 @@
-/*****************************************************
-             PROJECT  : MALT
-             VERSION  : 1.2.2
-             DATE     : 06/2023
-             AUTHOR   : Valat Sébastien
-             LICENSE  : CeCILL-C
-*****************************************************/
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.2.4
+*    DATE     : 10/2024
+*    LICENSE  : CeCILL-C
+*    FILE     : src/lib/portability/Compiler.hpp
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat (ECR) - 2014
+*    AUTHOR   : Sébastien Valat - 2024
+***********************************************************/
 
 #ifndef MALT_COMPILER_HPP
 #define MALT_COMPILER_HPP
 
-/********************  HEADERS  *********************/
+/**********************************************************/
 #include <config.h>
 
-/*********************  TYPES  **********************/
+/**********************************************************/
 #if defined(MALT_PORTABILITY_COMPILER_GNU)
 	//pthread mode
 	#include "CompilerGNU.hpp"

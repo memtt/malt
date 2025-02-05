@@ -1,29 +1,32 @@
-/*****************************************************
-             PROJECT  : MALT
-             VERSION  : 1.2.2
-             DATE     : 06/2023
-             AUTHOR   : Valat Sébastien
-             LICENSE  : CeCILL-C
-*****************************************************/
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.2.4
+*    DATE     : 10/2024
+*    LICENSE  : CeCILL-C
+*    FILE     : src/lib/stacks/StackLoopRemover.cpp
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat - 2015 - 2024
+*    AUTHOR   : Sébastien Valat (CERN) - 2015
+***********************************************************/
 
-/********************  HEADERS  *********************/
+/**********************************************************/
 //std
 #include <cassert>
 //internal
 #include <common/Debug.hpp>
 #include "StackLoopRemover.hpp"
 
-/*******************  NAMESPACE  ********************/
+/**********************************************************/
 namespace MALT
 {
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 StackLoopNode::StackLoopNode(void )
 {
 	this->reset();
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void StackLoopNode::addLinkTo(StackLoopNode * target)
 {
 	assert(target != NULL);
@@ -40,7 +43,7 @@ void StackLoopNode::addLinkTo(StackLoopNode * target)
 	MALT_FATAL_ARG("Not enougth link to unloop stacks, limit is %1, see macro MALT_STACK_NODE_MAX_LINK").arg(MALT_STACK_NODE_MAX_LINK).end();
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 StackLoopNode* StackLoopNode::followNextUnused(void )
 {
 	for (int i = 0 ; i < MALT_STACK_NODE_MAX_LINK ; i++)
@@ -54,7 +57,7 @@ StackLoopNode* StackLoopNode::followNextUnused(void )
 	return NULL;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 StackLoopNode* StackLoopNode::getLink(AddressType targetAddr)
 {
 	for (int i = 0 ; i < MALT_STACK_NODE_MAX_LINK ; i++)
@@ -68,14 +71,14 @@ StackLoopNode* StackLoopNode::getLink(AddressType targetAddr)
 	return NULL;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void StackLoopNode::setAddr(AddressType addr)
 {
 	assert(this->addr == nullAddr);
 	this->addr = addr;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void StackLoopNode::reset(void )
 {
 	this->addr = nullAddr;
@@ -86,7 +89,7 @@ void StackLoopNode::reset(void )
 	}
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 StackLoopRemover::StackLoopRemover(int maxSize)
 {
 	assert(maxSize > 0);
@@ -95,27 +98,27 @@ StackLoopRemover::StackLoopRemover(int maxSize)
 	this->maxSize = maxSize;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 StackLoopRemover::~StackLoopRemover(void )
 {
 	delete [] this->rebuildStack;
 	delete [] this->nodes;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 AddressType StackLoopNode::getAddr(void )
 {
 	return addr;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void StackLoopRemover::reset(void )
 {
 	for (int i = 0 ; i < maxSize ; i++)
 		nodes[i].reset();
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void StackLoopRemover::removeLoops(Stack& stack)
 {
 	//check

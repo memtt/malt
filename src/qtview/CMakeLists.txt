@@ -1,18 +1,20 @@
-######################################################
-#            PROJECT  : MALT                         #
-#            VERSION  : 1.2.2                        #
-#            DATE     : 06/2023                      #
-#            AUTHOR   : Valat Sébastien              #
-#            LICENSE  : CeCILL-C                     #
-######################################################
+############################################################
+#    PROJECT  : MALT (MALoc Tracker)
+#    VERSION  : 1.2.4
+#    DATE     : 10/2024
+#    LICENSE  : CeCILL-C
+#    FILE     : src/qtview/CMakeLists.txt
+#-----------------------------------------------------------
+#    AUTHOR   : Sébastien Valat - 2018
+############################################################
 
-######################################################
+############################################################
 # Find includes in corresponding build directories
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 # Instruct CMake to run moc automatically when needed.
 set(CMAKE_AUTOMOC OFF)
 
-######################################################
+############################################################
 
 #includes
 include_directories(${Qt5Widgets_INCLUDE_DIRS})

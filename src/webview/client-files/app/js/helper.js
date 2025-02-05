@@ -1,3 +1,14 @@
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.2.4
+*    DATE     : 10/2024
+*    LICENSE  : CeCILL-C
+*    FILE     : src/webview/client-files/app/js/helper.js
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat (ECR) - 2014 - 2015
+*    AUTHOR   : Sébastien Valat - 2015 - 2024
+*    AUTHOR   : Mehdi Raza Jaffery (CERN) - 2016
+***********************************************************/
 /**********************************************************************/
 function MaltHelper()
 {
@@ -72,6 +83,10 @@ MaltHelper.prototype.ticksToHourMinSec = function(t,ticksPerSec)
 /** Short helper to convert values to human readable format **/	
 MaltHelper.prototype.humanReadable = function(value,decimals,unit,protectedSpace)
 {
+	//error
+	if (value == undefined)
+		return "UNDEF";
+
 	var mul = 1000;
 	if (unit == 'B' || unit == 'B')
 		mul = 1024;

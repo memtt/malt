@@ -1,3 +1,13 @@
+############################################################
+#    PROJECT  : MALT (MALoc Tracker)
+#    VERSION  : 1.2.4
+#    DATE     : 10/2024
+#    LICENSE  : CeCILL-C
+#    FILE     : packaging/Dockerfile-centos-7
+#-----------------------------------------------------------
+#    AUTHOR   : Sébastien Valat - 2019 - 2024
+############################################################
+
 #distri we want
 FROM centos:7
 

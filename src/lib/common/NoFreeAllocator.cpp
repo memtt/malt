@@ -1,12 +1,15 @@
-/*****************************************************
-             PROJECT  : MATT
-             VERSION  : 1.2.2
-             DATE     : 06/2023
-             AUTHOR   : Valat Sébastien
-             LICENSE  : CeCILL-C
-*****************************************************/
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.2.4
+*    DATE     : 10/2024
+*    LICENSE  : CeCILL-C
+*    FILE     : src/lib/common/NoFreeAllocator.cpp
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat - 2015 - 2024
+*    AUTHOR   : Sébastien Valat (INRIA) - 2024
+***********************************************************/
 
-/********************  HEADERS  *********************/
+/**********************************************************/
 //std C++
 #include <cassert>
 //intenrals
@@ -16,25 +19,25 @@
 //current
 #include "NoFreeAllocator.hpp"
 
-/***************** USING NAMESPACE ******************/
+/**********************************************************/
 using namespace std;
 using namespace MALT;
 
-/*******************  NAMESPACE  ********************/
+/**********************************************************/
 namespace MALTV2
 {
 
-/********************  MACRO  ***********************/
+/**********************************************************/
 /** By default, align on pointer size **/
 #define MATT_BASE_ALIGNMENT (sizeof(void*))
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /** Global instance to be used by all MATT functions. **/
 NoFreeAllocator * gblNoFreeAllocator = NULL;
 /** Memory to allocate the initial no free allocator. We use this way to get spinlock init correctly **/
 char gblNoFreeAllocatorMem[sizeof(NoFreeAllocator)];
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void doNoFreeAllocatorInit ( void )
 {
 	if (gblNoFreeAllocator == NULL)
@@ -44,7 +47,7 @@ void doNoFreeAllocatorInit ( void )
 	}
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Init function to setup the allocator. We do not use the class constructor
  * as the instance might be init later than the first object. Thanks to the init()
@@ -63,7 +66,7 @@ void NoFreeAllocator::init( bool threadsafe, bool useInitSegment )
 	this->setupNewSegment(useInitSegment);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Setup a new big segment.
 **/
@@ -96,7 +99,7 @@ void NoFreeAllocator::setupNewSegment( bool useInitSegment )
 	this->cur = segment;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Allocate a new user segment which will never freed.
  * @param size Define the requested size (will be round to MATT_BASE_ALIGNMENT).
@@ -138,7 +141,7 @@ void* NoFreeAllocator::allocate(size_t size)
 	return ret;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * @return Return the total used memory (allocator headers + user allocations).
 **/
@@ -147,7 +150,7 @@ size_t NoFreeAllocator::getInuseMemory ( void )
 	return inUseMem;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * @return Return the maxium authorized allocation size.
 **/
@@ -156,7 +159,7 @@ size_t NoFreeAllocator::getMaxSize ( void ) const
 	return NO_FREE_ALLOC_SEG_SIZE - sizeof(NoFreeAllocatorSegment);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * @return Return the total memory allocated fomr OS by the allocator.
  * Will be multiple of NO_FREE_ALLOC_SEG_SIZE.
@@ -166,7 +169,7 @@ size_t NoFreeAllocator::getTotalMemory ( void )
 	return totalMem;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * @return The unused memory , will be delta between total and in use memory.
 **/
@@ -175,7 +178,7 @@ size_t NoFreeAllocator::getUnusedMemory ( void )
 	return totalMem - getInuseMemory();
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Print the current memory state of the allocator.
  * @param out Define the output stream to use.

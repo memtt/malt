@@ -1,13 +1,16 @@
-######################################################
-#            PROJECT  : MALT                         #
-#            VERSION  : 1.2.2                        #
-#            DATE     : 06/2023                      #
-#            AUTHOR   : Valat Sébastien              #
-#            LICENSE  : CeCILL-C                     #
-######################################################
+############################################################
+#    PROJECT  : MALT (MALoc Tracker)
+#    VERSION  : 1.2.4
+#    DATE     : 10/2024
+#    LICENSE  : CeCILL-C
+#    FILE     : packaging/fedora/malt.spec
+#-----------------------------------------------------------
+#    AUTHOR   : Sébastien Valat - 2015 - 2024
+#    AUTHOR   : Tru Huynh - 2018
+############################################################
 
 Name: malt
-Version: 1.2.2
+Version: 1.2.4
 Release: 1%{?dist}
 Summary: Memory profiling tool to track memory allocations (malloc, realloc, free...)
 

@@ -1,26 +1,29 @@
-/*****************************************************
-             PROJECT  : MALT
-             VERSION  : 1.2.2
-             DATE     : 06/2023
-             AUTHOR   : Valat Sébastien
-             LICENSE  : CeCILL-C
-*****************************************************/
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.2.4
+*    DATE     : 10/2024
+*    LICENSE  : CeCILL-C
+*    FILE     : src/lib/valprof/ProfiledStateValue.hpp
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat - 2014 - 2024
+*    AUTHOR   : Sébastien Valat (ECR) - 2014
+***********************************************************/
 
 #ifndef MALT_MEMORY_TIMELINE_HPP
 #define MALT_MEMORY_TIMELINE_HPP
 
-/********************  HEADERS  *********************/
+/**********************************************************/
 #include <cstdlib>
-#include <cycle.h>
+#include <portability/Clock.hpp>
 #include <json/ConvertToJson.h>
 
 namespace MALT
 {
 
-/********************  MACROS  **********************/
+/**********************************************************/
 #define MALT_PROFILED_VALUE_DEFAULT_STEPS 1024
 
-/********************  STRUCT  **********************/
+/**********************************************************/
 struct ProfiledStateValueEntry
 {
 	//funcs
@@ -36,7 +39,7 @@ struct ProfiledStateValueEntry
 	void * location;
 };
 
-/*********************  CLASS  **********************/
+/**********************************************************/
 class ProfiledStateValue
 {
 	public:

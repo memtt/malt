@@ -1,15 +1,18 @@
-/*****************************************************
-             PROJECT  : MALT
-             VERSION  : 1.2.2
-             DATE     : 06/2023
-             AUTHOR   : Valat Sébastien
-             LICENSE  : CeCILL-C
-*****************************************************/
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.2.4
+*    DATE     : 10/2024
+*    LICENSE  : CeCILL-C
+*    FILE     : src/lib/profiler/LocalAllocStackProfiler.hpp
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat - 2014 - 2024
+*    AUTHOR   : Sébastien Valat (ECR) - 2014
+***********************************************************/
 
 #ifndef MALT_LOCAL_ALLOC_STACK_PROFILER_HPP
 #define MALT_LOCAL_ALLOC_STACK_PROFILER_HPP
 
-/********************  HEADERS  *********************/
+/**********************************************************/
 //std
 #include <cstdlib>
 //locals
@@ -18,13 +21,13 @@
 #include "AllocStackProfiler.hpp"
 #include "core/StackSizeAnalyser.hpp"
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 
-/*******************  NAMESPACE  ********************/
+/**********************************************************/
 namespace MALT
 {
 
-/*********************  ENUM  ***********************/
+/**********************************************************/
 enum MallocKind
 {
 	MALLOC_KIND_MALLOC,
@@ -36,7 +39,7 @@ enum MallocKind
 	MALLOC_KIND_MAX,
 };
 
-/********************  STRUCT  **********************/
+/**********************************************************/
 struct FunctionStat
 {
 	FunctionStat(void);
@@ -46,7 +49,7 @@ struct FunctionStat
 	ticks time;
 };
 
-/********************  STRUCT  **********************/
+/**********************************************************/
 struct PerThreadAllocStats
 {
 	FunctionStat malloc[MALLOC_KIND_MAX];
@@ -55,11 +58,11 @@ struct PerThreadAllocStats
 	FunctionStat realloc;
 };
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void convertToJson(htopml::JsonState& json, const FunctionStat& value);
 void convertToJson(htopml::JsonState& json, const PerThreadAllocStats& value);
 
-/*********************  CLASS  **********************/
+/**********************************************************/
 /**
  * Object to be instntiate localy per thread to track stack and local parameters without loks.
  * It will cooperate with the global AllocStackProfiler to push the values on the global
@@ -114,7 +117,7 @@ class LocalAllocStackProfiler
 		PerThreadAllocStats allocStats;
 };
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 inline void LocalAllocStackProfiler::onEnterFunc(void* this_fn, void* call_site, bool ignoreStack)
 {
 	//stack current loc tracking
@@ -129,7 +132,7 @@ inline void LocalAllocStackProfiler::onEnterFunc(void* this_fn, void* call_site,
 		stackSizeAnalyser.onEnterFunc(this_fn);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 inline void LocalAllocStackProfiler::onExitFunc(void* this_fn, void* call_site, bool ignoreStack)
 {
 	//stack current loc tracking

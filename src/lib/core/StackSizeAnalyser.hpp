@@ -1,15 +1,18 @@
-/*****************************************************
-             PROJECT  : MALT
-             VERSION  : 1.2.2
-             DATE     : 06/2023
-             AUTHOR   : Valat Sébastien
-             LICENSE  : CeCILL-C
-*****************************************************/
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.2.4
+*    DATE     : 10/2024
+*    LICENSE  : CeCILL-C
+*    FILE     : src/lib/core/StackSizeAnalyser.hpp
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat - 2014 - 2024
+*    AUTHOR   : Sébastien Valat (ECR) - 2014
+***********************************************************/
 
 #ifndef MALT_STACK_SIZE_ANALYSER_HPP
 #define MALT_STACK_SIZE_ANALYSER_HPP
 
-/********************  HEADERS  *********************/
+/**********************************************************/
 //standard
 //locals
 #include <stacks/Stack.hpp>
@@ -17,11 +20,11 @@
 #include "StackSizeTracker.hpp"
 #include <stacks/EnterExitStack.hpp>
 
-/*******************  NAMESPACE  ********************/
+/**********************************************************/
 namespace MALT
 {
 
-/*********************  CLASS  **********************/
+/**********************************************************/
 /**
  * @brief Class used to track the stack size and keep the largest stack seen.
 **/
@@ -29,7 +32,7 @@ class StackSizeAnalyser
 {
 	public:
 		StackSizeAnalyser(void);
-		inline void onEnterFunc(void * funcAddr);
+		inline void onEnterFunc(void * funcAddr, size_t stackPointer = 0);
 		inline void onExitFunc(void * funcAddr);
 		void solveSymbols(SymbolSolver & symbolResolver) const;
 	public:
@@ -49,16 +52,21 @@ class StackSizeAnalyser
 		ProfiledStateValue timeProfile;
 };
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Function to be used when we enter in function.
  * @param funcAddr Function pointer to the function we enter in.
+ * @param stackPointer The address of the stack at the call time. This is used to
+ * compute the stack. If 0, then it automatically fetch it inside.
 **/
-inline void StackSizeAnalyser::onEnterFunc(void* funcAddr)
+inline void StackSizeAnalyser::onEnterFunc(void* funcAddr, size_t stackPointer)
 {
 	//update current
 	currentStack.enterFunction(funcAddr);
-	currentStackMem.enter();
+	if (stackPointer == 0)
+		currentStackMem.enter();
+	else
+		currentStackMem.enter(stackPointer);
 	
 	//get current size
 	size_t cur = currentStackMem.getSize();
@@ -75,7 +83,7 @@ inline void StackSizeAnalyser::onEnterFunc(void* funcAddr)
 	}
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Function to be used when we exit from a function.
  * @param funcAddr Function pointer to the function we exit.

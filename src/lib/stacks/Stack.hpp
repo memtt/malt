@@ -1,15 +1,18 @@
-/*****************************************************
-             PROJECT  : MALT
-             VERSION  : 1.2.2
-             DATE     : 06/2023
-             AUTHOR   : Valat Sébastien
-             LICENSE  : CeCILL-C
-*****************************************************/
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.2.4
+*    DATE     : 10/2024
+*    LICENSE  : CeCILL-C
+*    FILE     : src/lib/stacks/Stack.hpp
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat - 2014 - 2024
+*    AUTHOR   : Sébastien Valat (ECR) - 2014
+***********************************************************/
 
 #ifndef MALT_STACK_H
 #define MALT_STACK_H
 
-/********************  HEADERS  *********************/
+/**********************************************************/
 //std c
 #include <stdint.h>
 //std c++
@@ -17,26 +20,26 @@
 //Include Debug
 #include <common/Debug.hpp>
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Define a hash of the stack.
 **/
 typedef uint64_t StackHash;
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 namespace htopml
 {
 	class JsonState;
 }
 
-/*******************  NAMESPACE  ********************/
+/**********************************************************/
 namespace MALT
 {
 
-/*********************  TYPES  **********************/
+/**********************************************************/
 class SymbolSolver;
 
-/*********************  ENUM  ***********************/
+/**********************************************************/
 /**
  * Define the ordering of the stack storage. The ordering is forced by the backtrace implementation
  * and for the enter-exit mode, it is more efficient to use a reversed representation to enlarge the segment
@@ -50,18 +53,19 @@ enum StackOrder
 	STACK_ORDER_DESC
 };
 
+/**********************************************************/
 /**
  * To distinguish the type of the pointer in the Stack, either C address or a Python address.
  */
 //TODO: Add ostream operator (<<)
 //For C, keep the pointers as string
 //For Python, prefix "PY-0x....."
-
 enum DomainType {
 	DOMAIN_C,
 	DOMAIN_PYTHON,
 };
 
+/**********************************************************/
 struct AddressType {
 	#if INTPTR_MAX == INT64_MAX /*64 Bits */
 
@@ -129,12 +133,14 @@ struct AddressType {
 	std::string toString() const;
 };
 
+/**********************************************************/
 extern const AddressType nullAddr;
 
+/**********************************************************/
 std::ostream &operator<<(std::ostream &out, const AddressType &addrType);
 void convertToJson(htopml::JsonState & json, const AddressType& addrType);
 
-/*********************  CLASS  *************s*********/
+/**********************************************************/
 /**
  * Provide a short reprensentation of a call stack as an array of instruction addresses.
  * This base class can be extended to build the backtrace stack representation of the enter-exit
@@ -189,9 +195,9 @@ class Stack
 		StackOrder order;
 };
 
+/**********************************************************/
 //TODO: Make it in a single commit
 //TODO: #ifdef 32 bits
-
 /**
  * To distinguish the type of the pointer in the Stack, either C address or a Python address.
  */
@@ -213,4 +219,5 @@ struct AddressType{
 };
 
 }
+
 #endif //MALT_STACK_H

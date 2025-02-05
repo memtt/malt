@@ -1,19 +1,22 @@
-/*****************************************************
-             PROJECT  : MALT
-             VERSION  : 1.2.2
-             DATE     : 06/2023
-             AUTHOR   : Valat Sébastien
-             LICENSE  : CeCILL-C
-*****************************************************/
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.2.4
+*    DATE     : 10/2024
+*    LICENSE  : CeCILL-C
+*    FILE     : src/lib/portability/Mutex.hpp
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat (ECR) - 2014 - 2015
+*    AUTHOR   : Sébastien Valat - 2024
+***********************************************************/
 
 #ifndef MALT_MUTEX_HPP
 #define MALT_MUTEX_HPP
 
-/********************  HEADERS  *********************/
+/**********************************************************/
 #include <common/TakeLock.hpp>
 #include <config.h>
 
-/*********************  TYPES  **********************/
+/**********************************************************/
 #if defined(MALT_PORTABILITY_MUTEX_PTHREAD)
 	//pthread mode
 	#include "MutexPthread.hpp"

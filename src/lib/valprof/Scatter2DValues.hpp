@@ -1,26 +1,28 @@
-/*****************************************************
-             PROJECT  : MALT
-             VERSION  : 1.2.2
-             DATE     : 06/2023
-             AUTHOR   : Valat Sébastien
-             LICENSE  : CeCILL-C
-*****************************************************/
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.2.4
+*    DATE     : 10/2024
+*    LICENSE  : CeCILL-C
+*    FILE     : src/lib/valprof/Scatter2DValues.hpp
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat - 2016 - 2024
+***********************************************************/
 
 #ifndef MALT_SCATTER_2D_VALUES_HPP
 #define MALT_SCATTER_2D_VALUES_HPP
 
-/********************  HEADERS  *********************/
+/**********************************************************/
 //std
 #include <cstdlib>
 #include <stdint.h>
 //extern deps
 #include <json/JsonState.h>
 
-/********************  NAMESPACE  *******************/
+/**********************************************************/
 namespace MALT
 {
 
-/*********************  CLASS  **********************/
+/**********************************************************/
 struct Scatter2DValuesAxis
 {
 	/** Number of cells on the given axis **/
@@ -31,10 +33,10 @@ struct Scatter2DValuesAxis
 	uint64_t max;
 };
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void convertToJson(htopml::JsonState& json, const Scatter2DValuesAxis & value);
 
-/*********************  CLASS  **********************/
+/**********************************************************/
 /**
  * This class help building scatter 2D chart, mostly used to track chunk size over time
  * and lifetime over chunk size. It discretize the 2D space and count the number of occurences

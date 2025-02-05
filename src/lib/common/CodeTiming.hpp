@@ -1,26 +1,29 @@
-/*****************************************************
-             PROJECT  : MALT
-             VERSION  : 1.2.2
-             DATE     : 06/2023
-             AUTHOR   : Valat Sébastien
-             LICENSE  : CeCILL-C
-*****************************************************/
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.2.4
+*    DATE     : 10/2024
+*    LICENSE  : CeCILL-C
+*    FILE     : src/lib/common/CodeTiming.hpp
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat (ECR) - 2014
+*    AUTHOR   : Sébastien Valat - 2022 - 2024
+***********************************************************/
 
 #ifndef MALT_CODE_TIMING_H
 #define MALT_CODE_TIMING_H
 
-/********************  HEADERS  *********************/
+/**********************************************************/
 //standards
 #include <string>
 #include <cstdlib>
 #include <ostream>
 #include <iostream>
 //from fftw (copied into extern-deps)
-#include <cycle.h>
+#include <portability/Clock.hpp>
 //internal
 #include <config.h>
 
-/********************  MACROS  **********************/
+/**********************************************************/
 /**
  * A short macro to quicly profile some code lines. 
 \code{.cpp}
@@ -43,7 +46,7 @@ void yourFunc(void)
 #endif
 
 
-/********************  MACROS  **********************/
+/**********************************************************/
 #ifdef MALT_ENABLE_CODE_TIMING
 	/**
 	 * Provide a short way to measure code timings by using a star/stop representation.
@@ -65,11 +68,11 @@ void yourFunc(void)
 #endif //MALT_ENABLE_CODE_TIMING
 	
 	
-/*******************  NAMESPACE  ********************/
+/**********************************************************/
 namespace MALT
 {
 
-/*********************  CLASS  **********************/
+/**********************************************************/
 /**
  * @brief Short code to profile functions.
  * 
@@ -123,18 +126,18 @@ class CodeTiming
 		static CodeTiming * globalTimers[64];
 };
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /** Start measurement of a new call to your code. **/
 inline ticks CodeTiming::start(void)
 {
 	#ifdef MALT_ENABLE_CODE_TIMING
-		return getticks();
+		return Clock::getticks();
 	#else
 		return 0;
 	#endif
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /** End measurement of the current call to your code. **/
 inline void CodeTiming::end(ticks start, ticks end)
 {
@@ -147,7 +150,7 @@ inline void CodeTiming::end(ticks start, ticks end)
 	if (doIt) {
 		//get time
 		if (end == 0)
-			end = getticks();
+			end = Clock::getticks();
 		ticks t = end - start;
 
 		//update min/max
@@ -165,7 +168,7 @@ inline void CodeTiming::end(ticks start, ticks end)
 	}
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 ticks ticksPerSecond(ticks forceValue = 0);
 ticks mockableGetTicks(void);
 

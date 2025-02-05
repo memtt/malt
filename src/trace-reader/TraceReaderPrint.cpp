@@ -1,27 +1,30 @@
-/*****************************************************
-             PROJECT  : MALT
-             VERSION  : 1.2.2
-             DATE     : 06/2023
-             AUTHOR   : Valat Sébastien
-             LICENSE  : CeCILL-C
-*****************************************************/
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.2.4
+*    DATE     : 10/2024
+*    LICENSE  : CeCILL-C
+*    FILE     : src/trace-reader/TraceReaderPrint.cpp
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat - 2014 - 2024
+*    AUTHOR   : Sébastien Valat (ECR) - 2014 - 2015
+***********************************************************/
 
-/********************  HEADERS  *********************/
+/**********************************************************/
 //STD
 #include <cstdio>
 //malt internals
 #include "TraceReaderPrint.hpp"
 
-/*******************  NAMESPACE  ********************/
+/**********************************************************/
 namespace MALT
 {
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TraceReaderPrint::TraceReaderPrint(Filter * filter): TraceReader(filter)
 {
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void TraceReaderPrint::onStart(void)
 {
 	//open json array
@@ -29,14 +32,14 @@ void TraceReaderPrint::onStart(void)
 	this->first = true;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void TraceReaderPrint::onEnd(void)
 {
 	//closejson array
 	printf("\n]\n");
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void TraceReaderPrint::onData(MALT::AllocTracerChunk& chunk)
 {
 	if (!first)

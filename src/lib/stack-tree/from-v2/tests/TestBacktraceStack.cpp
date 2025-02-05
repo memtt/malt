@@ -1,28 +1,30 @@
-/*****************************************************
-             PROJECT  : MALT
-             VERSION  : 1.2.2
-             DATE     : 06/2023
-             AUTHOR   : Valat Sébastien
-             LICENSE  : CeCILL-C
-*****************************************************/
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.2.4
+*    DATE     : 10/2024
+*    LICENSE  : CeCILL-C
+*    FILE     : src/lib/stack-tree/from-v2/tests/TestBacktraceStack.cpp
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat - 2015 - 2024
+***********************************************************/
 
-/********************  HEADERS  *********************/
+/**********************************************************/
 #include <gtest/gtest.h>
 #include <stacks/BacktraceStack.hpp>
 #include <common/SimpleAllocator.hpp>
 #include <common/Options.hpp>
 
-/***************** USING NAMESPACE ******************/
+/**********************************************************/
 using namespace MALT;
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(Stack,constructorAndLoadCurrentStack)
 {
 	BacktraceStack stack;
 	stack.loadCurrentStack();
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 int main(int argc, char ** argv)
 {
 	//init internal allocator

@@ -61,6 +61,25 @@ If you are a user of spack you can also install it easily by using :
 spack install malt
 ```
 
+Into distributions
+------------------
+
+**Gentoo**
+
+I provide an overlay containing both MALT & NUMAPROF, you can use it by calling :
+
+```sh
+# MALT using gentoo overlay memtt :
+sudo eselect repository add memtt git https://github.com/memtt/gentoo-memtt-overlay.git
+sudo eselect repository enable memtt
+sudo emerge -a malt numaprof
+```
+
+**Debian / Ubuntu / Centos / RedHat / Fedora / Arch**
+
+You can give a look into [packaging/README.md](packaging/README.md) if you want to yourself build
+packages for those distributions with the embeded scripts.
+
 Build options
 -------------
 
@@ -388,6 +407,11 @@ malt -o "output:stackTree=true" ./PROGRAM
 Currently you can still find cases where you cannot load the file into nodejs, I'm working on a workaround.
 Please provide me your files if it appends. By compressing it in gzip you will get less than 30-40 MB.
 
+As of 25/07/2024, the JSON are read and processed using streams, and thus, we by-pass the internal hard limit of NodeJs requiring string to be < 512 MB.
+However, keep in mind that such big files makes the web interface a bit less responsive. This was tested with files up to 1 GB.
+
+Due to another limitations, you may encounter the following error `FATAL ERROR: Reached heap limit Allocation failed - JavaScript heap out of memory`. You want to modify the heap size limit of nodeJs, with the following options `NODE_OPTIONS="--max-old-space-size=<SIZE>"` with `SIZE` in megabytes.
+
 Packaging
 ---------
 
@@ -452,6 +476,18 @@ License
 -------
 
 MALT is distributed under CeCILL-C license (LGPL compatible).
+
+To cite
+-------
+
+If you publish about MALT, you cite this research paper as reference :
+
+```
+Sébastien Valat, Andres S. Charif-Rubial, and William Jalby. 2017. MALT: a Malloc tracker.
+In Proceedings of the 4th ACM SIGPLAN International Workshop on Software Engineering for
+Parallel Systems (SEPS 2017). Association for Computing Machinery, New York, NY, USA,
+1–10. https://doi.org/10.1145/3141865.3141867
+```
 
 Discussion
 ----------

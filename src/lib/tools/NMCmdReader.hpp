@@ -1,25 +1,28 @@
-/*****************************************************
-             PROJECT  : MALT
-             VERSION  : 1.2.2
-             DATE     : 06/2023
-             AUTHOR   : Valat Sébastien
-             LICENSE  : CeCILL-C
-*****************************************************/
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.2.4
+*    DATE     : 10/2024
+*    LICENSE  : CeCILL-C
+*    FILE     : src/lib/tools/NMCmdReader.hpp
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat (ECR) - 2014
+*    AUTHOR   : Sébastien Valat - 2024
+***********************************************************/
 
 #ifndef MALT_NM_CMD_READER_HPP
 #define MALT_NM_CMD_READER_HPP
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 //standard
 #include <string>
 #include <vector>
 #include "ELFReader.hpp"
 
-/*******************  NAMESPACE  ********************/
+/**********************************************************/
 namespace MALT
 {
 
-/********************  STRUCT  **********************/
+/**********************************************************/
 struct NMCmdReaderEntry
 {
 	std::string name;
@@ -30,10 +33,10 @@ struct NMCmdReaderEntry
 	int line;
 };
 
-/*********************  TYPES  **********************/
+/**********************************************************/
 typedef std::vector<NMCmdReaderEntry> NMCmdReaderEntryVector;
 
-/*********************  CLASS  **********************/
+/**********************************************************/
 class NMCmdReader
 {
 	public:

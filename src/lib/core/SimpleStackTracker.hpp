@@ -1,15 +1,18 @@
-/*****************************************************
-             PROJECT  : MALT
-             VERSION  : 1.2.2
-             DATE     : 06/2023
-             AUTHOR   : Valat Sébastien
-             LICENSE  : CeCILL-C
-*****************************************************/
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.2.4
+*    DATE     : 10/2024
+*    LICENSE  : CeCILL-C
+*    FILE     : src/lib/core/SimpleStackTracker.hpp
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat - 2014 - 2024
+*    AUTHOR   : Sébastien Valat (ECR) - 2014
+***********************************************************/
 
 #ifndef MALT_SIMPLE_BACKTRACE_STORAGE_HPP
 #define MALT_SIMPLE_BACKTRACE_STORAGE_HPP
 
-/********************  HEADERS  *********************/
+/**********************************************************/
 //extern
 #include <map>
 #include <vector>
@@ -23,11 +26,11 @@
 #include <common/STLInternalAllocator.hpp>
 #include <common/Array.hpp>
 
-/*******************  NAMESPACE  ********************/
+/**********************************************************/
 namespace MALT
 {
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 //typedef std::vector<SimpleCallStackNode*> SimpleBacktraceVector;
 /**
  * Vector of call stack node pointers. It also replace the default memory
@@ -45,7 +48,7 @@ typedef std::vector<SimpleCallStackNode*,STLInternalAllocator<SimpleCallStackNod
 **/
 typedef std::map<StackHash,SimpleBacktraceVector,std::less<StackHash>,STLInternalAllocator<std::pair<StackHash,SimpleBacktraceVector> > > SimpleBacktraceVectorMap;
 
-/*********************  CLASS  **********************/
+/**********************************************************/
 /**
  * It is used to keep track of the prifiling state attached the the call stacks.
  * 

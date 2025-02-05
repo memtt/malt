@@ -1,12 +1,15 @@
-/*****************************************************
-             PROJECT  : MALT
-             VERSION  : 1.2.2
-             DATE     : 06/2023
-             AUTHOR   : Valat Sébastien
-             LICENSE  : CeCILL-C
-*****************************************************/
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.2.4
+*    DATE     : 10/2024
+*    LICENSE  : CeCILL-C
+*    FILE     : src/lib/common/Debug.cpp
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat - 2014 - 2024
+*    AUTHOR   : Sébastien Valat (ECR) - 2014
+***********************************************************/
 
-/********************  HEADERS  *********************/
+/**********************************************************/
 //standard
 #include <cassert>
 #include <cstdlib>
@@ -16,17 +19,17 @@
 //header to implement
 #include "Debug.hpp"
 
-/*******************  NAMESPACE  ********************/
+/**********************************************************/
 namespace MALT
 {
 
-/********************** CONSTS **********************/
+/**********************************************************/
 /**
  * String to print names of debug levels.
 **/
 static const char * cstLevelPrefix[] = {"Assert : ","Debug : ","Info : ","","Warning : ","Error : ","Fatal : "};
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Constructor of debug object. Arguments must be setup with arg() method and message printing
  * will be effective when calling the end() method.
@@ -49,7 +52,7 @@ Debug::Debug(const char* format, const char* file, int line, MALT::DebugLevel le
 	this->fakeAbort = false;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Short constructor without code location.
 **/
@@ -62,7 +65,7 @@ Debug::Debug(const char* format, DebugLevel level)
 	this->level = level;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void Debug::abort(void)
 {
 	if (this->fakeAbort)
@@ -71,26 +74,26 @@ void Debug::abort(void)
 		::abort();
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 Debug & Debug::enableFakeAbort(void)
 {
 	this->fakeAbort = true;
 	return *this;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 bool Debug::aborted(void) const
 {
 	return this->fakeAbort == false;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void Debug::end(void)
 {
 	this->end(std::cout, std::cerr);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Emit the message.
 **/
@@ -137,7 +140,7 @@ void Debug::end(std::ostream & out, std::ostream & err)
 	}
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Destructor, only to check message emission on debug mode.
 **/

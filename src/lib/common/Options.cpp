@@ -1,12 +1,16 @@
-/*****************************************************
-             PROJECT  : MALT
-             VERSION  : 1.2.2
-             DATE     : 06/2023
-             AUTHOR   : Valat Sébastien
-             LICENSE  : CeCILL-C
-*****************************************************/
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.2.4
+*    DATE     : 10/2024
+*    LICENSE  : CeCILL-C
+*    FILE     : src/lib/common/Options.cpp
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat - 2014 - 2024
+*    AUTHOR   : Sébastien Valat (ECR) - 2014 - 2015
+*    AUTHOR   : Sébastien Valat (CERN) - 2015
+***********************************************************/
 
-/********************  HEADERS  *********************/
+/**********************************************************/
 //std
 #include <cstdio>
 #include <cassert>
@@ -15,11 +19,11 @@
 #include "Options.hpp"
 #include <json/JsonState.h>
 
-/*******************  NAMESPACE  ********************/
+/**********************************************************/
 namespace MALT 
 {
 
-/********************  GLOBALS  *********************/
+/**********************************************************/
 Options * gblOptions = NULL;
 /**
  * To be used in LocalAllocStackProfiler to cut MALT internal function calls
@@ -30,7 +34,7 @@ Options * gblOptions = NULL;
 **/
 static const int cstDefaultStackSkip = 4;
 
-/********************  CONSTS  **********************/
+/**********************************************************/
 /**
  * To convert MALT verbosity level.
 **/
@@ -40,7 +44,7 @@ static const char * cstVerbosityLevels[MALT_VERBOSITY_COUNT] = {
 	"verbose"
 };
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Constructor to setup the default values for each options
 **/
@@ -84,7 +88,7 @@ Options::Options(void)
 	this->dumpAfterSeconds        = 0;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Manage operator == to help validation in unit test suite.
 **/
@@ -130,7 +134,7 @@ bool Options::operator==(const Options& value) const
 	return true;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Load values from string, mostly to be used from MALT_OPTION environment variable.
  * 
@@ -200,7 +204,7 @@ void Options::loadFromString ( const char* value )
 	free(dump);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Internal function to load options from iniDic.
 **/
@@ -255,7 +259,7 @@ void Options::loadFromIniDic ( dictionary* iniDic )
 	this->dumpAfterSeconds    = iniparser_getint(iniDic,"dump:after-seconds",this->dumpAfterSeconds);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Function to load options from a config file in INI format.
 **/
@@ -278,7 +282,7 @@ void Options::loadFromFile(const char* fname)
 	//TODO apply getenv MALT_OPTIONS to override here and add "envOverride" parameter to enable it from caller
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Helper function to convert the options to JSON output format and dump it
  * into the MALT output profile.
@@ -338,7 +342,7 @@ void convertToJson(htopml::JsonState & json,const Options & value)
 	json.closeStruct();
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Helper to dump the config as INI file.
 **/
@@ -403,7 +407,7 @@ void Options::dumpConfig(const char* fname)
 	iniparser_freedict(dic);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Internal function to split strings on ':' and extract the section name.
 **/
@@ -416,7 +420,7 @@ std::string IniParserHelper::extractSectionName ( const char * key )
 	return tmp;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Updat some entries of a dictionnary.
  * @param dic Define the dictionnary to update.
@@ -429,7 +433,7 @@ void IniParserHelper::setEntry(dictionary* dic, const char* key, const char* val
 	iniparser_set(dic,key,value);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Help set setup ini dic entries from boolean by converting them to string
  * internally.
@@ -442,7 +446,7 @@ void IniParserHelper::setEntry(dictionary* dic, const char* key, bool value)
 	setEntry(dic,key,value?"true":"false");
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Help set setup ini dic entries from integer by converting them to string
  * internally.
@@ -457,7 +461,7 @@ void IniParserHelper::setEntry(dictionary* dic, const char* key, int value)
 	setEntry(dic,key,buffer);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Need to be call once after malloc is available.
 **/
@@ -469,7 +473,7 @@ Options& initGlobalOptions ( void )
 	return *gblOptions;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Convert verbosity level from string.
 **/
@@ -485,7 +489,7 @@ Verbosity verbosityFromString(const std::string & value)
 	return MALT_VERBOSITY_DEFAULT;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Convert verbosity level to string.
 **/
@@ -495,7 +499,7 @@ const char * verbosityToString(Verbosity value)
 	return cstVerbosityLevels[value];
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 Verbosity iniparser_getverbosity(dictionary * dic, const char * key, Verbosity notFound)
 {
 	//tansmit
@@ -508,7 +512,7 @@ Verbosity iniparser_getverbosity(dictionary * dic, const char * key, Verbosity n
 	return res;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Dump to stream to be used for json output.
 **/

@@ -1,23 +1,26 @@
-/*****************************************************
-             PROJECT  : MALT
-             VERSION  : 1.2.2
-             DATE     : 06/2023
-             AUTHOR   : Valat Sébastien
-             LICENSE  : CeCILL-C
-*****************************************************/
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.2.4
+*    DATE     : 10/2024
+*    LICENSE  : CeCILL-C
+*    FILE     : src/trace-reader/TraceReaderFragmentation.hpp
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat (ECR) - 2014
+*    AUTHOR   : Sébastien Valat - 2024
+***********************************************************/
 
 #ifndef MALT_TRACE_READER_FRAGMENTATION_HPP
 #define MALT_TRACE_READER_FRAGMENTATION_HPP
 
-/********************  HEADERS  *********************/
+/**********************************************************/
 #include <map>
 #include "TraceReader.hpp"
 
-/*******************  NAMESPACE  ********************/
+/**********************************************************/
 namespace MALT
 {
 
-/********************  STRUCT  **********************/
+/**********************************************************/
 struct FragmentationChunk
 {
 	AllocTracerChunk chunk;
@@ -25,7 +28,7 @@ struct FragmentationChunk
 	bool haveSharedPage;
 };
 
-/********************  STRUCT  **********************/
+/**********************************************************/
 class FragmentationChunkPerCallStack
 {
 	public:
@@ -40,12 +43,12 @@ class FragmentationChunkPerCallStack
 		ticks sumLifetime;
 };
 
-/*********************  TYPES  **********************/
+/**********************************************************/
 class Stack;
 typedef std::map<void*,FragmentationChunk> FragmentationChunkMap;
 typedef std::map<const Stack *,FragmentationChunkPerCallStack> FragmentationChunkPerCallStackMap;
 
-/*********************  CLASS  **********************/
+/**********************************************************/
 class TraceReaderFragmentation : public TraceReader
 {
 	public:

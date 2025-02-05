@@ -1,29 +1,32 @@
-/*****************************************************
-             PROJECT  : MALT
-             VERSION  : 1.2.2
-             DATE     : 06/2023
-             AUTHOR   : Valat Sébastien
-             LICENSE  : CeCILL-C
-*****************************************************/
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.2.4
+*    DATE     : 10/2024
+*    LICENSE  : CeCILL-C
+*    FILE     : src/lib/stack-tree/AbstractStackTree.hpp
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat (ECR) - 2014
+*    AUTHOR   : Sébastien Valat - 2024
+***********************************************************/
 
 #ifndef MALT_RLOCK_FREE_TREE_HPP
 #define MALT_RLOCK_FREE_TREE_HPP
 
-/********************  HEADERS  *********************/
+/**********************************************************/
 //std
 #include <cassert>
 #include "StackSTLHashMap.hpp"
 #include "RLockFreeTree.hpp"
 
 
-/*******************  NAMESPACE  ********************/
+/**********************************************************/
 namespace MALT
 {
 	
-/*********************  TYPES  **********************/
+/**********************************************************/
 typedef void * StackNodeHanlder;
 
-/*********************  CLASS  **********************/
+/**********************************************************/
 template <class T>
 class AbstractStackTree
 {
@@ -42,7 +45,7 @@ class AbstractStackTree
 		RLockFreeTree<T> tree;
 };
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 template <class T>
 AbstractStackTree<T>::AbstractStackTree(bool useHashMap, bool threadSafe)
 	:tree(threadSafe)
@@ -51,7 +54,7 @@ AbstractStackTree<T>::AbstractStackTree(bool useHashMap, bool threadSafe)
 	this->threadSafe = threadSafe;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 StackNodeHanlder AbstractStackTree::getChild(StackNodeHanlder handler, void* callsite)
 {
 	assert(useHashMap == false);
@@ -62,7 +65,7 @@ StackNodeHanlder AbstractStackTree::getChild(StackNodeHanlder handler, void* cal
 		return tree.getChild(handler,callsite);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 T* AbstractStackTree::getData(StackNodeHanlder handler)
 {
 	assert(handler != NULL);
@@ -74,7 +77,7 @@ T* AbstractStackTree::getData(StackNodeHanlder handler)
 	}
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 StackNodeHanlder AbstractStackTree::getNode(const Stack& stack)
 {
 	StackNodeHanlder res;
@@ -90,7 +93,7 @@ StackNodeHanlder AbstractStackTree::getNode(const Stack& stack)
 	return res;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 StackNodeHanlder AbstractStackTree::getParent(StackNodeHanlder handler)
 {
 	assert(handler != NULL);
@@ -102,7 +105,7 @@ StackNodeHanlder AbstractStackTree::getParent(StackNodeHanlder handler)
 		return tree.getParent(handler);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void AbstractStackTree::toJson(htopml::JsonState& state)
 {
 	if (useHashMap)

@@ -1,25 +1,28 @@
-/*****************************************************
-             PROJECT  : MALT
-             VERSION  : 1.2.2
-             DATE     : 06/2023
-             AUTHOR   : Valat Sébastien
-             LICENSE  : CeCILL-C
-*****************************************************/
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.2.4
+*    DATE     : 10/2024
+*    LICENSE  : CeCILL-C
+*    FILE     : src/lib/common/TakeLock.hpp
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat - 2014 - 2024
+*    AUTHOR   : Sébastien Valat (ECR) - 2014
+***********************************************************/
 
 #ifndef MALT_TAKE_LOCK_HPP
 #define MALT_TAKE_LOCK_HPP
 
-/********************  HEADERS  *********************/
+/**********************************************************/
 #include <cstdlib>
 #include <cassert>
 
-/********************  INFO   ***********************/
+/**********************************************************/
 /**
  * This file orginally came from MPC_Allocator_CPP project
  * written under CeCILL-C licence by Sébastien Valat.
 **/
 
-/********************  MACRO  ***********************/
+/**********************************************************/
 /**
  * Simple macro to start an optional critical section by using TakeLock mechanism. It
  * support internal use of return, exceptions... The section must be ended by END_CRITICAL
@@ -40,7 +43,7 @@ MALT_END_CRITICAL
 **/
 #define MALT_OPTIONAL_CRITICAL(lock,takeLock) do { MALT::TakeLock<typeof(lock)> _local_take_lock__(&(lock),(takeLock));
 
-/********************  MACROS  **********************/
+/**********************************************************/
 /**
  * Simple macro to start a critical section by using TakeLock mechanism. It
  * support internal use of return, exceptions... The section must be ended by END_CRITICAL
@@ -60,15 +63,15 @@ MALT_END_CRITICAL
 **/
 #define MALT_START_CRITICAL(lock) { MALT::TakeLock<typeof(lock)> _local_take_lock__(&(lock));
 
-/********************  MACROS  **********************/
+/**********************************************************/
 /** Close a critical region defined by START_CRITICAL of OPTIONAL_CRITICAL. **/
 #define MALT_END_CRITICAL }while(0);
 
-/*******************  NAMESPACE  ********************/
+/**********************************************************/
 namespace MALT
 {
 
-/*********************  CLASS  **********************/
+/**********************************************************/
 /**
  * Simple class used to manage locking/unlocking of a lock on a region bases by supported
  * exceptions and return inside it.
@@ -104,7 +107,7 @@ class TakeLock
 		T * lock;
 };
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Constructor used to take the lock at init time.
  * @param lock Pointer to the luck to use. 
@@ -123,7 +126,7 @@ TakeLock<T>::TakeLock(T* lock, bool takeLock)
 	}
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Automatically released the lock when current object (so scope) is destroyed.
 **/
@@ -133,7 +136,7 @@ TakeLock<T>::~TakeLock(void )
 	unlock();
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Short function to check the locking status.
 **/
@@ -143,7 +146,7 @@ inline bool TakeLock<T>::isLock(void )
 	return lock != NULL;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Permit to manually unlock inside the context if required.
 **/

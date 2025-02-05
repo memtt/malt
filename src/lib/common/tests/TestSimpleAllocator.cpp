@@ -1,30 +1,33 @@
-/*****************************************************
-             PROJECT  : MALT
-             VERSION  : 1.2.2
-             DATE     : 06/2023
-             AUTHOR   : Valat Sébastien
-             LICENSE  : CeCILL-C
-*****************************************************/
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.2.4
+*    DATE     : 10/2024
+*    LICENSE  : CeCILL-C
+*    FILE     : src/lib/common/tests/TestSimpleAllocator.cpp
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat - 2014 - 2024
+*    AUTHOR   : Sébastien Valat (ECR) - 2014
+***********************************************************/
 
-/********************  HEADERS  *********************/
+/**********************************************************/
 #include <gtest/gtest.h>
 #include <common/SimpleAllocator.hpp>
 
-/***************** USING NAMESPACE ******************/
+/**********************************************************/
 using namespace MALT;
 
-/********************** CONSTS **********************/
+/**********************************************************/
 const char CST_VALUE_1[] = "=============================================================== MALT MEMORY =====================================================================\n\
 Internal memory : allocated = 262.1 Ko , unused = 262.1 Ko\n\
 =================================================================================================================================================\n";
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(SimpleAllocator,constructor)
 {
 	SimpleAllocator alloc;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(SimpleAllocator,alloc1)
 {
 	SimpleAllocator alloc;
@@ -33,7 +36,7 @@ TEST(SimpleAllocator,alloc1)
 	alloc.free(ptr);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(SimpleAllocator,alloc2)
 {
 	SimpleAllocator alloc;
@@ -43,7 +46,7 @@ TEST(SimpleAllocator,alloc2)
 	EXPECT_EQ(ptr1,ptr2);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(SimpleAllocator,alloc3)
 {
 	SimpleAllocator alloc;
@@ -55,7 +58,7 @@ TEST(SimpleAllocator,alloc3)
 	EXPECT_NE(ptr2,ptr3);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(SimpleAllocator,alloc4)
 {
 	SimpleAllocator alloc;
@@ -69,7 +72,7 @@ TEST(SimpleAllocator,alloc4)
 		alloc.free(ptr[i]);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(SimpleAllocator,alloc5)
 {
 	SimpleAllocator alloc;
@@ -79,7 +82,7 @@ TEST(SimpleAllocator,alloc5)
 	EXPECT_NE(ptr1,ptr2);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(SimpleAllocator,mallocSeq1)
 {
 	SimpleAllocator alloc;
@@ -95,7 +98,7 @@ TEST(SimpleAllocator,mallocSeq1)
 	memset(ptr5,0,48*sizeof(int));
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(SimpleAllocator,reallocSeq1)
 {
 	SimpleAllocator alloc;
@@ -111,7 +114,7 @@ TEST(SimpleAllocator,reallocSeq1)
 	memset(ptr5,0,48*sizeof(int));
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(SimpleAllocator,refillNonMultiple)
 {
 	//to check move of non used to small segment from cur => freelist
@@ -120,7 +123,7 @@ TEST(SimpleAllocator,refillNonMultiple)
 		alloc.malloc(560);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(SimpleAllocator,getTotalAndInUseAndUnusedMemory)
 {
 	SimpleAllocator alloc;
@@ -133,14 +136,14 @@ TEST(SimpleAllocator,getTotalAndInUseAndUnusedMemory)
 	EXPECT_EQ(32+sizeof(Chunk),alloc.getInuseMemory());
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(SimpleAllocator,getMaxSize)
 {
 	SimpleAllocator alloc;
 	EXPECT_EQ(MALT_ALLOC_SYS_REQ_SIZE,alloc.getMaxSize());
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(SimpleAllocator,printStat)
 {
 	SimpleAllocator alloc;
@@ -152,7 +155,7 @@ TEST(SimpleAllocator,printStat)
 	EXPECT_EQ(CST_VALUE_1,out.str());
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(SimpleAllocator,tooLarge)
 {
 	SimpleAllocator alloc;

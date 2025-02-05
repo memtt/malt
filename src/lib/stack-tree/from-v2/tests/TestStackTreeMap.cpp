@@ -1,31 +1,33 @@
-/*****************************************************
-             PROJECT  : MALT
-             VERSION  : 1.2.2
-             DATE     : 06/2023
-             AUTHOR   : Valat Sébastien
-             LICENSE  : CeCILL-C
-*****************************************************/
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.2.4
+*    DATE     : 10/2024
+*    LICENSE  : CeCILL-C
+*    FILE     : src/lib/stack-tree/from-v2/tests/TestStackTreeMap.cpp
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat - 2015 - 2024
+***********************************************************/
 
-/********************  HEADERS  *********************/
+/**********************************************************/
 #include <gtest/gtest.h>
 #include <json/ConvertToJson.h>
 #include <common/SimpleAllocator.hpp>
 #include "../StackTreeMap.hpp"
 
-/***************** USING NAMESPACE ******************/
+/**********************************************************/
 using namespace MALTV2;
 
 void * CST_VALUE_1[] = {(void*)0x1,(void*)0x2,(void*)0x3,(void*)0x4};
 const char CST_VALUE_2[] = "{\n\t\"addresses\":{\n\t\t\"0x3\":\"0xaaa\",\n\t\t\"0x1\":\"0xbbb\",\n\t\t\"0x2\":\"0xccc\"\n\t},\n\t\"calltree\":{\n\t\t\"0x1\":{\n\t\t\t\"0x2\":{\n\t\t\t\t\"dataId\":2\n\t\t\t}\n\t\t},\n\t\t\"0x3\":{\n\t\t\t\"dataId\":0\n\t\t}\n\t},\n\t\"data\":{\n\t\t\"test-counter\":{\n\t\t\t\"2\":11,\n\t\t\t\"0\":10\n\t\t}\n\t}\n}"
 ;
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(StackTreeMap,constructor)
 {
 	StackTreeMap map;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(StackTreeMap,getValueRef)
 {
 	//setup map
@@ -45,7 +47,7 @@ TEST(StackTreeMap,getValueRef)
 	EXPECT_EQ(10,map.getTypedData<int>(handler,0));
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(StackTreeMap,toJson)
 {
 	//setup map
@@ -78,7 +80,7 @@ TEST(StackTreeMap,toJson)
 	EXPECT_EQ(CST_VALUE_2,out.str());
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(StackTreeMap,testDataHandler)
 {
 	//setup map
@@ -105,7 +107,7 @@ TEST(StackTreeMap,testDataHandler)
 	EXPECT_EQ(10,map.getTypedData<int>(dataHandler,0));
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 int main(int argc, char ** argv)
 {
 	//init internal allocator

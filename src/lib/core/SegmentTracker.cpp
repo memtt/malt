@@ -1,10 +1,14 @@
-/*****************************************************
-             PROJECT  : MALT
-             VERSION  : 1.2.2
-             DATE     : 06/2023
-             AUTHOR   : Valat Sébastien
-             LICENSE  : CeCILL-C
-*****************************************************/
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.2.4
+*    DATE     : 10/2024
+*    LICENSE  : CeCILL-C
+*    FILE     : src/lib/core/SegmentTracker.cpp
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat - 2014 - 2024
+*    AUTHOR   : Sébastien Valat (ECR) - 2014
+*    AUTHOR   : Antoine Bernard (crans.org) - 2024
+***********************************************************/
 
 /********************  HEADERS  *********************/
 #include <cassert>
@@ -23,7 +27,7 @@ namespace MALT
 SegmentInfo::SegmentInfo(void)
 {
 	this->size = 0;
-	this->allocTime = getticks();
+	this->allocTime = Clock::getticks();
 }
 
 /*******************  FUNCTION  *********************/
@@ -43,7 +47,7 @@ SegmentInfo::~SegmentInfo(void)
 **/
 ticks SegmentInfo::getLifetime(void ) const
 {
-	return getticks() - allocTime;
+	return Clock::getticks() - allocTime;
 }
 
 /*******************  FUNCTION  *********************/
@@ -156,7 +160,7 @@ LeakInfo::LeakInfo(void)
 
 /*******************  FUNCTION  *********************/
 /**
- * Conver a leak info object to json.
+ * Convert a leak info object to json.
  * @param json The json state object to make the conversion.
  * @param it Reference to the object to convert.
 **/

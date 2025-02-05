@@ -1,20 +1,24 @@
-/*****************************************************
-             PROJECT  : MALT
-             VERSION  : 1.2.2
-             DATE     : 06/2023
-             AUTHOR   : Valat Sébastien
-             LICENSE  : CeCILL-C
-*****************************************************/
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.2.4
+*    DATE     : 10/2024
+*    LICENSE  : CeCILL-C
+*    FILE     : src/lib/core/tests/TestSegmentTracker.cpp
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat - 2014 - 2024
+*    AUTHOR   : Sébastien Valat (ECR) - 2014
+***********************************************************/
 
-/********************  HEADERS  *********************/
+/**********************************************************/
 #include <gtest/gtest.h>
 #include <core/SegmentTracker.hpp>
 #include <stacks/Stack.hpp>
+#include <json/ConvertToJson.h>
 
-/***************** USING NAMESPACE ******************/
+/**********************************************************/
 using namespace MALT;
 
-/********************* GLOBALS **********************/
+/**********************************************************/
 //for pre init of global allocator
 class ForceInit
 {
@@ -23,26 +27,26 @@ class ForceInit
 };
 ForceInit gblForceInit;
 
-/********************* GLOBALS **********************/
+/**********************************************************/
 static void * CST_STACK_1_CONTENT[] = {(void*)0x1,(void*)0x2,(void*)0x3};
 #define CST_STACK_1_SIZE (sizeof(CST_STACK_1_CONTENT)/sizeof(CST_STACK_1_CONTENT[0]))
 static void * CST_ADDR1 = ((void*)0x42);
 static Stack CST_STACK_1(CST_STACK_1_CONTENT,CST_STACK_1_SIZE,STACK_ORDER_ASC,DOMAIN_C);
 static CallStackInfo CST_INFO_1;
 
-/********************  MACROS  **********************/
+/**********************************************************/
 #define EXPECT_NULL(x) EXPECT_EQ((void*)NULL,(x))
 #define EXPECT_NOT_NULL(x) EXPECT_NE((void*)NULL,(x))
 #define ASSERT_NULL(x) ASSERT_EQ((void*)NULL,(x))
 #define ASSERT_NOT_NULL(x) ASSERT_NE((void*)NULL,(x))
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(TestSegmentTracker,testConstructor)
 {
 	SegmentTracker tracker;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(TestSegmentTracker,testAdd)
 {
 	//setup objects
@@ -53,7 +57,7 @@ TEST(TestSegmentTracker,testAdd)
 	tracker.add(CST_ADDR1,64,stack);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(TestSegmentTracker,testGetOK)
 {
 	//setup objects
@@ -67,9 +71,12 @@ TEST(TestSegmentTracker,testGetOK)
 	SegmentInfo * info = tracker.get(CST_ADDR1);
 	ASSERT_NOT_NULL(info);
 	EXPECT_EQ(64UL,info->size);
+
+	//check lifetime
+	EXPECT_GT(info->getLifetime(), 0UL);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(TestSegmentTracker,testGetInvalid)
 {
 	//setup objects
@@ -83,7 +90,7 @@ TEST(TestSegmentTracker,testGetInvalid)
 	EXPECT_NULL(tracker.get((void*)0x41));
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(TestSegmentTracker,testRemoveOK)
 {
 	//setup objects
@@ -98,7 +105,7 @@ TEST(TestSegmentTracker,testRemoveOK)
 	EXPECT_NULL(tracker.get(CST_ADDR1));
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(TestSegmentTracker,testRemoveNotExist)
 {
 	//setup objects
@@ -110,7 +117,7 @@ TEST(TestSegmentTracker,testRemoveNotExist)
 	EXPECT_NULL(tracker.get(CST_ADDR1));
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(TestSegmentTracker,testMunmap1)
 {
 	//setup objects
@@ -128,7 +135,7 @@ TEST(TestSegmentTracker,testMunmap1)
 	EXPECT_EQ(0x100U,info->size);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(TestSegmentTracker,testMunmap2)
 {
 	//setup objects
@@ -146,7 +153,7 @@ TEST(TestSegmentTracker,testMunmap2)
 	EXPECT_EQ(0x100U,info->size);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(TestSegmentTracker,testMunmap3)
 {
 	//setup objects
@@ -167,7 +174,7 @@ TEST(TestSegmentTracker,testMunmap3)
 	EXPECT_EQ(0x080U,info->size);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(TestSegmentTracker,testMunmap4)
 {
 	//setup objects
@@ -188,7 +195,7 @@ TEST(TestSegmentTracker,testMunmap4)
 	EXPECT_EQ(0x080U,info->size);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(TestSegmentTracker,testMunmap5)
 {
 	//setup objects
@@ -208,4 +215,63 @@ TEST(TestSegmentTracker,testMunmap5)
 	info = tracker.get((void*)0x1C0);
 	ASSERT_NOT_NULL(info);
 	EXPECT_EQ(0x040U,info->size);
+}
+
+/**********************************************************/
+TEST(TestSegmentTracker,toJson_no_segments)
+{
+	//setup objects
+	SegmentTracker tracker;
+	MMCallStackNode stack(&CST_STACK_1,&CST_INFO_1);
+
+	//convert
+	std::stringstream out;
+	htopml::convertToJson(out, tracker);
+
+	//compare
+	EXPECT_EQ(out.str(), "[]");
+}
+
+/**********************************************************/
+TEST(TestSegmentTracker,toJson_have_one_leak)
+{
+	//setup objects
+	SegmentTracker tracker;
+	MMCallStackNode stack(&CST_STACK_1,&CST_INFO_1);
+	
+	//try to add a new entry
+	tracker.add((void*)0x100,128,stack);
+	tracker.add((void*)0x800,128,stack);
+	
+	//munmap out of segment (after)
+	tracker.munmap((void*)0x100,128);
+
+	//convert
+	std::stringstream out;
+	htopml::convertToJson(out, tracker);
+
+	//compare
+	EXPECT_EQ(out.str(), "[{\n\t\"stack\":[\"0x1\", \"0x2\", \"0x3\"],\n\t\"count\":1,\n\t\"memory\":128\n}]");
+}
+
+/**********************************************************/
+TEST(TestSegmentTracker,toJson_trunked)
+{
+	//setup objects
+	SegmentTracker tracker;
+	MMCallStackNode stack(&CST_STACK_1,&CST_INFO_1);
+	
+	//try to add a new entry
+	tracker.add((void*)0x100,128,stack);
+	tracker.add((void*)0x800,128,stack);
+	
+	//munmap out of segment (after)
+	tracker.munmap((void*)0x120,32);
+
+	//convert
+	std::stringstream out;
+	htopml::convertToJson(out, tracker);
+
+	//compare
+	EXPECT_EQ(out.str(), "[{\n\t\"stack\":[\"0x1\", \"0x2\", \"0x3\"],\n\t\"count\":3,\n\t\"memory\":224\n}]");
 }

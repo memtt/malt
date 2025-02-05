@@ -1,3 +1,14 @@
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.2.4
+*    DATE     : 10/2024
+*    LICENSE  : CeCILL-C
+*    FILE     : src/webview/client-files/app/js/directives.js
+*-----------------------------------------------------------
+*    AUTHOR   : Mehdi Raza Jaffery (CERN) - 2016
+*    AUTHOR   : Sébastien Valat - 2024
+*    AUTHOR   : Antoine Bernard (crans.org) - 2024
+***********************************************************/
 /**
  * This file contains all the directives needed across different pages.
  * This encourages reuse of components rather than repeating code across controllers.
@@ -144,7 +155,7 @@
 						return $scope.formatValue(Math.round(value/divider),unit);
 				}
 
-				$scope.hasExlusiveValues = function() {
+				$scope.hasExclusiveValues = function() {
 					if ($scope.selectedDetails == undefined || $scope.selectedDetails.own == undefined)
 						return true;
 					else

@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 ############################################################
 #    PROJECT  : MALT (MALoc Tracker)
-#    VERSION  : 1.2.2
-#    DATE     : 05/2024
+#    VERSION  : 1.2.4
+#    DATE     : 10/2024
 #    LICENSE  : CeCILL-C
 #    FILE     : dev/update_file_headers.py
 #-----------------------------------------------------------
@@ -11,7 +11,10 @@
 
 # Usage : 
 # --------------------------------------------------------------------------------------------------
-# for file in $(git ls-files); do ./dev/update_file_headers.py $file; done
+# python3 -m venv venv
+# source venv/bin/activate
+# pip install gitpython
+# ./dev/update_file_headers.py --git-all .
 # --------------------------------------------------------------------------------------------------
 
 ############################################################
@@ -339,8 +342,12 @@ class HeaderPatcher:
         exclude = self.config['exclude_files']
         for pattern in exclude:
             if fnmatch.fnmatch(filename, pattern) or filename.startswith(pattern):
-                print(f" - {filename} : IGNORED")
-                return
+                # check if included
+                include = self.config['include_files']
+                for ipattern in include:
+                    if not(fnmatch.fnmatch(filename, ipattern) or filename.startswith(ipattern)):
+                        print(f" - {filename} : EXCLUDED")
+                        return
         
         # apply
         self.patch_header(filename)

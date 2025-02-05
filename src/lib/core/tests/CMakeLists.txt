@@ -1,12 +1,15 @@
-######################################################
-#            PROJECT  : MALT                         #
-#            VERSION  : 1.2.2                        #
-#            DATE     : 06/2023                      #
-#            AUTHOR   : Valat Sébastien              #
-#            LICENSE  : CeCILL-C                     #
-######################################################
+############################################################
+#    PROJECT  : MALT (MALoc Tracker)
+#    VERSION  : 1.2.4
+#    DATE     : 10/2024
+#    LICENSE  : CeCILL-C
+#    FILE     : src/lib/core/tests/CMakeLists.txt
+#-----------------------------------------------------------
+#    AUTHOR   : Sébastien Valat - 2014 - 2022
+#    AUTHOR   : Sébastien Valat (ECR) - 2014 - 2015
+############################################################
 
-######################################################
+############################################################
 #Use gtest
 include_directories(${GTEST_INCLUDE_DIRS} ${GMOCK_INCLUDE_DIRS})
 include_directories(../)
@@ -17,6 +20,9 @@ set(TEST_NAMES TestVmaTracker
                TestSymbolSolver
                TestAllocTraceFile
                TestCallStackInfo
+               TestSimpleCallStackNode
+               TestSimpleCallStackTracker
+               TestStackSizeAnalyser
 )
 
 #####################################################

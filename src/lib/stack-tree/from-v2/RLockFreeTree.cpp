@@ -1,23 +1,25 @@
-/*****************************************************
-             PROJECT  : MALT
-             VERSION  : 1.2.2
-             DATE     : 06/2023
-             AUTHOR   : Valat Sébastien
-             LICENSE  : CeCILL-C
-*****************************************************/
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.2.4
+*    DATE     : 10/2024
+*    LICENSE  : CeCILL-C
+*    FILE     : src/lib/stack-tree/from-v2/RLockFreeTree.cpp
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat - 2015 - 2024
+***********************************************************/
 
-/********************  HEADERS  *********************/
+/**********************************************************/
 #include "RLockFreeTree.hpp"
 #include <json/JsonState.h>
 #include <common/Debug.hpp>
 #include <common/NoFreeAllocator.hpp>
 // #include <core/SymbolRegistry.hpp>
 
-/*******************  NAMESPACE  ********************/
+/**********************************************************/
 namespace MALTV2
 {
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 RLockFreeTreeNode::RLockFreeTreeNode(MALT::AddressType callsite)
 {
 	this->callSite = callsite;
@@ -30,7 +32,7 @@ RLockFreeTreeNode::RLockFreeTreeNode(MALT::AddressType callsite)
 		this->data[i] = NULL;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 RLockFreeTree::RLockFreeTree(bool threadSafe)
 	:root(MALT::nullAddr)
 {
@@ -38,24 +40,24 @@ RLockFreeTree::RLockFreeTree(bool threadSafe)
 	this->lastDataId = 0;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 RLockFreeTree::~RLockFreeTree(void)
 {
 
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 StackTreeHandler RLockFreeTree::enterThread(void)
 {
 	return &root;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void RLockFreeTree::exitThread(StackTreeHandler handler)
 {
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 RLockFreeTreeNode * RLockFreeTree::addChild(RLockFreeTreeNode* node, MALT::AddressType callsite)
 {
 	RLockFreeTreeNode * child = NULL;
@@ -81,7 +83,7 @@ RLockFreeTreeNode * RLockFreeTree::addChild(RLockFreeTreeNode* node, MALT::Addre
 	return child;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 RLockFreeTreeNode * RLockFreeTree::findChild(RLockFreeTreeNode* node, MALT::AddressType callsite)
 {
 	//errors
@@ -102,7 +104,7 @@ RLockFreeTreeNode * RLockFreeTree::findChild(RLockFreeTreeNode* node, MALT::Addr
 	return res;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void RLockFreeTree::insertChild(RLockFreeTreeNode* parent, RLockFreeTreeNode* child)
 {
 	//errors
@@ -114,13 +116,13 @@ void RLockFreeTree::insertChild(RLockFreeTreeNode* parent, RLockFreeTreeNode* ch
 	parent->firstChild = child;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 StackTreeHandler RLockFreeTree::setOnRoot(StackTreeHandler handler)
 {
 	return &this->root;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 StackTreeHandler RLockFreeTree::getFromStack(StackTreeHandler handler, const Stack & stack)
 {
 	//check
@@ -134,7 +136,7 @@ StackTreeHandler RLockFreeTree::getFromStack(StackTreeHandler handler, const Sta
 	return handler;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 StackTreeHandler RLockFreeTree::getFromStack(StackTreeHandler handler, const MALT::Stack & stack)
 {
 	//check
@@ -148,7 +150,7 @@ StackTreeHandler RLockFreeTree::getFromStack(StackTreeHandler handler, const MAL
 	return handler;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void RLockFreeTree::copyData(const Stack& stack, const StackTreeStorage& storage,int id)
 {
 	StackTreeHandler handler = enterThread();
@@ -159,7 +161,7 @@ void RLockFreeTree::copyData(const Stack& stack, const StackTreeStorage& storage
 	exitThread(handler);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 StackTreeHandler RLockFreeTree::getFromStack(StackTreeHandler handler, int skip)
 {
 	BacktraceStack stack;
@@ -168,13 +170,13 @@ StackTreeHandler RLockFreeTree::getFromStack(StackTreeHandler handler, int skip)
 	return getFromStack(handler,stack);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 RLockFreeTreeNode* RLockFreeTree::getNode(StackTreeHandler handler)
 {
 	return (RLockFreeTreeNode*)handler;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 StackTreeHandler RLockFreeTree::enterFunction(StackTreeHandler handler, MALT::AddressType callsite)
 {
 	Handler node = findChild((Handler)handler,callsite);
@@ -186,7 +188,7 @@ StackTreeHandler RLockFreeTree::enterFunction(StackTreeHandler handler, MALT::Ad
 	return node;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 StackTreeHandler RLockFreeTree::exitFunction(StackTreeHandler handler, MALT::AddressType callsite)
 {
 	Handler typedHandler = (Handler)handler;
@@ -194,14 +196,14 @@ StackTreeHandler RLockFreeTree::exitFunction(StackTreeHandler handler, MALT::Add
 	return handler;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 StackTreeDataHandler RLockFreeTree::getDataHandler ( StackTreeHandler handler )
 {
 	Handler typedHandler = (Handler)handler;
 	return &typedHandler->data;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 int RLockFreeTree::getStackId ( StackTreeDataHandler handler )
 {
 	Handler typedHandler = (Handler)handler;
@@ -209,7 +211,7 @@ int RLockFreeTree::getStackId ( StackTreeDataHandler handler )
 	return typedHandler->dataId;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void* RLockFreeTree::getData(StackTreeHandler handler, int id)
 {
 	assert(id < MALT_STACK_TREE_ENTRIES);
@@ -220,7 +222,7 @@ void* RLockFreeTree::getData(StackTreeHandler handler, int id)
 	return ret;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void* RLockFreeTree::getData ( StackTreeDataHandler dataHandler, int id )
 {
 	assert(id < MALT_STACK_TREE_ENTRIES);
@@ -230,7 +232,7 @@ void* RLockFreeTree::getData ( StackTreeDataHandler dataHandler, int id )
 	return ret;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 // void RLockFreeTree::setData(MALT::StackTreeHandler handler, int id, void* data)
 // {
 // 	assert(id < MALT_STACK_TREE_ENTRIES);
@@ -238,7 +240,7 @@ void* RLockFreeTree::getData ( StackTreeDataHandler dataHandler, int id )
 // 	typedHandler->data[id] = data;
 // }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void convertToJson(htopml::JsonState& json, const std::map<void*,void*>  & value)
 {
 	char buffer[128];
@@ -251,7 +253,7 @@ void convertToJson(htopml::JsonState& json, const std::map<void*,void*>  & value
 	json.closeStruct();
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void convertToJson(htopml::JsonState& json, const RLockFreeTree& tree)
 {
 	char buffer[128];
@@ -276,7 +278,7 @@ void convertToJson(htopml::JsonState& json, const RLockFreeTree& tree)
 	json.closeStruct();
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void convertToJson(htopml::JsonState& json, const RLockFreeTreeNode& tree)
 {
 	char buffer[64];
@@ -303,7 +305,7 @@ void convertToJson(htopml::JsonState& json, const RLockFreeTreeNode& tree)
 	json.closeStruct();
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void RLockFreeTree::printData(htopml::JsonState& json, int i) const
 {
 	json.openFieldStruct(this->names[i].c_str());
@@ -311,7 +313,7 @@ void RLockFreeTree::printData(htopml::JsonState& json, int i) const
 	json.closeFieldStruct(this->names[i].c_str());
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void RLockFreeTree::printData(htopml::JsonState& json, const RLockFreeTreeNode* node, int i) const
 {
 	char buffer[64];
@@ -328,19 +330,19 @@ void RLockFreeTree::printData(htopml::JsonState& json, const RLockFreeTreeNode* 
 	}
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 bool RLockFreeTree::isEnterExit ( void ) const
 {
 	return true;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void RLockFreeTree::toJson ( htopml::JsonState& json, const StackTree& tree ) const
 {
 	convertToJson(json,dynamic_cast<const RLockFreeTree&>(tree));
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 bool RLockFreeTreeNode::hasData ( void )
 {
 	for (int i = 0 ; i < MALT_STACK_TREE_ENTRIES ; i++)
@@ -357,7 +359,7 @@ bool RLockFreeTreeNode::hasData ( void )
 		return false;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void RLockFreeTree::markChildData ( RLockFreeTreeNode* node )
 {
 	//set root
@@ -394,20 +396,20 @@ void RLockFreeTree::markChildData ( RLockFreeTreeNode* node )
 	}
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void RLockFreeTree::prepareForOutput ( void )
 {
 	addrToId[MALT::nullAddr] = MALT::nullAddr;
 	markChildData();
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void RLockFreeTree::registerSymbols ( SymbolRegistry& solver ) const
 {
 	root.registerSymbols(solver);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void RLockFreeTreeNode::registerSymbols ( SymbolRegistry& solver ) const
 {
 	MALT_FATAL("Must not be called in V1 (not supported)");

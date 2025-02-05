@@ -1,7 +1,14 @@
-src/webview/node_modules/grunt*
-src/webview/node_modules/browserify/
-src/webview/node_modules/.bin/grunt
-src/webview/node_modules/.bin/browserify
+# Ignore node modules which are downloaded at the installation
+src/webview/node_modules/
+
+# Ignore build directories
 src/webview/dist
 src/webview/build
 /build*
+/venv
+
+# for convenience
+/UNTRACKED
+
+# python
+__pycache__

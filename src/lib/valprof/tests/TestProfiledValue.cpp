@@ -1,21 +1,25 @@
-/*****************************************************
-             PROJECT  : MALT
-             VERSION  : 1.2.2
-             DATE     : 06/2023
-             AUTHOR   : Valat Sébastien
-             LICENSE  : CeCILL-C
-*****************************************************/
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.2.4
+*    DATE     : 10/2024
+*    LICENSE  : CeCILL-C
+*    FILE     : src/lib/valprof/tests/TestProfiledValue.cpp
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat - 2014 - 2024
+*    AUTHOR   : Sébastien Valat (ECR) - 2014
+*    AUTHOR   : Sébastien Valat (INRIA) - 2023
+***********************************************************/
 
-/********************  HEADERS  *********************/
+/**********************************************************/
 #include <sstream>
 #include <gtest/gtest.h>
 #include <json/ConvertToJson.h>
 #include <valprof/ProfiledValue.hpp>
 
-/***************** USING NAMESPACE ******************/
+/**********************************************************/
 using namespace MALT;
 
-/********************** CONSTS **********************/
+/**********************************************************/
 static void * CST_FUNC_1 = (void*)0xA;
 static void * CST_FUNC_2 = (void*)0xB;
 static const char * CST_STRING_1 = "{\n\t\"start\":0,\n\t\"fields\":[\"max\"],\n\t\"perPoints\":1,\n\t\"peak\":3,\n\t\"values\":[1, 1, 2, 2, 3],\n\t\"callsite\":[\"0xa\", \"0xa\", \"0xa\", \"0xa\", \"0xa\"]\n}";
@@ -25,13 +29,13 @@ static const char * CST_STRING_4 = "{\n\t\"start\":0,\n\t\"fields\":[\"max\"],\n
 static const char * CST_STRING_5 = "{\n\t\"start\":0,\n\t\"fields\":[\"max\"],\n\t\"perPoints\":1,\n\t\"peak\":4,\n\t\"values\":[1, 1, 1, 1, 3, 3, 4],\n\t\"callsite\":[\"0xa\", \"0xa\", \"0x0\", \"0x0\", \"0xa\", \"0xa\", \"0xa\"]\n}";
 
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(ProfiledValue,constructor)
 {
 	ProfiledStateMaxInt profile(10);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(ProfiledValue,push_only_5)
 {
 	//setup
@@ -53,7 +57,7 @@ TEST(ProfiledValue,push_only_5)
 	EXPECT_EQ(CST_STRING_1,buffer.str());
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(ProfiledValue,push_max)
 {
 	//setup
@@ -75,7 +79,7 @@ TEST(ProfiledValue,push_max)
 	EXPECT_EQ(CST_STRING_2,buffer.str());
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(ProfiledValue,push_more_than_max_1)
 {
 	//setup
@@ -97,7 +101,7 @@ TEST(ProfiledValue,push_more_than_max_1)
 	EXPECT_EQ(CST_STRING_3,buffer.str());
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(ProfiledValue,push_more_than_max_2)
 {
 	//setup
@@ -119,7 +123,7 @@ TEST(ProfiledValue,push_more_than_max_2)
 	EXPECT_EQ(CST_STRING_4,buffer.str());
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(ProfiledValue,hole)
 {
 	//setup

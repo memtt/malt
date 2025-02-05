@@ -1,18 +1,21 @@
-/*****************************************************
-             PROJECT  : MALT
-             VERSION  : 1.2.2
-             DATE     : 06/2023
-             AUTHOR   : Valat Sébastien
-             LICENSE  : CeCILL-C
-*****************************************************/
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.2.4
+*    DATE     : 10/2024
+*    LICENSE  : CeCILL-C
+*    FILE     : src/lib/portability/OS.hpp
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat (ECR) - 2014
+*    AUTHOR   : Sébastien Valat - 2024
+***********************************************************/
 
 #ifndef MALT_OS_HPP
 #define MALT_OS_HPP
 
-/********************  HEADERS  *********************/
+/**********************************************************/
 #include <config.h>
 
-/*********************  TYPES  **********************/
+/**********************************************************/
 #if defined(MALT_PORTABILITY_OS_UNIX)
 	//pthread mode
 	#include "OSUnix.hpp"

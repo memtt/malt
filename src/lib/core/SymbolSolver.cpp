@@ -1,12 +1,18 @@
-/*****************************************************
-             PROJECT  : MALT
-             VERSION  : 1.2.2
-             DATE     : 06/2023
-             AUTHOR   : Valat Sébastien
-             LICENSE  : CeCILL-C
-*****************************************************/
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.2.4
+*    DATE     : 10/2024
+*    LICENSE  : CeCILL-C
+*    FILE     : src/lib/core/SymbolSolver.cpp
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat - 2014 - 2024
+*    AUTHOR   : Sébastien Valat (ECR) - 2014
+*    AUTHOR   : Sébastien Valat (ATOS) - 2019
+*    AUTHOR   : Sriram Swaminarayan (LANL) - 2023
+*    AUTHOR   : Sébastien Valat (INRIA) - 2023 - 2024
+***********************************************************/
 
-/********************  HEADERS  *********************/
+/**********************************************************/
 //c++
 #include <cassert>
 #include <cstdlib>
@@ -41,11 +47,11 @@
 #endif
 
 
-/*******************  NAMESPACE  ********************/
+/**********************************************************/
 namespace MALT
 {
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Constructor of the symbol solver.
 **/
@@ -54,7 +60,7 @@ SymbolSolver::SymbolSolver(void )
 	strings.push_back("??");
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Destructor of the symbol solver.
 **/
@@ -64,7 +70,7 @@ SymbolSolver::~SymbolSolver(void )
 		free((void*)it->second);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Get the symbol name from the call site raw address.
  * @param callsite Raw address of the call site.
@@ -87,7 +93,7 @@ const char* SymbolSolver::getName(void* callSite)
 	}
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Register a new raw address.
  * @param callsite Raw address of the callsite to convert with detailed informations.
@@ -109,7 +115,7 @@ void SymbolSolver::registerAddress(AddressType callSite)
 	callSiteMap[callSite].mapEntry = procMapEntry;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Setup a new entry in the call site map with symbols name.
  * @param callsite Raw address of the call site we need to symbol name.
@@ -134,7 +140,7 @@ const char* SymbolSolver::setupNewEntry(void* callSite)
 	return res;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Dump the symbol solver into the output stream for debugging.
  * @param out Reference to the output stream to use.
@@ -148,7 +154,7 @@ std::ostream& operator<<(std::ostream& out, const SymbolSolver& dic)
 	return out;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Convert the symbol solver to json format.
  * @param json Reference to the json state to make the conversion.
@@ -167,7 +173,7 @@ void convertToJson(htopml::JsonState& json, const SymbolSolver& value)
 	json.closeStruct();
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Add a new entry for the given call site to the symbol name map.
  * @param callsite Raw address of the call site.
@@ -190,7 +196,7 @@ const char* SymbolSolver::setupNewEntry(void* callSite, const std::string& name)
 	}
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Check is the /proc/self/maps has been loaded of not.
  * @return True if loaded, false otherwise.
@@ -200,7 +206,7 @@ bool SymbolSolver::procMapIsLoaded(void) const
 	return (procMap.empty() == false);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Load the /proc/self/maps entry.
 **/
@@ -250,7 +256,7 @@ void SymbolSolver::loadProcMap(void)
 	fclose(fp);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * If ASLR is enabled in addition to usage of fPIE or dynamic libraries there
  * is an offset to extract to get real offset to use with addr2line to extract
@@ -317,7 +323,7 @@ size_t SymbolSolver::extractElfVaddr(const std::string & obj) const
 	return res;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Test is ASLR is enabled to know how to resolve symbols.
 **/
@@ -327,7 +333,7 @@ bool SymbolSolver::hasASLREnabled(void) const
 	return ! (tmp.empty() || tmp == "0");
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Convert the proc map entry to json format.
  * @param json Reference to the json state to make the conversion.
@@ -344,7 +350,7 @@ void convertToJson(htopml::JsonState& json, const LinuxProcMapEntry& value)
 	json.closeStruct();
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Constructor of the call site. It sets default line/function/file values to
  * unknown.
@@ -358,7 +364,7 @@ CallSite::CallSite(LinuxProcMapEntry* mapEntry)
 	this->file = -1;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Get the linux proc map entry from the call site raw address.
  * @param callsite Raw address of the call site.
@@ -377,7 +383,7 @@ LinuxProcMapEntry* SymbolSolver::getMapEntry(AddressType callSite)
 	return NULL;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Solve de symbols which have been registered by registerAddress().
  * Symbols are soved with the addr2line tool.
@@ -409,7 +415,7 @@ void SymbolSolver::solveNames(void)
 	solveMissings();
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Just search for the ASLR offset for each proc map entry used so we
  * can eventually solve again the symbole in post-mortem.
@@ -433,7 +439,7 @@ void SymbolSolver::solveAslrOffsets(void)
 	}
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Solve de symbols which have been registered by registerAddress().
  * Symbols are solved via maqao.
@@ -453,7 +459,7 @@ void SymbolSolver::solveMaqaoNames(void)
 	}
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Determine the offset to remove from the effective addres to get the address
  * in the binary file. It might need some tricks when ASLR is enabled which
@@ -472,7 +478,7 @@ void * SymbolSolver::getASRLOffset(void * instrAddr) const
 	return (void*)elf2AddrOffset;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /* 
  * Some links :
  * man proc & man addr2line
@@ -631,7 +637,7 @@ void SymbolSolver::solveNames(LinuxProcMapEntry * procMapEntry)
 	assumeArg(i == lst.size(),"Some entries are missing from addr2line, get %1, but expect %2. (%3)").arg(i).arg(lst.size()).arg(elfFile).end();
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Return the string ID of the given value. If not already registered it register it
  * and assign an ID.
@@ -654,7 +660,7 @@ int SymbolSolver::getString(const char * value)
 	return strings.size()-1;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Register the maqao symbol.
  * @param funcId Function ID from maqao.
@@ -672,7 +678,23 @@ void SymbolSolver::registerMaqaoFunctionSymbol(int funcId, const char* funcName,
 	site.file = file;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
+/**
+ * Register the symbol resolution, more for unit tests.
+ * @param addr The address to translate.
+ * @param funcName The function name.
+ * @param file The file of the call ste..
+ * @param line Line of the call site.
+**/
+void SymbolSolver::registerFunctionSymbol(void * addr, const char * funcName,const char * file,int line)
+{
+	auto & site = this->callSiteMap[addr];
+	site.file = getString(file);
+	site.function = getString(funcName);
+	site.line = line;
+}
+
+/**********************************************************/
 /**
  * Convert a call site to json format.
  * @param json Reference to the json state to make the conversion
@@ -695,7 +717,7 @@ void convertToJson(htopml::JsonState& json, const CallSite& value)
 	json.closeStruct();
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Get the call site infos from the site raw address.
  * @param site The raw address of the symbol to solve.
@@ -710,7 +732,7 @@ const CallSite* SymbolSolver::getCallSiteInfo(AddressType site) const
 		return &it->second;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Return the string from its ID.
  * @param id Define the ID of the string we want.
@@ -722,7 +744,7 @@ const std::string& SymbolSolver::getString(int id) const
 	return strings[id];
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Function to use after loading symbols with resolveNames(). It search all '??' values
  * and try a resolution of symbol names with backtrace_symbols() from glibc.
@@ -756,7 +778,7 @@ void SymbolSolver::solveMissings(void)
 	}
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Extract the symbol name from the backtrace_symbols().
  * @param value Value returned by backtrace_symbols()
@@ -805,7 +827,7 @@ char * SymbolSolver::extractSymbolName(char* value)
 	return ret;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Check if it is the same function.
  * @param s1 Pointer to the call site.

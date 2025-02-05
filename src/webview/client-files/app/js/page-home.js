@@ -1,3 +1,15 @@
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.2.4
+*    DATE     : 10/2024
+*    LICENSE  : CeCILL-C
+*    FILE     : src/webview/client-files/app/js/page-home.js
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat (ECR) - 2014 - 2015
+*    AUTHOR   : Sébastien Valat - 2015 - 2024
+*    AUTHOR   : Mehdi Raza Jaffery (CERN) - 2016
+*    AUTHOR   : Antoine Bernard (crans.org) - 2024
+***********************************************************/
 function MaltPageHome()
 {
 	var cur = this;
@@ -92,13 +104,13 @@ function MaltPageHome()
 			key:'totalAllocatedMemory',
 			name:'Cumulated memory allocations',
 			level: 1,
-			help:"Sum of all dyanmic memory allocation throuth malloc, calloc, realloc....",
+			help:"Sum of all dynamic memory allocation througth malloc, calloc, realloc....",
 			format: function(x) {return maltHelper.humanReadable(x,1,'B',false);}
 		},{
 			key:'allocCount',
 			name:'Allocation count',
 			level: 1,
-			help:"Total number of all dyanmic memory allocation with malloc, calloc, realloc....",
+			help:"Total number of all dynamic memory allocation with malloc, calloc, realloc....",
 			format: function(x) {return maltHelper.humanReadable(x,1,'',false);}
 		},{
 			key:'recyclingRatio',

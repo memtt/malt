@@ -1,12 +1,16 @@
-######################################################
-#            PROJECT  : MALT                         #
-#            VERSION  : 1.2.2                        #
-#            DATE     : 06/2023                      #
-#            AUTHOR   : Valat Sébastien              #
-#            LICENSE  : CeCILL-C                     #
-######################################################
+############################################################
+#    PROJECT  : MALT (MALoc Tracker)
+#    VERSION  : 1.2.4
+#    DATE     : 10/2024
+#    LICENSE  : CeCILL-C
+#    FILE     : cmake/macros.cmake
+#-----------------------------------------------------------
+#    AUTHOR   : Sébastien Valat - 2014 - 2024
+#    AUTHOR   : Sébastien Valat (ECR) - 2014 - 2015
+#    AUTHOR   : Sébastien Valat (INRIA) - 2024
+############################################################
 
-######################################################
+############################################################
 #Setup paths to gtest/gmock headers and library
 MACRO(malt_setup_internal_gmock_and_gtest)
 	set(GMOCK_SOURCE_DIR ${CMAKE_SOURCE_DIR}/extern-deps/googletest-1.14.0)
@@ -19,12 +23,9 @@ MACRO(malt_setup_internal_gmock_and_gtest)
 	set(GTEST_USE_EMBEDED "yes")
 ENDMACRO(malt_setup_internal_gmock_and_gtest)
 
-######################################################
+############################################################
 # Setup google test by either using the internal one of using the one is current system if avail
 MACRO(malt_setup_google_tests)
-	# search system on
-	find_package(GTest QUIET)
-
 	# if avail use the system one, otherwise use embeded one
 	if (NOT GTEST_FOUND)
 		malt_setup_internal_gmock_and_gtest()
@@ -33,7 +34,7 @@ MACRO(malt_setup_google_tests)
 	endif()
 ENDMACRO()
 
-######################################################
+############################################################
 #Short macro to quicly declare some unit tests
 MACRO(declare_test test_name)
 	add_executable(${test_name} ${test_name}.cpp)
@@ -41,14 +42,14 @@ MACRO(declare_test test_name)
 	add_test(${test_name} ${test_name})
 ENDMACRO(declare_test)
 
-######################################################
+############################################################
 MACRO(malt_enable_gcc_coverage)
-	set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -O0 -fprofile-arcs -ftest-coverage")
-	set(CMAKE_CXX_FLAGS "${CMAKE_C_FLAGS} -O0 -fprofile-arcs -ftest-coverage")
-	set(CMAKE_EXE_LINKER_FLAGS_FLAGS "${CMAKE_C_FLAGS} -O0 -fprofile-arcs -ftest-coverage")
+	set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -O0 -fprofile-arcs -ftest-coverage -fprofile-update=atomic")
+	set(CMAKE_CXX_FLAGS "${CMAKE_C_FLAGS} -O0 -fprofile-arcs -ftest-coverage -fprofile-update=atomic")
+	set(CMAKE_EXE_LINKER_FLAGS_FLAGS "${CMAKE_C_FLAGS} -O0 -fprofile-arcs -ftest-coverage -fprofile-update=atomic")
 ENDMACRO(malt_enable_gcc_coverage)
 
-######################################################
+############################################################
 MACRO(check_nodejs)
 	find_program(NODEJS_PATH NAMES node nodejs)
 	if (NOT NODEJS_PATH)
@@ -56,7 +57,7 @@ MACRO(check_nodejs)
 	endif(NOT NODEJS_PATH)
 ENDMACRO(check_nodejs)
 
-######################################################
+############################################################
 MACRO(malt_enable_cxx_11)
 	include(CheckCXXCompilerFlag)
 	CHECK_CXX_COMPILER_FLAG("-std=c++11" COMPILER_SUPPORTS_CXX11)
@@ -67,3 +68,48 @@ MACRO(malt_enable_cxx_11)
 			message(FATAL_ERROR "The compiler ${CMAKE_CXX_COMPILER} has no C++11 support. Please use a different C++ compiler.")
 	endif()
 ENDMACRO(malt_enable_cxx_11)
+
+###########################################################
+# Print a summary status to help ensuring everything
+# is correct
+function(malt_print_status)
+	# Prepare some vars for printing
+	list(JOIN MALT_CXX_FLAGS " " MALT_CXX_FLAGS_STR)
+	string(TOUPPER "${CMAKE_BUILD_TYPE}" CMAKE_BUILD_TYPE_UPPER)
+	if (CMAKE_BUILD_TYPE STREQUAL "")
+		list(JOIN CMAKE_CXX_FLAGS " " CMAKE_BUILD_TYPE_FLAGS)
+	else()
+		list(JOIN CMAKE_CXX_FLAGS_${CMAKE_BUILD_TYPE_UPPER} " " CMAKE_BUILD_TYPE_FLAGS)
+	endif()
+
+	# Print summary
+	message(STATUS "==============================================================")
+	message(STATUS "|  OS               : ${CMAKE_HOST_SYSTEM_NAME}")
+	message(STATUS "|  Compiler familly : ${CMAKE_CXX_COMPILER_ID}")
+	message(STATUS "|  Compiler         : ${CMAKE_CXX_COMPILER}")
+	message(STATUS "--------------------------------------------------------------")
+	message(STATUS "|  tests            : ${ENABLE_TESTS}")
+	message(STATUS "|  profiler         : ${ENABLE_PROFILER}")
+	message(STATUS "|  gcc-coverage     : ${ENABLE_GCC_COVERAGE}")
+	message(STATUS "|  valgrind         : ${ENABLE_VALGRIND}")
+	message(STATUS "--------------------------------------------------------------")
+	message(STATUS "|  port_mutex       : ${PORTABILITY_MUTEX}")
+	message(STATUS "|  port_os          : ${PORTABILITY_OS}")
+	message(STATUS "|  port_compiler    : ${PORTABILITY_COMPILER}")
+	message(STATUS "|  port_clock       : ${PORTABILITY_CLOCK}")
+	message(STATUS "--------------------------------------------------------------")
+	message(STATUS "|  openmp           : ${OpenMP_CXX_FLAGS}")
+	message(STATUS "|  libunwind        : ${LIBUNWIND_LIBRARIES}")
+	message(STATUS "|  libelf           : ${LIBELF_LIBRARY}")
+	#message(STATUS "|  iniparser        : ${INIPARSER_LIBRARY}")
+	message(STATUS "|  gtest            : ${GTEST_INCLUDE_DIR}")
+	message(STATUS "|  qt5-widgets      : ${Qt5Widgets_INCLUDE_DIRS}")
+	message(STATUS "|  qt5-web-egnine   : ${Qt5WebEngineWidgets_INCLUDE_DIRS}")
+	message(STATUS "|  qt5-network      : ${Qt5Network_INCLUDE_DIRS}")
+	message(STATUS "--------------------------------------------------------------")
+	message(STATUS "|  CMake build type : ${CMAKE_BUILD_TYPE}")
+	message(STATUS "|  CMake cxxflags   : ${CMAKE_BUILD_TYPE_FLAGS}")
+	message(STATUS "|  User cxxflags    : ${CMAKE_CXX_FLAGS}")
+	message(STATUS "|  All cxxflags     : ${CMAKE_BUILD_TYPE_FLAGS} ${MALT_CXX_FLAGS_STR} ${CMAKE_CXX_FLAGS}")
+	message(STATUS "==============================================================")
+endfunction()

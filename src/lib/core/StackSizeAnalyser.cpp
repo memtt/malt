@@ -1,19 +1,22 @@
-/*****************************************************
-             PROJECT  : MALT
-             VERSION  : 1.2.2
-             DATE     : 06/2023
-             AUTHOR   : Valat Sébastien
-             LICENSE  : CeCILL-C
-*****************************************************/
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.2.4
+*    DATE     : 10/2024
+*    LICENSE  : CeCILL-C
+*    FILE     : src/lib/core/StackSizeAnalyser.cpp
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat (ECR) - 2014
+*    AUTHOR   : Sébastien Valat - 2021 - 2024
+***********************************************************/
 
-/********************  HEADERS  *********************/
+/**********************************************************/
 #include "StackSizeAnalyser.hpp"
 
-/*******************  NAMESPACE  ********************/
+/**********************************************************/
 namespace MALT
 {
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Constructor of the stack analyser.
  * It init the current call stack with function pointed by 0x1 as a fake first 
@@ -26,7 +29,7 @@ StackSizeAnalyser::StackSizeAnalyser(void)
 	currentStack.enterFunction((void*)0x1);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * To be used to solve the symbols pointed by the larger stack after analysis.
  * @param symbolResolver Reference to the symbol resolver.
@@ -36,7 +39,7 @@ void StackSizeAnalyser::solveSymbols(SymbolSolver& symbolResolver) const
 	largestStack.solveSymbols(symbolResolver);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Conver the stack size analyser to json format for the final profile file.
  * @param json Reference to the json state used to make the conversion.

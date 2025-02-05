@@ -1,12 +1,15 @@
-/*****************************************************
-             PROJECT  : MALT
-             VERSION  : 1.2.2
-             DATE     : 06/2023
-             AUTHOR   : Valat Sébastien
-             LICENSE  : CeCILL-C
-*****************************************************/
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.2.4
+*    DATE     : 10/2024
+*    LICENSE  : CeCILL-C
+*    FILE     : src/lib/common/tests/TestSTLInternalAllocator.cpp
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat - 2014 - 2024
+*    AUTHOR   : Sébastien Valat (ECR) - 2014
+***********************************************************/
 
-/********************  HEADERS  *********************/
+/**********************************************************/
 //std
 #include <map>
 #include <list>
@@ -16,10 +19,10 @@
 //internals
 #include <common/STLInternalAllocator.hpp>
 
-/***************** USING NAMESPACE ******************/
+/**********************************************************/
 using namespace MALT;
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(TestSTLInternalAllocator,withVector)
 {
 	//declare
@@ -39,7 +42,7 @@ TEST(TestSTLInternalAllocator,withVector)
 	container.clear();
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(TestSTLInternalAllocator,withList)
 {
 	//declare
@@ -59,7 +62,7 @@ TEST(TestSTLInternalAllocator,withList)
 	container.clear();
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(TestSTLInternalAllocator,withMap)
 {
 	//declare
@@ -79,7 +82,7 @@ TEST(TestSTLInternalAllocator,withMap)
 	container.clear();
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 int main(int argc, char ** argv)
 {
 	//init internal allocator

@@ -1,12 +1,15 @@
-/*****************************************************
-             PROJECT  : MALT
-             VERSION  : 1.2.2
-             DATE     : 06/2023
-             AUTHOR   : Valat Sébastien
-             LICENSE  : CeCILL-C
-*****************************************************/
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.2.4
+*    DATE     : 10/2024
+*    LICENSE  : CeCILL-C
+*    FILE     : src/lib/tools/BacktraceLibunwind.cpp
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat - 2014 - 2024
+*    AUTHOR   : Sébastien Valat (ECR) - 2014 - 2015
+***********************************************************/
 
-/********************  HEADERS  *********************/
+/**********************************************************/
 //malt config
 #include <config.h>
 //malt common
@@ -18,11 +21,11 @@
 //local
 #include "BacktraceLibunwind.hpp"
 
-/*******************  NAMESPACE  ********************/
+/**********************************************************/
 namespace MALT
 {
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 #ifdef MALT_HAVE_LIBUNWIND
 	int BacktraceLibunwind::backtrace(void** buffer, int maxDepth)
 	{

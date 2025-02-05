@@ -1,12 +1,15 @@
-/*****************************************************
-             PROJECT  : MALT
-             VERSION  : 1.2.2
-             DATE     : 06/2023
-             AUTHOR   : Valat Sébastien
-             LICENSE  : CeCILL-C
-*****************************************************/
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.2.4
+*    DATE     : 10/2024
+*    LICENSE  : CeCILL-C
+*    FILE     : src/lib/core/CallStackInfo.cpp
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat - 2014 - 2024
+*    AUTHOR   : Sébastien Valat (ECR) - 2014
+***********************************************************/
 
-/********************  HEADERS  *********************/
+/**********************************************************/
 //standard
 #include <cstdlib>
 //htopml
@@ -15,14 +18,14 @@
 #include "CallStackInfo.hpp"
 #include <common/Debug.hpp>
 
-/*******************  NAMESPACE  ********************/
+/**********************************************************/
 namespace MALT
 {
 
-/********************  MACROS  **********************/
+/**********************************************************/
 #define LINE_BREAK "\n"
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Constructor the count/min/max/sum storage, mainly to setup values to zero.
 **/
@@ -34,7 +37,7 @@ SimpleQuantityHistory::SimpleQuantityHistory(void )
 	this->sum = 0;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Register a new event and update the count/min/max/sum depening on the given value.
 **/
@@ -56,7 +59,7 @@ void SimpleQuantityHistory::addEvent(ssize_t value)
 	assert(max >= min);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Made a reduction on the current storage by merging the values from the given one.
 **/
@@ -79,7 +82,7 @@ void SimpleQuantityHistory::push(const SimpleQuantityHistory& value)
 	assert(max >= min);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Register a free event on the call stack info object.
  * @param value Define the size of the chunk we deallocate.
@@ -97,7 +100,7 @@ void CallStackInfo::onFreeEvent(size_t value,size_t peakId)
 	}
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * @return Compute and return the mean size.
 **/
@@ -109,7 +112,7 @@ ssize_t SimpleQuantityHistory::getMean(void) const
 		return sum/count;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Take care of the peak update.
  * @param peakId Define the ID of the last global peak seen by the caller. If larger
@@ -124,7 +127,7 @@ void CallStackInfo::updatePeak(size_t peakId)
 	}
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Return the memory consumption at peak time.
 **/
@@ -133,7 +136,7 @@ size_t CallStackInfo::getPeak(void) const
 	return this->peak;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Register a free event on the call stack info object.
  * @param value Define the size of the chunk we allocate.
@@ -157,13 +160,13 @@ void CallStackInfo::onAllocEvent(size_t value,size_t peakId)
 		this->maxAlive = this->alive;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void CallStackInfo::onMmap ( size_t value )
 {
 	//this->mmap.addEvent(value);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Free memory which is known to be seen before by the tool. We made the distinction due to some
  * issues with negativ values which might appear on alive parameter otherwise if we missed some allocations.
@@ -184,7 +187,7 @@ void CallStackInfo::onFreeLinkedMemory(size_t value, ticks lifetime,size_t peakI
 		this->lifetime.addEvent(lifetime);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Constructor of the call stack info to setup the default values to zero.
 **/
@@ -199,7 +202,7 @@ CallStackInfo::CallStackInfo(void )
 	this->peakId = 0;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Register a realloc event.
  * @param oldSize define the old size of the chunk.
@@ -214,7 +217,7 @@ void CallStackInfo::onReallocEvent(size_t oldSize, size_t newSize)
 		this->reallocDelta += newSize - oldSize;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Merge two call stack info on the current one.
  * @param info The remove info to merge on the current one.
@@ -231,7 +234,7 @@ void CallStackInfo::merge(const CallStackInfo& info)
 	//assert(peakId == info.peakId);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Manage json conversion of call stack info to be compatible with toJson().
 **/
@@ -251,7 +254,7 @@ void convertToJson(htopml::JsonState& json, const CallStackInfo& value)
 	json.closeStruct();
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Provide ostream compatbility to help debugging in unit tests.
 **/
@@ -261,7 +264,7 @@ std::ostream& operator<<(std::ostream& out, const CallStackInfo& info)
 	return out;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void convertToJson(htopml::JsonState& json, const SimpleQuantityHistory& value)
 {
 	json.openStruct();
@@ -272,7 +275,7 @@ void convertToJson(htopml::JsonState& json, const SimpleQuantityHistory& value)
 	json.closeStruct();
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Dump the call stack info into kcachegrind compatible format.
 **/
@@ -288,31 +291,31 @@ void CallStackInfo::writeAsCallgrindEntry(int line, std::ostream& out) const
 		<< ' ' << alive << ' ' << maxAlive;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 const SimpleQuantityHistory & CallStackInfo::getAllocInfo ( void ) const
 {
 	return this->alloc;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 const SimpleQuantityHistory & CallStackInfo::getFreeInfo ( void ) const
 {
 	return this->free;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 const SimpleQuantityHistory & CallStackInfo::getLifetime ( void ) const
 {
 	return this->lifetime;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 bool CallStackInfo::hasRealloc ( void ) const
 {
 	return reallocCount > 0;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Dump as callgrind call entry.
 **/
@@ -323,7 +326,7 @@ void CallStackInfo::writeAsCallgrindCallEntry ( int line, std::ostream& out ) co
 	out << "calls=" << free.count + alloc.count + cntZeros << " 0" << LINE_BREAK;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Dump the definition of the internal metrics exported by the call stack info 
  * into the kcachegrind compabitle output format.

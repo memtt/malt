@@ -1,12 +1,15 @@
-/*****************************************************
-             PROJECT  : MALT
-             VERSION  : 1.2.2
-             DATE     : 06/2023
-             AUTHOR   : Valat Sébastien
-             LICENSE  : CeCILL-C
-*****************************************************/
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.2.4
+*    DATE     : 10/2024
+*    LICENSE  : CeCILL-C
+*    FILE     : src/lib/tests/simple-case.cpp
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat (ECR) - 2014
+*    AUTHOR   : Sébastien Valat - 2015 - 2024
+***********************************************************/
 
-/********************  HEADERS  *********************/
+/**********************************************************/
 #include <cstdio>
 #include <cstdlib>
 #include <unistd.h>
@@ -21,14 +24,14 @@
  *  - LD_PRELOAD=../src/libAllocStackProfiler.so
 **/
 
-/********************* GLOBALS **********************/
+/**********************************************************/
 //example of static and TLS arrays
 int gblArray[1024];
 static int gblStaticArray[1024];
 const char gblString[] = "test const global string";
 __thread int tlsArray[1024];
 
-/*********************  CLASS  **********************/
+/**********************************************************/
 class OutOfMainAlloc
 {
 	public:
@@ -39,22 +42,22 @@ class OutOfMainAlloc
 		void * ptr;
 };
 
-/********************* GLOBALS **********************/
+/**********************************************************/
 OutOfMainAlloc gblOutOfMainAlloc;
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 OutOfMainAlloc::OutOfMainAlloc(void)
 {
 	ptr = malloc(128);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 OutOfMainAlloc::~OutOfMainAlloc(void)
 {
 	free(ptr);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void funcC()
 {
 	int * ptr = new int[16];
@@ -62,7 +65,7 @@ void funcC()
 	delete [] ptr;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void funcB()
 {
 	void * ptr = malloc(32);
@@ -71,7 +74,7 @@ void funcB()
 	funcC();
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void funcA()
 {
 	void * ptr = malloc(16);
@@ -80,7 +83,7 @@ void funcA()
 	funcB();
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void recurseA(int depth)
 {
 	if (depth > 0)
@@ -92,7 +95,7 @@ void recurseA(int depth)
 	}
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void testRealloc(void)
 {
 	void * ptr = realloc(NULL,16);
@@ -104,7 +107,7 @@ void testRealloc(void)
 	free(ptr);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void testMaxAlive(void)
 {
 	for (int i = 0 ; i < 100 ; i++)
@@ -118,7 +121,7 @@ void testMaxAlive(void)
 	}
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void testThreads(void)
 {
 	#pragma omp parallel for
@@ -130,21 +133,21 @@ void testThreads(void)
 	}
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void testLeak(void)
 {
 	void * ptr = malloc(32);
 	*(char*)ptr = 'c';
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void testLeak2(void)
 {
 	void * ptr = malloc(32);
 	*(char*)ptr = 'c';
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void testRecuseIntervedB(int depth);
 void testRecuseIntervedA(int depth)
 {
@@ -158,7 +161,7 @@ void testRecuseIntervedA(int depth)
 	testRecuseIntervedB(depth);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void testRecuseIntervedB(int depth)
 {
 	//static size_t mem = 0;
@@ -172,7 +175,7 @@ void testRecuseIntervedB(int depth)
 		testRecuseIntervedA(depth-1);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void testAllFuncs(void)
 {
 	void * ptr;
@@ -222,7 +225,7 @@ void testAllFuncs(void)
 	free(ptr);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void testPeak(void)
 {
 	void * ptr = malloc(1024*1024);
@@ -230,7 +233,7 @@ void testPeak(void)
 	free(ptr);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void testZero(void)
 {
 	void * ptr = malloc(0);
@@ -239,14 +242,14 @@ void testZero(void)
 	*(char*)ptr = 'c';
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void allocOnStack(void)
 {
 	char var[2048];
 	memset(var,0,sizeof(var));
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void allocOnStackRecurse(int depth)
 {
 	char var[512];
@@ -255,14 +258,14 @@ void allocOnStackRecurse(int depth)
 		allocOnStackRecurse(depth-1);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void testParallelWithRecurse(void)
 {
 	#pragma omp parallel
 	testRecuseIntervedB(5);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 int main(void)
 {
 	gblArray[0] = gblString[0];

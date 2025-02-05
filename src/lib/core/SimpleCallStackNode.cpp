@@ -1,20 +1,23 @@
-/*****************************************************
-             PROJECT  : MALT
-             VERSION  : 1.2.2
-             DATE     : 06/2023
-             AUTHOR   : Valat Sébastien
-             LICENSE  : CeCILL-C
-*****************************************************/
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.2.4
+*    DATE     : 10/2024
+*    LICENSE  : CeCILL-C
+*    FILE     : src/lib/core/SimpleCallStackNode.cpp
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat (ECR) - 2014
+*    AUTHOR   : Sébastien Valat - 2021 - 2024
+***********************************************************/
 
-/********************  HEADERS  *********************/
+/**********************************************************/
 #include <json/JsonState.h>
 #include "SimpleCallStackNode.hpp"
 
-/*******************  NAMESPACE  ********************/
+/**********************************************************/
 namespace MALT
 {
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Constructor of the simple call stack node.
  * @param stack Define the stack to be copied locally
@@ -27,7 +30,7 @@ SimpleCallStackNode::SimpleCallStackNode(const Stack& stack,int skipDepth)
 
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Stream operator to dump the call stack node.
  * @param out Define the output stream to be used.
@@ -40,7 +43,7 @@ std::ostream& operator<<(std::ostream& out, const SimpleCallStackNode& tracer)
 	return out;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Operator to convert the given call stack node into json format.
  * @param json Reference to the json state to make the conversion.

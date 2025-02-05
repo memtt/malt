@@ -1,27 +1,31 @@
-/*****************************************************
-             PROJECT  : MALT
-             VERSION  : 1.2.2
-             DATE     : 06/2023
-             AUTHOR   : Valat Sébastien
-             LICENSE  : CeCILL-C
-*****************************************************/
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.2.4
+*    DATE     : 10/2024
+*    LICENSE  : CeCILL-C
+*    FILE     : src/trace-reader/TraceReaderFragmentation.cpp
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat (ECR) - 2014 - 2015
+*    AUTHOR   : Mehdi Raza Jaffery (CERN) - 2016
+*    AUTHOR   : Sébastien Valat - 2018 - 2024
+***********************************************************/
 
-/********************  HEADERS  *********************/
+/**********************************************************/
 //STD
 #include <cstdio>
 //malt internals
 #include <common/Debug.hpp>
 #include "TraceReaderFragmentation.hpp"
 
-/*******************  NAMESPACE  ********************/
+/**********************************************************/
 namespace MALT
 {
 
-/********************  MACROS  **********************/
+/**********************************************************/
 #define PAGE_SIZE 4096
 #define PAGE_MASK (~(PAGE_SIZE-1))
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TraceReaderFragmentation::TraceReaderFragmentation(ticks tStep1, ticks tStep2,bool details, MALT::Filter* filter): TraceReader(filter)
 {
 	if (tStep1 >= tStep2)
@@ -34,13 +38,13 @@ TraceReaderFragmentation::TraceReaderFragmentation(ticks tStep1, ticks tStep2,bo
 	this->details = details;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void TraceReaderFragmentation::onStart(void)
 {
 	this->chunks.clear();
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void TraceReaderFragmentation::onEnd(void)
 {
 	this->checkForSharedPages();
@@ -50,7 +54,7 @@ void TraceReaderFragmentation::onEnd(void)
 		this->printPerCallStack();
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void TraceReaderFragmentation::printPerCallStack(void)
 {
 	//list
@@ -84,7 +88,7 @@ void TraceReaderFragmentation::printPerCallStack(void)
 	printf("}\n");
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void TraceReaderFragmentation::printDetails(void)
 {
 	printf("{\n");
@@ -107,7 +111,7 @@ void TraceReaderFragmentation::printDetails(void)
 	printf("}\n");
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void TraceReaderFragmentation::checkForSharedPages(void)
 {
 	for (FragmentationChunkMap::iterator it = chunks.begin() ; it != chunks.end() ; ++it)
@@ -123,7 +127,7 @@ void TraceReaderFragmentation::checkForSharedPages(void)
 	}
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void TraceReaderFragmentation::onData(MALT::AllocTracerChunk& chunk)
 {
 	//is alive on step 1, then register in list
@@ -136,7 +140,7 @@ void TraceReaderFragmentation::onData(MALT::AllocTracerChunk& chunk)
 	}
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 FragmentationChunkPerCallStack::FragmentationChunkPerCallStack()
 {
 	this->count = 0;
@@ -146,7 +150,7 @@ FragmentationChunkPerCallStack::FragmentationChunkPerCallStack()
 	this->min = -1;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void FragmentationChunkPerCallStack::push(size_t size, ticks lifetime)
 {
 	this->sum+=size;
@@ -158,7 +162,7 @@ void FragmentationChunkPerCallStack::push(size_t size, ticks lifetime)
 	this->sumLifetime += lifetime;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void FragmentationChunkPerCallStack::print(const Stack * stack) const
 {
 	printf("\t\t{\"stack\":\"%p\",\"count\":%zu,\"sum\":%zu,\"min\":%zu,\"max\":%zu,\"sumLifetime\":%llu},\n",

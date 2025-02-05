@@ -1,12 +1,15 @@
-/*****************************************************
-             PROJECT  : MALT
-             VERSION  : 1.2.2
-             DATE     : 06/2023
-             AUTHOR   : Valat Sébastien
-             LICENSE  : CeCILL-C
-*****************************************************/
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.2.4
+*    DATE     : 10/2024
+*    LICENSE  : CeCILL-C
+*    FILE     : src/lib/valprof/ProfiledStateValue.cpp
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat - 2014 - 2024
+*    AUTHOR   : Sébastien Valat (ECR) - 2014
+***********************************************************/
 
-/********************  HEADERS  *********************/
+/**********************************************************/
 #include <cassert>
 #include <cstring>
 #include "ProfiledStateValue.hpp"
@@ -14,13 +17,13 @@
 namespace MALT
 {
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 ProfiledStateValueEntry::ProfiledStateValueEntry(void)
 {
 	this->reset();
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void ProfiledStateValueEntry::reset(void)
 {
 	this->min = -1;
@@ -29,7 +32,7 @@ void ProfiledStateValueEntry::reset(void)
 	this->location = NULL;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void ProfiledStateValueEntry::reduce(const ProfiledStateValueEntry& value)
 {
 	if (value.index > index)
@@ -45,7 +48,7 @@ void ProfiledStateValueEntry::reduce(const ProfiledStateValueEntry& value)
 		min = value.min;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 ProfiledStateValue::ProfiledStateValue(size_t steps,bool useLinearIndex)
 {
 	//errors
@@ -57,7 +60,7 @@ ProfiledStateValue::ProfiledStateValue(size_t steps,bool useLinearIndex)
 	this->remoteLinearIndex = NULL;
 	
 	///setup vars
-	this->startTime = getticks();
+	this->startTime = Clock::getticks();
 	this->startIndex = getIndex();
 	this->currentId = 0;
 	this->steps = steps;
@@ -79,19 +82,19 @@ ProfiledStateValue::ProfiledStateValue(size_t steps,bool useLinearIndex)
 	this->printTimestamps = true;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void ProfiledStateValue::onDeltaEvent(ssize_t delta,void * location)
 {
 	this->value += delta;
 	onUpdateValue(value,location);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void ProfiledStateValue::onUpdateValue(size_t value,void * location)
 {
 	//get current
 	ticks index = getIndex();
-	ticks timestamp = getticks();
+	ticks timestamp = Clock::getticks();
 	this->value = value;
 	
 	if (location != NULL)
@@ -108,7 +111,7 @@ void ProfiledStateValue::onUpdateValue(size_t value,void * location)
 	linearIndex++;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void ProfiledStateValue::updateCurrentMinMax(ticks index, ticks timestamp, void* location )
 {
 	//update current interval min/max
@@ -129,13 +132,13 @@ void ProfiledStateValue::updateCurrentMinMax(ticks index, ticks timestamp, void*
 	}
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 bool ProfiledStateValue::isNextPoint(void) const
 {
 	return getIndex() > nextIndex;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void ProfiledStateValue::flush(void )
 {
 	//check if current if empty
@@ -156,7 +159,7 @@ void ProfiledStateValue::flush(void )
 	this->nextIndex += deltaIndex;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void ProfiledStateValue::resize(void )
 {
 	//errors
@@ -183,7 +186,7 @@ void ProfiledStateValue::resize(void )
 	this->nextIndex = getIndex() + deltaIndex;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void convertToJson(htopml::JsonState& json, const ProfiledStateValue& value)
 {
 	json.openStruct();
@@ -234,12 +237,12 @@ void convertToJson(htopml::JsonState& json, const ProfiledStateValue& value)
 	json.closeStruct();
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 ticks ProfiledStateValue::getIndex() const
 {
 	if (useLinearIndex == false)
 	{
-		return ::getticks();
+		return Clock::getticks();
 	} else if (remoteLinearIndex == NULL) {
 		return linearIndex;
 	} else {
@@ -247,13 +250,13 @@ ticks ProfiledStateValue::getIndex() const
 	}
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void ProfiledStateValue::setRemoteLinearIndex(ticks* remoteLinearIndex)
 {
 	this->remoteLinearIndex = remoteLinearIndex;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void ProfiledStateValue::disableTimestamp(void )
 {
 	this->printTimestamps = false;

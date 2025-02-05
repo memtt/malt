@@ -1,6 +1,31 @@
 Change log
 ==========
 
+1.2.4 - 03/10/2024
+------------------
+
+ - Fix issue in previous release making some unit tests broken (line numbers) by file header changing.
+ - Fix cmake issue with libunwind find package under Gentoo with x86_64 + x86.
+ - Add build summary in CMake script.
+
+1.2.3 - 02/10/2024
+------------------
+
+ - Upgrade Express.JS used version due to security issue.
+ - Remove javascript libs from the git repo, now download them and embed them at
+   release time in distributed tarball.
+ - Add authors to all source headers.
+ - Fix some typo in documentation.
+ - Webview now support big files.
+ - Dev script to check portability over distributions via Podman.
+ - Allow using malt webview forwarded via VSCode server.
+ - Some fixes in ./configure
+ - Use system google test if present.
+ - Upgrade embedded version of google test.
+ - Fix ways of finding MALT_ROOT due to readlink -f not supported on FreeBSD (now optional)
+ - Make MALT install dir re-localisable.
+ - Some tuning of address translation to support better large executables / libs.
+
 1.2.2 - 28/06/2023
 ------------------
 

@@ -1,22 +1,25 @@
-/*****************************************************
-             PROJECT  : MALT
-             VERSION  : 1.2.2
-             DATE     : 06/2023
-             AUTHOR   : Valat Sébastien
-             LICENSE  : CeCILL-C
-*****************************************************/
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.2.4
+*    DATE     : 10/2024
+*    LICENSE  : CeCILL-C
+*    FILE     : src/lib/portability/MutexPthread.hpp
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat (ECR) - 2014
+*    AUTHOR   : Sébastien Valat - 2022 - 2024
+***********************************************************/
 
 #ifndef MALT_MUTEX_PTHREAD_HPP
 #define MALT_MUTEX_PTHREAD_HPP
 
-/********************  HEADERS  *********************/
+/**********************************************************/
 #include "pthread.h"
 
-/*******************  NAMESPACE  ********************/
+/**********************************************************/
 namespace MALT
 {
 
-/********************  STRUCT  **********************/
+/**********************************************************/
 struct StaticMutexPthread
 {
 	void lock(void);
@@ -26,7 +29,7 @@ struct StaticMutexPthread
 	pthread_mutex_t mutex;
 };
 
-/*********************  CLASS  **********************/
+/**********************************************************/
 class MutexPthread
 {
 	public:
@@ -39,55 +42,55 @@ class MutexPthread
 		pthread_mutex_t mutex;
 };
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 inline void StaticMutexPthread::destroy(void )
 {
 	pthread_mutex_destroy(&mutex);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 inline void StaticMutexPthread::lock(void )
 {
 	pthread_mutex_lock(&mutex);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 inline void StaticMutexPthread::unlock(void )
 {
 	pthread_mutex_unlock(&mutex);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 inline bool StaticMutexPthread::tryLock(void)
 {
 	return pthread_mutex_trylock(&mutex) == 0;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 inline MutexPthread::MutexPthread(void )
 {
 	pthread_mutex_init(&mutex,NULL);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 inline MutexPthread::~MutexPthread(void )
 {
 	pthread_mutex_destroy(&mutex);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 inline void MutexPthread::lock(void )
 {
 	pthread_mutex_lock(&mutex);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 inline void MutexPthread::unlock(void )
 {
 	pthread_mutex_unlock(&mutex);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 inline bool MutexPthread::tryLock(void )
 {
 	return pthread_mutex_trylock(&mutex) == 0;

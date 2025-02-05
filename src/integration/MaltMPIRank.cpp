@@ -1,3 +1,15 @@
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.2.4
+*    DATE     : 10/2024
+*    LICENSE  : CeCILL-C
+*    FILE     : src/integration/MaltMPIRank.cpp
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat - 2014 - 2024
+*    AUTHOR   : Sébastien Valat (ECR) - 2014
+*    AUTHOR   : Sébastien Valat (INRIA) - 2023
+***********************************************************/
+
 #include <mpi.h>
 #include <sys/types.h>
 #include <unistd.h>
@@ -6,16 +18,16 @@
 namespace MALT
 {
 
-/********************* GLOBALS **********************/
+/**********************************************************/
 static int mpiRank = -1;
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 struct Helpers
 {
 	static int getFileId(void);
 };
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 int Helpers::getFileId(void )
 {
 	if (mpiRank == -1)
@@ -30,7 +42,7 @@ int Helpers::getFileId(void )
 extern "C"
 {
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 int MPI_Init(int *argc, char ***argv)
 {
 	//ensure MPI init
@@ -42,7 +54,7 @@ int MPI_Init(int *argc, char ***argv)
 	return res;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 int MPI_Init_thread(int *argc, char ***argv, int required, int *provided)
 {
 	//ensure MPI init

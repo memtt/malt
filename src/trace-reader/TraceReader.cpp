@@ -1,23 +1,26 @@
-/*****************************************************
-             PROJECT  : MALT
-             VERSION  : 1.2.2
-             DATE     : 06/2023
-             AUTHOR   : Valat Sébastien
-             LICENSE  : CeCILL-C
-*****************************************************/
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.2.4
+*    DATE     : 10/2024
+*    LICENSE  : CeCILL-C
+*    FILE     : src/trace-reader/TraceReader.cpp
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat - 2014 - 2024
+*    AUTHOR   : Sébastien Valat (ECR) - 2014 - 2015
+***********************************************************/
 
-/********************  HEADERS  *********************/
+/**********************************************************/
 //malt internals
 #include "TraceReader.hpp"
 
-/*******************  NAMESPACE  ********************/
+/**********************************************************/
 namespace MALT
 {
 
-/********************  MACROS  **********************/
+/**********************************************************/
 #define BUFFER_SIZE 1024
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 Filter::Filter()
 {
 	this->at = 0;
@@ -25,7 +28,7 @@ Filter::Filter()
 	this->filterStack = NULL;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 bool Filter::accept(MALT::AllocTracerChunk& chunk)
 {
 	return (filterSize == 0 || filterSize == chunk.size) 
@@ -35,19 +38,19 @@ bool Filter::accept(MALT::AllocTracerChunk& chunk)
 
 
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TraceReader::TraceReader(Filter * filter)
 {
 	this->filter = filter;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TraceReader::~TraceReader(void)
 {
 
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 bool TraceReader::run(const char* fname)
 {
 	//error
@@ -73,7 +76,7 @@ bool TraceReader::run(const char* fname)
 	return true;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void TraceReader::run(FILE* fp)
 {
 	//error

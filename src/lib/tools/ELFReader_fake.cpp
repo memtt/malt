@@ -1,12 +1,15 @@
-/*****************************************************
-             PROJECT  : MALT
-             VERSION  : 1.2.2
-             DATE     : 06/2023
-             AUTHOR   : Valat Sébastien
-             LICENSE  : CeCILL-C
-*****************************************************/
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.2.4
+*    DATE     : 10/2024
+*    LICENSE  : CeCILL-C
+*    FILE     : src/lib/tools/ELFReader_fake.cpp
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat (ECR) - 2014
+*    AUTHOR   : Sébastien Valat - 2024
+***********************************************************/
 
-/********************  HEADERS  *********************/
+/**********************************************************/
 #include "ELFReader.hpp"
 //standard
 #include <cstdio>
@@ -14,33 +17,33 @@
 //internals
 #include <common/Debug.hpp>
 
-/*******************  NAMESPACE  ********************/
+/**********************************************************/
 namespace MALT
 {
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 ElfReader::ElfReader(const std::string& file)
 {
 	this->elf = NULL;
 	this->fp = NULL;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 ElfReader::~ElfReader(void)
 {
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void ElfReader::loadGlobalVariables(ElfGlobalVariableVector& variables)
 {
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void convertToJson(htopml::JsonState& json, const ElfGlobalVariable& value)
 {
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 bool ElfReader::hasLibElf(void)
 {
 	return false;

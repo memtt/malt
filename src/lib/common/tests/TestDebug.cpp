@@ -1,20 +1,23 @@
-/*****************************************************
-             PROJECT  : MALT
-             VERSION  : 1.2.2
-             DATE     : 06/2023
-             AUTHOR   : Valat Sébastien
-             LICENSE  : CeCILL-C
-*****************************************************/
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.2.4
+*    DATE     : 10/2024
+*    LICENSE  : CeCILL-C
+*    FILE     : src/lib/common/tests/TestDebug.cpp
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat - 2022 - 2024
+*    AUTHOR   : Sébastien Valat (INRIA) - 2023 - 2024
+***********************************************************/
 
-/********************  HEADERS  *********************/
+/**********************************************************/
 #include <sstream>
 #include <gtest/gtest.h>
 #include "Debug.hpp"
 
-/***************** USING NAMESPACE ******************/
+/**********************************************************/
 using namespace MALT;
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 #ifndef NDEBUG
 TEST(Debug,end_not_called)
 {
@@ -23,7 +26,7 @@ TEST(Debug,end_not_called)
 }
 #endif
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(Debug,debug)
 {
 	Debug debug("message %1", "source.cpp", 10, MESSAGE_DEBUG);
@@ -39,7 +42,7 @@ TEST(Debug,debug)
 	EXPECT_EQ("", err.str());
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(Debug,info)
 {
 	Debug debug("message %1", "source.cpp", 10, MESSAGE_INFO);
@@ -51,7 +54,7 @@ TEST(Debug,info)
 	EXPECT_EQ("", err.str());
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(Debug,info_no_line)
 {
 	Debug debug("message %1", MESSAGE_INFO);
@@ -63,7 +66,7 @@ TEST(Debug,info_no_line)
 	EXPECT_EQ("", err.str());
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(Debug,normal)
 {
 	Debug debug("message %1", "source.cpp", 10, MESSAGE_NORMAL);
@@ -75,7 +78,7 @@ TEST(Debug,normal)
 	EXPECT_EQ("", err.str());
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(Debug,assertion)
 {
 	Debug debug("message %1", "source.cpp", 10, MESSAGE_ASSERT);
@@ -94,7 +97,7 @@ TEST(Debug,assertion)
 	#endif
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(Debug,warning)
 {
 	Debug debug("message %1", "source.cpp", 10, MESSAGE_WARNING);
@@ -106,7 +109,7 @@ TEST(Debug,warning)
 	EXPECT_EQ("\nWarning : At source.cpp:10 : \nWarning : message value\n", err.str());
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(Debug,error)
 {
 	Debug debug("message %1", "source.cpp", 10, MESSAGE_ERROR);
@@ -118,7 +121,7 @@ TEST(Debug,error)
 	EXPECT_EQ("\nError : At source.cpp:10 : \nError : message value\n", err.str());
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(Debug,fatal)
 {
 	Debug debug("message %1", "source.cpp", 10, MESSAGE_FATAL);
@@ -132,7 +135,7 @@ TEST(Debug,fatal)
 	EXPECT_TRUE(debug.aborted());
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(Debug,macros)
 {
 	//basic

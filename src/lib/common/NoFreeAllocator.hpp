@@ -1,10 +1,12 @@
-/*****************************************************
-             PROJECT  : MALT
-             VERSION  : 1.2.2
-             DATE     : 06/2023
-             AUTHOR   : Valat Sébastien
-             LICENSE  : CeCILL-C
-*****************************************************/
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.2.4
+*    DATE     : 10/2024
+*    LICENSE  : CeCILL-C
+*    FILE     : src/lib/common/NoFreeAllocator.hpp
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat - 2015 - 2024
+***********************************************************/
 
 /**
  * @file NoFreeAllocator.hpp
@@ -18,25 +20,25 @@
 #ifndef MALT_NO_FREE_ALLOCATOR_HPP
 #define MALT_NO_FREE_ALLOCATOR_HPP
 
-/********************  HEADERS  *********************/
+/**********************************************************/
 //std C++
 #include <cstdlib>
 #include <iostream>
 //internals
 #include <portability/Spinlock.hpp>
 
-/*******************  NAMESPACE  ********************/
+/**********************************************************/
 namespace MALTV2
 {
 	
-/********************  MACROS  **********************/
+/**********************************************************/
 /**
  * This is the maximum allocation size. The allocator will request memory to
  * the OS with mmap with this request size.
 **/
 #define NO_FREE_ALLOC_SEG_SIZE (2*1024ul*1024ul)
 
-/********************  STRUCT  **********************/
+/**********************************************************/
 /**
  * Descriptor of internal allocator memory segments requested to the system.
  * Each segment act as a stack by incrementing the last used position untill
@@ -54,7 +56,7 @@ struct NoFreeAllocatorSegment
 	void * unused;
 };
 	
-/*********************  CLASS  **********************/
+/**********************************************************/
 /**
  * @brief Implement a custom no free allocator.
  * 
@@ -88,20 +90,20 @@ class NoFreeAllocator
 		char initSegment[NO_FREE_ALLOC_SEG_SIZE];
 };
 
-/********************  GLOBALS  *********************/
+/**********************************************************/
 /** Static instance of the allocator for use in all MALT routines. **/
 extern NoFreeAllocator * gblNoFreeAllocator;
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /** Function to init the global static allocator. **/
 void doNoFreeAllocatorInit(void);
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /** Short wrapper to ease desactivation of this allocator and usage of the standard one **/
 #define MALT_NO_FREE_MALLOC(x) gblNoFreeAllocator->allocate(x)
 #define MALT_NO_FREE_NEW(x) new (MALT_NO_FREE_MALLOC(sizeof(x))) x
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /** Function to use the global allocator **/
 template <class T> T * noFreeMalloc(size_t cnt) {return (T*)gblNoFreeAllocator->allocate(sizeof(T)*cnt);}
 

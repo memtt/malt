@@ -1,12 +1,14 @@
-/*****************************************************
-             PROJECT  : MALT
-             VERSION  : 1.2.2
-             DATE     : 06/2023
-             AUTHOR   : Valat Sébastien
-             LICENSE  : CeCILL-C
-*****************************************************/
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.2.4
+*    DATE     : 10/2024
+*    LICENSE  : CeCILL-C
+*    FILE     : src/lib/tools/ProcPagemapReader.cpp
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat - 2015 - 2024
+***********************************************************/
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 #include <common/Debug.hpp>
 //portability issue, used on linux
 #include <sys/types.h>
@@ -16,20 +18,20 @@
 //locals
 #include "ProcPagemapReader.hpp"
 
-/********************  MACRO  ***********************/
+/**********************************************************/
 #define BUFFER_SIZE 1024
 #define PAGE_SIZE 4096
 #define MALT_UNUSED(x) ((void)(x))
 
-/*******************  NAMESPACE  ********************/
+/**********************************************************/
 namespace MALT
 {
 
-/********************  GLOBALS  *********************/
+/**********************************************************/
 int ProcPageMapReader::fd = 0;
 StaticMutex ProcPageMapReader::mutex = MALT_STATIC_MUTEX_INIT;
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void ProcPageMapReader::init ( void )
 {
 	//trivial
@@ -50,7 +52,7 @@ void ProcPageMapReader::init ( void )
 	MALT_END_CRITICAL
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 bool ProcPageMapReader::hasProcPagemap ( void )
 {
 	//init
@@ -60,7 +62,7 @@ bool ProcPageMapReader::hasProcPagemap ( void )
 	return fd > 0;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 size_t ProcPageMapReader::internalGetPhysicalSize ( void* ptr, size_t size )
 {
 	//check
@@ -99,7 +101,7 @@ size_t ProcPageMapReader::internalGetPhysicalSize ( void* ptr, size_t size )
 	return ret;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 size_t ProcPageMapReader::getPhysicalSize ( void* ptr, size_t size )
 {
 	//vars

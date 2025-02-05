@@ -1,23 +1,26 @@
-/*****************************************************
-             PROJECT  : MALT
-             VERSION  : 1.2.2
-             DATE     : 06/2023
-             AUTHOR   : Valat Sébastien
-             LICENSE  : CeCILL-C
-*****************************************************/
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.2.4
+*    DATE     : 10/2024
+*    LICENSE  : CeCILL-C
+*    FILE     : src/lib/core/StackSizeTracker.hpp
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat (ECR) - 2014
+*    AUTHOR   : Sébastien Valat - 2021 - 2024
+***********************************************************/
 
 #ifndef MALT_STACK_SIZE_TRACKER_H
 #define MALT_STACK_SIZE_TRACKER_H
 
-/********************  HEADERS  *********************/
+/**********************************************************/
 #include <common/Array.hpp>
 #include <json/JsonState.h>
 
-/*******************  NAMESPACE  ********************/
+/**********************************************************/
 namespace MALT
 {
 
-/*********************  CLASS  **********************/
+/**********************************************************/
 /**
  * @brief Class used to track the size of the stack of the current thread.
 **/
@@ -26,6 +29,7 @@ class StackSizeTracker
 	public:
 		StackSizeTracker(void);
 		void enter(void);
+		void enter(size_t stackPointer);
 		void exit(void);
 		unsigned long getSize(void) const;
 		unsigned long getTotalSize(void) const;

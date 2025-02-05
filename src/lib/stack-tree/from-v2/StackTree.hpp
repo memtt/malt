@@ -1,29 +1,31 @@
-/*****************************************************
-             PROJECT  : MALT
-             VERSION  : 1.2.2
-             DATE     : 06/2023
-             AUTHOR   : Valat Sébastien
-             LICENSE  : CeCILL-C
-*****************************************************/
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.2.4
+*    DATE     : 10/2024
+*    LICENSE  : CeCILL-C
+*    FILE     : src/lib/stack-tree/from-v2/StackTree.hpp
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat - 2015 - 2024
+***********************************************************/
 
 #ifndef MALTV2_STACK_TREE_HPP
 #define MALTV2_STACK_TREE_HPP
 
-/********************  HEADERS  *********************/
+/**********************************************************/
 #include "Stack.hpp"
 #include <cassert>
 #include <json/JsonState.h>
 #include <common/NoFreeAllocator.hpp>
 
-/*******************  NAMESPACE  ********************/
+/**********************************************************/
 namespace MALTV2
 {
 
-/********************  MACROS  **********************/
+/**********************************************************/
 #define MALT_STACK_TREE_ENTRIES 8
 #define MALT_STACK_TREE_NULL NULL
 
-/*********************  TYPES  **********************/
+/**********************************************************/
 class StackTreeStorage
 {
 	public:
@@ -34,7 +36,7 @@ class StackTreeStorage
 		void* data [MALT_STACK_TREE_ENTRIES];
 };
 
-/*********************  CLASS  **********************/
+/**********************************************************/
 class StackTreeTypeDescriptor
 {
 	public:
@@ -45,7 +47,7 @@ class StackTreeTypeDescriptor
 		virtual size_t typeSize(void) = 0;
 };
 
-/*********************  CLASS  **********************/
+/**********************************************************/
 template <class T>
 class StackTreeTypeDescriptorTyped : public StackTreeTypeDescriptor
 {
@@ -56,12 +58,12 @@ class StackTreeTypeDescriptorTyped : public StackTreeTypeDescriptor
 		virtual size_t typeSize(void) { return sizeof (T); };
 };
 
-/*********************  TYPES  **********************/
+/**********************************************************/
 typedef void * StackTreeHandler;
 typedef StackTreeStorage * StackTreeDataHandler;
 typedef int StackId;
 
-/*********************  CLASS  **********************/
+/**********************************************************/
 class StackTree
 {
 	public:

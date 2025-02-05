@@ -1,32 +1,35 @@
-/*****************************************************
-             PROJECT  : MALT
-             VERSION  : 1.2.2
-             DATE     : 06/2023
-             AUTHOR   : Valat Sébastien
-             LICENSE  : CeCILL-C
-*****************************************************/
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.2.4
+*    DATE     : 10/2024
+*    LICENSE  : CeCILL-C
+*    FILE     : src/lib/tests/TestSimpleStackTracker.cpp
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat - 2014 - 2024
+*    AUTHOR   : Sébastien Valat (ECR) - 2014
+***********************************************************/
 
-/********************  HEADERS  *********************/
+/**********************************************************/
 #include <gtest/gtest.h>
 #include <core/SimpleStackTracker.hpp>
 
-/***************** USING NAMESPACE ******************/
+/**********************************************************/
 using namespace MALT;
 
-/********************** CONSTS **********************/
+/**********************************************************/
 void * CST_STACK_1[] = {(void*)0x1,(void*)0x2,(void*)0x3,(void*)0x4,(void*)0x5,(void*)0x6,(void*)0x7,(void*)0x8,
                         (void*)0x9,(void*)0xa,(void*)0xb,(void*)0xc,(void*)0xd,(void*)0xe,(void*)0xf,(void*)0x4,
                         (void*)0x1,(void*)0x2,(void*)0x3,(void*)0x4,(void*)0x1,(void*)0x2,(void*)0x3,(void*)0x4,
                         (void*)0x1,(void*)0x2,(void*)0x3,(void*)0x4,(void*)0x1,(void*)0x2,(void*)0x3,(void*)0x4};
 int CST_STACK_1_SIZE = 32;
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(SimpleStackTracer,constructor)
 {
 	SimpleStackTracker tracker;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(SimpleStackTracer,findStackNodeAsc)
 {
 	SimpleStackTracker tracker;
@@ -38,7 +41,7 @@ TEST(SimpleStackTracer,findStackNodeAsc)
 	EXPECT_EQ(&node1,&node2);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(SimpleStackTracer,findStackNodeSkipDepthAsc)
 {
 	SimpleStackTracker tracker;
@@ -50,7 +53,7 @@ TEST(SimpleStackTracer,findStackNodeSkipDepthAsc)
 	EXPECT_EQ(&node1,&node2);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(SimpleStackTracer,findStackNodeDesc)
 {
 	SimpleStackTracker tracker;
@@ -62,7 +65,7 @@ TEST(SimpleStackTracer,findStackNodeDesc)
 	EXPECT_EQ(&node1,&node2);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(SimpleStackTracer,findStackNodeSkipDepthDesc)
 {
 	SimpleStackTracker tracker;
@@ -74,7 +77,7 @@ TEST(SimpleStackTracer,findStackNodeSkipDepthDesc)
 	EXPECT_EQ(&node1,&node2);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 int main(int argc, char ** argv)
 {
 	//init internal allocator

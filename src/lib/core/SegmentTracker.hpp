@@ -1,29 +1,32 @@
-/*****************************************************
-             PROJECT  : MALT
-             VERSION  : 1.2.2
-             DATE     : 06/2023
-             AUTHOR   : Valat Sébastien
-             LICENSE  : CeCILL-C
-*****************************************************/
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.2.4
+*    DATE     : 10/2024
+*    LICENSE  : CeCILL-C
+*    FILE     : src/lib/core/SegmentTracker.hpp
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat (ECR) - 2014
+*    AUTHOR   : Sébastien Valat - 2024
+***********************************************************/
 
 #ifndef MALT_SEGMENT_TRACKER_HPP
 #define MALT_SEGMENT_TRACKER_HPP
 
-/********************  HEADERS  *********************/
+/**********************************************************/
 //STD
 #include <map>
 //from fftw
-#include <cycle.h>
+#include <portability/Clock.hpp>
 //internals
 #include <common/STLInternalAllocator.hpp>
 #include "SimpleCallStackNode.hpp"
 
 
-/*******************  NAMESPACE  ********************/
+/**********************************************************/
 namespace MALT
 {
 
-/********************  STRUCT  **********************/
+/**********************************************************/
 /**
  * @brief Short description of final memory leaks.
 **/
@@ -36,7 +39,7 @@ struct LeakInfo
 	size_t cnt;
 };
 
-/*********************  CLASS  **********************/
+/**********************************************************/
 /**
  * @brief description of allocated segment to track them until deallocation time.
 **/
@@ -56,14 +59,14 @@ struct SegmentInfo
 	ticks allocTime;
 };
 
-/*********************  TYPES  **********************/
+/**********************************************************/
 /** Map used to store informations about allocated segments. **/
 typedef std::map<void*,SegmentInfo,std::less<void*>,STLInternalAllocator<std::pair<void*,SegmentInfo> > > SegmentInfoMap;
 // typedef std::map<void*,SegmentInfo> SegmentInfoMap;
 /** Map used to summurize the memory leaks at exit time. **/
 typedef std::map<const Stack *,LeakInfo> LeakInfoMap;
 
-/*********************  CLASS  **********************/
+/**********************************************************/
 /**
  * Class used to track the allocated segments during their lifetime. It permit to attach
  * extra informations about them and to detect memory leaks at exit (segments still registered into the tracker).
@@ -89,7 +92,7 @@ class SegmentTracker
 		SegmentInfoMap map;
 };
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void convertToJson(htopml::JsonState& json, const LeakInfoMap& value);
 
 }

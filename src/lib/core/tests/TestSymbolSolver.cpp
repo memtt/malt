@@ -1,12 +1,14 @@
-/*****************************************************
-             PROJECT  : MALT
-             VERSION  : 1.2.2
-             DATE     : 06/2023
-             AUTHOR   : Valat Sébastien
-             LICENSE  : CeCILL-C
-*****************************************************/
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.2.4
+*    DATE     : 10/2024
+*    LICENSE  : CeCILL-C
+*    FILE     : src/lib/core/tests/TestSymbolSolver.cpp
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat - 2019 - 2024
+***********************************************************/
 
-/********************  HEADERS  *********************/
+/**********************************************************/
 #include <gtest/gtest.h>
 #include <SymbolSolver.hpp>
 #include <common/Options.hpp>
@@ -14,26 +16,26 @@
 #include <common/GTestHelper.hpp>
 #include <stacks/BacktraceStack.hpp>
 
-/***************** USING NAMESPACE ******************/
+/**********************************************************/
 using namespace MALT;
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 int main(int argc, char ** argv);
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(TestSymbolSolver,testConstructor)
 {
 	SymbolSolver solver;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(TestSymbolSolver,testLoadProcMap)
 {
 	SymbolSolver solver;
 	solver.loadProcMap();
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(TestSymbolSolver,testSolve)
 {
 	SymbolSolver solver;
@@ -53,14 +55,14 @@ TEST(TestSymbolSolver,testSolve)
 	#endif
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void testCalleeLib(BacktraceStack & stack);
 void testCalleeExe(BacktraceStack & stack)
 {
 	stack.loadCurrentStack();
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(TestSymbolSolver, solveBacktraceExe)
 {
 	//vars
@@ -87,11 +89,11 @@ TEST(TestSymbolSolver, solveBacktraceExe)
 	#ifndef NDEBUG
 		EXPECT_EQ(__FILE__, file);
 		EXPECT_EQ("testCalleeExe(MALT::BacktraceStack&)", func);
-		EXPECT_EQ(60, site->line);
+		EXPECT_EQ(62, site->line);
 	#endif
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(TestSymbolSolver, solveBacktraceLib)
 {
 	//vars
@@ -117,11 +119,11 @@ TEST(TestSymbolSolver, solveBacktraceLib)
 		EXPECT_NE(0, site->file);
 		EXPECT_NE(-1, site->file);
 		EXPECT_EQ("testCalleeLib(MALT::BacktraceStack&)", func);
-		EXPECT_EQ(10, site->line);
+		EXPECT_EQ(19, site->line);
 	#endif
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 int main(int argc, char ** argv)
 {
 	//init internal allocator

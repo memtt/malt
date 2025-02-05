@@ -1,36 +1,39 @@
- /*****************************************************
-             PROJECT  : MALT
-             VERSION  : 1.2.2
-             DATE     : 06/2023
-             AUTHOR   : Valat Sébastien
-             LICENSE  : CeCILL-C
-*****************************************************/
-
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.2.4
+*    DATE     : 10/2024
+*    LICENSE  : CeCILL-C
+*    FILE     : src/lib/core/AllocTraceFile.hpp
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat - 2014 - 2024
+*    AUTHOR   : Sébastien Valat (ECR) - 2014
+***********************************************************/
+ 
 #ifndef MALT_ALLOC_TRACER_HPP
 #define MALT_ALLOC_TRACER_HPP
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 //standard
 #include <cstdio>
 #include <cstdlib>
 #include <cycle.h>
 #include <string>
 
-/*******************  NAMESPACE  ********************/
+/**********************************************************/
 namespace MALT
 {
 
-/*********************  TYPES  **********************/
+/**********************************************************/
 class Stack;
 	
-/********************  MACROS  **********************/
+/**********************************************************/
 /**
  * Buffer size to accumulate the element to dump to trace file to not
  * write them one by one.
 **/
 #define MALT_ALLOC_TRACER_BUFFER_SIZE 4096
 
-/********************  STRUCT  **********************/
+/**********************************************************/
 /**
  * Define an event to dump in binary format in the trace file.
  * @todo Ideally use uint64_t for sizes to be more strict in the output file, for
@@ -52,7 +55,7 @@ struct AllocTracerChunk
 	ticks lifetime;
 };
 
-/*********************  CLASS  **********************/
+/**********************************************************/
 /**
  * @brief Class to manage the generation of allocation trace file.
 **/

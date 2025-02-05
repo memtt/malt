@@ -1,15 +1,17 @@
-/*****************************************************
-             PROJECT  : MALT
-             VERSION  : 1.2.2
-             DATE     : 06/2023
-             AUTHOR   : Valat Sébastien
-             LICENSE  : CeCILL-C
-*****************************************************/
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.2.4
+*    DATE     : 10/2024
+*    LICENSE  : CeCILL-C
+*    FILE     : src/lib/stack-tree/from-v2/RLockFreeTree.hpp
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat - 2015 - 2024
+***********************************************************/
 
 #ifndef MALTV2_RLOCK_FREE_TREE_HPP
 #define MALTV2_RLOCK_FREE_TREE_HPP
 
-/********************  HEADERS  *********************/
+/**********************************************************/
 //internal
 #include <portability/Spinlock.hpp>
 //current
@@ -18,17 +20,17 @@
 #include <json/JsonState.h>
 #include <stacks/Stack.hpp>
 
-/*********************  TYPES  **********************/
+/**********************************************************/
 namespace htopml
 {
 	class JsonState;
 }
 
-/*******************  NAMESPACE  ********************/
+/**********************************************************/
 namespace MALTV2
 {
 
-/*********************  CLASS  **********************/
+/**********************************************************/
 /**
  * Define the node for RLockFreeTree.
 **/
@@ -56,10 +58,10 @@ struct RLockFreeTreeNode
 	bool hasChildData;
 };
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void convertToJson(htopml::JsonState & json, const RLockFreeTreeNode & tree);
 
-/*********************  CLASS  **********************/
+/**********************************************************/
 /**
  * This class provide a basic tree based on nodes with childs and optional data attached to the nodes.
  * The child list is built with a simple linked list. As we do not consider node deletion we can access to all lists
@@ -112,7 +114,7 @@ class RLockFreeTree : public StackTree
 		std::map<MALT::AddressType,MALT::AddressType> addrToId;
 };
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void convertToJson(htopml::JsonState& json, const std::map<MALT::AddressType,MALT::AddressType> & value);
 
 }

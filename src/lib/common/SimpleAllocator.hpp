@@ -1,26 +1,29 @@
-/*****************************************************
-             PROJECT  : MALT
-             VERSION  : 1.2.2
-             DATE     : 06/2023
-             AUTHOR   : Valat Sébastien
-             LICENSE  : CeCILL-C
-*****************************************************/
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.2.4
+*    DATE     : 10/2024
+*    LICENSE  : CeCILL-C
+*    FILE     : src/lib/common/SimpleAllocator.hpp
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat - 2014 - 2024
+*    AUTHOR   : Sébastien Valat (ECR) - 2014
+***********************************************************/
 
 #ifndef MALT_SIMPLE_ALLOCATOR_HPP
 #define MALT_SIMPLE_ALLOCATOR_HPP
 
-/********************  HEADERS  *********************/
+/**********************************************************/
 //standard
 #include <cstdlib>
 #include <iostream>
 //portability dependent code
 #include <portability/Spinlock.hpp>
 
-/*******************  NAMESPACE  ********************/
+/**********************************************************/
 namespace MALT
 {
 
-/********************  MACROS  **********************/
+/**********************************************************/
 /** Default memory size to request to system when internal memory is full. **/
 #define MALT_ALLOC_SYS_REQ_SIZE (256*1024UL)
 /** 
@@ -33,7 +36,7 @@ namespace MALT
 /** Do not split elements smaller than given size. **/
 #define MALT_ALLOC_SPLIT_THRESOLD (2*MALT_ALLOC_MIN_SIZE)
 
-/********************  MACROS  **********************/
+/**********************************************************/
 /** Wrapper to replace malloc for internal allocations. **/
 #define MALT_MALLOC(x) MALT::gblInternaAlloc->malloc(x)
 /** Wrapper to replace free for internal allocations. **/
@@ -41,7 +44,7 @@ namespace MALT
 /** Wrapper to replace realloc for internal allocations. **/
 #define MALT_REALLOC(x,y) MALT::gblInternaAlloc->realloc((x),(y))
 
-/********************  STRUCT  **********************/
+/**********************************************************/
 /**
  * Define an allocated memory chunk. It's defined only by its size as we do not consider
  * segment merging for this simple allocator.
@@ -63,7 +66,7 @@ struct Chunk
 	size_t size;
 };
 
-/********************  STRUCT  **********************/
+/**********************************************************/
 /**
  * Define a free chunk which can be placed into a double linked list.
  * It inherit from Chunk structure.
@@ -86,7 +89,7 @@ struct FreeChunk
 	FreeChunk * next;
 };
 
-/*********************  CLASS  **********************/
+/**********************************************************/
 /**
  * Implement a simple internal allocator to manage segments on a single free list base.
  * It uses mmap as lower function and keep all allocated memory. It also ensure full
@@ -133,7 +136,7 @@ class SimpleAllocator
 		Spinlock lock;
 };
 
-/*********************  CLASS  **********************/
+/**********************************************************/
 /**
  * Provide a global pointer to allocate memory on our simple allocator.
  * 

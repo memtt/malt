@@ -1,33 +1,36 @@
-/*****************************************************
-             PROJECT  : MALT
-             VERSION  : 1.2.2
-             DATE     : 06/2023
-             AUTHOR   : Jaffery, Mehdi Raza
-             LICENSE  : CeCILL-C
-*****************************************************/
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.2.4
+*    DATE     : 10/2024
+*    LICENSE  : CeCILL-C
+*    FILE     : src/trace-reader/TraceReaderStats.cpp
+*-----------------------------------------------------------
+*    AUTHOR   : Mehdi Raza Jaffery (CERN) - 2016
+*    AUTHOR   : Sébastien Valat - 2020 - 2024
+***********************************************************/
 
-/********************  HEADERS  *********************/
+/**********************************************************/
 //STD
 #include <cstdio>
 //malt internals
 #include "TraceReaderStats.hpp"
 
-/*******************  NAMESPACE  ********************/
+/**********************************************************/
 namespace MALT
 {
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TraceReaderStats::TraceReaderStats(Filter * filter): TraceReader(filter)
 {
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void TraceReaderStats::onStart(void)
 {
 	this->first = true;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void TraceReaderStats::onEnd(void)
 {
 	// We are organize the data like this:
@@ -51,7 +54,7 @@ void TraceReaderStats::onEnd(void)
 	printf("]\n");
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void TraceReaderStats::onData(MALT::AllocTracerChunk& chunk)
 {
 	TraceReaderStatsMap::iterator it = stats.find(chunk.allocStack);

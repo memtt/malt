@@ -1,39 +1,42 @@
-/*****************************************************
-             PROJECT  : MALT
-             VERSION  : 1.2.2
-             DATE     : 06/2023
-             AUTHOR   : Valat Sébastien
-             LICENSE  : CeCILL-C
-*****************************************************/
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.2.4
+*    DATE     : 10/2024
+*    LICENSE  : CeCILL-C
+*    FILE     : src/lib/tests/test-pthread-tracking.cpp
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat (ECR) - 2014
+*    AUTHOR   : Sébastien Valat - 2024
+***********************************************************/
 
-/********************  HEADERS  *********************/
+/**********************************************************/
 #include <pthread.h>
 #include <signal.h>
 #include <cstdio>
 #include <unistd.h>
 #include <wrapper/ThreadTracker.hpp>
 
-/********************  MACROS  **********************/
+/**********************************************************/
 #define NB_THREADS 16
 
-/********************* GLOBALS **********************/
+/**********************************************************/
 pthread_mutex_t mutex;
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void * thread_main_1(void *)
 {
 	fprintf(stderr,"New thread and simple exit\n");
 	return NULL;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void * thread_main_2(void *)
 {
 	fprintf(stderr,"New thread and pthread_exit\n");
 	pthread_exit(NULL);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void * thread_main_3(void *)
 {
 	fprintf(stderr,"New thread and lock\n");
@@ -42,7 +45,7 @@ void * thread_main_3(void *)
 	return NULL;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 int main(void)
 {
 	pthread_t t[1024];

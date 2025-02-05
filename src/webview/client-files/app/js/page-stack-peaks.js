@@ -1,3 +1,13 @@
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.2.4
+*    DATE     : 10/2024
+*    LICENSE  : CeCILL-C
+*    FILE     : src/webview/client-files/app/js/page-stack-peaks.js
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat (ECR) - 2014 - 2015
+*    AUTHOR   : Sébastien Valat - 2016 - 2024
+***********************************************************/
 function MaltPageStackPeaks()
 {
 	//declare module to manage malt home page
@@ -28,10 +38,10 @@ function MaltPageStackPeaks()
 			
 			cur.plotStackPeak('malt-stack-peaks',data, function(svg,chart,e) {
 				console.log(e);
-				$scope.selectedThreadId = e.pointIndex;
+				$scope.selectedThreadId = e.index;
 				$scope.$apply();
-				selectedChart.update(data,e.pointIndex);
-				selectedChartDetails.update(e.pointIndex);
+				selectedChart.update(data,e.index);
+				selectedChartDetails.update(e.index);
 			});
 		});
 	}]);

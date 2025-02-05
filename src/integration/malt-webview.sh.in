@@ -1,13 +1,18 @@
 #!/bin/bash
-######################################################
-#            PROJECT  : MALT                         #
-#            VERSION  : 1.2.2                        #
-#            DATE     : 06/2023                      #
-#            AUTHOR   : Valat Sébastien              #
-#            LICENSE  : CeCILL-C                     #
-######################################################
+############################################################
+#    PROJECT  : MALT (MALoc Tracker)
+#    VERSION  : 1.2.4
+#    DATE     : 10/2024
+#    LICENSE  : CeCILL-C
+#    FILE     : src/integration/malt-webview.sh.in
+#-----------------------------------------------------------
+#    AUTHOR   : Sébastien Valat (ECR) - 2014
+#    AUTHOR   : Sébastien Valat - 2015 - 2024
+#    AUTHOR   : Sébastien Valat (INRIA) - 2023
+#    AUTHOR   : Philippe Carphin - 2023
+############################################################
 
-######################################################
+############################################################
 # calc MALT root dir relative to this script
 MALT_ROOT="$(cd $(dirname $0)/.. && pwd)"
 
@@ -17,7 +22,7 @@ if readlink -f / > /dev/null 2>/dev/null; then
         MALT_ROOT="$(readlink -f $(dirname $0)/..)"
 fi
 
-######################################################
+############################################################
 NODE=""
 detectNodeJS()
 {
@@ -34,11 +39,11 @@ detectNodeJS()
 	fi
 }
 
-######################################################
+############################################################
 #check node
 detectNodeJS
 
-######################################################
+############################################################
 #check if have --no-auth
 HAVE_NO_AUTH="false"
 HAVE_CUSTOME_AUTH="false"
@@ -54,7 +59,7 @@ do
 	esac
 done
 
-######################################################
+############################################################
 #Check passwod file
 if [ ! -f "$HOME/.malt/passwd" ] && [ "$HAVE_NO_AUTH" = "false" ] && [ "$HAVE_CUSTOME_AUTH" = "false" ]; then
 	echo "!!! You need to setup a user/password to secure access to the web GUI !!!"
@@ -63,14 +68,14 @@ if [ ! -f "$HOME/.malt/passwd" ] && [ "$HAVE_NO_AUTH" = "false" ] && [ "$HAVE_CU
 	"${MALT_ROOT}/bin/malt-passwd" "$user" || exit 1
 fi
 
-######################################################
+############################################################
 function forwardSigterm()
 {
 	#echo "Send KILL to python $CHILD !"
 	kill $CHILD
 }
 
-######################################################
+############################################################
 trap forwardSigterm SIGTERM
 trap forwardSigterm SIGINT
 

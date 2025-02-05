@@ -1,22 +1,24 @@
-/*****************************************************
-             PROJECT  : MALT
-             VERSION  : 1.2.2
-             DATE     : 06/2023
-             AUTHOR   : Valat Sébastien
-             LICENSE  : CeCILL-C
-*****************************************************/
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.2.4
+*    DATE     : 10/2024
+*    LICENSE  : CeCILL-C
+*    FILE     : src/lib/valprof/tests/TestScatter2DValues.cpp
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat - 2016 - 2024
+***********************************************************/
 
-/********************  HEADERS  *********************/
+/**********************************************************/
 #include <sstream>
 #include <cstdio>
 #include <gtest/gtest.h>
 #include <json/ConvertToJson.h>
 #include <valprof/Scatter2DValues.hpp>
 
-/***************** USING NAMESPACE ******************/
+/**********************************************************/
 using namespace MALT;
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void loadFile(std::string & value,const char * path)
 {
 	//reset
@@ -41,13 +43,13 @@ void loadFile(std::string & value,const char * path)
 	fclose(fp);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(Scatter2DValues,constructor)
 {
 	Scatter2DValues scatter(1024,1024,false,false);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(Scatter2DValues,simple)
 {
 	Scatter2DValues scatter(1024,1024,false,false);
@@ -66,7 +68,7 @@ TEST(Scatter2DValues,simple)
 	EXPECT_EQ(ref,buffer.str());
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(Scatter2DValues,limit)
 {
 	Scatter2DValues scatter(1024,1024,false,false);
@@ -83,7 +85,7 @@ TEST(Scatter2DValues,limit)
 	EXPECT_EQ(ref,buffer.str());
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(Scatter2DValues,simpleScaleX)
 {
 	Scatter2DValues scatter(1024,1024,false,false);
@@ -102,7 +104,7 @@ TEST(Scatter2DValues,simpleScaleX)
 	EXPECT_EQ(ref,buffer.str());
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(Scatter2DValues,simpleScaleXY)
 {
 	Scatter2DValues scatter(1024,1024,false,false);
@@ -121,7 +123,7 @@ TEST(Scatter2DValues,simpleScaleXY)
 	EXPECT_EQ(ref,buffer.str());
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(Scatter2DValues,logSimple)
 {
 	Scatter2DValues scatter(1024,1024,true,true);
@@ -140,7 +142,7 @@ TEST(Scatter2DValues,logSimple)
 	EXPECT_EQ(ref,buffer.str());
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(Scatter2DValues,logScaleXZ)
 {
 	Scatter2DValues scatter(1024,1024,true,true);

@@ -96,7 +96,7 @@ About `stacks` section
 The `stack` entry contain all the statistics attached to each call stacks.
 It is build linking a call stack (with functions pointers) to the stat object.
 
-For dyanmic libraries (`.so` files) this is the absolute address at runtime
+For dynamic libraries (`.so` files) this is the absolute address at runtime
 which if you want to address in the library itself removing the shift
 should be recomputed but this is not required as the `sites` section already
 has all the conversion to code locations. Consider the address more like a

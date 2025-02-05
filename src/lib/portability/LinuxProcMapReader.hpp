@@ -1,24 +1,28 @@
-/*****************************************************
-             PROJECT  : MALT
-             VERSION  : 1.2.2
-             DATE     : 06/2023
-             AUTHOR   : Valat Sébastien
-             LICENSE  : CeCILL-C
-*****************************************************/
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.2.4
+*    DATE     : 10/2024
+*    LICENSE  : CeCILL-C
+*    FILE     : src/lib/portability/LinuxProcMapReader.hpp
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat (ECR) - 2014
+*    AUTHOR   : Sébastien Valat (INRIA) - 2023
+*    AUTHOR   : Sébastien Valat - 2024
+***********************************************************/
 
 #ifndef MALT_LINUX_PROC_MAP_HPP
 #define MALT_LINUX_PROC_MAP_HPP
 
-/********************  HEADERS  *********************/
+/**********************************************************/
 //standard
 #include <vector>
 #include <string>
 
-/*******************  NAMESPACE  ********************/
+/**********************************************************/
 namespace MALT
 {
 
-/********************  STRUCT  **********************/
+/**********************************************************/
 struct LinuxProcMapEntry
 {
 	void * lower;
@@ -28,10 +32,10 @@ struct LinuxProcMapEntry
 	std::string file;
 };
 
-/*********************  TYPES  **********************/
+/**********************************************************/
 typedef std::vector<LinuxProcMapEntry> LinuxProcMap;
 
-/*********************  CLASS  **********************/
+/**********************************************************/
 class LinuxProcMapReader
 {
 	public:

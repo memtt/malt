@@ -1,23 +1,26 @@
-/*****************************************************
-             PROJECT  : MALT
-             VERSION  : 1.2.2
-             DATE     : 06/2023
-             AUTHOR   : Valat Sébastien
-             LICENSE  : CeCILL-C
-*****************************************************/
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.2.4
+*    DATE     : 10/2024
+*    LICENSE  : CeCILL-C
+*    FILE     : src/lib/core/StackSizeTracker.cpp
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat (ECR) - 2014
+*    AUTHOR   : Sébastien Valat - 2020 - 2024
+***********************************************************/
 
-/********************  HEADERS  *********************/
+/**********************************************************/
 #include <cassert>
 #include <cstdio>
 #include "StackSizeTracker.hpp"
 #include <portability/LinuxProcMapReader.hpp>
-#include <cycle.h>
+#include <portability/Clock.hpp>
 
-/*******************  NAMESPACE  ********************/
+/**********************************************************/
 namespace MALT
 {
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Constructor of the stack size tracker.
 **/
@@ -31,7 +34,7 @@ StackSizeTracker::StackSizeTracker(void)
 	this->stack.push_back(0);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * To be called when we enter in a function, it will use assembly instruction
  * to extract the current stack pointer and compute the stack size consumed by
@@ -54,9 +57,18 @@ void StackSizeTracker::enter(void)
 		#warning "Arch not supported, stack size tracking will be ignored, all rest will work fine, this is optional."
 	#endif
 	
+	this->enter(crsp);
+}
+
+/**********************************************************/
+/**
+ * Enter in the stack by giving the stack size from the caller.
+ */
+void StackSizeTracker::enter(size_t stackPointer)
+{
 	//push
-	this->stack.push_back(crsp);
-	this->cur = crsp;
+	this->stack.push_back(stackPointer);
+	this->cur = stackPointer;
 	
 	//min
 	if (this->base == 0 || this->cur > this->base)
@@ -67,10 +79,10 @@ void StackSizeTracker::enter(void)
 	//	this->loadMapping();
 	
 	//debug
-	//printf("malt %llu , %zu , %zu , %zu\n",getticks(),this->base,crsp,getSize());
+	//printf("malt %llu , %zu , %zu , %zu\n",Clock::getticks(),this->base,crsp,getSize());
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Function used to extract mapLower and mapUpper from /proc/self/maps.
 **/
@@ -94,7 +106,7 @@ void StackSizeTracker::loadMapping(void)
 	}
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * To be called when exiting a function to pop the stack size entry.
 **/
@@ -103,7 +115,7 @@ void StackSizeTracker::exit(void)
 	this->stack.pop();
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Return the current size of the stack by a diff between the base address
  * and the current one.
@@ -113,7 +125,7 @@ long unsigned int StackSizeTracker::getSize(void) const
 	return this->base - this->cur;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Copy operator.
  * @param origin Reference to the original stack size tracker.
@@ -128,7 +140,7 @@ StackSizeTracker& StackSizeTracker::operator=(const StackSizeTracker& orig)
 	return *this;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Conver the stack size tracker into json format for the final profile file.
  * @param json Reference to the json state to make the conversion.
@@ -148,7 +160,7 @@ void convertToJson(htopml::JsonState& json, const StackSizeTracker& value)
 	json.closeArray();
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Return the total size using the mapUpper/mapLower from /proc/self/maps.
 **/

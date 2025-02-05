@@ -1,17 +1,19 @@
 #!/bin/bash
-######################################################
-#            PROJECT  : MATT                         #
-#            VERSION  : 1.2.2                        #
-#            DATE     : 06/2023                      #
-#            AUTHOR   : Valat Sébastien              #
-#            LICENSE  : CeCILL-C                     #
-######################################################
+############################################################
+#    PROJECT  : MALT (MALoc Tracker)
+#    VERSION  : 1.2.4
+#    DATE     : 10/2024
+#    LICENSE  : CeCILL-C
+#    FILE     : dev/update-version.sh
+#-----------------------------------------------------------
+#    AUTHOR   : Sébastien Valat - 2015 - 2024
+############################################################
 
-######################################################
+############################################################
 COLOR_RED="$(printf "\033[31m")"
 COLOR_RESET="$(printf "\033[0m")"
 
-######################################################
+############################################################
 function extract_old_version()
 {
 	OLD_VERSION=$(cat configure | grep VERSION | xargs echo | cut -d " " -f 4)
@@ -21,13 +23,13 @@ function extract_old_version()
 	echo "Old version is ${OLD_VERSION}, short is ${OLD_SHORT_VERSION}"
 }
 
-######################################################
+############################################################
 function print_error()
 {
 	echo "${COLOR_RED}$@${COLOR_RESET}" 1>&2
 }
 
-######################################################
+############################################################
 #check args
 if [ -z "$1" ]; then
 	print_error "Missing version !"
@@ -35,25 +37,25 @@ if [ -z "$1" ]; then
 	exit 1
 fi
 
-######################################################
+############################################################
 #check call from root directory of project
 if [ "$0" != "./dev/update-version.sh" ]; then
 	print_error "Caution, you must call this script from the project root directory !"
 fi
 
-######################################################
+############################################################
 version="$1"
 shortVersion="$(echo $1 | sed -e 's/-dev//g')"
 newdate="DATE     : $(date +%m/%Y)"
 V="VERSION"
 newversion="$V  : $(printf "%-16s" "$version")"
 
-######################################################
+############################################################
 extract_old_version
 echo "New version is ${newversion}"
 echo "Date is ${newdate}"
 
-######################################################
+############################################################
 echo
 echo
 for tmp in $(seq 1 5); do
@@ -62,7 +64,7 @@ for tmp in $(seq 1 5); do
 done
 
 
-######################################################
+############################################################
 update_all_files()
 {
 	find ./ | while read file
@@ -93,7 +95,7 @@ update_all_files()
 	done
 }
 
-######################################################
+############################################################
 #update bower and package
 update_special_sed()
 {
@@ -116,7 +118,7 @@ update_special_sed()
 	sed -i -r -e "s/${OLD_VERSION_PROTECTED}/${version}/g" CMakeLists.txt
 }
 
-######################################################
+############################################################
 update_packaging()
 {
 	#update date in debian changelog
@@ -126,14 +128,14 @@ update_packaging()
 	git mv packaging/gentoo/dev-util/malt/malt-${OLD_VERSION}.ebuild packaging/gentoo/dev-util/malt/malt-${version}.ebuild || exit 1
 }
 
-######################################################
+############################################################
 #Check if manpages need to be recompiled
 update_manpages()
 {
 	make -C ./src/manpages || exit 1
 }
 
-######################################################
+############################################################
 #serach not updated
 post_check()
 {

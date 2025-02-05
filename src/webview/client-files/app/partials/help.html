@@ -17,7 +17,7 @@
 <pre>malt-webview -i malt-my_program-12589.json [-p PORT]</pre>
 
 <p>It opens a webserver on port 8080 by default so you can open it with your browser by going to <a href='http://localhost:8080'>http://localhost:8080</a>.
-If you run it remotly, you might need to forward the port through SSH by using command : </p>
+If you run it remotely, you might need to forward the port through SSH by using command : </p>
 
 <pre>ssh user@foo -L8080:localhost:8080 </pre>
 
@@ -51,7 +51,7 @@ free(a);                  //Total requested = 0
 <h2>Virtual memory</h2>
 
 <p>This is the memory the memory allocator (<code>malloc</code>) has requested to the system. Here, we remind that memory management is done at page (4K segments) granularity
-by the OS. When you request an allocation of 16 bytes, the allocator must request a least 4Kb to the OS through the <code>mmap</code> system call. 
+by the OS. When you request an allocation of 16 bytes, the allocator must request a least 4Kb to the OS through the <code>mmap</code> system call.
 We can illustrate with the given code :</p>
 
 <pre>
@@ -65,15 +65,15 @@ a = realloc(a,64);        //Total virtual = 20K
 free(a);                  //Total virtual = 0
 </pre>
 
-<p>There is no guaranty that the allocator return the virtual memory immediatly, it might keep it for latter use. In practive it appens only for small segments (upper magnitude is roughtly 128 Kb).
+<p>There is no guaranty that the allocator return the virtual memory immediately, it might keep it for latter use. In practice it happens only for small segments (upper magnitude is roughly 128 Kb).
 The virtual memory also contain all the libraries and executable code so can contain much more than the requested memory.</p>
 
-<p>Caution, in practive the virtual take in account the memory space consummed by the binaries (lib and executable) of your program. MALT remove its own memory usage from this metric.</p>
+<p>Caution, in practice the virtual take in account the memory space consumed by the binaries (lib and executable) of your program. MALT removes its own memory usage from this metric.</p>
 
 <h2>Physical memory</h2>
 
 <p>By default the operating system only allocate Virtual Memory by keeping track of the authorized memory addressed. He didn't associate any physical
-pages to those virtual segments. The first access on a virtual page generate a "page fault" to notify the OS. On page fault, the OS searh and
+pages to those virtual segments. The first access on a virtual page generates a "page fault" to notify the OS. On page fault, the OS search and
 map a physical page to the virtual one. The virtual memory give the memory requested by the user and the physical give the memory used by
 the user. Gaps between those two metrics point too large allocation compared to the memory usage.</p>
 
@@ -85,7 +85,7 @@ memset(a+1M,0,1M)         //Total virtual = 2M,  physical = 2M
 free(a);                  //Total virtual = 0,   physical = 0
 </pre>
 
-<p>Caution, in practive the physical memory as for the virtual take in account the memory space consummed by the binaries (lib and executable) of your program. MALT remove its own memory usage from this metric.</p>
+<p>Caution, in practice the physical memory, like the virtual memory, takes into account the memory space consumed by the binaries (lib and executable) of your program. MALT removes its own memory usage from this metric.</p>
 
 <h2>Internal memory</h2>
 
@@ -96,19 +96,31 @@ free(a);                  //Total virtual = 0,   physical = 0
 <p>MALT provide two kinds of memory peaks : </p>
 
 <ul>
-	<li>Local peak : it track the maximum memor used by a given function for the wall execution.</li>
-	<li>Global peak : it track the memory used by a function at global peak time, it might be smaller than local peak as the function might use no memory when the global peak append.</li>
+	<li>Local peak : it tracks the maximum memory used by a given function for the whole execution.</li>
+	<li>Global peak : it tracks the memory used by a function at global peak time, it might be smaller than local peak as the function might use no memory when the global peak append.</li>
 </ul>
 
 <h2>About chunk lifetime</h2>
 
-Chunk lifetime correspond to the time between malloc and free. Ideally it need to be as long as possible as short lifetime linked to lot of allocation can lead to performance issues.
+<p>Chunk lifetime corresponds to the time between <code>malloc</code> and <code>free</code>. Ideally, it needs to be as long as possible, as short lifetime linked to lot of allocation can lead to performance issues.</p>
 
 <!--<h2>About fragmentation</h2>-->
 
 <h2>Allocation rates</h2>
 
-Allocation rate are related to number of allocation in a short period. It can pin point performance overhead due to operating system memory management functions.
+<p>Allocation rate are related to number of allocation in a short period. It can pinpoint performance overhead due to operating system memory management functions.</p>
+
+<h2>About counters</h2>
+
+<p>For each counter, MALT tracks two sub-metric:</p>
+
+<ul>
+    <li>Inclusive: It is the number of times <code>malloc</code> (<code>realloc</code>, <code>free</code>, ...) has been seen under this function (by looking in all call stacks and accounting if called in child functions). This is also called <code>total</code> in code. </li>
+    <li>Exclusive: It is the number of times exactly that <code>malloc</code> (<code>realloc</code>, <code>free</code>, ...) has been called in this function. This is also called <code>own</code> in code. </li>
+</ul>
+
+By default, values displayed are inclusives, i.e. it account for every allocation below it,as on the home page.
+Exclusives value are only displayed if it is relevant to the function.
 
 <h1>Thanks</h1>
 

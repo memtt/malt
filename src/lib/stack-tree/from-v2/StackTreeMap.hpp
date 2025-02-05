@@ -1,15 +1,17 @@
-/*****************************************************
-             PROJECT  : MALT
-             VERSION  : 1.2.2
-             DATE     : 06/2023
-             AUTHOR   : Valat Sébastien
-             LICENSE  : CeCILL-C
-*****************************************************/
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.2.4
+*    DATE     : 10/2024
+*    LICENSE  : CeCILL-C
+*    FILE     : src/lib/stack-tree/from-v2/StackTreeMap.hpp
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat - 2015 - 2024
+***********************************************************/
 
 #ifndef MALTV2_STACK_TREE_MAP_HPP
 #define MALTV2_STACK_TREE_MAP_HPP
 
-/********************  HEADERS  *********************/
+/**********************************************************/
 #include "StackTree.hpp"
 #include "EnterExitStack.hpp"
 #include "BacktraceStack.hpp"
@@ -18,11 +20,11 @@
 #include <json/JsonState.h>
 
 
-/*******************  NAMESPACE  ********************/
+/**********************************************************/
 namespace MALTV2
 {
 
-/*********************  CLASS  **********************/
+/**********************************************************/
 class StackTreeMap : public StackTree
 {
 	public:

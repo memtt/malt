@@ -1,5 +1,15 @@
+############################################################
+#    PROJECT  : MALT (MALoc Tracker)
+#    VERSION  : 1.2.4
+#    DATE     : 10/2024
+#    LICENSE  : CeCILL-C
+#    FILE     : packaging/Dockerfile-debian
+#-----------------------------------------------------------
+#    AUTHOR   : Sébastien Valat - 2019 - 2024
+############################################################
+
 #distri we want
-FROM debian:jessie
+FROM debian:bookworm
 
 #workdir
 WORKDIR /workdir

@@ -1,12 +1,17 @@
-/*****************************************************
-             PROJECT  : MALT
-             VERSION  : 1.2.2
-             DATE     : 06/2023
-             AUTHOR   : Valat Sébastien
-             LICENSE  : CeCILL-C
-*****************************************************/
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.2.4
+*    DATE     : 10/2024
+*    LICENSE  : CeCILL-C
+*    FILE     : src/lib/wrapper/AllocWrapper.cpp
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat - 2014 - 2024
+*    AUTHOR   : Sébastien Valat (ECR) - 2014
+*    AUTHOR   : Sébastien Valat (CERN) - 2015
+*    AUTHOR   : Antoine Bernard (crans.org) - 2024
+***********************************************************/
 
-/********************  HEADERS  *********************/
+/**********************************************************/
 //standard
 #include <cstdlib>
 #include <cstdio>
@@ -20,7 +25,7 @@
 #include <malloc.h>
 //signal
 #include <signal.h>
-//intenrals
+//internals
 #include <common/Debug.hpp>
 #include <portability/OS.hpp>
 #include <portability/Mutex.hpp>
@@ -32,10 +37,10 @@
 #include "malt.h"
 #include "AllocWrapperExtend.hpp"
 
-/***************** USING NAMESPACE ******************/
+/**********************************************************/
 using namespace MALT;
 
-/********************  MACRO  ***********************/
+/**********************************************************/
 /** Manage init of local state and fetch TLS in local pointer. **/
 #define MALT_WRAPPER_LOCAL_STATE_INIT \
 	/*get addr localy to avoid to read the TLS every time*/ \
@@ -50,7 +55,7 @@ using namespace MALT;
 		isEnterExit = localState.profiler->isEnterExit(); \
 	if (isEnterExit){};/*to remove, but add it add warning*/
 
-/********************  MACRO  ***********************/
+/**********************************************************/
 /** Check init status of local and global state and call enter/exit methods, then do requested action. **/
 #define MALT_WRAPPER_LOCAL_STATE_ACTION(action, retAddr)  \
 	if (gblState.status == ALLOC_WRAP_READY && tlsState.status == ALLOC_WRAP_READY) \
@@ -66,7 +71,7 @@ using namespace MALT;
 	}
 
 
-/********************  ENUM  ************************/
+/**********************************************************/
 /**
  * Follow the current state of GlobalState structure. By default it start as not initialized
  * (ALLOC_WRAP_NOT_READY) and go to larger values up to ALLOC_WRAP_FINISH).
@@ -90,7 +95,7 @@ enum AllocWrapperGlobalStatus
 	ALLOC_WRAP_FINISH
 };
 
-/*********************  STRUCT  *********************/
+/**********************************************************/
 /**
  * Store the global state of alloc wrapper, mainly used to maintain access to the profiling object and
  * keep track of the old (glibc) malloc/calloc... symbols to forward the requests after registration of
@@ -142,7 +147,7 @@ struct AllocWrapperGlobal
 	static void onExit(void);
 };
 
-/********************  STRUCT  **********************/
+/**********************************************************/
 /**
  * Manage the local data attached to each threads. 
  * The content use lazy initialization on first access thanks to the default status.
@@ -164,7 +169,7 @@ struct ThreadLocalState
 	void init(void);
 };
 
-/********************  GLOBALS  **********************/
+/**********************************************************/
 /** Store the global state of allocator wrapper. **/
 static AllocWrapperGlobal gblState = {ALLOC_WRAP_NOT_READY,MALT_STATIC_MUTEX_INIT,NULL,NULL,NULL,NULL,NULL};
 /** Store the per-thread state of allocator wrapper. **/
@@ -172,7 +177,7 @@ static __thread ThreadLocalState tlsState = {NULL,ALLOC_WRAP_NOT_READY};
 /** Temporary buffer to return on first realloc used by dlsym and split infinit call loops. **/
 static char gblCallocIniBuffer[4096];
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Check the stack mode to use by reading MALT_STACK environnement variable.
  * If MALT_STACK does not exist it use the value from config file (stack:mode).
@@ -212,7 +217,7 @@ static StackMode getStackMode(Options & options)
 	return ret;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 static void maltDumpOnEvent(void)
 {
 	//stop instr & dump
@@ -225,14 +230,14 @@ static void maltDumpOnEvent(void)
 	}
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 static void maltSigKillHandler(int s)
 {
 	fprintf(stderr,"MALT: Capture signal KILL, dump profile and exit.");
 	exit(1);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 static void maltSigHandler(int signum)
 {
 	//twik print
@@ -245,7 +250,7 @@ static void maltSigHandler(int signum)
 	maltDumpOnEvent();
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void maltSetupSigHandler(const Options & options)
 {
 	//get list
@@ -270,7 +275,7 @@ void maltSetupSigHandler(const Options & options)
 	}
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void * maltDumpAfterSecondsThreadMain(void * arg)
 {
 	//extract
@@ -289,7 +294,7 @@ void * maltDumpAfterSecondsThreadMain(void * arg)
 	return NULL;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void maltDumpAfterSecondsThread(const Options & options)
 {
 	//extract
@@ -313,10 +318,10 @@ void maltDumpAfterSecondsThread(const Options & options)
 	assumeArg(rc == 0, "Fail to start sleep thread for timeout dump: %1").argStrErrno().end();
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 extern "C" {
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 int maltInitStatus(void)
 {
 	return 1;
@@ -335,7 +340,7 @@ void maltEnable(void)
 		localState.status = ALLOC_WRAP_READY;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void maltDisable(void)
 {
 	/*get addr localy to avoid to read the TLS every time*/
@@ -351,7 +356,7 @@ void maltDisable(void)
 	
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Function in charge of the lazy initialization of the global state.
  * It take care of multiple and parallel calls in case of use in multi-thread context.
@@ -449,20 +454,20 @@ void AllocWrapperGlobal::init(void )
 	gblState.lock.unlock();
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void MALT::malt_wrap_extended_symbols(void)
 {
 	//default impl to be overriden by LD_PRELOAD for custom symbols
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void libdestructor(void) __attribute__((destructor (101)));
 void libdestructor(void)
 {
 	AllocWrapperGlobal::onExit();
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Function to register into on_exit() one. It permit to cleanup memory and to flush
  * the extracted profile at the end of the execution.
@@ -485,7 +490,7 @@ void AllocWrapperGlobal::onExit(void)
 	}
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Function used on lazy init of the TLS variable, it will be called on first use of the struct.
 **/
@@ -511,7 +516,7 @@ void ThreadLocalState::init(void)
 		tlsState.status = ALLOC_WRAP_DISABLED;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Wrapper of the malloc function to capture allocations. The original symbol will be
  * search by dlsym() in AllocWrapperGlobal::init() .
@@ -524,7 +529,7 @@ void * malloc(size_t size)
 	return malt_wrap_malloc(size, gblState.malloc, MALT_RETADDR);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void * MALT::malt_wrap_malloc(size_t size, const MallocFuncPtr & real_malloc, void * retaddr)
 {
 	//get local TLS and check init
@@ -533,9 +538,9 @@ void * MALT::malt_wrap_malloc(size_t size, const MallocFuncPtr & real_malloc, vo
 	//run the default function
 	assert(gblState.status > ALLOC_WRAP_INIT_SYM);
 	
-	ticks t = getticks();
+	ticks t = Clock::getticks();
 	void * res = real_malloc(size);
-	t = getticks() - t;
+	t = Clock::getticks() - t;
 
 	//profile
 	MALT_WRAPPER_LOCAL_STATE_ACTION(localState.profiler->onMalloc(res,size,t,MALLOC_KIND_MALLOC), retaddr);
@@ -544,7 +549,7 @@ void * MALT::malt_wrap_malloc(size_t size, const MallocFuncPtr & real_malloc, vo
 	return res;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Wrapper of the free function to capture deallocations. The original symbol will be
  * search by dlsym() in AllocWrapperGlobal::init() .
@@ -556,7 +561,7 @@ void free(void * ptr)
 	return malt_wrap_free(ptr, gblState.free, MALT_RETADDR);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void MALT::malt_wrap_free(void * ptr, const FreeFuncPtr & real_free, void * retaddr)
 {
 	//get local TLS and check init
@@ -570,7 +575,7 @@ void MALT::malt_wrap_free(void * ptr, const FreeFuncPtr & real_free, void * reta
 	real_free(ptr);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Wrapper of the calloc function to capture allocations. The original symbol will be
  * search by dlsym() in AllocWrapperGlobal::init() .
@@ -584,7 +589,7 @@ void * calloc(size_t nmemb,size_t size)
 	return malt_wrap_calloc(nmemb, size, gblState.calloc, MALT_RETADDR);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void * MALT::malt_wrap_calloc(size_t nmemb,size_t size, const CallocFuncPtr & real_calloc, void * retaddr)
 {
 	//get local TLS and check init
@@ -601,9 +606,9 @@ void * MALT::malt_wrap_calloc(size_t nmemb,size_t size, const CallocFuncPtr & re
 	//run the default function
 	assert(gblState.status > ALLOC_WRAP_INIT_SYM);
 	
-	ticks t = getticks();
+	ticks t = Clock::getticks();
 	void * res = real_calloc(nmemb,size);
-	t = getticks() - t;
+	t = Clock::getticks() - t;
 
 	//profile
 	MALT_WRAPPER_LOCAL_STATE_ACTION(localState.profiler->onCalloc(res,nmemb,size,t), retaddr);
@@ -612,7 +617,7 @@ void * MALT::malt_wrap_calloc(size_t nmemb,size_t size, const CallocFuncPtr & re
 	return res;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Wrapper of the realloc function to capture allocations. The original symbol will be
  * search by dlsym() in AllocWrapperGlobal::init() .
@@ -626,7 +631,7 @@ void * realloc(void * ptr, size_t size)
 	return malt_wrap_realloc(ptr, size, gblState.realloc, MALT_RETADDR);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void * MALT::malt_wrap_realloc(void * ptr,size_t size, const ReallocFuncPtr & real_realloc, void * retaddr)
 {
 	//get local TLS and check init
@@ -635,9 +640,9 @@ void * MALT::malt_wrap_realloc(void * ptr,size_t size, const ReallocFuncPtr & re
 	//run the default function
 	assert(gblState.status > ALLOC_WRAP_INIT_SYM);
 	
-	ticks t = getticks();
+	ticks t = Clock::getticks();
 	void * res = real_realloc(ptr,size);
-	t = getticks() - t;
+	t = Clock::getticks() - t;
 	
 	//profile
 	MALT_WRAPPER_LOCAL_STATE_ACTION(localState.profiler->onRealloc(ptr,res,size,t), retaddr);
@@ -645,7 +650,7 @@ void * MALT::malt_wrap_realloc(void * ptr,size_t size, const ReallocFuncPtr & re
 	return res;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Wrapper of the posix_memalign function to capture allocations. The original symbol will be
  * search by dlsym() in AllocWrapperGlobal::init() .
@@ -655,7 +660,7 @@ int posix_memalign(void ** memptr,size_t align, size_t size)
 	return malt_wrap_posix_memalign(memptr, align, size, gblState.posix_memalign, MALT_RETADDR);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 int MALT::malt_wrap_posix_memalign(void **memptr, size_t alignment, size_t size, const PosixMemalignFuncPtr & real_mem_align, void * retaddr)
 {
 	//get local TLS and check init
@@ -664,9 +669,9 @@ int MALT::malt_wrap_posix_memalign(void **memptr, size_t alignment, size_t size,
 	//run the default function
 	assert(gblState.status > ALLOC_WRAP_INIT_SYM);
 	
-	ticks t = getticks();
+	ticks t = Clock::getticks();
 	int res = real_mem_align(memptr, alignment, size);
-	t = getticks() - t;
+	t = Clock::getticks() - t;
 
 	//profile
 	MALT_WRAPPER_LOCAL_STATE_ACTION(localState.profiler->onMalloc(*memptr,size,t,MALLOC_KIND_POSIX_MEMALIGN), retaddr);
@@ -675,7 +680,7 @@ int MALT::malt_wrap_posix_memalign(void **memptr, size_t alignment, size_t size,
 	return res;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Wrapper of the aligned_alloc function to capture allocations. The original symbol will be
  * search by dlsym() in AllocWrapperGlobal::init() .
@@ -685,7 +690,7 @@ void * aligned_alloc(size_t alignment, size_t size)
 	return malt_wrap_aligned_alloc(alignment, size, gblState.aligned_alloc, MALT_RETADDR);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void * MALT::malt_wrap_aligned_alloc(size_t alignment, size_t size, const AlignedAllocFuncPtr & real_aligned_alloc, void * retaddr)
 {
 	//get local TLS and check init
@@ -694,9 +699,9 @@ void * MALT::malt_wrap_aligned_alloc(size_t alignment, size_t size, const Aligne
 	//run the default function
 	assert(gblState.status > ALLOC_WRAP_INIT_SYM);
 	
-	ticks t = getticks();
+	ticks t = Clock::getticks();
 	void * res = real_aligned_alloc(alignment,size);
-	t = getticks() - t;
+	t = Clock::getticks() - t;
 
 	//profile
 	MALT_WRAPPER_LOCAL_STATE_ACTION(localState.profiler->onMalloc(res,size,t,MALLOC_KIND_ALIGNED_ALLOC), retaddr);
@@ -705,7 +710,7 @@ void * MALT::malt_wrap_aligned_alloc(size_t alignment, size_t size, const Aligne
 	return res;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Wrapper of the memalign function to capture allocations. The original symbol will be
  * search by dlsym() in AllocWrapperGlobal::init() .
@@ -715,7 +720,7 @@ void *memalign(size_t alignment, size_t size)
 	return malt_wrap_memalign(alignment, size, gblState.memalign, MALT_RETADDR);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void *MALT::malt_wrap_memalign(size_t alignment, size_t size, const MemalignFuncPtr & real_memalign, void * retaddr)
 {
 	//get local TLS and check init
@@ -724,9 +729,9 @@ void *MALT::malt_wrap_memalign(size_t alignment, size_t size, const MemalignFunc
 	//run the default function
 	assert(gblState.status > ALLOC_WRAP_INIT_SYM);
 	
-	ticks t = getticks();
+	ticks t = Clock::getticks();
 	void * res = real_memalign(alignment,size);
-	t = getticks() - t;
+	t = Clock::getticks() - t;
 
 	//profile
 	MALT_WRAPPER_LOCAL_STATE_ACTION(localState.profiler->onMalloc(res,size,t,MALLOC_KIND_POSIX_MEMALIGN), retaddr);
@@ -735,7 +740,7 @@ void *MALT::malt_wrap_memalign(size_t alignment, size_t size, const MemalignFunc
 	return res;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Wrapper of the valloc function to capture allocations. The original symbol will be
  * search by dlsym() in AllocWrapperGlobal::init() .
@@ -745,7 +750,7 @@ void *valloc(size_t size)
 	return malt_wrap_valloc(size, gblState.valloc, MALT_RETADDR);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void * MALT::malt_wrap_valloc(size_t size, const VallocFuncPtr & real_aligned_valloc, void * retaddr)
 {
 	//get local TLS and check init
@@ -754,9 +759,9 @@ void * MALT::malt_wrap_valloc(size_t size, const VallocFuncPtr & real_aligned_va
 	//run the default function
 	assert(gblState.status > ALLOC_WRAP_INIT_SYM);
 	
-	ticks t = getticks();
+	ticks t = Clock::getticks();
 	void * res = real_aligned_valloc(size);
-	t = getticks() - t;
+	t = Clock::getticks() - t;
 
 	//profile
 	MALT_WRAPPER_LOCAL_STATE_ACTION(localState.profiler->onMalloc(res,size,t,MALLOC_KIND_VALLOC), retaddr);
@@ -765,7 +770,7 @@ void * MALT::malt_wrap_valloc(size_t size, const VallocFuncPtr & real_aligned_va
 	return res;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Wrapper of the pvalloc function to capture allocations. The original symbol will be
  * search by dlsym() in AllocWrapperGlobal::init() .
@@ -775,7 +780,7 @@ void *pvalloc(size_t size)
 	return malt_wrap_pvalloc(size, gblState.pvalloc, MALT_RETADDR);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void *MALT::malt_wrap_pvalloc(size_t size, const PVallocFuncPtr & real_pvalloc, void * retaddr)
 {
 	//get local TLS and check init
@@ -784,9 +789,9 @@ void *MALT::malt_wrap_pvalloc(size_t size, const PVallocFuncPtr & real_pvalloc, 
 	//run the default function
 	assert(gblState.status > ALLOC_WRAP_INIT_SYM);
 	
-	ticks t = getticks();
+	ticks t = Clock::getticks();
 	void * res = real_pvalloc(size);
-	t = getticks() - t;
+	t = Clock::getticks() - t;
 
 	//profile
 	MALT_WRAPPER_LOCAL_STATE_ACTION(localState.profiler->onMalloc(res,size,t,MALLOC_KIND_PVALLOC), retaddr);
@@ -795,7 +800,7 @@ void *MALT::malt_wrap_pvalloc(size_t size, const PVallocFuncPtr & real_pvalloc, 
 	return res;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Wrapper of the pvalloc function to capture allocations. The original symbol will be
  * search by dlsym() in AllocWrapperGlobal::init() .
@@ -805,7 +810,7 @@ void *mmap(void *start, size_t length, int prot,int flags,int fd, off_t offset)
 	return malt_wrap_mmap(start, length, prot, flags, fd, offset, gblState.mmap, MALT_RETADDR);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void * MALT::malt_wrap_mmap(void *start,size_t length,int prot,int flags,int fd,off_t offset, const MmapFuncPtr & real_mmap, void * retaddr)
 {
 	//get local TLS and check init
@@ -822,7 +827,7 @@ void * MALT::malt_wrap_mmap(void *start,size_t length,int prot,int flags,int fd,
 	return res;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Wrapper of the pvalloc function to capture allocations. The original symbol will be
  * search by dlsym() in AllocWrapperGlobal::init() .
@@ -832,7 +837,7 @@ int munmap(void *start, size_t length)
 	return malt_wrap_munmap(start, length, gblState.munmap, MALT_RETADDR);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 int MALT::malt_wrap_munmap(void * start, size_t length, const MunmapFuncPtr & real_munmap, void * retaddr)
 {
 	//get local TLS and check init
@@ -849,7 +854,7 @@ int MALT::malt_wrap_munmap(void * start, size_t length, const MunmapFuncPtr & re
 	return res;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Wrapper of the pvalloc function to capture allocations. The original symbol will be
  * search by dlsym() in AllocWrapperGlobal::init() .
@@ -859,7 +864,7 @@ void * mremap(void *old_address, size_t old_size , size_t new_size, int flags)
 	return malt_wrap_mremap(old_address, old_size, new_size, flags, gblState.mremap, MALT_RETADDR);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void * MALT::malt_wrap_mremap(void *old_address, size_t old_size , size_t new_size, int flags, const MremapFuncPtr & real_mremap, void * retaddr)
 {
 	//get local TLS and check init
@@ -876,7 +881,7 @@ void * MALT::malt_wrap_mremap(void *old_address, size_t old_size , size_t new_si
 	return res;
 }
 
-/*********************  STRUCT  *********************/
+/**********************************************************/
 //Juste to be sure of the C symbol naming.
 extern "C" 
 {
@@ -884,7 +889,7 @@ extern "C"
 	void __cyg_profile_func_exit  (void *this_fn,void *call_site);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Symbol used to capture entering in function when working with GCC/CLANG/ICC 
  * -finstrument-function CFLAG.
@@ -906,7 +911,7 @@ void __cyg_profile_func_enter (void *this_fn,void *call_site)
 		localState.profiler->onEnterFunc(this_fn,call_site);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Symbol used to capture exit of function when working with GCC/CLANG/ICC 
  * -finstrument-function CFLAG. 
@@ -929,26 +934,26 @@ void __cyg_profile_func_exit  (void *this_fn,void *call_site)
 }
 
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 extern "C" {
 	void maqao_enter_function(int fid,const char * funcName);
 	void maqao_exit_function(int fid,const char * funcName);
 	void maqao_reg_function(int funcId,const char * funcName,const char * file,int line);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void maqao_enter_function(int fid,const char * funcName)
 {
 	__cyg_profile_func_enter((void*)(size_t)fid,(void*)(size_t)fid);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void maqao_exit_function(int fid,const char * funcName)
 {
 	__cyg_profile_func_exit((void*)(size_t)fid,(void*)(size_t)fid);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void maqao_reg_function(int funcId,const char * funcName,const char * file,int line)
 {
 	//check init

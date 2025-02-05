@@ -1,32 +1,35 @@
-/*****************************************************
-             PROJECT  : MALT
-             VERSION  : 1.2.2
-             DATE     : 06/2023
-             AUTHOR   : Valat Sébastien
-             LICENSE  : CeCILL-C
-*****************************************************/
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.2.4
+*    DATE     : 10/2024
+*    LICENSE  : CeCILL-C
+*    FILE     : src/lib/core/CallStackInfo.hpp
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat - 2014 - 2024
+*    AUTHOR   : Sébastien Valat (ECR) - 2014
+***********************************************************/
 
 #ifndef MALT_CALL_STACK_INFO_HPP
 #define MALT_CALL_STACK_INFO_HPP
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 //standard
 #include <ostream>
 #include <cstdlib>
 //from fftw (copied in extern-deps)
-#include <cycle.h>
+#include <portability/Clock.hpp>
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 namespace htopml
 {
 	class JsonState;
 }
 
-/*******************  NAMESPACE  ********************/
+/**********************************************************/
 namespace MALT
 {
 
-/*********************  CLASS  **********************/
+/**********************************************************/
 /**
  * Provide a simple class to track some quantitiy over time by taking care of their
  * extremal values. By default it capture :
@@ -48,12 +51,12 @@ struct SimpleQuantityHistory
 	ssize_t sum;
 };
 
-/*********************  STRUCT  *********************/
+/**********************************************************/
 //pre-declaration to avoid head loop inclusion
 struct CallStackInfoGlobals;
 struct CallStackInfoRealloc;
 
-/*********************  CLASS  **********************/
+/**********************************************************/
 /**
  * @brief Structure to define the informations we tracked for each call site.
 **/
@@ -108,7 +111,7 @@ struct CallStackInfo
 		size_t reallocDelta;
 };
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void convertToJson(htopml::JsonState& json, const SimpleQuantityHistory& value);
 
 }

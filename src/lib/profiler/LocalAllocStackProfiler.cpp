@@ -1,12 +1,15 @@
-/*****************************************************
-             PROJECT  : MALT
-             VERSION  : 1.2.2
-             DATE     : 06/2023
-             AUTHOR   : Valat Sébastien
-             LICENSE  : CeCILL-C
-*****************************************************/
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.2.4
+*    DATE     : 10/2024
+*    LICENSE  : CeCILL-C
+*    FILE     : src/lib/profiler/LocalAllocStackProfiler.cpp
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat - 2014 - 2024
+*    AUTHOR   : Sébastien Valat (ECR) - 2014
+***********************************************************/
 
-/********************  HEADERS  *********************/
+/**********************************************************/
 //locals from common/
 #include <common/Debug.hpp>
 #include <common/CodeTiming.hpp>
@@ -15,11 +18,11 @@
 //locals
 #include "LocalAllocStackProfiler.hpp"
 
-/*******************  NAMESPACE  ********************/
+/**********************************************************/
 namespace MALT
 {
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 LocalAllocStackProfiler::LocalAllocStackProfiler(AllocStackProfiler* globalProfiler, bool reentrance)
 {
 	//errors
@@ -44,13 +47,13 @@ LocalAllocStackProfiler::LocalAllocStackProfiler(AllocStackProfiler* globalProfi
 	this->inUse = false;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 LocalAllocStackProfiler::~LocalAllocStackProfiler(void)
 {
 	//nothing up to now
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 //TODO: Pass Stack*, may be nullptr for C CallStack
 //TODO: Pass Stack* to getStack()
 void LocalAllocStackProfiler::onMalloc(void* res, size_t size, ticks time, MallocKind kind)
@@ -69,7 +72,7 @@ void LocalAllocStackProfiler::onMalloc(void* res, size_t size, ticks time, Mallo
 	}
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void LocalAllocStackProfiler::onFree(void* ptr, ticks time)
 {
 	//old state
@@ -86,7 +89,7 @@ void LocalAllocStackProfiler::onFree(void* ptr, ticks time)
 	}
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void LocalAllocStackProfiler::onCalloc(void * res,size_t nmemb, size_t size, ticks time)
 {
 	//old state
@@ -103,7 +106,7 @@ void LocalAllocStackProfiler::onCalloc(void * res,size_t nmemb, size_t size, tic
 	}
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void LocalAllocStackProfiler::onRealloc(void* ptr, void* res, size_t size,ticks time)
 {
 	//old state
@@ -120,7 +123,7 @@ void LocalAllocStackProfiler::onRealloc(void* ptr, void* res, size_t size,ticks 
 	}
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void LocalAllocStackProfiler::onMmap(void* ptr, size_t size, int flags, int fd)
 {
 	//skip file and non anon
@@ -144,7 +147,7 @@ void LocalAllocStackProfiler::onMmap(void* ptr, size_t size, int flags, int fd)
 	//CODE_TIMING("globalMmapProf",globalProfiler->onGlobalMmap(ptr,size,stack));
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void LocalAllocStackProfiler::onMunmap(void* ptr, size_t size)
 {
 // 	//old state
@@ -166,7 +169,7 @@ void LocalAllocStackProfiler::onMunmap(void* ptr, size_t size)
 	//CODE_TIMING("globalMmapProf",globalProfiler->onGlobalMunmap(ptr,size,stack));
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void convertToJson(htopml::JsonState& json, const LocalAllocStackProfiler& value)
 {
 	json.openStruct();
@@ -176,13 +179,13 @@ void convertToJson(htopml::JsonState& json, const LocalAllocStackProfiler& value
 	json.closeStruct();
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void LocalAllocStackProfiler::solveSymbols(SymbolSolver& symbolResolver) const
 {
 	this->stackSizeAnalyser.solveSymbols(symbolResolver);
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 //TODO: getStack should receive a parameter iff it's a Python stack
 Stack* LocalAllocStackProfiler::getStack(void )
 {
@@ -203,13 +206,13 @@ Stack* LocalAllocStackProfiler::getStack(void )
 	}
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 bool LocalAllocStackProfiler::isEnterExit(void)
 {
 	return stackMode == STACK_MODE_ENTER_EXIT_FUNC;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 FunctionStat::FunctionStat(void)
 {
 	this->count = 0;
@@ -217,7 +220,7 @@ FunctionStat::FunctionStat(void)
 	this->time = 0;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void FunctionStat::inc(ssize_t value,ticks time)
 {
 	this->count++;
@@ -225,7 +228,7 @@ void FunctionStat::inc(ssize_t value,ticks time)
 	this->time += time;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void convertToJson(htopml::JsonState& json, const FunctionStat& value)
 {
 	json.openStruct();
@@ -235,7 +238,7 @@ void convertToJson(htopml::JsonState& json, const FunctionStat& value)
 	json.closeStruct();
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void convertToJson(htopml::JsonState& json, const PerThreadAllocStats& value)
 {
 	json.openStruct();

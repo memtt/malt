@@ -1,29 +1,32 @@
- /*****************************************************
-             PROJECT  : MALT
-             VERSION  : 1.2.2
-             DATE     : 06/2023
-             AUTHOR   : Valat Sébastien
-             LICENSE  : CeCILL-C
-*****************************************************/
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.2.4
+*    DATE     : 10/2024
+*    LICENSE  : CeCILL-C
+*    FILE     : src/lib/core/VmaTracker.hpp
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat - 2014 - 2024
+*    AUTHOR   : Sébastien Valat (ECR) - 2014
+***********************************************************/
 
 #ifndef MALT_VMA_TRACKER_HPP
 #define MALT_VMA_TRACKER_HPP
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 //standard
 
-/*******************  NAMESPACE  ********************/
+/**********************************************************/
 namespace MALT
 {
 
-/*********************  STRUCT  *********************/
+/**********************************************************/
 struct VmaInfo
 {
 	size_t start;
 	size_t end;
 };
 
-/*********************  CLASS  **********************/
+/**********************************************************/
 /**
  * Class used to track the state of each VMA (Virtual Memory Area) managed by
  * mmap/mremap/munmap. It permit to compute the memory exchange rate with the OS.
@@ -38,6 +41,11 @@ class VmaTracker
 		void mmap(void * ptr,size_t size);
 		size_t mremap(void * oldPtr,size_t oldSize,void * newPtr,size_t newSize);
 		size_t munmap(void * ptr,size_t size);
+		std::vector<VmaInfo> getAsVector(void) const;
+		size_t getCount(void) const;
+		size_t getInsertPosition(void) const;
+	public:
+		friend std::ostream & operator<<(std::ostream & out, VmaTracker & tracker);
 	private:
 		void compact(void);
 		void grow(void);

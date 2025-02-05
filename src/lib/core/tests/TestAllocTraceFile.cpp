@@ -1,21 +1,23 @@
-/*****************************************************
-             PROJECT  : MALT
-             VERSION  : 1.2.2
-             DATE     : 06/2023
-             AUTHOR   : Valat Sébastien
-             LICENSE  : CeCILL-C
-*****************************************************/
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.2.4
+*    DATE     : 10/2024
+*    LICENSE  : CeCILL-C
+*    FILE     : src/lib/core/tests/TestAllocTraceFile.cpp
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat - 2022 - 2024
+***********************************************************/
 
-/********************  HEADERS  *********************/
+/**********************************************************/
 #include <gtest/gtest.h>
 #include <AllocTraceFile.hpp>
 #include <common/Options.hpp>
 #include <stacks/BacktraceStack.hpp>
 
-/***************** USING NAMESPACE ******************/
+/**********************************************************/
 using namespace MALT;
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(TestAllocTraceFile, constructor)
 {
 	const char path[] = "./test-teace-file.malt.trace";
@@ -24,7 +26,7 @@ TEST(TestAllocTraceFile, constructor)
 	EXPECT_EQ(0, unlink(path));
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 TEST(TestAllocTraceFile, trace)
 {
 	//build tracer
@@ -35,7 +37,7 @@ TEST(TestAllocTraceFile, trace)
 	//build infos
 	BacktraceStack stack;
 	stack.loadCurrentStack();
-	ticks allocTime = getticks();
+	ticks allocTime = Clock::getticks();
 	ticks lifeTime = 10000;
 
 	//dump many
@@ -57,7 +59,7 @@ TEST(TestAllocTraceFile, trace)
 	EXPECT_EQ(0, unlink(path));
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 int main(int argc, char ** argv)
 {
 	//init internal allocator

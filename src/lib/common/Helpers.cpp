@@ -1,12 +1,15 @@
-/*****************************************************
-             PROJECT  : MALT
-             VERSION  : 1.2.2
-             DATE     : 06/2023
-             AUTHOR   : Valat Sébastien
-             LICENSE  : CeCILL-C
-*****************************************************/
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.2.4
+*    DATE     : 10/2024
+*    LICENSE  : CeCILL-C
+*    FILE     : src/lib/common/Helpers.cpp
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat - 2014 - 2024
+*    AUTHOR   : Sébastien Valat (ECR) - 2014
+***********************************************************/
 
-/********************  HEADERS  *********************/
+/**********************************************************/
 //standard
 #include <cassert>
 #include <iomanip>
@@ -16,18 +19,18 @@
 //header to implement
 #include "Helpers.hpp"
 
-/***************** USING NAMESPACE ******************/
+/**********************************************************/
 using namespace std;
 
-/*******************  NAMESPACE  ********************/
+/**********************************************************/
 namespace MALT
 {
 
-/********************** CONSTS **********************/
+/**********************************************************/
 /** Strings for unit printing. **/
 static const char * cstUnits[] = {"","K","M","G","T","P"};
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Help to format values by using adapted unit.
  * @param value The value to print.
@@ -53,7 +56,7 @@ void Helpers::printValue(std::ostream & out,double value, const char* unit)
 	out << setw(5) << std::right << buffer << " " << setw(1) << cstUnits[depth] << unit;
 }
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 /**
  * Return a numeric identifier to add to output filename. By default it uses the current
  * PID but it can also be override by LD_PRELOAD to support MPI ranks.

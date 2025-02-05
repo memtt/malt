@@ -1,25 +1,28 @@
-/*****************************************************
-             PROJECT  : MALT
-             VERSION  : 1.2.2
-             DATE     : 06/2023
-             AUTHOR   : Valat Sébastien
-             LICENSE  : CeCILL-C
-*****************************************************/
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.2.4
+*    DATE     : 10/2024
+*    LICENSE  : CeCILL-C
+*    FILE     : src/trace-reader/TraceReaderStackAllocs.hpp
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat - 2014 - 2024
+*    AUTHOR   : Sébastien Valat (ECR) - 2014
+***********************************************************/
 
 #ifndef MALT_TRACE_READER_STACK_ALLOCS_HPP
 #define MALT_TRACE_READER_STACK_ALLOCS_HPP
 
-/********************  HEADERS  *********************/
+/**********************************************************/
 //STL C++
 #include <map>
 //internal
 #include "TraceReader.hpp"
 
-/*******************  NAMESPACE  ********************/
+/**********************************************************/
 namespace MALT
 {
 
-/********************  STRUCT  **********************/
+/**********************************************************/
 struct AtTimeInfo
 {
 	AtTimeInfo(void) {this->count = 0;this->size = 0;};
@@ -27,7 +30,7 @@ struct AtTimeInfo
 	size_t size;
 };
 
-/*********************  CLASS  **********************/
+/**********************************************************/
 class TraceReaderStackAllocs : public TraceReader
 {
 	public:
