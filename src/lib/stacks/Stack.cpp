@@ -32,36 +32,6 @@
 namespace MALT
 {
 
-/**********************************************************/
-const AddressType nullAddr = {DOMAIN_C, 0};
-
-/**********************************************************/
-std::ostream &operator<<(std::ostream &out, const AddressType &addrType){
-	out << addrType.toString();
-	
-	return out;
-}
-
-/**********************************************************/
-std::string AddressType::toString() const {
-	std::string value;
-
-	if (this->domain == DOMAIN_PYTHON){
-		value += "PY-";
-	}
-
-	char buffer[64];
-	sprintf(buffer, "%p", (void*) this->address);
-	value += buffer;
-
-	return value;
-}
-
-/**********************************************************/
-void convertToJson(htopml::JsonState & json, const AddressType& addrType){
-	json.printValue(addrType.toString());
-}
-
 /*******************  FUNCTION  *********************/
 /**
  * Stack constructor to init the internal states.

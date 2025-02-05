@@ -157,8 +157,8 @@ TEST(TestSimpleStackTracker, getBacktraceInfo)
 {
 	//build a stack
 	void * cstStackFrames[] {(void*)0x10, (void*)0x20, (void*)0x40};
-	Stack stack(cstStackFrames, 3, STACK_ORDER_ASC);
-	Stack stack2(cstStackFrames + 1, 2, STACK_ORDER_ASC);
+	Stack stack(cstStackFrames, 3, STACK_ORDER_ASC, DOMAIN_C);
+	Stack stack2(cstStackFrames + 1, 2, STACK_ORDER_ASC, DOMAIN_C);
 	
 	//build tracker
 	SimpleStackTracker tracker;
@@ -182,7 +182,7 @@ TEST(TestSimpleStackTracker, outputStream)
 {
 	//build a stack
 	void * cstStackFrames[] {(void*)0x10, (void*)0x20, (void*)0x40};
-	Stack stack(cstStackFrames, 3, STACK_ORDER_ASC);
+	Stack stack(cstStackFrames, 3, STACK_ORDER_ASC, DOMAIN_C);
 	
 	//build tracker
 	SimpleStackTracker tracker;
@@ -203,7 +203,7 @@ TEST(TestSimpleStackTracker, convertToJson)
 {
 	//build a stack
 	void * cstStackFrames[] {(void*)0x10, (void*)0x20, (void*)0x40};
-	Stack stack(cstStackFrames, 3, STACK_ORDER_ASC);
+	Stack stack(cstStackFrames, 3, STACK_ORDER_ASC, DOMAIN_C);
 	
 	//build tracker
 	SimpleStackTracker tracker;
@@ -230,7 +230,7 @@ TEST(TestSimpleStackTracker, solveSymbols)
 {
 	//build a stack
 	void * cstStackFrames[] {(void*)0x10, (void*)0x20, (void*)0x30};
-	Stack stack(cstStackFrames, 3, STACK_ORDER_ASC);
+	Stack stack(cstStackFrames, 3, STACK_ORDER_ASC, DOMAIN_C);
 	
 	//build tracker
 	SimpleStackTracker tracker;
@@ -260,7 +260,7 @@ TEST(TestSimpleStackTracker, ValgrindOutput)
 {
 	//build a stack
 	void * cstStackFrames[] {(void*)0x10, (void*)0x20, (void*)0x30};
-	Stack stack(cstStackFrames, 3, STACK_ORDER_ASC);
+	Stack stack(cstStackFrames, 3, STACK_ORDER_ASC, DOMAIN_C);
 	
 	//build tracker
 	SimpleStackTracker tracker;

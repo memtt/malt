@@ -90,7 +90,7 @@ void BacktraceStack::loadCurrentStack(void)
 	//fix addresses, backtrace return next instruction, by substracting 1 we go to the middle
 	//of the previous instruction. addr2line is ok with non exact addresses under linux at least.
 	for (int i = 0 ; i < this->size ; i++)
-		this->stack[i].address = ((uintptr_t)this->stack[i].getAddress() - 1);
+		this->stack[i] -= 1;
 }
 
 }

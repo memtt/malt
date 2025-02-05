@@ -93,7 +93,7 @@ TEST(TestSimpleCallStackNode,testConstructor)
 {
 	//build a stack
 	void * cstStackFrames[] {(void*)0x10, (void*)0x20, (void*)0x40};
-	Stack stack(cstStackFrames, 3, STACK_ORDER_ASC);
+	Stack stack(cstStackFrames, 3, STACK_ORDER_ASC, DOMAIN_C);
 	
 	//load it in
 	SimpleCallStackNode node(stack, 0);
@@ -104,7 +104,7 @@ TEST(TestSimpleCallStackNode,convertToJson_1)
 {
 	//build a stack
 	void * cstStackFrames[] {(void*)0x10, (void*)0x20, (void*)0x40};
-	Stack stack(cstStackFrames, 3, STACK_ORDER_ASC);
+	Stack stack(cstStackFrames, 3, STACK_ORDER_ASC, DOMAIN_C);
 	
 	//load it in
 	SimpleCallStackNode node(stack, 0);
@@ -122,7 +122,7 @@ TEST(TestSimpleCallStackNode,convertToJson_2)
 {
 	//build a stack
 	void * cstStackFrames[] {(void*)0x10, (void*)0x20, (void*)0x40};
-	Stack stack(cstStackFrames, 3, STACK_ORDER_ASC);
+	Stack stack(cstStackFrames, 3, STACK_ORDER_ASC, DOMAIN_C);
 	
 	//load it in
 	SimpleCallStackNode node(stack, 1);
@@ -140,7 +140,7 @@ TEST(TestSimpleCallStackNode,outputStream)
 {
 	//build a stack
 	void * cstStackFrames[] {(void*)0x10, (void*)0x20, (void*)0x40};
-	Stack stack(cstStackFrames, 3, STACK_ORDER_ASC);
+	Stack stack(cstStackFrames, 3, STACK_ORDER_ASC, DOMAIN_C);
 	
 	//load it in
 	SimpleCallStackNode node(stack, 1);

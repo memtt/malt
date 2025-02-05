@@ -71,7 +71,7 @@ Stack::Stack(void **stack, int size, StackOrder order, MALT::DomainType domain){
 	this->set((MALT::AddressType*) stack,size,order);
 	//Apply domain on all addresses
 	for (size_t i = 0; i < size; i++){
-		this->stack[i].domain = domain;
+		this->stack[i].setDomain(domain);
 	}
 	//Check if the AddressType representation is the same as a C pointer representation? With the far left bit at zero.
 	assert(MALT::DOMAIN_C == 0);

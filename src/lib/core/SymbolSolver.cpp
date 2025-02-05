@@ -100,7 +100,7 @@ const char* SymbolSolver::getName(void* callSite)
 **/
 void SymbolSolver::registerAddress(AddressType callSite)
 {
-	assert(! callSite.isNULL());
+	MALT_ASSERT(callSite.isNULL() == false);
 	//check if present, if true, nothing to do
 	CallSiteMap::const_iterator it = callSiteMap.find(callSite);
 	if (it != callSiteMap.end()){
@@ -688,7 +688,8 @@ void SymbolSolver::registerMaqaoFunctionSymbol(int funcId, const char* funcName,
 **/
 void SymbolSolver::registerFunctionSymbol(void * addr, const char * funcName,const char * file,int line)
 {
-	auto & site = this->callSiteMap[addr];
+	AddressType langAddr(DOMAIN_C, addr);
+	auto & site = this->callSiteMap[langAddr];
 	site.file = getString(file);
 	site.function = getString(funcName);
 	site.line = line;
@@ -759,7 +760,7 @@ void SymbolSolver::solveMissings(void)
 		if (it->second.function == -1 || getString(it->second.function) == "??"){
 			CallSite dummyCallSite = it->second;
 			assert(it->second.file != -1);
-			assert(it->first.domain == DOMAIN_C);
+			assert(it->first.getDomain() == DOMAIN_C);
 			assert(it->first.getAddress() != nullptr);
 			toResolve.push_back(it->first.getAddress());
 		}

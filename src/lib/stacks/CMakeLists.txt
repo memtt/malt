@@ -11,6 +11,7 @@
 
 ############################################################
 set(MALT_STACKS_SRC Stack.cpp
+                    AddressType.cpp
                     BacktraceStack.cpp
                     EnterExitStack.cpp
                     StackLoopRemover.cpp)
