@@ -1,6 +1,6 @@
 {
   "name": "malt-webview",
-  "version": "1.2.4",
+  "version": "1.2.5",
   "description": "Web view based on Node.js for MALT.",
   "main": "malt-electron.js",
   "node-main": "malt-webserver.js",

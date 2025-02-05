@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 ############################################################
 #    PROJECT  : Gray Scott Simulation
-#    VERSION  : 0.0.0
-#    DATE     : 11/2024
+#    VERSION  : 1.2.5
+#    DATE     : 02/2025
 #    LICENSE  : CeCILL-C
 #    FILE     : dev/gen-coverage.py
 #-----------------------------------------------------------
