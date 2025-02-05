@@ -4,7 +4,7 @@ Change log
 1.2.5 - 05/02/2025
 ------------------
 
- - Fix borken interface from 1.2.4.
+ - Fix broken interface from 1.2.4.
  - Introduce some extra unit-tests.
 
 1.2.4 - 03/10/2024
