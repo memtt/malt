@@ -20,7 +20,7 @@ namespace MALTV2
 {
 
 /**********************************************************/
-RLockFreeTreeNode::RLockFreeTreeNode(MALT::AddressType callsite)
+RLockFreeTreeNode::RLockFreeTreeNode(MALT::LangAddress callsite)
 {
 	this->callSite = callsite;
 	this->next = NULL;
@@ -58,7 +58,7 @@ void RLockFreeTree::exitThread(StackTreeHandler handler)
 }
 
 /**********************************************************/
-RLockFreeTreeNode * RLockFreeTree::addChild(RLockFreeTreeNode* node, MALT::AddressType callsite)
+RLockFreeTreeNode * RLockFreeTree::addChild(RLockFreeTreeNode* node, MALT::LangAddress callsite)
 {
 	RLockFreeTreeNode * child = NULL;
 	assert(node != NULL);
@@ -84,7 +84,7 @@ RLockFreeTreeNode * RLockFreeTree::addChild(RLockFreeTreeNode* node, MALT::Addre
 }
 
 /**********************************************************/
-RLockFreeTreeNode * RLockFreeTree::findChild(RLockFreeTreeNode* node, MALT::AddressType callsite)
+RLockFreeTreeNode * RLockFreeTree::findChild(RLockFreeTreeNode* node, MALT::LangAddress callsite)
 {
 	//errors
 	assert(node != NULL);
@@ -177,7 +177,7 @@ RLockFreeTreeNode* RLockFreeTree::getNode(StackTreeHandler handler)
 }
 
 /**********************************************************/
-StackTreeHandler RLockFreeTree::enterFunction(StackTreeHandler handler, MALT::AddressType callsite)
+StackTreeHandler RLockFreeTree::enterFunction(StackTreeHandler handler, MALT::LangAddress callsite)
 {
 	Handler node = findChild((Handler)handler,callsite);
 	
@@ -189,7 +189,7 @@ StackTreeHandler RLockFreeTree::enterFunction(StackTreeHandler handler, MALT::Ad
 }
 
 /**********************************************************/
-StackTreeHandler RLockFreeTree::exitFunction(StackTreeHandler handler, MALT::AddressType callsite)
+StackTreeHandler RLockFreeTree::exitFunction(StackTreeHandler handler, MALT::LangAddress callsite)
 {
 	Handler typedHandler = (Handler)handler;
 	typedHandler = typedHandler->parent;
@@ -259,7 +259,7 @@ void convertToJson(htopml::JsonState& json, const RLockFreeTree& tree)
 	char buffer[128];
 	json.openStruct();
 		json.openFieldStruct("addresses");
-			for (std::map<MALT::AddressType,MALT::AddressType>::const_iterator it = tree.addrToId.begin() ; it != tree.addrToId.end() ; ++it)
+			for (std::map<MALT::LangAddress,MALT::LangAddress>::const_iterator it = tree.addrToId.begin() ; it != tree.addrToId.end() ; ++it)
 			{
 				if (it->first != MALT::nullAddr)
 				{
@@ -367,9 +367,9 @@ void RLockFreeTree::markChildData ( RLockFreeTreeNode* node )
 		node = &this->root;
 	
 	//update addree
-	std::map<MALT::AddressType,MALT::AddressType>::iterator it = addrToId.find(node->callSite);
-	//TODO: Create a third domain ID in AddressType
-	MALT::AddressType id(MALT::DOMAIN_C, (void*)addrToId.size());
+	std::map<MALT::LangAddress,MALT::LangAddress>::iterator it = addrToId.find(node->callSite);
+	//TODO: Create a third domain ID in LangAddress
+	MALT::LangAddress id(MALT::DOMAIN_C, (void*)addrToId.size());
 	if (it != addrToId.end())
 		id = addrToId[node->callSite];
 	else

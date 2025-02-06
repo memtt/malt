@@ -19,7 +19,7 @@
 #include <ostream>
 //Include Debug
 #include <common/Debug.hpp>
-#include <stacks/AddressType.hpp>
+#include <stacks/LangAddress.hpp>
 
 /**********************************************************/
 /**
@@ -67,23 +67,23 @@ class Stack
 {
 	public:
 		Stack(StackOrder order);
-		Stack(AddressType* stack,int size,StackOrder order);
+		Stack(LangAddress* stack,int size,StackOrder order);
 		Stack(void** stack,int size,StackOrder order,DomainType domain/*=DOMAIN_C*/);
 		Stack(const Stack & orig);
 		Stack(const Stack & orig,int skipDepth);
 		virtual ~Stack(void);
 		StackHash hash(int skipDepth = 0) const;
-		static StackHash hash(AddressType* stack, int size, MALT::StackOrder order);
+		static StackHash hash(LangAddress* stack, int size, MALT::StackOrder order);
 		void solveSymbols(SymbolSolver & dic) const;
 		void grow(void);
 		bool isValid(void) const;
 		int getSize(void) const;
-		void set(AddressType* stack, int size,StackOrder order);
+		void set(LangAddress* stack, int size,StackOrder order);
 		void set (void** stack, int size, StackOrder order, DomainType domain);
 		void set(const Stack & orig);
-		AddressType getCaller(void) const;
-		AddressType getCallee(void) const;
-		AddressType operator[] (int idx) const;
+		LangAddress getCaller(void) const;
+		LangAddress getCallee(void) const;
+		LangAddress operator[] (int idx) const;
 		static bool partialCompare(const Stack & stack1,int skip1,const Stack & stack2,int skip2);
 		Stack & operator = (const Stack & stack);
 		size_t getMemSize(void) const;
@@ -94,12 +94,14 @@ class Stack
 		friend bool operator == (const Stack & v1,const Stack & v2);
 		friend bool operator < (const Stack & v1,const Stack & v2);
 	protected:
+		virtual void onGrow(size_t newSize);
+	protected:
 		/** Pointer to the array of addresses to store the stack steps (due to fast skip it can be after the start of this->mem). **/
 		//TODO: Pass Unique ID (search for the Unique ID map in miniMalt)
 		//void ** stack;
-		AddressType* stack;
+		LangAddress* stack;
 		/** Pointer to the array of addresses to store the stack steps (ignoring fast skip). **/
-		AddressType* mem;
+		LangAddress* mem;
 		/** Size of the current stack. **/
 		int size;
 		/** Size of the buffer used to store the stack. **/

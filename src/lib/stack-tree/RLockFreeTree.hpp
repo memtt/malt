@@ -32,7 +32,7 @@ namespace MALT
 **/
 struct RLockFreeTreeNode
 {
-	RLockFreeTreeNode(AddressType callSite);
+	RLockFreeTreeNode(LangAddress callSite);
 	/** Pointer to the next element on the same parent. NULL if none (last element). **/
 	RLockFreeTreeNode * next;
 	/** Pointer to the parent node, NULL if root. **/
@@ -40,7 +40,7 @@ struct RLockFreeTreeNode
 	/** Pointer to the first child of the current node. NULL if none. **/
 	RLockFreeTreeNode * firstChild;
 	/** Define the corresponding call site. **/
-	AddressType callSite;
+	LangAddress callSite;
 	/** Optional data attached to the current node, NULL if none. **/
 	void * data;
 };
@@ -63,7 +63,7 @@ class RLockFreeTree
 	public:
 		RLockFreeTree(bool threadSafe = true);
 		Handler getRoot(void);
-		Handler getChild(Handler handler,AddressType callsite);
+		Handler getChild(Handler handler,LangAddress callsite);
 		Handler getParent(Handler handler);
 		Handler getFromStack(Stack & stack);
 		T * getData(Handler handler);
@@ -71,8 +71,8 @@ class RLockFreeTree
 	public:
 		template <class U> friend void convertToJson(htopml::JsonState & json, const RLockFreeTree<U> & value);
 	private:
-		RLockFreeTreeNode * findChild(RLockFreeTreeNode * node,AddressType callsite);
-		RLockFreeTreeNode * addChild(RLockFreeTreeNode * node,AddressType callsite);
+		RLockFreeTreeNode * findChild(RLockFreeTreeNode * node,LangAddress callsite);
+		RLockFreeTreeNode * addChild(RLockFreeTreeNode * node,LangAddress callsite);
 		void insertChild(RLockFreeTreeNode * parent,RLockFreeTreeNode * child);
 	private:
 		RLockFreeTreeNode root;
@@ -81,7 +81,7 @@ class RLockFreeTree
 };
 
 /**********************************************************/
-inline RLockFreeTreeNode::RLockFreeTreeNode(AddressType callSite)
+inline RLockFreeTreeNode::RLockFreeTreeNode(LangAddress callSite)
 {
 	this->data = NULL;
 	this->callSite = callSite;
@@ -100,7 +100,7 @@ RLockFreeTree<T>::RLockFreeTree(bool threadSafe)
 
 /**********************************************************/
 template <class T>
-typename RLockFreeTree<T>::Handler RLockFreeTree<T>::addChild(RLockFreeTreeNode* node, AddressType callsite)
+typename RLockFreeTree<T>::Handler RLockFreeTree<T>::addChild(RLockFreeTreeNode* node, LangAddress callsite)
 {
 	RLockFreeTreeNode * child = NULL;
 	assert(node != NULL);
@@ -129,7 +129,7 @@ typename RLockFreeTree<T>::Handler RLockFreeTree<T>::addChild(RLockFreeTreeNode*
  * This function is lock free if we consider the locking of addChild and only insertion without deletion during use.
 **/
 template <class T>
-RLockFreeTreeNode* RLockFreeTree<T>::findChild(RLockFreeTreeNode* node, AddressType callsite)
+RLockFreeTreeNode* RLockFreeTree<T>::findChild(RLockFreeTreeNode* node, LangAddress callsite)
 {
 	//errors
 	assert(node != NULL);
@@ -178,7 +178,7 @@ typename RLockFreeTree<T>::Handler RLockFreeTree<T>::getParent(RLockFreeTree::Ha
 
 /**********************************************************/
 template <class T>
-typename RLockFreeTree<T>::Handler RLockFreeTree<T>::getChild(RLockFreeTree::Handler handler, AddressType callsite)
+typename RLockFreeTree<T>::Handler RLockFreeTree<T>::getChild(RLockFreeTree::Handler handler, LangAddress callsite)
 {
 	//serch if exist
 	RLockFreeTreeNode * node = findChild(handler,callsite);

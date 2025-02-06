@@ -98,15 +98,13 @@ const char* SymbolSolver::getName(void* callSite)
  * Register a new raw address.
  * @param callsite Raw address of the callsite to convert with detailed informations.
 **/
-void SymbolSolver::registerAddress(AddressType callSite)
+void SymbolSolver::registerAddress(LangAddress callSite)
 {
-	MALT_ASSERT(callSite.isNULL() == false);
+	assert(callSite.isNULL() == false);
 	//check if present, if true, nothing to do
 	CallSiteMap::const_iterator it = callSiteMap.find(callSite);
-	if (it != callSiteMap.end()){
-		assert(it->second.file != -1);
+	if (it != callSiteMap.end())
 		return;
-	}
 	
 	//search procmap entry
 	LinuxProcMapEntry * procMapEntry = getMapEntry(callSite);
@@ -370,7 +368,7 @@ CallSite::CallSite(LinuxProcMapEntry* mapEntry)
  * @param callsite Raw address of the call site.
  * @return Return a pointer to the struct representing the /proc/self/maps entry. NULL if not found.
 **/
-LinuxProcMapEntry* SymbolSolver::getMapEntry(AddressType callSite)
+LinuxProcMapEntry* SymbolSolver::getMapEntry(LangAddress callSite)
 {
 	//search in map by checking intervals
 	for (LinuxProcMap::iterator it = procMap.begin() ; it != procMap.end() ; ++it)
@@ -670,7 +668,7 @@ int SymbolSolver::getString(const char * value)
 **/
 void SymbolSolver::registerMaqaoFunctionSymbol(int funcId, const char* funcName, const char* file, int line)
 {
-	AddressType addr = AddressType(DOMAIN_C, (void*)(size_t)funcId);
+	LangAddress addr = LangAddress(DOMAIN_C, (void*)(size_t)funcId);
 	MaqaoSite & site = maqaoSites[addr];
 	site.function = funcName;
 	puts(file);
@@ -688,7 +686,7 @@ void SymbolSolver::registerMaqaoFunctionSymbol(int funcId, const char* funcName,
 **/
 void SymbolSolver::registerFunctionSymbol(void * addr, const char * funcName,const char * file,int line)
 {
-	AddressType langAddr(DOMAIN_C, addr);
+	LangAddress langAddr(DOMAIN_C, addr);
 	auto & site = this->callSiteMap[langAddr];
 	site.file = getString(file);
 	site.function = getString(funcName);
@@ -724,7 +722,7 @@ void convertToJson(htopml::JsonState& json, const CallSite& value)
  * @param site The raw address of the symbol to solve.
  * @return Pointer to the call site.
 **/
-const CallSite* SymbolSolver::getCallSiteInfo(AddressType site) const
+const CallSite* SymbolSolver::getCallSiteInfo(LangAddress site) const
 {
 	CallSiteMap::const_iterator it = callSiteMap.find(site);
 	if (it == callSiteMap.end())
@@ -759,7 +757,6 @@ void SymbolSolver::solveMissings(void)
 	for (CallSiteMap::const_iterator it = callSiteMap.begin() ; it != callSiteMap.end() ; ++it)
 		if (it->second.function == -1 || getString(it->second.function) == "??"){
 			CallSite dummyCallSite = it->second;
-			assert(it->second.file != -1);
 			assert(it->first.getDomain() == DOMAIN_C);
 			assert(it->first.getAddress() != nullptr);
 			toResolve.push_back(it->first.getAddress());
@@ -835,7 +832,7 @@ char * SymbolSolver::extractSymbolName(char* value)
  * @param s2 Raw address of the call site.
  * @return True if the resolved symbol match.
 **/
-bool SymbolSolver::isSameFuntion(const CallSite* s1, AddressType s2) const
+bool SymbolSolver::isSameFuntion(const CallSite* s1, LangAddress s2) const
 {
 	if (s1 == NULL || s2.isNULL())
 		return false;

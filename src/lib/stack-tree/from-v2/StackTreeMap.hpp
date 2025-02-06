@@ -54,8 +54,8 @@ class StackTreeMap : public StackTree
 	public:
 		StackTreeMap(bool backtrace = true,bool threadSafe = true);
 		~StackTreeMap(void);
-		virtual StackTreeHandler enterFunction(StackTreeHandler handler,MALT::AddressType callsite);
-		virtual StackTreeHandler exitFunction(StackTreeHandler handler,MALT::AddressType callsite);
+		virtual StackTreeHandler enterFunction(StackTreeHandler handler,MALT::LangAddress callsite);
+		virtual StackTreeHandler exitFunction(StackTreeHandler handler,MALT::LangAddress callsite);
 		virtual StackTreeHandler enterThread(void);
 		virtual void exitThread(StackTreeHandler handler);
 		virtual StackTreeHandler getFromStack(StackTreeHandler handler, const Stack & stack);

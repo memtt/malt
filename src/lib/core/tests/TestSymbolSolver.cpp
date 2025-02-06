@@ -40,11 +40,11 @@ TEST(TestSymbolSolver,testSolve)
 {
 	SymbolSolver solver;
 	solver.loadProcMap();
-	solver.registerAddress(AddressType(DOMAIN_C, (void*)main));
+	solver.registerAddress(LangAddress(DOMAIN_C, (void*)main));
 	solver.solveNames();
 
 	//extact
-	const CallSite * site = solver.getCallSiteInfo(AddressType(DOMAIN_C, (void*)main));
+	const CallSite * site = solver.getCallSiteInfo(LangAddress(DOMAIN_C, (void*)main));
 	std::string func = solver.getString(site->function);
 	std::string file = solver.getString(site->file);
 
@@ -74,7 +74,7 @@ TEST(TestSymbolSolver, solveBacktraceExe)
 	stack.fastSkip(3);
 
 	//solve
-	AddressType callee = stack.getCallee();
+	LangAddress callee = stack.getCallee();
 	EXPECT_NE(callee, nullAddr);
 	solver.loadProcMap();
 	solver.registerAddress(callee);
@@ -105,7 +105,7 @@ TEST(TestSymbolSolver, solveBacktraceLib)
 	stack.fastSkip(3);
 
 	//extract
-	AddressType callee = stack.getCallee();
+	LangAddress callee = stack.getCallee();
 	solver.loadProcMap();
 	solver.registerAddress(callee);
 	solver.solveNames();

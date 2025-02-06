@@ -90,7 +90,7 @@ StackTreeHandler StackTreeMap::enterThread(void)
 }
 
 /**********************************************************/
-StackTreeHandler StackTreeMap::exitFunction(StackTreeHandler handler, MALT::AddressType callsite)
+StackTreeHandler StackTreeMap::exitFunction(StackTreeHandler handler, MALT::LangAddress callsite)
 {
 	//assume(!backtrace,"Try to use exitFunction with backtrace mode enabled !");
 	if (backtrace)
@@ -105,7 +105,7 @@ StackTreeHandler StackTreeMap::exitFunction(StackTreeHandler handler, MALT::Addr
 }
 
 /**********************************************************/
-StackTreeHandler StackTreeMap::enterFunction(StackTreeHandler handler, MALT::AddressType callsite)
+StackTreeHandler StackTreeMap::enterFunction(StackTreeHandler handler, MALT::LangAddress callsite)
 {
 	//assume(!backtrace,"Try to use exitFunction with backtrace mode enabled !");
 	if (backtrace)

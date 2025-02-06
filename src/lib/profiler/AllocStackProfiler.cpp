@@ -538,7 +538,7 @@ void AllocStackProfiler::onExit(void )
 		);
 		
 		//check which allocator is in use
-		AddressType addr(DOMAIN_C, (void*) this->realMallocAddr);
+		LangAddress addr(DOMAIN_C, (void*) this->realMallocAddr);
 		LinuxProcMapEntry * mallocProcMapEntry = this->symbolResolver.getMapEntry(addr);
 		if (mallocProcMapEntry != NULL)
 			this->realMallocLib = mallocProcMapEntry->file;

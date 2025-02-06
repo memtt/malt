@@ -51,7 +51,7 @@ Stack::Stack ( StackOrder order )
  * Import a stack from a raw C representation, typically the one obtained from the backtrace() function.
  * For the backtrace function, use STACK_ORDER_ASC ordering.
 **/
-Stack::Stack(AddressType* stack, int size,StackOrder order)
+Stack::Stack(LangAddress* stack, int size,StackOrder order)
 {
 	this->order   = order;
 	this->stack   = NULL;
@@ -149,20 +149,21 @@ void Stack::set ( const Stack& orig )
  * Permit to replace the current stack content by the given one.
  * It can be feed by the raw representation provided by backtrace().
 **/
-void Stack::set (AddressType* stack, int size, StackOrder order )
+void Stack::set (LangAddress* stack, int size, StackOrder order )
 {
 	//realloc if required
 	if (this->memSize < size)
 	{
-		this->mem     = (AddressType*)MALT_REALLOC(this->mem,size * sizeof(AddressType));
+		this->mem     = (LangAddress*)MALT_REALLOC(this->mem,size * sizeof(LangAddress));
 		this->stack   = this->mem;
 		this->memSize = size;
+		this->onGrow(this->memSize);
 	}
 	
 	//copy
 	if (this->order == order) 
 	{
-		memcpy(this->stack,stack,size * sizeof(AddressType));
+		memcpy(this->stack,stack,size * sizeof(LangAddress));
 	} else {
 		for (int i = 0 ; i < size ; i++)
 			this->stack[i] = stack[size - 1 - i];
@@ -178,9 +179,10 @@ void Stack::set (void** stack, int size, StackOrder order, DomainType domain)
 	//realloc if required
 	if (this->memSize < size)
 	{
-		this->mem     = (AddressType*)MALT_REALLOC(this->mem,size * sizeof(AddressType));
+		this->mem     = (LangAddress*)MALT_REALLOC(this->mem,size * sizeof(LangAddress));
 		this->stack   = this->mem;
 		this->memSize = size;
+		this->onGrow(this->memSize);
 	}
 	
 	//copy
@@ -224,7 +226,7 @@ StackHash Stack::hash ( int skipDepth ) const
 /**
  * Internal function to compute the hash.
 **/
-StackHash Stack::hash (AddressType* stack, int size ,StackOrder order)
+StackHash Stack::hash (LangAddress* stack, int size ,StackOrder order)
 {
 	//errors
 	assert(stack != NULL);
@@ -274,13 +276,13 @@ StackHash Stack::hash (AddressType* stack, int size ,StackOrder order)
  * Operator to read stack entries. It provide a uniq ordering by checking the internal one.
  * The external representation exposed to the user is by convention the backtrace one (ASC).
 **/
-AddressType Stack::operator[](int idx) const
+LangAddress Stack::operator[](int idx) const
 {
 	//errors
 	assert(idx >= 0);
 	
 	//trivial
-	if (idx < 0 || idx >= size || stack == NULL || stack->isNULL())
+	if (idx < 0 || idx >= size || stack == NULL)
 		return nullAddr;
 		
 	//depend on order
@@ -368,8 +370,8 @@ bool Stack::partialCompare(const Stack& stack1, int skip1, const Stack& stack2, 
 		return false;
 	
 	//localy get the pointers
-	AddressType* s1 = stack1.stack;
-	AddressType* s2 = stack2.stack;
+	LangAddress* s1 = stack1.stack;
+	LangAddress* s2 = stack2.stack;
 	
 	//skip start for ASC mode
 	if (stack1.order == STACK_ORDER_ASC)
@@ -424,9 +426,10 @@ void Stack::grow ( void )
 	//if not allocated
 	if (this->stack == NULL)
 	{
-		this->mem = (AddressType*)MALT_MALLOC(sizeof(AddressType/* * */) * CALL_STACK_DEFAULT_SIZE);
+		this->mem = (LangAddress*)MALT_MALLOC(sizeof(LangAddress/* * */) * CALL_STACK_DEFAULT_SIZE);
 		this->memSize = CALL_STACK_DEFAULT_SIZE;
 		this->size = 0;
+		this->onGrow(this->memSize);
 	} else {
 		//cal next size, double for small and add threshold if too large
 		if (this->memSize <= CALL_STACK_GROW_THRESHOLD)
@@ -435,11 +438,17 @@ void Stack::grow ( void )
 			this->memSize += CALL_STACK_GROW_THRESHOLD;
 
 		//resize memory
-		this->mem = (AddressType*)MALT_REALLOC(this->mem,this->memSize * sizeof(AddressType));
+		this->mem = (LangAddress*)MALT_REALLOC(this->mem,this->memSize * sizeof(LangAddress));
+		this->onGrow(this->memSize);
 	}
 	
 	//point stack on mem (no quick skip)
 	this->stack = mem;
+}
+
+/**********************************************************/
+void Stack::onGrow(size_t newSize)
+{
 }
 
 /**********************************************************/
@@ -472,7 +481,7 @@ void Stack::solveSymbols ( SymbolSolver& dic ) const
 /**
  * Return the callee, the current active function when doing backtrace(). Return NULL if no stack.
 **/
-AddressType Stack::getCallee(void ) const
+LangAddress Stack::getCallee(void ) const
 {
 	if (stack == NULL)
 	{
@@ -496,7 +505,7 @@ AddressType Stack::getCallee(void ) const
 /**
  * Return the caller of current function in call stack. Return NULL if no stack.
 **/
-AddressType Stack::getCaller(void ) const
+LangAddress Stack::getCaller(void ) const
 {
 	if (stack == NULL)
 	{

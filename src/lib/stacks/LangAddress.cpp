@@ -14,36 +14,36 @@
 #include <json/JsonState.h>
 //interne
 #include <common/Debug.hpp>
-#include "AddressType.hpp"
+#include "LangAddress.hpp"
 
 /**********************************************************/
 namespace MALT
 {
 
 /**********************************************************/
-const AddressType nullAddr = {DOMAIN_C, 0};
+const LangAddress nullAddr = LangAddress(DOMAIN_C, 0);
 
 /**********************************************************/
-AddressType::AddressType(DomainType domain, void* address)
+LangAddress::LangAddress(DomainType domain, void* address)
 {
 	this->domain = domain;
 	this->address = (uintptr_t) address;
 }
 
 /**********************************************************/
-bool AddressType::operator == (const AddressType & value) const
+bool LangAddress::operator == (const LangAddress & value) const
 {
 	return ((this->address == value.address) && (this->domain == value.domain));
 }
 
 /**********************************************************/
-bool AddressType::operator != (const AddressType & value) const
+bool LangAddress::operator != (const LangAddress & value) const
 {
 	return ((this->address != value.address) || (this->domain != value.domain));
 }
 
 /**********************************************************/
-bool AddressType::operator < (const AddressType & value) const
+bool LangAddress::operator < (const LangAddress & value) const
 {
 	if (this->domain < value.domain){
 		return true;
@@ -55,20 +55,20 @@ bool AddressType::operator < (const AddressType & value) const
 }
 
 /**********************************************************/
-bool AddressType::operator >= (const AddressType & value) const
+bool LangAddress::operator >= (const LangAddress & value) const
 {
 	return ((this->address >= value.address) || (this->domain >= value.domain));
 }
 
 /**********************************************************/
-AddressType & AddressType::operator-=(size_t delta)
+LangAddress & LangAddress::operator-=(size_t delta)
 {
 	this->address--;
 	return *this;
 }
 
 /**********************************************************/
-bool AddressType::isNULL(void) const{
+bool LangAddress::isNULL(void) const{
 	switch (this->domain){
 		case DOMAIN_C:
 			return (this->address == 0);	
@@ -81,14 +81,14 @@ bool AddressType::isNULL(void) const{
 }
 
 /**********************************************************/
-std::ostream &operator<<(std::ostream &out, const AddressType &addrType){
+std::ostream &operator<<(std::ostream &out, const LangAddress &addrType){
 	out << addrType.toString();
 	
 	return out;
 }
 
 /**********************************************************/
-std::string AddressType::toString() const {
+std::string LangAddress::toString() const {
 	std::string value;
 
 	if (this->domain == DOMAIN_PYTHON){
@@ -96,7 +96,7 @@ std::string AddressType::toString() const {
 	}
 
 	char buffer[64];
-	void * ptr = (void*) this->address;
+	void * ptr = (void*)(uintptr_t)(this->address);
 	sprintf(buffer, "%p", ptr);
 	value += buffer;
 
@@ -104,7 +104,7 @@ std::string AddressType::toString() const {
 }
 
 /**********************************************************/
-void convertToJson(htopml::JsonState & json, const AddressType& addrType){
+void convertToJson(htopml::JsonState & json, const LangAddress& addrType){
 	json.printValue(addrType.toString());
 }
 

@@ -44,6 +44,15 @@ BacktraceStack::BacktraceStack(void)
 
 /**********************************************************/
 /**
+ * Destructor.
+**/
+BacktraceStack::~BacktraceStack(void)
+{
+	MALT_FREE(this->stackBuffer);
+}
+
+/**********************************************************/
+/**
  * Load the current backtrace. This function will automatically grow the internal buffer
  * to adapt to the size needed to store the full call depth.
 **/
@@ -60,12 +69,12 @@ void BacktraceStack::loadCurrentStack(void)
 		//int loadedSize = backtrace(this->stack,this->memSize);
 		//int loadedSize = GetStackTrace(this->stack,this->memSize,0);
 
-		//Check if the AddressType representation is the same as a C pointer representation? With the far left bit at zero.
+		//Check if the LangAddress representation is the same as a C pointer representation? With the far left bit at zero.
 		assert(DOMAIN_C == 0);
-		assert(sizeof(AddressType) == sizeof(void*));
+		assert(sizeof(LangAddress) == sizeof(void*));
 		assert(sizeof(this->stack[0]) == sizeof(void*));
 		
-		int loadedSize = Backtrace::backtrace((void**)(this->stack),this->memSize);
+		int loadedSize = Backtrace::backtrace(this->stackBuffer,this->memSize);
 
 		assert(loadedSize <= this->memSize);
 		assert(loadedSize > 0);
@@ -91,8 +100,20 @@ void BacktraceStack::loadCurrentStack(void)
 	
 	//fix addresses, backtrace return next instruction, by substracting 1 we go to the middle
 	//of the previous instruction. addr2line is ok with non exact addresses under linux at least.
-	for (int i = 0 ; i < this->size ; i++)
-		this->stack[i] -= 1;
+	for (int i = 0 ; i < this->size ; i++) {
+		this->stack[i].set(DOMAIN_C, this->stackBuffer[i]);
+		if (this->stack[i].isNULL() == false)
+			this->stack[i] -= 1;
+	}
+}
+
+/**********************************************************/
+/**
+ * Realloc the current buffer to backtrace().
+ */
+void BacktraceStack::onGrow(size_t newSize)
+{
+	this->stackBuffer = (void**)MALT_REALLOC(this->stackBuffer,this->memSize * sizeof(void*));
 }
 
 /**********************************************************/
@@ -109,9 +130,9 @@ int BacktraceStack::getBactraceSkipOptimDelta(void)
 	int sizeLoadCurrent = getSize();
 
 
-	//Check if the AddressType representation is the same as a C pointer representation? With the far left bit at zero.
+	//Check if the LangAddress representation is the same as a C pointer representation? With the far left bit at zero.
 	assert(DOMAIN_C == 0);
-	assert(sizeof(AddressType) == sizeof(void*));
+	assert(sizeof(LangAddress) == sizeof(void*));
 	assert(sizeof(this->stack[0]) == sizeof(void*));
 		
 

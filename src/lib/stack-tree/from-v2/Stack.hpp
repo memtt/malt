@@ -65,23 +65,23 @@ class Stack
 {
 	public:
 		Stack(StackOrder order);
-		Stack(MALT::AddressType* stack,int size,StackOrder order);
+		Stack(MALT::LangAddress* stack,int size,StackOrder order);
 		Stack(void** stack,int size,StackOrder order,MALT::DomainType domain/*=DOMAIN_C*/);
 		Stack(const Stack & orig);
 		Stack(const Stack & orig,int skipDepth);
 		virtual ~Stack(void);
 		StackHash hash(int skipDepth = 0) const;
-		static StackHash hash(MALT::AddressType* stack, int size, MALTV2::StackOrder order);
+		static StackHash hash(MALT::LangAddress* stack, int size, MALTV2::StackOrder order);
 		void registerSymbols(SymbolRegistry & dic) const;
 		void grow(void);
 		bool isValid(void) const;
 		int getSize(void) const;
-		void set(MALT::AddressType* stack, int size,StackOrder order);
+		void set(MALT::LangAddress* stack, int size,StackOrder order);
 		void set (void** stack, int size, StackOrder order, MALT::DomainType domain);
 		void set(const Stack & orig);
-		MALT::AddressType getCaller(void) const;
-		MALT::AddressType getCallee(void) const;
-		MALT::AddressType operator[] (int idx) const;
+		MALT::LangAddress getCaller(void) const;
+		MALT::LangAddress getCallee(void) const;
+		MALT::LangAddress operator[] (int idx) const;
 		static bool partialCompare(const Stack & stack1,int skip1,const Stack & stack2,int skip2);
 		Stack & operator = (const Stack & stack);
 		size_t getMemSize(void) const;
@@ -92,10 +92,14 @@ class Stack
 		friend bool operator == (const Stack & v1,const Stack & v2);
 		friend bool operator < (const Stack & v1,const Stack & v2);
 	protected:
+		virtual void onGrow(size_t newSize);
+	protected:
 		/** Pointer to the array of addresses to store the stack steps (due to fast skip it can be after the start of this->mem). **/
-		MALT::AddressType* stack;
+		//TODO: Pass Unique ID (search for the Unique ID map in miniMalt)
+		//void ** stack;
+		MALT::LangAddress* stack;
 		/** Pointer to the array of addresses to store the stack steps (ignoring fast skip). **/
-		MALT::AddressType* mem;
+		MALT::LangAddress* mem;
 		/** Size of the current stack. **/
 		int size;
 		/** Size of the buffer used to store the stack. **/
@@ -107,4 +111,4 @@ class Stack
 
 }
 
-#endif //MALTV2_STACK_H
+#endif //MALT_STACK_H

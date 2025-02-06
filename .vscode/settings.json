@@ -68,7 +68,11 @@
 		"format": "cpp",
 		"span": "cpp",
 		"valarray": "cpp",
-		"cassert": "cpp"
+		"cassert": "cpp",
+		"bit": "cpp",
+		"stop_token": "cpp",
+		"mutex": "cpp",
+		"compare": "cpp"
 	},
 	"cmake.configureOnOpen": false
 }

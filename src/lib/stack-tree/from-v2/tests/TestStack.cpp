@@ -49,28 +49,28 @@ TEST(Stack,isValid)
 TEST(Stack,getCalleeAsc)
 {
 	Stack stack(CST_STACK_1,4,STACK_ORDER_ASC, DOMAIN_C);
-	EXPECT_EQ(AddressType(DOMAIN_C, (void*)0x1),stack.getCallee());
+	EXPECT_EQ(LangAddress(DOMAIN_C, (void*)0x1),stack.getCallee());
 }
 
 /**********************************************************/
 TEST(Stack,getCalleeDesc)
 {
 	Stack stack(CST_STACK_1,4,STACK_ORDER_DESC, DOMAIN_C);
-	EXPECT_EQ(AddressType(DOMAIN_C, (void*)0x4),stack.getCallee());
+	EXPECT_EQ(LangAddress(DOMAIN_C, (void*)0x4),stack.getCallee());
 }
 
 /**********************************************************/
 TEST(Stack,getCallerAsc)
 {
 	Stack stack(CST_STACK_1,4,STACK_ORDER_ASC, DOMAIN_C);
-	EXPECT_EQ(AddressType(DOMAIN_C, (void*)0x2),stack.getCaller());
+	EXPECT_EQ(LangAddress(DOMAIN_C, (void*)0x2),stack.getCaller());
 }
 
 /**********************************************************/
 TEST(Stack,getCallerDesc)
 {
 	Stack stack(CST_STACK_1,4,STACK_ORDER_DESC, DOMAIN_C);
-	EXPECT_EQ(AddressType(DOMAIN_C, (void*)0x3),stack.getCaller());
+	EXPECT_EQ(LangAddress(DOMAIN_C, (void*)0x3),stack.getCaller());
 }
 
 /**********************************************************/
@@ -78,7 +78,7 @@ TEST(Stack,operatorArrayAsc)
 {
 	Stack stack(CST_STACK_1,4,STACK_ORDER_ASC, DOMAIN_C);
 	for (size_t i = 0 ; i < 4 ; i++)
-		EXPECT_EQ(AddressType(DOMAIN_C, (void*)(i+1)),stack[i]);
+		EXPECT_EQ(LangAddress(DOMAIN_C, (void*)(i+1)),stack[i]);
 }
 
 /**********************************************************/
@@ -86,7 +86,7 @@ TEST(Stack,operatorArrayDesc)
 {
 	Stack stack(CST_STACK_1,4,STACK_ORDER_DESC, DOMAIN_C);
 	for (size_t i = 0 ; i < 4 ; i++)
-		EXPECT_EQ(AddressType(DOMAIN_C, (void*)(4-i)),stack[i]);
+		EXPECT_EQ(LangAddress(DOMAIN_C, (void*)(4-i)),stack[i]);
 }
 
 /**********************************************************/
@@ -207,8 +207,8 @@ TEST(Stack,partialCopyConstructor1)
 	Stack stack2(stack,2);
 	
 	EXPECT_EQ(2,stack2.getSize());
-	EXPECT_EQ(AddressType(DOMAIN_C, (void*)0x2),stack2[0]);
-	EXPECT_EQ(AddressType(DOMAIN_C, (void*)0x1),stack2[1]);
+	EXPECT_EQ(LangAddress(DOMAIN_C, (void*)0x2),stack2[0]);
+	EXPECT_EQ(LangAddress(DOMAIN_C, (void*)0x1),stack2[1]);
 }
 
 /**********************************************************/
@@ -218,8 +218,8 @@ TEST(Stack,partialCopyConstructor)
 	Stack stack2(stack,2);
 	
 	EXPECT_EQ(2,stack2.getSize());
-	EXPECT_EQ(AddressType(DOMAIN_C, (void*)0x3),stack2[0]);
-	EXPECT_EQ(AddressType(DOMAIN_C, (void*)0x4),stack2[1]);
+	EXPECT_EQ(LangAddress(DOMAIN_C, (void*)0x3),stack2[0]);
+	EXPECT_EQ(LangAddress(DOMAIN_C, (void*)0x4),stack2[1]);
 }
 
 /**********************************************************/

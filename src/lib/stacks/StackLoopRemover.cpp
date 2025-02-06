@@ -58,7 +58,7 @@ StackLoopNode* StackLoopNode::followNextUnused(void )
 }
 
 /**********************************************************/
-StackLoopNode* StackLoopNode::getLink(AddressType targetAddr)
+StackLoopNode* StackLoopNode::getLink(LangAddress targetAddr)
 {
 	for (int i = 0 ; i < MALT_STACK_NODE_MAX_LINK ; i++)
 	{
@@ -72,7 +72,7 @@ StackLoopNode* StackLoopNode::getLink(AddressType targetAddr)
 }
 
 /**********************************************************/
-void StackLoopNode::setAddr(AddressType addr)
+void StackLoopNode::setAddr(LangAddress addr)
 {
 	assert(this->addr == nullAddr);
 	this->addr = addr;
@@ -94,7 +94,7 @@ StackLoopRemover::StackLoopRemover(int maxSize)
 {
 	assert(maxSize > 0);
 	this->nodes = new StackLoopNode[maxSize];
-	this->rebuildStack = new AddressType[maxSize];
+	this->rebuildStack = new LangAddress[maxSize];
 	this->maxSize = maxSize;
 }
 
@@ -106,7 +106,7 @@ StackLoopRemover::~StackLoopRemover(void )
 }
 
 /**********************************************************/
-AddressType StackLoopNode::getAddr(void )
+LangAddress StackLoopNode::getAddr(void )
 {
 	return addr;
 }

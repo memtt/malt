@@ -9,8 +9,8 @@
 *    AUTHOR   : Sébastien Valat (ECR) - 2014
 ***********************************************************/
 
-#ifndef MALT_ADDRSS_TYPE_H
-#define MALT_ADDRSS_TYPE_H
+#ifndef MALT_LANG_ADDRESS_TYPE_H
+#define MALT_LANG_ADDRESS_TYPE_H
 
 /**********************************************************/
 //std c
@@ -38,9 +38,9 @@ enum DomainType {
 };
 
 /**********************************************************/
-class AddressType {
+class LangAddress {
 	public:
-		AddressType(DomainType domain=DOMAIN_C, void* address=nullptr);
+		LangAddress(DomainType domain=DOMAIN_C, void* address=nullptr);
 		void set(DomainType domain, void* address) {this->domain = domain; this->address = (uintptr_t)address;};
 		void setDomain(DomainType domain) {this->domain = domain;};
 		void* getAddress(void) const {void * ptr = (void*)(size_t)(this->address); return ptr;};
@@ -48,24 +48,24 @@ class AddressType {
 		bool isNULL(void) const;
 		std::string toString(void) const;
 	public:
-		bool operator == (const AddressType & value) const;
-		bool operator != (const AddressType & value) const;
-		friend std::ostream &operator<<(std::ostream &out, const AddressType &addrType);
-		friend void convertToJson(htopml::JsonState & json, const AddressType& addrType);
-		bool operator < (const AddressType & value) const;
-		bool operator >= (const AddressType & value) const;
-		AddressType & operator-=(size_t delta);
+		bool operator == (const LangAddress & value) const;
+		bool operator != (const LangAddress & value) const;
+		friend std::ostream &operator<<(std::ostream &out, const LangAddress &addrType);
+		friend void convertToJson(htopml::JsonState & json, const LangAddress& addrType);
+		bool operator < (const LangAddress & value) const;
+		bool operator >= (const LangAddress & value) const;
+		LangAddress & operator-=(size_t delta);
 	private:
 		#if INTPTR_MAX == INT64_MAX /*64 Bits */
 
 			/* 0 if it's a normal C address 1 if it's a Python address */
-			int32_t domain:1;
+			uint32_t domain:1;
 
 			/* The address, on 63 bits */
 			uintptr_t address:63;
 
 		#elif INTPTR_MAX == INT32_MAX /* 32 Bits */
-			int32_t domain;
+			uint32_t domain;
 			void* address;
 		#else
 			#error Unknown architecture
@@ -73,8 +73,8 @@ class AddressType {
 };
 
 /**********************************************************/
-extern const AddressType nullAddr;
+extern const LangAddress nullAddr;
 
 }
 
-#endif //MALT_ADDRSS_TYPE_H
+#endif //MALT_LANG_ADDRESS_TYPE_H

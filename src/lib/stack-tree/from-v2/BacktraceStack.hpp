@@ -31,7 +31,12 @@ class BacktraceStack : public Stack
 {
 	public:
 		BacktraceStack(void);
+		~BacktraceStack(void);
 		void loadCurrentStack(void);
+	protected:
+		virtual void onGrow(size_t newSize);
+	private:
+		void ** stackBuffer{nullptr};
 };
 
 }

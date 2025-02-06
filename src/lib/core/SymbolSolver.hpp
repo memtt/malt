@@ -73,9 +73,9 @@ struct MaqaoSite
 
 /**********************************************************/
 /** Map to join a raw address to a callsite description **/
-typedef std::map<AddressType,CallSite> CallSiteMap;
+typedef std::map<LangAddress,CallSite> CallSiteMap;
 /** Map to join a raw address to a mapqao call site. It uses the internal allocator as used while running. **/
-typedef std::map<AddressType,MaqaoSite,std::less<AddressType>,STLInternalAllocator<std::pair<AddressType,MaqaoSite> > > MaqaoSiteMap;
+typedef std::map<LangAddress,MaqaoSite,std::less<LangAddress>,STLInternalAllocator<std::pair<LangAddress,MaqaoSite> > > MaqaoSiteMap;
 
 /**********************************************************/
 /**
@@ -90,19 +90,19 @@ class SymbolSolver
 		SymbolSolver(void);
 		~SymbolSolver(void);
 		const char * getName(void * callSite);
-		void registerAddress(AddressType callSite);
+		void registerAddress(LangAddress callSite);
 		const char* setupNewEntry(void* callSite);
 		const char * setupNewEntry(void * callSite,const std::string & name);
 		void loadProcMap(void);
 		void solveNames(void);
 		void solveMaqaoNames(void);
-		const CallSite * getCallSiteInfo(AddressType site) const;
+		const CallSite * getCallSiteInfo(LangAddress site) const;
 		const std::string & getString(int id) const;
-		bool isSameFuntion(const CallSite * s1,AddressType s2) const;
+		bool isSameFuntion(const CallSite * s1,LangAddress s2) const;
 		bool procMapIsLoaded(void) const;
 		void registerMaqaoFunctionSymbol(int funcId,const char * funcName,const char * file,int line);
 		void registerFunctionSymbol(void * addr, const char * funcName,const char * file,int line);
-		LinuxProcMapEntry * getMapEntry(AddressType callSite);
+		LinuxProcMapEntry * getMapEntry(LangAddress callSite);
 		void solveAslrOffsets(void);
 	public:
 		friend std::ostream & operator << (std::ostream & out,const SymbolSolver & dic);
@@ -138,11 +138,11 @@ void convertToJson(htopml::JsonState & state,const CallSite & entry);
  * @param json Reference to the json state to make conversion.
  * @param iterable Reference to the map to dump.
 **/
-template <class T> void convertToJson(htopml::JsonState & json, const std::map<AddressType,T> & iterable)
+template <class T> void convertToJson(htopml::JsonState & json, const std::map<LangAddress,T> & iterable)
 {
 	json.openStruct();
 
-	for (typename std::map<AddressType,T>::const_iterator it = iterable.begin() ; it != iterable.end() ; ++it)
+	for (typename std::map<LangAddress,T>::const_iterator it = iterable.begin() ; it != iterable.end() ; ++it)
 	{
 		json.printField(it->first.toString().c_str(), it->second);
 	}
