@@ -210,7 +210,7 @@ maltBuildCustomAllocWrapper()
 
 	# header
 	echo "#define _GNU_SOURCE" >> ${source_file}
-	echo "#include <malt/AllocWrapperExtend.hpp>" > ${source_file}
+	echo "#include <malt/WrapperCAlloc.hpp>" > ${source_file}
 	echo "#include <stdio.h>" >> ${source_file}
 	echo "//libc POSIX.1, here we use GNU specific RTLD_NEXT (need _GNU_SOURCE)" >> ${source_file}
 	echo "#include <dlfcn.h>" >> ${source_file}

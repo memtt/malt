@@ -11,7 +11,7 @@
 
 ############################################################
 add_library(malt-libc-wrapper OBJECT 
-      AllocWrapper.cpp
+      WrapperCAlloc.cpp
       GlobalState.cpp
       InjectCAlloc.cpp
       InjectCInit.cpp
@@ -33,7 +33,7 @@ SET_TARGET_PROPERTIES(malt-fake-controler PROPERTIES COMPILE_FLAGS -fPIC)
 
 ############################################################
 INSTALL(FILES malt.h
-              AllocWrapperExtend.hpp
+              WrapperCAlloc.hpp
         DESTINATION include/malt)
 
 ############################################################

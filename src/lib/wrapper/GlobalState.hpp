@@ -32,7 +32,7 @@
 #include <profiler/LocalAllocStackProfiler.hpp>
 //locals
 #include "malt.h"
-#include "AllocWrapperExtend.hpp"
+#include "WrapperCAlloc.hpp"
 
 /**********************************************************/
 /** Manage init of local state and fetch TLS in local pointer. **/
@@ -111,30 +111,35 @@ struct AllocWrapperGlobal
 	 * CAUTION, need to star at second position. 
 	**/
 	MALT::StaticMutex lock;
-	/** Pointer to the old (glibc) malloc symbol. **/
-	MallocFuncPtr malloc;
-	/** Pointer to the old (glibc) free symbol. **/
-	FreeFuncPtr free;
-	/** Pointer to the old (glibc) calloc symbol. **/
-	CallocFuncPtr calloc;
-	/** Pointer to the old (glibc) realloc symbol. **/
-	ReallocFuncPtr realloc;
-	/** Pointer to the old (libc) posix_memalign symbol. **/
-	PosixMemalignFuncPtr posix_memalign;
-	/** Pointer to the old (libc) aligned_alloc symbol. **/
-	AlignedAllocFuncPtr aligned_alloc;
-	/** Pointer to the old (libc) valloc symbol. **/
-	VallocFuncPtr valloc;
-	/** Pointer to the old (libc) pvalloc symbol. **/
-	PVallocFuncPtr pvalloc;
-	/** Pointer to the old (libc) memalign symbol. **/
-	MemalignFuncPtr memalign;
-	/** Pointer to the old (libc) mmap symbol. **/
-	MmapFuncPtr mmap;
-	/** Pointer to the old (libc) munmap symbol. **/
-	MunmapFuncPtr munmap;
-	/** Pointer to the old (libc) mremap symbol. **/
-	MremapFuncPtr mremap;
+	/** The allocator subsystem */
+	struct {
+		/** Pointer to the old (glibc) malloc symbol. **/
+		MallocFuncPtr malloc;
+		/** Pointer to the old (glibc) free symbol. **/
+		FreeFuncPtr free;
+		/** Pointer to the old (glibc) calloc symbol. **/
+		CallocFuncPtr calloc;
+		/** Pointer to the old (glibc) realloc symbol. **/
+		ReallocFuncPtr realloc;
+		/** Pointer to the old (libc) posix_memalign symbol. **/
+		PosixMemalignFuncPtr posix_memalign;
+		/** Pointer to the old (libc) aligned_alloc symbol. **/
+		AlignedAllocFuncPtr aligned_alloc;
+		/** Pointer to the old (libc) valloc symbol. **/
+		VallocFuncPtr valloc;
+		/** Pointer to the old (libc) pvalloc symbol. **/
+		PVallocFuncPtr pvalloc;
+		/** Pointer to the old (libc) memalign symbol. **/
+		MemalignFuncPtr memalign;
+	} allocFuncs;
+	struct {
+		/** Pointer to the old (libc) mmap symbol. **/
+		MmapFuncPtr mmap;
+		/** Pointer to the old (libc) munmap symbol. **/
+		MunmapFuncPtr munmap;
+		/** Pointer to the old (libc) mremap symbol. **/
+		MremapFuncPtr mremap;
+	} mmapFuncs;
 	/** Pointer to the profiler (use pointer due to use before main, only way to ensure init before first malloc usage). **/
 	AllocStackProfiler * profiler;
 	/** Keep track of user options. **/

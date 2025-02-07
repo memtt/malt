@@ -220,19 +220,21 @@ void AllocWrapperGlobal::init(void )
 		//update state
 		gblState.status = ALLOC_WRAP_INIT_SYM;
 		
-		//search addresses
-		gblState.mmap = (MmapFuncPtr)dlsym(RTLD_NEXT,"mmap");
-		gblState.munmap = (MunmapFuncPtr)dlsym(RTLD_NEXT,"munmap");
-		gblState.malloc = (MallocFuncPtr)dlsym(RTLD_NEXT,"malloc");
-		gblState.free = (FreeFuncPtr)dlsym(RTLD_NEXT,"free");
-		gblState.calloc = (CallocFuncPtr)dlsym(RTLD_NEXT,"calloc");
-		gblState.realloc = (ReallocFuncPtr)dlsym(RTLD_NEXT,"realloc");
-		gblState.posix_memalign = (PosixMemalignFuncPtr)dlsym(RTLD_NEXT,"posix_memalign");
-		gblState.aligned_alloc = (AlignedAllocFuncPtr)dlsym(RTLD_NEXT,"aligned_alloc");
-		gblState.valloc = (VallocFuncPtr)dlsym(RTLD_NEXT,"valloc");
-		gblState.memalign = (MemalignFuncPtr)dlsym(RTLD_NEXT,"memalign");
-		gblState.pvalloc = (PVallocFuncPtr)dlsym(RTLD_NEXT,"pvalloc");
-		gblState.mremap = (MremapFuncPtr)dlsym(RTLD_NEXT,"mremap");
+		//search addresses for base mmap system layer
+		gblState.mmapFuncs.mmap = (MmapFuncPtr)dlsym(RTLD_NEXT,"mmap");
+		gblState.mmapFuncs.munmap = (MunmapFuncPtr)dlsym(RTLD_NEXT,"munmap");
+		gblState.mmapFuncs.mremap = (MremapFuncPtr)dlsym(RTLD_NEXT,"mremap");
+
+		//search addresses for C allocator
+		gblState.allocFuncs.malloc = (MallocFuncPtr)dlsym(RTLD_NEXT,"malloc");
+		gblState.allocFuncs.free = (FreeFuncPtr)dlsym(RTLD_NEXT,"free");
+		gblState.allocFuncs.calloc = (CallocFuncPtr)dlsym(RTLD_NEXT,"calloc");
+		gblState.allocFuncs.realloc = (ReallocFuncPtr)dlsym(RTLD_NEXT,"realloc");
+		gblState.allocFuncs.posix_memalign = (PosixMemalignFuncPtr)dlsym(RTLD_NEXT,"posix_memalign");
+		gblState.allocFuncs.aligned_alloc = (AlignedAllocFuncPtr)dlsym(RTLD_NEXT,"aligned_alloc");
+		gblState.allocFuncs.valloc = (VallocFuncPtr)dlsym(RTLD_NEXT,"valloc");
+		gblState.allocFuncs.memalign = (MemalignFuncPtr)dlsym(RTLD_NEXT,"memalign");
+		gblState.allocFuncs.pvalloc = (PVallocFuncPtr)dlsym(RTLD_NEXT,"pvalloc");
 
 		//init profiler
 		gblState.status = ALLOC_WRAP_INIT_PROFILER;
@@ -262,7 +264,7 @@ void AllocWrapperGlobal::init(void )
 		
 		//ok do it
 		gblState.profiler = new AllocStackProfiler(*gblState.options,mode,true);
-		gblState.profiler->setRealMallocAddr(gblState.malloc);
+		gblState.profiler->setRealMallocAddr(gblState.allocFuncs.malloc);
 
 		//filter exe
 		if (gblState.options->exe.empty() == false && OS::getExeName() != gblState.options->exe)

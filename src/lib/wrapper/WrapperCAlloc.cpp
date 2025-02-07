@@ -12,7 +12,7 @@
 
 /**********************************************************/
 #include "GlobalState.hpp"
-#include "AllocWrapperExtend.hpp"
+#include "WrapperCAlloc.hpp"
 
 /**********************************************************/
 using namespace MALT;

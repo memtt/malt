@@ -10,7 +10,7 @@
 
 /**********************************************************/
 #include "GlobalState.hpp"
-#include "AllocWrapperExtend.hpp"
+#include "WrapperCAlloc.hpp"
 
 /**********************************************************/
 using namespace MALT;
@@ -25,7 +25,7 @@ using namespace MALT;
 **/
 void * malloc(size_t size)
 {
-	return malt_wrap_malloc(size, gblState.malloc, MALT_RETADDR);
+	return malt_wrap_malloc(size, gblState.allocFuncs.malloc, MALT_RETADDR);
 }
 
 /**********************************************************/
@@ -37,7 +37,7 @@ void * malloc(size_t size)
 **/
 void free(void * ptr)
 {
-	return malt_wrap_free(ptr, gblState.free, MALT_RETADDR);
+	return malt_wrap_free(ptr, gblState.allocFuncs.free, MALT_RETADDR);
 }
 
 /**********************************************************/
@@ -51,7 +51,7 @@ void free(void * ptr)
 **/
 void * calloc(size_t nmemb,size_t size)
 {
-	return malt_wrap_calloc(nmemb, size, gblState.calloc, MALT_RETADDR);
+	return malt_wrap_calloc(nmemb, size, gblState.allocFuncs.calloc, MALT_RETADDR);
 }
 
 /**********************************************************/
@@ -65,7 +65,7 @@ void * calloc(size_t nmemb,size_t size)
 **/
 void * realloc(void * ptr, size_t size)
 {
-	return malt_wrap_realloc(ptr, size, gblState.realloc, MALT_RETADDR);
+	return malt_wrap_realloc(ptr, size, gblState.allocFuncs.realloc, MALT_RETADDR);
 }
 
 /**********************************************************/
@@ -75,7 +75,7 @@ void * realloc(void * ptr, size_t size)
 **/
 int posix_memalign(void ** memptr,size_t align, size_t size)
 {
-	return malt_wrap_posix_memalign(memptr, align, size, gblState.posix_memalign, MALT_RETADDR);
+	return malt_wrap_posix_memalign(memptr, align, size, gblState.allocFuncs.posix_memalign, MALT_RETADDR);
 }
 
 /**********************************************************/
@@ -85,7 +85,7 @@ int posix_memalign(void ** memptr,size_t align, size_t size)
 **/
 void * aligned_alloc(size_t alignment, size_t size)
 {
-	return malt_wrap_aligned_alloc(alignment, size, gblState.aligned_alloc, MALT_RETADDR);
+	return malt_wrap_aligned_alloc(alignment, size, gblState.allocFuncs.aligned_alloc, MALT_RETADDR);
 }
 
 /**********************************************************/
@@ -95,7 +95,7 @@ void * aligned_alloc(size_t alignment, size_t size)
 **/
 void *memalign(size_t alignment, size_t size)
 {
-	return malt_wrap_memalign(alignment, size, gblState.memalign, MALT_RETADDR);
+	return malt_wrap_memalign(alignment, size, gblState.allocFuncs.memalign, MALT_RETADDR);
 }
 
 /**********************************************************/
@@ -105,7 +105,7 @@ void *memalign(size_t alignment, size_t size)
 **/
 void *valloc(size_t size)
 {
-	return malt_wrap_valloc(size, gblState.valloc, MALT_RETADDR);
+	return malt_wrap_valloc(size, gblState.allocFuncs.valloc, MALT_RETADDR);
 }
 
 /**********************************************************/
@@ -115,7 +115,7 @@ void *valloc(size_t size)
 **/
 void *pvalloc(size_t size)
 {
-	return malt_wrap_pvalloc(size, gblState.pvalloc, MALT_RETADDR);
+	return malt_wrap_pvalloc(size, gblState.allocFuncs.pvalloc, MALT_RETADDR);
 }
 
 /**********************************************************/
@@ -125,7 +125,7 @@ void *pvalloc(size_t size)
 **/
 void *mmap(void *start, size_t length, int prot,int flags,int fd, off_t offset)
 {
-	return malt_wrap_mmap(start, length, prot, flags, fd, offset, gblState.mmap, MALT_RETADDR);
+	return malt_wrap_mmap(start, length, prot, flags, fd, offset, gblState.mmapFuncs.mmap, MALT_RETADDR);
 }
 
 /**********************************************************/
@@ -135,7 +135,7 @@ void *mmap(void *start, size_t length, int prot,int flags,int fd, off_t offset)
 **/
 int munmap(void *start, size_t length)
 {
-	return malt_wrap_munmap(start, length, gblState.munmap, MALT_RETADDR);
+	return malt_wrap_munmap(start, length, gblState.mmapFuncs.munmap, MALT_RETADDR);
 }
 
 /**********************************************************/
@@ -145,5 +145,5 @@ int munmap(void *start, size_t length)
 **/
 void * mremap(void *old_address, size_t old_size , size_t new_size, int flags)
 {
-	return malt_wrap_mremap(old_address, old_size, new_size, flags, gblState.mremap, MALT_RETADDR);
+	return malt_wrap_mremap(old_address, old_size, new_size, flags, gblState.mmapFuncs.mremap, MALT_RETADDR);
 }

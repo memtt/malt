@@ -10,7 +10,7 @@
 
 /**********************************************************/
 #include "GlobalState.hpp"
-#include "AllocWrapperExtend.hpp"
+#include "WrapperCAlloc.hpp"
 #include "InjectFuncEnterExit.hpp"
 
 /**********************************************************/
