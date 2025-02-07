@@ -71,3 +71,10 @@ target_link_libraries(test-controler malt-controler)
 ############################################################
 add_executable(test-pthread-tracking test-pthread-tracking.cpp)
 target_link_libraries(test-pthread-tracking malt)
+
+############################################################
+add_definitions(-DBUILD_PATH="${CMAKE_BINARY_DIR}")
+add_definitions(-DEXE_PATH="${CMAKE_CURRENT_BINARY_DIR}")
+add_definitions(-DSRC_PATH="${CMAKE_SOURCE_DIR}")
+add_executable(TestFullAnalysis TestFullAnalysis.cpp)
+target_link_libraries(TestFullAnalysis ${GTEST_BOTH_LIBRARIES} ${GMOCK_BOTH_LIBRARIES})

@@ -27,7 +27,7 @@ var childProcess = require('child_process');
 /**
  * Construct a MaltProject by loading data in JSON format from given file.
 **/
-function MaltProject(file)
+function MaltProject(file, callback = function(){})
 {
 	//declare internal stats to get a short list in same place
 	this.data = null;//store data tree
@@ -37,7 +37,7 @@ function MaltProject(file)
 	if (file != undefined)
 	{
 		console.log("loading file "+file+"...");
-		this.loadFile(file);
+		this.loadFile(file, callback);
 	}
 }
 
@@ -73,7 +73,7 @@ MaltProject.prototype.loadData = function(data)
 /**
  * Function in charge of loading the json file.
 **/
-MaltProject.prototype.loadFile = function(file)
+MaltProject.prototype.loadFile = function(file, callback = function(){})
 {
 	//init
 	this.data = null;
@@ -87,6 +87,7 @@ MaltProject.prototype.loadFile = function(file)
 	// receive parsed JSON, and load it
 	parseStream.on('data', function(data) {
 		cur.loadData(data);
+		callback();
 	});
 
 	// handle end of file

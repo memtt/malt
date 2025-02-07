@@ -1,0 +1,363 @@
+loading file /build/src/lib/tests/malt-current-out-basic-run-and-check.json...
+Loading file : /build/src/lib/tests/malt-current-out-basic-run-and-check.json
+Finished reading JSON file
+Optimizing datas for requests...
+???????????? => 72 -> 75
+Optimizing sites.instr...
+Optimizing access to stack details...
+Data optimization done.
+----------------- EXTRACT ------------------
+/build/src/lib/tests/malt-current-out-basic-run-and-check.json
+/src/lib/tests/simple-case.cpp
+--------------------------------------------
+
+simple-case.cpp:__static_initialization_and_destruction_0():46
+ - alloc: {"count":1,"min":128,"max":128,"sum":128}
+ - free: {"count":1,"min":128,"max":128,"sum":128}
+ - globalPeak: 128
+
+simple-case.cpp:OutOfMainAlloc::OutOfMainAlloc():51
+ - alloc: {"count":1,"min":128,"max":128,"sum":128}
+ - free: {"count":1,"min":128,"max":128,"sum":128}
+ - globalPeak: 128
+
+simple-case.cpp:OutOfMainAlloc::~OutOfMainAlloc():57
+ - alloc: {"count":0,"min":0,"max":0,"sum":0}
+ - free: {"count":0,"min":0,"max":0,"sum":0}
+ - globalPeak: 0
+
+simple-case.cpp:funcC():63
+ - alloc: {"count":11,"min":64,"max":64,"sum":704}
+ - free: {"count":11,"min":64,"max":64,"sum":704}
+ - globalPeak: 0
+
+simple-case.cpp:funcC():65
+ - alloc: {"count":0,"min":0,"max":0,"sum":0}
+ - free: {"count":0,"min":0,"max":0,"sum":0}
+ - globalPeak: 0
+
+simple-case.cpp:funcB():71
+ - alloc: {"count":11,"min":32,"max":32,"sum":352}
+ - free: {"count":11,"min":32,"max":32,"sum":352}
+ - globalPeak: 0
+
+simple-case.cpp:funcB():73
+ - alloc: {"count":0,"min":0,"max":0,"sum":0}
+ - free: {"count":0,"min":0,"max":0,"sum":0}
+ - globalPeak: 0
+
+simple-case.cpp:funcB():74
+ - alloc: {"count":11,"min":64,"max":64,"sum":704}
+ - free: {"count":11,"min":64,"max":64,"sum":704}
+ - globalPeak: 0
+
+simple-case.cpp:funcA():80
+ - alloc: {"count":1,"min":16,"max":16,"sum":16}
+ - free: {"count":1,"min":16,"max":16,"sum":16}
+ - globalPeak: 0
+
+simple-case.cpp:funcA():82
+ - alloc: {"count":0,"min":0,"max":0,"sum":0}
+ - free: {"count":0,"min":0,"max":0,"sum":0}
+ - globalPeak: 0
+
+simple-case.cpp:funcA():83
+ - alloc: {"count":2,"min":32,"max":64,"sum":96}
+ - free: {"count":2,"min":32,"max":64,"sum":96}
+ - globalPeak: 0
+
+simple-case.cpp:recurseA(int):91
+ - alloc: {"count":110,"min":64,"max":64,"sum":7040}
+ - free: {"count":110,"min":64,"max":64,"sum":7040}
+ - globalPeak: 0
+
+simple-case.cpp:recurseA(int):93
+ - alloc: {"count":99,"min":64,"max":64,"sum":6336}
+ - free: {"count":99,"min":64,"max":64,"sum":6336}
+ - globalPeak: 0
+
+simple-case.cpp:recurseA(int):94
+ - alloc: {"count":0,"min":0,"max":0,"sum":0}
+ - free: {"count":0,"min":0,"max":0,"sum":0}
+ - globalPeak: 0
+
+simple-case.cpp:testRealloc():101
+ - alloc: {"count":1,"min":16,"max":16,"sum":16}
+ - free: {"count":1,"min":16,"max":16,"sum":16}
+ - globalPeak: 0
+
+simple-case.cpp:testRealloc():102
+ - alloc: {"count":1,"min":32,"max":32,"sum":32}
+ - free: {"count":1,"min":32,"max":32,"sum":32}
+ - globalPeak: 0
+
+simple-case.cpp:testRealloc():103
+ - alloc: {"count":0,"min":0,"max":0,"sum":0}
+ - free: {"count":0,"min":0,"max":0,"sum":0}
+ - globalPeak: 0
+
+simple-case.cpp:testRealloc():105
+ - alloc: {"count":1,"min":44,"max":44,"sum":44}
+ - free: {"count":1,"min":44,"max":44,"sum":44}
+ - globalPeak: 0
+
+simple-case.cpp:testRealloc():107
+ - alloc: {"count":0,"min":0,"max":0,"sum":0}
+ - free: {"count":0,"min":0,"max":0,"sum":0}
+ - globalPeak: 0
+
+simple-case.cpp:testMaxAlive():115
+ - alloc: {"count":100,"min":64,"max":64,"sum":6400}
+ - free: {"count":100,"min":64,"max":64,"sum":6400}
+ - globalPeak: 0
+
+simple-case.cpp:testMaxAlive():116
+ - alloc: {"count":100,"min":64,"max":64,"sum":6400}
+ - free: {"count":100,"min":64,"max":64,"sum":6400}
+ - globalPeak: 0
+
+simple-case.cpp:testMaxAlive():119
+ - alloc: {"count":0,"min":0,"max":0,"sum":0}
+ - free: {"count":0,"min":0,"max":0,"sum":0}
+ - globalPeak: 0
+
+simple-case.cpp:testMaxAlive():120
+ - alloc: {"count":0,"min":0,"max":0,"sum":0}
+ - free: {"count":0,"min":0,"max":0,"sum":0}
+ - globalPeak: 0
+
+simple-case.cpp:testThreads():126
+ - alloc: {"count":30,"min":16,"max":3200,"sum":7096}
+ - free: {"count":30,"min":16,"max":3200,"sum":7096}
+ - globalPeak: 6264
+
+simple-case.cpp:testThreads() [clone ._omp_fn.0]:130
+ - alloc: {"count":100,"min":64,"max":64,"sum":6400}
+ - free: {"count":100,"min":64,"max":64,"sum":6400}
+ - globalPeak: 0
+
+simple-case.cpp:testThreads() [clone ._omp_fn.0]:132
+ - alloc: {"count":0,"min":0,"max":0,"sum":0}
+ - free: {"count":0,"min":0,"max":0,"sum":0}
+ - globalPeak: 0
+
+simple-case.cpp:testLeak():139
+ - alloc: {"count":1,"min":32,"max":32,"sum":32}
+ - free: {"count":1,"min":32,"max":32,"sum":32}
+ - globalPeak: 32
+
+simple-case.cpp:testLeak2():146
+ - alloc: {"count":1,"min":32,"max":32,"sum":32}
+ - free: {"count":1,"min":32,"max":32,"sum":32}
+ - globalPeak: 32
+
+simple-case.cpp:testRecuseIntervedA(int):158
+ - alloc: {"count":46,"min":64,"max":64,"sum":2944}
+ - free: {"count":46,"min":64,"max":64,"sum":2944}
+ - globalPeak: 64
+
+simple-case.cpp:testRecuseIntervedA(int):160
+ - alloc: {"count":0,"min":0,"max":0,"sum":0}
+ - free: {"count":0,"min":0,"max":0,"sum":0}
+ - globalPeak: 0
+
+simple-case.cpp:testRecuseIntervedA(int):161
+ - alloc: {"count":82,"min":64,"max":64,"sum":5248}
+ - free: {"count":82,"min":64,"max":64,"sum":5248}
+ - globalPeak: 0
+
+simple-case.cpp:testRecuseIntervedB(int):171
+ - alloc: {"count":54,"min":64,"max":64,"sum":3456}
+ - free: {"count":54,"min":64,"max":64,"sum":3456}
+ - globalPeak: 0
+
+simple-case.cpp:testRecuseIntervedB(int):173
+ - alloc: {"count":0,"min":0,"max":0,"sum":0}
+ - free: {"count":0,"min":0,"max":0,"sum":0}
+ - globalPeak: 0
+
+simple-case.cpp:testRecuseIntervedB(int):175
+ - alloc: {"count":88,"min":64,"max":64,"sum":5632}
+ - free: {"count":88,"min":64,"max":64,"sum":5632}
+ - globalPeak: 0
+
+simple-case.cpp:testAllFuncs():184
+ - alloc: {"count":1,"min":16,"max":16,"sum":16}
+ - free: {"count":1,"min":16,"max":16,"sum":16}
+ - globalPeak: 0
+
+simple-case.cpp:testAllFuncs():186
+ - alloc: {"count":0,"min":0,"max":0,"sum":0}
+ - free: {"count":0,"min":0,"max":0,"sum":0}
+ - globalPeak: 0
+
+simple-case.cpp:testAllFuncs():189
+ - alloc: {"count":1,"min":16,"max":16,"sum":16}
+ - free: {"count":1,"min":16,"max":16,"sum":16}
+ - globalPeak: 0
+
+simple-case.cpp:testAllFuncs():191
+ - alloc: {"count":0,"min":0,"max":0,"sum":0}
+ - free: {"count":0,"min":0,"max":0,"sum":0}
+ - globalPeak: 0
+
+simple-case.cpp:testAllFuncs():194
+ - alloc: {"count":1,"min":16,"max":16,"sum":16}
+ - free: {"count":1,"min":16,"max":16,"sum":16}
+ - globalPeak: 0
+
+simple-case.cpp:testAllFuncs():196
+ - alloc: {"count":0,"min":0,"max":0,"sum":0}
+ - free: {"count":0,"min":0,"max":0,"sum":0}
+ - globalPeak: 0
+
+simple-case.cpp:testAllFuncs():199
+ - alloc: {"count":1,"min":16,"max":16,"sum":16}
+ - free: {"count":1,"min":16,"max":16,"sum":16}
+ - globalPeak: 0
+
+simple-case.cpp:testAllFuncs():201
+ - alloc: {"count":0,"min":0,"max":0,"sum":0}
+ - free: {"count":0,"min":0,"max":0,"sum":0}
+ - globalPeak: 0
+
+simple-case.cpp:testAllFuncs():211
+ - alloc: {"count":1,"min":16,"max":16,"sum":16}
+ - free: {"count":1,"min":16,"max":16,"sum":16}
+ - globalPeak: 0
+
+simple-case.cpp:testAllFuncs():213
+ - alloc: {"count":0,"min":0,"max":0,"sum":0}
+ - free: {"count":0,"min":0,"max":0,"sum":0}
+ - globalPeak: 0
+
+simple-case.cpp:testAllFuncs():216
+ - alloc: {"count":1,"min":16,"max":16,"sum":16}
+ - free: {"count":1,"min":16,"max":16,"sum":16}
+ - globalPeak: 0
+
+simple-case.cpp:testAllFuncs():219
+ - alloc: {"count":0,"min":0,"max":0,"sum":0}
+ - free: {"count":0,"min":0,"max":0,"sum":0}
+ - globalPeak: 0
+
+simple-case.cpp:testAllFuncs():222
+ - alloc: {"count":1,"min":16,"max":16,"sum":16}
+ - free: {"count":1,"min":16,"max":16,"sum":16}
+ - globalPeak: 0
+
+simple-case.cpp:testAllFuncs():225
+ - alloc: {"count":0,"min":0,"max":0,"sum":0}
+ - free: {"count":0,"min":0,"max":0,"sum":0}
+ - globalPeak: 0
+
+simple-case.cpp:testPeak():231
+ - alloc: {"count":1,"min":1048576,"max":1048576,"sum":1048576}
+ - free: {"count":1,"min":1048576,"max":1048576,"sum":1048576}
+ - globalPeak: 1048576
+
+simple-case.cpp:testPeak():232
+ - alloc: {"count":6,"min":64,"max":64,"sum":384}
+ - free: {"count":6,"min":64,"max":64,"sum":384}
+ - globalPeak: 64
+
+simple-case.cpp:testPeak():233
+ - alloc: {"count":0,"min":0,"max":0,"sum":0}
+ - free: {"count":0,"min":0,"max":0,"sum":0}
+ - globalPeak: 0
+
+simple-case.cpp:testParallelWithRecurse():263
+ - alloc: {"count":11,"min":64,"max":64,"sum":704}
+ - free: {"count":11,"min":64,"max":64,"sum":704}
+ - globalPeak: 0
+
+simple-case.cpp:testParallelWithRecurse() [clone ._omp_fn.0]:265
+ - alloc: {"count":88,"min":64,"max":64,"sum":5632}
+ - free: {"count":88,"min":64,"max":64,"sum":5632}
+ - globalPeak: 0
+
+simple-case.cpp:main:279
+ - alloc: {"count":1,"min":4096,"max":4096,"sum":4096}
+ - free: {"count":1,"min":4096,"max":4096,"sum":4096}
+ - globalPeak: 4096
+
+simple-case.cpp:main:282
+ - alloc: {"count":1,"min":256,"max":256,"sum":256}
+ - free: {"count":1,"min":256,"max":256,"sum":256}
+ - globalPeak: 0
+
+simple-case.cpp:main:284
+ - alloc: {"count":0,"min":0,"max":0,"sum":0}
+ - free: {"count":0,"min":0,"max":0,"sum":0}
+ - globalPeak: 0
+
+simple-case.cpp:main:286
+ - alloc: {"count":3,"min":16,"max":64,"sum":112}
+ - free: {"count":3,"min":16,"max":64,"sum":112}
+ - globalPeak: 0
+
+simple-case.cpp:main:289
+ - alloc: {"count":20,"min":32,"max":64,"sum":960}
+ - free: {"count":20,"min":32,"max":64,"sum":960}
+ - globalPeak: 0
+
+simple-case.cpp:main:291
+ - alloc: {"count":10,"min":64,"max":64,"sum":640}
+ - free: {"count":10,"min":64,"max":64,"sum":640}
+ - globalPeak: 0
+
+simple-case.cpp:main:294
+ - alloc: {"count":100,"min":64,"max":64,"sum":6400}
+ - free: {"count":100,"min":64,"max":64,"sum":6400}
+ - globalPeak: 0
+
+simple-case.cpp:main:296
+ - alloc: {"count":3,"min":16,"max":44,"sum":92}
+ - free: {"count":3,"min":16,"max":44,"sum":92}
+ - globalPeak: 0
+
+simple-case.cpp:main:297
+ - alloc: {"count":200,"min":64,"max":64,"sum":12800}
+ - free: {"count":200,"min":64,"max":64,"sum":12800}
+ - globalPeak: 0
+
+simple-case.cpp:main:298
+ - alloc: {"count":6,"min":64,"max":64,"sum":384}
+ - free: {"count":6,"min":64,"max":64,"sum":384}
+ - globalPeak: 0
+
+simple-case.cpp:main:299
+ - alloc: {"count":30,"min":16,"max":3200,"sum":7096}
+ - free: {"count":30,"min":16,"max":3200,"sum":7096}
+ - globalPeak: 6264
+
+simple-case.cpp:main:300
+ - alloc: {"count":7,"min":16,"max":16,"sum":112}
+ - free: {"count":7,"min":16,"max":16,"sum":112}
+ - globalPeak: 0
+
+simple-case.cpp:main:301
+ - alloc: {"count":1,"min":32,"max":32,"sum":32}
+ - free: {"count":1,"min":32,"max":32,"sum":32}
+ - globalPeak: 32
+
+simple-case.cpp:main:302
+ - alloc: {"count":1,"min":32,"max":32,"sum":32}
+ - free: {"count":1,"min":32,"max":32,"sum":32}
+ - globalPeak: 32
+
+simple-case.cpp:main:303
+ - alloc: {"count":7,"min":64,"max":1048576,"sum":1048960}
+ - free: {"count":7,"min":64,"max":1048576,"sum":1048960}
+ - globalPeak: 1048640
+
+simple-case.cpp:main:306
+ - alloc: {"count":11,"min":64,"max":64,"sum":704}
+ - free: {"count":11,"min":64,"max":64,"sum":704}
+ - globalPeak: 0
+
+simple-case.cpp:_GLOBAL__sub_I_gblArray:309
+ - alloc: {"count":1,"min":128,"max":128,"sum":128}
+ - free: {"count":1,"min":128,"max":128,"sum":128}
+ - globalPeak: 128
+Finished processing JSON file
