@@ -10,7 +10,14 @@
 ############################################################
 
 ############################################################
-add_library(malt-libc-wrapper OBJECT ../wrapper/AllocWrapper.cpp)
+add_library(malt-libc-wrapper OBJECT 
+      AllocWrapper.cpp
+      GlobalState.cpp
+      InjectCAlloc.cpp
+      InjectCInit.cpp
+      InjectFuncEnterExit.cpp
+      InjectMaqao.cpp
+)
 SET_TARGET_PROPERTIES(malt-libc-wrapper PROPERTIES COMPILE_FLAGS -fPIC)
 
 ############################################################

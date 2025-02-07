@@ -77,6 +77,14 @@ if (NOT IS_DIRECTORY ${CMAKE_SOURCE_DIR}/src/webview/node_modules)
 endif()
 
 ############################################################
+# check for python support
+find_package(Python3 REQUIRED COMPONENTS Interpreter Development QUIET)
+# we currently support only Python
+if (NOT Python3_INTERPRETER_ID STREQUAL "Python")
+	message(FATAL_ERROR "Invalid python interpreter, got '${Python3_INTERPRETER_ID}', support only 'Python' !")
+endif()
+
+############################################################
 #build subdirs
 add_subdirectory(src)
 if (ENABLE_PROFILER)
