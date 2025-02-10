@@ -18,6 +18,7 @@ add_library(malt-libc-wrapper OBJECT
       WrapperPythonAlloc.cpp
       GlobalState.cpp
       InjectCAlloc.cpp
+      InjectPythonAlloc.cpp
       InjectCInit.cpp
       InjectFuncEnterExit.cpp
       InjectMaqao.cpp
