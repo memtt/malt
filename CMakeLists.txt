@@ -78,10 +78,14 @@ endif()
 
 ############################################################
 # check for python support
-find_package(Python3 REQUIRED COMPONENTS Interpreter Development QUIET)
+find_package(Python3 QUIET COMPONENTS Interpreter Development QUIET)
 # we currently support only Python
 if (NOT Python3_INTERPRETER_ID STREQUAL "Python")
 	message(FATAL_ERROR "Invalid python interpreter, got '${Python3_INTERPRETER_ID}', support only 'Python' !")
+endif()
+find_package(Python3Instrum QUIET)
+if (Python3_FOUND AND NOT PYTHON3_INSTRUM_FOUND)
+	message(FATAL_ERROR "Got python but built in a way which does not permit to use MALT, should be built with --shared and without LTO !")
 endif()
 
 ############################################################

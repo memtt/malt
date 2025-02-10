@@ -52,6 +52,9 @@ endif (LIBELF_FOUND)
 if (LIBUNWIND_FOUND)
 	list(APPEND LIB_MALT_DEPS ${LIBUNWIND_LIBRARIES})
 endif (LIBUNWIND_FOUND)
+if (PYTHON3_FOUND)
+    list(APPEND LIB_MALT_DEPS ${Python3_LIBRARIES})
+endif()
 
 ############################################################
 #gen config.h

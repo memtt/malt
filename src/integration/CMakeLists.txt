@@ -21,6 +21,15 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/malt-webview.sh.in ${CMAKE_CURRENT_BI
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/malt-passwd.sh.in ${CMAKE_CURRENT_BINARY_DIR}/malt-passwd @ONLY)
 
 ############################################################
+# build MALT python interpreter
+if (Python3_FOUND)
+	include_directories(${Python3_INCLUDE_DIRS})
+	add_executable(malt-python3 malt-python3.cpp)
+	target_link_libraries(malt-python3 ${PYTHON3_LIBRARIES})
+	target_link_libraries(malt-python3 malt)
+endif()
+
+############################################################
 #install
 INSTALL(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/malt-webview ${CMAKE_CURRENT_BINARY_DIR}/malt-passwd
         DESTINATION bin/)

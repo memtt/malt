@@ -10,8 +10,12 @@
 ############################################################
 
 ############################################################
+include_directories(${Python3_INCLUDE_DIRS})
+
+############################################################
 add_library(malt-libc-wrapper OBJECT 
       WrapperCAlloc.cpp
+      WrapperPythonAlloc.cpp
       GlobalState.cpp
       InjectCAlloc.cpp
       InjectCInit.cpp

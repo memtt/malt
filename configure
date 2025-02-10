@@ -80,7 +80,7 @@ cfg_setup_options()
 							--doc='Enable debugging support (-DCMAKE_BUILD_TYPE=Debug).'
 	#debug
 	cfg_add_enable_option --name='release-debug' \
-							--on-enable='-DCMAKE_BUILD_TYPE=RelWithDebug' \
+							--on-enable='-DCMAKE_BUILD_TYPE=RelWithDebInfo' \
 							--on-disable='-DCMAKE_BUILD_TYPE=Release' \
 							--doc='Enable debugging support (-DCMAKE_BUILD_TYPE=RelWithDebug).'
 	#ninja
