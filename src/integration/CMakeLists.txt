@@ -27,6 +27,7 @@ if (Python3_FOUND)
 	add_executable(malt-python3 malt-python3.cpp)
 	target_link_libraries(malt-python3 ${PYTHON3_LIBRARIES})
 	target_link_libraries(malt-python3 malt)
+	INSTALL(TARGETS malt-python3 DESTINATION bin/)
 endif()
 
 ############################################################

@@ -10,11 +10,15 @@
 ############################################################
 
 ############################################################
+include_directories(${Python3_INCLUDE_DIRS})
+
+############################################################
 set(MALT_STACKS_SRC Stack.cpp
                     LangAddress.cpp
                     BacktraceStack.cpp
                     EnterExitStack.cpp
-                    StackLoopRemover.cpp)
+                    StackLoopRemover.cpp
+                    BacktracePythonStack.cpp)
 
 ############################################################
 add_library(malt-stacks OBJECT ${MALT_STACKS_SRC})

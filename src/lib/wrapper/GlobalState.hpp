@@ -9,6 +9,10 @@
 ***********************************************************/
 
 /**********************************************************/
+#ifndef MALT_GLOBAL_STATE_HPP
+#define MALT_GLOBAL_STATE_HPP
+
+/**********************************************************/
 //standard
 #include <cstdlib>
 #include <cstdio>
@@ -181,3 +185,5 @@ extern __thread ThreadLocalState tlsState;
 extern char gblCallocIniBuffer[4096];
 
 }
+
+#endif //MALT_GLOBAL_STATE_HPP

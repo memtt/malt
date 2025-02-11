@@ -56,7 +56,7 @@ LocalAllocStackProfiler::~LocalAllocStackProfiler(void)
 /**********************************************************/
 //TODO: Pass Stack*, may be nullptr for C CallStack
 //TODO: Pass Stack* to getStack()
-void LocalAllocStackProfiler::onMalloc(void* res, size_t size, ticks time, MallocKind kind)
+void LocalAllocStackProfiler::onMalloc(void* res, size_t size, ticks time, MallocKind kind, Language lang)
 {
 	//old state
 	bool oldInuse = inUse;
@@ -65,7 +65,7 @@ void LocalAllocStackProfiler::onMalloc(void* res, size_t size, ticks time, Mallo
 	if (!reentrance || !oldInuse)
 	{
 		inUse = true;
-		CODE_TIMING("mallocProf",globalProfiler->onMalloc(res,size,getStack()));
+		CODE_TIMING("mallocProf",globalProfiler->onMalloc(res,size,getStack(lang)));
 		this->cntMemOps++;
 		this->allocStats.malloc[kind].inc(size,time);
 		inUse = oldInuse;
@@ -73,7 +73,7 @@ void LocalAllocStackProfiler::onMalloc(void* res, size_t size, ticks time, Mallo
 }
 
 /**********************************************************/
-void LocalAllocStackProfiler::onFree(void* ptr, ticks time)
+void LocalAllocStackProfiler::onFree(void* ptr, ticks time, Language lang)
 {
 	//old state
 	bool oldInuse = inUse;
@@ -82,7 +82,7 @@ void LocalAllocStackProfiler::onFree(void* ptr, ticks time)
 	if (!reentrance || !oldInuse)
 	{
 		inUse = true;
-		CODE_TIMING("freeProf",globalProfiler->onFree(ptr,getStack()));
+		CODE_TIMING("freeProf",globalProfiler->onFree(ptr,getStack(lang)));
 		this->cntMemOps++;
 		inUse = oldInuse;
 		this->allocStats.free.inc(0,time);
@@ -90,7 +90,7 @@ void LocalAllocStackProfiler::onFree(void* ptr, ticks time)
 }
 
 /**********************************************************/
-void LocalAllocStackProfiler::onCalloc(void * res,size_t nmemb, size_t size, ticks time)
+void LocalAllocStackProfiler::onCalloc(void * res,size_t nmemb, size_t size, ticks time, Language lang)
 {
 	//old state
 	bool oldInuse = inUse;
@@ -99,7 +99,7 @@ void LocalAllocStackProfiler::onCalloc(void * res,size_t nmemb, size_t size, tic
 	if (!reentrance || !oldInuse)
 	{
 		inUse = true;
-		CODE_TIMING("callocProf",globalProfiler->onCalloc(res,nmemb,size,getStack()));
+		CODE_TIMING("callocProf",globalProfiler->onCalloc(res,nmemb,size,getStack(lang)));
 		this->cntMemOps++;
 		this->allocStats.calloc.inc(size,time);
 		inUse = oldInuse;
@@ -107,7 +107,7 @@ void LocalAllocStackProfiler::onCalloc(void * res,size_t nmemb, size_t size, tic
 }
 
 /**********************************************************/
-void LocalAllocStackProfiler::onRealloc(void* ptr, void* res, size_t size,ticks time)
+void LocalAllocStackProfiler::onRealloc(void* ptr, void* res, size_t size,ticks time, Language lang)
 {
 	//old state
 	bool oldInuse = inUse;
@@ -116,7 +116,7 @@ void LocalAllocStackProfiler::onRealloc(void* ptr, void* res, size_t size,ticks 
 	if (!reentrance || !oldInuse)
 	{
 		inUse = true;
-		CODE_TIMING("reallocProf",globalProfiler->onRealloc(ptr,res,size,getStack()));
+		CODE_TIMING("reallocProf",globalProfiler->onRealloc(ptr,res,size,getStack(lang)));
 		this->cntMemOps++;
 		this->allocStats.realloc.inc(size,time);
 		inUse = oldInuse;
@@ -187,22 +187,41 @@ void LocalAllocStackProfiler::solveSymbols(SymbolSolver& symbolResolver) const
 
 /**********************************************************/
 //TODO: getStack should receive a parameter iff it's a Python stack
-Stack* LocalAllocStackProfiler::getStack(void )
+Stack* LocalAllocStackProfiler::getStack(Language lang)
 {
-	//search with selected mode
-	switch(stackMode)
-	{
-		case STACK_MODE_BACKTRACE:
-			CODE_TIMING("loadCurrentStack",backtraceStack.loadCurrentStack());
-			backtraceStack.fastSkip(gblOptions->stackSkip);
-			return &backtraceStack;
-		case STACK_MODE_ENTER_EXIT_FUNC:
-			return &enterExitStack;
-		case STACK_MODE_USER:
-			return NULL;
-		default:
-			MALT_FATAL("Invalid stack mode !");
-			return NULL;
+	if (lang == LANG_C) {
+		//search with selected mode
+		switch(stackMode)
+		{
+			case STACK_MODE_BACKTRACE:
+				CODE_TIMING("loadCurrentStack",backtraceStack.loadCurrentStack());
+				backtraceStack.fastSkip(gblOptions->stackSkip);
+				return &backtraceStack;
+			case STACK_MODE_ENTER_EXIT_FUNC:
+				return &enterExitStack;
+			case STACK_MODE_USER:
+				return NULL;
+			default:
+				MALT_FATAL("Invalid stack mode !");
+				return NULL;
+		}
+	} else if (lang == LANG_PYTHON) {
+		//search with selected mode
+		switch(stackMode)
+		{
+			case STACK_MODE_BACKTRACE:
+				CODE_TIMING("loadCurrentStack",backtracePythonStack.loadCurrentStack());
+				return &backtracePythonStack;
+			case STACK_MODE_ENTER_EXIT_FUNC:
+				return &enterExitStack;
+			case STACK_MODE_USER:
+				return NULL;
+			default:
+				MALT_FATAL("Invalid stack mode !");
+				return NULL;
+		}
+	} else {
+		MALT_FATAL("Invalid language");
 	}
 }
 
@@ -252,6 +271,20 @@ void convertToJson(htopml::JsonState& json, const PerThreadAllocStats& value)
 	json.printField("calloc",value.calloc);
 	json.printField("realloc",value.realloc);
 	json.closeStruct();
+}
+
+/**********************************************************/
+bool LocalAllocStackProfiler::markInUseAndGetOldStatus(void)
+{
+	bool old = this->inUse;
+	this->inUse = true;
+	return old;
+}
+
+/**********************************************************/
+void LocalAllocStackProfiler::restoreInUseStatus(bool oldStatus)
+{
+	this->inUse = oldStatus;
 }
 
 }

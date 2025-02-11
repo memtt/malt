@@ -208,7 +208,7 @@ void Stack::set (void** stack, int size, StackOrder order, DomainType domain)
 **/
 StackHash Stack::hash ( int skipDepth ) const
 {
-	assert(skipDepth < size);
+	assert(skipDepth <= size);
 	assert(skipDepth >= 0);
 	switch(order)
 	{

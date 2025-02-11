@@ -18,6 +18,7 @@
 //locals
 #include "core/StackSizeTracker.hpp"
 #include <stacks/EnterExitStack.hpp>
+#include <stacks/BacktracePythonStack.hpp>
 #include "AllocStackProfiler.hpp"
 #include "core/StackSizeAnalyser.hpp"
 
@@ -37,6 +38,13 @@ enum MallocKind
 	MALLOC_KIND_VALLOC,
 	MALLOC_KIND_PVALLOC,
 	MALLOC_KIND_MAX,
+};
+
+/**********************************************************/
+enum Language
+{
+	LANG_C,
+	LANG_PYTHON
 };
 
 /**********************************************************/
@@ -75,20 +83,22 @@ class LocalAllocStackProfiler
 	public:
 		LocalAllocStackProfiler(AllocStackProfiler * globalProfiler,bool reentrance = true);
 		~LocalAllocStackProfiler(void);
-		void onMalloc(void* res, size_t size, ticks time, MALT::MallocKind kind);
-		void onFree(void* ptr, ticks time);
-		void onCalloc(void * res,size_t nmemb,size_t size, ticks time);
-		void onRealloc(void* ptr, void* res, size_t size, ticks time);
+		void onMalloc(void* res, size_t size, ticks time, MALT::MallocKind kind, Language lang = LANG_C);
+		void onFree(void* ptr, ticks time, Language lang = LANG_C);
+		void onCalloc(void * res,size_t nmemb,size_t size, ticks time, Language lang = LANG_C);
+		void onRealloc(void* ptr, void* res, size_t size, ticks time, Language lang = LANG_C);
 		void onMmap(void * ptr, size_t size,int flags,int fd);
 		void onMunmap(void * ptr, size_t size);
 		inline void onEnterFunc(void *this_fn,void *call_site,bool ignoreStack=false);
 		inline void onExitFunc(void *this_fn,void *call_site,bool ignoreStack=false);
 		void solveSymbols(SymbolSolver & symbolResolver) const;
 		bool isEnterExit(void);
+		bool markInUseAndGetOldStatus(void);
+		void restoreInUseStatus(bool oldStatus);
 	public:
 		friend void convertToJson(htopml::JsonState& json, const LocalAllocStackProfiler& value);
 	protected:
-		Stack * getStack(void);
+		Stack * getStack(Language lang = LANG_C);
 	private:
 		/** Pointer to the global state **/
 		AllocStackProfiler * globalProfiler;
@@ -98,6 +108,8 @@ class LocalAllocStackProfiler
 		EnterExitStack enterExitStack;
 		/** Object used to follow the local stack for the backtrace mode. **/
 		BacktraceStack backtraceStack;
+		/** Object used to follow the local stack for backtrace mode in python */
+		BacktracePythonStack backtracePythonStack;
 		/** Follow size of stack in enter-exit mode. **/
 		StackSizeAnalyser stackSizeAnalyser;
 		/** Counter memory requests. **/
