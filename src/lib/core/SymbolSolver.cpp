@@ -687,6 +687,19 @@ void SymbolSolver::registerMaqaoFunctionSymbol(int funcId, const char* funcName,
 void SymbolSolver::registerFunctionSymbol(void * addr, const char * funcName,const char * file,int line)
 {
 	LangAddress langAddr(DOMAIN_C, addr);
+	this->registerFunctionSymbol(langAddr, funcName, file, line);
+}
+
+/**********************************************************/
+/**
+ * Register the symbol resolution, more for unit tests.
+ * @param addr The address to translate.
+ * @param funcName The function name.
+ * @param file The file of the call ste..
+ * @param line Line of the call site.
+**/
+void SymbolSolver::registerFunctionSymbol(LangAddress langAddr, const char * funcName,const char * file,int line)
+{
 	auto & site = this->callSiteMap[langAddr];
 	site.file = getString(file);
 	site.function = getString(funcName);
@@ -757,9 +770,10 @@ void SymbolSolver::solveMissings(void)
 	for (CallSiteMap::const_iterator it = callSiteMap.begin() ; it != callSiteMap.end() ; ++it)
 		if (it->second.function == -1 || getString(it->second.function) == "??"){
 			CallSite dummyCallSite = it->second;
-			assert(it->first.getDomain() == DOMAIN_C);
-			assert(it->first.getAddress() != nullptr);
-			toResolve.push_back(it->first.getAddress());
+			if (it->first.getDomain() == DOMAIN_C) {
+				assert(it->first.getAddress() != nullptr);
+				toResolve.push_back(it->first.getAddress());
+			}
 		}
 	//nothing to do
 	if (toResolve.size() == 0)
@@ -770,8 +784,9 @@ void SymbolSolver::solveMissings(void)
 	{
 		int i = 0;
 		for (CallSiteMap::iterator it = callSiteMap.begin() ; it != callSiteMap.end() ; ++it)
-			if (it->second.function == -1 || getString(it->second.function) == "??")
-				it->second.function = getString(extractSymbolName(res[i++]));
+			if (it->first.getDomain() == DOMAIN_C)
+				if (it->second.function == -1 || getString(it->second.function) == "??")
+					it->second.function = getString(extractSymbolName(res[i++]));
 		free(res);
 	}
 }

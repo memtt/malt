@@ -525,7 +525,7 @@ void AllocStackProfiler::onExit(void )
 	MALT_OPTIONAL_CRITICAL(lock,threadSafe)
 		//to not instrument childs
 		unsetenv("LD_PRELOAD");
-		
+
 		//solve symbols
 		CODE_TIMING("solveSymbols",
 			this->symbolResolver.loadProcMap();

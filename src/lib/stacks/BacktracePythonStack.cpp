@@ -149,7 +149,7 @@ void BacktracePythonStack::loadCurrentStack(void)
 			PythonCallSite &entry = this->siteMap[hash];
 			entry.id = this->nextIndex++;
 			entry.file = currentFileName;
-			entry.function = currentFileName;
+			entry.function = currentFrameName;
 			entry.line = currentLineNumber;
 			currentId = entry.id;
 		} else {
@@ -176,6 +176,13 @@ void BacktracePythonStack::loadCurrentStack(void)
 		//Go up on the stack
 		currentFrame = PyFrame_GetBack(currentFrame);
 	}
+}
+
+/**********************************************************/
+void BacktracePythonStack::registerSymbolResolution(SymbolSolver & solver) const
+{
+	for (auto & site : this->siteMap)
+		solver.registerFunctionSymbol(LangAddress(DOMAIN_PYTHON, (void*)site.second.id), site.second.function.c_str(), site.second.file.c_str(), site.second.line);
 }
 
 }

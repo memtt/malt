@@ -46,6 +46,7 @@ class BacktracePythonStack : public Stack
 		BacktracePythonStack(void);
 		~BacktracePythonStack(void);
 		void loadCurrentStack(void);
+		void registerSymbolResolution(SymbolSolver & solver) const;
 	private:
 		PythonStrCallSiteMap siteMap;
 		size_t nextIndex{10};

@@ -182,6 +182,7 @@ void convertToJson(htopml::JsonState& json, const LocalAllocStackProfiler& value
 /**********************************************************/
 void LocalAllocStackProfiler::solveSymbols(SymbolSolver& symbolResolver) const
 {
+	this->backtracePythonStack.registerSymbolResolution(symbolResolver);
 	this->stackSizeAnalyser.solveSymbols(symbolResolver);
 }
 
@@ -222,6 +223,7 @@ Stack* LocalAllocStackProfiler::getStack(Language lang)
 		}
 	} else {
 		MALT_FATAL("Invalid language");
+		return NULL;
 	}
 }
 
