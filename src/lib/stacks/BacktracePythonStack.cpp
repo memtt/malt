@@ -49,18 +49,18 @@ BacktracePythonStack::BacktracePythonStack(void)
 	:Stack(STACK_ORDER_ASC)
 {
 	//build unknown map
-	const char * unknownName = gblInternaAlloc->strdup("UNKNOWN_PYTHON");
+	const char * unknownName = gblInternaAlloc->strdup("MALT_UNKNOWN_PYTHON");
 	const PythonCallSite siteUnknown = {unknownName, unknownName, 0};
 	this->siteMap[siteUnknown] = CST_PYTHON_UNKNOWN_FUNC_ID;
 
 	//build init map
-	const char * initName = gblInternaAlloc->strdup("PYTHON_INIT");
-	const PythonCallSite siteInit = {initName, initName, 1};
+	const char * initName = gblInternaAlloc->strdup("MALT_PYTHON_ROOT");
+	const PythonCallSite siteInit = {initName, initName, 0};
 	this->siteMap[siteInit] = CST_PYTHON_INIT_FUNC_ID;
 
 	//build null map
-	const char * nullName = gblInternaAlloc->strdup("PYTHON_NULL_FRAME");
-	const PythonCallSite siteNull = {nullName, nullName, 2};
+	const char * nullName = gblInternaAlloc->strdup("MALT_PYTHON_NULL_FRAME");
+	const PythonCallSite siteNull = {nullName, nullName, 0};
 	this->siteMap[siteNull] = CST_PYTHON_NULL_FUNC_ID;
 }
 
@@ -89,8 +89,11 @@ void BacktracePythonStack::loadCurrentStack(void)
     //If the Python interpreter is not correctly initialised, can't get the backtrace stack
 	if (_PyThreadState_UncheckedGet() == NULL){
 		assert(this->memSize >= 1);
-		this->size = 1;
+		if (this->memSize < 2)
+			this->grow();
+		this->size = 2;
 		this->stack[0].set(DOMAIN_PYTHON, (void*)CST_PYTHON_UNKNOWN_FUNC_ID);
+		this->stack[1].set(DOMAIN_PYTHON, (void*)CST_PYTHON_INIT_FUNC_ID);
 		return;
 	}
 
@@ -98,8 +101,11 @@ void BacktracePythonStack::loadCurrentStack(void)
 	::PyFrameObject* currentFrame = PyThreadState_GetFrame(PyGILState_GetThisThreadState());
 	if (currentFrame == NULL) {
 		assert(this->memSize >= 1);
-		this->size = 1;
+		if (this->memSize < 2)
+			this->grow();
+		this->size = 2;
 		this->stack[0].set(DOMAIN_PYTHON, (void*)CST_PYTHON_NULL_FUNC_ID);
+		this->stack[1].set(DOMAIN_PYTHON, (void*)CST_PYTHON_INIT_FUNC_ID);
 		return;
 	}
 
@@ -122,7 +128,7 @@ void BacktracePythonStack::loadCurrentStack(void)
 		//Fetch the file name and frame name i.e. function name in the current PyCode
 		//FIXME: Currently, this makes many allocations, maybe there's a way to avoid this
 		currentFilenameObject = PyUnicode_AsASCIIString(currentPyCode->co_filename);
-		currentFramenameObject = PyUnicode_AsASCIIString(currentPyCode->co_name);
+		currentFramenameObject = PyUnicode_AsASCIIString(currentPyCode->co_qualname);
 
 		assert(currentFilenameObject != NULL);
 		assert(currentFramenameObject != NULL);
@@ -184,8 +190,12 @@ void BacktracePythonStack::loadCurrentStack(void)
 /**********************************************************/
 void BacktracePythonStack::registerSymbolResolution(SymbolSolver & solver) const
 {
+	char buffer[4096];
 	for (auto & site : this->siteMap)
-		solver.registerFunctionSymbol(LangAddress(DOMAIN_PYTHON, (void*)site.second), site.first.function, site.first.file, site.first.line);
+	{
+		snprintf(buffer, sizeof(buffer), "py:%s", site.first.function);
+		solver.registerFunctionSymbol(LangAddress(DOMAIN_PYTHON, (void*)site.second), buffer, site.first.file, site.first.line);
+	}
 }
 
 /**********************************************************/
@@ -195,10 +205,10 @@ bool operator<(const PythonCallSite & a, const PythonCallSite & b)
 		return true;
 	} else if (a.line == b.line) {
 		int statusFunction = strcmp(a.function, b.function);
-		if (statusFunction == -1) {
+		if (statusFunction < 0) {
 			return true;
 		} else if (statusFunction == 0) {
-			return strcmp(a.file, b.file) == -1;
+			return strcmp(a.file, b.file) < 0;
 		} else {
 			return false;
 		}

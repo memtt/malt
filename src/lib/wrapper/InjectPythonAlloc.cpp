@@ -126,6 +126,8 @@ void initPythonAllocInstrumentation()
 	pythonObjAllocMalt.realloc = WrapperPythonObj::realloc;
 	PyMem_SetAllocator(::PYMEM_DOMAIN_OBJ, &pythonObjAllocMalt);
 
+	//PyGC_Disable();
+
 	//https://docs.python.org/3/c-api/memory.html
 	/*
 	void PyMem_GetAllocator(PyMemAllocatorDomain domain, PyMemAllocatorEx *allocator)

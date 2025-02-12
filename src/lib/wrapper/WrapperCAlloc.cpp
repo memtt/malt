@@ -40,6 +40,11 @@ void * MALT::malt_wrap_malloc(size_t size, const MallocFuncPtr & real_malloc, vo
 /**********************************************************/
 void MALT::malt_wrap_free(void * ptr, const FreeFuncPtr & real_free, void * retaddr)
 {
+	//need to ignore them otherwise enter sometime in an infinite call loop
+	//when using numpy with python
+	if (ptr == NULL)
+		return;
+
 	//get local TLS and check init
 	MALT_WRAPPER_LOCAL_STATE_INIT;
 
