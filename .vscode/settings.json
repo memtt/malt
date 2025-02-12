@@ -72,7 +72,9 @@
 		"bit": "cpp",
 		"stop_token": "cpp",
 		"mutex": "cpp",
-		"compare": "cpp"
+		"compare": "cpp",
+		"any": "cpp",
+		"concepts": "cpp"
 	},
 	"cmake.configureOnOpen": false
 }

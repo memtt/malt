@@ -23,17 +23,21 @@
 namespace MALT
 {
 
+typedef std::basic_string<char, std::char_traits<char>, STLInternalAllocator<char> > StringNoFree;
+
 /**********************************************************/
 struct PythonCallSite
 {
-	size_t id;
-	std::string file;
-	std::string function;
+	const char * file;
+	const char * function;
 	int line;
 };
 
 /**********************************************************/
-typedef std::map<std::string, PythonCallSite> PythonStrCallSiteMap;
+bool operator<(const PythonCallSite & a, const PythonCallSite & b);
+
+/**********************************************************/
+typedef std::map<PythonCallSite, size_t, std::less<PythonCallSite>, STLInternalAllocator<std::pair<PythonCallSite,size_t> > > PythonStrCallSiteMap;
 
 /**********************************************************/
 /**

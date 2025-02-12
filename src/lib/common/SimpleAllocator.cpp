@@ -360,6 +360,15 @@ void* SimpleAllocator::realloc(void * old,size_t size)
 }
 
 /**********************************************************/
+char * SimpleAllocator::strdup(const char * str)
+{
+	size_t size = strlen(str) + 1;
+	char * res = (char*)this->malloc(size);
+	strncpy(res, str, size);
+	return res;
+}
+
+/**********************************************************/
 /**
  * Construct a memory chunk by setting-up his header struct.
  * @param size Requested segment size (body size without the extra header one).

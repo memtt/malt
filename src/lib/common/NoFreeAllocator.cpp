@@ -12,6 +12,7 @@
 /**********************************************************/
 //std C++
 #include <cassert>
+#include <cstring>
 //intenrals
 #include <common/Debug.hpp>
 #include <common/Helpers.hpp>
@@ -192,6 +193,20 @@ void NoFreeAllocator::printState(std::ostream & out) const
 	Helpers::printValue(out,totalMem - inUseMem,"B");
 	out << endl;
 	out << "=================================================================================================================================================" << endl;
+}
+
+/**********************************************************/
+/**
+ * Make a strdup with the noFreeMalloc.
+ * @param str The C string to copy.
+ * @return Pointer to a memory segement that cannot be freed.
+ */
+char * noFreeStrdup(const char * str)
+{
+	size_t size = strlen(str) + 1;
+	char * res = noFreeMalloc<char>(size);
+	strncpy(res, str, size);
+	return res;
 }
 
 }

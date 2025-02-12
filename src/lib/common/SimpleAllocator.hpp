@@ -106,6 +106,7 @@ class SimpleAllocator
 		void * malloc(size_t size);
 		void free(void * ptr);
 		void * realloc(void * old,size_t size);
+		char * strdup(const char * str);
 		size_t getTotalMemory(void);
 		size_t getUnusedMemory(void);
 		size_t getInuseMemory(void);
