@@ -13,24 +13,25 @@
 include_directories(${Python3_INCLUDE_DIRS})
 
 ############################################################
-add_library(malt-libc-wrapper OBJECT 
+add_library(malt-wrappers OBJECT 
+      ThreadTracker.cpp
       WrapperCAlloc.cpp
       WrapperPythonAlloc.cpp
+      WrapperPthreads.cpp
       GlobalState.cpp
+      InjectPthreads.cpp
+)
+SET_TARGET_PROPERTIES(malt-wrappers PROPERTIES COMPILE_FLAGS -fPIC)
+
+############################################################
+add_library(malt-injectors OBJECT
       InjectCAlloc.cpp
       InjectPythonAlloc.cpp
       InjectCInit.cpp
       InjectFuncEnterExit.cpp
       InjectMaqao.cpp
 )
-SET_TARGET_PROPERTIES(malt-libc-wrapper PROPERTIES COMPILE_FLAGS -fPIC)
-
-############################################################
-set(MALT_THREAD_WRAPPER_SRC ThreadTracker.cpp)
-
-############################################################
-add_library(malt-thread-wrapper OBJECT ${MALT_THREAD_WRAPPER_SRC})
-SET_TARGET_PROPERTIES(malt-thread-wrapper PROPERTIES COMPILE_FLAGS -fPIC)
+SET_TARGET_PROPERTIES(malt-injectors PROPERTIES COMPILE_FLAGS -fPIC)
 
 ############################################################
 add_library(malt-fake-controler OBJECT FakeControler.c)

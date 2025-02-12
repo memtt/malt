@@ -28,19 +28,6 @@ typedef int (*PthreadCreateFuncPtr)(pthread_t *thread, const pthread_attr_t *att
 
 /**********************************************************/
 /**
- * Structure used to transmit arguments to the intermediate function used
- * to track pthread_create.
-**/
-struct ThreadTrackerArg
-{
-	/** User arguement to transmit to the real function provided by user. **/
-	void * arg;
-	/** Real function provided by user and to call after doing instrumentation. **/
-	void *(*routine) (void *);
-};
-
-/**********************************************************/
-/**
  * Structure to keep track of the global state monstly to remind active and 
  * maximum thread count.
 **/
@@ -73,6 +60,13 @@ struct ThreadTracker
 	static int getMaxThreadCount(void);
 	static void stopThreadTracking(void);
 };
+
+/**********************************************************/
+void pthreadWrapperOnExit(void *);
+void * pthreadWrapperStartRoutine(void * arg);
+
+/**********************************************************/
+extern ThreadTrackerData gblThreadTrackerData;
 
 }
 

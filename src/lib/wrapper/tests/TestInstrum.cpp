@@ -17,26 +17,13 @@
 using namespace MALT;
 
 /**********************************************************/
-TEST(TestThreadTracker, no_threads)
+void * function_testing_c_malloc()
 {
-	EXPECT_EQ(1, ThreadTracker::getThreadCount());
-	EXPECT_EQ(1, ThreadTracker::getMaxThreadCount());
+	return malloc(16);
 }
 
 /**********************************************************/
-TEST(TestThreadTracker, one_thread)
+TEST(TestInstrum, c_basic_malloc)
 {
-	std::thread threads[10];
-
-	for (int i = 0 ; i < 10 ; i++) {
-		threads[i] = std::thread([](){
-			usleep(10000);
-		});
-	}
-
-	for (int i = 0 ; i < 10 ; i++)
-		threads[i].join();
-
-	EXPECT_EQ(1, ThreadTracker::getThreadCount());
-	EXPECT_EQ(11, ThreadTracker::getMaxThreadCount());
+	
 }

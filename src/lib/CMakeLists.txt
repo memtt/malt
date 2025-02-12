@@ -75,7 +75,7 @@ set(COMMON_OBJS $<TARGET_OBJECTS:htopml-json>
                 $<TARGET_OBJECTS:matt-stacks-v2>
                 $<TARGET_OBJECTS:malt-valprof>
                 $<TARGET_OBJECTS:malt-profiler>
-                $<TARGET_OBJECTS:malt-thread-wrapper>
+                $<TARGET_OBJECTS:malt-wrappers>
                 $<TARGET_OBJECTS:malt-stack-trees>
                 $<TARGET_OBJECTS:malt-common>
                 $<TARGET_OBJECTS:malt-port>
@@ -88,7 +88,7 @@ set_target_properties(malt-base PROPERTIES VERSION ${MALT_VERSION}
                                            SOVERSION ${MALT_SO_VERSION})
 
 ############################################################
-add_library(malt SHARED ${COMMON_OBJS} $<TARGET_OBJECTS:malt-libc-wrapper>)
+add_library(malt SHARED ${COMMON_OBJS} $<TARGET_OBJECTS:malt-injectors>)
 target_link_libraries(malt ${LIB_MALT_DEPS})
 set_target_properties(malt PROPERTIES VERSION ${MALT_VERSION}
                                       SOVERSION ${MALT_SO_VERSION})

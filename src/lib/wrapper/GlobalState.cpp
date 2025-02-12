@@ -16,10 +16,13 @@ namespace MALT
 {
 
 /**********************************************************/
+#define GBL_STATE_INIT {ALLOC_WRAP_NOT_READY,MALT_STATIC_MUTEX_INIT,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL};
+#define TLS_STATE_INIT {NULL,ALLOC_WRAP_NOT_READY}
+/**********************************************************/
 /** Store the global state of allocator wrapper. **/
-AllocWrapperGlobal gblState = {ALLOC_WRAP_NOT_READY,MALT_STATIC_MUTEX_INIT,NULL,NULL,NULL,NULL,NULL};
+AllocWrapperGlobal gblState = GBL_STATE_INIT;
 /** Store the per-thread state of allocator wrapper. **/
-__thread ThreadLocalState tlsState = {NULL,ALLOC_WRAP_NOT_READY};
+__thread ThreadLocalState tlsState = TLS_STATE_INIT;
 /** Temporary buffer to return on first realloc used by dlsym and split infinit call loops. **/
 char gblCallocIniBuffer[4096];
 
@@ -355,6 +358,13 @@ void ThreadLocalState::init(void)
 void malt_wrap_extended_symbols(void)
 {
 	//default impl to be overriden by LD_PRELOAD for custom symbols
+}
+
+/**********************************************************/
+void globalResetForTests(void)
+{
+	gblState = GBL_STATE_INIT;
+	tlsState = TLS_STATE_INIT;
 }
 
 }
