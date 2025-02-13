@@ -10,6 +10,10 @@
 ############################################################
 
 ############################################################
+add_definitions(-DBUILD_PATH="${CMAKE_BINARY_DIR}")
+add_definitions(-DSRC_PATH="${CMAKE_SOURCE_DIR}")
+
+############################################################
 add_library(malt-common OBJECT CodeTiming.cpp FormattedMessage.cpp Debug.cpp Options.cpp SimpleAllocator.cpp Helpers.cpp NoFreeAllocator.cpp)
 SET_TARGET_PROPERTIES(malt-common PROPERTIES COMPILE_FLAGS -fPIC)
 

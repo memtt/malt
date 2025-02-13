@@ -1,0 +1,22 @@
+loading file /build/src/lib/wrapper/tests/malt-c-basic-malloc.json...
+Loading file : /build/src/lib/wrapper/tests/malt-c-basic-malloc.json
+Finished reading JSON file
+Optimizing datas for requests...
+Optimizing sites.instr...
+Optimizing access to stack details...
+Data optimization done.
+----------------- EXTRACT ------------------
+/build/src/lib/wrapper/tests/malt-c-basic-malloc.json
+/src/lib/wrapper/tests/TestInstrum.cpp
+--------------------------------------------
+
+TestInstrum.cpp:function_testing_c_malloc():33
+ - alloc: {"count":1,"min":16,"max":16,"sum":16}
+ - free: {"count":1,"min":16,"max":16,"sum":16}
+ - globalPeak: 0
+
+TestInstrum.cpp:TestInstrum_c_basic_malloc_Test::TestBody():46
+ - alloc: {"count":1,"min":16,"max":16,"sum":16}
+ - free: {"count":1,"min":16,"max":16,"sum":16}
+ - globalPeak: 0
+Finished processing JSON file

@@ -30,6 +30,9 @@ struct Helpers
 {
 	static void printValue(std::ostream & out,double value, const char* unit = "");
 	static int getFileId(void);
+	static std::string loadFullFile(const std::string & fname);
+	static bool writeFullFile(const std::string & fname, const std::string & data);
+	static std::string simpleProfileDump(const std::string & profileFile, const std::string & sourceFile);
 };
 
 }

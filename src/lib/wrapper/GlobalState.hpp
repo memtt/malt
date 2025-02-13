@@ -184,6 +184,9 @@ extern __thread ThreadLocalState tlsState;
 /** Temporary buffer to return on first realloc used by dlsym and split infinit call loops. **/
 extern char gblCallocIniBuffer[4096];
 
+/**********************************************************/
+void globalResetForTests(void);
+
 }
 
 #endif //MALT_GLOBAL_STATE_HPP

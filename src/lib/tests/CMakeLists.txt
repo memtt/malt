@@ -79,5 +79,5 @@ add_definitions(-DSRC_PATH="${CMAKE_SOURCE_DIR}")
 
 ############################################################
 add_executable(TestFullAnalysis TestFullAnalysis.cpp)
-target_link_libraries(TestFullAnalysis ${GTEST_BOTH_LIBRARIES} ${GMOCK_BOTH_LIBRARIES})
+target_link_libraries(TestFullAnalysis ${GTEST_BOTH_LIBRARIES} ${GMOCK_BOTH_LIBRARIES} malt-base)
 add_test(TestFullAnalysis TestFullAnalysis)

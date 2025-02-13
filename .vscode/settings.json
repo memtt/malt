@@ -74,7 +74,8 @@
 		"mutex": "cpp",
 		"compare": "cpp",
 		"any": "cpp",
-		"concepts": "cpp"
+		"concepts": "cpp",
+		"charconv": "cpp"
 	},
 	"cmake.configureOnOpen": false
 }

@@ -13,32 +13,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include <gtest/gtest.h>
-
-/**********************************************************/
-static std::string loadFullFile(std::string fname)
-{
-	//output
-	std::string result;
-
-	//open
-	FILE * fp = fopen(fname.c_str(), "r");
-	if (fp == NULL)
-		return result;
-
-	//load
-	while (!feof(fp)) {
-		char buffer[4096];
-		ssize_t size = fread(buffer, 1,sizeof(buffer)-1, fp);
-		buffer[size] = '\0';
-		result += buffer;
-	}
-
-	//close
-	fclose(fp);
-
-	//ok
-	return result;
-}
+#include <common/Helpers.hpp>
 
 /**********************************************************/
 TEST(TestFullAnalysis, basic_run)
@@ -66,18 +41,10 @@ TEST(TestFullAnalysis, basic_run_and_check_file_line_counter)
 	ASSERT_EQ(status_sys, 0);
 
 	//extract infis
-	const int status_end_2 = setenv("NODE_PATH", BUILD_PATH "/src/webview/node_modules/", 1);
-	const int status_sys_2 = system("node "
-		 SRC_PATH "/src/webview/malt-simple-dump.js "
-		 "-i " EXE_PATH "/malt-current-out-basic-run-and-check.json "
-		 "-s " SRC_PATH "/src/lib/tests/simple-case.cpp "
-		 "| sed -e 's#" SRC_PATH "##g' "
-		 "> " EXE_PATH "/malt-current-out-basic-run-and-check-extract.txt"
-	);
-
+	std::string result = MALT::Helpers::simpleProfileDump(EXE_PATH "/malt-current-out-basic-run-and-check.json", SRC_PATH "/src/lib/tests/simple-case.cpp");
+		 
 	//load file
-	std::string result = loadFullFile(EXE_PATH "/malt-current-out-basic-run-and-check-extract.txt");
-	std::string ref = loadFullFile(SRC_PATH "/src/lib/tests/malt-current-out-basic-run-and-check-extract-ref.txt");
+	std::string ref = MALT::Helpers::loadFullFile(SRC_PATH "/src/lib/tests/malt-current-out-basic-run-and-check-extract-ref.txt");
 
 	//compare
 	ASSERT_EQ(result, ref);

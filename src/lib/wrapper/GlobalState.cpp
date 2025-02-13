@@ -365,6 +365,7 @@ void globalResetForTests(void)
 {
 	gblState = GBL_STATE_INIT;
 	tlsState = TLS_STATE_INIT;
+	gblOptions = NULL;
 }
 
 }

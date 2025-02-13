@@ -14,6 +14,7 @@
 #include <cassert>
 #include <iomanip>
 #include <cstdio>
+#include <unistd.h>
 //portability wrappers
 #include <portability/OS.hpp>
 //header to implement
@@ -64,6 +65,78 @@ void Helpers::printValue(std::ostream & out,double value, const char* unit)
 int Helpers::getFileId(void )
 {
 	return OS::getPID();
+}
+
+/**********************************************************/
+std::string Helpers::loadFullFile(const std::string & fname)
+{
+	//output
+	std::string result;
+
+	//open
+	FILE * fp = fopen(fname.c_str(), "r");
+	if (fp == NULL)
+		return result;
+
+	//load
+	while (!feof(fp)) {
+		char buffer[4096];
+		ssize_t size = fread(buffer, 1,sizeof(buffer)-1, fp);
+		buffer[size] = '\0';
+		result += buffer;
+	}
+
+	//close
+	fclose(fp);
+
+	//ok
+	return result;
+}
+
+/**********************************************************/
+bool Helpers::writeFullFile(const std::string & fname, const std::string & data)
+{
+	//open
+	FILE * fp = fopen(fname.c_str(), "w+");
+	if (fp == NULL)
+		return false;
+
+	//write
+	ssize_t res = fwrite(data.c_str(), 1, data.size(), fp);
+	assert(res == data.size());
+
+	//ok
+	return res == data.size();
+}
+
+/**********************************************************/
+std::string Helpers::simpleProfileDump(const std::string & profileFile, const std::string & sourceFile)
+{
+	//create tmp file
+	char tmpFile[] = "malt-unit-test-XXXXXX";
+	int fd = mkstemp(tmpFile);
+	assert(fd > 0);
+
+	//build command
+	std::stringstream cmd;
+	cmd << "node "
+		<< SRC_PATH << "/src/webview/malt-simple-dump.js "
+		<< "-i " << profileFile << " "
+		<< "-s " << sourceFile << " "
+		<< "| sed -e 's#" SRC_PATH "##g' "
+		<< "> " << tmpFile;
+
+	//run
+	system(cmd.str().c_str());
+
+	//read
+	std::string result = MALT::Helpers::loadFullFile(tmpFile);
+
+	//close & remove
+	close(fd);
+
+	//ok
+	return result;
 }
 
 }

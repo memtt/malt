@@ -19,6 +19,7 @@ extern "C"
 /**********************************************************/
 void maltEnable(void);
 void maltDisable(void);
+int maltInitStatus(void);
 
 #ifdef __cplusplus
 }

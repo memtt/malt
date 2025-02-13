@@ -98,8 +98,6 @@ void* WrapperPythonObj::realloc(void* ctx, void *ptr, size_t new_size)
 /**********************************************************/
 void initPythonAllocInstrumentation()
 {
-	printf("MALT PYTHON INIT <================\n");
-
 	//get all
 	PyMem_GetAllocator(::PYMEM_DOMAIN_RAW, &gblPythonRawAlloc);
 	PyMem_GetAllocator(::PYMEM_DOMAIN_MEM, &gblPythonMemAlloc);

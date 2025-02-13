@@ -2,7 +2,7 @@ loading file /build/src/lib/tests/malt-current-out-basic-run-and-check.json...
 Loading file : /build/src/lib/tests/malt-current-out-basic-run-and-check.json
 Finished reading JSON file
 Optimizing datas for requests...
-???????????? => 72 -> 75
+???????????? => 79 -> 82
 Optimizing sites.instr...
 Optimizing access to stack details...
 Data optimization done.
@@ -127,9 +127,9 @@ simple-case.cpp:testMaxAlive():120
  - globalPeak: 0
 
 simple-case.cpp:testThreads():126
- - alloc: {"count":30,"min":16,"max":3200,"sum":7096}
- - free: {"count":30,"min":16,"max":3200,"sum":7096}
- - globalPeak: 6264
+ - alloc: {"count":30,"min":16,"max":3200,"sum":7208}
+ - free: {"count":30,"min":16,"max":3200,"sum":7208}
+ - globalPeak: 6376
 
 simple-case.cpp:testThreads() [clone ._omp_fn.0]:130
  - alloc: {"count":100,"min":64,"max":64,"sum":6400}
@@ -327,9 +327,9 @@ simple-case.cpp:main:298
  - globalPeak: 0
 
 simple-case.cpp:main:299
- - alloc: {"count":30,"min":16,"max":3200,"sum":7096}
- - free: {"count":30,"min":16,"max":3200,"sum":7096}
- - globalPeak: 6264
+ - alloc: {"count":30,"min":16,"max":3200,"sum":7208}
+ - free: {"count":30,"min":16,"max":3200,"sum":7208}
+ - globalPeak: 6376
 
 simple-case.cpp:main:300
  - alloc: {"count":7,"min":16,"max":16,"sum":112}

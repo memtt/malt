@@ -611,7 +611,7 @@ void AllocStackProfiler::onExit(void )
 
 		//To know it has been done
 		if (options.outputVerbosity >= MALT_VERBOSITY_DEFAULT)
-			fprintf(stderr,"MALT: profile dump done...\n");
+			fprintf(stderr,"MALT: profile dump done : %s...\n", FormattedMessage(options.outputName).arg(OS::getExeName()).arg(Helpers::getFileId()).arg("json").toString().c_str());
 
 		//print timings
 		#ifdef MALT_ENABLE_CODE_TIMING

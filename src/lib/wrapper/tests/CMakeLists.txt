@@ -12,6 +12,12 @@
 #Use gtest
 include_directories(${GTEST_INCLUDE_DIRS} ${GMOCK_INCLUDE_DIRS})
 include_directories(../)
+include_directories(${Python3_INCLUDE_DIRS})
+
+############################################################
+add_definitions(-DBINARY_DIR="${CMAKE_CURRENT_BINARY_DIR}")
+add_definitions(-DBUILD_DIR="${CMAKE_BINARY_DIR}")
+add_definitions(-DSRC_DIR="${CMAKE_SOURCE_DIR}")
 
 ############################################################
 set(TEST_NAMES
@@ -25,3 +31,9 @@ FOREACH(test_name ${TEST_NAMES})
 	target_link_libraries(${test_name} ${GTEST_BOTH_LIBRARIES} ${GMOCK_BOTH_LIBRARIES} malt-base)
 	malt_add_test(${test_name} ${test_name})
 ENDFOREACH(test_name)
+
+############################################################
+target_link_libraries(TestInstrum malt-injectors)
+target_compile_options(TestInstrum PUBLIC -g)
+target_link_libraries(TestInstrum ${PYTHON3_LIBRARIES})
+	
