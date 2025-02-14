@@ -77,5 +77,25 @@
 		"concepts": "cpp",
 		"charconv": "cpp"
 	},
-	"cmake.configureOnOpen": false
+	"cmake.configureOnOpen": false,
+	"[python]": {
+		"editor.insertSpaces": true,
+		"editor.tabSize": 4
+	},
+	"[cpp]": {
+		"editor.insertSpaces": false,
+		"editor.tabSize": 4
+	},
+	"[c]": {
+		"editor.insertSpaces": false,
+		"editor.tabSize": 4
+	},
+	"[javascript]": {
+		"editor.insertSpaces": false,
+		"editor.tabSize": 4
+	},
+	"[html]": {
+		"editor.insertSpaces": false,
+		"editor.tabSize": 4
+	},
 }
