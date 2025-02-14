@@ -46,6 +46,8 @@ TEST(TestFullAnalysis, basic_run_and_check_file_line_counter)
 	//load file
 	std::string ref = MALT::Helpers::loadFullFile(SRC_PATH "/src/lib/tests/malt-current-out-basic-run-and-check-extract-ref.txt");
 
+	//MALT::Helpers::writeFullFile(SRC_PATH "/src/lib/tests/malt-current-out-basic-run-and-check-extract-ref.txt", result);
+
 	//compare
 	ASSERT_EQ(result, ref);
 }

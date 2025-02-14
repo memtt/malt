@@ -1,0 +1,47 @@
+loading file /build/src/lib/wrapper/tests/malt-python-basic-array.json...
+Loading file : /build/src/lib/wrapper/tests/malt-python-basic-array.json
+Finished reading JSON file
+Optimizing datas for requests...
+Optimizing sites.instr...
+Optimizing access to stack details...
+Data optimization done.
+----------------- EXTRACT ------------------
+/build/src/lib/wrapper/tests/malt-python-basic-array.json
+/src/lib/wrapper/tests/main1.py
+--------------------------------------------
+
+main1.py:py:MainClass:2
+ - alloc: {"count":1,"min":160,"max":160,"sum":160}
+ - free: {"count":1,"min":160,"max":160,"sum":160}
+ - globalPeak: 0
+
+main1.py:py:MainClass:5
+ - alloc: {"count":2,"min":160,"max":208,"sum":368}
+ - free: {"count":2,"min":160,"max":208,"sum":368}
+ - globalPeak: 0
+
+main1.py:py:MainClass.a_function:7
+ - alloc: {"count":2,"min":40,"max":48,"sum":88}
+ - free: {"count":2,"min":40,"max":48,"sum":88}
+ - globalPeak: 0
+
+main1.py:py:MainClass.a_function:8
+ - alloc: {"count":11,"min":32,"max":864,"sum":4128}
+ - free: {"count":11,"min":32,"max":864,"sum":4128}
+ - globalPeak: 0
+
+main1.py:py:MainClass.a_function:9
+ - alloc: {"count":209,"min":16,"max":512,"sum":9407}
+ - free: {"count":209,"min":16,"max":512,"sum":9407}
+ - globalPeak: 0
+
+main1.py:py:main:12
+ - alloc: {"count":1,"min":328,"max":328,"sum":328}
+ - free: {"count":1,"min":328,"max":328,"sum":328}
+ - globalPeak: 0
+
+main1.py:py:main:13
+ - alloc: {"count":222,"min":16,"max":864,"sum":13623}
+ - free: {"count":222,"min":16,"max":864,"sum":13623}
+ - globalPeak: 0
+Finished processing JSON file

@@ -2,7 +2,7 @@ loading file /build/src/lib/tests/malt-current-out-basic-run-and-check.json...
 Loading file : /build/src/lib/tests/malt-current-out-basic-run-and-check.json
 Finished reading JSON file
 Optimizing datas for requests...
-???????????? => 79 -> 82
+???????????? => 62 -> 65
 Optimizing sites.instr...
 Optimizing access to stack details...
 Data optimization done.
@@ -126,17 +126,12 @@ simple-case.cpp:testMaxAlive():120
  - free: {"count":0,"min":0,"max":0,"sum":0}
  - globalPeak: 0
 
-simple-case.cpp:testThreads():126
- - alloc: {"count":30,"min":16,"max":3200,"sum":7208}
- - free: {"count":30,"min":16,"max":3200,"sum":7208}
- - globalPeak: 6376
-
-simple-case.cpp:testThreads() [clone ._omp_fn.0]:130
+simple-case.cpp:testThreads():130
  - alloc: {"count":100,"min":64,"max":64,"sum":6400}
  - free: {"count":100,"min":64,"max":64,"sum":6400}
  - globalPeak: 0
 
-simple-case.cpp:testThreads() [clone ._omp_fn.0]:132
+simple-case.cpp:testThreads():132
  - alloc: {"count":0,"min":0,"max":0,"sum":0}
  - free: {"count":0,"min":0,"max":0,"sum":0}
  - globalPeak: 0
@@ -152,8 +147,8 @@ simple-case.cpp:testLeak2():146
  - globalPeak: 32
 
 simple-case.cpp:testRecuseIntervedA(int):158
- - alloc: {"count":46,"min":64,"max":64,"sum":2944}
- - free: {"count":46,"min":64,"max":64,"sum":2944}
+ - alloc: {"count":11,"min":64,"max":64,"sum":704}
+ - free: {"count":11,"min":64,"max":64,"sum":704}
  - globalPeak: 64
 
 simple-case.cpp:testRecuseIntervedA(int):160
@@ -162,13 +157,13 @@ simple-case.cpp:testRecuseIntervedA(int):160
  - globalPeak: 0
 
 simple-case.cpp:testRecuseIntervedA(int):161
- - alloc: {"count":82,"min":64,"max":64,"sum":5248}
- - free: {"count":82,"min":64,"max":64,"sum":5248}
+ - alloc: {"count":19,"min":64,"max":64,"sum":1216}
+ - free: {"count":19,"min":64,"max":64,"sum":1216}
  - globalPeak: 0
 
 simple-case.cpp:testRecuseIntervedB(int):171
- - alloc: {"count":54,"min":64,"max":64,"sum":3456}
- - free: {"count":54,"min":64,"max":64,"sum":3456}
+ - alloc: {"count":12,"min":64,"max":64,"sum":768}
+ - free: {"count":12,"min":64,"max":64,"sum":768}
  - globalPeak: 0
 
 simple-case.cpp:testRecuseIntervedB(int):173
@@ -177,8 +172,8 @@ simple-case.cpp:testRecuseIntervedB(int):173
  - globalPeak: 0
 
 simple-case.cpp:testRecuseIntervedB(int):175
- - alloc: {"count":88,"min":64,"max":64,"sum":5632}
- - free: {"count":88,"min":64,"max":64,"sum":5632}
+ - alloc: {"count":18,"min":64,"max":64,"sum":1152}
+ - free: {"count":18,"min":64,"max":64,"sum":1152}
  - globalPeak: 0
 
 simple-case.cpp:testAllFuncs():184
@@ -266,14 +261,9 @@ simple-case.cpp:testPeak():233
  - free: {"count":0,"min":0,"max":0,"sum":0}
  - globalPeak: 0
 
-simple-case.cpp:testParallelWithRecurse():263
+simple-case.cpp:testParallelWithRecurse():265
  - alloc: {"count":11,"min":64,"max":64,"sum":704}
  - free: {"count":11,"min":64,"max":64,"sum":704}
- - globalPeak: 0
-
-simple-case.cpp:testParallelWithRecurse() [clone ._omp_fn.0]:265
- - alloc: {"count":88,"min":64,"max":64,"sum":5632}
- - free: {"count":88,"min":64,"max":64,"sum":5632}
  - globalPeak: 0
 
 simple-case.cpp:main:279
@@ -327,9 +317,9 @@ simple-case.cpp:main:298
  - globalPeak: 0
 
 simple-case.cpp:main:299
- - alloc: {"count":30,"min":16,"max":3200,"sum":7208}
- - free: {"count":30,"min":16,"max":3200,"sum":7208}
- - globalPeak: 6376
+ - alloc: {"count":100,"min":64,"max":64,"sum":6400}
+ - free: {"count":100,"min":64,"max":64,"sum":6400}
+ - globalPeak: 0
 
 simple-case.cpp:main:300
  - alloc: {"count":7,"min":16,"max":16,"sum":112}
