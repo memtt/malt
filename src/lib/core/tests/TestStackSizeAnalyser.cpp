@@ -73,8 +73,8 @@ TEST(TestStackSizeAnalyser, enter_exit)
 {
 	//build it
 	StackSizeAnalyser analyser;
-	analyser.onEnterFunc((void*)0x100);
-	analyser.onExitFunc((void*)0x100);
+	analyser.onEnterFunc(LangAddress(DOMAIN_C, (void*)0x100));
+	analyser.onExitFunc(LangAddress(DOMAIN_C, (void*)0x100));
 }
 
 /**********************************************************/
@@ -87,12 +87,12 @@ TEST(TestStackSizeAnalyser, full_workflow)
 	StackSizeAnalyser analyser;
 
 	//play
-	analyser.onEnterFunc((void*)0x100);
-	analyser.onEnterFunc((void*)0x200);
-	analyser.onExitFunc((void*)0x200);
-	analyser.onEnterFunc((void*)0x300);
-	analyser.onExitFunc((void*)0x300);
-	analyser.onExitFunc((void*)0x100);
+	analyser.onEnterFunc(LangAddress(DOMAIN_C, (void*)0x100));
+	analyser.onEnterFunc(LangAddress(DOMAIN_C, (void*)0x200));
+	analyser.onExitFunc(LangAddress(DOMAIN_C, (void*)0x200));
+	analyser.onEnterFunc(LangAddress(DOMAIN_C, (void*)0x300));
+	analyser.onExitFunc(LangAddress(DOMAIN_C, (void*)0x300));
+	analyser.onExitFunc(LangAddress(DOMAIN_C, (void*)0x100));
 
 	//solver
 	SymbolSolver solver;
@@ -118,12 +118,12 @@ TEST(TestStackSizeAnalyser, solveSymbos)
 	StackSizeAnalyser analyser;
 
 	//play
-	analyser.onEnterFunc((void*)0x100, 3000);
-	analyser.onEnterFunc((void*)0x200, 2000);
-	analyser.onExitFunc((void*)0x200);
-	analyser.onEnterFunc((void*)0x300, 1000);
-	analyser.onExitFunc((void*)0x300);
-	analyser.onExitFunc((void*)0x100);
+	analyser.onEnterFunc(LangAddress(DOMAIN_C, (void*)0x100), 3000);
+	analyser.onEnterFunc(LangAddress(DOMAIN_C, (void*)0x200), 2000);
+	analyser.onExitFunc(LangAddress(DOMAIN_C, (void*)0x200));
+	analyser.onEnterFunc(LangAddress(DOMAIN_C, (void*)0x300), 1000);
+	analyser.onExitFunc(LangAddress(DOMAIN_C, (void*)0x300));
+	analyser.onExitFunc(LangAddress(DOMAIN_C, (void*)0x100));
 
 	//solve
 	SymbolSolver solver;

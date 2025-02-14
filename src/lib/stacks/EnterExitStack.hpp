@@ -44,8 +44,8 @@ class EnterExitStack : public Stack
 {
 	public:
 		EnterExitStack(void);
-		inline void enterFunction(void * funcAddr);
-		inline void exitFunction(void * funcAddr);
+		inline void enterFunction(LangAddress funcAddr);
+		inline void exitFunction(LangAddress funcAddr);
 	private:
 		size_t realSize;
 };
@@ -55,7 +55,7 @@ class EnterExitStack : public Stack
  * Notify function entry point.
  * It may produce a reallocation of the storage segment.
 **/
-inline void EnterExitStack::enterFunction ( void* funcAddr )
+inline void EnterExitStack::enterFunction ( LangAddress funcAddr )
 {
 	//check default
 	if (stack == NULL)
@@ -71,7 +71,7 @@ inline void EnterExitStack::enterFunction ( void* funcAddr )
 		this->grow();
 		
 	//update
-	this->stack[size++].set(DOMAIN_C, funcAddr);
+	this->stack[size++] = funcAddr;
 	
 	//errors
 	assert(size <= memSize);
@@ -82,7 +82,7 @@ inline void EnterExitStack::enterFunction ( void* funcAddr )
  * Notify a function exit to remove the last stack entry.
  * It will not free the related memory for future reuse.
 **/
-inline void EnterExitStack::exitFunction ( void* funcAddr )
+inline void EnterExitStack::exitFunction ( LangAddress funcAddr )
 {
 	assert(size > 0);
 
@@ -93,7 +93,7 @@ inline void EnterExitStack::exitFunction ( void* funcAddr )
 	if (size > 0)
 		size--;
 
-	assert(funcAddr == stack[size].getAddress());
+	assert(funcAddr == stack[size]);
 }
 
 }

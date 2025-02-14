@@ -35,7 +35,7 @@ void __cyg_profile_func_enter (void *this_fn,void *call_site)
 	
 	//stack tracking
 	if (tlsState.status == ALLOC_WRAP_READY || tlsState.status == ALLOC_WRAP_DISABLED)
-		localState.profiler->onEnterFunc(this_fn,call_site);
+		localState.profiler->onEnterFunc(LangAddress(DOMAIN_C, this_fn),LangAddress(DOMAIN_C, call_site));
 }
 
 /**********************************************************/
@@ -57,5 +57,5 @@ void __cyg_profile_func_exit  (void *this_fn,void *call_site)
 	
 	//stack tracking
 	if (tlsState.status == ALLOC_WRAP_READY || tlsState.status == ALLOC_WRAP_DISABLED)
-		localState.profiler->onExitFunc(this_fn,call_site);
+		localState.profiler->onExitFunc(LangAddress(DOMAIN_C, this_fn),LangAddress(DOMAIN_C, call_site));
 }

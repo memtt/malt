@@ -71,9 +71,8 @@ LangAddress & LangAddress::operator-=(size_t delta)
 bool LangAddress::isNULL(void) const{
 	switch (this->domain){
 		case DOMAIN_C:
-			return (this->address == 0);	
 		case DOMAIN_PYTHON:
-			return false;
+			return (this->address == 0);
 		default:
 			MALT_FATAL_ARG("Undefined domain %1").arg(domain).end();
 			return true;

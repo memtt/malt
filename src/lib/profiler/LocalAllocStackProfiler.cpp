@@ -39,7 +39,7 @@ LocalAllocStackProfiler::LocalAllocStackProfiler(AllocStackProfiler* globalProfi
 	this->options = globalProfiler->getOptions();
 	this->stackMode = globalProfiler->getStackMode();
 	this->enterExitStackTracer = globalProfiler->getEnterExitStackTracer();
-	enterExitStack.enterFunction((void*)0x1);
+	enterExitStack.enterFunction(LangAddress(DOMAIN_C, (void*)0x1));
 	backtraceStack.loadCurrentStack();
 	
 	this->enterExitHandler = enterExitStackTracer->getRoot();

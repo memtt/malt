@@ -26,7 +26,7 @@ StackSizeAnalyser::StackSizeAnalyser(void)
 	:largestStack(STACK_ORDER_DESC),timeProfile(MALT_PROFILED_VALUE_DEFAULT_STEPS,true)
 {
 	this->largestSize = 0;
-	currentStack.enterFunction((void*)0x1);
+	currentStack.enterFunction(LangAddress(DOMAIN_C, (void*)0x1));
 }
 
 /**********************************************************/

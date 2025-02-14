@@ -37,6 +37,8 @@ class BacktracePythonStack : public Stack
 		BacktracePythonStack(PythonSymbolTracker & pythonSymbolTracker);
 		~BacktracePythonStack(void);
 		void loadCurrentStack(void);
+		LangAddress getCurrentFrameAddr(void);
+		PyFrameObject * loadCurrentFrame(void);
 	private:
 		PythonSymbolTracker & pythonSymbolTracker;
 };

@@ -15,6 +15,26 @@
 #include <stacks/BacktracePythonStack.hpp>
 
 /**********************************************************/
+/** Check init status of local and global state and call enter/exit methods, then do requested action. **/
+#define MALT_WRAPPER_LOCAL_STATE_ACTION_PYTHON(action)  \
+	if (gblState.status == ALLOC_WRAP_READY && tlsState.status == ALLOC_WRAP_READY) \
+	{ \
+		LangAddress __retAddr__ = nullAddr; \
+		if (localState.profiler->isInUse() == false) { \
+			bool __oldStatus = localState.profiler->markInUseAndGetOldStatus(); \
+			__retAddr__ = localState.profiler->getBacktracePythonStack().getCurrentFrameAddr(); \
+			localState.profiler->restoreInUseStatus(__oldStatus); \
+		} \
+		if (isEnterExit)\
+		{\
+			localState.profiler->onEnterFunc(nullAddr,__retAddr__,true); \
+		}\
+		do{action;}while(0); \
+		if (isEnterExit) \
+			localState.profiler->onExitFunc(nullAddr,__retAddr__,true); \
+	}
+
+/**********************************************************/
 namespace MALT
 {
 
@@ -29,7 +49,7 @@ void * malt_wrap_python_malloc(void * ctx, size_t size, PythonMallocFuncPtr real
 	
 	//not to reenter in low level alloc
 	bool oldStatus;
-	MALT_WRAPPER_LOCAL_STATE_ACTION(oldStatus = localState.profiler->markInUseAndGetOldStatus(), retaddr);
+	oldStatus = localState.profiler->markInUseAndGetOldStatus();
 
 	//real call
 	ticks t = Clock::getticks();
@@ -37,10 +57,10 @@ void * malt_wrap_python_malloc(void * ctx, size_t size, PythonMallocFuncPtr real
 	t = Clock::getticks() - t;
 
 	//end of not reenter
-	MALT_WRAPPER_LOCAL_STATE_ACTION(localState.profiler->restoreInUseStatus(oldStatus), retaddr);
+	localState.profiler->restoreInUseStatus(oldStatus);
 
 	//profile
-	MALT_WRAPPER_LOCAL_STATE_ACTION(localState.profiler->onMalloc(res,size,t,MALLOC_KIND_MALLOC,LANG_PYTHON), retaddr);
+	MALT_WRAPPER_LOCAL_STATE_ACTION_PYTHON(localState.profiler->onMalloc(res,size,t,MALLOC_KIND_MALLOC,LANG_PYTHON));
 
 	//return segment to user
 	return res;
@@ -53,18 +73,17 @@ void malt_wrap_python_free(void * ctx, void * ptr, PythonFreeFuncPtr real_free, 
 	MALT_WRAPPER_LOCAL_STATE_INIT;
 
 	//profile
-	MALT_WRAPPER_LOCAL_STATE_ACTION(localState.profiler->onFree(ptr,0,LANG_PYTHON), retaddr);
+	MALT_WRAPPER_LOCAL_STATE_ACTION_PYTHON(localState.profiler->onFree(ptr,0,LANG_PYTHON));
 
 	//not to reenter in low level alloc
-	bool oldStatus;
-	MALT_WRAPPER_LOCAL_STATE_ACTION(oldStatus = localState.profiler->markInUseAndGetOldStatus(), retaddr);
+	bool oldStatus = localState.profiler->markInUseAndGetOldStatus();
 
 	//run the default function
 	assert(gblState.status > ALLOC_WRAP_INIT_SYM);
 	real_free(ctx, ptr);
 
 	//end of not reenter
-	MALT_WRAPPER_LOCAL_STATE_ACTION(localState.profiler->restoreInUseStatus(oldStatus), retaddr);
+	localState.profiler->restoreInUseStatus(oldStatus);
 }
 
 /**********************************************************/
@@ -85,18 +104,17 @@ void * malt_wrap_python_calloc(void * ctx, size_t nmemb,size_t size, PythonCallo
 	assert(gblState.status > ALLOC_WRAP_INIT_SYM);
 
 	//not to reenter in low level alloc
-	bool oldStatus;
-	MALT_WRAPPER_LOCAL_STATE_ACTION(oldStatus = localState.profiler->markInUseAndGetOldStatus(), retaddr);
+	bool oldStatus = localState.profiler->markInUseAndGetOldStatus();
 	
 	ticks t = Clock::getticks();
 	void * res = real_calloc(ctx,nmemb,size);
 	t = Clock::getticks() - t;
 
 	//end of not reenter
-	MALT_WRAPPER_LOCAL_STATE_ACTION(localState.profiler->restoreInUseStatus(oldStatus), retaddr);
+	localState.profiler->restoreInUseStatus(oldStatus);
 
 	//profile
-	MALT_WRAPPER_LOCAL_STATE_ACTION(localState.profiler->onCalloc(res,nmemb,size,t,LANG_PYTHON), retaddr);
+	MALT_WRAPPER_LOCAL_STATE_ACTION_PYTHON(localState.profiler->onCalloc(res,nmemb,size,t,LANG_PYTHON));
 
 	//return result to user
 	return res;
@@ -112,18 +130,17 @@ void * malt_wrap_python_realloc(void * ctx,void * ptr,size_t size, PythonRealloc
 	assert(gblState.status > ALLOC_WRAP_INIT_SYM);
 
 	//not to reenter in low level alloc
-	bool oldStatus;
-	MALT_WRAPPER_LOCAL_STATE_ACTION(oldStatus = localState.profiler->markInUseAndGetOldStatus(), retaddr);
+	bool oldStatus = localState.profiler->markInUseAndGetOldStatus();
 	
 	ticks t = Clock::getticks();
 	void * res = real_realloc(ctx,ptr,size);
 	t = Clock::getticks() - t;
 
 	//end of not reenter
-	MALT_WRAPPER_LOCAL_STATE_ACTION(localState.profiler->restoreInUseStatus(oldStatus), retaddr);
+	localState.profiler->restoreInUseStatus(oldStatus);
 	
 	//profile
-	MALT_WRAPPER_LOCAL_STATE_ACTION(localState.profiler->onRealloc(ptr,res,size,t,LANG_PYTHON), retaddr);
+	MALT_WRAPPER_LOCAL_STATE_ACTION_PYTHON(localState.profiler->onRealloc(ptr,res,size,t,LANG_PYTHON));
 	
 	return res;
 }
@@ -131,26 +148,45 @@ void * malt_wrap_python_realloc(void * ctx,void * ptr,size_t size, PythonRealloc
 /**********************************************************/
 int malt_wrap_python_on_enter_exit(PyObject *obj, PyFrameObject *frame, int what, PyObject *arg)
 {
-	MALT::PythonSymbolTracker & tracker = gblState.profiler->getPythonSymbolTracker();
-	LangAddress addr = tracker.frameToLangAddress(frame);
-	MALT::PythonCallSite site = tracker.getCallSite(addr);
+	//get local TLS and check init
+	MALT_WRAPPER_LOCAL_STATE_INIT
+
+	//not to reenter in low level alloc
+	bool oldStatus;
+	oldStatus = localState.profiler->markInUseAndGetOldStatus();
+
+	//apply
 	switch (what)
 	{
-		case PyTrace_CALL:
-			printf("Enter call %p %s\n", frame, site.function);
+		case PyTrace_CALL: {
+			MALT::PythonSymbolTracker & tracker = gblState.profiler->getPythonSymbolTracker();
+			LangAddress parentAddr = tracker.parentFrameToLangAddress(frame);
+			PythonCallSite site = tracker.getCallSite(parentAddr);
+			printf("enter in %s:%s:%d\n", site.file, site.function, site.line);
+			localState.profiler->onEnterFunc(nullAddr,parentAddr,true);
 			break;
-		case PyTrace_RETURN:
-			printf("Return call %p %s\n", frame, site.function);
+		}
+		case PyTrace_RETURN: {
+			MALT::PythonSymbolTracker & tracker = gblState.profiler->getPythonSymbolTracker();
+			LangAddress parentAddr = tracker.parentFrameToLangAddress(frame);
+			PythonCallSite site = tracker.getCallSite(parentAddr);
+			printf("exit in %s:%s:%d\n", site.file, site.function, site.line);
+			localState.profiler->onExitFunc(nullAddr,parentAddr,true);
 			break;
+		}
 		case PyTrace_C_CALL:
-			printf("Enter C call %p %s\n", frame, site.function);
+			localState.profiler->onEnterFunc(nullAddr, LangAddress(DOMAIN_PYTHON, MALT_PYTHON_C_BRIDGE_FUNC_ID),true);
 			break;
 		case PyTrace_C_RETURN:
-			printf("Edit C call %p %s\n", frame, site.function);
+			localState.profiler->onExitFunc(nullAddr, LangAddress(DOMAIN_PYTHON, MALT_PYTHON_C_BRIDGE_FUNC_ID),true);
 			break;
-		default:{}
+		default:{
 			//ignored
+		}
 	};
+
+	//end of not reenter
+	localState.profiler->restoreInUseStatus(oldStatus);
 
 	//ok
 	return 0;

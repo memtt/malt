@@ -35,12 +35,31 @@ PythonSymbolTracker::PythonSymbolTracker(void)
 	const char * nullName = gblInternaAlloc->strdup("MALT_PYTHON_NULL_FRAME");
 	const PythonCallSite siteNull = {nullName, nullName, 0};
 	this->siteMap[siteNull] = MALT_PYTHON_NULL_FUNC_ID;
+
+	//build C bridge map
+	const char * cBridgeName = gblInternaAlloc->strdup("MALT_PYTHON_C_BRIDGE_FRAME");
+	const PythonCallSite siteCBridge = {cBridgeName, cBridgeName, 0};
+	this->siteMap[siteCBridge] = MALT_PYTHON_C_BRIDGE_FUNC_ID;
 }
 
 /**********************************************************/
 PythonSymbolTracker::~PythonSymbolTracker(void)
 {
 
+}
+
+/**********************************************************/
+LangAddress PythonSymbolTracker::parentFrameToLangAddress(PyFrameObject * frame)
+{
+	//get up
+	PyFrameObject * parentFrame = PyFrame_GetBack(frame);
+
+	//if top
+	if (parentFrame == NULL)
+		return LangAddress(DOMAIN_PYTHON, MALT_PYTHON_INIT_FUNC_ID);
+
+	//ok
+	return this->frameToLangAddress(parentFrame);
 }
 
 /**********************************************************/

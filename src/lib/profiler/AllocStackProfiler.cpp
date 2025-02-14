@@ -141,9 +141,8 @@ void AllocStackProfiler::onFree(void* ptr,Stack * userStack)
 }
 
 /**********************************************************/
-void AllocStackProfiler::registerSymbol(int funcId, const char* funcName, const char* file, int line)
+void AllocStackProfiler::registerMaqaoFunctionSymbol(int funcId, const char* funcName, const char* file, int line)
 {
-	this->pythonSymbolTracker.registerSymbolResolution(symbolResolver);
 	symbolResolver.registerMaqaoFunctionSymbol(funcId,funcName,file,line);
 }
 
@@ -526,6 +525,9 @@ void AllocStackProfiler::onExit(void )
 	MALT_OPTIONAL_CRITICAL(lock,threadSafe)
 		//to not instrument childs
 		unsetenv("LD_PRELOAD");
+
+		//register symbols
+		this->pythonSymbolTracker.registerSymbolResolution(this->symbolResolver);
 
 		//solve symbols
 		CODE_TIMING("solveSymbols",

@@ -32,8 +32,8 @@ class StackSizeAnalyser
 {
 	public:
 		StackSizeAnalyser(void);
-		inline void onEnterFunc(void * funcAddr, size_t stackPointer = 0);
-		inline void onExitFunc(void * funcAddr);
+		inline void onEnterFunc(LangAddress funcAddr, size_t stackPointer = 0);
+		inline void onExitFunc(LangAddress funcAddr);
 		void solveSymbols(SymbolSolver & symbolResolver) const;
 	public:
 		friend void convertToJson(htopml::JsonState& json, const StackSizeAnalyser& value);
@@ -59,7 +59,7 @@ class StackSizeAnalyser
  * @param stackPointer The address of the stack at the call time. This is used to
  * compute the stack. If 0, then it automatically fetch it inside.
 **/
-inline void StackSizeAnalyser::onEnterFunc(void* funcAddr, size_t stackPointer)
+inline void StackSizeAnalyser::onEnterFunc(LangAddress funcAddr, size_t stackPointer)
 {
 	//update current
 	currentStack.enterFunction(funcAddr);
@@ -88,7 +88,7 @@ inline void StackSizeAnalyser::onEnterFunc(void* funcAddr, size_t stackPointer)
  * Function to be used when we exit from a function.
  * @param funcAddr Function pointer to the function we exit.
 **/
-inline void StackSizeAnalyser::onExitFunc(void* funcAddr)
+inline void StackSizeAnalyser::onExitFunc(LangAddress funcAddr)
 {
 	//update current
 	currentStack.exitFunction(funcAddr);

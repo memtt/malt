@@ -29,7 +29,7 @@ void ProfiledStateValueEntry::reset(void)
 	this->min = -1;
 	this->max = 0;
 	this->index = 0;
-	this->location = NULL;
+	this->location = nullAddr;
 }
 
 /**********************************************************/
@@ -83,21 +83,21 @@ ProfiledStateValue::ProfiledStateValue(size_t steps,bool useLinearIndex)
 }
 
 /**********************************************************/
-void ProfiledStateValue::onDeltaEvent(ssize_t delta,void * location)
+void ProfiledStateValue::onDeltaEvent(ssize_t delta,LangAddress location)
 {
 	this->value += delta;
 	onUpdateValue(value,location);
 }
 
 /**********************************************************/
-void ProfiledStateValue::onUpdateValue(size_t value,void * location)
+void ProfiledStateValue::onUpdateValue(size_t value,LangAddress location)
 {
 	//get current
 	ticks index = getIndex();
 	ticks timestamp = Clock::getticks();
 	this->value = value;
 	
-	if (location != NULL)
+	if (location.isNULL() == false)
 		this->hasLocation = true;
 	
 	//flush previous if really old
@@ -105,14 +105,14 @@ void ProfiledStateValue::onUpdateValue(size_t value,void * location)
 		this->flush();
 	
 	//update current
-	updateCurrentMinMax(index,timestamp,location);
+	updateCurrentMinMax(index,timestamp, location);
 	
 	//update linear index
 	linearIndex++;
 }
 
 /**********************************************************/
-void ProfiledStateValue::updateCurrentMinMax(ticks index, ticks timestamp, void* location )
+void ProfiledStateValue::updateCurrentMinMax(ticks index, ticks timestamp, LangAddress location )
 {
 	//update current interval min/max
 	if (value > current.max)

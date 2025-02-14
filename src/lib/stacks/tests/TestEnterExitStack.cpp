@@ -23,9 +23,9 @@ TEST(Stack,test1)
 	EnterExitStack stack;
 	
 	for (int i = 0 ; i < 6 ; i++)
-		stack.enterFunction((void*)(size_t)i);
+		stack.enterFunction(LangAddress(DOMAIN_C, (void*)(size_t)i));
 	
-	stack.exitFunction((void*)0x5);
+	stack.exitFunction(LangAddress(DOMAIN_C, (void*)0x5));
 	
 	for (int i = 0 ; i < 5 ; i++)
 		EXPECT_EQ(LangAddress(DOMAIN_C, (void*) (size_t)(4-i)),stack[i]);

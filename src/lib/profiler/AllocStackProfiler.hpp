@@ -144,7 +144,7 @@ class AllocStackProfiler
 		void registerPerThreadProfiler(LocalAllocStackProfiler * profiler);
 		ticks ticksPerSecond(void) const;
 		StackMode getStackMode(void) const {return mode;};
-		void registerSymbol(int funcId,const char * funcName,const char * file,int line);
+		void registerMaqaoFunctionSymbol(int funcId,const char * funcName,const char * file,int line);
 		AllocTreeStrackTracer * getEnterExitStackTracer(void);
 		bool isEnterExit(void);
 		LocalAllocStackProfiler * createLocalStackProfiler(bool reentrant);

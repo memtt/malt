@@ -18,6 +18,21 @@
 using namespace MALT;
 
 /**********************************************************/
+/** Check init status of local and global state and call enter/exit methods, then do requested action. **/
+#define MALT_WRAPPER_LOCAL_STATE_ACTION(action, retAddr)  \
+	if (gblState.status == ALLOC_WRAP_READY && tlsState.status == ALLOC_WRAP_READY) \
+	{ \
+		if (isEnterExit)\
+		{\
+			retAddr =__builtin_extract_return_addr(__builtin_return_address(0)); \
+			localState.profiler->onEnterFunc(LangAddress(DOMAIN_C, (void*)__func__),LangAddress(DOMAIN_C, retAddr),true); \
+		}\
+		do{action;}while(0); \
+		if (isEnterExit) \
+			localState.profiler->onExitFunc(LangAddress(DOMAIN_C, (void*)__func__),LangAddress(DOMAIN_C, retAddr),true); \
+	}
+
+/**********************************************************/
 void * MALT::malt_wrap_malloc(size_t size, const MallocFuncPtr & real_malloc, void * retaddr)
 {
 	//get local TLS and check init

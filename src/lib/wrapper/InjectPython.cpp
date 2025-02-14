@@ -168,7 +168,10 @@ void initPythonAllocInstrumentation()
 void initPythonEnterExitInstrumentation(void)
 {
 	printf("MALT: Instument Python profiling...\n");
+	PyGILState_STATE gstate;
+	gstate = PyGILState_Ensure();
 	PyEval_SetProfileAllThreads(malt_wrap_python_on_enter_exit, NULL);
+	PyGILState_Release(gstate);
 }
 
 /**********************************************************/

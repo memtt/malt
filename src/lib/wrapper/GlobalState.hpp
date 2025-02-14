@@ -53,21 +53,6 @@
 		isEnterExit = localState.profiler->isEnterExit(); \
 	if (isEnterExit){};/*to remove, but add it add warning*/
 
-/**********************************************************/
-/** Check init status of local and global state and call enter/exit methods, then do requested action. **/
-#define MALT_WRAPPER_LOCAL_STATE_ACTION(action, retAddr)  \
-	if (gblState.status == ALLOC_WRAP_READY && tlsState.status == ALLOC_WRAP_READY) \
-	{ \
-		if (isEnterExit)\
-		{\
-			retAddr =__builtin_extract_return_addr(__builtin_return_address(0)); \
-			localState.profiler->onEnterFunc((void*)__func__,retAddr,true); \
-		}\
-		do{action;}while(0); \
-		if (isEnterExit) \
-			localState.profiler->onExitFunc((void*)__func__,retAddr,true); \
-	}
-
 
 /**********************************************************/
 namespace MALT

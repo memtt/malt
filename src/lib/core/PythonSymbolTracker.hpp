@@ -27,6 +27,7 @@ namespace MALT
 #define MALT_PYTHON_UNKNOWN_FUNC_ID ((void*)0x1)
 #define MALT_PYTHON_INIT_FUNC_ID ((void*)0x2)
 #define MALT_PYTHON_NULL_FUNC_ID ((void*)0x3)
+#define MALT_PYTHON_C_BRIDGE_FUNC_ID ((void*)0x4)
 
 /**********************************************************/
 struct PythonCallSite
@@ -57,6 +58,7 @@ class PythonSymbolTracker
 		PythonSymbolTracker(void);
 		~PythonSymbolTracker(void);
 		void registerSymbolResolution(SymbolSolver & solver) const;
+		LangAddress parentFrameToLangAddress(PyFrameObject * frame);
 		LangAddress frameToLangAddress(PyFrameObject * frame);
 		PythonCallSite getCallSite(LangAddress langAddr);
 	private:

@@ -16,6 +16,7 @@
 #include <cstdlib>
 #include <portability/Clock.hpp>
 #include <json/ConvertToJson.h>
+#include <stacks/LangAddress.hpp>
 
 namespace MALT
 {
@@ -36,7 +37,7 @@ struct ProfiledStateValueEntry
 	size_t max;
 	ticks index;
 	ticks timestamp;
-	void * location;
+	LangAddress location;
 };
 
 /**********************************************************/
@@ -44,15 +45,15 @@ class ProfiledStateValue
 {
 	public:
 		ProfiledStateValue(size_t steps = MALT_PROFILED_VALUE_DEFAULT_STEPS, bool useLinearIndex = false);
-		void onDeltaEvent(ssize_t delta, void* location);
-		void onUpdateValue(size_t value, void* location);
+		void onDeltaEvent(ssize_t delta, LangAddress location);
+		void onUpdateValue(size_t value, LangAddress location);
 		bool isNextPoint(void) const;
 		void setRemoteLinearIndex(ticks * remoteLinearIndex);
 		void disableTimestamp(void);
 	public:
 		friend void convertToJson(htopml::JsonState& json, const ProfiledStateValue& value);
 	private:
-		inline void updateCurrentMinMax(ticks index, ticks timestamp, void* location);
+		inline void updateCurrentMinMax(ticks index, ticks timestamp, LangAddress location);
 		void flush(void);
 		void resize(void);
 		inline ticks getIndex() const;

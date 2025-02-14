@@ -55,20 +55,14 @@ BacktracePythonStack::~BacktracePythonStack(void)
 }
 
 /**********************************************************/
-//In this function the code derivated from the work of intern student (UGA)
-//Bastien Levasseur
-/**
- * Load the current backtrace. This function will automatically grow the internal buffer
- * to adapt to the size needed to store the full call depth.
-**/
-void BacktracePythonStack::loadCurrentStack(void)
+PyFrameObject * BacktracePythonStack::loadCurrentFrame(void)
 {
 	//first grow
 	this->stack = this->mem;
 	if (this->stack == NULL)
 		this->grow();
 
-    //If the Python interpreter is not correctly initialised, can't get the backtrace stack
+	//If the Python interpreter is not correctly initialised, can't get the backtrace stack
 	if (_PyThreadState_UncheckedGet() == NULL){
 		assert(this->memSize >= 1);
 		if (this->memSize < 2)
@@ -76,7 +70,7 @@ void BacktracePythonStack::loadCurrentStack(void)
 		this->size = 2;
 		this->stack[0].set(DOMAIN_PYTHON, MALT_PYTHON_UNKNOWN_FUNC_ID);
 		this->stack[1].set(DOMAIN_PYTHON, MALT_PYTHON_INIT_FUNC_ID);
-		return;
+		return NULL;
 	}
 
 	//Get the Python Frame
@@ -88,11 +82,39 @@ void BacktracePythonStack::loadCurrentStack(void)
 		this->size = 2;
 		this->stack[0].set(DOMAIN_PYTHON, MALT_PYTHON_NULL_FUNC_ID);
 		this->stack[1].set(DOMAIN_PYTHON, MALT_PYTHON_INIT_FUNC_ID);
-		return;
+	} else {
+		//init
+		this->size = 0;
 	}
 
-	//init
-	this->size = 0;
+	//ok
+	return currentFrame;
+}
+
+/**********************************************************/
+LangAddress BacktracePythonStack::getCurrentFrameAddr(void)
+{
+	//load current frame
+	PyFrameObject * currentFrame = this->loadCurrentFrame();
+
+	//return addr
+	if (currentFrame == NULL)
+		return this->stack[0];
+	else
+		return this->pythonSymbolTracker.frameToLangAddress(currentFrame);
+}
+
+/**********************************************************/
+//In this function the code derivated from the work of intern student (UGA)
+//Bastien Levasseur
+/**
+ * Load the current backtrace. This function will automatically grow the internal buffer
+ * to adapt to the size needed to store the full call depth.
+**/
+void BacktracePythonStack::loadCurrentStack(void)
+{
+	//load current frame
+	PyFrameObject * currentFrame = this->loadCurrentFrame();
 
 	//Fetch while we are not on the top of the stack
 	while(currentFrame != NULL){

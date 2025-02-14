@@ -89,12 +89,14 @@ class LocalAllocStackProfiler
 		void onRealloc(void* ptr, void* res, size_t size, ticks time, Language lang = LANG_C);
 		void onMmap(void * ptr, size_t size,int flags,int fd);
 		void onMunmap(void * ptr, size_t size);
-		inline void onEnterFunc(void *this_fn,void *call_site,bool ignoreStack=false);
-		inline void onExitFunc(void *this_fn,void *call_site,bool ignoreStack=false);
+		inline void onEnterFunc(LangAddress this_fn,LangAddress call_site,bool ignoreStack=false);
+		inline void onExitFunc(LangAddress this_fn,LangAddress call_site,bool ignoreStack=false);
 		void solveSymbols(SymbolSolver & symbolResolver) const;
 		bool isEnterExit(void);
+		inline bool isInUse(void);
 		bool markInUseAndGetOldStatus(void);
 		void restoreInUseStatus(bool oldStatus);
+		inline BacktracePythonStack getBacktracePythonStack(void);
 	public:
 		friend void convertToJson(htopml::JsonState& json, const LocalAllocStackProfiler& value);
 	protected:
@@ -130,7 +132,7 @@ class LocalAllocStackProfiler
 };
 
 /**********************************************************/
-inline void LocalAllocStackProfiler::onEnterFunc(void* this_fn, void* call_site, bool ignoreStack)
+inline void LocalAllocStackProfiler::onEnterFunc(LangAddress this_fn, LangAddress call_site, bool ignoreStack)
 {
 	//stack current loc tracking
 	//TODO this is also done by LocalAllocStackProfiler, maybe try to point his object instead of recompute
@@ -145,7 +147,7 @@ inline void LocalAllocStackProfiler::onEnterFunc(void* this_fn, void* call_site,
 }
 
 /**********************************************************/
-inline void LocalAllocStackProfiler::onExitFunc(void* this_fn, void* call_site, bool ignoreStack)
+inline void LocalAllocStackProfiler::onExitFunc(LangAddress this_fn, LangAddress call_site, bool ignoreStack)
 {
 	//stack current loc tracking
 	//TODO this is also done by LocalAllocStackProfiler, maybe try to point his object instead of recompute
@@ -157,6 +159,18 @@ inline void LocalAllocStackProfiler::onExitFunc(void* this_fn, void* call_site, 
 	//max stack
 	if (options->maxStackEnabled && !ignoreStack)
 		stackSizeAnalyser.onExitFunc(this_fn);
+}
+
+/**********************************************************/
+BacktracePythonStack LocalAllocStackProfiler::getBacktracePythonStack(void)
+{
+	return this->backtracePythonStack;
+}
+
+/**********************************************************/
+bool LocalAllocStackProfiler::isInUse(void)
+{
+	return this->inUse;
 }
 
 }
