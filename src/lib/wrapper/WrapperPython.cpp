@@ -20,7 +20,7 @@
 	if (gblState.status == ALLOC_WRAP_READY && tlsState.status == ALLOC_WRAP_READY) \
 	{ \
 		LangAddress __retAddr__ = nullAddr; \
-		if (localState.profiler->isInUse() == false) { \
+		if (localState.profiler->isInUse() == false && localState.profiler->isEnterExit()) { \
 			bool __oldStatus = localState.profiler->markInUseAndGetOldStatus(); \
 			__retAddr__ = localState.profiler->getBacktracePythonStack().getCurrentFrameAddr(); \
 			localState.profiler->restoreInUseStatus(__oldStatus); \
@@ -161,16 +161,16 @@ int malt_wrap_python_on_enter_exit(PyObject *obj, PyFrameObject *frame, int what
 		case PyTrace_CALL: {
 			MALT::PythonSymbolTracker & tracker = gblState.profiler->getPythonSymbolTracker();
 			LangAddress parentAddr = tracker.parentFrameToLangAddress(frame);
-			PythonCallSite site = tracker.getCallSite(parentAddr);
-			printf("enter in %s:%s:%d\n", site.file, site.function, site.line);
+			//PythonCallSite site = tracker.getCallSite(parentAddr);
+			//printf("enter in %s:%s:%d\n", site.file, site.function, site.line);
 			localState.profiler->onEnterFunc(nullAddr,parentAddr,true);
 			break;
 		}
 		case PyTrace_RETURN: {
 			MALT::PythonSymbolTracker & tracker = gblState.profiler->getPythonSymbolTracker();
 			LangAddress parentAddr = tracker.parentFrameToLangAddress(frame);
-			PythonCallSite site = tracker.getCallSite(parentAddr);
-			printf("exit in %s:%s:%d\n", site.file, site.function, site.line);
+			//PythonCallSite site = tracker.getCallSite(parentAddr);
+			//printf("exit in %s:%s:%d\n", site.file, site.function, site.line);
 			localState.profiler->onExitFunc(nullAddr,parentAddr,true);
 			break;
 		}

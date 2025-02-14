@@ -35,6 +35,7 @@ namespace MALT
 enum DomainType {
 	DOMAIN_C,
 	DOMAIN_PYTHON,
+	DOMAIN_PYTHON_FRAME,
 };
 
 /**********************************************************/
@@ -57,13 +58,10 @@ class LangAddress {
 		LangAddress & operator-=(size_t delta);
 	private:
 		#if INTPTR_MAX == INT64_MAX /*64 Bits */
-
 			/* 0 if it's a normal C address 1 if it's a Python address */
-			uint32_t domain:1;
-
+			uint32_t domain:2;
 			/* The address, on 63 bits */
-			uintptr_t address:63;
-
+			uintptr_t address:62;
 		#elif INTPTR_MAX == INT32_MAX /* 32 Bits */
 			uint32_t domain;
 			void* address;

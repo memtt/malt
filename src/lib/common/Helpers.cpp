@@ -127,7 +127,9 @@ std::string Helpers::simpleProfileDump(const std::string & profileFile, const st
 		<< "> " << tmpFile;
 
 	//run
-	system(cmd.str().c_str());
+	int status = system(cmd.str().c_str());
+	if (status != 0)
+		return "CONVERSION_ERROR";
 
 	//read
 	std::string result = MALT::Helpers::loadFullFile(tmpFile);

@@ -178,7 +178,8 @@ void initPythonEnterExitInstrumentation(void)
 void initPythonInstrumentation(void)
 {
 	initPythonAllocInstrumentation();
-	initPythonEnterExitInstrumentation();
+	if (gblState.profiler->isEnterExit())
+		initPythonEnterExitInstrumentation();
 }
 
 }
