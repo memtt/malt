@@ -651,8 +651,6 @@ int SymbolSolver::getString(const char * value)
 			return id;
 		id++;
 	}
-	if (*value == '\0')
-		fprintf(stderr,"insert empty\n");
 	strings.push_back(value);
 	assert(strings.size() != 0);
 	return strings.size()-1;

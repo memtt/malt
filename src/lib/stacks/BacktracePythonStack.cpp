@@ -37,31 +37,13 @@ namespace MALT
 {
 
 /**********************************************************/
-const size_t CST_PYTHON_UNKNOWN_FUNC_ID = 0x1;
-const size_t CST_PYTHON_INIT_FUNC_ID = 0x2;
-const size_t CST_PYTHON_NULL_FUNC_ID = 0x3;
-
-/**********************************************************/
 /**
  * Constructor to setup the ordering mode compatible with backtrace().
 **/
-BacktracePythonStack::BacktracePythonStack(void)
+BacktracePythonStack::BacktracePythonStack(PythonSymbolTracker & pythonSymbolTracker)
 	:Stack(STACK_ORDER_ASC)
+	,pythonSymbolTracker(pythonSymbolTracker)
 {
-	//build unknown map
-	const char * unknownName = gblInternaAlloc->strdup("MALT_UNKNOWN_PYTHON");
-	const PythonCallSite siteUnknown = {unknownName, unknownName, 0};
-	this->siteMap[siteUnknown] = CST_PYTHON_UNKNOWN_FUNC_ID;
-
-	//build init map
-	const char * initName = gblInternaAlloc->strdup("MALT_PYTHON_ROOT");
-	const PythonCallSite siteInit = {initName, initName, 0};
-	this->siteMap[siteInit] = CST_PYTHON_INIT_FUNC_ID;
-
-	//build null map
-	const char * nullName = gblInternaAlloc->strdup("MALT_PYTHON_NULL_FRAME");
-	const PythonCallSite siteNull = {nullName, nullName, 0};
-	this->siteMap[siteNull] = CST_PYTHON_NULL_FUNC_ID;
 }
 
 /**********************************************************/
@@ -92,8 +74,8 @@ void BacktracePythonStack::loadCurrentStack(void)
 		if (this->memSize < 2)
 			this->grow();
 		this->size = 2;
-		this->stack[0].set(DOMAIN_PYTHON, (void*)CST_PYTHON_UNKNOWN_FUNC_ID);
-		this->stack[1].set(DOMAIN_PYTHON, (void*)CST_PYTHON_INIT_FUNC_ID);
+		this->stack[0].set(DOMAIN_PYTHON, MALT_PYTHON_UNKNOWN_FUNC_ID);
+		this->stack[1].set(DOMAIN_PYTHON, MALT_PYTHON_INIT_FUNC_ID);
 		return;
 	}
 
@@ -104,8 +86,8 @@ void BacktracePythonStack::loadCurrentStack(void)
 		if (this->memSize < 2)
 			this->grow();
 		this->size = 2;
-		this->stack[0].set(DOMAIN_PYTHON, (void*)CST_PYTHON_NULL_FUNC_ID);
-		this->stack[1].set(DOMAIN_PYTHON, (void*)CST_PYTHON_INIT_FUNC_ID);
+		this->stack[0].set(DOMAIN_PYTHON, MALT_PYTHON_NULL_FUNC_ID);
+		this->stack[1].set(DOMAIN_PYTHON, MALT_PYTHON_INIT_FUNC_ID);
 		return;
 	}
 
@@ -114,66 +96,11 @@ void BacktracePythonStack::loadCurrentStack(void)
 
 	//Fetch while we are not on the top of the stack
 	while(currentFrame != NULL){
-		//decl some vars
-		PyCodeObject* currentPyCode = NULL;
-		PyObject* currentFilenameObject = NULL;
-		PyObject* currentFramenameObject = NULL;
-		char* currentFileName = NULL;
-		char* currentFrameName = NULL;
-		int currentLineNumber = 0;
-
-		currentPyCode = PyFrame_GetCode(currentFrame);
-		assert(currentPyCode != NULL);
-
-		//Fetch the file name and frame name i.e. function name in the current PyCode
-		//FIXME: Currently, this makes many allocations, maybe there's a way to avoid this
-		currentFilenameObject = PyUnicode_AsASCIIString(currentPyCode->co_filename);
-		currentFramenameObject = PyUnicode_AsASCIIString(currentPyCode->co_qualname);
-
-		assert(currentFilenameObject != NULL);
-		assert(currentFramenameObject != NULL);
-
-		currentFileName = PyBytes_AsString(currentFilenameObject);
-		currentFrameName = PyBytes_AsString(currentFramenameObject);
-
-		//TODO: Look into https://docs.python.org/3/reference/datamodel.html#codeobject.co_lines
-		//TODO: And this https://peps.python.org/pep-0626/
-		//This should be way more performant, currently this is the major overhead
-		//Intuition : Py_Addr2Line is called way too many times, can we refractor the filename, framename and line number into one call of Addr2Line ??
-		currentLineNumber = PyFrame_GetLineNumber(currentFrame);
-
-		//build site
-		PythonCallSite site;
-		site.file = currentFileName;
-		site.function = currentFrameName;
-		site.line = currentLineNumber;
-
-		//search entry
-		auto it = this->siteMap.find(site);
-		size_t currentId;
-
-		//is new or not
-		if (it == this->siteMap.end()) {
-			PythonCallSite siteNew;
-			siteNew.file = gblInternaAlloc->strdup(currentFileName);
-			siteNew.function = gblInternaAlloc->strdup(currentFrameName);
-			siteNew.line = currentLineNumber;
-			currentId = this->siteMap[siteNew] = this->nextIndex++;
-		} else {
-			currentId = it->second;
-		}
-
-		//Valid names with a single chararacter are not alloced, so we don't free them
-		if (strncmp((currentFileName + 1), "\0", 1) != 0){
-			PyObject_Free((void*) currentFilenameObject);
-		}
-
-		if (strncmp((currentFrameName + 1), "\0", 1) != 0){
-			PyObject_Free((void*) currentFramenameObject);	
-		}
+		//convert
+		LangAddress langAddr = this->pythonSymbolTracker.frameToLangAddress(currentFrame);
 
 		//register
-		this->stack[this->size++].set(DOMAIN_PYTHON, (void*)currentId);
+		this->stack[this->size++] = langAddr;
 
 		//grow if needs
 		if (this->size == this->memSize)
@@ -184,18 +111,7 @@ void BacktracePythonStack::loadCurrentStack(void)
 	}
 
 	//push root
-	this->stack[this->size-1].set(DOMAIN_PYTHON, (void*)CST_PYTHON_INIT_FUNC_ID);
-}
-
-/**********************************************************/
-void BacktracePythonStack::registerSymbolResolution(SymbolSolver & solver) const
-{
-	char buffer[4096];
-	for (auto & site : this->siteMap)
-	{
-		snprintf(buffer, sizeof(buffer), "py:%s", site.first.function);
-		solver.registerFunctionSymbol(LangAddress(DOMAIN_PYTHON, (void*)site.second), buffer, site.first.file, site.first.line);
-	}
+	this->stack[this->size-1].set(DOMAIN_PYTHON, MALT_PYTHON_INIT_FUNC_ID);
 }
 
 /**********************************************************/

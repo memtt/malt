@@ -18,7 +18,7 @@
 /**********************************************************/
 namespace MALT
 {
-	void initPythonAllocInstrumentation();
+	void initPythonInstrumentation();
 	typedef int (*Py_RunMainFuncPtr) (void);
 }
 
@@ -26,7 +26,7 @@ namespace MALT
 int Py_RunMain()
 {
 	MALT::Py_RunMainFuncPtr realPy_RunMain = (MALT::Py_RunMainFuncPtr)dlsym(RTLD_NEXT,"Py_RunMain");
-	MALT::initPythonAllocInstrumentation();
+	MALT::initPythonInstrumentation();
 	return realPy_RunMain();
 }
 

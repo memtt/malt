@@ -11,8 +11,8 @@
 /**********************************************************/
 #include <Python.h>
 #include "GlobalState.hpp"
-#include "WrapperPythonAlloc.hpp"
-#include "InjectPythonAlloc.hpp"
+#include "WrapperPython.hpp"
+#include "InjectPython.hpp"
 
 /**********************************************************/
 namespace MALT
@@ -98,12 +98,15 @@ void* WrapperPythonObj::realloc(void* ctx, void *ptr, size_t new_size)
 /**********************************************************/
 void initPythonAllocInstrumentation()
 {
+	printf("MALT: Instument Python allocator...\n");
+
 	//get all
 	PyMem_GetAllocator(::PYMEM_DOMAIN_RAW, &gblPythonRawAlloc);
 	PyMem_GetAllocator(::PYMEM_DOMAIN_MEM, &gblPythonMemAlloc);
 	PyMem_GetAllocator(::PYMEM_DOMAIN_OBJ, &gblPythonObjAlloc);
 
 	::PyMemAllocatorEx pythonRawAllocMalt;
+	pythonRawAllocMalt.ctx = NULL;
 	pythonRawAllocMalt.malloc = WrapperPythonRaw::malloc;
 	pythonRawAllocMalt.free = WrapperPythonRaw::free;
 	pythonRawAllocMalt.calloc = WrapperPythonRaw::calloc;
@@ -111,6 +114,7 @@ void initPythonAllocInstrumentation()
 	PyMem_SetAllocator(::PYMEM_DOMAIN_RAW, &pythonRawAllocMalt);
 
 	::PyMemAllocatorEx pythonMemAllocMalt;
+	pythonMemAllocMalt.ctx = NULL;
 	pythonMemAllocMalt.malloc = WrapperPythonMem::malloc;
 	pythonMemAllocMalt.free = WrapperPythonMem::free;
 	pythonMemAllocMalt.calloc = WrapperPythonMem::calloc;
@@ -118,6 +122,7 @@ void initPythonAllocInstrumentation()
 	PyMem_SetAllocator(::PYMEM_DOMAIN_MEM, &pythonMemAllocMalt);
 
 	::PyMemAllocatorEx pythonObjAllocMalt;
+	pythonObjAllocMalt.ctx = NULL;
 	pythonObjAllocMalt.malloc = WrapperPythonObj::malloc;
 	pythonObjAllocMalt.free = WrapperPythonObj::free;
 	pythonObjAllocMalt.calloc = WrapperPythonObj::calloc;
@@ -157,6 +162,20 @@ void initPythonAllocInstrumentation()
 	*/
 
 	//Be init before (by wrapping) : int Py_RunMain()
+}
+
+/**********************************************************/
+void initPythonEnterExitInstrumentation(void)
+{
+	printf("MALT: Instument Python profiling...\n");
+	PyEval_SetProfileAllThreads(malt_wrap_python_on_enter_exit, NULL);
+}
+
+/**********************************************************/
+void initPythonInstrumentation(void)
+{
+	initPythonAllocInstrumentation();
+	initPythonEnterExitInstrumentation();
 }
 
 }

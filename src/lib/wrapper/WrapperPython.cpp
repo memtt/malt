@@ -11,7 +11,8 @@
 /**********************************************************/
 #include <Python.h>
 #include "GlobalState.hpp"
-#include "WrapperPythonAlloc.hpp"
+#include "WrapperPython.hpp"
+#include <stacks/BacktracePythonStack.hpp>
 
 /**********************************************************/
 namespace MALT
@@ -125,6 +126,34 @@ void * malt_wrap_python_realloc(void * ctx,void * ptr,size_t size, PythonRealloc
 	MALT_WRAPPER_LOCAL_STATE_ACTION(localState.profiler->onRealloc(ptr,res,size,t,LANG_PYTHON), retaddr);
 	
 	return res;
+}
+
+/**********************************************************/
+int malt_wrap_python_on_enter_exit(PyObject *obj, PyFrameObject *frame, int what, PyObject *arg)
+{
+	MALT::PythonSymbolTracker & tracker = gblState.profiler->getPythonSymbolTracker();
+	LangAddress addr = tracker.frameToLangAddress(frame);
+	MALT::PythonCallSite site = tracker.getCallSite(addr);
+	switch (what)
+	{
+		case PyTrace_CALL:
+			printf("Enter call %p %s\n", frame, site.function);
+			break;
+		case PyTrace_RETURN:
+			printf("Return call %p %s\n", frame, site.function);
+			break;
+		case PyTrace_C_CALL:
+			printf("Enter C call %p %s\n", frame, site.function);
+			break;
+		case PyTrace_C_RETURN:
+			printf("Edit C call %p %s\n", frame, site.function);
+			break;
+		default:{}
+			//ignored
+	};
+
+	//ok
+	return 0;
 }
 
 }

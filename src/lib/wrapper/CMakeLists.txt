@@ -10,13 +10,10 @@
 ############################################################
 
 ############################################################
-include_directories(${Python3_INCLUDE_DIRS})
-
-############################################################
 add_library(malt-wrappers OBJECT 
       ThreadTracker.cpp
       WrapperCAlloc.cpp
-      WrapperPythonAlloc.cpp
+      WrapperPython.cpp
       WrapperPthreads.cpp
       GlobalState.cpp
       InjectPthreads.cpp
@@ -26,7 +23,7 @@ SET_TARGET_PROPERTIES(malt-wrappers PROPERTIES COMPILE_FLAGS -fPIC)
 ############################################################
 add_library(malt-injectors OBJECT
       InjectCAlloc.cpp
-      InjectPythonAlloc.cpp
+      InjectPython.cpp
       InjectCInit.cpp
       InjectFuncEnterExit.cpp
       InjectMaqao.cpp

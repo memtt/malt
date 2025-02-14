@@ -12,3 +12,16 @@ src/webview/build
 
 # python
 __pycache__
+
+# examples built
+examples/step-1-basic
+examples/step-2-problem-fragmentation
+examples/step-3-problem-mem-on-stack
+examples/step-4-problem-short-life-alloc
+examples/step-5-problem-for-auto-missing-ref-copy
+examples/step-6-problem-grow-by-copy
+examples/step-7-problem-peak
+
+# IDEs
+.vscode
+

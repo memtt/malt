@@ -24,6 +24,7 @@ namespace MALT
 
 /**********************************************************/
 LocalAllocStackProfiler::LocalAllocStackProfiler(AllocStackProfiler* globalProfiler, bool reentrance)
+	:backtracePythonStack(globalProfiler->getPythonSymbolTracker())
 {
 	//errors
 	assert(globalProfiler != NULL);
@@ -182,7 +183,6 @@ void convertToJson(htopml::JsonState& json, const LocalAllocStackProfiler& value
 /**********************************************************/
 void LocalAllocStackProfiler::solveSymbols(SymbolSolver& symbolResolver) const
 {
-	this->backtracePythonStack.registerSymbolResolution(symbolResolver);
 	this->stackSizeAnalyser.solveSymbols(symbolResolver);
 }
 

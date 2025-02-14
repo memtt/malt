@@ -66,6 +66,7 @@ include_directories(../../extern-deps/from-fftw)
 include_directories(../../extern-deps/iniparser/src)
 include_directories(../../extern-deps/from-htopml)
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
+include_directories(${Python3_INCLUDE_DIRS})
 
 ############################################################
 set(COMMON_OBJS $<TARGET_OBJECTS:htopml-json>

@@ -18,26 +18,13 @@
 //internal core
 #include <core/SymbolSolver.hpp>
 #include <core/CallStackInfo.hpp>
+#include <core/PythonSymbolTracker.hpp>
+//python
+#include <Python.h>
 
 /**********************************************************/
 namespace MALT
 {
-
-typedef std::basic_string<char, std::char_traits<char>, STLInternalAllocator<char> > StringNoFree;
-
-/**********************************************************/
-struct PythonCallSite
-{
-	const char * file;
-	const char * function;
-	int line;
-};
-
-/**********************************************************/
-bool operator<(const PythonCallSite & a, const PythonCallSite & b);
-
-/**********************************************************/
-typedef std::map<PythonCallSite, size_t, std::less<PythonCallSite>, STLInternalAllocator<std::pair<PythonCallSite,size_t> > > PythonStrCallSiteMap;
 
 /**********************************************************/
 /**
@@ -47,13 +34,11 @@ typedef std::map<PythonCallSite, size_t, std::less<PythonCallSite>, STLInternalA
 class BacktracePythonStack : public Stack
 {
 	public:
-		BacktracePythonStack(void);
+		BacktracePythonStack(PythonSymbolTracker & pythonSymbolTracker);
 		~BacktracePythonStack(void);
 		void loadCurrentStack(void);
-		void registerSymbolResolution(SymbolSolver & solver) const;
 	private:
-		PythonStrCallSiteMap siteMap;
-		size_t nextIndex{10};
+		PythonSymbolTracker & pythonSymbolTracker;
 };
 
 }

@@ -12,7 +12,6 @@
 #Use gtest
 include_directories(${GTEST_INCLUDE_DIRS} ${GMOCK_INCLUDE_DIRS})
 include_directories(../)
-include_directories(${Python3_INCLUDE_DIRS})
 
 ############################################################
 add_definitions(-DBINARY_DIR="${CMAKE_CURRENT_BINARY_DIR}")

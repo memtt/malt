@@ -19,7 +19,8 @@ set(MALT_LIB_SRC VmaTracker.cpp
                  StackSizeTracker.cpp
                  StackSizeAnalyser.cpp
                  SimpleStackTracker.cpp
-                 SimpleCallStackNode.cpp)
+                 SimpleCallStackNode.cpp
+                 PythonSymbolTracker.cpp)
 
 ############################################################
 add_library(malt-core OBJECT ${MALT_LIB_SRC})

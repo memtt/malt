@@ -45,7 +45,10 @@ struct WrapperPythonObj {
     static void* realloc(void* ctx, void *ptr, size_t new_size);
 };
 
+int pythonOnPorfile(PyObject *obj, PyFrameObject *frame, int what, PyObject *arg);
 void initPythonAllocInstrumentation(void);
+void initPythonEnterExitInstrumentation(void);
+void initPythonInstrumentation(void);
 
 }
 

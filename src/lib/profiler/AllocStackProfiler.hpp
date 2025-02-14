@@ -36,6 +36,7 @@
 #include <core/SimpleStackTracker.hpp>
 #include <core/AllocTraceFile.hpp>
 #include <core/VmaTracker.hpp>
+#include <core/PythonSymbolTracker.hpp>
 //from v2
 #include <stack-tree/from-v2/RLockFreeTree.hpp>
 
@@ -143,12 +144,13 @@ class AllocStackProfiler
 		void registerPerThreadProfiler(LocalAllocStackProfiler * profiler);
 		ticks ticksPerSecond(void) const;
 		StackMode getStackMode(void) const {return mode;};
-		void registerMaqaoFunctionSymbol(int funcId,const char * funcName,const char * file,int line);
+		void registerSymbol(int funcId,const char * funcName,const char * file,int line);
 		AllocTreeStrackTracer * getEnterExitStackTracer(void);
 		bool isEnterExit(void);
 		LocalAllocStackProfiler * createLocalStackProfiler(bool reentrant);
 		void destroyLocalStackProfiler(LocalAllocStackProfiler * localProfiler);
 		void setRealMallocAddr(MallocFuncPtr realMallocFunc);
+		PythonSymbolTracker & getPythonSymbolTracker(void);
 	public:
 		friend void convertToJson(htopml::JsonState& json, const AllocStackProfiler& value);
 	private:
@@ -178,6 +180,7 @@ class AllocStackProfiler
 		StackSizeTracker largestStackMem;
 		Stack largestStack;
 		SymbolSolver symbolResolver;
+		PythonSymbolTracker pythonSymbolTracker;
 		LocalAllocStackProfilerList perThreadProfiler;
 		timeval trefSec;
 		ticks trefTicks;

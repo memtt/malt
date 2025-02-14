@@ -46,5 +46,5 @@ void maqao_reg_function(int funcId,const char * funcName,const char * file,int l
 	gblState.options->stackMode = STACK_MODE_ENTER_EXIT_FUNC;
 	
 	//reg
-	gblState.profiler->registerMaqaoFunctionSymbol(funcId,funcName,file,line);
+	gblState.profiler->registerSymbol(funcId,funcName,file,line);
 }
