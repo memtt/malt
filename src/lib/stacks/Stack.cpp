@@ -300,6 +300,35 @@ LangAddress Stack::operator[](int idx) const
 
 /**********************************************************/
 /**
+ * Operator to read stack entries. It provide a uniq ordering by checking the internal one.
+ * The external representation exposed to the user is by convention the backtrace one (ASC).
+**/
+LangAddress & Stack::operator[](int idx)
+{
+	//errors
+	assert(idx >= 0);
+	
+	//trivial
+	if (idx < 0 || idx >= size || stack == NULL) {
+		MALT_FATAL_ARG("Out of bound [%1] in stack : %2").arg(idx).arg(this).end();
+		return this->stack[0];
+	}
+		
+	//depend on order
+	switch(order)
+	{
+		case STACK_ORDER_ASC:
+			return stack[idx];
+		case STACK_ORDER_DESC:
+			return stack[size - idx - 1];
+		default:
+			MALT_FATAL_ARG("Undefined order on Stack : %1").arg(this).end();
+			return this->stack[0];
+	}
+}
+
+/**********************************************************/
+/**
  * Print the stack content with the backtrace ordering (ASC).
 **/
 std::ostream &operator<<(std::ostream &out, const Stack &obj)

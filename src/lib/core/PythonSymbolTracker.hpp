@@ -18,6 +18,7 @@
 #include "common/STLInternalAllocator.hpp"
 #include "SymbolSolver.hpp"
 #include "stacks/LangAddress.hpp"
+#include "stacks/Stack.hpp"
 
 /**********************************************************/
 namespace MALT
@@ -43,6 +44,7 @@ struct TmpPythonCallSite
 	PythonCallSite site;
 	PyObject* filenameObject;
 	PyObject* framenameObject;
+	PyCodeObject* code;
 };
 
 /**********************************************************/
@@ -61,6 +63,7 @@ class PythonSymbolTracker
 		LangAddress parentFrameToLangAddress(PyFrameObject * frame);
 		LangAddress frameToLangAddress(PyFrameObject * frame);
 		PythonCallSite getCallSite(LangAddress langAddr);
+		void makeStackPythonDomain(Stack & stack);
 	private:
 		static TmpPythonCallSite frameToCallSite(::PyFrameObject * frame);
 		static void freeFrameToCallSite(TmpPythonCallSite & callsite);

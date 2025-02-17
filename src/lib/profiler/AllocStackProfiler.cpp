@@ -958,4 +958,10 @@ PythonSymbolTracker & AllocStackProfiler::getPythonSymbolTracker(void)
 	return this->pythonSymbolTracker;
 }
 
+/**********************************************************/
+bool AllocStackProfiler::isEnterExit(void)
+{
+	return mode == STACK_MODE_ENTER_EXIT_FUNC;
+}
+
 }

@@ -32,7 +32,7 @@ check_c_source_runs("
 	#include <stdlib.h>
 	#include <Python.h>
 	int Py_RunMain(){exit(0);}
-	int main(int argc, char** argv){Py_BytesMain(argc, argv); return 1;}
+	int main(int argc, char** argv){char * argv2[] = {\"${Python3_EXECUTABLE}\", \"/dev/null\", NULL}; Py_BytesMain(2, argv2); return 1;}
 " tmp_python3_instrum)
 if (tmp_python3_instrum_EXITCODE EQUAL 0)
 	set(PYTHON3_INSTRUM_FOUND ON)

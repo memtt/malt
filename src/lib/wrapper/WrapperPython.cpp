@@ -159,19 +159,28 @@ int malt_wrap_python_on_enter_exit(PyObject *obj, PyFrameObject *frame, int what
 	switch (what)
 	{
 		case PyTrace_CALL: {
-			MALT::PythonSymbolTracker & tracker = gblState.profiler->getPythonSymbolTracker();
-			LangAddress parentAddr = tracker.parentFrameToLangAddress(frame);
+			//MALT::PythonSymbolTracker & tracker = gblState.profiler->getPythonSymbolTracker();
+			//LangAddress parentAddr = tracker.parentFrameToLangAddress(frame);
+			//get up
+			PyFrameObject * parentFrame = PyFrame_GetBack(frame);
 			//PythonCallSite site = tracker.getCallSite(parentAddr);
 			//printf("enter in %s:%s:%d\n", site.file, site.function, site.line);
-			localState.profiler->onEnterFunc(nullAddr,parentAddr,true);
+			if (parentFrame != nullptr) {
+				localState.profiler->onEnterFunc(nullAddr,LangAddress(DOMAIN_PYTHON_FRAME, parentFrame),true);
+				//Py_DECREF(parentFrame);
+			}
 			break;
 		}
 		case PyTrace_RETURN: {
-			MALT::PythonSymbolTracker & tracker = gblState.profiler->getPythonSymbolTracker();
-			LangAddress parentAddr = tracker.parentFrameToLangAddress(frame);
+			//MALT::PythonSymbolTracker & tracker = gblState.profiler->getPythonSymbolTracker();
+			//LangAddress parentAddr = tracker.parentFrameToLangAddress(frame);
 			//PythonCallSite site = tracker.getCallSite(parentAddr);
 			//printf("exit in %s:%s:%d\n", site.file, site.function, site.line);
-			localState.profiler->onExitFunc(nullAddr,parentAddr,true);
+			PyFrameObject * parentFrame = PyFrame_GetBack(frame);
+			if (parentFrame != nullptr) {
+				localState.profiler->onExitFunc(nullAddr,LangAddress(DOMAIN_PYTHON_FRAME, parentFrame),true);
+				//Py_DECREF(parentFrame);
+			}
 			break;
 		}
 		case PyTrace_C_CALL:
@@ -190,6 +199,20 @@ int malt_wrap_python_on_enter_exit(PyObject *obj, PyFrameObject *frame, int what
 
 	//ok
 	return 0;
+}
+
+bool malt_wrap_python_mark_in_use(void)
+{
+	//get local TLS and check init
+	MALT_WRAPPER_LOCAL_STATE_INIT
+	return localState.profiler->markInUseAndGetOldStatus();
+}
+
+void malt_wrap_python_restore_in_use(bool oldValue)
+{
+	//get local TLS and check init
+	MALT_WRAPPER_LOCAL_STATE_INIT
+	localState.profiler->restoreInUseStatus(oldValue);
 }
 
 }

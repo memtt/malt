@@ -72,6 +72,7 @@ bool LangAddress::isNULL(void) const{
 	switch (this->domain){
 		case DOMAIN_C:
 		case DOMAIN_PYTHON:
+		case DOMAIN_PYTHON_FRAME:
 			return (this->address == 0);
 		default:
 			MALT_FATAL_ARG("Undefined domain %1").arg(domain).end();
@@ -92,6 +93,8 @@ std::string LangAddress::toString() const {
 
 	if (this->domain == DOMAIN_PYTHON){
 		value += "PY-";
+	} else if (this->domain == DOMAIN_PYTHON){
+		value += "PYF-";
 	}
 
 	char buffer[64];

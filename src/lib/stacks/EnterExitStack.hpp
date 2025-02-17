@@ -93,7 +93,7 @@ inline void EnterExitStack::exitFunction ( LangAddress funcAddr )
 	if (size > 0)
 		size--;
 
-	assert(funcAddr == stack[size]);
+	assert(funcAddr == stack[size] || (funcAddr.getDomain() == DOMAIN_PYTHON_FRAME && stack[size].getDomain() == DOMAIN_PYTHON));
 }
 
 }

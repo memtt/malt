@@ -83,6 +83,7 @@ PyFrameObject * BacktracePythonStack::loadCurrentFrame(void)
 		this->stack[0].set(DOMAIN_PYTHON, MALT_PYTHON_NULL_FUNC_ID);
 		this->stack[1].set(DOMAIN_PYTHON, MALT_PYTHON_INIT_FUNC_ID);
 	} else {
+		//Py_DECREF(currentFrame);
 		//init
 		this->size = 0;
 	}

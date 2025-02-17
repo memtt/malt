@@ -177,9 +177,11 @@ void initPythonEnterExitInstrumentation(void)
 /**********************************************************/
 void initPythonInstrumentation(void)
 {
+	bool status = malt_wrap_python_mark_in_use();
 	initPythonAllocInstrumentation();
 	if (gblState.profiler->isEnterExit())
 		initPythonEnterExitInstrumentation();
+	malt_wrap_python_restore_in_use(status);
 }
 
 }

@@ -84,6 +84,7 @@ class Stack
 		LangAddress getCaller(void) const;
 		LangAddress getCallee(void) const;
 		LangAddress operator[] (int idx) const;
+		LangAddress & operator[] (int idx);
 		static bool partialCompare(const Stack & stack1,int skip1,const Stack & stack2,int skip2);
 		Stack & operator = (const Stack & stack);
 		size_t getMemSize(void) const;

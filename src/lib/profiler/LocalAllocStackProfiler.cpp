@@ -190,6 +190,7 @@ void LocalAllocStackProfiler::solveSymbols(SymbolSolver& symbolResolver) const
 //TODO: getStack should receive a parameter iff it's a Python stack
 Stack* LocalAllocStackProfiler::getStack(Language lang)
 {
+	bool oldInUse;
 	if (lang == LANG_C) {
 		//search with selected mode
 		switch(stackMode)
@@ -199,6 +200,9 @@ Stack* LocalAllocStackProfiler::getStack(Language lang)
 				backtraceStack.fastSkip(gblOptions->stackSkip);
 				return &backtraceStack;
 			case STACK_MODE_ENTER_EXIT_FUNC:
+				oldInUse = this->markInUseAndGetOldStatus();
+				this->globalProfiler->getPythonSymbolTracker().makeStackPythonDomain(enterExitStack);
+				this->restoreInUseStatus(oldInUse);
 				return &enterExitStack;
 			case STACK_MODE_USER:
 				return NULL;
@@ -214,6 +218,9 @@ Stack* LocalAllocStackProfiler::getStack(Language lang)
 				CODE_TIMING("loadCurrentStack",backtracePythonStack.loadCurrentStack());
 				return &backtracePythonStack;
 			case STACK_MODE_ENTER_EXIT_FUNC:
+				oldInUse = this->markInUseAndGetOldStatus();
+				this->globalProfiler->getPythonSymbolTracker().makeStackPythonDomain(enterExitStack);
+				this->restoreInUseStatus(oldInUse);
 				return &enterExitStack;
 			case STACK_MODE_USER:
 				return NULL;
