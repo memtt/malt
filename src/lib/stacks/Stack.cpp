@@ -611,4 +611,19 @@ bool operator<(const Stack& v1, const Stack& v2)
 	return true;
 }
 
+/**********************************************************/
+Stack & Stack::operator+=(Stack & stack)
+{
+	//grow
+	while(this->memSize < this->size + stack.size)
+		this->grow();
+
+	//add
+	for (size_t i = 0 ; i < stack.size ; i++)
+		this->stack[this->size++] = stack.stack[i];
+
+	//ok
+	return *this;
+}
+
 }

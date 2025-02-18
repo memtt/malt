@@ -118,6 +118,7 @@ void BacktracePythonStack::loadCurrentStack(void)
 	PyFrameObject * currentFrame = this->loadCurrentFrame();
 
 	//Fetch while we are not on the top of the stack
+	this->size = 0;
 	while(currentFrame != NULL){
 		//convert
 		LangAddress langAddr = this->pythonSymbolTracker.frameToLangAddress(currentFrame);
@@ -134,7 +135,10 @@ void BacktracePythonStack::loadCurrentStack(void)
 	}
 
 	//push root
-	this->stack[this->size-1].set(DOMAIN_PYTHON, MALT_PYTHON_INIT_FUNC_ID);
+	this->stack[this->size++].set(DOMAIN_PYTHON, MALT_PYTHON_INIT_FUNC_ID);
+	//grow if needs
+	if (this->size == this->memSize)
+		this->grow();
 }
 
 /**********************************************************/

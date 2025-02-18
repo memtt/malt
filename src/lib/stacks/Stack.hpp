@@ -89,6 +89,7 @@ class Stack
 		Stack & operator = (const Stack & stack);
 		size_t getMemSize(void) const;
 		void fastSkip(int depth);
+		Stack & operator+=(Stack & stack);
 	public:
 		friend std::ostream & operator << (std::ostream & out,const Stack & tracer);
 		friend void convertToJson(htopml::JsonState & json, const Stack & value);

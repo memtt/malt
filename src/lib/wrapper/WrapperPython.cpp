@@ -159,36 +159,41 @@ int malt_wrap_python_on_enter_exit(PyObject *obj, PyFrameObject *frame, int what
 	switch (what)
 	{
 		case PyTrace_CALL: {
-			//MALT::PythonSymbolTracker & tracker = gblState.profiler->getPythonSymbolTracker();
-			//LangAddress parentAddr = tracker.parentFrameToLangAddress(frame);
+			MALT::PythonSymbolTracker & tracker = gblState.profiler->getPythonSymbolTracker();
+			LangAddress parentAddr = tracker.parentFrameToLangAddress(frame);
 			//get up
-			PyFrameObject * parentFrame = PyFrame_GetBack(frame);
-			//PythonCallSite site = tracker.getCallSite(parentAddr);
+			PythonCallSite site = tracker.getCallSite(parentAddr);
+			localState.profiler->onEnterFunc(nullAddr,parentAddr,true);
 			//printf("enter in %s:%s:%d\n", site.file, site.function, site.line);
+			//////////////////////
+			/*PyFrameObject * parentFrame = PyFrame_GetBack(frame);
 			if (parentFrame != nullptr) {
 				localState.profiler->onEnterFunc(nullAddr,LangAddress(DOMAIN_PYTHON_FRAME, parentFrame),true);
 				//Py_DECREF(parentFrame);
-			}
+			}*/
+
 			break;
 		}
 		case PyTrace_RETURN: {
-			//MALT::PythonSymbolTracker & tracker = gblState.profiler->getPythonSymbolTracker();
-			//LangAddress parentAddr = tracker.parentFrameToLangAddress(frame);
-			//PythonCallSite site = tracker.getCallSite(parentAddr);
+			MALT::PythonSymbolTracker & tracker = gblState.profiler->getPythonSymbolTracker();
+			LangAddress parentAddr = tracker.parentFrameToLangAddress(frame);
+			PythonCallSite site = tracker.getCallSite(parentAddr);
+			localState.profiler->onExitFunc(nullAddr,parentAddr,true);
 			//printf("exit in %s:%s:%d\n", site.file, site.function, site.line);
-			PyFrameObject * parentFrame = PyFrame_GetBack(frame);
+			//////////////
+			/*PyFrameObject * parentFrame = PyFrame_GetBack(frame);
 			if (parentFrame != nullptr) {
 				localState.profiler->onExitFunc(nullAddr,LangAddress(DOMAIN_PYTHON_FRAME, parentFrame),true);
 				//Py_DECREF(parentFrame);
-			}
+			}*/
 			break;
 		}
-		case PyTrace_C_CALL:
+		/*case PyTrace_C_CALL:
 			localState.profiler->onEnterFunc(nullAddr, LangAddress(DOMAIN_PYTHON, MALT_PYTHON_C_BRIDGE_FUNC_ID),true);
 			break;
 		case PyTrace_C_RETURN:
 			localState.profiler->onExitFunc(nullAddr, LangAddress(DOMAIN_PYTHON, MALT_PYTHON_C_BRIDGE_FUNC_ID),true);
-			break;
+			break;*/
 		default:{
 			//ignored
 		}

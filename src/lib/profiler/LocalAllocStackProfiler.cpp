@@ -216,7 +216,8 @@ Stack* LocalAllocStackProfiler::getStack(Language lang)
 		{
 			case STACK_MODE_BACKTRACE:
 				CODE_TIMING("loadCurrentStack",backtracePythonStack.loadCurrentStack());
-				return &backtracePythonStack;
+				this->backtraceStack += backtracePythonStack;
+				return &backtraceStack;
 			case STACK_MODE_ENTER_EXIT_FUNC:
 				oldInUse = this->markInUseAndGetOldStatus();
 				this->globalProfiler->getPythonSymbolTracker().makeStackPythonDomain(enterExitStack);
