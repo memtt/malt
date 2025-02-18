@@ -164,7 +164,7 @@ int malt_wrap_python_on_enter_exit(PyObject *obj, PyFrameObject *frame, int what
 			//get up
 			PythonCallSite site = tracker.getCallSite(parentAddr);
 			localState.profiler->onEnterFunc(nullAddr,parentAddr,true);
-			//printf("enter in %s:%s:%d\n", site.file, site.function, site.line);
+			printf("enter in %s:%s:%d\n", site.file, site.function, site.line);
 			//////////////////////
 			/*PyFrameObject * parentFrame = PyFrame_GetBack(frame);
 			if (parentFrame != nullptr) {
@@ -179,7 +179,7 @@ int malt_wrap_python_on_enter_exit(PyObject *obj, PyFrameObject *frame, int what
 			LangAddress parentAddr = tracker.parentFrameToLangAddress(frame);
 			PythonCallSite site = tracker.getCallSite(parentAddr);
 			localState.profiler->onExitFunc(nullAddr,parentAddr,true);
-			//printf("exit in %s:%s:%d\n", site.file, site.function, site.line);
+			printf("exit in %s:%s:%d\n", site.file, site.function, site.line);
 			//////////////
 			/*PyFrameObject * parentFrame = PyFrame_GetBack(frame);
 			if (parentFrame != nullptr) {

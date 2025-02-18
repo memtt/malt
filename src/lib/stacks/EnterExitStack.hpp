@@ -46,9 +46,16 @@ class EnterExitStack : public Stack
 		EnterExitStack(void);
 		inline void enterFunction(LangAddress funcAddr);
 		inline void exitFunction(LangAddress funcAddr);
+		inline void reset(void);
 	private:
 		size_t realSize;
 };
+
+/**********************************************************/
+inline void EnterExitStack::reset(void)
+{
+	this->realSize = this->size = 0;
+}
 
 /**********************************************************/
 /**
@@ -93,7 +100,7 @@ inline void EnterExitStack::exitFunction ( LangAddress funcAddr )
 	if (size > 0)
 		size--;
 
-	assert(funcAddr == stack[size] || (funcAddr.getDomain() == DOMAIN_PYTHON_FRAME && stack[size].getDomain() == DOMAIN_PYTHON));
+	assert(funcAddr == stack[size]);
 }
 
 }

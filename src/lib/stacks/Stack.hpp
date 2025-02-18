@@ -95,6 +95,7 @@ class Stack
 		friend void convertToJson(htopml::JsonState & json, const Stack & value);
 		friend bool operator == (const Stack & v1,const Stack & v2);
 		friend bool operator < (const Stack & v1,const Stack & v2);
+		friend class MultiLangStackMerger;
 	protected:
 		virtual void onGrow(size_t newSize);
 	protected:

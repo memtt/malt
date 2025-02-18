@@ -56,6 +56,9 @@ Options::Options(void)
 	this->stackLibunwind          = false;
 	this->stackMode               = "backtrace";
 	this->stackSkip               = cstDefaultStackSkip;
+	//python
+	this->pythonStack             = "enter-exit";
+	this->pythonMix               = true;
 	//time
 	this->timeProfileEnabled      = true;
 	this->timeProfilePoints       = 512;
@@ -100,6 +103,9 @@ bool Options::operator==(const Options& value) const
 	if (stackMode != value.stackMode) return false;
 	if (stackLibunwind != value.stackLibunwind) return false;
 	if (stackSkip != value.stackSkip) return false;
+	//python
+	if (pythonStack != value.pythonStack) return false;
+	if (pythonMix != value.pythonMix) return false;
 	//time
 	if (this->timeProfileEnabled != value.timeProfileEnabled) return false;
 	if (this->timeProfilePoints != value.timeProfilePoints) return false;
@@ -218,6 +224,11 @@ void Options::loadFromIniDic ( dictionary* iniDic )
 	this->timeProfilePoints   = iniparser_getint(iniDic,"time:points",this->timeProfilePoints);
 	this->timeProfileLinear   = iniparser_getboolean(iniDic,"time:linear-index",this->timeProfileLinear);
 	
+	//python
+	this->pythonMix           = iniparser_getboolean(iniDic,"python:mix",this->pythonMix);
+	this->pythonStack         = iniparser_getstring(iniDic,"python:stack",(char*)this->pythonStack.c_str());
+	this->pythonStackEnum     = stackModeFromString(this->pythonStack);
+
 	//load values for stack profiling
 	this->stackResolve        = iniparser_getboolean(iniDic,"stack:resolve",this->stackResolve);
 	this->stackProfileEnabled = iniparser_getboolean(iniDic,"stack:enabled",this->stackProfileEnabled);
@@ -303,6 +314,11 @@ void convertToJson(htopml::JsonState & json,const Options & value)
 			json.printField("libunwind",value.stackLibunwind);
 			json.printField("stackSkip",value.stackSkip);
 		json.closeFieldStruct("stack");
+
+		json.openFieldStruct("python");
+			json.printField("mix", value.pythonMix);
+			json.printField("stack", value.pythonStack);
+		json.closeFieldStruct("python");
 		
 		json.openFieldStruct("output");
 			json.printField("callgrind",value.outputCallgrind);
@@ -363,6 +379,10 @@ void Options::dumpConfig(const char* fname)
 	IniParserHelper::setEntry(dic,"stack:resolve",this->stackResolve);
 	IniParserHelper::setEntry(dic,"stack:libunwind",this->stackLibunwind);
 	IniParserHelper::setEntry(dic,"stack:skip",this->stackSkip);
+
+	//python
+	IniParserHelper::setEntry(dic,"python:stack",this->pythonStack.c_str());
+	IniParserHelper::setEntry(dic,"python:mix",this->pythonMix);
 	
 	//output
 	IniParserHelper::setEntry(dic,"output:name",this->outputName.c_str());
@@ -487,6 +507,24 @@ Verbosity verbosityFromString(const std::string & value)
 	//error
 	MALT_FATAL_ARG("Invalid verbosity level: '%1'").arg(value).end();
 	return MALT_VERBOSITY_DEFAULT;
+}
+
+/**********************************************************/
+StackMode stackModeFromString(const std::string & value)
+{
+	if (value == "backtrace")
+		return STACK_MODE_BACKTRACE;
+	else if (value == "enter-exit")
+		return STACK_MODE_ENTER_EXIT_FUNC;
+	else if (value == "user")
+		return STACK_MODE_USER;
+	else if (value == "none")
+		return STACK_MODE_NONE;
+	else
+		MALT_FATAL_ARG("Invalid stack mode : %1").arg(value).end();
+
+	//default
+	return STACK_MODE_NONE;
 }
 
 /**********************************************************/

@@ -21,6 +21,7 @@
 #include <unistd.h>
 //intenrals
 #include <common/Options.hpp>
+#include <common/RangePtr.hpp>
 #include <portability/Mutex.hpp>
 #include <stacks/EnterExitStack.hpp>
 #include <stack-tree/StackSTLHashMap.hpp>
@@ -37,6 +38,7 @@
 #include <core/AllocTraceFile.hpp>
 #include <core/VmaTracker.hpp>
 #include <core/PythonSymbolTracker.hpp>
+#include <stacks/MultiLangStackMerger.hpp>
 //from v2
 #include <stack-tree/from-v2/RLockFreeTree.hpp>
 
@@ -46,14 +48,6 @@ namespace MALT
 
 /**********************************************************/
 class LocalAllocStackProfiler;
-
-/**********************************************************/
-enum StackMode
-{
-	STACK_MODE_BACKTRACE,
-	STACK_MODE_ENTER_EXIT_FUNC,
-	STACK_MODE_USER
-};
 
 /**********************************************************/
 struct ReallocJump
@@ -151,6 +145,7 @@ class AllocStackProfiler
 		void destroyLocalStackProfiler(LocalAllocStackProfiler * localProfiler);
 		void setRealMallocAddr(MallocFuncPtr realMallocFunc);
 		PythonSymbolTracker & getPythonSymbolTracker(void);
+		MultiLangStackMerger & getMultiLangStackMerger(void) {return this->multiLangStackMerger;};
 	public:
 		friend void convertToJson(htopml::JsonState& json, const AllocStackProfiler& value);
 	private:
@@ -165,6 +160,7 @@ class AllocStackProfiler
 		void loopSuppress(void);
 	private:
 		//SimpleStackTracer stackTracer;
+		MultiLangStackMerger multiLangStackMerger;
 		StackSTLHashMap<CallStackInfo> stackTracker;
 		RLockFreeTree<CallStackInfo> treeStackTracker;
 // 		AbstractStackTree<CallStackInfo> stackTree;

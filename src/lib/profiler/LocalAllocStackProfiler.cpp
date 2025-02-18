@@ -190,48 +190,50 @@ void LocalAllocStackProfiler::solveSymbols(SymbolSolver& symbolResolver) const
 //TODO: getStack should receive a parameter iff it's a Python stack
 Stack* LocalAllocStackProfiler::getStack(Language lang)
 {
+	//check
+	assert (lang == LANG_C || lang == LANG_PYTHON);
+
+	//vars
 	bool oldInUse;
-	if (lang == LANG_C) {
-		//search with selected mode
-		switch(stackMode)
-		{
-			case STACK_MODE_BACKTRACE:
-				CODE_TIMING("loadCurrentStack",backtraceStack.loadCurrentStack());
-				backtraceStack.fastSkip(gblOptions->stackSkip);
-				return &backtraceStack;
-			case STACK_MODE_ENTER_EXIT_FUNC:
-				oldInUse = this->markInUseAndGetOldStatus();
-				this->globalProfiler->getPythonSymbolTracker().makeStackPythonDomain(enterExitStack);
-				this->restoreInUseStatus(oldInUse);
-				return &enterExitStack;
-			case STACK_MODE_USER:
-				return NULL;
-			default:
-				MALT_FATAL("Invalid stack mode !");
-				return NULL;
-		}
-	} else if (lang == LANG_PYTHON) {
-		//search with selected mode
-		switch(stackMode)
-		{
-			case STACK_MODE_BACKTRACE:
-				CODE_TIMING("loadCurrentStack",backtracePythonStack.loadCurrentStack());
-				this->backtraceStack += backtracePythonStack;
-				return &backtraceStack;
-			case STACK_MODE_ENTER_EXIT_FUNC:
-				oldInUse = this->markInUseAndGetOldStatus();
-				this->globalProfiler->getPythonSymbolTracker().makeStackPythonDomain(enterExitStack);
-				this->restoreInUseStatus(oldInUse);
-				return &enterExitStack;
-			case STACK_MODE_USER:
-				return NULL;
-			default:
-				MALT_FATAL("Invalid stack mode !");
-				return NULL;
-		}
+
+	//backtrance in C
+	Stack * cRef = &this->enterExitStack;
+	if(stackMode ==  STACK_MODE_BACKTRACE) {
+		CODE_TIMING("loadCurrentStack",backtraceStack.loadCurrentStack());
+		backtraceStack.fastSkip(gblOptions->stackSkip);
+		cRef = &backtraceStack;
+	}
+
+	//backtrace in python
+	Stack * pythonRef = nullptr;
+	if (gblOptions->pythonStackEnum == STACK_MODE_BACKTRACE) {
+		CODE_TIMING("loadCurrentStack",backtracePythonStack.loadCurrentStack());
+		pythonRef = &backtracePythonStack;
 	} else {
-		MALT_FATAL("Invalid language");
-		return NULL;
+		//oldInUse = this->markInUseAndGetOldStatus();
+		//CODE_TIMING("trackPythonStack", this->globalProfiler->getPythonSymbolTracker().makeStackPythonDomain(enterExitStack));
+		//this->restoreInUseStatus(oldInUse);
+		pythonRef = &this->enterExitStack;
+	}
+
+	//if backtrace in python is needed
+	if (gblOptions->pythonMix) {
+		if (cRef == pythonRef) {
+			assert(cRef == &this->enterExitStack);
+			globalProfiler->getMultiLangStackMerger().removePythonLib(mixStack, *cRef);
+		} else {
+			globalProfiler->getMultiLangStackMerger().mixPythonAndCStack(mixStack, *cRef, *pythonRef);
+		}
+		return &mixStack;
+	} else {
+		if (lang == LANG_PYTHON)
+			return pythonRef;
+		else if (lang == LANG_C)
+			return cRef;
+		else {
+			MALT_FATAL("Invalid language, not supported !");
+			return nullptr;
+		}
 	}
 }
 

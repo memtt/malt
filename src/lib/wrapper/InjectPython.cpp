@@ -179,7 +179,7 @@ void initPythonInstrumentation(void)
 {
 	bool status = malt_wrap_python_mark_in_use();
 	initPythonAllocInstrumentation();
-	if (gblState.profiler->isEnterExit())
+	if (gblOptions->pythonStackEnum == STACK_MODE_ENTER_EXIT_FUNC)
 		initPythonEnterExitInstrumentation();
 	malt_wrap_python_restore_in_use(status);
 }

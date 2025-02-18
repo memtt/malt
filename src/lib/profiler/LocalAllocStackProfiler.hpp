@@ -110,6 +110,8 @@ class LocalAllocStackProfiler
 		EnterExitStack enterExitStack;
 		/** Object used to follow the local stack for the backtrace mode. **/
 		BacktraceStack backtraceStack;
+		/** Final mixed stack to cache faster. */
+		Stack mixStack{STACK_ORDER_ASC};
 		/** Object used to follow the local stack for backtrace mode in python */
 		BacktracePythonStack backtracePythonStack;
 		/** Follow size of stack in enter-exit mode. **/

@@ -50,6 +50,15 @@ enum Verbosity
 };
 
 /**********************************************************/
+enum StackMode
+{
+	STACK_MODE_BACKTRACE,
+	STACK_MODE_ENTER_EXIT_FUNC,
+	STACK_MODE_USER,
+	STACK_MODE_NONE
+};
+
+/**********************************************************/
 /**
  * Structure to manage the MALT options. It manage loading status from a config 
  * file in INI format.
@@ -69,6 +78,10 @@ struct Options
 	bool stackLibunwind;
 	std::string stackMode;
 	int stackSkip;
+	//python
+	std::string pythonStack;
+	StackMode pythonStackEnum;
+	bool pythonMix;
 	//vars for time profiging
 	bool timeProfileEnabled;
 	int timeProfilePoints;
@@ -120,6 +133,7 @@ static inline const Options & getGlobalOptions(void)
 /**********************************************************/
 Options & initGlobalOptions(void);
 Verbosity verbosityFromString(const std::string & value);
+StackMode stackModeFromString(const std::string & value);
 const char * verbosityToString(Verbosity value);
 Verbosity iniparser_getverbosity(dictionary * d, const char * key, Verbosity notfound);
 std::ostream & operator << (std::ostream & out, Verbosity value);
