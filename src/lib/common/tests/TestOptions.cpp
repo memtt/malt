@@ -33,6 +33,11 @@ const char cstJson[] = "\
 		\"libunwind\":false,\n\
 		\"stackSkip\":4\n\
 	},\n\
+	\"python\":{\n\
+		\"instru\":true,\n\
+		\"mix\":true,\n\
+		\"stack\":\"enter-exit\"\n\
+	},\n\
 	\"output\":{\n\
 		\"callgrind\":false,\n\
 		\"dumpConfig\":false,\n\

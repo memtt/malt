@@ -1,13 +1,13 @@
-loading file /build/src/lib/wrapper/tests/malt-python-basic-array.json...
-Loading file : /build/src/lib/wrapper/tests/malt-python-basic-array.json
+loading file /build/src/lib/wrappers/tests/malt-python-basic-array.json...
+Loading file : /build/src/lib/wrappers/tests/malt-python-basic-array.json
 Finished reading JSON file
 Optimizing datas for requests...
 Optimizing sites.instr...
 Optimizing access to stack details...
 Data optimization done.
 ----------------- EXTRACT ------------------
-/build/src/lib/wrapper/tests/malt-python-basic-array.json
-/src/lib/wrapper/tests/main1.py
+/build/src/lib/wrappers/tests/malt-python-basic-array.json
+/src/lib/wrappers/tests/main1.py
 --------------------------------------------
 
 main1.py:py:<module>:1

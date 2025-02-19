@@ -213,7 +213,7 @@ void convertToJson(htopml::JsonState& json, const ProfiledStateValue& value)
 	{
 		json.openFieldArray("location");
 		for (size_t i = 0 ; i < value.currentId ; i++)
-			json.printValue(value.entries[i].location);
+			json.printValue(value.entries[i].location, false);
 		json.closeFieldArray("location");
 	}
 	

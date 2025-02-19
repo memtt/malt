@@ -73,7 +73,7 @@ class JsonState
 	public:
 		JsonState(std::ostream * out, bool useIndent = true, bool lua = false);
 		template <class T> void printField(const char* name, const T& value);
-		template <class T> void printValue(const T & value);
+		template <class T> void printValue(const T & value, bool separator = true);
 		template <class T> void printFieldArray(const char * name,const T * value,int size);
 		template <class T> void printArray(const T * value,int size);
 		void printFormattedField(const char * name,const char * format,...);

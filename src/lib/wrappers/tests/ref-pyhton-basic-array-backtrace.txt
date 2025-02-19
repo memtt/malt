@@ -15,7 +15,7 @@ main1.py:py:<module>:1
  - free: {"count":18,"min":32,"max":984,"sum":3461}
  - globalPeak: 0
 
-main1.py:py:MainClass:2
+main1.py:py:MainClass.__init__:2
  - alloc: {"count":2,"min":64,"max":160,"sum":224}
  - free: {"count":2,"min":64,"max":160,"sum":224}
  - globalPeak: 0

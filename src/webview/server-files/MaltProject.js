@@ -1180,11 +1180,6 @@ function optimizeProjectDatas(data)
 	var strings = data.sites.strings;
 	var instrs = data.sites.instr;
 
-	//TODO remove
-	for (var i in strings)
-		if (strings[i] == '')
-			console.log("???????????? => "+i+" -> "+strings.length);
-
 	//do for stacks/instr section
 	//avoid to jump to string table every time
 	console.log("Optimizing sites.instr...");

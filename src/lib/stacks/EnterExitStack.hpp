@@ -47,14 +47,12 @@ class EnterExitStack : public Stack
 		inline void enterFunction(LangAddress funcAddr);
 		inline void exitFunction(LangAddress funcAddr);
 		inline void reset(void);
-	private:
-		size_t realSize;
 };
 
 /**********************************************************/
 inline void EnterExitStack::reset(void)
 {
-	this->realSize = this->size = 0;
+	this->size = 0;
 }
 
 /**********************************************************/
@@ -69,8 +67,7 @@ inline void EnterExitStack::enterFunction ( LangAddress funcAddr )
 		this->grow();
 
 	//check realSize
-	size_t tmp = ++realSize;
-	if (tmp > MALT_MAX_STACK_SIZE)
+	if (this->size + 1 > MALT_MAX_STACK_SIZE)
 		return;
 	
 	//check size
@@ -93,8 +90,7 @@ inline void EnterExitStack::exitFunction ( LangAddress funcAddr )
 {
 	assert(size > 0);
 
-	size_t tmp = realSize--;
-	if (tmp >MALT_MAX_STACK_SIZE)
+	if (this->size - 1 >MALT_MAX_STACK_SIZE)
 		return;
 
 	if (size > 0)

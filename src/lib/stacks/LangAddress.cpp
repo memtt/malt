@@ -93,13 +93,13 @@ std::string LangAddress::toString() const {
 
 	if (this->domain == DOMAIN_PYTHON){
 		value += "PY-";
-	} else if (this->domain == DOMAIN_PYTHON){
+	} else if (this->domain == DOMAIN_PYTHON_FRAME){
 		value += "PYF-";
 	}
 
-	char buffer[64];
+	char buffer[128];
 	void * ptr = (void*)(uintptr_t)(this->address);
-	sprintf(buffer, "%p", ptr);
+	snprintf(buffer, sizeof(buffer), "%p", ptr);
 	value += buffer;
 
 	return value;

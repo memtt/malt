@@ -26,6 +26,12 @@ add_library(malt-injectors OBJECT
 SET_TARGET_PROPERTIES(malt-injectors PROPERTIES COMPILE_FLAGS -fPIC)
 
 ############################################################
+add_library(malt-injector-python OBJECT
+      InjectPython.cpp
+)
+SET_TARGET_PROPERTIES(malt-injector-python PROPERTIES COMPILE_FLAGS -fPIC)
+
+############################################################
 #if (ENABLE_TESTS)
 #	add_subdirectory(tests)
 #endif (ENABLE_TESTS)

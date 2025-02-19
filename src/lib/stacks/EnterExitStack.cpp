@@ -30,7 +30,6 @@ namespace MALT
 EnterExitStack::EnterExitStack ( void )
 	:Stack(STACK_ORDER_DESC)
 {
-	this->realSize = 0;
 }
 
 }
