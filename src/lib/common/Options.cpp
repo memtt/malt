@@ -59,6 +59,7 @@ Options::Options(void)
 	//python
 	this->pythonStack             = "enter-exit";
 	this->pythonMix               = true;
+	this->pythonInstru            = true;
 	//time
 	this->timeProfileEnabled      = true;
 	this->timeProfilePoints       = 512;
@@ -104,6 +105,7 @@ bool Options::operator==(const Options& value) const
 	if (stackLibunwind != value.stackLibunwind) return false;
 	if (stackSkip != value.stackSkip) return false;
 	//python
+	if (pythonInstru != value.pythonInstru) return false;
 	if (pythonStack != value.pythonStack) return false;
 	if (pythonMix != value.pythonMix) return false;
 	//time
@@ -225,6 +227,7 @@ void Options::loadFromIniDic ( dictionary* iniDic )
 	this->timeProfileLinear   = iniparser_getboolean(iniDic,"time:linear-index",this->timeProfileLinear);
 	
 	//python
+	this->pythonInstru        = iniparser_getboolean(iniDic,"python:instru",this->pythonInstru);
 	this->pythonMix           = iniparser_getboolean(iniDic,"python:mix",this->pythonMix);
 	this->pythonStack         = iniparser_getstring(iniDic,"python:stack",(char*)this->pythonStack.c_str());
 	this->pythonStackEnum     = stackModeFromString(this->pythonStack);
@@ -316,6 +319,7 @@ void convertToJson(htopml::JsonState & json,const Options & value)
 		json.closeFieldStruct("stack");
 
 		json.openFieldStruct("python");
+			json.printField("instru", value.pythonInstru);
 			json.printField("mix", value.pythonMix);
 			json.printField("stack", value.pythonStack);
 		json.closeFieldStruct("python");
@@ -381,6 +385,7 @@ void Options::dumpConfig(const char* fname)
 	IniParserHelper::setEntry(dic,"stack:skip",this->stackSkip);
 
 	//python
+	IniParserHelper::setEntry(dic,"python:intru",this->pythonInstru);
 	IniParserHelper::setEntry(dic,"python:stack",this->pythonStack.c_str());
 	IniParserHelper::setEntry(dic,"python:mix",this->pythonMix);
 	

@@ -145,11 +145,12 @@ int malt_wrap_python_on_enter_exit(PyObject *obj, PyFrameObject *frame, int what
 			case PyTrace_CALL: {
 				MALT::PythonSymbolTracker & tracker = gblState.profiler->getPythonSymbolTracker();
 				LangAddress parentAddr = tracker.parentFrameToLangAddress(frame);
-				//get up
+				//////////////////////
 				PythonCallSite site = tracker.getCallSite(parentAddr);
-				env.getLocalProfiler().onEnterFunc(nullAddr,parentAddr,true);
 				printf("enter in %s:%s:%d\n", site.file, site.function, site.line);
 				//////////////////////
+				//get up
+				env.getLocalProfiler().onEnterFunc(nullAddr,parentAddr,true);
 				/*PyFrameObject * parentFrame = PyFrame_GetBack(frame);
 				if (parentFrame != nullptr) {
 					env.getLocalProfiler().onEnterFunc(nullAddr,LangAddress(DOMAIN_PYTHON_FRAME, parentFrame),true);
@@ -161,10 +162,11 @@ int malt_wrap_python_on_enter_exit(PyObject *obj, PyFrameObject *frame, int what
 			case PyTrace_RETURN: {
 				MALT::PythonSymbolTracker & tracker = gblState.profiler->getPythonSymbolTracker();
 				LangAddress parentAddr = tracker.parentFrameToLangAddress(frame);
+				//////////////
 				PythonCallSite site = tracker.getCallSite(parentAddr);
-				env.getLocalProfiler().onExitFunc(nullAddr,parentAddr,true);
 				printf("exit in %s:%s:%d\n", site.file, site.function, site.line);
 				//////////////
+				env.getLocalProfiler().onExitFunc(nullAddr,parentAddr,true);
 				/*PyFrameObject * parentFrame = PyFrame_GetBack(frame);
 				if (parentFrame != nullptr) {
 					env.getLocalProfiler().onExitFunc(nullAddr,LangAddress(DOMAIN_PYTHON_FRAME, parentFrame),true);
@@ -176,6 +178,7 @@ int malt_wrap_python_on_enter_exit(PyObject *obj, PyFrameObject *frame, int what
 				env.getLocalProfiler().onEnterFunc(nullAddr, LangAddress(DOMAIN_PYTHON, MALT_PYTHON_C_BRIDGE_FUNC_ID),true);
 				break;
 			case PyTrace_C_RETURN:
+			case PyTrace_C_EXCEPTION:
 				env.getLocalProfiler().onExitFunc(nullAddr, LangAddress(DOMAIN_PYTHON, MALT_PYTHON_C_BRIDGE_FUNC_ID),true);
 				break;*/
 			default:{

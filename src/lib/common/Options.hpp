@@ -82,6 +82,7 @@ struct Options
 	std::string pythonStack;
 	StackMode pythonStackEnum;
 	bool pythonMix;
+	bool pythonInstru;
 	//vars for time profiging
 	bool timeProfileEnabled;
 	int timeProfilePoints;

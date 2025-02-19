@@ -128,6 +128,7 @@ MaltCallStacksView.prototype.buildCallTree = function(data)
 		var cur = tree;
 		reduceStat(cur,call.info);
 		call.stack.reverse().forEach(function(loc) {
+			loc.function = loc.function.replace('<', '&lt;').replace('>', '&gt;');
 			if (cur.childs[loc.function] == undefined)
 				cur.childs[loc.function] = {childs:{},id:id++,location:loc};
 			cur = cur.childs[loc.function];

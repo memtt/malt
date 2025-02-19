@@ -83,6 +83,8 @@ LangAddress PythonSymbolTracker::frameToLangAddress(PyFrameObject * frame)
 	auto it = this->siteMap.find(tmpsite.site);
 	void * currentId;
 
+	assert(tmpsite.site.function[0] != '\0');
+
 	//is new or not
 	if (it == this->siteMap.end()) {
 		PythonCallSite siteNew;
