@@ -11,12 +11,12 @@
 /**********************************************************/
 #include <gtest/gtest.h>
 #include <thread>
-#include <ThreadTracker.hpp>
+#include <core/ThreadTracker.hpp>
 #include <Python.h>
 #include "../WrapperCAlloc.hpp"
-#include "../GlobalState.hpp"
+#include "state/GlobalState.hpp"
 #include "../InjectPythonInit.hpp"
-#include "../malt.h"
+#include "state/malt.h"
 #include <common/Helpers.hpp>
 
 /**********************************************************/

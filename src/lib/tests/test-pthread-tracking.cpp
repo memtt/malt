@@ -14,7 +14,7 @@
 #include <signal.h>
 #include <cstdio>
 #include <unistd.h>
-#include <wrapper/ThreadTracker.hpp>
+#include <core/ThreadTracker.hpp>
 
 /**********************************************************/
 #define NB_THREADS 16

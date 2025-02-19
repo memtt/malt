@@ -11,7 +11,7 @@
 /**********************************************************/
 #include <gtest/gtest.h>
 #include <thread>
-#include <ThreadTracker.hpp>
+#include <core/ThreadTracker.hpp>
 
 /**********************************************************/
 using namespace MALT;

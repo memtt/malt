@@ -10,8 +10,8 @@
 
 /**********************************************************/
 #include <Python.h>
-#include "LazyEnv.hpp"
-#include "ReentranceGuard.hpp"
+#include "state/LazyEnv.hpp"
+#include "state/ReentranceGuard.hpp"
 #include "WrapperPython.hpp"
 #include <stacks/BacktracePythonStack.hpp>
 

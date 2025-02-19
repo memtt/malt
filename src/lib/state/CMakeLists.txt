@@ -10,29 +10,20 @@
 ############################################################
 
 ############################################################
-add_library(malt-wrappers OBJECT 
-      WrapperCAlloc.cpp
-      WrapperPython.cpp
-      WrapperPthreads.cpp
-      InjectPthreads.cpp
+add_library(malt-state OBJECT 
+      GlobalState.cpp
 )
-SET_TARGET_PROPERTIES(malt-wrappers PROPERTIES COMPILE_FLAGS -fPIC)
+SET_TARGET_PROPERTIES(malt-state PROPERTIES COMPILE_FLAGS -fPIC)
 
 ############################################################
-add_library(malt-injectors OBJECT
-      InjectCAlloc.cpp
-      InjectPython.cpp
-      InjectCInit.cpp
-      InjectFuncEnterExit.cpp
-      InjectMaqao.cpp
-)
-SET_TARGET_PROPERTIES(malt-injectors PROPERTIES COMPILE_FLAGS -fPIC)
+add_library(malt-fake-controler OBJECT FakeControler.c)
+SET_TARGET_PROPERTIES(malt-fake-controler PROPERTIES COMPILE_FLAGS -fPIC)
 
 ############################################################
-INSTALL(FILES WrapperCAlloc.hpp
+INSTALL(FILES malt.h
         DESTINATION include/malt)
 
 ############################################################
-if (ENABLE_TESTS)
-	add_subdirectory(tests)
-endif (ENABLE_TESTS)
+#if (ENABLE_TESTS)
+#	add_subdirectory(tests)
+#endif (ENABLE_TESTS)

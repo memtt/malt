@@ -13,6 +13,7 @@
 set(MALT_LIB_SRC VmaTracker.cpp
                  SymbolSolver.cpp
                  CallStackInfo.cpp
+                 ThreadTracker.cpp
                  AllocTraceFile.cpp
                  SegmentTracker.cpp
                  ValgrindOutput.cpp

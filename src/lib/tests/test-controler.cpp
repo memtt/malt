@@ -12,7 +12,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
-#include <wrapper/malt.h>
+#include <state/malt.h>
 
 /**********************************************************/
 int main(void)

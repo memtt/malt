@@ -10,11 +10,11 @@
 
 /**********************************************************/
 #include <Python.h>
-#include "GlobalState.hpp"
+#include "state/GlobalState.hpp"
 #include "WrapperPython.hpp"
 #include "InjectPython.hpp"
-#include "LazyEnv.hpp"
-#include "ReentranceGuard.hpp"
+#include "state/LazyEnv.hpp"
+#include "state/ReentranceGuard.hpp"
 
 /**********************************************************/
 namespace MALT

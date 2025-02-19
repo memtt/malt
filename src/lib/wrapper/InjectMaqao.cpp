@@ -9,7 +9,7 @@
 ***********************************************************/
 
 /**********************************************************/
-#include "GlobalState.hpp"
+#include "state/GlobalState.hpp"
 #include "WrapperCAlloc.hpp"
 #include "InjectFuncEnterExit.hpp"
 

@@ -80,6 +80,7 @@ set(COMMON_OBJS $<TARGET_OBJECTS:htopml-json>
                 $<TARGET_OBJECTS:malt-stack-trees>
                 $<TARGET_OBJECTS:malt-common>
                 $<TARGET_OBJECTS:malt-port>
+                $<TARGET_OBJECTS:malt-state>
                 $<TARGET_OBJECTS:iniparser>)
 
 ############################################################
@@ -102,6 +103,7 @@ set_target_properties(malt-controler PROPERTIES VERSION ${MALT_VERSION}
 ############################################################
 add_subdirectory(core)
 add_subdirectory(tools)
+add_subdirectory(state)
 add_subdirectory(common)
 add_subdirectory(stacks)
 add_subdirectory(valprof)

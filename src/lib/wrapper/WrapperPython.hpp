@@ -13,7 +13,7 @@
 #define MALT_WRAPPER_PYTHON_ALLOC_HPP
 
 /**********************************************************/
-#include "GlobalState.hpp"
+#include "state/GlobalState.hpp"
 #include <Python.h>
 
 /**********************************************************/

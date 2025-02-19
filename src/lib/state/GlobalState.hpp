@@ -34,9 +34,9 @@
 #include <core/StackSizeTracker.hpp>
 #include <profiler/AllocStackProfiler.hpp>
 #include <profiler/LocalAllocStackProfiler.hpp>
+#include "wrapper/WrapperCAlloc.hpp"
 //locals
 #include "malt.h"
-#include "WrapperCAlloc.hpp"
 
 /**********************************************************/
 namespace MALT

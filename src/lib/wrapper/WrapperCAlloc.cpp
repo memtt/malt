@@ -11,8 +11,8 @@
 ***********************************************************/
 
 /**********************************************************/
-#include "LazyEnv.hpp"
-#include "ReentranceGuard.hpp"
+#include "state/LazyEnv.hpp"
+#include "state/ReentranceGuard.hpp"
 #include "WrapperCAlloc.hpp"
 
 /**********************************************************/

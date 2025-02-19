@@ -33,7 +33,7 @@
 #include "AllocStackProfiler.hpp"
 #include "LocalAllocStackProfiler.hpp"
 #include <tools/NMCmdReader.hpp>
-#include <wrapper/ThreadTracker.hpp>
+#include <core/ThreadTracker.hpp>
 #include "ConverterToV2Tree.hpp"
 #include "common/NoFreeAllocator.hpp"
 #include "stacks/StackLoopRemover.hpp"
