@@ -34,7 +34,7 @@
 #include <core/StackSizeTracker.hpp>
 #include <profiler/AllocStackProfiler.hpp>
 #include <profiler/LocalAllocStackProfiler.hpp>
-#include "wrapper/WrapperCAlloc.hpp"
+#include "wrappers/WrapperCAlloc.hpp"
 //locals
 #include "malt.h"
 

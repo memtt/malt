@@ -3,14 +3,14 @@
 *    VERSION  : 1.2.4
 *    DATE     : 02/2025
 *    LICENSE  : CeCILL-C
-*    FILE     : ./src/lib/wrapper/InjectCAlloc.cpp
+*    FILE     : src/lib/injectors/InjectCAlloc.cpp
 *-----------------------------------------------------------
 *    AUTHOR   : Sébastien Valat (INRIA) - 2025
 ***********************************************************/
 
 /**********************************************************/
 #include "state/GlobalState.hpp"
-#include "WrapperCAlloc.hpp"
+#include "wrappers/WrapperCAlloc.hpp"
 
 /**********************************************************/
 using namespace MALT;

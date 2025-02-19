@@ -3,14 +3,14 @@
 *    VERSION  : 1.2.4
 *    DATE     : 02/2025
 *    LICENSE  : CeCILL-C
-*    FILE     : ./src/lib/wrapper/InjectFuncEnterExit.cpp
+*    FILE     : src/lib/injectors/InjectFuncEnterExit.cpp
 *-----------------------------------------------------------
 *    AUTHOR   : Sébastien Valat (INRIA) - 2025
 ***********************************************************/
 
 /**********************************************************/
 #include "state/LazyEnv.hpp"
-#include "WrapperCAlloc.hpp"
+#include "wrappers/WrapperCAlloc.hpp"
 #include "InjectFuncEnterExit.hpp"
 
 /**********************************************************/

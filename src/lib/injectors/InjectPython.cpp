@@ -3,7 +3,7 @@
 *    VERSION  : 1.2.4
 *    DATE     : 02/2025
 *    LICENSE  : CeCILL-C
-*    FILE     : ./src/lib/wrapper/InjectCAlloc.cpp
+*    FILE     : src/lib/injectors/InjectPython.cpp
 *-----------------------------------------------------------
 *    AUTHOR   : Sébastien Valat (INRIA) - 2025
 ***********************************************************/
@@ -11,7 +11,7 @@
 /**********************************************************/
 #include <Python.h>
 #include "state/GlobalState.hpp"
-#include "WrapperPython.hpp"
+#include "wrappers/WrapperPython.hpp"
 #include "InjectPython.hpp"
 #include "state/LazyEnv.hpp"
 #include "state/ReentranceGuard.hpp"

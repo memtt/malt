@@ -81,6 +81,7 @@ set(COMMON_OBJS $<TARGET_OBJECTS:htopml-json>
                 $<TARGET_OBJECTS:malt-common>
                 $<TARGET_OBJECTS:malt-port>
                 $<TARGET_OBJECTS:malt-state>
+                $<TARGET_OBJECTS:malt-injectors-ok-for-tests>
                 $<TARGET_OBJECTS:iniparser>)
 
 ############################################################
@@ -107,8 +108,9 @@ add_subdirectory(state)
 add_subdirectory(common)
 add_subdirectory(stacks)
 add_subdirectory(valprof)
-add_subdirectory(wrapper)
+add_subdirectory(wrappers)
 add_subdirectory(profiler)
+add_subdirectory(injectors)
 add_subdirectory(stack-tree)
 add_subdirectory(portability)
 

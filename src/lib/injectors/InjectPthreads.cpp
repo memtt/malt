@@ -1,18 +1,17 @@
 /***********************************************************
 *    PROJECT  : MALT (MALoc Tracker)
 *    VERSION  : 1.2.4
-*    DATE     : 10/2024
+*    DATE     : 02/2025
 *    LICENSE  : CeCILL-C
-*    FILE     : ./src/lib/wrapper/ThreadTracker.cpp
+*    FILE     : src/lib/injectors/InjectPthreads.cpp
 *-----------------------------------------------------------
-*    AUTHOR   : Sébastien Valat - 2014 - 2024
-*    AUTHOR   : Sébastien Valat (ECR) - 2014
+*    AUTHOR   : Sébastien Valat (INRIA) - 2025
 ***********************************************************/
 
 /**********************************************************/
 //standard
 #include "core/ThreadTracker.hpp"
-#include "WrapperPthreads.hpp"
+#include "wrappers/WrapperPthreads.hpp"
 #include <cstdio>
 #include <cassert>
 //libc POSIX.1, here we use GNU specific RTLD_NEXT (need _GNU_SOURCE)

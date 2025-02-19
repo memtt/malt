@@ -14,19 +14,8 @@ add_library(malt-wrappers OBJECT
       WrapperCAlloc.cpp
       WrapperPython.cpp
       WrapperPthreads.cpp
-      InjectPthreads.cpp
 )
 SET_TARGET_PROPERTIES(malt-wrappers PROPERTIES COMPILE_FLAGS -fPIC)
-
-############################################################
-add_library(malt-injectors OBJECT
-      InjectCAlloc.cpp
-      InjectPython.cpp
-      InjectCInit.cpp
-      InjectFuncEnterExit.cpp
-      InjectMaqao.cpp
-)
-SET_TARGET_PROPERTIES(malt-injectors PROPERTIES COMPILE_FLAGS -fPIC)
 
 ############################################################
 INSTALL(FILES WrapperCAlloc.hpp

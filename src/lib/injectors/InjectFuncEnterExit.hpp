@@ -3,7 +3,7 @@
 *    VERSION  : 1.2.4
 *    DATE     : 02/2025
 *    LICENSE  : CeCILL-C
-*    FILE     : ./src/lib/wrapper/InjectFuncEnterExit.hpp
+*    FILE     : src/lib/injectors/InjectFuncEnterExit.hpp
 *-----------------------------------------------------------
 *    AUTHOR   : Sébastien Valat (INRIA) - 2025
 ***********************************************************/
