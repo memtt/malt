@@ -9,7 +9,7 @@
 ############################################################
 
 ############################################################
-set(MALT_LIB_TOOLS_SRC NMCmdReader.cpp BacktraceLibunwind.cpp Backtrace.cpp ProcPagemapReader.cpp)
+set(MALT_LIB_TOOLS_SRC NMCmdReader.cpp BacktraceLibunwind.cpp Backtrace.cpp ProcPagemapReader.cpp Addr2Line.cpp)
                  
 ############################################################
 #Optional sources
