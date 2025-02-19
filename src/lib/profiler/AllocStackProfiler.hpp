@@ -141,7 +141,7 @@ class AllocStackProfiler
 		void registerMaqaoFunctionSymbol(int funcId,const char * funcName,const char * file,int line);
 		AllocTreeStrackTracer * getEnterExitStackTracer(void);
 		bool isEnterExit(void);
-		LocalAllocStackProfiler * createLocalStackProfiler(bool reentrant);
+		LocalAllocStackProfiler * createLocalStackProfiler();
 		void destroyLocalStackProfiler(LocalAllocStackProfiler * localProfiler);
 		void setRealMallocAddr(MallocFuncPtr realMallocFunc);
 		PythonSymbolTracker & getPythonSymbolTracker(void);

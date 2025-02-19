@@ -39,22 +39,6 @@
 #include "WrapperCAlloc.hpp"
 
 /**********************************************************/
-/** Manage init of local state and fetch TLS in local pointer. **/
-#define MALT_WRAPPER_LOCAL_STATE_INIT \
-	/*get addr localy to avoid to read the TLS every time*/ \
-	ThreadLocalState & localState = tlsState; \
-	 \
-	/*check init */  \
-	if ( tlsState.status == ALLOC_WRAP_NOT_READY ) \
-		localState.init();\
-	\
-	bool isEnterExit = true;\
-	if (localState.profiler != NULL) \
-		isEnterExit = localState.profiler->isEnterExit(); \
-	if (isEnterExit){};/*to remove, but add it add warning*/
-
-
-/**********************************************************/
 namespace MALT
 {
 
@@ -156,6 +140,11 @@ struct ThreadLocalState
 	/**
 	 * Remember the default init state to manage lazy initialization.**/
 	AllocWrapperGlobalStatus status;
+
+	/**
+	 * Is guard already passed once (to stop internal instrumentation)
+	 */
+	bool inMalt;
 	
 	/** Function used to init the structure on first use. **/
 	void init(void);

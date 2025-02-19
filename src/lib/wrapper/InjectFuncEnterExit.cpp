@@ -9,7 +9,7 @@
 ***********************************************************/
 
 /**********************************************************/
-#include "GlobalState.hpp"
+#include "LazyEnv.hpp"
 #include "WrapperCAlloc.hpp"
 #include "InjectFuncEnterExit.hpp"
 
@@ -31,11 +31,11 @@ using namespace MALT;
 void __cyg_profile_func_enter (void *this_fn,void *call_site)
 {
 	//get local TLS and check init
-	MALT_WRAPPER_LOCAL_STATE_INIT
+	LazyEnv env;
 	
 	//stack tracking
 	if (tlsState.status == ALLOC_WRAP_READY || tlsState.status == ALLOC_WRAP_DISABLED)
-		localState.profiler->onEnterFunc(LangAddress(DOMAIN_C, this_fn),LangAddress(DOMAIN_C, call_site));
+		env.getLocalProfiler().onEnterFunc(LangAddress(DOMAIN_C, this_fn),LangAddress(DOMAIN_C, call_site));
 }
 
 /**********************************************************/
@@ -53,9 +53,9 @@ void __cyg_profile_func_enter (void *this_fn,void *call_site)
 void __cyg_profile_func_exit  (void *this_fn,void *call_site)
 {
 	//get local TLS and check init
-	MALT_WRAPPER_LOCAL_STATE_INIT
+	LazyEnv env;
 	
 	//stack tracking
 	if (tlsState.status == ALLOC_WRAP_READY || tlsState.status == ALLOC_WRAP_DISABLED)
-		localState.profiler->onExitFunc(LangAddress(DOMAIN_C, this_fn),LangAddress(DOMAIN_C, call_site));
+		env.getLocalProfiler().onExitFunc(LangAddress(DOMAIN_C, this_fn),LangAddress(DOMAIN_C, call_site));
 }

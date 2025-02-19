@@ -17,7 +17,7 @@ namespace MALT
 
 /**********************************************************/
 #define GBL_STATE_INIT {ALLOC_WRAP_NOT_READY,MALT_STATIC_MUTEX_INIT,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL};
-#define TLS_STATE_INIT {NULL,ALLOC_WRAP_NOT_READY}
+#define TLS_STATE_INIT {NULL,ALLOC_WRAP_NOT_READY,false}
 /**********************************************************/
 /** Store the global state of allocator wrapper. **/
 AllocWrapperGlobal gblState = GBL_STATE_INIT;
@@ -347,7 +347,7 @@ void ThreadLocalState::init(void)
 		gblState.init();
 	
 	//create the local chain
-	tlsState.profiler = gblState.profiler->createLocalStackProfiler(true);
+	tlsState.profiler = gblState.profiler->createLocalStackProfiler();
 	
 	//mark ready
 	if (gblOptions->enabled)

@@ -13,6 +13,8 @@
 #include "GlobalState.hpp"
 #include "WrapperPython.hpp"
 #include "InjectPython.hpp"
+#include "LazyEnv.hpp"
+#include "ReentranceGuard.hpp"
 
 /**********************************************************/
 namespace MALT
@@ -177,11 +179,14 @@ void initPythonEnterExitInstrumentation(void)
 /**********************************************************/
 void initPythonInstrumentation(void)
 {
-	bool status = malt_wrap_python_mark_in_use();
+	//setup env
+	LazyEnv env;
+	ReentranceGuard guard(env);
+
+	//init python
 	initPythonAllocInstrumentation();
 	if (gblOptions->pythonStackEnum == STACK_MODE_ENTER_EXIT_FUNC)
 		initPythonEnterExitInstrumentation();
-	malt_wrap_python_restore_in_use(status);
 }
 
 }

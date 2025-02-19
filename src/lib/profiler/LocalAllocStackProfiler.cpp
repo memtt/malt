@@ -23,15 +23,11 @@ namespace MALT
 {
 
 /**********************************************************/
-LocalAllocStackProfiler::LocalAllocStackProfiler(AllocStackProfiler* globalProfiler, bool reentrance)
+LocalAllocStackProfiler::LocalAllocStackProfiler(AllocStackProfiler* globalProfiler)
 	:backtracePythonStack(globalProfiler->getPythonSymbolTracker())
 {
 	//errors
 	assert(globalProfiler != NULL);
-	
-	//mark in use to avoid reentrance in cas of usage of malloc in future to setup fields
-	this->reentrance = reentrance;
-	this->inUse = true;
 	
 	//setup fields
 	this->cntMemOps = 0;
@@ -43,9 +39,6 @@ LocalAllocStackProfiler::LocalAllocStackProfiler(AllocStackProfiler* globalProfi
 	backtraceStack.loadCurrentStack();
 	
 	this->enterExitHandler = enterExitStackTracer->getRoot();
-	
-	//ok for use
-	this->inUse = false;
 }
 
 /**********************************************************/
@@ -59,69 +52,37 @@ LocalAllocStackProfiler::~LocalAllocStackProfiler(void)
 //TODO: Pass Stack* to getStack()
 void LocalAllocStackProfiler::onMalloc(void* res, size_t size, ticks time, MallocKind kind, Language lang)
 {
-	//old state
-	bool oldInuse = inUse;
-	
 	//check for reentrance
-	if (!reentrance || !oldInuse)
-	{
-		inUse = true;
-		CODE_TIMING("mallocProf",globalProfiler->onMalloc(res,size,getStack(lang)));
-		this->cntMemOps++;
-		this->allocStats.malloc[kind].inc(size,time);
-		inUse = oldInuse;
-	}
+	CODE_TIMING("mallocProf",globalProfiler->onMalloc(res,size,getStack(lang)));
+	this->cntMemOps++;
+	this->allocStats.malloc[kind].inc(size,time);
 }
 
 /**********************************************************/
 void LocalAllocStackProfiler::onFree(void* ptr, ticks time, Language lang)
 {
-	//old state
-	bool oldInuse = inUse;
-	
 	//check for reentrance
-	if (!reentrance || !oldInuse)
-	{
-		inUse = true;
-		CODE_TIMING("freeProf",globalProfiler->onFree(ptr,getStack(lang)));
-		this->cntMemOps++;
-		inUse = oldInuse;
-		this->allocStats.free.inc(0,time);
-	}
+	CODE_TIMING("freeProf",globalProfiler->onFree(ptr,getStack(lang)));
+	this->cntMemOps++;
+	this->allocStats.free.inc(0,time);
 }
 
 /**********************************************************/
 void LocalAllocStackProfiler::onCalloc(void * res,size_t nmemb, size_t size, ticks time, Language lang)
 {
-	//old state
-	bool oldInuse = inUse;
-	
 	//check for reentrance
-	if (!reentrance || !oldInuse)
-	{
-		inUse = true;
-		CODE_TIMING("callocProf",globalProfiler->onCalloc(res,nmemb,size,getStack(lang)));
-		this->cntMemOps++;
-		this->allocStats.calloc.inc(size,time);
-		inUse = oldInuse;
-	}
+	CODE_TIMING("callocProf",globalProfiler->onCalloc(res,nmemb,size,getStack(lang)));
+	this->cntMemOps++;
+	this->allocStats.calloc.inc(size,time);
 }
 
 /**********************************************************/
 void LocalAllocStackProfiler::onRealloc(void* ptr, void* res, size_t size,ticks time, Language lang)
 {
-	//old state
-	bool oldInuse = inUse;
-	
 	//check for reentrance
-	if (!reentrance || !oldInuse)
-	{
-		inUse = true;
-		CODE_TIMING("reallocProf",globalProfiler->onRealloc(ptr,res,size,getStack(lang)));
-		this->cntMemOps++;
-		this->allocStats.realloc.inc(size,time);
-		inUse = oldInuse;
-	}
+	CODE_TIMING("reallocProf",globalProfiler->onRealloc(ptr,res,size,getStack(lang)));
+	this->cntMemOps++;
+	this->allocStats.realloc.inc(size,time);
 }
 
 /**********************************************************/
@@ -131,19 +92,11 @@ void LocalAllocStackProfiler::onMmap(void* ptr, size_t size, int flags, int fd)
 	if ((flags & (MAP_ANON|MAP_ANONYMOUS)) == 0 || fd != 0)
 		return;
 	
-	//old state
-	bool oldInuse = inUse;
-	
 	//get stack
 	Stack * stack = getStack();
 	
 	//check for renentrance
-	if (!reentrance || !oldInuse)
-	{
-		inUse = true;
-		CODE_TIMING("userMmapProf",globalProfiler->onMmap(ptr,size,stack));
-		inUse = oldInuse;
-	}
+	CODE_TIMING("userMmapProf",globalProfiler->onMmap(ptr,size,stack));
 	
 	//CODE_TIMING("globalMmapProf",globalProfiler->onGlobalMmap(ptr,size,stack));
 }
@@ -283,20 +236,6 @@ void convertToJson(htopml::JsonState& json, const PerThreadAllocStats& value)
 	json.printField("calloc",value.calloc);
 	json.printField("realloc",value.realloc);
 	json.closeStruct();
-}
-
-/**********************************************************/
-bool LocalAllocStackProfiler::markInUseAndGetOldStatus(void)
-{
-	bool old = this->inUse;
-	this->inUse = true;
-	return old;
-}
-
-/**********************************************************/
-void LocalAllocStackProfiler::restoreInUseStatus(bool oldStatus)
-{
-	this->inUse = oldStatus;
 }
 
 }

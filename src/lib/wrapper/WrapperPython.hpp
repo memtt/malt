@@ -35,10 +35,6 @@ void * malt_wrap_python_realloc(void * ctx,void * ptr,size_t size, PythonRealloc
 /**********************************************************/
 int malt_wrap_python_on_enter_exit(PyObject *obj, PyFrameObject *frame, int what, PyObject *arg);
 
-/**********************************************************/
-bool malt_wrap_python_mark_in_use(void);
-void malt_wrap_python_restore_in_use(bool oldValue);
-
 }
 
 #endif //MALT_WRAPPER_PYTHON_ALLOC_HPP

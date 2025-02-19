@@ -81,7 +81,7 @@ void convertToJson(htopml::JsonState& json, const PerThreadAllocStats& value);
 class LocalAllocStackProfiler
 {
 	public:
-		LocalAllocStackProfiler(AllocStackProfiler * globalProfiler,bool reentrance = true);
+		LocalAllocStackProfiler(AllocStackProfiler * globalProfiler);
 		~LocalAllocStackProfiler(void);
 		void onMalloc(void* res, size_t size, ticks time, MALT::MallocKind kind, Language lang = LANG_C);
 		void onFree(void* ptr, ticks time, Language lang = LANG_C);
@@ -93,9 +93,6 @@ class LocalAllocStackProfiler
 		inline void onExitFunc(LangAddress this_fn,LangAddress call_site,bool ignoreStack=false);
 		void solveSymbols(SymbolSolver & symbolResolver) const;
 		bool isEnterExit(void);
-		inline bool isInUse(void);
-		bool markInUseAndGetOldStatus(void);
-		void restoreInUseStatus(bool oldStatus);
 		inline BacktracePythonStack getBacktracePythonStack(void);
 	public:
 		friend void convertToJson(htopml::JsonState& json, const LocalAllocStackProfiler& value);
@@ -118,13 +115,6 @@ class LocalAllocStackProfiler
 		StackSizeAnalyser stackSizeAnalyser;
 		/** Counter memory requests. **/
 		size_t cntMemOps;
-		/** Request for the object to take care of reentrance (disable not analyse inner calls). **/
-		bool reentrance;
-		/**
-		 * Avoid to instrument inner allocations, marked at 'true' when entering in first level malloc/free.... 
-		 * It permit to use dynamic allocation inside instrumentation functions.
-		**/
-		volatile bool inUse;
 		/** Ways to track stack. **/
 		StackMode stackMode;
 		/** Pointer to the global enterExitStackTracer for enter-exit mode **/
@@ -167,12 +157,6 @@ inline void LocalAllocStackProfiler::onExitFunc(LangAddress this_fn, LangAddress
 BacktracePythonStack LocalAllocStackProfiler::getBacktracePythonStack(void)
 {
 	return this->backtracePythonStack;
-}
-
-/**********************************************************/
-bool LocalAllocStackProfiler::isInUse(void)
-{
-	return this->inUse;
 }
 
 }

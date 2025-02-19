@@ -1,0 +1,56 @@
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.2.4
+*    DATE     : 02/2025
+*    LICENSE  : CeCILL-C
+*    FILE     : ./src/lib/wrapper/GlobalState.hpp
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat (INRIA) - 2025
+***********************************************************/
+
+/**********************************************************/
+#ifndef MALT_REENTRANCE_GUARD_HPP
+#define MALT_REENTRANCE_GUARD_HPP
+
+/**********************************************************/
+#include "LazyEnv.hpp"
+
+/**********************************************************/
+namespace MALT
+{
+
+/**********************************************************/
+class ReentranceGuard
+{
+	public:
+		inline ReentranceGuard(LazyEnv & env);
+		inline ~ReentranceGuard(void);
+		inline bool needInstrument(void) const;
+	private:
+		bool oldStatus;
+		LazyEnv & env;
+};
+
+/**********************************************************/
+ReentranceGuard::ReentranceGuard(LazyEnv & env)
+	:env(env)
+{
+	this->oldStatus = this->env.markInstrumented();
+}
+
+/**********************************************************/
+ReentranceGuard::~ReentranceGuard(void)
+{
+	this->env.endInstrumentation(this->oldStatus);
+}
+
+/**********************************************************/
+bool ReentranceGuard::needInstrument(void) const
+{
+	return this->oldStatus == false && this->env.isMaltReady();
+}
+
+}
+
+#endif //MALT_REENTRANCE_GUARD_HPP
+

@@ -11,7 +11,8 @@
 ***********************************************************/
 
 /**********************************************************/
-#include "GlobalState.hpp"
+#include "LazyEnv.hpp"
+#include "ReentranceGuard.hpp"
 #include "WrapperCAlloc.hpp"
 
 /**********************************************************/
@@ -20,33 +21,36 @@ using namespace MALT;
 /**********************************************************/
 /** Check init status of local and global state and call enter/exit methods, then do requested action. **/
 #define MALT_WRAPPER_LOCAL_STATE_ACTION(action, retAddr)  \
-	if (gblState.status == ALLOC_WRAP_READY && tlsState.status == ALLOC_WRAP_READY) \
+	do \
 	{ \
-		if (isEnterExit)\
+		if (env.isEnterExit())\
 		{\
 			retAddr =__builtin_extract_return_addr(__builtin_return_address(0)); \
-			localState.profiler->onEnterFunc(LangAddress(DOMAIN_C, (void*)__func__),LangAddress(DOMAIN_C, retAddr),true); \
+			env.getLocalProfiler().onEnterFunc(LangAddress(DOMAIN_C, (void*)__func__),LangAddress(DOMAIN_C, retAddr),true); \
 		}\
 		do{action;}while(0); \
-		if (isEnterExit) \
-			localState.profiler->onExitFunc(LangAddress(DOMAIN_C, (void*)__func__),LangAddress(DOMAIN_C, retAddr),true); \
-	}
+		if (env.isEnterExit()) \
+		env.getLocalProfiler().onExitFunc(LangAddress(DOMAIN_C, (void*)__func__),LangAddress(DOMAIN_C, retAddr),true); \
+	} while(0)
 
 /**********************************************************/
 void * MALT::malt_wrap_malloc(size_t size, const MallocFuncPtr & real_malloc, void * retaddr)
 {
 	//get local TLS and check init
-	MALT_WRAPPER_LOCAL_STATE_INIT
+	LazyEnv env;
+	ReentranceGuard guard(env);
 
 	//run the default function
-	assert(gblState.status > ALLOC_WRAP_INIT_SYM);
+	assert(env.getGlobalState().status > ALLOC_WRAP_INIT_SYM);
 	
 	ticks t = Clock::getticks();
 	void * res = real_malloc(size);
 	t = Clock::getticks() - t;
 
 	//profile
-	MALT_WRAPPER_LOCAL_STATE_ACTION(localState.profiler->onMalloc(res,size,t,MALLOC_KIND_MALLOC), retaddr);
+	if (guard.needInstrument()) {
+		MALT_WRAPPER_LOCAL_STATE_ACTION(env.getLocalProfiler().onMalloc(res,size,t,MALLOC_KIND_MALLOC), retaddr);
+	}
 
 	//return segment to user
 	return res;
@@ -61,10 +65,13 @@ void MALT::malt_wrap_free(void * ptr, const FreeFuncPtr & real_free, void * reta
 		return;
 
 	//get local TLS and check init
-	MALT_WRAPPER_LOCAL_STATE_INIT;
+	LazyEnv env;
+	ReentranceGuard guard(env);
 
 	//profile
-	MALT_WRAPPER_LOCAL_STATE_ACTION(localState.profiler->onFree(ptr,0), retaddr);
+	if (guard.needInstrument()) {
+		MALT_WRAPPER_LOCAL_STATE_ACTION(env.getLocalProfiler().onFree(ptr,0), retaddr);
+	}
 
 	//run the default function
 	assert(gblState.status > ALLOC_WRAP_INIT_SYM);
@@ -75,7 +82,8 @@ void MALT::malt_wrap_free(void * ptr, const FreeFuncPtr & real_free, void * reta
 void * MALT::malt_wrap_calloc(size_t nmemb,size_t size, const CallocFuncPtr & real_calloc, void * retaddr)
 {
 	//get local TLS and check init
-	MALT_WRAPPER_LOCAL_STATE_INIT
+	LazyEnv env;
+	ReentranceGuard guard(env);
 
 	//calloc need a special trick for first use due to usage in dlsym
 	//this way it avoid to create infinite loop
@@ -93,7 +101,9 @@ void * MALT::malt_wrap_calloc(size_t nmemb,size_t size, const CallocFuncPtr & re
 	t = Clock::getticks() - t;
 
 	//profile
-	MALT_WRAPPER_LOCAL_STATE_ACTION(localState.profiler->onCalloc(res,nmemb,size,t), retaddr);
+	if (guard.needInstrument()) {
+		MALT_WRAPPER_LOCAL_STATE_ACTION(env.getLocalProfiler().onCalloc(res,nmemb,size,t), retaddr);
+	}
 
 	//return result to user
 	return res;
@@ -103,7 +113,8 @@ void * MALT::malt_wrap_calloc(size_t nmemb,size_t size, const CallocFuncPtr & re
 void * MALT::malt_wrap_realloc(void * ptr,size_t size, const ReallocFuncPtr & real_realloc, void * retaddr)
 {
 	//get local TLS and check init
-	MALT_WRAPPER_LOCAL_STATE_INIT
+	LazyEnv env;
+	ReentranceGuard guard(env);
 
 	//run the default function
 	assert(gblState.status > ALLOC_WRAP_INIT_SYM);
@@ -113,7 +124,9 @@ void * MALT::malt_wrap_realloc(void * ptr,size_t size, const ReallocFuncPtr & re
 	t = Clock::getticks() - t;
 	
 	//profile
-	MALT_WRAPPER_LOCAL_STATE_ACTION(localState.profiler->onRealloc(ptr,res,size,t), retaddr);
+	if (guard.needInstrument()) {
+		MALT_WRAPPER_LOCAL_STATE_ACTION(env.getLocalProfiler().onRealloc(ptr,res,size,t), retaddr);
+	}
 	
 	return res;
 }
@@ -122,7 +135,8 @@ void * MALT::malt_wrap_realloc(void * ptr,size_t size, const ReallocFuncPtr & re
 int MALT::malt_wrap_posix_memalign(void **memptr, size_t alignment, size_t size, const PosixMemalignFuncPtr & real_mem_align, void * retaddr)
 {
 	//get local TLS and check init
-	MALT_WRAPPER_LOCAL_STATE_INIT
+	LazyEnv env;
+	ReentranceGuard guard(env);
 
 	//run the default function
 	assert(gblState.status > ALLOC_WRAP_INIT_SYM);
@@ -132,7 +146,9 @@ int MALT::malt_wrap_posix_memalign(void **memptr, size_t alignment, size_t size,
 	t = Clock::getticks() - t;
 
 	//profile
-	MALT_WRAPPER_LOCAL_STATE_ACTION(localState.profiler->onMalloc(*memptr,size,t,MALLOC_KIND_POSIX_MEMALIGN), retaddr);
+	if (guard.needInstrument()) {
+		MALT_WRAPPER_LOCAL_STATE_ACTION(env.getLocalProfiler().onMalloc(*memptr,size,t,MALLOC_KIND_POSIX_MEMALIGN), retaddr);
+	}
 
 	//return segment to user
 	return res;
@@ -142,7 +158,8 @@ int MALT::malt_wrap_posix_memalign(void **memptr, size_t alignment, size_t size,
 void * MALT::malt_wrap_aligned_alloc(size_t alignment, size_t size, const AlignedAllocFuncPtr & real_aligned_alloc, void * retaddr)
 {
 	//get local TLS and check init
-	MALT_WRAPPER_LOCAL_STATE_INIT
+	LazyEnv env;
+	ReentranceGuard guard(env);
 
 	//run the default function
 	assert(gblState.status > ALLOC_WRAP_INIT_SYM);
@@ -152,7 +169,9 @@ void * MALT::malt_wrap_aligned_alloc(size_t alignment, size_t size, const Aligne
 	t = Clock::getticks() - t;
 
 	//profile
-	MALT_WRAPPER_LOCAL_STATE_ACTION(localState.profiler->onMalloc(res,size,t,MALLOC_KIND_ALIGNED_ALLOC), retaddr);
+	if (guard.needInstrument()) {
+		MALT_WRAPPER_LOCAL_STATE_ACTION(env.getLocalProfiler().onMalloc(res,size,t,MALLOC_KIND_ALIGNED_ALLOC), retaddr);
+	}
 
 	//return segment to user
 	return res;
@@ -162,7 +181,8 @@ void * MALT::malt_wrap_aligned_alloc(size_t alignment, size_t size, const Aligne
 void *MALT::malt_wrap_memalign(size_t alignment, size_t size, const MemalignFuncPtr & real_memalign, void * retaddr)
 {
 	//get local TLS and check init
-	MALT_WRAPPER_LOCAL_STATE_INIT
+	LazyEnv env;
+	ReentranceGuard guard(env);
 
 	//run the default function
 	assert(gblState.status > ALLOC_WRAP_INIT_SYM);
@@ -172,7 +192,9 @@ void *MALT::malt_wrap_memalign(size_t alignment, size_t size, const MemalignFunc
 	t = Clock::getticks() - t;
 
 	//profile
-	MALT_WRAPPER_LOCAL_STATE_ACTION(localState.profiler->onMalloc(res,size,t,MALLOC_KIND_POSIX_MEMALIGN), retaddr);
+	if (guard.needInstrument()) {
+		MALT_WRAPPER_LOCAL_STATE_ACTION(env.getLocalProfiler().onMalloc(res,size,t,MALLOC_KIND_POSIX_MEMALIGN), retaddr);
+	}
 
 	//return segment to user
 	return res;
@@ -182,7 +204,8 @@ void *MALT::malt_wrap_memalign(size_t alignment, size_t size, const MemalignFunc
 void * MALT::malt_wrap_valloc(size_t size, const VallocFuncPtr & real_aligned_valloc, void * retaddr)
 {
 	//get local TLS and check init
-	MALT_WRAPPER_LOCAL_STATE_INIT
+	LazyEnv env;
+	ReentranceGuard guard(env);
 
 	//run the default function
 	assert(gblState.status > ALLOC_WRAP_INIT_SYM);
@@ -192,7 +215,9 @@ void * MALT::malt_wrap_valloc(size_t size, const VallocFuncPtr & real_aligned_va
 	t = Clock::getticks() - t;
 
 	//profile
-	MALT_WRAPPER_LOCAL_STATE_ACTION(localState.profiler->onMalloc(res,size,t,MALLOC_KIND_VALLOC), retaddr);
+	if (guard.needInstrument()) {
+		MALT_WRAPPER_LOCAL_STATE_ACTION(env.getLocalProfiler().onMalloc(res,size,t,MALLOC_KIND_VALLOC), retaddr);
+	}
 
 	//return segment to user
 	return res;
@@ -202,7 +227,8 @@ void * MALT::malt_wrap_valloc(size_t size, const VallocFuncPtr & real_aligned_va
 void *MALT::malt_wrap_pvalloc(size_t size, const PVallocFuncPtr & real_pvalloc, void * retaddr)
 {
 	//get local TLS and check init
-	MALT_WRAPPER_LOCAL_STATE_INIT
+	LazyEnv env;
+	ReentranceGuard guard(env);
 
 	//run the default function
 	assert(gblState.status > ALLOC_WRAP_INIT_SYM);
@@ -212,7 +238,9 @@ void *MALT::malt_wrap_pvalloc(size_t size, const PVallocFuncPtr & real_pvalloc, 
 	t = Clock::getticks() - t;
 
 	//profile
-	MALT_WRAPPER_LOCAL_STATE_ACTION(localState.profiler->onMalloc(res,size,t,MALLOC_KIND_PVALLOC), retaddr);
+	if (guard.needInstrument()) {
+		MALT_WRAPPER_LOCAL_STATE_ACTION(env.getLocalProfiler().onMalloc(res,size,t,MALLOC_KIND_PVALLOC), retaddr);
+	}
 
 	//return segment to user
 	return res;
@@ -222,14 +250,17 @@ void *MALT::malt_wrap_pvalloc(size_t size, const PVallocFuncPtr & real_pvalloc, 
 void * MALT::malt_wrap_mmap(void *start,size_t length,int prot,int flags,int fd,off_t offset, const MmapFuncPtr & real_mmap, void * retaddr)
 {
 	//get local TLS and check init
-	MALT_WRAPPER_LOCAL_STATE_INIT
+	LazyEnv env;
+	ReentranceGuard guard(env);
 
 	//run the default function
 	assert(gblState.status > ALLOC_WRAP_INIT_SYM);
 	void * res = real_mmap(start,length,prot,flags,fd,offset);
 
 	//profile
-	//MALT_WRAPPER_LOCAL_STATE_ACTION(localState.profiler->onMmap(res,length,flags,fd));
+	//if (guard.needInstrument()) {
+	//	MALT_WRAPPER_LOCAL_STATE_ACTION(localState.profiler->onMmap(res,length,flags,fd));
+	//}
 
 	//return segment to user
 	return res;
@@ -239,14 +270,17 @@ void * MALT::malt_wrap_mmap(void *start,size_t length,int prot,int flags,int fd,
 int MALT::malt_wrap_munmap(void * start, size_t length, const MunmapFuncPtr & real_munmap, void * retaddr)
 {
 	//get local TLS and check init
-	MALT_WRAPPER_LOCAL_STATE_INIT
+	LazyEnv env;
+	ReentranceGuard guard(env);
 
 	//run the default function
 	assert(gblState.status > ALLOC_WRAP_INIT_SYM);
 	int res = real_munmap(start,length);
 
 	//profile
-	//MALT_WRAPPER_LOCAL_STATE_ACTION(localState.profiler->onMalloc(res,size));
+	//if (guard.needInstrument()) {
+	//	MALT_WRAPPER_LOCAL_STATE_ACTION(localState.profiler->onMalloc(res,size));
+	//}
 
 	//return segment to user
 	return res;
@@ -256,14 +290,17 @@ int MALT::malt_wrap_munmap(void * start, size_t length, const MunmapFuncPtr & re
 void * MALT::malt_wrap_mremap(void *old_address, size_t old_size , size_t new_size, int flags, const MremapFuncPtr & real_mremap, void * retaddr)
 {
 	//get local TLS and check init
-	MALT_WRAPPER_LOCAL_STATE_INIT
+	LazyEnv env;
+	ReentranceGuard guard(env);
 
 	//run the default function
 	assert(gblState.status > ALLOC_WRAP_INIT_SYM);
 	void * res = real_mremap(old_address,old_size,new_size,flags);
 
 	//profile
-	//MALT_WRAPPER_LOCAL_STATE_ACTION(localState.profiler->onMalloc(res,size));
+	//if (guard.needInstrument()) {
+	//	MALT_WRAPPER_LOCAL_STATE_ACTION(localState.profiler->onMalloc(res,size));
+	//}
 
 	//return segment to user
 	return res;
