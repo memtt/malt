@@ -34,7 +34,7 @@ ENDFOREACH(test_name)
 
 ############################################################
 target_link_libraries(TestInstrum malt-injectors)
-target_compile_options(TestInstrum PUBLIC -g)
+target_compile_options(TestInstrum PUBLIC -g -O0)
 target_link_libraries(TestInstrum ${PYTHON3_LIBRARIES})
 
 ############################################################

@@ -36,9 +36,9 @@ target_link_libraries(bench malt-base dl)
 #Enable openMP if present to use paralle tests
 if(OPENMP_FOUND)
 	message(STATUS "OpenMP found for unit tests")
-	set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS} -g")
-	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS} -g")
-	set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${OpenMP_EXE_LINKER_FLAGS} -g")
+	set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
+	set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${OpenMP_EXE_LINKER_FLAGS}")
 endif()
 
 ############################################################
@@ -46,30 +46,31 @@ set(CMAKE_CXX_FLAGS -O0)
 
 ############################################################
 add_executable(simple-case-no-finstr simple-case.cpp)
+target_compile_options(simple-case-no-finstr PUBLIC -g -O0)
 
 ############################################################
 add_executable(simple-case-finstr simple-case.cpp)
-SET_TARGET_PROPERTIES(simple-case-finstr PROPERTIES COMPILE_FLAGS -finstrument-functions)
+target_compile_options(simple-case-finstr PUBLIC -g -O0 -finstrument-functions)
 
 ############################################################
 add_executable(simple-case-finstr-linked simple-case.cpp)
-SET_TARGET_PROPERTIES(simple-case-finstr-linked PROPERTIES COMPILE_FLAGS -finstrument-functions)
 target_link_libraries(simple-case-finstr-linked malt)
+target_compile_options(simple-case-finstr-linked PUBLIC -g -O0 -finstrument-functions)
 
 ############################################################
 add_executable(test-atexit-first test-atexit-first.cpp)
-SET_TARGET_PROPERTIES(test-atexit-first PROPERTIES COMPILE_FLAGS -finstrument-functions)
 target_link_libraries(test-atexit-first malt)
+target_compile_options(test-atexit-first PUBLIC -g -O0 -finstrument-functions)
 
 ############################################################
 add_executable(test-fragmentation test-fragmentation.cpp)
-SET_TARGET_PROPERTIES(test-fragmentation PROPERTIES COMPILE_FLAGS -finstrument-functions)
 target_link_libraries(test-fragmentation malt)
+target_compile_options(test-fragmentation PUBLIC -g -O0 -finstrument-functions)
 
 ############################################################
 add_executable(test-controler test-controler.cpp)
-SET_TARGET_PROPERTIES(test-controler PROPERTIES COMPILE_FLAGS -finstrument-functions)
 target_link_libraries(test-controler malt-controler)
+target_compile_options(test-controler PUBLIC -g -O0 -finstrument-functions)
 
 ############################################################
 add_executable(test-pthread-tracking test-pthread-tracking.cpp)

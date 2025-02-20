@@ -98,8 +98,6 @@ class SymbolSolver
 		void solveMissings(void);
 		static char * extractSymbolName(char * value);
 		size_t extractElfVaddr(const std::string & obj) const;
-		bool hasASLREnabled(void) const;
-		void * getASRLOffset(void * instrAddr) const;
 	private:
 		/** Dictionnary of symbols. **/
 		FuncNameDicMap nameMap;

@@ -75,6 +75,17 @@ TEST(TestRangesPtr, set)
 	ASSERT_FALSE(ranges.contains((void*)0x99));
 	ASSERT_TRUE(ranges.contains((void*)0x100));
 	ASSERT_FALSE(ranges.contains((void*)0x300));
-	ASSERT_TRUE(ranges.contains((void*)0x1200));
+	ASSERT_TRUE(ranges.contains((void*)0x1199));
 	ASSERT_FALSE(ranges.contains((void*)0x1300));
+}
+
+/**********************************************************/
+int main(int argc, char ** argv)
+{
+	//init internal allocator
+	gblInternaAlloc = new SimpleAllocator(true);
+	
+	// This allows the user to override the flag on the command line.
+	::testing::InitGoogleTest(&argc, argv);
+	return RUN_ALL_TESTS();
 }

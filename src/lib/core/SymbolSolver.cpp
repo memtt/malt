@@ -20,9 +20,7 @@
 #include <cstdio>
 #include <iostream>
 //unix
-#include <dlfcn.h>
 #include <execinfo.h>
-#include <link.h>
 //externals
 #include <json/JsonState.h>
 //malt
@@ -325,16 +323,6 @@ size_t SymbolSolver::extractElfVaddr(const std::string & obj) const
 
 /**********************************************************/
 /**
- * Test is ASLR is enabled to know how to resolve symbols.
-**/
-bool SymbolSolver::hasASLREnabled(void) const
-{
-	std::string tmp = OS::loadTextFile("/proc/sys/kernel/randomize_va_space");
-	return ! (tmp.empty() || tmp == "0");
-}
-
-/**********************************************************/
-/**
  * Convert the proc map entry to json format.
  * @param json Reference to the json state to make the conversion.
  * @param value Reference to the proc map entry object to convert.
@@ -410,13 +398,13 @@ void SymbolSolver::solveNames(void)
 	for (auto & procMapEntry : this->procMap) {
 		if (!(procMapEntry.file.empty() || procMapEntry.file[0] == '[')) {
 			Addr2Line * addr2line = nullptr;
-			void * aslrOffset = (void*)-1;
+			size_t aslrOffset = -1;
 			for (auto & site : callSiteMap) {
 				if (site.first.getDomain() == DOMAIN_C && site.second.mapEntry == &procMapEntry) {
-					if (aslrOffset == (void*)-1)
-						aslrOffset = this->getASRLOffset(site.first.getAddress());
+					if (aslrOffset == -1)
+						aslrOffset = OS::getASLROffset(site.first.getAddress());
 					if (addr2line == nullptr || addr2line->isFull())
-						addr2line = &addr2lineJobs.emplace_back(this->stringDict, procMapEntry.file, (size_t)aslrOffset, gblOptions->stackAddr2lineBucket);
+						addr2line = &addr2lineJobs.emplace_back(this->stringDict, procMapEntry.file, aslrOffset, gblOptions->stackAddr2lineBucket);
 					addr2line->addTask(site.first, &site.second);
 				}
 			}
@@ -452,7 +440,7 @@ void SymbolSolver::solveAslrOffsets(void)
 			for (CallSiteMap::iterator it2 = callSiteMap.begin() ; it2 != callSiteMap.end() ; ++it2)
 			{
 				if (it2->second.mapEntry == &*it) {
-					it->aslrOffset = this->getASRLOffset(it2->first.getAddress());
+					it->aslrOffset = OS::getASLROffset(it2->first.getAddress());
 					break;
 				}
 			}
@@ -478,32 +466,6 @@ void SymbolSolver::solveMaqaoNames(void)
 			assert(it->second.mapEntry == NULL);
 		}
 	}
-}
-
-/**********************************************************/
-/* 
- * Some links :
- * man proc & man addr2line
- * http://stackoverflow.com/a/7557756/257568
- * ​http://libglim.googlecode.com/svn/trunk/exception.hpp
- * ​http://stackoverflow.com/questions/10452847/backtrace-function-inside-shared-libraries 
-*/
-/**
- * Determine the offset to remove from the effective addres to get the address
- * in the binary file. It might need some tricks when ASLR is enabled which
- * is obtained by getaddr().
-*/
-void * SymbolSolver::getASRLOffset(void * instrAddr) const
-{
-	//From https://stackoverflow.com/questions/55066749/how-to-find-load-relocation-for-a-pie-binary
-	Dl_info info;
-	void *extra = NULL;
-	size_t elf2AddrOffset = 0;
-	if (dladdr1(instrAddr, &info, &extra, RTLD_DL_LINKMAP)) {
-		struct link_map *map = (struct link_map *)extra;
-		elf2AddrOffset = map->l_addr;
-	}
-	return (void*)elf2AddrOffset;
 }
 
 /**********************************************************/

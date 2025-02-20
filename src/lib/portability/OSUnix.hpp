@@ -73,6 +73,8 @@ class OSUnix
 		static std::string loadTextFile(const std::string & file);
 		static void * mmap(size_t size, bool populate = false);
 		static void munmap(void * ptr,size_t size);
+		static size_t getASLROffset(void * instrAddr);
+		static bool hasASLREnabled(void);
 };
 
 }

@@ -21,6 +21,10 @@
 #include <libgen.h>
 #include <signal.h>
 #include <string.h>
+//unix
+#include <dlfcn.h>
+#include <execinfo.h>
+#include <link.h>
 //internals
 #include <common/Debug.hpp>
 #include "Mutex.hpp"
@@ -348,6 +352,42 @@ void* OSUnix::mmap(size_t size, bool populate)
 void OSUnix::munmap(void* ptr, size_t size)
 {
 	::munmap(ptr,size);
+}
+
+/**********************************************************/
+/**
+ * Test is ASLR is enabled to know how to resolve symbols.
+**/
+bool OSUnix::hasASLREnabled(void)
+{
+	std::string tmp = OSUnix::loadTextFile("/proc/sys/kernel/randomize_va_space");
+	return ! (tmp.empty() || tmp == "0");
+}
+
+/**********************************************************/
+/* 
+ * Some links :
+ * man proc & man addr2line
+ * http://stackoverflow.com/a/7557756/257568
+ * ​http://libglim.googlecode.com/svn/trunk/exception.hpp
+ * ​http://stackoverflow.com/questions/10452847/backtrace-function-inside-shared-libraries 
+*/
+/**
+ * Determine the offset to remove from the effective addres to get the address
+ * in the binary file. It might need some tricks when ASLR is enabled which
+ * is obtained by getaddr().
+*/
+size_t OSUnix::getASLROffset(void * instrAddr)
+{
+	//From https://stackoverflow.com/questions/55066749/how-to-find-load-relocation-for-a-pie-binary
+	Dl_info info;
+	void *extra = NULL;
+	size_t elf2AddrOffset = 0;
+	if (dladdr1(instrAddr, &info, &extra, RTLD_DL_LINKMAP)) {
+		struct link_map *map = (struct link_map *)extra;
+		elf2AddrOffset = map->l_addr;
+	}
+	return elf2AddrOffset;
 }
 
 }

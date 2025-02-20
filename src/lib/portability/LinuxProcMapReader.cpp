@@ -51,7 +51,7 @@ void LinuxProcMapReader::load(void)
 		{
 			//parse
 			int cnt = sscanf(buffer,"%p-%p %s %p %s %zu %s\n",&(entry.lower),&(entry.upper),ignored,&(entry.offset),ignored,&ignored2,fileName);
-			entry.aslrOffset = NULL;
+			entry.aslrOffset = 0;
 			
 			//check args
 			if (cnt == 7)
