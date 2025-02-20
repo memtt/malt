@@ -1,13 +1,3 @@
-loading file /build/src/lib/tests/malt-current-out-basic-run-and-check.json...
-Loading file : /build/src/lib/tests/malt-current-out-basic-run-and-check.json
-Finished reading JSON file
-Optimizing datas for requests...
-Optimizing sites.instr...
-Optimizing access to stack details...
-Data optimization done.
------------------ EXTRACT ------------------
-/build/src/lib/tests/malt-current-out-basic-run-and-check.json
-/src/lib/tests/simple-case.cpp
 --------------------------------------------
 
 simple-case.cpp:__static_initialization_and_destruction_0():46

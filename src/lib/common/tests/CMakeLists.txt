@@ -15,6 +15,10 @@ include_directories(${GTEST_INCLUDE_DIRS} ${GMOCK_INCLUDE_DIRS})
 include_directories(../)
 
 ############################################################
+add_definitions(-DTEST_SRC_DIR="${CMAKE_CURRENT_SOURCE_DIR}")
+add_definitions(-DTEST_BUILD_DIR="${CMAKE_CURRENT_BINARY_DIR}")
+
+############################################################
 set(TEST_NAMES TestArray
                TestOptions
                TestSimpleAllocator
@@ -23,6 +27,10 @@ set(TEST_NAMES TestArray
                TestCodeTiming
                TestDebug
                TestNoFreeAllocator
+               TestHelpers
+               TestParallelWorker
+               TestRangePtr
+               TestStringIdDictionnary
    )
 
 ############################################################

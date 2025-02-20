@@ -105,6 +105,9 @@ bool Helpers::writeFullFile(const std::string & fname, const std::string & data)
 	ssize_t res = fwrite(data.c_str(), 1, data.size(), fp);
 	assert(res == data.size());
 
+	//close
+	fclose(fp);
+
 	//ok
 	return res == data.size();
 }
