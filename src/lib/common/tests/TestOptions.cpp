@@ -31,7 +31,9 @@ const char cstJson[] = "\
 		\"mode\":\"backtrace\",\n\
 		\"resolve\":true,\n\
 		\"libunwind\":false,\n\
-		\"stackSkip\":4\n\
+		\"stackSkip\":4,\n\
+		\"addr2lineBucket\":100,\n\
+		\"addr2lineThreads\":8\n\
 	},\n\
 	\"python\":{\n\
 		\"instru\":true,\n\
@@ -121,7 +123,7 @@ TEST(TestOptions,toSJon)
 	Options options;
 	std::stringstream out;
 	htopml::convertToJson(out, options, true);
-	EXPECT_EQ(out.str(), cstJson);
+	EXPECT_EQ(cstJson, out.str());
 }
 
 /**********************************************************/

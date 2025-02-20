@@ -78,6 +78,8 @@ struct Options
 	bool stackLibunwind;
 	std::string stackMode;
 	int stackSkip;
+	int stackAddr2lineBucket;
+	int stackAddr2lineThreads;
 	//python
 	std::string pythonStack;
 	StackMode pythonStackEnum;

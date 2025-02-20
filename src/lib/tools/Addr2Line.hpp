@@ -56,9 +56,10 @@ typedef std::vector<Addr2LineTask> Addr2LineTaskVector;
 class Addr2Line
 {
 	public:
-		Addr2Line(StringIdDictionnary & dict, const std::string & elfFile, size_t aslrOffset, size_t bucketSize = 20);
+		Addr2Line(StringIdDictionnary & dict, const std::string & elfFile, size_t aslrOffset, size_t bucketSize = 100);
 		bool addTask(const LangAddress & address, CallSite * callSite);
-		void run(void);
+		bool run(void);
+		bool isFull(void) const;
 	private:
 		bool loadEntry(CallSite & callSite, FILE * fp);
 		std::string buildCommandLine(void) const;

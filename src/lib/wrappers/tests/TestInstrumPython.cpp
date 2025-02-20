@@ -33,7 +33,7 @@ TEST(TestInstrum, python_basic_array_backtrace)
 {
 	//reset MALT & enable
 	const std::string profile = BINARY_DIR "/malt-python-basic-array.json";
-	setenv("MALT_OPTIONS", "stack:mode=backtrace;output:name=" BINARY_DIR "/malt-python-basic-array.json", 1);
+	setenv("MALT_OPTIONS", "stack:mode=backtrace;python:mix=false;output:name=" BINARY_DIR "/malt-python-basic-array.json", 1);
 	MALT::globalResetForTests();
 
 	//make an alloc
@@ -68,7 +68,7 @@ TEST(TestInstrum, python_basic_array_enter_exit)
 {
 	//reset MALT & enable
 	const std::string profile = BINARY_DIR "/malt-python-basic-array.json";
-	setenv("MALT_OPTIONS", "stack:mode=enter-exit;output:name=" BINARY_DIR "/malt-python-basic-array.json", 1);
+	setenv("MALT_OPTIONS", "stack:mode=enter-exit;python:stack=enter-exit;python:mix=false;output:name=" BINARY_DIR "/malt-python-basic-array.json", 1);
 	MALT::globalResetForTests();
 
 	//make an alloc

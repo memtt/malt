@@ -33,6 +33,12 @@ Addr2Line::Addr2Line(StringIdDictionnary & dict, const std::string & elfFile, si
 }
 
 /**********************************************************/
+bool Addr2Line::isFull(void) const
+{
+	return this->tasks.size() >= this->bucketSize;
+}
+
+/**********************************************************/
 bool Addr2Line::addTask(const LangAddress & address, CallSite * callSite)
 {
 	//checks
@@ -54,14 +60,15 @@ bool Addr2Line::addTask(const LangAddress & address, CallSite * callSite)
 }
 
 /**********************************************************/
-void Addr2Line::run(void)
+bool Addr2Line::run(void)
 {
 	//trivial
 	if (this->tasks.empty())
-		return;
+		return true;
 
 	//build command
 	std::string command = this->buildCommandLine();
+	//MALT_DEBUG_ARG("addr2line", "Command : %1").arg(command).end();
 	assert(command.size() < 4096);
 
 	//debug
@@ -73,7 +80,7 @@ void Addr2Line::run(void)
 	if (fp == NULL)
 	{
 		MALT_ERROR_ARG("Fail to use addr2line on %1 to load symbols : %2.").arg(elfFile).argStrErrno().end();
-		return;
+		return false;
 	}
 
 	//parse output
@@ -87,8 +94,11 @@ void Addr2Line::run(void)
 	if (res != 0)
 	{
 		MALT_ERROR_ARG("Get error while using addr2line on %1 to load symbols : %2.").arg(elfFile).argStrErrno().end();
-		return;
+		return false;
 	}
+
+	//ok
+	return true;
 }
 
 /**********************************************************/
@@ -136,7 +146,7 @@ bool Addr2Line::loadEntry(CallSite & callSite, FILE * fp)
 		return false;
 
 	//debug
-	MALT_DEBUG_ARG("addr2line", "function=%1, source=%2").arg("bufferFunc").arg(bufferFile).end();
+	//MALT_DEBUG_ARG("addr2line", "function=%1, source=%2").arg(bufferFunc).arg(bufferFile).end();
 
 	//check end of line and remove it
 	int endLine = strlen(bufferFunc);

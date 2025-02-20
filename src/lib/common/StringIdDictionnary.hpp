@@ -15,6 +15,7 @@
 /**********************************************************/
 #include <string>
 #include <vector>
+#include <mutex>
 //extern deps
 #include <json/JsonState.h>
 
@@ -33,6 +34,7 @@ class StringIdDictionnary
 		friend void convertToJson(htopml::JsonState & json, const StringIdDictionnary & value);
 	private:
 		std::vector<std::string> strings;
+		std::mutex mutex;
 };
 
 }

@@ -201,6 +201,7 @@ class AllocStackProfiler
 		Scatter2DValues lifetimeOverSize;
 		MallocFuncPtr realMallocAddr;
 		std::string realMallocLib;
+		bool skipThreadRegister{false};
 };
 
 }

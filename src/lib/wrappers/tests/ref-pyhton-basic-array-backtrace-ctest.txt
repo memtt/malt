@@ -36,8 +36,8 @@ main1.py:py:MainClass.a_function:8
  - globalPeak: 0
 
 main1.py:py:MainClass.a_function:9
- - alloc: {"count":214,"min":16,"max":512,"sum":10199}
- - free: {"count":214,"min":16,"max":512,"sum":10199}
+ - alloc: {"count":209,"min":16,"max":512,"sum":9407}
+ - free: {"count":209,"min":16,"max":512,"sum":9407}
  - globalPeak: 0
 
 main1.py:py:<module>:11
@@ -51,13 +51,13 @@ main1.py:py:main:12
  - globalPeak: 0
 
 main1.py:py:main:13
- - alloc: {"count":427,"min":16,"max":864,"sum":28815}
- - free: {"count":427,"min":16,"max":864,"sum":28815}
+ - alloc: {"count":422,"min":16,"max":864,"sum":28023}
+ - free: {"count":422,"min":16,"max":864,"sum":28023}
  - globalPeak: 0
 
 main1.py:py:<module>:15
- - alloc: {"count":430,"min":16,"max":864,"sum":29271}
- - free: {"count":430,"min":16,"max":864,"sum":29271}
+ - alloc: {"count":425,"min":16,"max":864,"sum":28479}
+ - free: {"count":425,"min":16,"max":864,"sum":28479}
  - globalPeak: 0
 
 main1.py:py:<module>:-1

@@ -29,7 +29,9 @@
 #include <common/Debug.hpp>
 #include <common/Array.hpp>
 #include <common/Options.hpp>
+#include <common/ParallelWorker.hpp>
 #include <portability/OS.hpp>
+#include <tools/Addr2Line.hpp>
 //current
 #include "SymbolSolver.hpp"
 
@@ -57,7 +59,7 @@ namespace MALT
 **/
 SymbolSolver::SymbolSolver(void )
 {
-	strings.push_back("??");
+	this->stringDict.getId("??");
 }
 
 /**********************************************************/
@@ -165,7 +167,7 @@ void convertToJson(htopml::JsonState& json, const SymbolSolver& value)
 // 	json.printField("entries",value.nameMap);
 
 	json.printField("map",value.procMap);
-	json.printField("strings",value.strings);
+	json.printField("strings",value.stringDict);
 	json.printField("instr",value.callSiteMap);
 
 	json.closeStruct();
@@ -402,12 +404,33 @@ void SymbolSolver::solveNames(void)
 	//avoid to LD_PRELOAD otherwise we will create fork bomb
 	setenv("LD_PRELOAD","",1);
 
-	//loop on assemblies to extract names
+	//new way of solving
+	//this->callSiteMap2 = callSiteMap;
+	std::list<Addr2Line> addr2lineJobs;
+	for (auto & procMapEntry : this->procMap) {
+		if (!(procMapEntry.file.empty() || procMapEntry.file[0] == '[')) {
+			Addr2Line * addr2line = nullptr;
+			void * aslrOffset = (void*)-1;
+			for (auto & site : callSiteMap) {
+				if (site.first.getDomain() == DOMAIN_C && site.second.mapEntry == &procMapEntry) {
+					if (aslrOffset == (void*)-1)
+						aslrOffset = this->getASRLOffset(site.first.getAddress());
+					if (addr2line == nullptr || addr2line->isFull())
+						addr2line = &addr2lineJobs.emplace_back(this->stringDict, procMapEntry.file, (size_t)aslrOffset, gblOptions->stackAddr2lineBucket);
+					addr2line->addTask(site.first, &site.second);
+				}
+			}
+		}
+	}
+	//solve
+	runParallelJobs(addr2lineJobs, gblOptions->stackAddr2lineThreads);
+
+	/*//loop on assemblies to extract names
 	for (LinuxProcMap::iterator it = procMap.begin() ; it != procMap.end() ; ++it)
 	{
 		if (!(it->file.empty() || it->file[0] == '['))
 			solveNames(&(*it));
-	}
+	}*/
 
 	//final check for not found
 	solveMissings();
@@ -458,6 +481,13 @@ void SymbolSolver::solveMaqaoNames(void)
 }
 
 /**********************************************************/
+/* 
+ * Some links :
+ * man proc & man addr2line
+ * http://stackoverflow.com/a/7557756/257568
+ * ​http://libglim.googlecode.com/svn/trunk/exception.hpp
+ * ​http://stackoverflow.com/questions/10452847/backtrace-function-inside-shared-libraries 
+*/
 /**
  * Determine the offset to remove from the effective addres to get the address
  * in the binary file. It might need some tricks when ASLR is enabled which
@@ -477,165 +507,6 @@ void * SymbolSolver::getASRLOffset(void * instrAddr) const
 }
 
 /**********************************************************/
-/* 
- * Some links :
- * man proc & man addr2line
- * http://stackoverflow.com/a/7557756/257568
- * ​http://libglim.googlecode.com/svn/trunk/exception.hpp
- * ​http://stackoverflow.com/questions/10452847/backtrace-function-inside-shared-libraries 
-*/
-/**
- * Solve the symbol names using addr2line for the given /proc/self/maps entry.
- * @param procMapEntry Pointer to the proc map entry to be solved.
-**/
-void SymbolSolver::solveNames(LinuxProcMapEntry * procMapEntry)
-{
-	//prepare command
-	bool hasEntries = false;
-	const std::string elfFile = procMapEntry->file;
-	std::stringstream addr2lineCmd;
-	const std::string prefix = std::string("addr2line -C -f -e ") + elfFile;
-	const size_t prefixLen = prefix.length();
-	addr2lineCmd << prefix;
-	std::vector<CallSite*> lst;
-	std::vector<std::string> theCommands;
-
-	//create addr2line args
-	bool firstNeedAslrScan = true;
-
-	for (CallSiteMap::iterator it = callSiteMap.begin() ; it != callSiteMap.end() ; ++it)
-	{
-		//TODO: If C or Python
-		//TODO: If Python, just fill the CallSite object
-		//if (/* C code */ 1){
-		if (it->second.mapEntry == procMapEntry)
-		{
-			if (addr2lineCmd.str().length() > MAX_ARG_STRLEN-20)
-			{
-				// Max length for each entry is 20 computed as follows:
-				// In the worst case, each entry is 19 characters long
-				// plus one for the newline in case it is the last entry.
-				// We get 19 as: 1 for space, 2 for "0x", and 16 for address
-
-				//hide error if silent
-				if (gblOptions != NULL && gblOptions->outputVerbosity <= MALT_VERBOSITY_DEFAULT)
-					addr2lineCmd << ' ' << "2>/dev/null";
-				theCommands.push_back(addr2lineCmd.str());
-				addr2lineCmd.str(std::string(""));
-				addr2lineCmd << prefix;
-			}
-			if (firstNeedAslrScan)
-			{
-				procMapEntry->aslrOffset = this->getASRLOffset(it->first.getAddress());
-				firstNeedAslrScan = false;
-			}
-
-			//printf("OFFSET %zx %zx %zx %zx\n", it->first, procMapEntry->lower, map->l_addr, elfVaddr);
-			addr2lineCmd << ' '  << (void*)((((size_t)it->first.getAddress()) - (size_t)procMapEntry->aslrOffset));
-			hasEntries = true;
-			lst.push_back(&it->second);
-		}
-		//}else{
-			/* Python code */ 
-			/* Fill the CallSite here */
-		//}
-	}
-
-
-
-	if ( addr2lineCmd.str().length() > prefixLen)
-	{
-		//hide error if silent
-		if (gblOptions != NULL && gblOptions->outputVerbosity <= MALT_VERBOSITY_DEFAULT)
-			addr2lineCmd << ' ' << "2>/dev/null";
-		theCommands.push_back(addr2lineCmd.str());
-	}
-
-	//if no extry, exit
-	if (!hasEntries)
-		return;
-
-	//run command
-	//std::cerr << addr2lineCmd.str() << std::endl;
-	size_t i = 0;
-	for (auto &cmd : theCommands) {
-		//debug
-		if (gblOptions != NULL && gblOptions->outputVerbosity >= MALT_VERBOSITY_VERBOSE)
-			printf("MALT: %s\n",cmd.c_str());
-
-		FILE * fp = popen(cmd.c_str(),"r");
-
-		//check error, skip resolution
-		if (fp == NULL)
-		{
-			MALT_ERROR_ARG("Fail to use addr2line on %1 to load symbols : %2.").arg(elfFile).argStrErrno().end();
-			return;
-		}
-
-		//read all entries (need big for some big template based C++ application,
-		//seen at cern)
-		static char bufferFunc[200*4096];
-		static char bufferFile[20*4096];
-		while (!feof(fp))
-		{
-			//read the two lines
-			char * funcRes = fgets(bufferFunc,sizeof(bufferFunc),fp);
-			char * fileRes = fgets(bufferFile,sizeof(bufferFile),fp);
-
-			if (funcRes != bufferFunc || fileRes != bufferFile)
-				break;
-
-			//std::cerr << bufferFunc;
-			//std::cerr << bufferFile;
-
-			//check end of line and remove it
-			int endLine = strlen(bufferFunc);
-			assumeArg(bufferFunc[endLine-1] == '\n',"Missing \\n at end of line for the function or symbol name read from addr2line : %1.").arg(bufferFunc).end();
-			bufferFunc[endLine-1] = '\0';
-
-			//check errors
-			assume(i < lst.size(),"Overpass lst size.");
-
-			//search ':' separator at end of "file:line" string
-			char * sep = strrchr(bufferFile,':');
-			if (sep == NULL)
-			{
-				MALT_WARNING_ARG("Fail to split source location on ':' : %1").arg(bufferFile).end();
-			} else {
-				*sep='\0';
-
-				//extract line
-				lst[i]->line = atoi(sep+1);
-
-				//get filename and function name address
-				lst[i]->file = getString(bufferFile);
-
-				assert(lst[i]->file != -1);
-				//if (strcmp(bufferFunc,"??") == 0)
-				//      lst[i]->function = -1;
-				//else
-				lst[i]->function = getString(bufferFunc);
-			}
-
-			//move next
-			i++;
-			//std::cerr<< std::endl;
-		}
-
-		//close
-		int res = pclose(fp);
-		if (res != 0)
-		{
-			MALT_ERROR_ARG("Get error while using addr2line on %1 to load symbols : %2.").arg(elfFile).argStrErrno().end();
-			return;
-		}
-	}
-
-	//error
-	assumeArg(i == lst.size(),"Some entries are missing from addr2line, get %1, but expect %2. (%3)").arg(i).arg(lst.size()).arg(elfFile).end();
-}
-
-/**********************************************************/
 /**
  * Return the string ID of the given value. If not already registered it register it
  * and assign an ID.
@@ -644,16 +515,7 @@ void SymbolSolver::solveNames(LinuxProcMapEntry * procMapEntry)
 **/
 int SymbolSolver::getString(const char * value)
 {
-	int id = 0;
-	for (std::vector<std::string>::iterator it = strings.begin() ; it != strings.end() ; ++it)
-	{
-		if (*it == value)
-			return id;
-		id++;
-	}
-	strings.push_back(value);
-	assert(strings.size() != 0);
-	return strings.size()-1;
+	return this->stringDict.getId(value);
 }
 
 /**********************************************************/
@@ -750,8 +612,7 @@ const CallSite* SymbolSolver::getCallSiteInfo(LangAddress site) const
 **/
 const std::string& SymbolSolver::getString(int id) const
 {
-	assert((size_t)id < strings.size());
-	return strings[id];
+	return this->stringDict.getString(id);
 }
 
 /**********************************************************/

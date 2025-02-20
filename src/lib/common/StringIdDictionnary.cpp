@@ -38,11 +38,11 @@ const std::string & StringIdDictionnary::getString(int id) const
 /**********************************************************/
 int StringIdDictionnary::getId(const std::string & value)
 {
-	//check
-	assert(value.empty() == false);
-
 	//vars
 	int id = 0;
+
+	//lock
+	std::lock_guard<std::mutex> guard(this->mutex);
 
 	//loop to search
 	for (size_t i = 0 ; i < this->strings.size() ; i++)
@@ -60,7 +60,7 @@ int StringIdDictionnary::getId(const std::string & value)
 /**********************************************************/
 void convertToJson(htopml::JsonState & json, const StringIdDictionnary & value)
 {
-	json.printValue(value);
+	json.printValue(value.strings);
 }
 
 }

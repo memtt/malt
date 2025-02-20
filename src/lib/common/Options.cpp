@@ -56,6 +56,8 @@ Options::Options(void)
 	this->stackLibunwind          = false;
 	this->stackMode               = "backtrace";
 	this->stackSkip               = cstDefaultStackSkip;
+	this->stackAddr2lineBucket    = 100;
+	this->stackAddr2lineThreads   = 8;
 	//python
 	this->pythonStack             = "enter-exit";
 	this->pythonMix               = true;
@@ -104,6 +106,8 @@ bool Options::operator==(const Options& value) const
 	if (stackMode != value.stackMode) return false;
 	if (stackLibunwind != value.stackLibunwind) return false;
 	if (stackSkip != value.stackSkip) return false;
+	if (stackAddr2lineBucket != value.stackAddr2lineBucket) return false;
+	if (stackAddr2lineThreads != value.stackAddr2lineThreads) return false;
 	//python
 	if (pythonInstru != value.pythonInstru) return false;
 	if (pythonStack != value.pythonStack) return false;
@@ -238,6 +242,8 @@ void Options::loadFromIniDic ( dictionary* iniDic )
 	this->stackLibunwind      = iniparser_getboolean(iniDic,"stack:libunwind",this->stackLibunwind);
 	this->stackMode           = iniparser_getstring(iniDic,"stack:mode",(char*)this->stackMode.c_str());
 	this->stackSkip           = iniparser_getint(iniDic,"stack:skip",this->stackSkip);
+	this->stackAddr2lineBucket= iniparser_getint(iniDic,"stack:addr2lineBucket",this->stackAddr2lineBucket);
+	this->stackAddr2lineThreads= iniparser_getint(iniDic,"stack:addr2lineThreads",this->stackAddr2lineThreads);
 	
 	//load values for output
 	this->outputName          = iniparser_getstring(iniDic,"output:name",(char*)this->outputName.c_str());
@@ -316,6 +322,8 @@ void convertToJson(htopml::JsonState & json,const Options & value)
 			json.printField("resolve",value.stackResolve);
 			json.printField("libunwind",value.stackLibunwind);
 			json.printField("stackSkip",value.stackSkip);
+			json.printField("addr2lineBucket",value.stackAddr2lineBucket);
+			json.printField("addr2lineThreads",value.stackAddr2lineThreads);
 		json.closeFieldStruct("stack");
 
 		json.openFieldStruct("python");
@@ -383,6 +391,8 @@ void Options::dumpConfig(const char* fname)
 	IniParserHelper::setEntry(dic,"stack:resolve",this->stackResolve);
 	IniParserHelper::setEntry(dic,"stack:libunwind",this->stackLibunwind);
 	IniParserHelper::setEntry(dic,"stack:skip",this->stackSkip);
+	IniParserHelper::setEntry(dic,"stack:addr2lineBucket",this->stackAddr2lineBucket);
+	IniParserHelper::setEntry(dic,"stack:addr2lineThreads",this->stackAddr2lineThreads);
 
 	//python
 	IniParserHelper::setEntry(dic,"python:intru",this->pythonInstru);

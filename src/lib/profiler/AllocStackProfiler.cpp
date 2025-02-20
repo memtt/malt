@@ -534,10 +534,13 @@ void AllocStackProfiler::onExit(void )
 			this->symbolResolver.loadProcMap();
 			this->solvePerThreadSymbols();
 			this->stackTracker.solveSymbols(symbolResolver);
-			if (options.stackResolve)
+			if (options.stackResolve) {
+				this->skipThreadRegister = true;
 				this->symbolResolver.solveNames();
-			else
+				this->skipThreadRegister = false;
+			} else {
 				this->symbolResolver.solveAslrOffsets();
+			}
 		);
 		
 		//check which allocator is in use
@@ -756,6 +759,10 @@ void AllocStackProfiler::registerPerThreadProfiler(LocalAllocStackProfiler* prof
 {
 	//errors
 	MALT_ASSERT(profiler != NULL);
+
+	//skip
+	if (skipThreadRegister)
+		return;
 	
 	//insert in list
 	MALT_OPTIONAL_CRITICAL(lock,threadSafe)

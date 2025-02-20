@@ -26,6 +26,9 @@
 #include <json/JsonState.h>
 //internal common
 #include <common/STLInternalAllocator.hpp>
+#include <common/StringIdDictionnary.hpp>
+//tools
+#include <tools/Addr2Line.hpp>
 //internal portability
 #include <portability/LinuxProcMapReader.hpp>
 //Include Stack
@@ -38,24 +41,6 @@ typedef std::map<void *,const char*> FuncNameDicMap;
 /**********************************************************/
 namespace MALT
 {
-
-/**********************************************************/
-/**
- * Define a call site.
- * with its source informations extracted from debug symbols.
-**/
-struct CallSite
-{
-	CallSite(LinuxProcMapEntry * mapEntry = NULL);
-	/** Define the line of the call site. **/
-	int line;
-	/** Define the file ID (pointing the string) of the call site. **/
-	int file;
-	/** Define the function ID (pointing the string) of the call site. **/
-	int function;
-	/** Pointer to the proc map entry related to the call site. **/
-	LinuxProcMapEntry * mapEntry;
-};
 
 /**********************************************************/
 /**
@@ -109,7 +94,6 @@ class SymbolSolver
 		friend std::ostream & operator << (std::ostream & out,const SymbolSolver & dic);
 		friend void convertToJson(htopml::JsonState & json, const SymbolSolver & value);
 	private:
-		void solveNames(LinuxProcMapEntry * procMapEntry);
 		int getString(const char* value);
 		void solveMissings(void);
 		static char * extractSymbolName(char * value);
@@ -123,10 +107,10 @@ class SymbolSolver
 		LinuxProcMap procMap;
 		/** Call site map to join raw addresses to call site infos. **/
 		CallSiteMap callSiteMap;
-		/** Dictionnary of strings (function names and file paths). **/
-		std::vector<std::string> strings;
 		/** Maqo call site map. **/
 		MaqaoSiteMap maqaoSites;
+		/** Dictionnary */
+		StringIdDictionnary stringDict;
 };
 
 /**********************************************************/
