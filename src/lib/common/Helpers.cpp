@@ -110,7 +110,7 @@ bool Helpers::writeFullFile(const std::string & fname, const std::string & data)
 }
 
 /**********************************************************/
-std::string Helpers::simpleProfileDump(const std::string & profileFile, const std::string & sourceFile)
+std::string Helpers::simpleProfileDump(const std::string & profileFile, const std::string & sourceFile, bool counters)
 {
 	//create tmp file
 	char tmpFile[] = "malt-unit-test-XXXXXX";
@@ -123,7 +123,10 @@ std::string Helpers::simpleProfileDump(const std::string & profileFile, const st
 		<< SRC_PATH << "/src/webview/malt-simple-dump.js "
 		<< "-i " << profileFile << " "
 		<< "-s " << sourceFile << " "
-		<< "| sed -e 's#" SRC_PATH "##g' "
+		<< "| grep -A 100000 -e '--------------------------------------------' ";
+	if (counters == false)
+		cmd << "| egrep '^[a-zA-Z0-9/.]' ";
+	cmd << "| sed -e 's#" SRC_PATH "##g' "
 		<< "> " << tmpFile;
 
 	//run

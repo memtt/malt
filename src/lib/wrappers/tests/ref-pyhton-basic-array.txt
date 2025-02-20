@@ -1,67 +1,12 @@
-loading file /build/src/lib/wrappers/tests/malt-python-basic-array.json...
-Loading file : /build/src/lib/wrappers/tests/malt-python-basic-array.json
-Finished reading JSON file
-Optimizing datas for requests...
-Optimizing sites.instr...
-Optimizing access to stack details...
-Data optimization done.
------------------ EXTRACT ------------------
-/build/src/lib/wrappers/tests/malt-python-basic-array.json
-/src/lib/wrappers/tests/main1.py
---------------------------------------------
-
 main1.py:py:<module>:1
- - alloc: {"count":18,"min":32,"max":984,"sum":3461}
- - free: {"count":18,"min":32,"max":984,"sum":3461}
- - globalPeak: 0
-
 main1.py:py:MainClass:2
- - alloc: {"count":2,"min":64,"max":160,"sum":224}
- - free: {"count":2,"min":64,"max":160,"sum":224}
- - globalPeak: 0
-
 main1.py:py:MainClass:5
- - alloc: {"count":3,"min":64,"max":208,"sum":432}
- - free: {"count":3,"min":64,"max":208,"sum":432}
- - globalPeak: 0
-
 main1.py:py:MainClass.a_function:7
- - alloc: {"count":2,"min":40,"max":48,"sum":88}
- - free: {"count":2,"min":40,"max":48,"sum":88}
- - globalPeak: 0
-
 main1.py:py:MainClass.a_function:8
- - alloc: {"count":211,"min":32,"max":864,"sum":18528}
- - free: {"count":211,"min":32,"max":864,"sum":18528}
- - globalPeak: 0
-
 main1.py:py:MainClass.a_function:9
- - alloc: {"count":214,"min":16,"max":512,"sum":10199}
- - free: {"count":214,"min":16,"max":512,"sum":10199}
- - globalPeak: 0
-
 main1.py:py:<module>:11
- - alloc: {"count":3,"min":64,"max":400,"sum":624}
- - free: {"count":3,"min":64,"max":400,"sum":624}
- - globalPeak: 0
-
 main1.py:py:main:12
- - alloc: {"count":1,"min":328,"max":328,"sum":328}
- - free: {"count":1,"min":328,"max":328,"sum":328}
- - globalPeak: 0
-
 main1.py:py:main:13
- - alloc: {"count":427,"min":16,"max":864,"sum":28815}
- - free: {"count":427,"min":16,"max":864,"sum":28815}
- - globalPeak: 0
-
 main1.py:py:<module>:15
- - alloc: {"count":430,"min":16,"max":864,"sum":29271}
- - free: {"count":430,"min":16,"max":864,"sum":29271}
- - globalPeak: 0
-
 main1.py:py:<module>:-1
- - alloc: {"count":3,"min":45,"max":64,"sum":155}
- - free: {"count":3,"min":45,"max":64,"sum":155}
- - globalPeak: 0
 Finished processing JSON file

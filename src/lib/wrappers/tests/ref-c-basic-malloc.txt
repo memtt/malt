@@ -1,13 +1,3 @@
-loading file /build/src/lib/wrappers/tests/malt-c-basic-malloc.json...
-Loading file : /build/src/lib/wrappers/tests/malt-c-basic-malloc.json
-Finished reading JSON file
-Optimizing datas for requests...
-Optimizing sites.instr...
-Optimizing access to stack details...
-Data optimization done.
------------------ EXTRACT ------------------
-/build/src/lib/wrappers/tests/malt-c-basic-malloc.json
-/src/lib/wrappers/tests/TestInstrum.cpp
 --------------------------------------------
 
 TestInstrum.cpp:function_testing_c_malloc():34
