@@ -22,8 +22,12 @@ add_definitions(-DSRC_DIR="${CMAKE_SOURCE_DIR}")
 set(TEST_NAMES
 	TestThreadTracker
 	TestInstrum
-	TestInstrumPython
 )
+
+############################################################
+if (PYTHON3_INSTRUM_FOUND)
+	list(APPEND TEST_NAMES TestInstrumPython)
+endif (PYTHON3_INSTRUM_FOUND)
 
 ############################################################
 FOREACH(test_name ${TEST_NAMES})
@@ -38,6 +42,8 @@ target_compile_options(TestInstrum PUBLIC -g -O0)
 target_link_libraries(TestInstrum ${PYTHON3_LIBRARIES})
 
 ############################################################
-target_link_libraries(TestInstrumPython malt-injector-python)
-target_compile_options(TestInstrumPython PUBLIC -g)
-target_link_libraries(TestInstrumPython ${PYTHON3_LIBRARIES})
+if (PYTHON3_INSTRUM_FOUND)
+	target_link_libraries(TestInstrumPython malt-injector-python)
+	target_compile_options(TestInstrumPython PUBLIC -g)
+	target_link_libraries(TestInstrumPython ${PYTHON3_LIBRARIES})
+endif (PYTHON3_INSTRUM_FOUND)

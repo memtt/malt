@@ -18,6 +18,10 @@ else (LIBUNWIND_FOUND)
 endif (LIBUNWIND_FOUND)
 
 ############################################################
+# python
+set (MALT_HAVE_PYTHON ${PYTHON3_INSTRUM_FOUND})
+
+############################################################
 #Code options
 set(ENABLE_CODE_TIMING   "no"       CACHE BOOL   "Enable some tricks to quickly check timings of hostspots of MALT internal code.")
 
@@ -52,7 +56,7 @@ endif (LIBELF_FOUND)
 if (LIBUNWIND_FOUND)
 	list(APPEND LIB_MALT_DEPS ${LIBUNWIND_LIBRARIES})
 endif (LIBUNWIND_FOUND)
-if (PYTHON3_FOUND)
+if (PYTHON3_INSTRUM_FOUND)
     list(APPEND LIB_MALT_DEPS ${Python3_LIBRARIES})
 endif()
 
@@ -66,7 +70,9 @@ include_directories(../../extern-deps/from-fftw)
 include_directories(../../extern-deps/iniparser/src)
 include_directories(../../extern-deps/from-htopml)
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
-include_directories(${Python3_INCLUDE_DIRS})
+if (PYTHON3_INSTRUM_FOUND)
+    include_directories(${Python3_INCLUDE_DIRS})
+endif()
 
 ############################################################
 set(COMMON_OBJS $<TARGET_OBJECTS:htopml-json>

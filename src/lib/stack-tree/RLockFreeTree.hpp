@@ -206,7 +206,7 @@ T* RLockFreeTree<T>::getData(typename RLockFreeTree<T>::Handler handler)
 		MALT_OPTIONAL_CRITICAL(lock,threadSafe)
 			//maybe another do the job juste before, so recheck before create
 			if (handler->data == NULL)
-				handler->data = new (gblInternaAlloc->malloc(sizeof(T))) T ();
+				handler->data = new (MALT_MALLOC(sizeof(T))) T ();
 			data = (T*)handler->data;
 		MALT_END_CRITICAL
 	}

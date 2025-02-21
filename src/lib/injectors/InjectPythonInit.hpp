@@ -13,7 +13,7 @@
 #define MALT_INJECT_PYTHON_INIT_HPP
 
 /**********************************************************/
-#include <Python.h>
+#include "../portability/Python.hpp"
 
 /**********************************************************/
 namespace MALT
@@ -23,11 +23,13 @@ namespace MALT
 }
 
 /**********************************************************/
-int Py_RunMain()
-{
-	MALT::Py_RunMainFuncPtr realPy_RunMain = (MALT::Py_RunMainFuncPtr)dlsym(RTLD_NEXT,"Py_RunMain");
-	MALT::initPythonInstrumentation();
-	return realPy_RunMain();
-}
+#ifdef MALT_HAVE_PYTHON
+	int Py_RunMain()
+	{
+		MALT::Py_RunMainFuncPtr realPy_RunMain = (MALT::Py_RunMainFuncPtr)dlsym(RTLD_NEXT,"Py_RunMain");
+		MALT::initPythonInstrumentation();
+		return realPy_RunMain();
+	}
+#endif //MALT_HAVE_PYTHON
 
 #endif //MALT_INJECT_PYTHON_INIT_HPP

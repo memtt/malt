@@ -104,7 +104,7 @@ LangAddress PythonSymbolTracker::frameToLangAddress(PyFrameObject * frame)
 }
 
 /**********************************************************/
-TmpPythonCallSite PythonSymbolTracker::frameToCallSite(::PyFrameObject * frame)
+TmpPythonCallSite PythonSymbolTracker::frameToCallSite(PyFrameObject * frame)
 {
 	//decl some vars
 	PyCodeObject* currentPyCode = NULL;

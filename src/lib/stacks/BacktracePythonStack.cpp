@@ -19,11 +19,10 @@
 #include <common/NoFreeAllocator.hpp>
 //portability
 #include <tools/Backtrace.hpp>
-#include "../tools/BacktraceGlibc.hpp"
+#include "tools/BacktraceGlibc.hpp"
+#include "portability/Python.hpp"
 //current
 #include <stacks/BacktracePythonStack.hpp>
-//Python
-#include <Python.h>
 
 /**********************************************************/
 /**
@@ -74,7 +73,7 @@ PyFrameObject * BacktracePythonStack::loadCurrentFrame(void)
 	}
 
 	//Get the Python Frame
-	::PyFrameObject* currentFrame = PyThreadState_GetFrame(PyGILState_GetThisThreadState());
+	PyFrameObject* currentFrame = PyThreadState_GetFrame(PyGILState_GetThisThreadState());
 	if (currentFrame == NULL) {
 		assert(this->memSize >= 1);
 		if (this->memSize < 2)

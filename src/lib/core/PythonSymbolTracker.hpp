@@ -14,7 +14,7 @@
 
 /**********************************************************/
 #include <map>
-#include <Python.h>
+#include "portability/Python.hpp"
 #include "common/STLInternalAllocator.hpp"
 #include "SymbolSolver.hpp"
 #include "stacks/LangAddress.hpp"
@@ -65,7 +65,7 @@ class PythonSymbolTracker
 		PythonCallSite getCallSite(LangAddress langAddr);
 		void makeStackPythonDomain(Stack & stack);
 	private:
-		static TmpPythonCallSite frameToCallSite(::PyFrameObject * frame);
+		static TmpPythonCallSite frameToCallSite(PyFrameObject * frame);
 		static void freeFrameToCallSite(TmpPythonCallSite & callsite);
 	private:
 		PythonStrCallSiteMap siteMap;

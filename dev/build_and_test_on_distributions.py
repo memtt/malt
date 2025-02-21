@@ -20,13 +20,13 @@ docker/podman to validate it is still OK (or close to) on all.
 ./build_and_test_on_distributions.py
 
 # better to see the name of each test as we don't have tons of them
-./build_and_test_on_distributions.p -v
+./build_and_test_on_distributions.py -v
 
 # for debugging in real time, get direct output of commands.
-./build_and_test_on_distributions.p -v --capture=no
+./build_and_test_on_distributions.py -v --capture=no
 
 # you can also call it via pytest command itself
-pytest ./build_and_test_on_distributions.p
+pytest ./build_and_test_on_distributions.py
 ```
 '''
 
@@ -41,6 +41,19 @@ from common import jump_in_dir, assert_shell_command, in_container, PodmanContai
 import pytest
 
 ############################################################
+COMMON_CONF_OPTIONS = "--with-python=/opt/malt-python"
+############################################################
+BUILD_CUSTOM_PYTHON = """apt install -y wget \\
+    && cd /tmp \\
+    && wget https://www.python.org/ftp/python/3.13.2/Python-3.13.2.tar.xz \\
+    && tar -xf Python-3.13.2.tar.xz \\
+    && cd Python-3.13.2 \\
+    && ./configure --enable-shared --prefix=/opt/malt-python \\
+    && make -j8 \\
+    && make install \\
+    && cd .. \\
+    && rm -rfd Python-3.13.2"""
+############################################################
 BUILD_PARAMETERS = {
     "distributions": {
         "ubuntu:22.04": [
@@ -49,7 +62,8 @@ BUILD_PARAMETERS = {
             "apt install -y cmake g++ make clang",
             "apt install -y libunwind-dev libelf-dev libunwind-dev nodejs npm",
             "apt install -y libqt5webkit5-dev",
-            "apt install -y ccache"
+            "apt install -y ccache",
+            BUILD_CUSTOM_PYTHON
         ],
         "ubuntu:23.04": [
             "apt update",
@@ -57,7 +71,8 @@ BUILD_PARAMETERS = {
             "apt install -y cmake g++ make clang",
             "apt install -y libunwind-dev libelf-dev libunwind-dev nodejs npm",
             "apt install -y libqt5webkit5-dev",
-            "apt install -y ccache"
+            "apt install -y ccache",
+            BUILD_CUSTOM_PYTHON
         ],
         "ubuntu:24.04": [
             "apt update -y",
@@ -65,7 +80,8 @@ BUILD_PARAMETERS = {
             "apt install -y cmake g++ make clang",
             "apt install -y libunwind-dev libelf-dev libunwind-dev nodejs npm",
             "apt install -y libqt5webkit5-dev",
-            "apt install -y ccache"
+            "apt install -y ccache",
+            BUILD_CUSTOM_PYTHON
         ],
         "debian:10": [
             "apt update",
@@ -73,7 +89,8 @@ BUILD_PARAMETERS = {
             "apt install -y cmake g++ make clang",
             "apt install -y libunwind-dev libelf-dev libunwind-dev nodejs npm",
             "apt install -y libqt5webkit5-dev",
-            "apt install -y ccache"
+            "apt install -y ccache",
+            BUILD_CUSTOM_PYTHON
         ],
         "debian:11": [
             "apt update",
@@ -81,7 +98,8 @@ BUILD_PARAMETERS = {
             "apt install -y cmake g++ make clang",
             "apt install -y libunwind-dev libelf-dev libunwind-dev nodejs npm",
             "apt install -y libqt5webkit5-dev",
-            "apt install -y ccache"
+            "apt install -y ccache",
+            BUILD_CUSTOM_PYTHON
         ],
         "debian:12": [
             "apt update",
@@ -89,7 +107,8 @@ BUILD_PARAMETERS = {
             "apt install -y cmake g++ make clang",
             "apt install -y libunwind-dev libelf-dev libunwind-dev nodejs npm",
             "apt install -y libqt5webkit5-dev",
-            "apt install -y ccache"
+            "apt install -y ccache",
+            BUILD_CUSTOM_PYTHON
         ],
     },
     'compilers': {
@@ -135,7 +154,7 @@ def test_distribution(dist_name_version: str, compiler:str, variant:str):
     # build & start container to run commands in
     with in_container(f"malt/{dist_name_version}") as container:
         # to perform tests
-        container.assert_run(f"/mnt/malt-sources/configure --enable-tests {variant_options} {compiler_options}")
+        container.assert_run(f"PATH=/opt/malt-python/bin:$PATH LD_LIBRARY_PATH=/opt/malt-python/lib:$LD_LIBRARY_PATH /mnt/malt-sources/configure --enable-tests {COMMON_CONF_OPTIONS} {variant_options} {compiler_options} && return 1")
         container.assert_run(f"make -j{cores}")
         container.assert_run(f"ctest --output-on-failure -j{cores}")
 

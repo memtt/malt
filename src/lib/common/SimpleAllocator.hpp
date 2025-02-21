@@ -37,12 +37,19 @@ namespace MALT
 #define MALT_ALLOC_SPLIT_THRESOLD (2*MALT_ALLOC_MIN_SIZE)
 
 /**********************************************************/
-/** Wrapper to replace malloc for internal allocations. **/
-#define MALT_MALLOC(x) MALT::gblInternaAlloc->malloc(x)
-/** Wrapper to replace free for internal allocations. **/
-#define MALT_FREE(x) MALT::gblInternaAlloc->free(x)
-/** Wrapper to replace realloc for internal allocations. **/
-#define MALT_REALLOC(x,y) MALT::gblInternaAlloc->realloc((x),(y))
+#define MALT_HAVE_INTERNAL_ALLOC
+#ifdef MALT_HAVE_INTERNAL_ALLOC
+	/** Wrapper to replace malloc for internal allocations. **/
+	#define MALT_MALLOC(x) MALT::gblInternaAlloc->malloc(x)
+	/** Wrapper to replace free for internal allocations. **/
+	#define MALT_FREE(x) MALT::gblInternaAlloc->free(x)
+	/** Wrapper to replace realloc for internal allocations. **/
+	#define MALT_REALLOC(x,y) MALT::gblInternaAlloc->realloc((x),(y))
+#else
+	#define MALT_MALLOC(x) malloc(x)
+	#define MALT_FREE(x) free(x)
+	#define MALT_REALLOC(x, y) realloc((x), (y))
+#endif
 
 /**********************************************************/
 /**

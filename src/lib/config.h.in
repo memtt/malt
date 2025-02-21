@@ -44,6 +44,9 @@
 //if have libunwind
 #cmakedefine MALT_HAVE_LIBUNWIND
 
+//if have python support
+#cmakedefine MALT_HAVE_PYTHON
+
 //arm RDTSC port selection
 #cmakedefine HAVE_ARMV7A_CNTVCT
 #cmakedefine HAVE_ARMV7A_PMCCNTR

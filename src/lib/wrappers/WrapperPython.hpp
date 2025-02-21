@@ -14,7 +14,7 @@
 
 /**********************************************************/
 #include "state/GlobalState.hpp"
-#include <Python.h>
+#include "portability/Python.hpp"
 
 /**********************************************************/
 namespace MALT

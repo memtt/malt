@@ -64,6 +64,11 @@ cfg_add_with_option --name='libelf' \
 						--doc='Define prefix to find libelf [/usr]' \
 						--var='LIBELF_PREFIX'
 
+#where to search python
+cfg_add_with_option --name='python' \
+						--doc='Define prefix to find python [/usr]' \
+						--var='Python3_ROOT_DIR'
+
 ############################################################
 #If we want to document extra options
 #CFG_CUSTOM_HELP="My custom options:"

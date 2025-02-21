@@ -58,10 +58,10 @@ class STLInternalAllocator {
 
 		//    memory allocation
 		inline pointer allocate(size_type cnt, typename std::allocator<void>::const_pointer = 0) { 
-		return reinterpret_cast<pointer>(gblInternaAlloc->malloc(cnt * sizeof(T))); 
+		return reinterpret_cast<pointer>(MALT_MALLOC(cnt * sizeof(T))); 
 		}
 		inline void deallocate(pointer p, size_type) { 
-			gblInternaAlloc->free(p);
+			MALT_FREE(p);
 		}
 
 		//    size

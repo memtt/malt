@@ -12,7 +12,7 @@
 #include <gtest/gtest.h>
 #include <thread>
 #include <core/ThreadTracker.hpp>
-#include <Python.h>
+#include "portability/Python.hpp"
 #include "../WrapperCAlloc.hpp"
 #include "state/GlobalState.hpp"
 #include "injectors/InjectPythonInit.hpp"

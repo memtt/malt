@@ -9,7 +9,7 @@
 ***********************************************************/
 
 /**********************************************************/
-#include <Python.h>
+#include "portability/Python.hpp"
 #include "state/LazyEnv.hpp"
 #include "state/ReentranceGuard.hpp"
 #include "WrapperPython.hpp"

@@ -20,7 +20,9 @@
 #include <core/CallStackInfo.hpp>
 #include <core/PythonSymbolTracker.hpp>
 //python
-#include <Python.h>
+#ifdef MALT_HAVE_PYTHON
+	#include <Python.h>
+#endif //MALT_HAVE_PYTHON
 
 /**********************************************************/
 namespace MALT

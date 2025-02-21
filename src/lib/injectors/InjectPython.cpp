@@ -9,7 +9,7 @@
 ***********************************************************/
 
 /**********************************************************/
-#include <Python.h>
+#include "portability/Python.hpp"
 #include "state/GlobalState.hpp"
 #include "wrappers/WrapperPython.hpp"
 #include "InjectPython.hpp"
@@ -21,9 +21,9 @@ namespace MALT
 {
 
 /**********************************************************/
-::PyMemAllocatorEx gblPythonRawAlloc;
-::PyMemAllocatorEx gblPythonMemAlloc;
-::PyMemAllocatorEx gblPythonObjAlloc;
+PyMemAllocatorEx gblPythonRawAlloc;
+PyMemAllocatorEx gblPythonMemAlloc;
+PyMemAllocatorEx gblPythonObjAlloc;
 
 /**********************************************************/
 void* WrapperPythonRaw::malloc(void* ctx, size_t size)
@@ -103,33 +103,33 @@ void initPythonAllocInstrumentation()
 	printf("MALT: Instument Python allocator...\n");
 
 	//get all
-	PyMem_GetAllocator(::PYMEM_DOMAIN_RAW, &gblPythonRawAlloc);
-	PyMem_GetAllocator(::PYMEM_DOMAIN_MEM, &gblPythonMemAlloc);
-	PyMem_GetAllocator(::PYMEM_DOMAIN_OBJ, &gblPythonObjAlloc);
+	PyMem_GetAllocator(PYMEM_DOMAIN_RAW, &gblPythonRawAlloc);
+	PyMem_GetAllocator(PYMEM_DOMAIN_MEM, &gblPythonMemAlloc);
+	PyMem_GetAllocator(PYMEM_DOMAIN_OBJ, &gblPythonObjAlloc);
 
-	::PyMemAllocatorEx pythonRawAllocMalt;
+	PyMemAllocatorEx pythonRawAllocMalt;
 	pythonRawAllocMalt.ctx = NULL;
 	pythonRawAllocMalt.malloc = WrapperPythonRaw::malloc;
 	pythonRawAllocMalt.free = WrapperPythonRaw::free;
 	pythonRawAllocMalt.calloc = WrapperPythonRaw::calloc;
 	pythonRawAllocMalt.realloc = WrapperPythonRaw::realloc;
-	PyMem_SetAllocator(::PYMEM_DOMAIN_RAW, &pythonRawAllocMalt);
+	PyMem_SetAllocator(PYMEM_DOMAIN_RAW, &pythonRawAllocMalt);
 
-	::PyMemAllocatorEx pythonMemAllocMalt;
+	PyMemAllocatorEx pythonMemAllocMalt;
 	pythonMemAllocMalt.ctx = NULL;
 	pythonMemAllocMalt.malloc = WrapperPythonMem::malloc;
 	pythonMemAllocMalt.free = WrapperPythonMem::free;
 	pythonMemAllocMalt.calloc = WrapperPythonMem::calloc;
 	pythonMemAllocMalt.realloc = WrapperPythonMem::realloc;
-	PyMem_SetAllocator(::PYMEM_DOMAIN_MEM, &pythonMemAllocMalt);
+	PyMem_SetAllocator(PYMEM_DOMAIN_MEM, &pythonMemAllocMalt);
 
-	::PyMemAllocatorEx pythonObjAllocMalt;
+	PyMemAllocatorEx pythonObjAllocMalt;
 	pythonObjAllocMalt.ctx = NULL;
 	pythonObjAllocMalt.malloc = WrapperPythonObj::malloc;
 	pythonObjAllocMalt.free = WrapperPythonObj::free;
 	pythonObjAllocMalt.calloc = WrapperPythonObj::calloc;
 	pythonObjAllocMalt.realloc = WrapperPythonObj::realloc;
-	PyMem_SetAllocator(::PYMEM_DOMAIN_OBJ, &pythonObjAllocMalt);
+	PyMem_SetAllocator(PYMEM_DOMAIN_OBJ, &pythonObjAllocMalt);
 
 	//PyGC_Disable();
 
