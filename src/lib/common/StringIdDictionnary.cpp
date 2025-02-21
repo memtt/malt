@@ -26,7 +26,7 @@ StringIdDictionnary::StringIdDictionnary(void)
 }
 
 /**********************************************************/
-const std::string & StringIdDictionnary::getString(int id) const
+const String & StringIdDictionnary::getString(int id) const
 {
 	//check
 	assert((size_t)id < this->strings.size());
@@ -36,7 +36,7 @@ const std::string & StringIdDictionnary::getString(int id) const
 }
 
 /**********************************************************/
-int StringIdDictionnary::getId(const std::string & value)
+int StringIdDictionnary::getId(const String & value)
 {
 	//vars
 	int id = 0;
@@ -60,7 +60,10 @@ int StringIdDictionnary::getId(const std::string & value)
 /**********************************************************/
 void convertToJson(htopml::JsonState & json, const StringIdDictionnary & value)
 {
-	json.printValue(value.strings);
+	json.openArray();
+		for (const auto & it : value.strings)
+			json.printValue(it, false);
+	json.closeArray();
 }
 
 }

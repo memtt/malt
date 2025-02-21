@@ -19,6 +19,7 @@
 #include "SymbolSolver.hpp"
 #include "stacks/LangAddress.hpp"
 #include "stacks/Stack.hpp"
+#include "common/StringIdDictionnary.hpp"
 
 /**********************************************************/
 namespace MALT
@@ -52,6 +53,7 @@ bool operator<(const PythonCallSite & a, const PythonCallSite & b);
 
 /**********************************************************/
 typedef std::map<PythonCallSite, void*, std::less<PythonCallSite>, STLInternalAllocator<std::pair<PythonCallSite,void*> > > PythonStrCallSiteMap;
+typedef std::map<PyCodeObject *, void*, std::less<PyCodeObject*>, STLInternalAllocator<std::pair<PyCodeObject*,void*> > > PythonPyCodeToAddrMap;
 
 /**********************************************************/
 class PythonSymbolTracker
@@ -65,11 +67,14 @@ class PythonSymbolTracker
 		PythonCallSite getCallSite(LangAddress langAddr);
 		void makeStackPythonDomain(Stack & stack);
 	private:
+		LangAddress fastFrameToLangAddress(PyFrameObject * frame);
+		LangAddress slowFrameToLangAddress(PyFrameObject * frame);
 		static TmpPythonCallSite frameToCallSite(PyFrameObject * frame);
 		static void freeFrameToCallSite(TmpPythonCallSite & callsite);
 	private:
 		PythonStrCallSiteMap siteMap;
 		size_t nextIndex{10};
+		PythonPyCodeToAddrMap codeToaddrMap;
 };
 
 }

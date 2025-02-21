@@ -142,6 +142,7 @@ std::string Helpers::simpleProfileDump(const std::string & profileFile, const st
 
 	//close & remove
 	close(fd);
+	unlink(tmpFile);
 
 	//ok
 	return result;

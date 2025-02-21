@@ -82,7 +82,7 @@ class SymbolSolver
 		void solveNames(void);
 		void solveMaqaoNames(void);
 		const CallSite * getCallSiteInfo(LangAddress site) const;
-		const std::string & getString(int id) const;
+		const String & getString(int id) const;
 		bool isSameFuntion(const CallSite * s1,LangAddress s2) const;
 		bool procMapIsLoaded(void) const;
 		void registerMaqaoFunctionSymbol(int funcId,const char * funcName,const char * file,int line);

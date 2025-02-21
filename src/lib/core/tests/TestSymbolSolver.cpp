@@ -45,8 +45,8 @@ TEST(TestSymbolSolver,testSolve)
 
 	//extact
 	const CallSite * site = solver.getCallSiteInfo(LangAddress(DOMAIN_C, (void*)main));
-	std::string func = solver.getString(site->function);
-	std::string file = solver.getString(site->file);
+	const String & func = solver.getString(site->function);
+	const String & file = solver.getString(site->file);
 
 	//test
 	#ifndef NDEBUG
@@ -82,8 +82,8 @@ TEST(TestSymbolSolver, solveBacktraceExe)
 
 	//extact
 	const CallSite * site = solver.getCallSiteInfo(callee);
-	std::string func = solver.getString(site->function);
-	std::string file = solver.getString(site->file);
+	const String & func = solver.getString(site->function);
+	const String & file = solver.getString(site->file);
 
 	//check
 	#ifndef NDEBUG
@@ -112,7 +112,7 @@ TEST(TestSymbolSolver, solveBacktraceLib)
 	
 	//extact
 	const CallSite * site = solver.getCallSiteInfo(callee);
-	std::string func = solver.getString(site->function);
+	const String & func = solver.getString(site->function);
 
 	//check
 	#ifndef NDEBUG

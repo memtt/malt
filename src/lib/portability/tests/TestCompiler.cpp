@@ -35,7 +35,7 @@ std::string mangledCppFunction(bool p1, int p2)
 }
 
 /**********************************************************/
-std::string getMangledName(void* addr)
+String getMangledName(void* addr)
 {
 	LangAddress callsite(MALT::DOMAIN_C, (void*)((size_t)addr + 1));
 	SymbolSolver solver;
@@ -48,7 +48,7 @@ std::string getMangledName(void* addr)
 /**********************************************************/
 TEST(TestCompiler,demangleCppNames_mangled)
 {
-	std::string mangled = getMangledName((void*)mangledCppFunction);
+	std::string mangled = getMangledName((void*)mangledCppFunction).c_str();
 	std::string demangled = Compiler::demangleCppNames(mangled);
 	EXPECT_THAT(demangled, MatchesRegex("^mangledCppFunction(\\[.*\\])\\(bool, int\\)$")) << "mangled=" << mangled;
 }
@@ -56,7 +56,7 @@ TEST(TestCompiler,demangleCppNames_mangled)
 /**********************************************************/
 TEST(TestCompiler,demangleCppNames_not_mangled)
 {
-	std::string mangled = getMangledName((void*)notMangledCFunction);
+	std::string mangled = getMangledName((void*)notMangledCFunction).c_str();
 	std::string demangled = Compiler::demangleCppNames(mangled);
 	EXPECT_THAT(demangled, MatchesRegex("^notMangledCFunction()")) << "mangled=" << mangled;
 }

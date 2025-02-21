@@ -76,6 +76,22 @@ void PythonSymbolTracker::makeStackPythonDomain(Stack & stack)
 /**********************************************************/
 LangAddress PythonSymbolTracker::frameToLangAddress(PyFrameObject * frame)
 {
+	//get fast
+	//LangAddress addrFast = this->fastFrameToLangAddress(frame);
+
+	//get slow
+	LangAddress addrSlow = this->slowFrameToLangAddress(frame);
+
+	//check equal
+	//assert(addrFast.isNULL() || addrSlow == addrFast);
+
+	//ok
+	return addrSlow;
+}
+
+/**********************************************************/
+LangAddress PythonSymbolTracker::slowFrameToLangAddress(PyFrameObject * frame)
+{
 	//convert
 	TmpPythonCallSite tmpsite = frameToCallSite(frame);
 
@@ -99,8 +115,31 @@ LangAddress PythonSymbolTracker::frameToLangAddress(PyFrameObject * frame)
 	//free
 	freeFrameToCallSite(tmpsite);
 
+	//build address
+	LangAddress addr(DOMAIN_PYTHON, (void*)currentId);
+
+	//store
+	//fprintf(stderr, "Entry : %p, %s, %s, %d\n", tmpsite.code, tmpsite.site.file, tmpsite.site.function, tmpsite.site.line);
+	//this->codeToaddrMap[tmpsite.code] = addr.getAddress();
+
 	//ok
-	return LangAddress(DOMAIN_PYTHON, (void*)currentId);
+	return addr;
+}
+
+/**********************************************************/
+LangAddress PythonSymbolTracker::fastFrameToLangAddress(PyFrameObject * frame)
+{
+	//get code
+	PyCodeObject * currentPyCode = PyFrame_GetCode(frame);
+	assert(currentPyCode != NULL);
+
+	//search in map
+	const auto it = this->codeToaddrMap.find(currentPyCode);
+	if (it != this->codeToaddrMap.end()) {
+		return LangAddress(DOMAIN_PYTHON, (void*)(it->second));
+	} else {
+		return this->slowFrameToLangAddress(frame);
+	}
 }
 
 /**********************************************************/

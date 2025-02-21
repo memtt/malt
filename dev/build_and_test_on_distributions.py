@@ -154,7 +154,7 @@ def test_distribution(dist_name_version: str, compiler:str, variant:str):
     # build & start container to run commands in
     with in_container(f"malt/{dist_name_version}") as container:
         # to perform tests
-        container.assert_run(f"PATH=/opt/malt-python/bin:$PATH LD_LIBRARY_PATH=/opt/malt-python/lib:$LD_LIBRARY_PATH /mnt/malt-sources/configure --enable-tests {COMMON_CONF_OPTIONS} {variant_options} {compiler_options} && return 1")
+        container.assert_run(f"/mnt/malt-sources/configure --enable-tests {COMMON_CONF_OPTIONS} {variant_options} {compiler_options}")
         container.assert_run(f"make -j{cores}")
         container.assert_run(f"ctest --output-on-failure -j{cores}")
 

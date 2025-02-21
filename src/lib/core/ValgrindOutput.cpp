@@ -93,7 +93,7 @@ bool ValgrindOutput::isNewOperator(const SymbolSolver& symbols, LangAddress addr
 	if (leafInfo == NULL)
 		return false;
 
-	const std::string & symbol = symbols.getString(leafInfo->function);
+	const String & symbol = symbols.getString(leafInfo->function);
 	return (strncmp("_Znw",symbol.c_str(),4) == 0 || strncmp("_Zna",symbol.c_str(),4) == 0);
 }
 

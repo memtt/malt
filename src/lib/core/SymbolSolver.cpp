@@ -572,7 +572,7 @@ const CallSite* SymbolSolver::getCallSiteInfo(LangAddress site) const
  * @param id Define the ID of the string we want.
  * @return The string matching the given ID.
 **/
-const std::string& SymbolSolver::getString(int id) const
+const String& SymbolSolver::getString(int id) const
 {
 	return this->stringDict.getString(id);
 }

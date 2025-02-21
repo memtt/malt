@@ -81,6 +81,7 @@ inline void PyMem_SetAllocator(PyMemDomain domain, const PyMemAllocatorEx * allo
 inline PyGILState_STATE PyGILState_Ensure(void) {return false;};
 inline void PyGILState_Release(PyGILState_STATE state) {};
 inline void PyEval_SetProfileAllThreads(Py_tracefunc func, PyObject *obj){};
+inline void PyEval_SetTraceAllThreads(Py_tracefunc func, PyObject *obj){};
 inline PyCodeObject * PyFrame_GetCode(PyFrameObject * frame) {return nullptr;};
 inline PyObject * PyUnicode_AsASCIIString(const char * value) {return nullptr;};
 inline char * PyBytes_AsString(PyObject * obj) {return nullptr;};

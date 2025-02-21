@@ -23,6 +23,12 @@ namespace MALT
 /**********************************************************/
 typedef std::basic_string<char, std::char_traits<char>, STLInternalAllocator<char> > String;
 
+/**********************************************************/
+inline void convertToJson(htopml::JsonState & json, const String & value)
+{
+	json.printValue(std::string(value.c_str()));
+}
+
 }
 
 #endif //MALT_STRING_HPP

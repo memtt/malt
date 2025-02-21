@@ -18,6 +18,9 @@
 #include <mutex>
 //extern deps
 #include <json/JsonState.h>
+//internal
+#include "String.hpp"
+#include "STLInternalAllocator.hpp"
 
 /**********************************************************/
 namespace MALT
@@ -28,12 +31,12 @@ class StringIdDictionnary
 {
 	public:
 		StringIdDictionnary(void);
-		const std::string & getString(int id) const;
-		int getId(const std::string & value);
+		const String & getString(int id) const;
+		int getId(const String & value);
 	public:
 		friend void convertToJson(htopml::JsonState & json, const StringIdDictionnary & value);
 	private:
-		std::vector<std::string> strings;
+		std::vector<String, STLInternalAllocator<String> > strings;
 		std::mutex mutex;
 };
 
