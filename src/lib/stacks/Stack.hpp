@@ -14,7 +14,8 @@
 
 /**********************************************************/
 //std c
-#include <stdint.h>
+#include <cstdint>
+#include <cassert>
 //std c++
 #include <ostream>
 //Include Debug
@@ -84,7 +85,7 @@ class Stack
 		LangAddress getCaller(void) const;
 		LangAddress getCallee(void) const;
 		LangAddress operator[] (int idx) const;
-		LangAddress & operator[] (int idx);
+		inline LangAddress & operator[] (int idx);
 		static bool partialCompare(const Stack & stack1,int skip1,const Stack & stack2,int skip2);
 		Stack & operator = (const Stack & stack);
 		size_t getMemSize(void) const;
@@ -113,6 +114,35 @@ class Stack
 		/** Keep track of the element ordering in the stack storage. **/
 		StackOrder order;
 };
+
+/**********************************************************/
+/**
+ * Operator to read stack entries. It provide a uniq ordering by checking the internal one.
+ * The external representation exposed to the user is by convention the backtrace one (ASC).
+**/
+LangAddress & Stack::operator[](int idx)
+{
+	//errors
+	assert(idx >= 0);
+
+	//trivial
+	if (idx < 0 || idx >= size || stack == NULL) {
+		MALT_FATAL_ARG("Out of bound [%1] in stack : %2").arg(idx).arg(this).end();
+		return this->stack[0];
+	}
+
+	//depend on order
+	switch(order)
+	{
+		case STACK_ORDER_ASC:
+			return stack[idx];
+		case STACK_ORDER_DESC:
+			return stack[size - idx - 1];
+		default:
+			MALT_FATAL_ARG("Undefined order on Stack : %1").arg(this).end();
+			return this->stack[0];
+	}
+}
 
 }
 

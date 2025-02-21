@@ -37,6 +37,7 @@ class StringIdDictionnary
 		friend void convertToJson(htopml::JsonState & json, const StringIdDictionnary & value);
 	private:
 		std::vector<String, STLInternalAllocator<String> > strings;
+		std::map<String, size_t> stringToId;
 		std::mutex mutex;
 };
 

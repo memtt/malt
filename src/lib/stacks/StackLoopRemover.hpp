@@ -20,7 +20,7 @@ namespace MALT
 {
 
 /**********************************************************/
-#define MALT_STACK_NODE_MAX_LINK 8
+#define MALT_STACK_NODE_MAX_LINK 32
 
 /**********************************************************/
 class StackLoopNode

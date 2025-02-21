@@ -22,22 +22,22 @@ namespace MALT
 PythonSymbolTracker::PythonSymbolTracker(void)
 {
 	//build unknown map
-	const char * unknownName = gblInternaAlloc->strdup("MALT_UNKNOWN_PYTHON");
+	int unknownName = this->dict.getId("MALT_UNKNOWN_PYTHON");
 	const PythonCallSite siteUnknown = {unknownName, unknownName, 0};
 	this->siteMap[siteUnknown] = MALT_PYTHON_UNKNOWN_FUNC_ID;
 
 	//build init map
-	const char * initName = gblInternaAlloc->strdup("MALT_PYTHON_ROOT");
+	int initName = this->dict.getId("MALT_PYTHON_ROOT");
 	const PythonCallSite siteInit = {initName, initName, 0};
 	this->siteMap[siteInit] = MALT_PYTHON_INIT_FUNC_ID;
 
 	//build null map
-	const char * nullName = gblInternaAlloc->strdup("MALT_PYTHON_NULL_FRAME");
+	int nullName = this->dict.getId("MALT_PYTHON_NULL_FRAME");
 	const PythonCallSite siteNull = {nullName, nullName, 0};
 	this->siteMap[siteNull] = MALT_PYTHON_NULL_FUNC_ID;
 
 	//build C bridge map
-	const char * cBridgeName = gblInternaAlloc->strdup("MALT_PYTHON_C_BRIDGE_FRAME");
+	int cBridgeName = this->dict.getId("MALT_PYTHON_C_BRIDGE_FRAME");
 	const PythonCallSite siteCBridge = {cBridgeName, cBridgeName, 0};
 	this->siteMap[siteCBridge] = MALT_PYTHON_C_BRIDGE_FUNC_ID;
 }
@@ -95,19 +95,21 @@ LangAddress PythonSymbolTracker::slowFrameToLangAddress(PyFrameObject * frame)
 	//convert
 	TmpPythonCallSite tmpsite = frameToCallSite(frame);
 
+	//build call site
+	PythonCallSite site;
+	site.file = this->dict.getId(tmpsite.site.file);
+	site.function = this->dict.getId(tmpsite.site.function);
+	site.line = tmpsite.site.line;
+
 	//search entry
-	auto it = this->siteMap.find(tmpsite.site);
+	auto it = this->siteMap.find(site);
 	void * currentId;
 
 	assert(tmpsite.site.function[0] != '\0');
 
 	//is new or not
 	if (it == this->siteMap.end()) {
-		PythonCallSite siteNew;
-		siteNew.file = gblInternaAlloc->strdup(tmpsite.site.file);
-		siteNew.function = gblInternaAlloc->strdup(tmpsite.site.function);
-		siteNew.line = tmpsite.site.line;
-		currentId = this->siteMap[siteNew] = (void*)(this->nextIndex++);
+		currentId = this->siteMap[site] = (void*)(this->nextIndex++);
 	} else {
 		currentId = it->second;
 	}
@@ -203,8 +205,10 @@ void PythonSymbolTracker::registerSymbolResolution(SymbolSolver & solver) const
 	char buffer[4096];
 	for (auto & site : this->siteMap)
 	{
-		snprintf(buffer, sizeof(buffer), "py:%s", site.first.function);
-		solver.registerFunctionSymbol(LangAddress(DOMAIN_PYTHON, site.second), buffer, site.first.file, site.first.line);
+		const char * function = this->dict.getString(site.first.function).c_str();
+		const char * file = this->dict.getString(site.first.file).c_str();
+		snprintf(buffer, sizeof(buffer), "py:%s", function);
+		solver.registerFunctionSymbol(LangAddress(DOMAIN_PYTHON, site.second), buffer, file, site.first.line);
 	}
 }
 
@@ -223,7 +227,8 @@ PythonCallSite PythonSymbolTracker::getCallSite(LangAddress langAddr)
 	MALT_FATAL_ARG("Python address not found in symbole tracker : %1").arg(langAddr).end();
 
 	//not found
-	PythonCallSite errorSite = {"NOT_FOUND", "NOT_FOUND", -1};
+	int notFound = this->dict.getId("NOT_FOUND");
+	PythonCallSite errorSite = {notFound, notFound, -1};
 	return errorSite;
 }
 

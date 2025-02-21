@@ -34,6 +34,14 @@ namespace MALT
 /**********************************************************/
 struct PythonCallSite
 {
+	int file;
+	int function;
+	int line;
+};
+
+/**********************************************************/
+struct PythonNamedCallSite
+{
 	const char * file;
 	const char * function;
 	int line;
@@ -42,7 +50,7 @@ struct PythonCallSite
 /**********************************************************/
 struct TmpPythonCallSite
 {
-	PythonCallSite site;
+	PythonNamedCallSite site;
 	PyObject* filenameObject;
 	PyObject* framenameObject;
 	PyCodeObject* code;
@@ -75,6 +83,7 @@ class PythonSymbolTracker
 		PythonStrCallSiteMap siteMap;
 		size_t nextIndex{10};
 		PythonPyCodeToAddrMap codeToaddrMap;
+		StringIdDictionnary dict;
 };
 
 }

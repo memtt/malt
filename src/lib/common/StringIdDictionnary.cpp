@@ -38,23 +38,24 @@ const String & StringIdDictionnary::getString(int id) const
 /**********************************************************/
 int StringIdDictionnary::getId(const String & value)
 {
-	//vars
-	int id = 0;
-
 	//lock
 	std::lock_guard<std::mutex> guard(this->mutex);
 
 	//loop to search
-	for (size_t i = 0 ; i < this->strings.size() ; i++)
-		if (this->strings[i] == value)
-			return i;
-	
+	const auto it = this->stringToId.find(value);
+	if (it != this->stringToId.end())
+		return it->second;
+
 	//not found => insert
-	strings.push_back(value);
+	strings.emplace_back(value);
+	assert(strings.size() < INT_MAX);
+	const size_t id = strings.size() - 1;
+
+	//set id
+	this->stringToId[value] = id;
 
 	//ok
-	assert(strings.size() < INT_MAX);
-	return strings.size()-1;
+	return id;
 }
 
 /**********************************************************/

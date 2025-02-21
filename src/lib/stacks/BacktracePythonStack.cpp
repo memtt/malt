@@ -146,11 +146,10 @@ bool operator<(const PythonCallSite & a, const PythonCallSite & b)
 	if (a.line < b.line) {
 		return true;
 	} else if (a.line == b.line) {
-		int statusFunction = strcmp(a.function, b.function);
-		if (statusFunction < 0) {
+		if (a.function < b.function) {
 			return true;
-		} else if (statusFunction == 0) {
-			return strcmp(a.file, b.file) < 0;
+		} else if (a.function == b.function) {
+			return a.file < b.file;
 		} else {
 			return false;
 		}
