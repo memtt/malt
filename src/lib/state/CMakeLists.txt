@@ -12,6 +12,7 @@
 ############################################################
 add_library(malt-state OBJECT 
       GlobalState.cpp
+      Enable.cpp
 )
 SET_TARGET_PROPERTIES(malt-state PROPERTIES COMPILE_FLAGS -fPIC)
 

@@ -34,7 +34,7 @@ void __cyg_profile_func_enter (void *this_fn,void *call_site)
 	LazyEnv env;
 	
 	//stack tracking
-	if (tlsState.status == ALLOC_WRAP_READY || tlsState.status == ALLOC_WRAP_DISABLED)
+	if (env.getLocalState().status == ALLOC_WRAP_READY || env.getLocalState().status == ALLOC_WRAP_DISABLED)
 		env.getLocalProfiler().onEnterFunc(LangAddress(DOMAIN_C, this_fn),LangAddress(DOMAIN_C, call_site));
 }
 
@@ -56,6 +56,6 @@ void __cyg_profile_func_exit  (void *this_fn,void *call_site)
 	LazyEnv env;
 	
 	//stack tracking
-	if (tlsState.status == ALLOC_WRAP_READY || tlsState.status == ALLOC_WRAP_DISABLED)
+	if (env.getLocalState().status == ALLOC_WRAP_READY || env.getLocalState().status == ALLOC_WRAP_DISABLED)
 		env.getLocalProfiler().onExitFunc(LangAddress(DOMAIN_C, this_fn),LangAddress(DOMAIN_C, call_site));
 }

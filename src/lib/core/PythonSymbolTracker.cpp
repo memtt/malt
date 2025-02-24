@@ -232,4 +232,15 @@ PythonCallSite PythonSymbolTracker::getCallSite(LangAddress langAddr)
 	return errorSite;
 }
 
+/**********************************************************/
+PythonNamedCallSite PythonSymbolTracker::getNamedCallSite(LangAddress langAddr)
+{
+	PythonCallSite site = this->getCallSite(langAddr);
+	PythonNamedCallSite namedSite;
+	namedSite.file = this->dict.getString(site.file).c_str();
+	namedSite.function = this->dict.getString(site.function).c_str();
+	namedSite.line = site.line;
+	return namedSite;
+}
+
 }

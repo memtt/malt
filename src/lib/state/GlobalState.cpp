@@ -9,6 +9,7 @@
 ***********************************************************/
 
 /**********************************************************/
+#include <pthread.h>
 #include "GlobalState.hpp"
 
 /**********************************************************/
@@ -102,6 +103,30 @@ static void maltSigHandler(int signum)
 }
 
 /**********************************************************/
+void maltForkHandlerPrepare(void)
+{
+	fprintf(stderr, "MALT: PREPARE_FORK\n");
+}
+
+/**********************************************************/
+void maltForkHandlerChild(void)
+{
+	fprintf(stderr, "MALT: FORK_DONE_NOW_IN_CHILD\n");
+}
+
+/**********************************************************/
+void maltForkHandlerParent(void)
+{
+	fprintf(stderr, "MALT: FORK_DONE_NOW_IN_PARENT\n");
+}
+
+/**********************************************************/
+void maltRegisterPthreadAtFork(void)
+{
+	pthread_atfork(maltForkHandlerPrepare, maltForkHandlerParent, maltForkHandlerChild);
+}
+
+/**********************************************************/
 void maltSetupSigHandler(const Options & options)
 {
 	//get list
@@ -167,44 +192,6 @@ void maltDumpAfterSecondsThread(const Options & options)
 	pthread_t th;
 	int rc = pthread_create(&th, NULL, maltDumpAfterSecondsThreadMain, (void*)secs);
 	assumeArg(rc == 0, "Fail to start sleep thread for timeout dump: %1").argStrErrno().end();
-}
-
-/**********************************************************/
-extern "C" {
-
-/**********************************************************/
-int maltInitStatus(void)
-{
-	return 1;
-}
-	
-void maltEnable(void)
-{
-	/*get addr localy to avoid to read the TLS every time*/
-	ThreadLocalState & localState = tlsState;
-
-	/*check init */ 
-	if ( localState.status == ALLOC_WRAP_NOT_READY )
-		localState.init();
-	
-	if(localState.status == ALLOC_WRAP_DISABLED)
-		localState.status = ALLOC_WRAP_READY;
-}
-
-/**********************************************************/
-void maltDisable(void)
-{
-	/*get addr localy to avoid to read the TLS every time*/
-	ThreadLocalState & localState = tlsState;
-
-	/*check init */ 
-	if ( localState.status == ALLOC_WRAP_NOT_READY )
-		localState.init();
-	
-	if(localState.status == ALLOC_WRAP_READY)
-		localState.status = ALLOC_WRAP_DISABLED;
-}
-	
 }
 
 /**********************************************************/
@@ -295,6 +282,9 @@ void AllocWrapperGlobal::init(void )
 		maltSetupSigHandler(*gblOptions);
 		maltDumpAfterSecondsThread(*gblOptions);
 
+		//pthread at fork handling
+		maltRegisterPthreadAtFork();
+
 		//final state
 		gblState.status = ALLOC_WRAP_READY;
 
@@ -337,23 +327,23 @@ void AllocWrapperGlobal::onExit(void)
 void ThreadLocalState::init(void)
 {
 	//check errors
-	assert(tlsState.profiler == NULL);
+	assert(this->profiler == NULL);
 	
 	//mark as init to authorize but in use to authorise malloc without intrum and cut infinit call loops
-	tlsState.status = ALLOC_WRAP_INIT_PROFILER;
+	this->status = ALLOC_WRAP_INIT_PROFILER;
 
 	//check init
 	if (gblState.status == ALLOC_WRAP_NOT_READY)
 		gblState.init();
 	
 	//create the local chain
-	tlsState.profiler = gblState.profiler->createLocalStackProfiler();
+	this->profiler = gblState.profiler->createLocalStackProfiler();
 	
 	//mark ready
 	if (gblOptions->enabled)
-		tlsState.status = ALLOC_WRAP_READY;
+		this->status = ALLOC_WRAP_READY;
 	else
-		tlsState.status = ALLOC_WRAP_DISABLED;
+		this->status = ALLOC_WRAP_DISABLED;
 }
 
 /**********************************************************/

@@ -73,6 +73,7 @@ class PythonSymbolTracker
 		LangAddress parentFrameToLangAddress(PyFrameObject * frame);
 		LangAddress frameToLangAddress(PyFrameObject * frame);
 		PythonCallSite getCallSite(LangAddress langAddr);
+		PythonNamedCallSite getNamedCallSite(LangAddress langAddr);
 		void makeStackPythonDomain(Stack & stack);
 	private:
 		LangAddress fastFrameToLangAddress(PyFrameObject * frame);

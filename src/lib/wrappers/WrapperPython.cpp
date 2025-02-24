@@ -146,7 +146,7 @@ int malt_wrap_python_on_enter_exit(PyObject *obj, PyFrameObject *frame, int what
 				MALT::PythonSymbolTracker & tracker = gblState.profiler->getPythonSymbolTracker();
 				LangAddress parentAddr = tracker.parentFrameToLangAddress(frame);
 				//////////////////////
-				//PythonCallSite site = tracker.getCallSite(parentAddr);
+				//PythonNamedCallSite site = tracker.getNamedCallSite(parentAddr);
 				//printf("enter in %s:%s:%d\n", site.file, site.function, site.line);
 				//////////////////////
 				//get up
@@ -163,7 +163,7 @@ int malt_wrap_python_on_enter_exit(PyObject *obj, PyFrameObject *frame, int what
 				MALT::PythonSymbolTracker & tracker = gblState.profiler->getPythonSymbolTracker();
 				LangAddress parentAddr = tracker.parentFrameToLangAddress(frame);
 				//////////////
-				//PythonCallSite site = tracker.getCallSite(parentAddr);
+				//PythonNamedCallSite site = tracker.getNamedCallSite(parentAddr);
 				//printf("exit in %s:%s:%d\n", site.file, site.function, site.line);
 				//////////////
 				env.getLocalProfiler().onExitFunc(nullAddr,parentAddr,true);

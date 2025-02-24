@@ -14,6 +14,7 @@
 
 /**********************************************************/
 #include "GlobalState.hpp"
+#include <atomic>
 
 /**********************************************************/
 namespace MALT
@@ -33,22 +34,26 @@ class LazyEnv
 		inline bool isMaltReady() const;
 		inline bool markInstrumented();
 		inline void endInstrumentation(bool oldStatus);
+		inline void enable();
+		inline void disable();
 	private:
-		ThreadLocalState & threadLocalState;
+		ThreadLocalState * threadLocalState{nullptr};
 		bool enterExit;
 };
 
 /**********************************************************/
 LazyEnv::LazyEnv()
-        :threadLocalState(tlsState)
 {
+	//read
+	this->threadLocalState = &tlsState;
+
 	/*check init */
-	if ( this->threadLocalState.status == ALLOC_WRAP_NOT_READY )
-		this->threadLocalState.init();
+	if ( this->threadLocalState->status == ALLOC_WRAP_NOT_READY )
+		this->threadLocalState->init();
 
 	this->enterExit = true;
-	if (threadLocalState.profiler != NULL){
-		this->enterExit = this->threadLocalState.profiler->isEnterExit();
+	if (threadLocalState->profiler != NULL){
+		this->enterExit = this->threadLocalState->profiler->isEnterExit();
 	}
 }
 
@@ -61,7 +66,7 @@ AllocStackProfiler & LazyEnv::getGlobalProfiler()
 /**********************************************************/
 LocalAllocStackProfiler & LazyEnv::getLocalProfiler()
 {
-	return *(this->threadLocalState.profiler);
+	return *(this->threadLocalState->profiler);
 }
 
 /**********************************************************/
@@ -73,7 +78,7 @@ AllocWrapperGlobal & LazyEnv::getGlobalState()
 /**********************************************************/
 ThreadLocalState & LazyEnv::getLocalState()
 {
-	return this->threadLocalState;
+	return *this->threadLocalState;
 }
 
 /**********************************************************/
@@ -85,8 +90,8 @@ bool LazyEnv::isEnterExit() const
 /**********************************************************/
 bool LazyEnv::markInstrumented()
 {
-	bool oldStatus = this->threadLocalState.inMalt;
-	this->threadLocalState.inMalt = true;
+	bool oldStatus = this->threadLocalState->inMalt;
+	this->threadLocalState->inMalt = true;
 	return oldStatus;
 }
 
@@ -94,14 +99,28 @@ bool LazyEnv::markInstrumented()
 void LazyEnv::endInstrumentation(bool oldStatus)
 {
 	//cannot have false / false
-	assert(this->threadLocalState.inMalt != oldStatus || oldStatus == true);
-	this->threadLocalState.inMalt = oldStatus;
+	assert(this->threadLocalState->inMalt != oldStatus || oldStatus == true);
+	this->threadLocalState->inMalt = oldStatus;
 }
 
 /**********************************************************/
 bool LazyEnv::isMaltReady() const
 {
-	return (gblState.status == ALLOC_WRAP_READY && this->threadLocalState.status == ALLOC_WRAP_READY);
+	return (gblState.status == ALLOC_WRAP_READY && this->threadLocalState != nullptr && this->threadLocalState->status == ALLOC_WRAP_READY);
+}
+
+/**********************************************************/
+void LazyEnv::enable()
+{
+	if(this->threadLocalState->status == ALLOC_WRAP_DISABLED)
+		this->threadLocalState->status = ALLOC_WRAP_READY;
+}
+
+/**********************************************************/
+void LazyEnv::disable()
+{
+	if(this->threadLocalState->status == ALLOC_WRAP_READY)
+	this->threadLocalState->status = ALLOC_WRAP_DISABLED;
 }
 
 }
