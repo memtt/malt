@@ -503,8 +503,9 @@ void FreeChunk::removeFromList(void)
 /**********************************************************/
 void initInternalAlloc(bool threadSafe)
 {
+	static char * mem[sizeof(SimpleAllocator)];
 	if (gblInternaAlloc == NULL)
-		gblInternaAlloc = new SimpleAllocator(threadSafe);
+		gblInternaAlloc = new(mem) SimpleAllocator(threadSafe);
 }
 
 }

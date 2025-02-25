@@ -117,6 +117,8 @@ struct AllocWrapperGlobal
 	AllocStackProfiler * profiler;
 	/** Keep track of user options. **/
 	Options * options;
+	/** TLS */
+	pthread_key_t tlsKey;
 	/** Function used to init the structure on first use. **/
 	void init(void);
 	/** Function to cleanup the structure at exit. **/
@@ -160,6 +162,7 @@ extern char gblCallocIniBuffer[4096];
 
 /**********************************************************/
 void globalResetForTests(void);
+ThreadLocalState * maltGetLocalState();
 
 }
 

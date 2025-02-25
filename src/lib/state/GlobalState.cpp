@@ -18,7 +18,8 @@ namespace MALT
 
 /**********************************************************/
 #define GBL_STATE_INIT {ALLOC_WRAP_NOT_READY,MALT_STATIC_MUTEX_INIT,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL};
-#define TLS_STATE_INIT {NULL,ALLOC_WRAP_NOT_READY,false}
+static const ThreadLocalState TLS_STATE_INIT = {NULL,ALLOC_WRAP_NOT_READY,false};
+
 /**********************************************************/
 /** Store the global state of allocator wrapper. **/
 AllocWrapperGlobal gblState = GBL_STATE_INIT;
@@ -152,13 +153,32 @@ void maltSetupSigHandler(const Options & options)
 }
 
 /**********************************************************/
+ThreadLocalState * maltGetLocalState()
+{
+	//need init global
+	if (gblState.status == ALLOC_WRAP_NOT_READY)
+		gblState.init();
+
+	//in case of reentrance we skip
+	if (gblState.status != ALLOC_WRAP_READY)
+		return nullptr;
+
+	//get TLS
+	ThreadLocalState * tls = (ThreadLocalState*)pthread_getspecific(gblState.tlsKey);
+
+	//ok
+	return tls;
+	//return &tlsState;
+}
+
+/**********************************************************/
 void * maltDumpAfterSecondsThreadMain(void * arg)
 {
 	//extract
 	int secs = (size_t)arg;
 
 	//we will need it latter to onExit
-	tlsState.init();
+	maltGetLocalState()->init();
 
 	//wait
 	sleep(secs);
@@ -236,6 +256,15 @@ void AllocWrapperGlobal::init(void )
 		
 		//init internal alloc
 		initInternalAlloc(true);
+
+		//init TLS
+		pthread_key_create(&this->tlsKey, nullptr);
+
+		//allocate the current one
+		ThreadLocalState * firstLocalState = (ThreadLocalState*)MALT_MALLOC(sizeof(ThreadLocalState));
+		assert(firstLocalState != nullptr);
+		*firstLocalState = TLS_STATE_INIT;
+		pthread_setspecific(this->tlsKey, firstLocalState);
 
 		//load options
 		gblState.options = &(initGlobalOptions());
