@@ -25,7 +25,7 @@ struct ProcMapEntry
 {
 	void * lower;
 	void * upper;
-	size_t offer;
+	size_t offset;
 	size_t aslrOffset;
 	std::string file;
 };
@@ -33,9 +33,9 @@ struct ProcMapEntry
 /**********************************************************/
 struct InstructionInfos
 {
-	const char * file;
-	const char * binary;
-	const char * function;
+	const std::string * file;
+	const std::string * binary;
+	const std::string * function;
 	size_t line;
 };
 

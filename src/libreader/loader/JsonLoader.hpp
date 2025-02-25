@@ -38,11 +38,19 @@ class JsonLoader
 		static void load(MALTFormat::CountMinMaxSum & minMaxSum, const nlohmann::json & json);
 		static void load(MALTFormat::StackInfos & stackInfos, const nlohmann::json & json);
 		static void load(MALTFormat::ProcMapEntry & procMapEntry, const nlohmann::json & json);
-		static void load(MALTFormat::InstructionInfos & instrInfos, const nlohmann::json & json);
+		static void load(MALTFormat::InstructionInfos & instrInfos, const nlohmann::json & json, const std::vector<std::string> & strings);
 		static void load(MALTFormat::Sites & sites, const nlohmann::json & json);
 		static void load(MALTFormat::CallSite & sites, const nlohmann::json & json);
 		static void load(MALTFormat::TimelineInfos& sites, const nlohmann::json & json);
 		static void load(MALTFormat::Timeline& timeline, const nlohmann::json & json);
+		static void load(MALTFormat::ScatterPoint& scatterPoint, const nlohmann::json & json);
+		static void load(MALTFormat::ScatterChart& scatterChart, const nlohmann::json & json);
+		static void load(MALTFormat::Scatter& scatter, const nlohmann::json & json);
+		static void load(MALTFormat::Threads& threads, const nlohmann::json & json);
+		static void load(MALTFormat::ThreadsFuncStats& threadsFuncStats, const nlohmann::json & json);
+		static void load(MALTFormat::Globals& globals, const nlohmann::json & json);
+		static void load(MALTFormat::Leaks& leaks, const nlohmann::json & json);
+		static void load(MALTFormat::Leak& leak, const nlohmann::json & json);
 		static void load(void* & ptr, const nlohmann::json & json);
 	private:
 		MALTFormat::MaltProfile profile;

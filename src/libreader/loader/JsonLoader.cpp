@@ -90,6 +90,14 @@ void JsonLoader::load(MALTFormat::MaltProfile & profile, const nlohmann::json & 
 			JsonLoader::load(profile.sites, json["sites"]);
 			#pragma omp task
 			JsonLoader::load(profile.timeline, json["timeline"]);
+			#pragma omp task
+			JsonLoader::load(profile.scatter, json["scatter"]);
+			#pragma omp task
+			JsonLoader::load(profile.threads, json["threads"]);
+			#pragma omp task
+			JsonLoader::load(profile.globals, json["globals"]);
+			#pragma omp task
+			JsonLoader::load(profile.leaks, json["leaks"]);
 		}
 	}
 }
@@ -331,23 +339,46 @@ void JsonLoader::load(void* & ptr, const nlohmann::json & json)
 /**********************************************************/
 void JsonLoader::load(ProcMapEntry & procMapEntry, const nlohmann::json & json)
 {
-	/*
-	void * lower;
-	void * upper;
-	size_t offer;
-	size_t aslrOffset;
-	std::string file;*/
+	//check
+	assert(json.contains("lower"));
+	assert(json.contains("upper"));
+	assert(json.contains("offset"));
+	assert(json.contains("aslrOffset"));
+	assert(json.contains("file"));
+
+	//load
+	JsonLoader::load(procMapEntry.lower, json["lower"]);
+	JsonLoader::load(procMapEntry.upper, json["upper"]);
+	json["offset"].get_to(procMapEntry.offset);
+	json["aslrOffset"].get_to(procMapEntry.aslrOffset);
+	json["file"].get_to(procMapEntry.file);
 };
 
 /**********************************************************/
-void JsonLoader::load(InstructionInfos & instrInfos, const nlohmann::json & json)
+void JsonLoader::load(InstructionInfos & instrInfos, const nlohmann::json & json, const std::vector<std::string> & strings)
 {
-	/*
-	const char * file;
-	const char * binary;
-	const char * function;
-	size_t line;
-	*/
+	//check
+	assert(json.contains("file"));
+	assert(json.contains("binary"));
+	assert(json.contains("function"));
+	assert(json.contains("line"));
+
+	//extract
+	size_t fileId = 0;
+	json["file"].get_to(fileId);
+	size_t binaryId = 0;
+	json["binary"].get_to(binaryId);
+	size_t functionId = 0;
+	json["function"].get_to(functionId);
+
+	//fill
+	assert(fileId < strings.size());
+	instrInfos.file = &strings[fileId];
+	assert(binaryId < strings.size());
+	instrInfos.binary = &strings[binaryId];
+	assert(functionId < strings.size());
+	instrInfos.function = &strings[functionId];
+	json["line"].get_to(instrInfos.line);
 };
 
 /**********************************************************/
@@ -391,3 +422,115 @@ void JsonLoader::load(Timeline & timeline, const nlohmann::json & json)
 	TimelineInfos memoryBandwidth;
 	*/
 };
+
+/**********************************************************/
+void JsonLoader::load(MALTFormat::ScatterPoint& scatterPoint, const nlohmann::json & json)
+{
+	/*
+	size_t x;
+	size_t y;
+	size_t v;
+	*/
+}
+
+/**********************************************************/
+void JsonLoader::load(MALTFormat::ScatterChart& scatterChart, const nlohmann::json & json)
+{
+	/*
+	struct {
+		struct {
+			size_t max;
+			size_t size;
+			bool log;
+		} xAxis;
+		struct {
+			size_t max;
+			size_t size;
+			bool log;
+		} yAxis;
+	} infos;
+	std::vector<ScatterPoint> points;
+	*/
+}
+
+/**********************************************************/
+void JsonLoader::load(MALTFormat::Scatter& scatter, const nlohmann::json & json)
+{
+	/*
+	ScatterChart sizeOverTime;
+	ScatterChart lifetimeOverSize;
+	*/
+}
+
+/**********************************************************/
+void JsonLoader::load(MALTFormat::Threads& threads, const nlohmann::json & json)
+{
+	/*
+	struct {
+		size_t size;
+		std::vector<LangAddress> stack;
+		std::vector<size_t> mem;
+		size_t total;
+		struct {
+			std::vector<size_t> min;
+			std::vector<size_t> max;
+			std::vector<size_t> index;
+			std::vector<CyclesTime> timestamp;
+			CyclesTime peakTimestamp;
+			size_t peakMemory;
+			size_t peakIndex;
+			bool linearIndex;
+		} timeprofiler;
+	} stackMem;
+	size_t cntMemOps;
+	struct {
+		ThreadsFuncStats malloc;
+		ThreadsFuncStats posix_memalign;
+		ThreadsFuncStats aligned_alloc;
+		ThreadsFuncStats memalign;
+		ThreadsFuncStats valloc;
+		ThreadsFuncStats pvalloc;
+		ThreadsFuncStats free;
+		ThreadsFuncStats calloc;
+		ThreadsFuncStats realloc;
+	} stats;
+	*/
+}
+
+/**********************************************************/
+void JsonLoader::load(MALTFormat::ThreadsFuncStats& threadsFuncStats, const nlohmann::json & json)
+{
+	/*
+	size_t count;
+	size_t sum;
+	CyclesDuration time;
+	*/
+}
+
+/**********************************************************/
+void JsonLoader::load(MALTFormat::Globals& globals, const nlohmann::json & json)
+{
+	/*
+	CyclesDuration ticksPerSecond;
+	size_t totalMemory;
+	size_t freeMemoryAtStart;
+	size_t cachedMemoryAtStart;
+	size_t maxThreadCount;
+	*/
+}
+
+/**********************************************************/
+void JsonLoader::load(MALTFormat::Leaks& leaks, const nlohmann::json & json)
+{
+	/*array of leak*/
+}
+
+/**********************************************************/
+void JsonLoader::load(MALTFormat::Leak& leak, const nlohmann::json & json)
+{
+	/*
+	std::vector<LangAddress> stack;
+	size_t count;
+	size_t memory;
+	*/
+}
