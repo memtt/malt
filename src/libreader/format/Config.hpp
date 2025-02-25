@@ -29,7 +29,7 @@ struct Config
 	} time;
 	struct {
 		bool enabled;
-		std::string backtrace;
+		std::string mode;
 		bool resolve;
 		bool libunwind;
 		size_t stackSkip;

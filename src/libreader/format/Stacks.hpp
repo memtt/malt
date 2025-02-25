@@ -38,7 +38,7 @@ struct StackInfos
 	CountMinMaxSum alloc;
 	CountMinMaxSum free;
 	CountMinMaxSum lifetime;
-	size_t globalPreak;
+	size_t globalPeak;
 	size_t reallocCount;
 	size_t reallocSumDelta;
 };

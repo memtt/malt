@@ -32,6 +32,18 @@ class JsonLoader
 		static void load(MALTFormat::MaltProfile & profile, const nlohmann::json & json);
 		static void load(MALTFormat::Run & run, const nlohmann::json & json);
 		static void load(MALTFormat::Config & config, const nlohmann::json & json);
+		static void load(MALTFormat::Stacks & stacks, const nlohmann::json & json);
+		static void load(MALTFormat::StackStats & stats, const nlohmann::json & json);
+		static void load(MALTFormat::LangAddress & address, const nlohmann::json & json);
+		static void load(MALTFormat::CountMinMaxSum & minMaxSum, const nlohmann::json & json);
+		static void load(MALTFormat::StackInfos & stackInfos, const nlohmann::json & json);
+		static void load(MALTFormat::ProcMapEntry & procMapEntry, const nlohmann::json & json);
+		static void load(MALTFormat::InstructionInfos & instrInfos, const nlohmann::json & json);
+		static void load(MALTFormat::Sites & sites, const nlohmann::json & json);
+		static void load(MALTFormat::CallSite & sites, const nlohmann::json & json);
+		static void load(MALTFormat::TimelineInfos& sites, const nlohmann::json & json);
+		static void load(MALTFormat::Timeline& timeline, const nlohmann::json & json);
+		static void load(void* & ptr, const nlohmann::json & json);
 	private:
 		MALTFormat::MaltProfile profile;
 };
