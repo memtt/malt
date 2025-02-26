@@ -90,5 +90,9 @@ void ProgressBar::progress(size_t steps)
 
 		//display
 		last_display = percent;
+
+		//last
+		if (last_display == 100)
+			this->end();
 	}
 }

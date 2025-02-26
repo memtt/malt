@@ -13,8 +13,7 @@
 include_directories(.)
 
 ############################################################
-add_executable(malt-reader
-    main.cpp
+add_library(malt-profile SHARED
     loader/ProgressBar.cpp
     loader/FileReader.cpp
     loader/JsonLoader.cpp
@@ -31,5 +30,14 @@ add_executable(malt-reader
     format/Threads.cpp
     format/MaltProfile.cpp
 )
-target_link_libraries(malt-reader PRIVATE nlohmann_json::nlohmann_json)
-target_link_libraries(malt-reader PRIVATE OpenMP::OpenMP_CXX)
+target_link_libraries(malt-profile PRIVATE nlohmann_json::nlohmann_json)
+target_link_libraries(malt-profile PRIVATE OpenMP::OpenMP_CXX)
+
+############################################################
+add_executable(malt-reader main.cpp)
+target_link_libraries(malt-reader malt-profile)
+
+############################################################
+if (ENABLE_TESTS)
+    add_subdirectory(format/tests)
+endif()

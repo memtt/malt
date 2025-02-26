@@ -25,7 +25,8 @@ void to_json(nlohmann::json & json, const Run & run)
 		{"allocator", run.allocator},
 		{"exe", run.exe},
 		{"command", run.command},
-		{"hostname", run.hostname}
+		{"hostname", run.hostname},
+		{"date", run.date}
 	};
 }
 
@@ -40,6 +41,7 @@ void from_json(const nlohmann::json & json, Run & run)
 	assert(json.contains("exe"));
 	assert(json.contains("command"));
 	assert(json.contains("hostname"));
+	assert(json.contains("date"));
 
 	//load
 	json.at("formatVersion").get_to(run.formatVersion);
@@ -49,6 +51,7 @@ void from_json(const nlohmann::json & json, Run & run)
 	json.at("exe").get_to(run.exe);
 	json.at("command").get_to(run.command);
 	json.at("hostname").get_to(run.hostname);
+	json.at("date").get_to(run.date);
 }
 
 }

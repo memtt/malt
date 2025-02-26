@@ -47,10 +47,7 @@ FileReader::~FileReader(void)
 	fclose(this->fp);
 	delete [] this->buffer;
 	if (this->progressBar != nullptr) 
-	{
-		this->progressBar->end();
 		delete this->progressBar;
-	}
 
 	//reset
 	this->fp = nullptr;

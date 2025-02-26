@@ -30,6 +30,7 @@ struct Run
 	std::string exe;
 	std::string command;
 	std::string hostname;
+	std::string date;
 };
 
 /**********************************************************/
