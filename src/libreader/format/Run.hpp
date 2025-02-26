@@ -14,6 +14,7 @@
 /**********************************************************/
 #include <string>
 #include "Types.hpp"
+#include <nlohmann/json.hpp>
 
 /**********************************************************/
 namespace MALTFormat
@@ -30,6 +31,10 @@ struct Run
 	std::string command;
 	std::string hostname;
 };
+
+/**********************************************************/
+void from_json(const nlohmann::json & json, Run & run);
+void to_json(nlohmann::json & json, const Run & run);
 
 }
 

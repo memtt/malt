@@ -13,6 +13,7 @@
 
 /**********************************************************/
 #include <string>
+#include <nlohmann/json.hpp>
 #include "Types.hpp"
 
 /**********************************************************/
@@ -72,6 +73,10 @@ struct Config
 		size_t afterSeconds;
 	} dump;
 };
+
+/**********************************************************/
+void from_json(const nlohmann::json & json, Config & config);
+void to_json(nlohmann::json & json, const Config & config);
 
 }
 

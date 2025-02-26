@@ -13,6 +13,7 @@
 
 /**********************************************************/
 #include <string>
+#include <nlohmann/json.hpp>
 #include "Types.hpp"
 
 /**********************************************************/
@@ -28,6 +29,10 @@ struct Globals
 	size_t cachedMemoryAtStart;
 	size_t maxThreadCount;
 };
+
+/**********************************************************/
+void from_json(const nlohmann::json & json, Globals & value);
+void to_json(nlohmann::json & json, const Globals & value);
 
 }
 

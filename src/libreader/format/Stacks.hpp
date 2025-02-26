@@ -14,6 +14,7 @@
 /**********************************************************/
 #include <string>
 #include <vector>
+#include <nlohmann/json.hpp>
 #include "Types.hpp"
 
 /**********************************************************/
@@ -57,6 +58,16 @@ struct Stacks
 {
 	std::vector<StackStats> stats;
 };
+
+/**********************************************************/
+void from_json(const nlohmann::json & json, CountMinMaxSum & value);
+void to_json(nlohmann::json & json, const CountMinMaxSum & value);
+void from_json(const nlohmann::json & json, StackInfos & value);
+void to_json(nlohmann::json & json, const StackInfos & value);
+void from_json(const nlohmann::json & json, StackStats & value);
+void to_json(nlohmann::json & json, const StackStats & value);
+void from_json(const nlohmann::json & json, Stacks & value);
+void to_json(nlohmann::json & json, const Stacks & value);
 
 }
 

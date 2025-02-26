@@ -14,6 +14,7 @@
 /**********************************************************/
 #include <string>
 #include <vector>
+#include <nlohmann/json.hpp>
 #include "Types.hpp"
 
 /**********************************************************/
@@ -52,6 +53,14 @@ struct Scatter
 	ScatterChart sizeOverTime;
 	ScatterChart lifetimeOverSize;
 };
+
+/**********************************************************/
+void from_json(const nlohmann::json & json, ScatterPoint & value);
+void to_json(nlohmann::json & json, const ScatterPoint & value);
+void from_json(const nlohmann::json & json, ScatterChart & value);
+void to_json(nlohmann::json & json, const ScatterChart & value);
+void from_json(const nlohmann::json & json, Scatter & value);
+void to_json(nlohmann::json & json, const Scatter & value);
 
 }
 

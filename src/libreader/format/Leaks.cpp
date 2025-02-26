@@ -8,34 +8,35 @@
 *    AUTHOR   : Sébastien Valat (INRIA) - 2025
 ***********************************************************/
 
-#ifndef MALT_FORMAT_LEAKS_HPP
-#define MALT_FORMAT_LEAKS_HPP
-
 /**********************************************************/
-#include <string>
-#include <vector>
-#include <nlohmann/json.hpp>
-#include "Types.hpp"
+#include "Leaks.hpp"
 
 /**********************************************************/
 namespace MALTFormat
 {
 
 /**********************************************************/
-struct Leak
+void to_json(nlohmann::json & json, const Leak & value)
 {
-	std::vector<LangAddress> stack;
-	size_t count;
-	size_t memory;
-};
-
-/**********************************************************/
-typedef std::vector<Leak> Leaks;
-
-/**********************************************************/
-void from_json(const nlohmann::json & json, Leak & value);
-void to_json(nlohmann::json & json, const Leak & value);
-
+	json = nlohmann::json{
+		{"stack", value.stack},
+		{"count", value.count},
+		{"memory", value.memory},
+	};
 }
 
-#endif //MALT_FORMAT_LEAKS_HPP
+/**********************************************************/
+void from_json(const nlohmann::json & json, Leak & value)
+{
+	//checks
+	assert(json.contains("stack"));
+	assert(json.contains("count"));
+	assert(json.contains("memory"));
+
+	//load
+	json.at("stack").get_to(value.stack);
+	json.at("count").get_to(value.count);
+	json.at("memory").get_to(value.memory);
+}
+
+}

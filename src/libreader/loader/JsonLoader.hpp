@@ -30,8 +30,6 @@ class JsonLoader
 	private:
 		void loadFile(const std::string & fname);
 		static void load(MALTFormat::MaltProfile & profile, const nlohmann::json & json);
-		static void load(MALTFormat::Run & run, const nlohmann::json & json);
-		static void load(MALTFormat::Config & config, const nlohmann::json & json);
 		static void load(MALTFormat::Stacks & stacks, const nlohmann::json & json);
 		static void load(MALTFormat::StackStats & stats, const nlohmann::json & json);
 		static void load(MALTFormat::LangAddress & address, const nlohmann::json & json);

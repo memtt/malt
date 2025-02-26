@@ -15,6 +15,7 @@
 #include <string>
 #include <vector>
 #include <map>
+#include <nlohmann/json.hpp>
 
 /**********************************************************/
 namespace MALTFormat
@@ -33,9 +34,9 @@ struct ProcMapEntry
 /**********************************************************/
 struct InstructionInfos
 {
-	const std::string * file;
-	const std::string * binary;
-	const std::string * function;
+	size_t file;
+	size_t binary;
+	size_t function;
 	size_t line;
 };
 
@@ -46,6 +47,16 @@ struct Sites
 	std::vector<std::string> strings;
 	std::map<void*, InstructionInfos> instr;
 };
+
+/**********************************************************/
+void from_json(const nlohmann::json & json, ProcMapEntry & value);
+void to_json(nlohmann::json & json, const ProcMapEntry & value);
+void from_json(const nlohmann::json & json, InstructionInfos & value);
+void to_json(nlohmann::json & json, const InstructionInfos & value);
+void from_json(const nlohmann::json & json, Sites & value);
+void to_json(nlohmann::json & json, const Sites & value);
+void from_json(const nlohmann::json & json, std::map<void*, InstructionInfos> & value);
+void to_json(nlohmann::json & json, const std::map<void*, InstructionInfos> & value);
 
 }
 

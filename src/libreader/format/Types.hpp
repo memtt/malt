@@ -13,6 +13,7 @@
 
 /**********************************************************/
 #include <string>
+#include <nlohmann/json.hpp>
 
 /**********************************************************/
 namespace MALTFormat
@@ -36,6 +37,12 @@ struct LangAddress
 	Lang lang;
 	void * address;
 };
+
+/**********************************************************/
+void from_json(const nlohmann::json & json, LangAddress & value);
+void to_json(nlohmann::json & json, const LangAddress & value);
+void from_json(const nlohmann::json & json, void* & ptr);
+void to_json(nlohmann::json & json, const void * & ptr);
 
 }
 
