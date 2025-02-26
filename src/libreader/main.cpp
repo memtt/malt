@@ -17,5 +17,5 @@ using namespace MALTReader;
 /**********************************************************/
 int main(int argc, char ** argv)
 {
-	JsonLoader loader(argv[1]);
+	JsonLoader loader(argv[1], true);
 }

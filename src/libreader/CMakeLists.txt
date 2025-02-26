@@ -15,6 +15,8 @@ include_directories(.)
 ############################################################
 add_executable(malt-reader
     main.cpp
+    loader/ProgressBar.cpp
+    loader/FileReader.cpp
     loader/JsonLoader.cpp
     format/Config.cpp
     format/Run.cpp

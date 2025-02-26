@@ -23,12 +23,12 @@ namespace MALTReader
 class JsonLoader
 {
 	public:
-		JsonLoader(const std::string & fname);
+		JsonLoader(const std::string & fname, bool progressBar = false);
 		~JsonLoader(void);
 		MALTFormat::MaltProfile & getProfile(void);
 		const MALTFormat::MaltProfile & getProfile(void) const;
 	private:
-		void loadFile(const std::string & fname);
+		void loadFile(const std::string & fname, bool progressBar);
 		static void load(MALTFormat::MaltProfile & profile, const nlohmann::json & json);
 		static void load(MALTFormat::Stacks & stacks, const nlohmann::json & json);
 		static void load(MALTFormat::StackStats & stats, const nlohmann::json & json);

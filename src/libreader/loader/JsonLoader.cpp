@@ -15,17 +15,21 @@
 //to parse json
 #include <fstream>
 //local
+#include "FileReader.hpp"
 #include "JsonLoader.hpp"
 
 /**********************************************************/
-using namespace MALTReader;
 using namespace MALTFormat;
 using json = nlohmann::json;
 
 /**********************************************************/
-JsonLoader::JsonLoader(const std::string & fname)
+namespace MALTReader
 {
-	this->loadFile(fname);
+
+/**********************************************************/
+JsonLoader::JsonLoader(const std::string & fname, bool progressBar)
+{
+	this->loadFile(fname, progressBar);
 }
 
 /**********************************************************/
@@ -35,14 +39,14 @@ JsonLoader::~JsonLoader(void)
 }
 
 /**********************************************************/
-void JsonLoader::loadFile(const std::string & fname)
+void JsonLoader::loadFile(const std::string & fname, bool progressBar)
 {
 	//open stream
-	std::ifstream f(fname);
+	FileReader reader(fname, progressBar);
 
 	//load it
 	printf("Parsing JSON...\n");
-	json data = json::parse(f);
+	json data = json::parse(begin(reader), end(reader));
 	printf("Extracting infos...\n");
 	this->load(this->profile, data);
 	printf("Done.\n");
@@ -402,4 +406,6 @@ void JsonLoader::load(MALTFormat::Leak& leak, const nlohmann::json & json)
 	size_t count;
 	size_t memory;
 	*/
+}
+
 }
