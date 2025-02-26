@@ -83,6 +83,13 @@ ProfiledStateValue::ProfiledStateValue(size_t steps,bool useLinearIndex)
 }
 
 /**********************************************************/
+ProfiledStateValue::~ProfiledStateValue(void)
+{
+	delete [] this->entries;
+	this->entries = nullptr;
+}
+
+/**********************************************************/
 void ProfiledStateValue::onDeltaEvent(ssize_t delta,LangAddress location)
 {
 	this->value += delta;

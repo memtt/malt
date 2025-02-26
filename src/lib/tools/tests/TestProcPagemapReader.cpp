@@ -47,6 +47,7 @@ TEST(ProcPagemapReader,largeFull)
 	memset(buffer,0,size);
 	size_t phys = ProcPageMapReader::getPhysicalSize(buffer,size);
 	EXPECT_EQ(size,phys);
+	delete [] buffer;
 }
 
 /**********************************************************/
@@ -60,6 +61,7 @@ TEST(ProcPagemapReader,largeHalfFull)
 	if (ProcPageMapReader::hasProcPagemap()) {
 		EXPECT_GT(size,phys);
 	}
+	delete [] buffer;
 }
 
 /**********************************************************/

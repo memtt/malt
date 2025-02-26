@@ -69,6 +69,8 @@ class Addr2Line
 		size_t bucketSize;
 		size_t aslrOffset;
 		Addr2LineTaskVector tasks;
+		char bufferFunc[512*4096];
+		char bufferFile[512*4096];
 };
 
 }

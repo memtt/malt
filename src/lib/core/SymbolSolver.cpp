@@ -394,7 +394,7 @@ void SymbolSolver::solveNames(void)
 
 	//new way of solving
 	//this->callSiteMap2 = callSiteMap;
-	std::list<Addr2Line> addr2lineJobs;
+	std::list<Addr2Line, STLInternalAllocator<Addr2Line> > addr2lineJobs;
 	for (auto & procMapEntry : this->procMap) {
 		if (!(procMapEntry.file.empty() || procMapEntry.file[0] == '[')) {
 			Addr2Line * addr2line = nullptr;
@@ -574,6 +574,7 @@ const CallSite* SymbolSolver::getCallSiteInfo(LangAddress site) const
 **/
 const String& SymbolSolver::getString(int id) const
 {
+	assert(id >= 0);
 	return this->stringDict.getString(id);
 }
 

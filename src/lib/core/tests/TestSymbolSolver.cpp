@@ -71,7 +71,7 @@ TEST(TestSymbolSolver, solveBacktraceExe)
 
 	//run
 	testCalleeExe(stack);
-	stack.fastSkip(3);
+	stack.fastSkip(stack.getBactraceSkipOptimDelta());
 
 	//solve
 	LangAddress callee = stack.getCallee();
@@ -82,8 +82,8 @@ TEST(TestSymbolSolver, solveBacktraceExe)
 
 	//extact
 	const CallSite * site = solver.getCallSiteInfo(callee);
-	const String & func = solver.getString(site->function);
-	const String & file = solver.getString(site->file);
+	const std::string & func = solver.getString(site->function).c_str();
+	const std::string & file = solver.getString(site->file).c_str();
 
 	//check
 	#ifndef NDEBUG
@@ -102,7 +102,7 @@ TEST(TestSymbolSolver, solveBacktraceLib)
 
 	//run
 	testCalleeLib(stack);
-	stack.fastSkip(3);
+	stack.fastSkip(stack.getBactraceSkipOptimDelta());
 
 	//extract
 	LangAddress callee = stack.getCallee();
@@ -112,7 +112,7 @@ TEST(TestSymbolSolver, solveBacktraceLib)
 	
 	//extact
 	const CallSite * site = solver.getCallSiteInfo(callee);
-	const String & func = solver.getString(site->function);
+	const std::string & func = solver.getString(site->function).c_str();
 
 	//check
 	#ifndef NDEBUG

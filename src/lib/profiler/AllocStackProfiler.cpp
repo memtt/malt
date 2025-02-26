@@ -155,7 +155,8 @@ void AllocStackProfiler::onPrepareRealloc(void* oldPtr,Stack * userStack)
 /**********************************************************/
 LocalAllocStackProfiler* AllocStackProfiler::createLocalStackProfiler()
 {
-	LocalAllocStackProfiler* res = new LocalAllocStackProfiler(this);
+	void * mem = MALT_MALLOC(sizeof(LocalAllocStackProfiler));
+	LocalAllocStackProfiler* res = new(mem) LocalAllocStackProfiler(this);
 	this->registerPerThreadProfiler(res);
 	return res;
 }

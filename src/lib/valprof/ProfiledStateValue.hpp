@@ -45,6 +45,7 @@ class ProfiledStateValue
 {
 	public:
 		ProfiledStateValue(size_t steps = MALT_PROFILED_VALUE_DEFAULT_STEPS, bool useLinearIndex = false);
+		~ProfiledStateValue(void);
 		void onDeltaEvent(ssize_t delta, LangAddress location);
 		void onUpdateValue(size_t value, LangAddress location);
 		bool isNextPoint(void) const;

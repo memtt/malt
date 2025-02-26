@@ -133,13 +133,13 @@ bool Addr2Line::loadEntry(CallSite & callSite, FILE * fp)
 	//check
 	assert(fp != nullptr);
 
-	//reading buffer
-	char bufferFunc[200*4096];
-	char bufferFile[20*4096];
-
 	//read the two lines
-	char * function = fgets(bufferFunc,sizeof(bufferFunc),fp);
-	char * file = fgets(bufferFile,sizeof(bufferFile),fp);
+	char * function = fgets(bufferFunc,sizeof(bufferFunc)-1,fp);
+	char * file = fgets(bufferFile,sizeof(bufferFile)-1,fp);
+
+	//check
+	assert(strlen(function) < sizeof(bufferFunc) - 2);
+	assert(strlen(file) < sizeof(bufferFile) - 2);
 
 	//check
 	if (function != bufferFunc || file != bufferFile)
