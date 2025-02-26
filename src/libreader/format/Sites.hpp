@@ -34,10 +34,10 @@ struct ProcMapEntry
 /**********************************************************/
 struct InstructionInfos
 {
-	size_t file;
-	size_t binary;
-	size_t function;
-	size_t line;
+	ssize_t file;
+	ssize_t binary;
+	ssize_t function;
+	ssize_t line;
 };
 
 /**********************************************************/

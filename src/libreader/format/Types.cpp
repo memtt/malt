@@ -30,7 +30,10 @@ void to_json(nlohmann::json & json, const LangAddress & value)
 
 	//convert
 	char buffer[512];
-	snprintf(buffer, sizeof(buffer), "%s0x%p", lang.c_str(), value.address);
+	if (value.address == nullptr)
+		snprintf(buffer, sizeof(buffer), "%s0x0", lang.c_str());
+	else
+		snprintf(buffer, sizeof(buffer), "%s%p", lang.c_str(), value.address);
 
 	//set
 	json = buffer;
@@ -47,10 +50,10 @@ void from_json(const nlohmann::json & json, LangAddress & address)
 
 	//cases
 	void * ptr = nullptr;
-	if (sscanf(value.c_str(), "PY-0x%p", &ptr) == 1) {
+	if (sscanf(value.c_str(), "PY-%p", &ptr) == 1) {
 		address.lang = LANG_PYTHON;
 		address.address = ptr;
-	} else if (sscanf(value.c_str(), "0x%p", &ptr) == 1) {
+	} else if (sscanf(value.c_str(), "%p", &ptr) == 1) {
 		address.lang = LANG_C;
 		address.address = ptr;
 	} else {
@@ -69,7 +72,7 @@ void from_json(const nlohmann::json & json, void * & ptr)
 	std::string value = json;
 
 	//parse
-	if (sscanf(value.c_str(), "0x%p", &ptr) == 0)
+	if (sscanf(value.c_str(), "%p", &ptr) == 0)
 		assert(false);
 }
 
@@ -77,7 +80,7 @@ void from_json(const nlohmann::json & json, void * & ptr)
 void to_json(nlohmann::json & json, const void *& ptr)
 {
 	char buffer[256];
-	snprintf(buffer, sizeof(buffer), "0x%p", ptr);
+	snprintf(buffer, sizeof(buffer), "%p", ptr);
 	json = buffer;
 }
 

@@ -144,7 +144,7 @@ TEST(TestFormat, field_scatter)
 
 	//check
 	const nlohmann::json empty = std::vector<int>();
-	ASSERT_EQ(nlohmann::json::diff(data["scatter"], asJson), empty);
+	ASSERT_EQ(data["scatter"], asJson);
 }
 
 /**********************************************************/
@@ -160,6 +160,7 @@ TEST(TestFormat, field_sites)
 
 	//check
 	const nlohmann::json empty = std::vector<int>();
+	ASSERT_EQ(data["sites"], asJson);
 	ASSERT_EQ(nlohmann::json::diff(data["sites"], asJson), empty);
 }
 

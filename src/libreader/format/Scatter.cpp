@@ -42,21 +42,17 @@ void from_json(const nlohmann::json & json, ScatterPoint & value)
 /**********************************************************/
 void to_json(nlohmann::json & json, const ScatterChart & value)
 {
-	json = nlohmann::json{
-		{"infos",
-			{"xAxis",
-				{"max", value.infos.xAxis.max},
-				{"size", value.infos.xAxis.size},
-				{"log", value.infos.xAxis.log},
-			},
-			{"yAxis",
-				{"max", value.infos.yAxis.max},
-				{"size", value.infos.yAxis.size},
-				{"log", value.infos.yAxis.log},
-			}
-		},
-		{"points", value.points}
+	json["infos"]["xAxis"] = nlohmann::json{
+		{"max", value.infos.xAxis.max},
+		{"size", value.infos.xAxis.size},
+		{"log", value.infos.xAxis.log}
 	};
+	json["infos"]["yAxis"] = nlohmann::json{
+		{"max", value.infos.yAxis.max},
+		{"size", value.infos.yAxis.size},
+		{"log", value.infos.yAxis.log}
+	};
+	json["points"] = value.points;
 }
 
 /**********************************************************/
@@ -80,9 +76,9 @@ void from_json(const nlohmann::json & json, ScatterChart & value)
 	assert(yAxis.contains("max"));
 	assert(yAxis.contains("size"));
 	assert(yAxis.contains("log"));
-	xAxis.at("max").get_to(value.infos.yAxis.max);
-	xAxis.at("size").get_to(value.infos.yAxis.size);
-	xAxis.at("log").get_to(value.infos.yAxis.log);
+	yAxis.at("max").get_to(value.infos.yAxis.max);
+	yAxis.at("size").get_to(value.infos.yAxis.size);
+	yAxis.at("log").get_to(value.infos.yAxis.log);
 
 	//load points
 	json.at("points").get_to(value.points);
