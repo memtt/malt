@@ -42,6 +42,10 @@ struct MaltProfile
 	Leaks leaks;
 };
 
+/**********************************************************/
+void from_json(const nlohmann::json & json, MaltProfile & value);
+void to_json(nlohmann::json & json, const MaltProfile & value);
+
 }
 
 #endif //MALT_FORMAT_MALT_PROFILE_HPP

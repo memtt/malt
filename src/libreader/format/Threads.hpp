@@ -14,6 +14,7 @@
 /**********************************************************/
 #include <string>
 #include <vector>
+#include <nlohmann/json.hpp>
 #include "Types.hpp"
 
 /**********************************************************/
@@ -29,7 +30,7 @@ struct ThreadsFuncStats
 };
 
 /**********************************************************/
-struct Threads
+struct Thread
 {
 	struct {
 		size_t size;
@@ -41,7 +42,7 @@ struct Threads
 			std::vector<size_t> max;
 			std::vector<size_t> index;
 			std::vector<CyclesTime> timestamp;
-			CyclesTime peakTimestamp;
+			CyclesTime peakTimesteamp;//TODO fix the name
 			size_t peakMemory;
 			size_t peakIndex;
 			bool linearIndex;
@@ -60,6 +61,15 @@ struct Threads
 		ThreadsFuncStats realloc;
 	} stats;
 };
+
+/**********************************************************/
+typedef std::vector<Thread> Threads;
+
+/**********************************************************/
+void from_json(const nlohmann::json & json, ThreadsFuncStats & value);
+void to_json(nlohmann::json & json, const ThreadsFuncStats & value);
+void from_json(const nlohmann::json & json, Thread & value);
+void to_json(nlohmann::json & json, const Thread & value);
 
 }
 

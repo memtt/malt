@@ -28,6 +28,8 @@ add_executable(malt-reader
     format/Stacks.cpp
     format/MemStats.cpp
     format/Timeline.cpp
+    format/Threads.cpp
+    format/MaltProfile.cpp
 )
 target_link_libraries(malt-reader PRIVATE nlohmann_json::nlohmann_json)
 target_link_libraries(malt-reader PRIVATE OpenMP::OpenMP_CXX)
