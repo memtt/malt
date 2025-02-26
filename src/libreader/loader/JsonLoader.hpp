@@ -38,7 +38,6 @@ class JsonLoader
 		static void load(MALTFormat::ProcMapEntry & procMapEntry, const nlohmann::json & json);
 		static void load(MALTFormat::InstructionInfos & instrInfos, const nlohmann::json & json, const std::vector<std::string> & strings);
 		static void load(MALTFormat::Sites & sites, const nlohmann::json & json);
-		static void load(MALTFormat::CallSite & sites, const nlohmann::json & json);
 		static void load(MALTFormat::TimelineInfos& sites, const nlohmann::json & json);
 		static void load(MALTFormat::Timeline& timeline, const nlohmann::json & json);
 		static void load(MALTFormat::ScatterPoint& scatterPoint, const nlohmann::json & json);

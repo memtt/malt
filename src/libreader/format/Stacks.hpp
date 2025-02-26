@@ -57,6 +57,7 @@ struct StackStats
 struct Stacks
 {
 	std::vector<StackStats> stats;
+	size_t count;
 };
 
 /**********************************************************/

@@ -46,17 +46,20 @@ void from_json(const nlohmann::json & json, ProcMapEntry & value)
 	//load
 	std::string lower;
 	std::string upper;
+	std::string offset;
 	json.at("lower").get_to(lower);
 	json.at("upper").get_to(upper);
-	json.at("offset").get_to(value.offset);
+	json.at("offset").get_to(offset);
 	json.at("aslrOffset").get_to(value.aslrOffset);
 	json.at("file").get_to(value.file);
 
 	//convert
-	ssize_t statusLower = sscanf(lower.c_str(), "0%p", &value.lower);
-	ssize_t statusUpper = sscanf(upper.c_str(), "0%p", &value.upper);
+	ssize_t statusLower = sscanf(lower.c_str(), "0x%p", &value.lower);
+	ssize_t statusUpper = sscanf(upper.c_str(), "0x%p", &value.upper);
+	ssize_t statusOffset = sscanf(offset.c_str(), "0x%zx", &value.offset);
 	assert(statusLower == 1);
 	assert(statusUpper == 1);
+	assert(statusOffset == 1);
 }
 
 /**********************************************************/
@@ -73,17 +76,19 @@ void to_json(nlohmann::json & json, const InstructionInfos & value)
 /**********************************************************/
 void from_json(const nlohmann::json & json, InstructionInfos & value)
 {
-	//checks
-	assert(json.contains("file"));
-	assert(json.contains("binary"));
-	assert(json.contains("function"));
-	assert(json.contains("memory"));
-
 	//load
-	json.at("file").get_to(value.file);
-	json.at("binary").get_to(value.binary);
-	json.at("function").get_to(value.function);
-	json.at("line").get_to(value.line);
+	value.file = 0;
+	value.binary = 0;
+	value.function = 0;
+	value.line = 0;
+	if (json.contains("file"))
+		json.at("file").get_to(value.file);
+	if (json.contains("binary"))
+		json.at("binary").get_to(value.binary);
+	if (json.contains("function"))
+		json.at("function").get_to(value.function);
+	if (json.contains("line"))
+		json.at("line").get_to(value.line);
 }
 
 /**********************************************************/

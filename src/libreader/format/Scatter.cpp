@@ -103,7 +103,6 @@ void from_json(const nlohmann::json & json, Scatter & value)
 	//checks
 	assert(json.contains("sizeOverTime"));
 	assert(json.contains("lifetimeOverSize"));
-	assert(json.contains("memory"));
 
 	//load
 	json.at("sizeOverTime").get_to(value.sizeOverTime);

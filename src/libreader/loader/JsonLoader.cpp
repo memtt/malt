@@ -89,19 +89,19 @@ void JsonLoader::load(MALTFormat::MaltProfile & profile, const nlohmann::json & 
 			#pragma omp task
 			json["config"].get_to(profile.config);
 			#pragma omp task
-			JsonLoader::load(profile.stacks, json["stacks"]);
+			json["stacks"].get_to(profile.stacks);
 			#pragma omp task
-			JsonLoader::load(profile.sites, json["sites"]);
+			json["sites"].get_to(profile.sites);
 			#pragma omp task
-			JsonLoader::load(profile.timeline, json["timeline"]);
+			json["timeline"].get_to(profile.timeline);
 			#pragma omp task
-			JsonLoader::load(profile.scatter, json["scatter"]);
+			json["scatter"].get_to(profile.scatter);
 			#pragma omp task
 			JsonLoader::load(profile.threads, json["threads"]);
 			#pragma omp task
-			JsonLoader::load(profile.globals, json["globals"]);
+			json["globals"].get_to(profile.globals);
 			#pragma omp task
-			JsonLoader::load(profile.leaks, json["leaks"]);
+			json["leaks"].get_to(profile.leaks);
 		}
 	}
 }
@@ -261,15 +261,6 @@ void JsonLoader::load(Sites & sites, const nlohmann::json & json)
 	std::vector<ProcMapEntry> map;
 	std::vector<std::string> strings;
 	std::map<void*, InstructionInfos> instr;
-	*/
-};
-
-/**********************************************************/
-void JsonLoader::load(CallSite & callSite, const nlohmann::json & json)
-{
-	/*
-	LangAddress orig;
-	const InstructionInfos * translated;
 	*/
 };
 

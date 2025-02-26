@@ -105,14 +105,12 @@ void from_json(const nlohmann::json & json, StackStats & value)
 	assert(json.contains("stack"));
 	assert(json.contains("stackId"));
 	assert(json.contains("infos"));
-	assert(json.contains("count"));
 
 	//load
 	std::string stackId;
 	json.at("stack").get_to(value.stack);
 	json.at("stackId").get_to(stackId);
 	json.at("infos").get_to(value.infos);
-	json.at("count").get_to(value.count);
 
 	//convert
 	ssize_t status = sscanf(stackId.c_str(), "0x%p", &value.stackId);
@@ -130,11 +128,19 @@ void to_json(nlohmann::json & json, const Stacks & value)
 /**********************************************************/
 void from_json(const nlohmann::json & json, Stacks & value)
 {
-	//checks
+	//check
 	assert(json.contains("stats"));
+	assert(json.contains("count"));
 
-	//load
-	json.at("stats").get_to(value.stats);
+	//get it
+	const nlohmann::json & stats = json["stats"];
+	assert(stats.is_array());
+	value.stats.reserve(stats.size());
+	for (const auto & it : stats) {
+		auto & stat = value.stats.emplace_back();
+		#pragma omp task
+		it.get_to(stat);
+	}
 }
 
 }

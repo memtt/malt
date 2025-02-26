@@ -14,19 +14,13 @@
 /**********************************************************/
 #include <string>
 #include <vector>
+#include <nlohmann/json.hpp>
 #include "Types.hpp"
 #include "Sites.hpp"
 
 /**********************************************************/
 namespace MALTFormat
 {
-
-/**********************************************************/
-struct CallSite
-{
-	LangAddress orig;
-	const InstructionInfos * translated;
-};
 
 /**********************************************************/
 struct TimelineInfos
@@ -36,7 +30,7 @@ struct TimelineInfos
 	CyclesDuration perPoints;
 	std::vector<size_t> peak;
 	std::vector< std::vector<size_t> > values;
-	std::vector<CallSite> callsite;
+	std::vector<LangAddress> callsite;
 };
 
 /**********************************************************/
@@ -46,6 +40,13 @@ struct Timeline
 	TimelineInfos systemTimeline;
 	TimelineInfos memoryBandwidth;
 };
+
+/**********************************************************/
+void from_json(const nlohmann::json & json, TimelineInfos & value);
+void to_json(nlohmann::json & json, const TimelineInfos & value);
+void from_json(const nlohmann::json & json, Timeline & value);
+void to_json(nlohmann::json & json, const Timeline & value);
+
 
 }
 
