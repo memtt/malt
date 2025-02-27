@@ -21,6 +21,9 @@ examples/step-4-problem-short-life-alloc
 examples/step-5-problem-for-auto-missing-ref-copy
 examples/step-6-problem-grow-by-copy
 examples/step-7-problem-peak
+examples/step-8-problem-heavy-realloc
+examples/step-9-problem-tls-and-gbl-vars
+examples/*.json
 
 # cache
 /podman-ccache
