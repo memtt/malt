@@ -110,6 +110,12 @@ BUILD_PARAMETERS = {
             "apt install -y ccache",
             BUILD_CUSTOM_PYTHON
         ],
+        "debian:12-minimal": [
+            "apt update",
+            "apt upgrade -y",
+            "apt install -y cmake g++ make clang",
+            "apt install -y libunwind-dev libelf-dev libunwind-dev",
+        ],
     },
     'compilers': {
         "gcc": "CXX=g++ CC=gcc",

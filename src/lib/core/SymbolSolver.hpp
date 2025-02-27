@@ -109,6 +109,8 @@ class SymbolSolver
 		MaqaoSiteMap maqaoSites;
 		/** Dictionnary */
 		StringIdDictionnary stringDict;
+		/** Default string **/
+		const String defaultString{"??"};
 };
 
 /**********************************************************/

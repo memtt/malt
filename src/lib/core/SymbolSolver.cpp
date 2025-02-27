@@ -574,8 +574,10 @@ const CallSite* SymbolSolver::getCallSiteInfo(LangAddress site) const
 **/
 const String& SymbolSolver::getString(int id) const
 {
-	assert(id >= 0);
-	return this->stringDict.getString(id);
+	if (id == -1)
+		return this->defaultString;
+	else
+		return this->stringDict.getString(id);
 }
 
 /**********************************************************/

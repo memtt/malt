@@ -69,9 +69,12 @@ TEST(TestSymbolSolver, solveBacktraceExe)
 	BacktraceStack stack;
 	SymbolSolver solver;
 
+	//skipe delta
+	size_t skipDelta = stack.getBactraceSkipOptimDelta();
+
 	//run
 	testCalleeExe(stack);
-	stack.fastSkip(stack.getBactraceSkipOptimDelta());
+	stack.fastSkip(skipDelta+1);
 
 	//solve
 	LangAddress callee = stack.getCallee();
@@ -100,9 +103,12 @@ TEST(TestSymbolSolver, solveBacktraceLib)
 	BacktraceStack stack;
 	SymbolSolver solver;
 
+	//skipe delta
+	size_t skipDelta = stack.getBactraceSkipOptimDelta();
+
 	//run
 	testCalleeLib(stack);
-	stack.fastSkip(stack.getBactraceSkipOptimDelta());
+	stack.fastSkip(skipDelta+1);
 
 	//extract
 	LangAddress callee = stack.getCallee();

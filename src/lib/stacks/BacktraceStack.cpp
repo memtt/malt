@@ -74,6 +74,7 @@ void BacktraceStack::loadCurrentStack(void)
 		assert(sizeof(LangAddress) == sizeof(void*));
 		assert(sizeof(this->stack[0]) == sizeof(void*));
 		
+		assert(this->stackBuffer != nullptr);
 		int loadedSize = Backtrace::backtrace(this->stackBuffer,this->memSize);
 
 		assert(loadedSize <= this->memSize);
@@ -138,7 +139,7 @@ int BacktraceStack::getBactraceSkipOptimDelta(void)
 		
 
 	//dirct call
-	int sizeDirect = BacktraceGlibc::backtrace((void**) stack,memSize);
+	int sizeDirect = BacktraceGlibc::backtrace(stackBuffer,memSize);
 
 	//calc delta
 	int delta = sizeLoadCurrent - sizeDirect;

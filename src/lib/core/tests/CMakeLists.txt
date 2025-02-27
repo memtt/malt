@@ -28,6 +28,7 @@ set(TEST_NAMES TestVmaTracker
 #####################################################
 add_library(TestSymbolSolverLib SHARED TestSymbolSolverLib.cpp)
 target_link_libraries(TestSymbolSolverLib malt-base)
+target_compile_options(TestSymbolSolverLib PRIVATE -g -O0)
 
 #####################################################
 FOREACH(test_name ${TEST_NAMES})
@@ -36,3 +37,6 @@ FOREACH(test_name ${TEST_NAMES})
 	target_link_libraries(${test_name} ${GTEST_BOTH_LIBRARIES} ${GMOCK_BOTH_LIBRARIES} malt-base TestSymbolSolverLib)
 	malt_add_test(${test_name} ${test_name})
 ENDFOREACH(test_name)
+
+#####################################################
+target_compile_options(TestSymbolSolver PRIVATE -g)

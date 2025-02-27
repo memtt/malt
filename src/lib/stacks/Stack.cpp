@@ -304,17 +304,8 @@ LangAddress Stack::operator[](int idx) const
 **/
 std::ostream &operator<<(std::ostream &out, const Stack &obj)
 {
-	switch(obj.order)
-	{
-		case STACK_ORDER_ASC:
-			for (int i = 0 ; i < obj.size ; i++)
-				out << obj.stack[i] << " ";
-			break;
-		case STACK_ORDER_DESC:
-			for (int i = obj.size - 1 ; i >= 0 ; i--)
-				out << obj.stack[i] << " ";
-			break;
-	}
+	for (int i = 0 ; i < obj.size ; i++)
+		out << obj[i] << " ";
 	return out;
 }
 
