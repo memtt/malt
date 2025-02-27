@@ -71,7 +71,7 @@ static StackMode getStackMode(Options & options)
 }
 
 /**********************************************************/
-static void maltDumpOnEvent(void)
+void maltDumpOnEvent(void)
 {
 	//stop instr & dump
 	if (gblState.status == ALLOC_WRAP_READY)

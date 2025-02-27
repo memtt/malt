@@ -255,6 +255,7 @@ enabled=true          ; Enable or disable MALT when threads start
 on-signal=             ; Dump on signal. Can be comma separated list from SIGINT, SIGUSR1,
                        ; SIGUSR2... help, avail (limited to only one dump)
 after-seconds=0        ; Dump after X seconds (limited to only one time)
+on-sys-full-at=-1      ; Dump when system memory become full at x% (-1 to disable).
 ```
 
 Option values can be overridden on the fly with command :

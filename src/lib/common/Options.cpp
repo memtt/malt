@@ -92,6 +92,7 @@ Options::Options(void)
 	//dump
 	this->dumpOnSignal            = MALT_NO_DUMP_SIGNAL;
 	this->dumpAfterSeconds        = 0;
+	this->dumpOnSysFullAt         = -1;
 }
 
 /**********************************************************/
@@ -142,6 +143,7 @@ bool Options::operator==(const Options& value) const
 	//dump
 	if (this->dumpOnSignal != value.dumpOnSignal) return false;
 	if (this->dumpAfterSeconds != value.dumpAfterSeconds) return false;
+	if (this->dumpOnSysFullAt != value.dumpOnSysFullAt) return false;
 	
 	return true;
 }
@@ -277,6 +279,7 @@ void Options::loadFromIniDic ( dictionary* iniDic )
 	//dump
 	this->dumpOnSignal        = iniparser_getstring(iniDic,"dump:on-signal",(char*)this->dumpOnSignal.c_str());
 	this->dumpAfterSeconds    = iniparser_getint(iniDic,"dump:after-seconds",this->dumpAfterSeconds);
+	this->dumpOnSysFullAt     = iniparser_getint(iniDic,"dump:on-sys-full-at",this->dumpOnSysFullAt);
 }
 
 /**********************************************************/
@@ -366,6 +369,7 @@ void convertToJson(htopml::JsonState & json,const Options & value)
 		json.openFieldStruct("dump");
 			json.printField("onSignal", value.dumpOnSignal);
 			json.printField("afterSeconds", value.dumpAfterSeconds);
+			json.printField("onSysFullAt", value.dumpOnSysFullAt);
 		json.closeFieldStruct("dump");
 	json.closeStruct();
 }
@@ -431,6 +435,7 @@ void Options::dumpConfig(const char* fname)
 	//dump
 	IniParserHelper::setEntry(dic,"dump:on-signal",this->dumpOnSignal.c_str());
 	IniParserHelper::setEntry(dic,"dump:after-seconds",this->dumpAfterSeconds);
+	IniParserHelper::setEntry(dic,"dump:on-sys-full-at",this->dumpOnSysFullAt);
 	
 	//write
 	FILE * fp = fopen(fname,"w");

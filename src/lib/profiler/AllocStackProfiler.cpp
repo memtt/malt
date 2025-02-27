@@ -285,11 +285,15 @@ void AllocStackProfiler::onAllocEvent(void* ptr, size_t size,Stack* userStack,MM
 }
 
 /**********************************************************/
+void maltDumpOnEvent(void);
+
+/**********************************************************/
 size_t AllocStackProfiler::onFreeEvent(void* ptr, MALT::Stack* userStack, MMCallStackNode* callStackNode, bool doLock)
 {
 	//locals
 	ticks t = Clock::getticks();
 	size_t size = 0;
+	bool doDump = false;
 	MMCallStackNode localCallStackNode;
 	if (callStackNode == NULL)
 		callStackNode = &localCallStackNode;
@@ -365,6 +369,20 @@ size_t AllocStackProfiler::onFreeEvent(void* ptr, MALT::Stack* userStack, MMCall
 				curSystemTimeline.freeMemory = sysMem.freeMemory;
 				curSystemTimeline.swapMemory = sysMem.swap;
 				systemTimeline.push(t,curSystemTimeline,(void*)callStackNode->stack);
+
+				//trigger dump
+				if (this->options.dumpOnSysFullAt) {
+					size_t sysFullAt = (100*((sysMem.totalMemory - sysMem.freeMemory - sysMem.cached))) / sysMem.totalMemory;
+					if (sysFullAt >= this->options.dumpOnSysFullAt) {
+						fprintf(stderr, "MALT: System full at %d% (> sys-full-at=%d%) [%zu / %zu]\n",
+							sysFullAt,
+							this->options.dumpOnSysFullAt,
+							(sysMem.totalMemory - sysMem.freeMemory - sysMem.cached),
+							sysMem.totalMemory
+						);
+						doDump = true;
+					}
+				}
 			}
 		}
 		
@@ -375,6 +393,10 @@ size_t AllocStackProfiler::onFreeEvent(void* ptr, MALT::Stack* userStack, MMCall
 		memoryBandwidth.push(t,allocBw,(void*)callStackNode->stack);
 	MALT_END_CRITICAL
 	
+	//trigger dump
+	if (doDump)
+		maltDumpOnEvent();
+
 	return size;
 }
 
