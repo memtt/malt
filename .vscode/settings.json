@@ -75,7 +75,10 @@
 		"compare": "cpp",
 		"any": "cpp",
 		"concepts": "cpp",
-		"charconv": "cpp"
+		"charconv": "cpp",
+		"*.ipp": "cpp",
+		"semaphore": "cpp",
+		"shared_mutex": "cpp"
 	},
 	"cmake.configureOnOpen": false,
 	"[python]": {

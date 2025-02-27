@@ -80,7 +80,7 @@ endif()
 # check for python support
 find_package(Python3 QUIET COMPONENTS Interpreter Development QUIET)
 # we currently support only Python
-if (NOT Python3_INTERPRETER_ID STREQUAL "Python")
+if (Python3_FOUND AND NOT Python3_INTERPRETER_ID STREQUAL "Python")
 	message(FATAL_ERROR "Invalid python interpreter, got '${Python3_INTERPRETER_ID}', support only 'Python' !")
 endif()
 find_package(Python3Instrum QUIET)
