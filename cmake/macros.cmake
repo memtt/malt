@@ -50,14 +50,6 @@ MACRO(malt_enable_gcc_coverage)
 ENDMACRO(malt_enable_gcc_coverage)
 
 ############################################################
-MACRO(check_nodejs)
-	find_program(NODEJS_PATH NAMES node nodejs)
-	if (NOT NODEJS_PATH)
-		message(WARNING "Failed to find nodeJS program, the webview GUI will not work !")
-	endif(NOT NODEJS_PATH)
-ENDMACRO(check_nodejs)
-
-############################################################
 MACRO(malt_enable_cxx_11)
 	include(CheckCXXCompilerFlag)
 	CHECK_CXX_COMPILER_FLAG("-std=c++11" COMPILER_SUPPORTS_CXX11)
@@ -108,6 +100,7 @@ function(malt_print_status)
 	message(STATUS "|  qt5-network      : ${Qt5Network_INCLUDE_DIRS}")
 	message(STATUS "|  Python3          : ${Python3_EXECUTABLE}")
 	message(STATUS "|  Python3 instrum. : ${PYTHON3_INSTRUM_FOUND}")
+	message(STATUS "|  Node             : ${NODE_BINARY}")
 	message(STATUS "--------------------------------------------------------------")
 	message(STATUS "|  CMake build type : ${CMAKE_BUILD_TYPE}")
 	message(STATUS "|  CMake cxxflags   : ${CMAKE_BUILD_TYPE_FLAGS}")

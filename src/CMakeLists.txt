@@ -10,9 +10,6 @@
 ############################################################
 
 ############################################################
-check_nodejs()
-
-############################################################
 if (Qt5WebEngineWidgets_FOUND OR Qt5WebKitWidgets_FOUND)
 	set(Qt5Webkit_FOUND OK)
 endif (Qt5WebEngineWidgets_FOUND OR Qt5WebKitWidgets_FOUND)
@@ -42,7 +39,9 @@ endif(ENABLE_PROFILER)
 add_subdirectory(integration)
 add_subdirectory(trace-reader)
 add_subdirectory(manpages)
-add_subdirectory(webview)
-if (QT5_FOUND)
+if (NODE_FOUND)
+	add_subdirectory(webview)
+endif()
+if (QT5_FOUND AND NODE_FOUND)
 	add_subdirectory(qtview)
-endif (QT5_FOUND)
+endif ()

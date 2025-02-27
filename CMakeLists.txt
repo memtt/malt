@@ -64,15 +64,16 @@ set(ENABLE_PROFILER "yes" CACHE BOOL "Enable the installation of the profiler.")
 ############################################################
 # search deps
 find_package(GTest QUIET)
-FIND_PACKAGE(OpenMP QUIET)
+find_package(OpenMP QUIET)
 find_package(LibElf QUIET)
 find_package(Libunwind QUIET)
 find_package(Qt5Widgets QUIET)
 find_package(Qt5WebEngineWidgets QUIET)
 find_package(Qt5WebKitWidgets QUIET)
 find_package(Qt5Network QUIET)
+find_package(Node QUIET)
 # Check for npm if needed
-if (NOT IS_DIRECTORY ${CMAKE_SOURCE_DIR}/src/webview/node_modules)
+if (NODE_FOUND AND NOT IS_DIRECTORY ${CMAKE_SOURCE_DIR}/src/webview/node_modules)
 	find_package(Npm REQUIRED)
 endif()
 
