@@ -32,6 +32,8 @@ add_library(malt-profile SHARED
 )
 target_link_libraries(malt-profile PRIVATE nlohmann_json::nlohmann_json)
 target_link_libraries(malt-profile PRIVATE OpenMP::OpenMP_CXX)
+set_target_properties(malt-profile PROPERTIES VERSION ${MALT_VERSION}
+                                              SOVERSION ${MALT_SO_VERSION})
 
 ############################################################
 add_executable(malt-reader main.cpp)
@@ -41,3 +43,8 @@ target_link_libraries(malt-reader malt-profile)
 if (ENABLE_TESTS)
     add_subdirectory(format/tests)
 endif()
+
+############################################################
+INSTALL(TARGETS malt-profile
+	ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+	LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
