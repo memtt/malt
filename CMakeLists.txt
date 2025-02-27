@@ -12,7 +12,7 @@
 
 ############################################################
 #Usage of OBJECT keyword in add_library require 2.8.8 (or something like that, need to check)
-cmake_minimum_required(VERSION 2.8.12)
+cmake_minimum_required(VERSION 3.5)
 # TODO we can remove this if/else when we do not use anymore centos7 and move up cmake req to 3.0
 if (CMAKE_VERSION VERSION_LESS 3.0)
 	project(MALT)	
