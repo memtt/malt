@@ -54,71 +54,83 @@ BUILD_CUSTOM_PYTHON = """apt install -y wget \\
     && cd .. \\
     && rm -rfd Python-3.13.2"""
 ############################################################
+UBUNTU_BASIC_CMDS=[
+    "apt update",
+    "apt upgrade -y",
+    "apt install -y cmake g++ make clang",
+    "apt install -y ccache",
+]
+UBUNTU_FULL_CMDS=[
+    "apt install -y libunwind-dev libelf-dev libunwind-dev nodejs npm",
+    "apt install -y libqt5webkit5-dev",
+    BUILD_CUSTOM_PYTHON
+]
+############################################################
 BUILD_PARAMETERS = {
     "distributions": {
-        "ubuntu:22.04": [
-            "apt update",
-            "apt upgrade -y",
-            "apt install -y cmake g++ make clang",
-            "apt install -y libunwind-dev libelf-dev libunwind-dev nodejs npm",
-            "apt install -y libqt5webkit5-dev",
-            "apt install -y ccache",
-            BUILD_CUSTOM_PYTHON
-        ],
-        "ubuntu:24.10": [
-            "apt update -y",
-            "apt upgrade -y",
-            "apt install -y cmake g++ make clang",
-            "apt install -y libunwind-dev libelf-dev libunwind-dev nodejs npm",
-            "apt install -y libqt5webkit5-dev",
-            "apt install -y ccache",
-            BUILD_CUSTOM_PYTHON
-        ],
-        "ubuntu:24.04": [
-            "apt update -y",
-            "apt upgrade -y",
-            "apt install -y cmake g++ make clang",
-            "apt install -y libunwind-dev libelf-dev libunwind-dev nodejs npm",
-            "apt install -y libqt5webkit5-dev",
-            "apt install -y ccache",
-            BUILD_CUSTOM_PYTHON
-        ],
-        "ubuntu:25.04": [
-            "apt update",
-            "apt upgrade -y",
-            "apt install -y cmake g++ make clang",
-            "apt install -y libunwind-dev libelf-dev libunwind-dev nodejs npm",
-            "apt install -y libqt5webkit5-dev",
-            "apt install -y ccache",
-            BUILD_CUSTOM_PYTHON
-        ],
-        "debian:10": [
-            "apt update",
-            "apt upgrade -y",
-            "apt install -y cmake g++ make clang",
-            "apt install -y libunwind-dev libelf-dev libunwind-dev nodejs npm",
-            "apt install -y libqt5webkit5-dev",
-            "apt install -y ccache",
-            BUILD_CUSTOM_PYTHON
-        ],
-        "debian:11": [
-            "apt update",
-            "apt upgrade -y",
-            "apt install -y cmake g++ make clang",
-            "apt install -y libunwind-dev libelf-dev libunwind-dev nodejs npm",
-            "apt install -y libqt5webkit5-dev",
-            "apt install -y ccache",
-            BUILD_CUSTOM_PYTHON
-        ],
-        "debian:12": [
-            "apt update",
-            "apt upgrade -y",
-            "apt install -y cmake g++ make clang",
-            "apt install -y libunwind-dev libelf-dev libunwind-dev nodejs npm",
-            "apt install -y libqt5webkit5-dev",
-            "apt install -y ccache",
-            BUILD_CUSTOM_PYTHON
-        ],
+        ############ ubuntu:22.04
+        "malt/ubuntu-basic:22.04": {
+            "base": "ubuntu:22.04",
+            "cmds": UBUNTU_BASIC_CMDS
+        },
+        "malt/ubuntu-full:22.04": {
+            "base": "malt/ubuntu-basic:22.04",
+            "cmds": UBUNTU_FULL_CMDS
+        },
+        ############ ubuntu:24.04
+        "malt/ubuntu-basic:24.04": {
+            "base": "ubuntu:24.04",
+            "cmds": UBUNTU_BASIC_CMDS
+        },
+        "malt/ubuntu-full:24.04": {
+            "base": "malt/ubuntu-basic:24.04",
+            "cmds": UBUNTU_FULL_CMDS
+        },
+        ############ ubuntu:22.10
+        "malt/ubuntu-basic:24.10": {
+            "base": "ubuntu:24.10",
+            "cmds": UBUNTU_BASIC_CMDS
+        },
+        "malt/ubuntu-full:24.10": {
+            "base": "malt/ubuntu-basic:24.10",
+            "cmds": UBUNTU_FULL_CMDS
+        },
+        ############ ubuntu:25.04
+        "malt/ubuntu-basic:25.04": {
+            "base": "ubuntu:25.04",
+            "cmds": UBUNTU_BASIC_CMDS
+        },
+        "malt/ubuntu-full:25.04": {
+            "base": "malt/ubuntu-basic:25.04",
+            "cmds": UBUNTU_FULL_CMDS
+        },
+        ############ debian:10
+        "malt/debian-basic:10": {
+            "base": "debian:10",
+            "cmds": UBUNTU_BASIC_CMDS
+        },
+        "malt/debian-full:10": {
+            "base": "malt/debian-basic:10",
+            "cmds": UBUNTU_FULL_CMDS
+        },
+        ############ debian:11
+        "malt/debian-basic:11": {
+            "base": "debian:11",
+            "cmds": UBUNTU_BASIC_CMDS
+        },
+        "malt/debian-full:11": {
+            "base": "malt/debian-basic:11",
+            "cmds": UBUNTU_FULL_CMDS
+        },
+        ############ debian:12
+        "malt/debian-basic:12": {
+            "base": "debian:12",
+            "cmds": UBUNTU_BASIC_CMDS
+        },
+        "malt/debian-full:12": {
+            "base": "malt/debian-basic:12",
+            "cmds": UBUNTU_FULL_CMDS
+        },
     },
     'compilers': {
         "gcc": "CXX=g++ CC=gcc",
@@ -143,12 +155,13 @@ def gen_distr_paramatrized():
 @pytest.mark.parametrize("dist_name_version", BUILD_PARAMETERS['distributions'].keys())
 def test_prep_image(dist_name_version):
     # to install
-    distr_install_cmds = BUILD_PARAMETERS['distributions'][dist_name_version]
+    distr_install_cmds = BUILD_PARAMETERS['distributions'][dist_name_version]["cmds"]
+    base_name = BUILD_PARAMETERS['distributions'][dist_name_version]["base"]
 
     # build
-    container = PodmanContainerHandler(f"malt/{dist_name_version}")
+    container = PodmanContainerHandler(dist_name_version)
     container.add_build_run_rules(distr_install_cmds)
-    container.build(dist_name_version)
+    container.build(base_name)
 
 ############################################################
 @pytest.mark.parametrize("dist_name_version, compiler, variant", gen_distr_paramatrized())
@@ -161,7 +174,7 @@ def test_distribution(dist_name_version: str, compiler:str, variant:str):
     cores = multiprocessing.cpu_count()
 
     # build & start container to run commands in
-    with in_container(f"malt/{dist_name_version}") as container:
+    with in_container(dist_name_version) as container:
         # to perform tests
         container.assert_run(f"/mnt/malt-sources/configure --enable-tests {COMMON_CONF_OPTIONS} {variant_options} {compiler_options}")
         container.assert_run(f"make -j{cores}")
@@ -219,6 +232,9 @@ def test_current_host_release_tests():
 # To be able to run as a standard program directly and not call via pytest command
 # (can still also)
 if __name__ == '__main__':
+    if "-v" in sys.argv:
+        sys.argv.append("--capture=no")
+
     # nicer to get -v by default to get the list of tests displayed as 'integration tests' can be long
     sys.argv.append('-v')
 
