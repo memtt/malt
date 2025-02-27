@@ -29,9 +29,15 @@ bool runParallelJobs(T & jobList, int threads)
 	assert(threads > 0);
 	assert(threads < 2048);
 
+	//SKIP FOR NOW
+	bool finalStatus = true;
+	for (auto & job : jobList)
+		if (job.run() == false)
+			finalStatus = false;
+	return finalStatus;
+
 	//iterator
 	std::mutex mutex;
-	bool finalStatus = true;
 	typename T::iterator it = jobList.begin();
 
 	//spawn threads

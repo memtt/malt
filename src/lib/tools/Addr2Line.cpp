@@ -51,7 +51,8 @@ bool Addr2Line::addTask(const LangAddress & address, CallSite * callSite)
 		return false;
 
 	//append
-	Addr2LineTask & task = this->tasks.emplace_back();
+	tasks.emplace_back();
+	Addr2LineTask & task = this->tasks.back();
 	task.address = address;
 	task.callSite = callSite;
 

@@ -65,8 +65,8 @@ BUILD_PARAMETERS = {
             "apt install -y ccache",
             BUILD_CUSTOM_PYTHON
         ],
-        "ubuntu:23.04": [
-            "apt update",
+        "ubuntu:24.10": [
+            "apt update -y",
             "apt upgrade -y",
             "apt install -y cmake g++ make clang",
             "apt install -y libunwind-dev libelf-dev libunwind-dev nodejs npm",
@@ -76,6 +76,15 @@ BUILD_PARAMETERS = {
         ],
         "ubuntu:24.04": [
             "apt update -y",
+            "apt upgrade -y",
+            "apt install -y cmake g++ make clang",
+            "apt install -y libunwind-dev libelf-dev libunwind-dev nodejs npm",
+            "apt install -y libqt5webkit5-dev",
+            "apt install -y ccache",
+            BUILD_CUSTOM_PYTHON
+        ],
+        "ubuntu:25.04": [
+            "apt update",
             "apt upgrade -y",
             "apt install -y cmake g++ make clang",
             "apt install -y libunwind-dev libelf-dev libunwind-dev nodejs npm",
@@ -109,12 +118,6 @@ BUILD_PARAMETERS = {
             "apt install -y libqt5webkit5-dev",
             "apt install -y ccache",
             BUILD_CUSTOM_PYTHON
-        ],
-        "debian:12-minimal": [
-            "apt update",
-            "apt upgrade -y",
-            "apt install -y cmake g++ make clang",
-            "apt install -y libunwind-dev libelf-dev libunwind-dev",
         ],
     },
     'compilers': {
