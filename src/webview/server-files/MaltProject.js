@@ -459,7 +459,7 @@ MaltProject.prototype.genSummaryWarnings = function(data)
 	if (data.summary.globalVarMem > data.summary.peakRequestedMemory / 3 && data.summary.globalVarMem > 1024*1024)
 		ret.globalVarMem = ["Caution, a large part of your memory is consummed by global variables, check if it is normal."];
 	if (data.summary.tlsVarMem > data.summary.peakRequestedMemory / 3 && data.summary.tlsVarMem > 1024*1024)
-		ret.globalVarMem = ["Caution, a large part of your memory is consummed by TLS variables, check if it is normal."];
+		ret.tlsVarMem = ["Caution, a large part of your memory is consummed by TLS variables, check if it is normal."];
 	if (data.summary.numGblVar > 500)
 		ret.numGblVar = ["Caution, you get a realy big number of global variable, your code is likely to be buggy."];
 
@@ -561,7 +561,7 @@ MaltProject.prototype.getSummaryV2 = function()
 	}
 	ret.summary.numGblVar = cntVars;
 	ret.summary.globalVarMem = gblMem;
-	ret.summary.tlsVarMem = tlsMem;
+	ret.summary.tlsVarMem = tlsMem * (this.data.globals.maxThreadCount + 1);
 
 	//summary warnings
 	ret.summaryWarnings = this.genSummaryWarnings(ret);
