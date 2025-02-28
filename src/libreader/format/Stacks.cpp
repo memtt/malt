@@ -86,7 +86,7 @@ void from_json(const nlohmann::json & json, StackInfos & value)
 }
 
 /**********************************************************/
-void to_json(nlohmann::json & json, const StackStats & value)
+void to_json(nlohmann::json & json, const StackStat & value)
 {
 	char bufferStackId[256];
 	if (value.stackId == nullptr)
@@ -101,7 +101,7 @@ void to_json(nlohmann::json & json, const StackStats & value)
 }
 
 /**********************************************************/
-void from_json(const nlohmann::json & json, StackStats & value)
+void from_json(const nlohmann::json & json, StackStat & value)
 {
 	//checks
 	assert(json.contains("stack"));

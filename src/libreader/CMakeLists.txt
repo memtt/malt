@@ -30,6 +30,7 @@ add_library(malt-profile SHARED
     format/MaltProfile.cpp
     loader/Prepare.cpp
     extractors/ExtractorHelpers.cpp
+    extractors/Extractor.cpp
 )
 target_link_libraries(malt-profile PRIVATE nlohmann_json::nlohmann_json)
 target_link_libraries(malt-profile PRIVATE OpenMP::OpenMP_CXX)

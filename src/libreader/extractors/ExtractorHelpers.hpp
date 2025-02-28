@@ -8,8 +8,8 @@
 *    AUTHOR   : Sébastien Valat (INRIA) - 2025
 ***********************************************************/
 
-#ifndef MALT_READER_PREPARE_HPP
-#define MALT_READER_PREPARE_HPP
+#ifndef MALT_READER_EXTRACTOR_HELPER_HPP
+#define MALT_READER_EXTRACTOR_HELPER_HPP
 
 /**********************************************************/
 #include "format/MaltProfile.hpp"
@@ -26,4 +26,4 @@ struct ExtractorHelpers
 
 }
 
-#endif //MALT_READER_PREPARE_HPP
+#endif //MALT_READER_EXTRACTOR_HELPER_HPP

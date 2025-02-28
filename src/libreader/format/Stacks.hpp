@@ -14,6 +14,7 @@
 /**********************************************************/
 #include <string>
 #include <vector>
+#include <cstdint>
 #include <nlohmann/json.hpp>
 #include "Types.hpp"
 
@@ -24,30 +25,30 @@ namespace MALTFormat
 /**********************************************************/
 struct CountMinMaxSum
 {
-	size_t count;
-	size_t min;
-	size_t max;
-	size_t sum;
+	size_t count{0};
+	size_t min{SIZE_MAX};
+	size_t max{0};
+	size_t sum{0};
 	void merge(const CountMinMaxSum & value);
 };
 
 /**********************************************************/
 struct StackInfos
 {
-	size_t countZeros;
-	size_t maxAliveReq;
-	size_t aliveReq;
+	size_t countZeros{0};
+	size_t maxAliveReq{0};
+	size_t aliveReq{0};
 	CountMinMaxSum alloc;
 	CountMinMaxSum free;
 	CountMinMaxSum lifetime;
-	size_t globalPeak;
-	size_t reallocCount;
-	size_t reallocSumDelta;
+	size_t globalPeak{0};
+	size_t reallocCount{0};
+	size_t reallocSumDelta{0};
 	void merge(const StackInfos & value);
 };
 
 /**********************************************************/
-struct StackStats
+struct StackStat
 {
 	std::vector<LangAddress> stack;
 	StackId stackId;
@@ -55,9 +56,12 @@ struct StackStats
 };
 
 /**********************************************************/
+typedef std::vector<StackStat> StackStats;
+
+/**********************************************************/
 struct Stacks
 {
-	std::vector<StackStats> stats;
+	StackStats stats;
 	size_t count;
 };
 
@@ -66,8 +70,8 @@ void from_json(const nlohmann::json & json, CountMinMaxSum & value);
 void to_json(nlohmann::json & json, const CountMinMaxSum & value);
 void from_json(const nlohmann::json & json, StackInfos & value);
 void to_json(nlohmann::json & json, const StackInfos & value);
-void from_json(const nlohmann::json & json, StackStats & value);
-void to_json(nlohmann::json & json, const StackStats & value);
+void from_json(const nlohmann::json & json, StackStat & value);
+void to_json(nlohmann::json & json, const StackStat & value);
 void from_json(const nlohmann::json & json, Stacks & value);
 void to_json(nlohmann::json & json, const Stacks & value);
 
