@@ -16,7 +16,6 @@ include_directories(.)
 add_library(malt-profile SHARED
     loader/ProgressBar.cpp
     loader/FileReader.cpp
-    loader/JsonLoader.cpp
     format/Config.cpp
     format/Run.cpp
     format/Globals.cpp
@@ -29,7 +28,8 @@ add_library(malt-profile SHARED
     format/Timeline.cpp
     format/Threads.cpp
     format/MaltProfile.cpp
-    extractors/Prepare.cpp
+    loader/Prepare.cpp
+    extractors/ExtractorHelpers.cpp
 )
 target_link_libraries(malt-profile PRIVATE nlohmann_json::nlohmann_json)
 target_link_libraries(malt-profile PRIVATE OpenMP::OpenMP_CXX)

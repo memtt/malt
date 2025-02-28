@@ -28,6 +28,7 @@ struct CountMinMaxSum
 	size_t min;
 	size_t max;
 	size_t sum;
+	void merge(const CountMinMaxSum & value);
 };
 
 /**********************************************************/
@@ -42,6 +43,7 @@ struct StackInfos
 	size_t globalPeak;
 	size_t reallocCount;
 	size_t reallocSumDelta;
+	void merge(const StackInfos & value);
 };
 
 /**********************************************************/
@@ -50,7 +52,6 @@ struct StackStats
 	std::vector<LangAddress> stack;
 	StackId stackId;
 	StackInfos infos;
-	size_t count;
 };
 
 /**********************************************************/

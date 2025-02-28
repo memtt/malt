@@ -12,32 +12,13 @@
 #include <gtest/gtest.h>
 #include <fstream>
 #include "../MaltProfile.hpp"
+#include "GetJson.hpp"
 
 /**********************************************************/
 using namespace MALTFormat;
 
 /**********************************************************/
-static void get_json(nlohmann::json & data)
-{
-	//calc profile fname
-	const std::string fname = CUR_BUILD_DIR "/malt-simple-case-finstr-linked.json";
-
-	//check if exist
-	FILE * fp = fopen(fname.c_str(), "r");
-	if (fp == nullptr) {
-		//generate
-		int status = system("MALT_OPTIONS='output:indent=true;output:name=" CUR_BUILD_DIR "/malt-%1.%3' " BUILD_DIR "/src/lib/tests/simple-case-finstr-linked");
-	} else {
-		fclose(fp);
-	}
-
-	//load
-	std::ifstream f(fname);
-	data = nlohmann::json::parse(f);
-}
-
-/**********************************************************/
-/*TEST(TestFormat, load_save_load)
+TEST(TestFormat, load_save_load)
 {
 	//get json
 	nlohmann::json data;
@@ -48,8 +29,9 @@ static void get_json(nlohmann::json & data)
 	const nlohmann::json asJson = profile;
 
 	//check
-	ASSERT_EQ(data, asJson);
-}*/
+	const nlohmann::json empty = std::vector<int>();
+	ASSERT_EQ(nlohmann::json::diff(data, asJson), empty);
+}
 
 /**********************************************************/
 TEST(TestFormat, field_config)

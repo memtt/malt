@@ -26,6 +26,7 @@ void to_json(nlohmann::json & json, const MaltProfile & value)
 		{"timeline", value.timeline},
 		{"scatter", value.scatter},
 		{"threads", value.threads},
+		{"memStats", value.memStats},
 		{"globals", value.globals},
 		{"leaks", value.leaks},
 	};
@@ -65,6 +66,8 @@ void from_json(const nlohmann::json & json, MaltProfile & profile)
 			json["scatter"].get_to(profile.scatter);
 			#pragma omp task
 			json["threads"].get_to(profile.threads);
+			#pragma omp task
+			json["memStats"].get_to(profile.memStats);
 			#pragma omp task
 			json["globals"].get_to(profile.globals);
 			#pragma omp task

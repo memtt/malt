@@ -38,6 +38,7 @@ struct MaltProfile
 	Timeline timeline;
 	Scatter scatter;
 	Threads threads;
+	MemStats memStats;
 	Globals globals;
 	Leaks leaks;
 };

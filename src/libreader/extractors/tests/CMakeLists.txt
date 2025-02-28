@@ -18,11 +18,10 @@ add_definitions(-DBUILD_DIR="${CMAKE_BINARY_DIR}")
 add_definitions(-DCUR_BUILD_DIR="${CMAKE_CURRENT_BINARY_DIR}")
 
 ############################################################
-add_executable(TestReaderFormat
-    TestFormat.cpp
-    TestStacks.cpp
+add_executable(TestReaderExtractors
+    TestExtractorHelpers.cpp
 )
-target_link_libraries(TestReaderFormat malt-profile)
-target_link_libraries(TestReaderFormat ${GTEST_BOTH_LIBRARIES} ${GMOCK_BOTH_LIBRARIES})
-add_test(TestReaderFormat TestReaderFormat)
+target_link_libraries(TestReaderExtractors malt-profile)
+target_link_libraries(TestReaderExtractors ${GTEST_BOTH_LIBRARIES} ${GMOCK_BOTH_LIBRARIES})
+add_test(TestReaderExtractors TestReaderExtractors)
 

@@ -20,10 +20,10 @@ namespace MALTFormat
 void to_json(nlohmann::json & json, const CountMinMaxSum & value)
 {
 	json = nlohmann::json{
-		{"stack", value.count},
-		{"count", value.min},
-		{"memory", value.max},
-		{"memory", value.sum},
+		{"count", value.count},
+		{"min", value.min},
+		{"max", value.max},
+		{"sum", value.sum},
 	};
 }
 
@@ -47,15 +47,15 @@ void from_json(const nlohmann::json & json, CountMinMaxSum & value)
 void to_json(nlohmann::json & json, const StackInfos & value)
 {
 	json = nlohmann::json{
-		{"stack", value.countZeros},
-		{"memory", value.maxAliveReq},
-		{"memory", value.aliveReq},
-		{"memory", value.alloc},
-		{"memory", value.free},
-		{"memory", value.lifetime},
-		{"memory", value.globalPeak},
-		{"memory", value.reallocCount},
-		{"memory", value.reallocSumDelta},
+		{"countZeros", value.countZeros},
+		{"maxAliveReq", value.maxAliveReq},
+		{"aliveReq", value.aliveReq},
+		{"alloc", value.alloc},
+		{"free", value.free},
+		{"lifetime", value.lifetime},
+		{"globalPeak", value.globalPeak},
+		{"reallocCount", value.reallocCount},
+		{"reallocSumDelta", value.reallocSumDelta},
 	};
 }
 
@@ -89,12 +89,14 @@ void from_json(const nlohmann::json & json, StackInfos & value)
 void to_json(nlohmann::json & json, const StackStats & value)
 {
 	char bufferStackId[256];
-	snprintf(bufferStackId, sizeof(bufferStackId), "0x%p", value.stackId);
+	if (value.stackId == nullptr)
+		snprintf(bufferStackId, sizeof(bufferStackId), "0x0");
+	else
+		snprintf(bufferStackId, sizeof(bufferStackId), "%p", value.stackId);
 	json = nlohmann::json{
 		{"stack", value.stack},
 		{"stackId", bufferStackId},
 		{"infos", value.infos},
-		{"count", value.count},
 	};
 }
 
@@ -113,7 +115,7 @@ void from_json(const nlohmann::json & json, StackStats & value)
 	json.at("infos").get_to(value.infos);
 
 	//convert
-	ssize_t status = sscanf(stackId.c_str(), "0x%p", &value.stackId);
+	ssize_t status = sscanf(stackId.c_str(), "%p", &value.stackId);
 	assert(status == 1);
 }
 
@@ -122,6 +124,7 @@ void to_json(nlohmann::json & json, const Stacks & value)
 {
 	json = nlohmann::json{
 		{"stats", value.stats},
+		{"count", value.count},
 	};
 }
 
@@ -131,16 +134,41 @@ void from_json(const nlohmann::json & json, Stacks & value)
 	//check
 	assert(json.contains("stats"));
 	assert(json.contains("count"));
+	//json.at("stats").get_to(value.stats);
+	json.at("count").get_to(value.count);
 
 	//get it
 	const nlohmann::json & stats = json["stats"];
 	assert(stats.is_array());
 	value.stats.reserve(stats.size());
-	for (const auto & it : stats) {
-		auto & stat = value.stats.emplace_back();
-		#pragma omp task
-		it.get_to(stat);
+	for (size_t i = 0 ; i < stats.size() ; i++) {
+		value.stats.emplace_back();
+		//#pragma omp task
+		stats[i].get_to(value.stats[i]);
 	}
+}
+
+/**********************************************************/
+void CountMinMaxSum::merge(const CountMinMaxSum & value)
+{
+	this->count += value.count;
+	this->sum += value.sum;
+	this->min = std::min(this->min, value.min);
+	this->max = std::max(this->max, value.max);
+}
+
+/**********************************************************/
+void StackInfos::merge(const StackInfos & value)
+{
+	this->countZeros += value.countZeros;
+	this->maxAliveReq += value.maxAliveReq;
+	this->aliveReq += value.aliveReq;
+	this->globalPeak += value.globalPeak;
+	this->reallocCount += value.reallocCount;
+	this->reallocSumDelta += value.reallocSumDelta;
+	this->alloc.merge(value.alloc);
+	this->free.merge(value.free);
+	this->lifetime.merge(value.lifetime);
 }
 
 }

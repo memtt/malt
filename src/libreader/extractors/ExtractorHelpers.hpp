@@ -8,24 +8,22 @@
 *    AUTHOR   : Sébastien Valat (INRIA) - 2025
 ***********************************************************/
 
+#ifndef MALT_READER_PREPARE_HPP
+#define MALT_READER_PREPARE_HPP
+
 /**********************************************************/
 #include "format/MaltProfile.hpp"
-#include <nlohmann/json.hpp>
-#include "loader/FileReader.hpp"
 
 /**********************************************************/
-using namespace MALTReader;
-
-/**********************************************************/
-int main(int argc, char ** argv)
+namespace MALTReader
 {
-	//open stream
-	FileReader reader(argv[1], true);
 
-	//load it
-	printf("Parsing JSON...\n");
-	nlohmann::json data = nlohmann::json::parse(begin(reader), end(reader));
-	printf("Extracting infos...\n");
-	MALTFormat::MaltProfile profile = data;
-	printf("Done.\n");
+/**********************************************************/
+struct ExtractorHelpers
+{
+	static bool isAllocFunction(const std::string & name);
+};
+
 }
+
+#endif //MALT_READER_PREPARE_HPP
