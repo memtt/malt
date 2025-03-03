@@ -9,6 +9,8 @@
 ***********************************************************/
 
 /**********************************************************/
+#include <iostream>
+#include "ExtractorHelpers.hpp"
 #include "Extractor.hpp"
 
 /**********************************************************/
@@ -22,6 +24,7 @@ namespace MALTReader
 Extractor::Extractor(const MALTFormat::MaltProfile & profile)
 	:profile(profile)
 {
+	this->buildTranslation();
 }
 
 /**********************************************************/
@@ -30,77 +33,161 @@ Extractor::~Extractor(void)
 }
 
 /**********************************************************/
-FlatProfile Extractor::getFlatProfile(const LocaltionMappingFunc & mapping,const LocaltionFilterFunc & filter)
+void Extractor::buildTranslation(void)
 {
 	//vars
-	FlatProfile result;
+	const StackStats & stats = this->profile.stacks.stats;
+	const SitesInstrMap & instrs  = this->profile.sites.instr;
+	const std::vector<std::string> & strings = this->profile.sites.strings;
+
+	//loop on all
+	for (const auto & statEntry : stats) {
+		for (const LangAddress & addr : statEntry.stack) {
+			//get site
+			const auto & it = instrs.find(addr);
+			assert(it != instrs.end());
+			const InstructionInfos & instrInfos = it->second;
+
+			//check
+			assert(instrInfos.binary != -1);
+			assert(instrInfos.file != -1);
+			assert(instrInfos.function != -1);
+			assert(instrInfos.binary < strings.size());
+			assert(instrInfos.file < strings.size());
+			assert(instrInfos.function < strings.size());
+
+			//build ref
+			InstructionInfosStrRef ref;
+			ref.binary = &strings[instrInfos.binary];
+			ref.function = &strings[instrInfos.function];
+			ref.file = &strings[instrInfos.file];
+
+			//store
+			this->addrTranslation[addr] = ref;
+		}
+	}
+}
+
+/**********************************************************/
+FlatProfileVector Extractor::getFlatProfile(const LocaltionMappingFunc & mapping,const LocaltionFilterFunc & filter)
+{
+	//vars
+	FlatProfileMap result;
 	const StackStats & stats = this->profile.stacks.stats;
 
 	//loop on all
 	for (const auto & statEntry : stats) {
-		
-	}
-
-	//get local
-	/*
-	//setup some local vars
-	///var stats = this.data.stacks.stats;
-	///var res = new Object();
-	////var callers = "total";
-	var cur = null;
-	///if (total == false)
-	///	callers = "childs";
-
-	for(var i in stats)
-	{
 		//extract some short refs
-		var statsEntry = stats[i];
-		var detailedStack = statsEntry.detailedStack;
-		var infos = statsEntry.infos;
-		var stack = statsEntry.stack;
+		const StackInfos & infos = statEntry.infos;
+		const Stack & stack = statEntry.stack;
 
 		//skip C++ operators
-		var skip = 0;
-		while (skip < detailedStack.length && isAllocFunction(detailedStack[skip].function)) skip++;
-		if (skip >= detailedStack.length)
+		size_t skip = 0;
+		while (skip < stack.size() && ExtractorHelpers::isAllocFunction(*addrTranslation[stack[skip]].function)) skip++;
+		if (skip >= stack.size())
 		{
-			console.log("Warning : get call stacks with only allocation function ??? : "+JSON.stringify(detailedStack) +" -> "+JSON.stringify(statsEntry));
+			std::cerr << "Warning : get call stacks with only allocation function ??? : " << std::endl;
+			//TODO make serialization of stacks
+			for (const auto it : stack) {
+				InstructionInfosStrRef infosRef = addrTranslation[stack[skip]];
+				std::cerr << "           - " << *infosRef.file << ":" << infosRef.line << " (" << *infosRef.function << ")" << std::endl;
+			}
+			//TODO print infos
 			continue;
 		}
 
 		//update internal values
-		cur = detailedStack[skip];
-		if (accept == true || accept(cur,infos) == true)
-			mergeStackInfo(res,cur,stack[skip],"own",infos,mapping,fields);
+		LangAddress cur = stack[skip];
+		if (filter(this->addrTranslation[cur],infos) == true)
+			this->mergeStackInfo(result, cur, FLAT_PROFILE_OWN, infos, mapping);
 
 		//childs
-		var done = new Object;
-		for (var j in stack)
+		std::map<std::string, bool> done;
+		for (size_t j = 0 ; j < stack.size() ; j++)
 		{
 			//skip firsts for 'own' mode, otherwise keep them
-			if (total == false && j <= skip)
+			if (j <= skip)
 				continue;
 
 			//extract some quick refs
-			cur = detailedStack[j];
-			var key = mapping(cur);
-			var filter = (accept == true || accept(cur,infos) == true);
-			if (filter && done[key] == undefined && !isAllocFunction(cur.function))
+			const LangAddress cur = stack[j];
+			const std::string key = mapping(addrTranslation[cur], infos);
+			bool accepted = filter(addrTranslation[cur], infos);
+			if (accepted && done.find(key) == done.end())
 			{
 				done[key] = true;
-				mergeStackInfo(res,cur,stack[j],callers,infos,mapping,fields);
+				this->mergeStackInfo(result,cur,FLAT_PROFILE_TOTAL,infos,mapping);
 			}
 		}
 	}
 
 	//convert to simple list
-	var finalRes = new Array();
-	for (var i in res)
-		finalRes.push(res[i]);
+	FlatProfileVector resultVector;
+	resultVector.reserve(result.size());
+	for (const auto & it : result)
+		resultVector.emplace_back(it.second);
 
 	//ok return
-	return finalRes;
-	*/
+	return resultVector;
+}
+
+/**********************************************************/
+void Extractor::mergeStackInfo(FlatProfileMap & into, const LangAddress & addr,FlatProfileCounter counter,const StackInfos & infos,const LocaltionMappingFunc & mapping)
+{
+	//extract key by using mapping function
+	const InstructionInfosStrRef & detailedStackEntry = this->addrTranslation[addr];
+	std::string key = mapping(detailedStackEntry, infos);
+	if (key.empty())
+		key = MALTFormat::to_string(addr);
+
+	//check existing
+	auto it = into.find(key);
+	FlatProfileValue * cur{nullptr};
+	if (it == into.end())
+	{
+		//build it
+		cur = &into[key];
+
+		//copy user requested fields
+		cur->location = &detailedStackEntry;
+	} else {
+		cur = &it->second;
+		//check line and keep the lowest one
+		if (detailedStackEntry.line != 0 && detailedStackEntry.line != -1 && (detailedStackEntry.line < cur->location->line || cur->location->line == -1 || cur->location->line == 0))
+			cur->location = &detailedStackEntry;
+	}
+
+	//check for subkey (own or total) and clone or merge
+	switch(counter) {
+		case FLAT_PROFILE_TOTAL:
+			cur->total.merge(infos);
+			break;
+		case FLAT_PROFILE_OWN:
+			cur->own.merge(infos);
+			break;
+		default:
+			break;
+	}
+}
+
+/**********************************************************/
+void to_json(nlohmann::json & json, const InstructionInfosStrRef & value)
+{
+	json = nlohmann::json{
+		{"binary", *value.binary},
+		{"file", *value.file},
+		{"function", *value.function},
+	};
+}
+
+/**********************************************************/
+void to_json(nlohmann::json & json, const FlatProfileValue & value)
+{
+	json = nlohmann::json{
+		{"own", value.own},
+		{"total", value.total},
+		{"location", *value.location},
+	};
 }
 
 }

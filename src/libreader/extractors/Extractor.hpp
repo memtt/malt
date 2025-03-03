@@ -13,6 +13,7 @@
 
 /**********************************************************/
 #include <functional>
+#include <nlohmann/json.hpp>
 #include "format/MaltProfile.hpp"
 
 /**********************************************************/
@@ -20,12 +21,19 @@ namespace MALTReader
 {
 
 /**********************************************************/
+enum FlatProfileCounter
+{
+	FLAT_PROFILE_OWN,
+	FLAT_PROFILE_TOTAL,
+};
+
+/**********************************************************/
 struct InstructionInfosStrRef
 {
-	const std::string * file;
-	const std::string * binary;
-	const std::string * function;
-	ssize_t line;
+	const std::string * file{nullptr};
+	const std::string * binary{nullptr};
+	const std::string * function{nullptr};
+	ssize_t line{-1};
 };
 
 /**********************************************************/
@@ -33,13 +41,14 @@ struct FlatProfileValue
 {
 	MALTFormat::StackInfos own;
 	MALTFormat::StackInfos total;
-	size_t line{0};
+	const InstructionInfosStrRef * location{nullptr}; 
 };
 
 /**********************************************************/
 typedef std::function<std::string(const InstructionInfosStrRef & /*location*/, const MALTFormat::StackInfos & /*infos*/)> LocaltionMappingFunc;
-typedef std::function<std::string(const InstructionInfosStrRef & /*location*/, const MALTFormat::StackInfos & /*infos*/)> LocaltionFilterFunc;
-typedef std::map<std::string, FlatProfileValue> FlatProfile;
+typedef std::function<bool(const InstructionInfosStrRef & /*location*/, const MALTFormat::StackInfos & /*infos*/)> LocaltionFilterFunc;
+typedef std::map<std::string, FlatProfileValue> FlatProfileMap;
+typedef std::vector<FlatProfileValue> FlatProfileVector;
 
 /**********************************************************/
 class Extractor
@@ -47,10 +56,18 @@ class Extractor
 	public:
 		Extractor(const MALTFormat::MaltProfile & profile);
 		~Extractor(void);
-		FlatProfile getFlatProfile(const LocaltionMappingFunc & mapping,const LocaltionFilterFunc & filter);
+		FlatProfileVector getFlatProfile(const LocaltionMappingFunc & mapping,const LocaltionFilterFunc & filter);
+	private:
+		void mergeStackInfo(FlatProfileMap & into, const MALTFormat::LangAddress & addr,FlatProfileCounter counter,const MALTFormat::StackInfos & infos,const LocaltionMappingFunc & mapping);
+		void buildTranslation(void);
 	private:
 		const MALTFormat::MaltProfile & profile;
+		std::map<MALTFormat::LangAddress, InstructionInfosStrRef> addrTranslation;
 };
+
+/**********************************************************/
+void to_json(nlohmann::json & json, const InstructionInfosStrRef & value);
+void to_json(nlohmann::json & json, const FlatProfileValue & value);
 
 }
 

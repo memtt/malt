@@ -26,7 +26,7 @@ namespace MALTFormat
 struct CountMinMaxSum
 {
 	size_t count{0};
-	size_t min{SIZE_MAX};
+	size_t min{0};
 	size_t max{0};
 	size_t sum{0};
 	void merge(const CountMinMaxSum & value);
@@ -48,9 +48,12 @@ struct StackInfos
 };
 
 /**********************************************************/
+typedef std::vector<LangAddress> Stack;
+
+/**********************************************************/
 struct StackStat
 {
-	std::vector<LangAddress> stack;
+	Stack stack;
 	StackId stackId;
 	StackInfos infos;
 };

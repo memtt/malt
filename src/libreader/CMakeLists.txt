@@ -44,6 +44,7 @@ target_link_libraries(malt-reader malt-profile)
 ############################################################
 if (ENABLE_TESTS)
     add_subdirectory(format/tests)
+    add_subdirectory(extractors/tests)
 endif()
 
 ############################################################

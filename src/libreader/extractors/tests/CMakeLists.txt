@@ -16,12 +16,18 @@ include_directories(${GTEST_INCLUDE_DIRS} ${GMOCK_INCLUDE_DIRS})
 ############################################################
 add_definitions(-DBUILD_DIR="${CMAKE_BINARY_DIR}")
 add_definitions(-DCUR_BUILD_DIR="${CMAKE_CURRENT_BINARY_DIR}")
+add_definitions(-DCUR_SRC_DIR="${CMAKE_CURRENT_SOURCE_DIR}")
 
 ############################################################
 add_executable(TestReaderExtractors
     TestExtractorHelpers.cpp
+    TestExtractor.cpp
 )
 target_link_libraries(TestReaderExtractors malt-profile)
 target_link_libraries(TestReaderExtractors ${GTEST_BOTH_LIBRARIES} ${GMOCK_BOTH_LIBRARIES})
 add_test(TestReaderExtractors TestReaderExtractors)
 
+############################################################
+add_executable(extractor-example example.cpp)
+target_link_options(extractor-example PRIVATE -O0 -g)
+target_link_libraries(extractor-example PRIVATE malt)

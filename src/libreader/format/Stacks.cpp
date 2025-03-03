@@ -151,6 +151,11 @@ void from_json(const nlohmann::json & json, Stacks & value)
 /**********************************************************/
 void CountMinMaxSum::merge(const CountMinMaxSum & value)
 {
+	//first fill
+	if (this->count == 0 && this->min == 0)
+		this->min = value.min;
+
+	//make normal
 	this->count += value.count;
 	this->sum += value.sum;
 	this->min = std::min(this->min, value.min);
