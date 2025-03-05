@@ -26,7 +26,7 @@ static void get_json(nlohmann::json & data)
 	FILE * fp = fopen(fname.c_str(), "r");
 	if (fp == nullptr) {
 		//generate
-		int status = system("MALT_OPTIONS='output:indent=true;output:name=" CUR_BUILD_DIR "/malt-%1.%3' " BUILD_DIR "/src/lib/tests/simple-case-finstr-linked");
+		int status = system("MALT_OPTIONS='output:indent=true;output:name=" CUR_BUILD_DIR "/malt-%1.%3' " BUILD_DIR "/src/lib/insturm/tests/simple-case-finstr-linked");
 	} else {
 		fclose(fp);
 	}
