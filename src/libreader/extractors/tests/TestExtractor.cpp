@@ -41,8 +41,17 @@ TEST(TestExtractorHelpers, getFlatProfile)
 		return location.file->find("/example.cpp") != location.file->npos;
 	});
 
+	//load ref
+	std::ifstream exampleExpected(CUR_SRC_DIR "/example.expected.json");
+	nlohmann::json dataExpected = nlohmann::json::parse(exampleExpected);
+
+	//remove abs path
+	nlohmann::json resJson = ExtractorHelpers::toJsonFiltered(res, {"*.count", "*.location"});
+	ExtractorHelpers::jsonRemoveAbsPath(resJson, SRC_DIR "/");
+
 	//check
-	ASSERT_EQ(ExtractorHelpers::toJsonFiltered(res, {"*.count"}), nlohmann::json::parse("[]"));
+	EXPECT_EQ(dataExpected["getFlatProfile"], resJson);
+	ASSERT_EQ(nlohmann::json::diff(dataExpected["getFlatProfile"], resJson), nlohmann::json::array());
 }
 
 /**********************************************************/
@@ -61,6 +70,14 @@ TEST(TestExtractorHelpers, getFlatProfile_full)
 		return location.file->find("/example.cpp") != location.file->npos;
 	});
 
+	//load ref
+	std::ifstream exampleExpected(CUR_SRC_DIR "/example.expected.json");
+	nlohmann::json dataExpected = nlohmann::json::parse(exampleExpected);
+
+	//remove abs path
+	nlohmann::json resJson = res;
+	ExtractorHelpers::jsonRemoveAbsPath(resJson, SRC_DIR "/");
+
 	//check
-	ASSERT_EQ(nlohmann::json(res), nlohmann::json::parse("[]"));
+	ASSERT_EQ(nlohmann::json::diff(dataExpected["getFlatProfile_full"], resJson), nlohmann::json::array());
 }

@@ -51,3 +51,16 @@ TEST(TestExtractorHelpers, filterJson)
 
 	EXPECT_EQ(json, jsonRef);
 }
+
+/**********************************************************/
+TEST(TestExtractorHelpers, jsonRemoveAbsPath)
+{
+	const std::string jsonStr = "[{\"path\": \"/tmp/malt/bin/malt\", \"min\":10, \"max\":20}, [\"/tmp/malt/bin/malt\", \"/tmp/malt/bin/malt\", 15]]";
+	const std::string jsonStrRef = "[{\"path\": \"bin/malt\", \"min\":10, \"max\":20}, [\"bin/malt\", \"bin/malt\", 15]]";
+	nlohmann::json json = nlohmann::json::parse(jsonStr);
+	nlohmann::json jsonRef = nlohmann::json::parse(jsonStrRef);
+
+	ExtractorHelpers::jsonRemoveAbsPath(json, "/tmp/malt/");
+
+	EXPECT_EQ(json, jsonRef);
+}

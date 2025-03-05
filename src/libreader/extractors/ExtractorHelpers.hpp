@@ -27,8 +27,9 @@ struct ExtractorHelpers
 	template <class T>
 	static nlohmann::json toJsonFiltered(const T & value, const std::vector<std::string> & fieldsToKeep);
 	static void filterJson(nlohmann::json & value, const std::vector<std::string> & fieldsToKeep);
-	static void filterJson(nlohmann::json & value, const std::vector<std::string> & fieldsToKeep, std::vector<std::string> & stack);
+	static bool filterJson(nlohmann::json & value, const std::vector<std::string> & fieldsToKeep, std::vector<std::string> & stack);
 	static bool jsonCheckPath(const std::vector<std::string> & fieldsToKeep, const std::vector<std::string> & stack);
+	static void jsonRemoveAbsPath(nlohmann::json & value, const std::string & prefix);
 };
 
 /**********************************************************/

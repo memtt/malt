@@ -67,8 +67,15 @@ void ExtractorHelpers::filterJson(nlohmann::json & value, const std::vector<std:
 }
 
 /**********************************************************/
-void ExtractorHelpers::filterJson(nlohmann::json & value, const std::vector<std::string> & fieldsToKeep, std::vector<std::string> & stack)
+bool ExtractorHelpers::filterJson(nlohmann::json & value, const std::vector<std::string> & fieldsToKeep, std::vector<std::string> & stack)
 {
+	//keep all childs if selected
+	if (jsonCheckPath(fieldsToKeep, stack))
+		return false;
+
+	//otherwise check
+	bool removedSomes = false;
+	bool removedAll = false;
 	if (value.is_array()) {
 		stack.push_back("[]");
 		for (auto & it : value)
@@ -79,16 +86,26 @@ void ExtractorHelpers::filterJson(nlohmann::json & value, const std::vector<std:
 		std::vector<std::string> keysToRemove;
 		for (const auto & it : value.items()) {
 			stack.push_back(it.key());
-			if (it.value().is_array() || it.value().is_object() ||  jsonCheckPath(fieldsToKeep, stack))
-				filterJson(it.value(), fieldsToKeep, stack);
-			else
+			if (it.value().is_array() || it.value().is_object() ||  jsonCheckPath(fieldsToKeep, stack)) {
+				if (filterJson(it.value(), fieldsToKeep, stack)) {
+					keysToRemove.push_back(it.key());
+					removedSomes = true;
+				}
+			} else {
 				keysToRemove.push_back(it.key());
+				removedSomes = true;
+			}
 			stack.pop_back();
 		}
 		//remove
 		for (const auto & it : keysToRemove)
 			value.erase(it);
+		//all
+		if (removedSomes && value.size() == 0)
+			removedAll = true;
 	}
+
+	return removedAll;
 }
 
 /**********************************************************/
@@ -107,6 +124,24 @@ bool ExtractorHelpers::jsonCheckPath(const std::vector<std::string> & fieldsToKe
 		}
 	}
 	return false;
+}
+
+/**********************************************************/
+void ExtractorHelpers::jsonRemoveAbsPath(nlohmann::json & value, const std::string & prefix)
+{
+	if (value.is_string()) {
+		std::string str = value;
+		std::size_t pos = str.find(prefix);
+		if (pos == std::string::npos) return;
+		str.replace(pos, prefix.length(), "");
+		value = str;
+	} else if (value.is_array()) {
+		for (auto & it : value)
+			ExtractorHelpers::jsonRemoveAbsPath(it, prefix);
+	} else if (value.is_object()) {
+		for (auto & it : value.items())
+			ExtractorHelpers::jsonRemoveAbsPath(it.value(), prefix);
+	}
 }
 
 }

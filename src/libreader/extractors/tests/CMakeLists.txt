@@ -17,6 +17,7 @@ include_directories(${GTEST_INCLUDE_DIRS} ${GMOCK_INCLUDE_DIRS})
 add_definitions(-DBUILD_DIR="${CMAKE_BINARY_DIR}")
 add_definitions(-DCUR_BUILD_DIR="${CMAKE_CURRENT_BINARY_DIR}")
 add_definitions(-DCUR_SRC_DIR="${CMAKE_CURRENT_SOURCE_DIR}")
+add_definitions(-DSRC_DIR="${CMAKE_SOURCE_DIR}")
 
 ############################################################
 add_executable(TestReaderExtractors

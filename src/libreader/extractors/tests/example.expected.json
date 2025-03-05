@@ -1,0 +1,358 @@
+{
+  "getFlatProfile": [
+    {
+      "location": {
+        "binary": "src/libreader/extractors/tests/example.cpp",
+        "file": "src/libreader/extractors/tests/example.cpp",
+        "function": "caller()"
+      },
+      "own": {
+        "alloc": {
+          "count": 0
+        },
+        "free": {
+          "count": 0
+        },
+        "lifetime": {
+          "count": 0
+        }
+      },
+      "total": {
+        "alloc": {
+          "count": 2
+        },
+        "free": {
+          "count": 2
+        },
+        "lifetime": {
+          "count": 2
+        }
+      }
+    },
+    {
+      "location": {
+        "binary": "src/libreader/extractors/tests/example.cpp",
+        "file": "src/libreader/extractors/tests/example.cpp",
+        "function": "callerRecurse(int)"
+      },
+      "own": {
+        "alloc": {
+          "count": 0
+        },
+        "free": {
+          "count": 0
+        },
+        "lifetime": {
+          "count": 0
+        }
+      },
+      "total": {
+        "alloc": {
+          "count": 2
+        },
+        "free": {
+          "count": 2
+        },
+        "lifetime": {
+          "count": 2
+        }
+      }
+    },
+    {
+      "location": {
+        "binary": "src/libreader/extractors/tests/example.cpp",
+        "file": "src/libreader/extractors/tests/example.cpp",
+        "function": "leaf()"
+      },
+      "own": {
+        "alloc": {
+          "count": 2
+        },
+        "free": {
+          "count": 2
+        },
+        "lifetime": {
+          "count": 2
+        }
+      },
+      "total": {
+        "alloc": {
+          "count": 0
+        },
+        "free": {
+          "count": 0
+        },
+        "lifetime": {
+          "count": 0
+        }
+      }
+    },
+    {
+      "location": {
+        "binary": "src/libreader/extractors/tests/example.cpp",
+        "file": "src/libreader/extractors/tests/example.cpp",
+        "function": "main"
+      },
+      "own": {
+        "alloc": {
+          "count": 0
+        },
+        "free": {
+          "count": 0
+        },
+        "lifetime": {
+          "count": 0
+        }
+      },
+      "total": {
+        "alloc": {
+          "count": 5
+        },
+        "free": {
+          "count": 2
+        },
+        "lifetime": {
+          "count": 2
+        }
+      }
+    }
+  ],
+  "getFlatProfile_full": [
+    {
+      "location": {
+        "binary": "src/libreader/extractors/tests/example.cpp",
+        "file": "src/libreader/extractors/tests/example.cpp",
+        "function": "caller()"
+      },
+      "own": {
+        "aliveReq": 0,
+        "alloc": {
+          "count": 0,
+          "max": 0,
+          "min": 0,
+          "sum": 0
+        },
+        "countZeros": 0,
+        "free": {
+          "count": 0,
+          "max": 0,
+          "min": 0,
+          "sum": 0
+        },
+        "globalPeak": 0,
+        "lifetime": {
+          "count": 0,
+          "max": 0,
+          "min": 0,
+          "sum": 0
+        },
+        "maxAliveReq": 0,
+        "reallocCount": 0,
+        "reallocSumDelta": 0
+      },
+      "total": {
+        "aliveReq": 0,
+        "alloc": {
+          "count": 2,
+          "max": 1048576,
+          "min": 0,
+          "sum": 1048592
+        },
+        "countZeros": 0,
+        "free": {
+          "count": 2,
+          "max": 1048576,
+          "min": 16,
+          "sum": 1048592
+        },
+        "globalPeak": 1048592,
+        "lifetime": {
+          "count": 2,
+          "max": 4171293,
+          "min": 0,
+          "sum": 6646867
+        },
+        "maxAliveReq": 1048592,
+        "reallocCount": 0,
+        "reallocSumDelta": 0
+      }
+    },
+    {
+      "location": {
+        "binary": "src/libreader/extractors/tests/example.cpp",
+        "file": "src/libreader/extractors/tests/example.cpp",
+        "function": "callerRecurse(int)"
+      },
+      "own": {
+        "aliveReq": 0,
+        "alloc": {
+          "count": 0,
+          "max": 0,
+          "min": 0,
+          "sum": 0
+        },
+        "countZeros": 0,
+        "free": {
+          "count": 0,
+          "max": 0,
+          "min": 0,
+          "sum": 0
+        },
+        "globalPeak": 0,
+        "lifetime": {
+          "count": 0,
+          "max": 0,
+          "min": 0,
+          "sum": 0
+        },
+        "maxAliveReq": 0,
+        "reallocCount": 0,
+        "reallocSumDelta": 0
+      },
+      "total": {
+        "aliveReq": 0,
+        "alloc": {
+          "count": 2,
+          "max": 1048576,
+          "min": 0,
+          "sum": 1048592
+        },
+        "countZeros": 0,
+        "free": {
+          "count": 2,
+          "max": 1048576,
+          "min": 16,
+          "sum": 1048592
+        },
+        "globalPeak": 1048592,
+        "lifetime": {
+          "count": 2,
+          "max": 4171293,
+          "min": 0,
+          "sum": 6646867
+        },
+        "maxAliveReq": 1048592,
+        "reallocCount": 0,
+        "reallocSumDelta": 0
+      }
+    },
+    {
+      "location": {
+        "binary": "src/libreader/extractors/tests/example.cpp",
+        "file": "src/libreader/extractors/tests/example.cpp",
+        "function": "leaf()"
+      },
+      "own": {
+        "aliveReq": 0,
+        "alloc": {
+          "count": 2,
+          "max": 1048576,
+          "min": 0,
+          "sum": 1048592
+        },
+        "countZeros": 0,
+        "free": {
+          "count": 2,
+          "max": 1048576,
+          "min": 16,
+          "sum": 1048592
+        },
+        "globalPeak": 1048592,
+        "lifetime": {
+          "count": 2,
+          "max": 4171293,
+          "min": 0,
+          "sum": 6646867
+        },
+        "maxAliveReq": 1048592,
+        "reallocCount": 0,
+        "reallocSumDelta": 0
+      },
+      "total": {
+        "aliveReq": 0,
+        "alloc": {
+          "count": 0,
+          "max": 0,
+          "min": 0,
+          "sum": 0
+        },
+        "countZeros": 0,
+        "free": {
+          "count": 0,
+          "max": 0,
+          "min": 0,
+          "sum": 0
+        },
+        "globalPeak": 0,
+        "lifetime": {
+          "count": 0,
+          "max": 0,
+          "min": 0,
+          "sum": 0
+        },
+        "maxAliveReq": 0,
+        "reallocCount": 0,
+        "reallocSumDelta": 0
+      }
+    },
+    {
+      "location": {
+        "binary": "src/libreader/extractors/tests/example.cpp",
+        "file": "src/libreader/extractors/tests/example.cpp",
+        "function": "main"
+      },
+      "own": {
+        "aliveReq": 0,
+        "alloc": {
+          "count": 0,
+          "max": 0,
+          "min": 0,
+          "sum": 0
+        },
+        "countZeros": 0,
+        "free": {
+          "count": 0,
+          "max": 0,
+          "min": 0,
+          "sum": 0
+        },
+        "globalPeak": 0,
+        "lifetime": {
+          "count": 0,
+          "max": 0,
+          "min": 0,
+          "sum": 0
+        },
+        "maxAliveReq": 0,
+        "reallocCount": 0,
+        "reallocSumDelta": 0
+      },
+      "total": {
+        "aliveReq": 873,
+        "alloc": {
+          "count": 5,
+          "max": 1048576,
+          "min": 0,
+          "sum": 1049465
+        },
+        "countZeros": 0,
+        "free": {
+          "count": 2,
+          "max": 1048576,
+          "min": 16,
+          "sum": 1048592
+        },
+        "globalPeak": 1049465,
+        "lifetime": {
+          "count": 2,
+          "max": 4171293,
+          "min": 0,
+          "sum": 6646867
+        },
+        "maxAliveReq": 1049465,
+        "reallocCount": 0,
+        "reallocSumDelta": 0
+      }
+    }
+  ]
+}
