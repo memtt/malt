@@ -374,7 +374,7 @@ size_t AllocStackProfiler::onFreeEvent(void* ptr, MALT::Stack* userStack, MMCall
 				if (this->options.dumpOnSysFullAt) {
 					size_t sysFullAt = (100*((sysMem.totalMemory - sysMem.freeMemory - sysMem.cached))) / sysMem.totalMemory;
 					if (sysFullAt >= this->options.dumpOnSysFullAt) {
-						fprintf(stderr, "MALT: System full at %d% (> sys-full-at=%d%) [%zu / %zu]\n",
+						fprintf(stderr, "MALT: System full at %zu%% (> sys-full-at=%d%%) [%zu / %zu]\n",
 							sysFullAt,
 							this->options.dumpOnSysFullAt,
 							(sysMem.totalMemory - sysMem.freeMemory - sysMem.cached),

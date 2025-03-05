@@ -15,7 +15,7 @@
 //#include <thread>
 //libc POSIX.1, here we use GNU specific RTLD_NEXT (need _GNU_SOURCE)
 #include <dlfcn.h>
-#include "../lib/injectors/InjectPythonInit.hpp"
+#include "../lib/instrum/injectors/InjectPythonInit.hpp"
 
 /**********************************************************/
 int main(int argc, char** argv)

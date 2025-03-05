@@ -54,11 +54,11 @@ TEST(TestInstrum, c_basic_malloc)
 	MALT::gblState.onExit();
 
 	//load ref
-	std::string ref = MALT::Helpers::loadFullFile(SRC_DIR "/src/lib/wrappers/tests/ref-c-basic-malloc.txt");
+	std::string ref = MALT::Helpers::loadFullFile(CUR_SRC_DIR "/ref-c-basic-malloc.txt");
 
 	//conver
-	std::string result = MALT::Helpers::simpleProfileDump(profile, SRC_DIR "/src/lib/wrappers/tests/TestInstrum.cpp");
+	std::string result = MALT::Helpers::simpleProfileDump(profile, CUR_SRC_DIR "/TestInstrum.cpp");
 
-	//MALT::Helpers::writeFullFile(SRC_DIR "/src/lib/wrappers/tests/ref-c-basic-malloc.txt", result);
+	//MALT::Helpers::writeFullFile(CUR_SRC_DIR "/ref-c-basic-malloc.txt", result);
 	ASSERT_EQ(ref, result);
 }

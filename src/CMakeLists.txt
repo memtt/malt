@@ -31,9 +31,7 @@ CHECK_C_SOURCE_RUNS("int main() {long long Rt; asm volatile(\"mrs %0,  CNTVCT_EL
 CHECK_C_SOURCE_RUNS("int main() {long long cc; asm volatile(\"mrs %0, PMCCNTR_EL0\" : \"=r\"(cc)); return 0;}" HAVE_ARMV8_PMCCNTR_EL0)
 
 ############################################################
-if (ENABLE_PROFILER)
-	add_subdirectory(lib)
-endif(ENABLE_PROFILER)
+add_subdirectory(lib)
 
 ############################################################
 add_subdirectory(integration)

@@ -3,7 +3,7 @@
 *    VERSION  : 1.2.4
 *    DATE     : 10/2024
 *    LICENSE  : CeCILL-C
-*    FILE     : src/lib/core/tests/TestVmaTracker.cpp
+*    FILE     : src/lib/insturm/core/tests/TestVmaTracker.cpp
 *-----------------------------------------------------------
 *    AUTHOR   : Sébastien Valat - 2014 - 2024
 *    AUTHOR   : Sébastien Valat (ECR) - 2014
@@ -41,12 +41,12 @@ TEST(TestFullAnalysis, basic_run_and_check_file_line_counter)
 	ASSERT_EQ(status_sys, 0);
 
 	//extract infis
-	std::string result = MALT::Helpers::simpleProfileDump(EXE_PATH "/malt-current-out-basic-run-and-check.json", SRC_PATH "/src/lib/tests/simple-case.cpp");
+	std::string result = MALT::Helpers::simpleProfileDump(EXE_PATH "/malt-current-out-basic-run-and-check.json", SRC_PATH "/src/lib/insturm/tests/simple-case.cpp");
 		 
 	//load file
-	std::string ref = MALT::Helpers::loadFullFile(SRC_PATH "/src/lib/tests/malt-current-out-basic-run-and-check-extract-ref.txt");
+	std::string ref = MALT::Helpers::loadFullFile(SRC_PATH "/src/lib/insturm/tests/malt-current-out-basic-run-and-check-extract-ref.txt");
 
-	//MALT::Helpers::writeFullFile(SRC_PATH "/src/lib/tests/malt-current-out-basic-run-and-check-extract-ref.txt", result);
+	//MALT::Helpers::writeFullFile(SRC_PATH "/src/lib/insturm/tests/malt-current-out-basic-run-and-check-extract-ref.txt", result);
 
 	//compare
 	ASSERT_EQ(result, ref);

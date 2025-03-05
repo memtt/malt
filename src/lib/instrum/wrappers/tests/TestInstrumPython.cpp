@@ -38,7 +38,7 @@ TEST(TestInstrum, python_basic_array_backtrace)
 
 	//make an alloc
 	maltEnable();
-	const char * argv[] = {"TestInstrum", SRC_DIR "/src/lib/wrappers/tests/main1.py", NULL};
+	const char * argv[] = {"TestInstrum", CUR_SRC_DIR "/main1.py", NULL};
 	int status = Py_BytesMain(2, (char**)argv);
 	maltDisable();
 
@@ -50,13 +50,13 @@ TEST(TestInstrum, python_basic_array_backtrace)
 
 	//load ref
 	//TODO: this is a bad trick, I should avoid extracting values of main() which vary due to python version.
-	std::string ref1 = MALT::Helpers::loadFullFile(SRC_DIR "/src/lib/wrappers/tests/ref-pyhton-basic-array-backtrace.txt");
+	std::string ref1 = MALT::Helpers::loadFullFile(SRC_DIR "/src/lib/insturm/wrappers/tests/ref-pyhton-basic-array-backtrace.txt");
 
 	//conver
-	std::string result = MALT::Helpers::simpleProfileDump(profile, SRC_DIR "/src/lib/wrappers/tests/main1.py", false);
+	std::string result = MALT::Helpers::simpleProfileDump(profile, CUR_SRC_DIR "/main1.py", false);
 
 	//save ref
-	//MALT::Helpers::writeFullFile(SRC_DIR "/src/lib/wrappers/tests/ref-pyhton-basic-array-backtrace.txt", result);
+	//MALT::Helpers::writeFullFile(SRC_DIR "/src/lib/insturm/wrappers/tests/ref-pyhton-basic-array-backtrace.txt", result);
 
 	//check
 	ASSERT_EQ(ref1, result);
@@ -72,7 +72,7 @@ TEST(TestInstrum, python_basic_array_enter_exit)
 
 	//make an alloc
 	maltEnable();
-	const char * argv[] = {"TestInstrum", SRC_DIR "/src/lib/wrappers/tests/main1.py", NULL};
+	const char * argv[] = {"TestInstrum", CUR_SRC_DIR "/main1.py", NULL};
 	int status = Py_BytesMain(2, (char**)argv);
 	maltDisable();
 
@@ -84,13 +84,13 @@ TEST(TestInstrum, python_basic_array_enter_exit)
 
 	//load ref
 	//TODO: this is a bad trick, I should avoid extracting values of main() which vary due to python version.
-	std::string ref1 = MALT::Helpers::loadFullFile(SRC_DIR "/src/lib/wrappers/tests/ref-pyhton-basic-array.txt");
+	std::string ref1 = MALT::Helpers::loadFullFile(SRC_DIR "/src/lib/insturm/wrappers/tests/ref-pyhton-basic-array.txt");
 	
 	//conver
-	std::string result = MALT::Helpers::simpleProfileDump(profile, SRC_DIR "/src/lib/wrappers/tests/main1.py", false);
+	std::string result = MALT::Helpers::simpleProfileDump(profile, CUR_SRC_DIR "/main1.py", false);
 
 	//save ref
-	//MALT::Helpers::writeFullFile(SRC_DIR "/src/lib/wrappers/tests/ref-pyhton-basic-array.txt", result);
+	//MALT::Helpers::writeFullFile(SRC_DIR "/src/lib/insturm/wrappers/tests/ref-pyhton-basic-array.txt", result);
 
 	//check
 	ASSERT_EQ(ref1, result);
