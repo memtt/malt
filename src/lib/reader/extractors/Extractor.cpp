@@ -54,6 +54,7 @@ void Extractor::buildTranslation(void)
 			ref.function = &this->getString(instrInfos.function);
 			ref.file = &this->getString(instrInfos.file);
 			ref.line = instrInfos.line;
+			ref.origin = addr;
 
 			//store
 			this->addrTranslation[addr] = ref;
@@ -65,63 +66,91 @@ void Extractor::buildTranslation(void)
 FlatProfileVector Extractor::getFlatProfile(const LocaltionMappingFunc & mapping,const LocaltionFilterFunc & filter) const
 {
 	//vars
-	FlatProfileMap result;
+	FlatProfileMap resultGeneral;
 	const StackStats & stats = this->profile.stacks.stats;
 
 	//loop on all
-	for (const auto & statEntry : stats) {
-		//extract some short refs
-		const StackInfos & infos = statEntry.infos;
-		const Stack & stack = statEntry.stack;
+	#pragma omp parallel
+	{
+		//local result to threading
+		FlatProfileMap result;
 
-		//skip C++ operators
-		size_t skip = 0;
-		while (skip < stack.size() && ExtractorHelpers::isAllocFunction(*addrTranslation.at(stack[skip]).function)) skip++;
-		if (skip >= stack.size())
-		{
-			std::cerr << "Warning : get call stacks with only allocation function ??? : " << std::endl;
-			//TODO make serialization of stacks
-			for (const auto it : stack) {
-				InstructionInfosStrRef infosRef = addrTranslation.at(stack[skip]);
-				std::cerr << "           - " << *infosRef.file << ":" << infosRef.line << " (" << *infosRef.function << ")" << std::endl;
+		//loop with threads
+		#pragma omp for
+		for (const auto & statEntry : stats) {
+			//extract some short refs
+			const StackInfos & infos = statEntry.infos;
+			const Stack & stack = statEntry.stack;
+
+			//skip C++ operators
+			size_t skip = 0;
+			while (skip < stack.size() && ExtractorHelpers::isAllocFunction(*addrTranslation.at(stack[skip]).function)) skip++;
+			if (skip >= stack.size())
+			{
+				std::cerr << "Warning : get call stacks with only allocation function ??? : " << std::endl;
+				//TODO make serialization of stacks
+				for (const auto it : stack) {
+					InstructionInfosStrRef infosRef = addrTranslation.at(stack[skip]);
+					std::cerr << "           - " << *infosRef.file << ":" << infosRef.line << " (" << *infosRef.function << ")" << std::endl;
+				}
+				//TODO print infos
+				continue;
 			}
-			//TODO print infos
-			continue;
+
+			//update internal values
+			LangAddress cur = stack[skip];
+			if (filter(this->addrTranslation.at(cur),infos) == true)
+				this->mergeStackInfo(result, cur, FLAT_PROFILE_OWN, infos, mapping);
+
+			//childs
+			std::map<std::string, bool> done;
+			for (size_t j = 0 ; j < stack.size() ; j++)
+			{
+				//skip firsts for 'own' mode, otherwise keep them
+				if (j <= skip)
+					continue;
+
+				//extract some quick refs
+				const LangAddress cur = stack[j];
+				const std::string key = mapping(addrTranslation.at(cur), infos);
+				bool accepted = filter(addrTranslation.at(cur), infos);
+				if (accepted && done.find(key) == done.end())
+				{
+					done[key] = true;
+					this->mergeStackInfo(result,cur,FLAT_PROFILE_TOTAL,infos,mapping);
+				}
+			}
 		}
 
-		//update internal values
-		LangAddress cur = stack[skip];
-		if (filter(this->addrTranslation.at(cur),infos) == true)
-			this->mergeStackInfo(result, cur, FLAT_PROFILE_OWN, infos, mapping);
-
-		//childs
-		std::map<std::string, bool> done;
-		for (size_t j = 0 ; j < stack.size() ; j++)
+		//merge
+		#pragma omp critical
 		{
-			//skip firsts for 'own' mode, otherwise keep them
-			if (j <= skip)
-				continue;
-
-			//extract some quick refs
-			const LangAddress cur = stack[j];
-			const std::string key = mapping(addrTranslation.at(cur), infos);
-			bool accepted = filter(addrTranslation.at(cur), infos);
-			if (accepted && done.find(key) == done.end())
-			{
-				done[key] = true;
-				this->mergeStackInfo(result,cur,FLAT_PROFILE_TOTAL,infos,mapping);
-			}
+			for (auto & it : result)
+				resultGeneral[it.first].merge(it.second);
 		}
 	}
 
 	//convert to simple list
 	FlatProfileVector resultVector;
-	resultVector.reserve(result.size());
-	for (const auto & it : result)
+	resultVector.reserve(resultGeneral.size());
+	for (const auto & it : resultGeneral)
 		resultVector.emplace_back(it.second);
 
 	//ok return
 	return resultVector;
+}
+
+/**********************************************************/
+void FlatProfileValue::merge(const FlatProfileValue & value)
+{
+	//merge
+	this->own.merge(value.own);
+	this->total.merge(value.total);
+	//keep lowest line
+	if (this->location == nullptr)
+		this->location = value.location;
+	else if (value.location != nullptr && value.location->line != -1 && value.location->line < this->location->line)
+		this->location = value.location;
 }
 
 /**********************************************************/

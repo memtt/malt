@@ -23,15 +23,18 @@ int main(int argc, char ** argv)
 	const Extractor & extractor = profile.getExtractor();
 
 	//extract
-	/*FlatProfileVector res = extractor.getFlatProfile([](const InstructionInfosStrRef & location, const MALTFormat::StackInfos & infos){
+	fprintf(stderr, "Treat\n");
+	FlatProfileVector res = extractor.getFlatProfile([](const InstructionInfosStrRef & location, const MALTFormat::StackInfos & infos){
 		return *location.function;
 	},[](const InstructionInfosStrRef & location, const MALTFormat::StackInfos & infos){
 		return true;
 	});
 
+	fprintf(stderr, "Treat end\n");
+
 	//to json
 	nlohmann::json json = res;
-	std::cout << json << std::endl;*/
+	std::cout << json << std::endl;
 
 	return EXIT_SUCCESS;
 }

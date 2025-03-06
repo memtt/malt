@@ -154,11 +154,14 @@ void CountMinMaxSum::merge(const CountMinMaxSum & value)
 	//first fill
 	if (this->count == 0 && this->min == 0)
 		this->min = value.min;
+	size_t value_min = value.min;
+	if (value.count == 0 && value.min == 0)
+		value_min = this->min;
 
 	//make normal
 	this->count += value.count;
 	this->sum += value.sum;
-	this->min = std::min(this->min, value.min);
+	this->min = std::min(this->min, value_min);
 	this->max = std::max(this->max, value.max);
 }
 

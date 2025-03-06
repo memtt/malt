@@ -160,7 +160,7 @@
         "alloc": {
           "count": 2,
           "max": 1048576,
-          "min": 0,
+          "min": 16,
           "sum": 1048592
         },
         "countZeros": 0,
@@ -174,7 +174,7 @@
         "lifetime": {
           "count": 2,
           "max": 4171293,
-          "min": 0,
+          "min": 2475574,
           "sum": 6646867
         },
         "maxAliveReq": 1048592,
@@ -220,7 +220,7 @@
         "alloc": {
           "count": 2,
           "max": 1048576,
-          "min": 0,
+          "min": 16,
           "sum": 1048592
         },
         "countZeros": 0,
@@ -234,7 +234,7 @@
         "lifetime": {
           "count": 2,
           "max": 4171293,
-          "min": 0,
+          "min": 2475574,
           "sum": 6646867
         },
         "maxAliveReq": 1048592,
@@ -254,7 +254,7 @@
         "alloc": {
           "count": 2,
           "max": 1048576,
-          "min": 0,
+          "min": 16,
           "sum": 1048592
         },
         "countZeros": 0,
@@ -268,7 +268,7 @@
         "lifetime": {
           "count": 2,
           "max": 4171293,
-          "min": 0,
+          "min": 2475574,
           "sum": 6646867
         },
         "maxAliveReq": 1048592,
@@ -340,7 +340,7 @@
         "alloc": {
           "count": 5,
           "max": 1048576,
-          "min": 0,
+          "min": 16,
           "sum": 1049465
         },
         "countZeros": 0,
@@ -354,7 +354,7 @@
         "lifetime": {
           "count": 2,
           "max": 4171293,
-          "min": 0,
+          "min": 2475574,
           "sum": 6646867
         },
         "maxAliveReq": 1049465,

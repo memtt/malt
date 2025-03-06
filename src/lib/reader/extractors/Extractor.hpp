@@ -34,6 +34,7 @@ struct InstructionInfosStrRef
 	const std::string * binary{nullptr};
 	const std::string * function{nullptr};
 	ssize_t line{-1};
+	MALTFormat::LangAddress origin{MALTFormat::LANG_C, nullptr};
 };
 
 /**********************************************************/
@@ -42,6 +43,7 @@ struct FlatProfileValue
 	MALTFormat::StackInfos own;
 	MALTFormat::StackInfos total;
 	const InstructionInfosStrRef * location{nullptr}; 
+	void merge(const FlatProfileValue & value);
 };
 
 /**********************************************************/
