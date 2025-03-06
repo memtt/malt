@@ -42,7 +42,7 @@ var maltProject = new MaltProject(args.params.input, function() {
 	console.log(file);
 	console.log(source_file);
 	console.log("--------------------------------------------");
-	var tmp = maltProject.getFileLinesFlatProfile(source_file, true);
+	/*var tmp = maltProject.getFileLinesFlatProfile(source_file, true);
 	tmp.forEach((value) => {
 		if (value.total != undefined) {
 			var d = JSON.stringify(value.total);
@@ -53,5 +53,5 @@ var maltProject = new MaltProject(args.params.input, function() {
 			console.log(` - free: ${JSON.stringify(value.total.alloc)}`);
 			console.log(` - globalPeak: ${value.total.globalPeak}`);
 		}
-	});
+	});*/
 });

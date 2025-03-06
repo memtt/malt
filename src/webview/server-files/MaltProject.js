@@ -1019,6 +1019,7 @@ function mergeStackInfo(into,detailedStackEntry,addr,subKey,infos,mapping,fields
  * Short wrapper to get strings from data.stacks.strings section and to manage undefined files.
  * @param strings Must be the translation table from sites.strings
 **/
+//--PORTED IN C++ VERSION--
 function getStringFromList(strings,id,defaultValue)
 {
 	if (id == undefined || id == -1)

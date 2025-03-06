@@ -28,6 +28,7 @@ Addr2Line::Addr2Line(StringIdDictionnary & dict, const std::string & elfFile, si
 	assert(elfFile.empty() == false);
 
 	this->elfFile = elfFile;
+	this->elfFileId = this->dict.getId(String(elfFile));
 	this->aslrOffset = aslrOffset;
 	this->bucketSize = bucketSize;
 }
@@ -164,6 +165,9 @@ bool Addr2Line::loadEntry(CallSite & callSite, FILE * fp)
 
 		//extract line
 		callSite.line = atoi(sep+1);
+
+		//get filename and function name address
+		callSite.binary = elfFileId;
 
 		//get filename and function name address
 		callSite.file = this->dict.getId(bufferFile);

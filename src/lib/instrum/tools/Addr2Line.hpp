@@ -38,6 +38,8 @@ struct CallSite
 	int file;
 	/** Define the function ID (pointing the string) of the call site. **/
 	int function;
+	/** Define the binary ID (pointing the string) of the call site. */
+	int binary;
 	/** Pointer to the proc map entry related to the call site. **/
 	LinuxProcMapEntry * mapEntry;
 };
@@ -66,6 +68,7 @@ class Addr2Line
 	private:
 		StringIdDictionnary & dict;
 		std::string elfFile;
+		int elfFileId{-1};
 		size_t bucketSize;
 		size_t aslrOffset;
 		Addr2LineTaskVector tasks;

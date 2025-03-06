@@ -548,7 +548,7 @@ void convertToJson(htopml::JsonState& json, const CallSite& value)
 		if (value.line != 0)
 			json.printField("line",value.line);
 		if (value.file != -1)
-			json.printField("binary",value.file);
+			json.printField("binary",value.binary);
 	}
 	json.closeStruct();
 }
