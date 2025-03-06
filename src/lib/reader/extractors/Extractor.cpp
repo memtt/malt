@@ -215,6 +215,12 @@ void to_json(nlohmann::json & json, const FlatProfileValue & value)
 }
 
 /**********************************************************/
+void to_json(nlohmann::json & json, const InstructionInfosStrRef* value)
+{
+	to_json(json, *value);
+}
+
+/**********************************************************/
 const std::string& Extractor::getString(ssize_t id) const
 {
 	//check
@@ -226,6 +232,39 @@ const std::string& Extractor::getString(ssize_t id) const
 		return unknown;
 	else
 		return this->profile.sites.strings[id];
+}
+
+/**********************************************************/
+FunctionStackVector Extractor::getDebugStackList() const
+{
+	//vars
+	FunctionStackVector res;
+	const auto & stats = this->profile.stacks.stats;
+
+	//pre allocate
+	res.reserve(stats.size());
+	for (size_t i = 0 ; i < stats.size() ; i++) {
+		res.emplace_back();
+	}
+
+	//loop on all
+	#pragma omp parallel for
+	for (size_t i = 0 ; i < stats.size() ; i++) {
+		//vars
+		const auto & statEntry = stats[i];
+		auto & outStack = res[i];
+
+		//pre allocate
+		outStack.reserve(statEntry.stack.size());
+
+		//fill
+		for (const auto & addr : statEntry.stack) {
+			outStack.push_back(*this->addrTranslation.at(addr).function);
+		}
+	}
+
+	//ok
+	return res;
 }
 
 }

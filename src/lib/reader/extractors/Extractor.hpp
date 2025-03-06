@@ -51,6 +51,7 @@ typedef std::function<std::string(const InstructionInfosStrRef & /*location*/, c
 typedef std::function<bool(const InstructionInfosStrRef & /*location*/, const MALTFormat::StackInfos & /*infos*/)> LocaltionFilterFunc;
 typedef std::map<std::string, FlatProfileValue> FlatProfileMap;
 typedef std::vector<FlatProfileValue> FlatProfileVector;
+typedef std::vector<std::vector<std::string> > FunctionStackVector;
 
 /**********************************************************/
 class Extractor
@@ -59,6 +60,7 @@ class Extractor
 		Extractor(const MALTFormat::MaltProfile & profile);
 		~Extractor(void);
 		FlatProfileVector getFlatProfile(const LocaltionMappingFunc & mapping,const LocaltionFilterFunc & filter) const;
+		FunctionStackVector getDebugStackList() const;
 	private:
 		void mergeStackInfo(FlatProfileMap & into, const MALTFormat::LangAddress & addr,FlatProfileCounter counter,const MALTFormat::StackInfos & infos,const LocaltionMappingFunc & mapping) const;
 		void buildTranslation(void);

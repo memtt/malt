@@ -8,29 +8,35 @@
 *    AUTHOR   : Sébastien Valat (INRIA) - 2025
 ***********************************************************/
 
-#ifndef MALT_READER_PROFILE_HPP
-#define MALT_READER_PROFILE_HPP
-
 /**********************************************************/
-#include "format/MaltProfile.hpp"
-#include "extractors/Extractor.hpp"
+#include "WebProfile.hpp"
 
 /**********************************************************/
 namespace MALTReader
 {
 
 /**********************************************************/
-class Profile
+WebProfile::WebProfile(const std::string & fname, bool loadProgressBar)
+	:Profile(fname, loadProgressBar)
 {
-	public:
-		Profile(const std::string & fname, bool loadProgressBar = false);
-		virtual ~Profile(void);
-		const Extractor & getExtractor(void) const;
-	protected:
-		MALTFormat::MaltProfile profile;
-		Extractor * extractor{nullptr};
-};
+}
+
+/**********************************************************/
+WebProfile::~WebProfile(void)
+{
+}
+
+/**********************************************************/
+nlohmann::json WebProfile::getProcMap(void) const
+{
+	return this->profile.sites.map;
+}
+
+/**********************************************************/
+nlohmann::json WebProfile::getDebugStackList(void) const
+{
+	return this->extractor->getDebugStackList();
+}
 
 }
 
-#endif //MALT_READER_PROFILE_HPP

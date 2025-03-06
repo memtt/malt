@@ -10,7 +10,7 @@
 
 /**********************************************************/
 #include <iostream>
-#include "Profile.hpp"
+#include "WebProfile.hpp"
 #include "extractors/ExtractorHelpers.hpp"
 
 /**********************************************************/
@@ -19,7 +19,13 @@ using namespace MALTReader;
 /**********************************************************/
 int main(int argc, char ** argv)
 {
-	Profile profile(argv[1], true);
+	WebProfile profile(argv[1], true);
+	std::cout << profile.getDebugStackList() << std::endl;
+	
+
+	return EXIT_SUCCESS;
+
+
 	const Extractor & extractor = profile.getExtractor();
 
 	//extract
