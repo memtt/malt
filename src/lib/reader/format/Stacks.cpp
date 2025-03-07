@@ -13,6 +13,9 @@
 #include "Stacks.hpp"
 
 /**********************************************************/
+#define jsContains(value, field) ((value).find((field)) != (value).end())
+
+/**********************************************************/
 namespace MALTFormat
 {
 
@@ -31,10 +34,10 @@ void to_json(nlohmann::json & json, const CountMinMaxSum & value)
 void from_json(const nlohmann::json & json, CountMinMaxSum & value)
 {
 	//checks
-	assert(json.contains("count"));
-	assert(json.contains("min"));
-	assert(json.contains("max"));
-	assert(json.contains("sum"));
+	assert(jsContains(json, "count"));
+	assert(jsContains(json, "min"));
+	assert(jsContains(json, "max"));
+	assert(jsContains(json, "sum"));
 
 	//load
 	json.at("count").get_to(value.count);
@@ -63,15 +66,15 @@ void to_json(nlohmann::json & json, const StackInfos & value)
 void from_json(const nlohmann::json & json, StackInfos & value)
 {
 	//checks
-	assert(json.contains("countZeros"));
-	assert(json.contains("maxAliveReq"));
-	assert(json.contains("aliveReq"));
-	assert(json.contains("alloc"));
-	assert(json.contains("free"));
-	assert(json.contains("lifetime"));
-	assert(json.contains("globalPeak"));
-	assert(json.contains("reallocCount"));
-	assert(json.contains("reallocSumDelta"));
+	assert(jsContains(json, "countZeros"));
+	assert(jsContains(json, "maxAliveReq"));
+	assert(jsContains(json, "aliveReq"));
+	assert(jsContains(json, "alloc"));
+	assert(jsContains(json, "free"));
+	assert(jsContains(json, "lifetime"));
+	assert(jsContains(json, "globalPeak"));
+	assert(jsContains(json, "reallocCount"));
+	assert(jsContains(json, "reallocSumDelta"));
 
 	//load
 	json.at("countZeros").get_to(value.countZeros);
@@ -104,9 +107,9 @@ void to_json(nlohmann::json & json, const StackStat & value)
 void from_json(const nlohmann::json & json, StackStat & value)
 {
 	//checks
-	assert(json.contains("stack"));
-	assert(json.contains("stackId"));
-	assert(json.contains("infos"));
+	assert(jsContains(json, "stack"));
+	assert(jsContains(json, "stackId"));
+	assert(jsContains(json, "infos"));
 
 	//load
 	std::string stackId;
@@ -132,8 +135,8 @@ void to_json(nlohmann::json & json, const Stacks & value)
 void from_json(const nlohmann::json & json, Stacks & value)
 {
 	//check
-	assert(json.contains("stats"));
-	assert(json.contains("count"));
+	assert(jsContains(json, "stats"));
+	assert(jsContains(json, "count"));
 	//json.at("stats").get_to(value.stats);
 	json.at("count").get_to(value.count);
 

@@ -12,6 +12,9 @@
 #include "MemStats.hpp"
 
 /**********************************************************/
+#define jsContains(value, field) ((value).find((field)) != (value).end())
+
+/**********************************************************/
 namespace MALTFormat
 {
 
@@ -29,9 +32,9 @@ void to_json(nlohmann::json & json, const ReallocJump & value)
 void from_json(const nlohmann::json & json, ReallocJump & value)
 {
 	//checks
-	assert(json.contains("oldSize"));
-	assert(json.contains("newSize"));
-	assert(json.contains("count"));
+	assert(jsContains(json, "oldSize"));
+	assert(jsContains(json, "newSize"));
+	assert(jsContains(json, "count"));
 
 	//load
 	json.at("oldSize").get_to(value.oldSize);
@@ -60,9 +63,9 @@ void to_json(nlohmann::json & json, const GlobalVariable & value)
 void from_json(const nlohmann::json & json, GlobalVariable & value)
 {
 	//checks
-	assert(json.contains("name"));
-	assert(json.contains("size"));
-	assert(json.contains("tls"));
+	assert(jsContains(json, "name"));
+	assert(jsContains(json, "size"));
+	assert(jsContains(json, "tls"));
 
 	//load
 	json.at("name").get_to(value.name);
@@ -70,11 +73,11 @@ void from_json(const nlohmann::json & json, GlobalVariable & value)
 	json.at("tls").get_to(value.tls);
 
 	//optionals
-	if (json.contains("line"))
+	if (jsContains(json, "line"))
 		json.at("line").get_to(value.line);
 	else
 		value.line = -1;
-	if (json.contains("file"))
+	if (jsContains(json, "file"))
 		json.at("file").get_to(value.file);
 	else
 		value.file = "";
@@ -95,9 +98,9 @@ void to_json(nlohmann::json & json, const MemStats & value)
 void from_json(const nlohmann::json & json, MemStats & value)
 {
 	//checks
-	assert(json.contains("sizeMap"));
-	assert(json.contains("reallocJump"));
-	assert(json.contains("globalVariables"));
+	assert(jsContains(json, "sizeMap"));
+	assert(jsContains(json, "reallocJump"));
+	assert(jsContains(json, "globalVariables"));
 
 	//load
 	from_json(json.at("sizeMap"), value.sizeMap);

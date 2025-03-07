@@ -13,6 +13,9 @@
 #include "Threads.hpp"
 
 /**********************************************************/
+#define jsContains(value, field) ((value).find((field)) != (value).end())
+
+/**********************************************************/
 namespace MALTFormat
 {
 
@@ -30,9 +33,9 @@ void to_json(nlohmann::json & json, const ThreadsFuncStats & value)
 void from_json(const nlohmann::json & json, ThreadsFuncStats & value)
 {
 	//checks
-	assert(json.contains("count"));
-	assert(json.contains("sum"));
-	assert(json.contains("time"));
+	assert(jsContains(json, "count"));
+	assert(jsContains(json, "sum"));
+	assert(jsContains(json, "time"));
 
 	//load
 	json.at("count").get_to(value.count);
@@ -78,33 +81,33 @@ void to_json(nlohmann::json & json, const Thread & value)
 void from_json(const nlohmann::json & json, Thread & value)
 {
 	//checks
-	assert(json.contains("stackMem"));
-	assert(json.contains("cntMemOps"));
-	assert(json.contains("stats"));
+	assert(jsContains(json, "stackMem"));
+	assert(jsContains(json, "cntMemOps"));
+	assert(jsContains(json, "stats"));
 
 	//root
 	json.at("cntMemOps").get_to(value.cntMemOps);
 
 	//stats
 	const nlohmann::json & stackMem = json.at("stackMem");
-	assert(stackMem.contains("stack"));
-	assert(stackMem.contains("mem"));
-	assert(stackMem.contains("total"));
-	assert(stackMem.contains("timeprofiler"));
+	assert(jsContains(stackMem, "stack"));
+	assert(jsContains(stackMem, "mem"));
+	assert(jsContains(stackMem, "total"));
+	assert(jsContains(stackMem, "timeprofiler"));
 	stackMem.at("stack").get_to(value.stackMem.stack);
 	stackMem.at("mem").get_to(value.stackMem.mem);
 	stackMem.at("total").get_to(value.stackMem.total);
 
 	//timeprofiler
 	const nlohmann::json & timeprofiler = stackMem.at("timeprofiler");
-	assert(timeprofiler.contains("min"));
-	assert(timeprofiler.contains("max"));
-	assert(timeprofiler.contains("index"));
-	assert(timeprofiler.contains("timestamp"));
-	assert(timeprofiler.contains("peakTimesteamp"));
-	assert(timeprofiler.contains("peakMemory"));
-	assert(timeprofiler.contains("peakIndex"));
-	assert(timeprofiler.contains("linearIndex"));
+	assert(jsContains(timeprofiler, "min"));
+	assert(jsContains(timeprofiler, "max"));
+	assert(jsContains(timeprofiler, "index"));
+	assert(jsContains(timeprofiler, "timestamp"));
+	assert(jsContains(timeprofiler, "peakTimesteamp"));
+	assert(jsContains(timeprofiler, "peakMemory"));
+	assert(jsContains(timeprofiler, "peakIndex"));
+	assert(jsContains(timeprofiler, "linearIndex"));
 	timeprofiler.at("min").get_to(value.stackMem.timeprofiler.min);
 	timeprofiler.at("max").get_to(value.stackMem.timeprofiler.max);
 	timeprofiler.at("index").get_to(value.stackMem.timeprofiler.index);
@@ -116,15 +119,15 @@ void from_json(const nlohmann::json & json, Thread & value)
 
 	//stats
 	const nlohmann::json & stats = json.at("stats");
-	assert(stats.contains("malloc"));
-	assert(stats.contains("posix_memalign"));
-	assert(stats.contains("aligned_alloc"));
-	assert(stats.contains("memalign"));
-	assert(stats.contains("valloc"));
-	assert(stats.contains("pvalloc"));
-	assert(stats.contains("free"));
-	assert(stats.contains("calloc"));
-	assert(stats.contains("realloc"));
+	assert(jsContains(stats, "malloc"));
+	assert(jsContains(stats, "posix_memalign"));
+	assert(jsContains(stats, "aligned_alloc"));
+	assert(jsContains(stats, "memalign"));
+	assert(jsContains(stats, "valloc"));
+	assert(jsContains(stats, "pvalloc"));
+	assert(jsContains(stats, "free"));
+	assert(jsContains(stats, "calloc"));
+	assert(jsContains(stats, "realloc"));
 	stats.at("malloc").get_to(value.stats.malloc);
 	stats.at("posix_memalign").get_to(value.stats.posix_memalign);
 	stats.at("aligned_alloc").get_to(value.stats.aligned_alloc);

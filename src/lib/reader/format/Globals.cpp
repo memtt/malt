@@ -12,6 +12,9 @@
 #include "Globals.hpp"
 
 /**********************************************************/
+#define jsContains(value, field) ((value).find((field)) != (value).end())
+
+/**********************************************************/
 namespace MALTFormat
 {
 
@@ -31,11 +34,11 @@ void to_json(nlohmann::json & json, const Globals & value)
 void from_json(const nlohmann::json & json, Globals & value)
 {
 	//checks
-	assert(json.contains("ticksPerSecond"));
-	assert(json.contains("totalMemory"));
-	assert(json.contains("freeMemoryAtStart"));
-	assert(json.contains("cachedMemoryAtStart"));
-	assert(json.contains("maxThreadCount"));
+	assert(jsContains(json, "ticksPerSecond"));
+	assert(jsContains(json, "totalMemory"));
+	assert(jsContains(json, "freeMemoryAtStart"));
+	assert(jsContains(json, "cachedMemoryAtStart"));
+	assert(jsContains(json, "maxThreadCount"));
 
 	//load
 	json.at("ticksPerSecond").get_to(value.ticksPerSecond);

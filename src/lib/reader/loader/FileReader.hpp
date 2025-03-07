@@ -61,12 +61,14 @@ struct FileReaderIterator {
 		return target->get_current();
 	}
 
-	FileReader* target = nullptr;
+	FileReader* target{nullptr};
 };
 
 /**********************************************************/
 inline FileReaderIterator begin(FileReader& tgt) {
-	return FileReaderIterator{&tgt};
+	FileReaderIterator res;
+	res.target = &tgt;
+	return res;
 }
 
 /**********************************************************/

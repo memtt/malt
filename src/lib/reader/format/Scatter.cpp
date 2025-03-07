@@ -12,6 +12,9 @@
 #include "Scatter.hpp"
 
 /**********************************************************/
+#define jsContains(value, field) ((value).find((field)) != (value).end())
+
+/**********************************************************/
 namespace MALTFormat
 {
 
@@ -29,9 +32,9 @@ void to_json(nlohmann::json & json, const ScatterPoint & value)
 void from_json(const nlohmann::json & json, ScatterPoint & value)
 {
 	//checks
-	assert(json.contains("x"));
-	assert(json.contains("y"));
-	assert(json.contains("v"));
+	assert(jsContains(json, "x"));
+	assert(jsContains(json, "y"));
+	assert(jsContains(json, "v"));
 
 	//load
 	json.at("x").get_to(value.x);
@@ -59,23 +62,23 @@ void to_json(nlohmann::json & json, const ScatterChart & value)
 void from_json(const nlohmann::json & json, ScatterChart & value)
 {
 	//checks
-	assert(json.contains("infos"));
-	assert(json.contains("points"));
+	assert(jsContains(json, "infos"));
+	assert(jsContains(json, "points"));
 
 	//load infos.xaxis
 	const nlohmann::json & xAxis = json.at("infos").at("xAxis");
-	assert(xAxis.contains("max"));
-	assert(xAxis.contains("size"));
-	assert(xAxis.contains("log"));
+	assert(jsContains(xAxis, "max"));
+	assert(jsContains(xAxis, "size"));
+	assert(jsContains(xAxis, "log"));
 	xAxis.at("max").get_to(value.infos.xAxis.max);
 	xAxis.at("size").get_to(value.infos.xAxis.size);
 	xAxis.at("log").get_to(value.infos.xAxis.log);
 
 	//load infos.yaxis
 	const nlohmann::json & yAxis = json.at("infos").at("yAxis");
-	assert(yAxis.contains("max"));
-	assert(yAxis.contains("size"));
-	assert(yAxis.contains("log"));
+	assert(jsContains(yAxis, "max"));
+	assert(jsContains(yAxis, "size"));
+	assert(jsContains(yAxis, "log"));
 	yAxis.at("max").get_to(value.infos.yAxis.max);
 	yAxis.at("size").get_to(value.infos.yAxis.size);
 	yAxis.at("log").get_to(value.infos.yAxis.log);
@@ -97,8 +100,8 @@ void to_json(nlohmann::json & json, const Scatter & value)
 void from_json(const nlohmann::json & json, Scatter & value)
 {
 	//checks
-	assert(json.contains("sizeOverTime"));
-	assert(json.contains("lifetimeOverSize"));
+	assert(jsContains(json, "sizeOverTime"));
+	assert(jsContains(json, "lifetimeOverSize"));
 
 	//load
 	json.at("sizeOverTime").get_to(value.sizeOverTime);

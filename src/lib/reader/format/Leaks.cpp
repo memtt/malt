@@ -12,6 +12,9 @@
 #include "Leaks.hpp"
 
 /**********************************************************/
+#define jsContains(value, field) ((value).find((field)) != (value).end())
+
+/**********************************************************/
 namespace MALTFormat
 {
 
@@ -29,9 +32,9 @@ void to_json(nlohmann::json & json, const Leak & value)
 void from_json(const nlohmann::json & json, Leak & value)
 {
 	//checks
-	assert(json.contains("stack"));
-	assert(json.contains("count"));
-	assert(json.contains("memory"));
+	assert(jsContains(json, "stack"));
+	assert(jsContains(json, "count"));
+	assert(jsContains(json, "memory"));
 
 	//load
 	json.at("stack").get_to(value.stack);

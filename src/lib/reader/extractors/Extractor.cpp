@@ -77,8 +77,9 @@ FlatProfileVector Extractor::getFlatProfile(const LocaltionMappingFunc & mapping
 
 		//loop with threads
 		#pragma omp for
-		for (const auto & statEntry : stats) {
+		for (size_t i = 0 ; i < stats.size() ; i++) {
 			//extract some short refs
+			const StackStat & statEntry = stats[i];
 			const StackInfos & infos = statEntry.infos;
 			const Stack & stack = statEntry.stack;
 

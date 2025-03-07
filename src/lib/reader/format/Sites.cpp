@@ -13,6 +13,9 @@
 #include "Sites.hpp"
 
 /**********************************************************/
+#define jsContains(value, field) ((value).find((field)) != (value).end())
+
+/**********************************************************/
 namespace MALTFormat
 {
 
@@ -39,11 +42,11 @@ void to_json(nlohmann::json & json, const ProcMapEntry & value)
 void from_json(const nlohmann::json & json, ProcMapEntry & value)
 {
 	//checks
-	assert(json.contains("lower"));
-	assert(json.contains("upper"));
-	assert(json.contains("offset"));
-	assert(json.contains("aslrOffset"));
-	assert(json.contains("file"));
+	assert(jsContains(json, "lower"));
+	assert(jsContains(json, "upper"));
+	assert(jsContains(json, "offset"));
+	assert(jsContains(json, "aslrOffset"));
+	assert(jsContains(json, "file"));
 
 	//load
 	std::string lower;
@@ -86,13 +89,13 @@ void from_json(const nlohmann::json & json, InstructionInfos & value)
 	value.binary = -1;
 	value.function = -1;
 	value.line = -1;
-	if (json.contains("file"))
+	if (jsContains(json, "file"))
 		json.at("file").get_to(value.file);
-	if (json.contains("binary"))
+	if (jsContains(json, "binary"))
 		json.at("binary").get_to(value.binary);
-	if (json.contains("function"))
+	if (jsContains(json, "function"))
 		json.at("function").get_to(value.function);
-	if (json.contains("line"))
+	if (jsContains(json, "line"))
 		json.at("line").get_to(value.line);
 }
 
@@ -110,9 +113,9 @@ void to_json(nlohmann::json & json, const Sites & value)
 void from_json(const nlohmann::json & json, Sites & value)
 {
 	//checks
-	assert(json.contains("map"));
-	assert(json.contains("strings"));
-	assert(json.contains("instr"));
+	assert(jsContains(json, "map"));
+	assert(jsContains(json, "strings"));
+	assert(jsContains(json, "instr"));
 
 	//load
 	json.at("map").get_to(value.map);

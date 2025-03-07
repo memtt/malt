@@ -12,6 +12,9 @@
 #include "MaltProfile.hpp"
 
 /**********************************************************/
+#define jsContains(value, field) ((value).find((field)) != (value).end())
+
+/**********************************************************/
 namespace MALTFormat
 {
 
@@ -36,15 +39,15 @@ void to_json(nlohmann::json & json, const MaltProfile & value)
 void from_json(const nlohmann::json & json, MaltProfile & profile)
 {
 	//check keys
-	assert(json.contains("run"));
-	assert(json.contains("config"));
-	assert(json.contains("stacks"));
-	assert(json.contains("sites"));
-	assert(json.contains("timeline"));
-	assert(json.contains("scatter"));
-	assert(json.contains("threads"));
-	assert(json.contains("globals"));
-	assert(json.contains("leaks"));
+	assert(jsContains(json, "run"));
+	assert(jsContains(json, "config"));
+	assert(jsContains(json, "stacks"));
+	assert(jsContains(json, "sites"));
+	assert(jsContains(json, "timeline"));
+	assert(jsContains(json, "scatter"));
+	assert(jsContains(json, "threads"));
+	assert(jsContains(json, "globals"));
+	assert(jsContains(json, "leaks"));
 	//assert(json.size() == 9);
 
 	//load

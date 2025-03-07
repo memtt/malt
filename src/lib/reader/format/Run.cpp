@@ -12,6 +12,9 @@
 #include "Run.hpp"
 
 /**********************************************************/
+#define jsContains(value, field) ((value).find((field)) != (value).end())
+
+/**********************************************************/
 namespace MALTFormat
 {
 
@@ -34,14 +37,14 @@ void to_json(nlohmann::json & json, const Run & run)
 void from_json(const nlohmann::json & json, Run & run)
 {
 	//checks
-	assert(json.contains("formatVersion"));
-	assert(json.contains("tool"));
-	assert(json.contains("runtime"));
-	assert(json.contains("allocator"));
-	assert(json.contains("exe"));
-	assert(json.contains("command"));
-	assert(json.contains("hostname"));
-	assert(json.contains("date"));
+	assert(jsContains(json, "formatVersion"));
+	assert(jsContains(json, "tool"));
+	assert(jsContains(json, "runtime"));
+	assert(jsContains(json, "allocator"));
+	assert(jsContains(json, "exe"));
+	assert(jsContains(json, "command"));
+	assert(jsContains(json, "hostname"));
+	assert(jsContains(json, "date"));
 
 	//load
 	json.at("formatVersion").get_to(run.formatVersion);
