@@ -9,11 +9,13 @@
 ***********************************************************/
 
 /**********************************************************/
-#include "format/MaltProfile.hpp"
+#include "loader/JsonLoader.hpp"
+
+/**********************************************************/
+using namespace MALTReader;
 
 /**********************************************************/
 int main(int argc, char ** argv)
 {
-	MALTFormat::MaltProfile profile;
-	return 0;
+	JsonLoader loader(argv[1]);
 }

@@ -10,4 +10,12 @@
 ############################################################
 
 ############################################################
-add_executable(malt-reader main.cpp)
+include_directories(.)
+
+############################################################
+add_executable(malt-reader
+    main.cpp
+    loader/JsonLoader.cpp
+)
+target_link_libraries(malt-reader PRIVATE nlohmann_json::nlohmann_json)
+target_link_libraries(malt-reader PRIVATE OpenMP::OpenMP_CXX)
