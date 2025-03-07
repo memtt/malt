@@ -9,15 +9,8 @@
 #    AUTHOR   : Sébastien Valat - 2015
 #    AUTHOR   : Sébastien Valat (INRIA) - 2024
 ############################################################
-######################################################
-#            PROJECT  : MALT                         #
-#            VERSION  : 0.1.0-dev                    #
-#            DATE     : 03/2015                      #
-#            AUTHOR   : Valat Sébastien              #
-#            LICENSE  : CeCILL-C                     #
-######################################################
 
-######################################################
+############################################################
 add_subdirectory(from-htopml)
 add_subdirectory(iniparser)
 # only required for testing

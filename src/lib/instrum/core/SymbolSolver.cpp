@@ -403,8 +403,10 @@ void SymbolSolver::solveNames(void)
 				if (site.first.getDomain() == DOMAIN_C && site.second.mapEntry == &procMapEntry) {
 					if (aslrOffset == -1)
 						aslrOffset = OS::getASLROffset(site.first.getAddress());
-					if (addr2line == nullptr || addr2line->isFull())
-						addr2line = &addr2lineJobs.emplace_back(this->stringDict, procMapEntry.file, aslrOffset, gblOptions->stackAddr2lineBucket);
+					if (addr2line == nullptr || addr2line->isFull()) {
+						addr2lineJobs.emplace_back(this->stringDict, procMapEntry.file, aslrOffset, gblOptions->stackAddr2lineBucket);
+						addr2line = &addr2lineJobs.back();
+					}
 					addr2line->addTask(site.first, &site.second);
 				}
 			}

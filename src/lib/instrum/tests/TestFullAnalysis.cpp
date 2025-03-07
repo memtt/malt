@@ -3,7 +3,7 @@
 *    VERSION  : 1.2.4
 *    DATE     : 10/2024
 *    LICENSE  : CeCILL-C
-*    FILE     : src/lib/insturm/core/tests/TestVmaTracker.cpp
+*    FILE     : src/lib/instrum/core/tests/TestVmaTracker.cpp
 *-----------------------------------------------------------
 *    AUTHOR   : Sébastien Valat - 2014 - 2024
 *    AUTHOR   : Sébastien Valat (ECR) - 2014
