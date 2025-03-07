@@ -38,12 +38,12 @@ ENDFOREACH(test_name)
 
 ############################################################
 target_link_libraries(TestInstrum malt-injectors)
-target_compile_options(TestInstrum PUBLIC -g -O0)
+target_compile_options(TestInstrum PRIVATE -g -O0)
 target_link_libraries(TestInstrum ${PYTHON3_LIBRARIES})
 
 ############################################################
 if (PYTHON3_INSTRUM_FOUND)
 	target_link_libraries(TestInstrumPython malt-injector-python)
-	target_compile_options(TestInstrumPython PUBLIC -g)
+	target_compile_options(TestInstrumPython PRIVATE -g)
 	target_link_libraries(TestInstrumPython ${PYTHON3_LIBRARIES})
 endif (PYTHON3_INSTRUM_FOUND)

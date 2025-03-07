@@ -29,4 +29,4 @@ FOREACH(test_name ${TEST_NAMES})
 ENDFOREACH(test_name)
 
 ############################################################
-target_compile_options(TestAddr2Line PUBLIC -O0 -g)
+target_compile_options(TestAddr2Line PRIVATE -O0 -g)
