@@ -29,6 +29,7 @@ add_library(malt-profile SHARED
     format/Timeline.cpp
     format/Threads.cpp
     format/MaltProfile.cpp
+    extractors/Prepare.cpp
 )
 target_link_libraries(malt-profile PRIVATE nlohmann_json::nlohmann_json)
 target_link_libraries(malt-profile PRIVATE OpenMP::OpenMP_CXX)

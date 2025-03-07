@@ -37,14 +37,17 @@ struct GlobalVariable
 	size_t size;
 	bool tls;
 	size_t line;
-	size_t file;
+	std::string file;
 };
+
+/**********************************************************/
+typedef std::map<size_t, size_t> MemStatsSizeMap;
 
 /**********************************************************/
 struct MemStats
 {
-	std::map<size_t, size_t> sizeMap;
-	ReallocJump reallocJump;
+	MemStatsSizeMap sizeMap;
+	std::vector<ReallocJump> reallocJump;
 	std::map<std::string, std::vector<GlobalVariable> > globalVariables;
 };
 
@@ -55,6 +58,8 @@ void from_json(const nlohmann::json & json, GlobalVariable & value);
 void to_json(nlohmann::json & json, const GlobalVariable & value);
 void from_json(const nlohmann::json & json, MemStats & value);
 void to_json(nlohmann::json & json, const MemStats & value);
+void from_json(const nlohmann::json & json, MemStatsSizeMap & value);
+void to_json(nlohmann::json & json, const MemStatsSizeMap & value);
 
 }
 

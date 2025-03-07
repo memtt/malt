@@ -18,6 +18,26 @@ namespace MALTFormat
 /**********************************************************/
 void to_json(nlohmann::json & json, const LangAddress & value)
 {
+	//set
+	json = to_string(value);
+}
+
+/**********************************************************/
+void from_json(const nlohmann::json & json, LangAddress & address)
+{
+	//check
+	assert(json.is_string());
+
+	//parse
+	std::string value = json;
+
+	//convert
+	address = to_lang_address(value);
+}
+
+/**********************************************************/
+std::string to_string(const LangAddress & value)
+{
 	//select lang mode
 	std::string lang;
 	switch(value.lang) {
@@ -36,20 +56,15 @@ void to_json(nlohmann::json & json, const LangAddress & value)
 		snprintf(buffer, sizeof(buffer), "%s%p", lang.c_str(), value.address);
 
 	//set
-	json = buffer;
+	return buffer;
 }
 
 /**********************************************************/
-void from_json(const nlohmann::json & json, LangAddress & address)
+LangAddress to_lang_address(const std::string & value)
 {
-	//check
-	assert(json.is_string());
-
-	//parse
-	std::string value = json;
-
 	//cases
 	void * ptr = nullptr;
+	LangAddress address{LANG_C, 0};
 	if (sscanf(value.c_str(), "PY-%p", &ptr) == 1) {
 		address.lang = LANG_PYTHON;
 		address.address = ptr;
@@ -59,8 +74,8 @@ void from_json(const nlohmann::json & json, LangAddress & address)
 	} else {
 		assert(false);
 	}
+	return address;
 }
-
 
 /**********************************************************/
 void from_json(const nlohmann::json & json, void * & ptr)
@@ -82,6 +97,17 @@ void to_json(nlohmann::json & json, const void *& ptr)
 	char buffer[256];
 	snprintf(buffer, sizeof(buffer), "%p", ptr);
 	json = buffer;
+}
+
+/**********************************************************/
+bool operator<(const LangAddress & a, const LangAddress & b)
+{
+	if (a.lang < b.lang)
+		return true;
+	else if (a.lang == b.lang && a.address < b.address)
+		return true;
+	else
+		return false;
 }
 
 }

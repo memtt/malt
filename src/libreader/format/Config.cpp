@@ -82,7 +82,8 @@ void to_json(nlohmann::json & json, const Config & config){
 		{
 			"dump", {
 				{"onSignal", config.dump.onSignal},
-				{"afterSeconds", config.dump.afterSeconds}
+				{"afterSeconds", config.dump.afterSeconds},
+				{"onSysFullAt", config.dump.onSysFullAt}
 			}
 		},
 	};
@@ -182,6 +183,7 @@ void from_json(const nlohmann::json & json, Config & config)
 	assert(jsonDump.contains("afterSeconds"));
 	jsonDump.at("onSignal").get_to(config.dump.onSignal);
 	jsonDump.at("afterSeconds").get_to(config.dump.afterSeconds);
+	jsonDump.at("onSysFullAt").get_to(config.dump.onSysFullAt);
 }
 
 }

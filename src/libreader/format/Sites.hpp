@@ -41,11 +41,14 @@ struct InstructionInfos
 };
 
 /**********************************************************/
+typedef std::map<LangAddress, InstructionInfos> SitesInstrMap;
+
+/**********************************************************/
 struct Sites
 {
 	std::vector<ProcMapEntry> map;
 	std::vector<std::string> strings;
-	std::map<void*, InstructionInfos> instr;
+	SitesInstrMap instr;
 };
 
 /**********************************************************/
@@ -55,8 +58,8 @@ void from_json(const nlohmann::json & json, InstructionInfos & value);
 void to_json(nlohmann::json & json, const InstructionInfos & value);
 void from_json(const nlohmann::json & json, Sites & value);
 void to_json(nlohmann::json & json, const Sites & value);
-void from_json(const nlohmann::json & json, std::map<void*, InstructionInfos> & value);
-void to_json(nlohmann::json & json, const std::map<void*, InstructionInfos> & value);
+void from_json(const nlohmann::json & json, SitesInstrMap & value);
+void to_json(nlohmann::json & json, const SitesInstrMap & value);
 
 }
 

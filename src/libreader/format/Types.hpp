@@ -39,6 +39,13 @@ struct LangAddress
 };
 
 /**********************************************************/
+bool operator<(const LangAddress & a, const LangAddress & b);
+
+/**********************************************************/
+std::string to_string(const LangAddress & address);
+LangAddress to_lang_address(const std::string & value);
+
+/**********************************************************/
 void from_json(const nlohmann::json & json, LangAddress & value);
 void to_json(nlohmann::json & json, const LangAddress & value);
 void from_json(const nlohmann::json & json, void* & ptr);

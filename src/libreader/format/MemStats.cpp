@@ -42,13 +42,18 @@ void from_json(const nlohmann::json & json, ReallocJump & value)
 /**********************************************************/
 void to_json(nlohmann::json & json, const GlobalVariable & value)
 {
+	//defaults
 	json = nlohmann::json{
 		{"name", value.name},
 		{"size", value.size},
 		{"tls", value.tls},
-		{"line", value.line},
-		{"file", value.file},
 	};
+
+	//optionals
+	if (value.line != -1)
+		json["line"] = value.line;
+	if (value.file != "")
+		json["file"] = value.file;
 }
 
 /**********************************************************/
@@ -58,25 +63,32 @@ void from_json(const nlohmann::json & json, GlobalVariable & value)
 	assert(json.contains("name"));
 	assert(json.contains("size"));
 	assert(json.contains("tls"));
-	assert(json.contains("line"));
-	assert(json.contains("file"));
 
 	//load
 	json.at("name").get_to(value.name);
 	json.at("size").get_to(value.size);
 	json.at("tls").get_to(value.tls);
-	json.at("line").get_to(value.line);
-	json.at("file").get_to(value.file);
+
+	//optionals
+	if (json.contains("line"))
+		json.at("line").get_to(value.line);
+	else
+		value.line = -1;
+	if (json.contains("file"))
+		json.at("file").get_to(value.file);
+	else
+		value.file = "";
 }
+
 
 /**********************************************************/
 void to_json(nlohmann::json & json, const MemStats & value)
 {
 	json = nlohmann::json{
-		{"stack", value.sizeMap},
 		{"reallocJump", value.reallocJump},
 		{"globalVariables", value.globalVariables},
 	};
+	to_json(json["sizeMap"], value.sizeMap);
 }
 
 /**********************************************************/
@@ -88,9 +100,32 @@ void from_json(const nlohmann::json & json, MemStats & value)
 	assert(json.contains("globalVariables"));
 
 	//load
-	json.at("sizeMap").get_to(value.sizeMap);
+	from_json(json.at("sizeMap"), value.sizeMap);
+	//json.at("sizeMap").get_to(value.sizeMap);
 	json.at("reallocJump").get_to(value.reallocJump);
 	json.at("globalVariables").get_to(value.globalVariables);
+}
+
+/**********************************************************/
+void from_json(const nlohmann::json & json, MemStatsSizeMap & value)
+{
+	for (const auto & it : json.items()) {
+		//extract
+		const size_t key = atol(it.key().c_str());
+		size_t val;
+		it.value().get_to(val);
+		value[key] = val;
+	}
+}
+
+/**********************************************************/
+void to_json(nlohmann::json & json, const MemStatsSizeMap & value)
+{
+	for (const auto & it : value) {
+		char buffer[256];
+		snprintf(buffer, sizeof(buffer), "%zu", it.first);
+		json[buffer] = it.second;
+	}
 }
 
 }

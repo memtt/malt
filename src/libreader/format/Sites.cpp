@@ -21,13 +21,15 @@ void to_json(nlohmann::json & json, const ProcMapEntry & value)
 {
 	char bufferLower[256];
 	char bufferUpper[256];
+	char bufferOffset[256];
 	snprintf(bufferLower, sizeof(bufferLower), "%p", value.lower);
 	snprintf(bufferUpper, sizeof(bufferUpper), "%p", value.upper);
+	snprintf(bufferOffset, sizeof (bufferOffset), "0x%zx", value.offset);
 
 	json = nlohmann::json{
 		{"lower", bufferLower},
 		{"upper", bufferUpper},
-		{"offset", value.offset},
+		{"offset", bufferOffset},
 		{"aslrOffset", value.aslrOffset},
 		{"file", value.file},
 	};
@@ -119,23 +121,20 @@ void from_json(const nlohmann::json & json, Sites & value)
 }
 
 /**********************************************************/
-void from_json(const nlohmann::json & json, std::map<void*, InstructionInfos> & value)
+void from_json(const nlohmann::json & json, SitesInstrMap & value)
 {
 	for (const auto & it : json.items()) {
-		void * ptr;
-		std::string key = it.key();
-		ssize_t status = sscanf(key.c_str(), "%p", &ptr);
-		value[ptr] = it.value();
+		LangAddress addr = to_lang_address(it.key());
+		value[addr] = it.value();
 	}
 }
 
 /**********************************************************/
-void to_json(nlohmann::json & json, const std::map<void*, InstructionInfos> & value)
+void to_json(nlohmann::json & json, const SitesInstrMap & value)
 {
 	for (const auto & it : value) {
-		char buffer[256];
-		snprintf(buffer, sizeof(buffer), "%p", it.first);
-		json[buffer] = it.second;
+		std::string key = to_string(it.first);
+		json[key] = it.second;
 	}
 }
 

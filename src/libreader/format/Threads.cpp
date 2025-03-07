@@ -43,37 +43,34 @@ void from_json(const nlohmann::json & json, ThreadsFuncStats & value)
 /**********************************************************/
 void to_json(nlohmann::json & json, const Thread & value)
 {
-	json = nlohmann::json{
-			{"stats", {
-				{"malloc", value.stats.malloc},
-				{"posix_memalign", value.stats.posix_memalign},
-				{"aligned_alloc", value.stats.aligned_alloc},
-				{"memalign", value.stats.memalign},
-				{"aligned_alloc", value.stats.aligned_alloc},
-				{"valloc", value.stats.valloc},
-				{"pvalloc", value.stats.pvalloc},
-				{"free", value.stats.free},
-				{"calloc", value.stats.calloc},
-				{"realloc", value.stats.realloc},
-			},
-			{"cntMemOps", value.cntMemOps},
-			{"stackMem", 
-				{"size", value.stackMem.size},
-				{"stack", value.stackMem.stack},
-				{"mem", value.stackMem.mem},
-				{"total", value.stackMem.total},
-				{"timeprofiler",
-					{"min", value.stackMem.timeprofiler.min},
-					{"max", value.stackMem.timeprofiler.max},
-					{"index", value.stackMem.timeprofiler.index},
-					{"timestamp", value.stackMem.timeprofiler.timestamp},
-					{"peakTimestamp", value.stackMem.timeprofiler.peakTimesteamp},
-					{"peakMemory", value.stackMem.timeprofiler.peakMemory},
-					{"peakIndex", value.stackMem.timeprofiler.peakIndex},
-					{"linearIndex", value.stackMem.timeprofiler.linearIndex},
-				}
-			},
-		}
+	json["stats"] = nlohmann::json{
+		{"malloc", value.stats.malloc},
+		{"posix_memalign", value.stats.posix_memalign},
+		{"aligned_alloc", value.stats.aligned_alloc},
+		{"memalign", value.stats.memalign},
+		{"aligned_alloc", value.stats.aligned_alloc},
+		{"valloc", value.stats.valloc},
+		{"pvalloc", value.stats.pvalloc},
+		{"free", value.stats.free},
+		{"calloc", value.stats.calloc},
+		{"realloc", value.stats.realloc},
+	};
+	json["cntMemOps"] = value.cntMemOps;
+	json["stackMem"] = nlohmann::json{ 
+		{"size", value.stackMem.size},
+		{"stack", value.stackMem.stack},
+		{"mem", value.stackMem.mem},
+		{"total", value.stackMem.total}
+	};
+	json["stackMem"]["timeprofiler"] = nlohmann::json{
+		{"min", value.stackMem.timeprofiler.min},
+		{"max", value.stackMem.timeprofiler.max},
+		{"index", value.stackMem.timeprofiler.index},
+		{"timestamp", value.stackMem.timeprofiler.timestamp},
+		{"peakTimesteamp", value.stackMem.timeprofiler.peakTimesteamp},
+		{"peakMemory", value.stackMem.timeprofiler.peakMemory},
+		{"peakIndex", value.stackMem.timeprofiler.peakIndex},
+		{"linearIndex", value.stackMem.timeprofiler.linearIndex},
 	};
 }
 
@@ -84,6 +81,9 @@ void from_json(const nlohmann::json & json, Thread & value)
 	assert(json.contains("stackMem"));
 	assert(json.contains("cntMemOps"));
 	assert(json.contains("stats"));
+
+	//root
+	json.at("cntMemOps").get_to(value.cntMemOps);
 
 	//stats
 	const nlohmann::json & stackMem = json.at("stackMem");
