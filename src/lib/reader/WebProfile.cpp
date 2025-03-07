@@ -9,6 +9,7 @@
 ***********************************************************/
 
 /**********************************************************/
+#include "extractors/ExtractorHelpers.hpp"
 #include "WebProfile.hpp"
 
 /**********************************************************/
@@ -36,6 +37,62 @@ nlohmann::json WebProfile::getProcMap(void) const
 nlohmann::json WebProfile::getDebugStackList(void) const
 {
 	return this->extractor->getDebugStackList();
+}
+
+/**********************************************************/
+nlohmann::json WebProfile::getGlobalVariables(void) const
+{
+	return nlohmann::json{
+		{"vars", this->profile.memStats.globalVariables},
+		{"maxThreadCount", this->profile.globals.maxThreadCount}
+	};
+}
+
+/**********************************************************/
+nlohmann::json WebProfile::getFileLinesFlatProfile(const std::string & file, bool total) const
+{
+	//extract
+	FlatProfileVector res = this->extractor->getFlatProfile([](const InstructionInfosStrRef & location, const MALTFormat::StackInfos & infos){
+		char buffer[256];
+		snprintf(buffer, sizeof(buffer), "%zd", location.line);
+		return std::string(buffer);
+	},[&file](const InstructionInfosStrRef & location, const MALTFormat::StackInfos & infos){
+		return *location.file == file;
+	});
+
+	//select
+	std::string subset = "*.own";
+	if (total)
+	subset = "*.total";
+
+	//filter
+	nlohmann::json resJson = ExtractorHelpers::toJsonFiltered(res,
+		{
+			subset,
+			"*.location.line",
+			"*.location.function",
+		});
+
+	//ok
+	return resJson;
+}
+
+/**********************************************************/
+nlohmann::json WebProfile::getScatter(void) const
+{
+	return this->profile.scatter;
+}
+
+/**********************************************************/
+nlohmann::json WebProfile::getSizeMap(void) const
+{
+	return this->profile.memStats.sizeMap;
+}
+
+/**********************************************************/
+nlohmann::json WebProfile::functiongetReallocMap(void) const
+{
+	return this->profile.memStats.reallocJump;
 }
 
 }
