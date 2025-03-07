@@ -11,6 +11,7 @@
 /**********************************************************/
 #include <iostream>
 #include <list>
+#include <sstream>
 #include "ExtractorHelpers.hpp"
 
 /**********************************************************/

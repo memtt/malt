@@ -48,19 +48,11 @@ void Extractor::buildTranslation(void)
 			assert(it != instrs.end());
 			const InstructionInfos & instrInfos = it->second;
 
-			//check
-			assert(instrInfos.binary != -1);
-			assert(instrInfos.file != -1);
-			assert(instrInfos.function != -1);
-			assert(instrInfos.binary < strings.size());
-			assert(instrInfos.file < strings.size());
-			assert(instrInfos.function < strings.size());
-
 			//build ref
 			InstructionInfosStrRef ref;
-			ref.binary = &strings[instrInfos.binary];
-			ref.function = &strings[instrInfos.function];
-			ref.file = &strings[instrInfos.file];
+			ref.binary = &this->getString(instrInfos.binary);
+			ref.function = &this->getString(instrInfos.function);
+			ref.file = &this->getString(instrInfos.file);
 			ref.line = instrInfos.line;
 
 			//store
@@ -190,6 +182,20 @@ void to_json(nlohmann::json & json, const FlatProfileValue & value)
 		{"total", value.total},
 		{"location", *value.location},
 	};
+}
+
+/**********************************************************/
+const std::string& Extractor::getString(ssize_t id) const
+{
+	//check
+	assert(id >= -1);
+	assert(id < (ssize_t)this->profile.sites.strings.size());
+
+	//apply
+	if (id == -1)
+		return unknown;
+	else
+		return this->profile.sites.strings[id];
 }
 
 }

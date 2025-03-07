@@ -60,9 +60,11 @@ class Extractor
 	private:
 		void mergeStackInfo(FlatProfileMap & into, const MALTFormat::LangAddress & addr,FlatProfileCounter counter,const MALTFormat::StackInfos & infos,const LocaltionMappingFunc & mapping) const;
 		void buildTranslation(void);
+		const std::string& getString(ssize_t id) const;
 	private:
 		const MALTFormat::MaltProfile & profile;
 		std::map<MALTFormat::LangAddress, InstructionInfosStrRef> addrTranslation;
+		std::string unknown{"??"};
 };
 
 /**********************************************************/

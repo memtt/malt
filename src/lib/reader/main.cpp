@@ -9,9 +9,9 @@
 ***********************************************************/
 
 /**********************************************************/
-#include "format/MaltProfile.hpp"
-#include <nlohmann/json.hpp>
-#include "loader/FileReader.hpp"
+#include <iostream>
+#include "Profile.hpp"
+#include "extractors/ExtractorHelpers.hpp"
 
 /**********************************************************/
 using namespace MALTReader;
@@ -19,13 +19,19 @@ using namespace MALTReader;
 /**********************************************************/
 int main(int argc, char ** argv)
 {
-	//open stream
-	FileReader reader(argv[1], true);
+	Profile profile(argv[1], true);
+	const Extractor & extractor = profile.getExtractor();
 
-	//load it
-	printf("Parsing JSON...\n");
-	nlohmann::json data = nlohmann::json::parse(begin(reader), end(reader));
-	printf("Extracting infos...\n");
-	MALTFormat::MaltProfile profile = data;
-	printf("Done.\n");
+	//extract
+	/*FlatProfileVector res = extractor.getFlatProfile([](const InstructionInfosStrRef & location, const MALTFormat::StackInfos & infos){
+		return *location.function;
+	},[](const InstructionInfosStrRef & location, const MALTFormat::StackInfos & infos){
+		return true;
+	});
+
+	//to json
+	nlohmann::json json = res;
+	std::cout << json << std::endl;*/
+
+	return EXIT_SUCCESS;
 }

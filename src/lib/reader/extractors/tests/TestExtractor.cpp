@@ -47,7 +47,6 @@ TEST(TestExtractorHelpers, getFlatProfile)
 
 	//remove abs path
 	nlohmann::json resJson = ExtractorHelpers::toJsonFiltered(res, {"*.count", "*.location"});
-	ExtractorHelpers::jsonRemoveAbsPath(resJson, SRC_DIR "/");
 
 	//check
 	EXPECT_EQ(dataExpected["getFlatProfile"], resJson);
@@ -76,7 +75,6 @@ TEST(TestExtractorHelpers, getFlatProfile_full)
 
 	//remove abs path
 	nlohmann::json resJson = res;
-	ExtractorHelpers::jsonRemoveAbsPath(resJson, SRC_DIR "/");
 
 	//check
 	ASSERT_EQ(nlohmann::json::diff(dataExpected["getFlatProfile_full"], resJson), nlohmann::json::array());

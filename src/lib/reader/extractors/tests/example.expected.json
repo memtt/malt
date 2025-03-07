@@ -4,7 +4,8 @@
       "location": {
         "binary": "src/libreader/extractors/tests/example.cpp",
         "file": "src/libreader/extractors/tests/example.cpp",
-        "function": "caller()"
+        "function": "caller()",
+        "line": 35
       },
       "own": {
         "alloc": {
@@ -33,7 +34,8 @@
       "location": {
         "binary": "src/libreader/extractors/tests/example.cpp",
         "file": "src/libreader/extractors/tests/example.cpp",
-        "function": "callerRecurse(int)"
+        "function": "callerRecurse(int)",
+        "line": 27
       },
       "own": {
         "alloc": {
@@ -62,7 +64,8 @@
       "location": {
         "binary": "src/libreader/extractors/tests/example.cpp",
         "file": "src/libreader/extractors/tests/example.cpp",
-        "function": "leaf()"
+        "function": "leaf()",
+        "line": 17
       },
       "own": {
         "alloc": {
@@ -91,7 +94,8 @@
       "location": {
         "binary": "src/libreader/extractors/tests/example.cpp",
         "file": "src/libreader/extractors/tests/example.cpp",
-        "function": "main"
+        "function": "main",
+        "line": 41
       },
       "own": {
         "alloc": {
@@ -122,7 +126,8 @@
       "location": {
         "binary": "src/libreader/extractors/tests/example.cpp",
         "file": "src/libreader/extractors/tests/example.cpp",
-        "function": "caller()"
+        "function": "caller()",
+        "line": 35
       },
       "own": {
         "aliveReq": 0,
@@ -181,7 +186,8 @@
       "location": {
         "binary": "src/libreader/extractors/tests/example.cpp",
         "file": "src/libreader/extractors/tests/example.cpp",
-        "function": "callerRecurse(int)"
+        "function": "callerRecurse(int)",
+        "line": 27
       },
       "own": {
         "aliveReq": 0,
@@ -240,7 +246,8 @@
       "location": {
         "binary": "src/libreader/extractors/tests/example.cpp",
         "file": "src/libreader/extractors/tests/example.cpp",
-        "function": "leaf()"
+        "function": "leaf()",
+        "line": 17
       },
       "own": {
         "aliveReq": 0,
@@ -299,7 +306,8 @@
       "location": {
         "binary": "src/libreader/extractors/tests/example.cpp",
         "file": "src/libreader/extractors/tests/example.cpp",
-        "function": "main"
+        "function": "main",
+        "line": 41
       },
       "own": {
         "aliveReq": 0,
