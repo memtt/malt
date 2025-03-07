@@ -39,6 +39,7 @@ String getMangledName(void* addr)
 {
 	LangAddress callsite(MALT::DOMAIN_C, (void*)((size_t)addr + 1));
 	SymbolSolver solver;
+	solver.loadProcMap();
 	solver.registerAddress(callsite);
 	solver.solveNames();
 	int funcId = solver.getCallSiteInfo(callsite)->function;
