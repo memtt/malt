@@ -15,6 +15,7 @@
 #include <iomanip>
 #include <cstdio>
 #include <unistd.h>
+#include <sstream>
 //portability wrappers
 #include <portability/OS.hpp>
 //header to implement
