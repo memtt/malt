@@ -14,7 +14,7 @@
 /**********************************************************/
 #include <functional>
 #include <nlohmann/json.hpp>
-#include "format/MaltProfile.hpp"
+#include "../format/MaltProfile.hpp"
 
 /**********************************************************/
 namespace MALTReader
@@ -56,9 +56,9 @@ class Extractor
 	public:
 		Extractor(const MALTFormat::MaltProfile & profile);
 		~Extractor(void);
-		FlatProfileVector getFlatProfile(const LocaltionMappingFunc & mapping,const LocaltionFilterFunc & filter);
+		FlatProfileVector getFlatProfile(const LocaltionMappingFunc & mapping,const LocaltionFilterFunc & filter) const;
 	private:
-		void mergeStackInfo(FlatProfileMap & into, const MALTFormat::LangAddress & addr,FlatProfileCounter counter,const MALTFormat::StackInfos & infos,const LocaltionMappingFunc & mapping);
+		void mergeStackInfo(FlatProfileMap & into, const MALTFormat::LangAddress & addr,FlatProfileCounter counter,const MALTFormat::StackInfos & infos,const LocaltionMappingFunc & mapping) const;
 		void buildTranslation(void);
 	private:
 		const MALTFormat::MaltProfile & profile;

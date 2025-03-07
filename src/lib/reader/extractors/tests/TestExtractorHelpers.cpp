@@ -64,3 +64,18 @@ TEST(TestExtractorHelpers, jsonRemoveAbsPath)
 
 	EXPECT_EQ(json, jsonRef);
 }
+
+/**********************************************************/
+TEST(TestExtractorHelpers, jsonRemoveZeroes)
+{
+	const std::vector<std::string> fieldsToKeep{"ROOT.[].min", "*.max"};
+	
+	const std::string jsonStr = "[{\"min\":10, \"max\":20, \"mean\":0}, {\"min\":0, \"max\":0, \"mean\":0}, {\"key\": {\"zero\":0}}]";
+	const std::string jsonStrRef = "[{\"min\":10, \"max\":20}]";
+	nlohmann::json json = nlohmann::json::parse(jsonStr);
+	nlohmann::json jsonRef = nlohmann::json::parse(jsonStrRef);
+
+	ExtractorHelpers::jsonRemoveZeroes(json);
+
+	EXPECT_EQ(json, jsonRef);
+}

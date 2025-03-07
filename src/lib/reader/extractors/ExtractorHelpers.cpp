@@ -10,6 +10,7 @@
 
 /**********************************************************/
 #include <iostream>
+#include <list>
 #include "ExtractorHelpers.hpp"
 
 /**********************************************************/
@@ -142,6 +143,76 @@ void ExtractorHelpers::jsonRemoveAbsPath(nlohmann::json & value, const std::stri
 		for (auto & it : value.items())
 			ExtractorHelpers::jsonRemoveAbsPath(it.value(), prefix);
 	}
+}
+
+/**********************************************************/
+bool ExtractorHelpers::jsonRemoveZeroes(nlohmann::json & value)
+{
+	bool removedAll = false;
+	if (value.is_number()) {
+		size_t v = value;
+		if (v == 0)
+			return true;
+	} else if (value.is_array()) {
+		std::list<size_t> keysToRemove;
+		size_t i = 0;
+		for (auto & it : value) {
+			if (ExtractorHelpers::jsonRemoveZeroes(it))
+				keysToRemove.push_back(i);
+			i++;
+		}
+		if (keysToRemove.size() == value.size()) {
+			removedAll = true;
+		} else {
+			size_t cnt = 0;
+			for (auto & it : keysToRemove)
+				value.erase(it - (cnt++));
+		}
+	} else if (value.is_object()) {
+		std::list<std::string> keysToRemove;
+		for (auto & it : value.items()) {
+			if (ExtractorHelpers::jsonRemoveZeroes(it.value()))
+				keysToRemove.push_back(it.key());
+		}
+		if (keysToRemove.size() == value.size()) {
+			removedAll = true;
+		} else {
+			for (auto & it : keysToRemove)
+				value.erase(it);
+		}
+	}
+
+	//ok not removed all
+	return removedAll;
+}
+
+/**********************************************************/
+nlohmann::json ExtractorHelpers::buildShorterFlatProfileSummary(nlohmann::json value, bool onlyLocation)
+{
+	//reshape
+	nlohmann::json result = nlohmann::json::object();
+
+	//loop
+	for (auto & it : value) {
+		std::stringstream key;
+		std::string file = it["location"]["file"];
+		std::string function = it["location"]["function"];
+		key << file << ":" << function << ":" << it["location"]["line"];
+		result[key.str()] = it["own"];
+	}
+
+	//remove zeroes
+	ExtractorHelpers::jsonRemoveZeroes(result);
+
+	//case
+	if (onlyLocation) {
+		for (auto & it : result.items()) {
+			it.value() = true;
+		}
+	}
+
+	//ok
+	return result;
 }
 
 }

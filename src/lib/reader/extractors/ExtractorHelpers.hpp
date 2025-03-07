@@ -14,7 +14,7 @@
 /**********************************************************/
 #include <queue>
 #include <nlohmann/json.hpp>
-#include "format/MaltProfile.hpp"
+#include "../format/MaltProfile.hpp"
 
 /**********************************************************/
 namespace MALTReader
@@ -30,6 +30,8 @@ struct ExtractorHelpers
 	static bool filterJson(nlohmann::json & value, const std::vector<std::string> & fieldsToKeep, std::vector<std::string> & stack);
 	static bool jsonCheckPath(const std::vector<std::string> & fieldsToKeep, const std::vector<std::string> & stack);
 	static void jsonRemoveAbsPath(nlohmann::json & value, const std::string & prefix);
+	static bool jsonRemoveZeroes(nlohmann::json & value);
+	static nlohmann::json buildShorterFlatProfileSummary(nlohmann::json value, bool onlyLocation = false);
 };
 
 /**********************************************************/
@@ -45,6 +47,8 @@ nlohmann::json ExtractorHelpers::toJsonFiltered(const T & value, const std::vect
 	//ok
 	return json;
 }
+
+
 
 }
 

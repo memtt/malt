@@ -61,6 +61,7 @@ void Extractor::buildTranslation(void)
 			ref.binary = &strings[instrInfos.binary];
 			ref.function = &strings[instrInfos.function];
 			ref.file = &strings[instrInfos.file];
+			ref.line = instrInfos.line;
 
 			//store
 			this->addrTranslation[addr] = ref;
@@ -69,7 +70,7 @@ void Extractor::buildTranslation(void)
 }
 
 /**********************************************************/
-FlatProfileVector Extractor::getFlatProfile(const LocaltionMappingFunc & mapping,const LocaltionFilterFunc & filter)
+FlatProfileVector Extractor::getFlatProfile(const LocaltionMappingFunc & mapping,const LocaltionFilterFunc & filter) const
 {
 	//vars
 	FlatProfileMap result;
@@ -83,13 +84,13 @@ FlatProfileVector Extractor::getFlatProfile(const LocaltionMappingFunc & mapping
 
 		//skip C++ operators
 		size_t skip = 0;
-		while (skip < stack.size() && ExtractorHelpers::isAllocFunction(*addrTranslation[stack[skip]].function)) skip++;
+		while (skip < stack.size() && ExtractorHelpers::isAllocFunction(*addrTranslation.at(stack[skip]).function)) skip++;
 		if (skip >= stack.size())
 		{
 			std::cerr << "Warning : get call stacks with only allocation function ??? : " << std::endl;
 			//TODO make serialization of stacks
 			for (const auto it : stack) {
-				InstructionInfosStrRef infosRef = addrTranslation[stack[skip]];
+				InstructionInfosStrRef infosRef = addrTranslation.at(stack[skip]);
 				std::cerr << "           - " << *infosRef.file << ":" << infosRef.line << " (" << *infosRef.function << ")" << std::endl;
 			}
 			//TODO print infos
@@ -98,7 +99,7 @@ FlatProfileVector Extractor::getFlatProfile(const LocaltionMappingFunc & mapping
 
 		//update internal values
 		LangAddress cur = stack[skip];
-		if (filter(this->addrTranslation[cur],infos) == true)
+		if (filter(this->addrTranslation.at(cur),infos) == true)
 			this->mergeStackInfo(result, cur, FLAT_PROFILE_OWN, infos, mapping);
 
 		//childs
@@ -111,8 +112,8 @@ FlatProfileVector Extractor::getFlatProfile(const LocaltionMappingFunc & mapping
 
 			//extract some quick refs
 			const LangAddress cur = stack[j];
-			const std::string key = mapping(addrTranslation[cur], infos);
-			bool accepted = filter(addrTranslation[cur], infos);
+			const std::string key = mapping(addrTranslation.at(cur), infos);
+			bool accepted = filter(addrTranslation.at(cur), infos);
 			if (accepted && done.find(key) == done.end())
 			{
 				done[key] = true;
@@ -132,10 +133,10 @@ FlatProfileVector Extractor::getFlatProfile(const LocaltionMappingFunc & mapping
 }
 
 /**********************************************************/
-void Extractor::mergeStackInfo(FlatProfileMap & into, const LangAddress & addr,FlatProfileCounter counter,const StackInfos & infos,const LocaltionMappingFunc & mapping)
+void Extractor::mergeStackInfo(FlatProfileMap & into, const LangAddress & addr,FlatProfileCounter counter,const StackInfos & infos,const LocaltionMappingFunc & mapping) const
 {
 	//extract key by using mapping function
-	const InstructionInfosStrRef & detailedStackEntry = this->addrTranslation[addr];
+	const InstructionInfosStrRef & detailedStackEntry = this->addrTranslation.at(addr);
 	std::string key = mapping(detailedStackEntry, infos);
 	if (key.empty())
 		key = MALTFormat::to_string(addr);
@@ -177,6 +178,7 @@ void to_json(nlohmann::json & json, const InstructionInfosStrRef & value)
 		{"binary", *value.binary},
 		{"file", *value.file},
 		{"function", *value.function},
+		{"line", value.line},
 	};
 }
 
