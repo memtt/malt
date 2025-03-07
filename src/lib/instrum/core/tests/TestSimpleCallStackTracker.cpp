@@ -66,25 +66,25 @@ const char * CST_REF_1 = "{\n\
 
 const char * CST_REF_2 = "{\n\
 \t\"map\":[],\n\
-\t\"strings\":[\"??\", \"TestSimpleCallStackTracker.cpp\", \"functionStackA\", \"functionStackB\", \"functionStackC\"],\n\
+\t\"strings\":[\"??\", \"TestSimpleCallStackTracker.cpp\", \"functionStackA\", \"TestSimpleStackTracker\", \"functionStackB\", \"functionStackC\"],\n\
 \t\"instr\":{\n\
 \t\t\"0x10\":{\n\
 \t\t\t\"file\":1,\n\
 \t\t\t\"function\":2,\n\
 \t\t\t\"line\":23,\n\
-\t\t\t\"binary\":1\n\
+\t\t\t\"binary\":3\n\
 \t\t},\n\
 \t\t\"0x20\":{\n\
 \t\t\t\"file\":1,\n\
-\t\t\t\"function\":3,\n\
+\t\t\t\"function\":4,\n\
 \t\t\t\"line\":24,\n\
-\t\t\t\"binary\":1\n\
+\t\t\t\"binary\":3\n\
 \t\t},\n\
 \t\t\"0x30\":{\n\
 \t\t\t\"file\":1,\n\
-\t\t\t\"function\":4,\n\
+\t\t\t\"function\":5,\n\
 \t\t\t\"line\":25,\n\
-\t\t\t\"binary\":1\n\
+\t\t\t\"binary\":3\n\
 \t\t}\n\
 \t}\n\
 }\
@@ -240,9 +240,9 @@ TEST(TestSimpleStackTracker, solveSymbols)
 
 	//resolve
 	SymbolSolver solver;
-	solver.registerFunctionSymbol((void*)0x10, "functionStackA", "TestSimpleCallStackTracker.cpp", 23);
-	solver.registerFunctionSymbol((void*)0x20, "functionStackB", "TestSimpleCallStackTracker.cpp", 24);
-	solver.registerFunctionSymbol((void*)0x30, "functionStackC", "TestSimpleCallStackTracker.cpp", 25);
+	solver.registerFunctionSymbol((void*)0x10, "TestSimpleStackTracker", "functionStackA", "TestSimpleCallStackTracker.cpp", 23);
+	solver.registerFunctionSymbol((void*)0x20, "TestSimpleStackTracker", "functionStackB", "TestSimpleCallStackTracker.cpp", 24);
+	solver.registerFunctionSymbol((void*)0x30, "TestSimpleStackTracker", "functionStackC", "TestSimpleCallStackTracker.cpp", 25);
 
 	//port in tracker
 	tracker.solveSymbols(solver);
@@ -253,7 +253,7 @@ TEST(TestSimpleStackTracker, solveSymbols)
 
 	//compare
 	//ASSERT_THAT(value2, MatchesRegex(CST_REF_2));
-	ASSERT_EQ(out.str(), CST_REF_2);
+	ASSERT_EQ(CST_REF_2, out.str());
 }
 
 TEST(TestSimpleStackTracker, ValgrindOutput)
@@ -270,9 +270,9 @@ TEST(TestSimpleStackTracker, ValgrindOutput)
 
 	//resolve
 	SymbolSolver solver;
-	solver.registerFunctionSymbol((void*)0x10, "functionStackA", "TestSimpleCallStackTracker.cpp", 23);
-	solver.registerFunctionSymbol((void*)0x20, "functionStackB", "TestSimpleCallStackTracker.cpp", 24);
-	solver.registerFunctionSymbol((void*)0x30, "functionStackC", "TestSimpleCallStackTracker.cpp", 25);
+	solver.registerFunctionSymbol((void*)0x10, "TestSimpleStackTracker", "functionStackA", "TestSimpleCallStackTracker.cpp", 23);
+	solver.registerFunctionSymbol((void*)0x20, "TestSimpleStackTracker", "functionStackB", "TestSimpleCallStackTracker.cpp", 24);
+	solver.registerFunctionSymbol((void*)0x30, "TestSimpleStackTracker", "functionStackC", "TestSimpleCallStackTracker.cpp", 25);
 
 	//port in tracker
 	ValgrindOutput valgrind;

@@ -508,10 +508,10 @@ void SymbolSolver::registerMaqaoFunctionSymbol(int funcId, const char* funcName,
  * @param file The file of the call ste..
  * @param line Line of the call site.
 **/
-void SymbolSolver::registerFunctionSymbol(void * addr, const char * funcName,const char * file,int line)
+void SymbolSolver::registerFunctionSymbol(void * addr, const char * binary, const char * funcName,const char * file,int line)
 {
 	LangAddress langAddr(DOMAIN_C, addr);
-	this->registerFunctionSymbol(langAddr, funcName, file, line);
+	this->registerFunctionSymbol(langAddr, binary, funcName, file, line);
 }
 
 /**********************************************************/
@@ -522,11 +522,12 @@ void SymbolSolver::registerFunctionSymbol(void * addr, const char * funcName,con
  * @param file The file of the call ste..
  * @param line Line of the call site.
 **/
-void SymbolSolver::registerFunctionSymbol(LangAddress langAddr, const char * funcName,const char * file,int line)
+void SymbolSolver::registerFunctionSymbol(LangAddress langAddr, const char * binary, const char * funcName,const char * file,int line)
 {
 	auto & site = this->callSiteMap[langAddr];
 	site.file = getString(file);
 	site.function = getString(funcName);
+	site.binary = getString(binary);
 	site.line = line;
 }
 

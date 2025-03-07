@@ -96,9 +96,9 @@ TEST(TestStackSizeAnalyser, full_workflow)
 
 	//solver
 	SymbolSolver solver;
-	solver.registerFunctionSymbol((void*)0x100, "main()", "program", 10);
-	solver.registerFunctionSymbol((void*)0x200, "functionA()", "program", 20);
-	solver.registerFunctionSymbol((void*)0x300, "functionB()", "program", 30);
+	solver.registerFunctionSymbol((void*)0x100, "TestStackSizeAnalyser", "main()", "program", 10);
+	solver.registerFunctionSymbol((void*)0x200, "TestStackSizeAnalyser", "functionA()", "program", 20);
+	solver.registerFunctionSymbol((void*)0x300, "TestStackSizeAnalyser", "functionB()", "program", 30);
 
 	//to json
 	std::stringstream out;

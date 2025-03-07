@@ -29,6 +29,9 @@ set(MALT_SO_VERSION "1")
 set(MALT_JSON_FORMAT_VERSION "1.1")
 
 ############################################################
+set (CMAKE_CXX_STANDARD 11)
+
+############################################################
 #global setup
 enable_testing()
 

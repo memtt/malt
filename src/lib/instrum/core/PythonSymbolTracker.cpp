@@ -208,7 +208,7 @@ void PythonSymbolTracker::registerSymbolResolution(SymbolSolver & solver) const
 		const char * function = this->dict.getString(site.first.function).c_str();
 		const char * file = this->dict.getString(site.first.file).c_str();
 		snprintf(buffer, sizeof(buffer), "py:%s", function);
-		solver.registerFunctionSymbol(LangAddress(DOMAIN_PYTHON, site.second), buffer, file, site.first.line);
+		solver.registerFunctionSymbol(LangAddress(DOMAIN_PYTHON, site.second), "NONE", buffer, file, site.first.line);
 	}
 }
 

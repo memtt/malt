@@ -28,7 +28,7 @@ Addr2Line::Addr2Line(StringIdDictionnary & dict, const std::string & elfFile, si
 	assert(elfFile.empty() == false);
 
 	this->elfFile = elfFile;
-	this->elfFileId = this->dict.getId(String(elfFile));
+	this->elfFileId = this->dict.getId(String(elfFile.c_str()));
 	this->aslrOffset = aslrOffset;
 	this->bucketSize = bucketSize;
 }
