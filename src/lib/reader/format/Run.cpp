@@ -12,9 +12,6 @@
 #include "Run.hpp"
 
 /**********************************************************/
-#define jsContains(value, field) ((value).find((field)) != (value).end())
-
-/**********************************************************/
 namespace MALTFormat
 {
 
@@ -34,7 +31,7 @@ void to_json(nlohmann::json & json, const Run & run)
 }
 
 /**********************************************************/
-void from_json(const nlohmann::json & json, Run & run)
+void from_json(const JsonIn & json, Run & run)
 {
 	//checks
 	assert(jsContains(json, "formatVersion"));

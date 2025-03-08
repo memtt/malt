@@ -23,8 +23,13 @@ Profile::Profile(const std::string & fname, bool loadProgressBar)
 	FileReader reader(fname, loadProgressBar);
 
 	//load it
-	nlohmann::json data = nlohmann::json::parse(begin(reader), end(reader));
-	this->profile = data;
+	#ifdef USE_INTERNAL_JSON_IN
+		MALTJson::JsonFile file(fname);
+		file.getRoot().get_to(this->profile);
+	#else
+		nlohmann::json data = nlohmann::json::parse(begin(reader), end(reader));
+		this->profile = data;
+	#endif
 
 	//build extractor
 	this->extractor = new Extractor(this->profile);

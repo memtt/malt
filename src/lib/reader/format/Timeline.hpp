@@ -14,7 +14,7 @@
 /**********************************************************/
 #include <string>
 #include <vector>
-#include <nlohmann/json.hpp>
+#include "Json.hpp"
 #include "Types.hpp"
 #include "Sites.hpp"
 
@@ -42,9 +42,9 @@ struct Timeline
 };
 
 /**********************************************************/
-void from_json(const nlohmann::json & json, TimelineInfos & value);
+void from_json(const JsonIn & json, TimelineInfos & value);
 void to_json(nlohmann::json & json, const TimelineInfos & value);
-void from_json(const nlohmann::json & json, Timeline & value);
+void from_json(const JsonIn & json, Timeline & value);
 void to_json(nlohmann::json & json, const Timeline & value);
 
 

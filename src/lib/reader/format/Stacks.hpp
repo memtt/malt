@@ -15,7 +15,7 @@
 #include <string>
 #include <vector>
 #include <cstdint>
-#include <nlohmann/json.hpp>
+#include "Json.hpp"
 #include "Types.hpp"
 
 /**********************************************************/
@@ -69,13 +69,13 @@ struct Stacks
 };
 
 /**********************************************************/
-void from_json(const nlohmann::json & json, CountMinMaxSum & value);
+void from_json(const JsonIn & json, CountMinMaxSum & value);
 void to_json(nlohmann::json & json, const CountMinMaxSum & value);
-void from_json(const nlohmann::json & json, StackInfos & value);
+void from_json(const JsonIn & json, StackInfos & value);
 void to_json(nlohmann::json & json, const StackInfos & value);
-void from_json(const nlohmann::json & json, StackStat & value);
+void from_json(const JsonIn & json, StackStat & value);
 void to_json(nlohmann::json & json, const StackStat & value);
-void from_json(const nlohmann::json & json, Stacks & value);
+void from_json(const JsonIn & json, Stacks & value);
 void to_json(nlohmann::json & json, const Stacks & value);
 
 }

@@ -11,6 +11,7 @@
 
 ############################################################
 include_directories(.)
+include_directories(..)
 
 ############################################################
 add_library(malt-profile SHARED
@@ -34,7 +35,7 @@ add_library(malt-profile SHARED
     Profile.cpp
     WebProfile.cpp
 )
-target_link_libraries(malt-profile PRIVATE nlohmann_json::nlohmann_json)
+target_link_libraries(malt-profile PRIVATE nlohmann_json::nlohmann_json malt-json)
 target_link_libraries(malt-profile PRIVATE OpenMP::OpenMP_CXX)
 set_target_properties(malt-profile PROPERTIES VERSION ${MALT_VERSION}
                                               SOVERSION ${MALT_SO_VERSION})

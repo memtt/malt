@@ -12,9 +12,6 @@
 #include "Leaks.hpp"
 
 /**********************************************************/
-#define jsContains(value, field) ((value).find((field)) != (value).end())
-
-/**********************************************************/
 namespace MALTFormat
 {
 
@@ -29,7 +26,7 @@ void to_json(nlohmann::json & json, const Leak & value)
 }
 
 /**********************************************************/
-void from_json(const nlohmann::json & json, Leak & value)
+void from_json(const JsonIn & json, Leak & value)
 {
 	//checks
 	assert(jsContains(json, "stack"));

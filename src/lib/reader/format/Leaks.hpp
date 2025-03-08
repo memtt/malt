@@ -14,7 +14,7 @@
 /**********************************************************/
 #include <string>
 #include <vector>
-#include <nlohmann/json.hpp>
+#include "Json.hpp"
 #include "Types.hpp"
 
 /**********************************************************/
@@ -33,7 +33,7 @@ struct Leak
 typedef std::vector<Leak> Leaks;
 
 /**********************************************************/
-void from_json(const nlohmann::json & json, Leak & value);
+void from_json(const JsonIn & json, Leak & value);
 void to_json(nlohmann::json & json, const Leak & value);
 
 }

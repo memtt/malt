@@ -23,13 +23,14 @@ void to_json(nlohmann::json & json, const LangAddress & value)
 }
 
 /**********************************************************/
-void from_json(const nlohmann::json & json, LangAddress & address)
+void from_json(const JsonIn & json, LangAddress & address)
 {
 	//check
 	assert(json.is_string());
 
 	//parse
-	std::string value = json;
+	std::string value;
+	json.get_to(value);
 
 	//convert
 	address = to_lang_address(value);
@@ -78,13 +79,14 @@ LangAddress to_lang_address(const std::string & value)
 }
 
 /**********************************************************/
-void from_json(const nlohmann::json & json, void * & ptr)
+void from_json(const JsonIn & json, void * & ptr)
 {
 	//check
 	assert(json.is_string());
 
 	//convert
-	std::string value = json;
+	std::string value;
+	json.get_to(value);
 
 	//parse
 	if (sscanf(value.c_str(), "%p", &ptr) == 0)

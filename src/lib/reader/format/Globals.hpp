@@ -13,7 +13,7 @@
 
 /**********************************************************/
 #include <string>
-#include <nlohmann/json.hpp>
+#include "Json.hpp"
 #include "Types.hpp"
 
 /**********************************************************/
@@ -31,7 +31,7 @@ struct Globals
 };
 
 /**********************************************************/
-void from_json(const nlohmann::json & json, Globals & value);
+void from_json(const JsonIn & json, Globals & value);
 void to_json(nlohmann::json & json, const Globals & value);
 
 }

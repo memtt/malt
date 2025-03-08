@@ -13,7 +13,7 @@
 
 /**********************************************************/
 #include <string>
-#include <nlohmann/json.hpp>
+#include "Json.hpp"
 #include "Types.hpp"
 
 /**********************************************************/
@@ -76,7 +76,7 @@ struct Config
 };
 
 /**********************************************************/
-void from_json(const nlohmann::json & json, Config & config);
+void from_json(const JsonIn & json, Config & config);
 void to_json(nlohmann::json & json, const Config & config);
 
 }

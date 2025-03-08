@@ -12,9 +12,6 @@
 #include "Scatter.hpp"
 
 /**********************************************************/
-#define jsContains(value, field) ((value).find((field)) != (value).end())
-
-/**********************************************************/
 namespace MALTFormat
 {
 
@@ -29,7 +26,7 @@ void to_json(nlohmann::json & json, const ScatterPoint & value)
 }
 
 /**********************************************************/
-void from_json(const nlohmann::json & json, ScatterPoint & value)
+void from_json(const JsonIn & json, ScatterPoint & value)
 {
 	//checks
 	assert(jsContains(json, "x"));
@@ -59,14 +56,14 @@ void to_json(nlohmann::json & json, const ScatterChart & value)
 }
 
 /**********************************************************/
-void from_json(const nlohmann::json & json, ScatterChart & value)
+void from_json(const JsonIn & json, ScatterChart & value)
 {
 	//checks
 	assert(jsContains(json, "infos"));
 	assert(jsContains(json, "points"));
 
 	//load infos.xaxis
-	const nlohmann::json & xAxis = json.at("infos").at("xAxis");
+	const JsonIn & xAxis = json.at("infos").at("xAxis");
 	assert(jsContains(xAxis, "max"));
 	assert(jsContains(xAxis, "size"));
 	assert(jsContains(xAxis, "log"));
@@ -75,7 +72,7 @@ void from_json(const nlohmann::json & json, ScatterChart & value)
 	xAxis.at("log").get_to(value.infos.xAxis.log);
 
 	//load infos.yaxis
-	const nlohmann::json & yAxis = json.at("infos").at("yAxis");
+	const JsonIn & yAxis = json.at("infos").at("yAxis");
 	assert(jsContains(yAxis, "max"));
 	assert(jsContains(yAxis, "size"));
 	assert(jsContains(yAxis, "log"));
@@ -97,7 +94,7 @@ void to_json(nlohmann::json & json, const Scatter & value)
 }
 
 /**********************************************************/
-void from_json(const nlohmann::json & json, Scatter & value)
+void from_json(const JsonIn & json, Scatter & value)
 {
 	//checks
 	assert(jsContains(json, "sizeOverTime"));

@@ -12,9 +12,6 @@
 #include "MaltProfile.hpp"
 
 /**********************************************************/
-#define jsContains(value, field) ((value).find((field)) != (value).end())
-
-/**********************************************************/
 namespace MALTFormat
 {
 
@@ -36,7 +33,7 @@ void to_json(nlohmann::json & json, const MaltProfile & value)
 }
 
 /**********************************************************/
-void from_json(const nlohmann::json & json, MaltProfile & profile)
+void from_json(const JsonIn & json, MaltProfile & profile)
 {
 	//check keys
 	assert(jsContains(json, "run"));

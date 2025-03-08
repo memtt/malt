@@ -13,9 +13,6 @@
 #include "Stacks.hpp"
 
 /**********************************************************/
-#define jsContains(value, field) ((value).find((field)) != (value).end())
-
-/**********************************************************/
 namespace MALTFormat
 {
 
@@ -31,7 +28,7 @@ void to_json(nlohmann::json & json, const CountMinMaxSum & value)
 }
 
 /**********************************************************/
-void from_json(const nlohmann::json & json, CountMinMaxSum & value)
+void from_json(const JsonIn & json, CountMinMaxSum & value)
 {
 	//checks
 	assert(jsContains(json, "count"));
@@ -63,7 +60,7 @@ void to_json(nlohmann::json & json, const StackInfos & value)
 }
 
 /**********************************************************/
-void from_json(const nlohmann::json & json, StackInfos & value)
+void from_json(const JsonIn & json, StackInfos & value)
 {
 	//checks
 	assert(jsContains(json, "countZeros"));
@@ -104,7 +101,7 @@ void to_json(nlohmann::json & json, const StackStat & value)
 }
 
 /**********************************************************/
-void from_json(const nlohmann::json & json, StackStat & value)
+void from_json(const JsonIn & json, StackStat & value)
 {
 	//checks
 	assert(jsContains(json, "stack"));
@@ -132,7 +129,7 @@ void to_json(nlohmann::json & json, const Stacks & value)
 }
 
 /**********************************************************/
-void from_json(const nlohmann::json & json, Stacks & value)
+void from_json(const JsonIn & json, Stacks & value)
 {
 	//check
 	assert(jsContains(json, "stats"));
@@ -141,7 +138,7 @@ void from_json(const nlohmann::json & json, Stacks & value)
 	json.at("count").get_to(value.count);
 
 	//get it
-	const nlohmann::json & stats = json["stats"];
+	const JsonIn & stats = json["stats"];
 	assert(stats.is_array());
 	value.stats.reserve(stats.size());
 	for (size_t i = 0 ; i < stats.size() ; i++) {

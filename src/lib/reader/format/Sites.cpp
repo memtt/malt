@@ -13,9 +13,6 @@
 #include "Sites.hpp"
 
 /**********************************************************/
-#define jsContains(value, field) ((value).find((field)) != (value).end())
-
-/**********************************************************/
 namespace MALTFormat
 {
 
@@ -39,7 +36,7 @@ void to_json(nlohmann::json & json, const ProcMapEntry & value)
 }
 
 /**********************************************************/
-void from_json(const nlohmann::json & json, ProcMapEntry & value)
+void from_json(const JsonIn & json, ProcMapEntry & value)
 {
 	//checks
 	assert(jsContains(json, "lower"));
@@ -82,7 +79,7 @@ void to_json(nlohmann::json & json, const InstructionInfos & value)
 }
 
 /**********************************************************/
-void from_json(const nlohmann::json & json, InstructionInfos & value)
+void from_json(const JsonIn & json, InstructionInfos & value)
 {
 	//load
 	value.file = -1;
@@ -110,7 +107,7 @@ void to_json(nlohmann::json & json, const Sites & value)
 }
 
 /**********************************************************/
-void from_json(const nlohmann::json & json, Sites & value)
+void from_json(const JsonIn & json, Sites & value)
 {
 	//checks
 	assert(jsContains(json, "map"));
@@ -124,11 +121,11 @@ void from_json(const nlohmann::json & json, Sites & value)
 }
 
 /**********************************************************/
-void from_json(const nlohmann::json & json, SitesInstrMap & value)
+void from_json(const JsonIn & json, SitesInstrMap & value)
 {
 	for (const auto & it : json.items()) {
 		LangAddress addr = to_lang_address(it.key());
-		value[addr] = it.value();
+		it.value().get_to(value[addr]);
 	}
 }
 

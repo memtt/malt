@@ -20,12 +20,17 @@ using namespace MALTFormat;
 /**********************************************************/
 TEST(TestFormat, load_save_load)
 {
+	//get json in
+	JsonIn dataIn(nullptr);
+	get_json_in(dataIn);
+
 	//get json
 	nlohmann::json data;
 	get_json(data);
 
 	//convert in / back
-	MaltProfile profile = data;
+	MaltProfile profile;
+	dataIn.get_to(profile);
 	const nlohmann::json asJson = profile;
 
 	//check
@@ -36,12 +41,18 @@ TEST(TestFormat, load_save_load)
 /**********************************************************/
 TEST(TestFormat, field_config)
 {
+	//get json in
+	JsonIn dataIn(nullptr);
+	get_json_in(dataIn);
+
+	
 	//get json
 	nlohmann::json data;
 	get_json(data);
 
 	//convert in / back
-	MALTFormat::Config profile = data["config"];
+	MALTFormat::Config profile;
+	dataIn["config"].get_to(profile);
 	const nlohmann::json asJson = profile;
 
 	//check
@@ -52,12 +63,18 @@ TEST(TestFormat, field_config)
 /**********************************************************/
 TEST(TestFormat, field_run)
 {
+	//get json in
+	JsonIn dataIn(nullptr);
+	get_json_in(dataIn);
+
+	
 	//get json
 	nlohmann::json data;
 	get_json(data);
 
 	//convert in / back
-	MALTFormat::Run profile = data["run"];
+	MALTFormat::Run profile;
+	dataIn["run"].get_to(profile);
 	const nlohmann::json asJson = profile;
 
 	//check
@@ -68,12 +85,18 @@ TEST(TestFormat, field_run)
 /**********************************************************/
 TEST(TestFormat, field_globals)
 {
+	//get json in
+	JsonIn dataIn(nullptr);
+	get_json_in(dataIn);
+
+	
 	//get json
 	nlohmann::json data;
 	get_json(data);
 
 	//convert in / back
-	MALTFormat::Globals profile = data["globals"];
+	MALTFormat::Globals profile;
+	dataIn["globals"].get_to(profile);
 	const nlohmann::json asJson = profile;
 
 	//check
@@ -84,12 +107,18 @@ TEST(TestFormat, field_globals)
 /**********************************************************/
 TEST(TestFormat, field_leaks)
 {
+	//get json in
+	JsonIn dataIn(nullptr);
+	get_json_in(dataIn);
+
+	
 	//get json
 	nlohmann::json data;
 	get_json(data);
 
 	//convert in / back
-	MALTFormat::Leaks profile = data["leaks"];
+	MALTFormat::Leaks profile;
+	dataIn["leaks"].get_to(profile);
 	const nlohmann::json asJson = profile;
 
 	//check
@@ -100,12 +129,17 @@ TEST(TestFormat, field_leaks)
 /**********************************************************/
 TEST(TestFormat, field_mem_stats)
 {
+	//get json in
+	JsonIn dataIn(nullptr);
+	get_json_in(dataIn);
+	
 	//get json
 	nlohmann::json data;
 	get_json(data);
 
 	//convert in / back
-	MALTFormat::MemStats profile = data["memStats"];
+	MALTFormat::MemStats profile;
+	dataIn["memStats"].get_to(profile);
 	const nlohmann::json asJson = profile;
 
 	//check
@@ -117,12 +151,17 @@ TEST(TestFormat, field_mem_stats)
 /**********************************************************/
 TEST(TestFormat, field_scatter)
 {
+	//get json in
+	JsonIn dataIn(nullptr);
+	get_json_in(dataIn);
+
 	//get json
 	nlohmann::json data;
 	get_json(data);
 
 	//convert in / back
-	MALTFormat::Scatter profile = data["scatter"];
+	MALTFormat::Scatter profile;
+	dataIn["scatter"].get_to(profile);
 	const nlohmann::json asJson = profile;
 
 	//check
@@ -133,12 +172,17 @@ TEST(TestFormat, field_scatter)
 /**********************************************************/
 TEST(TestFormat, field_sites)
 {
+	//get json in
+	JsonIn dataIn(nullptr);
+	get_json_in(dataIn);
+
 	//get json
 	nlohmann::json data;
 	get_json(data);
 
 	//convert in / back
-	MALTFormat::Sites profile = data["sites"];
+	MALTFormat::Sites profile;
+	dataIn["sites"].get_to(profile);
 	const nlohmann::json asJson = profile;
 
 	//check
@@ -150,12 +194,17 @@ TEST(TestFormat, field_sites)
 /**********************************************************/
 TEST(TestFormat, field_threads)
 {
+	//get json in
+	JsonIn dataIn(nullptr);
+	get_json_in(dataIn);
+
 	//get json
 	nlohmann::json data;
 	get_json(data);
 
 	//convert in / back
-	MALTFormat::Threads profile = data["threads"];
+	MALTFormat::Threads profile;
+	dataIn["threads"].get_to(profile);
 	const nlohmann::json asJson = profile;
 
 	//check
@@ -166,12 +215,17 @@ TEST(TestFormat, field_threads)
 /**********************************************************/
 TEST(TestFormat, field_timeline)
 {
+	//get json in
+	JsonIn dataIn(nullptr);
+	get_json_in(dataIn);
+
 	//get json
 	nlohmann::json data;
 	get_json(data);
 
 	//convert in / back
-	MALTFormat::Timeline profile = data["timeline"];
+	MALTFormat::Timeline profile;
+	dataIn["timeline"].get_to(profile);
 	const nlohmann::json asJson = profile;
 
 	//check

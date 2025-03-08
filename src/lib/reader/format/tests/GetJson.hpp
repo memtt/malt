@@ -15,9 +15,20 @@
 #include <gtest/gtest.h>
 #include <fstream>
 #include "../MaltProfile.hpp"
+#include "../Json.hpp"
 
 /**********************************************************/
 static void get_json(nlohmann::json & data)
+{
+	//calc profile fname
+	const std::string fname = CUR_BUILD_DIR "/malt-simple-case-finstr-linked.json";
+
+	std::ifstream f(fname);
+	data = nlohmann::json::parse(f);
+}
+
+/**********************************************************/
+static void get_json_in(MALTFormat::JsonIn & data)
 {
 	//calc profile fname
 	const std::string fname = CUR_BUILD_DIR "/malt-simple-case-finstr-linked.json";
@@ -32,8 +43,13 @@ static void get_json(nlohmann::json & data)
 	}
 
 	//load
-	std::ifstream f(fname);
-	data = nlohmann::json::parse(f);
+	#ifdef USE_INTERNAL_JSON_IN
+		static MALTJson::JsonFile file(fname);
+		data = file.getRoot();
+	#else
+		std::ifstream f(fname);
+		data = nlohmann::json::parse(f);
+	#endif
 }
 
 #endif //MALT_FORMAT_TEST_GET_JSON_HPP

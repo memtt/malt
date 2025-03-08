@@ -14,7 +14,7 @@
 /**********************************************************/
 #include <string>
 #include "Types.hpp"
-#include <nlohmann/json.hpp>
+#include "Json.hpp"
 
 /**********************************************************/
 namespace MALTFormat
@@ -34,7 +34,7 @@ struct Run
 };
 
 /**********************************************************/
-void from_json(const nlohmann::json & json, Run & run);
+void from_json(const JsonIn & json, Run & run);
 void to_json(nlohmann::json & json, const Run & run);
 
 }

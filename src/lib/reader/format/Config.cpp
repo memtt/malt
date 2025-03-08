@@ -12,9 +12,6 @@
 #include "Config.hpp"
 
 /**********************************************************/
-#define jsContains(value, field) ((value).find((field)) != (value).end())
-
-/**********************************************************/
 namespace MALTFormat
 {
 
@@ -93,13 +90,13 @@ void to_json(nlohmann::json & json, const Config & config){
 }
 
 /**********************************************************/
-void from_json(const nlohmann::json & json, Config & config)
+void from_json(const JsonIn & json, Config & config)
 {
 	//checks
 	assert(jsContains(json, "time"));
 
 	//time
-	nlohmann::json jsonTime = json.at("time");
+	JsonIn jsonTime = json.at("time");
 	assert(jsContains(jsonTime, "enabled"));
 	assert(jsContains(jsonTime, "points"));
 	assert(jsContains(jsonTime, "linear"));
@@ -108,7 +105,7 @@ void from_json(const nlohmann::json & json, Config & config)
 	jsonTime.at("linear").get_to(config.time.linear);
 
 	//stack
-	nlohmann::json jsonStack = json.at("stack");
+	JsonIn jsonStack = json.at("stack");
 	assert(jsContains(jsonStack, "enabled"));
 	assert(jsContains(jsonStack, "mode"));
 	assert(jsContains(jsonStack, "resolve"));
@@ -125,7 +122,7 @@ void from_json(const nlohmann::json & json, Config & config)
 	jsonStack.at("addr2lineThreads").get_to(config.stack.addr2lineThreads);
 
 	//python
-	nlohmann::json jsonPython = json.at("python");
+	JsonIn jsonPython = json.at("python");
 	assert(jsContains(jsonPython, "instru"));
 	assert(jsContains(jsonPython, "mix"));
 	assert(jsContains(jsonPython, "stack"));
@@ -134,7 +131,7 @@ void from_json(const nlohmann::json & json, Config & config)
 	jsonPython.at("stack").get_to(config.python.stack);
 
 	//output
-	nlohmann::json jsonOutput = json.at("output");
+	JsonIn jsonOutput = json.at("output");
 	assert(jsContains(jsonOutput, "callgrind"));
 	assert(jsContains(jsonOutput, "dumpConfig"));
 	assert(jsContains(jsonOutput, "index"));
@@ -155,24 +152,24 @@ void from_json(const nlohmann::json & json, Config & config)
 	jsonOutput.at("loopSuppress").get_to(config.output.loopSuppress);
 
 	//maxStack
-	nlohmann::json jsonMaxSatck = json.at("maxStack");
+	JsonIn jsonMaxSatck = json.at("maxStack");
 	assert(jsContains(jsonMaxSatck, "enabled"));
 	jsonMaxSatck.at("enabled").get_to(config.maxStack.enabled);
 
 	//distr
-	nlohmann::json jsonDistr = json.at("distr");
+	JsonIn jsonDistr = json.at("distr");
 	assert(jsContains(jsonDistr, "allocSize"));
 	assert(jsContains(jsonDistr, "reallocJump"));
 	jsonDistr.at("allocSize").get_to(config.distr.allocSize);
 	jsonDistr.at("reallocJump").get_to(config.distr.reallocJump);
 
 	//maxStack
-	nlohmann::json jsonInfo = json.at("info");
+	JsonIn jsonInfo = json.at("info");
 	assert(jsContains(jsonInfo, "hidden"));
 	jsonInfo.at("hidden").get_to(config.info.hidden);
 
 	//maxStack
-	nlohmann::json jsonFilter = json.at("filter");
+	JsonIn jsonFilter = json.at("filter");
 	assert(jsContains(jsonFilter, "exe"));
 	assert(jsContains(jsonFilter, "childs"));
 	assert(jsContains(jsonFilter, "enabled"));
@@ -181,7 +178,7 @@ void from_json(const nlohmann::json & json, Config & config)
 	jsonFilter.at("enabled").get_to(config.filter.enabled);
 
 	//maxStack
-	nlohmann::json jsonDump = json.at("dump");
+	JsonIn jsonDump = json.at("dump");
 	assert(jsContains(jsonDump, "onSignal"));
 	assert(jsContains(jsonDump, "afterSeconds"));
 	jsonDump.at("onSignal").get_to(config.dump.onSignal);

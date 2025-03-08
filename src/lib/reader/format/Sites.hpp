@@ -15,7 +15,7 @@
 #include <string>
 #include <vector>
 #include <map>
-#include <nlohmann/json.hpp>
+#include "Json.hpp"
 
 /**********************************************************/
 namespace MALTFormat
@@ -52,13 +52,13 @@ struct Sites
 };
 
 /**********************************************************/
-void from_json(const nlohmann::json & json, ProcMapEntry & value);
+void from_json(const JsonIn & json, ProcMapEntry & value);
 void to_json(nlohmann::json & json, const ProcMapEntry & value);
-void from_json(const nlohmann::json & json, InstructionInfos & value);
+void from_json(const JsonIn & json, InstructionInfos & value);
 void to_json(nlohmann::json & json, const InstructionInfos & value);
-void from_json(const nlohmann::json & json, Sites & value);
+void from_json(const JsonIn & json, Sites & value);
 void to_json(nlohmann::json & json, const Sites & value);
-void from_json(const nlohmann::json & json, SitesInstrMap & value);
+void from_json(const JsonIn & json, SitesInstrMap & value);
 void to_json(nlohmann::json & json, const SitesInstrMap & value);
 
 }

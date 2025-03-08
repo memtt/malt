@@ -12,9 +12,6 @@
 #include "MemStats.hpp"
 
 /**********************************************************/
-#define jsContains(value, field) ((value).find((field)) != (value).end())
-
-/**********************************************************/
 namespace MALTFormat
 {
 
@@ -29,7 +26,7 @@ void to_json(nlohmann::json & json, const ReallocJump & value)
 }
 
 /**********************************************************/
-void from_json(const nlohmann::json & json, ReallocJump & value)
+void from_json(const JsonIn & json, ReallocJump & value)
 {
 	//checks
 	assert(jsContains(json, "oldSize"));
@@ -60,7 +57,7 @@ void to_json(nlohmann::json & json, const GlobalVariable & value)
 }
 
 /**********************************************************/
-void from_json(const nlohmann::json & json, GlobalVariable & value)
+void from_json(const JsonIn & json, GlobalVariable & value)
 {
 	//checks
 	assert(jsContains(json, "name"));
@@ -95,7 +92,7 @@ void to_json(nlohmann::json & json, const MemStats & value)
 }
 
 /**********************************************************/
-void from_json(const nlohmann::json & json, MemStats & value)
+void from_json(const JsonIn & json, MemStats & value)
 {
 	//checks
 	assert(jsContains(json, "sizeMap"));
@@ -110,7 +107,7 @@ void from_json(const nlohmann::json & json, MemStats & value)
 }
 
 /**********************************************************/
-void from_json(const nlohmann::json & json, MemStatsSizeMap & value)
+void from_json(const JsonIn & json, MemStatsSizeMap & value)
 {
 	for (const auto & it : json.items()) {
 		//extract

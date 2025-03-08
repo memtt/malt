@@ -13,9 +13,6 @@
 #include "Threads.hpp"
 
 /**********************************************************/
-#define jsContains(value, field) ((value).find((field)) != (value).end())
-
-/**********************************************************/
 namespace MALTFormat
 {
 
@@ -30,7 +27,7 @@ void to_json(nlohmann::json & json, const ThreadsFuncStats & value)
 }
 
 /**********************************************************/
-void from_json(const nlohmann::json & json, ThreadsFuncStats & value)
+void from_json(const JsonIn & json, ThreadsFuncStats & value)
 {
 	//checks
 	assert(jsContains(json, "count"));
@@ -78,7 +75,7 @@ void to_json(nlohmann::json & json, const Thread & value)
 }
 
 /**********************************************************/
-void from_json(const nlohmann::json & json, Thread & value)
+void from_json(const JsonIn & json, Thread & value)
 {
 	//checks
 	assert(jsContains(json, "stackMem"));
@@ -89,7 +86,7 @@ void from_json(const nlohmann::json & json, Thread & value)
 	json.at("cntMemOps").get_to(value.cntMemOps);
 
 	//stats
-	const nlohmann::json & stackMem = json.at("stackMem");
+	const JsonIn & stackMem = json.at("stackMem");
 	assert(jsContains(stackMem, "stack"));
 	assert(jsContains(stackMem, "mem"));
 	assert(jsContains(stackMem, "total"));
@@ -99,7 +96,7 @@ void from_json(const nlohmann::json & json, Thread & value)
 	stackMem.at("total").get_to(value.stackMem.total);
 
 	//timeprofiler
-	const nlohmann::json & timeprofiler = stackMem.at("timeprofiler");
+	const JsonIn & timeprofiler = stackMem.at("timeprofiler");
 	assert(jsContains(timeprofiler, "min"));
 	assert(jsContains(timeprofiler, "max"));
 	assert(jsContains(timeprofiler, "index"));
@@ -118,7 +115,7 @@ void from_json(const nlohmann::json & json, Thread & value)
 	timeprofiler.at("linearIndex").get_to(value.stackMem.timeprofiler.linearIndex);
 
 	//stats
-	const nlohmann::json & stats = json.at("stats");
+	const JsonIn & stats = json.at("stats");
 	assert(jsContains(stats, "malloc"));
 	assert(jsContains(stats, "posix_memalign"));
 	assert(jsContains(stats, "aligned_alloc"));

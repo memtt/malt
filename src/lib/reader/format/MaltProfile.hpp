@@ -44,7 +44,7 @@ struct MaltProfile
 };
 
 /**********************************************************/
-void from_json(const nlohmann::json & json, MaltProfile & value);
+void from_json(const JsonIn & json, MaltProfile & value);
 void to_json(nlohmann::json & json, const MaltProfile & value);
 
 }

@@ -15,7 +15,7 @@
 #include <string>
 #include <vector>
 #include <map>
-#include <nlohmann/json.hpp>
+#include "Json.hpp"
 #include "Types.hpp"
 
 /**********************************************************/
@@ -52,13 +52,13 @@ struct MemStats
 };
 
 /**********************************************************/
-void from_json(const nlohmann::json & json, ReallocJump & value);
+void from_json(const JsonIn & json, ReallocJump & value);
 void to_json(nlohmann::json & json, const ReallocJump & value);
-void from_json(const nlohmann::json & json, GlobalVariable & value);
+void from_json(const JsonIn & json, GlobalVariable & value);
 void to_json(nlohmann::json & json, const GlobalVariable & value);
-void from_json(const nlohmann::json & json, MemStats & value);
+void from_json(const JsonIn & json, MemStats & value);
 void to_json(nlohmann::json & json, const MemStats & value);
-void from_json(const nlohmann::json & json, MemStatsSizeMap & value);
+void from_json(const JsonIn & json, MemStatsSizeMap & value);
 void to_json(nlohmann::json & json, const MemStatsSizeMap & value);
 
 }

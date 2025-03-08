@@ -20,6 +20,10 @@ using namespace MALTFormat;
 /**********************************************************/
 TEST(TestFormatStacks, load_save_load)
 {
+	//get json in
+	JsonIn dataIn(nullptr);
+	get_json_in(dataIn);
+
 	//get json
 	nlohmann::json data;
 	get_json(data);
@@ -29,7 +33,7 @@ TEST(TestFormatStacks, load_save_load)
 	#pragma omp parallel
 	{
 		#pragma omp single
-		data["stacks"].get_to(profile);
+		dataIn["stacks"].get_to(profile);
 	}
 	const nlohmann::json asJson = profile;
 

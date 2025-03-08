@@ -12,9 +12,6 @@
 #include "Timeline.hpp"
 
 /**********************************************************/
-#define jsContains(value, field) ((value).find((field)) != (value).end())
-
-/**********************************************************/
 namespace MALTFormat
 {
 
@@ -32,7 +29,7 @@ void to_json(nlohmann::json & json, const TimelineInfos & value)
 }
 
 /**********************************************************/
-void from_json(const nlohmann::json & json, TimelineInfos & value)
+void from_json(const JsonIn & json, TimelineInfos & value)
 {
 	//checks
 	assert(jsContains(json, "start"));
@@ -62,7 +59,7 @@ void to_json(nlohmann::json & json, const Timeline & value)
 }
 
 /**********************************************************/
-void from_json(const nlohmann::json & json, Timeline & value)
+void from_json(const JsonIn & json, Timeline & value)
 {
 	//checks
 	assert(jsContains(json, "memoryTimeline"));

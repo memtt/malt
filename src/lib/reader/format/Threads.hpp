@@ -14,7 +14,7 @@
 /**********************************************************/
 #include <string>
 #include <vector>
-#include <nlohmann/json.hpp>
+#include "Json.hpp"
 #include "Types.hpp"
 
 /**********************************************************/
@@ -66,9 +66,9 @@ struct Thread
 typedef std::vector<Thread> Threads;
 
 /**********************************************************/
-void from_json(const nlohmann::json & json, ThreadsFuncStats & value);
+void from_json(const JsonIn & json, ThreadsFuncStats & value);
 void to_json(nlohmann::json & json, const ThreadsFuncStats & value);
-void from_json(const nlohmann::json & json, Thread & value);
+void from_json(const JsonIn & json, Thread & value);
 void to_json(nlohmann::json & json, const Thread & value);
 
 }

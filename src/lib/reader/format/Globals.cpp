@@ -12,9 +12,6 @@
 #include "Globals.hpp"
 
 /**********************************************************/
-#define jsContains(value, field) ((value).find((field)) != (value).end())
-
-/**********************************************************/
 namespace MALTFormat
 {
 
@@ -31,7 +28,7 @@ void to_json(nlohmann::json & json, const Globals & value)
 }
 
 /**********************************************************/
-void from_json(const nlohmann::json & json, Globals & value)
+void from_json(const JsonIn & json, Globals & value)
 {
 	//checks
 	assert(jsContains(json, "ticksPerSecond"));
