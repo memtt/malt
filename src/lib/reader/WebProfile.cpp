@@ -105,6 +105,12 @@ nlohmann::json WebProfile::getFlatFunctionProfile(bool total) const
 	return resJson;
 }
 
+nlohmann::json WebProfile::getProcMapDistr(void) const
+{
+	ProcMapDistr res = this->extractor->getProcMapDistr();
+	return res;
+}
+
 /**********************************************************/
 nlohmann::json WebProfile::getScatter(void) const
 {

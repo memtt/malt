@@ -10,6 +10,7 @@
 
 /**********************************************************/
 #include <iostream>
+#include <regex>
 #include "ExtractorHelpers.hpp"
 #include "Extractor.hpp"
 
@@ -221,6 +222,15 @@ void to_json(nlohmann::json & json, const InstructionInfosStrRef* value)
 }
 
 /**********************************************************/
+void to_json(nlohmann::json & json, const ProcMapDistrEntry & value)
+{
+	json = nlohmann::json{
+		{"mem", value.mem},
+		{"cnt", value.cnt},
+	};
+}
+
+/**********************************************************/
 const std::string& Extractor::getString(ssize_t id) const
 {
 	//check
@@ -264,6 +274,36 @@ FunctionStackVector Extractor::getDebugStackList() const
 	}
 
 	//ok
+	return res;
+}
+
+/**********************************************************/
+ProcMapDistr Extractor::getProcMapDistr(void) const
+{
+	//some local vars
+	ProcMapDistr res;
+	const auto & map = this->profile.sites.map;
+	std::regex isStackRegexp("^\\[stack:[0-9]+\\]$");
+
+	//loop on map entries
+	for (const auto & it : map)
+	{
+		//compte mem
+		size_t mem = (char*)it.upper - (char*)it.lower;
+
+		//check goal
+		std::string file = it.file;
+		if (file.empty())
+			file = "anonymous";
+		if (std::regex_search(file, isStackRegexp))
+			file = "stack";
+
+		//sum
+		res[file].mem += mem;
+		res[file].cnt++;
+	}
+
+	//ok return
 	return res;
 }
 

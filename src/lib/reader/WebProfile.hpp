@@ -29,6 +29,7 @@ class WebProfile : public Profile
 		nlohmann::json getGlobalVariables(void) const;
 		nlohmann::json getFileLinesFlatProfile(const std::string & file, bool total) const;
 		nlohmann::json getFlatFunctionProfile(bool total) const;
+		nlohmann::json getProcMapDistr(void) const;
 		nlohmann::json getScatter(void) const;
 		nlohmann::json getSizeMap(void) const;
 		nlohmann::json functiongetReallocMap(void) const;

@@ -81,3 +81,28 @@ TEST(TestExtractorHelpers, getFlatProfile_full)
 	//check
 	ASSERT_EQ(nlohmann::json::diff(dataExpected["getFlatProfile_full"], resJson), nlohmann::json::array());
 }
+
+/**********************************************************/
+TEST(TestExtractorHelpers, getProcMapDistr)
+{
+	//load
+	JsonFileIn JsonFileIn(CUR_SRC_DIR "/example.json");
+	JsonIn data = JsonFileIn.getRoot();
+	MaltProfile profile;
+	data.get_to(profile);
+
+	//extract
+	Extractor extractor(profile);
+	ProcMapDistr res = extractor.getProcMapDistr();
+
+	//load ref
+	std::ifstream exampleExpected(CUR_SRC_DIR "/example.expected.json");
+	nlohmann::json dataExpected = nlohmann::json::parse(exampleExpected);
+
+	//remove abs path
+	nlohmann::json resJson = res;
+
+	//check
+	ASSERT_EQ(dataExpected["getProcMapDistr"], resJson) << " Diff: " << nlohmann::json::diff(dataExpected["getProcMapDistr"], resJson);
+}
+

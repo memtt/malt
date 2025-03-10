@@ -47,6 +47,16 @@ struct FlatProfileValue
 };
 
 /**********************************************************/
+struct ProcMapDistrEntry
+{
+	size_t mem{0};
+	size_t cnt{0};
+};
+
+/**********************************************************/
+typedef std::map<std::string, ProcMapDistrEntry> ProcMapDistr;
+
+/**********************************************************/
 typedef std::function<std::string(const InstructionInfosStrRef & /*location*/, const MALTFormat::StackInfos & /*infos*/)> LocaltionMappingFunc;
 typedef std::function<bool(const InstructionInfosStrRef & /*location*/, const MALTFormat::StackInfos & /*infos*/)> LocaltionFilterFunc;
 typedef std::map<std::string, FlatProfileValue> FlatProfileMap;
@@ -60,6 +70,7 @@ class Extractor
 		Extractor(const MALTFormat::MaltProfile & profile);
 		~Extractor(void);
 		FlatProfileVector getFlatProfile(const LocaltionMappingFunc & mapping,const LocaltionFilterFunc & filter) const;
+		ProcMapDistr getProcMapDistr(void) const;
 		FunctionStackVector getDebugStackList() const;
 	private:
 		void mergeStackInfo(FlatProfileMap & into, const MALTFormat::LangAddress & addr,FlatProfileCounter counter,const MALTFormat::StackInfos & infos,const LocaltionMappingFunc & mapping) const;
@@ -74,6 +85,7 @@ class Extractor
 /**********************************************************/
 void to_json(nlohmann::json & json, const InstructionInfosStrRef & value);
 void to_json(nlohmann::json & json, const FlatProfileValue & value);
+void to_json(nlohmann::json & json, const ProcMapDistrEntry & value);
 
 }
 
