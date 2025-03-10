@@ -29,9 +29,10 @@ TEST(TestExtractorHelpers, constructor)
 TEST(TestExtractorHelpers, getFlatProfile)
 {
 	//load
-	std::ifstream example(CUR_SRC_DIR "/example.json");
-	nlohmann::json data = nlohmann::json::parse(example);
-	MaltProfile profile = data;
+	JsonFileIn JsonFileIn(CUR_SRC_DIR "/example.json");
+	JsonIn data = JsonFileIn.getRoot();
+	MaltProfile profile;
+	data.get_to(profile);
 
 	//extract
 	Extractor extractor(profile);
@@ -57,9 +58,10 @@ TEST(TestExtractorHelpers, getFlatProfile)
 TEST(TestExtractorHelpers, getFlatProfile_full)
 {
 	//load
-	std::ifstream example(CUR_SRC_DIR "/example.json");
-	nlohmann::json data = nlohmann::json::parse(example);
-	MaltProfile profile = data;
+	JsonFileIn JsonFileIn(CUR_SRC_DIR "/example.json");
+	JsonIn data = JsonFileIn.getRoot();
+	MaltProfile profile;
+	data.get_to(profile);
 
 	//extract
 	Extractor extractor(profile);
