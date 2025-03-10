@@ -63,7 +63,7 @@ nlohmann::json WebProfile::getFileLinesFlatProfile(const std::string & file, boo
 	//select
 	std::string subset = "*.own";
 	if (total)
-	subset = "*.total";
+		subset = "*.total";
 
 	//filter
 	nlohmann::json resJson = ExtractorHelpers::toJsonFiltered(res,
@@ -71,6 +71,34 @@ nlohmann::json WebProfile::getFileLinesFlatProfile(const std::string & file, boo
 			subset,
 			"*.location.line",
 			"*.location.function",
+		});
+
+	//ok
+	return resJson;
+}
+
+/**********************************************************/
+nlohmann::json WebProfile::getFlatFunctionProfile(bool total) const
+{
+	//extract
+	FlatProfileVector res = this->extractor->getFlatProfile([](const InstructionInfosStrRef & location, const MALTFormat::StackInfos & infos){
+		return *location.function;
+	},[](const InstructionInfosStrRef & location, const MALTFormat::StackInfos & infos){
+		return true;
+	});
+
+	//select
+	std::string subset = "*.own";
+	if (total)
+		subset = "*.total";
+
+	//filter
+	nlohmann::json resJson = ExtractorHelpers::toJsonFiltered(res,
+		{
+			subset,
+			"*.location.line",
+			"*.location.function",
+			"*.location.file",
 		});
 
 	//ok

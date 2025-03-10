@@ -21,9 +21,9 @@ int main(int argc, char ** argv)
 {
 	WebProfile profile(argv[1], true);
 	//std::cout << profile.getFileLinesFlatProfile("/home/svalat/Projects/test-memray-scalene/venv/lib/python3.13/site-packages/matplotlib/backends/_backend_tk.py", false) << std::endl;
-	
+	std::cout << profile.getFlatFunctionProfile(false) << std::endl;
 
-	//return EXIT_SUCCESS;
+	return EXIT_SUCCESS;
 
 
 	const Extractor & extractor = profile.getExtractor();
