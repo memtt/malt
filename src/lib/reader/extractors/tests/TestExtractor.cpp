@@ -11,6 +11,7 @@
 /**********************************************************/
 #include <gtest/gtest.h>
 #include <fstream>
+#include <omp.h>
 #include "../Extractor.hpp"
 #include "../ExtractorHelpers.hpp"
 
@@ -104,5 +105,32 @@ TEST(TestExtractorHelpers, getProcMapDistr)
 
 	//check
 	ASSERT_EQ(dataExpected["getProcMapDistr"], resJson) << " Diff: " << nlohmann::json::diff(dataExpected["getProcMapDistr"], resJson);
+}
+
+/**********************************************************/
+TEST(TestExtractorHelpers, getFilterdStacks)
+{
+	//load
+	JsonFileIn JsonFileIn(CUR_SRC_DIR "/example.json");
+	JsonIn data = JsonFileIn.getRoot();
+	MaltProfile profile;
+	data.get_to(profile);
+
+	//extract
+	Extractor extractor(profile);
+	omp_set_num_threads(1);
+	FilteredStackList res = extractor.getFilterdStacks([](const InstructionInfosStrRef & location){
+		return *location.file == "src/libreader/extractors/tests/example.cpp";
+	});
+
+	//load ref
+	std::ifstream exampleExpected(CUR_SRC_DIR "/example.expected.json");
+	nlohmann::json dataExpected = nlohmann::json::parse(exampleExpected);
+
+	//remove abs path
+	nlohmann::json resJson = res;
+
+	//check
+	ASSERT_EQ(dataExpected["getFilterdStacks"], resJson) << " Diff: " << nlohmann::json::diff(dataExpected["getProcMapDistr"], resJson);
 }
 

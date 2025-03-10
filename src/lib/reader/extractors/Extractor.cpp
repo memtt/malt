@@ -231,6 +231,15 @@ void to_json(nlohmann::json & json, const ProcMapDistrEntry & value)
 }
 
 /**********************************************************/
+void to_json(nlohmann::json & json, const FilteredStackEntry & value)
+{
+	json = nlohmann::json{
+		{"mem", value.stack},
+		{"cnt", value.infos},
+	};
+}
+
+/**********************************************************/
 const std::string& Extractor::getString(ssize_t id) const
 {
 	//check
@@ -304,6 +313,59 @@ ProcMapDistr Extractor::getProcMapDistr(void) const
 	}
 
 	//ok return
+	return res;
+}
+
+/**********************************************************/
+bool Extractor::filterExtractStacksCandidate(const Stack & stack, const LocaltionOnlyFilterFunc & filter) const
+{
+	for (const auto & it : stack)
+	{
+		const InstructionInfosStrRef & ref = this->addrTranslation.at(it);
+		if (filter(ref))
+			return true;
+	}
+	return false;
+}
+
+/**********************************************************/
+StackStrRef Extractor::buildStackStrRef(const Stack & stack) const
+{
+	//build
+	StackStrRef res;
+	res.reserve(stack.size());
+
+	//convert
+	for (const auto & it : stack)
+		res.push_back(&this->addrTranslation.at(it));
+
+	//ok
+	return res;
+}
+
+/**********************************************************/
+FilteredStackList Extractor::getFilterdStacks(const LocaltionOnlyFilterFunc & filter) const
+{
+	//get some refs
+	const auto & stats = this->profile.stacks.stats;
+	FilteredStackList res;	
+
+	//loop on stat entries
+	#pragma omp parallel for
+	for (const auto & statEntry : stats)
+	{
+		//get stack
+		const Stack & stack = statEntry.stack;
+		const StackInfos & infos = statEntry.infos;
+
+		//check if conteain
+		if (filterExtractStacksCandidate(stack,filter)) {
+			FilteredStackEntry entry{this->buildStackStrRef(stack), infos};
+			#pragma omp critical
+			res.emplace_back(std::move(entry));
+		}
+	}
+
 	return res;
 }
 

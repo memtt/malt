@@ -26,6 +26,7 @@ add_executable(TestReaderExtractors
 )
 target_link_libraries(TestReaderExtractors malt-profile)
 target_link_libraries(TestReaderExtractors ${GTEST_BOTH_LIBRARIES} ${GMOCK_BOTH_LIBRARIES})
+target_link_libraries(TestReaderExtractors OpenMP::OpenMP_CXX)
 add_test(TestReaderExtractors TestReaderExtractors)
 
 ############################################################

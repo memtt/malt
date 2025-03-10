@@ -13,6 +13,7 @@
 
 /**********************************************************/
 #include <functional>
+#include <vector>
 #include <nlohmann/json.hpp>
 #include "../format/MaltProfile.hpp"
 
@@ -54,11 +55,23 @@ struct ProcMapDistrEntry
 };
 
 /**********************************************************/
+typedef std::vector<const InstructionInfosStrRef*> StackStrRef;
+
+/**********************************************************/
+struct FilteredStackEntry
+{
+	StackStrRef stack;
+	MALTFormat::StackInfos infos;
+};
+
+/**********************************************************/
 typedef std::map<std::string, ProcMapDistrEntry> ProcMapDistr;
+typedef std::list<FilteredStackEntry> FilteredStackList;
 
 /**********************************************************/
 typedef std::function<std::string(const InstructionInfosStrRef & /*location*/, const MALTFormat::StackInfos & /*infos*/)> LocaltionMappingFunc;
 typedef std::function<bool(const InstructionInfosStrRef & /*location*/, const MALTFormat::StackInfos & /*infos*/)> LocaltionFilterFunc;
+typedef std::function<bool(const InstructionInfosStrRef & /*location*/)> LocaltionOnlyFilterFunc;
 typedef std::map<std::string, FlatProfileValue> FlatProfileMap;
 typedef std::vector<FlatProfileValue> FlatProfileVector;
 typedef std::vector<std::vector<std::string> > FunctionStackVector;
@@ -72,10 +85,13 @@ class Extractor
 		FlatProfileVector getFlatProfile(const LocaltionMappingFunc & mapping,const LocaltionFilterFunc & filter) const;
 		ProcMapDistr getProcMapDistr(void) const;
 		FunctionStackVector getDebugStackList() const;
+		FilteredStackList getFilterdStacks(const LocaltionOnlyFilterFunc & filter) const;
 	private:
 		void mergeStackInfo(FlatProfileMap & into, const MALTFormat::LangAddress & addr,FlatProfileCounter counter,const MALTFormat::StackInfos & infos,const LocaltionMappingFunc & mapping) const;
 		void buildTranslation(void);
 		const std::string& getString(ssize_t id) const;
+		bool filterExtractStacksCandidate(const MALTFormat::Stack & stack, const LocaltionOnlyFilterFunc & filter) const;
+		StackStrRef buildStackStrRef(const MALTFormat::Stack & stack) const;
 	private:
 		const MALTFormat::MaltProfile & profile;
 		std::map<MALTFormat::LangAddress, InstructionInfosStrRef> addrTranslation;
@@ -86,6 +102,7 @@ class Extractor
 void to_json(nlohmann::json & json, const InstructionInfosStrRef & value);
 void to_json(nlohmann::json & json, const FlatProfileValue & value);
 void to_json(nlohmann::json & json, const ProcMapDistrEntry & value);
+void to_json(nlohmann::json & json, const FilteredStackEntry & value);
 
 }
 
