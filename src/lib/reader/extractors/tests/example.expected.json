@@ -1128,5 +1128,19 @@
         }
       }
     ]
+  },
+  "getSummary": {
+    "globalStats": {
+      "count": 6,
+      "cumulAllocs": 1123193,
+      "internalMemory": 6,
+      "largestStack": 0,
+      "maxChunkSize": 1048576,
+      "minChunkSize": 16,
+      "physicalMem": 8876032,
+      "requestedMem": 1123193,
+      "segments": 9880,
+      "virtualMem": 22228992
+    }
   }
 }

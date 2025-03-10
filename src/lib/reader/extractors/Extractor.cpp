@@ -284,6 +284,23 @@ void to_json(nlohmann::json & json, const SummaryV2 & value)
 }
 
 /**********************************************************/
+void to_json(nlohmann::json & json, const Summary & value)
+{
+	json["globalStats"] = nlohmann::json{
+		{"physicalMem", value.globalStats.physicalMem},
+		{"virtualMem", value.globalStats.virtualMem},
+		{"requestedMem", value.globalStats.requestedMem},
+		{"internalMemory", value.globalStats.internalMemory},
+		{"segments", value.globalStats.segments},
+		{"minChunkSize", value.globalStats.minChunkSize},
+		{"maxChunkSize", value.globalStats.maxChunkSize},
+		{"count", value.globalStats.count},
+		{"largestStack", value.globalStats.largestStack},
+		{"cumulAllocs", value.globalStats.cumulAllocs},
+	};
+}
+
+/**********************************************************/
 const std::string& Extractor::getString(ssize_t id) const
 {
 	//check
@@ -572,6 +589,46 @@ SummaryWarnings Extractor::genSummaryWarnings(const SummaryV2 & data) const
 		ret["tlsVarMem"].push_back("Caution, a large part of your memory is consummed by TLS variables, check if it is normal.");
 	if (data.summary.numGblVar > 500)
 		ret["numGblVar"].push_back("Caution, you get a realy big number of global variable, your code is likely to be buggy.");
+
+	return ret;
+}
+
+/**********************************************************/
+Summary Extractor::getSummary(void) const
+{
+	Summary ret;
+
+	//extract global stats
+	ret.globalStats = {};
+	ret.globalStats.physicalMem = this->profile.timeline.memoryTimeline.peak[2];//this->profile.timeline.physicalMem.peakMemory;
+	ret.globalStats.virtualMem = this->profile.timeline.memoryTimeline.peak[1];//this->profile.timeline.virtualMem.peakMemory;
+	ret.globalStats.requestedMem = this->profile.timeline.memoryTimeline.peak[0];//this->profile.timeline.requestedMem.peakMemory;
+	ret.globalStats.internalMemory = this->profile.timeline.memoryTimeline.peak[4];//this->profile.timeline.internalMem.peakMemory;
+	ret.globalStats.segments = this->profile.timeline.memoryTimeline.peak[3];//this->profile.timeline.segments.peakMemory;
+
+	//search min/max/count size
+	ssize_t min = -1;
+	ssize_t max = -1;
+	size_t count = 0;
+	const auto & stats = this->profile.stacks.stats;
+	size_t sum = 0;
+	for (const auto & it : stats)
+	{
+		const auto & info = it.infos;
+		if ((info.alloc.min < min || min == -1) && info.alloc.min > 0)
+			min = info.alloc.min;
+		if (info.alloc.max > max || max == -1)
+			max = info.alloc.max;
+		count += info.alloc.count;
+		sum += info.alloc.sum;
+	}
+
+	//extract
+	ret.globalStats.minChunkSize = min;
+	ret.globalStats.maxChunkSize = max;
+	ret.globalStats.count = count;
+	ret.globalStats.largestStack = this->getMaxStack().size;
+	ret.globalStats.cumulAllocs = sum;
 
 	return ret;
 }

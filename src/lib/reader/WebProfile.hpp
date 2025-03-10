@@ -35,6 +35,7 @@ class WebProfile : public Profile
 		nlohmann::json functiongetReallocMap(void) const;
 		nlohmann::json getTimedValues(void) const;
 		nlohmann::json getSummaryV2(void) const;
+		nlohmann::json getSummary(void) const;
 };
 
 }

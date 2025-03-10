@@ -102,6 +102,23 @@ struct SummaryV2
 };
 
 /**********************************************************/
+struct Summary
+{
+	struct{
+		size_t physicalMem;
+		size_t virtualMem;
+		size_t requestedMem;
+		size_t internalMemory;
+		size_t segments;
+		size_t minChunkSize;
+		size_t maxChunkSize;
+		size_t count;
+		size_t largestStack;
+		size_t cumulAllocs;
+	} globalStats;
+};
+
+/**********************************************************/
 typedef std::vector<const InstructionInfosStrRef*> StackStrRef;
 
 /**********************************************************/
@@ -136,6 +153,7 @@ class Extractor
 		TimedValues getTimedValues(void) const;
 		SummaryWarnings genSummaryWarnings(const SummaryV2 & data) const;
 		SummaryV2 getSummaryV2(void) const;
+		Summary getSummary(void) const;
 	private:
 		void mergeStackInfo(FlatProfileMap & into, const MALTFormat::LangAddress & addr,FlatProfileCounter counter,const MALTFormat::StackInfos & infos,const LocaltionMappingFunc & mapping) const;
 		void buildTranslation(void);
@@ -156,6 +174,7 @@ void to_json(nlohmann::json & json, const ProcMapDistrEntry & value);
 void to_json(nlohmann::json & json, const FilteredStackEntry & value);
 void to_json(nlohmann::json & json, const TimedValues & value);
 void to_json(nlohmann::json & json, const SummaryV2 & value);
+void to_json(nlohmann::json & json, const Summary & value);
 
 }
 

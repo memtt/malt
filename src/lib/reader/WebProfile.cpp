@@ -141,5 +141,11 @@ nlohmann::json WebProfile::getSummaryV2(void) const
 	return this->extractor->getSummaryV2();
 }
 
+/**********************************************************/
+nlohmann::json WebProfile::getSummary(void) const
+{
+	return this->extractor->getSummary();
+}
+
 }
 
