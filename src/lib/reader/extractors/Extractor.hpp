@@ -55,6 +55,53 @@ struct ProcMapDistrEntry
 };
 
 /**********************************************************/
+struct TimedValues
+{
+	MALTFormat::CyclesDuration ticksPerSecond;
+	size_t allocBandwidth;
+	size_t freeBandwidth;
+	MALTFormat::TimelineInfos memoryBandwidth;
+	MALTFormat::TimelineInfos memoryTimeline;
+	MALTFormat::TimelineInfos systemTimeline;
+};
+
+/**********************************************************/
+typedef std::map<std::string, std::list<std::string> > SummaryWarnings;
+
+/**********************************************************/
+struct SummaryV2
+{
+	MALTFormat::Run run;
+	struct {
+		size_t totalMemory;
+		MALTFormat::CyclesDuration ticksPerSecond;
+	} system;
+	struct {
+		size_t peakPhysicalMemory;
+		size_t peakVirtualMemory;
+		size_t peakRequestedMemory;
+		size_t peakInternalMemory;
+		size_t peakSegmentCount;
+		float peakAllocRate;
+		size_t peakAllocCountRate;
+		size_t totalAllocatedMemory;
+		float recyclingRatio;
+		size_t allocCount;
+		size_t minAllocSize;
+		size_t meanAllocSize;
+		size_t maxAllocSize;
+		size_t leakedMem;
+		size_t leakedCount;
+		size_t largestStack;
+		size_t numGblVar;
+		size_t globalVarMem;
+		size_t tlsVarMem;
+	} summary;
+	SummaryWarnings summaryWarnings;
+	std::vector<MALTFormat::ThreadsStats> threadStats;
+};
+
+/**********************************************************/
 typedef std::vector<const InstructionInfosStrRef*> StackStrRef;
 
 /**********************************************************/
@@ -86,12 +133,16 @@ class Extractor
 		ProcMapDistr getProcMapDistr(void) const;
 		FunctionStackVector getDebugStackList() const;
 		FilteredStackList getFilterdStacks(const LocaltionOnlyFilterFunc & filter) const;
+		TimedValues getTimedValues(void) const;
+		SummaryWarnings genSummaryWarnings(const SummaryV2 & data) const;
+		SummaryV2 getSummaryV2(void) const;
 	private:
 		void mergeStackInfo(FlatProfileMap & into, const MALTFormat::LangAddress & addr,FlatProfileCounter counter,const MALTFormat::StackInfos & infos,const LocaltionMappingFunc & mapping) const;
 		void buildTranslation(void);
 		const std::string& getString(ssize_t id) const;
 		bool filterExtractStacksCandidate(const MALTFormat::Stack & stack, const LocaltionOnlyFilterFunc & filter) const;
 		StackStrRef buildStackStrRef(const MALTFormat::Stack & stack) const;
+		const MALTFormat::ThreadStackMem & getMaxStack(void) const;
 	private:
 		const MALTFormat::MaltProfile & profile;
 		std::map<MALTFormat::LangAddress, InstructionInfosStrRef> addrTranslation;
@@ -103,6 +154,8 @@ void to_json(nlohmann::json & json, const InstructionInfosStrRef & value);
 void to_json(nlohmann::json & json, const FlatProfileValue & value);
 void to_json(nlohmann::json & json, const ProcMapDistrEntry & value);
 void to_json(nlohmann::json & json, const FilteredStackEntry & value);
+void to_json(nlohmann::json & json, const TimedValues & value);
+void to_json(nlohmann::json & json, const SummaryV2 & value);
 
 }
 

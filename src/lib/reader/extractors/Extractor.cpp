@@ -240,6 +240,50 @@ void to_json(nlohmann::json & json, const FilteredStackEntry & value)
 }
 
 /**********************************************************/
+void to_json(nlohmann::json & json, const TimedValues & value)
+{
+	json = nlohmann::json{
+		{"ticksPerSecond", value.ticksPerSecond},
+		{"freeBandwidth", value.freeBandwidth},
+		{"memoryBandwidth", value.memoryBandwidth},
+		{"memoryTimeline", value.memoryTimeline},
+		{"systemTimeline", value.systemTimeline},
+	};
+}
+
+/**********************************************************/
+void to_json(nlohmann::json & json, const SummaryV2 & value)
+{
+	json["run"] = value.run;
+	json["system"] = nlohmann::json{
+		{"totalMemory", value.system.totalMemory},
+		{"ticksPerSecond", value.system.ticksPerSecond},
+	};
+	json["summary"] = nlohmann::json{
+		{"peakPhysicalMemory", value.summary.peakPhysicalMemory},
+		{"peakVirtualMemory", value.summary.peakVirtualMemory},
+		{"peakRequestedMemory", value.summary.peakRequestedMemory},
+		{"peakSegmentCount", value.summary.peakSegmentCount},
+		{"peakAllocRate", value.summary.peakAllocRate},
+		{"peakAllocCountRate", value.summary.peakAllocCountRate},
+		{"totalAllocatedMemory", value.summary.totalAllocatedMemory},
+		{"recyclingRatio", value.summary.recyclingRatio},
+		{"allocCount", value.summary.allocCount},
+		{"minAllocSize", value.summary.minAllocSize},
+		{"meanAllocSize", value.summary.meanAllocSize},
+		{"maxAllocSize", value.summary.maxAllocSize},
+		{"leakedMem", value.summary.leakedMem},
+		{"leakedCount", value.summary.leakedCount},
+		{"largestStack", value.summary.largestStack},
+		{"numGblVar", value.summary.numGblVar},
+		{"globalVarMem", value.summary.globalVarMem},
+		{"tlsVarMem", value.summary.tlsVarMem},
+	};
+	json["summaryWarnings"] = value.summaryWarnings;
+	json["threadStats"] = value.threadStats;
+}
+
+/**********************************************************/
 const std::string& Extractor::getString(ssize_t id) const
 {
 	//check
@@ -367,6 +411,169 @@ FilteredStackList Extractor::getFilterdStacks(const LocaltionOnlyFilterFunc & fi
 	}
 
 	return res;
+}
+
+/**********************************************************/
+TimedValues Extractor::getTimedValues(void) const
+{
+	TimedValues tmp;
+	tmp.ticksPerSecond = this->profile.globals.ticksPerSecond;
+	tmp.memoryBandwidth = this->profile.timeline.memoryBandwidth;
+	tmp.memoryTimeline = this->profile.timeline.memoryTimeline;
+	tmp.systemTimeline = this->profile.timeline.systemTimeline;
+	return tmp;
+}
+
+/**********************************************************/
+/**
+ * Get info about the largest stack
+**/
+const MALTFormat::ThreadStackMem & Extractor::getMaxStack(void) const
+{
+	//get first to start
+	size_t id = 0;
+
+	//loop
+	for (size_t i = 0 ; i < this->profile.threads.size() ; i++)
+	{
+		const auto & tmp = this->profile.threads[i];
+		if (tmp.stackMem.size > this->profile.threads[id].stackMem.size)
+			id = i;
+	}
+
+	return this->profile.threads[id].stackMem;
+}
+
+/**********************************************************/
+SummaryV2 Extractor::getSummaryV2(void) const
+{
+	SummaryV2 ret;
+
+	//extract run info
+	ret.run = this->profile.run;
+
+	//extract system info
+	ret.system.totalMemory = this->profile.globals.totalMemory;
+	ret.system.ticksPerSecond = this->profile.globals.ticksPerSecond;
+
+	//summary
+	ret.summary = {};
+	ret.summary.peakPhysicalMemory = this->profile.timeline.memoryTimeline.peak[2];
+	ret.summary.peakVirtualMemory = this->profile.timeline.memoryTimeline.peak[1];
+	ret.summary.peakRequestedMemory = this->profile.timeline.memoryTimeline.peak[0];
+	ret.summary.peakInternalMemory = this->profile.timeline.memoryTimeline.peak[3];
+	ret.summary.peakSegmentCount = this->profile.timeline.memoryTimeline.peak[4];
+
+	//rates
+	size_t peakMem = 0;
+	for (const auto & value : this->profile.timeline.memoryBandwidth.values)
+		peakMem = std::max(peakMem, value[1]);
+	ret.summary.peakAllocRate = ((float)peakMem / (float)this->profile.timeline.memoryBandwidth.perPoints) * this->profile.globals.ticksPerSecond;
+
+	//rates
+	size_t peakCount = 0;
+	for (const auto & value : this->profile.timeline.memoryBandwidth.values)
+		peakCount = std::max(peakCount, value[3]);
+	ret.summary.peakAllocCountRate = ((float)peakCount / (float)this->profile.timeline.memoryBandwidth.perPoints) * this->profile.globals.ticksPerSecond;
+
+	//search min/max/count size
+	ssize_t min = -1;
+	ssize_t max = -1;
+	ssize_t count = 0;
+	const MALTFormat::StackStats & stats = this->profile.stacks.stats;
+	size_t sum = 0;
+	for(const auto & it : stats)
+	{
+		const StackInfos & info = it.infos;
+		if ((info.alloc.min < min || min == -1) && info.alloc.min > 0)
+			min = info.alloc.min;
+		if (info.alloc.max > max || max == -1)
+			max = info.alloc.max;
+		count += info.alloc.count;
+		sum += info.alloc.sum;
+	}
+
+	//gen
+	ret.summary.totalAllocatedMemory = sum;
+	ret.summary.recyclingRatio = sum / ret.summary.peakRequestedMemory;
+	ret.summary.allocCount = count;
+	ret.summary.minAllocSize = min;
+	ret.summary.meanAllocSize = sum / count;
+	ret.summary.maxAllocSize = max;
+
+	//leaks
+	size_t leakCount = 0;
+	size_t leakMem = 0;
+	const Leaks & leaks = this->profile.leaks;
+	for (const auto & it : leaks)
+	{
+		leakCount += it.count;
+		leakMem += it.memory;
+	}
+	ret.summary.leakedMem = leakMem;
+	ret.summary.leakedCount = leakCount;
+
+	//stacks
+	ret.summary.largestStack = this->getMaxStack().size;
+
+	//global vars
+	size_t tlsMem = 0;
+	size_t gblMem = 0;
+	size_t cntVars = 0;
+	const auto & gvars = this->profile.memStats.globalVariables;
+	for (const auto & it : gvars)
+	{
+		for (const auto & var : it.second)
+		{
+			cntVars++;
+			if (var.tls)
+				tlsMem += var.size;
+			else
+				gblMem += var.size;
+		}
+	}
+	ret.summary.numGblVar = cntVars;
+	ret.summary.globalVarMem = gblMem;
+	ret.summary.tlsVarMem = tlsMem * (this->profile.globals.maxThreadCount + 1);
+
+	//summary warnings
+	ret.summaryWarnings = this->genSummaryWarnings(ret);
+
+	//thread stats
+	for (const auto & it : this->profile.threads)
+		ret.threadStats.emplace_back(it.stats);
+
+	//return
+	return ret;
+}
+
+/**********************************************************/
+SummaryWarnings Extractor::genSummaryWarnings(const SummaryV2 & data) const
+{
+	//vars
+	SummaryWarnings ret;
+
+	//calc
+	float runtime = (float)data.run.runtime / (float)data.system.ticksPerSecond;
+
+	//check too large recycling ratio
+	if (data.summary.recyclingRatio > 10)
+	{
+		ret["recyclingRatio"].push_back("Caution, you are heavily recycling your memory, it might hurt performance, check the allocation rate.");
+		ret["totalAllocatedMemory"].push_back("Caution, you are heavily recycling your memory, it might hurt performance, check the allocation rate.");
+	}
+	if (data.summary.allocCount / runtime > 100000)
+		ret["allocCount"].push_back("Caution, you are doing really large number of memory allocation, it might hurt performance.");
+	if (data.summary.leakedMem > data.summary.peakRequestedMemory / 2)
+		ret["leakMem"].push_back("Caution, half of your memory has leaked, it might not be an issue, but maybe you need to ensure the segments are used during the whole program life.");
+	if (data.summary.globalVarMem > data.summary.peakRequestedMemory / 3 && data.summary.globalVarMem > 1024*1024)
+		ret["globalVarMem"].push_back("Caution, a large part of your memory is consummed by global variables, check if it is normal.");
+	if (data.summary.tlsVarMem > data.summary.peakRequestedMemory / 3 && data.summary.tlsVarMem > 1024*1024)
+		ret["tlsVarMem"].push_back("Caution, a large part of your memory is consummed by TLS variables, check if it is normal.");
+	if (data.summary.numGblVar > 500)
+		ret["numGblVar"].push_back("Caution, you get a realy big number of global variable, your code is likely to be buggy.");
+
+	return ret;
 }
 
 }

@@ -33,6 +33,8 @@ class WebProfile : public Profile
 		nlohmann::json getScatter(void) const;
 		nlohmann::json getSizeMap(void) const;
 		nlohmann::json functiongetReallocMap(void) const;
+		nlohmann::json getTimedValues(void) const;
+		nlohmann::json getSummaryV2(void) const;
 };
 
 }

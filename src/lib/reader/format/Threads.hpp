@@ -30,36 +30,44 @@ struct ThreadsFuncStats
 };
 
 /**********************************************************/
+struct ThreadStackMem
+{
+	size_t size;
+	std::vector<LangAddress> stack;
+	std::vector<size_t> mem;
+	size_t total;
+	struct {
+		std::vector<size_t> min;
+		std::vector<size_t> max;
+		std::vector<size_t> index;
+		std::vector<CyclesTime> timestamp;
+		CyclesTime peakTimesteamp;//TODO fix the name
+		size_t peakMemory;
+		size_t peakIndex;
+		bool linearIndex;
+	} timeprofiler;
+};
+
+/**********************************************************/
+struct ThreadsStats
+{
+	ThreadsFuncStats malloc;
+	ThreadsFuncStats posix_memalign;
+	ThreadsFuncStats aligned_alloc;
+	ThreadsFuncStats memalign;
+	ThreadsFuncStats valloc;
+	ThreadsFuncStats pvalloc;
+	ThreadsFuncStats free;
+	ThreadsFuncStats calloc;
+	ThreadsFuncStats realloc;
+};
+
+/**********************************************************/
 struct Thread
 {
-	struct {
-		size_t size;
-		std::vector<LangAddress> stack;
-		std::vector<size_t> mem;
-		size_t total;
-		struct {
-			std::vector<size_t> min;
-			std::vector<size_t> max;
-			std::vector<size_t> index;
-			std::vector<CyclesTime> timestamp;
-			CyclesTime peakTimesteamp;//TODO fix the name
-			size_t peakMemory;
-			size_t peakIndex;
-			bool linearIndex;
-		} timeprofiler;
-	} stackMem;
+	ThreadStackMem stackMem;
 	size_t cntMemOps;
-	struct {
-		ThreadsFuncStats malloc;
-		ThreadsFuncStats posix_memalign;
-		ThreadsFuncStats aligned_alloc;
-		ThreadsFuncStats memalign;
-		ThreadsFuncStats valloc;
-		ThreadsFuncStats pvalloc;
-		ThreadsFuncStats free;
-		ThreadsFuncStats calloc;
-		ThreadsFuncStats realloc;
-	} stats;
+	ThreadsStats stats;
 };
 
 /**********************************************************/
@@ -70,6 +78,10 @@ void from_json(const JsonIn & json, ThreadsFuncStats & value);
 void to_json(nlohmann::json & json, const ThreadsFuncStats & value);
 void from_json(const JsonIn & json, Thread & value);
 void to_json(nlohmann::json & json, const Thread & value);
+void from_json(const JsonIn & json, ThreadStackMem & value);
+void to_json(nlohmann::json & json, const ThreadStackMem & value);
+void from_json(const JsonIn & json, ThreadsStats & value);
+void to_json(nlohmann::json & json, const ThreadsStats & value);
 
 }
 

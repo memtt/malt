@@ -129,5 +129,17 @@ nlohmann::json WebProfile::functiongetReallocMap(void) const
 	return this->profile.memStats.reallocJump;
 }
 
+/**********************************************************/
+nlohmann::json WebProfile::getTimedValues(void) const
+{
+	return this->extractor->getTimedValues();
+}
+
+/**********************************************************/
+nlohmann::json WebProfile::getSummaryV2(void) const
+{
+	return this->extractor->getSummaryV2();
+}
+
 }
 

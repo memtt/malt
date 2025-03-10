@@ -1038,5 +1038,95 @@
         }
       ]
     }
-  ]
+  ],
+  "getSummaryV2": {
+    "run": {
+      "allocator": "/usr/lib/x86_64-linux-gnu/libc.so.6",
+      "command": "./src/libreader/extractors/tests/extractor-example",
+      "date": "2025-03-03 14:44",
+      "exe": "extractor-example",
+      "formatVersion": "1.1",
+      "hostname": "sebv6",
+      "runtime": 1901361589,
+      "tool": "malt-1.2.4-dev"
+    },
+    "summary": {
+      "allocCount": 6,
+      "globalVarMem": 546908,
+      "largestStack": 0,
+      "leakedCount": 4,
+      "leakedMem": 74601,
+      "maxAllocSize": 1048576,
+      "meanAllocSize": 187198,
+      "minAllocSize": 16,
+      "numGblVar": 997,
+      "peakAllocCountRate": 127091613696,
+      "peakAllocRate": 127091613696.0,
+      "peakPhysicalMemory": 8876032,
+      "peakRequestedMemory": 1123193,
+      "peakSegmentCount": 6,
+      "peakVirtualMemory": 22228992,
+      "recyclingRatio": 1.0,
+      "tlsVarMem": 80,
+      "totalAllocatedMemory": 1123193
+    },
+    "summaryWarnings": {
+      "numGblVar": [
+        "Caution, you get a realy big number of global variable, your code is likely to be buggy."
+      ]
+    },
+    "system": {
+      "ticksPerSecond": 1991987901,
+      "totalMemory": 16400867328
+    },
+    "threadStats": [
+      {
+        "aligned_alloc": {
+          "count": 0,
+          "sum": 0,
+          "time": 0
+        },
+        "calloc": {
+          "count": 0,
+          "sum": 0,
+          "time": 0
+        },
+        "free": {
+          "count": 2,
+          "sum": 0,
+          "time": 0
+        },
+        "malloc": {
+          "count": 5,
+          "sum": 1122465,
+          "time": 102185
+        },
+        "memalign": {
+          "count": 0,
+          "sum": 0,
+          "time": 0
+        },
+        "posix_memalign": {
+          "count": 0,
+          "sum": 0,
+          "time": 0
+        },
+        "pvalloc": {
+          "count": 0,
+          "sum": 0,
+          "time": 0
+        },
+        "realloc": {
+          "count": 1,
+          "sum": 728,
+          "time": 2466
+        },
+        "valloc": {
+          "count": 0,
+          "sum": 0,
+          "time": 0
+        }
+      }
+    ]
+  }
 }
