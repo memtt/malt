@@ -45,6 +45,10 @@ static const char * CST_ALLOC_FUNC_NAMES[] = {
 	"for_allocate",
 	"for_deallocate",
 	"MALT::WrapperPython",
+	"default_malloc",
+	"default_free",
+	"default_calloc",
+	"default_realloc",
 	nullptr
 };
 
