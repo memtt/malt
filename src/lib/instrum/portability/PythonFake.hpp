@@ -88,6 +88,7 @@ inline char * PyBytes_AsString(PyObject * obj) {return nullptr;};
 inline int PyFrame_GetLineNumber(PyFrameObject * frame) {return 0;};
 inline void PyObject_Free(void * object) {};
 inline int Py_BytesMain(int argc, char ** argv) {fprintf(stderr, "MALT: Built without python support !\n"); return EXIT_FAILURE;};
+inline void Py_DECREF(void* ptr) {};
 
 }
 

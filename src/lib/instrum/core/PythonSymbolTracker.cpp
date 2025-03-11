@@ -59,7 +59,9 @@ LangAddress PythonSymbolTracker::parentFrameToLangAddress(PyFrameObject * frame)
 		return LangAddress(DOMAIN_PYTHON, MALT_PYTHON_INIT_FUNC_ID);
 
 	//ok
-	return this->frameToLangAddress(parentFrame);
+	LangAddress addr = this->frameToLangAddress(parentFrame);
+	Py_DECREF(parentFrame);
+	return addr;
 }
 
 /**********************************************************/
@@ -187,16 +189,18 @@ TmpPythonCallSite PythonSymbolTracker::frameToCallSite(PyFrameObject * frame)
 void PythonSymbolTracker::freeFrameToCallSite(TmpPythonCallSite & callsite)
 {
 	//Valid names with a single chararacter are not alloced, so we don't free them
-	if (strncmp((callsite.site.function + 1), "\0", 1) != 0){
+	/*if (strncmp((callsite.site.function + 1), "\0", 1) != 0){
 		PyObject_Free((void*) callsite.framenameObject);
 	}
 
 	if (strncmp((callsite.site.file + 1), "\0", 1) != 0){
 		PyObject_Free((void*) callsite.filenameObject);	
-	}
-	/*Py_DECREF(callsite.filenameObject);
+	}*/
+	Py_DECREF((void*)callsite.site.file);
+	Py_DECREF((void*)callsite.site.function);
+	Py_DECREF(callsite.filenameObject);
 	Py_DECREF(callsite.framenameObject);
-	Py_DECREF(callsite.code);*/
+	Py_DECREF(callsite.code);
 }
 
 /**********************************************************/

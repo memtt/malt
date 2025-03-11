@@ -100,8 +100,11 @@ LangAddress BacktracePythonStack::getCurrentFrameAddr(void)
 	//return addr
 	if (currentFrame == NULL)
 		return this->stack[0];
-	else
-		return this->pythonSymbolTracker.frameToLangAddress(currentFrame);
+	else {
+		LangAddress res = this->pythonSymbolTracker.frameToLangAddress(currentFrame);
+		Py_DECREF(currentFrame);
+		return res;
+	}
 }
 
 /**********************************************************/
@@ -130,7 +133,9 @@ void BacktracePythonStack::loadCurrentStack(void)
 			this->grow();
 
 		//Go up on the stack
+		PyFrameObject * oldFrame = currentFrame;
 		currentFrame = PyFrame_GetBack(currentFrame);
+		Py_DECREF(oldFrame);
 	}
 
 	//push root
