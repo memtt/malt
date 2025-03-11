@@ -9,8 +9,8 @@
 ***********************************************************/
 
 /**********************************************************/
-#ifndef MALT_REENTRANCE_GUARD_HPP
-#define MALT_REENTRANCE_GUARD_HPP
+#ifndef MALT_JE_MALLOC_GUARD_HPP
+#define MALT_JE_MALLOC_GUARD_HPP
 
 /**********************************************************/
 #include "LazyEnv.hpp"
@@ -20,45 +20,29 @@ namespace MALT
 {
 
 /**********************************************************/
-class ReentranceGuard
+class InternalJeMallocGuard
 {
 	public:
-		inline ReentranceGuard(LazyEnv & env);
-		inline ~ReentranceGuard(void);
-		inline bool needInstrument(void) const;
-		inline bool useInternalAlloc(void) const;
+		inline InternalJeMallocGuard(LazyEnv & env);
+		inline ~InternalJeMallocGuard(void);
 	private:
 		bool oldStatus;
 		LazyEnv & env;
 };
 
 /**********************************************************/
-ReentranceGuard::ReentranceGuard(LazyEnv & env)
+InternalJeMallocGuard::InternalJeMallocGuard(LazyEnv & env)
 	:env(env)
 {
-	this->oldStatus = this->env.markInstrumented();
+	this->oldStatus = this->env.markInInternalJeMalloc();
 }
 
 /**********************************************************/
-ReentranceGuard::~ReentranceGuard(void)
+InternalJeMallocGuard::~InternalJeMallocGuard(void)
 {
-	this->env.endInstrumentation(this->oldStatus);
-}
-
-/**********************************************************/
-bool ReentranceGuard::needInstrument(void) const
-{
-	return this->oldStatus == false && this->env.isMaltReady();
-}
-
-/**********************************************************/
-bool ReentranceGuard::useInternalAlloc(void) const
-{
-	return false;
-	return this->oldStatus == true;// && this->env.isMaltReady();
+	this->env.restoreInInternalJeMalloc(this->oldStatus);
 }
 
 }
 
-#endif //MALT_REENTRANCE_GUARD_HPP
-
+#endif //MALT_JE_MALLOC_GUARD_HPP

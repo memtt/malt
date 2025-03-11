@@ -69,6 +69,11 @@ cfg_add_with_option --name='python' \
 						--doc='Define prefix to find python [/usr]' \
 						--var='Python3_ROOT_DIR'
 
+#JeMalloc built for MALT
+cfg_add_with_option --name='malt-jemalloc' \
+						--doc='Define prefix to find JeMalloc built for MALT internals [/usr]' \
+						--var='MALTJEMALLOC_PREFIX'
+
 ############################################################
 #If we want to document extra options
 #CFG_CUSTOM_HELP="My custom options:"

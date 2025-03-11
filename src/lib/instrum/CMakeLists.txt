@@ -47,6 +47,9 @@ endif(ENABLE_CODE_TIMING)
 if (ENABLE_GCC_COVERAGE)
 	malt_enable_gcc_coverage()
 endif (ENABLE_GCC_COVERAGE)
+if (MALTJEMALLOC_FOUND)
+    set(MALT_ENABLE_INTERNAL_JEMALLOC yes)
+endif()
 
 ############################################################
 set(LIB_MALT_DEPS pthread dl)
@@ -59,6 +62,7 @@ endif (LIBUNWIND_FOUND)
 if (PYTHON3_INSTRUM_FOUND)
     list(APPEND LIB_MALT_DEPS ${Python3_LIBRARIES})
 endif()
+list(APPEND LIB_MALT_DEPS malt_je_malloc::jemalloc)
 
 ############################################################
 #gen config.h
@@ -72,6 +76,9 @@ include_directories(../../../extern-deps/from-htopml)
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 if (PYTHON3_INSTRUM_FOUND)
     include_directories(${Python3_INCLUDE_DIRS})
+endif()
+if (MALTJEMALLOC_FOUND)
+    include_directories(${MALTJEMALLOC_INCLUDE_DIRS})
 endif()
 
 ############################################################

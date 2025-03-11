@@ -14,10 +14,12 @@
 
 /**********************************************************/
 //standard
+#include "config.h"
 #include <cstdlib>
 #include <iostream>
 //portability dependent code
 #include <portability/Spinlock.hpp>
+#include <jemalloc-malt.h>
 
 /**********************************************************/
 namespace MALT
@@ -37,7 +39,9 @@ namespace MALT
 #define MALT_ALLOC_SPLIT_THRESOLD (2*MALT_ALLOC_MIN_SIZE)
 
 /**********************************************************/
-#define MALT_HAVE_INTERNAL_ALLOC
+#ifndef MALT_ENABLE_INTERNAL_JEMALLOC
+	#define MALT_HAVE_INTERNAL_ALLOC
+#endif
 #ifdef MALT_HAVE_INTERNAL_ALLOC
 	/** Wrapper to replace malloc for internal allocations. **/
 	#define MALT_MALLOC(x) MALT::gblInternaAlloc->malloc(x)
@@ -46,9 +50,9 @@ namespace MALT
 	/** Wrapper to replace realloc for internal allocations. **/
 	#define MALT_REALLOC(x,y) MALT::gblInternaAlloc->realloc((x),(y))
 #else
-	#define MALT_MALLOC(x) malloc(x)
-	#define MALT_FREE(x) free(x)
-	#define MALT_REALLOC(x, y) realloc((x), (y))
+	#define MALT_MALLOC(x) MALT::internal_je_malloc(x)
+	#define MALT_FREE(x) MALT::internal_je_free(x)
+	#define MALT_REALLOC(x, y) MALT::internal_je_realloc((x), (y))
 #endif
 
 /**********************************************************/
@@ -155,8 +159,13 @@ class SimpleAllocator
 **/
 extern SimpleAllocator * gblInternaAlloc;
 
-/*******************  FUNCTION  *********************/
+/**********************************************************/
 void initInternalAlloc(bool threadSafe = true);
+
+/**********************************************************/
+void * internal_je_malloc(size_t size);
+void internal_je_free(void * ptr);
+void * internal_je_realloc(void * ptr, size_t size);
 
 }
 

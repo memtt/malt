@@ -9,6 +9,7 @@
 ***********************************************************/
 
 /**********************************************************/
+#include <sys/mman.h>
 #include "state/GlobalState.hpp"
 #include "wrappers/WrapperCAlloc.hpp"
 

@@ -75,6 +75,7 @@ find_package(Qt5WebEngineWidgets QUIET)
 find_package(Qt5WebKitWidgets QUIET)
 find_package(Qt5Network QUIET)
 find_package(Node QUIET)
+find_package(MaltJeMalloc QUIET)
 # Check for npm if needed
 if (NODE_FOUND AND NOT IS_DIRECTORY ${CMAKE_SOURCE_DIR}/src/webview/node_modules)
 	find_package(Npm REQUIRED)

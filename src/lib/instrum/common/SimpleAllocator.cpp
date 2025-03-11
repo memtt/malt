@@ -21,6 +21,7 @@
 #include "Debug.hpp"
 #include "Helpers.hpp"
 #include "CodeTiming.hpp"
+#include "state/InternalJeMallocGuard.hpp"
 //object to implement
 #include "SimpleAllocator.hpp"
 #include <portability/OS.hpp>
@@ -506,6 +507,33 @@ void initInternalAlloc(bool threadSafe)
 	static char * mem[sizeof(SimpleAllocator)];
 	if (gblInternaAlloc == NULL)
 		gblInternaAlloc = new(mem) SimpleAllocator(threadSafe);
+}
+
+/**********************************************************/
+void * internal_je_malloc(size_t size)
+{
+	//get local TLS and check init
+	LazyEnv env;
+	InternalJeMallocGuard guard(env);
+	return malt_je_malloc(size);
+}
+
+/**********************************************************/
+void internal_je_free(void * ptr)
+{
+	//get local TLS and check init
+	LazyEnv env;
+	InternalJeMallocGuard guard(env);
+	return malt_je_free(ptr);
+}
+
+/**********************************************************/
+void * internal_je_realloc(void * ptr, size_t size)
+{
+	//get local TLS and check init
+	LazyEnv env;
+	InternalJeMallocGuard guard(env);
+	return malt_je_realloc(ptr, size);
 }
 
 }

@@ -16,6 +16,7 @@
 //standard
 #include <list>
 #include <cstdlib>
+#include <atomic>
 //os specific (TODO move)
 #include <sys/time.h>
 #include <unistd.h>
@@ -146,6 +147,7 @@ class AllocStackProfiler
 		void setRealMallocAddr(MallocFuncPtr realMallocFunc);
 		PythonSymbolTracker & getPythonSymbolTracker(void);
 		MultiLangStackMerger & getMultiLangStackMerger(void) {return this->multiLangStackMerger;};
+		void registerMaltJeMallocMem(ssize_t value);
 	public:
 		friend void convertToJson(htopml::JsonState& json, const AllocStackProfiler& value);
 	private:
@@ -202,6 +204,7 @@ class AllocStackProfiler
 		MallocFuncPtr realMallocAddr;
 		std::string realMallocLib;
 		bool skipThreadRegister{false};
+		std::atomic<size_t> maltJeMallocMem{0};
 };
 
 }

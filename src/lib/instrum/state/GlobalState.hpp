@@ -147,6 +147,11 @@ struct ThreadLocalState
 	 * Is guard already passed once (to stop internal instrumentation)
 	 */
 	bool inMalt;
+
+	/**
+	 * Is guar already passed to enter in malt-je-malloc so we need to MAP_POPULATE & count mmap
+	 */
+	bool inInternalJeMalloc;
 	
 	/** Function used to init the structure on first use. **/
 	void init(void);

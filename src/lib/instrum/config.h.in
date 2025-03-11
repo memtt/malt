@@ -53,4 +53,7 @@
 #cmakedefine HAVE_ARMV8_CNTVCT_EL0
 #cmakedefine HAVE_ARMV8_PMCCNTR_EL0
 
+//use internal je malloc
+#cmakedefine MALT_ENABLE_INTERNAL_JEMALLOC
+
 #endif //MALT_CONFIG_H

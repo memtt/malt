@@ -18,7 +18,7 @@ namespace MALT
 
 /**********************************************************/
 #define GBL_STATE_INIT {ALLOC_WRAP_NOT_READY,MALT_STATIC_MUTEX_INIT,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL};
-static const ThreadLocalState TLS_STATE_INIT = {NULL,ALLOC_WRAP_NOT_READY,false};
+static const ThreadLocalState TLS_STATE_INIT = {NULL,ALLOC_WRAP_NOT_READY,false, false};
 
 /**********************************************************/
 /** Store the global state of allocator wrapper. **/

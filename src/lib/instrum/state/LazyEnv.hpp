@@ -32,10 +32,13 @@ class LazyEnv
 		inline bool isEnterExit() const;
 		inline bool isPythonEnterExit() const;
 		inline bool isMaltReady() const;
+		inline bool isInInternalJeMalloc() const;
 		inline bool markInstrumented();
 		inline void endInstrumentation(bool oldStatus);
 		inline void enable();
 		inline void disable();
+		inline bool markInInternalJeMalloc(void);
+		inline void restoreInInternalJeMalloc(bool oldStatus);
 	private:
 		ThreadLocalState * threadLocalState{nullptr};
 		bool enterExit;
@@ -94,6 +97,16 @@ bool LazyEnv::isEnterExit() const
 }
 
 /**********************************************************/
+bool LazyEnv::isInInternalJeMalloc() const
+{
+	if (this->threadLocalState == nullptr) {
+		return false;
+	} else {
+		return this->threadLocalState->inInternalJeMalloc;
+	}
+}
+
+/**********************************************************/
 bool LazyEnv::markInstrumented()
 {
 	//skip
@@ -115,6 +128,30 @@ void LazyEnv::endInstrumentation(bool oldStatus)
 	//cannot have false / false
 	assert(this->threadLocalState->inMalt != oldStatus || oldStatus == true);
 	this->threadLocalState->inMalt = oldStatus;
+}
+
+/**********************************************************/
+bool LazyEnv::markInInternalJeMalloc()
+{
+	//skip
+	if (this->threadLocalState == nullptr)
+		return true;
+
+	bool oldStatus = this->threadLocalState->inInternalJeMalloc;
+	this->threadLocalState->inInternalJeMalloc = true;
+	return oldStatus;
+}
+
+/**********************************************************/
+void LazyEnv::restoreInInternalJeMalloc(bool oldStatus)
+{
+	//skip
+	if (this->threadLocalState == nullptr)
+		return;
+
+	//cannot have false / false
+	assert(this->threadLocalState->inInternalJeMalloc != oldStatus || oldStatus == true);
+	this->threadLocalState->inInternalJeMalloc = oldStatus;
 }
 
 /**********************************************************/

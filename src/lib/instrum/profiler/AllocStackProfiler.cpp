@@ -272,7 +272,7 @@ void AllocStackProfiler::onAllocEvent(void* ptr, size_t size,Stack* userStack,MM
 		//update intern mem usage
 		if (options.timeProfileEnabled)
 		{
-			curMemoryTimeline.internalMem = gblInternaAlloc->getInuseMemory();
+			curMemoryTimeline.internalMem = gblInternaAlloc->getInuseMemory() + this->maltJeMallocMem;
 			memoryTimeline.push(t,curMemoryTimeline,(void*)callStackNode->stack);
 		}
 		
@@ -992,6 +992,12 @@ PythonSymbolTracker & AllocStackProfiler::getPythonSymbolTracker(void)
 bool AllocStackProfiler::isEnterExit(void)
 {
 	return mode == STACK_MODE_ENTER_EXIT_FUNC;
+}
+
+/**********************************************************/
+void AllocStackProfiler::registerMaltJeMallocMem(ssize_t value)
+{
+	this->maltJeMallocMem += value;
 }
 
 }
