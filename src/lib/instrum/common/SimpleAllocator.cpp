@@ -510,30 +510,36 @@ void initInternalAlloc(bool threadSafe)
 }
 
 /**********************************************************/
-void * internal_je_malloc(size_t size)
-{
-	//get local TLS and check init
-	LazyEnv env;
-	InternalJeMallocGuard guard(env);
-	return malt_je_malloc(size);
-}
+#ifdef MALT_ENABLE_INTERNAL_JEMALLOC
+	void * internal_je_malloc(size_t size)
+	{
+		//get local TLS and check init
+		LazyEnv env;
+		InternalJeMallocGuard guard(env);
+		return malt_je_malloc(size);
+	}
+#endif
 
 /**********************************************************/
-void internal_je_free(void * ptr)
-{
-	//get local TLS and check init
-	LazyEnv env;
-	InternalJeMallocGuard guard(env);
-	return malt_je_free(ptr);
-}
+#ifdef MALT_ENABLE_INTERNAL_JEMALLOC
+	void internal_je_free(void * ptr)
+	{
+		//get local TLS and check init
+		LazyEnv env;
+		InternalJeMallocGuard guard(env);
+		return malt_je_free(ptr);
+	}
+#endif
 
 /**********************************************************/
-void * internal_je_realloc(void * ptr, size_t size)
-{
-	//get local TLS and check init
-	LazyEnv env;
-	InternalJeMallocGuard guard(env);
-	return malt_je_realloc(ptr, size);
-}
+#ifdef MALT_ENABLE_INTERNAL_JEMALLOC
+	void * internal_je_realloc(void * ptr, size_t size)
+	{
+		//get local TLS and check init
+		LazyEnv env;
+		InternalJeMallocGuard guard(env);
+		return malt_je_realloc(ptr, size);
+	}
+#endif
 
 }

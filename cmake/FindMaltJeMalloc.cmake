@@ -35,9 +35,11 @@ set(MALTJEMALLOC_LIBRARIES ${MALTJEMALLOC_LIBRARY})
 set(MALTJEMALLOC_INCLUDE_DIRS ${MALTJEMALLOC_INCLUDE_DIR} )
 
 ############################################################
-add_library(malt_je_malloc::jemalloc INTERFACE IMPORTED)
-target_link_libraries(malt_je_malloc::jemalloc INTERFACE ${MALTJEMALLOC_LIBRARY})
-target_include_directories(malt_je_malloc::jemalloc INTERFACE ${MALTJEMALLOC_INCLUDE_DIR})
+if (MALTJEMALLOC_LIBRARIES AND MALTJEMALLOC_INCLUDE_DIRS)
+	add_library(malt_je_malloc::jemalloc INTERFACE IMPORTED)
+	target_link_libraries(malt_je_malloc::jemalloc INTERFACE ${MALTJEMALLOC_LIBRARY})
+	target_include_directories(malt_je_malloc::jemalloc INTERFACE ${MALTJEMALLOC_INCLUDE_DIR})
+endif()
 
 ############################################################
 include(FindPackageHandleStandardArgs)

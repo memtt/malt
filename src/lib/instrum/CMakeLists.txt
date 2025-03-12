@@ -48,7 +48,7 @@ if (ENABLE_GCC_COVERAGE)
 	malt_enable_gcc_coverage()
 endif (ENABLE_GCC_COVERAGE)
 if (MALTJEMALLOC_FOUND)
-    set(MALT_ENABLE_INTERNAL_JEMALLOC yes)
+	set(MALT_ENABLE_INTERNAL_JEMALLOC yes)
 endif()
 
 ############################################################
@@ -60,9 +60,11 @@ if (LIBUNWIND_FOUND)
 	list(APPEND LIB_MALT_DEPS ${LIBUNWIND_LIBRARIES})
 endif (LIBUNWIND_FOUND)
 if (PYTHON3_INSTRUM_FOUND)
-    list(APPEND LIB_MALT_DEPS ${Python3_LIBRARIES})
+	list(APPEND LIB_MALT_DEPS ${Python3_LIBRARIES})
 endif()
-list(APPEND LIB_MALT_DEPS malt_je_malloc::jemalloc)
+if (MALTJEMALLOC_FOUND)
+	list(APPEND LIB_MALT_DEPS malt_je_malloc::jemalloc)
+endif()
 
 ############################################################
 #gen config.h
@@ -75,44 +77,44 @@ include_directories(../../../extern-deps/iniparser/src)
 include_directories(../../../extern-deps/from-htopml)
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 if (PYTHON3_INSTRUM_FOUND)
-    include_directories(${Python3_INCLUDE_DIRS})
+	include_directories(${Python3_INCLUDE_DIRS})
 endif()
 if (MALTJEMALLOC_FOUND)
-    include_directories(${MALTJEMALLOC_INCLUDE_DIRS})
+	include_directories(${MALTJEMALLOC_INCLUDE_DIRS})
 endif()
 
 ############################################################
 set(COMMON_OBJS $<TARGET_OBJECTS:htopml-json>
-                $<TARGET_OBJECTS:malt-core>
-                $<TARGET_OBJECTS:malt-tools>
-                $<TARGET_OBJECTS:malt-stacks>
-                $<TARGET_OBJECTS:matt-stacks-v2>
-                $<TARGET_OBJECTS:malt-valprof>
-                $<TARGET_OBJECTS:malt-profiler>
-                $<TARGET_OBJECTS:malt-wrappers>
-                $<TARGET_OBJECTS:malt-stack-trees>
-                $<TARGET_OBJECTS:malt-common>
-                $<TARGET_OBJECTS:malt-port>
-                $<TARGET_OBJECTS:malt-state>
-                $<TARGET_OBJECTS:malt-injectors-ok-for-tests>
-                $<TARGET_OBJECTS:iniparser>)
+				$<TARGET_OBJECTS:malt-core>
+				$<TARGET_OBJECTS:malt-tools>
+				$<TARGET_OBJECTS:malt-stacks>
+				$<TARGET_OBJECTS:matt-stacks-v2>
+				$<TARGET_OBJECTS:malt-valprof>
+				$<TARGET_OBJECTS:malt-profiler>
+				$<TARGET_OBJECTS:malt-wrappers>
+				$<TARGET_OBJECTS:malt-stack-trees>
+				$<TARGET_OBJECTS:malt-common>
+				$<TARGET_OBJECTS:malt-port>
+				$<TARGET_OBJECTS:malt-state>
+				$<TARGET_OBJECTS:malt-injectors-ok-for-tests>
+				$<TARGET_OBJECTS:iniparser>)
 
 ############################################################
 add_library(malt-base SHARED ${COMMON_OBJS})
 target_link_libraries(malt-base ${LIB_MALT_DEPS})
 set_target_properties(malt-base PROPERTIES VERSION ${MALT_VERSION}
-                                           SOVERSION ${MALT_SO_VERSION})
+										   SOVERSION ${MALT_SO_VERSION})
 
 ############################################################
 add_library(malt SHARED ${COMMON_OBJS} $<TARGET_OBJECTS:malt-injectors>)
 target_link_libraries(malt ${LIB_MALT_DEPS})
 set_target_properties(malt PROPERTIES VERSION ${MALT_VERSION}
-                                      SOVERSION ${MALT_SO_VERSION})
+									  SOVERSION ${MALT_SO_VERSION})
 
 ############################################################
 add_library(malt-controler SHARED $<TARGET_OBJECTS:malt-fake-controler>)
 set_target_properties(malt-controler PROPERTIES VERSION ${MALT_VERSION}
-                                                SOVERSION ${MALT_SO_VERSION})
+												SOVERSION ${MALT_SO_VERSION})
 
 ############################################################
 add_subdirectory(core)

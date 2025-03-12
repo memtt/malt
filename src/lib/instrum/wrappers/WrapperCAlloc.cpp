@@ -15,7 +15,6 @@
 #include "state/ReentranceGuard.hpp"
 #include "WrapperCAlloc.hpp"
 #include <sys/mman.h>
-#include <jemalloc-malt.h>
 
 /**********************************************************/
 using namespace MALT;
@@ -41,9 +40,6 @@ void * MALT::malt_wrap_malloc(size_t size, const MallocFuncPtr & real_malloc, vo
 	//get local TLS and check init
 	LazyEnv env;
 	ReentranceGuard guard(env);
-
-	if (guard.useInternalAlloc())
-		return malt_je_malloc(size);
 
 	//run the default function
 	assert(env.getGlobalState().status > ALLOC_WRAP_INIT_SYM);
@@ -73,9 +69,6 @@ void MALT::malt_wrap_free(void * ptr, const FreeFuncPtr & real_free, void * reta
 	LazyEnv env;
 	ReentranceGuard guard(env);
 
-	if (guard.useInternalAlloc())
-		return malt_je_free(ptr);
-
 	//profile
 	if (guard.needInstrument()) {
 		MALT_WRAPPER_LOCAL_STATE_ACTION(env.getLocalProfiler().onFree(ptr,0), retaddr);
@@ -92,9 +85,6 @@ void * MALT::malt_wrap_calloc(size_t nmemb,size_t size, const CallocFuncPtr & re
 	//get local TLS and check init
 	LazyEnv env;
 	ReentranceGuard guard(env);
-
-	if (guard.useInternalAlloc())
-		return malt_je_calloc(nmemb, size);
 
 	//calloc need a special trick for first use due to usage in dlsym
 	//this way it avoid to create infinite loop
@@ -127,9 +117,6 @@ void * MALT::malt_wrap_realloc(void * ptr,size_t size, const ReallocFuncPtr & re
 	LazyEnv env;
 	ReentranceGuard guard(env);
 
-	if (guard.useInternalAlloc())
-		return malt_je_realloc(ptr, size);
-
 	//run the default function
 	assert(gblState.status > ALLOC_WRAP_INIT_SYM);
 	
@@ -151,9 +138,6 @@ int MALT::malt_wrap_posix_memalign(void **memptr, size_t alignment, size_t size,
 	//get local TLS and check init
 	LazyEnv env;
 	ReentranceGuard guard(env);
-
-	if (guard.useInternalAlloc())
-		return malt_je_posix_memalign(memptr, alignment, size);
 
 	//run the default function
 	assert(gblState.status > ALLOC_WRAP_INIT_SYM);
@@ -178,9 +162,6 @@ void * MALT::malt_wrap_aligned_alloc(size_t alignment, size_t size, const Aligne
 	LazyEnv env;
 	ReentranceGuard guard(env);
 
-	if (guard.useInternalAlloc())
-		return malt_je_aligned_alloc(alignment, size);
-
 	//run the default function
 	assert(gblState.status > ALLOC_WRAP_INIT_SYM);
 	
@@ -203,9 +184,6 @@ void *MALT::malt_wrap_memalign(size_t alignment, size_t size, const MemalignFunc
 	//get local TLS and check init
 	LazyEnv env;
 	ReentranceGuard guard(env);
-
-	if (guard.useInternalAlloc())
-		return malt_je_memalign(alignment, size);
 
 	//run the default function
 	assert(gblState.status > ALLOC_WRAP_INIT_SYM);
@@ -230,9 +208,6 @@ void * MALT::malt_wrap_valloc(size_t size, const VallocFuncPtr & real_aligned_va
 	LazyEnv env;
 	ReentranceGuard guard(env);
 
-	if (guard.useInternalAlloc())
-		return malt_je_valloc(size);
-
 	//run the default function
 	assert(gblState.status > ALLOC_WRAP_INIT_SYM);
 	
@@ -255,9 +230,6 @@ void *MALT::malt_wrap_pvalloc(size_t size, const PVallocFuncPtr & real_pvalloc, 
 	//get local TLS and check init
 	LazyEnv env;
 	ReentranceGuard guard(env);
-
-	if (guard.useInternalAlloc())
-		return malt_je_valloc(size);
 
 	//run the default function
 	assert(gblState.status > ALLOC_WRAP_INIT_SYM);

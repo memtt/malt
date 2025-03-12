@@ -19,7 +19,9 @@
 #include <iostream>
 //portability dependent code
 #include <portability/Spinlock.hpp>
-#include <jemalloc-malt.h>
+#ifdef MALT_ENABLE_INTERNAL_JEMALLOC
+	#include <jemalloc-malt.h>
+#endif
 
 /**********************************************************/
 namespace MALT
