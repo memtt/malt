@@ -43,8 +43,7 @@ import pytest
 ############################################################
 COMMON_CONF_OPTIONS = "--with-python=/opt/malt-python"
 ############################################################
-BUILD_CUSTOM_PYTHON = """apt install -y wget \\
-    && cd /tmp \\
+BUILD_CUSTOM_PYTHON = """cd /tmp \\
     && wget https://www.python.org/ftp/python/3.13.2/Python-3.13.2.tar.xz \\
     && tar -xf Python-3.13.2.tar.xz \\
     && cd Python-3.13.2 \\
@@ -63,7 +62,22 @@ UBUNTU_BASIC_CMDS=[
 UBUNTU_FULL_CMDS=[
     "apt install -y libunwind-dev libelf-dev libunwind-dev nodejs npm",
     "apt install -y libqt5webkit5-dev",
-    BUILD_CUSTOM_PYTHON
+    "apt install -y wget",
+    BUILD_CUSTOM_PYTHON,
+    "apt update && apt install -y nlohmann-json3-dev"
+]
+CENTOS_BASIC_CMDS=[
+    "dnf makecache --refresh",
+    "dnf update -y",
+    "dnf install -y cmake gcc-c++ make clang",
+    "dnf install -y ccache"
+]
+CENTOS_FULL_CMDS=[
+    "dnf install -y libunwind-devel elfutils-libelf-devel libunwind-devel nodejs npm",
+    "dnf install -y qt5-qtwebkit-devel",
+    "dnf install -y wget",
+    BUILD_CUSTOM_PYTHON,
+    "dnf update && apt install -y nlohmann-json3-devel"
 ]
 ############################################################
 BUILD_PARAMETERS = {
@@ -130,6 +144,24 @@ BUILD_PARAMETERS = {
         "malt/debian-full:12": {
             "base": "malt/debian-basic:12",
             "cmds": UBUNTU_FULL_CMDS
+        },
+        ############ fedora:41
+        "malt/fedora-basic:41": {
+            "base": "fedora:41",
+            "cmds": CENTOS_BASIC_CMDS
+        },
+        "malt/fedora-full:41": {
+            "base": "malt/fedora-basic:41",
+            "cmds": CENTOS_FULL_CMDS
+        },
+        ############ almalinux:8.4
+        "malt/almalinux-basic:8.4": {
+            "base": "almalinux:8.4",
+            "cmds": CENTOS_BASIC_CMDS
+        },
+        "malt/almalinux-full:8.4": {
+            "base": "malt/almalinux-basic:8.4",
+            "cmds": CENTOS_FULL_CMDS
         },
     },
     'compilers': {
