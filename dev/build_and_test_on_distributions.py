@@ -44,6 +44,7 @@ import pytest
 COMMON_CONF_OPTIONS = "--with-python=/opt/malt-python"
 ############################################################
 PYTHON_VERSION="3.13.2"
+JEMALLOC_VERSION="5.3.0"
 BUILD_CUSTOM_PYTHON = f"""cd /tmp \\
     && curl -o Python-{PYTHON_VERSION}.tar.xz https://www.python.org/ftp/python/3.13.2/Python-{PYTHON_VERSION}.tar.xz \\
     && tar -xf Python-{PYTHON_VERSION}.tar.xz \\
@@ -52,19 +53,32 @@ BUILD_CUSTOM_PYTHON = f"""cd /tmp \\
     && make -j8 \\
     && make install \\
     && cd .. \\
-    && rm -rfd Python-{PYTHON_VERSION}"""
+    && rm -rfd Python-{PYTHON_VERSION} \\
+    && rm -rfd ~/.ccache"""
+BUILD_CUSTOM_JEMALLOC = f"""cd /tmp \\
+    && curl -o jemalloc-{JEMALLOC_VERSION}.tar.bz2 https://github.com/jemalloc/jemalloc/releases/download/{JEMALLOC_VERSION}/jemalloc-{JEMALLOC_VERSION}.tar.bz2 \\
+    && tar -xf jemalloc-{JEMALLOC_VERSION}.tar.bz2 \\
+    && cd jemalloc-{JEMALLOC_VERSION} \\
+    && mkdir build \\
+    && cd build \\
+    && ../configure ../configure --with-jemalloc-prefix=malt_je_ --with-private-namespace=malt_je_ --with-install-suffix=-malt --enable-shared --prefix=/usr/local \\
+    && make -j8 \\
+    && make install \\
+    && cd ../../ \\
+    && rm -rfd jemalloc-{JEMALLOC_VERSION} \\
+    && rm -rfd ~/.ccache"""
 ############################################################
 UBUNTU_BASIC_CMDS=[
     "apt update",
     "apt upgrade -y",
-    "apt install -y cmake g++ make clang",
-    "apt install -y ccache",
+    "apt install -y cmake g++ make clang ccache",
 ]
 UBUNTU_FULL_CMDS=[
     "apt install -y libunwind-dev libelf-dev libunwind-dev nodejs npm",
     "apt install -y libqt5webkit5-dev",
     "apt install -y curl",
     BUILD_CUSTOM_PYTHON,
+    BUILD_CUSTOM_JEMALLOC,
     "apt update && apt install -y nlohmann-json3-dev"
 ]
 UBUNTU_FULL_CMDS_UBUNTU_25=[
@@ -72,45 +86,46 @@ UBUNTU_FULL_CMDS_UBUNTU_25=[
     "apt install -y qtwebengine5-dev",
     "apt install -y curl",
     BUILD_CUSTOM_PYTHON,
+    BUILD_CUSTOM_JEMALLOC,
     "apt update && apt install -y nlohmann-json3-dev"
 ]
 CENTOS_BASIC_CMDS=[
     "dnf makecache --refresh",
     "dnf update -y",
-    "dnf install -y cmake gcc-c++ make clang",
-    "dnf install -y ccache"
+    "dnf install -y cmake gcc-c++ make clang ccache"
 ]
 CENTOS_FULL_CMDS=[
     "dnf install -y libunwind-devel elfutils-libelf-devel libunwind-devel nodejs npm",
     "dnf install -y qt5-qtwebkit-devel",
     "dnf install -y curl",
-    BUILD_CUSTOM_PYTHON
+    BUILD_CUSTOM_PYTHON,
+    BUILD_CUSTOM_JEMALLOC,
 ]
 ARCH_BASIC_CMDS=[
     "pacman --noconfirm -Syu",
-    "pacman --noconfirm -Sy cmake gcc make clang",
-    "pacman --noconfirm -Sy ccache"
+    "pacman --noconfirm -Sy cmake gcc make clang ccache"
 ]
 ARCH_FULL_CMDS=[
     "pacman --noconfirm -Sy libunwind libelf nodejs npm",
     "pacman --noconfirm -Sy qt5-webengine",
     "pacman --noconfirm -Sy curl",
     BUILD_CUSTOM_PYTHON,
+    BUILD_CUSTOM_JEMALLOC,
     "pacman --noconfirm -Sy nlohmann-json"
 ]
 GENTOO_BASIC_CMDS=[
     "emerge-webrsync",
     "yes | getuto",
     "emerge --verbose --update --deep --newuse @world -k -g",
-    "emerge -k -g cmake gcc make llvm-core/clang",
-    "emerge -k -g ccache"
+    "emerge -k -g cmake gcc make llvm-core/clang ccache",
 ]
 GENTOO_FULL_CMDS=[
-    "eselect profile set default/linux/amd64/23.0/desktop/plasma && emerge --verbose --update --deep --newuse @world -k -g",
+    #"eselect profile set default/linux/amd64/23.0/desktop/plasma && emerge --verbose --update --deep --newuse @world -k -g",
     "emerge -k -g sys-libs/libunwind elfutils nodejs",
     #"emerge -k -g dev-qt/qtwebengine",
     "emerge -k -g curl",
     BUILD_CUSTOM_PYTHON,
+    BUILD_CUSTOM_JEMALLOC,
     "emerge -k -g dev-cpp/nlohmann_json"
 ]
 ############################################################

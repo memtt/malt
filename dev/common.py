@@ -121,7 +121,7 @@ class PodmanContainerHandler:
                 cmds  = [f"FROM {base_image}"]
                 cmds += [
                     "ENV DEBIAN_FRONTEND=noninteractive",
-                    'ENV PATH "/usr/lib/ccache:$PATH"'
+                    'ENV PATH "/usr/lib/ccache:/usr/lib/ccache/bin:$PATH"'
                 ]
                 cmds += self.build_rules
 
