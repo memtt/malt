@@ -79,9 +79,15 @@ class HeaderPatcher:
                 commiter_name = parts[1]
             elif key == 'author-time':
                 commiter_time = parts[1]
-            elif key == 'author-tz':
+            elif key == 'filename':
                 commiter_zone = parts[1]
                 log.append({'mail': commiter_mail, 'name': commiter_name, 'time': commiter_time, 'zone': commiter_zone, 'hash': commit_hash, 'summary': summary})
+                commit_hash = ''
+                commiter_mail = 'INIT'
+                commiter_name = 'INIT'
+                commiter_time = 'INIT'
+                commiter_zone = 'INIT'
+                summary = 'INIT'
 
         #ok
         return log
@@ -101,6 +107,18 @@ class HeaderPatcher:
         else:
             return name
 
+    def need_skip_blame_entry(self, blame_entry: dict) -> bool:
+        exclude_hashes = self.config['exclude_hashes']
+        # skip some based on hash
+        skip = False
+        if blame_entry['hash'] in exclude_hashes:
+            skip = True
+        # skip based on summary (not to get commit which push file headers update)        
+        for regexp in self.config['exclude_summary_regexps']:
+            if regexp.match(blame_entry['summary']):
+                skip = True
+        return skip
+
     def git_extract_authors_from_history(self, blame_log: list) -> dict:
         # build final storage
         authors = {}
@@ -108,17 +126,8 @@ class HeaderPatcher:
 
         # loop on all entries
         for entry in blame_log:
-            # skip some based on hash
-            skip = False
-            if entry['hash'] in exclude_hashes:
-                skip = True
-            # skip based on summary (not to get commit which push file headers update)        
-            for regexp in self.config['exclude_summary_regexps']:
-                if regexp.match(entry['summary']):
-                    skip = True
-
             # apply skip
-            if skip:
+            if self.need_skip_blame_entry(entry):
                 continue
             
             # build summary
@@ -156,6 +165,10 @@ class HeaderPatcher:
         
         # loop on all entries
         for entry in blame_log:
+            # apply skip
+            if self.need_skip_blame_entry(entry):
+                continue
+
             date = datetime.datetime.fromtimestamp(int(entry['time']))
             year = date.year
             month = date.month
