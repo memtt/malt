@@ -27,3 +27,4 @@ examples/*.json
 
 # cache
 /podman-ccache
+.venv
