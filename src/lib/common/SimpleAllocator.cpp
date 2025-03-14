@@ -1,7 +1,7 @@
 /***********************************************************
 *    PROJECT  : MALT (MALoc Tracker)
-*    VERSION  : 1.2.5
-*    DATE     : 02/2025
+*    VERSION  : 1.2.6
+*    DATE     : 09/2024
 *    LICENSE  : CeCILL-C
 *    FILE     : src/lib/common/SimpleAllocator.cpp
 *-----------------------------------------------------------

@@ -1,8 +1,8 @@
 #!/bin/env python3
 ############################################################
 #    PROJECT  : MALT (MALoc Tracker)
-#    VERSION  : 1.2.5
-#    DATE     : 02/2025
+#    VERSION  : 1.2.6
+#    DATE     : 10/2024
 #    LICENSE  : CeCILL-C
 #    FILE     : dev/gen-archive.py
 #-----------------------------------------------------------
@@ -24,7 +24,7 @@ from common import print_exception, run_shell, jump_in_dir, jump_in_tmpdir
 ############################################################
 #extract version
 PACKAGE_NAME="malt"
-PACKAGE_VERSION="1.2.5"
+PACKAGE_VERSION="1.2.6"
 
 ############################################################
 # Generate MALT archive

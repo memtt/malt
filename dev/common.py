@@ -1,11 +1,12 @@
 ############################################################
 #    PROJECT  : MALT (MALoc Tracker)
-#    VERSION  : 1.2.5
+#    VERSION  : 1.2.6
 #    DATE     : 02/2025
 #    LICENSE  : CeCILL-C
-#    FILE     : dev/gen-archive.sh
+#    FILE     : dev/common.py
 #-----------------------------------------------------------
-#    AUTHOR   : Sébastien Valat - 2015 - 2024
+#    AUTHOR   : Sébastien Valat - 2024
+#    AUTHOR   : Sébastien Valat (INRIA) - 2025
 ############################################################
 
 ############################################################

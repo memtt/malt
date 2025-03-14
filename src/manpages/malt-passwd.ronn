@@ -22,7 +22,7 @@ more details : https://www.npmjs.com/package/htpasswd.
 
 ## VERSION
 
-   This is the manpage of MALT version 1.2.5.
+   This is the manpage of MALT version 1.2.6.
 
 ## SEE ALSO
 

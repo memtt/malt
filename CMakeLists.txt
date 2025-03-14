@@ -1,6 +1,6 @@
 ############################################################
 #    PROJECT  : MALT (MALoc Tracker)
-#    VERSION  : 1.2.5
+#    VERSION  : 1.2.6
 #    DATE     : 02/2025
 #    LICENSE  : CeCILL-C
 #    FILE     : CMakeLists.txt
@@ -18,12 +18,12 @@ if (CMAKE_VERSION VERSION_LESS 3.0)
 	project(MALT)	
 else()
 	cmake_policy(SET CMP0048 NEW)	
-	project(MALT VERSION 1.2.5)
+	project(MALT VERSION 1.2.6)
 endif()
 
 ############################################################
 #set versions to dispatch in code
-set(MALT_VERSION "1.2.5")
+set(MALT_VERSION "1.2.6")
 set(MALT_VERSION_NOTE "-dev")
 set(MALT_SO_VERSION "1")
 set(MALT_JSON_FORMAT_VERSION "1.1")

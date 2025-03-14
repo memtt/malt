@@ -1,6 +1,11 @@
 Change log
 ==========
 
+1.2.6 - 14/03/2025
+------------------
+
+ - Fix issue requiring NPM when not required if not wanting the webview.
+
 1.2.5 - 05/02/2025
 ------------------
 

@@ -1,13 +1,13 @@
 ############################################################
 #    PROJECT  : MALT (MALoc Tracker)
-#    VERSION  : 1.2.5
+#    VERSION  : 1.2.6
 #    DATE     : 02/2025
 #    LICENSE  : CeCILL-C
 #    FILE     : cmake/macros.cmake
 #-----------------------------------------------------------
 #    AUTHOR   : Sébastien Valat - 2014 - 2024
 #    AUTHOR   : Sébastien Valat (ECR) - 2014 - 2015
-#    AUTHOR   : Sébastien Valat (INRIA) - 2024
+#    AUTHOR   : Sébastien Valat (INRIA) - 2024 - 2025
 ############################################################
 
 ############################################################

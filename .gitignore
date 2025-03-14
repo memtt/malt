@@ -12,3 +12,8 @@ src/webview/build
 
 # python
 __pycache__
+
+#venv
+.venv
+
+/podman-ccache

@@ -1,6 +1,6 @@
 /***********************************************************
 *    PROJECT  : MALT (MALoc Tracker)
-*    VERSION  : 1.2.5
+*    VERSION  : 1.2.6
 *    DATE     : 02/2025
 *    LICENSE  : CeCILL-C
 *    FILE     : src/lib/core/SymbolSolver.cpp
@@ -9,7 +9,7 @@
 *    AUTHOR   : Sébastien Valat (ECR) - 2014
 *    AUTHOR   : Sébastien Valat (ATOS) - 2019
 *    AUTHOR   : Sriram Swaminarayan (LANL) - 2023
-*    AUTHOR   : Sébastien Valat (INRIA) - 2023 - 2024
+*    AUTHOR   : Sébastien Valat (INRIA) - 2023 - 2025
 ***********************************************************/
 
 /**********************************************************/

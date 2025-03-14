@@ -1,7 +1,7 @@
 /***********************************************************
 *    PROJECT  : MALT (MALoc Tracker)
-*    VERSION  : 1.2.5
-*    DATE     : 02/2025
+*    VERSION  : 1.2.6
+*    DATE     : 09/2024
 *    LICENSE  : CeCILL-C
 *    FILE     : src/lib/tests/TestValgrindOutput.cpp
 *-----------------------------------------------------------
@@ -25,7 +25,7 @@ void test3(void) {}
 /**********************************************************/
 void *CST_STACK_1[] = {(void*)0x1,(void*)0x2,(void*)0x2,(void*)0x2,(void*)0x2,(void*)0x2,(void*)0x3};
 const char CST_VALUE_1[] =  "version: 1\n\
-creator: MALT-1.2.5\n\
+creator: MALT-1.2.6\n\
 pid: 1\n\
 cmd: TestValgrindOutput\n\
 part: 1\n\

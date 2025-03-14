@@ -1,9 +1,9 @@
 ############################################################
 #    PROJECT  : MALT (MALoc Tracker)
-#    VERSION  : 1.2.5
-#    DATE     : 02/2025
+#    VERSION  : 1.2.6
+#    DATE     : 09/2024
 #    LICENSE  : CeCILL-C
-#    FILE     : packaging/gentoo/dev-util/malt/malt-1.3.0-dev.ebuild
+#    FILE     : packaging/gentoo/dev-util/malt/malt-1.2.6-dev.ebuild
 #-----------------------------------------------------------
 #    AUTHOR   : Sébastien Valat - 2015 - 2024
 ############################################################
@@ -15,7 +15,7 @@ inherit cmake-utils
 RESTRICT="primaryuri"
 DESCRIPTION="Memory profiling tool to track memory allocations (malloc,free,realloc...)."
 HOMEPAGE="https://github.com/svalat/malt"
-SRC_URI="https://github.com/downloads/svalat/malt/malt-1.2.5.tar.bz2"
+SRC_URI="https://github.com/downloads/svalat/malt/malt-1.2.6.tar.bz2"
 
 LICENSE="CeCILL-C"
 SLOT="0"

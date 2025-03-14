@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
 ############################################################
-#    PROJECT  : Gray Scott Simulation
-#    VERSION  : 1.2.5
+#    PROJECT  : MALT (MALoc Tracker)
+#    VERSION  : 1.2.6
 #    DATE     : 02/2025
 #    LICENSE  : CeCILL-C
 #    FILE     : dev/gen-coverage.py
 #-----------------------------------------------------------
-#    AUTHOR   : Sébastien Valat - 2024
+#    AUTHOR   : Sébastien Valat - 2022 - 2024
+#    AUTHOR   : Sébastien Valat (INRIA) - 2025
 ############################################################
 
 ############################################################

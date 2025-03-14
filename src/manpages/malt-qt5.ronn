@@ -35,7 +35,7 @@ managed by `malt-webview` command.
 
 ## VERSION
 
-   This is the manpage of MALT version 1.2.5.
+   This is the manpage of MALT version 1.2.6.
 
 ## SEE ALSO
 

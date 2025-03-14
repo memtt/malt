@@ -1,12 +1,11 @@
 /***********************************************************
 *    PROJECT  : MALT (MALoc Tracker)
-*    VERSION  : 1.2.5
+*    VERSION  : 1.2.6
 *    DATE     : 02/2025
 *    LICENSE  : CeCILL-C
-*    FILE     : src/lib/core/tests/TestSegmentTracker.cpp
+*    FILE     : src/lib/core/tests/TestSimpleCallStackTracker.cpp
 *-----------------------------------------------------------
-*    AUTHOR   : Sébastien Valat - 2014 - 2024
-*    AUTHOR   : Sébastien Valat (ECR) - 2014
+*    AUTHOR   : Sébastien Valat (INRIA) - 2025
 ***********************************************************/
 
 /**********************************************************/
@@ -92,7 +91,7 @@ const char * CST_REF_2 = "{\n\
 
 const char * CST_REF_3 = "\
 version: 1\n\
-creator: MALT-1.2.5\n\
+creator: MALT-1.2.6\n\
 pid: 10000\n\
 cmd: TestSimpleCallStackTracker\n\
 part: 1\n\
