@@ -43,15 +43,16 @@ import pytest
 ############################################################
 COMMON_CONF_OPTIONS = "--with-python=/opt/malt-python"
 ############################################################
-BUILD_CUSTOM_PYTHON = """cd /tmp \\
-    && wget https://www.python.org/ftp/python/3.13.2/Python-3.13.2.tar.xz \\
-    && tar -xf Python-3.13.2.tar.xz \\
-    && cd Python-3.13.2 \\
+PYTHON_VERSION="3.13.2"
+BUILD_CUSTOM_PYTHON = f"""cd /tmp \\
+    && curl -o Python-{PYTHON_VERSION}.tar.xz https://www.python.org/ftp/python/3.13.2/Python-{PYTHON_VERSION}.tar.xz \\
+    && tar -xf Python-{PYTHON_VERSION}.tar.xz \\
+    && cd Python-{PYTHON_VERSION} \\
     && ./configure --enable-shared --prefix=/opt/malt-python \\
     && make -j8 \\
     && make install \\
     && cd .. \\
-    && rm -rfd Python-3.13.2"""
+    && rm -rfd Python-{PYTHON_VERSION}"""
 ############################################################
 UBUNTU_BASIC_CMDS=[
     "apt update",
@@ -62,7 +63,14 @@ UBUNTU_BASIC_CMDS=[
 UBUNTU_FULL_CMDS=[
     "apt install -y libunwind-dev libelf-dev libunwind-dev nodejs npm",
     "apt install -y libqt5webkit5-dev",
-    "apt install -y wget",
+    "apt install -y curl",
+    BUILD_CUSTOM_PYTHON,
+    "apt update && apt install -y nlohmann-json3-dev"
+]
+UBUNTU_FULL_CMDS_UBUNTU_25=[
+    "apt install -y libunwind-dev libelf-dev libunwind-dev nodejs npm",
+    "apt install -y qtwebengine5-dev",
+    "apt install -y curl",
     BUILD_CUSTOM_PYTHON,
     "apt update && apt install -y nlohmann-json3-dev"
 ]
@@ -75,9 +83,35 @@ CENTOS_BASIC_CMDS=[
 CENTOS_FULL_CMDS=[
     "dnf install -y libunwind-devel elfutils-libelf-devel libunwind-devel nodejs npm",
     "dnf install -y qt5-qtwebkit-devel",
-    "dnf install -y wget",
+    "dnf install -y curl",
+    BUILD_CUSTOM_PYTHON
+]
+ARCH_BASIC_CMDS=[
+    "pacman --noconfirm -Syu",
+    "pacman --noconfirm -Sy cmake gcc make clang",
+    "pacman --noconfirm -Sy ccache"
+]
+ARCH_FULL_CMDS=[
+    "pacman --noconfirm -Sy libunwind libelf nodejs npm",
+    "pacman --noconfirm -Sy qt5-webengine",
+    "pacman --noconfirm -Sy curl",
     BUILD_CUSTOM_PYTHON,
-    "dnf update && apt install -y nlohmann-json3-devel"
+    "pacman --noconfirm -Sy nlohmann-json"
+]
+GENTOO_BASIC_CMDS=[
+    "emerge-webrsync",
+    "yes | getuto",
+    "emerge --verbose --update --deep --newuse @world -k -g",
+    "emerge -k -g cmake gcc make llvm-core/clang",
+    "emerge -k -g ccache"
+]
+GENTOO_FULL_CMDS=[
+    "eselect profile set default/linux/amd64/23.0/desktop/plasma && emerge --verbose --update --deep --newuse @world -k -g",
+    "emerge -k -g sys-libs/libunwind elfutils nodejs",
+    #"emerge -k -g dev-qt/qtwebengine",
+    "emerge -k -g curl",
+    BUILD_CUSTOM_PYTHON,
+    "emerge -k -g dev-cpp/nlohmann_json"
 ]
 ############################################################
 BUILD_PARAMETERS = {
@@ -116,7 +150,7 @@ BUILD_PARAMETERS = {
         },
         "malt/ubuntu-full:25.04": {
             "base": "malt/ubuntu-basic:25.04",
-            "cmds": UBUNTU_FULL_CMDS
+            "cmds": UBUNTU_FULL_CMDS_UBUNTU_25
         },
         ############ debian:10
         "malt/debian-basic:10": {
@@ -154,14 +188,23 @@ BUILD_PARAMETERS = {
             "base": "malt/fedora-basic:41",
             "cmds": CENTOS_FULL_CMDS
         },
-        ############ almalinux:8.4
-        "malt/almalinux-basic:8.4": {
-            "base": "almalinux:8.4",
-            "cmds": CENTOS_BASIC_CMDS
+        ############ archlinux:latest
+        "malt/archlinux-basic:latest": {
+            "base": "docker.io/library/archlinux:latest",
+            "cmds": ARCH_BASIC_CMDS
         },
-        "malt/almalinux-full:8.4": {
-            "base": "malt/almalinux-basic:8.4",
-            "cmds": CENTOS_FULL_CMDS
+        "malt/archlinux-full:latest": {
+            "base": "malt/archlinux-basic:latest",
+            "cmds": ARCH_FULL_CMDS
+        },
+        ############ archlinux:latest
+        "malt/gentoo-basic:latest": {
+            "base": "docker.io/gentoo/stage3:latest",
+            "cmds": GENTOO_BASIC_CMDS
+        },
+        "malt/gentoo-full:latest": {
+            "base": "malt/gentoo-basic:latest",
+            "cmds": GENTOO_FULL_CMDS
         },
     },
     'compilers': {
@@ -257,6 +300,17 @@ def test_current_host_release_tests():
     with tempfile.TemporaryDirectory() as tmpdir:
         with jump_in_dir(tmpdir):
             assert_shell_command(f"{sources}/configure --enable-tests CFLAGS=-Werror CXXFLAGS=-Werror")
+            assert_shell_command("make -j8")
+            assert_shell_command("ctest --output-on-failure")
+
+############################################################
+def test_current_host_debug_pedantic_tests():
+    # get malt source path
+    sources = get_malt_source_path()
+
+    with tempfile.TemporaryDirectory() as tmpdir:
+        with jump_in_dir(tmpdir):
+            assert_shell_command(f"{sources}/configure --enable-debug --enable-tests CFLAGS='-Wpedantic -Werror' CXXFLAGS='-Wpedantic -Werror'")
             assert_shell_command("make -j8")
             assert_shell_command("ctest --output-on-failure")
 
