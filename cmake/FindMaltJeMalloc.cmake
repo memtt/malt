@@ -28,7 +28,8 @@ find_path(MALTJEMALLOC_INCLUDE_DIR jemalloc-malt.h
 
 ############################################################
 find_library(MALTJEMALLOC_LIBRARY NAMES jemalloc-malt_pic
-	HINTS ${MALTJEMALLOC_PREFIX}/${LIBDIR})
+	HINTS ${MALTJEMALLOC_PREFIX}/lib
+	      ${MALTJEMALLOC_PREFIX}/${LIBDIR})
 
 ############################################################
 set(MALTJEMALLOC_LIBRARIES ${MALTJEMALLOC_LIBRARY})
@@ -49,4 +50,4 @@ find_package_handle_standard_args(MaltJeMalloc  DEFAULT_MSG
 	MALTJEMALLOC_LIBRARY MALTJEMALLOC_LIBRARIES MALTJEMALLOC_INCLUDE_DIR)
 
 ############################################################
-mark_as_advanced(MALTJEMALLOC_INCLUDE_DIR MALTJEMALLOC_LIBRARY )
+mark_as_advanced(MALTJEMALLOC_INCLUDE_DIR MALTJEMALLOC_LIBRARY)

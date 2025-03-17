@@ -508,7 +508,9 @@ void IniParserHelper::setEntry(dictionary* dic, const char* key, int value)
 Options& initGlobalOptions ( void )
 {
 	//error
-	assume (gblOptions == NULL,"initGlobalOptions was used previously, gblOptions is already init ! ");
+	//assume (gblOptions == NULL,"initGlobalOptions was used previously, gblOptions is already init ! ");
+	if (gblOptions != nullptr)
+		return *gblOptions;
 	gblOptions = new Options();
 	return *gblOptions;
 }

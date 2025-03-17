@@ -453,7 +453,13 @@ JeMalloc should be built with options and ideally installed in the same prefix t
 ```sh
 mkdir build
 cd build
-../configure --with-jemalloc-prefix=malt_je_ --with-private-namespace=malt_je_ --with-install-suffix=-malt --enable-shared --prefix={MALT_PREFIX}
+../configure --with-jemalloc-prefix=malt_je_ \
+             --with-private-namespace=malt_je_ \
+             --with-install-suffix=-malt \
+             --enable-shared \
+             --prefix={MALT_PREFIX} \
+             --disable-cxx \
+             --without-exports
 ```
 
 Similar tools

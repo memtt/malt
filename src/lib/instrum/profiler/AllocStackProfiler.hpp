@@ -61,7 +61,7 @@ struct ReallocJump
 /**********************************************************/
 typedef std::list<LocalAllocStackProfiler *,STLInternalAllocator<LocalAllocStackProfiler*> > LocalAllocStackProfilerList;
 typedef StackSTLHashMap<CallStackInfo> MMStackMap;
-typedef std::map<size_t,size_t> AllocSizeDistrMap;
+typedef std::map<size_t,size_t, std::less<size_t>, STLInternalAllocator<std::pair<size_t, size_t> > > AllocSizeDistrMap;
 typedef std::map<ReallocJump,size_t> ReallocJumpMap;
 typedef RLockFreeTree<CallStackInfo> AllocTreeStrackTracer;
 typedef std::map<std::string,ElfGlobalVariableVector> GlobalVariableMap;
