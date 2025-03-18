@@ -23,6 +23,12 @@ using namespace MALT;
 int main(int argc, char ** argv);
 
 /**********************************************************/
+int isFunctionForTest(int argument)
+{
+	return EXIT_SUCCESS;
+}
+
+/**********************************************************/
 TEST(TestSymbolSolver,testConstructor)
 {
 	SymbolSolver solver;
@@ -40,18 +46,18 @@ TEST(TestSymbolSolver,testSolve)
 {
 	SymbolSolver solver;
 	solver.loadProcMap();
-	solver.registerAddress(LangAddress(DOMAIN_C, (void*)main));
+	solver.registerAddress(LangAddress(DOMAIN_C, (void*)::isFunctionForTest));
 	solver.solveNames();
 
 	//extact
-	const CallSite * site = solver.getCallSiteInfo(LangAddress(DOMAIN_C, (void*)main));
+	const CallSite * site = solver.getCallSiteInfo(LangAddress(DOMAIN_C, (void*)::isFunctionForTest));
 	const String & func = solver.getString(site->function);
 	const String & file = solver.getString(site->file);
 
 	//test
 	#ifndef NDEBUG
 		EXPECT_EQ(__FILE__, file);
-		EXPECT_EQ("main", func);
+		EXPECT_EQ("isFunctionForTest", func);
 	#endif
 }
 
