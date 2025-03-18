@@ -62,6 +62,9 @@ Options::Options(void)
 	this->pythonStack             = "enter-exit";
 	this->pythonMix               = true;
 	this->pythonInstru            = true;
+	this->pythonObj               = true;
+	this->pythonMem               = true;
+	this->pythonRaw               = true;
 	//time
 	this->timeProfileEnabled      = true;
 	this->timeProfilePoints       = 512;
@@ -113,6 +116,9 @@ bool Options::operator==(const Options& value) const
 	if (pythonInstru != value.pythonInstru) return false;
 	if (pythonStack != value.pythonStack) return false;
 	if (pythonMix != value.pythonMix) return false;
+	if (pythonObj != value.pythonObj) return false;
+	if (pythonMem != value.pythonMem) return false;
+	if (pythonRaw != value.pythonRaw) return false;
 	//time
 	if (this->timeProfileEnabled != value.timeProfileEnabled) return false;
 	if (this->timeProfilePoints != value.timeProfilePoints) return false;
@@ -236,6 +242,9 @@ void Options::loadFromIniDic ( dictionary* iniDic )
 	this->pythonInstru        = iniparser_getboolean(iniDic,"python:instru",this->pythonInstru);
 	this->pythonMix           = iniparser_getboolean(iniDic,"python:mix",this->pythonMix);
 	this->pythonStack         = iniparser_getstring(iniDic,"python:stack",(char*)this->pythonStack.c_str());
+	this->pythonObj           = iniparser_getboolean(iniDic,"python:obj",this->pythonObj);
+	this->pythonMem           = iniparser_getboolean(iniDic,"python:mem",this->pythonMem);
+	this->pythonRaw           = iniparser_getboolean(iniDic,"python:raw",this->pythonRaw);
 	this->pythonStackEnum     = stackModeFromString(this->pythonStack);
 
 	//load values for stack profiling
@@ -333,6 +342,9 @@ void convertToJson(htopml::JsonState & json,const Options & value)
 			json.printField("instru", value.pythonInstru);
 			json.printField("mix", value.pythonMix);
 			json.printField("stack", value.pythonStack);
+			json.printField("obj", value.pythonObj);
+			json.printField("mem", value.pythonMem);
+			json.printField("raw", value.pythonRaw);
 		json.closeFieldStruct("python");
 		
 		json.openFieldStruct("output");
@@ -402,6 +414,9 @@ void Options::dumpConfig(const char* fname)
 	IniParserHelper::setEntry(dic,"python:intru",this->pythonInstru);
 	IniParserHelper::setEntry(dic,"python:stack",this->pythonStack.c_str());
 	IniParserHelper::setEntry(dic,"python:mix",this->pythonMix);
+	IniParserHelper::setEntry(dic,"python:obj",this->pythonObj);
+	IniParserHelper::setEntry(dic,"python:mem",this->pythonMem);
+	IniParserHelper::setEntry(dic,"python:raw",this->pythonRaw);
 	
 	//output
 	IniParserHelper::setEntry(dic,"output:name",this->outputName.c_str());

@@ -107,29 +107,35 @@ void initPythonAllocInstrumentation()
 	PyMem_GetAllocator(PYMEM_DOMAIN_MEM, &gblPythonMemAlloc);
 	PyMem_GetAllocator(PYMEM_DOMAIN_OBJ, &gblPythonObjAlloc);
 
-	PyMemAllocatorEx pythonRawAllocMalt;
-	pythonRawAllocMalt.ctx = NULL;
-	pythonRawAllocMalt.malloc = WrapperPythonRaw::malloc;
-	pythonRawAllocMalt.free = WrapperPythonRaw::free;
-	pythonRawAllocMalt.calloc = WrapperPythonRaw::calloc;
-	pythonRawAllocMalt.realloc = WrapperPythonRaw::realloc;
-	PyMem_SetAllocator(PYMEM_DOMAIN_RAW, &pythonRawAllocMalt);
+	if (gblOptions->pythonRaw) {
+		PyMemAllocatorEx pythonRawAllocMalt;
+		pythonRawAllocMalt.ctx = NULL;
+		pythonRawAllocMalt.malloc = WrapperPythonRaw::malloc;
+		pythonRawAllocMalt.free = WrapperPythonRaw::free;
+		pythonRawAllocMalt.calloc = WrapperPythonRaw::calloc;
+		pythonRawAllocMalt.realloc = WrapperPythonRaw::realloc;
+		PyMem_SetAllocator(PYMEM_DOMAIN_RAW, &pythonRawAllocMalt);
+	}
 
-	PyMemAllocatorEx pythonMemAllocMalt;
-	pythonMemAllocMalt.ctx = NULL;
-	pythonMemAllocMalt.malloc = WrapperPythonMem::malloc;
-	pythonMemAllocMalt.free = WrapperPythonMem::free;
-	pythonMemAllocMalt.calloc = WrapperPythonMem::calloc;
-	pythonMemAllocMalt.realloc = WrapperPythonMem::realloc;
-	PyMem_SetAllocator(PYMEM_DOMAIN_MEM, &pythonMemAllocMalt);
+	if (gblOptions->pythonMem) {
+		PyMemAllocatorEx pythonMemAllocMalt;
+		pythonMemAllocMalt.ctx = NULL;
+		pythonMemAllocMalt.malloc = WrapperPythonMem::malloc;
+		pythonMemAllocMalt.free = WrapperPythonMem::free;
+		pythonMemAllocMalt.calloc = WrapperPythonMem::calloc;
+		pythonMemAllocMalt.realloc = WrapperPythonMem::realloc;
+		PyMem_SetAllocator(PYMEM_DOMAIN_MEM, &pythonMemAllocMalt);
+	}
 
-	PyMemAllocatorEx pythonObjAllocMalt;
-	pythonObjAllocMalt.ctx = NULL;
-	pythonObjAllocMalt.malloc = WrapperPythonObj::malloc;
-	pythonObjAllocMalt.free = WrapperPythonObj::free;
-	pythonObjAllocMalt.calloc = WrapperPythonObj::calloc;
-	pythonObjAllocMalt.realloc = WrapperPythonObj::realloc;
-	PyMem_SetAllocator(PYMEM_DOMAIN_OBJ, &pythonObjAllocMalt);
+	if (gblOptions->pythonObj) {
+		PyMemAllocatorEx pythonObjAllocMalt;
+		pythonObjAllocMalt.ctx = NULL;
+		pythonObjAllocMalt.malloc = WrapperPythonObj::malloc;
+		pythonObjAllocMalt.free = WrapperPythonObj::free;
+		pythonObjAllocMalt.calloc = WrapperPythonObj::calloc;
+		pythonObjAllocMalt.realloc = WrapperPythonObj::realloc;
+		PyMem_SetAllocator(PYMEM_DOMAIN_OBJ, &pythonObjAllocMalt);
+	}
 
 	//PyGC_Disable();
 

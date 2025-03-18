@@ -85,6 +85,9 @@ struct Options
 	StackMode pythonStackEnum;
 	bool pythonMix;
 	bool pythonInstru;
+	bool pythonObj;
+	bool pythonMem;
+	bool pythonRaw;
 	//vars for time profiging
 	bool timeProfileEnabled;
 	int timeProfilePoints;

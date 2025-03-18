@@ -26,5 +26,5 @@ examples/step-9-problem-tls-and-gbl-vars
 examples/*.json
 
 # cache
-/podman-ccache
+/podman-cache
 .venv
