@@ -57,7 +57,7 @@ TEST(TestSymbolSolver,testSolve)
 	//test
 	#ifndef NDEBUG
 		EXPECT_EQ(__FILE__, file);
-		EXPECT_EQ("isFunctionForTest", func);
+		EXPECT_STREQ("isFunctionForTest(int)", func.c_str());
 	#endif
 }
 
@@ -98,7 +98,7 @@ TEST(TestSymbolSolver, solveBacktraceExe)
 	#ifndef NDEBUG
 		EXPECT_EQ(__FILE__, file);
 		EXPECT_EQ("testCalleeExe(MALT::BacktraceStack&)", func);
-		EXPECT_EQ(62, site->line);
+		EXPECT_EQ(68, site->line);
 	#endif
 }
 
