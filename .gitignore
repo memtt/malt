@@ -1,5 +1,5 @@
 # Ignore node modules which are downloaded at the installation
-src/webview/node_modules/
+node_modules
 
 # Ignore build directories
 src/webview/dist
