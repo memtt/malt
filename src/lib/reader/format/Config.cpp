@@ -41,6 +41,9 @@ void to_json(nlohmann::json & json, const Config & config){
 				{"instru", config.python.instru},
 				{"mix", config.python.mix},
 				{"stack", config.python.stack},
+				{"obj", config.python.obj},
+				{"mem", config.python.mem},
+				{"raw", config.python.raw},
 			}
 		},
 		{
@@ -126,9 +129,15 @@ void from_json(const JsonIn & json, Config & config)
 	assert(jsContains(jsonPython, "instru"));
 	assert(jsContains(jsonPython, "mix"));
 	assert(jsContains(jsonPython, "stack"));
+	assert(jsContains(jsonPython, "obj"));
+	assert(jsContains(jsonPython, "mem"));
+	assert(jsContains(jsonPython, "raw"));
 	jsonPython.at("instru").get_to(config.python.instru);
 	jsonPython.at("mix").get_to(config.python.mix);
 	jsonPython.at("stack").get_to(config.python.stack);
+	jsonPython.at("obj").get_to(config.python.obj);
+	jsonPython.at("mem").get_to(config.python.mem);
+	jsonPython.at("raw").get_to(config.python.raw);
 
 	//output
 	JsonIn jsonOutput = json.at("output");

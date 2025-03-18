@@ -27,7 +27,10 @@
     "python": {
       "instru": true,
       "mix": true,
-      "stack": "enter-exit"
+      "stack": "enter-exit",
+      "obj": true,
+      "mem": true,
+      "raw": true
     },
     "output": {
       "callgrind": false,

@@ -41,6 +41,9 @@ struct Config
 		bool instru;
 		bool mix;
 		std::string stack;
+		bool obj;
+		bool mem;
+		bool raw;
 	} python;
 	struct {
 		bool callgrind;
