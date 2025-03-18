@@ -301,6 +301,25 @@ void to_json(nlohmann::json & json, const Summary & value)
 }
 
 /**********************************************************/
+void to_json(nlohmann::json & json, const FlattenMaxStackInfo & value)
+{
+	json = nlohmann::json{
+		{"details", value.details},
+		{"totalMem", value.totalMem}
+	};
+}
+
+/**********************************************************/
+void to_json(nlohmann::json & json, const FlattenMaxStackInfoEntry & value)
+{
+	json = nlohmann::json{
+		{"info", *value.info},
+		{"mem", value.mem},
+		{"count", value.count},
+	};
+}
+
+/**********************************************************/
 const std::string& Extractor::getString(ssize_t id) const
 {
 	//check
@@ -428,6 +447,14 @@ FilteredStackList Extractor::getFilterdStacks(const LocaltionOnlyFilterFunc & fi
 	}
 
 	return res;
+}
+
+/**********************************************************/
+FilteredStackList Extractor::getFilterdStacksOnFileLine(const std::string & file, size_t line) const
+{
+	return this->getFilterdStacks([&file, line](const InstructionInfosStrRef & location) {
+		return *location.file == file && location.line == line;
+	});
 }
 
 /**********************************************************/
@@ -631,6 +658,73 @@ Summary Extractor::getSummary(void) const
 	ret.globalStats.cumulAllocs = sum;
 
 	return ret;
+}
+
+/**********************************************************/
+FlattenMaxStackInfo Extractor::getFlattenMaxStackInfo(const LocaltionOnlyMappingFunc & mapping,const LocaltionOnlyFilterFunc & accept, const ThreadStackMem & maxStack)
+{
+	//init hash map to flat on addresses
+	std::map<std::string, FlattenMaxStackInfoEntry> ret;
+	//var maxStack = this.data.maxStack;
+	//var maxStack = this.getMaxStack();
+
+	//loop on all entries
+	for (size_t i = 0 ; i < maxStack.stack.size() ; i++)
+	{
+		//get some vars
+		LangAddress addr = maxStack.stack[i];
+		ssize_t mem = maxStack.mem[i] - maxStack.mem[i+1];
+		assert(mem >= 0);
+		const InstructionInfosStrRef & info = this->addrTranslation[addr];
+		std::string key = to_string(addr);
+		//if (info != undefined)
+		key = mapping(info);
+		//else
+		//info = {function:addr};
+
+		//check filter
+		if (accept(info)) {
+			auto it = ret.find(key);
+			//create or merge
+			if (it == ret.end()) {
+				ret[key] = FlattenMaxStackInfoEntry{&info, 1, (size_t)mem};
+			} else {
+				ret[key].mem += mem;
+				ret[key].count++;
+			}
+		}
+	}
+
+	//remove keys
+	std::vector<FlattenMaxStackInfoEntry> finalRes;
+	for (const auto & it : ret)
+		finalRes.push_back(it.second);
+
+	//ok return
+	return FlattenMaxStackInfo{finalRes,maxStack.size};
+}
+
+/**********************************************************/
+FlattenMaxStackInfo Extractor::getMaxStackInfoOnFunction(void)
+{
+	return this->getFlattenMaxStackInfo(
+		[](const InstructionInfosStrRef & location) {return *location.function;},
+		[](const InstructionInfosStrRef & location) {return true;},
+		this->getMaxStack()
+	);
+}
+
+/**********************************************************/
+/**
+ * Flatten datas about the largest stack and return as json tree.
+**/
+FlattenMaxStackInfo Extractor::getStackInfoOnFunction(size_t id)
+{
+	return this->getFlattenMaxStackInfo(
+		[](const InstructionInfosStrRef & location) {return *location.function;},
+		[](const InstructionInfosStrRef & location) {return true;},
+		this->profile.threads[id].stackMem
+	);
 }
 
 }

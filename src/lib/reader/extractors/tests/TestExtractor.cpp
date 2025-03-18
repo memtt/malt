@@ -51,8 +51,9 @@ TEST(TestExtractorHelpers, getFlatProfile)
 	nlohmann::json resJson = ExtractorHelpers::toJsonFiltered(res, {"*.count", "*.location"});
 
 	//check
-	EXPECT_EQ(dataExpected["getFlatProfile"], resJson);
-	ASSERT_EQ(nlohmann::json::diff(dataExpected["getFlatProfile"], resJson), nlohmann::json::array());
+	EXPECT_EQ(dataExpected["getFlatProfile"], resJson)
+		<< "  Diff: "
+		<< nlohmann::json::diff(dataExpected["getFlatProfile"], resJson), nlohmann::json::array();
 }
 
 /**********************************************************/
@@ -135,6 +136,57 @@ TEST(TestExtractorHelpers, getFilterdStacks)
 }
 
 /**********************************************************/
+TEST(TestExtractorHelpers, getFilterdStacksOnFileLine)
+{
+	//load
+	JsonFileIn JsonFileIn(CUR_SRC_DIR "/example.json");
+	JsonIn data = JsonFileIn.getRoot();
+	MaltProfile profile;
+	data.get_to(profile);
+
+	//extract
+	Extractor extractor(profile);
+	omp_set_num_threads(1);
+	FilteredStackList res = extractor.getFilterdStacksOnFileLine("src/libreader/extractors/tests/example.cpp", 41);
+
+	//load ref
+	std::ifstream exampleExpected(CUR_SRC_DIR "/example.expected.json");
+	nlohmann::json dataExpected = nlohmann::json::parse(exampleExpected);
+
+	//remove abs path
+	nlohmann::json resJson = res;
+
+	//check
+	ASSERT_EQ(dataExpected["getFilterdStacksOnFileLine"], resJson) << " Diff: " << nlohmann::json::diff(dataExpected["getFilterdStacksOnFileLine"], resJson);
+}
+
+/**********************************************************/
+TEST(TestExtractorHelpers, getMaxStackInfoOnFunction)
+{
+	//load
+	JsonFileIn JsonFileIn(CUR_SRC_DIR "/example.json");
+	JsonIn data = JsonFileIn.getRoot();
+	MaltProfile profile;
+	data.get_to(profile);
+
+	//extract
+	Extractor extractor(profile);
+	omp_set_num_threads(1);
+	FlattenMaxStackInfo res = extractor.getMaxStackInfoOnFunction();
+
+	//load ref
+	std::ifstream exampleExpected(CUR_SRC_DIR "/example.expected.json");
+	nlohmann::json dataExpected = nlohmann::json::parse(exampleExpected);
+
+	//remove abs path
+	nlohmann::json resJson = res;
+
+	//check
+	ASSERT_EQ(dataExpected["getMaxStackInfoOnFunction"], resJson) << " Diff: " << nlohmann::json::diff(dataExpected["getMaxStackInfoOnFunction"], resJson);
+}
+
+
+/**********************************************************/
 TEST(TestExtractorHelpers, getSummaryV2)
 {
 	//load
@@ -155,7 +207,7 @@ TEST(TestExtractorHelpers, getSummaryV2)
 	nlohmann::json resJson = res;
 
 	//check
-	ASSERT_EQ(dataExpected["getSummaryV2"], resJson) << " Diff: " << nlohmann::json::diff(dataExpected["getProcMapDistr"], resJson);
+	ASSERT_EQ(dataExpected["getSummaryV2"], resJson) << " Diff: " << nlohmann::json::diff(dataExpected["getSummaryV2"], resJson);
 }
 
 /**********************************************************/
@@ -179,5 +231,5 @@ TEST(TestExtractorHelpers, getSummary)
 	nlohmann::json resJson = res;
 
 	//check
-	ASSERT_EQ(dataExpected["getSummary"], resJson) << " Diff: " << nlohmann::json::diff(dataExpected["getProcMapDistr"], resJson);
+	ASSERT_EQ(dataExpected["getSummary"], resJson) << " Diff: " << nlohmann::json::diff(dataExpected["getSummary"], resJson);
 }

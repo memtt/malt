@@ -1142,5 +1142,215 @@
       "segments": 9880,
       "virtualMem": 22228992
     }
+  },
+  "getFilterdStacksOnFileLine": [
+    {
+      "cnt": {
+        "aliveReq": 728,
+        "alloc": {
+          "count": 1,
+          "max": 728,
+          "min": 728,
+          "sum": 728
+        },
+        "countZeros": 0,
+        "free": {
+          "count": 0,
+          "max": 0,
+          "min": 0,
+          "sum": 0
+        },
+        "globalPeak": 728,
+        "lifetime": {
+          "count": 0,
+          "max": 0,
+          "min": 0,
+          "sum": 0
+        },
+        "maxAliveReq": 728,
+        "reallocCount": 0,
+        "reallocSumDelta": 0
+      },
+      "mem": [
+        {
+          "binary": "src/lib/injectors/InjectCAlloc.cpp",
+          "file": "src/lib/injectors/InjectCAlloc.cpp",
+          "function": "realloc",
+          "line": 68
+        },
+        {
+          "binary": "./stdlib/./stdlib/setenv.c",
+          "file": "./stdlib/./stdlib/setenv.c",
+          "function": "__add_to_environ",
+          "line": 156
+        },
+        {
+          "binary": "src/libreader/extractors/tests/example.cpp",
+          "file": "src/libreader/extractors/tests/example.cpp",
+          "function": "main",
+          "line": 41
+        },
+        {
+          "binary": "./csu/../sysdeps/x86/libc-start.c",
+          "file": "./csu/../sysdeps/x86/libc-start.c",
+          "function": "__libc_start_call_main",
+          "line": 58
+        },
+        {
+          "binary": "./csu/../csu/libc-start.c",
+          "file": "./csu/../csu/libc-start.c",
+          "function": "__libc_start_main_impl",
+          "line": 360
+        },
+        {
+          "binary": "??",
+          "file": "??",
+          "function": "_start",
+          "line": -1
+        }
+      ]
+    },
+    {
+      "cnt": {
+        "aliveReq": 121,
+        "alloc": {
+          "count": 1,
+          "max": 121,
+          "min": 121,
+          "sum": 121
+        },
+        "countZeros": 0,
+        "free": {
+          "count": 0,
+          "max": 0,
+          "min": 0,
+          "sum": 0
+        },
+        "globalPeak": 121,
+        "lifetime": {
+          "count": 0,
+          "max": 0,
+          "min": 0,
+          "sum": 0
+        },
+        "maxAliveReq": 121,
+        "reallocCount": 0,
+        "reallocSumDelta": 0
+      },
+      "mem": [
+        {
+          "binary": "src/lib/injectors/InjectCAlloc.cpp",
+          "file": "src/lib/injectors/InjectCAlloc.cpp",
+          "function": "malloc",
+          "line": 28
+        },
+        {
+          "binary": "./stdlib/./stdlib/setenv.c",
+          "file": "./stdlib/./stdlib/setenv.c",
+          "function": "__add_to_environ",
+          "line": 185
+        },
+        {
+          "binary": "src/libreader/extractors/tests/example.cpp",
+          "file": "src/libreader/extractors/tests/example.cpp",
+          "function": "main",
+          "line": 41
+        },
+        {
+          "binary": "./csu/../sysdeps/x86/libc-start.c",
+          "file": "./csu/../sysdeps/x86/libc-start.c",
+          "function": "__libc_start_call_main",
+          "line": 58
+        },
+        {
+          "binary": "./csu/../csu/libc-start.c",
+          "file": "./csu/../csu/libc-start.c",
+          "function": "__libc_start_main_impl",
+          "line": 360
+        },
+        {
+          "binary": "??",
+          "file": "??",
+          "function": "_start",
+          "line": -1
+        }
+      ]
+    },
+    {
+      "cnt": {
+        "aliveReq": 24,
+        "alloc": {
+          "count": 1,
+          "max": 24,
+          "min": 24,
+          "sum": 24
+        },
+        "countZeros": 0,
+        "free": {
+          "count": 0,
+          "max": 0,
+          "min": 0,
+          "sum": 0
+        },
+        "globalPeak": 24,
+        "lifetime": {
+          "count": 0,
+          "max": 0,
+          "min": 0,
+          "sum": 0
+        },
+        "maxAliveReq": 24,
+        "reallocCount": 0,
+        "reallocSumDelta": 0
+      },
+      "mem": [
+        {
+          "binary": "src/lib/injectors/InjectCAlloc.cpp",
+          "file": "src/lib/injectors/InjectCAlloc.cpp",
+          "function": "malloc",
+          "line": 28
+        },
+        {
+          "binary": "./misc/./misc/tsearch.c",
+          "file": "./misc/./misc/tsearch.c",
+          "function": "__GI___tsearch",
+          "line": 337
+        },
+        {
+          "binary": "./stdlib/./stdlib/setenv.c",
+          "file": "./stdlib/./stdlib/setenv.c",
+          "function": "__add_to_environ",
+          "line": 208
+        },
+        {
+          "binary": "src/libreader/extractors/tests/example.cpp",
+          "file": "src/libreader/extractors/tests/example.cpp",
+          "function": "main",
+          "line": 41
+        },
+        {
+          "binary": "./csu/../sysdeps/x86/libc-start.c",
+          "file": "./csu/../sysdeps/x86/libc-start.c",
+          "function": "__libc_start_call_main",
+          "line": 58
+        },
+        {
+          "binary": "./csu/../csu/libc-start.c",
+          "file": "./csu/../csu/libc-start.c",
+          "function": "__libc_start_main_impl",
+          "line": 360
+        },
+        {
+          "binary": "??",
+          "file": "??",
+          "function": "_start",
+          "line": -1
+        }
+      ]
+    }
+  ],
+  "getMaxStackInfoOnFunction": {
+    "details": [],
+    "totalMem": 0
   }
 }

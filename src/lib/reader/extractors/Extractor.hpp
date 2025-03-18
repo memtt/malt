@@ -129,11 +129,27 @@ struct FilteredStackEntry
 };
 
 /**********************************************************/
+struct FlattenMaxStackInfoEntry
+{
+	const InstructionInfosStrRef * info;
+	size_t mem;
+	size_t count;
+};
+
+/**********************************************************/
+struct FlattenMaxStackInfo
+{
+	std::vector<FlattenMaxStackInfoEntry> details;
+	size_t totalMem;
+};
+
+/**********************************************************/
 typedef std::map<std::string, ProcMapDistrEntry> ProcMapDistr;
 typedef std::list<FilteredStackEntry> FilteredStackList;
 
 /**********************************************************/
 typedef std::function<std::string(const InstructionInfosStrRef & /*location*/, const MALTFormat::StackInfos & /*infos*/)> LocaltionMappingFunc;
+typedef std::function<std::string(const InstructionInfosStrRef & /*location*/)> LocaltionOnlyMappingFunc;
 typedef std::function<bool(const InstructionInfosStrRef & /*location*/, const MALTFormat::StackInfos & /*infos*/)> LocaltionFilterFunc;
 typedef std::function<bool(const InstructionInfosStrRef & /*location*/)> LocaltionOnlyFilterFunc;
 typedef std::map<std::string, FlatProfileValue> FlatProfileMap;
@@ -150,10 +166,14 @@ class Extractor
 		ProcMapDistr getProcMapDistr(void) const;
 		FunctionStackVector getDebugStackList() const;
 		FilteredStackList getFilterdStacks(const LocaltionOnlyFilterFunc & filter) const;
+		FilteredStackList getFilterdStacksOnFileLine(const std::string & file, size_t line) const;
 		TimedValues getTimedValues(void) const;
 		SummaryWarnings genSummaryWarnings(const SummaryV2 & data) const;
 		SummaryV2 getSummaryV2(void) const;
 		Summary getSummary(void) const;
+		FlattenMaxStackInfo getFlattenMaxStackInfo(const LocaltionOnlyMappingFunc & mapping,const LocaltionOnlyFilterFunc & accept, const MALTFormat::ThreadStackMem & maxStack);
+		FlattenMaxStackInfo getMaxStackInfoOnFunction(void);
+		FlattenMaxStackInfo getStackInfoOnFunction(size_t id);
 	private:
 		void mergeStackInfo(FlatProfileMap & into, const MALTFormat::LangAddress & addr,FlatProfileCounter counter,const MALTFormat::StackInfos & infos,const LocaltionMappingFunc & mapping) const;
 		void buildTranslation(void);
@@ -175,6 +195,8 @@ void to_json(nlohmann::json & json, const FilteredStackEntry & value);
 void to_json(nlohmann::json & json, const TimedValues & value);
 void to_json(nlohmann::json & json, const SummaryV2 & value);
 void to_json(nlohmann::json & json, const Summary & value);
+void to_json(nlohmann::json & json, const FlattenMaxStackInfo & value);
+void to_json(nlohmann::json & json, const FlattenMaxStackInfoEntry & value);
 
 }
 
