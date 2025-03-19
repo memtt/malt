@@ -5,6 +5,7 @@ List of authors
  * Sébastien Valat (CERN) [2015-2018] -- Original author
  * Sébastien Valat (http://svalat.github.io) [2018-*] -- Original author
  * Mehdi Raza Jaffery (CERN) [2016] -- GUI improvements
+ * Bastien Levasseur (University Grenoble Alpes) [2024] -- Initial study and patches for Python support.
 
 Special thanks
 --------------
