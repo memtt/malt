@@ -1,0 +1,3 @@
+{
+    "c_basic_malloc": {"TestInstrum.cpp:function_testing_c_malloc():36":{"alloc":{"count":1,"max":16,"min":16,"sum":16}}}
+}

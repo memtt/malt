@@ -1,0 +1,354 @@
+{
+  "basic_run_and_check_file_line_counter": {
+    "simple-case.cpp:OutOfMainAlloc::OutOfMainAlloc():51": {
+      "alloc": {
+        "count": 1,
+        "max": 128,
+        "min": 128,
+        "sum": 128
+      }
+    },
+    "simple-case.cpp:OutOfMainAlloc::~OutOfMainAlloc():57": {
+      "free": {
+        "count": 1,
+        "max": 128,
+        "min": 128,
+        "sum": 128
+      }
+    },
+    "simple-case.cpp:funcA():80": {
+      "alloc": {
+        "count": 1,
+        "max": 16,
+        "min": 16,
+        "sum": 16
+      }
+    },
+    "simple-case.cpp:funcA():82": {
+      "free": {
+        "count": 1,
+        "max": 16,
+        "min": 16,
+        "sum": 16
+      }
+    },
+    "simple-case.cpp:funcB():71": {
+      "alloc": {
+        "count": 11,
+        "max": 32,
+        "min": 32,
+        "sum": 352
+      }
+    },
+    "simple-case.cpp:funcB():73": {
+      "free": {
+        "count": 11,
+        "max": 32,
+        "min": 32,
+        "sum": 352
+      }
+    },
+    "simple-case.cpp:funcC():63": {
+      "alloc": {
+        "count": 11,
+        "max": 64,
+        "min": 64,
+        "sum": 704
+      }
+    },
+    "simple-case.cpp:funcC():65": {
+      "free": {
+        "count": 11,
+        "max": 64,
+        "min": 64,
+        "sum": 704
+      }
+    },
+    "simple-case.cpp:main:282": {
+      "alloc": {
+        "count": 1,
+        "max": 256,
+        "min": 256,
+        "sum": 256
+      }
+    },
+    "simple-case.cpp:main:284": {
+      "free": {
+        "count": 1,
+        "max": 256,
+        "min": 256,
+        "sum": 256
+      }
+    },
+    "simple-case.cpp:recurseA(int):91": {
+      "alloc": {
+        "count": 110,
+        "max": 64,
+        "min": 64,
+        "sum": 7040
+      }
+    },
+    "simple-case.cpp:recurseA(int):94": {
+      "free": {
+        "count": 110,
+        "max": 64,
+        "min": 64,
+        "sum": 7040
+      }
+    },
+    "simple-case.cpp:testAllFuncs():184": {
+      "alloc": {
+        "count": 1,
+        "max": 16,
+        "min": 16,
+        "sum": 16
+      }
+    },
+    "simple-case.cpp:testAllFuncs():186": {
+      "free": {
+        "count": 1,
+        "max": 16,
+        "min": 16,
+        "sum": 16
+      }
+    },
+    "simple-case.cpp:testAllFuncs():189": {
+      "alloc": {
+        "count": 1,
+        "max": 16,
+        "min": 16,
+        "sum": 16
+      }
+    },
+    "simple-case.cpp:testAllFuncs():191": {
+      "free": {
+        "count": 1,
+        "max": 16,
+        "min": 16,
+        "sum": 16
+      }
+    },
+    "simple-case.cpp:testAllFuncs():194": {
+      "alloc": {
+        "count": 1,
+        "max": 16,
+        "min": 16,
+        "sum": 16
+      }
+    },
+    "simple-case.cpp:testAllFuncs():196": {
+      "free": {
+        "count": 1,
+        "max": 16,
+        "min": 16,
+        "sum": 16
+      }
+    },
+    "simple-case.cpp:testAllFuncs():199": {
+      "alloc": {
+        "count": 1,
+        "max": 16,
+        "min": 16,
+        "sum": 16
+      }
+    },
+    "simple-case.cpp:testAllFuncs():201": {
+      "free": {
+        "count": 1,
+        "max": 16,
+        "min": 16,
+        "sum": 16
+      }
+    },
+    "simple-case.cpp:testAllFuncs():211": {
+      "alloc": {
+        "count": 1,
+        "max": 16,
+        "min": 16,
+        "sum": 16
+      }
+    },
+    "simple-case.cpp:testAllFuncs():213": {
+      "free": {
+        "count": 1,
+        "max": 16,
+        "min": 16,
+        "sum": 16
+      }
+    },
+    "simple-case.cpp:testAllFuncs():219": {
+      "free": {
+        "count": 1,
+        "max": 16,
+        "min": 16,
+        "sum": 16
+      }
+    },
+    "simple-case.cpp:testAllFuncs():225": {
+      "free": {
+        "count": 1,
+        "max": 16,
+        "min": 16,
+        "sum": 16
+      }
+    },
+    "simple-case.cpp:testLeak():139": {
+      "alloc": {
+        "count": 1,
+        "max": 32,
+        "min": 32,
+        "sum": 32
+      }
+    },
+    "simple-case.cpp:testLeak2():146": {
+      "alloc": {
+        "count": 1,
+        "max": 32,
+        "min": 32,
+        "sum": 32
+      }
+    },
+    "simple-case.cpp:testMaxAlive():115": {
+      "alloc": {
+        "count": 100,
+        "max": 64,
+        "min": 64,
+        "sum": 6400
+      }
+    },
+    "simple-case.cpp:testMaxAlive():116": {
+      "alloc": {
+        "count": 100,
+        "max": 64,
+        "min": 64,
+        "sum": 6400
+      }
+    },
+    "simple-case.cpp:testMaxAlive():119": {
+      "free": {
+        "count": 100,
+        "max": 64,
+        "min": 64,
+        "sum": 6400
+      }
+    },
+    "simple-case.cpp:testMaxAlive():120": {
+      "free": {
+        "count": 100,
+        "max": 64,
+        "min": 64,
+        "sum": 6400
+      }
+    },
+    "simple-case.cpp:testPeak():231": {
+      "alloc": {
+        "count": 1,
+        "max": 1048576,
+        "min": 1048576,
+        "sum": 1048576
+      }
+    },
+    "simple-case.cpp:testPeak():233": {
+      "free": {
+        "count": 1,
+        "max": 1048576,
+        "min": 1048576,
+        "sum": 1048576
+      }
+    },
+    "simple-case.cpp:testRealloc():101": {
+      "alloc": {
+        "count": 1,
+        "max": 16,
+        "min": 16,
+        "sum": 16
+      }
+    },
+    "simple-case.cpp:testRealloc():102": {
+      "alloc": {
+        "count": 1,
+        "max": 32,
+        "min": 32,
+        "sum": 32
+      },
+      "free": {
+        "count": 1,
+        "max": 16,
+        "min": 16,
+        "sum": 16
+      }
+    },
+    "simple-case.cpp:testRealloc():103": {
+      "free": {
+        "count": 1,
+        "max": 32,
+        "min": 32,
+        "sum": 32
+      }
+    },
+    "simple-case.cpp:testRealloc():105": {
+      "alloc": {
+        "count": 1,
+        "max": 44,
+        "min": 44,
+        "sum": 44
+      }
+    },
+    "simple-case.cpp:testRealloc():107": {
+      "free": {
+        "count": 1,
+        "max": 44,
+        "min": 44,
+        "sum": 44
+      }
+    },
+    "simple-case.cpp:testRecuseIntervedA(int):158": {
+      "alloc": {
+        "count": 11,
+        "max": 64,
+        "min": 64,
+        "sum": 704
+      }
+    },
+    "simple-case.cpp:testRecuseIntervedA(int):160": {
+      "free": {
+        "count": 11,
+        "max": 64,
+        "min": 64,
+        "sum": 704
+      }
+    },
+    "simple-case.cpp:testRecuseIntervedB(int):171": {
+      "alloc": {
+        "count": 12,
+        "max": 64,
+        "min": 64,
+        "sum": 768
+      }
+    },
+    "simple-case.cpp:testRecuseIntervedB(int):173": {
+      "free": {
+        "count": 12,
+        "max": 64,
+        "min": 64,
+        "sum": 768
+      }
+    },
+    "simple-case.cpp:testThreads():130": {
+      "alloc": {
+        "count": 100,
+        "max": 64,
+        "min": 64,
+        "sum": 6400
+      }
+    },
+    "simple-case.cpp:testThreads():132": {
+      "free": {
+        "count": 100,
+        "max": 64,
+        "min": 64,
+        "sum": 6400
+      }
+    }
+  }
+}

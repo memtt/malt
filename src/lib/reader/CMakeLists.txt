@@ -15,6 +15,12 @@ include_directories(..)
 
 ############################################################
 add_library(malt-profile SHARED
+    json/File.cpp
+    json/Parser.cpp
+    json/Node.cpp
+    json/String.cpp
+    json/Json.cpp
+    json/JsonIterator.cpp
     loader/ProgressBar.cpp
     loader/FileReader.cpp
     format/Config.cpp
@@ -35,7 +41,7 @@ add_library(malt-profile SHARED
     Profile.cpp
     WebProfile.cpp
 )
-target_link_libraries(malt-profile PUBLIC nlohmann_json::nlohmann_json malt-json)
+target_link_libraries(malt-profile PUBLIC nlohmann_json::nlohmann_json)
 target_link_libraries(malt-profile PRIVATE OpenMP::OpenMP_CXX)
 set_target_properties(malt-profile PROPERTIES VERSION ${MALT_VERSION}
                                               SOVERSION ${MALT_SO_VERSION})
@@ -48,6 +54,8 @@ target_link_libraries(malt-reader malt-profile)
 if (ENABLE_TESTS)
     add_subdirectory(format/tests)
     add_subdirectory(extractors/tests)
+    add_subdirectory(json/tests)
+    add_subdirectory(tests)
 endif()
 
 ############################################################
