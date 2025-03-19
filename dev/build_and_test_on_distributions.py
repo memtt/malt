@@ -233,6 +233,21 @@ BUILD_PARAMETERS = {
             ]
         },
         ############ fedora:41
+        "malt/fedora-basic:40": {
+            "base": "fedora:40",
+            "cmds": CENTOS_BASIC_CMDS
+        },
+        "malt/fedora-full:40": {
+            "base": "malt/fedora-basic:40",
+            "cmds": CENTOS_FULL_CMDS
+        },
+        "malt/fedora-indev:40": {
+            "base": "malt/fedora-full:40",
+            "cmds": [
+                BUILD_CUSTOM_PYTHON
+            ]
+        },
+        ############ fedora:41
         "malt/fedora-basic:41": {
             "base": "fedora:41",
             "cmds": CENTOS_BASIC_CMDS
