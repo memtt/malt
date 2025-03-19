@@ -9,21 +9,21 @@
 ***********************************************************/
 
 /**********************************************************/
+#include "config.h"
 #include <gtest/gtest.h>
 #include <thread>
-#include <core/ThreadTracker.hpp>
-#include "portability/Python.hpp"
-#include "../WrapperCAlloc.hpp"
-#include "state/GlobalState.hpp"
-#include "injectors/InjectPythonInit.hpp"
-#include "state/malt.h"
-#include <common/Helpers.hpp>
+#include "instrum/injectors/InjectPythonInit.hpp"
+#include "instrum/state/malt.h"
 #include "reader/Profile.hpp"
 #include "reader/extractors/ExtractorHelpers.hpp"
 #include <fstream>
 
 /**********************************************************/
-using namespace MALT;
+namespace MALT
+{
+	void globalResetForTests();
+	void globalDump();
+};
 using namespace MALTReader;
 
 /**********************************************************/
@@ -33,7 +33,7 @@ int maltInitStatus(void)
 }
 
 /**********************************************************/
-TEST(TestInstrum, python_basic_array_backtrace)
+TEST(TestInstrumPython, python_basic_array_backtrace)
 {
 	//reset MALT & enable
 	const std::string profileFile = BINARY_DIR "/malt-python-basic-array.json";
@@ -50,7 +50,7 @@ TEST(TestInstrum, python_basic_array_backtrace)
 	ASSERT_EQ(status, 0);
 
 	//dump & get
-	MALT::gblState.onExit();
+	MALT::globalDump();
 
 	//load ref
 	nlohmann::json ref = nlohmann::json::parse(std::ifstream(CUR_SRC_DIR "/TestInstrumPython.json"));
@@ -72,7 +72,7 @@ TEST(TestInstrum, python_basic_array_backtrace)
 }
 
 /**********************************************************/
-TEST(TestInstrum, python_basic_array_enter_exit)
+TEST(TestInstrumPython, python_basic_array_enter_exit)
 {
 	//reset MALT & enable
 	const std::string profileFile = BINARY_DIR "/malt-python-basic-array.json";
@@ -89,7 +89,7 @@ TEST(TestInstrum, python_basic_array_enter_exit)
 	ASSERT_EQ(status, 0);
 
 	//dump & get
-	MALT::gblState.onExit();
+	MALT::globalDump();
 
 	//load ref
 	nlohmann::json ref = nlohmann::json::parse(std::ifstream(CUR_SRC_DIR "/TestInstrumPython.json"));

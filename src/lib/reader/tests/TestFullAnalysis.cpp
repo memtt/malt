@@ -33,7 +33,7 @@ TEST(TestFullAnalysis, basic_run)
 	ASSERT_EQ(status_sys, 0);
 
 	//check file has been generated
-	FILE * fp = fopen(EXE_PATH "/malt-current-out-basic-run.json", "r");
+	FILE * fp = fopen(BINARY_DIR "/malt-current-out-basic-run.json", "r");
 	fclose(fp);
 	ASSERT_NE(fp, nullptr);
 }
