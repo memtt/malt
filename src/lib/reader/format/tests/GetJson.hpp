@@ -35,9 +35,11 @@ static void get_json_in(MALTFormat::JsonIn & data)
 
 	//check if exist
 	FILE * fp = fopen(fname.c_str(), "r");
-	if (fp == nullptr) {
+	static bool doneOnce = false;
+	if (fp == nullptr || doneOnce == false) {
 		//generate
 		int status = system("MALT_OPTIONS='output:indent=true;output:name=" CUR_BUILD_DIR "/malt-%1.%3' " BUILD_DIR "/src/lib/instrum/tests/simple-case-finstr-linked");
+		doneOnce = true;
 	} else {
 		fclose(fp);
 	}
