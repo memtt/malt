@@ -17,7 +17,7 @@ cmake_minimum_required(VERSION 3.5)
 if (CMAKE_VERSION VERSION_LESS 3.0)
 	project(MALT)	
 else()
-	cmake_policy(SET CMP0048 NEW)	
+	cmake_policy(SET CMP0048 NEW)
 	project(MALT VERSION 1.2.4)
 endif()
 
@@ -43,6 +43,13 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_SOURCE_DIR}/cmake/)
 # Options
 set(ENABLE_TESTS "no" CACHE BOOL "Enable build of internal tests.")
 set(ENABLE_GCC_COVERAGE "no" CACHE BOOL "Enable coverage compile flags to be enabled.")
+set(ENABLE_LINK_OPTIM "yes" CACHE BOOL "Enable link optimisation (LTO & -fvisibility-hidden). Note: it is not compatible with compilation of unit tests.")
+set(ENABLE_IPO "yes" CACHE BOOL "Allow usage of IPO specfic optimization when ENABLE_LINK_OPTIM is enabled.")
+
+############################################################
+if (ENABLE_TESTS OR CMAKE_BUILD_TYPE="Debug")
+	set(ENABLE_LINK_OPTIM "no")
+endif()
 
 ############################################################
 #Delegate some cmake scripts
@@ -89,6 +96,21 @@ if (Python3_FOUND AND NOT Python3_INTERPRETER_ID STREQUAL "Python")
 	message(FATAL_ERROR "Invalid python interpreter, got '${Python3_INTERPRETER_ID}', support only 'Python' !")
 endif()
 find_package(Python3Instrum QUIET)
+
+############################################################
+if (ENABLE_LINK_OPTIM)
+	if (ENABLE_IPO)
+		cmake_policy(SET CMP0069 NEW)
+		include(CheckIPOSupported)
+		check_ipo_supported(RESULT USE_LINK_OPTIM LANGUAGES CXX)
+	else()
+		set(USE_LINK_OPTIM "no")
+	endif()
+	set(MALT_LIB_COMPILER_FLAGS "-fPIC -fvisibility=hidden")
+else()
+	set(USE_LINK_OPTIM "no")
+	set(MALT_LIB_COMPILER_FLAGS "-fPIC")
+endif()
 
 ############################################################
 #build subdirs

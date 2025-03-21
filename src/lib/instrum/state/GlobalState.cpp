@@ -11,6 +11,7 @@
 /**********************************************************/
 #include <pthread.h>
 #include "GlobalState.hpp"
+#include "portability/Visibility.hpp"
 
 /**********************************************************/
 namespace MALT
@@ -24,7 +25,7 @@ static const ThreadLocalState TLS_STATE_INIT = {NULL,ALLOC_WRAP_NOT_READY,false,
 /** Store the global state of allocator wrapper. **/
 AllocWrapperGlobal gblState = GBL_STATE_INIT;
 /** Store the per-thread state of allocator wrapper. **/
-__thread ThreadLocalState tlsState = TLS_STATE_INIT;
+DLL_PUBLIC __thread ThreadLocalState tlsState = TLS_STATE_INIT;
 /** Temporary buffer to return on first realloc used by dlsym and split infinit call loops. **/
 char gblCallocIniBuffer[4096];
 

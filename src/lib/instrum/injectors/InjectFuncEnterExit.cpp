@@ -12,6 +12,7 @@
 #include "state/LazyEnv.hpp"
 #include "wrappers/WrapperCAlloc.hpp"
 #include "InjectFuncEnterExit.hpp"
+#include "portability/Visibility.hpp"
 
 /**********************************************************/
 using namespace MALT;
@@ -28,7 +29,7 @@ using namespace MALT;
  * @param this_fn Define the name of the current function to exit.
  * @param call_site Define the address which made the call and on which to return.
 **/
-void __cyg_profile_func_enter (void *this_fn,void *call_site)
+DLL_PUBLIC void __cyg_profile_func_enter (void *this_fn,void *call_site)
 {
 	//get local TLS and check init
 	LazyEnv env;
@@ -50,7 +51,7 @@ void __cyg_profile_func_enter (void *this_fn,void *call_site)
  * @param this_fn Define the name of the current function to exit.
  * @param call_site Define the address which made the call and on which to return.
 **/
-void __cyg_profile_func_exit  (void *this_fn,void *call_site)
+DLL_PUBLIC void __cyg_profile_func_exit  (void *this_fn,void *call_site)
 {
 	//get local TLS and check init
 	LazyEnv env;

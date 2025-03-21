@@ -10,18 +10,19 @@
 
 /**********************************************************/
 #include "LazyEnv.hpp"
+#include "portability/Visibility.hpp"
 
 /**********************************************************/
 extern "C" {
 
 /**********************************************************/
-int maltInitStatus(void)
+DLL_PUBLIC int maltInitStatus(void)
 {
 	return 1;
 }
 
 /**********************************************************/
-void maltEnable(void)
+DLL_PUBLIC void maltEnable(void)
 {
 	//env
 	MALT::LazyEnv env;
@@ -29,7 +30,7 @@ void maltEnable(void)
 }
 
 /**********************************************************/
-void maltDisable(void)
+DLL_PUBLIC void maltDisable(void)
 {
 	//env
 	MALT::LazyEnv env;

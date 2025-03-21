@@ -14,6 +14,7 @@
 
 /**********************************************************/
 #include "../portability/Python.hpp"
+#include "../portability/Visibility.hpp"
 
 /**********************************************************/
 namespace MALT
@@ -24,7 +25,7 @@ namespace MALT
 
 /**********************************************************/
 #ifdef MALT_HAVE_PYTHON
-	int Py_RunMain()
+	DLL_PUBLIC int Py_RunMain()
 	{
 		MALT::Py_RunMainFuncPtr realPy_RunMain = (MALT::Py_RunMainFuncPtr)dlsym(RTLD_NEXT,"Py_RunMain");
 		MALT::initPythonInstrumentation();

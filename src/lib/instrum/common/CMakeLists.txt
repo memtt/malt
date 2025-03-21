@@ -15,7 +15,7 @@ add_definitions(-DSRC_PATH="${CMAKE_SOURCE_DIR}")
 
 ############################################################
 add_library(malt-common OBJECT CodeTiming.cpp FormattedMessage.cpp Debug.cpp Options.cpp SimpleAllocator.cpp Helpers.cpp NoFreeAllocator.cpp StringIdDictionnary.cpp)
-SET_TARGET_PROPERTIES(malt-common PROPERTIES COMPILE_FLAGS -fPIC)
+set_target_properties(malt-common PROPERTIES COMPILE_FLAGS ${MALT_LIB_COMPILER_FLAGS})
 
 ############################################################
 if (ENABLE_TESTS)

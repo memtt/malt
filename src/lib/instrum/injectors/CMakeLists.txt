@@ -13,7 +13,7 @@
 add_library(malt-injectors-ok-for-tests OBJECT 
       InjectPthreads.cpp
 )
-SET_TARGET_PROPERTIES(malt-injectors-ok-for-tests PROPERTIES COMPILE_FLAGS -fPIC)
+set_target_properties(malt-injectors-ok-for-tests PROPERTIES COMPILE_FLAGS ${MALT_LIB_COMPILER_FLAGS})
 
 ############################################################
 add_library(malt-injectors OBJECT
@@ -23,13 +23,13 @@ add_library(malt-injectors OBJECT
       InjectFuncEnterExit.cpp
       InjectMaqao.cpp
 )
-SET_TARGET_PROPERTIES(malt-injectors PROPERTIES COMPILE_FLAGS -fPIC)
+set_target_properties(malt-injectors PROPERTIES COMPILE_FLAGS ${MALT_LIB_COMPILER_FLAGS})
 
 ############################################################
 add_library(malt-injector-python OBJECT
       InjectPython.cpp
 )
-SET_TARGET_PROPERTIES(malt-injector-python PROPERTIES COMPILE_FLAGS -fPIC)
+set_target_properties(malt-injector-python PROPERTIES COMPILE_FLAGS ${MALT_LIB_COMPILER_FLAGS})
 
 ############################################################
 #if (ENABLE_TESTS)

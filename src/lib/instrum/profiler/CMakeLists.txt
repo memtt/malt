@@ -16,4 +16,4 @@ set(MALT_LIB_SRC AllocStackProfiler.cpp
 
 ############################################################
 add_library(malt-profiler OBJECT ${MALT_LIB_SRC})
-SET_TARGET_PROPERTIES(malt-profiler PROPERTIES COMPILE_FLAGS -fPIC)
+set_target_properties(malt-profiler PROPERTIES COMPILE_FLAGS ${MALT_LIB_COMPILER_FLAGS})

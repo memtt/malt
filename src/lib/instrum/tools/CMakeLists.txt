@@ -22,7 +22,7 @@ endif (LIBELF_FOUND)
 
 ############################################################
 add_library(malt-tools OBJECT ${MALT_LIB_TOOLS_SRC})
-SET_TARGET_PROPERTIES(malt-tools PROPERTIES COMPILE_FLAGS -fPIC)
+set_target_properties(malt-tools PROPERTIES COMPILE_FLAGS ${MALT_LIB_COMPILER_FLAGS})
 
 ############################################################
 if (ENABLE_TESTS)

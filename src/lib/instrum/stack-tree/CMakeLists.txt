@@ -14,7 +14,7 @@ set(MALT_STACK_TREES_SRC StackSTLHashMap.cpp)
 
 ############################################################
 add_library(malt-stack-trees OBJECT ${MALT_STACK_TREES_SRC})
-SET_TARGET_PROPERTIES(malt-stack-trees PROPERTIES COMPILE_FLAGS -fPIC)
+set_target_properties(malt-stack-trees PROPERTIES COMPILE_FLAGS ${MALT_LIB_COMPILER_FLAGS})
 
 ############################################################
 if (ENABLE_TESTS)

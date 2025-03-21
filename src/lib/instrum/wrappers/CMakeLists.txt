@@ -15,7 +15,7 @@ add_library(malt-wrappers OBJECT
       WrapperPython.cpp
       WrapperPthreads.cpp
 )
-SET_TARGET_PROPERTIES(malt-wrappers PROPERTIES COMPILE_FLAGS -fPIC)
+set_target_properties(malt-wrappers PROPERTIES COMPILE_FLAGS ${MALT_LIB_COMPILER_FLAGS})
 
 ############################################################
 INSTALL(FILES WrapperCAlloc.hpp

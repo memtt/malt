@@ -14,11 +14,11 @@ add_library(malt-state OBJECT
       GlobalState.cpp
       Enable.cpp
 )
-SET_TARGET_PROPERTIES(malt-state PROPERTIES COMPILE_FLAGS -fPIC)
+set_target_properties(malt-state PROPERTIES COMPILE_FLAGS ${MALT_LIB_COMPILER_FLAGS})
 
 ############################################################
 add_library(malt-fake-controler OBJECT FakeControler.c)
-SET_TARGET_PROPERTIES(malt-fake-controler PROPERTIES COMPILE_FLAGS -fPIC)
+set_target_properties(malt-fake-controler PROPERTIES COMPILE_FLAGS ${MALT_LIB_COMPILER_FLAGS})
 
 ############################################################
 INSTALL(FILES malt.h

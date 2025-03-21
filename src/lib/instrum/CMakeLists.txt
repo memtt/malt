@@ -102,12 +102,18 @@ set(COMMON_OBJS $<TARGET_OBJECTS:htopml-json>
 ############################################################
 add_library(malt-base SHARED ${COMMON_OBJS})
 target_link_libraries(malt-base ${LIB_MALT_DEPS})
+if (USE_LINK_OPTIM)
+	set_property(TARGET malt-base PROPERTY INTERPROCEDURAL_OPTIMIZATION TRUE)
+endif()
 set_target_properties(malt-base PROPERTIES VERSION ${MALT_VERSION}
 										   SOVERSION ${MALT_SO_VERSION})
 
 ############################################################
 add_library(malt SHARED ${COMMON_OBJS} $<TARGET_OBJECTS:malt-injectors>)
 target_link_libraries(malt ${LIB_MALT_DEPS})
+if (USE_LINK_OPTIM)
+	set_property(TARGET malt PROPERTY INTERPROCEDURAL_OPTIMIZATION TRUE)
+endif()
 set_target_properties(malt PROPERTIES VERSION ${MALT_VERSION}
 									  SOVERSION ${MALT_SO_VERSION})
 

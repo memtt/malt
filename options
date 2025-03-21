@@ -53,6 +53,18 @@ cfg_add_enable_option --name='jenkins' \
 						--doc='Enable all checking modes (unit, valgrind, coverage...)' \
 						--only='enable'
 
+#test
+cfg_add_enable_option --name='link-optim' \
+						--on='-DENABLE_LINK_OPTIM=${ON}' \
+						--doc='Disable link optimization (LTO + visibility=hidden).' \
+						--invert-help
+
+#test
+cfg_add_enable_option --name='ito' \
+						--on='-DENABLE_IPO=${ON}' \
+						--doc='Disable LTO specifically.' \
+						--invert-help
+
 ############################################################
 #libunwind
 cfg_add_with_option --name='libunwind' \

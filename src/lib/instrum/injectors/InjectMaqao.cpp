@@ -12,6 +12,7 @@
 #include "state/GlobalState.hpp"
 #include "wrappers/WrapperCAlloc.hpp"
 #include "InjectFuncEnterExit.hpp"
+#include "portability/Visibility.hpp"
 
 /**********************************************************/
 using namespace MALT;
@@ -24,19 +25,19 @@ extern "C" {
 }
 
 /**********************************************************/
-void maqao_enter_function(int fid,const char * funcName)
+DLL_PUBLIC void maqao_enter_function(int fid,const char * funcName)
 {
 	__cyg_profile_func_enter((void*)(size_t)fid,(void*)(size_t)fid);
 }
 
 /**********************************************************/
-void maqao_exit_function(int fid,const char * funcName)
+DLL_PUBLIC void maqao_exit_function(int fid,const char * funcName)
 {
 	__cyg_profile_func_exit((void*)(size_t)fid,(void*)(size_t)fid);
 }
 
 /**********************************************************/
-void maqao_reg_function(int funcId,const char * funcName,const char * file,int line)
+DLL_PUBLIC void maqao_reg_function(int funcId,const char * funcName,const char * file,int line)
 {
 	//check init
 	if (gblState.status == ALLOC_WRAP_NOT_READY)

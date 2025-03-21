@@ -25,7 +25,7 @@ set(MALT_LIB_SRC VmaTracker.cpp
 
 ############################################################
 add_library(malt-core OBJECT ${MALT_LIB_SRC})
-SET_TARGET_PROPERTIES(malt-core PROPERTIES COMPILE_FLAGS -fPIC)
+set_target_properties(malt-core PROPERTIES COMPILE_FLAGS ${MALT_LIB_COMPILER_FLAGS})
 
 ############################################################
 if (ENABLE_TESTS)

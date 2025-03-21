@@ -15,6 +15,7 @@
 #include "InjectPython.hpp"
 #include "state/LazyEnv.hpp"
 #include "state/ReentranceGuard.hpp"
+#include "portability/Visibility.hpp"
 
 /**********************************************************/
 namespace MALT
@@ -183,7 +184,7 @@ void initPythonEnterExitInstrumentation(void)
 }
 
 /**********************************************************/
-void initPythonInstrumentation(void)
+DLL_PUBLIC void initPythonInstrumentation(void)
 {
 	//setup env
 	LazyEnv env;
