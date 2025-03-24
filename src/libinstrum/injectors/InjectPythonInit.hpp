@@ -13,6 +13,7 @@
 #define MALT_INJECT_PYTHON_INIT_HPP
 
 /**********************************************************/
+#include <dlfcn.h>
 #include "../portability/Python.hpp"
 #include "../portability/Visibility.hpp"
 

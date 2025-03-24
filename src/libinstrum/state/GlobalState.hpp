@@ -168,6 +168,7 @@ extern char gblCallocIniBuffer[4096];
 /**********************************************************/
 void globalResetForTests(void);
 ThreadLocalState * maltGetLocalState();
+void globalDump(void);
 
 }
 

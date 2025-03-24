@@ -390,4 +390,10 @@ void globalResetForTests(void)
 	gblOptions = NULL;
 }
 
+/**********************************************************/
+void globalDump(void)
+{
+	MALT::gblState.onExit();
+}
+
 }
