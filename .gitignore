@@ -28,3 +28,6 @@ examples/*.json
 # cache
 /podman-cache
 .venv
+
+# reader
+src/reader
