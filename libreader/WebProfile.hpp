@@ -36,6 +36,9 @@ class WebProfile : public Profile
 		nlohmann::json getTimedValues(void) const;
 		nlohmann::json getSummaryV2(void) const;
 		nlohmann::json getSummary(void) const;
+		bool isSourceFile(const std::string & path) const;
+	private:
+		SourceFileMap sourceFiles;
 };
 
 }

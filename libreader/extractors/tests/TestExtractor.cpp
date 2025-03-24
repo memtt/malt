@@ -233,3 +233,21 @@ TEST(TestExtractorHelpers, getSummary)
 	//check
 	ASSERT_EQ(dataExpected["getSummary"], resJson) << " Diff: " << nlohmann::json::diff(dataExpected["getSummary"], resJson);
 }
+
+/**********************************************************/
+TEST(TestExtractorHelpers, getSourceFileMap)
+{
+	//load
+	JsonFileIn JsonFileIn(CUR_SRC_DIR "/example.json");
+	JsonIn data = JsonFileIn.getRoot();
+	MaltProfile profile;
+	data.get_to(profile);
+
+	//extract
+	Extractor extractor(profile);
+	SourceFileMap res = extractor.getSourceFileMap();
+
+	//check
+	ASSERT_TRUE(res.find("src/libreader/extractors/tests/example.cpp") != res.end());
+	ASSERT_FALSE(res.find("example.cpp") != res.end());
+}

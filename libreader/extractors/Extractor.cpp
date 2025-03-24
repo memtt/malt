@@ -727,4 +727,26 @@ FlattenMaxStackInfo Extractor::getStackInfoOnFunction(size_t id)
 	);
 }
 
+/**********************************************************/
+SourceFileMap Extractor::getSourceFileMap(void)
+{
+	//vars
+	SourceFileMap sourceFiles;
+
+	//loop
+	for (const auto & site : this->profile.sites.instr)
+	{
+		//skip
+		if (site.second.file == -1)
+			continue;
+
+		//get as string
+		std::string source = this->getString(site.second.file);
+		sourceFiles[source] = true;
+	}
+
+	//ok
+	return sourceFiles;
+}
+
 }

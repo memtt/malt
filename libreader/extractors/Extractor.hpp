@@ -155,6 +155,7 @@ typedef std::function<bool(const InstructionInfosStrRef & /*location*/)> Localti
 typedef std::map<std::string, FlatProfileValue> FlatProfileMap;
 typedef std::vector<FlatProfileValue> FlatProfileVector;
 typedef std::vector<std::vector<std::string> > FunctionStackVector;
+typedef std::map<std::string, bool> SourceFileMap;
 
 /**********************************************************/
 class Extractor
@@ -174,6 +175,7 @@ class Extractor
 		FlattenMaxStackInfo getFlattenMaxStackInfo(const LocaltionOnlyMappingFunc & mapping,const LocaltionOnlyFilterFunc & accept, const MALTFormat::ThreadStackMem & maxStack);
 		FlattenMaxStackInfo getMaxStackInfoOnFunction(void);
 		FlattenMaxStackInfo getStackInfoOnFunction(size_t id);
+		SourceFileMap getSourceFileMap(void);
 	private:
 		void mergeStackInfo(FlatProfileMap & into, const MALTFormat::LangAddress & addr,FlatProfileCounter counter,const MALTFormat::StackInfos & infos,const LocaltionMappingFunc & mapping) const;
 		void buildTranslation(void);

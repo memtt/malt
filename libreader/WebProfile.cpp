@@ -147,5 +147,12 @@ nlohmann::json WebProfile::getSummary(void) const
 	return this->extractor->getSummary();
 }
 
+/**********************************************************/
+bool WebProfile::isSourceFile(const std::string & path) const
+{
+	const auto it = this->sourceFiles.find(path);
+	return it != this->sourceFiles.end();
+}
+
 }
 
