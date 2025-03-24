@@ -101,4 +101,6 @@
 		"editor.insertSpaces": false,
 		"editor.tabSize": 4
 	},
+	"git.autoRepositoryDetection": "subFolders",
+	"git.repositoryScanMaxDepth": 2,
 }
