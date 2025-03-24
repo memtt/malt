@@ -12,10 +12,10 @@
 #include "config.h"
 #include <gtest/gtest.h>
 #include <thread>
-#include "instrum/injectors/InjectPythonInit.hpp"
-#include "instrum/state/malt.h"
-#include "reader/Profile.hpp"
-#include "reader/extractors/ExtractorHelpers.hpp"
+#include "libinstrum/injectors/InjectPythonInit.hpp"
+#include "libinstrum/state/malt.h"
+#include "libreader/Profile.hpp"
+#include "libreader/extractors/ExtractorHelpers.hpp"
 #include <fstream>
 
 /**********************************************************/

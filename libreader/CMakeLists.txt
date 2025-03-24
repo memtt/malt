@@ -12,17 +12,22 @@
 ############################################################
 include_directories(.)
 include_directories(..)
+include_directories(../..)
 
 ############################################################
 add_library(malt-profile SHARED
+    # JSON
     json/File.cpp
     json/Parser.cpp
     json/Node.cpp
     json/String.cpp
     json/Json.cpp
     json/JsonIterator.cpp
+    # LOADER
     loader/ProgressBar.cpp
     loader/FileReader.cpp
+    loader/Prepare.cpp
+    #FORMAT
     format/Config.cpp
     format/Run.cpp
     format/Globals.cpp
@@ -35,9 +40,10 @@ add_library(malt-profile SHARED
     format/Timeline.cpp
     format/Threads.cpp
     format/MaltProfile.cpp
-    loader/Prepare.cpp
+    # EXTRACTOR
     extractors/ExtractorHelpers.cpp
     extractors/Extractor.cpp
+    # PROFILE
     Profile.cpp
     WebProfile.cpp
 )
