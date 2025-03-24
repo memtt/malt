@@ -162,8 +162,8 @@ TmpPythonCallSite PythonSymbolTracker::frameToCallSite(PyFrameObject * frame)
 
 	//Fetch the file name and frame name i.e. function name in the current PyCode
 	//FIXME: Currently, this makes many allocations, maybe there's a way to avoid this
-	currentFilenameObject = PyUnicode_AsASCIIString(currentPyCode->co_filename);
-	currentFramenameObject = PyUnicode_AsASCIIString(currentPyCode->co_qualname);
+	currentFilenameObject = PyUnicode_AsEncodedString(currentPyCode->co_filename, "UTF-8", "strict");
+	currentFramenameObject = PyUnicode_AsEncodedString(currentPyCode->co_qualname, "UTF-8", "strict");
 
 	assert(currentFilenameObject != NULL);
 	assert(currentFramenameObject != NULL);

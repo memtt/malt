@@ -51,10 +51,14 @@ namespace MALT
 	#define MALT_FREE(x) MALT::gblInternaAlloc->free(x)
 	/** Wrapper to replace realloc for internal allocations. **/
 	#define MALT_REALLOC(x,y) MALT::gblInternaAlloc->realloc((x),(y))
-#else
+#elif !defined(MALT_USE_STD_MALLOC)
 	#define MALT_MALLOC(x) MALT::internal_je_malloc(x)
 	#define MALT_FREE(x) MALT::internal_je_free(x)
 	#define MALT_REALLOC(x, y) MALT::internal_je_realloc((x), (y))
+#else
+	#define MALT_MALLOC(x) malloc(x)
+	#define MALT_FREE(x) free(x)
+	#define MALT_REALLOC(x, y) realloc((x), (y))
 #endif
 
 /**********************************************************/
