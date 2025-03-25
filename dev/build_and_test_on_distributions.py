@@ -93,6 +93,17 @@ CENTOS_BASIC_CMDS=[
     "dnf update -y",
     "dnf install -y cmake gcc-c++ make clang ccache"
 ]
+ROCKY_BASIC_CMDS=[
+    "echo 'keepcache=true' >> /etc/dnf/dnf.conf",
+    "dnf makecache --refresh",
+    "dnf update -y",
+    "dnf install -y cmake gcc-c++ make clang"
+]
+ROCKY_FULL_CMDS=[
+    "dnf install -y elfutils-libelf-devel nodejs npm",
+    "dnf install -y curl bzip2 xz",
+    BUILD_CUSTOM_JEMALLOC,
+]
 CENTOS_FULL_CMDS=[
     "dnf install -y libunwind-devel elfutils-libelf-devel libunwind-devel nodejs npm",
     "dnf install -y qt5-qtwebkit-devel",
@@ -262,6 +273,36 @@ BUILD_PARAMETERS = {
                 BUILD_CUSTOM_PYTHON
             ]
         },
+        ############ rocky:8.9
+        "malt/rocky-basic:8.9": {
+            "base": "rockylinux:8.9",
+            "cmds": ROCKY_BASIC_CMDS
+        },
+        "malt/rocky-full:8.9": {
+            "base": "malt/rocky-basic:8.9",
+            "cmds": ROCKY_FULL_CMDS
+        },
+        "malt/rocky-indev:8.9": {
+            "base": "malt/rocky-full:8.9",
+            "cmds": [
+                BUILD_CUSTOM_PYTHON
+            ]
+        },
+        ############ rocky:9.3
+        #"malt/rocky-basic:9.3": {
+        #    "base": "rockylinux:9.3",
+        #    "cmds": ROCKY_BASIC_CMDS
+        #},
+        #"malt/rocky-full:9.3": {
+        #    "base": "malt/rocky-basic:9.3",
+        #    "cmds": ROCKY_FULL_CMDS
+        #},
+        #"malt/rocky-indev:9.3": {
+        #    "base": "malt/rocky-full:9.3",
+        #    "cmds": [
+        #        BUILD_CUSTOM_PYTHON
+        #    ]
+        #},
         ############ archlinux:latest
         "malt/archlinux-basic:latest": {
             "base": "docker.io/library/archlinux:latest",
@@ -352,10 +393,16 @@ def test_distribution(dist_name_version: str, compiler:str, variant:str):
     # infos
     cores = get_make_jobs()
 
+    # options
+    dev_options = ""
+    if "-indev" in dist_name_version:
+        pass
+        #dev_options = "--enable-python"
+
     # build & start container to run commands in
     with in_container(dist_name_version, caches=CACHES) as container:
         # to perform tests
-        container.assert_run(f"/mnt/malt-sources/configure --enable-tests {COMMON_CONF_OPTIONS} {variant_options} {compiler_options}")
+        container.assert_run(f"/mnt/malt-sources/configure --enable-tests {COMMON_CONF_OPTIONS} {variant_options} {compiler_options} {dev_options}")
         container.assert_run(f"make -j{cores}")
         container.assert_run(f"ctest --output-on-failure -j{cores}")
 

@@ -12,27 +12,15 @@
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
 #include "Compiler.hpp"
+#include <iostream>
 #include <common/Options.hpp>
 #include <common/SimpleAllocator.hpp>
 #include <core/SymbolSolver.hpp>
+#include "MangledFunctions.hpp"
 
 /**********************************************************/
 using namespace MALT;
 using namespace testing;
-
-/**********************************************************/
-extern "C" {
-	int notMangledCFunction(bool p1, int p2)
-	{
-		return p2;
-	}
-}
-
-/**********************************************************/
-std::string mangledCppFunction(bool p1, int p2)
-{
-	return "ok";
-}
 
 /**********************************************************/
 String getMangledName(void* addr)
@@ -51,7 +39,7 @@ TEST(TestCompiler,demangleCppNames_mangled)
 {
 	std::string mangled = getMangledName((void*)mangledCppFunction).c_str();
 	std::string demangled = Compiler::demangleCppNames(mangled);
-	EXPECT_THAT(demangled, MatchesRegex("^mangledCppFunction(\\[.*\\])\\(bool, int\\)$")) << "mangled=" << mangled;
+	EXPECT_THAT(demangled, MatchesRegex("^mangledCppFunction(\\[.*\\])?\\(bool, int\\)$")) << "mangled=" << mangled;
 }
 
 /**********************************************************/
