@@ -60,10 +60,15 @@ cfg_add_enable_option --name='link-optim' \
 						--invert-help
 
 #test
-cfg_add_enable_option --name='ito' \
+cfg_add_enable_option --name='ipo' \
 						--on='-DENABLE_IPO=${ON}' \
 						--doc='Disable LTO specifically.' \
 						--invert-help
+
+#test
+cfg_add_enable_option --name='python' \
+						--on='-DENABLE_PYTHON=${ON}' \
+						--doc='Enable the python support.'
 
 ############################################################
 #libunwind

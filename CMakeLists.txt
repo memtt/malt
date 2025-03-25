@@ -45,6 +45,7 @@ set(ENABLE_TESTS "no" CACHE BOOL "Enable build of internal tests.")
 set(ENABLE_GCC_COVERAGE "no" CACHE BOOL "Enable coverage compile flags to be enabled.")
 set(ENABLE_LINK_OPTIM "yes" CACHE BOOL "Enable link optimisation (LTO & -fvisibility-hidden). Note: it is not compatible with compilation of unit tests.")
 set(ENABLE_IPO "yes" CACHE BOOL "Allow usage of IPO specfic optimization when ENABLE_LINK_OPTIM is enabled.")
+set(ENABLE_PYTHON "no" CACHE BOOL "Enable compiling with the python support.")
 
 ############################################################
 if (ENABLE_TESTS OR CMAKE_BUILD_TYPE="Debug")
@@ -91,12 +92,17 @@ endif()
 
 ############################################################
 # check for python support
-find_package(Python3 QUIET COMPONENTS Interpreter Development QUIET)
-# we currently support only Python
-if (Python3_FOUND AND NOT Python3_INTERPRETER_ID STREQUAL "Python")
-	message(FATAL_ERROR "Invalid python interpreter, got '${Python3_INTERPRETER_ID}', support only 'Python' !")
+if (ENABLE_PYTHON)
+	find_package(Python3 QUIET COMPONENTS Interpreter Development QUIET)
+	# we currently support only Python
+	if (Python3_FOUND AND NOT Python3_INTERPRETER_ID STREQUAL "Python")
+		message(FATAL_ERROR "Invalid python interpreter, got '${Python3_INTERPRETER_ID}', support only 'Python' !")
+	endif()
+	find_package(Python3Instrum QUIET)
+else()
+	set(Python3_FOUND OFF)
+	set(PYTHON3_INSTRUM_FOUND OFF)
 endif()
-find_package(Python3Instrum QUIET)
 
 ############################################################
 if (ENABLE_LINK_OPTIM)
