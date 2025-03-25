@@ -45,10 +45,12 @@ void from_json(const JsonIn & json, ThreadStackMem & value)
 {
 	//stats
 	const JsonIn & stackMem = json;
+	assert(jsContains(stackMem, "size"));
 	assert(jsContains(stackMem, "stack"));
 	assert(jsContains(stackMem, "mem"));
 	assert(jsContains(stackMem, "total"));
 	assert(jsContains(stackMem, "timeprofiler"));
+	stackMem.at("size").get_to(value.size);
 	stackMem.at("stack").get_to(value.stack);
 	stackMem.at("mem").get_to(value.mem);
 	stackMem.at("total").get_to(value.total);
@@ -71,6 +73,8 @@ void from_json(const JsonIn & json, ThreadStackMem & value)
 	timeprofiler.at("peakMemory").get_to(value.timeprofiler.peakMemory);
 	timeprofiler.at("peakIndex").get_to(value.timeprofiler.peakIndex);
 	timeprofiler.at("linearIndex").get_to(value.timeprofiler.linearIndex);
+	if (jsContains(timeprofiler, "location"))
+		timeprofiler.at("location").get_to(value.timeprofiler.location);
 }
 
 /**********************************************************/
@@ -91,6 +95,7 @@ void to_json(nlohmann::json & json, const ThreadStackMem & value)
 		{"peakMemory", value.timeprofiler.peakMemory},
 		{"peakIndex", value.timeprofiler.peakIndex},
 		{"linearIndex", value.timeprofiler.linearIndex},
+		{"location", value.timeprofiler.location},
 	};
 }
 

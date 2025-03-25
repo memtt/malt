@@ -86,7 +86,11 @@ void to_json(nlohmann::json & json, const Config & config){
 			"dump", {
 				{"onSignal", config.dump.onSignal},
 				{"afterSeconds", config.dump.afterSeconds},
-				{"onSysFullAt", config.dump.onSysFullAt}
+				{"onSysFullAt", config.dump.onSysFullAt},
+				{"onAppUsingRss", config.dump.onAppUsingRss},
+				{"onAppUsingVirt", config.dump.onAppUsingVirt},
+				{"onAppUsingReq", config.dump.onAppUsingReq},
+				{"onThreadStackUsing", config.dump.onThreadStackUsing},
 			}
 		},
 	};
@@ -193,6 +197,10 @@ void from_json(const JsonIn & json, Config & config)
 	jsonDump.at("onSignal").get_to(config.dump.onSignal);
 	jsonDump.at("afterSeconds").get_to(config.dump.afterSeconds);
 	jsonDump.at("onSysFullAt").get_to(config.dump.onSysFullAt);
+	jsonDump.at("onAppUsingRss").get_to(config.dump.onAppUsingRss);
+	jsonDump.at("onAppUsingVirt").get_to(config.dump.onAppUsingVirt);
+	jsonDump.at("onAppUsingReq").get_to(config.dump.onAppUsingReq);
+	jsonDump.at("onThreadStackUsing").get_to(config.dump.onThreadStackUsing);
 }
 
 }

@@ -75,6 +75,10 @@ struct Config
 		std::string onSignal;
 		size_t afterSeconds;
 		std::string onSysFullAt;
+		std::string onAppUsingRss;
+		std::string onAppUsingVirt;
+		std::string onAppUsingReq;
+		std::string onThreadStackUsing;
 	} dump;
 };
 

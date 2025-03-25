@@ -61,7 +61,11 @@
     "dump": {
       "onSignal": "",
       "afterSeconds": 0,
-      "onSysFullAt": ""
+      "onSysFullAt": "",
+      "onAppUsingRss": "",
+      "onAppUsingVirt": "",
+      "onAppUsingReq": "",
+      "onThreadStackUsing": ""
     }
   },
   "stacks": {

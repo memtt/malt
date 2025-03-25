@@ -41,6 +41,7 @@ struct ThreadStackMem
 		std::vector<size_t> max;
 		std::vector<size_t> index;
 		std::vector<CyclesTime> timestamp;
+		std::vector<LangAddress> location;
 		CyclesTime peakTimesteamp;//TODO fix the name
 		size_t peakMemory;
 		size_t peakIndex;
