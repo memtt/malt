@@ -61,7 +61,7 @@
     "dump": {
       "onSignal": "",
       "afterSeconds": 0,
-      "onSysFullAt": -1
+      "onSysFullAt": ""
     }
   },
   "stacks": {

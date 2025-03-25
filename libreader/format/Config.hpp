@@ -74,7 +74,7 @@ struct Config
 	struct {
 		std::string onSignal;
 		size_t afterSeconds;
-		int onSysFullAt;
+		std::string onSysFullAt;
 	} dump;
 };
 
