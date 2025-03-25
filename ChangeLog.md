@@ -1,5 +1,24 @@
 Change log
 ==========
+ 
+DEV - XX/XX/XXXX 
+----------------
+
+ - Add python profiling support.
+ - Check portability on Ubuntu (22.04, 22.10, 24.04, 25.04), Debian (10, 11, 12), Fedora (40, 41), Arch, Gentoo
+ - Add more unit tests.
+ - Refactor the injection and init of MALT in a proper way with guards.
+ - Reshape the wrapper / inject / state code and files in a more ordered way.
+ - Rewrite the symbol solver infra code in a proper way.
+ - Fix an issue with TLS at init which induce an infinite loop in some conditions.
+ - Add dumping options (on-sys-full-at, on-app-using-rss, on-app-using-virt, on-app-using-req, on-thread-stack-using).
+ - Upgrade cmake dependency to 3.5 to avoid warning a recent systems.
+ - Fixes in the webview, size in base 2 instead of 10
+ - Fix TLS size not shown correctly in summary.
+ - Rename license file to be more standard.
+ - Fix some issues in the JSON file generated.
+ - Introduce usage of JeMalloc as the internal allocator in place of the custom one (required for large python apps).
+ - Use LTO & fvisibility=hidden in release mode when tests are disabled (default).
 
 1.2.4 - 03/10/2024
 ------------------
