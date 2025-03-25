@@ -72,7 +72,7 @@ const char cstJson[] = "\
 	\"dump\":{\n\
 		\"onSignal\":\"\",\n\
 		\"afterSeconds\":0,\n\
-		\"onSysFullAt\":-1\n\
+		\"onSysFullAt\":\"\"\n\
 	}\n\
 }";
 

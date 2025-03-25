@@ -23,7 +23,7 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/malt-passwd.sh.in ${CMAKE_CURRENT_BIN
 ############################################################
 # build MALT python interpreter
 if (Python3_FOUND AND PYTHON3_INSTRUM_FOUND)
-	include_directories(${Python3_INCLUDE_DIRS} ${CMAKE_BINARY_DIR}/src/lib/instrum)
+	include_directories(${Python3_INCLUDE_DIRS} ${CMAKE_BINARY_DIR}/src/libinstrum)
 	add_executable(malt-python3 malt-python3.cpp)
 	target_link_libraries(malt-python3 ${PYTHON3_LIBRARIES})
 	target_link_libraries(malt-python3 malt)

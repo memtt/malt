@@ -95,7 +95,7 @@ Options::Options(void)
 	//dump
 	this->dumpOnSignal            = MALT_NO_DUMP_SIGNAL;
 	this->dumpAfterSeconds        = 0;
-	this->dumpOnSysFullAt         = -1;
+	this->dumpOnSysFullAt         = "";
 }
 
 /**********************************************************/
@@ -288,7 +288,7 @@ void Options::loadFromIniDic ( dictionary* iniDic )
 	//dump
 	this->dumpOnSignal        = iniparser_getstring(iniDic,"dump:on-signal",(char*)this->dumpOnSignal.c_str());
 	this->dumpAfterSeconds    = iniparser_getint(iniDic,"dump:after-seconds",this->dumpAfterSeconds);
-	this->dumpOnSysFullAt     = iniparser_getint(iniDic,"dump:on-sys-full-at",this->dumpOnSysFullAt);
+	this->dumpOnSysFullAt     = iniparser_getstring(iniDic,"dump:on-sys-full-at",(char*)this->dumpOnSysFullAt.c_str());
 }
 
 /**********************************************************/
@@ -450,7 +450,7 @@ void Options::dumpConfig(const char* fname)
 	//dump
 	IniParserHelper::setEntry(dic,"dump:on-signal",this->dumpOnSignal.c_str());
 	IniParserHelper::setEntry(dic,"dump:after-seconds",this->dumpAfterSeconds);
-	IniParserHelper::setEntry(dic,"dump:on-sys-full-at",this->dumpOnSysFullAt);
+	IniParserHelper::setEntry(dic,"dump:on-sys-full-at",this->dumpOnSysFullAt.c_str());
 	
 	//write
 	FILE * fp = fopen(fname,"w");

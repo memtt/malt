@@ -125,7 +125,7 @@ The config file use INI format with sections and variables as in this example :
 	[dump]
 	on-signal                      = 
 	after-seconds                  = 0
-  on-sys-full-at                 =-1
+  on-sys-full-at                 =
 
 The `time` section support :
 
@@ -240,11 +240,12 @@ The `dump` section permit to dump the profile whenever you want:
    Notice profiling will currently stop from this point app will continue without profiling.
    To be fixed latter.
  * `on-sys-full-at`:
-   Will dump if the system memory if globaly filled at x%. Use -1 to disable.
+   Will dump if the system memory if globaly filled at x%. Use empty string to disable.
    Remark it consider free the free memory and the cached memory. A good value in practice is
    more 70% / 80% than going to 95% due to necessity to let room for the cached memory and because
    it will starts to swap before that. Consider also that MALT itself adds up memory on top of your
-   one (considered in the % here.).
+   one (considered in the % here.). Values can be in %, K, M, G by ending with the corresponding
+   character.
 
 ## ENVIRONMENT
 

@@ -76,7 +76,11 @@ AllocStackProfiler::AllocStackProfiler(const Options & options,StackMode mode,bo
 	,memoryBandwidth(1024,true)
 	,sizeOverTime(64,64,false,true)
 	,lifetimeOverSize(64,64,true,true)
+	,trigger(options)
 {
+	//vars
+	bool doDump = false;
+
 	this->mode = mode;
 	this->threadSafe = threadSafe;
 	this->options = options;
@@ -371,18 +375,8 @@ size_t AllocStackProfiler::onFreeEvent(void* ptr, MALT::Stack* userStack, MMCall
 				systemTimeline.push(t,curSystemTimeline,(void*)callStackNode->stack);
 
 				//trigger dump
-				if (this->options.dumpOnSysFullAt) {
-					size_t sysFullAt = (100*((sysMem.totalMemory - sysMem.freeMemory - sysMem.cached))) / sysMem.totalMemory;
-					if (sysFullAt >= this->options.dumpOnSysFullAt) {
-						fprintf(stderr, "MALT: System full at %zu%% (> sys-full-at=%d%%) [%zu / %zu]\n",
-							sysFullAt,
-							this->options.dumpOnSysFullAt,
-							(sysMem.totalMemory - sysMem.freeMemory - sysMem.cached),
-							sysMem.totalMemory
-						);
-						doDump = true;
-					}
-				}
+				if (this->trigger.onSysUpdate(sysMem))
+					doDump = true;
 			}
 		}
 		

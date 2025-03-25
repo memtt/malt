@@ -119,7 +119,7 @@ struct Options
 	//dump
 	std::string dumpOnSignal;
 	int dumpAfterSeconds;
-	int dumpOnSysFullAt;
+	std::string dumpOnSysFullAt;
 };
 
 /**********************************************************/

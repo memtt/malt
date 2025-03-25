@@ -39,6 +39,7 @@
 #include <core/AllocTraceFile.hpp>
 #include <core/VmaTracker.hpp>
 #include <core/PythonSymbolTracker.hpp>
+#include <core/Trigger.hpp>
 #include <stacks/MultiLangStackMerger.hpp>
 //from v2
 #include <stack-tree/from-v2/RLockFreeTree.hpp>
@@ -205,6 +206,7 @@ class AllocStackProfiler
 		std::string realMallocLib;
 		bool skipThreadRegister{false};
 		std::atomic<size_t> maltJeMallocMem{0};
+		Trigger trigger;
 };
 
 }

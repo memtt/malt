@@ -10,7 +10,8 @@
 ############################################################
 
 ############################################################
-set(MALT_LIB_SRC VmaTracker.cpp
+set(MALT_LIB_SRC Trigger.cpp
+                 VmaTracker.cpp
                  SymbolSolver.cpp
                  CallStackInfo.cpp
                  ThreadTracker.cpp
