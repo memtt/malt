@@ -91,6 +91,7 @@ void to_json(nlohmann::json & json, const Config & config){
 				{"onAppUsingVirt", config.dump.onAppUsingVirt},
 				{"onAppUsingReq", config.dump.onAppUsingReq},
 				{"onThreadStackUsing", config.dump.onThreadStackUsing},
+				{"watchDog", config.dump.watchDog},
 			}
 		},
 	};
@@ -201,6 +202,7 @@ void from_json(const JsonIn & json, Config & config)
 	jsonDump.at("onAppUsingVirt").get_to(config.dump.onAppUsingVirt);
 	jsonDump.at("onAppUsingReq").get_to(config.dump.onAppUsingReq);
 	jsonDump.at("onThreadStackUsing").get_to(config.dump.onThreadStackUsing);
+	jsonDump.at("watchDog").get_to(config.dump.watchDog);
 }
 
 }

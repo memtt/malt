@@ -65,7 +65,8 @@
       "onAppUsingRss": "",
       "onAppUsingVirt": "",
       "onAppUsingReq": "",
-      "onThreadStackUsing": ""
+      "onThreadStackUsing": "",
+      "watchDog": false
     }
   },
   "stacks": {
