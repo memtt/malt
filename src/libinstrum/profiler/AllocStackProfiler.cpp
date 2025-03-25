@@ -245,8 +245,8 @@ void AllocStackProfiler::onAllocEvent(void* ptr, size_t size,Stack* userStack,MM
 				if (memoryTimeline.isNewPoint(t))
 				{
 					OSProcMemUsage mem = OS::getProcMemoryUsage();
-					curMemoryTimeline.virtualMem = mem.virtualMemory - gblInternaAlloc->getTotalMemory();
-					curMemoryTimeline.physicalMem = mem.physicalMemory - gblInternaAlloc->getTotalMemory();
+					curMemoryTimeline.virtualMem = mem.virtualMemory - gblInternaAlloc->getTotalMemory() - maltJeMallocMem;
+					curMemoryTimeline.physicalMem = mem.physicalMemory - gblInternaAlloc->getTotalMemory() - maltJeMallocMem;
 					doDump |= trigger.onProcMemUpdate(mem);
 				}
 				sizeOverTime.push(t-trefTicks,size);
@@ -296,6 +296,32 @@ void AllocStackProfiler::onAllocEvent(void* ptr, size_t size,Stack* userStack,MM
 	//trigger dump
 	if (doDump)
 		maltDumpOnEvent();
+}
+
+/**********************************************************/
+void AllocStackProfiler::onUpdateMem(const OSProcMemUsage & procMem, const OSMemUsage & sysMem)
+{
+	MALT_OPTIONAL_CRITICAL(lock,threadSafe)
+		ticks t = Clock::getticks();
+		if (systemTimeline.isNewPoint(t))
+		{
+			curSystemTimeline.cachedMemory = sysMem.cached;
+			curSystemTimeline.freeMemory = sysMem.freeMemory;
+			curSystemTimeline.swapMemory = sysMem.swap;
+		}
+		if (memoryTimeline.isNewPoint(t))
+		{
+			curMemoryTimeline.virtualMem = procMem.virtualMemory - gblInternaAlloc->getTotalMemory() - maltJeMallocMem;
+			curMemoryTimeline.physicalMem = procMem.physicalMemory - gblInternaAlloc->getTotalMemory() - maltJeMallocMem;
+		}
+		//update intern mem usage
+		if (options.timeProfileEnabled)
+		{
+			curMemoryTimeline.internalMem = gblInternaAlloc->getInuseMemory() + this->maltJeMallocMem;
+			memoryTimeline.push(t,curMemoryTimeline,nullptr);
+			systemTimeline.push(t,curSystemTimeline,nullptr);
+		}
+	MALT_END_CRITICAL
 }
 
 /**********************************************************/
@@ -364,8 +390,8 @@ size_t AllocStackProfiler::onFreeEvent(void* ptr, MALT::Stack* userStack, MMCall
 			if (memoryTimeline.isNewPoint(t))
 			{
 				OSProcMemUsage mem = OS::getProcMemoryUsage();
-				curMemoryTimeline.virtualMem = mem.virtualMemory - gblInternaAlloc->getTotalMemory();
-				curMemoryTimeline.physicalMem = mem.physicalMemory - gblInternaAlloc->getTotalMemory();
+				curMemoryTimeline.virtualMem = mem.virtualMemory - gblInternaAlloc->getTotalMemory() - maltJeMallocMem;
+				curMemoryTimeline.physicalMem = mem.physicalMemory - gblInternaAlloc->getTotalMemory() - maltJeMallocMem;
 			}
 			curMemoryTimeline.segments--;
 			curMemoryTimeline.internalMem = gblInternaAlloc->getInuseMemory();

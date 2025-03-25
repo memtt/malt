@@ -12,8 +12,12 @@
 /**********************************************************/
 #include <cstdio>
 #include <thread>
+#include <signal.h>
+#include <sys/types.h>
+#include <dirent.h>
 #include "common/Debug.hpp"
 #include "Trigger.hpp"
+#include "state/GlobalState.hpp"
 
 /**********************************************************/
 using namespace std;
@@ -125,24 +129,48 @@ void Trigger::runSpyingThread(void)
 {
 	this->spyingThreadKeepRunning = true;
 	this->spyingThread = std::thread([this](){
+		fprintf(stderr, "MALT: Start active watch dog...\n");
 		while(this->spyingThreadKeepRunning) {
 			//get sys mem
 			OSMemUsage sysMem = OS::getMemoryUsage();
-			if (this->onSysUpdate(sysMem)) {
-				fprintf(stderr, "MALT: Watch dog triggering dump...\n");
-				maltDumpOnEvent();
-				return;
-			}
 			OSProcMemUsage procMem = OS::getProcMemoryUsage();
-			fprintf(stderr, "%zu < %zu %s\n", procMem.virtualMemory / 1024 / 1024, this->appVirtLimit / 1024 / 1024, this->options.dumpOnAppUsingVirt.c_str());
-			if (this->onProcMemUpdate(procMem)) {
+			if (gblState.profiler != nullptr)
+				gblState.profiler->onUpdateMem(procMem, sysMem);
+			if (this->onSysUpdate(sysMem)) {
+				//pauseAllButMe();
 				fprintf(stderr, "MALT: Watch dog triggering dump...\n");
 				maltDumpOnEvent();
 				return;
 			}
-			usleep(1);
+			if (this->onProcMemUpdate(procMem)) {
+				//pauseAllButMe();
+				fprintf(stderr, "MALT: Watch dog triggering dump...\n");
+				maltDumpOnEvent();
+				return;
+			}
 		}
 	});
+}
+
+/**********************************************************/
+void Trigger::pauseAllButMe(void)
+{
+	//open dir
+	fprintf(stderr, "MALT: Pause all threads except watch dog...\n");
+	const char directory[] = "/proc/self/task";
+	DIR* pdir = opendir (directory); 
+	dirent *pent = NULL;
+	pid_t cur = getpid();
+
+	while (pent = readdir (pdir)) 
+	{
+		if (pent->d_name[0] == '.')
+			continue;
+		pid_t pid = atol(pent->d_name);
+		fprintf(stderr, "MALT: Pause PID=%d\n", pid);
+		if (pid != cur)
+			kill(pid, SIGSTOP);
+	}
 }
 
 /**********************************************************/

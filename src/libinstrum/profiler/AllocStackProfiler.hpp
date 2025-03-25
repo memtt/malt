@@ -149,6 +149,7 @@ class AllocStackProfiler
 		PythonSymbolTracker & getPythonSymbolTracker(void);
 		MultiLangStackMerger & getMultiLangStackMerger(void) {return this->multiLangStackMerger;};
 		void registerMaltJeMallocMem(ssize_t value);
+		void onUpdateMem(const OSProcMemUsage & procMem, const OSMemUsage & sysMem);
 	public:
 		friend void convertToJson(htopml::JsonState& json, const AllocStackProfiler& value);
 	private:

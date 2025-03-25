@@ -34,6 +34,7 @@ class Trigger
 	private:
 		size_t calcLimit(const std::string & value, size_t ref, const std::string & paramName = "Unknown");
 		void runSpyingThread(void);
+		void pauseAllButMe(void);
 	private:
 		const Options & options;
 		size_t sysMemLimit{0};
