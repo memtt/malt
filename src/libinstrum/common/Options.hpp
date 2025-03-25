@@ -124,6 +124,7 @@ struct Options
 	std::string dumpOnAppUsingVirt;
 	std::string dumpOnAppUsingReq;
 	std::string dumpOnThreadStackUsing;
+	bool dumpWatchDog;
 };
 
 /**********************************************************/

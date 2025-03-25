@@ -79,7 +79,7 @@ AllocStackProfiler::AllocStackProfiler(const Options & options,StackMode mode,bo
 	,memoryBandwidth(1024,true)
 	,sizeOverTime(64,64,false,true)
 	,lifetimeOverSize(64,64,true,true)
-	,trigger(options)
+	,trigger(options, true)
 {
 	//vars
 	bool doDump = false;

@@ -14,6 +14,7 @@
 
 /**********************************************************/
 #include <cstdlib>
+#include <thread>
 #include "common/Options.hpp"
 #include "portability/OS.hpp"
 
@@ -24,7 +25,7 @@ namespace MALT
 class Trigger
 {
 	public:
-		Trigger(const Options & options);
+		Trigger(const Options & options, bool canHostSpyingThread = false);
 		~Trigger(void);
 		bool onSysUpdate(const OSMemUsage & memUsage) const;
 		bool onProcMemUpdate(const OSProcMemUsage & mem) const;
@@ -32,6 +33,7 @@ class Trigger
 		inline bool onThreadStackUpdate(size_t threadStackSize) const;
 	private:
 		size_t calcLimit(const std::string & value, size_t ref, const std::string & paramName = "Unknown");
+		void runSpyingThread(void);
 	private:
 		const Options & options;
 		size_t sysMemLimit{0};
@@ -40,6 +42,8 @@ class Trigger
 		size_t appReqLimit{0};
 		size_t totalMemory{0};
 		size_t threadStackLimit{0};
+		std::thread spyingThread;
+		volatile bool spyingThreadKeepRunning{false};
 };
 
 /**********************************************************/

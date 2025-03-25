@@ -11,6 +11,7 @@
 
 /**********************************************************/
 #include <cstdio>
+#include <thread>
 #include "common/Debug.hpp"
 #include "Trigger.hpp"
 
@@ -22,7 +23,7 @@ namespace MALT
 {
 
 /**********************************************************/
-Trigger::Trigger(const Options & options)
+Trigger::Trigger(const Options & options, bool canHostSpyingThread)
 	:options(options)
 {
 	//get sys mem
@@ -35,12 +36,19 @@ Trigger::Trigger(const Options & options)
 	this->appVirtLimit = this->calcLimit(options.dumpOnAppUsingVirt, sysMem.totalMemory, "dump:on-app-using-virt");
 	this->appReqLimit = this->calcLimit(options.dumpOnAppUsingReq, sysMem.totalMemory, "dump:on-app-using-req");
 	this->threadStackLimit = this->calcLimit(options.dumpOnThreadStackUsing, sysMem.totalMemory, "dump:on-thread-stack-using");
+
+	//start spying thread
+	if (options.dumpWatchDog && canHostSpyingThread)
+		this->runSpyingThread();
 }
 
 /**********************************************************/
 Trigger::~Trigger(void)
 {
-
+	if (this->spyingThreadKeepRunning) {
+		this->spyingThreadKeepRunning = false;
+		this->spyingThread.join();
+	}
 }
 
 /**********************************************************/
@@ -79,9 +87,9 @@ bool Trigger::onProcMemUpdate(const OSProcMemUsage & mem) const
 	//check
 	if (this->appVirtLimit > 0 && mem.virtualMemory > this->appVirtLimit) {
 		fprintf(stderr, "MALT: Virtual Memory overpass limit : %zu bytes (> on-app-using-virt=%s) [%zu / %zu]\n",
-				mem.physicalMemory,
+				mem.virtualMemory,
 				this->options.dumpOnAppUsingVirt.c_str(),
-				mem.physicalMemory,
+				mem.virtualMemory,
 				totalMemory
 			);
 		return true;
@@ -110,6 +118,34 @@ bool Trigger::onRequestUpdate(size_t reqMem) const
 }
 
 /**********************************************************/
+void maltDumpOnEvent();
+
+/**********************************************************/
+void Trigger::runSpyingThread(void)
+{
+	this->spyingThreadKeepRunning = true;
+	this->spyingThread = std::thread([this](){
+		while(this->spyingThreadKeepRunning) {
+			//get sys mem
+			OSMemUsage sysMem = OS::getMemoryUsage();
+			if (this->onSysUpdate(sysMem)) {
+				fprintf(stderr, "MALT: Watch dog triggering dump...\n");
+				maltDumpOnEvent();
+				return;
+			}
+			OSProcMemUsage procMem = OS::getProcMemoryUsage();
+			fprintf(stderr, "%zu < %zu %s\n", procMem.virtualMemory / 1024 / 1024, this->appVirtLimit / 1024 / 1024, this->options.dumpOnAppUsingVirt.c_str());
+			if (this->onProcMemUpdate(procMem)) {
+				fprintf(stderr, "MALT: Watch dog triggering dump...\n");
+				maltDumpOnEvent();
+				return;
+			}
+			usleep(1);
+		}
+	});
+}
+
+/**********************************************************/
 size_t Trigger::calcLimit(const std::string & value, size_t ref, const std::string & paramName)
 {
 	//trivial
@@ -123,7 +159,7 @@ size_t Trigger::calcLimit(const std::string & value, size_t ref, const std::stri
 
 	//parse
 	if (last == 'G' && sscanf(value.c_str(), "%fG", &valueFloat) == 1) {
-			return valueFloat * 1024.0 * 1024*.0 * 1024.0;
+			return (valueFloat * 1024.0 * 1024.0 * 1024.0);
 	} else if (last == 'M' && sscanf(value.c_str(), "%fM", &valueFloat) == 1) {
 			return valueFloat * 1024.0 * 1024.0;
 	} else if (last == 'K' && sscanf(value.c_str(), "%fK", &valueFloat) == 1) {

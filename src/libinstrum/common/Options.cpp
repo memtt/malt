@@ -100,6 +100,7 @@ Options::Options(void)
 	this->dumpOnAppUsingVirt      = "";
 	this->dumpOnAppUsingReq       = "";
 	this->dumpOnThreadStackUsing  = "";
+	this->dumpWatchDog            = false;
 }
 
 /**********************************************************/
@@ -158,6 +159,7 @@ bool Options::operator==(const Options& value) const
 	if (this->dumpOnAppUsingVirt != value.dumpOnAppUsingVirt) return false;
 	if (this->dumpOnAppUsingReq != value.dumpOnAppUsingReq) return false;
 	if (this->dumpOnThreadStackUsing != value.dumpOnThreadStackUsing) return false;
+	if (this->dumpWatchDog != value.dumpWatchDog) return false;
 	
 	return true;
 }
@@ -301,6 +303,7 @@ void Options::loadFromIniDic ( dictionary* iniDic )
 	this->dumpOnAppUsingVirt  = iniparser_getstring(iniDic,"dump:on-app-using-virt",(char*)this->dumpOnAppUsingVirt.c_str());
 	this->dumpOnAppUsingReq   = iniparser_getstring(iniDic,"dump:on-app-using-req",(char*)this->dumpOnAppUsingReq.c_str());
 	this->dumpOnThreadStackUsing = iniparser_getstring(iniDic,"dump:on-thread-stack-using",(char*)this->dumpOnThreadStackUsing.c_str());
+	this->dumpWatchDog        = iniparser_getboolean(iniDic,"dump:watch-dog",this->dumpWatchDog);
 }
 
 /**********************************************************/
@@ -398,6 +401,7 @@ void convertToJson(htopml::JsonState & json,const Options & value)
 			json.printField("onAppUsingVirt", value.dumpOnAppUsingVirt);
 			json.printField("onAppUsingReq", value.dumpOnAppUsingReq);
 			json.printField("onThreadStackUsing", value.dumpOnThreadStackUsing);
+			json.printField("watchDog", value.dumpWatchDog);
 		json.closeFieldStruct("dump");
 	json.closeStruct();
 }
@@ -471,7 +475,8 @@ void Options::dumpConfig(const char* fname)
 	IniParserHelper::setEntry(dic,"dump:on-app-using-virt",this->dumpOnAppUsingVirt.c_str());
 	IniParserHelper::setEntry(dic,"dump:on-app-using-req",this->dumpOnAppUsingReq.c_str());
 	IniParserHelper::setEntry(dic,"dump:on-thread-stack-using",this->dumpOnThreadStackUsing.c_str());
-	
+	IniParserHelper::setEntry(dic,"dump:watch-dog",this->dumpWatchDog);
+
 	//write
 	FILE * fp = fopen(fname,"w");
 	assumeArg(fp != NULL,"Failed to write dump of config file into %1 : %2 !").arg(fname).argStrErrno().end();
