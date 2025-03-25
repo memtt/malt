@@ -71,6 +71,9 @@ const char * TimeTrackAllocBandwidth::selfDescribeFields[4] = {
 };
 
 /**********************************************************/
+void maltDumpOnEvent(void);
+
+/**********************************************************/
 AllocStackProfiler::AllocStackProfiler(const Options & options,StackMode mode,bool threadSafe)
 	:largestStack(STACK_ORDER_DESC)
 	,memoryBandwidth(1024,true)
@@ -218,6 +221,7 @@ size_t AllocStackProfiler::onRealloc(void* oldPtr, void* ptr, size_t newSize,Sta
 void AllocStackProfiler::onAllocEvent(void* ptr, size_t size,Stack* userStack,MMCallStackNode * callStackNode,bool doLock)
 {
 	//locals
+	bool doDump = false;
 	ticks t = Clock::getticks();
 	MMCallStackNode localCallStackNode;
 	if (callStackNode == NULL)
@@ -237,11 +241,13 @@ void AllocStackProfiler::onAllocEvent(void* ptr, size_t size,Stack* userStack,MM
 			CODE_TIMING("timeProfileAllocStart",
 				curMemoryTimeline.segments++;
 				curMemoryTimeline.requestedMem+=size;
+				doDump |= trigger.onRequestUpdate(curMemoryTimeline.requestedMem);
 				if (memoryTimeline.isNewPoint(t))
 				{
 					OSProcMemUsage mem = OS::getProcMemoryUsage();
 					curMemoryTimeline.virtualMem = mem.virtualMemory - gblInternaAlloc->getTotalMemory();
 					curMemoryTimeline.physicalMem = mem.physicalMemory - gblInternaAlloc->getTotalMemory();
+					doDump |= trigger.onProcMemUpdate(mem);
 				}
 				sizeOverTime.push(t-trefTicks,size);
 			);
@@ -286,10 +292,11 @@ void AllocStackProfiler::onAllocEvent(void* ptr, size_t size,Stack* userStack,MM
 		allocBw.allocMem = size;
 		memoryBandwidth.push(t,allocBw,(void*)callStackNode->stack);
 	MALT_END_CRITICAL
-}
 
-/**********************************************************/
-void maltDumpOnEvent(void);
+	//trigger dump
+	if (doDump)
+		maltDumpOnEvent();
+}
 
 /**********************************************************/
 size_t AllocStackProfiler::onFreeEvent(void* ptr, MALT::Stack* userStack, MMCallStackNode* callStackNode, bool doLock)

@@ -257,7 +257,11 @@ enabled=true          ; Enable or disable MALT when threads start
 on-signal=             ; Dump on signal. Can be comma separated list from SIGINT, SIGUSR1,
                        ; SIGUSR2... help, avail (limited to only one dump)
 after-seconds=0        ; Dump after X seconds (limited to only one time)
-on-sys-full-at=-1      ; Dump when system memory become full at x%, xG, xM, xK, x  (empty to disable).
+on-sys-full-at=        ; Dump when system memory become full at x%, xG, xM, xK, x  (empty to disable).
+on-app-using-rss=      ; Dump when RSS of the app reach the given limit in %, G, M, K (empty to disable).
+on-app-using-virt=     ; Dump when Virtual Memory of the app reach limit in %, G, M, K (empty to disable).
+on-app-using-req=      ; Dump when Requested Memory of the app reach limit in %, G, M, K (empty to disable).
+on-thread-stack-using= ; Dump when one stack reach limit in %, G, M, K (empty to disable).
 ```
 
 Option values can be overridden on the fly with command :

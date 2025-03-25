@@ -120,6 +120,10 @@ struct Options
 	std::string dumpOnSignal;
 	int dumpAfterSeconds;
 	std::string dumpOnSysFullAt;
+	std::string dumpOnAppUsingRss;
+	std::string dumpOnAppUsingVirt;
+	std::string dumpOnAppUsingReq;
+	std::string dumpOnThreadStackUsing;
 };
 
 /**********************************************************/

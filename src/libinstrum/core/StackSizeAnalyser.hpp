@@ -15,6 +15,7 @@
 /**********************************************************/
 //standard
 //locals
+#include "core/Trigger.hpp"
 #include <stacks/Stack.hpp>
 #include <valprof/ProfiledStateValue.hpp>
 #include "StackSizeTracker.hpp"
@@ -50,7 +51,12 @@ class StackSizeAnalyser
 		Stack largestStack;
 		/** Track stack size over time. **/
 		ProfiledStateValue timeProfile;
+		/** Trigger  */
+		Trigger trigger;
 };
+
+/**********************************************************/
+void maltDumpOnEvent(void);
 
 /**********************************************************/
 /**
@@ -81,6 +87,10 @@ inline void StackSizeAnalyser::onEnterFunc(LangAddress funcAddr, size_t stackPoi
 		largestStackMem = currentStackMem;
 		largestStack = currentStack;
 	}
+
+	//need dump
+	if (this->trigger.onThreadStackUpdate(cur))
+		maltDumpOnEvent();
 }
 
 /**********************************************************/

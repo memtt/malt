@@ -125,7 +125,11 @@ The config file use INI format with sections and variables as in this example :
 	[dump]
 	on-signal                      = 
 	after-seconds                  = 0
-  on-sys-full-at                 =
+	on-sys-full-at                 =
+	on-app-using-rss               =
+	on-app-using-virt              =
+	on-app-using-req               =
+	on-thread-stack-using          =
 
 The `time` section support :
 
@@ -246,6 +250,18 @@ The `dump` section permit to dump the profile whenever you want:
    it will starts to swap before that. Consider also that MALT itself adds up memory on top of your
    one (considered in the % here.). Values can be in %, K, M, G by ending with the corresponding
    character.
+ * `on-app-using-rss`:
+   Will dump if the application reach the given RSS limit. The value is given in % of the global memory
+   available or in K, M, G. Empty to disable (default).
+ * `on-app-using-virt`:
+   Will dump if the application reach the given virtual memory limit. The value is given in % of the global memory
+   available or in K, M, G. Empty to disable (default).
+ * `on-app-using-req`:
+   Will dump if the application reach the given requested memory limit. The value is given in % of the global memory
+   available or in K, M, G. Empty to disable (default).
+ * `on-thread-stack-using`:
+   Will dump if one of the thread stack reach the given limit. The value is given in % of the global memory
+   available or in K, M, G. Empty to disable (default).
 
 ## ENVIRONMENT
 

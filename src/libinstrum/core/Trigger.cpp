@@ -29,7 +29,12 @@ Trigger::Trigger(const Options & options)
 	OSMemUsage sysMem = OS::getMemoryUsage();
 
 	//fill
+	this->totalMemory = sysMem.totalMemory;
 	this->sysMemLimit = this->calcLimit(options.dumpOnSysFullAt, sysMem.totalMemory, "dump:on-sys-full-at");
+	this->appRssLimit = this->calcLimit(options.dumpOnAppUsingRss, sysMem.totalMemory, "dump:on-app-using-rss");
+	this->appVirtLimit = this->calcLimit(options.dumpOnAppUsingVirt, sysMem.totalMemory, "dump:on-app-using-virt");
+	this->appReqLimit = this->calcLimit(options.dumpOnAppUsingReq, sysMem.totalMemory, "dump:on-app-using-req");
+	this->threadStackLimit = this->calcLimit(options.dumpOnThreadStackUsing, sysMem.totalMemory, "dump:on-thread-stack-using");
 }
 
 /**********************************************************/
@@ -39,20 +44,63 @@ Trigger::~Trigger(void)
 }
 
 /**********************************************************/
-bool Trigger::onSysUpdate(const OSMemUsage & memUsage)
+bool Trigger::onSysUpdate(const OSMemUsage & memUsage) const
 {
-	//trivial
-	if (this->sysMemLimit == 0)
-		return false;
-
 	//compute
 	size_t sysFullAt = memUsage.totalMemory - memUsage.freeMemory - memUsage.cached;
-	if (sysFullAt > this->sysMemLimit) {
+	if (this->sysMemLimit > 0 && sysFullAt > this->sysMemLimit) {
 		fprintf(stderr, "MALT: System full at %zu bytes (> sys-full-at=%s) [%zu / %zu]\n",
 				sysFullAt,
 				this->options.dumpOnSysFullAt.c_str(),
 				sysFullAt,
 				memUsage.totalMemory
+			);
+		return true;
+	}
+
+	//ok
+	return false;
+}
+
+/**********************************************************/
+bool Trigger::onProcMemUpdate(const OSProcMemUsage & mem) const
+{
+	//check
+	if (this->appRssLimit > 0 && mem.physicalMemory > this->appRssLimit) {
+		fprintf(stderr, "MALT: RSS overpass limit : %zu bytes (> on-app-using-rss=%s) [%zu / %zu]\n",
+				mem.physicalMemory,
+				this->options.dumpOnAppUsingRss.c_str(),
+				mem.physicalMemory,
+				totalMemory
+			);
+		return true;
+	}
+
+	//check
+	if (this->appVirtLimit > 0 && mem.virtualMemory > this->appVirtLimit) {
+		fprintf(stderr, "MALT: Virtual Memory overpass limit : %zu bytes (> on-app-using-virt=%s) [%zu / %zu]\n",
+				mem.physicalMemory,
+				this->options.dumpOnAppUsingVirt.c_str(),
+				mem.physicalMemory,
+				totalMemory
+			);
+		return true;
+	}
+
+	//ok
+	return false;
+}
+
+/**********************************************************/
+bool Trigger::onRequestUpdate(size_t reqMem) const
+{
+	//check
+	if (this->appReqLimit > 0 && reqMem > this->appReqLimit) {
+		fprintf(stderr, "MALT: Requested Memory overpass limit : %zu bytes (> on-app-using-req=%s) [%zu / %zu]\n",
+				reqMem,
+				this->options.dumpOnAppUsingReq.c_str(),
+				reqMem,
+				totalMemory
 			);
 		return true;
 	}

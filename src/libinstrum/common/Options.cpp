@@ -96,6 +96,10 @@ Options::Options(void)
 	this->dumpOnSignal            = MALT_NO_DUMP_SIGNAL;
 	this->dumpAfterSeconds        = 0;
 	this->dumpOnSysFullAt         = "";
+	this->dumpOnAppUsingRss       = "";
+	this->dumpOnAppUsingVirt      = "";
+	this->dumpOnAppUsingReq       = "";
+	this->dumpOnThreadStackUsing  = "";
 }
 
 /**********************************************************/
@@ -150,6 +154,10 @@ bool Options::operator==(const Options& value) const
 	if (this->dumpOnSignal != value.dumpOnSignal) return false;
 	if (this->dumpAfterSeconds != value.dumpAfterSeconds) return false;
 	if (this->dumpOnSysFullAt != value.dumpOnSysFullAt) return false;
+	if (this->dumpOnAppUsingRss != value.dumpOnAppUsingRss) return false;
+	if (this->dumpOnAppUsingVirt != value.dumpOnAppUsingVirt) return false;
+	if (this->dumpOnAppUsingReq != value.dumpOnAppUsingReq) return false;
+	if (this->dumpOnThreadStackUsing != value.dumpOnThreadStackUsing) return false;
 	
 	return true;
 }
@@ -289,6 +297,10 @@ void Options::loadFromIniDic ( dictionary* iniDic )
 	this->dumpOnSignal        = iniparser_getstring(iniDic,"dump:on-signal",(char*)this->dumpOnSignal.c_str());
 	this->dumpAfterSeconds    = iniparser_getint(iniDic,"dump:after-seconds",this->dumpAfterSeconds);
 	this->dumpOnSysFullAt     = iniparser_getstring(iniDic,"dump:on-sys-full-at",(char*)this->dumpOnSysFullAt.c_str());
+	this->dumpOnAppUsingRss   = iniparser_getstring(iniDic,"dump:on-app-using-rss",(char*)this->dumpOnAppUsingRss.c_str());
+	this->dumpOnAppUsingVirt  = iniparser_getstring(iniDic,"dump:on-app-using-virt",(char*)this->dumpOnAppUsingVirt.c_str());
+	this->dumpOnAppUsingReq   = iniparser_getstring(iniDic,"dump:on-app-using-req",(char*)this->dumpOnAppUsingReq.c_str());
+	this->dumpOnThreadStackUsing = iniparser_getstring(iniDic,"dump:on-thread-stack-using",(char*)this->dumpOnThreadStackUsing.c_str());
 }
 
 /**********************************************************/
@@ -382,6 +394,10 @@ void convertToJson(htopml::JsonState & json,const Options & value)
 			json.printField("onSignal", value.dumpOnSignal);
 			json.printField("afterSeconds", value.dumpAfterSeconds);
 			json.printField("onSysFullAt", value.dumpOnSysFullAt);
+			json.printField("onAppUsingRss", value.dumpOnAppUsingRss);
+			json.printField("onAppUsingVirt", value.dumpOnAppUsingVirt);
+			json.printField("onAppUsingReq", value.dumpOnAppUsingReq);
+			json.printField("onThreadStackUsing", value.dumpOnThreadStackUsing);
 		json.closeFieldStruct("dump");
 	json.closeStruct();
 }
@@ -451,6 +467,10 @@ void Options::dumpConfig(const char* fname)
 	IniParserHelper::setEntry(dic,"dump:on-signal",this->dumpOnSignal.c_str());
 	IniParserHelper::setEntry(dic,"dump:after-seconds",this->dumpAfterSeconds);
 	IniParserHelper::setEntry(dic,"dump:on-sys-full-at",this->dumpOnSysFullAt.c_str());
+	IniParserHelper::setEntry(dic,"dump:on-app-using-rss",this->dumpOnAppUsingRss.c_str());
+	IniParserHelper::setEntry(dic,"dump:on-app-using-virt",this->dumpOnAppUsingVirt.c_str());
+	IniParserHelper::setEntry(dic,"dump:on-app-using-req",this->dumpOnAppUsingReq.c_str());
+	IniParserHelper::setEntry(dic,"dump:on-thread-stack-using",this->dumpOnThreadStackUsing.c_str());
 	
 	//write
 	FILE * fp = fopen(fname,"w");
