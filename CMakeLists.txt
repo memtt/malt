@@ -97,11 +97,11 @@ if (ENABLE_PYTHON)
 	# we currently support only Python
 	if (Python3_FOUND AND NOT Python3_INTERPRETER_ID STREQUAL "Python")
 		message(FATAL_ERROR "Invalid python interpreter, got '${Python3_INTERPRETER_ID}', support only 'Python' !")
+	else()
+		set(PYTHON3_INSTRUM_FOUND ${Python3_FOUND})
 	endif()
-	find_package(Python3Instrum QUIET)
 else()
 	set(Python3_FOUND OFF)
-	set(PYTHON3_INSTRUM_FOUND OFF)
 endif()
 
 ############################################################

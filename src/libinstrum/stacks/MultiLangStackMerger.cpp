@@ -32,8 +32,11 @@ void MultiLangStackMerger::checkPython(void)
 	bool hasOne = false;
 	for (auto & entry : procMapReader) {
 		//fprintf(stderr, "MALT: entry : %s\n", entry.file.c_str());
-		if (entry.file.find("/libpython") != std::string::npos && entry.file.find(".so") != std::string::npos) {
-			//fprintf(stderr, "MALT: Python lib is in [%p , %p]\n", entry.lower, entry.upper);
+		std::string fname = basename(entry.file.c_str());
+		bool islib = (fname.find("libpython3") == 0 && entry.file.find(".so") != std::string::npos);
+		bool isexe = (fname.find("python3") == 0);
+		if (islib || isexe) {
+			//fprintf(stderr, "MALT: Python lib is in %s [%p , %p]\n", fname.c_str(), entry.lower, entry.upper);
 			this->pythonRange.add(entry.lower, entry.upper);
 			hasOne = true;
 		}

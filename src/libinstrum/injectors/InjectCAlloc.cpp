@@ -13,6 +13,7 @@
 #include "state/GlobalState.hpp"
 #include "wrappers/WrapperCAlloc.hpp"
 #include "portability/Visibility.hpp"
+#include "portability/Python.hpp"
 
 /**********************************************************/
 using namespace MALT;
@@ -27,6 +28,7 @@ using namespace MALT;
 **/
 DLL_PUBLIC void * malloc(size_t size)
 {
+	//call wrapper
 	return malt_wrap_malloc(size, gblState.allocFuncs.malloc, MALT_RETADDR);
 }
 

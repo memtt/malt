@@ -20,18 +20,57 @@
 /**********************************************************/
 namespace MALT
 {
-	void initPythonInstrumentation();
-	typedef int (*Py_RunMainFuncPtr) (void);
-}
+
+/**********************************************************/
+void initPythonInstrumentation();
+typedef int (*Py_RunMainFuncPtr) (void);
+typedef int (*Py_BytesMainFuncPtr) (int argc, char ** argv);
 
 /**********************************************************/
 #ifdef MALT_HAVE_PYTHON
+	inline bool havePython(void)
+	{
+		return true;
+	}
+#else //MALT_HAVE_PYTHON
+	inline bool havePython(void)
+	{
+		return false;
+	}
+#endif //MALT_HAVE_PYTHON
+
+/**********************************************************/
+inline void initPythonLazy(bool force = false)
+{
+	static int done = 0;
+	if (done == 0 && havePython() && Py_IsInitialized()) {
+		done = 1;
+		initPythonInstrumentation();	
+	}
+}
+
+}
+
+/**********************************************************/
+/*#ifdef MALT_HAVE_PYTHON
 	DLL_PUBLIC int Py_RunMain()
 	{
 		MALT::Py_RunMainFuncPtr realPy_RunMain = (MALT::Py_RunMainFuncPtr)dlsym(RTLD_NEXT,"Py_RunMain");
-		MALT::initPythonInstrumentation();
+		MALT::initPythonLazy();
 		return realPy_RunMain();
 	}
-#endif //MALT_HAVE_PYTHON
+#endif //MALT_HAVE_PYTHON*/
+
+/**********************************************************/
+/*#ifdef MALT_HAVE_PYTHON
+	DLL_PUBLIC int Py_BytesMain(int argc, char **argv)
+	{
+		MALT::Py_BytesMainFuncPtr realPy_BytesMain = (MALT::Py_BytesMainFuncPtr)dlsym(RTLD_NEXT,"Py_BytesMain");
+		fprintf(stderr, "MALT: Py_BytesMain\n");
+		Py_Initialize();
+		MALT::initPythonLazy();
+		return realPy_BytesMain(argc, argv);
+	}
+#endif //MALT_HAVE_PYTHON*/
 
 #endif //MALT_INJECT_PYTHON_INIT_HPP

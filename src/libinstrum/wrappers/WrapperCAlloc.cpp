@@ -14,6 +14,7 @@
 #include "state/LazyEnv.hpp"
 #include "state/ReentranceGuard.hpp"
 #include "WrapperCAlloc.hpp"
+#include "injectors/InjectPythonInit.hpp"
 #include <sys/mman.h>
 
 /**********************************************************/
@@ -50,6 +51,12 @@ void * MALT::malt_wrap_malloc(size_t size, const MallocFuncPtr & real_malloc, vo
 
 	//profile
 	if (guard.needInstrument()) {
+		//lazily init python when we see it init
+		//This is required for Ubuntu & Debian Python because we cannot hook in
+		//Py_RunMain() as I tried first.
+		initPythonLazy();
+
+		//instru
 		MALT_WRAPPER_LOCAL_STATE_ACTION(env.getLocalProfiler().onMalloc(res,size,t,MALLOC_KIND_MALLOC), retaddr);
 	}
 
