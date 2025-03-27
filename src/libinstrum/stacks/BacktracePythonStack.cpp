@@ -73,7 +73,7 @@ PyFrameObject * BacktracePythonStack::loadCurrentFrame(void)
 	}
 
 	//Get the Python Frame
-	PyFrameObject* currentFrame = PyThreadState_GetFrame(PyGILState_GetThisThreadState());
+	PyFrameObject* currentFrame = MALT::PyThreadState_GetFrame(MALT::PyGILState_GetThisThreadState());
 	if (currentFrame == NULL) {
 		assert(this->memSize >= 1);
 		if (this->memSize < 2)
@@ -82,7 +82,7 @@ PyFrameObject * BacktracePythonStack::loadCurrentFrame(void)
 		this->stack[0].set(DOMAIN_PYTHON, MALT_PYTHON_NULL_FUNC_ID);
 		this->stack[1].set(DOMAIN_PYTHON, MALT_PYTHON_INIT_FUNC_ID);
 	} else {
-		//Py_DECREF(currentFrame);
+		//Py_DecRef(currentFrame);
 		//init
 		this->size = 0;
 	}
@@ -102,7 +102,7 @@ LangAddress BacktracePythonStack::getCurrentFrameAddr(void)
 		return this->stack[0];
 	else {
 		LangAddress res = this->pythonSymbolTracker.frameToLangAddress(currentFrame);
-		Py_DECREF(currentFrame);
+		MALT::Py_DecRef((PyObject*)currentFrame);
 		return res;
 	}
 }
@@ -134,8 +134,8 @@ void BacktracePythonStack::loadCurrentStack(void)
 
 		//Go up on the stack
 		PyFrameObject * oldFrame = currentFrame;
-		currentFrame = PyFrame_GetBack(currentFrame);
-		Py_DECREF(oldFrame);
+		currentFrame = MALT::PyFrame_GetBack(currentFrame);
+		MALT::Py_DecRef((PyObject*)oldFrame);
 	}
 
 	//push root

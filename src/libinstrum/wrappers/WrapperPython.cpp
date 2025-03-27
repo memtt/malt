@@ -154,7 +154,7 @@ int malt_wrap_python_on_enter_exit(PyObject *obj, PyFrameObject *frame, int what
 				/*PyFrameObject * parentFrame = PyFrame_GetBack(frame);
 				if (parentFrame != nullptr) {
 					env.getLocalProfiler().onEnterFunc(nullAddr,LangAddress(DOMAIN_PYTHON_FRAME, parentFrame),true);
-					//Py_DECREF(parentFrame);
+					//Py_DecRef(parentFrame);
 				}*/
 
 				break;
@@ -170,7 +170,7 @@ int malt_wrap_python_on_enter_exit(PyObject *obj, PyFrameObject *frame, int what
 				/*PyFrameObject * parentFrame = PyFrame_GetBack(frame);
 				if (parentFrame != nullptr) {
 					env.getLocalProfiler().onExitFunc(nullAddr,LangAddress(DOMAIN_PYTHON_FRAME, parentFrame),true);
-					//Py_DECREF(parentFrame);
+					//Py_DecRef(parentFrame);
 				}*/
 				break;
 			}

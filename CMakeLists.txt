@@ -102,6 +102,7 @@ if (ENABLE_PYTHON)
 	endif()
 else()
 	set(Python3_FOUND OFF)
+	set(PYTHON3_INSTRUM_FOUND OFF)
 endif()
 
 ############################################################

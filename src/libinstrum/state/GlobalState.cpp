@@ -12,6 +12,7 @@
 #include <pthread.h>
 #include "GlobalState.hpp"
 #include "portability/Visibility.hpp"
+#include "injectors/InjectPythonInit.hpp"
 
 /**********************************************************/
 namespace MALT
@@ -249,6 +250,9 @@ void AllocWrapperGlobal::init(void )
 		gblState.allocFuncs.memalign = (MemalignFuncPtr)dlsym(RTLD_NEXT,"memalign");
 		gblState.allocFuncs.pvalloc = (PVallocFuncPtr)dlsym(RTLD_NEXT,"pvalloc");
 
+		//load python
+		MALT::gblHavePython = MALT::PyLazyInterfaceInit();
+
 		//init profiler
 		gblState.status = ALLOC_WRAP_INIT_PROFILER;
 
@@ -388,6 +392,7 @@ void globalResetForTests(void)
 	gblState = GBL_STATE_INIT;
 	tlsState = TLS_STATE_INIT;
 	gblOptions = NULL;
+	gblState.init();
 }
 
 /**********************************************************/

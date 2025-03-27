@@ -15,6 +15,12 @@ if (MALT_PORTABILITY_OS_UNIX)
 endif (MALT_PORTABILITY_OS_UNIX)
 
 ############################################################
+if (MALT_HAVE_PYTHON)
+	list(APPEND MALT_PORT_SRC PythonLazy.cpp)
+	include_directories(${Python3_INCLUDE_DIRS})
+endif (MALT_HAVE_PYTHON)
+
+############################################################
 list(APPEND MALT_PORT_SRC LinuxProcMapReader.cpp)
 list(APPEND MALT_PORT_SRC CompilerGNU.cpp)
 list(APPEND MALT_PORT_SRC ClockRDTSC.cpp)

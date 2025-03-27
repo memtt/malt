@@ -13,6 +13,7 @@
 add_library(malt-injectors-ok-for-tests OBJECT 
       InjectPthreads.cpp
       InjectPython.cpp
+      InjectPythonInit.cpp
 )
 set_target_properties(malt-injectors-ok-for-tests PROPERTIES COMPILE_FLAGS ${MALT_LIB_COMPILER_FLAGS})
 

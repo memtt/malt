@@ -104,9 +104,9 @@ void initPythonAllocInstrumentation()
 	printf("MALT: Instument Python allocator...\n");
 
 	//get all
-	PyMem_GetAllocator(PYMEM_DOMAIN_RAW, &gblPythonRawAlloc);
-	PyMem_GetAllocator(PYMEM_DOMAIN_MEM, &gblPythonMemAlloc);
-	PyMem_GetAllocator(PYMEM_DOMAIN_OBJ, &gblPythonObjAlloc);
+	MALT::PyMem_GetAllocator(PYMEM_DOMAIN_RAW, &gblPythonRawAlloc);
+	MALT::PyMem_GetAllocator(PYMEM_DOMAIN_MEM, &gblPythonMemAlloc);
+	MALT::PyMem_GetAllocator(PYMEM_DOMAIN_OBJ, &gblPythonObjAlloc);
 
 	if (gblOptions->pythonRaw) {
 		PyMemAllocatorEx pythonRawAllocMalt;
@@ -115,7 +115,7 @@ void initPythonAllocInstrumentation()
 		pythonRawAllocMalt.free = WrapperPythonRaw::free;
 		pythonRawAllocMalt.calloc = WrapperPythonRaw::calloc;
 		pythonRawAllocMalt.realloc = WrapperPythonRaw::realloc;
-		PyMem_SetAllocator(PYMEM_DOMAIN_RAW, &pythonRawAllocMalt);
+		MALT::PyMem_SetAllocator(PYMEM_DOMAIN_RAW, &pythonRawAllocMalt);
 	}
 
 	if (gblOptions->pythonMem) {
@@ -125,7 +125,7 @@ void initPythonAllocInstrumentation()
 		pythonMemAllocMalt.free = WrapperPythonMem::free;
 		pythonMemAllocMalt.calloc = WrapperPythonMem::calloc;
 		pythonMemAllocMalt.realloc = WrapperPythonMem::realloc;
-		PyMem_SetAllocator(PYMEM_DOMAIN_MEM, &pythonMemAllocMalt);
+		MALT::PyMem_SetAllocator(PYMEM_DOMAIN_MEM, &pythonMemAllocMalt);
 	}
 
 	if (gblOptions->pythonObj) {
@@ -135,7 +135,7 @@ void initPythonAllocInstrumentation()
 		pythonObjAllocMalt.free = WrapperPythonObj::free;
 		pythonObjAllocMalt.calloc = WrapperPythonObj::calloc;
 		pythonObjAllocMalt.realloc = WrapperPythonObj::realloc;
-		PyMem_SetAllocator(PYMEM_DOMAIN_OBJ, &pythonObjAllocMalt);
+		MALT::PyMem_SetAllocator(PYMEM_DOMAIN_OBJ, &pythonObjAllocMalt);
 	}
 
 	//PyGC_Disable();
@@ -177,10 +177,10 @@ void initPythonAllocInstrumentation()
 void initPythonEnterExitInstrumentation(void)
 {
 	printf("MALT: Instument Python profiling...\n");
-	PyGILState_STATE gstate;
-	gstate = PyGILState_Ensure();
-	PyEval_SetProfileAllThreads(malt_wrap_python_on_enter_exit, NULL);
-	PyGILState_Release(gstate);
+	PyThreadState * gstate;
+	gstate = MALT::PyGILState_Ensure();
+	MALT::PyEval_SetProfileAllThreads(malt_wrap_python_on_enter_exit, NULL);
+	MALT::PyGILState_Release(gstate);
 }
 
 /**********************************************************/

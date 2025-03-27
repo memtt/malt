@@ -22,6 +22,8 @@ namespace MALT
 {
 
 /**********************************************************/
+//TODO try to put in GlobalState.
+extern bool gblHavePython;
 void initPythonInstrumentation();
 typedef int (*Py_RunMainFuncPtr) (void);
 typedef int (*Py_BytesMainFuncPtr) (int argc, char ** argv);
@@ -30,21 +32,21 @@ typedef int (*Py_BytesMainFuncPtr) (int argc, char ** argv);
 #ifdef MALT_HAVE_PYTHON
 	inline bool havePython(void)
 	{
-		return true;
+		return gblHavePython;
 	}
 #else //MALT_HAVE_PYTHON
 	inline bool havePython(void)
 	{
 		return false;
-	}
+	}	
 #endif //MALT_HAVE_PYTHON
 
 /**********************************************************/
 inline void initPythonLazy(bool force = false)
 {
-	static int done = 0;
-	if (done == 0 && havePython() && Py_IsInitialized()) {
-		done = 1;
+	static bool done = false;
+	if (done == false && havePython() && MALT::Py_IsInitialized()) {
+		done = true;
 		initPythonInstrumentation();	
 	}
 }

@@ -69,7 +69,7 @@ void MALT::malt_wrap_free(void * ptr, const FreeFuncPtr & real_free, void * reta
 {
 	//need to ignore them otherwise enter sometime in an infinite call loop
 	//when using numpy with python
-	if (ptr == NULL)
+	if (ptr == NULL || ptr == gblCallocIniBuffer)
 		return;
 
 	//get local TLS and check init
@@ -82,8 +82,9 @@ void MALT::malt_wrap_free(void * ptr, const FreeFuncPtr & real_free, void * reta
 	}
 
 	//run the default function
-	assert(gblState.status > ALLOC_WRAP_INIT_SYM);
-	real_free(ptr);
+	//assert(gblState.status > ALLOC_WRAP_INIT_SYM);
+	if (real_free != nullptr)
+		real_free(ptr);
 }
 
 /**********************************************************/

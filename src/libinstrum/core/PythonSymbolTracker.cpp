@@ -52,7 +52,7 @@ PythonSymbolTracker::~PythonSymbolTracker(void)
 LangAddress PythonSymbolTracker::parentFrameToLangAddress(PyFrameObject * frame)
 {
 	//get up
-	PyFrameObject * parentFrame = PyFrame_GetBack(frame);
+	PyFrameObject * parentFrame = MALT::PyFrame_GetBack(frame);
 
 	//if top
 	if (parentFrame == NULL)
@@ -60,7 +60,7 @@ LangAddress PythonSymbolTracker::parentFrameToLangAddress(PyFrameObject * frame)
 
 	//ok
 	LangAddress addr = this->frameToLangAddress(parentFrame);
-	Py_DECREF(parentFrame);
+	MALT::Py_DecRef((PyObject*)parentFrame);
 	return addr;
 }
 
@@ -134,7 +134,7 @@ LangAddress PythonSymbolTracker::slowFrameToLangAddress(PyFrameObject * frame)
 LangAddress PythonSymbolTracker::fastFrameToLangAddress(PyFrameObject * frame)
 {
 	//get code
-	PyCodeObject * currentPyCode = PyFrame_GetCode(frame);
+	PyCodeObject * currentPyCode = MALT::PyFrame_GetCode(frame);
 	assert(currentPyCode != NULL);
 
 	//search in map
@@ -157,13 +157,13 @@ TmpPythonCallSite PythonSymbolTracker::frameToCallSite(PyFrameObject * frame)
 	char* currentFrameName = NULL;
 	int currentLineNumber = 0;
 
-	currentPyCode = PyFrame_GetCode(frame);
+	currentPyCode = MALT::PyFrame_GetCode(frame);
 	assert(currentPyCode != NULL);
 
 	//Fetch the file name and frame name i.e. function name in the current PyCode
 	//FIXME: Currently, this makes many allocations, maybe there's a way to avoid this
-	currentFilenameObject = PyUnicode_AsEncodedString(currentPyCode->co_filename, "UTF-8", "strict");
-	currentFramenameObject = PyUnicode_AsEncodedString(currentPyCode->co_qualname, "UTF-8", "strict");
+	currentFilenameObject = MALT::PyUnicode_AsEncodedString(currentPyCode->co_filename, "UTF-8", "strict");
+	currentFramenameObject = MALT::PyUnicode_AsEncodedString(currentPyCode->co_qualname, "UTF-8", "strict");
 
 	assert(currentFilenameObject != NULL);
 	assert(currentFramenameObject != NULL);
@@ -174,9 +174,9 @@ TmpPythonCallSite PythonSymbolTracker::frameToCallSite(PyFrameObject * frame)
 	//This should be way more performant, currently this is the major overhead
 	//Intuition : Py_Addr2Line is called way too many times, can we refractor the filename, framename and line number into one call of Addr2Line ??
 	TmpPythonCallSite tmpsite;
-	tmpsite.site.file = PyBytes_AsString(currentFilenameObject);
-	tmpsite.site.function = PyBytes_AsString(currentFramenameObject);
-	tmpsite.site.line = PyFrame_GetLineNumber(frame);
+	tmpsite.site.file = MALT::PyBytes_AsString(currentFilenameObject);
+	tmpsite.site.function = MALT::PyBytes_AsString(currentFramenameObject);
+	tmpsite.site.line = MALT::PyFrame_GetLineNumber(frame);
 	tmpsite.filenameObject = currentFilenameObject;
 	tmpsite.framenameObject = currentFramenameObject;
 	tmpsite.code = currentPyCode;
@@ -196,11 +196,11 @@ void PythonSymbolTracker::freeFrameToCallSite(TmpPythonCallSite & callsite)
 	if (strncmp((callsite.site.file + 1), "\0", 1) != 0){
 		PyObject_Free((void*) callsite.filenameObject);	
 	}*/
-	Py_DECREF((void*)callsite.site.file);
-	Py_DECREF((void*)callsite.site.function);
-	Py_DECREF(callsite.filenameObject);
-	Py_DECREF(callsite.framenameObject);
-	Py_DECREF(callsite.code);
+	MALT::Py_DecRef((PyObject*)callsite.site.file);
+	MALT::Py_DecRef((PyObject*)callsite.site.function);
+	MALT::Py_DecRef((PyObject*)callsite.filenameObject);
+	MALT::Py_DecRef((PyObject*)callsite.framenameObject);
+	MALT::Py_DecRef((PyObject*)callsite.code);
 }
 
 /**********************************************************/
