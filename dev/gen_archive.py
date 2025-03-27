@@ -31,6 +31,11 @@ PACKAGE_VERSION="1.2.4"
 def malt_dev_gen_archive(name: str = PACKAGE_NAME, version: str = PACKAGE_VERSION) -> None:
     # build default prefix
     prefix=f"{name}-{version}"
+
+    # check if has changes in wait
+    out = subprocess.check_output("git status --porcelain | grep -v '??'", shell=True)
+    if out != "":
+        cprint("Warning: GIT has some uncommited changes", color="yellow")
     
     # check is not release
     git_head_hash = subprocess.getoutput("git rev-parse --short HEAD")

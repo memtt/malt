@@ -396,7 +396,7 @@ def test_distribution(dist_name_version: str, compiler:str, variant:str):
         # to perform tests
         container.assert_run(f"/mnt/malt-sources/configure --enable-tests {COMMON_CONF_OPTIONS} {variant_options} {compiler_options} {dev_options}")
         container.assert_run(f"make -j{cores}")
-        container.assert_run(f"ctest --output-on-failure -j{cores}")
+        container.assert_run(f"OMP_NUM_THREADS=1 ctest --output-on-failure -j{cores}")
 
 ############################################################
 def test_current_host_debug_no_tests():

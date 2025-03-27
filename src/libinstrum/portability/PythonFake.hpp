@@ -21,6 +21,10 @@ namespace MALT
 {
 
 /**********************************************************/
+#define PY_MAJOR_VERSION 3
+#define PY_MINOR_VERSION 11
+
+/**********************************************************/
 typedef void * (*FakePythonMallocFuncPtr) (void *ctx, size_t size);
 typedef void * (*FakePythonCallocFuncPtr) (void *ctx, size_t nelem, size_t elsize);
 typedef void * (*FakePythonReallocFuncPtr) (void *ctx, void *ptr, size_t new_size);
