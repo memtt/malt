@@ -41,15 +41,13 @@ ENDFOREACH(test_name)
 if (NLOHMANN_JSON_FOUND)
 	target_link_libraries(TestInstrum malt-injectors)
 	target_compile_options(TestInstrum PRIVATE -g -O0)
-	target_link_libraries(TestInstrum ${PYTHON3_LIBRARIES})
 	target_link_libraries(TestInstrum malt-profile)
 endif ()
 
 ############################################################
 if (PYTHON3_INSTRUM_FOUND AND NLOHMANN_JSON_FOUND)
-	target_link_libraries(TestInstrumPython malt-injector-python)
 	target_compile_options(TestInstrumPython PRIVATE -g)
-	target_link_libraries(TestInstrumPython ${PYTHON3_LIBRARIES})
+	target_link_libraries(TestInstrumPython ${Python3_LIBRARIES})
 	target_link_libraries(TestInstrumPython malt-profile)
 endif ()
 

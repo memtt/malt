@@ -102,7 +102,6 @@ FlatProfileVector Extractor::getFlatProfile(const LocaltionMappingFunc & mapping
 			//update internal values
 			LangAddress cur = stack[skip];
 			if (filter(this->addrTranslation.at(cur),infos) == true) {
-				#pragma omp critical
 				this->mergeStackInfo(result, cur, FLAT_PROFILE_OWN, infos, mapping);
 			}
 
@@ -121,7 +120,6 @@ FlatProfileVector Extractor::getFlatProfile(const LocaltionMappingFunc & mapping
 				if (accepted && done.find(key) == done.end())
 				{
 					done[key] = true;
-					#pragma omp critical
 					this->mergeStackInfo(result,cur,FLAT_PROFILE_TOTAL,infos,mapping);
 				}
 			}

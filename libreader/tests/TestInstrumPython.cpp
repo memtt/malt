@@ -16,6 +16,7 @@
 #include "libinstrum/state/malt.h"
 #include "libreader/Profile.hpp"
 #include "libreader/extractors/ExtractorHelpers.hpp"
+#include "libinstrum/portability/Python.hpp"
 #include <fstream>
 
 /**********************************************************/
@@ -43,7 +44,9 @@ TEST(TestInstrumPython, python_basic_array_backtrace)
 	//make an alloc
 	maltEnable();
 	const char * argv[] = {"TestInstrum", CUR_SRC_DIR "/main1.py", NULL};
-	int status = Py_BytesMain(2, (char**)argv);
+	::Py_Initialize();
+	MALT::initPythonInstrumentation();
+	int status = ::Py_BytesMain(2, (char**)argv);
 	maltDisable();
 
 	//check
@@ -82,7 +85,9 @@ TEST(TestInstrumPython, python_basic_array_enter_exit)
 	//make an alloc
 	maltEnable();
 	const char * argv[] = {"TestInstrum", CUR_SRC_DIR "/main1.py", NULL};
-	int status = Py_BytesMain(2, (char**)argv);
+	::Py_Initialize();
+	MALT::initPythonInstrumentation();
+	int status = ::Py_BytesMain(2, (char**)argv);
 	maltDisable();
 
 	//check
