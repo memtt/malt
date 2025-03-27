@@ -56,4 +56,8 @@
 //use internal je malloc
 #cmakedefine MALT_ENABLE_INTERNAL_JEMALLOC
 
+//python linking mode
+#cmakedefine MALT_PORTABILITY_PYTHON_NATIVE
+#cmakedefine MALT_PORTABILITY_PYTHON_LAZY
+
 #endif //MALT_CONFIG_H

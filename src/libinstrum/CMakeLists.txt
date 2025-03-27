@@ -31,6 +31,7 @@ set(PORTABILITY_MUTEX     "PTHREAD"  CACHE STRING "Select mutex implementation t
 set(PORTABILITY_OS        "UNIX"     CACHE STRING "Select OS implementation to use. Currently support : 'UNIX'.")
 set(PORTABILITY_COMPILER  "GNU"      CACHE STRING "Select compiler support to use. Currently support : 'GNU' (also valid intel).")
 set(PORTABILITY_CLOCK     "RDTSC"    CACHE STRING "Clock to be used to represent time in MALT.")
+set(PORTABILITY_PYTHON    "LAZY"     CACHE STRING "Select the instrumentation mode for python : 'LAZY', 'NATIVE'.")
 
 ############################################################
 #select portability definitions
@@ -40,6 +41,7 @@ set(MALT_PORTABILITY_OS_${PORTABILITY_OS}              yes)
 set(MALT_PORTABILITY_COMPILER_${PORTABILITY_COMPILER}  yes)
 set(MALT_PORTABILITY_BACKTRACE_${PORTABILITY_BACKTRACE}  yes)
 set(MALT_PORTABILITY_CLOCK_${PORTABILITY_CLOCK}        yes)
+set(MALT_PORTABILITY_PYTHON_${PORTABILITY_PYTHON}      yes)
 #enabling features
 if (ENABLE_CODE_TIMING)
 	set(MALT_ENABLE_CODE_TIMING yes)
@@ -61,6 +63,9 @@ if (LIBUNWIND_FOUND)
 endif (LIBUNWIND_FOUND)
 if (MALTJEMALLOC_FOUND)
 	list(APPEND LIB_MALT_DEPS malt_je_malloc::jemalloc)
+endif()
+if (MALT_HAVE_PYTHON AND MALT_PORTABILITY_PYTHON_NATIVE)
+	list(APPEND LIB_MALT_DEPS ${Python3_LIBRARIES})
 endif()
 
 ############################################################

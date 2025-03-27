@@ -109,16 +109,16 @@ void PyMem_SetAllocator(PyMemAllocatorDomain domain, PyMemAllocatorEx *allocator
 }
 
 /**********************************************************/
-PyThreadState * PyGILState_Ensure(void)
+PyGILState_STATE PyGILState_Ensure(void)
 {
 	if (gblPythonApi.PyGILState_Ensure != nullptr)
 		return gblPythonApi.PyGILState_Ensure();
 	else
-		return nullptr;
+		return PyGILState_UNLOCKED;
 }
 
 /**********************************************************/
-void PyGILState_Release(PyThreadState * state)
+void PyGILState_Release(PyGILState_STATE state)
 {
 	if (gblPythonApi.PyGILState_Release != nullptr)
 		gblPythonApi.PyGILState_Release(state);

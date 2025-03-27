@@ -17,7 +17,13 @@
 
 /**********************************************************/
 #ifdef MALT_HAVE_PYTHON
-	#include "PythonLazy.hpp"
+	#ifdef MALT_PORTABILITY_PYTHON_LAZY
+		#include "PythonLazy.hpp"
+	#elif defined(MALT_PORTABILITY_PYTHON_NATIVE)
+		#include "PythonNative.hpp"
+	#else
+		#error "Invalide MALT_PORTABILIT_MODE !"
+	#endif
 #else //MALT_HAVE_PYTHON
 	#include "PythonFake.hpp"
 #endif //MALT_HAVE_PYTHON
