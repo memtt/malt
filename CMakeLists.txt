@@ -41,11 +41,20 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_SOURCE_DIR}/cmake/)
 
 ############################################################
 # Options
-set(ENABLE_TESTS "no" CACHE BOOL "Enable build of internal tests.")
-set(ENABLE_GCC_COVERAGE "no" CACHE BOOL "Enable coverage compile flags to be enabled.")
-set(ENABLE_LINK_OPTIM "yes" CACHE BOOL "Enable link optimisation (LTO & -fvisibility-hidden). Note: it is not compatible with compilation of unit tests.")
-set(ENABLE_IPO "yes" CACHE BOOL "Allow usage of IPO specfic optimization when ENABLE_LINK_OPTIM is enabled.")
-set(ENABLE_PYTHON "no" CACHE BOOL "Enable compiling with the python support.")
+set(ENABLE_TESTS          "no"       CACHE BOOL   "Enable build of internal tests.")
+set(ENABLE_GCC_COVERAGE   "no"       CACHE BOOL   "Enable coverage compile flags to be enabled.")
+set(ENABLE_LINK_OPTIM     "yes"      CACHE BOOL   "Enable link optimisation (LTO & -fvisibility-hidden). Note: it is not compatible with compilation of unit tests.")
+set(ENABLE_IPO            "yes"      CACHE BOOL   "Allow usage of IPO specfic optimization when ENABLE_LINK_OPTIM is enabled.")
+set(ENABLE_PYTHON         "no"       CACHE BOOL   "Enable compiling with the python support.")
+#Code options
+set(ENABLE_CODE_TIMING    "no"       CACHE BOOL   "Enable some tricks to quickly check timings of hostspots of MALT internal code.")
+#select portability mode
+set(PORTABILITY_SPINLOCK  "PTHREAD"  CACHE STRING "Select spinlock implementation to use. Currently support : 'PTHREAD', 'DUMMY'.")
+set(PORTABILITY_MUTEX     "PTHREAD"  CACHE STRING "Select mutex implementation to use. Currently support : 'PTHREAD', 'DUMMY'.")
+set(PORTABILITY_OS        "UNIX"     CACHE STRING "Select OS implementation to use. Currently support : 'UNIX'.")
+set(PORTABILITY_COMPILER  "GNU"      CACHE STRING "Select compiler support to use. Currently support : 'GNU' (also valid intel).")
+set(PORTABILITY_CLOCK     "RDTSC"    CACHE STRING "Clock to be used to represent time in MALT.")
+set(PORTABILITY_PYTHON    "LAZY"     CACHE STRING "Select the instrumentation mode for python : 'LAZY', 'NATIVE'.")
 
 ############################################################
 if (ENABLE_TESTS OR CMAKE_BUILD_TYPE="Debug")
