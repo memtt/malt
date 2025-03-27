@@ -79,7 +79,8 @@
 		"*.ipp": "cpp",
 		"semaphore": "cpp",
 		"shared_mutex": "cpp",
-		"regex": "cpp"
+		"regex": "cpp",
+		"bitset": "cpp"
 	},
 	"cmake.configureOnOpen": false,
 	"[python]": {

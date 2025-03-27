@@ -35,7 +35,8 @@ void* WrapperPythonRaw::malloc(void* ctx, size_t size)
 /**********************************************************/
 void WrapperPythonRaw::free(void* ctx, void* ptr)
 {
-	return malt_wrap_python_free(gblPythonRawAlloc.ctx, ptr, gblPythonRawAlloc.free, MALT_RETADDR);
+	if (ptr != nullptr)
+		return malt_wrap_python_free(gblPythonRawAlloc.ctx, ptr, gblPythonRawAlloc.free, MALT_RETADDR);
 }
 
 /**********************************************************/

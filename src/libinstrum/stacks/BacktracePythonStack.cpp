@@ -62,7 +62,7 @@ PyFrameObject * BacktracePythonStack::loadCurrentFrame(void)
 		this->grow();
 
 	//If the Python interpreter is not correctly initialised, can't get the backtrace stack
-	if (_PyThreadState_UncheckedGet() == NULL){
+	if (MALT::PyGILState_GetThisThreadState() == NULL){
 		assert(this->memSize >= 1);
 		if (this->memSize < 2)
 			this->grow();

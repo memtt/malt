@@ -75,7 +75,7 @@ typedef int (*Py_tracefunc)(PyObject *obj, PyFrameObject *frame, int what, PyObj
 inline bool PyLazyInterfaceInit(void){return false;};
 
 /**********************************************************/
-inline void * _PyThreadState_UncheckedGet(){return nullptr;};
+//inline void * _PyThreadState_UncheckedGet(){return nullptr;};
 inline PyFrameObject * PyThreadState_GetFrame(PyGILState_STATE gilState){return nullptr;};
 inline PyGILState_STATE PyGILState_GetThisThreadState() {return false;};
 inline PyFrameObject * PyFrame_GetBack(PyFrameObject * frame) {return nullptr;};

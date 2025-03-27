@@ -18,6 +18,8 @@
 #include "common/Debug.hpp"
 #include "Trigger.hpp"
 #include "state/GlobalState.hpp"
+#include "state/LazyEnv.hpp"
+#include "state/ReentranceGuard.hpp"
 
 /**********************************************************/
 using namespace std;
@@ -127,9 +129,13 @@ void maltDumpOnEvent();
 /**********************************************************/
 void Trigger::runSpyingThread(void)
 {
+	
 	this->spyingThreadKeepRunning = true;
 	this->spyingThread = std::thread([this](){
 		fprintf(stderr, "MALT: Start active watch dog...\n");
+		//get local TLS and check init
+		LazyEnv env;
+		ReentranceGuard guard(env);
 		while(this->spyingThreadKeepRunning) {
 			//get sys mem
 			OSMemUsage sysMem = OS::getMemoryUsage();

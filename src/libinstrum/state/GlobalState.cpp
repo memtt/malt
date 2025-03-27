@@ -250,9 +250,6 @@ void AllocWrapperGlobal::init(void )
 		gblState.allocFuncs.memalign = (MemalignFuncPtr)dlsym(RTLD_NEXT,"memalign");
 		gblState.allocFuncs.pvalloc = (PVallocFuncPtr)dlsym(RTLD_NEXT,"pvalloc");
 
-		//load python
-		MALT::gblHavePython = MALT::PyLazyInterfaceInit();
-
 		//init profiler
 		gblState.status = ALLOC_WRAP_INIT_PROFILER;
 
@@ -326,6 +323,9 @@ void AllocWrapperGlobal::init(void )
 		if (skip)
 			gblState.status = ALLOC_WRAP_FINISH;
 	}
+
+	//load python
+	MALT::gblHavePython = MALT::PyLazyInterfaceInit();
 
 	//secure in case of first call in threads
 	gblState.lock.unlock();

@@ -36,7 +36,7 @@ bool PyLazyInterfaceInit(void)
 {
 	bool supported = true;
 	//fprintf(stderr, "MALT: Loading python symbols...\n");
-	MALT_PYTHON_DLSYM(_PyThreadState_UncheckedGet, supported);
+	//MALT_PYTHON_DLSYM(_PyThreadState_UncheckedGet, supported);
 	MALT_PYTHON_DLSYM(PyThreadState_GetFrame, supported);
 	MALT_PYTHON_DLSYM(PyGILState_GetThisThreadState, supported);
 	MALT_PYTHON_DLSYM(PyFrame_GetBack, supported);
@@ -59,13 +59,13 @@ bool PyLazyInterfaceInit(void)
 }
 
 /**********************************************************/
-void * _PyThreadState_UncheckedGet()
+/*void * _PyThreadState_UncheckedGet()
 {
 	if (gblPythonApi._PyThreadState_UncheckedGet != nullptr)
 		return gblPythonApi._PyThreadState_UncheckedGet();
 	else
 		return 0;
-}
+}*/
 
 /**********************************************************/
 PyFrameObject * PyThreadState_GetFrame(PyThreadState * gilState)

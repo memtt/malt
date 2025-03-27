@@ -87,6 +87,12 @@ UBUNTU_FULL_CMDS_UBUNTU_25=[
     BUILD_CUSTOM_JEMALLOC,
     "apt update && apt install -y nlohmann-json3-dev"
 ]
+UBUNTU_INDEV_CMDS=[
+    "apt update && apt install -y python3-dev"
+]
+UBUNTU_INDEV_CMDS_UBUNTU_25=[
+    "apt update && apt install -y libpython3-dev"
+]
 CENTOS_BASIC_CMDS=[
     "echo 'keepcache=true' >> /etc/dnf/dnf.conf",
     "dnf makecache --refresh",
@@ -104,11 +110,17 @@ ROCKY_FULL_CMDS=[
     "dnf install -y curl bzip2 xz",
     BUILD_CUSTOM_JEMALLOC,
 ]
+ROCKY_INDEV_CMDS=[
+    "dnf install -y python3-devel"
+]
 CENTOS_FULL_CMDS=[
     "dnf install -y libunwind-devel elfutils-libelf-devel libunwind-devel nodejs npm",
     "dnf install -y qt5-qtwebkit-devel",
     "dnf install -y curl",
     BUILD_CUSTOM_JEMALLOC,
+]
+CENTOS_INDEV_CMDS=[
+    "dnf install -y python3-devel",
 ]
 ARCH_BASIC_CMDS=[
     "pacman --noconfirm -Syu",
@@ -120,6 +132,9 @@ ARCH_FULL_CMDS=[
     "pacman --noconfirm -Sy curl",
     BUILD_CUSTOM_JEMALLOC,
     "pacman --noconfirm -Sy nlohmann-json"
+]
+ARCH_INDEV_CMDS=[
+    "pacman --noconfirm -Sy python3"
 ]
 GENTOO_BASIC_CMDS=[
     "emerge-webrsync",
@@ -135,6 +150,8 @@ GENTOO_FULL_CMDS=[
     BUILD_CUSTOM_JEMALLOC,
     "emerge -b -k -g dev-cpp/nlohmann_json"
 ]
+GENTOO_INDEV_CMDS=[
+]
 ############################################################
 BUILD_PARAMETERS = {
     "distributions": {
@@ -149,9 +166,7 @@ BUILD_PARAMETERS = {
         },
         "malt/ubuntu-indev:22.04": {
             "base": "malt/ubuntu-full:22.04",
-            "cmds": [
-                BUILD_CUSTOM_PYTHON
-            ]
+            "cmds": UBUNTU_INDEV_CMDS
         },
         ############ ubuntu:24.04
         "malt/ubuntu-basic:24.04": {
@@ -164,9 +179,7 @@ BUILD_PARAMETERS = {
         },
         "malt/ubuntu-indev:24.04": {
             "base": "malt/ubuntu-full:24.04",
-            "cmds": [
-                BUILD_CUSTOM_PYTHON
-            ]
+            "cmds": UBUNTU_INDEV_CMDS
         },
         ############ ubuntu:22.10
         "malt/ubuntu-basic:24.10": {
@@ -179,9 +192,7 @@ BUILD_PARAMETERS = {
         },
         "malt/ubuntu-indev:24.10": {
             "base": "malt/ubuntu-full:24.10",
-            "cmds": [
-                BUILD_CUSTOM_PYTHON
-            ]
+            "cmds": UBUNTU_INDEV_CMDS
         },
         ############ ubuntu:25.04
         "malt/ubuntu-basic:25.04": {
@@ -194,9 +205,7 @@ BUILD_PARAMETERS = {
         },
         "malt/ubuntu-indev:25.04": {
             "base": "malt/ubuntu-full:25.04",
-            "cmds": [
-                BUILD_CUSTOM_PYTHON
-            ]
+            "cmds": UBUNTU_INDEV_CMDS_UBUNTU_25
         },
         ############ debian:10
         "malt/debian-basic:10": {
@@ -209,9 +218,7 @@ BUILD_PARAMETERS = {
         },
         "malt/debian-indev:10": {
             "base": "malt/debian-full:10",
-            "cmds": [
-                BUILD_CUSTOM_PYTHON
-            ]
+            "cmds": UBUNTU_INDEV_CMDS
         },
         ############ debian:11
         "malt/debian-basic:11": {
@@ -224,9 +231,7 @@ BUILD_PARAMETERS = {
         },
         "malt/debian-indev:11": {
             "base": "malt/debian-full:11",
-            "cmds": [
-                BUILD_CUSTOM_PYTHON
-            ]
+            "cmds": UBUNTU_INDEV_CMDS
         },
         ############ debian:12
         "malt/debian-basic:12": {
@@ -239,9 +244,7 @@ BUILD_PARAMETERS = {
         },
         "malt/debian-indev:12": {
             "base": "malt/debian-full:12",
-            "cmds": [
-                BUILD_CUSTOM_PYTHON
-            ]
+            "cmds": UBUNTU_INDEV_CMDS
         },
         ############ fedora:41
         "malt/fedora-basic:40": {
@@ -254,9 +257,7 @@ BUILD_PARAMETERS = {
         },
         "malt/fedora-indev:40": {
             "base": "malt/fedora-full:40",
-            "cmds": [
-                BUILD_CUSTOM_PYTHON
-            ]
+            "cmds": CENTOS_INDEV_CMDS
         },
         ############ fedora:41
         "malt/fedora-basic:41": {
@@ -269,9 +270,7 @@ BUILD_PARAMETERS = {
         },
         "malt/fedora-indev:41": {
             "base": "malt/fedora-full:41",
-            "cmds": [
-                BUILD_CUSTOM_PYTHON
-            ]
+            "cmds": CENTOS_INDEV_CMDS
         },
         ############ rocky:8.9
         "malt/rocky-basic:8.9": {
@@ -282,12 +281,10 @@ BUILD_PARAMETERS = {
             "base": "malt/rocky-basic:8.9",
             "cmds": ROCKY_FULL_CMDS
         },
-        "malt/rocky-indev:8.9": {
-            "base": "malt/rocky-full:8.9",
-            "cmds": [
-                BUILD_CUSTOM_PYTHON
-            ]
-        },
+        #"malt/rocky-indev:8.9": {
+        #    "base": "malt/rocky-full:8.9",
+        #    "cmds": ROCKY_INDEV_CMDS
+        #},
         ############ rocky:9.3
         #"malt/rocky-basic:9.3": {
         #    "base": "rockylinux:9.3",
@@ -314,9 +311,7 @@ BUILD_PARAMETERS = {
         },
         "malt/archlinux-indev:latest": {
             "base": "malt/archlinux-full:latest",
-            "cmds": [
-                BUILD_CUSTOM_PYTHON
-            ]
+            "cmds": ARCH_INDEV_CMDS
         },
         ############ archlinux:latest
         "malt/gentoo-basic:latest": {
@@ -329,9 +324,7 @@ BUILD_PARAMETERS = {
         },
         "malt/gentoo-indev:latest": {
             "base": "malt/gentoo-full:latest",
-            "cmds": [
-                BUILD_CUSTOM_PYTHON
-            ]
+            "cmds": GENTOO_INDEV_CMDS
         },
     },
     'compilers': {
@@ -396,8 +389,7 @@ def test_distribution(dist_name_version: str, compiler:str, variant:str):
     # options
     dev_options = ""
     if "-indev" in dist_name_version:
-        pass
-        #dev_options = "--enable-python"
+        dev_options = "--enable-python"
 
     # build & start container to run commands in
     with in_container(dist_name_version, caches=CACHES) as container:

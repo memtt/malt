@@ -174,6 +174,22 @@ int malt_wrap_python_on_enter_exit(PyObject *obj, PyFrameObject *frame, int what
 				}*/
 				break;
 			}
+			/*case PyTrace_EXCEPTION: {
+				printf("EXCEPTION\n");
+				break;
+			};
+			case PyTrace_C_CALL: {
+				printf("C CALL\n");
+				break;
+			}
+			case PyTrace_C_RETURN: {
+				printf("C RETURN\n");
+				break;
+			}
+			case PyTrace_C_EXCEPTION: {
+				printf("C EXCEPTION\n");
+				break;
+			}*/
 			/*case PyTrace_C_CALL:
 				env.getLocalProfiler().onEnterFunc(nullAddr, LangAddress(DOMAIN_PYTHON, MALT_PYTHON_C_BRIDGE_FUNC_ID),true);
 				break;

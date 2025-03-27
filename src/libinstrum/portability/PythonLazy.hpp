@@ -16,13 +16,17 @@
 #include <cstdlib>
 #include <cstdio>
 #include <Python.h>
+//for python 3.6 under Rocky 8.9
+#ifndef PyFrameObject
+	#include <frameobject.h>
+#endif
 
 /**********************************************************/
 namespace MALT
 {
 
 /**********************************************************/
-typedef void * (*_PyThreadState_UncheckedGetFuncPtr)();
+//typedef void * (*_PyThreadState_UncheckedGetFuncPtr)();
 typedef PyFrameObject * (*PyThreadState_GetFrameFuncPtr)(PyThreadState * /*gilState*/);
 typedef PyThreadState * (*PyGILState_GetThisThreadStateFuncPtr)();
 typedef PyFrameObject * (*PyFrame_GetBackFuncPtr)(PyFrameObject * /*frame*/);
@@ -46,7 +50,7 @@ typedef void (*Py_InitializeFuncPtr)(void);
 /**********************************************************/
 struct PythonAPIFuncPtrs
 {
-	_PyThreadState_UncheckedGetFuncPtr _PyThreadState_UncheckedGet{nullptr};
+	//_PyThreadState_UncheckedGetFuncPtr _PyThreadState_UncheckedGet{nullptr};
 	PyThreadState_GetFrameFuncPtr PyThreadState_GetFrame{nullptr};
 	PyGILState_GetThisThreadStateFuncPtr PyGILState_GetThisThreadState{nullptr};
 	PyFrame_GetBackFuncPtr PyFrame_GetBack{nullptr};
@@ -72,7 +76,7 @@ struct PythonAPIFuncPtrs
 bool PyLazyInterfaceInit(void);
 
 /**********************************************************/
-void * _PyThreadState_UncheckedGet();
+//void * _PyThreadState_UncheckedGet();
 PyFrameObject * PyThreadState_GetFrame(PyThreadState * gilState);
 PyThreadState * PyGILState_GetThisThreadState();
 PyFrameObject * PyFrame_GetBack(PyFrameObject * frame);

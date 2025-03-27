@@ -23,7 +23,7 @@ namespace MALT
 inline bool PyLazyInterfaceInit(void){return false;};
 
 /**********************************************************/
-inline void * _PyThreadState_UncheckedGet(){return ::_PyThreadState_UncheckedGet();};
+//inline void * _PyThreadState_UncheckedGet(){return ::_PyThreadState_UncheckedGet();};
 inline PyFrameObject * PyThreadState_GetFrame(PyThreadState* gilState){return ::PyThreadState_GetFrame(gilState);};
 inline PyThreadState* PyGILState_GetThisThreadState() {return ::PyGILState_GetThisThreadState();};
 inline PyFrameObject * PyFrame_GetBack(PyFrameObject * frame) {return ::PyFrame_GetBack(frame);};
