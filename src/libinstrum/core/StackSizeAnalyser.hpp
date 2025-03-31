@@ -109,6 +109,18 @@ inline void StackSizeAnalyser::onExitFunc(LangAddress funcAddr)
 	
 	//update time profile
 	timeProfile.onUpdateValue(cur,funcAddr);
+
+	//check if largest
+	if (cur > largestSize)
+	{
+		largestSize = cur;
+		largestStackMem = currentStackMem;
+		largestStack = currentStack;
+	}
+
+	//need dump
+	if (this->trigger.onThreadStackUpdate(cur))
+		maltDumpOnEvent();
 }
 
 }

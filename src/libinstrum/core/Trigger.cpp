@@ -42,6 +42,7 @@ Trigger::Trigger(const Options & options, bool canHostSpyingThread)
 	this->appVirtLimit = this->calcLimit(options.dumpOnAppUsingVirt, sysMem.totalMemory, "dump:on-app-using-virt");
 	this->appReqLimit = this->calcLimit(options.dumpOnAppUsingReq, sysMem.totalMemory, "dump:on-app-using-req");
 	this->threadStackLimit = this->calcLimit(options.dumpOnThreadStackUsing, sysMem.totalMemory, "dump:on-thread-stack-using");
+	this->allocCountLimit = this->calcLimit(options.dumpOnAllocCount, 0, "dump:on-alloc-count");
 
 	//start spying thread
 	if (options.dumpWatchDog && canHostSpyingThread)
@@ -97,6 +98,22 @@ bool Trigger::onProcMemUpdate(const OSProcMemUsage & mem) const
 				this->options.dumpOnAppUsingVirt.c_str(),
 				mem.virtualMemory,
 				totalMemory
+			);
+		return true;
+	}
+
+	//ok
+	return false;
+}
+
+/**********************************************************/
+bool Trigger::onAllocOp(size_t nbAlloc) const
+{
+	//check
+	if (this->allocCountLimit > 0 && nbAlloc > this->allocCountLimit) {
+		fprintf(stderr, "MALT: Number of Allocations requets overpass limit : %zu bytes (> on-alloc-count=%s)\n",
+				nbAlloc,
+				this->options.dumpOnAllocCount.c_str()
 			);
 		return true;
 	}
@@ -198,7 +215,7 @@ size_t Trigger::calcLimit(const std::string & value, size_t ref, const std::stri
 			return valueFloat * 1024.0 * 1024.0;
 	} else if (last == 'K' && sscanf(value.c_str(), "%fK", &valueFloat) == 1) {
 			return valueFloat * 1024.0;
-	} else if (last == '%' && sscanf(value.c_str(), "%f%%", &valueFloat) == 1) {
+	} else if (last == '%' && ref > 0 && sscanf(value.c_str(), "%f%%", &valueFloat) == 1) {
 		return valueFloat * (float)ref / 100.0;
 	} else if (last >= '0' && last <= '9' && sscanf(value.c_str(), "%zu", &valueSizet) == 1) {
 			return valueSizet;

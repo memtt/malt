@@ -90,6 +90,7 @@ AllocStackProfiler::AllocStackProfiler(const Options & options,StackMode mode,bo
 	this->largestStackSize = 0;
 	this->sharedLinearIndex = 0;
 	this->stackTree = NULL;
+	this->nbAllocSeen = 0;
 	
 	//init internal alloc
 	if (gblInternaAlloc == NULL)
@@ -231,6 +232,10 @@ void AllocStackProfiler::onAllocEvent(void* ptr, size_t size,Stack* userStack,MM
 		//update shared linear index
 		this->sharedLinearIndex++;
 		this->memOpsLevels();
+
+		//trigger
+		this->nbAllocSeen++;
+		this->trigger.onAllocOp(this->nbAllocSeen);
 		
 		//peak tracking
 		peakTracking(size);

@@ -193,6 +193,7 @@ class AllocStackProfiler
 		size_t peakId;
 		size_t peak;
 		size_t curReq;
+		size_t nbAllocSeen;
 		std::string traceFilename;
 		ProfiledValue<TimeTrackMemory> memoryTimeline;
 		TimeTrackMemory curMemoryTimeline;

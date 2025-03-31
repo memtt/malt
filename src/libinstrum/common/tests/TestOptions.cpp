@@ -77,6 +77,7 @@ const char cstJson[] = "\
 		\"onAppUsingVirt\":\"\",\n\
 		\"onAppUsingReq\":\"\",\n\
 		\"onThreadStackUsing\":\"\",\n\
+		\"onAllocCount\":\"\",\n\
 		\"watchDog\":false\n\
 	}\n\
 }";

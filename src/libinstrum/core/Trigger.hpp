@@ -30,6 +30,7 @@ class Trigger
 		bool onSysUpdate(const OSMemUsage & memUsage) const;
 		bool onProcMemUpdate(const OSProcMemUsage & mem) const;
 		bool onRequestUpdate(size_t reqMem) const;
+		bool onAllocOp(size_t nbAlloc) const;
 		inline bool onThreadStackUpdate(size_t threadStackSize) const;
 	private:
 		size_t calcLimit(const std::string & value, size_t ref, const std::string & paramName = "Unknown");
@@ -43,6 +44,7 @@ class Trigger
 		size_t appReqLimit{0};
 		size_t totalMemory{0};
 		size_t threadStackLimit{0};
+		size_t allocCountLimit{0};
 		std::thread spyingThread;
 		volatile bool spyingThreadKeepRunning{false};
 };
