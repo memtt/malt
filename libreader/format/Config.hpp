@@ -79,6 +79,7 @@ struct Config
 		std::string onAppUsingVirt;
 		std::string onAppUsingReq;
 		std::string onThreadStackUsing;
+		std::string onAllocCount;
 		bool watchDog;
 	} dump;
 };
