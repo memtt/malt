@@ -358,27 +358,37 @@ class HeaderPatcher:
             self.patch_file(file)
 
 ############################################################
-def main():
+def run_from_args(args):
+    # load
+    patcher = HeaderPatcher(args.config)
+
+    # patch
+    if args.git_all:
+        patcher.patch_all_git_files(args.FILE)
+    else:
+        patcher.patch_file(args.FILE)
+
+############################################################
+def config_arg_parser(parser: argparse.ArgumentParser):
     # calc default config path
-    default_config = os.path.join(os.path.dirname(__file__), 'header-config.json')
-    
-    # define arguments
-    parser = argparse.ArgumentParser()
+    default_config = os.path.join(os.path.dirname(__file__), 'update_file_headers.json')
+
+    # add options
     parser.add_argument('FILE', help='File to patch or source dir when using --git-all')
     parser.add_argument('--git-all', '-g', help="Run on all file from GIT. FILE in this case give the GIT dir.", action="store_true")
     parser.add_argument('--config', '-c', help="Config file to use", default=default_config)
 
+############################################################
+def main():
+    # define arguments
+    parser = argparse.ArgumentParser()
+    config_arg_parser(parser)
+
     # parse
     options = parser.parse_args()
     
-    # load
-    patcher = HeaderPatcher(options.config)
-
-    # patch
-    if options.git_all:
-        patcher.patch_all_git_files(options.FILE)
-    else:
-        patcher.patch_file(options.FILE)
+    # run
+    run_from_args(options)
 
 ############################################################
 if __name__ == "__main__":

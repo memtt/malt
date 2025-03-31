@@ -14,6 +14,8 @@
 import os
 import argparse
 from gen_archive import malt_dev_gen_archive
+from gen_coverage import malt_gen_coverage
+from update_file_headers import config_arg_parser, run_from_args
 
 ############################################################
 def get_malt_source_dir() -> str:
@@ -41,6 +43,14 @@ def command_archive(args: object) -> None:
     malt_dev_gen_archive()
 
 ############################################################
+def command_coverage(args: object) -> None:
+    malt_gen_coverage()
+
+############################################################
+def command_update_file_headers(args: object) -> None:
+    run_from_args(args)
+
+############################################################
 def main() -> None:
     # parse args
     parser = argparse.ArgumentParser("dev", description="Globale source manager of the MALT repo.")
@@ -55,6 +65,15 @@ def main() -> None:
     # sub command
     archive = subparser.add_parser('archive', aliases=['ar'], help="Generate delivery archive.")
     archive.set_defaults(func=command_archive)
+
+    # sub command
+    coverage = subparser.add_parser('coverage', aliases=['cov'], help="Generate coverage in current build directory.")
+    coverage.set_defaults(func=command_coverage)
+
+    # sub command
+    update_file_headers = subparser.add_parser('headers', aliases=['head'], help="UPdate file headers.")
+    config_arg_parser(update_file_headers)
+    coverage.set_defaults(func=command_update_file_headers)
 
     # parse
     args = parser.parse_args()
