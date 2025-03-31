@@ -20,6 +20,7 @@ set -e
 
 ############################################################
 ENABLE_MPI=false
+ENABLE_GDB=false
 MPI_WRAPPER_DIR="$HOME/.malt"
 MALT_OPTIONS=""
 MALT_VERSION="@MALT_VERSION@@MALT_VERSION_NOTE@"
@@ -344,6 +345,7 @@ maltShowHelp()
 	echo "   -v/--verbose                Enable verbose mode."
 	echo "   -t/--trace                  Enable the tracing mode."
 	echo "   -d/--dumpconfig             Enable the dump of config file at exit."
+	echo "   -g/--gdb                    Enable GDB with MALT required options while launching the program."
 	echo "   --wrap {type}:{func_name}   Wrap the given allocation (type=malloc,free...) with the"
 	echo "                               given use defined symbol (eg. je_malloc). Can list with"
 	echo "                               coma as separator or call several time."
@@ -396,6 +398,10 @@ while true; do
 		;;
 		--dumpconfig|-d)
 			export MALT_OPTIONS="${MALT_OPTIONS};output:config=true"
+			shift 1
+			;;
+		--gdb|-g)
+			ENABLE_GDB=true
 			shift 1
 			;;
 		--mpi)
@@ -456,11 +462,18 @@ fi
 ############################################################
 #run
 if [ "${ENABLE_MPI}" = "true" ]; then
-	LD_PRELOAD="${MPI_WRAPPER_DIR}/libmaltmpi.so:${MALT_LIB}:${LD_PRELOAD}" "$@"
+	ld_preload="${MPI_WRAPPER_DIR}/libmaltmpi.so:${MALT_LIB}:${LD_PRELOAD}"
 elif [ -z "${LD_PRELOAD}" ]; then
-	LD_PRELOAD="${MALT_LIB}" "$@"
+	ld_preload="${MALT_LIB}"
 else
-	LD_PRELOAD="${MALT_LIB}:${LD_PRELOAD}" "$@"
+	ld_preload="${MALT_LIB}:${LD_PRELOAD}"
+fi
+
+############################################################
+if [ "${ENABLE_GDB}" = "true" ]; then
+	gdb -iex "set environment LD_PRELOAD=${ld_preload}" --args "$@"
+else
+	LD_PRELOAD="${ld_preload}" "$@"
 fi
 
 ############################################################
