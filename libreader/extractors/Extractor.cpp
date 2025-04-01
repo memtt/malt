@@ -11,6 +11,7 @@
 /**********************************************************/
 #include <iostream>
 #include <regex>
+#include <memory>
 #include "ExtractorHelpers.hpp"
 #include "Extractor.hpp"
 
@@ -318,6 +319,15 @@ void to_json(nlohmann::json & json, const FlattenMaxStackInfoEntry & value)
 		{"mem", value.mem},
 		{"count", value.count},
 	};
+}
+
+/**********************************************************/
+void to_json(nlohmann::json & json, const FullTreeNode & value)
+{
+	if (value.infos != nullptr)
+		json = *value.infos;
+	else
+		json = value.child;
 }
 
 /**********************************************************/
@@ -748,6 +758,30 @@ SourceFileMap Extractor::getSourceFileMap(void)
 
 	//ok
 	return sourceFiles;
+}
+
+/**********************************************************/
+FullTreeNode Extractor::getFullTree(void) const
+{
+	//vars
+	FullTreeNode root;
+	const MALTFormat::Stacks & stacks = this->profile.stacks;
+
+	//loop
+	for (const auto & it : stacks.stats)
+	{
+		FullTreeNode * cur = &root;
+		const MALTFormat::Stack & stack = it.stack;
+		const StackInfos & infos = it.infos;
+		for (const auto & addr : stack)
+			cur = &cur->child[addr];
+
+		if (cur->infos == nullptr)
+			cur->infos = std::unique_ptr<MALTFormat::StackInfos>(new MALTFormat::StackInfos());
+		cur->infos->merge(infos);
+	}
+
+	return root;
 }
 
 }

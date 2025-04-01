@@ -235,6 +235,30 @@ TEST(TestExtractorHelpers, getSummary)
 }
 
 /**********************************************************/
+TEST(TestExtractorHelpers, getFullTree)
+{
+	//load
+	JsonFileIn JsonFileIn(CUR_SRC_DIR "/example.json");
+	JsonIn data = JsonFileIn.getRoot();
+	MaltProfile profile;
+	data.get_to(profile);
+
+	//extract
+	Extractor extractor(profile);
+	FullTreeNode res = extractor.getFullTree();
+
+	//load ref
+	std::ifstream exampleExpected(CUR_SRC_DIR "/example.expected.json");
+	nlohmann::json dataExpected = nlohmann::json::parse(exampleExpected);
+
+	//remove abs path
+	nlohmann::json resJson = res;
+
+	//check
+	ASSERT_EQ(dataExpected["getFullTree"], resJson) << " Diff: " << nlohmann::json::diff(dataExpected["getFullTree"], resJson);
+}
+
+/**********************************************************/
 TEST(TestExtractorHelpers, getSourceFileMap)
 {
 	//load

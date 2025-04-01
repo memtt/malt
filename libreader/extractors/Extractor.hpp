@@ -144,6 +144,13 @@ struct FlattenMaxStackInfo
 };
 
 /**********************************************************/
+struct FullTreeNode
+{
+	std::map<MALTFormat::LangAddress, FullTreeNode> child;
+	std::unique_ptr<MALTFormat::StackInfos> infos{nullptr};
+};
+
+/**********************************************************/
 typedef std::map<std::string, ProcMapDistrEntry> ProcMapDistr;
 typedef std::list<FilteredStackEntry> FilteredStackList;
 
@@ -176,6 +183,7 @@ class Extractor
 		FlattenMaxStackInfo getMaxStackInfoOnFunction(void);
 		FlattenMaxStackInfo getStackInfoOnFunction(size_t id);
 		SourceFileMap getSourceFileMap(void);
+		FullTreeNode getFullTree(void) const;
 	private:
 		void mergeStackInfo(FlatProfileMap & into, const MALTFormat::LangAddress & addr,FlatProfileCounter counter,const MALTFormat::StackInfos & infos,const LocaltionMappingFunc & mapping) const;
 		void buildTranslation(void);
@@ -199,6 +207,7 @@ void to_json(nlohmann::json & json, const SummaryV2 & value);
 void to_json(nlohmann::json & json, const Summary & value);
 void to_json(nlohmann::json & json, const FlattenMaxStackInfo & value);
 void to_json(nlohmann::json & json, const FlattenMaxStackInfoEntry & value);
+void to_json(nlohmann::json & json, const FullTreeNode & value);
 
 }
 
