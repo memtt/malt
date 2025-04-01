@@ -80,7 +80,7 @@ trap forwardSigterm SIGTERM
 trap forwardSigterm SIGINT
 
 #call node on main script
-"$NODE" "${MALT_ROOT}/share/malt/webview/malt-webserver.js" "$@" &
+"$NODE" "--max-old-space-size=8192" "${MALT_ROOT}/share/malt/webview/malt-webserver.js" "$@" &
 CHILD=$!
 wait $!
 exit $?
