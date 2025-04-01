@@ -158,6 +158,19 @@ int malt_wrap_python_on_enter_exit(PyObject *obj, PyFrameObject *frame, int what
 
 	//apply
 	if (guard.needInstrument()) {
+		/*static Py_tss_t key = Py_tss_NEEDS_INIT;
+		static bool isInit = false;
+		if (!isInit)
+			MALT::PyThread_tss_create(&key);
+		void * pptr = MALT::PyThread_tss_get(&key);
+		if (pptr == nullptr) {
+			pptr = MALT_MALLOC(1);
+			MALT::PyThread_tss_set(&key, pptr);
+			fprintf(stderr, "MALT: Create thread : %p\n", pptr);
+		} else {
+			//fprintf(stderr, "MALT: Thread is : %p\n", pptr);
+		}*/
+
 		switch (what)
 		{
 			case PyTrace_CALL: {

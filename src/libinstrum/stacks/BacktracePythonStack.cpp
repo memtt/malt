@@ -125,6 +125,8 @@ LangAddress BacktracePythonStack::getCurrentFrameAddr(void)
 **/
 void BacktracePythonStack::loadCurrentStack(void)
 {
+	PyGILState_STATE state = MALT::PyGILState_Ensure();
+
 	//load current frame
 	PyFrameObject * currentFrame = this->loadCurrentFrame();
 
@@ -152,6 +154,9 @@ void BacktracePythonStack::loadCurrentStack(void)
 	//grow if needs
 	if (this->size == this->memSize)
 		this->grow();
+
+	//GIL
+	MALT::PyGILState_Release(state);
 }
 
 /**********************************************************/

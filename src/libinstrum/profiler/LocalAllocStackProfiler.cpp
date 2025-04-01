@@ -159,14 +159,9 @@ Stack* LocalAllocStackProfiler::getStack(Language lang)
 		cRef = &backtraceStack;
 	}
 
-	//lazy
-	static bool pythonInitialized = false;
-	if (pythonInitialized == false && MALT::Py_IsInitialized() == 1)
-		pythonInitialized = true;
-
 	//backtrace in python
 	Stack * pythonRef = nullptr;
-	if (gblOptions->pythonStackEnum == STACK_MODE_BACKTRACE && pythonInitialized) {
+	if (gblOptions->pythonStackEnum == STACK_MODE_BACKTRACE && MALT::Py_IsInitialized()) {
 		CODE_TIMING("loadCurrentStack",backtracePythonStack.loadCurrentStack());
 		pythonRef = &backtracePythonStack;
 	} else {
