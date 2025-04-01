@@ -88,10 +88,10 @@ inline void EnterExitStack::enterFunction ( LangAddress funcAddr )
 **/
 inline void EnterExitStack::exitFunction ( LangAddress funcAddr )
 {
-	assert(size > 0);
-
-	if (this->size - 1 >MALT_MAX_STACK_SIZE)
+	if (this->size - 1 >MALT_MAX_STACK_SIZE || this->size == 0) {
+		MALT_WARNING("Get stack tracking going down too much !");
 		return;
+	}
 
 	if (size > 0)
 		size--;

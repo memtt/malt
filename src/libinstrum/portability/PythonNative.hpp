@@ -40,6 +40,7 @@ inline int PyFrame_GetLineNumber(PyFrameObject * frame) {return ::PyFrame_GetLin
 inline void PyObject_Free(void * object) {::PyObject_Free(object);};
 inline int Py_BytesMain(int argc, char ** argv) {return ::Py_BytesMain(argc, argv);};
 inline void Py_DecRef(PyObject* ptr) {::Py_DECREF(ptr);};
+inline Py_ssize_t Py_RefCnt(PyObject* ptr) {return ::Py_REFCNT(ptr);};
 inline PyObject * PyUnicode_AsEncodedString(PyObject * value, const char * encoding, const char * mode) {return ::PyUnicode_AsEncodedString(value, encoding, mode);};
 inline int Py_IsInitialized(void) {return ::Py_IsInitialized();};
 

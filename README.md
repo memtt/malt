@@ -262,6 +262,7 @@ on-app-using-rss=      ; Dump when RSS of the app reach the given limit in %, G,
 on-app-using-virt=     ; Dump when Virtual Memory of the app reach limit in %, G, M, K (empty to disable).
 on-app-using-req=      ; Dump when Requested Memory of the app reach limit in %, G, M, K (empty to disable).
 on-thread-stack-using= ; Dump when one stack reach limit in %, G, M, K (empty to disable).
+on-alloc-count=        ; Dump when number of allocations reach limit in G, M, K (empty to disable).
 watch-dog=false        ; Run an active thread spying continuouly the memory of the app, not only sometimes.
 ```
 

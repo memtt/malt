@@ -94,15 +94,24 @@ PyFrameObject * BacktracePythonStack::loadCurrentFrame(void)
 /**********************************************************/
 LangAddress BacktracePythonStack::getCurrentFrameAddr(void)
 {
+	//TODO need to find a way to make this clean... It fixes crash on the exit.
+	if (MALT::PyGILState_GetThisThreadState() == NULL) {
+		return LangAddress(DOMAIN_PYTHON, MALT_PYTHON_NULL_FUNC_ID);
+	}
+
+	PyGILState_STATE gilState = MALT::PyGILState_Ensure();
+
 	//load current frame
 	PyFrameObject * currentFrame = this->loadCurrentFrame();
 
 	//return addr
-	if (currentFrame == NULL)
+	if (currentFrame == NULL) {
+		MALT::PyGILState_Release(gilState);
 		return this->stack[0];
-	else {
+	} else {
 		LangAddress res = this->pythonSymbolTracker.frameToLangAddress(currentFrame);
 		MALT::Py_DecRef((PyObject*)currentFrame);
+		MALT::PyGILState_Release(gilState);
 		return res;
 	}
 }

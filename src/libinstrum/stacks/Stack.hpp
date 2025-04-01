@@ -20,6 +20,7 @@
 #include <ostream>
 //Include Debug
 #include <common/Debug.hpp>
+#include <common/String.hpp>
 #include <stacks/LangAddress.hpp>
 
 /**********************************************************/
@@ -76,6 +77,8 @@ class Stack
 		StackHash hash(int skipDepth = 0) const;
 		static StackHash hash(LangAddress* stack, int size, MALT::StackOrder order);
 		void solveSymbols(SymbolSolver & dic) const;
+		void printSymbols(SymbolSolver & dic) const;
+		String toDebugString(SymbolSolver & dic) const;
 		void grow(void);
 		bool isValid(void) const;
 		int getSize(void) const;

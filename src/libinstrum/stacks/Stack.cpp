@@ -470,6 +470,46 @@ void Stack::solveSymbols ( SymbolSolver& dic ) const
 
 /**********************************************************/
 /**
+ * Loop on all symbols and register them into the symbol translator.
+**/
+String Stack::toDebugString(SymbolSolver & dic) const
+{
+	String final_buffer;
+	if (stack != NULL) {
+		for (int i = 0 ; i < size ; i++) {
+			const CallSite * site = dic.getCallSiteInfo(this->stack[size - i - 1]);
+			char padding[4096];
+			char buffer[4096];
+			memset(padding, ' ', 2*i);
+			padding[2*i] = '\0';
+			snprintf(buffer, sizeof(buffer), "%s%s:%d\n",padding, dic.getString(site->file).c_str(), site->line);
+			final_buffer += buffer;
+			snprintf(buffer, sizeof(buffer), "%s%s\n",padding, dic.getString(site->function).c_str());
+			final_buffer += buffer;
+		}
+	}
+	return final_buffer;
+}
+
+/**********************************************************/
+/**
+ * Loop on all symbols and register them into the symbol translator.
+**/
+void Stack::printSymbols( SymbolSolver& dic ) const
+{
+	if (stack != NULL)
+		for (int i = 0 ; i < size ; i++) {
+			const CallSite * site = dic.getCallSiteInfo(this->stack[size - i - 1]);
+			char padding[4096];
+			memset(padding, ' ', 2*i);
+			padding[2*i] = '\0';
+			fprintf(stderr, "%s%s:%d\n",padding, dic.getString(site->file).c_str(), site->line);
+			fprintf(stderr, "%s%s\n",padding, dic.getString(site->function).c_str());
+		}
+}
+
+/**********************************************************/
+/**
  * Return the callee, the current active function when doing backtrace(). Return NULL if no stack.
 **/
 LangAddress Stack::getCallee(void ) const

@@ -54,6 +54,8 @@ bool PyLazyInterfaceInit(void)
 	MALT_PYTHON_DLSYM(Py_BytesMain, supported);
 	MALT_PYTHON_DLSYM(PyUnicode_AsEncodedString, supported);
 	MALT_PYTHON_DLSYM(Py_IsInitialized, supported);
+	MALT_PYTHON_DLSYM(Py_DecRef, supported);
+	//MALT_PYTHON_DLSYM(Py_RefCnt, supported);
 	//fprintf(stderr, "MALT: Python support = %d\n", (int)supported);
 	return supported;
 }
@@ -223,6 +225,13 @@ void Py_DecRef(PyObject* ptr)
 {
 	if (gblPythonApi.Py_DecRef != nullptr)
 		return gblPythonApi.Py_DecRef(ptr);
+}
+
+/**********************************************************/
+Py_ssize_t Py_RefCnt(PyObject* ptr)
+{
+	if (gblPythonApi.Py_RefCnt != nullptr)
+		return gblPythonApi.Py_RefCnt(ptr);
 }
 
 }

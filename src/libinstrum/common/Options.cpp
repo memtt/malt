@@ -60,6 +60,7 @@ Options::Options(void)
 	this->stackAddr2lineThreads   = 8;
 	//python
 	this->pythonStack             = "enter-exit";
+	this->pythonStackEnum         = STACK_MODE_ENTER_EXIT_FUNC;
 	this->pythonMix               = true;
 	this->pythonInstru            = true;
 	this->pythonObj               = true;

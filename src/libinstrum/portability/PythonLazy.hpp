@@ -45,6 +45,7 @@ typedef int (*Py_BytesMainFuncPtr)(int /*argc*/, char ** /*argv*/);
 typedef PyObject * (*PyUnicode_AsEncodedStringFuncPtr)(PyObject * /*value*/, const char * /*encoding*/, const char * /*mode*/);
 typedef int (*Py_IsInitializedFuncPtr)(void);
 typedef void (*Py_DecRefFuncPtr)(PyObject* /*ptr*/);
+typedef Py_ssize_t (*Py_RefCntFuncPtr)(PyObject* /*ptr*/);
 typedef void (*Py_InitializeFuncPtr)(void);
 
 /**********************************************************/
@@ -69,6 +70,7 @@ struct PythonAPIFuncPtrs
 	PyUnicode_AsEncodedStringFuncPtr PyUnicode_AsEncodedString{nullptr};
 	Py_IsInitializedFuncPtr Py_IsInitialized{nullptr};
 	Py_DecRefFuncPtr Py_DecRef{nullptr};
+	Py_RefCntFuncPtr Py_RefCnt{nullptr};
 	Py_InitializeFuncPtr Py_Initialize{nullptr};
 };
 
@@ -95,6 +97,7 @@ int Py_BytesMain(int argc, char ** argv);
 PyObject * PyUnicode_AsEncodedString(PyObject *unicode, const char *encoding, const char *errors);
 int Py_IsInitialized(void);
 void Py_DecRef(PyObject* ptr);
+Py_ssize_t Py_RefCnt(PyObject* ptr);
 void Py_Initialize(void);
 
 }

@@ -29,6 +29,7 @@ typedef void * (*FakePythonMallocFuncPtr) (void *ctx, size_t size);
 typedef void * (*FakePythonCallocFuncPtr) (void *ctx, size_t nelem, size_t elsize);
 typedef void * (*FakePythonReallocFuncPtr) (void *ctx, void *ptr, size_t new_size);
 typedef void   (*FakePythonFreeFuncPtr) (void *ctx, void *ptr);
+typedef ssize_t Py_ssize_t;
 
 /**********************************************************/
 typedef bool PyGILState_STATE;
@@ -97,6 +98,7 @@ inline void PyObject_Free(void * object) {};
 inline int Py_BytesMain(int argc, char ** argv) {fprintf(stderr, "MALT: Built without python support !\n"); return EXIT_FAILURE;};
 inline void Py_DecRef(void* ptr) {};
 inline PyObject * PyUnicode_AsEncodedString(const char * value, const char * encoding, const char * mode) {return nullptr;};
+inline Py_ssize_t Py_RefCnt(PyObject* ptr) {return 0;};
 inline int Py_IsInitialized(void) {return 0;};
 
 }

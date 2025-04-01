@@ -15,6 +15,7 @@
 /**********************************************************/
 #include <string>
 #include "STLInternalAllocator.hpp"
+#include <json/JsonState.h>
 
 /**********************************************************/
 namespace MALT
