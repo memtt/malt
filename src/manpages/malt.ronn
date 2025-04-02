@@ -55,6 +55,8 @@ it with debug symbols (`-g`) and also to disable inlining to get more accurate s
    Automatically wrap all the memory managment functions under the given prefix. You can list
    several prefixes separated by comma. For exemple giving `je_` will wrap all the `je_malloc`,
    `je_free`, `je_realloc`... functions.
+ * `--gdb`:
+   Run the program into GDB by configuring Automatically GDB to work properly with MALT.
  * `-h`, `--help`:
    Display help message with a list of available command line options.
 

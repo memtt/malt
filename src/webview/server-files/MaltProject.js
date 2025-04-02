@@ -764,6 +764,7 @@ MaltProject.prototype.getStackInfoOnFunction = function(id)
 }
 
 /**********************************************************/
+//--PORTED IN C++ VERSION--
 MaltProject.prototype.getFullTree = function()
 {
 	var tree = {};

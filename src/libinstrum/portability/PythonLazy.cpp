@@ -240,30 +240,30 @@ Py_ssize_t Py_RefCnt(PyObject* ptr)
 }
 
 /**********************************************************/
-int PyThread_tss_create(Py_tss_t *key)
+/*int PyThread_tss_create(Py_tss_t *key)
 {
 	if (gblPythonApi.PyThread_tss_create != nullptr)
 		return gblPythonApi.PyThread_tss_create(key);
 	else
 		return 1;
-}
+}*/
 
 /**********************************************************/
-int PyThread_tss_set(Py_tss_t *key, void *value)
+/*int PyThread_tss_set(Py_tss_t *key, void *value)
 {
 	if (gblPythonApi.PyThread_tss_set != nullptr)
 		return gblPythonApi.PyThread_tss_set(key, value);
 	else
 		return 1;
-}
+}*/
 
 /**********************************************************/
-void *PyThread_tss_get(Py_tss_t *key)
+/*void *PyThread_tss_get(Py_tss_t *key)
 {
 	if (gblPythonApi.PyThread_tss_get != nullptr)
 		return gblPythonApi.PyThread_tss_get(key);
 	else
 		return nullptr;
-}
+}*/
 
 }

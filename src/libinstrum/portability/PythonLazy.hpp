@@ -78,9 +78,9 @@ struct PythonAPIFuncPtrs
 	Py_RefCntFuncPtr Py_RefCnt{nullptr};
 	Py_InitializeFuncPtr Py_Initialize{nullptr};
 	//
-	PyThread_tss_createFuncPtr PyThread_tss_create{nullptr};
-	PyThread_tss_setFuncPtr PyThread_tss_set{nullptr};
-	PyThread_tss_getFuncPtr PyThread_tss_get{nullptr};
+	//PyThread_tss_createFuncPtr PyThread_tss_create{nullptr};
+	//PyThread_tss_setFuncPtr PyThread_tss_set{nullptr};
+	//PyThread_tss_getFuncPtr PyThread_tss_get{nullptr};
 };
 
 /**********************************************************/
@@ -109,9 +109,9 @@ void Py_DecRef(PyObject* ptr);
 Py_ssize_t Py_RefCnt(PyObject* ptr);
 void Py_Initialize(void);
 //
-int PyThread_tss_create(Py_tss_t *key);
-int PyThread_tss_set(Py_tss_t *key, void *value);
-void *PyThread_tss_get(Py_tss_t *key);
+//int PyThread_tss_create(Py_tss_t *key);
+//int PyThread_tss_set(Py_tss_t *key, void *value);
+//void *PyThread_tss_get(Py_tss_t *key);
 
 }
 
