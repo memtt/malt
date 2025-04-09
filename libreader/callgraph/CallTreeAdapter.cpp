@@ -87,7 +87,7 @@ CallTreeAdapter::CallTreeAdapter(const Extractor & extractor)
 	FullTreeNode calltree = extractor.getFullTree();
 
 	//build graph
-	TreeSet treeSet = this->generateTreeDataSet(calltree);
+	fulltree = this->generateTreeDataSet(calltree);
 }
 
 /**********************************************************/
@@ -257,118 +257,206 @@ TreeSet CallTreeAdapter::generateTreeDataSet(FullTreeNode & treeNode)
 	return set;
 }
 
+/**********************************************************/
+/**
+ * Convert RGB string to HEX color string
+ * @param  {string} rgb RGB color string
+ * @return {string}     HEX color string
+ */
+std::string CallTreeAdapter::convertRgbStringToHex(const std::string & rgb) {
+	int r = 0, g = 0, b = 0;
+	if (sscanf(rgb.c_str(), "(%d,%d,%d)", &r, &g, &b) == 3) {
+		char buffer[256];
+		snprintf(buffer, sizeof(buffer), "#%02x%02x%02x", r, g, b);
+		return buffer;
+	} else {
+		return "#000000";
+	}
 }
 
+/**********************************************************/
+class D3ScaleLinearRange
+{
+	public:
+		D3ScaleLinearRange(double valueMin, double valueMax, double rangeMin, double rangeMax);
+		double getValue(double value) const;
+	private:
+		double valueMin;
+		double valueMax;
+		double rangeMin;
+		double rangeMax;
+};
 
+/**********************************************************/
+D3ScaleLinearRange::D3ScaleLinearRange(double valueMin, double valueMax, double rangeMin, double rangeMax)
+{
+	this->valueMax = valueMax;
+	this->valueMin = valueMin;
+	this->rangeMax = rangeMax;
+	this->rangeMin = rangeMin;
+}
 
-// 	/**
-// 	 * Convert RGB string to HEX color string
-// 	 * @param  {string} rgb RGB color string
-// 	 * @return {string}     HEX color string
-// 	 */
-// 	function convertRgbStringToHex(rgb) {
-// 		var a = rgb.split("(")[1].split(")")[0];
-// 		a = a.split(",");
-// 		var b = a.map(function(x){             //For each array element
-// 		    x = parseInt(x).toString(16);      //Convert to a base16 string
-// 		    return (x.length==1) ? "0"+x : x;  //Add zero if we get only one character
-// 		})
-// 		return "#"+b.join("");
-// 	}
+/**********************************************************/
+double D3ScaleLinearRange::getValue(double value) const
+{
+	//calc delta
+	double delta = this->rangeMax - this->rangeMin; 
+	double ratio = (value - rangeMin) / delta;
 
-// 	/**
-// 	 * Calculates color codes for nodes and edges. based on a metric
-// 	 *
-// 	 * Color is added as the 'color' property on each node and edge.
-// 	 * 'Thickness' is also added to the edges.
-// 	 *
-// 	 * @param {dataset} dataset Call-Tree dataset
-// 	 */
-// 	function addColorCodes(dataset) {
-// 		var nodes = dataset.nodes;
-// 		var max = -1;
+	//calc colors
+	return this->valueMin + (double)(this->valueMax - this->valueMin) * ratio;
+}
 
-// 		// find max
-// 		for (var i = 0; i < nodes.length; i++) {
-// 			if(nodes[i].score > max) {
-// 				max = nodes[i].score;
-// 			}
-// 		}
+/**********************************************************/
+class D3ScaleLinearColorRange
+{
+	public:
+		D3ScaleLinearColorRange(const std::string & colorMin, const std::string & colorMax, double rangeMin, double rangeMax);
+		std::string getColor(double value) const;
+	private:
+		int colorMin_r{0}, colorMin_g{0}, colorMin_b{0};
+		int colorMax_r{0}, colorMax_g{0}, colorMax_b{0};
+		double rangeMin;
+		double rangeMax;
+};
 
-// 		// generate a mapping function from [0-max] onto [#397EBA,#FF9595]
-// 		var colorScale = d3scale.scaleLinear()
-// 			.range(["#397EBA","#ab4141"])
-// 			.domain([0,max]);
+/**********************************************************/
+D3ScaleLinearColorRange::D3ScaleLinearColorRange(const std::string & colorMin, const std::string & colorMax, double rangeMin, double rangeMax)
+{
+	//parse
+	ssize_t res1 = sscanf(colorMin.c_str(), "#%02x%02x%02x", &colorMin_r, &colorMin_g, &colorMin_b);
+	ssize_t res2 = sscanf(colorMin.c_str(), "#%02x%02x%02x", &colorMax_r, &colorMax_g, &colorMax_b);
 
-// 		// generate a mapping function from [0-max] onto [1,4]
-// 		var thicknessScale = d3scale.scaleLinear()
-// 			.range([0.8, 8])
-// 			.domain([0,max]);
+	//check
+	assert(res1 != 3);
+	assert(res2 != 3);
 
-// 		// assign colors
-// 		for (var i = 0; i < nodes.length; i++) {
-// 			nodes[i].color = convertRgbStringToHex(colorScale(nodes[i].score));
-// 			for (var j = 0; j < nodes[i].inEdges.length; j++) {
-// 				nodes[i].inEdges[j].color = convertRgbStringToHex(colorScale(nodes[i].inEdges[j].score));
-// 				nodes[i].inEdges[j].thickness = thicknessScale(nodes[i].inEdges[j].score);
-// 			}
-// 			for (var j = 0; j < nodes[i].outEdges.length; j++) {
-// 				nodes[i].outEdges[j].color = convertRgbStringToHex(colorScale(nodes[i].outEdges[j].score));
-// 				nodes[i].outEdges[j].thickness = thicknessScale(nodes[i].outEdges[j].score);
-// 			}
-// 		}
-// 	}
+	this->rangeMin = rangeMin;
+	this->rangeMax = rangeMax;
+}
 
-// 	/**
-// 	 * Add score attribute to nodes
-// 	 * @param {array} nodes  Node list
-// 	 * @param {string} metric Type of metric to use as score
-// 	 * @param {boolean} isRatio Should the score be calculated as percentages?
-// 	 */
-// 	function addScores(nodes, metric, isRatio) {
-// 		var extractValue = maltFuncMetrics.maltMetrics[metric].extractor;
-// 		var formatValue = maltFuncMetrics.maltMetrics[metric].formalter;
-// 		if(isRatio) {
-// 			var max = 0;
-// 			for (var i = 0; i < fulltree.nodes.length; i++) {
-// 				if(fulltree.nodes[i].inEdges.length == 0) {
-// 					var val = maltFuncMetrics.maltMetrics[metric].extractor(fulltree.nodes[i].stats);
-// 					if(maltFuncMetrics.maltMetrics[metric].ref == 'sum') {
-// 						max += val;
-// 					} else {
-// 						max = val > max? val : max;
-// 					}
-// 				}
-// 			}
-// 			for (var i = 0; i < nodes.length; i++) {
-// 				nodes[i].score = extractValue(nodes[i].stats)/max*100.0;
-// 				nodes[i].scoreReadable = Math.round(nodes[i].score*100)/100 + '%';
+/**********************************************************/
+std::string D3ScaleLinearColorRange::getColor(double value) const
+{
+	//calc delta
+	double delta = this->rangeMax - this->rangeMin; 
+	double ratio = (value - rangeMin) / delta;
 
-// 				for (var j = 0; j < nodes[i].inEdges.length; j++) {
-// 					nodes[i].inEdges[j].score = extractValue(nodes[i].inEdges[j].stats)/max*100.0;
-// 					nodes[i].inEdges[j].scoreReadable = Math.round(nodes[i].inEdges[j].score*100)/100 + '%';
-// 				}
-// 				for (var j = 0; j < nodes[i].outEdges.length; j++) {
-// 					nodes[i].outEdges[j].score = extractValue(nodes[i].outEdges[j].stats)/max*100.0;
-// 					nodes[i].outEdges[j].scoreReadable = Math.round(nodes[i].outEdges[j].score*100)/100 + '%';
-// 				}
-// 			}
-// 		} else {
-// 			for (var i = 0; i < nodes.length; i++) {
-// 				nodes[i].score = extractValue(nodes[i].stats);
-// 				nodes[i].scoreReadable = formatValue(nodes[i].score);
+	//calc colors
+	int r = this->colorMin_r + (double)(this->colorMax_r - this->colorMin_r) * ratio;
+	int g = this->colorMin_g + (double)(this->colorMax_g - this->colorMin_g) * ratio;
+	int b = this->colorMin_b + (double)(this->colorMax_b - this->colorMin_b) * ratio;
 
-// 				for (var j = 0; j < nodes[i].inEdges.length; j++) {
-// 					nodes[i].inEdges[j].score = extractValue(nodes[i].inEdges[j].stats);
-// 					nodes[i].inEdges[j].scoreReadable = formatValue(nodes[i].inEdges[j].score);
-// 				}
-// 				for (var j = 0; j < nodes[i].outEdges.length; j++) {
-// 					nodes[i].outEdges[j].score = extractValue(nodes[i].outEdges[j].stats);
-// 					nodes[i].outEdges[j].scoreReadable = formatValue(nodes[i].outEdges[j].score);
-// 				}
-// 			}
-// 		}
-// 	}
+	//make web color
+	char buffer[256];
+	snprintf(buffer, sizeof(buffer), "#%02x%02x%02x", r, g, b);
+
+	//ok
+	return buffer;
+}
+
+/**********************************************************/
+/**
+ * Calculates color codes for nodes and edges. based on a metric
+ *
+ * Color is added as the 'color' property on each node and edge.
+ * 'Thickness' is also added to the edges.
+ *
+ * @param {dataset} dataset Call-Tree dataset
+ */
+void CallTreeAdapter::addColorCodes(TreeSet & dataset)
+{
+	//vars
+	std::vector<CallTreeNode> & nodes = dataset.nodes;
+	ssize_t max = -1;
+
+	// find max
+	for (size_t i = 0; i < nodes.size(); i++) {
+		if(nodes[i].score > max) {
+			max = nodes[i].score;
+		}
+	}
+
+	// generate a mapping function from [0-max] onto [#397EBA,#FF9595]
+	D3ScaleLinearColorRange colorScale = D3ScaleLinearColorRange("#397EBA", "#ab4141", 0, max);
+
+	// generate a mapping function from [0-max] onto [1,4]
+	D3ScaleLinearRange thicknessScale = D3ScaleLinearRange(0.8, 8, 0, max);
+
+	// assign colors
+	for (size_t i = 0; i < nodes.size(); i++) {
+		nodes[i].color = convertRgbStringToHex(colorScale.getColor(nodes[i].score));
+		for (size_t j = 0; j < nodes[i].inEdges.size(); j++) {
+			nodes[i].inEdges[j].color = convertRgbStringToHex(colorScale.getColor(nodes[i].inEdges[j].score));
+			nodes[i].inEdges[j].thickness = thicknessScale.getValue(nodes[i].inEdges[j].score);
+		}
+		for (size_t j = 0; j < nodes[i].outEdges.size(); j++) {
+			nodes[i].outEdges[j].color = convertRgbStringToHex(colorScale.getColor(nodes[i].outEdges[j].score));
+			nodes[i].outEdges[j].thickness = thicknessScale.getValue(nodes[i].outEdges[j].score);
+		}
+	}
+}
+
+/**
+ * Add score attribute to nodes
+ * @param {array} nodes  Node list
+ * @param {string} metric Type of metric to use as score
+ * @param {boolean} isRatio Should the score be calculated as percentages?
+ */
+void CallTreeAdapter::addScores(std::vector<CallTreeNode> & nodes, const MaltMetric & metric, bool isRatio)
+{
+	//vars
+	auto extractValue = metric.extractor;
+	auto formatValue = metric.formater;
+
+	//apply
+	if(isRatio) {
+		double max = 0;
+		for (size_t i = 0; i < fulltree.nodes.size(); i++) {
+			if(fulltree.nodes[i].inEdges.size() == 0) {
+				size_t val = metric.extractor(fulltree.nodes[i].stats);
+				if(metric.ref == REF_MODE_SUM) {
+					max += val;
+				} else {
+					max = val > max? val : max;
+				}
+			}
+		}
+		for (size_t i = 0; i < nodes.size() ; i++) {
+			nodes[i].score = extractValue(nodes[i].stats)/max*100.0;
+			char buffer[256];
+			snprintf(buffer, sizeof(buffer), "%.02g%%", (double)(nodes[i].score*100.0)/100.0);
+			nodes[i].scoreReadable = buffer;
+
+			for (size_t j = 0; j < nodes[i].inEdges.size(); j++) {
+				nodes[i].inEdges[j].score = extractValue(nodes[i].inEdges[j].stats)/max*100.0;
+				snprintf(buffer, sizeof(buffer), "%.02g%%", (double)(nodes[i].inEdges[j].score*100.0)/100.0);
+				nodes[i].inEdges[j].scoreReadable = buffer;
+			}
+			for (size_t j = 0; j < nodes[i].outEdges.size(); j++) {
+				nodes[i].outEdges[j].score = extractValue(nodes[i].outEdges[j].stats)/max*100.0;
+				snprintf(buffer, sizeof(buffer), "%.02g%%", (double)(nodes[i].outEdges[j].score*100.0)/100.0);
+				nodes[i].outEdges[j].scoreReadable = buffer;
+			}
+		}
+	} else {
+		for (size_t i = 0; i < nodes.size(); i++) {
+			nodes[i].score = extractValue(nodes[i].stats);
+			nodes[i].scoreReadable = formatValue(nodes[i].score);
+
+			for (size_t j = 0; j < nodes[i].inEdges.size(); j++) {
+				nodes[i].inEdges[j].score = extractValue(nodes[i].inEdges[j].stats);
+				nodes[i].inEdges[j].scoreReadable = formatValue(nodes[i].inEdges[j].score);
+			}
+			for (size_t j = 0; j < nodes[i].outEdges.size(); j++) {
+				nodes[i].outEdges[j].score = extractValue(nodes[i].outEdges[j].stats);
+				nodes[i].outEdges[j].scoreReadable = formatValue(nodes[i].outEdges[j].score);
+			}
+		}
+	}
+}
+
+}
 
 // 	/**
 // 	 * Filter a tree to have only decendants of a particular node.

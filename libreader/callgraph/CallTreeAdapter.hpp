@@ -35,6 +35,10 @@ struct InOutEdge
 	InOutEdge(size_t id, const MALTFormat::StackInfos & stats):id(id), stats(stats){};
 	size_t id;
 	MALTFormat::StackInfos stats;
+	std::string color;
+	double thickness;
+	double score{0.0};
+	std::string scoreReadable;
 };
 
 /**********************************************************/
@@ -49,14 +53,17 @@ struct CallTreeEdge
 struct CallTreeNode
 {
 	CallTreeNode(size_t id, std::string label, std::string tooltip, size_t level, MALTFormat::StackInfos stats, const FullTreeNode & treeNode);
-	size_t id;
+	size_t id{0};
 	std::string label;
 	std::string tooltip;
-	size_t level;
+	size_t level{0};
 	MALTFormat::StackInfos stats;
 	const FullTreeNode & treeNode;
 	std::vector<InOutEdge> outEdges;
 	std::vector<InOutEdge> inEdges;
+	double score{0.0};
+	std::string scoreReadable;
+	std::string color;
 };
 
 /**********************************************************/
@@ -80,8 +87,12 @@ class CallTreeAdapter
 		~CallTreeAdapter(void);
 		size_t generateNodesAndVertices(const FullTreeNode & treeNode, size_t level, std::vector<CallTreeNode> & nodes, std::vector<CallTreeEdge> & vertices, SimpleIdCache & nodeCache, SimpleIdCache & vertCache, std::vector<size_t> stack);
 		TreeSet generateTreeDataSet(FullTreeNode & treeNode);
+		static std::string convertRgbStringToHex(const std::string & rgb);
+		static void addColorCodes(TreeSet & dataset);
+		void addScores(std::vector<CallTreeNode> & nodes, const MaltMetric & metric, bool isRatio);
 	private:
 		const Extractor & extractor;
+		TreeSet fulltree;
 };
 
 /**********************************************************/
