@@ -21,7 +21,7 @@ namespace MALTReader
 /**********************************************************/
 MaltFuncMetrics::MaltFuncMetrics(void)
 {
-
+	this->fillMetrics();
 }
 
 /**********************************************************/

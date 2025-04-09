@@ -25,6 +25,9 @@ It has been rewritten in C++ by
 #include "CppDeclParser.hpp"
 
 /**********************************************************/
+#define START_END_TO_START_SIZE(start, end) (start), ((end) - (start))
+
+/**********************************************************/
 namespace MALTReader
 {
 
@@ -125,8 +128,8 @@ FuncDescription CppDeclParser::parseCppPrototype(std::string func)
 
 	// Get args list
 	if(doesHaveBraces) {
-		funcDescription.arguments = func.substr(func.find_last_of('(')+1, func.size()-1);
-		func = func.substr(0, func.find_last_of('('));
+		funcDescription.arguments = func.substr(START_END_TO_START_SIZE(func.find_last_of('(')+1, func.size()-1));
+		func = func.substr(START_END_TO_START_SIZE(0, func.find_last_of('(')));
 		trim(func);
 		if(!funcDescription.arguments.size()) {
 			funcDescription.arguments = "";
@@ -138,8 +141,8 @@ FuncDescription CppDeclParser::parseCppPrototype(std::string func)
 	// Get function type parameters
 	if(isFunctionParameterized) {
 		size_t parameterStartIndex = getParameterStartIndex(func);
-		funcDescription.funcParameters = func.substr(parameterStartIndex+1, func.size()-1);
-		func = func.substr(0, parameterStartIndex);
+		funcDescription.funcParameters = func.substr(START_END_TO_START_SIZE(parameterStartIndex+1, func.size()-1));
+		func = func.substr(START_END_TO_START_SIZE(0, parameterStartIndex));
 	}
 
 	size_t doubleColonPosition = func.find_last_of("::");
@@ -147,8 +150,9 @@ FuncDescription CppDeclParser::parseCppPrototype(std::string func)
 
 	// Get function name if there is class
 	if(hasClass) {
-		funcDescription.funcName = func.substr(doubleColonPosition + 2);
-		func = func.substr(0, doubleColonPosition);
+		funcDescription.funcName = func.substr(doubleColonPosition + 1);
+		trim(funcDescription.funcName);
+		func = func.substr(START_END_TO_START_SIZE(0, doubleColonPosition-1));
 	}
 
 	bool isClassParameterized = (func[func.size()-1] == '>');
@@ -156,8 +160,8 @@ FuncDescription CppDeclParser::parseCppPrototype(std::string func)
 	// Get the class type parameters if there is class
 	if(hasClass && isClassParameterized) {
 		size_t parameterStartIndex = getParameterStartIndex(func);
-		funcDescription.classParameters = func.substr(parameterStartIndex+1, func.size()-1);
-		func = func.substr(0, parameterStartIndex);
+		funcDescription.classParameters = func.substr(START_END_TO_START_SIZE(parameterStartIndex+1, func.size()-1));
+		func = func.substr(START_END_TO_START_SIZE(0, parameterStartIndex));
 	}
 
 	size_t lastSpacePosition = func.find_last_of(' ');
@@ -174,8 +178,8 @@ FuncDescription CppDeclParser::parseCppPrototype(std::string func)
 
 		// Is namespaced?
 		if(className.find_last_of("::") != -1) {
-			funcDescription.nameSpace = className.substr(0, className.find_last_of("::"));
-			className = className.substr(className.find_last_of("::") + 2);
+			funcDescription.nameSpace = className.substr(START_END_TO_START_SIZE(0, className.find_last_of("::")-1));
+ 			className = className.substr(className.find_last_of("::") + 1);
 		}
 
 		funcDescription.className = className;
@@ -185,6 +189,7 @@ FuncDescription CppDeclParser::parseCppPrototype(std::string func)
 	if(!hasClass) {
 		if(hasReturnValue) {
 			funcDescription.funcName = func.substr(lastSpacePosition);
+			trim(funcDescription.funcName);
 			func = func.substr(0, lastSpacePosition);
 		} else {
 			funcDescription.funcName = func;

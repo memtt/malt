@@ -86,8 +86,8 @@ CallTreeAdapter::CallTreeAdapter(const Extractor & extractor)
 	//build calltree
 	FullTreeNode calltree = extractor.getFullTree();
 
-	// console.time("generateTreeDataSet");
-	//var fulltree = generateTreeDataSet(calltree);
+	//build graph
+	TreeSet treeSet = this->generateTreeDataSet(calltree);
 }
 
 /**********************************************************/
@@ -122,7 +122,7 @@ static ssize_t getIndexOf(const std::vector<size_t> & stack, size_t levelMax, si
  * @param {array} stack Stack of previous nodes
  * @return {int}              Id for current tree
  */
-size_t CallTreeAdapter::generateNodesAndVertices(const FullTreeNode & treeNode, size_t level, std::vector<CallTreeNode> & nodes, std::vector<CallTreeEdge> vertices, SimpleIdCache & nodeCache, SimpleIdCache & vertCache, std::vector<size_t> stack)
+size_t CallTreeAdapter::generateNodesAndVertices(const FullTreeNode & treeNode, size_t level, std::vector<CallTreeNode> & nodes, std::vector<CallTreeEdge> & vertices, SimpleIdCache & nodeCache, SimpleIdCache & vertCache, std::vector<size_t> stack)
 {
 	//vars
 	std::string identifier;
@@ -241,23 +241,25 @@ size_t CallTreeAdapter::generateNodesAndVertices(const FullTreeNode & treeNode, 
 	return currentId;
 }
 
+/**********************************************************/
+/**
+ * Convert a call tree to a object containing nodes and vertices
+ * @param  {object} tree Call-tree
+ * @return {object}      Contains nodes and edges
+ */
+TreeSet CallTreeAdapter::generateTreeDataSet(FullTreeNode & treeNode)
+{
+	TreeSet set;
+	std::vector<size_t> stack;
+	SimpleIdCache nodeIdCache;
+	SimpleIdCache vertIdCache;
+	generateNodesAndVertices(treeNode, 0, set.nodes, set.vertices, nodeIdCache, vertIdCache, stack);
+	return set;
 }
 
-// 	/**
-// 	 * Convert a call tree to a object containing nodes and vertices
-// 	 * @param  {object} tree Call-tree
-// 	 * @return {object}      Contains nodes and edges
-// 	 */
-// 	function generateTreeDataSet(tree)
-// 	{
-// 		var nodes = [], vertices= [];
-// 		generateNodesAndVertices(tree, 0, nodes, vertices, new SimpleIdCache(), new SimpleIdCache(), []);
+}
 
-// 		return {
-// 			nodes: nodes,
-// 			edges: vertices
-// 		};
-// 	}
+
 
 // 	/**
 // 	 * Convert RGB string to HEX color string

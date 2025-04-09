@@ -60,6 +60,13 @@ struct CallTreeNode
 };
 
 /**********************************************************/
+struct TreeSet
+{
+	std::vector<CallTreeNode> nodes;
+	std::vector<CallTreeEdge> vertices;
+};
+
+/**********************************************************/
 /**
  * An adapter class that encapsulates a stack-tree and exposes
  * it as nodes and edges, suitable for making a calltree graph.
@@ -71,7 +78,8 @@ class CallTreeAdapter
 	public:
 		CallTreeAdapter(const Extractor & extractor);
 		~CallTreeAdapter(void);
-		size_t generateNodesAndVertices(const FullTreeNode & treeNode, size_t level, std::vector<CallTreeNode> & nodes, std::vector<CallTreeEdge> vertices, SimpleIdCache & nodeCache, SimpleIdCache & vertCache, std::vector<size_t> stack);
+		size_t generateNodesAndVertices(const FullTreeNode & treeNode, size_t level, std::vector<CallTreeNode> & nodes, std::vector<CallTreeEdge> & vertices, SimpleIdCache & nodeCache, SimpleIdCache & vertCache, std::vector<size_t> stack);
+		TreeSet generateTreeDataSet(FullTreeNode & treeNode);
 	private:
 		const Extractor & extractor;
 };

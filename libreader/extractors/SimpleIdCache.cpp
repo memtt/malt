@@ -18,6 +18,18 @@ namespace MALTReader
 {
 
 /**********************************************************/
+SimpleIdCache::SimpleIdCache(void)
+{
+
+}
+
+/**********************************************************/
+SimpleIdCache::~SimpleIdCache(void)
+{
+
+}
+
+/**********************************************************/
 /**
  * Checks if the object is already in the cache
  * @param  {string} value The object to check

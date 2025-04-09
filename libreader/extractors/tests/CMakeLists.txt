@@ -23,6 +23,9 @@ add_definitions(-DSRC_DIR="${CMAKE_SOURCE_DIR}")
 add_executable(TestReaderExtractors
     TestExtractorHelpers.cpp
     TestExtractor.cpp
+    TestSimpleIdCache.cpp
+    TestFuncMetrics.cpp
+    TestCppDeclParser.cpp
 )
 target_link_libraries(TestReaderExtractors malt-profile)
 target_link_libraries(TestReaderExtractors ${GTEST_BOTH_LIBRARIES} ${GMOCK_BOTH_LIBRARIES})
