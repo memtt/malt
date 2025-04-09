@@ -773,8 +773,10 @@ FullTreeNode Extractor::getFullTree(void) const
 		FullTreeNode * cur = &root;
 		const MALTFormat::Stack & stack = it.stack;
 		const StackInfos & infos = it.infos;
-		for (const auto & addr : stack)
+		for (const auto & addr : stack) {
 			cur = &cur->child[addr];
+			cur->location = &this->addrTranslation.at(addr);
+		}
 
 		if (cur->infos == nullptr)
 			cur->infos = std::unique_ptr<MALTFormat::StackInfos>(new MALTFormat::StackInfos());

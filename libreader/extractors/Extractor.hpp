@@ -148,6 +148,7 @@ struct FullTreeNode
 {
 	std::map<MALTFormat::LangAddress, FullTreeNode> child;
 	std::unique_ptr<MALTFormat::StackInfos> infos{nullptr};
+	const InstructionInfosStrRef * location{nullptr};
 };
 
 /**********************************************************/

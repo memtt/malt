@@ -43,6 +43,10 @@ add_library(malt-profile SHARED
     # EXTRACTOR
     extractors/ExtractorHelpers.cpp
     extractors/Extractor.cpp
+    extractors/FuncMetrics.cpp
+    extractors/SimpleIdCache.cpp
+    extractors/CallTreeAdapter.cpp
+    extractors/CppDeclParser.cpp
     # PROFILE
     Profile.cpp
     WebProfile.cpp

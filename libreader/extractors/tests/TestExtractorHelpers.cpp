@@ -79,3 +79,14 @@ TEST(TestExtractorHelpers, jsonRemoveZeroes)
 
 	EXPECT_EQ(json, jsonRef);
 }
+
+/**********************************************************/
+TEST(TestExtractorHelpers, humanReadable)
+{
+	ASSERT_EQ(std::string("1  B"), ExtractorHelpers::humanReadable(1, 2, "B"));
+	ASSERT_EQ(std::string("2.00 KB"), ExtractorHelpers::humanReadable(2048, 2, "B"));
+	ASSERT_EQ(std::string("200.00 KB"), ExtractorHelpers::humanReadable(204800, 2, "B"));
+	ASSERT_EQ(std::string("3.00 MB"), ExtractorHelpers::humanReadable(3072*1024, 2, "B"));
+	ASSERT_EQ(std::string("4.00 GB"), ExtractorHelpers::humanReadable(4096UL*1024UL*1024UL, 2, "B"));
+	ASSERT_EQ(std::string("4.00 TB"), ExtractorHelpers::humanReadable(4096UL*1024UL*1024UL*1024UL, 2, "B"));
+}

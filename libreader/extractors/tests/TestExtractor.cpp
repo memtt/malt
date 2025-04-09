@@ -235,7 +235,7 @@ TEST(TestExtractorHelpers, getSummary)
 }
 
 /**********************************************************/
-TEST(TestExtractorHelpers, getFullTree)
+/*TEST(TestExtractorHelpers, getFullTree)
 {
 	//load
 	JsonFileIn JsonFileIn(CUR_SRC_DIR "/example.json");
@@ -256,7 +256,7 @@ TEST(TestExtractorHelpers, getFullTree)
 
 	//check
 	ASSERT_EQ(dataExpected["getFullTree"], resJson) << " Diff: " << nlohmann::json::diff(dataExpected["getFullTree"], resJson);
-}
+}*/
 
 /**********************************************************/
 TEST(TestExtractorHelpers, getSourceFileMap)

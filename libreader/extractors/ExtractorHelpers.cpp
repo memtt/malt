@@ -53,6 +53,12 @@ static const char * CST_ALLOC_FUNC_NAMES[] = {
 };
 
 /**********************************************************/
+static const char * MALT_POWER_PS[] = {"&nbsp;","K","M","G","T","P"};
+static const char * MALT_POWER_NPS[] = {" ","K","M","G","T","P"};
+static const char * MALT_SUBPOWER_PS[] = {"&nbsp;","m","u","n"};
+static const char * MALT_SUBPOWER_NPS[] = {" ","m","u","n","p"};
+
+/**********************************************************/
 bool ExtractorHelpers::isAllocFunction(const std::string & name)
 {
 	//search all
@@ -218,6 +224,57 @@ nlohmann::json ExtractorHelpers::buildShorterFlatProfileSummary(nlohmann::json v
 
 	//ok
 	return result;
+}
+
+/********************************************************************/
+/** Short helper to convert values to human readable format **/	
+std::string ExtractorHelpers::humanReadable(double value,int decimals,const std::string & unit, bool protectedSpace)
+{
+	//select kilo / mega base
+	size_t mul = 1000;
+	if (unit == "B" || unit == "B")
+		mul = 1024;
+	
+	//fix decimals
+	if (value >= 1 && value < mul)
+		decimals = 0;
+	if (value == 0)
+		decimals = 0;
+
+	//out
+	std::stringstream buffer;
+	buffer.precision(decimals);
+	
+	//handle kilo vs mili
+	if (value >= 0.1 || value == 0)
+	{
+		int power = 0;
+		while (value >= mul)
+		{
+			power++;
+			value /= mul;
+		}
+
+		if (protectedSpace)
+			buffer << std::fixed << value << " " << MALT_POWER_PS[power] << unit;
+		else
+			buffer << std::fixed <<  value << " " << MALT_POWER_NPS[power] << unit;
+	} else {
+		int power = 0;
+		while (value < 0.1 && power < 4)
+		{
+			power++;
+			value *= 1000.0;
+		}
+
+		if (protectedSpace)
+			buffer << std::fixed << value << " " << MALT_SUBPOWER_PS[power] << unit;
+		else
+			buffer << std::fixed << value << " " << MALT_SUBPOWER_NPS[power] << unit;
+	}
+
+	//ok
+	return buffer.str();
 }
 
 }

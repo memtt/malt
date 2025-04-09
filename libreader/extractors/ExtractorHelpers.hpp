@@ -32,6 +32,7 @@ struct ExtractorHelpers
 	static void jsonRemoveAbsPath(nlohmann::json & value, const std::string & prefix);
 	static bool jsonRemoveZeroes(nlohmann::json & value);
 	static nlohmann::json buildShorterFlatProfileSummary(nlohmann::json value, bool onlyLocation = false);
+	static std::string humanReadable(double value,int decimals,const std::string & unit, bool protectedSpace = false);
 };
 
 /**********************************************************/
@@ -47,8 +48,6 @@ nlohmann::json ExtractorHelpers::toJsonFiltered(const T & value, const std::vect
 	//ok
 	return json;
 }
-
-
 
 }
 
