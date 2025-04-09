@@ -22,7 +22,7 @@ It has been rewritten in C++ by
 
 /**********************************************************/
 #include "FuncMetrics.hpp"
-#include "Extractor.hpp"
+#include "extractors/Extractor.hpp"
 #include "SimpleIdCache.hpp"
 
 /**********************************************************/

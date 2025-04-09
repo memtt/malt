@@ -43,10 +43,11 @@ add_library(malt-profile SHARED
     # EXTRACTOR
     extractors/ExtractorHelpers.cpp
     extractors/Extractor.cpp
-    extractors/FuncMetrics.cpp
-    extractors/SimpleIdCache.cpp
-    extractors/CallTreeAdapter.cpp
-    extractors/CppDeclParser.cpp
+    # CALL GRAPH
+    callgraph/FuncMetrics.cpp
+    callgraph/SimpleIdCache.cpp
+    callgraph/CallTreeAdapter.cpp
+    callgraph/CppDeclParser.cpp
     # PROFILE
     Profile.cpp
     WebProfile.cpp
@@ -64,6 +65,7 @@ target_link_libraries(malt-reader malt-profile)
 if (ENABLE_TESTS)
     add_subdirectory(format/tests)
     add_subdirectory(extractors/tests)
+    add_subdirectory(callgraph/tests)
     add_subdirectory(json/tests)
     add_subdirectory(tests)
 endif()

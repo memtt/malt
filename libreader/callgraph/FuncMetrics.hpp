@@ -18,7 +18,7 @@
 #include <map>
 #include <string>
 #include <functional>
-#include "Extractor.hpp"
+#include "extractors/Extractor.hpp"
 #include "../format/Stacks.hpp"
 
 /**********************************************************/

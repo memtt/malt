@@ -20,16 +20,13 @@ add_definitions(-DCUR_SRC_DIR="${CMAKE_CURRENT_SOURCE_DIR}")
 add_definitions(-DSRC_DIR="${CMAKE_SOURCE_DIR}")
 
 ############################################################
-add_executable(TestReaderExtractors
-    TestExtractorHelpers.cpp
-    TestExtractor.cpp
+add_executable(TestReaderCallGraph
+    TestSimpleIdCache.cpp
+    TestFuncMetrics.cpp
+    TestCppDeclParser.cpp
 )
-target_link_libraries(TestReaderExtractors malt-profile)
-target_link_libraries(TestReaderExtractors ${GTEST_BOTH_LIBRARIES} ${GMOCK_BOTH_LIBRARIES})
-target_link_libraries(TestReaderExtractors OpenMP::OpenMP_CXX)
-add_test(TestReaderExtractors TestReaderExtractors)
+target_link_libraries(TestReaderCallGraph malt-profile)
+target_link_libraries(TestReaderCallGraph ${GTEST_BOTH_LIBRARIES} ${GMOCK_BOTH_LIBRARIES})
+target_link_libraries(TestReaderCallGraph OpenMP::OpenMP_CXX)
+add_test(TestReaderCallGraph TestReaderCallGraph)
 
-############################################################
-add_executable(extractor-example example.cpp)
-target_link_options(extractor-example PRIVATE -O0 -g -finstrument-functions)
-target_link_libraries(extractor-example PRIVATE malt)

@@ -18,7 +18,7 @@ It has been rewritten in C++ by
 /**********************************************************/
 
 /**********************************************************/
-#include "ExtractorHelpers.hpp"
+#include "extractors/ExtractorHelpers.hpp"
 #include "CppDeclParser.hpp"
 #include "CallTreeAdapter.hpp"
 
