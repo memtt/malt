@@ -456,79 +456,76 @@ void CallTreeAdapter::addScores(std::vector<CallTreeNode> & nodes, const MaltMet
 	}
 }
 
+/**
+ * Filter a tree to have only decendants of a particular node.
+ * @param  {int} nodeId  Node id of the focal node
+ * @param  {object} nodeSet Set of nodes already in graph
+ * @param  {array} edges   Set of edges already in graph
+ * @param  {int} depth   Depth to limit the tree to. Defaults to unlimited.
+ * @param  {float} costFilter   Mimimum cost for node to be included.
+ */
+void CallTreeAdapter::filterDescendantsRecurse(ssize_t nodeId, std::map<ssize_t, bool> nodeSet, std::vector<InOutEdge> & edges, size_t depth, const CostFilter & costFilter)
+{
+	//init
+	nodeSet[nodeId] = true;
+
+	std::vector<InOutEdge> & currentEdges = fulltree.nodes[nodeId-1].outEdges;
+	for (size_t i = 0; i < currentEdges.size(); i++) {
+		if(nodeSet.find(currentEdges[i].id) != nodeSet.end()) {
+			if(depth != 0) {
+				if(!costFilter.check(fulltree.nodes[currentEdges[i].id-1].score))
+					continue;
+
+				nodeSet[currentEdges[i].id] = true;
+
+				filterDescendantsRecurse(currentEdges[i].id, nodeSet, edges, depth - 1, costFilter);
+			}
+		}
+
+		if(nodeSet.find(currentEdges[i].id) != nodeSet.end()) {
+			InOutEdge edge = currentEdges[i];
+			edge.from = nodeId;
+			edge.to = edge.id;
+			edges.emplace_back(edge);
+		}
+	}
 }
 
-// 	/**
-// 	 * Filter a tree to have only decendants of a particular node.
-// 	 * @param  {int} nodeId  Node id of the focal node
-// 	 * @param  {object} nodeSet Set of nodes already in graph
-// 	 * @param  {array} edges   Set of edges already in graph
-// 	 * @param  {int} depth   Depth to limit the tree to. Defaults to unlimited.
-// 	 * @param  {float} costFilter   Mimimum cost for node to be included.
-// 	 */
-// 	function filterDescendantsRecurse(nodeId, nodeSet, edges, depth, costFilter) {
-// 		nodeSet["" + nodeId] = true;
+/**
+ * Filter a tree to have only ancestors of a particular node.
+ * @param  {int} nodeId  Node id of the focal node
+ * @param  {object} nodeSet Set of nodes already in graph
+ * @param  {array} edges   Set of edges already in graph
+ * @param  {int} height   height to limit the tree to. Defaults to unlimited.
+ * @param  {float} costFilter   Mimimum cost for node to be included.
+ */
+void CallTreeAdapter::filterAncestorsRecurse(ssize_t nodeId, std::map<ssize_t, bool> nodeSet, std::vector<InOutEdge> & edges, size_t height, const CostFilter & costFilter)
+{
+	nodeSet[nodeId] = true;
 
-// 		var currentEdges = fulltree.nodes[nodeId-1].outEdges;
-// 		for (var i = 0; i < currentEdges.length; i++) {
-// 			if(!(("" + currentEdges[i].id) in nodeSet)) {
-// 				if(depth !== 0) {
-// 					if(!costFilter(fulltree.nodes[currentEdges[i].id-1].score))
-// 						continue;
+	std::vector<InOutEdge> & currentEdges = fulltree.nodes[nodeId-1].inEdges;
+	for (size_t i = 0; i < currentEdges.size(); i++) {
+		if(nodeSet.find(currentEdges[i].id) != nodeSet.end()) {
+			if(!costFilter.check(fulltree.nodes[currentEdges[i].id-1].score))
+				continue;
 
-// 					nodeSet["" + currentEdges[i].id] = true;
+			if(height != 0) {
+				nodeSet[currentEdges[i].id] = true;
+				filterAncestorsRecurse(currentEdges[i].id, nodeSet, edges, height - 1, costFilter);
+			}
 
-// 					filterDescendantsRecurse(currentEdges[i].id, nodeSet, edges, depth - 1, costFilter);
-// 				}
-// 			}
+		}
 
-// 			if(("" + currentEdges[i].id) in nodeSet) {
-// 				edges.push({
-// 					from: nodeId,
-// 					to: currentEdges[i].id,
-// 					score: currentEdges[i].scoreReadable,
-// 					color: currentEdges[i].color,
-// 					thickness: currentEdges[i].thickness
-// 				});
-// 			}
-// 		}
-// 	}
+		if(nodeSet.find(currentEdges[i].id) != nodeSet.end()) {
+			InOutEdge edge = currentEdges[i];
+			edge.from = edge.id;
+			edge.to = nodeId;
+			edges.emplace_back(edge);
+		}
+	}
+}
 
-// 	/**
-// 	 * Filter a tree to have only ancestors of a particular node.
-// 	 * @param  {int} nodeId  Node id of the focal node
-// 	 * @param  {object} nodeSet Set of nodes already in graph
-// 	 * @param  {array} edges   Set of edges already in graph
-// 	 * @param  {int} height   height to limit the tree to. Defaults to unlimited.
-// 	 * @param  {float} costFilter   Mimimum cost for node to be included.
-// 	 */
-// 	function filterAncestorsRecurse(nodeId, nodeSet, edges, height, costFilter) {
-// 		nodeSet["" + nodeId] = true;
-
-// 		var currentEdges = fulltree.nodes[nodeId-1].inEdges;
-// 		for (var i = 0; i < currentEdges.length; i++) {
-// 			if(!(("" + currentEdges[i].id) in nodeSet)) {
-// 				if(!costFilter(fulltree.nodes[currentEdges[i].id-1].score))
-// 					continue;
-
-// 				if(height !== 0) {
-// 					nodeSet["" + currentEdges[i].id] = true;
-// 					filterAncestorsRecurse(currentEdges[i].id, nodeSet, edges, height - 1, costFilter);
-// 				}
-
-// 			}
-
-// 			if(("" + currentEdges[i].id) in nodeSet) {
-// 				edges.push({
-// 					from: currentEdges[i].id,
-// 					to: nodeId,
-// 					score: currentEdges[i].scoreReadable,
-// 					color: currentEdges[i].color,
-// 					thickness: currentEdges[i].thickness
-// 				});
-// 			}
-// 		}
-// 	}
+}
 
 // 	/**
 // 	 * Filter a tree to have only decendants of a particular node.

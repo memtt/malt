@@ -33,10 +33,12 @@ namespace MALTReader
 struct InOutEdge
 {
 	InOutEdge(size_t id, const MALTFormat::StackInfos & stats):id(id), stats(stats){};
-	size_t id;
+	ssize_t from{0};
+	ssize_t to{0};
+	size_t id{0};
 	MALTFormat::StackInfos stats;
 	std::string color;
-	double thickness;
+	double thickness{0.0};
 	double score{0.0};
 	std::string scoreReadable;
 };
@@ -45,8 +47,8 @@ struct InOutEdge
 struct CallTreeEdge
 {
 	CallTreeEdge(size_t from, size_t to): from(from), to(to) {};
-	size_t from;
-	size_t to;
+	size_t from{0};
+	size_t to{0};
 };
 
 /**********************************************************/
@@ -74,6 +76,20 @@ struct TreeSet
 };
 
 /**********************************************************/
+class CostFilter
+{
+	public:
+		CostFilter(float cost, float min, float max, const MaltMetric & metric);
+		CostFilter(float cost, float min, float middle, float max, const MaltMetric & metric);
+		bool check(float value) const;
+	private:
+		void setup(float cost, float min, float max, const MaltMetric & metric);
+	private:
+		bool greaterThan;
+		float costValue;
+};
+
+/**********************************************************/
 /**
  * An adapter class that encapsulates a stack-tree and exposes
  * it as nodes and edges, suitable for making a calltree graph.
@@ -90,23 +106,11 @@ class CallTreeAdapter
 		static std::string convertRgbStringToHex(const std::string & rgb);
 		static void addColorCodes(TreeSet & dataset);
 		void addScores(std::vector<CallTreeNode> & nodes, const MaltMetric & metric, bool isRatio);
+		void filterDescendantsRecurse(ssize_t nodeId, std::map<ssize_t, bool> nodeSet, std::vector<InOutEdge> & edges, size_t depth, const CostFilter & costFilter);
+		void filterAncestorsRecurse(ssize_t nodeId, std::map<ssize_t, bool> nodeSet, std::vector<InOutEdge> & edges, size_t height, const CostFilter & costFilter);
 	private:
 		const Extractor & extractor;
 		TreeSet fulltree;
-};
-
-/**********************************************************/
-class CostFilter
-{
-	public:
-		CostFilter(float cost, float min, float max, const MaltMetric & metric);
-		CostFilter(float cost, float min, float middle, float max, const MaltMetric & metric);
-		bool check(float value) const;
-	private:
-		void setup(float cost, float min, float max, const MaltMetric & metric);
-	private:
-		bool greaterThan;
-		float costValue;
 };
 
 }
