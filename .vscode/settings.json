@@ -80,7 +80,9 @@
 		"semaphore": "cpp",
 		"shared_mutex": "cpp",
 		"regex": "cpp",
-		"bitset": "cpp"
+		"bitset": "cpp",
+		"codecvt": "cpp",
+		"numbers": "cpp"
 	},
 	"cmake.configureOnOpen": false,
 	"[python]": {

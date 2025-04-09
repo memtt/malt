@@ -113,7 +113,7 @@ MaltFuncMetrics.prototype.maltMetrics = {
 	},
 	'recycling.ratio': {
 		name: 'Recycling ratio',
-		extractor: function(x) {return x.alloc.count == 0 ? 1 : x.alloc.sum / x.alloc.maxAliveReq;},
+		extractor: function(x) {return x.alloc.count == 0 ? 1 : x.alloc.sum / x.maxAliveReq;},
 		formalter: function(x) {return maltHelper.humanReadable(x,1,'',false);},
 		defaultOrder: 'desc',
 		ref: 'max'
@@ -130,7 +130,7 @@ MaltFuncMetrics.prototype.maltMetrics = {
 		extractor: function(x) {return x.reallocSumDelta;},
 		formalter: function(x) {return maltHelper.humanReadable(x,1,'',false);},
 		defaultOrder: 'desc',
-		ref: 'max'
+		ref: 'sum'
 	}
 };
 
