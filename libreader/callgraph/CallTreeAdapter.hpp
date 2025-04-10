@@ -55,6 +55,7 @@ struct CallTreeEdge
 struct CallTreeNode
 {
 	CallTreeNode(size_t id, std::string label, std::string tooltip, size_t level, MALTFormat::StackInfos stats, const FullTreeNode & treeNode);
+	CallTreeNode(const CallTreeNode & orig) = default;
 	size_t id{0};
 	std::string label;
 	std::string tooltip;
@@ -66,6 +67,13 @@ struct CallTreeNode
 	double score{0.0};
 	std::string scoreReadable;
 	std::string color;
+};
+
+/**********************************************************/
+struct Graph
+{
+	std::vector<CallTreeNode> nodeList;
+	std::vector<InOutEdge> edgeList;
 };
 
 /**********************************************************/
@@ -108,6 +116,13 @@ class CallTreeAdapter
 		void addScores(std::vector<CallTreeNode> & nodes, const MaltMetric & metric, bool isRatio);
 		void filterDescendantsRecurse(ssize_t nodeId, std::map<ssize_t, bool> nodeSet, std::vector<InOutEdge> & edges, size_t depth, const CostFilter & costFilter);
 		void filterAncestorsRecurse(ssize_t nodeId, std::map<ssize_t, bool> nodeSet, std::vector<InOutEdge> & edges, size_t height, const CostFilter & costFilter);
+		Graph filterDescendants(ssize_t nodeId, ssize_t depth, const CostFilter & costFilter);
+		Graph filterAncestors (ssize_t nodeId, ssize_t height, const CostFilter & costFilter);
+		const std::vector<CallTreeEdge> & getEdges(void) const;
+		const std::vector<CallTreeNode> & getNodes(void) const;
+		const CallTreeNode * getNodeByFunctionName(const std::string & func);
+		const CallTreeNode * getNodeById(ssize_t nodeId);
+		Graph filterNodeLine(ssize_t nodeId, ssize_t depth, ssize_t height, double costFilterPercentage, const MaltMetric & metric, bool isRatio);
 	private:
 		const Extractor & extractor;
 		TreeSet fulltree;

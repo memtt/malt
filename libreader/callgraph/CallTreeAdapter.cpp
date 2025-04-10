@@ -397,6 +397,7 @@ void CallTreeAdapter::addColorCodes(TreeSet & dataset)
 	}
 }
 
+/**********************************************************/
 /**
  * Add score attribute to nodes
  * @param {array} nodes  Node list
@@ -456,6 +457,7 @@ void CallTreeAdapter::addScores(std::vector<CallTreeNode> & nodes, const MaltMet
 	}
 }
 
+/**********************************************************/
 /**
  * Filter a tree to have only decendants of a particular node.
  * @param  {int} nodeId  Node id of the focal node
@@ -491,6 +493,7 @@ void CallTreeAdapter::filterDescendantsRecurse(ssize_t nodeId, std::map<ssize_t,
 	}
 }
 
+/**********************************************************/
 /**
  * Filter a tree to have only ancestors of a particular node.
  * @param  {int} nodeId  Node id of the focal node
@@ -525,128 +528,159 @@ void CallTreeAdapter::filterAncestorsRecurse(ssize_t nodeId, std::map<ssize_t, b
 	}
 }
 
+/**********************************************************/
+/**
+ * Filter a tree to have only decendants of a particular node.
+ * @param  {int} nodeId  Node id of the focal node
+ * @param  {int} depth   Depth to limit the tree to. Defaults to unlimited.
+ * @param  {float} costFilter   Mimimum cost for node to be included.
+ * @return {object}                      A tree object containing 'nodes' and 'edges'.
+ */
+Graph CallTreeAdapter::filterDescendants(ssize_t nodeId, ssize_t depth, const CostFilter & costFilter)
+{
+	Graph graph;
+	std::map<ssize_t, bool> nodeSet;
+	filterDescendantsRecurse(nodeId, nodeSet, graph.edgeList, depth || -1, costFilter);
+	for(const auto & it : nodeSet) {
+		graph.nodeList.emplace_back(fulltree.nodes[it.first-1]);
+	}
+	return graph;
 }
 
-// 	/**
-// 	 * Filter a tree to have only decendants of a particular node.
-// 	 * @param  {int} nodeId  Node id of the focal node
-// 	 * @param  {int} depth   Depth to limit the tree to. Defaults to unlimited.
-// 	 * @param  {float} costFilter   Mimimum cost for node to be included.
-// 	 * @return {object}                      A tree object containing 'nodes' and 'edges'.
-// 	 */
-// 	function filterDescendants(nodeId, depth, costFilter) {
-// 		var nodeSet = {}, nodeList = [], edgeList = [];
-// 		filterDescendantsRecurse(nodeId, nodeSet, edgeList, depth || -1, costFilter);
-// 		for(var i in nodeSet) {
-// 			nodeList.push(fulltree.nodes[i-1]);
-// 		}
-// 		return {nodes: nodeList, edges: edgeList};
-// 	}
+/**********************************************************/
+/**
+ * Filter a tree to have only ancestors of a particular node.
+ * @param  {int} nodeId  Node id of the focal node
+ * @param  {int} height   Height to limit the tree to. Defaults to unlimited.
+ * @param  {float} costFilter   Mimimum cost for node to be included.
+ * @return {object}                      A tree object containing 'nodes' and 'edges'.
+ */
+Graph CallTreeAdapter::filterAncestors (ssize_t nodeId, ssize_t height, const CostFilter & costFilter)
+{
+	Graph graph;
+	std::map<ssize_t, bool> nodeSet;
+	filterAncestorsRecurse(nodeId, nodeSet, graph.edgeList, height, costFilter);
+	for(const auto & it : nodeSet) {
+		graph.nodeList.emplace_back(fulltree.nodes[it.first-1]);
+	}
+	return graph;
+}
 
-// 	/**
-// 	 * Filter a tree to have only ancestors of a particular node.
-// 	 * @param  {int} nodeId  Node id of the focal node
-// 	 * @param  {int} height   Height to limit the tree to. Defaults to unlimited.
-// 	 * @param  {float} costFilter   Mimimum cost for node to be included.
-// 	 * @return {object}                      A tree object containing 'nodes' and 'edges'.
-// 	 */
-// 	function filterAncestors (nodeId, height, costFilter) {
-// 		var nodeSet = {}, nodeList = [], edgeList = [];
-// 		filterAncestorsRecurse(nodeId, nodeSet, edgeList, height || -1, costFilter);
-// 		for(var i in nodeSet) {
-// 			nodeList.push(fulltree.nodes[i-1]);
-// 		}
-// 		return {nodes: nodeList, edges: edgeList};
-// 	}
+/**********************************************************/
+/**
+ * Get edges for the Call-tree
+ * @return {array} Array of edges {from, to}
+ */
+const std::vector<CallTreeEdge> & CallTreeAdapter::getEdges(void) const
+{
+	return fulltree.vertices;
+}
 
-// 	/**
-// 	 * Get edges for the Call-tree
-// 	 * @return {array} Array of edges {from, to}
-// 	 */
-// 	this.getEdges = function() {
-// 		return fulltree.edges;
-// 	}
+/**********************************************************/
+/**
+ * Get nodes for the call-tree
+ * @return {array} Array of nodes {id, label, level, score}
+ */
+const std::vector<CallTreeNode> & CallTreeAdapter::getNodes(void) const
+{
+	return fulltree.nodes;
+}
 
-// 	/**
-// 	 * Get nodes for the call-tree
-// 	 * @return {array} Array of nodes {id, label, level, score}
-// 	 */
-// 	this.getNodes = function() {
-// 		return fulltree.nodes;
-// 	}
+/**********************************************************/
+/**
+ * Get a node by function name
+ * @param  {string} func Function name
+ * @return {object}      Node if found, otherwise null
+ */
+const CallTreeNode * CallTreeAdapter::getNodeByFunctionName(const std::string & func)
+{
+	const std::vector<CallTreeNode> & nodes = fulltree.nodes;
+	for (size_t i = 0; i < nodes.size(); i++) {
+		//if(nodes[i].data.location.function == func) {
+		if(nodes[i].tooltip == func) {
+			return &nodes[i];
+		}
+	}
+	return nullptr;
+}
 
-// 	/**
-// 	 * Get a node by function name
-// 	 * @param  {string} func Function name
-// 	 * @return {object}      Node if found, otherwise null
-// 	 */
-// 	this.getNodeByFunctionName = function(func)
-// 	{
-// 		var nodes = fulltree.nodes;
-// 		for (var i = 0; i < nodes.length; i++) {
-// 			if(nodes[i].data.location.function == func) {
-// 				return nodes[i];
-// 			}
-// 		}
-// 		return null;
-// 	}
+/**********************************************************/
+/**
+ * Get a node by its node id
+ * @param  {int} nodeId Node id to search for
+ * @return {object}        Node
+ */
+const CallTreeNode * CallTreeAdapter::getNodeById(ssize_t nodeId)
+{
+	if (nodeId < 0 || nodeId >= fulltree.nodes.size())
+		return nullptr;
+	else
+		return &fulltree.nodes[nodeId-1];
+}
 
-// 	/**
-// 	 * Get a node by its node id
-// 	 * @param  {int} nodeId Node id to search for
-// 	 * @return {object}        Node
-// 	 */
-// 	this.getNodeById = function(nodeId) {
-// 		return fulltree.nodes[nodeId-1];
-// 	}
+/**********************************************************/
+/**
+ * Filter a tree to have only the ancestors and decendants for a particular node.
+ * @param  {int} nodeId Node id of focal node
+ * @param  {int} depth  Depth to limit to. Defaults to unlimited.
+ * @param  {int} height Height to limit to. Defaults to unlimited.
+ * @param  {float} costFilterPercentage Minimum cost in percentage for node to be included.
+ * @param  {string} metric               Type of metric to use as score.
+ * @param {boolean} isRatio Should the node scores be calculated as percentages?
+ * @return {object}                      A tree object containing 'nodes' and 'edges'.
+ */
+Graph CallTreeAdapter::filterNodeLine(ssize_t nodeId, ssize_t depth, ssize_t height, double costFilterPercentage, const MaltMetric & metric, bool isRatio) {
+	addScores(fulltree.nodes, metric, isRatio);
+	addColorCodes(fulltree);
 
-// 	/**
-// 	 * Filter a tree to have only the ancestors and decendants for a particular node.
-// 	 * @param  {int} nodeId Node id of focal node
-// 	 * @param  {int} depth  Depth to limit to. Defaults to unlimited.
-// 	 * @param  {int} height Height to limit to. Defaults to unlimited.
-// 	 * @param  {float} costFilterPercentage Minimum cost in percentage for node to be included.
-// 	 * @param  {string} metric               Type of metric to use as score.
-// 	 * @param {boolean} isRatio Should the node scores be calculated as percentages?
-// 	 * @return {object}                      A tree object containing 'nodes' and 'edges'.
-// 	 */
-// 	this.filterNodeLine = function(nodeId, depth, height, costFilterPercentage, metric, isRatio) {
-// 		addScores(fulltree.nodes, metric, isRatio);
-// 		addColorCodes(fulltree);
+	double max = -1;
+	for (size_t i = 0; i < fulltree.nodes.size(); i++) {
+		if(fulltree.nodes[i].score > max) {
+			max = fulltree.nodes[i].score;
+		}
+	}
+	double min = max + 1;
+	for (size_t i = 0; i < fulltree.nodes.size(); i++) {
+		if(fulltree.nodes[i].score < min) {
+			min = fulltree.nodes[i].score;
+		}
+	}
 
-// 		var max = -1;
-// 		for (var i = 0; i < fulltree.nodes.length; i++) {
-// 			if(fulltree.nodes[i].score > max) {
-// 				max = fulltree.nodes[i].score;
-// 			}
-// 		}
-// 		var min = max + 1;
-// 		for (var i = 0; i < fulltree.nodes.length; i++) {
-// 			if(fulltree.nodes[i].score < min) {
-// 				min = fulltree.nodes[i].score;
-// 			}
-// 		}
+	CostFilter childrenCostFilter(costFilterPercentage, min, fulltree.nodes[nodeId-1].score, max, metric);
+	CostFilter parentCostFilter(costFilterPercentage, min, max, metric);
+	Graph descs = filterDescendants(nodeId, depth, childrenCostFilter);
+	Graph ancs = filterAncestors(nodeId, height, parentCostFilter);
+	Graph finalGraph;
 
-// 		var childrenCostFilter = new CostFilter(costFilterPercentage, [min, fulltree.nodes[nodeId-1].score, max], metric);
-// 		var parentCostFilter = new CostFilter(costFilterPercentage, [min, max], metric);
-// 		var descs = filterDescendants(nodeId, depth, childrenCostFilter);
-// 		var ancs = filterAncestors(nodeId, height, parentCostFilter);
+	std::map<std::string, InOutEdge> edgeSet = {};
+	char buffer[512];
+	for (size_t i = 0; i < descs.edgeList.size(); i++) {
+		snprintf(buffer, sizeof(buffer), "%zd-%zd", descs.edgeList[i].from, descs.edgeList[i].to);
+		edgeSet.emplace(buffer, descs.edgeList[i]);
+	}
+	for (size_t i = 0; i < ancs.edgeList.size(); i++) {
+		snprintf(buffer, sizeof(buffer), "%zd-%zd", ancs.edgeList[i].from, ancs.edgeList[i].to);
+		edgeSet.emplace(buffer, ancs.edgeList[i]);
+	}
+	for(const auto & it : edgeSet) {
+		finalGraph.edgeList.emplace_back(it.second);
+	}
 
-// 		var edgeSet = {};
-// 		for (var i = 0; i < descs.edges.length; i++) {
-// 			edgeSet[descs.edges[i].from + ',' + descs.edges[i].to] = descs.edges[i];
-// 		}
-// 		for (var i = 0; i < ancs.edges.length; i++) {
-// 			edgeSet[ancs.edges[i].from + ',' + ancs.edges[i].to] = ancs.edges[i];
-// 		}
+	std::map<ssize_t, CallTreeNode> nodeSet = {};
+	for (size_t i = 0; i < descs.nodeList.size(); i++) {
+		nodeSet.emplace(descs.nodeList[i].id, descs.nodeList[i]);
+	}
+	for (size_t i = 0; i < ancs.edgeList.size(); i++) {
+		nodeSet.emplace(ancs.nodeList[i].id, ancs.nodeList[i]);
+	}
+	for(const auto & it : nodeSet) {
+		finalGraph.nodeList.emplace_back(it.second);
+	}
 
-// 		var edgeList = [];
-// 		for(var i in edgeSet) {
-// 			edgeList.push(edgeSet[i]);
-// 		}
+	return finalGraph;
+}
 
-// 		return {nodes: union(descs.nodes, ancs.nodes), edges: edgeList};
-// 	}
+}
 
 // 	/**
 // 	 * Filter a tree to get all root nodes plus their descendants
