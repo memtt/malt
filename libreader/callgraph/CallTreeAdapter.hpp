@@ -123,8 +123,10 @@ class CallTreeAdapter
 		const CallTreeNode * getNodeByFunctionName(const std::string & func);
 		const CallTreeNode * getNodeById(ssize_t nodeId);
 		Graph filterNodeLine(ssize_t nodeId, ssize_t depth, ssize_t height, double costFilterPercentage, const MaltMetric & metric, bool isRatio);
+		Graph filterRootLines(ssize_t depth, double costFilterPercentage, const MaltMetric & metric, bool isRatio);
 	private:
 		const Extractor & extractor;
+		FullTreeNode calltree;
 		TreeSet fulltree;
 };
 

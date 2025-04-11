@@ -84,10 +84,10 @@ CallTreeAdapter::CallTreeAdapter(const Extractor & extractor)
 	:extractor(extractor)
 {
 	//build calltree
-	FullTreeNode calltree = extractor.getFullTree();
+	this->calltree = extractor.getFullTree();
 
 	//build graph
-	fulltree = this->generateTreeDataSet(calltree);
+	this->fulltree = this->generateTreeDataSet(this->calltree);
 }
 
 /**********************************************************/
@@ -680,69 +680,58 @@ Graph CallTreeAdapter::filterNodeLine(ssize_t nodeId, ssize_t depth, ssize_t hei
 	return finalGraph;
 }
 
+/**********************************************************/
+/**
+ * Filter a tree to get all root nodes plus their descendants
+ * @param  {int}    depth                Depth to limit to. Defaults to unlimited.
+ * @param  {int}    costFilterPercentage Minimum cost in percentage for node to be included.
+ * @param  {string} metric               Type of metric to use as score.
+ * @param {boolean} isRatio Should the node scores be calculated as percentages?
+ * @return {object}                      A tree object containing 'nodes' and 'edges'.
+ */
+Graph CallTreeAdapter::filterRootLines(ssize_t depth, double costFilterPercentage, const MaltMetric & metric, bool isRatio)
+{
+	addScores(fulltree.nodes, metric, isRatio);
+	addColorCodes(fulltree);
+
+	double max = -1;
+	for (size_t i = 0; i < fulltree.nodes.size(); i++) {
+		if(fulltree.nodes[i].score > max) {
+			max = fulltree.nodes[i].score;
+		}
+	}
+	double min = max + 1;
+	for (size_t i = 0; i < fulltree.nodes.size(); i++) {
+		if(fulltree.nodes[i].score < min) {
+			min = fulltree.nodes[i].score;
+		}
+	}
+
+	std::vector<InOutEdge> edgeList;
+	std::map<ssize_t, bool> nodeSet;
+	for (size_t i = 0; i < fulltree.nodes.size(); i++) {
+		if(fulltree.nodes[i].inEdges.size() == 0) {
+			CostFilter childrenCostFilter(costFilterPercentage, min, fulltree.nodes[i].score, max, metric);
+			filterDescendantsRecurse(fulltree.nodes[i].id, nodeSet, edgeList, depth, childrenCostFilter);
+		}
+	}
+
+	std::map<std::string, InOutEdge> edgeSet;
+	Graph graph;
+	for (size_t i = 0; i < edgeList.size(); i++) {
+		char buffer[256];
+		snprintf(buffer, sizeof(buffer), "%zd-%zd", edgeList[i].from, edgeList[i].to);
+		edgeSet.emplace(buffer,edgeList[i]);
+	}
+	for(const auto & it : edgeSet) {
+		graph.edgeList.emplace_back(it.second);
+	}
+	for(const auto & it : nodeSet) {
+		graph.nodeList.emplace_back(fulltree.nodes[it.first-1]);
+	}
+
+	return graph;
 }
 
-// 	/**
-// 	 * Filter a tree to get all root nodes plus their descendants
-// 	 * @param  {int}    depth                Depth to limit to. Defaults to unlimited.
-// 	 * @param  {int}    costFilterPercentage Minimum cost in percentage for node to be included.
-// 	 * @param  {string} metric               Type of metric to use as score.
-// 	 * @param {boolean} isRatio Should the node scores be calculated as percentages?
-// 	 * @return {object}                      A tree object containing 'nodes' and 'edges'.
-// 	 */
-// 	this.filterRootLines = function(depth, costFilterPercentage, metric, isRatio) {
-// 		addScores(fulltree.nodes, metric, isRatio);
-// 		addColorCodes(fulltree);
+}
 
-// 		var max = -1;
-// 		for (var i = 0; i < fulltree.nodes.length; i++) {
-// 			if(fulltree.nodes[i].score > max) {
-// 				max = fulltree.nodes[i].score;
-// 			}
-// 		}
-// 		var min = max + 1;
-// 		for (var i = 0; i < fulltree.nodes.length; i++) {
-// 			if(fulltree.nodes[i].score < min) {
-// 				min = fulltree.nodes[i].score;
-// 			}
-// 		}
-
-// 		var nodeSet = {}, edgeList = [];
-// 		for (var i = 0; i < fulltree.nodes.length; i++) {
-// 			if(fulltree.nodes[i].inEdges.length == 0) {
-// 				var childrenCostFilter = new CostFilter(costFilterPercentage, [min, fulltree.nodes[i].score, max], metric);
-// 				filterDescendantsRecurse(fulltree.nodes[i].id, nodeSet, edgeList, depth, childrenCostFilter);
-// 			}
-// 		}
-
-// 		var edgeSet = {};
-// 		var edges = [];
-// 		var nodes = [];
-// 		for (var i = 0; i < edgeList.length; i++) {
-// 			edgeSet[edgeList[i].from + ',' + edgeList[i].to] = edgeList[i];
-// 		}
-// 		for(var i in edgeSet) {
-// 			edges.push(edgeSet[i]);
-// 		}
-// 		for(var i in nodeSet) {
-// 			nodes.push(fulltree.nodes[i-1]);
-// 		}
-
-// 		return {nodes: nodes, edges: edges};
-// 	}
-
-// 	// console.time("buildCallTree");
-// 	var calltree = buildCallTree(stacktree);
-// 	// console.timeEnd("buildCallTree");
-
-// 	// console.time("generateTreeDataSet");
-// 	var fulltree = generateTreeDataSet(calltree);
-// 	// console.timeEnd("generateTreeDataSet");
-
-// 	// console.time("addColorCodes");
-// 	// console.timeEnd("addColorCodes");
-
-// 	return this;
-// }
-
-// module.exports = CallTreeAdapter;
