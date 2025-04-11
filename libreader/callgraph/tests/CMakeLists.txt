@@ -26,6 +26,7 @@ add_executable(TestReaderCallGraph
     TestCppDeclParser.cpp
     TestCallTreeAdapter.cpp
     TestDotCode.cpp
+    TestGraphGenerator.cpp
 )
 target_link_libraries(TestReaderCallGraph malt-profile)
 target_link_libraries(TestReaderCallGraph ${GTEST_BOTH_LIBRARIES} ${GMOCK_BOTH_LIBRARIES})

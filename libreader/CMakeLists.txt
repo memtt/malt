@@ -49,6 +49,7 @@ add_library(malt-profile SHARED
     callgraph/CallTreeAdapter.cpp
     callgraph/CppDeclParser.cpp
     callgraph/DotCode.cpp
+    callgraph/GraphGenerator.cpp
     # PROFILE
     Profile.cpp
     WebProfile.cpp
