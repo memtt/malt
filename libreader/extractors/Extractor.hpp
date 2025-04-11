@@ -22,6 +22,9 @@ namespace MALTReader
 {
 
 /**********************************************************/
+class CallTreeAdapter;
+
+/**********************************************************/
 enum FlatProfileCounter
 {
 	FLAT_PROFILE_OWN,
@@ -185,6 +188,7 @@ class Extractor
 		FlattenMaxStackInfo getStackInfoOnFunction(size_t id);
 		SourceFileMap getSourceFileMap(void);
 		FullTreeNode getFullTree(void) const;
+		nlohmann::json getCallTree(ssize_t nodeId, ssize_t depth, ssize_t height, double minCost, const std::string & func, const std::string & metric, bool isRatio);
 	private:
 		void mergeStackInfo(FlatProfileMap & into, const MALTFormat::LangAddress & addr,FlatProfileCounter counter,const MALTFormat::StackInfos & infos,const LocaltionMappingFunc & mapping) const;
 		void buildTranslation(void);
@@ -196,6 +200,7 @@ class Extractor
 		const MALTFormat::MaltProfile & profile;
 		std::map<MALTFormat::LangAddress, InstructionInfosStrRef> addrTranslation;
 		std::string unknown{"??"};
+		CallTreeAdapter * calltreeCache{nullptr};
 };
 
 /**********************************************************/

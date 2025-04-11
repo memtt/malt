@@ -14,6 +14,9 @@
 #include <memory>
 #include "ExtractorHelpers.hpp"
 #include "Extractor.hpp"
+#include "../callgraph/CallTreeAdapter.hpp"
+#include "../callgraph/GraphGenerator.hpp"
+#include "../callgraph/FuncMetrics.hpp"
 
 /**********************************************************/
 using namespace MALTFormat;
@@ -32,6 +35,10 @@ Extractor::Extractor(const MALTFormat::MaltProfile & profile)
 /**********************************************************/
 Extractor::~Extractor(void)
 {
+	if (this->calltreeCache != nullptr) {
+		delete this->calltreeCache;
+		this->calltreeCache = nullptr;
+	}
 }
 
 /**********************************************************/
@@ -784,6 +791,94 @@ FullTreeNode Extractor::getFullTree(void) const
 	}
 
 	return root;
+}
+
+/**********************************************************/
+nlohmann::json Extractor::getCallTree(ssize_t nodeId, ssize_t depth, ssize_t height, double minCost, const std::string & func, const std::string & metric, bool isRatio)
+{
+	// Response object
+	nlohmann::json resp;
+
+	// If tree object hasnt been created, create and cache it
+	if(this->calltreeCache == nullptr) {
+		// console.time("filteredStack");
+		//FilteredStackList filteredStack = this->getFilterdStacks(true);
+		// console.timeEnd("filteredStack");
+		this->calltreeCache = new CallTreeAdapter(*this);
+	}
+
+	// If nodeId not provided, get node id by function name
+	if(nodeId != -1) {
+		const CallTreeNode* tmpnode = this->calltreeCache->getNodeByFunctionName(func);
+
+		if(tmpnode == nullptr) {
+			resp["nodeNotFoundError"] = "Node not found.";
+			return resp;
+		}
+
+		nodeId = tmpnode->id;
+	}
+
+	//get metric
+	MaltFuncMetrics metrics;
+	const MaltMetric & metricDef = metrics.getMetrics().at(metric);
+
+	// Filter tree and get the focal node
+	// console.time("filterNodeLine");
+	Graph filteredTree;
+	bool ratio = isRatio;
+	if(nodeId == -1) {
+		filteredTree = this->calltreeCache->filterRootLines(depth, minCost, metricDef, ratio);
+	} else {
+		filteredTree = this->calltreeCache->filterNodeLine(nodeId, depth, height, minCost, metricDef, ratio);
+	}
+	// console.timeEnd("filterNodeLine");
+
+	// console.time("getNodeById");
+	const CallTreeNode * node = this->calltreeCache->getNodeById(nodeId);
+	// console.timeEnd("getNodeById");
+
+	// Build output object
+	resp["totalNodes"] = this->calltreeCache->getNodes().size();
+	resp["visibleNodes"] = filteredTree.nodeList.size();
+	if(nodeId == -1) {
+		resp["nodeId"] = -1;//TODO int
+		resp["file"] = "Root nodes";
+		resp["fileShort"] = resp["file"];
+		resp["function"] = "Filtering might hide some nodes";
+		resp["functionShort"] = resp["function"];
+	} else {
+		resp["nodeId"] = nodeId;
+		resp["file"] = *node->treeNode.location->file;
+		std::string fname = basename(node->treeNode.location->file->c_str());
+		resp["fileShort"] = (resp["file"].size() > 40) ? (std::string(".../") + fname) : *node->treeNode.location->file;
+		resp["function"] = *node->treeNode.location->function;
+		resp["functionShort"] = (resp["function"].size() > 40) ? node->label : *node->treeNode.location->function;
+	}
+	// console.time("getDotCodeForTree");
+	resp["dotCode"] = GraphGenerator::getDotCodeForTree(filteredTree, nodeId);
+	// console.timeEnd("getDotCodeForTree");
+	resp["svg"] = nullptr;
+
+	// Generate SVG code from Dot code if GraphViz is installed
+	if(GraphGenerator::isDotInstalled()) {
+		// console.time("convertDotToSvg");
+		if(filteredTree.nodeList.size() > 1000) {
+			resp["error" ] = nlohmann::json{{"filterError", "Too many nodes selected at once."}};
+			return resp;
+		} else {
+			std::string svg = GraphGenerator::convertDotToSvg(resp["dotCode"]);
+			if(svg.empty()) {
+				resp["error"] = nlohmann::json{{"svgGenerationError", "Could not generate graph."}};
+			} else {
+				resp["svg"] = svg;
+			}
+			return resp;
+		}
+	} else {
+		resp["error"] = nlohmann::json{{"svgGenerationError", "Please install GraphViz to enable graph generation."}};
+		return resp;
+	}
 }
 
 }
