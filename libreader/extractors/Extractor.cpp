@@ -842,7 +842,7 @@ nlohmann::json Extractor::getCallTree(ssize_t nodeId, ssize_t depth, ssize_t hei
 	resp["totalNodes"] = this->calltreeCache->getNodes().size();
 	resp["visibleNodes"] = filteredTree.nodeList.size();
 	if(nodeId == -1) {
-		resp["nodeId"] = -1;//TODO int
+		resp["nodeId"] = -1;
 		resp["file"] = "Root nodes";
 		resp["fileShort"] = resp["file"];
 		resp["function"] = "Filtering might hide some nodes";

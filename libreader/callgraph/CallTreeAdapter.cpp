@@ -325,11 +325,11 @@ D3ScaleLinearColorRange::D3ScaleLinearColorRange(const std::string & colorMin, c
 {
 	//parse
 	ssize_t res1 = sscanf(colorMin.c_str(), "#%02x%02x%02x", &colorMin_r, &colorMin_g, &colorMin_b);
-	ssize_t res2 = sscanf(colorMin.c_str(), "#%02x%02x%02x", &colorMax_r, &colorMax_g, &colorMax_b);
+	ssize_t res2 = sscanf(colorMax.c_str(), "#%02x%02x%02x", &colorMax_r, &colorMax_g, &colorMax_b);
 
 	//check
-	assert(res1 != 3);
-	assert(res2 != 3);
+	assert(res1 == 3);
+	assert(res2 == 3);
 
 	this->rangeMin = rangeMin;
 	this->rangeMax = rangeMax;

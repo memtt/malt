@@ -275,3 +275,25 @@ TEST(TestExtractorHelpers, getSourceFileMap)
 	ASSERT_TRUE(res.find("src/libreader/extractors/tests/example.cpp") != res.end());
 	ASSERT_FALSE(res.find("example.cpp") != res.end());
 }
+
+
+/**********************************************************/
+TEST(TestExtractorHelpers, getCallTree)
+{
+	//load
+	JsonFileIn JsonFileIn(CUR_SRC_DIR "/example.json");
+	JsonIn data = JsonFileIn.getRoot();
+	MaltProfile profile;
+	data.get_to(profile);
+
+	//extract
+	Extractor extractor(profile);
+	nlohmann::json resJson = extractor.getCallTree(-1, 3, 3, 1.0, "", "alloc.count", false);
+
+	//load ref
+	std::ifstream exampleExpected(CUR_SRC_DIR "/example.expected.json");
+	nlohmann::json dataExpected = nlohmann::json::parse(exampleExpected);
+
+	//check
+	ASSERT_EQ(dataExpected["getSummary"], resJson) << " Diff: " << nlohmann::json::diff(dataExpected["getSummary"], resJson);
+}
