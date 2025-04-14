@@ -295,5 +295,7 @@ TEST(TestExtractorHelpers, getCallTree)
 	nlohmann::json dataExpected = nlohmann::json::parse(exampleExpected);
 
 	//check
-	ASSERT_EQ(dataExpected["getSummary"], resJson) << " Diff: " << nlohmann::json::diff(dataExpected["getSummary"], resJson);
+	ASSERT_EQ(dataExpected["getCallTree"], resJson["dotCode"]) << " Diff: " << nlohmann::json::diff(dataExpected["getCallTree"], resJson["dotCode"]);
+	const std::string svg = resJson["svg"];
+	ASSERT_TRUE(svg.find("<svg") != -1);
 }
