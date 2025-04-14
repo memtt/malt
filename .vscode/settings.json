@@ -82,7 +82,8 @@
 		"regex": "cpp",
 		"bitset": "cpp",
 		"codecvt": "cpp",
-		"numbers": "cpp"
+		"numbers": "cpp",
+		"text_encoding": "cpp"
 	},
 	"cmake.configureOnOpen": false,
 	"[python]": {
@@ -107,4 +108,9 @@
 	},
 	"git.autoRepositoryDetection": "subFolders",
 	"git.repositoryScanMaxDepth": 2,
+	"output.smartScroll.enabled": false,
+	"cmake.configureArgs": [
+		"-DENABLE_PYTHON=yes",
+		"-DENABLE_TESTS=yes"
+	],
 }
