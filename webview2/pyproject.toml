@@ -1,0 +1,24 @@
+[build-system]
+requires = ["hatchling >= 1.26"]
+build-backend = "hatchling.build"
+
+[project]
+name = "maltwebview2"
+version = "0.0.0"
+requires-python = ">= 3.8"
+dependencies = [
+	"uvicorn == 0.34.1",
+    "fastapi[standard] == 0.115.12"
+]
+authors = [
+    {name = "Sébastien Valat", email = "sebastien.valat@inria.fr"},
+]
+maintainers = [
+    {name = "Sébastien Valat", email = "sebastien.valat-dev@orange.fr"},
+]
+description = "A rewrite of the original webview in python + C++ (from full NodeJS)"
+readme = {file = "README.md", content-type = "text/markdown"}
+license = "CeCILL-C"
+
+[project.scripts]
+malt-webview-2 = "maltwebview2.main:main"
