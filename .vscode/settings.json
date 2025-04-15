@@ -83,7 +83,15 @@
 		"bitset": "cpp",
 		"codecvt": "cpp",
 		"numbers": "cpp",
-		"text_encoding": "cpp"
+		"text_encoding": "cpp",
+		"strstream": "cpp",
+		"cfenv": "cpp",
+		"complex": "cpp",
+		"coroutine": "cpp",
+		"source_location": "cpp",
+		"future": "cpp",
+		"stdfloat": "cpp",
+		"typeindex": "cpp"
 	},
 	"cmake.configureOnOpen": false,
 	"[python]": {
