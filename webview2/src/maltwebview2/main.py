@@ -1,3 +1,4 @@
+import sys
 import os
 import argparse
 import subprocess
@@ -12,11 +13,18 @@ def main():
     
     # set env
     env = os.environ.copy()
-    env['MALT_WEBVIEW2_FILE'] = os.path.abspath(args.FILE)
-    
+    file = os.path.abspath(args.FILE)
+    env['MALT_WEBVIEW2_FILE'] = file
+    if not os.path.exists(file) or not os.path.isfile(file):
+        print(f"[MALT-WEBVIEW2] Invalid file : {file}", file=sys.stderr)
+        return -1
+
     dir = os.path.dirname(os.path.abspath(__file__))
     subprocess.run([
         "fastapi",
         "dev",
         f"{dir}/serv.py"
     ], cwd=f"{dir}/../../../../webview/", env=env)
+
+    # ok
+    return 0
