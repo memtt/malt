@@ -12,7 +12,7 @@ def main():
     
     # set env
     env = os.environ.copy()
-    env['MALT_WEBVIEW2_FILE'] = args.FILE
+    env['MALT_WEBVIEW2_FILE'] = os.path.abspath(args.FILE)
     
     dir = os.path.dirname(os.path.abspath(__file__))
     subprocess.run([

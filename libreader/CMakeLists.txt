@@ -53,6 +53,7 @@ add_library(malt-profile SHARED
     # PROFILE
     Profile.cpp
     WebProfile.cpp
+	Requests.cpp
 )
 target_link_libraries(malt-profile PUBLIC nlohmann_json::nlohmann_json)
 target_link_libraries(malt-profile PRIVATE OpenMP::OpenMP_CXX)
