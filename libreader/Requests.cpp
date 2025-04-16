@@ -58,7 +58,7 @@ const char * malt_reader_get_summary(malt_reader_t * reader)
 	nlohmann::json json = reader->profile->getSummary();
 	std::string str = json.dump();
 	const char * res = strdup(str.c_str());
-	fprintf(stderr, "[MALT-WEBVIEW-2] Response : %s\n", res);
+	//fprintf(stderr, "[MALT-WEBVIEW-2] Response : %s\n", res);
 	return res;
 }
 
@@ -69,7 +69,18 @@ const char * malt_reader_get_summary_v2(malt_reader_t * reader)
 	nlohmann::json json = reader->profile->getSummaryV2();
 	std::string str = json.dump();
 	const char * res = strdup(str.c_str());
-	fprintf(stderr, "[MALT-WEBVIEW-2] Response : %p = %s\n", res, res);
+	//fprintf(stderr, "[MALT-WEBVIEW-2] Response : %p = %s\n", res, res);
+	return res;
+}
+
+/**********************************************************/
+const char * malt_reader_get_flat_profile(malt_reader_t * reader)
+{
+	fprintf(stderr, "[MALT-WEBVIEW-2] Request GET_SUMMARY_V2(%p)\n", reader);
+	nlohmann::json json = reader->profile->getFlatFunctionProfile(true);
+	std::string str = json.dump();
+	const char * res = strdup(str.c_str());
+	//fprintf(stderr, "[MALT-WEBVIEW-2] Response : %p = %s\n", res, res);
 	return res;
 }
 

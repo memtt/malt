@@ -23,8 +23,10 @@ def main():
     subprocess.run([
         "fastapi",
         "dev",
+        "--port", "8080",
+        "--reload",
         f"{dir}/serv.py"
-    ], cwd=f"{dir}/../../../../webview/", env=env)
+    ], cwd=os.path.abspath(f"{dir}/../../../../webview/"), env=env)
 
     # ok
     return 0

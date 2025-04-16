@@ -96,3 +96,10 @@ TEST(TestCppDeclParser, getShortName_3)
 	FuncDescription descr = CppDeclParser::parseCppPrototype("std::list<int> NS::Class<int>::function<std::string>(std::vector<int> & a)");
 	ASSERT_EQ("NS::Class<...>::function<...>(...)", CppDeclParser::getShortName(descr));
 }
+
+/**********************************************************/
+TEST(TestCppDeclParser, getShortName_4)
+{
+	ASSERT_EQ("basic_c_func()", CppDeclParser::getShortName("basic_c_func()"));
+	ASSERT_EQ("basic()", CppDeclParser::getShortName("basic()"));
+}

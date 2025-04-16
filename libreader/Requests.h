@@ -30,6 +30,7 @@ void malt_reader_free_response(const char * response);
 // requests
 const char * malt_reader_get_summary(malt_reader_t * reader);
 const char * malt_reader_get_summary_v2(malt_reader_t * reader);
+const char * malt_reader_get_flat_profile(malt_reader_t * reader);
 
 /**********************************************************/
 #ifdef __cplusplus

@@ -72,6 +72,7 @@ ssize_t CppDeclParser::getParameterStartIndex(const std::string & func)
 	return i + 1;
 }
 
+/**********************************************************/
 /**
  * Get description for a C++ prototype declaration
  * @param  {string} func Prototype Declaration string
@@ -182,6 +183,19 @@ FuncDescription CppDeclParser::parseCppPrototype(std::string func)
 	return funcDescription;
 }
 
+/**********************************************************/
+/**
+ * Get a short name for a method from its description object
+ * @param  {object} funcDescription Description object
+ * @return {string}                 Short name
+ */
+std::string CppDeclParser::getShortName(const std::string & func)
+{
+	FuncDescription descr = parseCppPrototype(func);
+	return getShortName(descr);
+}
+
+/**********************************************************/
 /**
  * Get a short name for a method from its description object
  * @param  {object} funcDescription Description object

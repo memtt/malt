@@ -17,6 +17,7 @@
 #include "../callgraph/CallTreeAdapter.hpp"
 #include "../callgraph/GraphGenerator.hpp"
 #include "../callgraph/FuncMetrics.hpp"
+#include "../callgraph/CppDeclParser.hpp"
 
 /**********************************************************/
 using namespace MALTFormat;
@@ -61,6 +62,7 @@ void Extractor::buildTranslation(void)
 			InstructionInfosStrRef ref;
 			ref.binary = &this->getString(instrInfos.binary);
 			ref.function = &this->getString(instrInfos.function);
+			ref.functionShort = &this->getCachedString(CppDeclParser::getShortName(*(ref.function)));
 			ref.file = &this->getString(instrInfos.file);
 			ref.line = instrInfos.line;
 			ref.origin = addr;
@@ -210,6 +212,7 @@ void to_json(nlohmann::json & json, const InstructionInfosStrRef & value)
 		{"binary", *value.binary},
 		{"file", *value.file},
 		{"function", *value.function},
+		{"functionShort", *value.functionShort},
 		{"line", value.line},
 	};
 }
@@ -335,6 +338,18 @@ void to_json(nlohmann::json & json, const FullTreeNode & value)
 		json = *value.infos;
 	else
 		json = value.child;
+}
+
+/**********************************************************/
+const std::string& Extractor::getCachedString(const std::string & value)
+{
+	const auto it = this->cachedStrings.find(value);
+	if (it != this->cachedStrings.end()) {
+		return it->first;
+	} else {
+		this->cachedStrings[value] = true;
+		return this->getCachedString(value);
+	}
 }
 
 /**********************************************************/

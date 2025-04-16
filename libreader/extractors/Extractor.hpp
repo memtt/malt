@@ -37,6 +37,7 @@ struct InstructionInfosStrRef
 	const std::string * file{nullptr};
 	const std::string * binary{nullptr};
 	const std::string * function{nullptr};
+	const std::string * functionShort{nullptr};
 	ssize_t line{-1};
 	MALTFormat::LangAddress origin{MALTFormat::LANG_C, nullptr};
 };
@@ -196,11 +197,13 @@ class Extractor
 		bool filterExtractStacksCandidate(const MALTFormat::Stack & stack, const LocaltionOnlyFilterFunc & filter) const;
 		StackStrRef buildStackStrRef(const MALTFormat::Stack & stack) const;
 		const MALTFormat::ThreadStackMem & getMaxStack(void) const;
+		const std::string& getCachedString(const std::string & value);
 	private:
 		const MALTFormat::MaltProfile & profile;
 		std::map<MALTFormat::LangAddress, InstructionInfosStrRef> addrTranslation;
 		std::string unknown{"??"};
 		CallTreeAdapter * calltreeCache{nullptr};
+		std::map<std::string, bool> cachedStrings;
 };
 
 /**********************************************************/

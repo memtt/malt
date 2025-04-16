@@ -98,6 +98,7 @@ nlohmann::json WebProfile::getFlatFunctionProfile(bool total) const
 			subset,
 			"*.location.line",
 			"*.location.function",
+			"*.location.functionShort",
 			"*.location.file",
 		});
 

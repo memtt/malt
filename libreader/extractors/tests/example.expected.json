@@ -5,6 +5,7 @@
         "binary": "src/libreader/extractors/tests/example.cpp",
         "file": "src/libreader/extractors/tests/example.cpp",
         "function": "caller()",
+        "functionShort": "caller()",
         "line": 35
       },
       "own": {
@@ -35,6 +36,7 @@
         "binary": "src/libreader/extractors/tests/example.cpp",
         "file": "src/libreader/extractors/tests/example.cpp",
         "function": "callerRecurse(int)",
+        "functionShort": "callerRecurse(int)",
         "line": 27
       },
       "own": {
@@ -65,6 +67,7 @@
         "binary": "src/libreader/extractors/tests/example.cpp",
         "file": "src/libreader/extractors/tests/example.cpp",
         "function": "leaf()",
+        "functionShort": "leaf()",
         "line": 17
       },
       "own": {
@@ -95,6 +98,7 @@
         "binary": "src/libreader/extractors/tests/example.cpp",
         "file": "src/libreader/extractors/tests/example.cpp",
         "function": "main",
+        "functionShort": "main",
         "line": 41
       },
       "own": {
@@ -127,6 +131,7 @@
         "binary": "src/libreader/extractors/tests/example.cpp",
         "file": "src/libreader/extractors/tests/example.cpp",
         "function": "caller()",
+        "functionShort": "caller()",
         "line": 35
       },
       "own": {
@@ -187,6 +192,7 @@
         "binary": "src/libreader/extractors/tests/example.cpp",
         "file": "src/libreader/extractors/tests/example.cpp",
         "function": "callerRecurse(int)",
+        "functionShort": "callerRecurse(int)",
         "line": 27
       },
       "own": {
@@ -247,6 +253,7 @@
         "binary": "src/libreader/extractors/tests/example.cpp",
         "file": "src/libreader/extractors/tests/example.cpp",
         "function": "leaf()",
+        "functionShort": "leaf()",
         "line": 17
       },
       "own": {
@@ -307,6 +314,7 @@
         "binary": "src/libreader/extractors/tests/example.cpp",
         "file": "src/libreader/extractors/tests/example.cpp",
         "function": "main",
+        "functionShort": "main",
         "line": 41
       },
       "own": {
@@ -482,36 +490,42 @@
           "binary": "src/lib/injectors/InjectCAlloc.cpp",
           "file": "src/lib/injectors/InjectCAlloc.cpp",
           "function": "realloc",
+          "functionShort": "realloc",
           "line": 68
         },
         {
           "binary": "./stdlib/./stdlib/setenv.c",
           "file": "./stdlib/./stdlib/setenv.c",
           "function": "__add_to_environ",
+          "functionShort": "__add_to_environ",
           "line": 156
         },
         {
           "binary": "src/libreader/extractors/tests/example.cpp",
           "file": "src/libreader/extractors/tests/example.cpp",
           "function": "main",
+          "functionShort": "main",
           "line": 41
         },
         {
           "binary": "./csu/../sysdeps/x86/libc-start.c",
           "file": "./csu/../sysdeps/x86/libc-start.c",
           "function": "__libc_start_call_main",
+          "functionShort": "__libc_start_call_main",
           "line": 58
         },
         {
           "binary": "./csu/../csu/libc-start.c",
           "file": "./csu/../csu/libc-start.c",
           "function": "__libc_start_main_impl",
+          "functionShort": "__libc_start_main_impl",
           "line": 360
         },
         {
           "binary": "??",
           "file": "??",
           "function": "_start",
+          "functionShort": "_start",
           "line": -1
         }
       ]
@@ -548,36 +562,42 @@
           "binary": "src/lib/injectors/InjectCAlloc.cpp",
           "file": "src/lib/injectors/InjectCAlloc.cpp",
           "function": "malloc",
+          "functionShort": "malloc",
           "line": 28
         },
         {
           "binary": "./stdlib/./stdlib/setenv.c",
           "file": "./stdlib/./stdlib/setenv.c",
           "function": "__add_to_environ",
+          "functionShort": "__add_to_environ",
           "line": 185
         },
         {
           "binary": "src/libreader/extractors/tests/example.cpp",
           "file": "src/libreader/extractors/tests/example.cpp",
           "function": "main",
+          "functionShort": "main",
           "line": 41
         },
         {
           "binary": "./csu/../sysdeps/x86/libc-start.c",
           "file": "./csu/../sysdeps/x86/libc-start.c",
           "function": "__libc_start_call_main",
+          "functionShort": "__libc_start_call_main",
           "line": 58
         },
         {
           "binary": "./csu/../csu/libc-start.c",
           "file": "./csu/../csu/libc-start.c",
           "function": "__libc_start_main_impl",
+          "functionShort": "__libc_start_main_impl",
           "line": 360
         },
         {
           "binary": "??",
           "file": "??",
           "function": "_start",
+          "functionShort": "_start",
           "line": -1
         }
       ]
@@ -614,42 +634,49 @@
           "binary": "src/lib/injectors/InjectCAlloc.cpp",
           "file": "src/lib/injectors/InjectCAlloc.cpp",
           "function": "malloc",
+          "functionShort": "malloc",
           "line": 28
         },
         {
           "binary": "./misc/./misc/tsearch.c",
           "file": "./misc/./misc/tsearch.c",
           "function": "__GI___tsearch",
+          "functionShort": "__GI___tsearch",
           "line": 337
         },
         {
           "binary": "./stdlib/./stdlib/setenv.c",
           "file": "./stdlib/./stdlib/setenv.c",
           "function": "__add_to_environ",
+          "functionShort": "__add_to_environ",
           "line": 208
         },
         {
           "binary": "src/libreader/extractors/tests/example.cpp",
           "file": "src/libreader/extractors/tests/example.cpp",
           "function": "main",
+          "functionShort": "main",
           "line": 41
         },
         {
           "binary": "./csu/../sysdeps/x86/libc-start.c",
           "file": "./csu/../sysdeps/x86/libc-start.c",
           "function": "__libc_start_call_main",
+          "functionShort": "__libc_start_call_main",
           "line": 58
         },
         {
           "binary": "./csu/../csu/libc-start.c",
           "file": "./csu/../csu/libc-start.c",
           "function": "__libc_start_main_impl",
+          "functionShort": "__libc_start_main_impl",
           "line": 360
         },
         {
           "binary": "??",
           "file": "??",
           "function": "_start",
+          "functionShort": "_start",
           "line": -1
         }
       ]
@@ -686,66 +713,77 @@
           "binary": "src/lib/injectors/InjectCAlloc.cpp",
           "file": "src/lib/injectors/InjectCAlloc.cpp",
           "function": "malloc",
+          "functionShort": "malloc",
           "line": 28
         },
         {
           "binary": "src/libreader/extractors/tests/example.cpp",
           "file": "src/libreader/extractors/tests/example.cpp",
           "function": "leaf()",
+          "functionShort": "leaf()",
           "line": 17
         },
         {
           "binary": "src/libreader/extractors/tests/example.cpp",
           "file": "src/libreader/extractors/tests/example.cpp",
           "function": "callerRecurse(int)",
+          "functionShort": "callerRecurse(int)",
           "line": 27
         },
         {
           "binary": "src/libreader/extractors/tests/example.cpp",
           "file": "src/libreader/extractors/tests/example.cpp",
           "function": "callerRecurse(int)",
+          "functionShort": "callerRecurse(int)",
           "line": 29
         },
         {
           "binary": "src/libreader/extractors/tests/example.cpp",
           "file": "src/libreader/extractors/tests/example.cpp",
           "function": "callerRecurse(int)",
+          "functionShort": "callerRecurse(int)",
           "line": 29
         },
         {
           "binary": "src/libreader/extractors/tests/example.cpp",
           "file": "src/libreader/extractors/tests/example.cpp",
           "function": "callerRecurse(int)",
+          "functionShort": "callerRecurse(int)",
           "line": 29
         },
         {
           "binary": "src/libreader/extractors/tests/example.cpp",
           "file": "src/libreader/extractors/tests/example.cpp",
           "function": "caller()",
+          "functionShort": "caller()",
           "line": 35
         },
         {
           "binary": "src/libreader/extractors/tests/example.cpp",
           "file": "src/libreader/extractors/tests/example.cpp",
           "function": "main",
+          "functionShort": "main",
           "line": 42
         },
         {
           "binary": "./csu/../sysdeps/x86/libc-start.c",
           "file": "./csu/../sysdeps/x86/libc-start.c",
           "function": "__libc_start_call_main",
+          "functionShort": "__libc_start_call_main",
           "line": 58
         },
         {
           "binary": "./csu/../csu/libc-start.c",
           "file": "./csu/../csu/libc-start.c",
           "function": "__libc_start_main_impl",
+          "functionShort": "__libc_start_main_impl",
           "line": 360
         },
         {
           "binary": "??",
           "file": "??",
           "function": "_start",
+          "functionShort": "_start",
           "line": -1
         }
       ]
@@ -782,66 +820,77 @@
           "binary": "src/lib/injectors/InjectCAlloc.cpp",
           "file": "src/lib/injectors/InjectCAlloc.cpp",
           "function": "malloc",
+          "functionShort": "malloc",
           "line": 28
         },
         {
           "binary": "src/libreader/extractors/tests/example.cpp",
           "file": "src/libreader/extractors/tests/example.cpp",
           "function": "leaf()",
+          "functionShort": "leaf()",
           "line": 18
         },
         {
           "binary": "src/libreader/extractors/tests/example.cpp",
           "file": "src/libreader/extractors/tests/example.cpp",
           "function": "callerRecurse(int)",
+          "functionShort": "callerRecurse(int)",
           "line": 27
         },
         {
           "binary": "src/libreader/extractors/tests/example.cpp",
           "file": "src/libreader/extractors/tests/example.cpp",
           "function": "callerRecurse(int)",
+          "functionShort": "callerRecurse(int)",
           "line": 29
         },
         {
           "binary": "src/libreader/extractors/tests/example.cpp",
           "file": "src/libreader/extractors/tests/example.cpp",
           "function": "callerRecurse(int)",
+          "functionShort": "callerRecurse(int)",
           "line": 29
         },
         {
           "binary": "src/libreader/extractors/tests/example.cpp",
           "file": "src/libreader/extractors/tests/example.cpp",
           "function": "callerRecurse(int)",
+          "functionShort": "callerRecurse(int)",
           "line": 29
         },
         {
           "binary": "src/libreader/extractors/tests/example.cpp",
           "file": "src/libreader/extractors/tests/example.cpp",
           "function": "caller()",
+          "functionShort": "caller()",
           "line": 35
         },
         {
           "binary": "src/libreader/extractors/tests/example.cpp",
           "file": "src/libreader/extractors/tests/example.cpp",
           "function": "main",
+          "functionShort": "main",
           "line": 42
         },
         {
           "binary": "./csu/../sysdeps/x86/libc-start.c",
           "file": "./csu/../sysdeps/x86/libc-start.c",
           "function": "__libc_start_call_main",
+          "functionShort": "__libc_start_call_main",
           "line": 58
         },
         {
           "binary": "./csu/../csu/libc-start.c",
           "file": "./csu/../csu/libc-start.c",
           "function": "__libc_start_main_impl",
+          "functionShort": "__libc_start_main_impl",
           "line": 360
         },
         {
           "binary": "??",
           "file": "??",
           "function": "_start",
+          "functionShort": "_start",
           "line": -1
         }
       ]
@@ -878,66 +927,77 @@
           "binary": "src/lib/injectors/InjectCAlloc.cpp",
           "file": "src/lib/injectors/InjectCAlloc.cpp",
           "function": "free",
+          "functionShort": "free",
           "line": 40
         },
         {
           "binary": "src/libreader/extractors/tests/example.cpp",
           "file": "src/libreader/extractors/tests/example.cpp",
           "function": "leaf()",
+          "functionShort": "leaf()",
           "line": 19
         },
         {
           "binary": "src/libreader/extractors/tests/example.cpp",
           "file": "src/libreader/extractors/tests/example.cpp",
           "function": "callerRecurse(int)",
+          "functionShort": "callerRecurse(int)",
           "line": 27
         },
         {
           "binary": "src/libreader/extractors/tests/example.cpp",
           "file": "src/libreader/extractors/tests/example.cpp",
           "function": "callerRecurse(int)",
+          "functionShort": "callerRecurse(int)",
           "line": 29
         },
         {
           "binary": "src/libreader/extractors/tests/example.cpp",
           "file": "src/libreader/extractors/tests/example.cpp",
           "function": "callerRecurse(int)",
+          "functionShort": "callerRecurse(int)",
           "line": 29
         },
         {
           "binary": "src/libreader/extractors/tests/example.cpp",
           "file": "src/libreader/extractors/tests/example.cpp",
           "function": "callerRecurse(int)",
+          "functionShort": "callerRecurse(int)",
           "line": 29
         },
         {
           "binary": "src/libreader/extractors/tests/example.cpp",
           "file": "src/libreader/extractors/tests/example.cpp",
           "function": "caller()",
+          "functionShort": "caller()",
           "line": 35
         },
         {
           "binary": "src/libreader/extractors/tests/example.cpp",
           "file": "src/libreader/extractors/tests/example.cpp",
           "function": "main",
+          "functionShort": "main",
           "line": 42
         },
         {
           "binary": "./csu/../sysdeps/x86/libc-start.c",
           "file": "./csu/../sysdeps/x86/libc-start.c",
           "function": "__libc_start_call_main",
+          "functionShort": "__libc_start_call_main",
           "line": 58
         },
         {
           "binary": "./csu/../csu/libc-start.c",
           "file": "./csu/../csu/libc-start.c",
           "function": "__libc_start_main_impl",
+          "functionShort": "__libc_start_main_impl",
           "line": 360
         },
         {
           "binary": "??",
           "file": "??",
           "function": "_start",
+          "functionShort": "_start",
           "line": -1
         }
       ]
@@ -974,66 +1034,77 @@
           "binary": "src/lib/injectors/InjectCAlloc.cpp",
           "file": "src/lib/injectors/InjectCAlloc.cpp",
           "function": "free",
+          "functionShort": "free",
           "line": 40
         },
         {
           "binary": "src/libreader/extractors/tests/example.cpp",
           "file": "src/libreader/extractors/tests/example.cpp",
           "function": "leaf()",
+          "functionShort": "leaf()",
           "line": 20
         },
         {
           "binary": "src/libreader/extractors/tests/example.cpp",
           "file": "src/libreader/extractors/tests/example.cpp",
           "function": "callerRecurse(int)",
+          "functionShort": "callerRecurse(int)",
           "line": 27
         },
         {
           "binary": "src/libreader/extractors/tests/example.cpp",
           "file": "src/libreader/extractors/tests/example.cpp",
           "function": "callerRecurse(int)",
+          "functionShort": "callerRecurse(int)",
           "line": 29
         },
         {
           "binary": "src/libreader/extractors/tests/example.cpp",
           "file": "src/libreader/extractors/tests/example.cpp",
           "function": "callerRecurse(int)",
+          "functionShort": "callerRecurse(int)",
           "line": 29
         },
         {
           "binary": "src/libreader/extractors/tests/example.cpp",
           "file": "src/libreader/extractors/tests/example.cpp",
           "function": "callerRecurse(int)",
+          "functionShort": "callerRecurse(int)",
           "line": 29
         },
         {
           "binary": "src/libreader/extractors/tests/example.cpp",
           "file": "src/libreader/extractors/tests/example.cpp",
           "function": "caller()",
+          "functionShort": "caller()",
           "line": 35
         },
         {
           "binary": "src/libreader/extractors/tests/example.cpp",
           "file": "src/libreader/extractors/tests/example.cpp",
           "function": "main",
+          "functionShort": "main",
           "line": 42
         },
         {
           "binary": "./csu/../sysdeps/x86/libc-start.c",
           "file": "./csu/../sysdeps/x86/libc-start.c",
           "function": "__libc_start_call_main",
+          "functionShort": "__libc_start_call_main",
           "line": 58
         },
         {
           "binary": "./csu/../csu/libc-start.c",
           "file": "./csu/../csu/libc-start.c",
           "function": "__libc_start_main_impl",
+          "functionShort": "__libc_start_main_impl",
           "line": 360
         },
         {
           "binary": "??",
           "file": "??",
           "function": "_start",
+          "functionShort": "_start",
           "line": -1
         }
       ]
@@ -1176,36 +1247,42 @@
           "binary": "src/lib/injectors/InjectCAlloc.cpp",
           "file": "src/lib/injectors/InjectCAlloc.cpp",
           "function": "realloc",
+          "functionShort": "realloc",
           "line": 68
         },
         {
           "binary": "./stdlib/./stdlib/setenv.c",
           "file": "./stdlib/./stdlib/setenv.c",
           "function": "__add_to_environ",
+          "functionShort": "__add_to_environ",
           "line": 156
         },
         {
           "binary": "src/libreader/extractors/tests/example.cpp",
           "file": "src/libreader/extractors/tests/example.cpp",
           "function": "main",
+          "functionShort": "main",
           "line": 41
         },
         {
           "binary": "./csu/../sysdeps/x86/libc-start.c",
           "file": "./csu/../sysdeps/x86/libc-start.c",
           "function": "__libc_start_call_main",
+          "functionShort": "__libc_start_call_main",
           "line": 58
         },
         {
           "binary": "./csu/../csu/libc-start.c",
           "file": "./csu/../csu/libc-start.c",
           "function": "__libc_start_main_impl",
+          "functionShort": "__libc_start_main_impl",
           "line": 360
         },
         {
           "binary": "??",
           "file": "??",
           "function": "_start",
+          "functionShort": "_start",
           "line": -1
         }
       ]
@@ -1242,36 +1319,42 @@
           "binary": "src/lib/injectors/InjectCAlloc.cpp",
           "file": "src/lib/injectors/InjectCAlloc.cpp",
           "function": "malloc",
+          "functionShort": "malloc",
           "line": 28
         },
         {
           "binary": "./stdlib/./stdlib/setenv.c",
           "file": "./stdlib/./stdlib/setenv.c",
           "function": "__add_to_environ",
+          "functionShort": "__add_to_environ",
           "line": 185
         },
         {
           "binary": "src/libreader/extractors/tests/example.cpp",
           "file": "src/libreader/extractors/tests/example.cpp",
           "function": "main",
+          "functionShort": "main",
           "line": 41
         },
         {
           "binary": "./csu/../sysdeps/x86/libc-start.c",
           "file": "./csu/../sysdeps/x86/libc-start.c",
           "function": "__libc_start_call_main",
+          "functionShort": "__libc_start_call_main",
           "line": 58
         },
         {
           "binary": "./csu/../csu/libc-start.c",
           "file": "./csu/../csu/libc-start.c",
           "function": "__libc_start_main_impl",
+          "functionShort": "__libc_start_main_impl",
           "line": 360
         },
         {
           "binary": "??",
           "file": "??",
           "function": "_start",
+          "functionShort": "_start",
           "line": -1
         }
       ]
@@ -1308,42 +1391,49 @@
           "binary": "src/lib/injectors/InjectCAlloc.cpp",
           "file": "src/lib/injectors/InjectCAlloc.cpp",
           "function": "malloc",
+          "functionShort": "malloc",
           "line": 28
         },
         {
           "binary": "./misc/./misc/tsearch.c",
           "file": "./misc/./misc/tsearch.c",
           "function": "__GI___tsearch",
+          "functionShort": "__GI___tsearch",
           "line": 337
         },
         {
           "binary": "./stdlib/./stdlib/setenv.c",
           "file": "./stdlib/./stdlib/setenv.c",
           "function": "__add_to_environ",
+          "functionShort": "__add_to_environ",
           "line": 208
         },
         {
           "binary": "src/libreader/extractors/tests/example.cpp",
           "file": "src/libreader/extractors/tests/example.cpp",
           "function": "main",
+          "functionShort": "main",
           "line": 41
         },
         {
           "binary": "./csu/../sysdeps/x86/libc-start.c",
           "file": "./csu/../sysdeps/x86/libc-start.c",
           "function": "__libc_start_call_main",
+          "functionShort": "__libc_start_call_main",
           "line": 58
         },
         {
           "binary": "./csu/../csu/libc-start.c",
           "file": "./csu/../csu/libc-start.c",
           "function": "__libc_start_main_impl",
+          "functionShort": "__libc_start_main_impl",
           "line": 360
         },
         {
           "binary": "??",
           "file": "??",
           "function": "_start",
+          "functionShort": "_start",
           "line": -1
         }
       ]

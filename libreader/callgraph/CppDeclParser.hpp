@@ -55,6 +55,7 @@ struct CppDeclParser
 	static ssize_t getParameterStartIndex(const std::string & func);
 	static FuncDescription parseCppPrototype(std::string func);
 	static std::string getShortName(const FuncDescription & funcDescription);
+	static std::string getShortName(const std::string & func);
 };
 
 /**********************************************************/
