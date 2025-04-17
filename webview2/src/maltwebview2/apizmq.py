@@ -1,0 +1,37 @@
+import os
+import json
+import ctypes
+import zmq
+
+class MaltProfileRequest:
+    def __init__(self, socket_path: str = "ipc:///tmp/socket"):
+        context = zmq.Context()
+
+        #  Socket to talk to server
+        print("Connecting to hello world server…")
+        self.socket = context.socket(zmq.REQ)
+        self.socket.connect(socket_path)
+
+    def make_request(self, operation: str, **kwargs):
+        request = kwargs.copy()
+        request["operation"] = operation
+
+        print("Sending request %s …" % request)
+        self.socket.send(json.dumps(request).encode())
+
+        #  Get the reply.
+        message = self.socket.recv()
+        print("Received reply %s" % (request))
+        return message
+
+    def get_summary(self) -> str:
+        return self.make_request("getSummary")
+
+    def get_summary_v2(self) -> str:
+        return self.make_request("getSummaryV2")
+
+    def get_flat_profile(self) -> str:
+        return self.make_request("getFlatFunctionProfile", own=True, total=True)
+
+    def wait_ready(self) -> str:
+        return self.make_request("waitReady")

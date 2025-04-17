@@ -53,6 +53,13 @@ void Extractor::buildTranslation(MALTFormat::MaltProfile & profile)
 	//loop on all
 	for (auto & statEntry : stats) {
 		for (LangAddress & addr : statEntry.stack) {
+			//already translated
+			auto transIt = this->addrTranslationHidden.find(addr);
+			if (transIt != this->addrTranslationHidden.end()) {
+				addr = LangAddress{LANG_TRANS_PTR, &(transIt->second)};
+				continue;
+			}
+
 			//get site
 			const auto & it = instrs.find(addr);
 			assert(it != instrs.end());

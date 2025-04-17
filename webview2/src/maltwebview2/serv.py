@@ -8,12 +8,12 @@ from starlette.responses import FileResponse
 from starlette.responses import StreamingResponse 
 import starlette.status as status
 
-from .api import MaltProfileRequest
+from .apizmq import MaltProfileRequest
 
 app = FastAPI()
 
 # create the reader
-malt_reader = MaltProfileRequest(os.environ['MALT_WEBVIEW2_FILE'])
+malt_reader = MaltProfileRequest(os.environ['MALT_WEBVIEW2_SOCKET'])
 
 #@app.get("/api/index")
 #def read_root():
@@ -31,13 +31,13 @@ async def main():
 app.mount("/app/", StaticFiles(directory="./client-files/app"), name="app")
 
 @app.get("/summary.json")
-def get_api_summary():
+async def get_api_summary():
     return Response(content=malt_reader.get_summary(), media_type="application/json")
 
 @app.get("/data/summary.json")
-def get_api_summary_v2():
+async def get_api_summary_v2():
     return Response(content=malt_reader.get_summary_v2(), media_type="application/json")
 
 @app.get("/flat.json")
-def get_api_get_flat():
+async def get_api_get_flat():
     return Response(content=malt_reader.get_flat_profile(), media_type="application/json")

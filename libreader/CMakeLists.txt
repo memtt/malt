@@ -65,6 +65,10 @@ add_executable(malt-reader main.cpp)
 target_link_libraries(malt-reader malt-profile)
 
 ############################################################
+add_executable(malt-zmq-reader main_zmq.cpp)
+target_link_libraries(malt-zmq-reader malt-profile zmq)
+
+############################################################
 if (ENABLE_TESTS)
     add_subdirectory(format/tests)
     add_subdirectory(extractors/tests)
