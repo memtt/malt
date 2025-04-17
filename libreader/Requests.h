@@ -27,6 +27,7 @@ struct malt_reader_t;
 malt_reader_t * malt_reader_init(const char * fname);
 void malt_reader_destroy(malt_reader_t * reader);
 void malt_reader_free_response(const char * response);
+void malt_reader_free_last_response(malt_reader_t * reader);
 // requests
 const char * malt_reader_get_summary(malt_reader_t * reader);
 const char * malt_reader_get_summary_v2(malt_reader_t * reader);

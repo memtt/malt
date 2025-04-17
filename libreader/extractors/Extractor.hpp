@@ -173,7 +173,7 @@ typedef std::map<std::string, bool> SourceFileMap;
 class Extractor
 {
 	public:
-		Extractor(const MALTFormat::MaltProfile & profile);
+		Extractor(MALTFormat::MaltProfile & profile);
 		~Extractor(void);
 		FlatProfileVector getFlatProfile(const LocaltionMappingFunc & mapping,const LocaltionFilterFunc & filter) const;
 		ProcMapDistr getProcMapDistr(void) const;
@@ -191,8 +191,9 @@ class Extractor
 		FullTreeNode getFullTree(void) const;
 		nlohmann::json getCallTree(ssize_t nodeId, ssize_t depth, ssize_t height, double minCost, const std::string & func, const std::string & metric, bool isRatio);
 	private:
+		inline const InstructionInfosStrRef & getAddrTranslation(MALTFormat::LangAddress addr) const;
 		void mergeStackInfo(FlatProfileMap & into, const MALTFormat::LangAddress & addr,FlatProfileCounter counter,const MALTFormat::StackInfos & infos,const LocaltionMappingFunc & mapping) const;
-		void buildTranslation(void);
+		void buildTranslation(MALTFormat::MaltProfile & profile);
 		const std::string& getString(ssize_t id) const;
 		bool filterExtractStacksCandidate(const MALTFormat::Stack & stack, const LocaltionOnlyFilterFunc & filter) const;
 		StackStrRef buildStackStrRef(const MALTFormat::Stack & stack) const;
@@ -200,7 +201,7 @@ class Extractor
 		const std::string& getCachedString(const std::string & value);
 	private:
 		const MALTFormat::MaltProfile & profile;
-		std::map<MALTFormat::LangAddress, InstructionInfosStrRef> addrTranslation;
+		std::map<MALTFormat::LangAddress, InstructionInfosStrRef> addrTranslationHidden;
 		std::string unknown{"??"};
 		CallTreeAdapter * calltreeCache{nullptr};
 		std::map<std::string, bool> cachedStrings;
@@ -217,6 +218,16 @@ void to_json(nlohmann::json & json, const Summary & value);
 void to_json(nlohmann::json & json, const FlattenMaxStackInfo & value);
 void to_json(nlohmann::json & json, const FlattenMaxStackInfoEntry & value);
 void to_json(nlohmann::json & json, const FullTreeNode & value);
+
+/**********************************************************/
+const InstructionInfosStrRef & Extractor::getAddrTranslation(MALTFormat::LangAddress addr) const
+{
+	assert(addr.lang == MALTFormat::LANG_TRANS_PTR);
+	//if (addr.lang == MALTFormat::LANG_TRANS_PTR)
+	return *(InstructionInfosStrRef*)addr.address;
+	/*else
+		return this->addrTranslationHidden.at(addr);*/
+}
 
 }
 

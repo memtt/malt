@@ -24,7 +24,6 @@ def main():
         "fastapi",
         "dev",
         "--port", "8080",
-        "--reload",
         f"{dir}/serv.py"
     ], cwd=os.path.abspath(f"{dir}/../../../../webview/"), env=env)
 

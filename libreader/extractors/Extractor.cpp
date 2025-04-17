@@ -27,10 +27,10 @@ namespace MALTReader
 {
 
 /**********************************************************/
-Extractor::Extractor(const MALTFormat::MaltProfile & profile)
+Extractor::Extractor(MALTFormat::MaltProfile & profile)
 	:profile(profile)
 {
-	this->buildTranslation();
+	this->buildTranslation(profile);
 }
 
 /**********************************************************/
@@ -43,16 +43,16 @@ Extractor::~Extractor(void)
 }
 
 /**********************************************************/
-void Extractor::buildTranslation(void)
+void Extractor::buildTranslation(MALTFormat::MaltProfile & profile)
 {
 	//vars
-	const StackStats & stats = this->profile.stacks.stats;
-	const SitesInstrMap & instrs  = this->profile.sites.instr;
-	const std::vector<std::string> & strings = this->profile.sites.strings;
+	StackStats & stats = profile.stacks.stats;
+	const SitesInstrMap & instrs  = profile.sites.instr;
+	const std::vector<std::string> & strings = profile.sites.strings;
 
 	//loop on all
-	for (const auto & statEntry : stats) {
-		for (const LangAddress & addr : statEntry.stack) {
+	for (auto & statEntry : stats) {
+		for (LangAddress & addr : statEntry.stack) {
 			//get site
 			const auto & it = instrs.find(addr);
 			assert(it != instrs.end());
@@ -68,7 +68,10 @@ void Extractor::buildTranslation(void)
 			ref.origin = addr;
 
 			//store
-			this->addrTranslation[addr] = ref;
+			auto & trans = this->addrTranslationHidden[addr];
+			trans = ref;
+			assert(addr.lang != LANG_TRANS_PTR);
+			addr = LangAddress{LANG_TRANS_PTR, &trans};
 		}
 	}
 }
@@ -96,13 +99,13 @@ FlatProfileVector Extractor::getFlatProfile(const LocaltionMappingFunc & mapping
 
 			//skip C++ operators
 			size_t skip = 0;
-			while (skip < stack.size() && ExtractorHelpers::isAllocFunction(*addrTranslation.at(stack[skip]).function)) skip++;
+			while (skip < stack.size() && ExtractorHelpers::isAllocFunction(*getAddrTranslation(stack[skip]).function)) skip++;
 			if (skip >= stack.size())
 			{
 				std::cerr << "Warning : get call stacks with only allocation function ??? : " << std::endl;
 				//TODO make serialization of stacks
 				for (const auto it : stack) {
-					InstructionInfosStrRef infosRef = addrTranslation.at(stack[skip]);
+					InstructionInfosStrRef infosRef = getAddrTranslation(stack[skip]);
 					std::cerr << "           - " << *infosRef.file << ":" << infosRef.line << " (" << *infosRef.function << ")" << std::endl;
 				}
 				//TODO print infos
@@ -111,7 +114,7 @@ FlatProfileVector Extractor::getFlatProfile(const LocaltionMappingFunc & mapping
 
 			//update internal values
 			LangAddress cur = stack[skip];
-			if (filter(this->addrTranslation.at(cur),infos) == true) {
+			if (filter(this->getAddrTranslation(cur),infos) == true) {
 				this->mergeStackInfo(result, cur, FLAT_PROFILE_OWN, infos, mapping);
 			}
 
@@ -125,8 +128,8 @@ FlatProfileVector Extractor::getFlatProfile(const LocaltionMappingFunc & mapping
 
 				//extract some quick refs
 				const LangAddress cur = stack[j];
-				const std::string key = mapping(addrTranslation.at(cur), infos);
-				bool accepted = filter(addrTranslation.at(cur), infos);
+				const std::string key = mapping(getAddrTranslation(cur), infos);
+				bool accepted = filter(getAddrTranslation(cur), infos);
 				if (accepted && done.find(key) == done.end())
 				{
 					done[key] = true;
@@ -170,7 +173,7 @@ void FlatProfileValue::merge(const FlatProfileValue & value)
 void Extractor::mergeStackInfo(FlatProfileMap & into, const LangAddress & addr,FlatProfileCounter counter,const StackInfos & infos,const LocaltionMappingFunc & mapping) const
 {
 	//extract key by using mapping function
-	const InstructionInfosStrRef & detailedStackEntry = this->addrTranslation.at(addr);
+	const InstructionInfosStrRef & detailedStackEntry = this->getAddrTranslation(addr);
 	std::string key = mapping(detailedStackEntry, infos);
 	if (key.empty())
 		key = MALTFormat::to_string(addr);
@@ -224,6 +227,12 @@ void to_json(nlohmann::json & json, const FlatProfileValue & value)
 		{"own", value.own},
 		{"total", value.total},
 		{"location", *value.location},
+		//TODO remove
+		{"binary", *value.location->binary},
+		{"file", *value.location->file},
+		{"function", *value.location->function},
+		{"functionShort", *value.location->functionShort},
+		{"line", value.location->line},
 	};
 }
 
@@ -391,7 +400,7 @@ FunctionStackVector Extractor::getDebugStackList() const
 
 		//fill
 		for (const auto & addr : statEntry.stack) {
-			outStack.push_back(*this->addrTranslation.at(addr).function);
+			outStack.push_back(*this->getAddrTranslation(addr).function);
 		}
 	}
 
@@ -434,7 +443,7 @@ bool Extractor::filterExtractStacksCandidate(const Stack & stack, const Localtio
 {
 	for (const auto & it : stack)
 	{
-		const InstructionInfosStrRef & ref = this->addrTranslation.at(it);
+		const InstructionInfosStrRef & ref = this->getAddrTranslation(it);
 		if (filter(ref))
 			return true;
 	}
@@ -450,7 +459,7 @@ StackStrRef Extractor::buildStackStrRef(const Stack & stack) const
 
 	//convert
 	for (const auto & it : stack)
-		res.push_back(&this->addrTranslation.at(it));
+		res.push_back(&this->getAddrTranslation(it));
 
 	//ok
 	return res;
@@ -708,7 +717,7 @@ FlattenMaxStackInfo Extractor::getFlattenMaxStackInfo(const LocaltionOnlyMapping
 		LangAddress addr = maxStack.stack[i];
 		ssize_t mem = maxStack.mem[i] - maxStack.mem[i+1];
 		assert(mem >= 0);
-		const InstructionInfosStrRef & info = this->addrTranslation[addr];
+		const InstructionInfosStrRef & info = this->getAddrTranslation(addr);
 		std::string key = to_string(addr);
 		//if (info != undefined)
 		key = mapping(info);
@@ -797,7 +806,7 @@ FullTreeNode Extractor::getFullTree(void) const
 		const StackInfos & infos = it.infos;
 		for (const auto & addr : stack) {
 			cur = &cur->child[addr];
-			cur->location = &this->addrTranslation.at(addr);
+			cur->location = &this->getAddrTranslation(addr);
 		}
 
 		if (cur->infos == nullptr)

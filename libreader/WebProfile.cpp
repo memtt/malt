@@ -78,7 +78,7 @@ nlohmann::json WebProfile::getFileLinesFlatProfile(const std::string & file, boo
 }
 
 /**********************************************************/
-nlohmann::json WebProfile::getFlatFunctionProfile(bool total) const
+nlohmann::json WebProfile::getFlatFunctionProfile(bool own, bool total) const
 {
 	//extract
 	FlatProfileVector res = this->extractor->getFlatProfile([](const InstructionInfosStrRef & location, const MALTFormat::StackInfos & infos){
@@ -87,20 +87,26 @@ nlohmann::json WebProfile::getFlatFunctionProfile(bool total) const
 		return true;
 	});
 
+	//fields to keep
+	std::vector<std::string> fieldsToKeep{
+		/*"*.location.line",
+		"*.location.function",
+		"*.location.functionShort",
+		"*.location.file",*/
+		"*.line",
+		"*.function",
+		"*.functionShort",
+		"*.file",
+	};
+
 	//select
-	std::string subset = "*.own";
+	if (own)
+		fieldsToKeep.push_back("*.own");
 	if (total)
-		subset = "*.total";
+		fieldsToKeep.push_back("*.total");
 
 	//filter
-	nlohmann::json resJson = ExtractorHelpers::toJsonFiltered(res,
-		{
-			subset,
-			"*.location.line",
-			"*.location.function",
-			"*.location.functionShort",
-			"*.location.file",
-		});
+	nlohmann::json resJson = ExtractorHelpers::toJsonFiltered(res, fieldsToKeep);
 
 	//ok
 	return resJson;

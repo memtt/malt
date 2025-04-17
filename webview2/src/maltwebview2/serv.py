@@ -2,7 +2,7 @@ import os
 import json
 
 from fastapi import FastAPI
-from fastapi.responses import RedirectResponse
+from fastapi.responses import RedirectResponse, Response
 from fastapi.staticfiles import StaticFiles
 from starlette.responses import FileResponse 
 from starlette.responses import StreamingResponse 
@@ -31,13 +31,13 @@ async def main():
 app.mount("/app/", StaticFiles(directory="./client-files/app"), name="app")
 
 @app.get("/summary.json")
-async def get_api_summary():
-    return malt_reader.get_summary()
+def get_api_summary():
+    return Response(content=malt_reader.get_summary(), media_type="application/json")
 
 @app.get("/data/summary.json")
-async def get_api_summary_v2():
-    return malt_reader.get_summary_v2()
+def get_api_summary_v2():
+    return Response(content=malt_reader.get_summary_v2(), media_type="application/json")
 
 @app.get("/flat.json")
-async def get_api_get_flat():
-    return malt_reader.get_flat_profile()
+def get_api_get_flat():
+    return Response(content=malt_reader.get_flat_profile(), media_type="application/json")
