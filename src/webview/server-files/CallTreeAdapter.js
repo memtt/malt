@@ -32,6 +32,7 @@ var allocFuncRegexp = /^((__gnu_cxx::new_allocator)|(operator new)|(operator del
  *
  * @param {object} stacktree Stack tree object
  */
+//--PORTED IN C++ VERSION--
 function CallTreeAdapter(stacktree)
 {
 
@@ -41,6 +42,7 @@ function CallTreeAdapter(stacktree)
 	 * @param {array} minMax An array containing either [min, max] or [min, middle, max]
 	 * @param {string} metric Type of metric; determines whether we need > or < comparison
 	 */
+	//--PORTED IN C++ VERSION--
 	function CostFilter(cost, minMax, metric) {
 		var comparators = {
 			lt: function(left, right) {
@@ -75,6 +77,7 @@ function CallTreeAdapter(stacktree)
 	 * @param  {object} node Child node
 	 * @param  {object} info Parent node info
 	 */
+	//--PORTED IN C++ VERSION--
 	function reduceStat(node,info)
 	{
 		if(node.info == undefined)
@@ -88,6 +91,7 @@ function CallTreeAdapter(stacktree)
 	 * @param  {object} data Stack tree data
 	 * @return {object}      Call tree
 	 */
+	//--PORTED IN C++ VERSION--
 	function buildCallTree(data)
 	{
 		var tree = {childs:{},id:null};
@@ -113,6 +117,7 @@ function CallTreeAdapter(stacktree)
 	 * @param  {object} location Location object for a function
 	 * @return {string}          Identifier
 	 */
+	//--PORTED IN C++ VERSION--
 	function getIdentifier(location)
 	{
 		if(!location)
@@ -132,6 +137,7 @@ function CallTreeAdapter(stacktree)
 	 * @param {array} stack Stack of previous nodes
 	 * @return {int}              Id for current tree
 	 */
+	//--PORTED IN C++ VERSION--
 	function generateNodesAndVertices(tree, level, nodes, vertices, nodeCache, vertCache, stack)
 	{
 		var identifier = null;
@@ -215,6 +221,7 @@ function CallTreeAdapter(stacktree)
 	 * @param  {object} tree Call-tree
 	 * @return {object}      Contains nodes and edges
 	 */
+	//--PORTED IN C++ VERSION--
 	function generateTreeDataSet(tree)
 	{
 		var nodes = [], vertices= [];
@@ -231,6 +238,7 @@ function CallTreeAdapter(stacktree)
 	 * @param  {string} rgb RGB color string
 	 * @return {string}     HEX color string
 	 */
+	//--PORTED IN C++ VERSION--
 	function convertRgbStringToHex(rgb) {
 		var a = rgb.split("(")[1].split(")")[0];
 		a = a.split(",");
@@ -249,6 +257,7 @@ function CallTreeAdapter(stacktree)
 	 *
 	 * @param {dataset} dataset Call-Tree dataset
 	 */
+	//--PORTED IN C++ VERSION--
 	function addColorCodes(dataset) {
 		var nodes = dataset.nodes;
 		var max = -1;
@@ -290,6 +299,7 @@ function CallTreeAdapter(stacktree)
 	 * @param {string} metric Type of metric to use as score
 	 * @param {boolean} isRatio Should the score be calculated as percentages?
 	 */
+	//--PORTED IN C++ VERSION--
 	function addScores(nodes, metric, isRatio) {
 		var extractValue = maltFuncMetrics.maltMetrics[metric].extractor;
 		var formatValue = maltFuncMetrics.maltMetrics[metric].formalter;
@@ -343,6 +353,7 @@ function CallTreeAdapter(stacktree)
 	 * @param  {int} depth   Depth to limit the tree to. Defaults to unlimited.
 	 * @param  {float} costFilter   Mimimum cost for node to be included.
 	 */
+	//--PORTED IN C++ VERSION--
 	function filterDescendantsRecurse(nodeId, nodeSet, edges, depth, costFilter) {
 		nodeSet["" + nodeId] = true;
 
@@ -379,6 +390,7 @@ function CallTreeAdapter(stacktree)
 	 * @param  {int} height   height to limit the tree to. Defaults to unlimited.
 	 * @param  {float} costFilter   Mimimum cost for node to be included.
 	 */
+	//--PORTED IN C++ VERSION--
 	function filterAncestorsRecurse(nodeId, nodeSet, edges, height, costFilter) {
 		nodeSet["" + nodeId] = true;
 
@@ -414,6 +426,7 @@ function CallTreeAdapter(stacktree)
 	 * @param  {float} costFilter   Mimimum cost for node to be included.
 	 * @return {object}                      A tree object containing 'nodes' and 'edges'.
 	 */
+	//--PORTED IN C++ VERSION--
 	function filterDescendants(nodeId, depth, costFilter) {
 		var nodeSet = {}, nodeList = [], edgeList = [];
 		filterDescendantsRecurse(nodeId, nodeSet, edgeList, depth || -1, costFilter);
@@ -430,6 +443,7 @@ function CallTreeAdapter(stacktree)
 	 * @param  {float} costFilter   Mimimum cost for node to be included.
 	 * @return {object}                      A tree object containing 'nodes' and 'edges'.
 	 */
+	//--PORTED IN C++ VERSION--
 	function filterAncestors (nodeId, height, costFilter) {
 		var nodeSet = {}, nodeList = [], edgeList = [];
 		filterAncestorsRecurse(nodeId, nodeSet, edgeList, height || -1, costFilter);
@@ -443,6 +457,7 @@ function CallTreeAdapter(stacktree)
 	 * Get edges for the Call-tree
 	 * @return {array} Array of edges {from, to}
 	 */
+	//--PORTED IN C++ VERSION--
 	this.getEdges = function() {
 		return fulltree.edges;
 	}
@@ -451,6 +466,7 @@ function CallTreeAdapter(stacktree)
 	 * Get nodes for the call-tree
 	 * @return {array} Array of nodes {id, label, level, score}
 	 */
+	//--PORTED IN C++ VERSION--
 	this.getNodes = function() {
 		return fulltree.nodes;
 	}
@@ -460,6 +476,7 @@ function CallTreeAdapter(stacktree)
 	 * @param  {string} func Function name
 	 * @return {object}      Node if found, otherwise null
 	 */
+	//--PORTED IN C++ VERSION--
 	this.getNodeByFunctionName = function(func)
 	{
 		var nodes = fulltree.nodes;
@@ -476,6 +493,7 @@ function CallTreeAdapter(stacktree)
 	 * @param  {int} nodeId Node id to search for
 	 * @return {object}        Node
 	 */
+	//--PORTED IN C++ VERSION--
 	this.getNodeById = function(nodeId) {
 		return fulltree.nodes[nodeId-1];
 	}
@@ -490,6 +508,7 @@ function CallTreeAdapter(stacktree)
 	 * @param {boolean} isRatio Should the node scores be calculated as percentages?
 	 * @return {object}                      A tree object containing 'nodes' and 'edges'.
 	 */
+	//--PORTED IN C++ VERSION--
 	this.filterNodeLine = function(nodeId, depth, height, costFilterPercentage, metric, isRatio) {
 		addScores(fulltree.nodes, metric, isRatio);
 		addColorCodes(fulltree);
@@ -536,6 +555,7 @@ function CallTreeAdapter(stacktree)
 	 * @param {boolean} isRatio Should the node scores be calculated as percentages?
 	 * @return {object}                      A tree object containing 'nodes' and 'edges'.
 	 */
+	//--PORTED IN C++ VERSION--
 	this.filterRootLines = function(depth, costFilterPercentage, metric, isRatio) {
 		addScores(fulltree.nodes, metric, isRatio);
 		addColorCodes(fulltree);

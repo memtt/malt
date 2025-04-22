@@ -124,6 +124,7 @@ MaltCallStacksView.prototype.buildCallTree = function(data)
 {
 	var tree = {childs:{},id:null};
 	var id = 0;
+	console.log(data);
 	data.forEach(function(call) {
 		var cur = tree;
 		reduceStat(cur,call.info);

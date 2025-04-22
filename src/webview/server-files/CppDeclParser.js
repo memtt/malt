@@ -22,6 +22,7 @@
 	 * for old nodejs still in use on old redhat release.
 	 * https://stackoverflow.com/questions/27599537/string-prototype-in-node-v0-10-25-does-not-have-endswith
 	 */
+	//--PORTED IN C++ VERSION--
 	String.prototype.endsWith = String.prototype.endsWith || function(str){
 		return new RegExp(str + "$").test(str);
 	}
@@ -31,6 +32,7 @@
 	 * @param  {string} func Prototype declaration string
 	 * @return {int}         Start index
 	 */
+	//--PORTED IN C++ VERSION--
 	function getParameterStartIndex(func) {
 		var gtCount = 1, i = func.length - 2;
 
@@ -49,12 +51,14 @@
 		return i + 1;
 	}
 
+	//--PORTED IN C++ VERSION--
 	var CppDeclParser = {
 		/**
 		 * Get description for a C++ prototype declaration
 		 * @param  {string} func Prototype Declaration string
 		 * @return {object}      Description of the function
 		 */
+		//--PORTED IN C++ VERSION--
 		parseCppPrototype: function(func) {
 			var funcDescription = {
 				full: null,
@@ -164,6 +168,7 @@
 		 * @param  {object} funcDescription Description object
 		 * @return {string}                 Short name
 		 */
+		//--PORTED IN C++ VERSION--
 		getShortName: function(funcDescription) {
 			var name = '';
 

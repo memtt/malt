@@ -31,6 +31,7 @@ var MaltProject = require('./server-files/MaltProject.js');
 /**********************************************************/
 //start express
 var app = Express();
+app.use(Express.json());
 
 /**********************************************************/
 //intenral cache for computed data which take a while to built
@@ -173,11 +174,11 @@ app.get('/global-variables.json',function (req,res){
 });
 
 /**********************************************************/
-app.get('/stacks.json',function(req,res){
+app.post('/stacks.json',function(req,res){
 	//extratc file from request
-	var file = req.query.file;
-	var line = req.query.line;
-	var func = req.query.func;
+	var file = req.body.file;
+	var line = req.body.line;
+	var func = req.body.func;
 
 	//return error
 	if (file != undefined || line != undefined)
@@ -304,6 +305,7 @@ app.get('/data/summary.json',function(req,res) {
 	res.end();
 });
 
+/**********************************************************/
 app.get('/calltree', function(req, res) {
 	maltProject.getCallTree(req.query.nodeid, req.query.depth, 
 		req.query.height, req.query.mincost, req.query.func, req.query.metric, 
@@ -324,6 +326,7 @@ app.get('/calltree', function(req, res) {
 		});
 });
 
+/**********************************************************/
 app.get('/active-chunks', function(req, res) {
 	maltProject.getActiveChunks(req.query.timestamp, function(result) {
 		res.json(result);
@@ -339,6 +342,19 @@ app.get('/',function(eq,res,next){
 /**********************************************************/
 app.get('/data.json',function(eq,res,next){
 	res.sendfile(args.params.input);
+});
+
+/**********************************************************/
+app.post('/source-file',function(req, res){
+	console.log(req.body.path);
+	if (req.body.path == undefined) {
+		res.send(500, 'Missing path POST parameter !');
+	} else if (maltProject.isSourceFile(req.body.path)) {
+		res.sendfile(req.body.path);
+	} else {
+		res.send(500, 'Invalid source file path !');
+	}
+	res.end();
 });
 
 /**********************************************************/

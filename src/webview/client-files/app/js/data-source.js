@@ -22,12 +22,23 @@ function MaltDataSourceNodeJS()
 MaltDataSourceNodeJS.prototype.loadSourceFile = function(file,handler,fail)
 {
 	//handle relative paths which otherwise are suppressed by URL parsing.
-	file = file.replace('../','/{..}/');
-	file = file.replace('./','/{.}/');
+	//file = file.replace('../','/{..}/');
+	//file = file.replace('./','/{.}/');
 	//call
-	$.get("../app-sources"+file)
+	/*$.get("../app-sources"+file)
 		.done(handler)
-		.fail(fail);
+		.fail(fail);*/
+
+	$.ajax({
+		url: '../source-file',
+		type: 'POST',
+		cache: false, 
+		contentType: "application/json; charset=utf-8",
+		dataType: "text",
+		data: JSON.stringify({ path: file }), 
+		success: handler,
+		error: fail
+	});
 }
 
 //wrapper to getch annotation of source files [source-editor.js]
@@ -85,12 +96,30 @@ MaltDataSourceNodeJS.prototype.getSizeDistr = function($http,handler)
 
 MaltDataSourceNodeJS.prototype.getCallStackDataFileLine = function(file,line,handler)
 {
-	$.getJSON("../stacks.json?file="+encodeURIComponent(file)+"&line="+line,handler);
+	//$.getJSON("../stacks.json?file="+encodeURIComponent(file)+"&line="+line,handler);
+	$.ajax({ 
+		url: '../stacks.json',
+		type: 'POST',
+		cache: false, 
+		contentType: "application/json; charset=utf-8",
+		dataType: "json",
+		data: JSON.stringify({ file: file, line: line }), 
+		success: handler
+	});
 }
 
 MaltDataSourceNodeJS.prototype.getCallStackDataFunc = function(func,handler)
 {
-	$.getJSON("../stacks.json?func="+encodeURIComponent(func),handler);
+	//$.getJSON("../stacks.json?func="+encodeURIComponent(func),handler);
+	$.ajax({ 
+		url: '../stacks.json',
+		type: 'POST',
+		cache: false, 
+		contentType: "application/json; charset=utf-8",
+		dataType: "json",
+		data: JSON.stringify({ func: func }), 
+		success: handler
+	});
 }
 
 MaltDataSourceNodeJS.prototype.getCallTreeData = function(nodeid, depth, height, mincost, func, metric, isRatio, handler, fail)
@@ -161,11 +190,21 @@ function MaltDataSourceClientSideData(data)
 }
 
 //wrapper to fetch source files from remote server [source-editor.js]
-MaltDataSourceClientSide.prototype.loadSourceFile = function(file,handler)
+MaltDataSourceClientSide.prototype.loadSourceFile = function(file,handler, error)
 {
-	file = file.replace('./','{.}/');
+	/*file = file.replace('./','{.}/');
 	file = file.replace('../','{..}/');
-	$.get("../app-sources/"+file,handler);
+	$.get("../app-sources/"+file,handler);*/
+	$.ajax({
+		url: '../source-file',
+		type: 'POST',
+		cache: false, 
+		contentType: "application/json; charset=utf-8",
+		dataType: "json",
+		data: JSON.stringify({ path: file }), 
+		success: function(data) {console.log("ok"); console.log(data);},
+		error: function(data) {console.log("ERR"); console.log(data);}
+	});
 }
 
 //wrapper to getch annotation of source files [source-editor.js]
