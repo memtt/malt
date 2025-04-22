@@ -112,4 +112,10 @@ bool operator<(const LangAddress & a, const LangAddress & b)
 		return false;
 }
 
+/**********************************************************/
+bool operator==(const LangAddress & a, const LangAddress & b)
+{
+	return a.lang == b.lang && a.address == b.address;
+}
+
 }

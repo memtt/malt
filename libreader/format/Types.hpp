@@ -41,6 +41,7 @@ struct LangAddress
 
 /**********************************************************/
 bool operator<(const LangAddress & a, const LangAddress & b);
+bool operator==(const LangAddress & a, const LangAddress & b);
 
 /**********************************************************/
 std::string to_string(const LangAddress & address);

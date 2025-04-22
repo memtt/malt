@@ -28,7 +28,8 @@ int main(int argc, char ** argv)
 	//loading profile
 	WebProfile profile(argv[1], true);
 
-	while (true) {
+	bool continueRun = true;
+	while (continueRun) {
 		zmq::message_t request;
 
 		//  Wait for next request from client
@@ -50,11 +51,25 @@ int main(int argc, char ** argv)
 			} else if (reqJson["operation"] == "getSummary") {
 				responseJson = profile.getSummary();
 			} else if (reqJson["operation"] == "getFlatFunctionProfile") {
-				bool own = reqJson["own"];
-				bool total = reqJson["total"];
+				const bool own = reqJson["own"];
+				const bool total = reqJson["total"];
 				responseJson = profile.getFlatFunctionProfile(own, total);
+			} else if (reqJson["operation"] == "getFilterdStacksOnFileLine") {
+				const std::string file = reqJson["file"];
+				const size_t line = reqJson["line"];
+				responseJson = profile.getFilterdStacksOnFileLine(file, line);
+			} else if (reqJson["operation"] == "getFilterdStacksOnSymbol") {
+				const std::string func = reqJson["func"];
+				responseJson = profile.getFilterdStacksOnSymbol(func);
 			} else if (reqJson["operation"] == "waitReady") {
 				responseJson = nlohmann::json({"ready", true});
+			} else if (reqJson["operation"] == "stop") {
+				responseJson = nlohmann::json({"ready", true});
+				continueRun = false;
+			} else if (reqJson["operation"] == "getCallStackNextLevel") {
+				const size_t parentStackId = reqJson["parentStackId"];
+				const size_t parentDepth = reqJson["parentDepth"];
+				responseJson = profile.getCallStackNextLevel(parentStackId, parentDepth);
 			} else {
 				responseJson = nlohmann::json({"error", "Invalid operation !"});
 			}

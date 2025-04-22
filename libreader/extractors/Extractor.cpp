@@ -262,8 +262,8 @@ void to_json(nlohmann::json & json, const ProcMapDistrEntry & value)
 void to_json(nlohmann::json & json, const FilteredStackEntry & value)
 {
 	json = nlohmann::json{
-		{"mem", value.stack},
-		{"cnt", value.infos},
+		{"stack", value.stack},
+		{"info", value.infos},
 	};
 }
 
@@ -325,6 +325,17 @@ void to_json(nlohmann::json & json, const Summary & value)
 		{"count", value.globalStats.count},
 		{"largestStack", value.globalStats.largestStack},
 		{"cumulAllocs", value.globalStats.cumulAllocs},
+	};
+}
+
+/**********************************************************/
+void to_json(nlohmann::json & json, const CallStackChild & value)
+{
+	json = nlohmann::json{
+		{"infos", value.infos},	
+		{"location", *value.location},
+		{"parentStackId", value.parentStackId},
+		{"parentStackDepth", value.parentStackDepth},
 	};
 }
 
@@ -503,6 +514,14 @@ FilteredStackList Extractor::getFilterdStacksOnFileLine(const std::string & file
 {
 	return this->getFilterdStacks([&file, line](const InstructionInfosStrRef & location) {
 		return *location.file == file && location.line == line;
+	});
+}
+
+/**********************************************************/
+FilteredStackList Extractor::getFilterdStacksOnSymbol(const std::string & func) const
+{
+	return this->getFilterdStacks([&func](const InstructionInfosStrRef & location) {
+		return *location.function == func;
 	});
 }
 
@@ -910,6 +929,71 @@ nlohmann::json Extractor::getCallTree(ssize_t nodeId, ssize_t depth, ssize_t hei
 		resp["error"] = nlohmann::json{{"svgGenerationError", "Please install GraphViz to enable graph generation."}};
 		return resp;
 	}
+}
+
+/**********************************************************/
+CallStackChild::CallStackChild(MALTFormat::StackInfos infos, const InstructionInfosStrRef * location, size_t parentStackId, size_t parentStackDepth)
+	:infos(infos)
+	,location(location)
+	,parentStackId(parentStackId)
+	,parentStackDepth(parentStackDepth)
+{
+}
+
+/**********************************************************/
+bool Extractor::stackIsMatchingBellowDepth(const Stack & stack1, const Stack stack2, size_t depth)
+{
+	//trivial
+	if (stack1.size() < depth || stack2.size() < depth)
+		return false;
+
+	//loop
+	for (size_t i = 0 ; i < depth ; i++)
+		if (!(stack1[i] == stack2[i]))
+			return false;
+
+	//ok
+	return true;
+}
+
+/**********************************************************/
+CallStackChildList Extractor::getCallStackNextLevel(size_t parentStackId, size_t parentDepth) const
+{
+	//vars
+	const auto & parentStack = this->profile.stacks.stats[parentStackId].stack;
+	CallStackChildList result;
+
+	//search stacks starting by
+	for (size_t i = 0 ; i < this->profile.stacks.stats.size() ; i++) {
+		//get ref
+		const auto & it = this->profile.stacks.stats[i];
+
+		//check ok
+		bool stackMatching = this->stackIsMatchingBellowDepth(parentStack, it.stack, parentDepth);
+		if (stackMatching && it.stack.size() > parentDepth) {
+			//accound
+			StackInfos sumedChildInfos;
+
+			//sum all childs up to here
+			for (size_t j = 0 ; j < this->profile.stacks.stats.size() ; j++) {
+				const auto & cur = this->profile.stacks.stats[j];
+				if (this->stackIsMatchingBellowDepth(it.stack, cur.stack, parentDepth + 1))
+					sumedChildInfos.merge(cur.infos);
+			}
+
+			//insert
+			LangAddress childAddr = it.stack[parentDepth + 1];
+			result.emplace_back(
+				sumedChildInfos,
+				&this->getAddrTranslation(childAddr),
+				i,
+				parentDepth + 1
+			);
+		}
+	}
+
+	//ok
+	return result;
 }
 
 }

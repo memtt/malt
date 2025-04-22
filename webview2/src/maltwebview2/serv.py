@@ -7,10 +7,25 @@ from fastapi.staticfiles import StaticFiles
 from starlette.responses import FileResponse 
 from starlette.responses import StreamingResponse 
 import starlette.status as status
+from starlette.middleware.gzip import GZipMiddleware
+from pydantic import BaseModel
 
 from .apizmq import MaltProfileRequest
 
+class PostStacksItem(BaseModel):
+    file: str | None = None
+    func: str | None = None
+    line: str | None = None
+
+class PostSourceFile(BaseModel):
+    path: str
+
+class PostGetCallStackNextLevel(BaseModel):
+    parentStackId: int
+    parentStackDepth: int
+
 app = FastAPI()
+#app.add_middleware(GZipMiddleware, minimum_size=1000)
 
 # create the reader
 malt_reader = MaltProfileRequest(os.environ['MALT_WEBVIEW2_SOCKET'])
@@ -41,3 +56,25 @@ async def get_api_summary_v2():
 @app.get("/flat.json")
 async def get_api_get_flat():
     return Response(content=malt_reader.get_flat_profile(), media_type="application/json")
+
+@app.post("/stacks.json")
+async def post_api_get_stacks(item: PostStacksItem):
+    if item.func is not None:
+        resp = malt_reader.getFilterdStacksOnSymbol(item.func)
+        json.loads(resp)
+        return Response(content=resp, media_type="application/json")
+    elif item.file is not None and item.line is not None:
+        return Response(content=malt_reader.getFilterdStacksOnSymbol(item.file, item.line), media_type="application/json")
+    else:
+        raise Exception("Invalid parametters, should get {func} of {file & line} !")
+
+@app.post("/source-file")
+async def post_api_get_stacks(item: PostSourceFile):
+    if os.path.exists(item.path):
+        return FileResponse(item.path)
+    else:
+        raise Exception(f"File not found : {item.path}")
+
+@app.post("/call-stack-next-level")
+async def post_api_call_stack_next_level(item: PostGetCallStackNextLevel):
+    return Response(content=malt_reader.get_call_stack_next_level(item.parentStackId, item.parentStackDepth), media_type="application/json")

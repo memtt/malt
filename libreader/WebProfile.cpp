@@ -155,6 +155,24 @@ nlohmann::json WebProfile::getSummary(void) const
 }
 
 /**********************************************************/
+nlohmann::json WebProfile::getFilterdStacksOnFileLine(const std::string & file, size_t line) const
+{
+	return this->extractor->getFilterdStacksOnFileLine(file, line);
+}
+
+/**********************************************************/
+nlohmann::json WebProfile::getFilterdStacksOnSymbol(const std::string & func) const
+{
+	return this->extractor->getFilterdStacksOnSymbol(func);
+}
+
+/**********************************************************/
+nlohmann::json WebProfile::getCallStackNextLevel(size_t parentStackId, size_t parentDepth) const
+{
+	return this->extractor->getCallStackNextLevel(parentStackId, parentDepth);
+}
+
+/**********************************************************/
 bool WebProfile::isSourceFile(const std::string & path) const
 {
 	const auto it = this->sourceFiles.find(path);

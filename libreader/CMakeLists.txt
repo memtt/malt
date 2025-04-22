@@ -69,6 +69,10 @@ add_executable(malt-zmq-reader main_zmq.cpp)
 target_link_libraries(malt-zmq-reader malt-profile zmq)
 
 ############################################################
+add_executable(malt-httplib-reader main_http_lib.cpp)
+target_link_libraries(malt-httplib-reader malt-profile cpp-httplib)
+
+############################################################
 if (ENABLE_TESTS)
     add_subdirectory(format/tests)
     add_subdirectory(extractors/tests)
