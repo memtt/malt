@@ -299,3 +299,46 @@ TEST(TestExtractorHelpers, getCallTree)
 	const std::string svg = resJson["svg"];
 	ASSERT_TRUE(svg.find("<svg") != -1);
 }
+
+/**********************************************************/
+TEST(TestExtractorHelpers, getCallStackNextLevel_1)
+{
+	//load
+	JsonFileIn JsonFileIn(CUR_SRC_DIR "/example.json");
+	JsonIn data = JsonFileIn.getRoot();
+	MaltProfile profile;
+	data.get_to(profile);
+
+	//extract
+	Extractor extractor(profile);
+	nlohmann::json resJson = extractor.getCallStackNextLevel(0, 0);
+
+	//load ref
+	std::ifstream exampleExpected(CUR_SRC_DIR "/example.expected.json");
+	nlohmann::json dataExpected = nlohmann::json::parse(exampleExpected);
+
+	//check
+	ASSERT_EQ(dataExpected["getCallStackNextLevel"], resJson) << " Diff: " << nlohmann::json::diff(dataExpected["getCallStackNextLevel"], resJson);
+}
+
+/**********************************************************/
+TEST(TestExtractorHelpers, getCallStackNextLevel_2)
+{
+	//load
+	JsonFileIn JsonFileIn(CUR_SRC_DIR "/example.json");
+	JsonIn data = JsonFileIn.getRoot();
+	MaltProfile profile;
+	data.get_to(profile);
+
+	//extract
+	Extractor extractor(profile);
+	CallStackChildList level_0 = extractor.getCallStackNextLevel(1, 1);
+	nlohmann::json resJson = extractor.getCallStackNextLevel(level_0.back().parentStackId, level_0.back().parentStackDepth);
+
+	//load ref
+	std::ifstream exampleExpected(CUR_SRC_DIR "/example.expected.json");
+	nlohmann::json dataExpected = nlohmann::json::parse(exampleExpected);
+
+	//check
+	ASSERT_EQ(dataExpected["getCallStackNextLevel2"], resJson) << " Diff: " << nlohmann::json::diff(dataExpected["getCallStackNextLevel2"], resJson);
+}

@@ -949,7 +949,7 @@ bool Extractor::stackIsMatchingBellowDepth(const Stack & stack1, const Stack sta
 
 	//loop
 	for (size_t i = 0 ; i < depth ; i++)
-		if (!(stack1[i] == stack2[i]))
+		if (!(stack1[stack1.size() - i - 1] == stack2[stack2.size() - i - 1]))
 			return false;
 
 	//ok
@@ -962,6 +962,7 @@ CallStackChildList Extractor::getCallStackNextLevel(size_t parentStackId, size_t
 	//vars
 	const auto & parentStack = this->profile.stacks.stats[parentStackId].stack;
 	CallStackChildList result;
+	std::map<std::string, bool> alreadySeen;
 
 	//search stacks starting by
 	for (size_t i = 0 ; i < this->profile.stacks.stats.size() ; i++) {
@@ -981,14 +982,21 @@ CallStackChildList Extractor::getCallStackNextLevel(size_t parentStackId, size_t
 					sumedChildInfos.merge(cur.infos);
 			}
 
-			//insert
-			LangAddress childAddr = it.stack[parentDepth + 1];
-			result.emplace_back(
-				sumedChildInfos,
-				&this->getAddrTranslation(childAddr),
-				i,
-				parentDepth + 1
-			);
+			//get next child
+			LangAddress childAddr = it.stack[it.stack.size() - parentDepth - 2];
+			const InstructionInfosStrRef & location = this->getAddrTranslation(childAddr);
+			std::string ref = *location.file + std::string(":") + *location.function;
+
+			//check already seen
+			if (alreadySeen.find(ref) == alreadySeen.end()) {
+				alreadySeen[ref] = true;
+				result.emplace_back(
+					sumedChildInfos,
+					&location,
+					i,
+					parentDepth + 1
+				);
+			}
 		}
 	}
 

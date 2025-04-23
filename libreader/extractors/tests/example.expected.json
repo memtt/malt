@@ -459,7 +459,7 @@
   },
   "getFilterdStacks": [
     {
-      "cnt": {
+      "info": {
         "aliveReq": 728,
         "alloc": {
           "count": 1,
@@ -485,7 +485,7 @@
         "reallocCount": 0,
         "reallocSumDelta": 0
       },
-      "mem": [
+      "stack": [
         {
           "binary": "src/lib/injectors/InjectCAlloc.cpp",
           "file": "src/lib/injectors/InjectCAlloc.cpp",
@@ -531,7 +531,7 @@
       ]
     },
     {
-      "cnt": {
+      "info": {
         "aliveReq": 121,
         "alloc": {
           "count": 1,
@@ -557,7 +557,7 @@
         "reallocCount": 0,
         "reallocSumDelta": 0
       },
-      "mem": [
+      "stack": [
         {
           "binary": "src/lib/injectors/InjectCAlloc.cpp",
           "file": "src/lib/injectors/InjectCAlloc.cpp",
@@ -603,7 +603,7 @@
       ]
     },
     {
-      "cnt": {
+      "info": {
         "aliveReq": 24,
         "alloc": {
           "count": 1,
@@ -629,7 +629,7 @@
         "reallocCount": 0,
         "reallocSumDelta": 0
       },
-      "mem": [
+      "stack": [
         {
           "binary": "src/lib/injectors/InjectCAlloc.cpp",
           "file": "src/lib/injectors/InjectCAlloc.cpp",
@@ -682,7 +682,7 @@
       ]
     },
     {
-      "cnt": {
+      "info": {
         "aliveReq": 0,
         "alloc": {
           "count": 1,
@@ -708,7 +708,7 @@
         "reallocCount": 0,
         "reallocSumDelta": 0
       },
-      "mem": [
+      "stack": [
         {
           "binary": "src/lib/injectors/InjectCAlloc.cpp",
           "file": "src/lib/injectors/InjectCAlloc.cpp",
@@ -789,7 +789,7 @@
       ]
     },
     {
-      "cnt": {
+      "info": {
         "aliveReq": 0,
         "alloc": {
           "count": 1,
@@ -815,7 +815,7 @@
         "reallocCount": 0,
         "reallocSumDelta": 0
       },
-      "mem": [
+      "stack": [
         {
           "binary": "src/lib/injectors/InjectCAlloc.cpp",
           "file": "src/lib/injectors/InjectCAlloc.cpp",
@@ -896,7 +896,7 @@
       ]
     },
     {
-      "cnt": {
+      "info": {
         "aliveReq": 0,
         "alloc": {
           "count": 0,
@@ -922,7 +922,7 @@
         "reallocCount": 0,
         "reallocSumDelta": 0
       },
-      "mem": [
+      "stack": [
         {
           "binary": "src/lib/injectors/InjectCAlloc.cpp",
           "file": "src/lib/injectors/InjectCAlloc.cpp",
@@ -1003,7 +1003,7 @@
       ]
     },
     {
-      "cnt": {
+      "info": {
         "aliveReq": 0,
         "alloc": {
           "count": 0,
@@ -1029,7 +1029,7 @@
         "reallocCount": 0,
         "reallocSumDelta": 0
       },
-      "mem": [
+      "stack": [
         {
           "binary": "src/lib/injectors/InjectCAlloc.cpp",
           "file": "src/lib/injectors/InjectCAlloc.cpp",
@@ -1216,7 +1216,7 @@
   },
   "getFilterdStacksOnFileLine": [
     {
-      "cnt": {
+      "info": {
         "aliveReq": 728,
         "alloc": {
           "count": 1,
@@ -1242,7 +1242,7 @@
         "reallocCount": 0,
         "reallocSumDelta": 0
       },
-      "mem": [
+      "stack": [
         {
           "binary": "src/lib/injectors/InjectCAlloc.cpp",
           "file": "src/lib/injectors/InjectCAlloc.cpp",
@@ -1288,7 +1288,7 @@
       ]
     },
     {
-      "cnt": {
+      "info": {
         "aliveReq": 121,
         "alloc": {
           "count": 1,
@@ -1314,7 +1314,7 @@
         "reallocCount": 0,
         "reallocSumDelta": 0
       },
-      "mem": [
+      "stack": [
         {
           "binary": "src/lib/injectors/InjectCAlloc.cpp",
           "file": "src/lib/injectors/InjectCAlloc.cpp",
@@ -1360,7 +1360,7 @@
       ]
     },
     {
-      "cnt": {
+      "info": {
         "aliveReq": 24,
         "alloc": {
           "count": 1,
@@ -1386,7 +1386,7 @@
         "reallocCount": 0,
         "reallocSumDelta": 0
       },
-      "mem": [
+      "stack": [
         {
           "binary": "src/lib/injectors/InjectCAlloc.cpp",
           "file": "src/lib/injectors/InjectCAlloc.cpp",
@@ -1958,5 +1958,120 @@
       ]
     }
   ],
-  "getCallTree": "digraph G {\nnode  [color=\"white\", fontcolor=\"white\", fontname=\"Courier New\", fontsize=\"10\", penwidth=\"1\", shape=\"record\", style=\"filled\"];\nedge  [fontname=\"Courier New\", fontsize=\"9\"];\n\n}\n"
+  "getCallTree": "digraph G {\nnode  [color=\"white\", fontcolor=\"white\", fontname=\"Courier New\", fontsize=\"10\", penwidth=\"1\", shape=\"record\", style=\"filled\"];\nedge  [fontname=\"Courier New\", fontsize=\"9\"];\n\n}\n",
+  "getCallStackNextLevel": [
+    {
+      "infos": {
+        "aliveReq": 73728,
+        "alloc": {
+          "count": 1,
+          "max": 73728,
+          "min": 73728,
+          "sum": 73728
+        },
+        "countZeros": 0,
+        "free": {
+          "count": 0,
+          "max": 0,
+          "min": 0,
+          "sum": 0
+        },
+        "globalPeak": 73728,
+        "lifetime": {
+          "count": 0,
+          "max": 0,
+          "min": 0,
+          "sum": 0
+        },
+        "maxAliveReq": 73728,
+        "reallocCount": 0,
+        "reallocSumDelta": 0
+      },
+      "location": {
+        "binary": "./elf/./elf/dl-init.c",
+        "file": "./elf/./elf/dl-init.c",
+        "function": "call_init",
+        "functionShort": "call_init",
+        "line": 120
+      },
+      "parentStackDepth": 1,
+      "parentStackId": 0
+    },
+    {
+      "infos": {
+        "aliveReq": 873,
+        "alloc": {
+          "count": 5,
+          "max": 1048576,
+          "min": 16,
+          "sum": 1049465
+        },
+        "countZeros": 0,
+        "free": {
+          "count": 2,
+          "max": 1048576,
+          "min": 16,
+          "sum": 1048592
+        },
+        "globalPeak": 1049465,
+        "lifetime": {
+          "count": 2,
+          "max": 4171293,
+          "min": 2475574,
+          "sum": 6646867
+        },
+        "maxAliveReq": 1049465,
+        "reallocCount": 0,
+        "reallocSumDelta": 0
+      },
+      "location": {
+        "binary": "./csu/../csu/libc-start.c",
+        "file": "./csu/../csu/libc-start.c",
+        "function": "__libc_start_main_impl",
+        "functionShort": "__libc_start_main_impl",
+        "line": 360
+      },
+      "parentStackDepth": 1,
+      "parentStackId": 1
+    }
+  ],
+  "getCallStackNextLevel2": [
+    {
+      "infos": {
+        "aliveReq": 873,
+        "alloc": {
+          "count": 5,
+          "max": 1048576,
+          "min": 16,
+          "sum": 1049465
+        },
+        "countZeros": 0,
+        "free": {
+          "count": 2,
+          "max": 1048576,
+          "min": 16,
+          "sum": 1048592
+        },
+        "globalPeak": 1049465,
+        "lifetime": {
+          "count": 2,
+          "max": 4171293,
+          "min": 2475574,
+          "sum": 6646867
+        },
+        "maxAliveReq": 1049465,
+        "reallocCount": 0,
+        "reallocSumDelta": 0
+      },
+      "location": {
+        "binary": "src/libreader/extractors/tests/example.cpp",
+        "file": "src/libreader/extractors/tests/example.cpp",
+        "function": "main",
+        "functionShort": "main",
+        "line": 41
+      },
+      "parentStackDepth": 3,
+      "parentStackId": 1
+    }
+  ]
 }
