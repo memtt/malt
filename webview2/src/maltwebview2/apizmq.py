@@ -39,8 +39,8 @@ class MaltProfileRequest:
     def getFilterdStacksOnSymbol(self, func: str) -> str:
         return self.make_request("getFilterdStacksOnSymbol", func = func)
     
-    def get_call_stack_next_level(self, parentStackId: int, parentStackLevel: int) -> str:
-        return self.make_request("getCallStackNextLevel", parentStackId = parentStackId, parentStackLevel = parentStackLevel)
+    def get_call_stack_next_level(self, parentStackId: int, parentStackLevel: int, filter: dict = {'function': '', 'file': '', 'line': -1}) -> str:
+        return self.make_request("getCallStackNextLevel", parentStackId = parentStackId, parentStackLevel = parentStackLevel, filter = filter)
 
     def wait_ready(self) -> str:
         return self.make_request("waitReady")

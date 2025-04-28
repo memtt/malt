@@ -167,9 +167,9 @@ nlohmann::json WebProfile::getFilterdStacksOnSymbol(const std::string & func) co
 }
 
 /**********************************************************/
-nlohmann::json WebProfile::getCallStackNextLevel(size_t parentStackId, size_t parentDepth) const
+nlohmann::json WebProfile::getCallStackNextLevel(size_t parentStackId, size_t parentDepth, const LocationFilter & filter) const
 {
-	return this->extractor->getCallStackNextLevel(parentStackId, parentDepth);
+	return this->extractor->getCallStackNextLevel(parentStackId, parentDepth, filter);
 }
 
 /**********************************************************/

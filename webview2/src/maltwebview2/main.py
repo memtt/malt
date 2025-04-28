@@ -10,9 +10,11 @@ from .apizmq import MaltProfileRequest
 def malt_profile_zqm(file):
     dir = os.path.dirname(os.path.abspath(__file__))
     subprocess.run([
+        "xterm", "-e", "gdb", "--args",
         "./src/reader/libreader/malt-zmq-reader",
         file
-    ], cwd=os.path.abspath(f"{dir}/../../../../../build-release"))
+    ], cwd=os.path.abspath(f"{dir}/../../../../../build"))
+    print("KILLLED ==============")
 
 def fastapi_process(file):
     dir = os.path.dirname(os.path.abspath(__file__))

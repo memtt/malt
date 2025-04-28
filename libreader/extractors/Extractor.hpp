@@ -158,11 +158,14 @@ struct FullTreeNode
 /**********************************************************/
 struct CallStackChild
 {
-	CallStackChild(MALTFormat::StackInfos infos, const InstructionInfosStrRef * location, size_t parentStackId, size_t parentStackDepth);
+	CallStackChild(MALTFormat::StackInfos infos, const InstructionInfosStrRef * location, size_t parentStackId, size_t parentStackDepth, size_t stackId, size_t stackDepth, bool hasChild);
 	MALTFormat::StackInfos infos;
 	const InstructionInfosStrRef * location{nullptr};
 	size_t parentStackId{0};
 	size_t parentStackDepth{0};
+	size_t stackId{0};
+	size_t stackDepth{0};
+	bool hasChild;
 };
 
 /**********************************************************/
@@ -179,6 +182,14 @@ typedef std::map<std::string, FlatProfileValue> FlatProfileMap;
 typedef std::vector<FlatProfileValue> FlatProfileVector;
 typedef std::vector<std::vector<std::string> > FunctionStackVector;
 typedef std::map<std::string, bool> SourceFileMap;
+
+/**********************************************************/
+struct LocationFilter
+{
+	std::string function;
+	std::string file;
+	ssize_t line{-1};
+};
 
 /**********************************************************/
 class Extractor
@@ -202,7 +213,7 @@ class Extractor
 		SourceFileMap getSourceFileMap(void);
 		FullTreeNode getFullTree(void) const;
 		nlohmann::json getCallTree(ssize_t nodeId, ssize_t depth, ssize_t height, double minCost, const std::string & func, const std::string & metric, bool isRatio);
-		CallStackChildList getCallStackNextLevel(size_t parentStackId, size_t parentDepth) const;
+		CallStackChildList getCallStackNextLevel(size_t parentStackId, size_t parentDepth, const LocationFilter & filter) const;
 	private:
 		inline const InstructionInfosStrRef & getAddrTranslation(MALTFormat::LangAddress addr) const;
 		void mergeStackInfo(FlatProfileMap & into, const MALTFormat::LangAddress & addr,FlatProfileCounter counter,const MALTFormat::StackInfos & infos,const LocaltionMappingFunc & mapping) const;
@@ -212,7 +223,8 @@ class Extractor
 		StackStrRef buildStackStrRef(const MALTFormat::Stack & stack) const;
 		const MALTFormat::ThreadStackMem & getMaxStack(void) const;
 		const std::string& getCachedString(const std::string & value);
-		static bool stackIsMatchingBellowDepth(const MALTFormat::Stack & stack1, const MALTFormat::Stack stack2, size_t depth);
+		static bool stackIsMatchingBellowDepth(const MALTFormat::Stack & stack1, const MALTFormat::Stack & stack2, size_t depth);
+		bool stackIsMatchingLocationFilter(const LocationFilter & filter, const MALTFormat::Stack & stack) const;
 	private:
 		const MALTFormat::MaltProfile & profile;
 		std::map<MALTFormat::LangAddress, InstructionInfosStrRef> addrTranslationHidden;

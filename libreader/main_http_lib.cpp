@@ -52,6 +52,11 @@ int main(int argc, char ** argv)
 		res.set_content(data.dump(), "application/json");
 	});
 
+	svr.Get("/flat.json", [&profile](const Request& req, Response& res) {
+		nlohmann::json data = profile.getFlatFunctionProfile(true, true);
+		res.set_content(data.dump(), "application/json");
+	});
+
 	//listen
 	printf("Listening on http://localhost:8080\n");
 	svr.listen("localhost", 8080);

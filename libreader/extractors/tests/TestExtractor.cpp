@@ -311,7 +311,8 @@ TEST(TestExtractorHelpers, getCallStackNextLevel_1)
 
 	//extract
 	Extractor extractor(profile);
-	nlohmann::json resJson = extractor.getCallStackNextLevel(0, 0);
+	LocationFilter filter;
+	nlohmann::json resJson = extractor.getCallStackNextLevel(0, 0, filter);
 
 	//load ref
 	std::ifstream exampleExpected(CUR_SRC_DIR "/example.expected.json");
@@ -332,8 +333,9 @@ TEST(TestExtractorHelpers, getCallStackNextLevel_2)
 
 	//extract
 	Extractor extractor(profile);
-	CallStackChildList level_0 = extractor.getCallStackNextLevel(1, 1);
-	nlohmann::json resJson = extractor.getCallStackNextLevel(level_0.back().parentStackId, level_0.back().parentStackDepth);
+	LocationFilter filter;
+	CallStackChildList level_0 = extractor.getCallStackNextLevel(1, 1, filter);
+	nlohmann::json resJson = extractor.getCallStackNextLevel(level_0.back().parentStackId, level_0.back().parentStackDepth, filter);
 
 	//load ref
 	std::ifstream exampleExpected(CUR_SRC_DIR "/example.expected.json");

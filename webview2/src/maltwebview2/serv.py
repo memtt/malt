@@ -20,9 +20,15 @@ class PostStacksItem(BaseModel):
 class PostSourceFile(BaseModel):
     path: str
 
+class PostGetCallStackNextLevelFilter(BaseModel):
+    function: str = ""
+    file: str = ""
+    line: int = -1
+
 class PostGetCallStackNextLevel(BaseModel):
     parentStackId: int
     parentStackDepth: int
+    filter: PostGetCallStackNextLevelFilter
 
 app = FastAPI()
 #app.add_middleware(GZipMiddleware, minimum_size=1000)
@@ -75,6 +81,7 @@ async def post_api_get_stacks(item: PostSourceFile):
     else:
         raise Exception(f"File not found : {item.path}")
 
-@app.post("/call-stack-next-level")
+@app.post("/call-stack-next-level.json")
 async def post_api_call_stack_next_level(item: PostGetCallStackNextLevel):
-    return Response(content=malt_reader.get_call_stack_next_level(item.parentStackId, item.parentStackDepth), media_type="application/json")
+    filter = {"function": item.filter.function, "file": item.filter.file, "line": item.filter.line}
+    return Response(content=malt_reader.get_call_stack_next_level(item.parentStackId, item.parentStackDepth, filter), media_type="application/json")

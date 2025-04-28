@@ -68,18 +68,24 @@ int main(int argc, char ** argv)
 				continueRun = false;
 			} else if (reqJson["operation"] == "getCallStackNextLevel") {
 				const size_t parentStackId = reqJson["parentStackId"];
-				const size_t parentDepth = reqJson["parentDepth"];
-				responseJson = profile.getCallStackNextLevel(parentStackId, parentDepth);
+				const size_t parentStackLevel = reqJson["parentStackLevel"];
+				LocationFilter filter;
+				filter.function = reqJson["filter"]["function"];
+				filter.file = reqJson["filter"]["file"];
+				filter.line = reqJson["filter"]["line"];
+				responseJson = profile.getCallStackNextLevel(parentStackId, parentStackLevel, filter);
 			} else {
 				responseJson = nlohmann::json({"error", "Invalid operation !"});
 			}
 		} catch (std::exception & e) {
-			responseJson =  nlohmann::json({"error", "Invalid request or error during treatment !"});
+			responseJson =  nlohmann::json({"error", "Invalid request or error during treatment : " + std::string(e.what())});
 		}
 
 		//convert
 		response = responseJson.dump();
 		responseJson = nlohmann::json();
+
+		//std::cout << response << std::endl;
 
 		//  Send reply back to client
 		zmq::message_t reply (response.c_str(), response.size());

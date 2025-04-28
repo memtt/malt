@@ -336,6 +336,9 @@ void to_json(nlohmann::json & json, const CallStackChild & value)
 		{"location", *value.location},
 		{"parentStackId", value.parentStackId},
 		{"parentStackDepth", value.parentStackDepth},
+		{"stackId", value.stackId},
+		{"stackDepth", value.stackDepth},
+		{"hasChild", value.hasChild},
 	};
 }
 
@@ -932,16 +935,19 @@ nlohmann::json Extractor::getCallTree(ssize_t nodeId, ssize_t depth, ssize_t hei
 }
 
 /**********************************************************/
-CallStackChild::CallStackChild(MALTFormat::StackInfos infos, const InstructionInfosStrRef * location, size_t parentStackId, size_t parentStackDepth)
+CallStackChild::CallStackChild(MALTFormat::StackInfos infos, const InstructionInfosStrRef * location, size_t parentStackId, size_t parentStackDepth, size_t stackId, size_t stackDepth, bool hasChild)
 	:infos(infos)
 	,location(location)
 	,parentStackId(parentStackId)
 	,parentStackDepth(parentStackDepth)
+	,stackId(stackId)
+	,stackDepth(stackDepth)
+	,hasChild(hasChild)
 {
 }
 
 /**********************************************************/
-bool Extractor::stackIsMatchingBellowDepth(const Stack & stack1, const Stack stack2, size_t depth)
+bool Extractor::stackIsMatchingBellowDepth(const Stack & stack1, const Stack & stack2, size_t depth)
 {
 	//trivial
 	if (stack1.size() < depth || stack2.size() < depth)
@@ -957,7 +963,29 @@ bool Extractor::stackIsMatchingBellowDepth(const Stack & stack1, const Stack sta
 }
 
 /**********************************************************/
-CallStackChildList Extractor::getCallStackNextLevel(size_t parentStackId, size_t parentDepth) const
+bool Extractor::stackIsMatchingLocationFilter(const LocationFilter & filter, const Stack & stack) const
+{
+	//nothing to chec
+	if (filter.function.empty() && filter.file.empty() && filter.line == -1)
+		return true;
+
+	for (const auto & addr : stack) {
+		//get next child
+		const InstructionInfosStrRef & location = this->getAddrTranslation(addr);
+
+		//check
+		if (filter.function.empty() == false && filter.function == *location.function)
+			return true;
+		if (filter.file.empty() == false && filter.file == *location.function && filter.line != -1 && filter.line == location.line)
+			return true;
+	}
+
+	//not ok
+	return false;
+}
+
+/**********************************************************/
+CallStackChildList Extractor::getCallStackNextLevel(size_t parentStackId, size_t parentDepth, const LocationFilter & filter) const
 {
 	//vars
 	const auto & parentStack = this->profile.stacks.stats[parentStackId].stack;
@@ -970,16 +998,22 @@ CallStackChildList Extractor::getCallStackNextLevel(size_t parentStackId, size_t
 		const auto & it = this->profile.stacks.stats[i];
 
 		//check ok
-		bool stackMatching = this->stackIsMatchingBellowDepth(parentStack, it.stack, parentDepth);
-		if (stackMatching && it.stack.size() > parentDepth) {
+		bool stackMatchingBellowDepth = this->stackIsMatchingBellowDepth(parentStack, it.stack, parentDepth);
+		bool stackMatchingFilter = this->stackIsMatchingLocationFilter(filter, it.stack);
+		if (stackMatchingBellowDepth && stackMatchingFilter && it.stack.size() > parentDepth + 1) {
 			//accound
 			StackInfos sumedChildInfos;
 
 			//sum all childs up to here
+			bool hasChild = false;
 			for (size_t j = 0 ; j < this->profile.stacks.stats.size() ; j++) {
 				const auto & cur = this->profile.stacks.stats[j];
-				if (this->stackIsMatchingBellowDepth(it.stack, cur.stack, parentDepth + 1))
+				if (this->stackIsMatchingBellowDepth(it.stack, cur.stack, parentDepth + 1)) {
 					sumedChildInfos.merge(cur.infos);
+					//has child
+					if (cur.stack.size() > parentDepth + 2)
+						hasChild = true;
+				}
 			}
 
 			//get next child
@@ -993,8 +1027,11 @@ CallStackChildList Extractor::getCallStackNextLevel(size_t parentStackId, size_t
 				result.emplace_back(
 					sumedChildInfos,
 					&location,
+					parentStackId,
+					parentDepth,
 					i,
-					parentDepth + 1
+					parentDepth + 1,
+					hasChild
 				);
 			}
 		}
