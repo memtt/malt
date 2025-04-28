@@ -65,7 +65,8 @@ function MaltPageTimeline()
 		//distpatch click on stack tree
 		$scope.callStacks.onClick = function(location,info)
 		{
-// 			alert(JSON.stringify(info));
+//			alert(JSON.stringify(location));
+//			alert(JSON.stringify(info));
 // 			$("#malt-source-filename").text(location.file);
 			$scope.editor.moveToFileFunction(location.file,location.function);
 			$scope.file = location.file;

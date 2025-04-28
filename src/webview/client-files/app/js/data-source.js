@@ -108,6 +108,20 @@ MaltDataSourceNodeJS.prototype.getCallStackDataFileLine = function(file,line,han
 	});
 }
 
+MaltDataSourceNodeJS.prototype.getCallStackLevel = function(parentId, parentLevel, filter, handler)
+{
+	//$.getJSON("../stacks.json?file="+encodeURIComponent(file)+"&line="+line,handler);
+	$.ajax({ 
+		url: '../call-stack-next-level.json',
+		type: 'POST',
+		cache: false, 
+		contentType: "application/json; charset=utf-8",
+		dataType: "json",
+		data: JSON.stringify({ parentStackId: parentId, parentStackDepth: parentLevel, filter: filter }), 
+		success: handler
+	});
+}
+
 MaltDataSourceNodeJS.prototype.getCallStackDataFunc = function(func,handler)
 {
 	//$.getJSON("../stacks.json?func="+encodeURIComponent(func),handler);
