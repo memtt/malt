@@ -358,6 +358,21 @@ app.post('/source-file',function(req, res){
 });
 
 /**********************************************************/
+app.post("/call-stack-next-level.json", function(req, res) {
+	filter = {"function": req.body.filter.function, "file": req.body.filter.file, "line": req.body.filter.line};
+
+	if (filter.function == null)
+		filter.function = "";
+	if (filter.file == null)
+		filter.file = "";
+	if (filter.line == null)
+		filter.line = -1;
+
+	var resp = maltProject.getCallStackNextLevel(req.body.parentStackId, req.body.parentStackDepth, filter);
+	res.json(resp);
+});
+
+/**********************************************************/
 var staticSourceServer = Express.static('/');
 app.use('/app-sources/',function(req,res,next){
 	var reqPath = decodeURIComponent(req.path)

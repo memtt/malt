@@ -961,6 +961,105 @@ MaltProject.prototype.getStackCallerCalle = function(stack)
 }
 
 /**********************************************************/
+MaltProject.prototype.stackIsMatchingBellowDepth = function(stack1, stack2, depth)
+{
+	//trivial
+	if (stack1.length < depth || stack2.length < depth)
+		return false;
+
+	//loop
+	for (var i = 0 ; i < depth ; i++)
+		if (!(stack1[stack1.length - i - 1] == stack2[stack2.length - i - 1]))
+			return false;
+
+	//ok
+	return true;
+}
+
+/**********************************************************/
+MaltProject.prototype.stackIsMatchingLocationFilter = function(filter, detailedStack)
+{
+	//nothing to chec
+	if (filter.function == "" && filter.file == "" && filter.line == -1)
+		return true;
+
+	for (var i = 0 ; i < detailedStack.length ; i++) {
+		var location = detailedStack[i];
+
+		//check
+		if (filter.function != "" && filter.function == location.function)
+			return true;
+		if (filter.file != "" && filter.file == location.function && filter.line != -1 && filter.line == location.line)
+			return true;
+	}
+
+	//not ok
+	return false;
+}
+
+/**********************************************************/
+MaltProject.prototype.getCallStackNextLevel = function(parentStackId, parentDepth, filter)
+{
+	//vars
+	var parentStack = this.data.stacks.stats[parentStackId].stack;
+	var result = [];
+	var alreadySeen = {};
+	var instrs = this.data.sites.instr;
+
+	//search stacks starting by
+	for (var i = 0 ; i < this.data.stacks.stats.length ; i++) {
+		//get ref
+		it = this.data.stacks.stats[i];
+		detailedStack = genDetailedStack(instrs,it.stack);
+
+		//check ok
+		var stackMatchingBellowDepth = this.stackIsMatchingBellowDepth(parentStack, it.stack, parentDepth);
+		var stackMatchingFilter = this.stackIsMatchingLocationFilter(filter, detailedStack);
+		if (stackMatchingBellowDepth && stackMatchingFilter && it.stack.length > parentDepth + 1) {
+			//accound
+			var sumedChildInfos = null;
+
+			//sum all childs up to here
+			var hasChild = false;
+			for (var j = 0 ; j < this.data.stacks.stats.length ; j++) {
+				var cur = this.data.stacks.stats[j];
+				if (this.stackIsMatchingBellowDepth(it.stack, cur.stack, parentDepth + 1)) {
+					if (sumedChildInfos == null)
+						sumedChildInfos = clone(cur.infos);
+					else
+						mergeStackInfoDatas(sumedChildInfos, cur.infos);
+					//has child
+					if (cur.stack.length > parentDepth + 2)
+						hasChild = true;
+				}
+			}
+
+			//get next child
+			var childAddr = it.stack[it.stack.length - parentDepth - 2];
+			var location = detailedStack[it.stack.length - parentDepth - 2];
+			var ref = location.file + ":" + location.function;
+
+			//check already seen
+			if (alreadySeen[ref] == undefined) {
+				alreadySeen[ref] = true;
+				result.push({
+					infos: sumedChildInfos,
+					location : location,
+					parentStackId: parentStackId,
+					parentStackDepth : parentDepth,
+					stackId: i,
+					stackDepth: parentDepth + 1,
+					hasChild: hasChild
+				});
+			}
+		}
+	}
+
+	//ok
+	return result;
+}
+
+/**********************************************************/
 function filterExtractStacksCandidate(detailedStack,filter)
 {
 	for (var i in detailedStack)
