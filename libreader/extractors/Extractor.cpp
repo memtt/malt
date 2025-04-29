@@ -950,6 +950,8 @@ CallStackChild::CallStackChild(MALTFormat::StackInfos infos, const InstructionIn
 bool Extractor::stackIsMatchingBellowDepth(const Stack & stack1, const Stack & stack2, size_t depth)
 {
 	//trivial
+	if (depth == 0)
+		return true;
 	if (stack1.size() < depth || stack2.size() < depth)
 		return false;
 
@@ -990,9 +992,10 @@ CallStackChildList Extractor::getCallStackNextLevel(size_t parentStackId, size_t
 	//vars
 	const auto & parentStack = this->profile.stacks.stats[parentStackId].stack;
 	CallStackChildList result;
-	std::map<std::string, bool> alreadySeen;
+	std::map<std::string, CallStackChild> alreadySeen;
 
 	//search stacks starting by
+	#pragma omp parallel for
 	for (size_t i = 0 ; i < this->profile.stacks.stats.size() ; i++) {
 		//get ref
 		const auto & it = this->profile.stacks.stats[i];
@@ -1001,41 +1004,41 @@ CallStackChildList Extractor::getCallStackNextLevel(size_t parentStackId, size_t
 		bool stackMatchingBellowDepth = this->stackIsMatchingBellowDepth(parentStack, it.stack, parentDepth);
 		bool stackMatchingFilter = this->stackIsMatchingLocationFilter(filter, it.stack);
 		if (stackMatchingBellowDepth && stackMatchingFilter && it.stack.size() > parentDepth + 1) {
-			//accound
-			StackInfos sumedChildInfos;
-
 			//sum all childs up to here
 			bool hasChild = false;
-			for (size_t j = 0 ; j < this->profile.stacks.stats.size() ; j++) {
-				const auto & cur = this->profile.stacks.stats[j];
-				if (this->stackIsMatchingBellowDepth(it.stack, cur.stack, parentDepth + 1)) {
-					sumedChildInfos.merge(cur.infos);
-					//has child
-					if (cur.stack.size() > parentDepth + 2)
-						hasChild = true;
-				}
-			}
+			if (it.stack.size() > parentDepth + 2)
+				hasChild = true;
 
 			//get next child
 			LangAddress childAddr = it.stack[it.stack.size() - parentDepth - 2];
 			const InstructionInfosStrRef & location = this->getAddrTranslation(childAddr);
-			std::string ref = *location.file + std::string(":") + *location.function;
+			char bufferRef[8192];
+			snprintf(bufferRef, sizeof(bufferRef), "%s:%s", location.file->c_str(), location.function->c_str());
 
 			//check already seen
-			if (alreadySeen.find(ref) == alreadySeen.end()) {
-				alreadySeen[ref] = true;
-				result.emplace_back(
-					sumedChildInfos,
-					&location,
-					parentStackId,
-					parentDepth,
-					i,
-					parentDepth + 1,
-					hasChild
-				);
+			#pragma omp critical
+			{
+				auto it2 = alreadySeen.find(bufferRef);
+				if (it2 == alreadySeen.end()) {
+					CallStackChild child(it.infos,
+						&location,
+						parentStackId,
+						parentDepth,
+						i,
+						parentDepth + 1,
+						hasChild);
+					alreadySeen.emplace(bufferRef, child);
+				} else {
+					it2->second.infos.merge(it.infos);
+					it2->second.hasChild |= hasChild;
+				}
 			}
 		}
 	}
+
+	//convert
+	for (auto & it : alreadySeen)
+		result.push_back(it.second);
 
 	//ok
 	return result;
