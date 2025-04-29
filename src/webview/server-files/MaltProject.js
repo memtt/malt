@@ -964,6 +964,8 @@ MaltProject.prototype.getStackCallerCalle = function(stack)
 MaltProject.prototype.stackIsMatchingBellowDepth = function(stack1, stack2, depth)
 {
 	//trivial
+	if (depth == 0)
+		return true;
 	if (stack1.length < depth || stack2.length < depth)
 		return false;
 
@@ -1016,43 +1018,37 @@ MaltProject.prototype.getCallStackNextLevel = function(parentStackId, parentDept
 		var stackMatchingBellowDepth = this.stackIsMatchingBellowDepth(parentStack, it.stack, parentDepth);
 		var stackMatchingFilter = this.stackIsMatchingLocationFilter(filter, detailedStack);
 		if (stackMatchingBellowDepth && stackMatchingFilter && it.stack.length > parentDepth + 1) {
-			//accound
-			var sumedChildInfos = null;
-
 			//sum all childs up to here
 			var hasChild = false;
-			for (var j = 0 ; j < this.data.stacks.stats.length ; j++) {
-				var cur = this.data.stacks.stats[j];
-				if (this.stackIsMatchingBellowDepth(it.stack, cur.stack, parentDepth + 1)) {
-					if (sumedChildInfos == null)
-						sumedChildInfos = clone(cur.infos);
-					else
-						mergeStackInfoDatas(sumedChildInfos, cur.infos);
-					//has child
-					if (cur.stack.length > parentDepth + 2)
-						hasChild = true;
-				}
-			}
+			if (it.stack.length > parentDepth + 2)
+				hasChild = true;
 
 			//get next child
-			var childAddr = it.stack[it.stack.length - parentDepth - 2];
 			var location = detailedStack[it.stack.length - parentDepth - 2];
-			var ref = location.file + ":" + location.function;
+			bufferRef = location.file + ":" + location.function;
 
 			//check already seen
-			if (alreadySeen[ref] == undefined) {
-				alreadySeen[ref] = true;
-				result.push({
-					infos: sumedChildInfos,
+			var it2 = alreadySeen[bufferRef];
+			if (it2 == undefined) {
+				alreadySeen[bufferRef] = {
+					infos: it.infos,
 					location : location,
 					parentStackId: parentStackId,
 					parentStackDepth : parentDepth,
 					stackId: i,
 					stackDepth: parentDepth + 1,
 					hasChild: hasChild
-				});
+				};
+			} else {
+				mergeStackInfoDatas(it2.infos, it.infos);
+				it2.hasChild |= hasChild;
 			}
 		}
+	}
+
+	//convert
+	for (var key in alreadySeen){
+		result.push(alreadySeen[key]);
 	}
 
 	//ok
