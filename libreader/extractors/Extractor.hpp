@@ -77,29 +77,29 @@ struct SummaryV2
 {
 	MALTFormat::Run run;
 	struct {
-		size_t totalMemory;
-		MALTFormat::CyclesDuration ticksPerSecond;
+		size_t totalMemory{0};
+		MALTFormat::CyclesDuration ticksPerSecond{0};
 	} system;
 	struct {
-		size_t peakPhysicalMemory;
-		size_t peakVirtualMemory;
-		size_t peakRequestedMemory;
-		size_t peakInternalMemory;
-		size_t peakSegmentCount;
-		float peakAllocRate;
-		size_t peakAllocCountRate;
-		size_t totalAllocatedMemory;
-		float recyclingRatio;
-		size_t allocCount;
-		size_t minAllocSize;
-		size_t meanAllocSize;
-		size_t maxAllocSize;
-		size_t leakedMem;
-		size_t leakedCount;
-		size_t largestStack;
-		size_t numGblVar;
-		size_t globalVarMem;
-		size_t tlsVarMem;
+		size_t peakPhysicalMemory{0};
+		size_t peakVirtualMemory{0};
+		size_t peakRequestedMemory{0};
+		size_t peakInternalMemory{0};
+		size_t peakSegmentCount{0};
+		float peakAllocRate{0};
+		float peakAllocCountRate{0};
+		size_t totalAllocatedMemory{0};
+		float recyclingRatio{0};
+		size_t allocCount{0};
+		size_t minAllocSize{0};
+		float meanAllocSize{0};
+		size_t maxAllocSize{0};
+		size_t leakedMem{0};
+		size_t leakedCount{0};
+		size_t largestStack{0};
+		size_t numGblVar{0};
+		size_t globalVarMem{0};
+		size_t tlsVarMem{0};
 	} summary;
 	SummaryWarnings summaryWarnings;
 	std::vector<MALTFormat::ThreadsStats> threadStats;
@@ -109,16 +109,16 @@ struct SummaryV2
 struct Summary
 {
 	struct{
-		size_t physicalMem;
-		size_t virtualMem;
-		size_t requestedMem;
-		size_t internalMemory;
-		size_t segments;
-		size_t minChunkSize;
-		size_t maxChunkSize;
-		size_t count;
-		size_t largestStack;
-		size_t cumulAllocs;
+		size_t physicalMem{0};
+		size_t virtualMem{0};
+		size_t requestedMem{0};
+		size_t internalMemory{0};
+		size_t segments{0};
+		size_t minChunkSize{0};
+		size_t maxChunkSize{0};
+		size_t count{0};
+		size_t largestStack{0};
+		size_t cumulAllocs{0};
 	} globalStats;
 };
 

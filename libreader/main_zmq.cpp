@@ -74,6 +74,10 @@ int main(int argc, char ** argv)
 				filter.file = reqJson["filter"]["file"];
 				filter.line = reqJson["filter"]["line"];
 				responseJson = profile.getCallStackNextLevel(parentStackId, parentStackLevel, filter);
+			} else if (reqJson["operation"] == "getFileLinesFlatProfile") {
+				const std::string file = reqJson["file"];
+				const bool total = reqJson["total"];
+				responseJson = profile.getFileLinesFlatProfile(file, total);
 			} else {
 				responseJson = nlohmann::json({"error", "Invalid operation !"});
 			}

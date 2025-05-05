@@ -130,7 +130,7 @@ FlatProfileVector Extractor::getFlatProfile(const LocaltionMappingFunc & mapping
 			for (size_t j = 0 ; j < stack.size() ; j++)
 			{
 				//skip firsts for 'own' mode, otherwise keep them
-				if (j <= skip)
+				if (j < skip)
 					continue;
 
 				//extract some quick refs
@@ -148,8 +148,13 @@ FlatProfileVector Extractor::getFlatProfile(const LocaltionMappingFunc & mapping
 		//merge
 		#pragma omp critical
 		{
-			for (auto & it : result)
-				resultGeneral[it.first].merge(it.second);
+			for (auto & it : result) {
+				auto it2 = resultGeneral.find(it.first);
+				if (it2 == resultGeneral.end())
+					resultGeneral[it.first] = it.second;
+				else
+					it2->second.merge(it.second);
+			}
 		}
 	}
 
@@ -195,23 +200,35 @@ void Extractor::mergeStackInfo(FlatProfileMap & into, const LangAddress & addr,F
 
 		//copy user requested fields
 		cur->location = &detailedStackEntry;
+
+		//check for subkey (own or total) and clone or merge
+		switch(counter) {
+			case FLAT_PROFILE_TOTAL:
+				cur->total = infos;
+				break;
+			case FLAT_PROFILE_OWN:
+				cur->own = infos;
+				break;
+			default:
+				break;
+		}
 	} else {
 		cur = &it->second;
 		//check line and keep the lowest one
 		if ((detailedStackEntry.line > 0 && detailedStackEntry.line < cur->location->line) || cur->location->line <= 0 )
 			cur->location = &detailedStackEntry;
-	}
 
-	//check for subkey (own or total) and clone or merge
-	switch(counter) {
-		case FLAT_PROFILE_TOTAL:
-			cur->total.merge(infos);
-			break;
-		case FLAT_PROFILE_OWN:
-			cur->own.merge(infos);
-			break;
-		default:
-			break;
+		//check for subkey (own or total) and clone or merge
+		switch(counter) {
+			case FLAT_PROFILE_TOTAL:
+				cur->total.merge(infos);
+				break;
+			case FLAT_PROFILE_OWN:
+				cur->own.merge(infos);
+				break;
+			default:
+				break;
+		}
 	}
 }
 
@@ -291,6 +308,7 @@ void to_json(nlohmann::json & json, const SummaryV2 & value)
 		{"peakPhysicalMemory", value.summary.peakPhysicalMemory},
 		{"peakVirtualMemory", value.summary.peakVirtualMemory},
 		{"peakRequestedMemory", value.summary.peakRequestedMemory},
+		{"peakInternalMemory", value.summary.peakInternalMemory},
 		{"peakSegmentCount", value.summary.peakSegmentCount},
 		{"peakAllocRate", value.summary.peakAllocRate},
 		{"peakAllocCountRate", value.summary.peakAllocCountRate},
@@ -610,10 +628,10 @@ SummaryV2 Extractor::getSummaryV2(void) const
 
 	//gen
 	ret.summary.totalAllocatedMemory = sum;
-	ret.summary.recyclingRatio = sum / ret.summary.peakRequestedMemory;
+	ret.summary.recyclingRatio = (float)sum / (float)ret.summary.peakRequestedMemory;
 	ret.summary.allocCount = count;
 	ret.summary.minAllocSize = min;
-	ret.summary.meanAllocSize = sum / count;
+	ret.summary.meanAllocSize = (float)sum / (float)count;
 	ret.summary.maxAllocSize = max;
 
 	//leaks

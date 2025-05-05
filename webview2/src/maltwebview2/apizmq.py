@@ -32,15 +32,18 @@ class MaltProfileRequest:
 
     def get_flat_profile(self) -> str:
         return self.make_request("getFlatFunctionProfile", own=True, total=True)
-    
+
     def getFilterdStacksOnFileLine(self, file: str, line: int) -> str:
         return self.make_request("getFilterdStacksOnFileLine", file=file, line=line)
 
     def getFilterdStacksOnSymbol(self, func: str) -> str:
         return self.make_request("getFilterdStacksOnSymbol", func = func)
-    
+
     def get_call_stack_next_level(self, parentStackId: int, parentStackLevel: int, filter: dict = {'function': '', 'file': '', 'line': -1}) -> str:
         return self.make_request("getCallStackNextLevel", parentStackId = parentStackId, parentStackLevel = parentStackLevel, filter = filter)
+
+    def getFileLinesFlatProfile(self, file: str, total: bool) -> str:
+        return self.make_request("getFileLinesFlatProfile", file = file, total = total)
 
     def wait_ready(self) -> str:
         return self.make_request("waitReady")
