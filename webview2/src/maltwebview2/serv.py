@@ -86,7 +86,7 @@ async def post_api_get_stacks(item: PostSourceFile):
 
 @app.post("/file-infos.json")
 async def post_api_file_infos(item: PostGetFileInfos):
-    return Response(content=malt_reader.getFileLinesFlatProfile(item.file, False), media_type="application/json")
+    return Response(content=malt_reader.getFileLinesFlatProfile(item.file, True), media_type="application/json")
 
 @app.post("/call-stack-next-level.json")
 async def post_api_call_stack_next_level(item: PostGetCallStackNextLevel):

@@ -141,6 +141,8 @@ FlatProfileVector Extractor::getFlatProfile(const LocaltionMappingFunc & mapping
 				{
 					done[key] = true;
 					this->mergeStackInfo(result,cur,FLAT_PROFILE_TOTAL,infos,mapping);
+					if (j > skip)
+						this->mergeStackInfo(result,cur,FLAT_PROFILE_CHILDS,infos,mapping);
 				}
 			}
 		}
@@ -209,6 +211,9 @@ void Extractor::mergeStackInfo(FlatProfileMap & into, const LangAddress & addr,F
 			case FLAT_PROFILE_OWN:
 				cur->own = infos;
 				break;
+			case FLAT_PROFILE_CHILDS:
+				cur->childs = infos;
+				break;
 			default:
 				break;
 		}
@@ -225,6 +230,9 @@ void Extractor::mergeStackInfo(FlatProfileMap & into, const LangAddress & addr,F
 				break;
 			case FLAT_PROFILE_OWN:
 				cur->own.merge(infos);
+				break;
+			case FLAT_PROFILE_CHILDS:
+				cur->childs.merge(infos);
 				break;
 			default:
 				break;
@@ -250,6 +258,7 @@ void to_json(nlohmann::json & json, const FlatProfileValue & value)
 	json = nlohmann::json{
 		{"own", value.own},
 		{"total", value.total},
+		{"childs", value.total},
 		{"location", *value.location},
 		//TODO remove
 		{"binary", *value.location->binary},

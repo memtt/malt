@@ -61,17 +61,18 @@ nlohmann::json WebProfile::getFileLinesFlatProfile(const std::string & file, boo
 	});
 
 	//select
-	std::string subset = "*.own";
+	std::vector<std::string> subset{
+		"*.own",
+		"*.line",
+		"*.function"
+	};
 	if (total)
-		subset = "*.total";
+		subset.push_back("*.total");
+	else
+		subset.push_back("*.childs");
 
 	//filter
-	nlohmann::json resJson = ExtractorHelpers::toJsonFiltered(res,
-		{
-			subset,
-			"*.location.line",
-			"*.location.function",
-		});
+	nlohmann::json resJson = ExtractorHelpers::toJsonFiltered(res, subset);
 
 	//ok
 	return resJson;
@@ -82,7 +83,9 @@ nlohmann::json WebProfile::getFlatFunctionProfile(bool own, bool total) const
 {
 	//extract
 	FlatProfileVector res = this->extractor->getFlatProfile([](const InstructionInfosStrRef & location, const MALTFormat::StackInfos & infos){
-		return *location.function;
+		char buffer[8192];
+		snprintf(buffer, sizeof(buffer), "%s:%s", location.file->c_str(), location.function->c_str());
+		return std::string(buffer);
 	},[](const InstructionInfosStrRef & location, const MALTFormat::StackInfos & infos){
 		return true;
 	});

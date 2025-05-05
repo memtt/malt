@@ -29,6 +29,7 @@ enum FlatProfileCounter
 {
 	FLAT_PROFILE_OWN,
 	FLAT_PROFILE_TOTAL,
+	FLAT_PROFILE_CHILDS,
 };
 
 /**********************************************************/
@@ -45,6 +46,7 @@ struct InstructionInfosStrRef
 /**********************************************************/
 struct FlatProfileValue
 {
+	MALTFormat::StackInfos childs;
 	MALTFormat::StackInfos own;
 	MALTFormat::StackInfos total;
 	const InstructionInfosStrRef * location{nullptr}; 
