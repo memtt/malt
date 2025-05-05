@@ -28,7 +28,6 @@ MaltDataSourceNodeJS.prototype.loadSourceFile = function(file,handler,fail)
 	/*$.get("../app-sources"+file)
 		.done(handler)
 		.fail(fail);*/
-
 	$.ajax({
 		url: '../source-file',
 		type: 'POST',
@@ -218,15 +217,16 @@ MaltDataSourceClientSide.prototype.loadSourceFile = function(file,handler, error
 	/*file = file.replace('./','{.}/');
 	file = file.replace('../','{..}/');
 	$.get("../app-sources/"+file,handler);*/
+	console.log("OOKOKOOOK");
 	$.ajax({
 		url: '../source-file',
 		type: 'POST',
 		cache: false, 
 		contentType: "application/json; charset=utf-8",
-		dataType: "json",
+		dataType: "text",
 		data: JSON.stringify({ path: file }), 
-		success: function(data) {console.log("ok"); console.log(data);},
-		error: function(data) {console.log("ERR"); console.log(data);}
+		success: handler,
+		error: error
 	});
 }
 

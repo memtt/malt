@@ -347,14 +347,17 @@ app.get('/data.json',function(eq,res,next){
 /**********************************************************/
 app.post('/source-file',function(req, res){
 	console.log(req.body.path);
-	if (req.body.path == undefined) {
+	if (req.body.path == undefined) {
 		res.send(500, 'Missing path POST parameter !');
+		res.end();
 	} else if (maltProject.isSourceFile(req.body.path)) {
-		res.sendfile(req.body.path);
+		res.sendFile(req.body.path, {}, (err) => {
+			console.log("Fail to send : " + err);
+		});
 	} else {
 		res.send(500, 'Invalid source file path !');
+		res.end();
 	}
-	res.end();
 });
 
 /**********************************************************/

@@ -306,7 +306,7 @@ MaltProject.prototype.getFileLinesFlatProfile = function(file,total)
 MaltProject.prototype.getFlatFunctionProfile = function(total)
 {
 	var res = this.getFlatProfile(
-		function(entry) {return entry.function;},    //map on lines
+		function(entry) {return entry.file + ":"+entry.function;},    //map on lines
 		true,                                        //accept all
 		['function','line','file'],                  //export only line info
 		total);
@@ -1128,7 +1128,7 @@ function mergeStackInfo(into,detailedStackEntry,addr,subKey,infos,mapping,fields
 		into[key] = cur;
 	} else {
 		//check line and keep the lowest one
-		if (detailedStackEntry.line != 0 && detailedStackEntry.line != -1 && (detailedStackEntry.line < cur.line || cur.line == -1 || cur.line == 0))
+		if ((detailedStackEntry.line > 0 && detailedStackEntry.line < cur.line) || cur.line <= 0 )
 			cur.line = detailedStackEntry.line;
 	}
 
