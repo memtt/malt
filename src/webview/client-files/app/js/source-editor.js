@@ -150,6 +150,7 @@ MaltSourceEditor.prototype.moveToFile = function(file)
 			cur.updateAnotations();
 		}, function(message) {
 			// XHR fails to load file, show error message
+			cur.file = file;
 			cur.container.innerHTML =
 				'<pre class="line-numbers"><code>Source for the file, '
 				+ file + ', could not be loaded.</code></pre>';
