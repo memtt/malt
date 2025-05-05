@@ -44,7 +44,16 @@ MaltDataSourceNodeJS.prototype.loadSourceFile = function(file,handler,fail)
 //wrapper to getch annotation of source files [source-editor.js]
 MaltDataSourceNodeJS.prototype.loadSourceFileAnnotations = function(file,handler)
 {
-	$.getJSON("../file-infos.json?file="+file,handler);
+	//$.getJSON("../file-infos.json?file="+file,handler);
+	$.ajax({ 
+		url: '../file-infos.json',
+		type: 'POST',
+		cache: false, 
+		contentType: "application/json; charset=utf-8",
+		dataType: "json",
+		data: JSON.stringify({ file: file }), 
+		success: handler
+	});
 }
 
 //wrapper to fetch timed data [page-timeline.js]
@@ -224,7 +233,16 @@ MaltDataSourceClientSide.prototype.loadSourceFile = function(file,handler, error
 //wrapper to getch annotation of source files [source-editor.js]
 MaltDataSourceClientSide.prototype.loadSourceFileAnnotations = function(file,handler)
 {
-	$.getJSON("../file-infos.json?file="+file,handler);
+	//$.getJSON("../file-infos.json?file="+file,handler);
+	$.ajax({ 
+		url: '../file-infos.json',
+		type: 'POST',
+		cache: false, 
+		contentType: "application/json; charset=utf-8",
+		dataType: "json",
+		data: JSON.stringify({ file: file }), 
+		success: handler
+	});
 }
 
 //wrapper to fetch timed data [page-timeline.js]

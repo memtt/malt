@@ -221,9 +221,9 @@ app.get('/memtrace-at.json',function(req,res) {
 });
 
 /**********************************************************/
-app.get('/file-infos.json',function(req,res) {
+app.post('/file-infos.json',function(req,res) {
 	//extract file from request
-	var file = req.query.file;
+	var file = req.body.file;
 
 	//setup cache root entry
 	if (maltCache['file-infos.json'] == undefined)
