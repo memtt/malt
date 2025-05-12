@@ -12,6 +12,8 @@
 
 /**********************************************************/
 #include <cassert>
+#include <libgen.h>
+#include <algorithm>
 #include "PythonSymbolTracker.hpp"
 
 /**********************************************************/
@@ -208,15 +210,144 @@ void PythonSymbolTracker::freeFrameToCallSite(TmpPythonCallSite & callsite)
 }
 
 /**********************************************************/
+std::string PythonSymbolTracker::getModulePath(const std::string & filePath) const
+{
+	//var
+	std::string result;
+	std::string remainingPath = filePath;
+
+	//remove .py
+	if (remainingPath.substr(std::max((ssize_t)remainingPath.size() - 3, 0L),3) == ".py")
+		remainingPath = remainingPath.substr(0, remainingPath.size() - 3);
+
+	//depack until see python path
+	while(remainingPath != "." && remainingPath != "/") {
+		//tmp
+		std::string tmp = remainingPath;
+
+		//get name
+		std::string dname = basename((char*)tmp.c_str());
+
+		//end
+		if (strncmp(dname.c_str(), "python3.", 8) == 0)
+			break;
+
+		//frozen
+		if (strncmp(dname.c_str(), "<frozen ", 8) == 0) {
+			dname = dname.substr(8, dname.size() - 9);
+		}
+
+		//build path
+		if (result.empty())
+			result = dname;
+		else
+			result = std::string(dname) + std::string(".") + result;
+
+		//depack
+		remainingPath = dirname((char*)tmp.c_str());
+	}
+
+	return result;
+}
+
+/**********************************************************/
+std::string PythonSymbolTracker::getPythonPath(const std::string & path) const
+{
+	//var
+	std::string remainingPath = path;
+
+	//depack until see python path
+	while(remainingPath != "." && remainingPath != "/") {
+		//tmp
+		std::string tmp = remainingPath;
+
+		//get name
+		std::string dname = basename((char*)tmp.c_str());
+
+		//end
+		if (strncmp(dname.c_str(), "python3.", 8) == 0)
+			break;
+
+		//depack
+		remainingPath = dirname((char*)tmp.c_str());
+	}
+
+	return remainingPath;
+}
+
+/**********************************************************/
+std::map<std::string, bool> PythonSymbolTracker::extractorPythonPaths(void) const
+{
+	std::map<std::string, bool> result;
+	for (auto & site : this->siteMap)
+	{
+		const String & value = this->dict.getString(site.first.file);
+		if (value[0] == '/') {
+			result[this->getPythonPath(value.c_str())] = true;
+			fprintf(stderr, "PATH => %s\n", this->getPythonPath(value.c_str()).c_str());
+		}
+	}
+	return result;
+}
+
+/**********************************************************/
+std::string PythonSymbolTracker::unfrozeFileName(const std::string & fname, const std::map<std::string, bool> & paths) const
+{
+	//check
+	assert(fname.substr(0, 8) == "<frozen ");
+
+	//extract module name
+	std::string filename = fname.substr(8, fname.size() - 9);
+	for (size_t i = 0 ; i < filename.size() ; i++)
+		if (filename[i] == '.')
+			filename[i] = '/';
+
+	//search partent path
+	for (const auto & it : paths) {
+		std::string fullPath = it.first + "/" + filename + std::string(".py");
+		fprintf(stderr, "TRY %s\n", fullPath.c_str());
+		FILE * fp = fopen(fullPath.c_str(), "r");
+		if (fp != nullptr) {
+			fclose(fp);
+			return fullPath;
+		}
+	}
+
+	//not found
+	return fname;
+}
+
+/**********************************************************/
 void PythonSymbolTracker::registerSymbolResolution(SymbolSolver & solver) const
 {
+	//get python paths
+	std::map<std::string, bool> pythonPaths = this->extractorPythonPaths();
+
+	//loop on all sites to register them
 	char buffer[4096];
 	for (auto & site : this->siteMap)
 	{
+		//extract strings
 		const char * function = this->dict.getString(site.first.function).c_str();
-		const char * file = this->dict.getString(site.first.file).c_str();
-		snprintf(buffer, sizeof(buffer), "py:%s", function);
-		solver.registerFunctionSymbol(LangAddress(DOMAIN_PYTHON, site.second), "NONE", buffer, file, site.first.line);
+		std::string file = this->dict.getString(site.first.file).c_str();
+
+		//handle file
+		if (file.substr(0, 8) == "<frozen ") {
+			fprintf(stderr, "UNFROZE => %s\n", file.c_str());
+			file = this->unfrozeFileName(file, pythonPaths);
+			fprintf(stderr, "UNFROZE => %s\n", file.c_str());
+		}
+
+		//prepent module path before function name
+		std::string mpath = getModulePath(file);
+		if (*function == '\0' || strncmp(function, "<module>", 8) == 0)
+			snprintf(buffer, sizeof(buffer), "py:%s.%s", mpath.c_str(), function);
+		else
+			snprintf(buffer, sizeof(buffer), "py:%s.%s()", mpath.c_str(), function);
+
+		//register
+		//fprintf(stderr, "%s => %s => %s => %s\n", function, file.c_str(), mpath.c_str(), buffer);
+		solver.registerFunctionSymbol(LangAddress(DOMAIN_PYTHON, site.second), "NONE", buffer, file.c_str(), site.first.line);
 	}
 }
 

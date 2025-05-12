@@ -80,6 +80,10 @@ class PythonSymbolTracker
 		LangAddress slowFrameToLangAddress(PyFrameObject * frame);
 		static TmpPythonCallSite frameToCallSite(PyFrameObject * frame);
 		static void freeFrameToCallSite(TmpPythonCallSite & callsite);
+		std::string getModulePath(const std::string & filePath) const;
+		std::map<std::string, bool> extractorPythonPaths(void) const;
+		std::string getPythonPath(const std::string & path) const;
+		std::string unfrozeFileName(const std::string & fname, const std::map<std::string, bool> & paths) const;
 	private:
 		PythonStrCallSiteMap siteMap;
 		size_t nextIndex{10};
