@@ -146,7 +146,7 @@ MaltDataSourceNodeJS.prototype.getCallStackDataFunc = function(func,handler)
 
 MaltDataSourceNodeJS.prototype.getCallTreeData = function(nodeid, depth, height, mincost, func, metric, isRatio, handler, fail)
 {
-	$.getJSON("../calltree?"
+	/*$.getJSON("../calltree?"
 		+ (func ? "func=" + encodeURIComponent(func) : "nodeid=" + encodeURIComponent(nodeid))
 		+ "&depth=" + encodeURIComponent(depth)
 		+ "&height=" + encodeURIComponent(height)
@@ -154,10 +154,28 @@ MaltDataSourceNodeJS.prototype.getCallTreeData = function(nodeid, depth, height,
 		+ "&metric=" + encodeURIComponent(metric)
 		+ "&isratio=" + encodeURIComponent(isRatio))
 		.done(handler)
-		.fail(fail);
+		.fail(fail);*/
+	$.ajax({ 
+		url: '../calltree',
+		type: 'POST',
+		cache: false, 
+		contentType: "application/json; charset=utf-8",
+		dataType: "json",
+		data: JSON.stringify({
+			func: func,
+			nodeid: nodeid,
+			depth: depth,
+			height: height,
+			mincost: mincost,
+			metric: metric,
+			isratio: isRatio
+		}), 
+		success: handler,
+		error: fail
+	});
 }
 
-MaltDataSourceNodeJS.prototype.getCallTreeFormatLink = function(nodeid, depth, height, mincost, func, metric, isRatio, format) {
+MaltDataSourceNodeJS.prototype.getCallTreeFormatLink = async function(nodeid, depth, height, mincost, func, metric, isRatio, format) {
 	return  "../calltree?"
 		+ (func ? "func=" + encodeURIComponent(func) : "nodeid=" + encodeURIComponent(nodeid))
 		+ "&depth=" + encodeURIComponent(depth)
@@ -166,6 +184,25 @@ MaltDataSourceNodeJS.prototype.getCallTreeFormatLink = function(nodeid, depth, h
 		+ "&metric=" + encodeURIComponent(metric)
 		+ "&isratio=" + encodeURIComponent(isRatio)
 		+ "&format=" + encodeURIComponent(format);
+	/*$.ajax({ 
+		url: '../calltree',
+		type: 'POST',
+		cache: false, 
+		contentType: "application/json; charset=utf-8",
+		dataType: "json",
+		data: JSON.stringify({
+			func: func,
+			nodeid: nodeid,
+			depth: depth,
+			height: height,
+			mincost: mincost,
+			metric: metric,
+			isratio: isRatio,
+			format: format
+		}), 
+		success: handler,
+		error: fail
+	});*/
 }
 
 MaltDataSourceNodeJS.prototype.loadProcMaps = function(func,handler)

@@ -327,6 +327,27 @@ app.get('/calltree', function(req, res) {
 });
 
 /**********************************************************/
+app.post('/calltree', function(req, res) {
+	maltProject.getCallTree(req.body.nodeid, req.body.depth, 
+		req.body.height, req.body.mincost, req.body.func, req.body.metric, 
+		req.body.isratio, function(data) {
+			if(req.body.format == 'svg') {
+				res.header("Content-Type", "image/svg+xml");
+				res.setHeader('Content-disposition', 'attachment; filename=calltree.svg');
+				res.send(data.svg);
+				res.end();
+			} else if (req.body.format == 'dot') {
+				res.header("Content-Type", "text/vnd.graphviz");
+				res.setHeader('Content-disposition', 'attachment; filename=calltree.dot');
+				res.send(data.dotCode);
+				res.end();
+			} else {
+				res.json(data);
+			}
+		});
+});
+
+/**********************************************************/
 app.get('/active-chunks', function(req, res) {
 	maltProject.getActiveChunks(req.query.timestamp, function(result) {
 		res.json(result);
