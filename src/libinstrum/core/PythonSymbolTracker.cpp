@@ -284,7 +284,6 @@ std::map<std::string, bool> PythonSymbolTracker::extractorPythonPaths(void) cons
 		const String & value = this->dict.getString(site.first.file);
 		if (value[0] == '/') {
 			result[this->getPythonPath(value.c_str())] = true;
-			fprintf(stderr, "PATH => %s\n", this->getPythonPath(value.c_str()).c_str());
 		}
 	}
 	return result;
@@ -305,7 +304,6 @@ std::string PythonSymbolTracker::unfrozeFileName(const std::string & fname, cons
 	//search partent path
 	for (const auto & it : paths) {
 		std::string fullPath = it.first + "/" + filename + std::string(".py");
-		fprintf(stderr, "TRY %s\n", fullPath.c_str());
 		FILE * fp = fopen(fullPath.c_str(), "r");
 		if (fp != nullptr) {
 			fclose(fp);
@@ -333,9 +331,7 @@ void PythonSymbolTracker::registerSymbolResolution(SymbolSolver & solver) const
 
 		//handle file
 		if (file.substr(0, 8) == "<frozen ") {
-			fprintf(stderr, "UNFROZE => %s\n", file.c_str());
 			file = this->unfrozeFileName(file, pythonPaths);
-			fprintf(stderr, "UNFROZE => %s\n", file.c_str());
 		}
 
 		//prepent module path before function name
@@ -346,7 +342,6 @@ void PythonSymbolTracker::registerSymbolResolution(SymbolSolver & solver) const
 			snprintf(buffer, sizeof(buffer), "py:%s.%s()", mpath.c_str(), function);
 
 		//register
-		//fprintf(stderr, "%s => %s => %s => %s\n", function, file.c_str(), mpath.c_str(), buffer);
 		solver.registerFunctionSymbol(LangAddress(DOMAIN_PYTHON, site.second), "NONE", buffer, file.c_str(), site.first.line);
 	}
 }
