@@ -991,7 +991,7 @@ MaltProject.prototype.stackIsMatchingLocationFilter = function(filter, detailedS
 		//check
 		if (filter.function != "" && filter.function == location.function)
 			return true;
-		if (filter.file != "" && filter.file == location.function && filter.line != -1 && filter.line == location.line)
+		if (filter.file != "" && filter.file == location.file && filter.line != -1 && filter.line == location.line)
 			return true;
 	}
 
