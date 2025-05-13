@@ -39,6 +39,8 @@ class WebProfile : public Profile
 		nlohmann::json getFilterdStacksOnFileLine(const std::string & file, size_t line) const;
 		nlohmann::json getFilterdStacksOnSymbol(const std::string & func) const;
 		nlohmann::json getCallStackNextLevel(size_t parentStackId, size_t parentDepth, const LocationFilter & filter) const;
+		nlohmann::json getStacksMem(void) const;
+		nlohmann::json getStackInfoOnFunction(size_t thread_id) const;
 		bool isSourceFile(const std::string & path) const;
 	private:
 		SourceFileMap sourceFiles;

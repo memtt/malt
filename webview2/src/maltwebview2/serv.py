@@ -92,3 +92,15 @@ async def post_api_file_infos(item: PostGetFileInfos):
 async def post_api_call_stack_next_level(item: PostGetCallStackNextLevel):
     filter = {"function": item.filter.function, "file": item.filter.file, "line": item.filter.line}
     return Response(content=malt_reader.get_call_stack_next_level(item.parentStackId, item.parentStackDepth, filter), media_type="application/json")
+
+@app.get("/timed.json")
+async def get_api_get_timed():
+    return Response(content=malt_reader.getTimedValues(), media_type="application/json")
+
+@app.get("/stacks-mem.json")
+async def get_api_get_timed():
+    return Response(content=malt_reader.getStacksMem(), media_type="application/json")
+
+@app.get("/stack.json")
+async def get_api_get_stack(id: int):
+    return Response(content=malt_reader.getStackInfoOnFunction(id), media_type="application/json")

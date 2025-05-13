@@ -45,6 +45,15 @@ class MaltProfileRequest:
     def getFileLinesFlatProfile(self, file: str, total: bool) -> str:
         return self.make_request("getFileLinesFlatProfile", file = file, total = total)
 
+    def getTimedValues(self) -> str:
+        return self.make_request("getTimedValues")
+
+    def getStacksMem(self) -> str:
+        return self.make_request("getStacksMem")
+
+    def getStackInfoOnFunction(self, thread_id: int) -> str:
+        return self.make_request("getStackInfoOnFunction", thread_id = thread_id)
+
     def wait_ready(self) -> str:
         return self.make_request("waitReady")
 

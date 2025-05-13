@@ -159,6 +159,18 @@ nlohmann::json WebProfile::getSummary(void) const
 }
 
 /**********************************************************/
+nlohmann::json WebProfile::getStacksMem(void) const
+{
+	return this->extractor->getStackMem();
+}
+
+/**********************************************************/
+nlohmann::json WebProfile::getStackInfoOnFunction(size_t thread_id) const
+{
+	return this->extractor->getStackInfoOnFunction(thread_id);
+}
+
+/**********************************************************/
 nlohmann::json WebProfile::getFilterdStacksOnFileLine(const std::string & file, size_t line) const
 {
 	return this->extractor->getFilterdStacksOnFileLine(file, line);

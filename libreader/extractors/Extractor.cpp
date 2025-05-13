@@ -43,43 +43,54 @@ Extractor::~Extractor(void)
 }
 
 /**********************************************************/
+void Extractor::buildTranslation(MALTFormat::Stack & stack)
+{
+	const SitesInstrMap & instrs  = profile.sites.instr;
+
+	for (LangAddress & addr : stack) {
+		//already translated
+		auto transIt = this->addrTranslationHidden.find(addr);
+		if (transIt != this->addrTranslationHidden.end()) {
+			addr = LangAddress{LANG_TRANS_PTR, &(transIt->second)};
+			continue;
+		}
+
+		//get site
+		const auto & it = instrs.find(addr);
+		assert(it != instrs.end());
+		const InstructionInfos & instrInfos = it->second;
+
+		//build ref
+		InstructionInfosStrRef ref;
+		ref.binary = &this->getString(instrInfos.binary);
+		ref.function = &this->getString(instrInfos.function);
+		ref.functionShort = &this->getCachedString(CppDeclParser::getShortName(*(ref.function)));
+		ref.file = &this->getString(instrInfos.file);
+		ref.line = instrInfos.line;
+		ref.origin = addr;
+
+		//store
+		auto & trans = this->addrTranslationHidden[addr];
+		trans = ref;
+		assert(addr.lang != LANG_TRANS_PTR);
+		addr = LangAddress{LANG_TRANS_PTR, &trans};
+	}
+}
+
+/**********************************************************/
 void Extractor::buildTranslation(MALTFormat::MaltProfile & profile)
 {
 	//vars
 	StackStats & stats = profile.stacks.stats;
-	const SitesInstrMap & instrs  = profile.sites.instr;
-	const std::vector<std::string> & strings = profile.sites.strings;
 
 	//loop on all
 	for (auto & statEntry : stats) {
-		for (LangAddress & addr : statEntry.stack) {
-			//already translated
-			auto transIt = this->addrTranslationHidden.find(addr);
-			if (transIt != this->addrTranslationHidden.end()) {
-				addr = LangAddress{LANG_TRANS_PTR, &(transIt->second)};
-				continue;
-			}
+		this->buildTranslation(statEntry.stack);
+	}
 
-			//get site
-			const auto & it = instrs.find(addr);
-			assert(it != instrs.end());
-			const InstructionInfos & instrInfos = it->second;
-
-			//build ref
-			InstructionInfosStrRef ref;
-			ref.binary = &this->getString(instrInfos.binary);
-			ref.function = &this->getString(instrInfos.function);
-			ref.functionShort = &this->getCachedString(CppDeclParser::getShortName(*(ref.function)));
-			ref.file = &this->getString(instrInfos.file);
-			ref.line = instrInfos.line;
-			ref.origin = addr;
-
-			//store
-			auto & trans = this->addrTranslationHidden[addr];
-			trans = ref;
-			assert(addr.lang != LANG_TRANS_PTR);
-			addr = LangAddress{LANG_TRANS_PTR, &trans};
-		}
+	//loop on all
+	for (auto & thread : profile.threads) {
+		this->buildTranslation(thread.stackMem.stack);
 	}
 }
 
@@ -370,6 +381,15 @@ void to_json(nlohmann::json & json, const CallStackChild & value)
 }
 
 /**********************************************************/
+void to_json(nlohmann::json & json, const StackMem & value)
+{
+	json = nlohmann::json{
+		{"stacks", value.stacks},
+		{"ticksPerSecond", value.ticksPerSecond}
+	};
+}
+
+/**********************************************************/
 void to_json(nlohmann::json & json, const FlattenMaxStackInfo & value)
 {
 	json = nlohmann::json{
@@ -564,6 +584,23 @@ TimedValues Extractor::getTimedValues(void) const
 	tmp.memoryTimeline = this->profile.timeline.memoryTimeline;
 	tmp.systemTimeline = this->profile.timeline.systemTimeline;
 	return tmp;
+}
+
+/**********************************************************/
+StackMem Extractor::getStackMem(void) const
+{
+	//prepare array
+	StackMem res;
+
+	//copy informations
+	for (auto it : this->profile.threads)
+		res.stacks.push_back(it.stackMem);
+
+	//set
+	res.ticksPerSecond = this->profile.globals.ticksPerSecond;
+
+	//ok return
+	return res;
 }
 
 /**********************************************************/
@@ -772,7 +809,7 @@ FlattenMaxStackInfo Extractor::getFlattenMaxStackInfo(const LocaltionOnlyMapping
 		//get some vars
 		LangAddress addr = maxStack.stack[i];
 		ssize_t mem = maxStack.mem[i] - maxStack.mem[i+1];
-		assert(mem >= 0);
+		//assert(mem >= 0);
 		const InstructionInfosStrRef & info = this->getAddrTranslation(addr);
 		std::string key = to_string(addr);
 		//if (info != undefined)
@@ -818,10 +855,12 @@ FlattenMaxStackInfo Extractor::getMaxStackInfoOnFunction(void)
 **/
 FlattenMaxStackInfo Extractor::getStackInfoOnFunction(size_t id)
 {
+	if (id >= this->profile.threads.size())
+		throw new std::runtime_error("Invalid thread ID !");
 	return this->getFlattenMaxStackInfo(
 		[](const InstructionInfosStrRef & location) {return *location.function;},
 		[](const InstructionInfosStrRef & location) {return true;},
-		this->profile.threads[id].stackMem
+		this->profile.threads.at(id).stackMem
 	);
 }
 
@@ -1005,7 +1044,7 @@ bool Extractor::stackIsMatchingLocationFilter(const LocationFilter & filter, con
 		//check
 		if (filter.function.empty() == false && filter.function == *location.function)
 			return true;
-		if (filter.file.empty() == false && filter.file == *location.function && filter.line != -1 && filter.line == location.line)
+		if (filter.file.empty() == false && filter.file == *location.file && filter.line != -1 && filter.line == location.line)
 			return true;
 	}
 

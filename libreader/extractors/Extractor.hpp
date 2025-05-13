@@ -171,6 +171,13 @@ struct CallStackChild
 };
 
 /**********************************************************/
+struct StackMem
+{
+	std::vector<MALTFormat::ThreadStackMem> stacks;
+	MALTFormat::CyclesDuration ticksPerSecond;
+};
+
+/**********************************************************/
 typedef std::map<std::string, ProcMapDistrEntry> ProcMapDistr;
 typedef std::list<FilteredStackEntry> FilteredStackList;
 typedef std::list<CallStackChild> CallStackChildList;
@@ -216,14 +223,16 @@ class Extractor
 		FullTreeNode getFullTree(void) const;
 		nlohmann::json getCallTree(ssize_t nodeId, ssize_t depth, ssize_t height, double minCost, const std::string & func, const std::string & metric, bool isRatio);
 		CallStackChildList getCallStackNextLevel(size_t parentStackId, size_t parentDepth, const LocationFilter & filter) const;
+		const MALTFormat::ThreadStackMem & getMaxStack(void) const;
+		StackMem getStackMem(void) const;
 	private:
 		inline const InstructionInfosStrRef & getAddrTranslation(MALTFormat::LangAddress addr) const;
 		void mergeStackInfo(FlatProfileMap & into, const MALTFormat::LangAddress & addr,FlatProfileCounter counter,const MALTFormat::StackInfos & infos,const LocaltionMappingFunc & mapping) const;
 		void buildTranslation(MALTFormat::MaltProfile & profile);
+		void buildTranslation(MALTFormat::Stack & stack);
 		const std::string& getString(ssize_t id) const;
 		bool filterExtractStacksCandidate(const MALTFormat::Stack & stack, const LocaltionOnlyFilterFunc & filter) const;
 		StackStrRef buildStackStrRef(const MALTFormat::Stack & stack) const;
-		const MALTFormat::ThreadStackMem & getMaxStack(void) const;
 		const std::string& getCachedString(const std::string & value);
 		static bool stackIsMatchingBellowDepth(const MALTFormat::Stack & stack1, const MALTFormat::Stack & stack2, size_t depth);
 		bool stackIsMatchingLocationFilter(const LocationFilter & filter, const MALTFormat::Stack & stack) const;
@@ -247,6 +256,7 @@ void to_json(nlohmann::json & json, const FlattenMaxStackInfo & value);
 void to_json(nlohmann::json & json, const FlattenMaxStackInfoEntry & value);
 void to_json(nlohmann::json & json, const FullTreeNode & value);
 void to_json(nlohmann::json & json, const CallStackChild & value);
+void to_json(nlohmann::json & json, const StackMem & value);
 
 /**********************************************************/
 const InstructionInfosStrRef & Extractor::getAddrTranslation(MALTFormat::LangAddress addr) const

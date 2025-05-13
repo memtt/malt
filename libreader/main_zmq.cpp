@@ -78,6 +78,13 @@ int main(int argc, char ** argv)
 				const std::string file = reqJson["file"];
 				const bool total = reqJson["total"];
 				responseJson = profile.getFileLinesFlatProfile(file, total);
+			} else if (reqJson["operation"] == "getTimedValues") {
+				responseJson = profile.getTimedValues();
+			} else if (reqJson["operation"] == "getStacksMem") {
+				responseJson = profile.getStacksMem();
+			} else if (reqJson["operation"] == "getStackInfoOnFunction") {
+				const size_t thread_id = reqJson["thread_id"];
+				responseJson = profile.getStackInfoOnFunction(thread_id);
 			} else {
 				responseJson = nlohmann::json({"error", "Invalid operation !"});
 			}
