@@ -54,6 +54,21 @@ class MaltProfileRequest:
     def getStackInfoOnFunction(self, thread_id: int) -> str:
         return self.make_request("getStackInfoOnFunction", thread_id = thread_id)
 
+    def getSizeMap(self) -> str:
+        return self.make_request("getSizeMap")
+
+    def getScatter(self) -> str:
+        return self.make_request("getScatter")
+
+    def getReallocMap(self) -> str:
+        return self.make_request("getReallocMap")
+
+    def getGlobalVariables(self) -> str:
+        return self.make_request("getGlobalVariables")
+
+    def getCallTree(self, nodeid: int, depth: int, height: int, mincost: int, func: str, metric: str, isratio: bool, format: str):
+        return self.make_request("getCallTree", nodeid = nodeid, depth = depth, height = height, mincost = mincost, func = func, metric = metric, isratio = isratio, format = format)
+
     def wait_ready(self) -> str:
         return self.make_request("waitReady")
 

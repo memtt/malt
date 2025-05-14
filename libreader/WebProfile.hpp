@@ -32,7 +32,7 @@ class WebProfile : public Profile
 		nlohmann::json getProcMapDistr(void) const;
 		nlohmann::json getScatter(void) const;
 		nlohmann::json getSizeMap(void) const;
-		nlohmann::json functiongetReallocMap(void) const;
+		nlohmann::json getReallocMap(void) const;
 		nlohmann::json getTimedValues(void) const;
 		nlohmann::json getSummaryV2(void) const;
 		nlohmann::json getSummary(void) const;
@@ -41,6 +41,7 @@ class WebProfile : public Profile
 		nlohmann::json getCallStackNextLevel(size_t parentStackId, size_t parentDepth, const LocationFilter & filter) const;
 		nlohmann::json getStacksMem(void) const;
 		nlohmann::json getStackInfoOnFunction(size_t thread_id) const;
+		nlohmann::json getCallTree(ssize_t nodeId, ssize_t depth, ssize_t height, double minCost, const std::string & func, const std::string & metric, bool isRatio);
 		bool isSourceFile(const std::string & path) const;
 	private:
 		SourceFileMap sourceFiles;

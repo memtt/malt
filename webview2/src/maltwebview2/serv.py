@@ -104,3 +104,29 @@ async def get_api_get_timed():
 @app.get("/stack.json")
 async def get_api_get_stack(id: int):
     return Response(content=malt_reader.getStackInfoOnFunction(id), media_type="application/json")
+
+@app.get("/size-map.json")
+async def get_api_get_size_map():
+    return Response(content=malt_reader.getSizeMap(), media_type="application/json")
+
+@app.get("/scatter.json")
+async def get_api_get_size_map():
+    return Response(content=malt_reader.getScatter(), media_type="application/json")
+
+@app.get("/realloc-map.json")
+async def get_api_get_size_map():
+    return Response(content=malt_reader.getReallocMap(), media_type="application/json")
+
+@app.get("/global-variables.json")
+async def get_api_get_size_map():
+    return Response(content=malt_reader.getGlobalVariables(), media_type="application/json")
+
+@app.get("/calltree")
+async def get_api_get_calltree(nodeid: int, depth: int, height: int, mincost: int, func: str, metric: str, isratio: bool, format: str):
+    res = malt_reader.getCallTree(nodeid, depth, height, mincost, func, metric, isratio, format)
+    if format == "svg" and "svg" in res:
+        return Response(content=res["svg"], media_type="image/svg+xml")
+    elif format == "dot" and "dot" in res:
+        return Response(content=res["dot"], media_type="text/vnd.graphviz")
+    else:
+        return res

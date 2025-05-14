@@ -85,6 +85,24 @@ int main(int argc, char ** argv)
 			} else if (reqJson["operation"] == "getStackInfoOnFunction") {
 				const size_t thread_id = reqJson["thread_id"];
 				responseJson = profile.getStackInfoOnFunction(thread_id);
+			} else if (reqJson["operation"] == "getSizeMap") {
+				responseJson = profile.getSizeMap();
+			} else if (reqJson["operation"] == "getScatter") {
+				responseJson = profile.getScatter();
+			} else if (reqJson["operation"] == "getReallocMap") {
+				responseJson = profile.getReallocMap();
+			} else if (reqJson["operation"] == "getGlobalVariables") {
+				responseJson = profile.getGlobalVariables();
+			} else if (reqJson["operation"] == "getCallTree") {
+				size_t nodeid = reqJson["nodeid"];
+				size_t depth = reqJson["depth"];
+				size_t height = reqJson["height"];
+				size_t mincost = reqJson["mincost"];
+				std::string func = reqJson["func"];
+				std::string metric = reqJson["metric"];
+				bool isratio = reqJson["isratio"];
+				std::string format = reqJson["format"];
+				responseJson = profile.getCallTree(nodeid, depth, height, mincost, func, metric, isratio);
 			} else {
 				responseJson = nlohmann::json({"error", "Invalid operation !"});
 			}

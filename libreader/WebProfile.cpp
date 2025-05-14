@@ -13,6 +13,9 @@
 #include "WebProfile.hpp"
 
 /**********************************************************/
+using namespace MALTFormat;
+
+/**********************************************************/
 namespace MALTReader
 {
 
@@ -131,11 +134,13 @@ nlohmann::json WebProfile::getScatter(void) const
 /**********************************************************/
 nlohmann::json WebProfile::getSizeMap(void) const
 {
-	return this->profile.memStats.sizeMap;
+	nlohmann::json js;
+	MALTFormat::to_json(js, this->profile.memStats.sizeMap);
+	return js;
 }
 
 /**********************************************************/
-nlohmann::json WebProfile::functiongetReallocMap(void) const
+nlohmann::json WebProfile::getReallocMap(void) const
 {
 	return this->profile.memStats.reallocJump;
 }
@@ -186,6 +191,12 @@ nlohmann::json WebProfile::getFilterdStacksOnSymbol(const std::string & func) co
 nlohmann::json WebProfile::getCallStackNextLevel(size_t parentStackId, size_t parentDepth, const LocationFilter & filter) const
 {
 	return this->extractor->getCallStackNextLevel(parentStackId, parentDepth, filter);
+}
+
+/**********************************************************/
+nlohmann::json WebProfile::getCallTree(ssize_t nodeId, ssize_t depth, ssize_t height, double minCost, const std::string & func, const std::string & metric, bool isRatio)
+{
+	return this->extractor->getCallTree(nodeId, depth, height, minCost, func, metric, isRatio);
 }
 
 /**********************************************************/
