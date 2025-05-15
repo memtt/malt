@@ -13,6 +13,9 @@
 ############################################################
 add_subdirectory(from-htopml)
 add_subdirectory(iniparser)
+if (ENABLE_JEMALLOC)
+	add_subdirectory(jemalloc)
+endif()
 # only required for testing
 if(ENABLE_TESTS AND GTEST_USE_EMBEDED)
 	add_subdirectory(googletest-1.14.0)

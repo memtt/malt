@@ -60,6 +60,11 @@ cfg_add_enable_option --name='python' \
 						--on='-DENABLE_PYTHON=${ON}' \
 						--doc='Enable the python support.'
 
+#JeMalloc built for MALT
+cfg_add_enable_option --name='jemalloc' \
+						--on='-DENABLE_JEMALLOC=${ON}' \
+						--doc='Enable building the internal jemalloc to get better internal memory handling.' \
+
 ############################################################
 #libunwind
 cfg_add_with_option --name='libunwind' \
@@ -77,9 +82,9 @@ cfg_add_with_option --name='python' \
 						--var='Python3_ROOT_DIR'
 
 #JeMalloc built for MALT
-cfg_add_with_option --name='malt-jemalloc' \
-						--doc='Define prefix to find JeMalloc built for MALT internals [/usr]' \
-						--var='MALTJEMALLOC_PREFIX'
+#cfg_add_with_option --name='malt-jemalloc' \
+#						--doc='Define prefix to find JeMalloc built for MALT internals [/usr]' \
+#						--var='MALTJEMALLOC_PREFIX'
 
 #Python linking way for MALT
 cfg_add_with_option --name='python-linking' \

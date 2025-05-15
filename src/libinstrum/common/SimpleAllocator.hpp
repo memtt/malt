@@ -20,7 +20,7 @@
 //portability dependent code
 #include <portability/Spinlock.hpp>
 #ifdef MALT_ENABLE_INTERNAL_JEMALLOC
-	#include <jemalloc-malt.h>
+	#include "jemalloc-malt.h"
 #endif
 
 /**********************************************************/

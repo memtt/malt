@@ -53,7 +53,7 @@ def malt_dev_gen_archive(name: str = PACKAGE_NAME, version: str = PACKAGE_VERSIO
     origdir = os.getcwd()
     with jump_in_tmpdir() as dir:
         run_shell(f"tar -xf /tmp/{prefix}.tar.bz2")
-        with jump_in_dir(f"{prefix}/src/webview"):
+        with jump_in_dir(f"{prefix}/"):
             print("  --------------------------------------------")
             run_shell("./prepare.sh 2>&1 | sed -e 's/^/  /g'")
             print("  --------------------------------------------")

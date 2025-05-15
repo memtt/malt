@@ -50,7 +50,8 @@ if (LIBUNWIND_FOUND)
 	list(APPEND LIB_MALT_DEPS ${LIBUNWIND_LIBRARIES})
 endif (LIBUNWIND_FOUND)
 if (MALTJEMALLOC_FOUND)
-	list(APPEND LIB_MALT_DEPS malt_je_malloc::jemalloc)
+	#list(APPEND LIB_MALT_DEPS malt_je_malloc::jemalloc)
+	#list(APPEND LIB_MALT_DEPS ${CMAKE_BINARY_DIR}/extern-deps/jemalloc/jemalloc-prefix/lib/libjemalloc-malt_pic.a)
 endif()
 if (MALT_HAVE_PYTHON AND MALT_PORTABILITY_PYTHON_NATIVE)
 	list(APPEND LIB_MALT_DEPS ${Python3_LIBRARIES})
@@ -97,6 +98,9 @@ if (USE_LINK_OPTIM)
 endif()
 set_target_properties(malt-base PROPERTIES VERSION ${MALT_VERSION}
 										   SOVERSION ${MALT_SO_VERSION})
+if (ENABLE_JEMALLOC)
+	target_link_libraries(malt-base jemalloc-malt_pic)
+endif()
 
 ############################################################
 add_library(malt SHARED ${COMMON_OBJS} $<TARGET_OBJECTS:malt-injectors>)
@@ -106,6 +110,9 @@ if (USE_LINK_OPTIM)
 endif()
 set_target_properties(malt PROPERTIES VERSION ${MALT_VERSION}
 									  SOVERSION ${MALT_SO_VERSION})
+if (ENABLE_JEMALLOC)
+	target_link_libraries(malt jemalloc-malt_pic)
+endif()
 
 ############################################################
 add_library(malt-controler SHARED $<TARGET_OBJECTS:malt-fake-controler>)

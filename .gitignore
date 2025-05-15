@@ -1,5 +1,6 @@
 # Ignore node modules which are downloaded at the installation
 node_modules
+extern-deps/jemalloc
 
 # Ignore build directories
 src/webview/dist
@@ -34,3 +35,4 @@ examples/fortran/*/*.json
 
 # reader
 src/reader
+

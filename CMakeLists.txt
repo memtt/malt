@@ -46,6 +46,7 @@ set(ENABLE_GCC_COVERAGE   "no"       CACHE BOOL   "Enable coverage compile flags
 set(ENABLE_LINK_OPTIM     "yes"      CACHE BOOL   "Enable link optimisation (LTO & -fvisibility-hidden). Note: it is not compatible with compilation of unit tests.")
 set(ENABLE_IPO            "yes"      CACHE BOOL   "Allow usage of IPO specfic optimization when ENABLE_LINK_OPTIM is enabled.")
 set(ENABLE_PYTHON         "no"       CACHE BOOL   "Enable compiling with the python support.")
+set(ENABLE_JEMALLOC       "yes"      CACHE BOOL   "Enable building internal JeMalloc.")
 #Code options
 set(ENABLE_CODE_TIMING    "no"       CACHE BOOL   "Enable some tricks to quickly check timings of hostspots of MALT internal code.")
 #select portability mode
@@ -92,11 +93,20 @@ find_package(Qt5WebEngineWidgets QUIET)
 find_package(Qt5WebKitWidgets QUIET)
 find_package(Qt5Network QUIET)
 find_package(Node QUIET)
-find_package(MaltJeMalloc QUIET)
+#find_package(MaltJeMalloc QUIET)
 find_package(nlohmann_json 3.11.3 QUIET)
 # Check for npm if needed
 if (NODE_FOUND AND NOT IS_DIRECTORY ${CMAKE_SOURCE_DIR}/src/webview/node_modules)
 	find_package(Npm REQUIRED)
+endif()
+
+############################################################
+# set
+if (ENABLE_JEMALLOC)
+	set(MALTJEMALLOC_FOUND ON)
+	set(MALTJEMALLOC_LIBRARY ${CMAKE_BINARY_DIR}/extern-deps/jemalloc/jemalloc-prefix/lib/libjemalloc-malt_pic.a)
+	#set(MALTJEMALLOC_INCLUDE_DIRS ${CMAKE_BINARY_DIR}/extern-deps/jemalloc/jemalloc-prefix/include/jemalloc)
+	set(MALTJEMALLOC_INCLUDE_DIRS ${CMAKE_BINARY_DIR}/extern-deps/jemalloc/jemalloc-build/include/jemalloc)
 endif()
 
 ############################################################
