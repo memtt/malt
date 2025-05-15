@@ -257,7 +257,13 @@ void ElfReader::loadGlobalVariables(ElfGlobalVariableVector& variables)
 	ElfStringTable strings = getStringTable(link);
 	assert(strings.data != NULL && strings.size > 0);
 
+	//init
+	std::map<size_t, size_t> offsetMap;
+	for (int i = 0 ; i < symCount ; i++)
+		offsetMap[table[i].st_shndx] = secHeader->sh_offset;
+
 	//loop on symbols
+	//size_t offset = secHeader->sh_offset;
 	for (int i = 0 ; i < symCount ; i++)
 	{
 		if (table[i].st_name != 0)
@@ -276,6 +282,8 @@ void ElfReader::loadGlobalVariables(ElfGlobalVariableVector& variables)
 				var.size = table[i].st_size;
 				var.tls = (type == STT_TLS);
 				var.line = -1;
+				var.offset = offsetMap[table[i].st_shndx];
+
 				//fix name
 				//get short name to cut on recent GCC (eg. _ZSt4cout@GLIBCXX_3.4)
 				std::string shortName = var.symbol;
@@ -291,6 +299,9 @@ void ElfReader::loadGlobalVariables(ElfGlobalVariableVector& variables)
 				//printf("symbol = %d = %s -> %zu\n",table[i].st_name,strings.get(table[i].st_name),table[i].st_size);
 			}
 		}
+
+		//inc
+		offsetMap[table[i].st_shndx] += table[i].st_size;
 	}
 }
 
@@ -346,6 +357,32 @@ void convertToJson(htopml::JsonState& json, const ElfGlobalVariable& value)
 bool ElfReader::hasLibElf(void)
 {
 	return true;
+}
+
+/**********************************************************/
+const ElfGlobalVariable & ElfReader::getVarByName(const ElfGlobalVariableVector & variables, const std::string & name) const
+{
+	for (const auto & it : variables) {
+		fprintf(stderr, "%s\n", it.name.c_str());
+		if (it.name == name)
+			return it;
+	}
+	MALT_FATAL_ARG("Fail to find global variable {1}").arg(name).end();
+}
+
+/**********************************************************/
+void * ElfReader::getInMemAddr(const LinuxProcMapReader & procMap, const ElfGlobalVariable & variable) const
+{
+	const LinuxProcMapEntry * entry = procMap.getEntryByOffset(variable.file, variable.offset);
+	assert(entry != nullptr);
+	return (void*)((size_t)entry->lower + variable.offset - (size_t)entry->offset);
+	//return (void*)variable.offset;
+}
+
+/**********************************************************/
+size_t ElfReader::getPhysSize(const ProcPageMapReader & pageMapReader, const ElfGlobalVariable & variable) const
+{
+
 }
 
 }

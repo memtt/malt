@@ -18,6 +18,8 @@
 #include <string>
 #include <cstdio>
 #include <json/JsonState.h>
+#include "portability/LinuxProcMapReader.hpp"
+#include "ProcPagemapReader.hpp"
 
 /**********************************************************/
 struct Elf;
@@ -76,6 +78,9 @@ class ElfReader
 		~ElfReader(void);
 		void loadGlobalVariables(ElfGlobalVariableVector & variables);
 		static bool hasLibElf(void);
+		const ElfGlobalVariable & getVarByName(const ElfGlobalVariableVector & variables, const std::string & name) const;
+		void * getInMemAddr(const LinuxProcMapReader & procMap, const ElfGlobalVariable & variable) const;
+		size_t getPhysSize(const ProcPageMapReader & pageMapReader, const ElfGlobalVariable & variable) const;
 	private:
 		void libelfInit(void);
 		void openFile(const std::string & file);
