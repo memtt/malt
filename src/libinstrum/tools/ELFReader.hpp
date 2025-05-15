@@ -34,6 +34,8 @@ namespace MALT
 struct ElfGlobalVariable
 {
 	/** Name of the variable. **/
+	std::string symbol;
+	/** Name of the variable. **/
 	std::string name;
 	/** Size (in bytes) of the variable. **/
 	size_t size;

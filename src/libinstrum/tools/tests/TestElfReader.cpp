@@ -49,8 +49,8 @@ TEST(ElfReader,loadSimpleCaseGlobVars)
 	if (ElfReader::hasLibElf())
 	{
 		EXPECT_TRUE(hasVariable(vars,"gblArray",1024 * sizeof(int),false));
-		EXPECT_TRUE(hasVariable(vars,"_ZL14gblStaticArray",1024 * sizeof(int),false));
-		EXPECT_TRUE(hasVariable(vars,"_ZL9gblString",25,false));
+		EXPECT_TRUE(hasVariable(vars,"gblStaticArray",1024 * sizeof(int),false));
+		EXPECT_TRUE(hasVariable(vars,"gblString",25,false));
 		EXPECT_TRUE(hasVariable(vars,"tlsArray",1024 * sizeof(int),true));
 	}
 }

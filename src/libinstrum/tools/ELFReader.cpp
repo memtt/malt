@@ -20,6 +20,7 @@
 #include <common/Debug.hpp>
 //from libelf (non standard)
 #include <libelf.h>
+#include "portability/Compiler.hpp"
 
 /**********************************************************/
 namespace MALT
@@ -271,10 +272,19 @@ void ElfReader::loadGlobalVariables(ElfGlobalVariableVector& variables)
 				//setup var
 				ElfGlobalVariable var;
 				if (table[i].st_name > 0 && table[i].st_name < strings.size)
-					var.name = strings.data + table[i].st_name;
+					var.symbol = strings.data + table[i].st_name;
 				var.size = table[i].st_size;
 				var.tls = (type == STT_TLS);
 				var.line = -1;
+				//fix name
+				//get short name to cut on recent GCC (eg. _ZSt4cout@GLIBCXX_3.4)
+				std::string shortName = var.symbol;
+				int pos = shortName.find("@");
+				if (pos != std::string::npos)
+					shortName = shortName.substr(0, pos);
+				
+				//demangle namespace
+				var.name = Compiler::demangleCppNames(shortName);
 				
 				//push
 				variables.push_back(var);
@@ -319,6 +329,7 @@ ElfStringTable ElfReader::getStringTable(int secId)
 void convertToJson(htopml::JsonState& json, const ElfGlobalVariable& value)
 {
 	json.openStruct();
+		json.printField("symbol",value.name);
 		json.printField("name",value.name);
 		json.printField("size",value.size);
 		//json.printField("offset",value.offset);
