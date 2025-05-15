@@ -23,8 +23,6 @@ It optionally depends on :
 - nodejs (<http://nodejs.org/>) to run the webview GUI. Tested version is 0.10.30 - 12.22.9.
 - libelf (<http://www.mr511.de/software/english.html>) to extract global variable list from executables and libs. Tested version is 0.128 - 0.183.
 - libunwind (<http://www.nongnu.org/libunwind/>) as an alternative implementation of glibc backtrace method. Tested version is 1.1 - 1.3.2.
-- jemalloc (https://github.com/jemalloc/jemalloc) to get a better internal allocator for the MALT self allocations. Tested version is 5.3.0.
-  Note that is should be built with special options dedicated to MALT, see in the following pats of this document.
 
 Supported system (known):
 
@@ -89,11 +87,12 @@ MALT build support several options to define with -D option of CMake :
 
 - `-DENABLE_CODE_TIMING={yes|no}` : Enable quick and dirty function to measure MALT internal
   performances.
-- `-DENABLE_TESTS={yes|no}`        : Enable build of unit tests.
+- `-DENABLE_TESTS={yes|no}`       : Enable build of unit tests.
 - `-DJUNIT_OUTPUT={yes|no}`       : Enable generation of junit files for jenkins integration.
 - `-DENABLE_VALGRIND={yes|no}`    : Run unit tests inside valgrind memcheck and generate XML report.
 - `-DPORTABILITY_OS={UNIX}`       : Set portability build options to fix OS specific calls.
 - `-DPORTABILITY_MUTEX={PTHREAD}` : Set portability build option to select mutex implementation.
+- `-DENABLE_JEMALLOC={yes|no}`    : Enable or disable usage of jemalloc internally to MALT.
 
 Note about Intel Compiler
 -------------------------
@@ -446,27 +445,12 @@ Using internal JeMalloc
 -----------------------
 
 MALT also support usage of JeMalloc for its internal allocations instead of the custom very light allocator.
-It is required sometimes, mostly for python support not to consume too much memory.
+It is required sometimes, mostly for python support not to consume too much memory, this is done via the option
+on `configure` : `--enable-jemalloc`.
 
-JeMalloc need to be built specifically for MALT so it does not interfer with the main allocator (which can
-also be a real jemalloc).
-
-MALT use a custom allocator internally so it does not mix and change the allocation pattern of the app compare
-to a normal run.
-
-JeMalloc should be built with options and ideally installed in the same prefix than MALT :
-
-```sh
-mkdir build
-cd build
-../configure --with-jemalloc-prefix=malt_je_ \
-             --with-private-namespace=malt_je_ \
-             --with-install-suffix=-malt \
-             --enable-shared \
-             --prefix={MALT_PREFIX} \
-             --disable-cxx \
-             --without-exports
-```
+**Note:** If you use the git repo it will require an internet connection to download it, but it is embeded
+into the officiel release archive. Otherwise you can pre-download it with : `./prepare.sh` as for the NodeJS
+dependencies.
 
 Similar tools
 -------------
