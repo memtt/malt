@@ -1,6 +1,6 @@
 # Ignore node modules which are downloaded at the installation
 node_modules
-extern-deps/jemalloc
+extern-deps/jemalloc/jemalloc-*
 
 # Ignore build directories
 src/webview/dist
