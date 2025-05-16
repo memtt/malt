@@ -17,7 +17,8 @@ include_directories(../)
 ############################################################
 set(TEST_NAMES TestStack
                TestBacktraceStack
-               TestEnterExitStack)
+               TestEnterExitStack
+               TestStackReducer)
 
 ############################################################
 FOREACH(test_name ${TEST_NAMES})

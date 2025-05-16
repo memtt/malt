@@ -95,6 +95,8 @@ std::string LangAddress::toString() const {
 		value += "PY-";
 	} else if (this->domain == DOMAIN_PYTHON_FRAME){
 		value += "PYF-";
+	} else if (this->domain == DOMAIN_SUB_STACK){
+		value += "SS-";
 	}
 
 	char buffer[128];

@@ -16,7 +16,8 @@ set(MALT_STACKS_SRC Stack.cpp
                     EnterExitStack.cpp
                     StackLoopRemover.cpp
                     BacktracePythonStack.cpp
-                    MultiLangStackMerger.cpp)
+                    MultiLangStackMerger.cpp
+                    StackReducer.cpp)
 
 ############################################################
 add_library(malt-stacks OBJECT ${MALT_STACKS_SRC})

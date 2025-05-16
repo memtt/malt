@@ -36,6 +36,7 @@ enum DomainType {
 	DOMAIN_C,
 	DOMAIN_PYTHON,
 	DOMAIN_PYTHON_FRAME,
+	DOMAIN_SUB_STACK,
 };
 
 /**********************************************************/

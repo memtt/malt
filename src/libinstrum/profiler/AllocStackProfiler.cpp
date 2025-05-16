@@ -459,6 +459,7 @@ void AllocStackProfiler::peakTracking(ssize_t delta)
 MMCallStackNode AllocStackProfiler::getStackNode(Stack* userStack)
 {
 	MMStackMap::Node * node;
+	//CODE_TIMING("stackReducer",this->reducer.reduce(*userStack));
 	CODE_TIMING("searchInfo",node = &stackTracker.getNode(*userStack));
 	MMCallStackNode res(node->first.stack,&node->second);
 	return res;

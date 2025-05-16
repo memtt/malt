@@ -322,15 +322,15 @@ bool operator== ( const Stack& v1, const Stack& v2 )
 	assert(v1.size > 0);
 	assert(v2.stack != NULL);
 	assert(v2.size > 0);
-	assert(v1.order == v2.order);
+	//assert(v1.order == v2.order);
 
 	//trivial
-	if (v1.size != v2.size || v1.order != v2.order)
+	if (v1.size != v2.size)
 		return false;
 	
 	//check content starting by
 	for (int i = 0 ; i < v1.size ; i++)
-		if (v1.stack[i] != v2.stack[i])
+		if (v1[i] != v2[i])
 			return false;
 
 	//ok this is good
@@ -603,14 +603,16 @@ bool operator<(const Stack& v1, const Stack& v2)
 		return false;
 	
 	
-	assert(v1.order == v2.order);
+	//assert(v1.order == v2.order);
 
 	//check content starting by
 	for (int i = 0 ; i < v1.size ; i++)
-		if (v1.stack[i] >= v2.stack[i])
+		if (v1[i] < v2[i])
+			return true;
+		else if (!(v1[i] == v2[i]))
 			return false;
 
-	return true;
+	return false;
 }
 
 /**********************************************************/

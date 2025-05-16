@@ -43,6 +43,7 @@
 #include <stacks/MultiLangStackMerger.hpp>
 //from v2
 #include <stack-tree/from-v2/RLockFreeTree.hpp>
+#include <stacks/StackReducer.hpp>
 
 /**********************************************************/
 namespace MALT
@@ -209,6 +210,7 @@ class AllocStackProfiler
 		bool skipThreadRegister{false};
 		std::atomic<size_t> maltJeMallocMem{0};
 		Trigger trigger;
+		StackReducer reducer{5};
 };
 
 }
