@@ -45,40 +45,55 @@ void to_json(nlohmann::json & json, const GlobalVariable & value)
 {
 	//defaults
 	json = nlohmann::json{
+		{"symbol", value.symbol},
 		{"name", value.name},
 		{"size", value.size},
+		{"usedSize", value.usedSize},
 		{"tls", value.tls},
+		{"binaryFile", value.binaryFile},
+		{"offset", value.offset},
+		{"secOffset", value.secOffset},
 	};
 
 	//optionals
 	if (value.line != -1)
 		json["line"] = value.line;
-	if (value.file != "")
-		json["file"] = value.file;
+	if (value.sourceFile != "")
+		json["sourceFile"] = value.sourceFile;
 }
 
 /**********************************************************/
 void from_json(const JsonIn & json, GlobalVariable & value)
 {
 	//checks
+	assert(jsContains(json, "symbol"));
 	assert(jsContains(json, "name"));
 	assert(jsContains(json, "size"));
+	assert(jsContains(json, "usedSize"));
 	assert(jsContains(json, "tls"));
+	assert(jsContains(json, "binaryFile"));
+	assert(jsContains(json, "offset"));
+	assert(jsContains(json, "secOffset"));
 
 	//load
+	json.at("symbol").get_to(value.symbol);
 	json.at("name").get_to(value.name);
 	json.at("size").get_to(value.size);
+	json.at("usedSize").get_to(value.usedSize);
 	json.at("tls").get_to(value.tls);
+	json.at("binaryFile").get_to(value.binaryFile);
+	json.at("offset").get_to(value.offset);
+	json.at("secOffset").get_to(value.secOffset);
 
 	//optionals
 	if (jsContains(json, "line"))
 		json.at("line").get_to(value.line);
 	else
 		value.line = -1;
-	if (jsContains(json, "file"))
-		json.at("file").get_to(value.file);
+	if (jsContains(json, "sourceFile"))
+		json.at("sourceFile").get_to(value.sourceFile);
 	else
-		value.file = "";
+		value.sourceFile = "";
 }
 
 

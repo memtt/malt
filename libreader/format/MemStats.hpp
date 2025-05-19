@@ -33,11 +33,16 @@ struct ReallocJump
 /**********************************************************/
 struct GlobalVariable
 {
+	std::string symbol;
 	std::string name;
 	size_t size;
+	size_t usedSize;
+	size_t offset;
+	size_t secOffset;
 	bool tls;
 	size_t line;
-	std::string file;
+	std::string sourceFile;
+	std::string binaryFile;
 };
 
 /**********************************************************/

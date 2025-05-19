@@ -1,14 +1,14 @@
 {
     "python_basic_array_backtrace": {
-        "main1.py:py:<module>:1":true,
-        "main1.py:py:MainClass.__init__:2":true,
-        "main1.py:py:MainClass.a_function:5":true,
-        "main1.py:py:MainClass:1":true,
-        "main1.py:py:main:11":true},
+        "main1.py:py:src.reader.libreader.tests.main1.<module>:1":true,
+        "main1.py:py:src.reader.libreader.tests.main1.MainClass():1":true,
+		"main1.py:py:src.reader.libreader.tests.main1.MainClass.__init__():2": true,
+        "main1.py:py:src.reader.libreader.tests.main1.MainClass.a_function():5":true,
+        "main1.py:py:src.reader.libreader.tests.main1.main():11":true},
     "python_basic_array_enter_exit": {
-        "main1.py:py:<module>:1":true,
-        "main1.py:py:MainClass.__init__:2":true,
-        "main1.py:py:MainClass.a_function:5":true,
-        "main1.py:py:MainClass:1":true,
-        "main1.py:py:main:11":true}
+        "main1.py:py:src.reader.libreader.tests.main1.<module>:1":true,
+        "main1.py:py:src.reader.libreader.tests.main1.MainClass():1":true,
+		"main1.py:py:src.reader.libreader.tests.main1.MainClass.__init__():2": true,
+        "main1.py:py:src.reader.libreader.tests.main1.MainClass.a_function():5":true,
+        "main1.py:py:src.reader.libreader.tests.main1.main():11":true}
 }
