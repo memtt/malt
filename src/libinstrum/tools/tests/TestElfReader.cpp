@@ -21,6 +21,7 @@ using namespace MALT;
 static const char CST_BINARY_FILE[] = TEST_BIN_DIR "/../../tests/simple-case-no-finstr"; 
 static const char CST_THIS_BIN_FILE[] = TEST_BIN_DIR "/TestElfReader";
 static char gbl_large_var_200MB[200UL*1024*1024UL];
+extern char gbl_large_var_200MB_dyn[200UL*1024*1024UL];
 
 /**********************************************************/
 TEST(ElfReader,constructor)
@@ -58,7 +59,7 @@ TEST(ElfReader,loadSimpleCaseGlobVars)
 }
 
 /**********************************************************/
-TEST(ElfReader,getPhysSize)
+TEST(ElfReader,getPhysAddr_exe)
 {
 	//init half
 	memset(gbl_large_var_200MB, 0, sizeof(gbl_large_var_200MB) / 2);
@@ -68,10 +69,25 @@ TEST(ElfReader,getPhysSize)
 	ElfGlobalVariableVector vars;
 	reader.loadGlobalVariables(vars);
 	const ElfGlobalVariable & var = reader.getVarByName(vars, "gbl_large_var_200MB");
-	fprintf(stderr, "offset = %p\n", (void*)var.offset);
 	LinuxProcMapReader procMapReader;
 	procMapReader.load();
-	EXPECT_EQ(&gbl_large_var_200MB, reader.getInMemAddr(procMapReader, var));
+	EXPECT_EQ(gbl_large_var_200MB, reader.getInMemAddr(procMapReader, var));
+}
+
+/**********************************************************/
+TEST(ElfReader,getPhysAddr_so)
+{
+	//init half
+	memset(gbl_large_var_200MB_dyn, 0, sizeof(gbl_large_var_200MB_dyn) / 2);
+
+	//load vars
+	ElfReader reader(CST_THIS_BIN_FILE);
+	ElfGlobalVariableVector vars;
+	reader.loadGlobalVariables(vars);
+	const ElfGlobalVariable & var = reader.getVarByName(vars, "gbl_large_var_200MB_dyn");
+	LinuxProcMapReader procMapReader;
+	procMapReader.load();
+	EXPECT_EQ(gbl_large_var_200MB_dyn, reader.getInMemAddr(procMapReader, var));
 }
 
 /**********************************************************/

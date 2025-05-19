@@ -21,6 +21,7 @@
 //from libelf (non standard)
 #include <libelf.h>
 #include "portability/Compiler.hpp"
+#include "portability/OS.hpp"
 
 /**********************************************************/
 namespace MALT
@@ -145,6 +146,9 @@ void ElfReader::openFile(const std::string& file)
 			.end();
 		goto err_elf_kind;
 	}
+
+	//track
+	this->binaryFile = file;
 
 	//ok valid
 	return;
@@ -275,6 +279,12 @@ void ElfReader::loadGlobalVariables(ElfGlobalVariableVector& variables)
 			//check type, only extract global and tls
 			if ((type == STT_OBJECT || type == STT_TLS) && (bind == STB_LOCAL || bind == STB_GLOBAL) && table[i].st_size > 0)
 			{
+				//get section
+				Elf_Scn * vSec = elf_getscn(elf,table[i].st_shndx);
+				assert(sec != NULL);
+				ElfArch_Shdr * vSecHeader = elfarch_getshdr(vSec);
+				assert(secHeader != NULL);
+
 				//setup var
 				ElfGlobalVariable var;
 				if (table[i].st_name > 0 && table[i].st_name < strings.size)
@@ -282,7 +292,9 @@ void ElfReader::loadGlobalVariables(ElfGlobalVariableVector& variables)
 				var.size = table[i].st_size;
 				var.tls = (type == STT_TLS);
 				var.line = -1;
-				var.offset = offsetMap[table[i].st_shndx];
+				var.offset = table[i].st_value;
+				var.secOffset = vSecHeader->sh_offset;
+				var.binaryFile = this->binaryFile;
 
 				//fix name
 				//get short name to cut on recent GCC (eg. _ZSt4cout@GLIBCXX_3.4)
@@ -343,13 +355,16 @@ void convertToJson(htopml::JsonState& json, const ElfGlobalVariable& value)
 		json.printField("symbol",value.name);
 		json.printField("name",value.name);
 		json.printField("size",value.size);
-		//json.printField("offset",value.offset);
+		json.printField("offset",value.offset);
+		json.printField("secOffset",value.secOffset);
 		json.printField("tls",value.tls);
-		if (value.line != -1 && !value.file.empty())
+		json.printField("usedSize",value.usedSize);
+		if (value.line != -1 && !value.sourceFile.empty())
 		{
 			json.printField("line",value.line);
-			json.printField("file",value.file);
+			json.printField("sourceFile",value.sourceFile);
 		}
+		json.printField("binaryFile",value.binaryFile);
 	json.closeStruct();
 }
 
@@ -363,7 +378,6 @@ bool ElfReader::hasLibElf(void)
 const ElfGlobalVariable & ElfReader::getVarByName(const ElfGlobalVariableVector & variables, const std::string & name) const
 {
 	for (const auto & it : variables) {
-		fprintf(stderr, "%s\n", it.name.c_str());
 		if (it.name == name)
 			return it;
 	}
@@ -373,16 +387,20 @@ const ElfGlobalVariable & ElfReader::getVarByName(const ElfGlobalVariableVector 
 /**********************************************************/
 void * ElfReader::getInMemAddr(const LinuxProcMapReader & procMap, const ElfGlobalVariable & variable) const
 {
-	const LinuxProcMapEntry * entry = procMap.getEntryByOffset(variable.file, variable.offset);
+	const LinuxProcMapEntry * entry = procMap.getEntryByOffset(variable.binaryFile, variable.offset + variable.secOffset);
 	assert(entry != nullptr);
-	return (void*)((size_t)entry->lower + variable.offset - (size_t)entry->offset);
-	//return (void*)variable.offset;
+	return (void*)(OS::getASLROffset((void*)((size_t)entry->lower + variable.offset)) + variable.offset);
 }
 
 /**********************************************************/
-size_t ElfReader::getPhysSize(const ProcPageMapReader & pageMapReader, const ElfGlobalVariable & variable) const
+size_t ElfReader::getPhysSize(const LinuxProcMapReader & procMapReader, ProcPageMapReader & pagePageMapReader, const ElfGlobalVariable & variable) const
 {
-
+	if (variable.tls) {
+		return 0;
+	} else {
+		void * addr = this->getInMemAddr(procMapReader, variable);
+		return pagePageMapReader.getPhysicalSize(addr, variable.size);
+	}
 }
 
 }
