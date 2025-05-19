@@ -89,6 +89,7 @@ class PythonSymbolTracker
 		size_t nextIndex{10};
 		PythonPyCodeToAddrMap codeToaddrMap;
 		StringIdDictionnary dict;
+		std::string baseDir;
 };
 
 }

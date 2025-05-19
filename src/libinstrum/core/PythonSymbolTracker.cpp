@@ -14,6 +14,7 @@
 #include <cassert>
 #include <libgen.h>
 #include <algorithm>
+#include <unistd.h>
 #include "PythonSymbolTracker.hpp"
 
 /**********************************************************/
@@ -42,6 +43,13 @@ PythonSymbolTracker::PythonSymbolTracker(void)
 	int cBridgeName = this->dict.getId("MALT_PYTHON_C_BRIDGE_FRAME");
 	const PythonCallSite siteCBridge = {cBridgeName, cBridgeName, 0};
 	this->siteMap[siteCBridge] = MALT_PYTHON_C_BRIDGE_FUNC_ID;
+
+	//init basedir
+	char buffer[8192];
+	char * cwd = getcwd(buffer, sizeof(buffer));
+	if (cwd == nullptr)
+		MALT_FATAL("Fail to read current working directory !");
+	this->baseDir = canonicalize_file_name(cwd);
 }
 
 /**********************************************************/
@@ -225,6 +233,10 @@ std::string PythonSymbolTracker::getModulePath(const std::string & filePath) con
 		//tmp
 		std::string tmp = remainingPath;
 
+		//end
+		if (this->baseDir.find(remainingPath.c_str()) != std::string::npos)
+			break;
+
 		//get name
 		std::string dname = basename((char*)tmp.c_str());
 
@@ -278,6 +290,7 @@ std::string PythonSymbolTracker::getPythonPath(const std::string & path) const
 /**********************************************************/
 std::map<std::string, bool> PythonSymbolTracker::extractorPythonPaths(void) const
 {
+	//search path in python install or venv or prefix
 	std::map<std::string, bool> result;
 	for (auto & site : this->siteMap)
 	{
@@ -286,6 +299,8 @@ std::map<std::string, bool> PythonSymbolTracker::extractorPythonPaths(void) cons
 			result[this->getPythonPath(value.c_str())] = true;
 		}
 	}
+
+	//ok
 	return result;
 }
 
