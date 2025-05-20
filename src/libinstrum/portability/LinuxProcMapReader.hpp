@@ -43,6 +43,8 @@ class LinuxProcMapReader
 	public:
 		void load(void);
 		const LinuxProcMapEntry* getEntry(void* addr) const;
+		const LinuxProcMapEntry* getEntryByOffset(const std::string & fname, size_t offset) const;
+		const LinuxProcMapEntry* getFirstEntry(const std::string & filename) const;
 		const_iterator begin(void) { return procMap.begin(); };
 		const_iterator end(void) { return procMap.end(); };
 	private:

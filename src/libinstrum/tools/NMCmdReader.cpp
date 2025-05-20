@@ -98,23 +98,17 @@ void NMCmdReader::findSourcesAndDemangle(ElfGlobalVariableVector& vars) const
 	//search for all
 	for (ElfGlobalVariableVector::iterator it = vars.begin() ; it != vars.end() ; ++it)
 	{
-		const NMCmdReaderEntry * entry = getEntry(it->name);
+		const NMCmdReaderEntry * entry = getEntry(it->symbol);
 		
 		//search for sources
 		if (entry != NULL)
 		{
 			it->line = entry->line;
-			it->file = entry->file;
+			it->sourceFile = entry->file;
 		}
 
 		//get short name to cut on recent GCC (eg. _ZSt4cout@GLIBCXX_3.4)
 		std::string shortName = it->name;
-		int pos = shortName.find("@");
-		if (pos != std::string::npos)
-			shortName = shortName.substr(0, pos);
-		
-		//demangle namespace
-		it->name = Compiler::demangleCppNames(shortName);
 	}
 }
 

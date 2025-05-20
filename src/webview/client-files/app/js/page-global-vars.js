@@ -10,6 +10,7 @@
 ***********************************************************/
 function MaltPageGlobalVars()
 {
+	this.maxThreadCount = 1;
 	//an example of data format
 	var defaultData = {
 		maxThreadCount:1,
@@ -44,6 +45,7 @@ function MaltPageGlobalVars()
 			$scope.globalVariablesMem = maltHelper.humanReadable(summary.global,1,'B',false);
 			$scope.tlsVariablesMem = maltHelper.humanReadable(summary.tls,1,'B',false);
 			$scope.activeThreads = data.maxThreadCount;
+			cur.maxThreadCount = data.maxThreadCount;
 			
 			//gen formatted data
 			$scope.dataForBinaryPie = cur.cutForPie(cur.getDataForBinaryPies(data),95,8,0.1);
@@ -111,7 +113,7 @@ function MaltPageGlobalVars()
 MaltPageGlobalVars.prototype.getTLSInstances = function(data)
 {
 	//1 instance of TLS per thread plus the one to store defualt values
-	return data.maxThreadCount + 1;
+	return this.maxThreadCount;
 }
 
 ////////////////////////////// SUMMARY /////////////////////////////////
@@ -203,7 +205,7 @@ MaltPageGlobalVars.prototype.getDataForVarPies = function(data)
 			var size = cur.size;
 			if (cur.tls)
 				size *= this.getTLSInstances(data);
-			res.push({binary:bin,name:cur.name,value:size,file:cur.file,line:cur.line});
+			res.push({binary:bin,name:cur.name,value:size,file:cur.sourceFile,line:cur.line,usedSize:cur.usedSize});
 		}
 	}
 	
@@ -263,6 +265,7 @@ MaltPageGlobalVars.prototype.getDataForBinaryGraphs = function(data)
 	{
 		var cntTls = 0;
 		var cntGbl = 0;
+		var usedSize = 0;
 		for (var v in vars[bin])
 		{
 			var cur = vars[bin][v];
@@ -270,8 +273,9 @@ MaltPageGlobalVars.prototype.getDataForBinaryGraphs = function(data)
 				cntTls += cur.size * this.getTLSInstances(data);
 			else
 				cntGbl += cur.size;
+			usedSize += cur.usedSize;
 		}
-		res.push({name:bin.split('/').pop(),tls:cntTls,gbl:cntGbl});
+		res.push({name:bin.split('/').pop(),tls:cntTls,gbl:cntGbl,var:cur,usedSize:usedSize});
 	}
 	
 	return this.formatDatasForBarChar(data,res);
@@ -294,9 +298,9 @@ MaltPageGlobalVars.prototype.getDataForVarGraphs = function(data,filter)
 			{
 					var cur = vars[bin][v];
 					if (cur.tls)
-						res.push({name:cur.name,tls:cur.size * this.getTLSInstances(data),gbl:0,file:cur.file,line:cur.line});
+						res.push({name:cur.name,tls:cur.size * this.getTLSInstances(data),gbl:0,file:cur.sourceFile,line:cur.line,usedSize:cur.usedSize});
 					else
-						res.push({name:cur.name,tls:0,gbl:cur.size,file:cur.file,line:cur.line});
+						res.push({name:cur.name,tls:0,gbl:cur.size,file:cur.sourceFile,line:cur.line,usedSize:cur.usedSize});
 			}
 			//res.push({name:bin,tls:cntTls,gbl:cntGbl});
 		}
@@ -365,8 +369,8 @@ MaltPageGlobalVars.prototype.formatDatasForBarChar = function(data,vars)
 	{
 		var cur = varsSorted[i];
 		sum += varsSorted[i].gbl + varsSorted[i].tls;
-		gbl.push({name:varsSorted[i].name,value:varsSorted[i].gbl,file:cur.file,line:cur.line});
-		tls.push({name:varsSorted[i].name,value:varsSorted[i].tls,file:cur.file,line:cur.line});
+		gbl.push({name:varsSorted[i].name,value:varsSorted[i].gbl,file:cur.sourceFile,line:cur.line,usedSize:cur.usedSize});
+		tls.push({name:varsSorted[i].name,value:varsSorted[i].tls,file:cur.sourceFile,line:cur.line,usedSize:cur.usedSize});
 	}
 	
 	//format final output
@@ -430,19 +434,21 @@ MaltPageGlobalVars.prototype.buildMultiBarChart = function($scope,d3Selection,da
 			
 		var tlsInstances = cur.getTLSInstances(data);
 		chart.tooltip.contentGenerator(function (obj) {
-				console.log(obj);
 				var d = obj.data;
 				var pos = "";
 				var tls = "";
 				if (d.file != undefined && d.file != '')
 					pos = "<br/>" + d.file + ":" + d.line;
 				if (d.key == "TLS variables")
-					tls = " [ "+tlsInstances+" * "+maltHelper.humanReadable(d.value/tlsInstances,1,'B',false) +" ] ";
+					tls = " [Instances : "+tlsInstances+" * "+maltHelper.humanReadable(d.value/tlsInstances,1,'B',false) +" ] ";
 // 				var ratio = " ( "+(100*d.value/e.series.total).toFixed(2)+"% ) ";
 				var ratio = "";
+				var used = "";
+				if (d.key != "TLS variables")
+					used = " [Accessed memory : " + maltHelper.humanReadable(d.usedSize, 1, "B", false) + " ("+ maltHelper.humanReadable(100 * d.usedSize / d.value, 1, "%", false) + ")]"
 				//console.log(data);
 				//console.log(e);
-				return "<div style='text-align:center'><h3>"+d.name+"</h3>"+maltHelper.humanReadable(d.value,1,'B',false)+tls+ratio+pos+'</div>';
+				return "<div style='text-align:center'><h3>"+d.name+"</h3>"+maltHelper.humanReadable(d.value,1,'B',false)+tls+ratio+used+pos+'</div>';
 		});
 
 		$scope.chart = chart;

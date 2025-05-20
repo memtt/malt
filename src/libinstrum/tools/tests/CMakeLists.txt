@@ -29,4 +29,8 @@ FOREACH(test_name ${TEST_NAMES})
 ENDFOREACH(test_name)
 
 ############################################################
+add_library(TestElfReaderDyn SHARED TestElfReaderDyn.cpp)
+target_link_libraries(TestElfReader TestElfReaderDyn)
+
+############################################################
 target_compile_options(TestAddr2Line PRIVATE -O0 -g)

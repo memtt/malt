@@ -84,4 +84,37 @@ const LinuxProcMapEntry * LinuxProcMapReader::getEntry(void* addr) const
 	return NULL;
 }
 
+/**********************************************************/
+const LinuxProcMapEntry * LinuxProcMapReader::getEntryByOffset(const std::string & fname, size_t offset) const
+{
+	//search
+	const LinuxProcMapEntry * result = nullptr;
+	for (LinuxProcMap::const_iterator it = procMap.begin() ; it != procMap.end() ; ++it)
+	{
+		if (it->file == fname && (size_t)it->offset <= offset) {
+			if (result == nullptr)
+				result = &(*it);
+			else if (it->offset > result->offset)
+				result = &(*it);
+		}
+	}
+	
+	//ok
+	return result;
+}
+
+/**********************************************************/
+const LinuxProcMapEntry * LinuxProcMapReader::getFirstEntry(const std::string & fname) const
+{
+	//search
+	for (LinuxProcMap::const_iterator it = procMap.begin() ; it != procMap.end() ; ++it)
+	{
+		if (it->file == fname)
+			return &(*it);
+	}
+	
+	//ok not found
+	return NULL;
+}
+
 }

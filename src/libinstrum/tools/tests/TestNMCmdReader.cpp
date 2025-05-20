@@ -30,7 +30,7 @@ bool hasVar(ElfGlobalVariableVector & vars, const std::string & name, bool accep
 {
 	for (auto & it : vars) {
 		if (it.name == name) {
-			if (it.file.empty() == false && it.line > 0)
+			if (it.sourceFile.empty() == false && it.line > 0)
 				return true;
 			else
 				return acceptNoSource;

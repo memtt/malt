@@ -18,6 +18,8 @@
 #include <string>
 #include <cstdio>
 #include <json/JsonState.h>
+#include "portability/LinuxProcMapReader.hpp"
+#include "ProcPagemapReader.hpp"
 
 /**********************************************************/
 struct Elf;
@@ -41,10 +43,16 @@ struct ElfGlobalVariable
 	size_t size;
 	/** Offset of the variable inside elf file. **/
 	size_t offset;
+	/** Offset of the section in the elf file. **/
+	size_t secOffset;
+	/** Physical used size (currently 0 for TLS). */
+	size_t usedSize;
 	/** Define if the variable is a TLS or not. **/
 	bool tls;
 	/** Source file defining the variable or empty if no debug informations. **/
-	std::string file;
+	std::string sourceFile;
+	/** Binary file storing the variable */
+	std::string binaryFile;
 	/** Declaration line inside source file. **/
 	int line;
 };
@@ -76,6 +84,9 @@ class ElfReader
 		~ElfReader(void);
 		void loadGlobalVariables(ElfGlobalVariableVector & variables);
 		static bool hasLibElf(void);
+		const ElfGlobalVariable & getVarByName(const ElfGlobalVariableVector & variables, const std::string & name) const;
+		void * getInMemAddr(const LinuxProcMapReader & procMap, const ElfGlobalVariable & variable) const;
+		size_t getPhysSize(const LinuxProcMapReader & procMapReader, ProcPageMapReader & pagePageMapReader, const ElfGlobalVariable & variable) const;
 	private:
 		void libelfInit(void);
 		void openFile(const std::string & file);
@@ -87,6 +98,8 @@ class ElfReader
 		Elf * elf;
 		/** Keep track of file descriptor used by libelf until close. **/
 		FILE * fp;
+		/** Keep track of the file name */
+		std::string binaryFile;
 };
 
 /**********************************************************/

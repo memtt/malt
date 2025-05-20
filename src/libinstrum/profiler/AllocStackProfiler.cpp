@@ -490,6 +490,9 @@ void AllocStackProfiler::loadGlobalVariables(void)
 	//load /proc/map
 	LinuxProcMapReader map;
 	map.load();
+
+	//to get physical addresses
+	ProcPageMapReader pageMap;
 	
 	//loop on files and load vars
 	for (LinuxProcMapReader::const_iterator it = map.begin() ; it != map.end() ; ++it)
@@ -518,6 +521,11 @@ void AllocStackProfiler::loadGlobalVariables(void)
 
 			//extract
 			elfReader.loadGlobalVariables(globalVariables[it->file]);
+
+			//extarct physical size
+			for (auto & itFile : globalVariables)
+				for (auto & itVar:  itFile.second)
+					itVar.usedSize = elfReader.getPhysSize(map, pageMap, itVar);
 			
 			//search sources
 			NMCmdReader reader;
