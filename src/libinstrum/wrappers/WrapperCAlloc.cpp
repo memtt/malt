@@ -342,5 +342,7 @@ void MALT::maltRegisterWrappedSymbol(const char * wrapped_symbol)
 /**********************************************************/
 const std::list<std::string> & MALT::maltGetWrappedSymbols(void)
 {
+	if (gblMaltWrappedSymbols == nullptr)
+		gblMaltWrappedSymbols = new std::list<std::string>();
 	return *gblMaltWrappedSymbols;
 }

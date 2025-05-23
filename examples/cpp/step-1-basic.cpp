@@ -9,18 +9,36 @@
 ***********************************************************/
 
 /**********************************************************/
+/*
+This file provide a basic example for MALT by making different kind
+of memory allocations, about :
+ - Global variables
+ - Thread Local Storage (TLS)
+ - malloc / free
+ - new / delete
+*/
+
+/**********************************************************/
 #include <cstdlib>
 #include <cstdio>
 #include <cstring>
 #include <list>
 
 /**********************************************************/
+// Here a global varaible
 static char buffer[1024*1024*64];
 
 /**********************************************************/
+// Here a TLS (Thread Local Storage), it means building an instance
+// of the global variable per thread plus the original copy with the
+// init data to copy from when spwawning the thread.
 static char __thread * thread_private_buffer[8*1024*1024];
 
 /**********************************************************/
+/**
+ * Here a simple function using malloc / free and using the memory by
+ * setting it to 0.
+ */
 void function_using_c_malloc(void)
 {
 	//alloc

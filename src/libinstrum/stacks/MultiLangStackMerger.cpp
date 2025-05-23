@@ -72,8 +72,9 @@ void MultiLangStackMerger::mixPythonAndCStack(Stack& outStack, const Stack & cSt
 				if (pythonStack[j].getDomain() == DOMAIN_PYTHON)
 					outStack.stack[cur++] = pythonStack[j];
 			//skip
-			while (i < cStack.getSize() && this->isPythonLibAddr(cStack[i]))
+			while (i < cStack.getSize() && this->isPythonLibAddr(cStack[i])) {
 				i++;
+			}
 
 			//already copied (this means we do not handle C => ptyhon => python ... renetrance yet)
 			alreadyCopyPythonStack = true;

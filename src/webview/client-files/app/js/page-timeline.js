@@ -43,7 +43,7 @@ function MaltPageTimeline()
 				.useInteractiveGuideline(true)    //Tooltips which show all data points. Very nice!
 // 				.showControls(true)
 // 				.stacked(true)        //Allow user to switch between "Grouped" and "Stacked" mode.
-				.margin({left: 100})
+				.margin({left: 100, right:60})
 				;
 			chart.margin.left = 100;
 
@@ -75,7 +75,7 @@ function MaltPageTimeline()
 	{
 		nv.addGraph(function() {
 			var chart = nv.models.lineChart()
-				.margin({left: 100}) //Adjust chart margins to give the x-axis some breathing room.
+				.margin({left: 100, right:60}) //Adjust chart margins to give the x-axis some breathing room.
 				.useInteractiveGuideline(true) //We want nice looking tooltips and a guideline!
 // 				.transitionDuration(500) //how fast do you want the lines to transition?
 				.showLegend(true) //Show the legend, allowing users to turn on/off line series.

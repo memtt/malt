@@ -46,5 +46,6 @@ malt:
 ############################################################
 clean:
 	rm -f $(TARGETS)
+	rm -f malt-*.json
 
 .PHONY: clean malt
