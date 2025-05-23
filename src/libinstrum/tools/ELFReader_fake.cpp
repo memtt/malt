@@ -49,4 +49,10 @@ bool ElfReader::hasLibElf(void)
 	return false;
 }
 
+/**********************************************************/
+size_t getPhysSize(const LinuxProcMapReader & procMapReader, ProcPageMapReader & pagePageMapReader, const ElfGlobalVariable & variable) const
+{
+	return 0;
+}
+
 }
