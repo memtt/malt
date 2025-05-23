@@ -37,6 +37,7 @@
 #include "ConverterToV2Tree.hpp"
 #include "common/NoFreeAllocator.hpp"
 #include "stacks/StackLoopRemover.hpp"
+#include "wrappers/WrapperCAlloc.hpp"
 
 /**********************************************************/
 #define MALT_SKIP_DEPTH 3
@@ -702,6 +703,7 @@ void convertToJson(htopml::JsonState& json, const AllocStackProfiler& value)
 		json.printField("date",OS::getDateTime());
 		json.printField("runtime",Clock::getticks() - value.trefTicks);
 		json.printField("allocator", value.realMallocLib);
+		json.printField("allocatorWrappers", maltGetWrappedSymbols());
 		if (value.getOptions()->traceEnabled)
 			json.printField("tracefile",value.traceFilename);
 		if (value.getOptions()->infoHidden == false)

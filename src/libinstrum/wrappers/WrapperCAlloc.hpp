@@ -15,6 +15,8 @@
 //standard
 #include <cstdlib>
 #include <pthread.h>
+#include <list>
+#include <string>
 
 namespace MALT
 {
@@ -52,6 +54,10 @@ void * malt_wrap_mremap(void *old_address, size_t old_size , size_t new_size, in
 
 //load symbols
 void malt_wrap_extended_symbols(void);
+
+//wrapped symbols
+void maltRegisterWrappedSymbol(const char * wrapped_symbol);
+const std::list<std::string> & maltGetWrappedSymbols(void);
 
 }
 

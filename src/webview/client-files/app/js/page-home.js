@@ -20,6 +20,7 @@ function MaltPageHome()
 			tool: '',
 			date: '',
 			runtime: 0,
+			allocatorWrappers: [],
 		},
 		system: {
 			ticksPerSecond: 1,
@@ -236,6 +237,11 @@ function MaltPageHome()
 		//convert CPU freq
 		$scope.getFormattedCpuFreq = function() {
 			return maltHelper.humanReadable($scope.summaryData.system.ticksPerSecond,1,'Hz',false);
+		}
+
+		//get allocator wrappers
+		$scope.getAllocatorWrappers = function() {
+			return $scope.summaryData.run.allocatorWrappers.join(", ");
 		}
 
 		//return allocator, we can later extrat name from lib

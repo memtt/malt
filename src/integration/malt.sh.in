@@ -245,6 +245,7 @@ maltBuildCustomAllocWrapper()
 			echo "	$(maltGetWrapProto ${semantic_func} ${func_to_wrap})" >> ${tmp_wrappers}
 			echo "		{${print} return malt_wrap_${semantic_func}($(maltGetWrapArgs ${semantic_func}), ${sym_var}, MALT_RETADDR);};" >> ${tmp_wrappers}
 			echo "	${sym_var} = (${ptr_type})dlsym(RTLD_NEXT, \"${func_to_wrap}\");" >> ${tmp_dlsym}
+			echo "	MALT::maltRegisterWrappedSymbol(\"${func_to_wrap}\");" >> ${tmp_dlsym}
 		else
 			echo "MALT: Invalid custom wrapper pattern : ${wrap}, expect something like: 'malloc:je_malloc'" 1>&2
 			exit 1

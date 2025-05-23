@@ -21,6 +21,11 @@
 using namespace MALT;
 
 /**********************************************************/
+namespace MALT {
+	static std::list<std::string> * gblMaltWrappedSymbols = nullptr;
+}
+
+/**********************************************************/
 /** Check init status of local and global state and call enter/exit methods, then do requested action. **/
 #define MALT_WRAPPER_LOCAL_STATE_ACTION(action, retAddr)  \
 	do \
@@ -324,4 +329,18 @@ void * MALT::malt_wrap_mremap(void *old_address, size_t old_size , size_t new_si
 
 	//return segment to user
 	return res;
+}
+
+/**********************************************************/
+void MALT::maltRegisterWrappedSymbol(const char * wrapped_symbol)
+{
+	if (gblMaltWrappedSymbols == nullptr)
+		gblMaltWrappedSymbols = new std::list<std::string>();
+	gblMaltWrappedSymbols->push_back(wrapped_symbol);
+}
+
+/**********************************************************/
+const std::list<std::string> & MALT::maltGetWrappedSymbols(void)
+{
+	return *gblMaltWrappedSymbols;
 }
