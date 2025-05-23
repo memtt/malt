@@ -14,6 +14,7 @@
  *
  * Tracks objects by assigning unique numeric ids to them.
  */
+//--PORTED IN C++ VERSION--
 function SimpleIdCache()
 {
 	this.cache = [];

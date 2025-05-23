@@ -27,7 +27,8 @@ var childProcess = require('child_process');
 /**
  * Construct a MaltProject by loading data in JSON format from given file.
 **/
-function MaltProject(file)
+//--PORTED IN C++ VERSION--
+function MaltProject(file, callback = function(){})
 {
 	//declare internal stats to get a short list in same place
 	this.data = null;//store data tree
@@ -37,11 +38,12 @@ function MaltProject(file)
 	if (file != undefined)
 	{
 		console.log("loading file "+file+"...");
-		this.loadFile(file);
+		this.loadFile(file, callback);
 	}
 }
 
 /**********************************************************/
+//--PORTED IN C++ VERSION--
 MaltProject.prototype.loadData = function(data)
 {
 	//check version compatibility
@@ -73,7 +75,7 @@ MaltProject.prototype.loadData = function(data)
 /**
  * Function in charge of loading the json file.
 **/
-MaltProject.prototype.loadFile = function(file)
+MaltProject.prototype.loadFile = function(file, callback = function(){})
 {
 	//init
 	this.data = null;
@@ -87,6 +89,7 @@ MaltProject.prototype.loadFile = function(file)
 	// receive parsed JSON, and load it
 	parseStream.on('data', function(data) {
 		cur.loadData(data);
+		callback();
 	});
 
 	// handle end of file
@@ -119,6 +122,7 @@ MaltProject.prototype.loadFile = function(file)
 }
 
 /**********************************************************/
+//--PORTED IN C++ VERSION--
 MaltProject.prototype.getProcMap = function()
 {
 	return this.stacks.sites.map;
@@ -172,6 +176,7 @@ MaltProject.prototype.getTraceFilename = function()
 /**
  * Just for debug, print only stack with function names.
 **/
+//--PORTED IN C++ VERSION--
 MaltProject.prototype.getDebugStackList = function()
 {
 	//setup some local vars
@@ -197,6 +202,7 @@ MaltProject.prototype.getDebugStackList = function()
 /**
  * Provide access to the list of global variables from executable and dynamic libs.
 **/
+//--PORTED IN C++ VERSION--
 MaltProject.prototype.getGlobalVariables = function()
 {
 	return {
@@ -213,6 +219,7 @@ MaltProject.prototype.getGlobalVariables = function()
  * @param accept Can be 'true' or a function with prototype(entry,info) with entry from stacks.stats[].detailedStack to accept (true) or reject (false) them.
  * @param total If 'true', the output contain 'own' and 'total' otherwise it contain 'own' and 'childs'.
 **/
+//--PORTED IN C++ VERSION--
 MaltProject.prototype.getFlatProfile = function(mapping,accept,fields,total)
 {
 	//setup some local vars
@@ -279,6 +286,7 @@ MaltProject.prototype.getFlatProfile = function(mapping,accept,fields,total)
  * Map memory informations from stack onto file lines.
  * @param total If 'true', produce 'own' and 'total', otherwise produce 'own' and 'childs'.
 **/
+//--PORTED IN C++ VERSION--
 MaltProject.prototype.getFileLinesFlatProfile = function(file,total)
 {
 	var res = this.getFlatProfile(
@@ -294,10 +302,11 @@ MaltProject.prototype.getFileLinesFlatProfile = function(file,total)
  * Map memory informations from stack on functions (symbols).
  * @param total If 'true', produce 'own' and 'total', otherwise produce 'own' and 'childs'.
 **/
+//--PORTED IN C++ VERSION--
 MaltProject.prototype.getFlatFunctionProfile = function(total)
 {
 	var res = this.getFlatProfile(
-		function(entry) {return entry.function;},    //map on lines
+		function(entry) {return entry.file + ":"+entry.function;},    //map on lines
 		true,                                        //accept all
 		['function','line','file'],                  //export only line info
 		total);
@@ -311,6 +320,7 @@ MaltProject.prototype.getFlatFunctionProfile = function(total)
 /**
  * Return virtual memory distribution extracted from /proc/self/maps and execution end.
 **/
+//--PORTED IN C++ VERSION--
 MaltProject.prototype.getProcMapDistr = function()
 {
 	//some local vars
@@ -349,18 +359,21 @@ MaltProject.prototype.getProcMapDistr = function()
 }
 
 /**********************************************************/
+//--PORTED IN C++ VERSION--
 MaltProject.prototype.getScatter = function()
 {
 	return this.data.scatter;
 }
 
 /**********************************************************/
+//--PORTED IN C++ VERSION--
 MaltProject.prototype.getSizeMap = function()
 {
 	return this.data.memStats.sizeMap;
 }
 
 /**********************************************************/
+//--PORTED IN C++ VERSION--
 MaltProject.prototype.getReallocMap = function()
 {
 	return this.data.memStats.reallocJump;
@@ -371,6 +384,7 @@ MaltProject.prototype.getReallocMap = function()
  * Extract a list of stacks containing elements which pass the given filter function.
  * @param filter A filter function which return a boolean and have prototype function(detailedStackEntry)
 **/
+//--PORTED IN C++ VERSION--
 MaltProject.prototype.getFilterdStacks = function(filter)
 {
 	//get some refs
@@ -396,6 +410,7 @@ MaltProject.prototype.getFilterdStacks = function(filter)
 /**
  * Return the list of stacks (detailed) which contain location file:line.
 **/
+//--PORTED IN C++ VERSION--
 MaltProject.prototype.getFilterdStacksOnFileLine = function(file,line)
 {
 	return this.getFilterdStacks(function(entry) {
@@ -418,6 +433,7 @@ MaltProject.prototype.getFilterdStacksOnSymbol = function(symbol)
 /**
  * Return all timed values to build graphs.
 **/
+//--PORTED IN C++ VERSION--
 MaltProject.prototype.getTimedValues = function()
 {
 	var tmp = new Object();
@@ -438,6 +454,7 @@ MaltProject.prototype.getTimedValues = function()
 }
 
 /**********************************************************/
+//--PORTED IN C++ VERSION--
 MaltProject.prototype.genSummaryWarnings = function(data)
 {
 	//vars
@@ -453,12 +470,12 @@ MaltProject.prototype.genSummaryWarnings = function(data)
 	console.log(runtime + " => " + data.summary.allocCount / runtime);
 	if (data.summary.allocCount / runtime > 100000)
 		ret.allocCount = ["Caution, you are doing really large number of memory allocation, it might hurt performance."];
-	if (data.summary.leakMem > data.summary.peakRequestedMemory / 2)
-		ret.leakMem = ["Caution, half of your memory has leaked, it might not be an issue, but maybe you need to ensure the segments are used during the whole program life."]
+	if (data.summary.leakedMem > data.summary.peakRequestedMemory / 2)
+		ret.leakedMem = ["Caution, half of your memory has leaked, it might not be an issue, but maybe you need to ensure the segments are used during the whole program life."]
 	if (data.summary.globalVarMem > data.summary.peakRequestedMemory / 3 && data.summary.globalVarMem > 1024*1024)
 		ret.globalVarMem = ["Caution, a large part of your memory is consummed by global variables, check if it is normal."];
 	if (data.summary.tlsVarMem > data.summary.peakRequestedMemory / 3 && data.summary.tlsVarMem > 1024*1024)
-		ret.globalVarMem = ["Caution, a large part of your memory is consummed by TLS variables, check if it is normal."];
+		ret.tlsVarMem = ["Caution, a large part of your memory is consummed by TLS variables, check if it is normal."];
 	if (data.summary.numGblVar > 500)
 		ret.numGblVar = ["Caution, you get a realy big number of global variable, your code is likely to be buggy."];
 
@@ -469,6 +486,7 @@ MaltProject.prototype.genSummaryWarnings = function(data)
 /**
  * Build a summary from the whole datas.
 **/
+//--PORTED IN C++ VERSION--
 MaltProject.prototype.getSummaryV2 = function()
 {
 	var ret = {};
@@ -560,7 +578,7 @@ MaltProject.prototype.getSummaryV2 = function()
 	}
 	ret.summary.numGblVar = cntVars;
 	ret.summary.globalVarMem = gblMem;
-	ret.summary.tlsVarMem = tlsMem;
+	ret.summary.tlsVarMem = tlsMem * (this.data.globals.maxThreadCount + 1);
 
 	//summary warnings
 	ret.summaryWarnings = this.genSummaryWarnings(ret);
@@ -578,6 +596,7 @@ MaltProject.prototype.getSummaryV2 = function()
 /**
  * Build a summary from the whole datas.
 **/
+//--PORTED IN C++ VERSION--
 MaltProject.prototype.getSummary = function()
 {
 	var ret = {};
@@ -618,6 +637,7 @@ MaltProject.prototype.getSummary = function()
 }
 
 /**********************************************************/
+//--PORTED IN C++ VERSION--
 MaltProject.prototype.getStacksMem = function()
 {
 	//prepare array
@@ -635,6 +655,7 @@ MaltProject.prototype.getStacksMem = function()
 /**
  * Get info about the largest stack
 **/
+//--PORTED IN C++ VERSION--
 MaltProject.prototype.getMaxStack = function()
 {
 	//get first to start
@@ -658,6 +679,7 @@ MaltProject.prototype.getMaxStack = function()
 /**
  * Flatten datas about the largest stack and return as json tree.
 **/
+//--PORTED IN C++ VERSION--
 MaltProject.prototype.getFlattenMaxStackInfo = function(mapping,accept,stack)
 {
 	//init hash map to flat on addresses
@@ -706,6 +728,7 @@ MaltProject.prototype.getFlattenMaxStackInfo = function(mapping,accept,stack)
 /**
  * Flatten datas about the largest stack and return as json tree.
 **/
+//--PORTED IN C++ VERSION--
 MaltProject.prototype.getMaxStackInfoOnFunction = function(mapping,accept)
 {
 	return this.getFlattenMaxStackInfo(
@@ -720,6 +743,7 @@ MaltProject.prototype.getMaxStackInfoOnFunction = function(mapping,accept)
  * Return true if the given path correspond to a source file of
  * the current project.
 **/
+//--PORTED IN C++ VERSION--
 MaltProject.prototype.isSourceFile = function(path)
 {
 	return (this.data.sourceFiles[path] == true)
@@ -729,6 +753,7 @@ MaltProject.prototype.isSourceFile = function(path)
 /**
  * Flatten datas about the largest stack and return as json tree.
 **/
+//--PORTED IN C++ VERSION--
 MaltProject.prototype.getStackInfoOnFunction = function(id)
 {
 	return this.getFlattenMaxStackInfo(
@@ -739,6 +764,7 @@ MaltProject.prototype.getStackInfoOnFunction = function(id)
 }
 
 /**********************************************************/
+//--PORTED IN C++ VERSION--
 MaltProject.prototype.getFullTree = function()
 {
 	var tree = {};
@@ -935,6 +961,101 @@ MaltProject.prototype.getStackCallerCalle = function(stack)
 }
 
 /**********************************************************/
+MaltProject.prototype.stackIsMatchingBellowDepth = function(stack1, stack2, depth)
+{
+	//trivial
+	if (depth == 0)
+		return true;
+	if (stack1.length < depth || stack2.length < depth)
+		return false;
+
+	//loop
+	for (var i = 0 ; i < depth ; i++)
+		if (!(stack1[stack1.length - i - 1] == stack2[stack2.length - i - 1]))
+			return false;
+
+	//ok
+	return true;
+}
+
+/**********************************************************/
+MaltProject.prototype.stackIsMatchingLocationFilter = function(filter, detailedStack)
+{
+	//nothing to chec
+	if (filter.function == "" && filter.file == "" && filter.line == -1)
+		return true;
+
+	for (var i = 0 ; i < detailedStack.length ; i++) {
+		var location = detailedStack[i];
+
+		//check
+		if (filter.function != "" && filter.function == location.function)
+			return true;
+		if (filter.file != "" && filter.file == location.file && filter.line != -1 && filter.line == location.line)
+			return true;
+	}
+
+	//not ok
+	return false;
+}
+
+/**********************************************************/
+MaltProject.prototype.getCallStackNextLevel = function(parentStackId, parentDepth, filter)
+{
+	//vars
+	var parentStack = this.data.stacks.stats[parentStackId].stack;
+	var result = [];
+	var alreadySeen = {};
+	var instrs = this.data.sites.instr;
+
+	//search stacks starting by
+	for (var i = 0 ; i < this.data.stacks.stats.length ; i++) {
+		//get ref
+		it = this.data.stacks.stats[i];
+		detailedStack = genDetailedStack(instrs,it.stack);
+
+		//check ok
+		var stackMatchingBellowDepth = this.stackIsMatchingBellowDepth(parentStack, it.stack, parentDepth);
+		var stackMatchingFilter = this.stackIsMatchingLocationFilter(filter, detailedStack);
+		if (stackMatchingBellowDepth && stackMatchingFilter && it.stack.length > parentDepth + 1) {
+			//sum all childs up to here
+			var hasChild = false;
+			if (it.stack.length > parentDepth + 2)
+				hasChild = true;
+
+			//get next child
+			var location = detailedStack[it.stack.length - parentDepth - 2];
+			bufferRef = location.file + ":" + location.function;
+
+			//check already seen
+			var it2 = alreadySeen[bufferRef];
+			if (it2 == undefined) {
+				alreadySeen[bufferRef] = {
+					infos: it.infos,
+					location : location,
+					parentStackId: parentStackId,
+					parentStackDepth : parentDepth,
+					stackId: i,
+					stackDepth: parentDepth + 1,
+					hasChild: hasChild
+				};
+			} else {
+				mergeStackInfoDatas(it2.infos, it.infos);
+				it2.hasChild |= hasChild;
+			}
+		}
+	}
+
+	//convert
+	for (var key in alreadySeen){
+		result.push(alreadySeen[key]);
+	}
+
+	//ok
+	return result;
+}
+
+/**********************************************************/
 function filterExtractStacksCandidate(detailedStack,filter)
 {
 	for (var i in detailedStack)
@@ -945,16 +1066,19 @@ function filterExtractStacksCandidate(detailedStack,filter)
 
 /**********************************************************/
 /** Regexp to detect memory functions (new, new[], gnu and icc fortran alloc/free...). **/
-var allocFuncRegexp = /^((gomp_realloc)|(gomp_malloc)|(gomp_free)|(__gnu_cxx::new_allocator)|(operator new)|(operator delete)|(_Zn[wa])|(g_malloc)|(g_realloc)|(g_free)|(for__get_vm)|(for__free_vm)|([mc]alloc)|(free)|(realloc)|(memalign)|(posix_memalign)|(for_(de)?alloc_allocatable)|(for_(de)?allocate))/
+//--PORTED IN C++ VERSION--
+var allocFuncRegexp = /^((MALT::WrapperPython.*::.*)|(gomp_realloc)|(gomp_malloc)|(gomp_free)|(__gnu_cxx::new_allocator)|(operator new)|(operator delete)|(_Zn[wa])|(g_malloc)|(g_realloc)|(g_free)|(for__get_vm)|(for__free_vm)|([mc]alloc)|(free)|(realloc)|(memalign)|(posix_memalign)|(for_(de)?alloc_allocatable)|(for_(de)?allocate))/
 
 /**********************************************************/
 /** Quick check to detect memory functions. **/
+//--PORTED IN C++ VERSION--
 function isAllocFunction(name)
 {
 	return allocFuncRegexp.test(name);
 }
 
 /**********************************************************/
+//--PORTED IN C++ VERSION--
 function mergeStackMinMaxInfo(onto,value)
 {
 	onto.count += value.count;
@@ -966,6 +1090,7 @@ function mergeStackMinMaxInfo(onto,value)
 }
 
 /**********************************************************/
+//--PORTED IN C++ VERSION--
 function mergeStackInfoDatas(onto,value)
 {
 	onto.countZeros += value.countZeros;
@@ -980,6 +1105,7 @@ function mergeStackInfoDatas(onto,value)
 }
 
 /**********************************************************/
+//--PORTED IN C++ VERSION--
 function mergeStackInfo(into,detailedStackEntry,addr,subKey,infos,mapping,fields)
 {
 	//extract key by using mapping function
@@ -1002,7 +1128,7 @@ function mergeStackInfo(into,detailedStackEntry,addr,subKey,infos,mapping,fields
 		into[key] = cur;
 	} else {
 		//check line and keep the lowest one
-		if (detailedStackEntry.line != 0 && detailedStackEntry.line != -1 && (detailedStackEntry.line < cur.line || cur.line == -1 || cur.line == 0))
+		if ((detailedStackEntry.line > 0 && detailedStackEntry.line < cur.line) || cur.line <= 0 )
 			cur.line = detailedStackEntry.line;
 	}
 
@@ -1018,6 +1144,7 @@ function mergeStackInfo(into,detailedStackEntry,addr,subKey,infos,mapping,fields
  * Short wrapper to get strings from data.stacks.strings section and to manage undefined files.
  * @param strings Must be the translation table from sites.strings
 **/
+//--PORTED IN C++ VERSION--
 function getStringFromList(strings,id,defaultValue)
 {
 	if (id == undefined || id == -1)
@@ -1178,11 +1305,6 @@ function optimizeProjectDatas(data)
 	//get some inside vars
 	var strings = data.sites.strings;
 	var instrs = data.sites.instr;
-
-	//TODO remove
-	for (var i in strings)
-		if (strings[i] == '')
-			console.log("???????????? => "+i+" -> "+strings.length);
 
 	//do for stacks/instr section
 	//avoid to jump to string table every time

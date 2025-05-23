@@ -138,7 +138,7 @@ MaltSourceEditor.prototype.moveToFile = function(file)
 		return;
 	} else {
 		var cur = this;
-		maltDataSource.loadSourceFile(file,function(data){
+		maltDataSource.loadSourceFile(file, function(data){
 			// File loaded, now highlight it
 			cur.container.innerHTML =
 				'<pre class="line-numbers"><code class="' +
@@ -148,8 +148,9 @@ MaltSourceEditor.prototype.moveToFile = function(file)
 			Prism.highlightElement(cur.syntaxHighlighterEle);
 			cur.file = file;
 			cur.updateAnotations();
-		}, function() {
+		}, function(message) {
 			// XHR fails to load file, show error message
+			cur.file = file;
 			cur.container.innerHTML =
 				'<pre class="line-numbers"><code>Source for the file, '
 				+ file + ', could not be loaded.</code></pre>';

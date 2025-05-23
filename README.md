@@ -87,11 +87,12 @@ MALT build support several options to define with -D option of CMake :
 
 - `-DENABLE_CODE_TIMING={yes|no}` : Enable quick and dirty function to measure MALT internal
   performances.
-- `-DENABLE_TESTS={yes|no}`        : Enable build of unit tests.
+- `-DENABLE_TESTS={yes|no}`       : Enable build of unit tests.
 - `-DJUNIT_OUTPUT={yes|no}`       : Enable generation of junit files for jenkins integration.
 - `-DENABLE_VALGRIND={yes|no}`    : Run unit tests inside valgrind memcheck and generate XML report.
 - `-DPORTABILITY_OS={UNIX}`       : Set portability build options to fix OS specific calls.
 - `-DPORTABILITY_MUTEX={PTHREAD}` : Set portability build option to select mutex implementation.
+- `-DENABLE_JEMALLOC={yes|no}`    : Enable or disable usage of jemalloc internally to MALT.
 
 Note about Intel Compiler
 -------------------------
@@ -255,6 +256,13 @@ enabled=true          ; Enable or disable MALT when threads start
 on-signal=             ; Dump on signal. Can be comma separated list from SIGINT, SIGUSR1,
                        ; SIGUSR2... help, avail (limited to only one dump)
 after-seconds=0        ; Dump after X seconds (limited to only one time)
+on-sys-full-at=        ; Dump when system memory become full at x%, xG, xM, xK, x  (empty to disable).
+on-app-using-rss=      ; Dump when RSS of the app reach the given limit in %, G, M, K (empty to disable).
+on-app-using-virt=     ; Dump when Virtual Memory of the app reach limit in %, G, M, K (empty to disable).
+on-app-using-req=      ; Dump when Requested Memory of the app reach limit in %, G, M, K (empty to disable).
+on-thread-stack-using= ; Dump when one stack reach limit in %, G, M, K (empty to disable).
+on-alloc-count=        ; Dump when number of allocations reach limit in G, M, K (empty to disable).
+watch-dog=false        ; Run an active thread spying continuouly the memory of the app, not only sometimes.
 ```
 
 Option values can be overridden on the fly with command :
@@ -432,6 +440,17 @@ export MANPATH=${PREFIX}/share/man:$MANPATH
 
 `LD_LIBRARY_PATH` is not required as the `malt` command will use the full path to get access the
 internal `.so` file.
+
+Using internal JeMalloc
+-----------------------
+
+MALT also support usage of JeMalloc for its internal allocations instead of the custom very light allocator.
+It is required sometimes, mostly for python support not to consume too much memory, this is done via the option
+on `configure` : `--enable-jemalloc`.
+
+**Note:** If you use the git repo it will require an internet connection to download it, but it is embeded
+into the officiel release archive. Otherwise you can pre-download it with : `./prepare.sh` as for the NodeJS
+dependencies.
 
 Similar tools
 -------------

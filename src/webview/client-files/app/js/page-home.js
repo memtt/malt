@@ -245,7 +245,7 @@ function MaltPageHome()
 		
 		//convert CPU freq
 		$scope.getFormattedTotalMemory = function() {
-			return maltHelper.humanReadable($scope.summaryData.system.totalMemory,1,'b',false);
+			return maltHelper.humanReadable($scope.summaryData.system.totalMemory,1,'B',false);
 		}
 
 		//format values

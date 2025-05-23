@@ -1,5 +1,6 @@
 # Ignore node modules which are downloaded at the installation
-src/webview/node_modules/
+node_modules
+extern-deps/jemalloc/jemalloc-*
 
 # Ignore build directories
 src/webview/dist
@@ -13,7 +14,25 @@ src/webview/build
 # python
 __pycache__
 
-#venv
+# examples built
+examples/cpp/step-1-basic
+examples/cpp/step-2-problem-fragmentation
+examples/cpp/step-3-problem-mem-on-stack
+examples/cpp/step-4-problem-short-life-alloc
+examples/cpp/step-5-problem-for-auto-missing-ref-copy
+examples/cpp/step-6-problem-grow-by-copy
+examples/cpp/step-7-problem-peak
+examples/cpp/step-8-problem-heavy-realloc
+examples/cpp/step-9-problem-tls-and-gbl-vars
+examples/cpp/*.json
+examples/fortran/01-ifort-heap-arrays/reproducer_heap
+examples/fortran/01-ifort-heap-arrays/reproducer_stack
+examples/fortran/*/*.json
+
+# cache
+/podman-cache
 .venv
 
-/podman-ccache
+# reader
+src/reader
+

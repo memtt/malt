@@ -43,6 +43,28 @@ cfg_add_enable_option --name='jenkins' \
 						--doc='Enable all checking modes (unit, valgrind, coverage...)' \
 						--only='enable'
 
+#test
+cfg_add_enable_option --name='link-optim' \
+						--on='-DENABLE_LINK_OPTIM=${ON}' \
+						--doc='Disable link optimization (LTO + visibility=hidden).' \
+						--invert-help
+
+#test
+cfg_add_enable_option --name='ipo' \
+						--on='-DENABLE_IPO=${ON}' \
+						--doc='Disable LTO specifically.' \
+						--invert-help
+
+#test
+cfg_add_enable_option --name='python' \
+						--on='-DENABLE_PYTHON=${ON}' \
+						--doc='Enable the python support.'
+
+#JeMalloc built for MALT
+cfg_add_enable_option --name='jemalloc' \
+						--on='-DENABLE_JEMALLOC=${ON}' \
+						--doc='Enable building the internal jemalloc to get better internal memory handling.' \
+
 ############################################################
 #libunwind
 cfg_add_with_option --name='libunwind' \
@@ -53,6 +75,21 @@ cfg_add_with_option --name='libunwind' \
 cfg_add_with_option --name='libelf' \
 						--doc='Define prefix to find libelf [/usr]' \
 						--var='LIBELF_PREFIX'
+
+#where to search python
+cfg_add_with_option --name='python' \
+						--doc='Define prefix to find python [/usr]' \
+						--var='Python3_ROOT_DIR'
+
+#JeMalloc built for MALT
+#cfg_add_with_option --name='malt-jemalloc' \
+#						--doc='Define prefix to find JeMalloc built for MALT internals [/usr]' \
+#						--var='MALTJEMALLOC_PREFIX'
+
+#Python linking way for MALT
+cfg_add_with_option --name='python-linking' \
+						--doc='Define how to link to python (LAZY or NATIVE). [LAZY]' \
+						--var='PORTABILITY_PYTHON'
 
 ############################################################
 #If we want to document extra options

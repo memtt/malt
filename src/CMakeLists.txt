@@ -32,8 +32,13 @@ CHECK_C_SOURCE_RUNS("int main() {long long cc; asm volatile(\"mrs %0, PMCCNTR_EL
 
 ############################################################
 if (ENABLE_PROFILER)
-	add_subdirectory(lib)
-endif(ENABLE_PROFILER)
+	add_subdirectory(libinstrum)
+endif()
+
+############################################################
+if (NLOHMANN_JSON_FOUND AND EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/reader)
+	add_subdirectory(reader)
+endif()
 
 ############################################################
 add_subdirectory(integration)

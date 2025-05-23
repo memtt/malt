@@ -22,18 +22,37 @@ function MaltDataSourceNodeJS()
 MaltDataSourceNodeJS.prototype.loadSourceFile = function(file,handler,fail)
 {
 	//handle relative paths which otherwise are suppressed by URL parsing.
-	file = file.replace('../','/{..}/');
-	file = file.replace('./','/{.}/');
+	//file = file.replace('../','/{..}/');
+	//file = file.replace('./','/{.}/');
 	//call
-	$.get("../app-sources"+file)
+	/*$.get("../app-sources"+file)
 		.done(handler)
-		.fail(fail);
+		.fail(fail);*/
+	$.ajax({
+		url: '../source-file',
+		type: 'POST',
+		cache: false, 
+		contentType: "application/json; charset=utf-8",
+		dataType: "text",
+		data: JSON.stringify({ path: file }), 
+		success: handler,
+		error: fail
+	});
 }
 
 //wrapper to getch annotation of source files [source-editor.js]
 MaltDataSourceNodeJS.prototype.loadSourceFileAnnotations = function(file,handler)
 {
-	$.getJSON("../file-infos.json?file="+file,handler);
+	//$.getJSON("../file-infos.json?file="+file,handler);
+	$.ajax({ 
+		url: '../file-infos.json',
+		type: 'POST',
+		cache: false, 
+		contentType: "application/json; charset=utf-8",
+		dataType: "json",
+		data: JSON.stringify({ file: file }), 
+		success: handler
+	});
 }
 
 //wrapper to fetch timed data [page-timeline.js]
@@ -85,17 +104,49 @@ MaltDataSourceNodeJS.prototype.getSizeDistr = function($http,handler)
 
 MaltDataSourceNodeJS.prototype.getCallStackDataFileLine = function(file,line,handler)
 {
-	$.getJSON("../stacks.json?file="+encodeURIComponent(file)+"&line="+line,handler);
+	//$.getJSON("../stacks.json?file="+encodeURIComponent(file)+"&line="+line,handler);
+	$.ajax({ 
+		url: '../stacks.json',
+		type: 'POST',
+		cache: false, 
+		contentType: "application/json; charset=utf-8",
+		dataType: "json",
+		data: JSON.stringify({ file: file, line: line }), 
+		success: handler
+	});
+}
+
+MaltDataSourceNodeJS.prototype.getCallStackLevel = function(parentId, parentLevel, filter, handler)
+{
+	//$.getJSON("../stacks.json?file="+encodeURIComponent(file)+"&line="+line,handler);
+	$.ajax({ 
+		url: '../call-stack-next-level.json',
+		type: 'POST',
+		cache: false, 
+		contentType: "application/json; charset=utf-8",
+		dataType: "json",
+		data: JSON.stringify({ parentStackId: parentId, parentStackDepth: parentLevel, filter: filter }), 
+		success: handler
+	});
 }
 
 MaltDataSourceNodeJS.prototype.getCallStackDataFunc = function(func,handler)
 {
-	$.getJSON("../stacks.json?func="+encodeURIComponent(func),handler);
+	//$.getJSON("../stacks.json?func="+encodeURIComponent(func),handler);
+	$.ajax({ 
+		url: '../stacks.json',
+		type: 'POST',
+		cache: false, 
+		contentType: "application/json; charset=utf-8",
+		dataType: "json",
+		data: JSON.stringify({ func: func }), 
+		success: handler
+	});
 }
 
 MaltDataSourceNodeJS.prototype.getCallTreeData = function(nodeid, depth, height, mincost, func, metric, isRatio, handler, fail)
 {
-	$.getJSON("../calltree?"
+	/*$.getJSON("../calltree?"
 		+ (func ? "func=" + encodeURIComponent(func) : "nodeid=" + encodeURIComponent(nodeid))
 		+ "&depth=" + encodeURIComponent(depth)
 		+ "&height=" + encodeURIComponent(height)
@@ -103,10 +154,28 @@ MaltDataSourceNodeJS.prototype.getCallTreeData = function(nodeid, depth, height,
 		+ "&metric=" + encodeURIComponent(metric)
 		+ "&isratio=" + encodeURIComponent(isRatio))
 		.done(handler)
-		.fail(fail);
+		.fail(fail);*/
+	$.ajax({ 
+		url: '../calltree',
+		type: 'POST',
+		cache: false, 
+		contentType: "application/json; charset=utf-8",
+		dataType: "json",
+		data: JSON.stringify({
+			func: func,
+			nodeid: nodeid,
+			depth: depth,
+			height: height,
+			mincost: mincost,
+			metric: metric,
+			isratio: isRatio
+		}), 
+		success: handler,
+		error: fail
+	});
 }
 
-MaltDataSourceNodeJS.prototype.getCallTreeFormatLink = function(nodeid, depth, height, mincost, func, metric, isRatio, format) {
+MaltDataSourceNodeJS.prototype.getCallTreeFormatLink = async function(nodeid, depth, height, mincost, func, metric, isRatio, format) {
 	return  "../calltree?"
 		+ (func ? "func=" + encodeURIComponent(func) : "nodeid=" + encodeURIComponent(nodeid))
 		+ "&depth=" + encodeURIComponent(depth)
@@ -115,6 +184,25 @@ MaltDataSourceNodeJS.prototype.getCallTreeFormatLink = function(nodeid, depth, h
 		+ "&metric=" + encodeURIComponent(metric)
 		+ "&isratio=" + encodeURIComponent(isRatio)
 		+ "&format=" + encodeURIComponent(format);
+	/*$.ajax({ 
+		url: '../calltree',
+		type: 'POST',
+		cache: false, 
+		contentType: "application/json; charset=utf-8",
+		dataType: "json",
+		data: JSON.stringify({
+			func: func,
+			nodeid: nodeid,
+			depth: depth,
+			height: height,
+			mincost: mincost,
+			metric: metric,
+			isratio: isRatio,
+			format: format
+		}), 
+		success: handler,
+		error: fail
+	});*/
 }
 
 MaltDataSourceNodeJS.prototype.loadProcMaps = function(func,handler)
@@ -161,17 +249,37 @@ function MaltDataSourceClientSideData(data)
 }
 
 //wrapper to fetch source files from remote server [source-editor.js]
-MaltDataSourceClientSide.prototype.loadSourceFile = function(file,handler)
+MaltDataSourceClientSide.prototype.loadSourceFile = function(file,handler, error)
 {
-	file = file.replace('./','{.}/');
+	/*file = file.replace('./','{.}/');
 	file = file.replace('../','{..}/');
-	$.get("../app-sources/"+file,handler);
+	$.get("../app-sources/"+file,handler);*/
+	console.log("OOKOKOOOK");
+	$.ajax({
+		url: '../source-file',
+		type: 'POST',
+		cache: false, 
+		contentType: "application/json; charset=utf-8",
+		dataType: "text",
+		data: JSON.stringify({ path: file }), 
+		success: handler,
+		error: error
+	});
 }
 
 //wrapper to getch annotation of source files [source-editor.js]
 MaltDataSourceClientSide.prototype.loadSourceFileAnnotations = function(file,handler)
 {
-	$.getJSON("../file-infos.json?file="+file,handler);
+	//$.getJSON("../file-infos.json?file="+file,handler);
+	$.ajax({ 
+		url: '../file-infos.json',
+		type: 'POST',
+		cache: false, 
+		contentType: "application/json; charset=utf-8",
+		dataType: "json",
+		data: JSON.stringify({ file: file }), 
+		success: handler
+	});
 }
 
 //wrapper to fetch timed data [page-timeline.js]

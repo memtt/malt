@@ -32,6 +32,7 @@ function MaltCallStacksView(containerId,selector)
 	this.stackViewRoots = [];
 	this.tree = null;
 	this.selector = selector;
+	this.filterByLocation = {};
 	
 	//counter to avoid multiple update due to async
 	this.asyncState = 0;
@@ -50,7 +51,10 @@ MaltCallStacksView.prototype.initRender = function()
 		clickableNodeNames:false,
 		onNodeExpand: function() {
 			var node = this;
-			cur.addToTree(node.maltData);
+			maltDataSource.getCallStackLevel(node.maltData.stackId, node.maltData.stackDepth, cur.filterByLocation, function(data) {
+				cur.addToTree(data, 0, 0);
+			});
+			//cur.addToTree(node.maltData);
         },
 		onNodeCollapse: function() {
 			var node = this;
@@ -78,13 +82,21 @@ MaltCallStacksView.prototype.update = function(file,line)
 	//avoid overlap between async req
 	this.asyncState++;
 	var state = this.asyncState;
+	this.filterByLocation = {"file": file, "line": line};
 
-	maltDataSource.getCallStackDataFileLine(file,line,function(data) {
+	/*maltDataSource.getCallStackDataFileLine(file,line,function(data) {
 		if (state == cur.asyncState)
 		{
 			var tree = cur.buildCallTree(data);
 			cur.addToTree(tree);
 			cur.tree = tree;
+		}
+	});*/
+
+	maltDataSource.getCallStackLevel(0, 0, this.filterByLocation, function(data) {
+		if (state == cur.asyncState)
+		{
+			cur.addToTree(data, 0, 0);
 		}
 	});
 }
@@ -98,14 +110,22 @@ MaltCallStacksView.prototype.updateFunc = function(func)
 	//avoid overlap between async req
 	this.asyncState++;
 	var state = this.asyncState;
+	this.filterByLocation = {"function": func};
 
-	maltDataSource.getCallStackDataFunc(func,function(data) {
+	/*maltDataSource.getCallStackDataFunc(func,function(data) {
 		if (state == cur.asyncState)
 		{
 			var tree = cur.buildCallTree(data);
 			cur.addToTree(tree);
 			cur.tree = tree;
 
+		}
+	});*/
+
+	maltDataSource.getCallStackLevel(0, 0, this.filterByLocation, function(data) {
+		if (state == cur.asyncState)
+		{
+			cur.addToTree(data, 0, 0);
 		}
 	});
 }
@@ -124,10 +144,12 @@ MaltCallStacksView.prototype.buildCallTree = function(data)
 {
 	var tree = {childs:{},id:null};
 	var id = 0;
+	console.log(data);
 	data.forEach(function(call) {
 		var cur = tree;
 		reduceStat(cur,call.info);
 		call.stack.reverse().forEach(function(loc) {
+			loc.function = loc.function.replace('<', '&lt;').replace('>', '&gt;');
 			if (cur.childs[loc.function] == undefined)
 				cur.childs[loc.function] = {childs:{},id:id++,location:loc};
 			cur = cur.childs[loc.function];
@@ -150,56 +172,60 @@ MaltCallStacksView.prototype.onClick = function(location,infos)
 
 /****************************************************/
 //add info to tree
-MaltCallStacksView.prototype.addToTree = function(treeNode)
+MaltCallStacksView.prototype.addToTree = function(entries, parentId, parentLevel)
 {
 	var cur = this;
 	//var metric = this.selector.getMetric();
 
-	for (var i in treeNode.childs)
+	for (var i in entries)
 	{
 		//extract value
-		var value = this.selector.getValue({total:treeNode.childs[i].info,own:treeNode.childs[i].info});
+		var value = this.selector.getValue({total:entries[i].infos,own:entries[i].infos});
 // 		var value = metric.extractor(treeNode.childs[i].info);
 		if (value == 0)
 			continue;
 		//value = maltHelper.humanReadableValue(value,metric.unit);
-		value = this.selector.getFormattedValue({total:treeNode.childs[i].info,own:treeNode.childs[i].info});
+		value = this.selector.getFormattedValue({total:entries[i].infos,own:entries[i].infos});
+
+		//ids
+		var id = `${entries[i].stackDepth}-${entries[i].stackId}`;
+		var parentId = `${entries[i].parentStackDepth}-${entries[i].parentStackId}`;
 		
 		//create html
-		var rows = $("<tr/>").attr('data-tt-id',treeNode.childs[i].id);
-		if (treeNode.id != null)
-			rows = rows.attr('data-tt-parent-id',treeNode.id);
+		var rows = $("<tr/>").attr('data-tt-id', id);
+		if (entries[i].parentStackDepth != 0)
+			rows = rows.attr('data-tt-parent-id', parentId);
 		
 		//mark for expand
-		if (treeNode.childs[i].childs != undefined && !jQuery.isEmptyObject(treeNode.childs[i].childs))
+		if (entries[i].hasChild)
 			rows = rows.attr('data-tt-branch', 'true');
 
-		var a = $('<span>'+i+'</span>').click(treeNode.childs[i],function(event) {
-			cur.onClick(event.data.location,{total:treeNode.childs[i].info,own:treeNode.childs[i].info});
+		var a = $('<span>'+entries[i].location.function+'</span>').click(entries[i],function(event) {
+			cur.onClick(event.data.location,{total:event.data.infos,own:event.data.infos});
 		})
 			.css('cursor','pointer');
 		var td = $('<td/>').append(a);
 		rows.append(td);
-		rows.append('<td id='+this.tableId+'.value.'+treeNode.childs[i].id+'>'+value+'</td>');
+		rows.append('<td id='+this.tableId+'.value.'+id+'>'+value+'</td>');
 		
 		//attach to parent
 		var parentNode = null;
-		if (treeNode.id != null)
-			parentNode = this.container.treetable('node',treeNode.id);	
+		if (entries[i].parentStackDepth != 0)
+			parentNode = this.container.treetable('node', parentId);
 		
 		//insert
 		this.container.treetable("loadBranch", parentNode, rows);
 		
 		//map user data
-		var branch = this.container.treetable('node',treeNode.childs[i].id);
-		branch.maltData = treeNode.childs[i];
+		var branch = this.container.treetable('node',id);
+		branch.maltData = entries[i];
 		
 		//childs
 		//this.addToTree(treeNode.childs[i],selector,expandedDepth-1);
 		
 		//post actions
-		this.container.treetable("collapseNode", treeNode.childs[i].id);
+		this.container.treetable("collapseNode", id);
 		if (parentNode == null)
-			this.stackViewRoots.push(treeNode.childs[i].id);
+			this.stackViewRoots.push(id);
 	}
 }

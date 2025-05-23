@@ -1,0 +1,129 @@
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.2.6
+*    DATE     : 09/2024
+*    LICENSE  : CeCILL-C
+*    FILE     : src/lib/stack-tree/from-v2/tests/TestRLockFreeTree.cpp
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat - 2015 - 2024
+***********************************************************/
+
+/**********************************************************/
+#include <gtest/gtest.h>
+#include <json/ConvertToJson.h>
+#include <common/SimpleAllocator.hpp>
+#include <stack-tree/from-v2/RLockFreeTree.hpp>
+#include <common/NoFreeAllocator.hpp>
+
+/**********************************************************/
+using namespace MALTV2;
+
+void * CST_VALUE_1[] = {(void*)0x1,(void*)0x2,(void*)0x3,(void*)0x4};
+const char CST_VALUE_2[] = "{\n\t\"addresses\":{\n\t\t\"0x3\":\"0xaaa\",\n\t\t\"0x1\":\"0xbbb\",\n\t\t\"0x2\":\"0xccc\"\n\t},\n\t\"calltree\":{\n\t\t\"0x1\":{\n\t\t\t\"0x2\":{\n\t\t\t\t\"dataId\":2\n\t\t\t}\n\t\t},\n\t\t\"0x3\":{\n\t\t\t\"dataId\":0\n\t\t}\n\t},\n\t\"data\":{\n\t\t\"test-counter\":{\n\t\t\t\"2\":11,\n\t\t\t\"0\":10\n\t\t}\n\t}\n}";
+
+/**********************************************************/
+TEST(TypedRLockFreeTree,constructor)
+{
+	RLockFreeTree tree;
+}
+
+/**********************************************************/
+TEST(TypedRLockFreeTree,enterThread)
+{
+	RLockFreeTree tree;
+	tree.addDescriptor<int>("test-counter");
+	
+	StackTreeHandler handler1 = tree.enterThread();
+	StackTreeHandler handler2 = tree.enterThread();
+	
+	EXPECT_EQ(handler1,handler2);
+	EXPECT_NE((void*)NULL,handler1);
+}
+
+/**********************************************************/
+TEST(TypedRLockFreeTree,enterFunction)
+{
+	RLockFreeTree tree;
+	tree.addDescriptor<int>("test-counter");
+
+	StackTreeHandler handler1 = tree.enterThread();
+	StackTreeHandler handler2 = tree.enterFunction(handler1,MALT::LangAddress(MALT::DOMAIN_C, (void*)0xAAA));
+	StackTreeHandler handler3 = tree.enterFunction(handler1,MALT::LangAddress(MALT::DOMAIN_C, (void*)0xAAA));
+	StackTreeHandler handler4 = tree.enterFunction(handler1,MALT::LangAddress(MALT::DOMAIN_C, (void*)0xBBB));
+	
+	EXPECT_EQ(handler2,handler3);
+	EXPECT_NE(handler1,handler2);
+	EXPECT_NE(handler1,handler4);
+}
+
+/**********************************************************/
+TEST(TypedRLockFreeTree,getData)
+{
+	RLockFreeTree tree;
+	tree.addDescriptor<int>("test-counter");
+
+	StackTreeHandler handler1 = tree.enterThread();
+	StackTreeHandler handler2 = tree.enterFunction(handler1,MALT::LangAddress(MALT::DOMAIN_C, (void*)0xAAA));
+	StackTreeHandler handler3 = tree.enterFunction(handler1,MALT::LangAddress(MALT::DOMAIN_C, (void*)0xBBB));
+	
+	int * data21 = &tree.getTypedData<int>(handler2,0);
+	int * data22 = &tree.getTypedData<int>(handler2,0);
+	int * data31 = &tree.getTypedData<int>(handler3,0);
+	int * data32 = &tree.getTypedData<int>(handler3,0);
+	
+	EXPECT_EQ(data21,data22);
+	EXPECT_EQ(data31,data32);
+	EXPECT_NE(data21,data31);
+}
+
+/**********************************************************/
+TEST(TypedRLockFreeTree,toJson)
+{
+	RLockFreeTree tree;
+	tree.addDescriptor<int>("test-counter");
+
+	StackTreeHandler handler1 = tree.enterThread();
+	StackTreeHandler handler2 = tree.enterFunction(handler1,MALT::LangAddress(MALT::DOMAIN_C, (void*)0xAAA));
+	StackTreeHandler handler3 = tree.enterFunction(handler1,MALT::LangAddress(MALT::DOMAIN_C, (void*)0xBBB));
+	StackTreeHandler handler4 = tree.enterFunction(handler3,MALT::LangAddress(MALT::DOMAIN_C, (void*)0xCCC));
+	
+	tree.getTypedData<int>(handler2,0) = 10;
+	tree.getTypedData<int>(handler4,0) = 11;
+	
+	std::stringstream out;
+	tree.prepareForOutput();
+	htopml::convertToJson(out,tree);
+	
+	EXPECT_EQ(CST_VALUE_2,out.str());
+}
+
+/**********************************************************/
+TEST(TypedRLockFreeTree,parallelUse)
+{
+	RLockFreeTree tree;
+	tree.addDescriptor<int>("test-counter");
+
+	#pragma omp parallel
+	{
+		for (int j = 0 ; j < 1000 ; j++)
+		{
+			StackTreeHandler handler = tree.enterThread();
+			
+			for (int i = 0 ; i < 10 ; i++)
+				handler = tree.enterFunction(handler,MALT::LangAddress(MALT::DOMAIN_C, (void*)(size_t)(i+1)));
+		}
+	}
+}
+
+/**********************************************************/
+int main(int argc, char ** argv)
+{
+	//init internal allocator
+	MALT::initInternalAlloc();
+	doNoFreeAllocatorInit();
+	
+	// This allows the user to override the flag on the command line.
+	::testing::InitGoogleTest(&argc, argv);
+	return RUN_ALL_TESTS();
+}
+

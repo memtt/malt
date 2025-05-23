@@ -115,14 +115,29 @@ class PodmanContainerHandler:
         for rule in rules:
             self.build_rules.append(f"RUN {rule}")
 
-    def build(self, base_image: str) -> None:
+    def build_cache_volumes(self, caches:dict) -> list:
+        # sources
+        volumes = []
+
+        # apply
+        for key, vm_path in caches.items():
+            img = self.image.replace(":", "_")
+            dir = key.replace("@IMG@", img)
+            os.makedirs(dir, exist_ok=True)
+            volumes.append("--volume")
+            volumes.append(f"{os.getcwd()}/{dir}:{vm_path}:rw")
+
+        # ok
+        return volumes
+
+    def build(self, base_image: str, caches: dict = {}) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:
             with open(f"{tmpdir}/Dockerfile", "w+") as fp:
                 # build Dockerfile
                 cmds  = [f"FROM {base_image}"]
                 cmds += [
                     "ENV DEBIAN_FRONTEND=noninteractive",
-                    'ENV PATH "/usr/lib/ccache:$PATH"'
+                    'ENV PATH "/usr/lib/ccache:/usr/lib/ccache/bin:$PATH"'
                 ]
                 cmds += self.build_rules
 
@@ -130,14 +145,30 @@ class PodmanContainerHandler:
                 fp.write("\n".join(cmds))
                 fp.flush()
 
-                # build image
-                assert_shell_command(f"podman build --tag {self.image} {tmpdir}")
+                # cmd  
+                cmd = ["podman",
+                       "build",
+                ] + self.build_cache_volumes(caches) + [
+                       "--tag",
+                       self.image,
+                       tmpdir
+                ]
 
-    def start(self):
+                # build image
+                assert_shell_command(' '.join(cmd))
+
+    def start(self, caches: dict={}):
         host_sources_path = get_malt_source_path()
-        ccache_dir = f"podman-ccache/{self.image}".replace(":", "_")
-        os.makedirs(ccache_dir, exist_ok=True)
-        cmd = ['podman', 'run', '--detach', '--volume', f'{host_sources_path}:/mnt/malt-sources:rw', '--volume', f'{os.getcwd()}/{ccache_dir}:/root/.ccache:rw', '--rm', '--tty', self.image, "/bin/bash"]
+
+        cmd = ['podman', 'run', 
+               '--detach',
+               '--volume', f'{host_sources_path}:/mnt/malt-sources:rw',
+        ] + self.build_cache_volumes(caches) + [
+               '--rm',
+               '--tty',
+               self.image,
+               "/bin/bash"
+        ]
         print(f"Running : {cmd}")
         self.container_id = subprocess.check_output(cmd).decode().split('\n')[0]
         print(self.container_id)
@@ -167,14 +198,14 @@ class PodmanContainerHandler:
 
 ############################################################
 @contextmanager
-def in_container(image: str):
+def in_container(image: str, caches: dict = {}):
     # handle return back afterward
     try:
         # create container handler
         handler = PodmanContainerHandler(image)
 
         # start
-        handler.start()
+        handler.start(caches=caches)
 
         # make action
         yield handler

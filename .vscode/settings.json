@@ -68,7 +68,57 @@
 		"format": "cpp",
 		"span": "cpp",
 		"valarray": "cpp",
-		"cassert": "cpp"
+		"cassert": "cpp",
+		"bit": "cpp",
+		"stop_token": "cpp",
+		"mutex": "cpp",
+		"compare": "cpp",
+		"any": "cpp",
+		"concepts": "cpp",
+		"charconv": "cpp",
+		"*.ipp": "cpp",
+		"semaphore": "cpp",
+		"shared_mutex": "cpp",
+		"regex": "cpp",
+		"bitset": "cpp",
+		"codecvt": "cpp",
+		"numbers": "cpp",
+		"text_encoding": "cpp",
+		"strstream": "cpp",
+		"cfenv": "cpp",
+		"complex": "cpp",
+		"coroutine": "cpp",
+		"source_location": "cpp",
+		"future": "cpp",
+		"stdfloat": "cpp",
+		"typeindex": "cpp"
 	},
-	"cmake.configureOnOpen": false
+	"cmake.configureOnOpen": false,
+	"[python]": {
+		"editor.insertSpaces": true,
+		"editor.tabSize": 4
+	},
+	"[cpp]": {
+		"editor.insertSpaces": false,
+		"editor.tabSize": 4
+	},
+	"[c]": {
+		"editor.insertSpaces": false,
+		"editor.tabSize": 4
+	},
+	"[javascript]": {
+		"editor.insertSpaces": false,
+		"editor.tabSize": 4
+	},
+	"[html]": {
+		"editor.insertSpaces": false,
+		"editor.tabSize": 4
+	},
+	"git.autoRepositoryDetection": "subFolders",
+	"git.repositoryScanMaxDepth": 2,
+	"output.smartScroll.enabled": false,
+	"cmake.configureArgs": [
+		"-DENABLE_PYTHON=yes",
+		"-DENABLE_TESTS=yes"
+	],
 }

@@ -31,6 +31,7 @@ var MaltProject = require('./server-files/MaltProject.js');
 /**********************************************************/
 //start express
 var app = Express();
+app.use(Express.json());
 
 /**********************************************************/
 //intenral cache for computed data which take a while to built
@@ -173,11 +174,11 @@ app.get('/global-variables.json',function (req,res){
 });
 
 /**********************************************************/
-app.get('/stacks.json',function(req,res){
+app.post('/stacks.json',function(req,res){
 	//extratc file from request
-	var file = req.query.file;
-	var line = req.query.line;
-	var func = req.query.func;
+	var file = req.body.file;
+	var line = req.body.line;
+	var func = req.body.func;
 
 	//return error
 	if (file != undefined || line != undefined)
@@ -220,9 +221,9 @@ app.get('/memtrace-at.json',function(req,res) {
 });
 
 /**********************************************************/
-app.get('/file-infos.json',function(req,res) {
+app.post('/file-infos.json',function(req,res) {
 	//extract file from request
-	var file = req.query.file;
+	var file = req.body.file;
 
 	//setup cache root entry
 	if (maltCache['file-infos.json'] == undefined)
@@ -304,6 +305,7 @@ app.get('/data/summary.json',function(req,res) {
 	res.end();
 });
 
+/**********************************************************/
 app.get('/calltree', function(req, res) {
 	maltProject.getCallTree(req.query.nodeid, req.query.depth, 
 		req.query.height, req.query.mincost, req.query.func, req.query.metric, 
@@ -324,6 +326,28 @@ app.get('/calltree', function(req, res) {
 		});
 });
 
+/**********************************************************/
+app.post('/calltree', function(req, res) {
+	maltProject.getCallTree(req.body.nodeid, req.body.depth, 
+		req.body.height, req.body.mincost, req.body.func, req.body.metric, 
+		req.body.isratio, function(data) {
+			if(req.body.format == 'svg') {
+				res.header("Content-Type", "image/svg+xml");
+				res.setHeader('Content-disposition', 'attachment; filename=calltree.svg');
+				res.send(data.svg);
+				res.end();
+			} else if (req.body.format == 'dot') {
+				res.header("Content-Type", "text/vnd.graphviz");
+				res.setHeader('Content-disposition', 'attachment; filename=calltree.dot');
+				res.send(data.dotCode);
+				res.end();
+			} else {
+				res.json(data);
+			}
+		});
+});
+
+/**********************************************************/
 app.get('/active-chunks', function(req, res) {
 	maltProject.getActiveChunks(req.query.timestamp, function(result) {
 		res.json(result);
@@ -339,6 +363,37 @@ app.get('/',function(eq,res,next){
 /**********************************************************/
 app.get('/data.json',function(eq,res,next){
 	res.sendfile(args.params.input);
+});
+
+/**********************************************************/
+app.post('/source-file',function(req, res){
+	console.log(req.body.path);
+	if (req.body.path == undefined) {
+		res.send(500, 'Missing path POST parameter !');
+		res.end();
+	} else if (maltProject.isSourceFile(req.body.path)) {
+		res.sendFile(req.body.path, {}, (err) => {
+			console.log("Fail to send : " + err);
+		});
+	} else {
+		res.send(500, 'Invalid source file path !');
+		res.end();
+	}
+});
+
+/**********************************************************/
+app.post("/call-stack-next-level.json", function(req, res) {
+	filter = {"function": req.body.filter.function, "file": req.body.filter.file, "line": req.body.filter.line};
+
+	if (filter.function == null)
+		filter.function = "";
+	if (filter.file == null)
+		filter.file = "";
+	if (filter.line == null)
+		filter.line = -1;
+
+	var resp = maltProject.getCallStackNextLevel(req.body.parentStackId, req.body.parentStackDepth, filter);
+	res.json(resp);
 });
 
 /**********************************************************/

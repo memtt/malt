@@ -42,13 +42,13 @@ void JsonState::printField(const char * name,const T & value)
  * @param value Value to affecto the field.
 **/
 template <class T>
-void JsonState::printValue(const T & value)
+void JsonState::printValue(const T & value, bool separator)
 {
 	//check where we are
 	assert(getState() & (JSON_STATE_FIELD | JSON_STATE_ARRAY | JSON_STATE_ROOT));
 
 	//separator
-	if (getState() == JSON_STATE_ARRAY && !isFirst())
+	if (separator && getState() == JSON_STATE_ARRAY && !isFirst())
 		bufferdStream << ", ";
 
 	//print

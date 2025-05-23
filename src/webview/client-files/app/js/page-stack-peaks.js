@@ -79,7 +79,7 @@ MaltPageStackPeaks.prototype.plotSelectedStackSize = function(domId,data,threadI
 	var chart;
 	nv.addGraph(function() {
 		chart = nv.models.lineChart()
-			.margin({top: 30, right: 20, bottom: 50, left: 200})
+			.margin({top: 30, right: 100, bottom: 50, left: 200})
 			.useInteractiveGuideline(true) //We want nice looking tooltips and a guideline!
 // 			.transitionDuration(500) //how fast do you want the lines to transition?
 			.showLegend(true) //Show the legend, allowing users to turn on/off line series.
@@ -132,7 +132,7 @@ MaltPageStackPeaks.prototype.plotStackMemOfFuncs = function(domId,threadId,onEle
 		chart = nv.models.multiBarHorizontalChart()
 			.x(function(d,i) { return d.info.function })
 			.y(function(d) { return d.mem })
-			.margin({top: 30, right: 20, bottom: 50, left: 200})
+			.margin({top: 30, right: 100, bottom: 50, left: 200})
 			.showValues(true)           //Show bar value next to each bar.
 // 			.tooltips(true)             //Show tooltips on hover.
 // 			.transitionDuration(350)
@@ -234,7 +234,7 @@ MaltPageStackPeaks.prototype.plotStackPeak = function(domId,data,onElementClick)
 		var chart = nv.models.multiBarHorizontalChart()
 			.x(function(d,i) { return i })
 			.y(function(d) { return d.size })
-			.margin({top: 30, right: 20, bottom: 50, left: 40})
+			.margin({top: 30, right: 100, bottom: 50, left: 40})
 			.showValues(true)           //Show bar value next to each bar.
 // 			.tooltips(true)             //Show tooltips on hover.
 // 			.transitionDuration(350)

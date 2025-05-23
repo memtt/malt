@@ -22,11 +22,13 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/malt-passwd.sh.in ${CMAKE_CURRENT_BIN
 
 ############################################################
 #install
-INSTALL(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/malt-webview ${CMAKE_CURRENT_BINARY_DIR}/malt-passwd
-        DESTINATION bin/)
+if (NODE_FOUND)
+	INSTALL(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/malt-webview ${CMAKE_CURRENT_BINARY_DIR}/malt-passwd
+			DESTINATION bin/)
+endif (NODE_FOUND)
 
 ############################################################
 if (ENABLE_PROFILER)
-	INSTALL(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/malt DESTINATION bin/)
-	INSTALL(FILES MaltMPIRank.cpp DESTINATION share/malt)
+	install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/malt DESTINATION bin/)
+	install(FILES MaltMPIRank.cpp DESTINATION share/malt)
 endif (ENABLE_PROFILER)
