@@ -240,7 +240,7 @@ MaltProject.prototype.getFlatProfile = function(mapping,accept,fields,total)
 
 		//skip C++ operators
 		var skip = 0;
-		while (skip < detailedStack.length && isAllocFunction(detailedStack[skip].function)) skip++;
+		while (skip < detailedStack.length && isAllocFunction(this.data, detailedStack[skip].function)) skip++;
 		if (skip >= detailedStack.length)
 		{
 			console.log("Warning : get call stacks with only allocation function ??? : "+JSON.stringify(detailedStack) +" -> "+JSON.stringify(statsEntry));
@@ -264,7 +264,7 @@ MaltProject.prototype.getFlatProfile = function(mapping,accept,fields,total)
 			cur = detailedStack[j];
 			var key = mapping(cur);
 			var filter = (accept == true || accept(cur,infos) == true);
-			if (filter && done[key] == undefined && !isAllocFunction(cur.function))
+			if (filter && done[key] == undefined && !isAllocFunction(this.data, cur.function))
 			{
 				done[key] = true;
 				mergeStackInfo(res,cur,stack[j],callers,infos,mapping,fields);
@@ -1072,9 +1072,12 @@ var allocFuncRegexp = /^((MALT::WrapperPython.*::.*)|(gomp_realloc)|(gomp_malloc
 /**********************************************************/
 /** Quick check to detect memory functions. **/
 //--PORTED IN C++ VERSION--
-function isAllocFunction(name)
+function isAllocFunction(data, name)
 {
-	return allocFuncRegexp.test(name);
+	if (data.run.allocatorWrappers.includes(name))
+		return true;
+	else
+		return allocFuncRegexp.test(name);
 }
 
 /**********************************************************/
