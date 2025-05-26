@@ -20,9 +20,9 @@
     "globalPeak": 73846,
     "lifetime": {
      "count": 35,
-     "max": 4849706,
-     "min": 85649,
-     "sum": 14958670
+     "max": 2469182,
+     "min": 55052,
+     "sum": 7957758
     },
     "maxAliveReq": 77472,
     "reallocCount": 0,
@@ -39,46 +39,6 @@
    "parentStackId": 0,
    "stackDepth": 1,
    "stackId": 0
-  },
-  {
-   "hasChild": true,
-   "infos": {
-    "aliveReq": 0,
-    "alloc": {
-     "count": 2,
-     "max": 1048576,
-     "min": 16,
-     "sum": 1048592
-    },
-    "countZeros": 0,
-    "free": {
-     "count": 2,
-     "max": 1048576,
-     "min": 16,
-     "sum": 1048592
-    },
-    "globalPeak": 1048592,
-    "lifetime": {
-     "count": 2,
-     "max": 2663551,
-     "min": 478376,
-     "sum": 3141927
-    },
-    "maxAliveReq": 1048592,
-    "reallocCount": 0,
-    "reallocSumDelta": 0
-   },
-   "location": {
-    "binary": "/usr/lib64/libc.so.6",
-    "file": "??",
-    "function": "__libc_start_main",
-    "functionShort": "__libc_start_main",
-    "line": -1
-   },
-   "parentStackDepth": 0,
-   "parentStackId": 0,
-   "stackDepth": 1,
-   "stackId": 1
   }
  ],
  "getCallStackNextLevel2": [
@@ -102,9 +62,9 @@
     "globalPeak": 1048592,
     "lifetime": {
      "count": 2,
-     "max": 2663551,
-     "min": 478376,
-     "sum": 3141927
+     "max": 1728167,
+     "min": 204704,
+     "sum": 1932871
     },
     "maxAliveReq": 1048592,
     "reallocCount": 0,
@@ -121,6 +81,16 @@
    "parentStackId": 1,
    "stackDepth": 2,
    "stackId": 1
+  }
+ ],
+ "getCallStackNextLevel_virtual_1": [
+  {
+   "hasChild": true,
+   "infos": {
+    "alloc": {
+     "count": 31
+    }
+   }
   }
  ],
  "getCallTree": "digraph G {\nnode  [color=\"white\", fontcolor=\"white\", fontname=\"Courier New\", fontsize=\"10\", penwidth=\"1\", shape=\"record\", style=\"filled\"];\nedge  [fontname=\"Courier New\", fontsize=\"9\"];\n\n}\n",
@@ -144,9 +114,9 @@
     "globalPeak": 16,
     "lifetime": {
      "count": 1,
-     "max": 2663551,
-     "min": 2663551,
-     "sum": 2663551
+     "max": 1728167,
+     "min": 1728167,
+     "sum": 1728167
     },
     "maxAliveReq": 16,
     "reallocCount": 0,
@@ -251,9 +221,9 @@
     "globalPeak": 1048576,
     "lifetime": {
      "count": 1,
-     "max": 478376,
-     "min": 478376,
-     "sum": 478376
+     "max": 204704,
+     "min": 204704,
+     "sum": 204704
     },
     "maxAliveReq": 1048576,
     "reallocCount": 0,
@@ -574,9 +544,9 @@
     "globalPeak": 16,
     "lifetime": {
      "count": 1,
-     "max": 2663551,
-     "min": 2663551,
-     "sum": 2663551
+     "max": 1728167,
+     "min": 1728167,
+     "sum": 1728167
     },
     "maxAliveReq": 16,
     "reallocCount": 0,
@@ -681,9 +651,9 @@
     "globalPeak": 1048576,
     "lifetime": {
      "count": 1,
-     "max": 478376,
-     "min": 478376,
-     "sum": 478376
+     "max": 204704,
+     "min": 204704,
+     "sum": 204704
     },
     "maxAliveReq": 1048576,
     "reallocCount": 0,
@@ -1175,9 +1145,9 @@
     "globalPeak": 1048592,
     "lifetime": {
      "count": 2,
-     "max": 2663551,
-     "min": 478376,
-     "sum": 3141927
+     "max": 1728167,
+     "min": 204704,
+     "sum": 1932871
     },
     "maxAliveReq": 1048592,
     "reallocCount": 0,
@@ -1238,9 +1208,9 @@
     "globalPeak": 1048592,
     "lifetime": {
      "count": 2,
-     "max": 2663551,
-     "min": 478376,
-     "sum": 3141927
+     "max": 1728167,
+     "min": 204704,
+     "sum": 1932871
     },
     "maxAliveReq": 1048592,
     "reallocCount": 0,
@@ -1267,9 +1237,9 @@
     "globalPeak": 1048592,
     "lifetime": {
      "count": 2,
-     "max": 2663551,
-     "min": 478376,
-     "sum": 3141927
+     "max": 1728167,
+     "min": 204704,
+     "sum": 1932871
     },
     "maxAliveReq": 1048592,
     "reallocCount": 0,
@@ -1330,9 +1300,9 @@
     "globalPeak": 1048592,
     "lifetime": {
      "count": 2,
-     "max": 2663551,
-     "min": 478376,
-     "sum": 3141927
+     "max": 1728167,
+     "min": 204704,
+     "sum": 1932871
     },
     "maxAliveReq": 1048592,
     "reallocCount": 0,
@@ -1359,9 +1329,9 @@
     "globalPeak": 1048592,
     "lifetime": {
      "count": 2,
-     "max": 2663551,
-     "min": 478376,
-     "sum": 3141927
+     "max": 1728167,
+     "min": 204704,
+     "sum": 1932871
     },
     "maxAliveReq": 1048592,
     "reallocCount": 0,
@@ -1396,9 +1366,9 @@
     "globalPeak": 1048592,
     "lifetime": {
      "count": 2,
-     "max": 2663551,
-     "min": 478376,
-     "sum": 3141927
+     "max": 1728167,
+     "min": 204704,
+     "sum": 1932871
     },
     "maxAliveReq": 1048592,
     "reallocCount": 0,
@@ -1422,9 +1392,9 @@
     "globalPeak": 1048592,
     "lifetime": {
      "count": 2,
-     "max": 2663551,
-     "min": 478376,
-     "sum": 3141927
+     "max": 1728167,
+     "min": 204704,
+     "sum": 1932871
     },
     "maxAliveReq": 1048592,
     "reallocCount": 0,
@@ -1451,9 +1421,9 @@
     "globalPeak": 1048592,
     "lifetime": {
      "count": 2,
-     "max": 2663551,
-     "min": 478376,
-     "sum": 3141927
+     "max": 1728167,
+     "min": 204704,
+     "sum": 1932871
     },
     "maxAliveReq": 1048592,
     "reallocCount": 0,
@@ -1514,9 +1484,9 @@
     "globalPeak": 1048592,
     "lifetime": {
      "count": 2,
-     "max": 2663551,
-     "min": 478376,
-     "sum": 3141927
+     "max": 1728167,
+     "min": 204704,
+     "sum": 1932871
     },
     "maxAliveReq": 1048592,
     "reallocCount": 0,
@@ -2109,7 +2079,7 @@
    "mem": 16384
   },
   "anonymous": {
-   "cnt": 9,
+   "cnt": 10,
    "mem": 2981888
   },
   "src/libinstrum/libmalt.so.1.2.4": {
@@ -2129,7 +2099,7 @@
    "largestStack": 0,
    "maxChunkSize": 1048576,
    "minChunkSize": 16,
-   "physicalMem": 6594560,
+   "physicalMem": 6852608,
    "requestedMem": 1122438,
    "segments": 37808,
    "virtualMem": 13164544
@@ -2139,11 +2109,11 @@
   "run": {
    "allocator": "/usr/lib64/libc.so.6",
    "command": "src/reader/libreader/extractors/tests/extractor-example",
-   "date": "2025-05-26 10:42",
+   "date": "2025-05-26 12:25",
    "exe": "extractor-example",
    "formatVersion": "1.1",
    "hostname": "sebv4",
-   "runtime": 2242031726,
+   "runtime": 2249072921,
    "tool": "malt-1.2.4-dev"
   },
   "summary": {
@@ -2156,10 +2126,10 @@
    "meanAllocSize": 28151.599609375,
    "minAllocSize": 16,
    "numGblVar": 949,
-   "peakAllocCountRate": 62860640256.0,
-   "peakAllocRate": 62860640256.0,
+   "peakAllocCountRate": 105161834496.0,
+   "peakAllocRate": 105161834496.0,
    "peakInternalMemory": 37808,
-   "peakPhysicalMemory": 6594560,
+   "peakPhysicalMemory": 6852608,
    "peakRequestedMemory": 1122438,
    "peakSegmentCount": 5,
    "peakVirtualMemory": 13164544,
@@ -2173,7 +2143,7 @@
    ]
   },
   "system": {
-   "ticksPerSecond": 3411193926,
+   "ticksPerSecond": 3411168598,
    "totalMemory": 16718856192
   },
   "threadStats": [
@@ -2196,7 +2166,7 @@
     "malloc": {
      "count": 40,
      "sum": 1126064,
-     "time": 169589
+     "time": 78803
     },
     "memalign": {
      "count": 0,

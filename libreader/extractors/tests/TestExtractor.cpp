@@ -386,3 +386,120 @@ TEST(TestExtractor, getCallStackNextLevel_2)
 	//check
 	ASSERT_EQ(dataExpected["getCallStackNextLevel2"], resJson) << " Diff: " << nlohmann::json::diff(dataExpected["getCallStackNextLevel2"], resJson);
 }
+
+/**********************************************************/
+void fillVirtualProfile(MaltProfile & profile)
+{
+	//fill
+	StackInfos stats1;
+	stats1.alloc.count = 10;
+	StackStat call1{
+		{LangAddress{LANG_C, (void*)0x4}, LangAddress{LANG_C, (void*)0x3}, LangAddress{LANG_C, (void*)0x2}, LangAddress{LANG_C, (void*)0x1}},
+		(void*)0x1,
+		stats1,
+	};
+	profile.stacks.stats.push_back(call1);
+
+	//fill
+	StackInfos stats2;
+	stats2.alloc.count = 21;
+	StackStat call2{
+		{LangAddress{LANG_C, (void*)0x6}, LangAddress{LANG_C, (void*)0x5}, LangAddress{LANG_C, (void*)0x2}, LangAddress{LANG_C, (void*)0x1}},
+		(void*)0x2,
+		stats2,
+	};
+	profile.stacks.stats.push_back(call2);
+
+	std::vector<std::string> strings{"0x0", "0x1", "0x2", "0x3", "0x4", "0x5", "0x6"};
+	profile.sites.strings = strings;
+	for (size_t i = 1 ; i <= 6 ; i++) {
+		profile.sites.instr[LangAddress{LANG_C, (void*)i}].file = i;
+		profile.sites.instr[LangAddress{LANG_C, (void*)i}].function = i;
+		profile.sites.instr[LangAddress{LANG_C, (void*)i}].binary = i;
+		profile.sites.instr[LangAddress{LANG_C, (void*)i}].line = i;
+	}
+}
+
+/**********************************************************/
+TEST(TestExtractor, getCallStackNextLevel_virtual_1)
+{
+	//load
+	MaltProfile profile;
+	fillVirtualProfile(profile);
+	
+	//extract
+	Extractor extractor(profile);
+	LocationFilter filter;
+	nlohmann::json resJson = extractor.getCallStackNextLevel(0, 0, filter);
+	resJson = ExtractorHelpers::toJsonFiltered(resJson, {"*.alloc.count", "*.hasChild", "*.location.function"});
+
+	//load ref
+	std::istringstream file(R"json([{"hasChild":true,"infos":{"alloc":{"count":31}},"location":{"function":"0x2"}}])json");
+	nlohmann::json dataExpected = nlohmann::json::parse(file);
+
+	//check
+	ASSERT_EQ(dataExpected, resJson) << " Diff: " << nlohmann::json::diff(dataExpected, resJson);
+}
+
+/**********************************************************/
+TEST(TestExtractor, getCallStackNextLevel_virtual_2)
+{
+	//load
+	MaltProfile profile;
+	fillVirtualProfile(profile);
+	
+	//extract
+	Extractor extractor(profile);
+	LocationFilter filter;
+	nlohmann::json resJson = extractor.getCallStackNextLevel(0, 1, filter);
+	resJson = ExtractorHelpers::toJsonFiltered(resJson, {"*.alloc.count", "*.hasChild", "*.location.function"});
+
+	//load ref
+	std::istringstream file(R"json([{"hasChild":true,"infos":{"alloc":{"count":10}},"location":{"function":"0x3"}},{"hasChild":true,"infos":{"alloc":{"count":21}},"location":{"function":"0x5"}}])json");
+	nlohmann::json dataExpected = nlohmann::json::parse(file);
+
+	//check
+	ASSERT_EQ(dataExpected, resJson) << " Diff: " << nlohmann::json::diff(dataExpected, resJson);
+}
+
+/**********************************************************/
+TEST(TestExtractor, getCallStackNextLevel_virtual_3)
+{
+	//load
+	MaltProfile profile;
+	fillVirtualProfile(profile);
+	
+	//extract
+	Extractor extractor(profile);
+	LocationFilter filter;
+	nlohmann::json resJson = extractor.getCallStackNextLevel(0, 2, filter);
+	resJson = ExtractorHelpers::toJsonFiltered(resJson, {"*.alloc.count", "*.hasChild", "*.location.function"});
+
+	//load ref
+	std::istringstream file(R"json([{"hasChild":false,"infos":{"alloc":{"count":10}},"location":{"function":"0x4"}}])json");
+	nlohmann::json dataExpected = nlohmann::json::parse(file);
+
+	//check
+	ASSERT_EQ(dataExpected, resJson) << " Diff: " << nlohmann::json::diff(dataExpected, resJson);
+}
+
+/**********************************************************/
+TEST(TestExtractor, getCallStackNextLevel_virtual_4)
+{
+	//load
+	MaltProfile profile;
+	fillVirtualProfile(profile);
+	
+	//extract
+	Extractor extractor(profile);
+	LocationFilter filter;
+	nlohmann::json resJson = extractor.getCallStackNextLevel(0, 3, filter);
+	resJson = ExtractorHelpers::toJsonFiltered(resJson, {"*.alloc.count", "*.hasChild", "*.location.function"});
+
+	//load ref
+	std::istringstream file(R"json([])json");
+	nlohmann::json dataExpected = nlohmann::json::parse(file);
+
+	//check
+	ASSERT_EQ(dataExpected, resJson) << " Diff: " << nlohmann::json::diff(dataExpected, resJson);
+}
