@@ -13,6 +13,8 @@
 #include "GlobalState.hpp"
 #include "portability/Visibility.hpp"
 #include "injectors/InjectPythonInit.hpp"
+#include "LazyEnv.hpp"
+#include "ReentranceGuard.hpp"
 
 /**********************************************************/
 namespace MALT
@@ -325,7 +327,11 @@ void AllocWrapperGlobal::init(void )
 	}
 
 	//load python
-	MALT::gblHavePython = MALT::PyLazyInterfaceInit();
+	{
+		LazyEnv env;
+		ReentranceGuard guard(env);
+		MALT::gblHavePython = MALT::PyLazyInterfaceInit();
+	}
 
 	//secure in case of first call in threads
 	gblState.lock.unlock();
