@@ -1069,14 +1069,14 @@ CallStackChildList Extractor::getCallStackNextLevel(size_t parentStackId, size_t
 		//check ok
 		bool stackMatchingBellowDepth = this->stackIsMatchingBellowDepth(parentStack, it.stack, parentDepth);
 		bool stackMatchingFilter = this->stackIsMatchingLocationFilter(filter, it.stack);
-		if (stackMatchingBellowDepth && stackMatchingFilter && it.stack.size() > parentDepth + 1) {
+		if (stackMatchingBellowDepth && stackMatchingFilter && it.stack.size() > parentDepth) {
 			//sum all childs up to here
 			bool hasChild = false;
-			if (it.stack.size() > parentDepth + 2)
+			if (it.stack.size() > parentDepth + 1)
 				hasChild = true;
 
 			//get next child
-			LangAddress childAddr = it.stack[it.stack.size() - parentDepth - 2];
+			LangAddress childAddr = it.stack[it.stack.size() - parentDepth - 1];
 			const InstructionInfosStrRef & location = this->getAddrTranslation(childAddr);
 			char bufferRef[8192];
 			snprintf(bufferRef, sizeof(bufferRef), "%s:%s", location.file->c_str(), location.function->c_str());

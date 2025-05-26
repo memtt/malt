@@ -410,9 +410,19 @@ void fillVirtualProfile(MaltProfile & profile)
 	};
 	profile.stacks.stats.push_back(call2);
 
-	std::vector<std::string> strings{"0x0", "0x1", "0x2", "0x3", "0x4", "0x5", "0x6"};
+	//fill
+	StackInfos stats3;
+	stats3.alloc.count = 32;
+	StackStat call3{
+		{LangAddress{LANG_C, (void*)0x7}, LangAddress{LANG_C, (void*)0x5}, LangAddress{LANG_C, (void*)0x2}, LangAddress{LANG_C, (void*)0x1}},
+		(void*)0x3,
+		stats3,
+	};
+	profile.stacks.stats.push_back(call3);
+
+	std::vector<std::string> strings{"0x0", "0x1", "0x2", "0x3", "0x4", "0x5", "0x6", "0x7"};
 	profile.sites.strings = strings;
-	for (size_t i = 1 ; i <= 6 ; i++) {
+	for (size_t i = 1 ; i <= 7 ; i++) {
 		profile.sites.instr[LangAddress{LANG_C, (void*)i}].file = i;
 		profile.sites.instr[LangAddress{LANG_C, (void*)i}].function = i;
 		profile.sites.instr[LangAddress{LANG_C, (void*)i}].binary = i;
@@ -434,7 +444,7 @@ TEST(TestExtractor, getCallStackNextLevel_virtual_1)
 	resJson = ExtractorHelpers::toJsonFiltered(resJson, {"*.alloc.count", "*.hasChild", "*.location.function"});
 
 	//load ref
-	std::istringstream file(R"json([{"hasChild":true,"infos":{"alloc":{"count":31}},"location":{"function":"0x2"}}])json");
+	std::istringstream file(R"json([{"hasChild":true,"infos":{"alloc":{"count":63}},"location":{"function":"0x1"}}])json");
 	nlohmann::json dataExpected = nlohmann::json::parse(file);
 
 	//check
@@ -455,7 +465,7 @@ TEST(TestExtractor, getCallStackNextLevel_virtual_2)
 	resJson = ExtractorHelpers::toJsonFiltered(resJson, {"*.alloc.count", "*.hasChild", "*.location.function"});
 
 	//load ref
-	std::istringstream file(R"json([{"hasChild":true,"infos":{"alloc":{"count":10}},"location":{"function":"0x3"}},{"hasChild":true,"infos":{"alloc":{"count":21}},"location":{"function":"0x5"}}])json");
+	std::istringstream file(R"json([{"hasChild":true,"infos":{"alloc":{"count":63}},"location":{"function":"0x2"}}])json");
 	nlohmann::json dataExpected = nlohmann::json::parse(file);
 
 	//check
@@ -476,7 +486,7 @@ TEST(TestExtractor, getCallStackNextLevel_virtual_3)
 	resJson = ExtractorHelpers::toJsonFiltered(resJson, {"*.alloc.count", "*.hasChild", "*.location.function"});
 
 	//load ref
-	std::istringstream file(R"json([{"hasChild":false,"infos":{"alloc":{"count":10}},"location":{"function":"0x4"}}])json");
+	std::istringstream file(R"json([{"hasChild":true,"infos":{"alloc":{"count":10}},"location":{"function":"0x3"}},{"hasChild":true,"infos":{"alloc":{"count":53}},"location":{"function":"0x5"}}])json");
 	nlohmann::json dataExpected = nlohmann::json::parse(file);
 
 	//check
@@ -494,6 +504,48 @@ TEST(TestExtractor, getCallStackNextLevel_virtual_4)
 	Extractor extractor(profile);
 	LocationFilter filter;
 	nlohmann::json resJson = extractor.getCallStackNextLevel(0, 3, filter);
+	resJson = ExtractorHelpers::toJsonFiltered(resJson, {"*.alloc.count", "*.hasChild", "*.location.function"});
+
+	//load ref
+	std::istringstream file(R"json([{"hasChild":false,"infos":{"alloc":{"count":10}},"location":{"function":"0x4"}}])json");
+	nlohmann::json dataExpected = nlohmann::json::parse(file);
+
+	//check
+	ASSERT_EQ(dataExpected, resJson) << " Diff: " << nlohmann::json::diff(dataExpected, resJson);
+}
+
+/**********************************************************/
+TEST(TestExtractor, getCallStackNextLevel_virtual_4_2)
+{
+	//load
+	MaltProfile profile;
+	fillVirtualProfile(profile);
+	
+	//extract
+	Extractor extractor(profile);
+	LocationFilter filter;
+	nlohmann::json resJson = extractor.getCallStackNextLevel(1, 3, filter);
+	resJson = ExtractorHelpers::toJsonFiltered(resJson, {"*.alloc.count", "*.hasChild", "*.location.function"});
+
+	//load ref
+	std::istringstream file(R"json([{"hasChild":false,"infos":{"alloc":{"count":21}},"location":{"function":"0x6"}},{"hasChild":false,"infos":{"alloc":{"count":32}},"location":{"function":"0x7"}}])json");
+	nlohmann::json dataExpected = nlohmann::json::parse(file);
+
+	//check
+	ASSERT_EQ(dataExpected, resJson) << " Diff: " << nlohmann::json::diff(dataExpected, resJson);
+}
+
+/**********************************************************/
+TEST(TestExtractor, getCallStackNextLevel_virtual_5)
+{
+	//load
+	MaltProfile profile;
+	fillVirtualProfile(profile);
+	
+	//extract
+	Extractor extractor(profile);
+	LocationFilter filter;
+	nlohmann::json resJson = extractor.getCallStackNextLevel(0, 4, filter);
 	resJson = ExtractorHelpers::toJsonFiltered(resJson, {"*.alloc.count", "*.hasChild", "*.location.function"});
 
 	//load ref
