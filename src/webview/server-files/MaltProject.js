@@ -971,7 +971,7 @@ MaltProject.prototype.stackIsMatchingBellowDepth = function(stack1, stack2, dept
 
 	//loop
 	for (var i = 0 ; i < depth ; i++)
-		if (!(stack1[stack1.length - i - 1] == stack2[stack2.length - i - 1]))
+		if (!(stack1[stack1.length - i - 1].function == stack2[stack2.length - i - 1].function))
 			return false;
 
 	//ok
@@ -1003,35 +1003,36 @@ MaltProject.prototype.stackIsMatchingLocationFilter = function(filter, detailedS
 MaltProject.prototype.getCallStackNextLevel = function(parentStackId, parentDepth, filter)
 {
 	//vars
+	var instrs = this.data.sites.instr;
 	var parentStack = this.data.stacks.stats[parentStackId].stack;
+	var detailedParentStack = genDetailedStack(instrs,parentStack);
 	var result = [];
 	var alreadySeen = {};
-	var instrs = this.data.sites.instr;
 
 	//search stacks starting by
 	for (var i = 0 ; i < this.data.stacks.stats.length ; i++) {
 		//get ref
 		it = this.data.stacks.stats[i];
-		detailedStack = genDetailedStack(instrs,it.stack);
+		var detailedStack = genDetailedStack(instrs,it.stack);
 
 		//check ok
-		var stackMatchingBellowDepth = this.stackIsMatchingBellowDepth(parentStack, it.stack, parentDepth);
+		var stackMatchingBellowDepth = this.stackIsMatchingBellowDepth(detailedParentStack, detailedStack, parentDepth);
 		var stackMatchingFilter = this.stackIsMatchingLocationFilter(filter, detailedStack);
-		if (stackMatchingBellowDepth && stackMatchingFilter && it.stack.length > parentDepth + 1) {
+		if (stackMatchingBellowDepth && stackMatchingFilter && it.stack.length > parentDepth) {
 			//sum all childs up to here
 			var hasChild = false;
-			if (it.stack.length > parentDepth + 2)
+			if (it.stack.length > parentDepth + 1)
 				hasChild = true;
 
 			//get next child
-			var location = detailedStack[it.stack.length - parentDepth - 2];
+			var location = detailedStack[it.stack.length - parentDepth - 1];
 			bufferRef = location.file + ":" + location.function;
 
 			//check already seen
 			var it2 = alreadySeen[bufferRef];
 			if (it2 == undefined) {
 				alreadySeen[bufferRef] = {
-					infos: it.infos,
+					infos: clone(it.infos),
 					location : location,
 					parentStackId: parentStackId,
 					parentStackDepth : parentDepth,
