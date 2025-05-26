@@ -39,7 +39,7 @@ TEST(TestExtractor, regenData)
 		fprintf(stderr, "Regenerate example.json\n");
 		setenv("MALT_OPTIONS", "output:indent=true;output:name=" CUR_SRC_DIR "/example.json", 1);
 		ASSERT_EQ(0, system(CUR_BUILD_DIR "/extractor-example"));
-		system("sed -i " CUR_SRC_DIR "/example.json -e \"s#" BUILD_DIR "/##g\" -e \"s#" SRC_DIR "/##g\"");
+		ASSERT_EQ(0, system("sed -i " CUR_SRC_DIR "/example.json -e \"s#" BUILD_DIR "/##g\" -e \"s#" SRC_DIR "/##g\""));
 	}
 }
 

@@ -1013,7 +1013,7 @@ CallStackChild::CallStackChild(MALTFormat::StackInfos infos, const InstructionIn
 }
 
 /**********************************************************/
-bool Extractor::stackIsMatchingBellowDepth(const Stack & stack1, const Stack & stack2, size_t depth)
+bool Extractor::stackIsMatchingBellowDepth(const Stack & stack1, const Stack & stack2, size_t depth) const
 {
 	//trivial
 	if (depth == 0)
@@ -1022,9 +1022,12 @@ bool Extractor::stackIsMatchingBellowDepth(const Stack & stack1, const Stack & s
 		return false;
 
 	//loop
-	for (size_t i = 0 ; i < depth ; i++)
-		if (!(stack1[stack1.size() - i - 1] == stack2[stack2.size() - i - 1]))
+	for (size_t i = 0 ; i < depth ; i++) {
+		const InstructionInfosStrRef & locationStack1 = this->getAddrTranslation(stack1[stack1.size() - i - 1]);
+		const InstructionInfosStrRef & locationStack2 = this->getAddrTranslation(stack2[stack2.size() - i - 1]);
+		if (!(*locationStack1.function == *locationStack2.function))
 			return false;
+	}
 
 	//ok
 	return true;

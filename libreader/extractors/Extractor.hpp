@@ -235,7 +235,7 @@ class Extractor
 		bool filterExtractStacksCandidate(const MALTFormat::Stack & stack, const LocaltionOnlyFilterFunc & filter) const;
 		StackStrRef buildStackStrRef(const MALTFormat::Stack & stack) const;
 		const std::string& getCachedString(const std::string & value);
-		static bool stackIsMatchingBellowDepth(const MALTFormat::Stack & stack1, const MALTFormat::Stack & stack2, size_t depth);
+		bool stackIsMatchingBellowDepth(const MALTFormat::Stack & stack1, const MALTFormat::Stack & stack2, size_t depth) const;
 		bool stackIsMatchingLocationFilter(const LocationFilter & filter, const MALTFormat::Stack & stack) const;
 	private:
 		const MALTFormat::MaltProfile & profile;
