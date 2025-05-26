@@ -31,6 +31,7 @@ struct Run
 	std::string command;
 	std::string hostname;
 	std::string date;
+	std::vector<std::string> allocatorWrappers;
 };
 
 /**********************************************************/

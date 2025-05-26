@@ -12,6 +12,7 @@
 #include <iostream>
 #include <list>
 #include <sstream>
+#include <algorithm>
 #include "ExtractorHelpers.hpp"
 
 /**********************************************************/
@@ -59,8 +60,12 @@ static const char * MALT_SUBPOWER_PS[] = {"&nbsp;","m","u","n"};
 static const char * MALT_SUBPOWER_NPS[] = {" ","m","u","n","p"};
 
 /**********************************************************/
-bool ExtractorHelpers::isAllocFunction(const std::string & name)
+bool ExtractorHelpers::isAllocFunction(const std::vector<std::string> & allocatorWrappers, const std::string & name)
 {
+	//check capture custom allocators
+	if (std::find(allocatorWrappers.begin(), allocatorWrappers.end(), name) != allocatorWrappers.end())
+		return true;
+
 	//search all
 	const char ** cursor = CST_ALLOC_FUNC_NAMES;
 	while (*cursor != nullptr) {

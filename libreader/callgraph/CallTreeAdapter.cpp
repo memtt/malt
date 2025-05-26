@@ -138,7 +138,7 @@ size_t CallTreeAdapter::generateNodesAndVertices(const FullTreeNode & treeNode, 
 		// 	return null;
 
 		//skip alloc functions
-		if (ExtractorHelpers::isAllocFunction(*treeNode.location->function))
+		if (ExtractorHelpers::isAllocFunction(this->extractor.getProfile().run.allocatorWrappers, *treeNode.location->function))
 			return CACHE_ID_NULL;
 
 		//get identifier

@@ -117,7 +117,7 @@ FlatProfileVector Extractor::getFlatProfile(const LocaltionMappingFunc & mapping
 
 			//skip C++ operators
 			size_t skip = 0;
-			while (skip < stack.size() && ExtractorHelpers::isAllocFunction(*getAddrTranslation(stack[skip]).function)) skip++;
+			while (skip < stack.size() && ExtractorHelpers::isAllocFunction(this->profile.run.allocatorWrappers, *getAddrTranslation(stack[skip]).function)) skip++;
 			if (skip >= stack.size())
 			{
 				std::cerr << "Warning : get call stacks with only allocation function ??? : " << std::endl;
@@ -1108,6 +1108,12 @@ CallStackChildList Extractor::getCallStackNextLevel(size_t parentStackId, size_t
 
 	//ok
 	return result;
+}
+
+/**********************************************************/
+const MaltProfile & Extractor::getProfile(void) const
+{
+	return this->profile;
 }
 
 }

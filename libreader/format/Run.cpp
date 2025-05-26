@@ -26,7 +26,8 @@ void to_json(nlohmann::json & json, const Run & run)
 		{"exe", run.exe},
 		{"command", run.command},
 		{"hostname", run.hostname},
-		{"date", run.date}
+		{"date", run.date},
+		{"allocatorWrappers", run.allocatorWrappers}
 	};
 }
 
@@ -42,6 +43,7 @@ void from_json(const JsonIn & json, Run & run)
 	assert(jsContains(json, "command"));
 	assert(jsContains(json, "hostname"));
 	assert(jsContains(json, "date"));
+	assert(jsContains(json, "allocatorWrappers"));
 
 	//load
 	json.at("formatVersion").get_to(run.formatVersion);
@@ -52,6 +54,7 @@ void from_json(const JsonIn & json, Run & run)
 	json.at("command").get_to(run.command);
 	json.at("hostname").get_to(run.hostname);
 	json.at("date").get_to(run.date);
+	json.at("allocatorWrappers").get_to(run.allocatorWrappers);
 }
 
 }

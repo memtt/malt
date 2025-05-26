@@ -23,7 +23,7 @@ namespace MALTReader
 /**********************************************************/
 struct ExtractorHelpers
 {
-	static bool isAllocFunction(const std::string & name);
+	static bool isAllocFunction(const std::vector<std::string> & allocatorWrappers, const std::string & name);
 	template <class T>
 	static nlohmann::json toJsonFiltered(const T & value, const std::vector<std::string> & fieldsToKeep);
 	static void filterJson(nlohmann::json & value, const std::vector<std::string> & fieldsToKeep);

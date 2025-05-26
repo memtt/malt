@@ -225,6 +225,7 @@ class Extractor
 		CallStackChildList getCallStackNextLevel(size_t parentStackId, size_t parentDepth, const LocationFilter & filter) const;
 		const MALTFormat::ThreadStackMem & getMaxStack(void) const;
 		StackMem getStackMem(void) const;
+		const MALTFormat::MaltProfile & getProfile(void) const;
 	private:
 		inline const InstructionInfosStrRef & getAddrTranslation(MALTFormat::LangAddress addr) const;
 		void mergeStackInfo(FlatProfileMap & into, const MALTFormat::LangAddress & addr,FlatProfileCounter counter,const MALTFormat::StackInfos & infos,const LocaltionMappingFunc & mapping) const;

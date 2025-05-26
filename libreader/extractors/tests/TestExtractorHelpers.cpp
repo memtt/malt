@@ -18,9 +18,11 @@ using namespace MALTReader;
 /**********************************************************/
 TEST(TestExtractorHelpers, isAllocFunction)
 {
-	ASSERT_FALSE(ExtractorHelpers::isAllocFunction("main"));
-	ASSERT_TRUE(ExtractorHelpers::isAllocFunction("malloc"));
-	ASSERT_FALSE(ExtractorHelpers::isAllocFunction("mmalloc"));
+	std::vector<std::string> wrapped{"je_malloc", "je_free"};
+	ASSERT_FALSE(ExtractorHelpers::isAllocFunction(wrapped, "main"));
+	ASSERT_TRUE(ExtractorHelpers::isAllocFunction(wrapped, "malloc"));
+	ASSERT_FALSE(ExtractorHelpers::isAllocFunction(wrapped, "mmalloc"));
+	ASSERT_TRUE(ExtractorHelpers::isAllocFunction(wrapped, "je_malloc"));
 }
 
 /**********************************************************/
