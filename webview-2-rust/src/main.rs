@@ -383,8 +383,8 @@ async fn main() -> std::io::Result<()> {
 	println!( "|                                                                         |"); 
 	println!( "|         Starting server listening on http://localhost:8080/             |");
 	println!( "|                                                                         |"); 
-	println!( "|         To use from remove you can :                                    |");
-	println!( "|         user> ssh -L8080:localhost:8080 myserver                        |");
+	println!( "|                  To use from remove you can :                           |");
+	println!( "|           user> ssh -L8080:localhost:8080 myserver                      |");
 	println!( "|                                                                         |");
 	println!( "+-------------------------------------------------------------------------+");
 
