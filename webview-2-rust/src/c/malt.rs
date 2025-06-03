@@ -230,7 +230,9 @@ impl MaltCReader
 
 	pub fn is_source_file(&self, file: &str) -> bool {
 		let cfile = CString::new(file).expect("Convert to CSstring");
-		unsafe { return malt_reader_is_source_file(self.handler, cfile.into_raw()) };
+		let res;
+		unsafe { res = malt_reader_is_source_file(self.handler, cfile.into_raw()); };
+		return res;
 	}
 }
 
