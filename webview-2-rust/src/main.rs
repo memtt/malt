@@ -22,6 +22,8 @@ use std::fs;
 use clap::{Parser, Subcommand};
 use std::env;
 use std::process;
+use serde_json::{Value};
+use actix_web::mime::IMAGE_SVG;
 
 /**********************************************************/
 #[derive(Deserialize)]
@@ -74,24 +76,28 @@ impl Default for PostGetCallStackNextLevelFilter {
 	}
 }
 
+/**********************************************************/
 #[derive(Deserialize)]
 struct PostGetCallStackNextLevel
 {
-	parentStackId: usize,
-	parentStackDepth: usize,
+	#[serde(rename="parentStackId")]
+	parent_stack_id: usize,
+	#[serde(rename="parentStackDepth")]
+	parent_stack_depth: usize,
 	filter: PostGetCallStackNextLevelFilter,
 }
 
 impl Default for PostGetCallStackNextLevel {
 	fn default() -> Self {
 		PostGetCallStackNextLevel {
-			parentStackId: 0,
-			parentStackDepth: 0,
+			parent_stack_id: 0,
+			parent_stack_depth: 0,
 			filter: PostGetCallStackNextLevelFilter::default()
 		}
 	}
 }
 
+/**********************************************************/
 #[derive(Deserialize)]
 struct SourceFile
 {
@@ -106,6 +112,7 @@ impl Default for SourceFile {
 	}
 }
 
+/**********************************************************/
 #[derive(Deserialize)]
 struct GetSourceFile
 {
@@ -120,6 +127,36 @@ impl Default for GetSourceFile {
 	}
 }
 
+/**********************************************************/
+#[derive(Deserialize)]
+struct CallTreeItem
+{
+	nodeid: isize,
+	depth: isize,
+	height: isize,
+	mincost: f64,
+	func: Option<String>,
+	metric: String,
+	isratio: bool,
+	format: Option<String>
+}
+
+impl Default for CallTreeItem {
+	fn default() -> Self {
+		CallTreeItem {
+			nodeid: 0,
+			depth: 0,
+			height: 0,
+			mincost: 0.0,
+			func: Some("".to_string()),
+			metric: "".to_string(),
+			isratio: false,
+			format: None,
+		}
+	}
+}
+
+/**********************************************************/
 #[get("/summary.json")]
 async fn summary_v1(data: web::Data<MaltCReader>) -> impl Responder
 {
@@ -128,6 +165,7 @@ async fn summary_v1(data: web::Data<MaltCReader>) -> impl Responder
 		.body(data.get_summary())
 }
 
+/**********************************************************/
 #[get("/data/summary.json")]
 async fn summary_v2(data: web::Data<MaltCReader>) -> impl Responder
 {
@@ -136,6 +174,7 @@ async fn summary_v2(data: web::Data<MaltCReader>) -> impl Responder
 		.body(data.get_summary_v2())
 }
 
+/**********************************************************/
 #[get("/flat.json")]
 async fn flat_profile(data: web::Data<MaltCReader>) -> impl Responder
 {
@@ -144,6 +183,7 @@ async fn flat_profile(data: web::Data<MaltCReader>) -> impl Responder
 		.body(data.get_flat_function_profile(true, true))
 }
 
+/**********************************************************/
 #[post("/stacks.json")]
 async fn stacks(data: web::Data<MaltCReader>, item: web::Query<PostStacksItem>) -> impl Responder
 {
@@ -158,6 +198,7 @@ async fn stacks(data: web::Data<MaltCReader>, item: web::Query<PostStacksItem>) 
 	}
 }
 
+/**********************************************************/
 #[post("/source-file")]
 async fn source_file(_data: web::Data<MaltCReader>, file: web::Json<SourceFile>) -> impl Responder
 {
@@ -174,6 +215,7 @@ async fn source_file(_data: web::Data<MaltCReader>, file: web::Json<SourceFile>)
 	}
 }
 
+/**********************************************************/
 #[post("/file-infos.json")]
 async fn file_infos(data: web::Data<MaltCReader>, file: web::Json<GetSourceFile>) -> impl Responder
 {
@@ -182,6 +224,7 @@ async fn file_infos(data: web::Data<MaltCReader>, file: web::Json<GetSourceFile>
 		.body(data.get_file_lines_flat_profile(&file.file, true))
 }
 
+/**********************************************************/
 #[post("/call-stack-next-level.json")]
 async fn call_stack_next_level(data: web::Data<MaltCReader>, item: web::Json<PostGetCallStackNextLevel>) -> impl Responder
 {
@@ -191,9 +234,10 @@ async fn call_stack_next_level(data: web::Data<MaltCReader>, item: web::Json<Pos
 
 	HttpResponse::Ok()
 		.content_type(ContentType::json())
-		.body(data.get_call_stack_next_level(item.parentStackId, item.parentStackDepth, &function, &file, line as i32))
+		.body(data.get_call_stack_next_level(item.parent_stack_id, item.parent_stack_depth, &function, &file, line as i32))
 }
 
+/**********************************************************/
 #[get("/timed.json")]
 async fn timed(data: web::Data<MaltCReader>) -> impl Responder
 {
@@ -202,6 +246,7 @@ async fn timed(data: web::Data<MaltCReader>) -> impl Responder
 		.body(data.get_timed_values())
 }
 
+/**********************************************************/
 #[get("/stacks-mem.json")]
 async fn stacks_mem(data: web::Data<MaltCReader>) -> impl Responder
 {
@@ -210,6 +255,7 @@ async fn stacks_mem(data: web::Data<MaltCReader>) -> impl Responder
 		.body(data.get_stacks_mem())
 }
 
+/**********************************************************/
 #[get("/stack.json")]
 async fn stack(data: web::Data<MaltCReader>, item: web::Query<StackItem>) -> impl Responder
 {
@@ -218,6 +264,7 @@ async fn stack(data: web::Data<MaltCReader>, item: web::Query<StackItem>) -> imp
 		.body(data.get_stack_info_on_function(item.id))
 }
 
+/**********************************************************/
 #[get("/size-map.json")]
 async fn size_map(data: web::Data<MaltCReader>) -> impl Responder
 {
@@ -226,6 +273,7 @@ async fn size_map(data: web::Data<MaltCReader>) -> impl Responder
 		.body(data.get_size_map())
 }
 
+/**********************************************************/
 #[get("/scatter.json")]
 async fn scatter(data: web::Data<MaltCReader>) -> impl Responder
 {
@@ -234,6 +282,7 @@ async fn scatter(data: web::Data<MaltCReader>) -> impl Responder
 		.body(data.get_scatter())
 }
 
+/**********************************************************/
 #[get("/realloc-map.json")]
 async fn realloc_map(data: web::Data<MaltCReader>) -> impl Responder
 {
@@ -242,6 +291,7 @@ async fn realloc_map(data: web::Data<MaltCReader>) -> impl Responder
 		.body(data.get_realloc_map())
 }
 
+/**********************************************************/
 #[get("/global-variables.json")]
 async fn global_variables(data: web::Data<MaltCReader>) -> impl Responder
 {
@@ -250,6 +300,47 @@ async fn global_variables(data: web::Data<MaltCReader>) -> impl Responder
 		.body(data.get_global_variables())
 }
 
+/**********************************************************/
+#[post("/calltree")]
+async fn calltree(data: web::Data<MaltCReader>, item: web::Json<CallTreeItem>) -> impl Responder
+{
+	let format = item.format.clone().unwrap_or("svg".to_string());
+	let func = item.func.clone().unwrap_or("".to_string());
+	let res = data.get_call_tree(item.nodeid, item.depth, item.height, item.mincost, &func, &item.metric, item.isratio);
+	let res_json: Value = serde_json::from_str(&res).expect("Unable to parse");
+	match format.as_str()
+	{
+		"svg" => {
+			if res_json["svg"].is_string() {
+				HttpResponse::Ok()
+					.content_type(ContentType(IMAGE_SVG))
+					.body(res_json["svg"].as_str().unwrap().to_string())
+			} else {
+				HttpResponse::Ok()
+					.content_type(ContentType::json())
+					.body(res_json.to_string())
+			}
+		},
+		"dot" => {
+			if res_json["dot"].is_string() {
+				HttpResponse::Ok()
+					.content_type("text/vnd.graphviz")
+					.body(res_json["dot"].as_str().unwrap().to_string())
+			} else {
+				HttpResponse::Ok()
+					.content_type(ContentType::json())
+					.body(res_json.to_string())
+			}
+		},
+		_ => {
+			HttpResponse::Ok()
+				.content_type(ContentType::json())
+				.body(res_json.to_string())
+		}
+	}
+}
+
+/**********************************************************/
 #[derive(Parser, Debug)]
 #[command(version, about, long_about = None)]
 struct Cli
@@ -257,12 +348,17 @@ struct Cli
 	file: String
 }
 
+/**********************************************************/
 fn get_webview_www_path() -> String
 {
+	let exe_path = env::current_exe().unwrap();
+	let bin_path = exe_path.parent().unwrap();
+	let prefix = bin_path.parent().unwrap();
 	//get prefix
-	return format!("{}/../share/malt/webview", env::current_exe().unwrap().display()).to_string();
+	return format!("{}/share/malt/webview", prefix.display()).to_string();
 }
 
+/**********************************************************/
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
 	//parsing args
@@ -310,6 +406,7 @@ async fn main() -> std::io::Result<()> {
 			.service(scatter)
 			.service(realloc_map)
 			.service(global_variables)
+			.service(calltree)
 			.service(web::redirect("/", "/app/index.html"))
 			.service(actix_files::Files::new("/app", format!("{}/client-files/app", get_webview_www_path())).show_files_listing())
 	})

@@ -59,7 +59,7 @@ extern "C" {
 	fn malt_reader_get_timed_values(reader: MaltReaderHandler) -> *const c_char;
 	fn malt_reader_get_filtered_stacks_on_file_line(reader: MaltReaderHandler, file: *const c_char, line: c_size_t) -> *const c_char;
 	fn malt_reader_get_filterd_stacks_on_symbol(reader: MaltReaderHandler, func: *const c_char) -> *const c_char;
-	fn malt_reader_get_call_stack_next_level(reader: MaltReaderHandler, parentStackId: c_size_t, parentDepth: c_size_t, function: *const c_char, file: *const c_char, line: c_int) -> *const c_char;
+	fn malt_reader_get_call_stack_next_level(reader: MaltReaderHandler, parent_stack_id: c_size_t, parent_depth: c_size_t, function: *const c_char, file: *const c_char, line: c_int) -> *const c_char;
 	fn malt_reader_get_stacks_mem(reader: MaltReaderHandler) -> *const c_char;
 	fn malt_reader_get_stack_info_on_function(reader: MaltReaderHandler, thread_id: c_size_t) -> *const c_char;
 	fn malt_reader_get_call_tree(reader: MaltReaderHandler, nodeId: c_ssize_t, depth: c_ssize_t, height: c_ssize_t, min_cost: c_double, func: *const c_char, metric: *const c_char, is_ratio: c_bool) -> *const c_char;
@@ -192,10 +192,10 @@ impl MaltCReader
 		return res;
 	}
 
-	pub fn get_call_stack_next_level(&self, parentStackId: c_size_t, parentDepth: c_size_t, function: &str, file: &str, line: c_int) -> String {
+	pub fn get_call_stack_next_level(&self, parent_stack_id: c_size_t, parent_depth: c_size_t, function: &str, file: &str, line: c_int) -> String {
 		let cfunction = CString::new(function).expect("Convert to CSstring");
 		let cfile = CString::new(file).expect("Convert to CSstring");
-		let c_str = unsafe { malt_reader_get_call_stack_next_level(self.handler, parentStackId, parentDepth, cfunction.into_raw(), cfile.into_raw(), line) };
+		let c_str = unsafe { malt_reader_get_call_stack_next_level(self.handler, parent_stack_id, parent_depth, cfunction.into_raw(), cfile.into_raw(), line) };
 		let cc_str = unsafe {CStr::from_ptr(c_str)};
 		let res = cc_str.to_str().unwrap().to_string();
 		unsafe {malt_reader_free_response(c_str)};
@@ -218,10 +218,10 @@ impl MaltCReader
 		return res;
 	}
 
-	pub fn get_call_tree(&self, nodeId: isize, depth: isize, height: isize, min_cost: f64, func: &str, metric: &str, is_ratio: bool) -> String {
+	pub fn get_call_tree(&self, node_id: isize, depth: isize, height: isize, min_cost: f64, func: &str, metric: &str, is_ratio: bool) -> String {
 		let cfunc = CString::new(func).expect("Convert to CSstring");
 		let cmetric = CString::new(metric).expect("Convert to CSstring");
-		let c_str = unsafe { malt_reader_get_call_tree(self.handler, nodeId, depth, height, min_cost, cfunc.into_raw(), cmetric.into_raw(), is_ratio) };
+		let c_str = unsafe { malt_reader_get_call_tree(self.handler, node_id, depth, height, min_cost, cfunc.into_raw(), cmetric.into_raw(), is_ratio) };
 		let cc_str = unsafe {CStr::from_ptr(c_str)};
 		let res = cc_str.to_str().unwrap().to_string();
 		unsafe {malt_reader_free_response(c_str)};

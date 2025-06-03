@@ -23,3 +23,4 @@ actix-web = "4"
 actix-files = "0.6.6"
 serde = { version = "1.0", default-features = false, features = ["alloc", "derive"] }
 clap = { version = "4.5.39", features = ["derive"] }
+serde_json = { version = "1.0", default-features = false, features = ["alloc"] }

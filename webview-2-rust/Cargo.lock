@@ -915,6 +915,7 @@ dependencies = [
  "actix-web",
  "clap",
  "serde",
+ "serde_json",
 ]
 
 [[package]]
