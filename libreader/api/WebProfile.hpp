@@ -45,6 +45,7 @@ class WebProfile : public Profile
 		bool isSourceFile(const std::string & path) const;
 	private:
 		SourceFileMap sourceFiles;
+		mutable nlohmann::json cachedFlatFunctionProfileTrueTrue;
 };
 
 }

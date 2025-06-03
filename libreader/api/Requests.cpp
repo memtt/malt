@@ -140,7 +140,7 @@ const char * malt_reader_get_file_lines_flat_profile(malt_reader_t * reader, con
 /**********************************************************/
 const char * malt_reader_get_flat_function_profile(malt_reader_t * reader, bool own, bool total)
 {
-	return malt_reader_hanle_request(reader, "GET_FILE_LINES_FLAT_PROFILE", [reader, own, total]() {
+	return malt_reader_hanle_request(reader, "GET_FLAT_FUNCTION_PROFILE", [reader, own, total]() {
 		return reader->profile->getFlatFunctionProfile(own, total);
 	});
 }

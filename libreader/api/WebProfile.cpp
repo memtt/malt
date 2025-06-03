@@ -23,6 +23,8 @@ namespace MALTReader
 WebProfile::WebProfile(const std::string & fname, bool loadProgressBar)
 	:Profile(fname, loadProgressBar)
 {
+	//pre compute and put in cache
+	this->getFlatFunctionProfile(true, true);
 }
 
 /**********************************************************/
@@ -84,6 +86,11 @@ nlohmann::json WebProfile::getFileLinesFlatProfile(const std::string & file, boo
 /**********************************************************/
 nlohmann::json WebProfile::getFlatFunctionProfile(bool own, bool total) const
 {
+	//cached
+	if (this->cachedFlatFunctionProfileTrueTrue.is_null() == false && own == true && total == true) {
+		return this->cachedFlatFunctionProfileTrueTrue;
+	}
+
 	//extract
 	FlatProfileVector res = this->extractor->getFlatProfile([](const InstructionInfosStrRef & location, const MALTFormat::StackInfos & infos){
 		char buffer[8192];
@@ -113,6 +120,11 @@ nlohmann::json WebProfile::getFlatFunctionProfile(bool own, bool total) const
 
 	//filter
 	nlohmann::json resJson = ExtractorHelpers::toJsonFiltered(res, fieldsToKeep);
+
+	//cached
+	if (this->cachedFlatFunctionProfileTrueTrue.is_null() == true && own == true && total == true) {
+		this->cachedFlatFunctionProfileTrueTrue = resJson;
+	}
 
 	//ok
 	return resJson;
