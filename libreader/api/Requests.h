@@ -34,7 +34,7 @@ void malt_reader_free_last_response(malt_reader_t * reader);
 // requests
 const char * malt_reader_get_proc_map(malt_reader_t * reader);
 const char * malt_reader_get_debug_stack_list(malt_reader_t * reader);
-const char * malt_reader_get_get_global_variables(malt_reader_t * reader);
+const char * malt_reader_get_global_variables(malt_reader_t * reader);
 const char * malt_reader_get_summary(malt_reader_t * reader);
 const char * malt_reader_get_summary_v2(malt_reader_t * reader);
 const char * malt_reader_get_file_lines_flat_profile(malt_reader_t * reader, const char * file, bool total);
