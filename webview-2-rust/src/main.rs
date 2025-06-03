@@ -20,6 +20,8 @@ use std::sync::Mutex;
 use serde::Deserialize;
 use std::fs;
 use clap::{Parser, Subcommand};
+use std::env;
+use std::process;
 
 /**********************************************************/
 #[derive(Deserialize)]
@@ -255,10 +257,16 @@ struct Cli
 	file: String
 }
 
+fn get_webview_www_path() -> String
+{
+	//get prefix
+	return format!("{}/../share/malt/webview", env::current_exe().unwrap().display()).to_string();
+}
+
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
 	//parsing args
-	let cli = Cli::parse();
+	let cli = Cli::parse();	
 
 	//print
 	println!("Loading {}...", &cli.file);
@@ -296,7 +304,7 @@ async fn main() -> std::io::Result<()> {
 			.service(realloc_map)
 			.service(global_variables)
 			.service(web::redirect("/", "/app/index.html"))
-			.service(actix_files::Files::new("/app", "/home/svalat/Projects/malt/src/webview/client-files/app").show_files_listing())
+			.service(actix_files::Files::new("/app", format!("{}/client-files/app", get_webview_www_path())).show_files_listing())
 	})
 	.bind(("127.0.0.1", 8080))?
 	.bind_uds("/tmp/tmp.sock")?

@@ -13,7 +13,7 @@
 if (CMAKE_BUILD_TYPE STREQUAL "Release")
 	set(RUST_BUILD_OPTION "--release")
 	set(RUST_BUILD_DIR "target/release")
-elseif (CMAKE_BUILD_TYPE STREQUAL "RelWithDebInfos")
+elseif (CMAKE_BUILD_TYPE STREQUAL "RelWithDebInfo")
 	set(RUST_BUILD_OPTION "--release")
 	set(RUST_BUILD_DIR "target/release")
 elseif (CMAKE_BUILD_TYPE STREQUAL "Debug")
@@ -35,7 +35,7 @@ add_custom_target(
 	COMMAND LD_LIBRARY_PATH="${CMAKE_BINARY_DIR}/src/reader/libreader"
 	        CARGO_TARGET_DIR="${CMAKE_CURRENT_BINARY_DIR}/target"
 			CMAKE_BINARY_DIR="${CMAKE_BINARY_DIR}"
-	        cargo build ${RUST_BUILD_OPTION}
+	        ${CARGO_BINARY} build ${RUST_BUILD_OPTION}
 	WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
