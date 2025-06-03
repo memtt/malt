@@ -276,14 +276,21 @@ async fn main() -> std::io::Result<()> {
 	let reader = web::Data::new(MaltCReader::new(&cli.file));
 
 	//print
-	println!("+--------------------------------------------------------------+");
-	println!("|                                                              |");
-	println!("|     Starting server listening on http://localhost:8080/      |");
-	println!("|                                                              |"); 
-	println!("|     To use from remove you can :                             |");
-	println!("|     user> ssh -L8080:localhost:8080 myserver                 |");
-	println!("|                                                              |");
-	println!("+--------------------------------------------------------------+");
+	println!( "+-------------------------------------------------------------------------+");
+	println!( "|                                                                         |");
+	println!( "|                    _ _                    _          _                  |");
+	println!(r"|    _ __ ___   __ _| | |_    __      _____| |____   _(_) _____      __   |");
+	println!(r"|   | '_ ` _ \ / _` | | __|___\ \ /\ / / _ \ '_ \ \ / / |/ _ \ \ /\ / /   |");
+	println!(r"|   | | | | | | (_| | | ||_____\ V  V /  __/ |_) \ V /| |  __/\ V  V /    |");
+	println!(r"|   |_| |_| |_|\__,_|_|\__|     \_/\_/ \___|_.__/ \_/ |_|\___| \_/\_/     |");
+	println!( "|                                                                         |"); 
+	println!( "|                                                                         |"); 
+	println!( "|         Starting server listening on http://localhost:8080/             |");
+	println!( "|                                                                         |"); 
+	println!( "|         To use from remove you can :                                    |");
+	println!( "|         user> ssh -L8080:localhost:8080 myserver                        |");
+	println!( "|                                                                         |");
+	println!( "+-------------------------------------------------------------------------+");
 
 	//build & start server
 	HttpServer::new(move || {
