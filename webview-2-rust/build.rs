@@ -10,6 +10,7 @@
 
 /**********************************************************/
 fn main() {
+	let cmake_binary_dir = std::env::var("CMAKE_BINARY_DIR").unwrap();
 	println!("cargo:rustc-link-lib=malt-profile");
-	println!("cargo:rustc-link-search=/home/sebv/Projects/inria/malt/build/src/reader/libreader/");
+	println!("cargo:rustc-link-search={}/src/reader/libreader/", cmake_binary_dir);
 }

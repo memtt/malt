@@ -32,8 +32,9 @@ add_custom_target(
 			Cargo.lock
 			src/c.rs
 			src/c/malt.rs
-	COMMAND LD_LIBRARY_PATH=${CMAKE_BINARY_DIR}/src/reader/libreader
-	        CARGO_TARGET_DIR=${CMAKE_CURRENT_BINARY_DIR}/target
+	COMMAND LD_LIBRARY_PATH="${CMAKE_BINARY_DIR}/src/reader/libreader"
+	        CARGO_TARGET_DIR="${CMAKE_CURRENT_BINARY_DIR}/target"
+			CMAKE_BINARY_DIR="${CMAKE_BINARY_DIR}"
 	        cargo build ${RUST_BUILD_OPTION}
 	WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
 )
