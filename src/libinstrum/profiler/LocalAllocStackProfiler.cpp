@@ -142,6 +142,16 @@ void LocalAllocStackProfiler::solveSymbols(SymbolSolver& symbolResolver) const
 }
 
 /**********************************************************/
+void LocalAllocStackProfiler::loadPythonFirstBacktrace(void)
+{
+	CODE_TIMING("loadCurrentStack",backtracePythonStack.loadCurrentStack());
+	for (size_t i = 0 ; i < backtracePythonStack.getSize() ; i++) {
+		std::cout << backtracePythonStack[i] << std::endl;
+		this->enterExitStack.enterFunction(backtracePythonStack[i]);
+	}
+}
+
+/**********************************************************/
 //TODO: getStack should receive a parameter iff it's a Python stack
 Stack* LocalAllocStackProfiler::getStack(Language lang)
 {

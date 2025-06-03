@@ -171,6 +171,13 @@ int malt_wrap_python_on_enter_exit(PyObject *obj, PyFrameObject *frame, int what
 			//fprintf(stderr, "MALT: Thread is : %p\n", pptr);
 		}*/
 
+		//for first make a backtrace
+		static bool needFirstBacktrace = false;
+		if (needFirstBacktrace && (what == PyTrace_C_CALL || what == PyTrace_RETURN)) {
+			env.getLocalProfiler().loadPythonFirstBacktrace();
+			needFirstBacktrace = false;
+		}
+
 		switch (what)
 		{
 			case PyTrace_CALL: {

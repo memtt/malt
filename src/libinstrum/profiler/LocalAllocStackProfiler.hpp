@@ -94,6 +94,7 @@ class LocalAllocStackProfiler
 		void solveSymbols(SymbolSolver & symbolResolver) const;
 		bool isEnterExit(void);
 		inline BacktracePythonStack getBacktracePythonStack(void);
+		void loadPythonFirstBacktrace(void);
 	public:
 		friend void convertToJson(htopml::JsonState& json, const LocalAllocStackProfiler& value);
 	protected:
