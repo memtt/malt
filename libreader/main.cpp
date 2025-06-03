@@ -10,7 +10,7 @@
 
 /**********************************************************/
 #include <iostream>
-#include "WebProfile.hpp"
+#include "api/WebProfile.hpp"
 #include "extractors/ExtractorHelpers.hpp"
 
 /**********************************************************/

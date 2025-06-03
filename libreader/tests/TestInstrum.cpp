@@ -12,7 +12,7 @@
 #include <gtest/gtest.h>
 #include <thread>
 #include "libinstrum/state/malt.h"
-#include "libreader/Profile.hpp"
+#include "libreader/api/Profile.hpp"
 #include "libreader/extractors/ExtractorHelpers.hpp"
 #include <fstream>
 

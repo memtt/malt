@@ -14,7 +14,7 @@
 #include <thread>
 #include "libinstrum/injectors/InjectPythonInit.hpp"
 #include "libinstrum/state/malt.h"
-#include "libreader/Profile.hpp"
+#include "libreader/api/Profile.hpp"
 #include "libreader/extractors/ExtractorHelpers.hpp"
 #include "libinstrum/portability/Python.hpp"
 #include <fstream>

@@ -50,10 +50,10 @@ add_library(malt-profile SHARED
     callgraph/CppDeclParser.cpp
     callgraph/DotCode.cpp
     callgraph/GraphGenerator.cpp
-    # PROFILE
-    Profile.cpp
-    WebProfile.cpp
-	Requests.cpp
+    # API
+    api/Profile.cpp
+    api/WebProfile.cpp
+	api/Requests.cpp
 )
 target_link_libraries(malt-profile PUBLIC nlohmann_json::nlohmann_json)
 target_link_libraries(malt-profile PRIVATE OpenMP::OpenMP_CXX)
@@ -67,6 +67,10 @@ target_link_libraries(malt-reader malt-profile)
 ############################################################
 add_executable(malt-zmq-reader main_zmq.cpp)
 target_link_libraries(malt-zmq-reader malt-profile zmq)
+
+############################################################
+add_executable(malt-stream-reader main_stream.cpp)
+target_link_libraries(malt-stream-reader malt-profile)
 
 ############################################################
 add_executable(malt-httplib-reader main_http_lib.cpp)
