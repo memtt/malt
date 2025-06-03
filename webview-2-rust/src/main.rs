@@ -11,6 +11,7 @@
 /**********************************************************/
 mod c;
 
+/**********************************************************/
 use actix_web::{get, post, web, App, HttpResponse, HttpServer, Responder};
 use actix_web::{http::header::ContentType};
 use actix_files;
@@ -18,7 +19,23 @@ use c::malt::MaltCReader;
 use std::sync::Mutex;
 use serde::Deserialize;
 use std::fs;
+use clap::{Parser, Subcommand};
 
+/**********************************************************/
+#[derive(Deserialize)]
+struct StackItem {
+	id: usize,
+}
+
+impl Default for StackItem {
+	fn default() -> Self {
+		StackItem {
+			id: 0,
+		}
+	}
+}
+
+/**********************************************************/
 #[derive(Deserialize)]
 struct PostStacksItem {
 	file: String,
@@ -36,6 +53,7 @@ impl Default for PostStacksItem {
 	}
 }
 
+/**********************************************************/
 #[derive(Deserialize)]
 struct PostGetCallStackNextLevelFilter
 {
@@ -139,7 +157,7 @@ async fn stacks(data: web::Data<MaltCReader>, item: web::Query<PostStacksItem>) 
 }
 
 #[post("/source-file")]
-async fn source_file(data: web::Data<MaltCReader>, file: web::Json<SourceFile>) -> impl Responder
+async fn source_file(_data: web::Data<MaltCReader>, file: web::Json<SourceFile>) -> impl Responder
 {
 	//if data.is_source_file(&file.path) {
 	if fs::exists(&file.path).unwrap() {
@@ -182,12 +200,84 @@ async fn timed(data: web::Data<MaltCReader>) -> impl Responder
 		.body(data.get_timed_values())
 }
 
+#[get("/stacks-mem.json")]
+async fn stacks_mem(data: web::Data<MaltCReader>) -> impl Responder
+{
+	HttpResponse::Ok()
+		.content_type(ContentType::json())
+		.body(data.get_stacks_mem())
+}
+
+#[get("/stack.json")]
+async fn stack(data: web::Data<MaltCReader>, item: web::Query<StackItem>) -> impl Responder
+{
+	HttpResponse::Ok()
+		.content_type(ContentType::json())
+		.body(data.get_stack_info_on_function(item.id))
+}
+
+#[get("/size-map.json")]
+async fn size_map(data: web::Data<MaltCReader>) -> impl Responder
+{
+	HttpResponse::Ok()
+		.content_type(ContentType::json())
+		.body(data.get_size_map())
+}
+
+#[get("/scatter.json")]
+async fn scatter(data: web::Data<MaltCReader>) -> impl Responder
+{
+	HttpResponse::Ok()
+		.content_type(ContentType::json())
+		.body(data.get_scatter())
+}
+
+#[get("/realloc-map.json")]
+async fn realloc_map(data: web::Data<MaltCReader>) -> impl Responder
+{
+	HttpResponse::Ok()
+		.content_type(ContentType::json())
+		.body(data.get_realloc_map())
+}
+
+#[get("/global-variables.json")]
+async fn global_variables(data: web::Data<MaltCReader>) -> impl Responder
+{
+	HttpResponse::Ok()
+		.content_type(ContentType::json())
+		.body(data.get_global_variables())
+}
+
+#[derive(Parser, Debug)]
+#[command(version, about, long_about = None)]
+struct Cli
+{
+	file: String
+}
+
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
+	//parsing args
+	let cli = Cli::parse();
+
+	//print
+	println!("Loading {}...", &cli.file);
+
 	// Note: web::Data created _outside_ HttpServer::new closure
 	//let mut counter = web::Data::new(MaltCReader::new("./src/test-data/malt-format-example.json"));
-	let reader = web::Data::new(MaltCReader::new("/home/sebv/Projects/inria/malt/build/malt-simple-case-finstr-linked-34827.json"));
+	let reader = web::Data::new(MaltCReader::new(&cli.file));
 
+	//print
+	println!("+--------------------------------------------------------------+");
+	println!("|                                                              |");
+	println!("|     Starting server listening on http://localhost:8080/      |");
+	println!("|                                                              |"); 
+	println!("|     To use from remove you can :                             |");
+	println!("|     user> ssh -L8080:localhost:8080 myserver                 |");
+	println!("|                                                              |");
+	println!("+--------------------------------------------------------------+");
+
+	//build & start server
 	HttpServer::new(move || {
 		App::new()
 			.app_data(reader.clone())
@@ -199,8 +289,14 @@ async fn main() -> std::io::Result<()> {
 			.service(file_infos)
 			.service(call_stack_next_level)
 			.service(timed)
+			.service(stacks_mem)
+			.service(stack)
+			.service(size_map)
+			.service(scatter)
+			.service(realloc_map)
+			.service(global_variables)
 			.service(web::redirect("/", "/app/index.html"))
-			.service(actix_files::Files::new("/app", "/home/sebv/Projects/inria/malt/src/webview/client-files/app").show_files_listing())
+			.service(actix_files::Files::new("/app", "/home/svalat/Projects/malt/src/webview/client-files/app").show_files_listing())
 	})
 	.bind(("127.0.0.1", 8080))?
 	.bind_uds("/tmp/tmp.sock")?

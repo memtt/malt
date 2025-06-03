@@ -106,7 +106,7 @@ const char * malt_reader_get_debug_stack_list(malt_reader_t * reader)
 }
 
 /**********************************************************/
-const char * malt_reader_get_get_global_variables(malt_reader_t * reader)
+const char * malt_reader_get_global_variables(malt_reader_t * reader)
 {
 	return malt_reader_hanle_request(reader, "GEt_GLOBAL_VARIABLES", [reader]() {
 		return reader->profile->getGlobalVariables();
