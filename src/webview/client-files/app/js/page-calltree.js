@@ -49,9 +49,9 @@ function MaltPageCallTree()
 		$scope.contextMenuNodeId = -1;
 		$scope.contextMenuFunction = null;
 
-		$scope.filterHeight = "-1";
-		$scope.filterDepth = "3";
-		$scope.filterNodeCost = "1";
+		$scope.filterHeight = -1;
+		$scope.filterDepth = 3;
+		$scope.filterNodeCost = 1;
 
 		// TODO Refactor into a directive
 		// Perhaps we should now create a directive for the draggable graph
@@ -138,8 +138,8 @@ function MaltPageCallTree()
 			nodeId = nodeId || $scope.nodeData.nodeId;
 			showLoader();
 
-			maltDataSource.getCallTreeData(nodeId, $scope.filterDepth, 
-				$scope.filterHeight, $scope.filterNodeCost, null, $scope.selectedMetric, 
+			maltDataSource.getCallTreeData(nodeId, Number($scope.filterDepth), 
+				Number($scope.filterHeight), Number($scope.filterNodeCost), null, $scope.selectedMetric, 
 				$scope.selector.ratio, function(data) {
 					hideLoader();
 

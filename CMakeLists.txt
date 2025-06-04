@@ -94,6 +94,7 @@ find_package(Qt5WebKitWidgets QUIET)
 find_package(Qt5Network QUIET)
 find_package(Node QUIET)
 find_package(nlohmann_json 3.11.3 QUIET)
+find_package(Cargo QUIET)
 find_package(Zmq QUIET)
 find_package(HttpLib QUIET)
 # Check for npm if needed
