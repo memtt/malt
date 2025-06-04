@@ -41,10 +41,9 @@ from common import jump_in_dir, assert_shell_command, in_container, PodmanContai
 import pytest
 
 ############################################################
-COMMON_CONF_OPTIONS = "--with-python=/opt/malt-python"
+COMMON_CONF_OPTIONS = ""
 ############################################################
 PYTHON_VERSION="3.13.2"
-JEMALLOC_VERSION="5.3.0"
 BUILD_CUSTOM_CORES=4
 BUILD_CUSTOM_PYTHON = f"""cd /tmp \\
     && curl --continue-at - -o /var/sources/Python-{PYTHON_VERSION}.tar.xz https://www.python.org/ftp/python/3.13.2/Python-{PYTHON_VERSION}.tar.xz \\
@@ -55,17 +54,6 @@ BUILD_CUSTOM_PYTHON = f"""cd /tmp \\
     && make install \\
     && cd .. \\
     && rm -rfd Python-{PYTHON_VERSION} """
-BUILD_CUSTOM_JEMALLOC = f"""cd /tmp \\
-    && curl --continue-at - -L -o /var/sources/jemalloc-{JEMALLOC_VERSION}.tar.bz2 https://github.com/jemalloc/jemalloc/releases/download/{JEMALLOC_VERSION}/jemalloc-{JEMALLOC_VERSION}.tar.bz2 \\
-    && tar --no-same-owner -xf /var/sources/jemalloc-{JEMALLOC_VERSION}.tar.bz2 \\
-    && cd jemalloc-{JEMALLOC_VERSION} \\
-    && mkdir build \\
-    && cd build \\
-    && ../configure --disable-doc --with-jemalloc-prefix=malt_je_ --with-private-namespace=malt_je_ --with-install-suffix=-malt --enable-shared --prefix=/usr/local --disable-cxx --without-export \\
-    && make -j{BUILD_CUSTOM_CORES} \\
-    && make install \\
-    && cd ../../ \\
-    && rm -rfd jemalloc-{JEMALLOC_VERSION} """
 ############################################################
 UBUNTU_BASIC_CMDS=[
     "rm -f /etc/apt/apt.conf.d/docker-clean; echo 'Binary::apt::APT::Keep-Downloaded-Packages \"true\";' > /etc/apt/apt.conf.d/keep-cache",
@@ -77,15 +65,13 @@ UBUNTU_FULL_CMDS=[
     "apt install -y libunwind-dev libelf-dev libunwind-dev nodejs npm",
     "apt install -y libqt5webkit5-dev",
     "apt install -y curl",
-    BUILD_CUSTOM_JEMALLOC,
-    "apt update && apt install -y nlohmann-json3-dev"
+    "apt update && apt install -y nlohmann-json3-dev cargo graphviz"
 ]
 UBUNTU_FULL_CMDS_UBUNTU_25=[
     "apt install -y libunwind-dev libelf-dev libunwind-dev nodejs npm",
     "apt install -y qtwebengine5-dev",
     "apt install -y curl",
-    BUILD_CUSTOM_JEMALLOC,
-    "apt update && apt install -y nlohmann-json3-dev"
+    "apt update && apt install -y nlohmann-json3-dev cargo graphviz"
 ]
 UBUNTU_INDEV_CMDS=[
     "apt update && apt install -y python3-dev"
@@ -108,7 +94,6 @@ ROCKY_BASIC_CMDS=[
 ROCKY_FULL_CMDS=[
     "dnf install -y elfutils-libelf-devel nodejs npm",
     "dnf install -y curl bzip2 xz",
-    BUILD_CUSTOM_JEMALLOC,
 ]
 ROCKY_INDEV_CMDS=[
     "dnf install -y python3-devel"
@@ -116,8 +101,7 @@ ROCKY_INDEV_CMDS=[
 CENTOS_FULL_CMDS=[
     "dnf install -y libunwind-devel elfutils-libelf-devel libunwind-devel nodejs npm",
     "dnf install -y qt5-qtwebkit-devel",
-    "dnf install -y curl",
-    BUILD_CUSTOM_JEMALLOC,
+    "dnf install -y curl graphviz",
 ]
 CENTOS_INDEV_CMDS=[
     "dnf install -y python3-devel",
@@ -130,8 +114,7 @@ ARCH_FULL_CMDS=[
     "pacman --noconfirm -Sy libunwind libelf nodejs npm",
     "pacman --noconfirm -Sy qt5-webengine",
     "pacman --noconfirm -Sy curl",
-    BUILD_CUSTOM_JEMALLOC,
-    "pacman --noconfirm -Sy nlohmann-json"
+    "pacman --noconfirm -Sy nlohmann-json cargo graphviz"
 ]
 ARCH_INDEV_CMDS=[
     "pacman --noconfirm -Sy python3"
@@ -147,8 +130,7 @@ GENTOO_FULL_CMDS=[
     "emerge -b -k -g sys-libs/libunwind elfutils nodejs",
     #"emerge -k -g dev-qt/qtwebengine",
     "emerge -b -k -g curl",
-    BUILD_CUSTOM_JEMALLOC,
-    "emerge -b -k -g dev-cpp/nlohmann_json"
+    "emerge -b -k -g dev-cpp/nlohmann_json cargo graphviz"
 ]
 GENTOO_INDEV_CMDS=[
 ]
@@ -396,7 +378,7 @@ def test_distribution(dist_name_version: str, compiler:str, variant:str):
         # to perform tests
         container.assert_run(f"/mnt/malt-sources/configure --enable-tests {COMMON_CONF_OPTIONS} {variant_options} {compiler_options} {dev_options}")
         container.assert_run(f"make -j{cores}")
-        container.assert_run(f"OMP_NUM_THREADS=1 ctest --output-on-failure -j{cores}")
+        container.assert_run(f"ctest --output-on-failure -j{cores}")
 
 ############################################################
 def test_current_host_debug_no_tests():

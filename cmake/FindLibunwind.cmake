@@ -18,7 +18,7 @@
 #  LIBUNWIND_DEFINITIONS - Compiler switches required for using libunwind
 
 ############################################################
-set(LIBUNWIND_PREFIX "" CACHE STRING "Help cmake to find libunwind library (http://www.nongnu.org/libunwind/) into your system.")
+set(LIBUNWIND_PREFIX "${CMAKE_INSTALL_PREFIX}" CACHE STRING "Help cmake to find libunwind library (http://www.nongnu.org/libunwind/) into your system.")
 
 ############################################################
 find_path(LIBUNWIND_INCLUDE_DIR libunwind.h

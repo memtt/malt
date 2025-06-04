@@ -1,3 +1,4 @@
 # dependencies for de ./dev scripts
 GitPython == 3.1.44
 termcolor == 2.5.0
+pytest == 8.4.0

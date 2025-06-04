@@ -10,34 +10,34 @@
 ############################################################
 
 ############################################################
-# - Try to find libelf (http://directory.fsf.org/wiki/Libelf)
+# - Try to find httplib (https://github.com/yhirose/cpp-httplib)
 # Once done this will define
-#  LIBELF_FOUND - System has libelf
-#  LIBELF_INCLUDE_DIRS - The libelf include directories
-#  LIBELF_LIBRARIES - The libraries needed to use libelf
-#  LIBELF_DEFINITIONS - Compiler switches required for using libelf
+#  HTTPLIB_FOUND - System has httplib
+#  HTTPLIB_INCLUDE_DIRS - The httplib include directories
+#  HTTPLIB_LIBRARIES - The libraries needed to use httplib
+#  HTTPLIB_DEFINITIONS - Compiler switches required for using httplib
 
 ############################################################
-set(LIBELF_PREFIX "${CMAKE_INSTALL_PREFIX}" CACHE STRING "Help cmake to find libelf library (http://directory.fsf.org/wiki/Libelf) into your system.")
+set(HTTPLIB_PREFIX "${CMAKE_INSTALL_PREFIX}" CACHE STRING "Help cmake to find httplib library (https://zeromq.org/) into your system.")
 
 ############################################################
-find_path(LIBELF_INCLUDE_DIR libelf.h elf.h
-	HINTS ${LIBELF_PREFIX}/include)
+find_path(HTTPLIB_INCLUDE_DIR httplib.h
+	HINTS ${HTTPLIB_PREFIX}/include)
 
 ############################################################
-find_library(LIBELF_LIBRARY NAMES elf
-	HINTS ${LIBELF_PREFIX}/${LIBDIR})
+find_library(HTTPLIB_LIBRARY NAMES cpp-httplib
+	HINTS ${HTTPLIB_PREFIX}/${LIBDIR})
 
 ############################################################
-set(LIBELF_LIBRARIES ${LIBELF_LIBRARY} )
-set(LIBELF_INCLUDE_DIRS ${LIBELF_INCLUDE_DIR} )
+set(HTTPLIB_LIBRARIES ${HTTPLIB_LIBRARY} )
+set(HTTPLIB_INCLUDE_DIRS ${HTTPLIB_INCLUDE_DIR} )
 
 ############################################################
 include(FindPackageHandleStandardArgs)
-# handle the QUIETLY and REQUIRED arguments and set LIBELF_FOUND to TRUE
+# handle the QUIETLY and REQUIRED arguments and set HTTPLIB_FOUND to TRUE
 # if all listed variables are TRUE
-find_package_handle_standard_args(LibElf  DEFAULT_MSG
-	LIBELF_LIBRARY LIBELF_INCLUDE_DIR)
+find_package_handle_standard_args(HttpLib  DEFAULT_MSG
+	HTTPLIB_LIBRARY HTTPLIB_INCLUDE_DIR)
 
 ############################################################
-mark_as_advanced(LIBELF_INCLUDE_DIR LIBELF_LIBRARY )
+mark_as_advanced(HTTPLIB_INCLUDE_DIR HTTPLIB_LIBRARY )

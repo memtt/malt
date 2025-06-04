@@ -10,34 +10,34 @@
 ############################################################
 
 ############################################################
-# - Try to find libelf (http://directory.fsf.org/wiki/Libelf)
+# - Try to find cppzmq (http://directory.fsf.org/wiki/Libelf)
 # Once done this will define
-#  LIBELF_FOUND - System has libelf
-#  LIBELF_INCLUDE_DIRS - The libelf include directories
-#  LIBELF_LIBRARIES - The libraries needed to use libelf
-#  LIBELF_DEFINITIONS - Compiler switches required for using libelf
+#  ZMQ_FOUND - System has cppzmq
+#  ZMQ_INCLUDE_DIRS - The cppzmq include directories
+#  ZMQ_LIBRARIES - The libraries needed to use cppzmq
+#  ZMQ_DEFINITIONS - Compiler switches required for using cppzmq
 
 ############################################################
-set(LIBELF_PREFIX "${CMAKE_INSTALL_PREFIX}" CACHE STRING "Help cmake to find libelf library (http://directory.fsf.org/wiki/Libelf) into your system.")
+set(ZMQ_PREFIX "${CMAKE_INSTALL_PREFIX}" CACHE STRING "Help cmake to find cppzmq library (https://zeromq.org/) into your system.")
 
 ############################################################
-find_path(LIBELF_INCLUDE_DIR libelf.h elf.h
-	HINTS ${LIBELF_PREFIX}/include)
+find_path(ZMQ_INCLUDE_DIR cppzmq.hpp
+	HINTS ${ZMQ_PREFIX}/include)
 
 ############################################################
-find_library(LIBELF_LIBRARY NAMES elf
-	HINTS ${LIBELF_PREFIX}/${LIBDIR})
+find_library(ZMQ_LIBRARY NAMES zmq
+	HINTS ${ZMQ_PREFIX}/${LIBDIR})
 
 ############################################################
-set(LIBELF_LIBRARIES ${LIBELF_LIBRARY} )
-set(LIBELF_INCLUDE_DIRS ${LIBELF_INCLUDE_DIR} )
+set(ZMQ_LIBRARIES ${ZMQ_LIBRARY} )
+set(ZMQ_INCLUDE_DIRS ${ZMQ_INCLUDE_DIR} )
 
 ############################################################
 include(FindPackageHandleStandardArgs)
-# handle the QUIETLY and REQUIRED arguments and set LIBELF_FOUND to TRUE
+# handle the QUIETLY and REQUIRED arguments and set ZMQ_FOUND to TRUE
 # if all listed variables are TRUE
-find_package_handle_standard_args(LibElf  DEFAULT_MSG
-	LIBELF_LIBRARY LIBELF_INCLUDE_DIR)
+find_package_handle_standard_args(Zmq  DEFAULT_MSG
+	ZMQ_LIBRARY ZMQ_INCLUDE_DIR)
 
 ############################################################
-mark_as_advanced(LIBELF_INCLUDE_DIR LIBELF_LIBRARY )
+mark_as_advanced(ZMQ_INCLUDE_DIR ZMQ_LIBRARY )

@@ -49,6 +49,18 @@ bool ElfReader::hasLibElf(void)
 	return false;
 }
 
+const ElfGlobalVariable & ElfReader::getVarByName(const ElfGlobalVariableVector & variables, const std::string & name) const
+{
+	static ElfGlobalVariable var;
+	return var;
+}
+
+/**********************************************************/
+void * ElfReader::getInMemAddr(const LinuxProcMapReader & procMap, const ElfGlobalVariable & variable) const
+{
+	return nullptr;
+}
+
 /**********************************************************/
 size_t ElfReader::getPhysSize(const LinuxProcMapReader & procMapReader, ProcPageMapReader & pagePageMapReader, const ElfGlobalVariable & variable) const
 {

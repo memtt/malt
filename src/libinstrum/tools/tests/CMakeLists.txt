@@ -16,7 +16,12 @@ include_directories(${GTEST_INCLUDE_DIRS} ${GMOCK_INCLUDE_DIRS})
 add_definitions(-DTEST_BIN_DIR="${CMAKE_CURRENT_BINARY_DIR}")
 
 ############################################################
-set(TEST_NAMES TestElfReader TestProcPagemapReader TestNMCmdReader TestAddr2Line)
+set(TEST_NAMES TestProcPagemapReader TestNMCmdReader TestAddr2Line)
+
+############################################################
+if (LIBELF_FOUND)
+	list(APPEND TEST_NAMES TestElfReader)
+endif()
 
 ############################################################
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O0")
@@ -29,8 +34,10 @@ FOREACH(test_name ${TEST_NAMES})
 ENDFOREACH(test_name)
 
 ############################################################
-add_library(TestElfReaderDyn SHARED TestElfReaderDyn.cpp)
-target_link_libraries(TestElfReader TestElfReaderDyn)
+if (LIBELF_FOUND)
+	add_library(TestElfReaderDyn SHARED TestElfReaderDyn.cpp)
+	target_link_libraries(TestElfReader TestElfReaderDyn)
+endif()
 
 ############################################################
 target_compile_options(TestAddr2Line PRIVATE -O0 -g)

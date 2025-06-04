@@ -40,21 +40,21 @@ struct ElfGlobalVariable
 	/** Name of the variable. **/
 	std::string name;
 	/** Size (in bytes) of the variable. **/
-	size_t size;
+	size_t size{0};
 	/** Offset of the variable inside elf file. **/
-	size_t offset;
+	size_t offset{0};
 	/** Offset of the section in the elf file. **/
-	size_t secOffset;
+	size_t secOffset{0};
 	/** Physical used size (currently 0 for TLS). */
-	size_t usedSize;
+	size_t usedSize{0};
 	/** Define if the variable is a TLS or not. **/
-	bool tls;
+	bool tls{false};
 	/** Source file defining the variable or empty if no debug informations. **/
 	std::string sourceFile;
 	/** Binary file storing the variable */
 	std::string binaryFile;
 	/** Declaration line inside source file. **/
-	int line;
+	int line{-1};
 };
 
 /**********************************************************/
