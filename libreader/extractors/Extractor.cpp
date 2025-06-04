@@ -964,7 +964,7 @@ Graph Extractor::getFilteredTree(ssize_t nodeId, ssize_t depth, ssize_t height, 
 	for (const auto & stackStat : this->profile.stacks.stats) {
 		const auto & stack = stackStat.stack;
 		for (ssize_t i = minDepth ; i < maxDepth - 1 ; i++) {
-			if (i < stack.size()) {
+			if (i < stack.size() - 1) {
 				//get
 				const LangAddress in = stack.at(stack.size() - i - 1);
 				const LangAddress out = stack.at(stack.size() - i - 2);
@@ -1050,7 +1050,7 @@ nlohmann::json Extractor::getCallTree(ssize_t nodeId, ssize_t depth, ssize_t hei
 	nlohmann::json resp;
 
 	// If tree object hasnt been created, create and cache it
-	if(this->calltreeCache == nullptr) {
+	if (this->calltreeCache == nullptr) {
 		// console.time("filteredStack");
 		//FilteredStackList filteredStack = this->getFilterdStacks(true);
 		// console.timeEnd("filteredStack");
@@ -1058,7 +1058,7 @@ nlohmann::json Extractor::getCallTree(ssize_t nodeId, ssize_t depth, ssize_t hei
 	}
 
 	// If nodeId not provided, get node id by function name
-	if(nodeId != -1) {
+	if (nodeId == 0) {
 		const CallTreeNode* tmpnode = this->calltreeCache->getNodeByFunctionName(func);
 
 		if(tmpnode == nullptr) {

@@ -24,12 +24,13 @@ else()
 	set(RUST_BUILD_DIR "target/debug")
 endif ()
 
+############################################################
 add_custom_target(
 	malt-webview-2-rust
 	ALL
 	SOURCES build.rs
 	        Cargo.toml
-			Cargo.lock
+			#Cargo.lock
 			src/c.rs
 			src/c/malt.rs
 	COMMAND LD_LIBRARY_PATH="${CMAKE_BINARY_DIR}/src/reader/libreader"
@@ -39,4 +40,12 @@ add_custom_target(
 	WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
+############################################################
+#add_test(
+#	NAME TestWebview2Rust
+#	COMMAND bash -c "LD_LIBRARY_PATH='${CMAKE_BINARY_DIR}/src/reader/libreader' CARGO_TARGET_DIR='${CMAKE_CURRENT_BINARY_DIR}/target' CMAKE_BINARY_DIR='${CMAKE_BINARY_DIR}' ${CARGO_BINARY} test"
+#	WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+#)
+
+############################################################
 install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/${RUST_BUILD_DIR}/malt-webview-new DESTINATION ${CMAKE_INSTALL_BINDIR})
