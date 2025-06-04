@@ -201,6 +201,56 @@ struct LocationFilter
 };
 
 /**********************************************************/
+struct Link
+{
+	MALTFormat::LangAddress in;
+	MALTFormat::LangAddress out;
+};
+
+/**********************************************************/
+inline bool operator<(const Link & a, const Link & b)
+{
+	if (a.in == b.in)
+		return a.out < b.out;
+	else
+		return a.in < b.in;
+}
+
+/**********************************************************/
+inline bool operator==(const Link & a, const Link & b)
+{
+	return (a.in == b.in) && (a.out == b.out);
+}
+
+/**********************************************************/
+struct NodeRef
+{
+	NodeRef(ssize_t nodeId)
+	{
+		if (nodeId == -1) {
+			this->stackId = 0;
+			this->offset = -1;
+		} else {
+			this->stackId = nodeId / (1UL<<32);
+			this->offset = nodeId % (1UL<<32);
+		}
+	}
+
+	ssize_t getId(void) 
+	{
+		if (offset == -1)
+			return -1;
+		else
+			return this->stackId * (1UL<<32) + this->offset;
+	}
+	
+	size_t stackId;
+	ssize_t offset;
+};
+
+class Graph;
+
+/**********************************************************/
 class Extractor
 {
 	public:
@@ -227,6 +277,7 @@ class Extractor
 		StackMem getStackMem(void) const;
 		const MALTFormat::MaltProfile & getProfile(void) const;
 	private:
+		Graph getFilteredTree(ssize_t nodeId, ssize_t depth, ssize_t height, double minCost, const std::string & metric, bool isRatio) const;
 		inline const InstructionInfosStrRef & getAddrTranslation(MALTFormat::LangAddress addr) const;
 		void mergeStackInfo(FlatProfileMap & into, const MALTFormat::LangAddress & addr,FlatProfileCounter counter,const MALTFormat::StackInfos & infos,const LocaltionMappingFunc & mapping) const;
 		void buildTranslation(MALTFormat::MaltProfile & profile);

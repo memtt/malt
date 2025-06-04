@@ -18,6 +18,7 @@ It has been rewritten in C++ by
 /**********************************************************/
 
 /**********************************************************/
+#include <algorithm>
 #include "extractors/ExtractorHelpers.hpp"
 #include "CppDeclParser.hpp"
 #include "CallTreeAdapter.hpp"
@@ -26,13 +27,13 @@ namespace MALTReader
 {
 
 /**********************************************************/
-CallTreeNode::CallTreeNode(size_t id, std::string label, std::string tooltip, size_t level, MALTFormat::StackInfos stats, const FullTreeNode & treeNode)
+CallTreeNode::CallTreeNode(size_t id, std::string label, std::string tooltip, size_t level, MALTFormat::StackInfos stats, const InstructionInfosStrRef * location)
 	:id(id)
 	,label(label)
 	,tooltip(tooltip)
 	,level(level)
 	,stats(stats)
-	,treeNode(treeNode)
+	,location(location)
 {
 
 }
@@ -149,16 +150,23 @@ size_t CallTreeAdapter::generateNodesAndVertices(const FullTreeNode & treeNode, 
 			currentId = nodeCache.put(identifier);
 			const std::string label = CppDeclParser::getShortName(CppDeclParser::parseCppPrototype(*treeNode.location->function));
 			const std::string tooltip = *treeNode.location->function;
-			nodes.emplace_back(currentId, label, tooltip, level, *treeNode.infos, treeNode);
+			if (treeNode.infos == nullptr) {
+				nodes.emplace_back(currentId, label, tooltip, level, MALTFormat::StackInfos(), treeNode.location);
+			} else {
+				nodes.emplace_back(currentId, label, tooltip, level, *treeNode.infos, treeNode.location);
+			}
 		} else {
 			currentId = nodeCache.get(identifier);
-			if(getIndexOf(stack, stack.size(), currentId) == -1)
-				nodes[currentId - 1].stats.merge(*treeNode.infos);
+			if(getIndexOf(stack, stack.size(), currentId) == -1) {
+				assert(currentId - 1 < nodes.size());
+				if (treeNode.infos != nullptr)
+					nodes[currentId - 1].stats.merge(*treeNode.infos);
+			}
 		}
 	}
 
 	// Add current node to stack
-	if(currentId)
+	if(currentId != CACHE_ID_NULL)
 		stack.push_back(currentId);
 
 	// Create edge from this node to all its children
@@ -179,8 +187,11 @@ size_t CallTreeAdapter::generateNodesAndVertices(const FullTreeNode & treeNode, 
 				vertCache.put(vertName);
 
 				//update links
-				nodes[currentId-1].outEdges.emplace_back(childId, *it.second.infos);
-				nodes[childId-1].inEdges.emplace_back(currentId, *it.second.infos);
+				MALTFormat::StackInfos infos;
+				if (it.second.infos != nullptr)
+					infos.merge(*it.second.infos);
+				nodes[currentId-1].outEdges.emplace_back(childId, infos);
+				nodes[childId-1].inEdges.emplace_back(currentId, infos);
 
 				//add vertice
 				vertices.emplace_back(currentId, childId);
@@ -188,7 +199,8 @@ size_t CallTreeAdapter::generateNodesAndVertices(const FullTreeNode & treeNode, 
 				// Find existing edge and merge stats
 				for (ssize_t j = nodes[currentId-1].outEdges.size() - 1; j >= 0; j--) {
 					if(nodes[currentId-1].outEdges[j].id == childId) {
-						nodes[currentId-1].outEdges[j].stats.merge(*it.second.infos);
+						if (it.second.infos != nullptr)
+							nodes[currentId-1].outEdges[j].stats.merge(*it.second.infos);
 						break;
 					}
 				}
@@ -226,7 +238,8 @@ size_t CallTreeAdapter::generateNodesAndVertices(const FullTreeNode & treeNode, 
 				// Find existing edge and merge stats
 				for (ssize_t j = nodes[currentId-1].outEdges.size() - 1; j >= 0; j--) {
 					if(nodes[currentId-1].outEdges[j].id == childId) {
-						nodes[currentId-1].outEdges[j].stats.merge(*it.second.infos);
+						if (it.second.infos != nullptr)
+							nodes[currentId-1].outEdges[j].stats.merge(*it.second.infos);
 						break;
 					}
 				}
@@ -371,11 +384,8 @@ void CallTreeAdapter::addColorCodes(TreeSet & dataset)
 	ssize_t max = -1;
 
 	// find max
-	for (size_t i = 0; i < nodes.size(); i++) {
-		if(nodes[i].score > max) {
-			max = nodes[i].score;
-		}
-	}
+	for (const auto & node : nodes)
+		max = std::max((ssize_t)node.score, max);
 
 	// generate a mapping function from [0-max] onto [#397EBA,#FF9595]
 	D3ScaleLinearColorRange colorScale = D3ScaleLinearColorRange("#397EBA", "#ab4141", 0, max);
@@ -384,15 +394,15 @@ void CallTreeAdapter::addColorCodes(TreeSet & dataset)
 	D3ScaleLinearRange thicknessScale = D3ScaleLinearRange(0.8, 8, 0, max);
 
 	// assign colors
-	for (size_t i = 0; i < nodes.size(); i++) {
-		nodes[i].color = convertRgbStringToHex(colorScale.getColor(nodes[i].score));
-		for (size_t j = 0; j < nodes[i].inEdges.size(); j++) {
-			nodes[i].inEdges[j].color = convertRgbStringToHex(colorScale.getColor(nodes[i].inEdges[j].score));
-			nodes[i].inEdges[j].thickness = thicknessScale.getValue(nodes[i].inEdges[j].score);
+	for (auto & node : nodes) {
+		node.color = convertRgbStringToHex(colorScale.getColor(node.score));
+		for (auto & inEdge : node.inEdges) {
+			inEdge.color = convertRgbStringToHex(colorScale.getColor(inEdge.score));
+			inEdge.thickness = thicknessScale.getValue(inEdge.score);
 		}
-		for (size_t j = 0; j < nodes[i].outEdges.size(); j++) {
-			nodes[i].outEdges[j].color = convertRgbStringToHex(colorScale.getColor(nodes[i].outEdges[j].score));
-			nodes[i].outEdges[j].thickness = thicknessScale.getValue(nodes[i].outEdges[j].score);
+		for (auto & outEdge : node.outEdges) {
+			outEdge.color = convertRgbStringToHex(colorScale.getColor(outEdge.score));
+			outEdge.thickness = thicknessScale.getValue(outEdge.score);
 		}
 	}
 }
@@ -413,9 +423,9 @@ void CallTreeAdapter::addScores(std::vector<CallTreeNode> & nodes, const MaltMet
 	//apply
 	if(isRatio) {
 		double max = 0;
-		for (size_t i = 0; i < fulltree.nodes.size(); i++) {
-			if(fulltree.nodes[i].inEdges.size() == 0) {
-				size_t val = metric.extractor(fulltree.nodes[i].stats);
+		for (const auto & node : fulltree.nodes) {
+			if(node.inEdges.size() == 0) {
+				size_t val = metric.extractor(node.stats);
 				if(metric.ref == REF_MODE_SUM) {
 					max += val;
 				} else {
@@ -423,35 +433,35 @@ void CallTreeAdapter::addScores(std::vector<CallTreeNode> & nodes, const MaltMet
 				}
 			}
 		}
-		for (size_t i = 0; i < nodes.size() ; i++) {
-			nodes[i].score = extractValue(nodes[i].stats)/max*100.0;
+		for (auto & node : nodes) {
+			node.score = extractValue(node.stats)/max*100.0;
 			char buffer[256];
-			snprintf(buffer, sizeof(buffer), "%.02g%%", (double)(nodes[i].score*100.0)/100.0);
-			nodes[i].scoreReadable = buffer;
+			snprintf(buffer, sizeof(buffer), "%.02g%%", (double)(node.score*100.0)/100.0);
+			node.scoreReadable = buffer;
 
-			for (size_t j = 0; j < nodes[i].inEdges.size(); j++) {
-				nodes[i].inEdges[j].score = extractValue(nodes[i].inEdges[j].stats)/max*100.0;
-				snprintf(buffer, sizeof(buffer), "%.02g%%", (double)(nodes[i].inEdges[j].score*100.0)/100.0);
-				nodes[i].inEdges[j].scoreReadable = buffer;
+			for (size_t j = 0; j < node.inEdges.size(); j++) {
+				node.inEdges[j].score = extractValue(node.inEdges[j].stats)/max*100.0;
+				snprintf(buffer, sizeof(buffer), "%.02g%%", (double)(node.inEdges[j].score*100.0)/100.0);
+				node.inEdges[j].scoreReadable = buffer;
 			}
-			for (size_t j = 0; j < nodes[i].outEdges.size(); j++) {
-				nodes[i].outEdges[j].score = extractValue(nodes[i].outEdges[j].stats)/max*100.0;
-				snprintf(buffer, sizeof(buffer), "%.02g%%", (double)(nodes[i].outEdges[j].score*100.0)/100.0);
-				nodes[i].outEdges[j].scoreReadable = buffer;
+			for (size_t j = 0; j < node.outEdges.size(); j++) {
+				node.outEdges[j].score = extractValue(node.outEdges[j].stats)/max*100.0;
+				snprintf(buffer, sizeof(buffer), "%.02g%%", (double)(node.outEdges[j].score*100.0)/100.0);
+				node.outEdges[j].scoreReadable = buffer;
 			}
 		}
 	} else {
-		for (size_t i = 0; i < nodes.size(); i++) {
-			nodes[i].score = extractValue(nodes[i].stats);
-			nodes[i].scoreReadable = formatValue(nodes[i].score);
+		for (auto & node : nodes) {
+			node.score = extractValue(node.stats);
+			node.scoreReadable = formatValue(node.score);
 
-			for (size_t j = 0; j < nodes[i].inEdges.size(); j++) {
-				nodes[i].inEdges[j].score = extractValue(nodes[i].inEdges[j].stats);
-				nodes[i].inEdges[j].scoreReadable = formatValue(nodes[i].inEdges[j].score);
+			for (size_t j = 0; j < node.inEdges.size(); j++) {
+				node.inEdges[j].score = extractValue(node.inEdges[j].stats);
+				node.inEdges[j].scoreReadable = formatValue(node.inEdges[j].score);
 			}
-			for (size_t j = 0; j < nodes[i].outEdges.size(); j++) {
-				nodes[i].outEdges[j].score = extractValue(nodes[i].outEdges[j].stats);
-				nodes[i].outEdges[j].scoreReadable = formatValue(nodes[i].outEdges[j].score);
+			for (size_t j = 0; j < node.outEdges.size(); j++) {
+				node.outEdges[j].score = extractValue(node.outEdges[j].stats);
+				node.outEdges[j].scoreReadable = formatValue(node.outEdges[j].score);
 			}
 		}
 	}
@@ -472,6 +482,7 @@ void CallTreeAdapter::filterDescendantsRecurse(ssize_t nodeId, std::map<ssize_t,
 	nodeSet[nodeId] = true;
 
 	std::vector<InOutEdge> & currentEdges = fulltree.nodes[nodeId-1].outEdges;
+	fprintf(stderr, "CURRENT_EDGED = %zu\n", currentEdges.size());
 	for (size_t i = 0; i < currentEdges.size(); i++) {
 		if(nodeSet.find(currentEdges[i].id) != nodeSet.end()) {
 			if(depth != 0) {
@@ -491,6 +502,7 @@ void CallTreeAdapter::filterDescendantsRecurse(ssize_t nodeId, std::map<ssize_t,
 			edges.emplace_back(edge);
 		}
 	}
+	fprintf(stderr, "EDGED = %zu\n", edges.size());
 }
 
 /**********************************************************/
@@ -526,6 +538,8 @@ void CallTreeAdapter::filterAncestorsRecurse(ssize_t nodeId, std::map<ssize_t, b
 			edges.emplace_back(edge);
 		}
 	}
+
+	fprintf(stderr, "EDGED2 = %zu\n", edges.size());
 }
 
 /**********************************************************/
@@ -544,6 +558,7 @@ Graph CallTreeAdapter::filterDescendants(ssize_t nodeId, ssize_t depth, const Co
 	for(const auto & it : nodeSet) {
 		graph.nodeList.emplace_back(fulltree.nodes[it.first-1]);
 	}
+	fprintf(stderr, "GRAPH FILTER DESC = %zu\n", graph.nodeList.size());
 	return graph;
 }
 
@@ -563,6 +578,7 @@ Graph CallTreeAdapter::filterAncestors (ssize_t nodeId, ssize_t height, const Co
 	for(const auto & it : nodeSet) {
 		graph.nodeList.emplace_back(fulltree.nodes[it.first-1]);
 	}
+	fprintf(stderr, "GRAPH FILTER ANCEST = %zu\n", graph.nodeList.size());
 	return graph;
 }
 
@@ -595,10 +611,10 @@ const std::vector<CallTreeNode> & CallTreeAdapter::getNodes(void) const
 const CallTreeNode * CallTreeAdapter::getNodeByFunctionName(const std::string & func)
 {
 	const std::vector<CallTreeNode> & nodes = fulltree.nodes;
-	for (size_t i = 0; i < nodes.size(); i++) {
-		//if(nodes[i].data.location.function == func) {
-		if(nodes[i].tooltip == func) {
-			return &nodes[i];
+	for (auto & node : nodes) {
+		//if(node.data.location.function == func) {
+		if(node.tooltip == func) {
+			return &node;
 		}
 	}
 	return nullptr;
@@ -634,15 +650,15 @@ Graph CallTreeAdapter::filterNodeLine(ssize_t nodeId, ssize_t depth, ssize_t hei
 	addColorCodes(fulltree);
 
 	double max = -1;
-	for (size_t i = 0; i < fulltree.nodes.size(); i++) {
-		if(fulltree.nodes[i].score > max) {
-			max = fulltree.nodes[i].score;
+	for (const auto & node : fulltree.nodes) {
+		if(node.score > max) {
+			max = node.score;
 		}
 	}
 	double min = max + 1;
-	for (size_t i = 0; i < fulltree.nodes.size(); i++) {
-		if(fulltree.nodes[i].score < min) {
-			min = fulltree.nodes[i].score;
+	for (const auto & node : fulltree.nodes) {
+		if(node.score < min) {
+			min = node.score;
 		}
 	}
 
@@ -695,39 +711,39 @@ Graph CallTreeAdapter::filterRootLines(ssize_t depth, double costFilterPercentag
 	addColorCodes(fulltree);
 
 	double max = -1;
-	for (size_t i = 0; i < fulltree.nodes.size(); i++) {
-		if(fulltree.nodes[i].score > max) {
-			max = fulltree.nodes[i].score;
+	for (const auto & node : fulltree.nodes) {
+		if(node.score > max) {
+			max = node.score;
 		}
 	}
 	double min = max + 1;
-	for (size_t i = 0; i < fulltree.nodes.size(); i++) {
-		if(fulltree.nodes[i].score < min) {
-			min = fulltree.nodes[i].score;
+	for (const auto & node : fulltree.nodes) {
+		if(node.score < min) {
+			min = node.score;
 		}
 	}
 
 	std::vector<InOutEdge> edgeList;
 	std::map<ssize_t, bool> nodeSet;
-	for (size_t i = 0; i < fulltree.nodes.size(); i++) {
-		if(fulltree.nodes[i].inEdges.size() == 0) {
-			CostFilter childrenCostFilter(costFilterPercentage, min, fulltree.nodes[i].score, max, metric);
-			filterDescendantsRecurse(fulltree.nodes[i].id, nodeSet, edgeList, depth, childrenCostFilter);
+	for (const auto & node : fulltree.nodes) {
+		if(node.inEdges.size() == 0) {
+			CostFilter childrenCostFilter(costFilterPercentage, min, node.score, max, metric);
+			filterDescendantsRecurse(node.id, nodeSet, edgeList, depth, childrenCostFilter);
 		}
 	}
 
 	std::map<std::string, InOutEdge> edgeSet;
 	Graph graph;
-	for (size_t i = 0; i < edgeList.size(); i++) {
+	for (auto & edge : edgeList) {
 		char buffer[256];
-		snprintf(buffer, sizeof(buffer), "%zd-%zd", edgeList[i].from, edgeList[i].to);
-		edgeSet.emplace(buffer,edgeList[i]);
+		snprintf(buffer, sizeof(buffer), "%zd-%zd", edge.from, edge.to);
+		edgeSet.emplace(buffer,edge);
 	}
 	for(const auto & it : edgeSet) {
 		graph.edgeList.emplace_back(it.second);
 	}
 	for(const auto & it : nodeSet) {
-		graph.nodeList.emplace_back(fulltree.nodes[it.first-1]);
+		graph.nodeList.emplace_back(fulltree.nodes.at(it.first-1));
 	}
 
 	return graph;

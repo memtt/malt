@@ -555,3 +555,21 @@ TEST(TestExtractor, getCallStackNextLevel_virtual_5)
 	//check
 	ASSERT_EQ(dataExpected, resJson) << " Diff: " << nlohmann::json::diff(dataExpected, resJson);
 }
+
+TEST(TestNodeRef, encode_decode_1)
+{
+	NodeRef id(-1);
+	ASSERT_EQ(id.offset, -1);
+	ASSERT_EQ(id.stackId, 0);
+	ASSERT_EQ(id.getId(), -1);
+}
+
+TEST(TestNodeRef, encode_decode_2)
+{
+	NodeRef id(0);
+	id.offset = 155;
+	id.stackId = 25;
+	NodeRef id2(id.getId());
+	ASSERT_EQ(id2.offset, 155);
+	ASSERT_EQ(id2.stackId, 25);
+}

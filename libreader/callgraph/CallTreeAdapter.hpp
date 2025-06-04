@@ -54,19 +54,19 @@ struct CallTreeEdge
 /**********************************************************/
 struct CallTreeNode
 {
-	CallTreeNode(size_t id, std::string label, std::string tooltip, size_t level, MALTFormat::StackInfos stats, const FullTreeNode & treeNode);
+	CallTreeNode(size_t id, std::string label, std::string tooltip, size_t level, MALTFormat::StackInfos stats, const InstructionInfosStrRef * location);
 	CallTreeNode(const CallTreeNode & orig) = default;
 	size_t id{0};
 	std::string label;
 	std::string tooltip;
 	size_t level{0};
 	MALTFormat::StackInfos stats;
-	const FullTreeNode & treeNode;
 	std::vector<InOutEdge> outEdges;
 	std::vector<InOutEdge> inEdges;
 	double score{0.0};
 	std::string scoreReadable;
 	std::string color;
+	const InstructionInfosStrRef * location{nullptr};
 };
 
 /**********************************************************/

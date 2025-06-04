@@ -9,9 +9,11 @@
 ***********************************************************/
 
 /**********************************************************/
+#include <algorithm>
 #include <iostream>
 #include <regex>
 #include <memory>
+#include <set>
 #include "ExtractorHelpers.hpp"
 #include "Extractor.hpp"
 #include "../callgraph/CallTreeAdapter.hpp"
@@ -913,6 +915,135 @@ FullTreeNode Extractor::getFullTree(void) const
 }
 
 /**********************************************************/
+struct NodeInfos
+{
+	LangAddress addr;
+	StackInfos infos;
+	const InstructionInfosStrRef * location{nullptr};
+	size_t level{-1UL};
+};
+
+/**********************************************************/
+Graph Extractor::getFilteredTree(ssize_t nodeId, ssize_t depth, ssize_t height, double minCost, const std::string & metric, bool isRatio) const
+{
+	//decode
+	NodeRef nodeRef(nodeId);
+
+	//calc depth range we accept
+	ssize_t minDepth = std::min(nodeRef.offset - height, 0L);
+	ssize_t maxDepth = nodeRef.offset + depth;
+	if (nodeId == -1)
+		maxDepth = depth + 1;
+
+	//loop on all stack and extract nodes that are OK
+	std::map<std::string, NodeInfos> nodeStats;
+	std::set<LangAddress> acceptedNodes;
+	for (const auto & stackStat : this->profile.stacks.stats) {
+		std::set<std::string> seen;
+		const auto & stack = stackStat.stack;
+		for (ssize_t i = minDepth ; i < maxDepth ; i++) {
+			if (i < stack.size()) {
+				const LangAddress addr = stack.at(stack.size() - i - 1);
+				const auto & location = this->getAddrTranslation(addr);
+				const std::string * funcName = location.function;
+				if (seen.find(*funcName) == seen.end()) {
+					seen.insert(*funcName);
+					acceptedNodes.insert(addr);
+					auto & entry = nodeStats[*funcName];
+					entry.infos.merge(stackStat.infos);
+					entry.location = &location;
+					entry.addr = addr;
+					entry.level = std::min(entry.level, (size_t)i);
+				}
+			}
+		}
+	}
+
+	//loop to build all links
+	std::map<Link, StackInfos> acceptedLinks;
+	for (const auto & stackStat : this->profile.stacks.stats) {
+		const auto & stack = stackStat.stack;
+		for (ssize_t i = minDepth ; i < maxDepth - 1 ; i++) {
+			if (i < stack.size()) {
+				//get
+				const LangAddress in = stack.at(stack.size() - i - 1);
+				const LangAddress out = stack.at(stack.size() - i - 2);
+
+				//func names
+				const std::string & inFunc = *this->getAddrTranslation(in).function;
+				const std::string & outFunc = *this->getAddrTranslation(out).function;
+
+				//search
+				const auto & inIt = nodeStats.find(inFunc);
+				const auto & outIt = nodeStats.find(outFunc);
+
+				if (inIt != nodeStats.end() && outIt != nodeStats.end()) {
+					//get node
+					const NodeInfos & inInfos = inIt->second;
+					const NodeInfos & outInfos = outIt->second;
+
+					//swap
+					const LangAddress func1 = inInfos.addr;
+					const LangAddress func2 = outInfos.addr;
+
+					//add
+					acceptedLinks[Link{func1, func2}].merge(stackStat.infos);
+				}
+			}
+		}
+	}
+
+	//build final graph
+	Graph graph;
+
+	//build nodes
+	for (const auto & it : nodeStats) {
+		//name fields
+		const std::string & func = it.first;
+		const NodeInfos & infos = it.second;
+
+		//build
+		const std::string label = CppDeclParser::getShortName(CppDeclParser::parseCppPrototype(func));
+		const std::string & tooltip = func;
+
+		//create node
+		assert(infos.addr.lang == LANG_TRANS_PTR);
+		graph.nodeList.emplace_back((size_t)infos.addr.address, label, tooltip, infos.level, infos.infos, infos.location);
+		graph.nodeList.back().color = "#10FF10";
+		graph.nodeList.back().scoreReadable = "30 B";
+		graph.nodeList.back().score = 10.0;
+	}
+
+	//build links
+	for (const auto & it : acceptedLinks)
+	{
+		//links
+		const LangAddress in = it.first.in;
+		const LangAddress out = it.first.out;
+
+		//func names
+		const std::string & inFunc = *this->getAddrTranslation(in).function;
+		const std::string & outFunc = *this->getAddrTranslation(out).function;
+
+		//get node
+		const NodeInfos & inInfos = nodeStats.at(inFunc);
+		const NodeInfos & outInfos = nodeStats.at(outFunc);
+
+		//create link
+		graph.edgeList.emplace_back(0, it.second);
+		graph.edgeList.back().from = (size_t)inInfos.addr.address;
+		graph.edgeList.back().to = (size_t)outInfos.addr.address;
+		graph.edgeList.back().color = "#10FF10";
+		graph.edgeList.back().scoreReadable = "30 B";
+		graph.edgeList.back().score = 10.0;
+		graph.edgeList.back().thickness = 10.0;
+	}
+
+	//ok
+	return graph;
+}
+
+/**********************************************************/
 nlohmann::json Extractor::getCallTree(ssize_t nodeId, ssize_t depth, ssize_t height, double minCost, const std::string & func, const std::string & metric, bool isRatio)
 {
 	// Response object
@@ -923,7 +1054,7 @@ nlohmann::json Extractor::getCallTree(ssize_t nodeId, ssize_t depth, ssize_t hei
 		// console.time("filteredStack");
 		//FilteredStackList filteredStack = this->getFilterdStacks(true);
 		// console.timeEnd("filteredStack");
-		this->calltreeCache = new CallTreeAdapter(*this);
+		//this->calltreeCache = new CallTreeAdapter(*this);
 	}
 
 	// If nodeId not provided, get node id by function name
@@ -946,11 +1077,12 @@ nlohmann::json Extractor::getCallTree(ssize_t nodeId, ssize_t depth, ssize_t hei
 	// console.time("filterNodeLine");
 	Graph filteredTree;
 	bool ratio = isRatio;
-	if(nodeId == -1) {
+	/*if(nodeId == -1) {
 		filteredTree = this->calltreeCache->filterRootLines(depth, minCost, metricDef, ratio);
 	} else {
 		filteredTree = this->calltreeCache->filterNodeLine(nodeId, depth, height, minCost, metricDef, ratio);
-	}
+	}*/
+	filteredTree = getFilteredTree(nodeId, depth, height, minCost, metric, ratio);
 	// console.timeEnd("filterNodeLine");
 
 	// console.time("getNodeById");
@@ -958,7 +1090,7 @@ nlohmann::json Extractor::getCallTree(ssize_t nodeId, ssize_t depth, ssize_t hei
 	// console.timeEnd("getNodeById");
 
 	// Build output object
-	resp["totalNodes"] = this->calltreeCache->getNodes().size();
+	//resp["totalNodes"] = this->calltreeCache->getNodes().size();
 	resp["visibleNodes"] = filteredTree.nodeList.size();
 	if(nodeId == -1) {
 		resp["nodeId"] = -1;
@@ -968,11 +1100,11 @@ nlohmann::json Extractor::getCallTree(ssize_t nodeId, ssize_t depth, ssize_t hei
 		resp["functionShort"] = resp["function"];
 	} else {
 		resp["nodeId"] = nodeId;
-		resp["file"] = *node->treeNode.location->file;
-		std::string fname = basename(node->treeNode.location->file->c_str());
-		resp["fileShort"] = (resp["file"].size() > 40) ? (std::string(".../") + fname) : *node->treeNode.location->file;
-		resp["function"] = *node->treeNode.location->function;
-		resp["functionShort"] = (resp["function"].size() > 40) ? node->label : *node->treeNode.location->function;
+		resp["file"] = *node->location->file;
+		std::string fname = basename(node->location->file->c_str());
+		resp["fileShort"] = (resp["file"].size() > 40) ? (std::string(".../") + fname) : *node->location->file;
+		resp["function"] = *node->location->function;
+		resp["functionShort"] = (resp["function"].size() > 40) ? node->label : *node->location->function;
 	}
 	// console.time("getDotCodeForTree");
 	resp["dotCode"] = GraphGenerator::getDotCodeForTree(filteredTree, nodeId);

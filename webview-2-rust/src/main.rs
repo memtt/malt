@@ -131,7 +131,7 @@ impl Default for GetSourceFile {
 #[derive(Deserialize)]
 struct CallTreeItem
 {
-	nodeid: isize,
+	nodeid: Option<isize>,
 	depth: isize,
 	height: isize,
 	mincost: f64,
@@ -144,7 +144,7 @@ struct CallTreeItem
 impl Default for CallTreeItem {
 	fn default() -> Self {
 		CallTreeItem {
-			nodeid: 0,
+			nodeid: Some(0),
 			depth: 0,
 			height: 0,
 			mincost: 0.0,
@@ -304,9 +304,10 @@ async fn global_variables(data: web::Data<MaltCReader>) -> impl Responder
 #[post("/calltree")]
 async fn calltree(data: web::Data<MaltCReader>, item: web::Json<CallTreeItem>) -> impl Responder
 {
-	let format = item.format.clone().unwrap_or("svg".to_string());
+	let format = item.format.clone().unwrap_or("".to_string());
 	let func = item.func.clone().unwrap_or("".to_string());
-	let res = data.get_call_tree(item.nodeid, item.depth, item.height, item.mincost, &func, &item.metric, item.isratio);
+	let nodeid = item.nodeid.clone().unwrap_or(-1);
+	let res = data.get_call_tree(nodeid, item.depth, item.height, item.mincost, &func, &item.metric, item.isratio);
 	let res_json: Value = serde_json::from_str(&res).expect("Unable to parse");
 	match format.as_str()
 	{
