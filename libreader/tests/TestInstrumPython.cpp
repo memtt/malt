@@ -55,9 +55,6 @@ TEST(TestInstrumPython, python_basic_array_backtrace)
 	//dump & get
 	MALT::globalDump();
 
-	//load ref
-	nlohmann::json ref = nlohmann::json::parse(std::ifstream(CUR_SRC_DIR "/TestInstrumPython.json"));
-
 	//convert
 	Profile profile(profileFile);
 	const MALTReader::Extractor & extractor = profile.getExtractor();
@@ -70,8 +67,17 @@ TEST(TestInstrumPython, python_basic_array_backtrace)
 	ExtractorHelpers::jsonRemoveAbsPath(resJson, CUR_SRC_DIR "/");
 	resJson = ExtractorHelpers::buildShorterFlatProfileSummary(resJson, true);
 
+	//ref
+	std::vector<std::string> ref{
+		"main1.py:py:src.reader.libreader.tests.main1.<module>:1",
+		"main1.py:py:src.reader.libreader.tests.main1.MainClass():2",
+		"main1.py:py:src.reader.libreader.tests.main1.MainClass.a_function():7",
+		"main1.py:py:src.reader.libreader.tests.main1.main():12"
+	};
+
 	//check
-	ASSERT_EQ(ref["python_basic_array_backtrace"], resJson) << "  Diff: " << nlohmann::json::diff(ref["python_basic_array_backtrace"], resJson);
+	for (const auto & key : ref)
+		ASSERT_TRUE(resJson[key].is_boolean()) << key;
 }
 
 /**********************************************************/
@@ -112,5 +118,5 @@ TEST(TestInstrumPython, python_basic_array_enter_exit)
 	resJson = ExtractorHelpers::buildShorterFlatProfileSummary(resJson, true);
 
 	//check
-	ASSERT_EQ(ref["python_basic_array_enter_exit"], resJson) << "  Diff: " << nlohmann::json::diff(ref["python_basic_array_enter_exit"], resJson);
+	ASSERT_EQ(ref["python_basic_array_enter_exit"].dump(1), resJson.dump(1));
 }

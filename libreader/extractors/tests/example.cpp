@@ -10,6 +10,13 @@
 
 /**********************************************************/
 #include <cstdlib>
+#include "state/malt.h"
+
+/**********************************************************/
+int maltInitStatus(void)
+{
+	return 0;
+}
 
 /**********************************************************/
 void leaf(void)
@@ -36,8 +43,24 @@ void caller(void)
 }
 
 /**********************************************************/
-int main(int argc, char * argv[])
+void caller2(void)
+{
+	void * ptr1 = malloc(8);
+	free(ptr1);
+}
+
+/**********************************************************/
+void main_sim(void)
 {
 	caller();
+	caller2();
+}
+
+/**********************************************************/
+int main(int argc, char * argv[])
+{
+	maltEnable();	
+	main_sim();
+	maltDisable();
 	return EXIT_SUCCESS;
 }

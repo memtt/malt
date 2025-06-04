@@ -65,16 +65,22 @@ add_executable(malt-reader main.cpp)
 target_link_libraries(malt-reader malt-profile)
 
 ############################################################
-add_executable(malt-zmq-reader main_zmq.cpp)
-target_link_libraries(malt-zmq-reader malt-profile zmq)
+if (ZMQ_FOUND)
+	include_directories(${ZMQ_INCLUDE_DIR})
+	add_executable(malt-zmq-reader main_zmq.cpp)
+	target_link_libraries(malt-zmq-reader malt-profile ${ZMQ_LIBRARY})
+endif()
 
 ############################################################
 add_executable(malt-stream-reader main_stream.cpp)
 target_link_libraries(malt-stream-reader malt-profile)
 
 ############################################################
-add_executable(malt-httplib-reader main_http_lib.cpp)
-target_link_libraries(malt-httplib-reader malt-profile cpp-httplib)
+if (HTTPLIB_FOUND)
+	include_directories(${HTTPLIB_INCLUDE_DIR})
+	add_executable(malt-httplib-reader main_http_lib.cpp)
+	target_link_libraries(malt-httplib-reader malt-profile ${HTTPLIB_LIBRARY})
+endif()
 
 ############################################################
 if (ENABLE_TESTS)

@@ -244,7 +244,7 @@ TEST(TestExtractor, getSummaryV2)
 	saveOnRegen(dataExpected, "getSummaryV2", resJson);
 
 	//check
-	ASSERT_EQ(dataExpected["getSummaryV2"], resJson) << " Diff: " << nlohmann::json::diff(dataExpected["getSummaryV2"], resJson);
+	ASSERT_EQ(dataExpected["getSummaryV2"].dump(1), resJson.dump(1));
 }
 
 /**********************************************************/
@@ -360,7 +360,7 @@ TEST(TestExtractor, getCallStackNextLevel_1)
 	saveOnRegen(dataExpected, "getCallStackNextLevel", resJson);
 
 	//check
-	ASSERT_EQ(dataExpected["getCallStackNextLevel"], resJson) << " Diff: " << nlohmann::json::diff(dataExpected["getCallStackNextLevel"], resJson);
+	ASSERT_EQ(dataExpected["getCallStackNextLevel"].dump(1), resJson.dump(1));
 }
 
 /**********************************************************/
@@ -384,7 +384,7 @@ TEST(TestExtractor, getCallStackNextLevel_2)
 	saveOnRegen(dataExpected, "getCallStackNextLevel2", resJson);
 
 	//check
-	ASSERT_EQ(dataExpected["getCallStackNextLevel2"], resJson) << " Diff: " << nlohmann::json::diff(dataExpected["getCallStackNextLevel2"], resJson);
+	ASSERT_EQ(dataExpected["getCallStackNextLevel2"].dump(1), resJson.dump(1)) << " Diff: " << nlohmann::json::diff(dataExpected["getCallStackNextLevel2"], resJson);
 }
 
 /**********************************************************/

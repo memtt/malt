@@ -12,6 +12,7 @@
 ############################################################
 #Use gtest
 include_directories(${GTEST_INCLUDE_DIRS} ${GMOCK_INCLUDE_DIRS})
+include_directories(${CMAKE_SOURCE_DIR}/src/libinstrum)
 
 ############################################################
 add_definitions(-DBUILD_DIR="${CMAKE_BINARY_DIR}")
