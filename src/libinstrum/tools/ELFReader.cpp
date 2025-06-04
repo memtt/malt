@@ -382,6 +382,7 @@ const ElfGlobalVariable & ElfReader::getVarByName(const ElfGlobalVariableVector 
 			return it;
 	}
 	MALT_FATAL_ARG("Fail to find global variable {1}").arg(name).end();
+	return *(ElfGlobalVariable*)nullptr;
 }
 
 /**********************************************************/

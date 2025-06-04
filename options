@@ -91,6 +91,11 @@ cfg_add_with_option --name='python-linking' \
 						--doc='Define how to link to python (LAZY or NATIVE). [LAZY]' \
 						--var='PORTABILITY_PYTHON'
 
+#where to search python
+cfg_add_with_option --name='cargo' \
+						--doc='Define prefix to find cargo [/usr]' \
+						--var='CARGO_PREFIX'
+
 ############################################################
 #If we want to document extra options
 #CFG_CUSTOM_HELP="My custom options:"

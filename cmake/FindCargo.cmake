@@ -15,7 +15,11 @@
 #  CAGO_BINARY - Path to the cargo binary file
 
 ############################################################
-find_program(CARGO_BINARY cargo)
+set(CARGO_PREFIX "${CMAKE_INSTALL_PREFIX}" CACHE STRING "Help cmake to find Cargo binary (https://doc.rust-lang.org/cargo/index.html) into your system.")
+
+############################################################
+find_program(CARGO_BINARY cargo
+	HINTS ${CARGO_PREFIX}/bin)
 
 ############################################################
 include(FindPackageHandleStandardArgs)

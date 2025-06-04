@@ -41,7 +41,7 @@ from common import jump_in_dir, assert_shell_command, in_container, PodmanContai
 import pytest
 
 ############################################################
-COMMON_CONF_OPTIONS = ""
+COMMON_CONF_OPTIONS = "--with-cargo=$HOME/.cargo"
 ############################################################
 PYTHON_VERSION="3.13.2"
 BUILD_CUSTOM_CORES=4
@@ -65,7 +65,14 @@ UBUNTU_FULL_CMDS=[
     "apt install -y libunwind-dev libelf-dev libunwind-dev nodejs npm",
     "apt install -y libqt5webkit5-dev",
     "apt install -y curl",
-    "apt update && apt install -y nlohmann-json3-dev cargo graphviz"
+    "apt update && apt install -y nlohmann-json3-dev cargo graphviz",
+    """curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs > /tmp/rustup-install.sh \\
+    && sh /tmp/rustup-install.sh -y \\
+    && rm -f /tmp/rustup-install.sh \\
+    && export PATH=$HOME/.cargo/bin:$PATH \\
+    && echo 'export PATH=$HOME/.cargo/bin:$PATH' >> ~/.bashrc \\
+    && rustup update stable
+    """
 ]
 UBUNTU_FULL_CMDS_UBUNTU_25=[
     "apt install -y libunwind-dev libelf-dev libunwind-dev nodejs npm",
@@ -114,7 +121,7 @@ ARCH_FULL_CMDS=[
     "pacman --noconfirm -Sy libunwind libelf nodejs npm",
     "pacman --noconfirm -Sy qt5-webengine",
     "pacman --noconfirm -Sy curl",
-    "pacman --noconfirm -Sy nlohmann-json cargo graphviz"
+    "pacman --noconfirm -Sy nlohmann-json cargo rustup graphviz"
 ]
 ARCH_INDEV_CMDS=[
     "pacman --noconfirm -Sy python3"

@@ -62,7 +62,7 @@ PyFrameObject * BacktracePythonStack::loadCurrentFrame(void)
 		this->grow();
 
 	//If the Python interpreter is not correctly initialised, can't get the backtrace stack
-	if (MALT::PyGILState_GetThisThreadState() == NULL){
+	if (MALT::PyGILState_GetThisThreadState() == 0) {
 		assert(this->memSize >= 1);
 		if (this->memSize < 2)
 			this->grow();
@@ -95,7 +95,7 @@ PyFrameObject * BacktracePythonStack::loadCurrentFrame(void)
 LangAddress BacktracePythonStack::getCurrentFrameAddr(void)
 {
 	//TODO need to find a way to make this clean... It fixes crash on the exit.
-	if (MALT::PyGILState_GetThisThreadState() == NULL) {
+	if (MALT::PyGILState_GetThisThreadState() == 0) {
 		return LangAddress(DOMAIN_PYTHON, MALT_PYTHON_NULL_FUNC_ID);
 	}
 
