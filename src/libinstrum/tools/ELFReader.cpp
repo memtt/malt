@@ -390,7 +390,13 @@ void * ElfReader::getInMemAddr(const LinuxProcMapReader & procMap, const ElfGlob
 {
 	const LinuxProcMapEntry * entry = procMap.getEntryByOffset(variable.binaryFile, variable.offset + variable.secOffset);
 	assert(entry != nullptr);
-	return (void*)(OS::getASLROffset((void*)((size_t)entry->lower + variable.offset)) + variable.offset);
+
+	//TODO fix
+	if (entry->aslrOffset == -1UL || entry->aslrOffset == 0UL) {
+		((LinuxProcMapEntry * )entry)->aslrOffset = OS::getASLROffset((void*)((size_t)entry->lower + variable.offset));
+	}
+
+	return (void*)(entry->aslrOffset + variable.offset);
 }
 
 /**********************************************************/

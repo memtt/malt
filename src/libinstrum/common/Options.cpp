@@ -103,6 +103,9 @@ Options::Options(void)
 	this->dumpOnThreadStackUsing  = "";
 	this->dumpOnAllocCount        = "";
 	this->dumpWatchDog            = false;
+	//tools
+	this->toolsNm                 = true;
+	this->toolsNmMaxSize          = "50M";
 }
 
 /**********************************************************/
@@ -163,6 +166,9 @@ bool Options::operator==(const Options& value) const
 	if (this->dumpOnThreadStackUsing != value.dumpOnThreadStackUsing) return false;
 	if (this->dumpWatchDog != value.dumpWatchDog) return false;
 	if (this->dumpOnAllocCount != value.dumpOnAllocCount) return false;
+	//nm
+	if (this->toolsNm != value.toolsNm) return false;
+	if (this->toolsNmMaxSize != value.toolsNmMaxSize) return false;
 	
 	return true;
 }
@@ -308,6 +314,10 @@ void Options::loadFromIniDic ( dictionary* iniDic )
 	this->dumpOnThreadStackUsing = iniparser_getstring(iniDic,"dump:on-thread-stack-using",(char*)this->dumpOnThreadStackUsing.c_str());
 	this->dumpOnAllocCount    = iniparser_getstring(iniDic,"dump:on-alloc-count",(char*)this->dumpOnAllocCount.c_str());
 	this->dumpWatchDog        = iniparser_getboolean(iniDic,"dump:watch-dog",this->dumpWatchDog);
+
+	//tools
+	this->toolsNm             = iniparser_getboolean(iniDic,"tools:nm",this->toolsNm);
+	this->toolsNmMaxSize      = iniparser_getstring(iniDic,"tools:nm-max-size",(char*)this->toolsNmMaxSize.c_str());
 }
 
 /**********************************************************/
@@ -408,6 +418,11 @@ void convertToJson(htopml::JsonState & json,const Options & value)
 			json.printField("onAllocCount", value.dumpOnAllocCount);
 			json.printField("watchDog", value.dumpWatchDog);
 		json.closeFieldStruct("dump");
+
+		json.openFieldStruct("tools");
+			json.printField("nm", value.toolsNm);
+			json.printField("nmMaxSize", value.toolsNmMaxSize);
+		json.closeFieldStruct("tools");
 	json.closeStruct();
 }
 
@@ -482,6 +497,10 @@ void Options::dumpConfig(const char* fname)
 	IniParserHelper::setEntry(dic,"dump:on-thread-stack-using",this->dumpOnThreadStackUsing.c_str());
 	IniParserHelper::setEntry(dic,"dump:on-alloc-count",this->dumpOnAllocCount.c_str());
 	IniParserHelper::setEntry(dic,"dump:watch-dog",this->dumpWatchDog);
+
+	//tools
+	IniParserHelper::setEntry(dic,"tools:nm",this->toolsNm);
+	IniParserHelper::setEntry(dic,"tools:nm-max-size",this->toolsNmMaxSize.c_str());
 
 	//write
 	FILE * fp = fopen(fname,"w");

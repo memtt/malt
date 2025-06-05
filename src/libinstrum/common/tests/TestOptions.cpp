@@ -79,6 +79,9 @@ const char cstJson[] = "\
 		\"onThreadStackUsing\":\"\",\n\
 		\"onAllocCount\":\"\",\n\
 		\"watchDog\":false\n\
+	},\n\
+	\"tools\":{\n\
+		\"nm\":true\n\
 	}\n\
 }";
 

@@ -25,10 +25,10 @@ namespace MALT
 /**********************************************************/
 struct LinuxProcMapEntry
 {
-	void * lower;
-	void * upper;
-	void * offset;
-	size_t aslrOffset;
+	void * lower{nullptr};
+	void * upper{nullptr};
+	void * offset{nullptr};
+	size_t aslrOffset{-1UL};
 	std::string file;
 };
 

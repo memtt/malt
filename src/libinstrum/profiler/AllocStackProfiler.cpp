@@ -529,9 +529,12 @@ void AllocStackProfiler::loadGlobalVariables(void)
 					itVar.usedSize = elfReader.getPhysSize(map, pageMap, itVar);
 			
 			//search sources
-			NMCmdReader reader;
-			reader.load(it->file);
-			reader.findSourcesAndDemangle(globalVariables[it->file]);
+			if (gblOptions->toolsNm) {
+				#warning "Support toolsNmMaxSize here."
+				NMCmdReader reader;
+				CODE_TIMING("nm",reader.load(it->file));
+				reader.findSourcesAndDemangle(globalVariables[it->file]);
+			}
 		}
 	}
 }

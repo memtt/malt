@@ -126,6 +126,9 @@ struct Options
 	std::string dumpOnThreadStackUsing;
 	std::string dumpOnAllocCount;
 	bool dumpWatchDog;
+	//tools
+	bool toolsNm;
+	std::string toolsNmMaxSize;
 };
 
 /**********************************************************/
