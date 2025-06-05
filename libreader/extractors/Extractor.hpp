@@ -231,17 +231,19 @@ struct NodeRef
 			this->stackId = 0;
 			this->offset = -1;
 		} else {
+			//due to 0 beeing reserved for another use to give function name as ref
+			nodeId -= 1;
 			this->stackId = nodeId / (1UL<<32);
 			this->offset = nodeId % (1UL<<32);
 		}
 	}
 
-	ssize_t getId(void) 
+	ssize_t getId(void) const
 	{
 		if (offset == -1)
 			return -1;
 		else
-			return this->stackId * (1UL<<32) + this->offset;
+			return this->stackId * (1UL<<32) + this->offset + 1;
 	}
 	
 	size_t stackId;
@@ -314,6 +316,7 @@ void to_json(nlohmann::json & json, const StackMem & value);
 const InstructionInfosStrRef & Extractor::getAddrTranslation(MALTFormat::LangAddress addr) const
 {
 	assert(addr.lang == MALTFormat::LANG_TRANS_PTR);
+	assert(this->addrTranslationHidden.find(addr) != this->addrTranslationHidden.end());
 	//if (addr.lang == MALTFormat::LANG_TRANS_PTR)
 	return *(InstructionInfosStrRef*)addr.address;
 	/*else

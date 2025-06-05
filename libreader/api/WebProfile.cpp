@@ -210,7 +210,7 @@ nlohmann::json WebProfile::getCallStackNextLevel(size_t parentStackId, size_t pa
 nlohmann::json WebProfile::getCallTree(ssize_t nodeId, ssize_t depth, ssize_t height, double minCost, const std::string & func, const std::string & metric, bool isRatio)
 {
 	nlohmann::json data = this->extractor->getCallTree(nodeId, depth, height, minCost, func, metric, isRatio);
-	std::cout << data << std::endl;
+	//std::cout << data << std::endl;
 	return data;
 }
 

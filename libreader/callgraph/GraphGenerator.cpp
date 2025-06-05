@@ -129,7 +129,7 @@ std::string GraphGenerator::getDotCodeForTree(const Graph & tree, ssize_t focuse
 				std::stringstream from, to, label;
 				from << "node" << vertices[i].from;
 				to << "node" << vertices[i].to;
-				label << " " << vertices[i].score;
+				label << " " << vertices[i].scoreReadable;
 				d.edge(from.str(), to.str(), {
 					{"label", label.str()},
 					{"color", toString(vertices[i].color)},
