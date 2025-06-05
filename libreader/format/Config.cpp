@@ -95,6 +95,11 @@ void to_json(nlohmann::json & json, const Config & config){
 				{"watchDog", config.dump.watchDog},
 			}
 		},
+		{
+			"tools", {
+				{"nm", config.tools.nm},
+			}
+		}
 	};
 }
 
@@ -205,6 +210,11 @@ void from_json(const JsonIn & json, Config & config)
 	jsonDump.at("onThreadStackUsing").get_to(config.dump.onThreadStackUsing);
 	jsonDump.at("onAllocCount").get_to(config.dump.onAllocCount);
 	jsonDump.at("watchDog").get_to(config.dump.watchDog);
+
+	//maxStack
+	JsonIn jsonTools = json.at("tools");
+	assert(jsContains(jsonTools, "nm"));
+	jsonTools.at("nm").get_to(config.tools.nm);
 }
 
 }

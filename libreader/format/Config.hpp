@@ -82,6 +82,9 @@ struct Config
 		std::string onAllocCount;
 		bool watchDog;
 	} dump;
+	struct {
+		bool nm;
+	} tools;
 };
 
 /**********************************************************/
