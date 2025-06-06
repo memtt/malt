@@ -59,8 +59,8 @@ Options::Options(void)
 	this->stackAddr2lineBucket    = 100;
 	this->stackAddr2lineThreads   = 8;
 	//python
-	this->pythonStack             = "backtrace";
-	this->pythonStackEnum         = STACK_MODE_BACKTRACE;
+	this->pythonStack             = "enter-exit";
+	this->pythonStackEnum         = STACK_MODE_ENTER_EXIT_FUNC;
 	this->pythonMix               = true;
 	this->pythonInstru            = true;
 	this->pythonObj               = true;
