@@ -22,6 +22,8 @@ var CallTreeAdapter = require("./CallTreeAdapter.js");
 var GraphGenerator = require("./GraphGenerator.js");
 var CppDeclParser = require("./CppDeclParser.js");
 var childProcess = require('child_process');
+const cliProgress = require('cli-progress');
+const colors = require('ansi-colors');
 
 /**********************************************************/
 /**
@@ -82,11 +84,18 @@ MaltProject.prototype.loadFile = function(file, callback = function(){})
 	this.file = file;
 	var cur = this;
 
+	//big
+	let { size } = fs.statSync(args.params.input);
+	if (size > 500*1024*1024) {
+		console.log(`Profile file is ${Math.round(size/1024.0/1024.0)} MB it may take a LONG TIME to load !`);
+	}
+
 	// create a read and a json-parser stream
 	const readStream = fs.createReadStream(args.params.input, { encoding: 'utf8' });
 	const parseStream = json.createParseStream();
 
 	// receive parsed JSON, and load it
+	let written = 0;
 	parseStream.on('data', function(data) {
 		cur.loadData(data);
 		callback();
@@ -112,9 +121,31 @@ MaltProject.prototype.loadFile = function(file, callback = function(){})
 		process.exit(1);
 	});
 
+	// create new progress bar
+	const b1 = new cliProgress.SingleBar({
+		format: 'Loading Progress |' + colors.gray('{bar}') + '| {percentage}% || {value}/{total} MB',
+		hideCursor: true
+	});
+	b1.start(Math.round(size/1024/1024), 0, {
+		speed: "N/A"
+	});
+
+	// handle start of the stream
+	let loaded = 0;
+	readStream.on('data', (data) => {
+		loaded += data.length;
+		b1.update(Math.round(loaded/1024/1024));
+	});
+
 	// handle start of the stream
 	readStream.on('resume', () => {
-		console.log("Loading file : " + args.params.input);
+		//console.log("Loading file : " + args.params.input);
+	});
+
+	// handle start of the stream
+	readStream.on('end', () => {
+		//console.log("Loading file : " + args.params.input);
+		b1.stop();
 	});
 
 	// Start reading
@@ -467,7 +498,7 @@ MaltProject.prototype.genSummaryWarnings = function(data)
 		ret.recyclingRatio = ["Caution, you are heavily recycling your memory, it might hurt performance, check the allocation rate."];
 		ret.totalAllocatedMemory = ["Caution, you are heavily recycling your memory, it might hurt performance, check the allocation rate."];
 	}
-	console.log(runtime + " => " + data.summary.allocCount / runtime);
+
 	if (data.summary.allocCount / runtime > 100000)
 		ret.allocCount = ["Caution, you are doing really large number of memory allocation, it might hurt performance."];
 	if (data.summary.leakedMem > data.summary.peakRequestedMemory / 2)

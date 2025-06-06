@@ -104,7 +104,45 @@ if (args.params.override != undefined)
 
 /**********************************************************/
 //load file
-var maltProject = new MaltProject(args.params.input);
+var maltProject = new MaltProject(args.params.input, () => {
+
+	//listen add
+	var listening = `http://${host}:${port}/`.padEnd(30);
+
+	//ssh
+	var sshAddr = `-L8080:localhost:${port} {SERVER}`.padEnd(40);
+
+	
+	//run express
+	//print
+	console.log( "+-------------------------------------------------------------------------+");
+	console.log( "|                                                                         |");
+	console.log( "|                    _ _                    _          _                  |");
+	console.log( "|    _ __ ___   __ _| | |_    __      _____| |____   _(_) _____      __   |");
+	console.log( "|   | '_ ` _ \\ / _` | | __|___\\ \\ /\\ / / _ \\ '_ \\ \\ / / |/ _ \\ \\ /\\ / /   |");
+	console.log( "|   | | | | | | (_| | | ||_____\\ V  V /  __/ |_) \\ V /| |  __/\\ V  V /    |");
+	console.log( "|   |_| |_| |_|\\__,_|_|\\__|     \\_/\\_/ \\___|_.__/ \\_/ |_|\\___| \\_/\\_/     |");
+	console.log( "|                                                                         |"); 
+	console.log( "|                                                                         |"); 
+	console.log( `|         Starting server listening on ${listening}     |`);
+	console.log( "|                                                                         |"); 
+	console.log( "|                  To use from remote you can :                           |");
+	console.log( `|           user> ssh ${sshAddr}            |`);
+	console.log( "|                                                                         |");
+	console.log( "+-------------------------------------------------------------------------+");
+
+	//remove
+	if (port != undefined && /^-?\d+$/.test(port) == false)
+	{
+		console.log("Removing old socket file : " + args.params.port);
+		fs.rmSync(port, {
+			force: true,
+		});
+	}
+
+	//listen
+	app.listen(port,host);
+});
 
 /**********************************************************/
 app.get('/flat.json',function(req,res) {
@@ -458,7 +496,3 @@ app.use('/deps/angular-route',Express.static(__dirname+'/bower_components/angula
 
 //console.log(JSON.stringify(maltProject.getFullTree(),null,'\t'));
 
-/**********************************************************/
-//run express
-console.log("\n\nStarting server on http://"+host+":" + port+"\n\n");
-app.listen(port,host);
