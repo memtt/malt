@@ -11,12 +11,17 @@ DEV - XX/XX/XXXX
  - Reshape the wrapper / inject / state code and files in a more ordered way.
  - Rewrite the symbol solver infra code in a proper way.
  - Add dumping options (on-sys-full-at, on-app-using-rss, on-app-using-virt, on-app-using-req, on-thread-stack-using).
+ - Add parameter "tools:nm" and "tools:nmMaxSize" to avoid analysing large files of PyTorch by default
+   to get source location of global variables.. 
  - Upgrade cmake dependency to 3.5 to avoid warning a recent systems.
  - Rename license file to be more standard.
  - Introduce usage of JeMalloc as the internal allocator in place of the custom one (required for large python apps).
  - Use LTO & fvisibility=hidden in release mode when tests are disabled (default).
  - Optimize the stack tree browser in the source page to handle large packages.
  - Add --gdb option on malt command to ease debugging.
+ - Add progress bar for profile loading in webview.
+ - Report the % of physical mapping of global variables.
+ - Better terminal output for the webview and display + handle URL only when profile is loaded, not when not ready.
  - Fix NodeJs limitation to load large JSON files by increasing its allowed memory limit.
  - Fix an issue with TLS at init which induce an infinite loop in some conditions.
  - Fix some issues in the JSON file generated.
