@@ -75,6 +75,7 @@ class OSUnix
 		static void munmap(void * ptr,size_t size);
 		static size_t getASLROffset(void * instrAddr);
 		static bool hasASLREnabled(void);
+		static size_t getFileSize(const std::string & fname);
 };
 
 }

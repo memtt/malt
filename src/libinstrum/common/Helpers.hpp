@@ -33,6 +33,7 @@ struct Helpers
 	static std::string loadFullFile(const std::string & fname);
 	static bool writeFullFile(const std::string & fname, const std::string & data);
 	static std::string simpleProfileDump(const std::string & profileFile, const std::string & sourceFile, bool counters = true);
+	static size_t valueFromKiloMegaGiga(const std::string & value);
 };
 
 }

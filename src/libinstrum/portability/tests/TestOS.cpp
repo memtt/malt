@@ -19,23 +19,6 @@ using namespace MALT;
 using namespace testing;
 
 /**********************************************************/
-TEST(TestOS,getSignalName)
-{
-	EXPECT_EQ("SIGUSR1", OS::getSignalName(SIGUSR1));
-	EXPECT_EQ("SIGUSR2", OS::getSignalName(SIGUSR2));
-	EXPECT_EQ("SIGTERM", OS::getSignalName(SIGTERM));
-	EXPECT_EQ("UNKNOWN", OS::getSignalName(-1));
-}
-
-/**********************************************************/
-TEST(TestOS,getSignalFromName)
-{
-	EXPECT_EQ(SIGUSR1, OS::getSignalFromName("SIGUSR1"));
-	EXPECT_EQ(SIGUSR2, OS::getSignalFromName("SIGUSR2"));
-	EXPECT_EQ(SIGTERM, OS::getSignalFromName("SIGTERM"));
-}
-
-/**********************************************************/
 TEST(TestOS,getProcMemUsage)
 {
 	//increase the mem usage
@@ -57,7 +40,7 @@ TEST(TestOS,getProcMemUsage)
 }
 
 /**********************************************************/
-TEST(TestOK,getMemoryUsage)
+TEST(TestOS,getMemoryUsage)
 {
 	OSMemUsage mem = OS::getMemoryUsage();
 	EXPECT_NE(0, mem.totalMemory);
@@ -68,19 +51,19 @@ TEST(TestOK,getMemoryUsage)
 }
 
 /**********************************************************/
-TEST(TestOK,getExeName)
+TEST(TestOS,getExeName)
 {
 	EXPECT_EQ("TestOS", OS::getExeName());
 }
 
 /**********************************************************/
-TEST(TestOK,getCmdLine)
+TEST(TestOS,getCmdLine)
 {
 	EXPECT_STREQ("TestOS", basename(OS::getCmdLine().c_str()));
 }
 
 /**********************************************************/
-TEST(TestOK,getSignalName)
+TEST(TestOS,getSignalName)
 {
 	EXPECT_EQ("SIGINT", OS::getSignalName(SIGINT));
 	EXPECT_EQ("SIGKILL", OS::getSignalName(SIGKILL));
@@ -90,7 +73,7 @@ TEST(TestOK,getSignalName)
 }
 
 /**********************************************************/
-TEST(TestOK,getSignalFromName)
+TEST(TestOS,getSignalFromName)
 {
 	EXPECT_EQ(SIGINT, OS::getSignalFromName("SIGINT"));
 	EXPECT_EQ(SIGKILL, OS::getSignalFromName("SIGKILL"));
@@ -100,7 +83,7 @@ TEST(TestOK,getSignalFromName)
 }
 
 /**********************************************************/
-TEST(TestOK,printAvailSigs)
+TEST(TestOS,printAvailSigs)
 {
 	std::stringstream out;
 	OS::printAvailSigs(out);
@@ -116,7 +99,7 @@ void fakeHandler(int s)
 };
 
 /**********************************************************/
-TEST(TestOK,setSigHandler_string)
+TEST(TestOS,setSigHandler_string)
 {
 	OS::setSigHandler(fakeHandler, "SIGUSR1");
 	gblGotSig = -1;
@@ -125,7 +108,7 @@ TEST(TestOK,setSigHandler_string)
 }
 
 /**********************************************************/
-TEST(TestOK,setSigHandler_int)
+TEST(TestOS,setSigHandler_int)
 {
 	OS::setSigHandler(fakeHandler, SIGUSR2);
 	gblGotSig = -1;
@@ -134,18 +117,24 @@ TEST(TestOK,setSigHandler_int)
 }
 
 /**********************************************************/
-TEST(TestOK,loadTextFile)
+TEST(TestOS,loadTextFile)
 {
 	std::string content = OS::loadTextFile(CURRENT_SOURCE_DIR "/data.txt");
 	EXPECT_EQ(content, "Hello World\nThis is a new line\n"); 
 }
 
 /**********************************************************/
-TEST(TestOK,mmap)
+TEST(TestOS,mmap)
 {
 	const size_t size = 1024*1024;
 	void * ptr = OS::mmap(size, false);
 	ASSERT_NE(nullptr, ptr);
 	memset(ptr, 0, size);
 	OS::munmap(ptr, size);
+}
+
+/**********************************************************/
+TEST(TestOS,getFileSize)
+{
+	ASSERT_EQ(31, OS::getFileSize(CURRENT_SOURCE_DIR "/data.txt"));
 }

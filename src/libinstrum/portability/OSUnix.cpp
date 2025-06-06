@@ -25,6 +25,7 @@
 #include <dlfcn.h>
 #include <execinfo.h>
 #include <link.h>
+#include <sys/stat.h>
 //internals
 #include <common/Debug.hpp>
 #include "Mutex.hpp"
@@ -388,6 +389,16 @@ size_t OSUnix::getASLROffset(void * instrAddr)
 		elf2AddrOffset = map->l_addr;
 	}
 	return elf2AddrOffset;
+}
+
+/**********************************************************/
+size_t OSUnix::getFileSize(const std::string & fname)
+{
+	struct stat st;
+	if (stat(fname.c_str(), &st) < 0)
+		return 0;
+	else
+		return st.st_size;
 }
 
 }

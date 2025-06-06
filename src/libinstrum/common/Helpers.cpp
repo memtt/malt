@@ -18,6 +18,7 @@
 #include <sstream>
 //portability wrappers
 #include <portability/OS.hpp>
+#include "Debug.hpp"
 //header to implement
 #include "Helpers.hpp"
 
@@ -147,6 +148,34 @@ std::string Helpers::simpleProfileDump(const std::string & profileFile, const st
 
 	//ok
 	return result;
+}
+
+size_t Helpers::valueFromKiloMegaGiga(const std::string & value)
+{
+	//trivial
+	if (value.empty())
+		return 0;
+
+	//vars
+	float valueFloat = 0.0;
+	size_t valueSizet = 0;
+	char last = value.back();
+
+	//parse
+	if (last == 'T' && sscanf(value.c_str(), "%fT", &valueFloat) == 1) {
+		return (valueFloat * 1024.0 * 1024.0 * 1024.0 * 1024.0);
+	} else if (last == 'G' && sscanf(value.c_str(), "%fG", &valueFloat) == 1) {
+		return (valueFloat * 1024.0 * 1024.0 * 1024.0);
+	} else if (last == 'M' && sscanf(value.c_str(), "%fM", &valueFloat) == 1) {
+		return valueFloat * 1024.0 * 1024.0;
+	} else if (last == 'K' && sscanf(value.c_str(), "%fK", &valueFloat) == 1) {
+		return valueFloat * 1024.0;
+	} else if (last >= '0' && last <= '9' && sscanf(value.c_str(), "%zu", &valueSizet) == 1) {
+		return valueSizet;
+	} else {
+		MALT_FATAL_ARG("Invalid format for parameter : %2").arg(value).end();
+		return 0;
+	}
 }
 
 }

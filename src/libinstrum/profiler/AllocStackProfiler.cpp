@@ -494,6 +494,9 @@ void AllocStackProfiler::loadGlobalVariables(void)
 
 	//to get physical addresses
 	ProcPageMapReader pageMap;
+
+	//get max size
+	size_t nmMaxFileSize = Helpers::valueFromKiloMegaGiga(gblOptions->toolsNmMaxSize);
 	
 	//loop on files and load vars
 	for (LinuxProcMapReader::const_iterator it = map.begin() ; it != map.end() ; ++it)
@@ -528,12 +531,16 @@ void AllocStackProfiler::loadGlobalVariables(void)
 				for (auto & itVar:  itFile.second)
 					itVar.usedSize = elfReader.getPhysSize(map, pageMap, itVar);
 			
+			//file size
+			size_t fsize = OS::getFileSize(it->file);
+
 			//search sources
-			if (gblOptions->toolsNm) {
-				#warning "Support toolsNmMaxSize here."
+			if (gblOptions->toolsNm && (nmMaxFileSize == 0 || fsize <= nmMaxFileSize)) {
 				NMCmdReader reader;
 				CODE_TIMING("nm",reader.load(it->file));
 				reader.findSourcesAndDemangle(globalVariables[it->file]);
+			} else if (fsize > nmMaxFileSize) {
+				fprintf(stderr, "MALT : Skipping global var location analysis for '%s', file is too large (tools:nmMaxSize=%s)\n", it->file.c_str(), gblOptions->toolsNmMaxSize.c_str());
 			}
 		}
 	}
