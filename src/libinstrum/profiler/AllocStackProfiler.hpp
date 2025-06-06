@@ -163,6 +163,7 @@ class AllocStackProfiler
 		void peakTracking(ssize_t delta);
 		void loadGlobalVariables(void);
 		void loopSuppress(void);
+		std::string getFileExeScriptName(void) const;
 	private:
 		//SimpleStackTracer stackTracer;
 		MultiLangStackMerger multiLangStackMerger;

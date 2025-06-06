@@ -193,6 +193,7 @@ DLL_PUBLIC void initPythonInstrumentation(void)
 
 	//init python
 	initPythonAllocInstrumentation();
+	gblState.profiler->getPythonSymbolTracker().solveExeName();
 	if (gblOptions->pythonStackEnum == STACK_MODE_ENTER_EXIT_FUNC)
 		initPythonEnterExitInstrumentation();
 }

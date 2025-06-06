@@ -77,6 +77,8 @@ class PythonSymbolTracker
 		PythonCallSite getCallSite(LangAddress langAddr);
 		PythonNamedCallSite getNamedCallSite(LangAddress langAddr);
 		void makeStackPythonDomain(Stack & stack);
+		void solveExeName(void);
+		const std::string & getScriptName(void) const;
 	private:
 		LangAddress fastFrameToLangAddress(PyFrameObject * frame);
 		LangAddress slowFrameToLangAddress(PyFrameObject * frame);
@@ -86,12 +88,15 @@ class PythonSymbolTracker
 		std::map<std::string, bool> extractorPythonPaths(void) const;
 		std::string getPythonPath(const std::string & path) const;
 		std::string unfrozeFileName(const std::string & fname, const std::map<std::string, bool> & paths) const;
+		std::string getPyProgramName(void) const;
 	private:
 		PythonStrCallSiteMap siteMap;
 		size_t nextIndex{10};
 		PythonPyCodeToAddrMap codeToaddrMap;
 		StringIdDictionnary dict;
 		std::string baseDir;
+		std::string programDir;
+		std::string scriptName;
 };
 
 }

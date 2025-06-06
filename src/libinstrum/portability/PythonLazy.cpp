@@ -55,6 +55,11 @@ bool PyLazyInterfaceInit(void)
 	MALT_PYTHON_DLSYM(PyUnicode_AsEncodedString, supported);
 	MALT_PYTHON_DLSYM(Py_IsInitialized, supported);
 	MALT_PYTHON_DLSYM(Py_DecRef, supported);
+
+	MALT_PYTHON_DLSYM(PySys_GetObject, supported);
+	MALT_PYTHON_DLSYM(PyList_GetItem, supported);
+	MALT_PYTHON_DLSYM(PyImport_ImportModule, supported);
+	
 	//MALT_PYTHON_DLSYM(Py_RefCnt, supported);
 	/*MALT_PYTHON_DLSYM(PyThread_tss_create, supported);
 	MALT_PYTHON_DLSYM(PyThread_tss_set, supported);
@@ -237,6 +242,33 @@ Py_ssize_t Py_RefCnt(PyObject* ptr)
 		return gblPythonApi.Py_RefCnt(ptr);
 	else
 		return 1;
+}
+
+/**********************************************************/
+PyObject *PySys_GetObject(const char *name)
+{
+	if (gblPythonApi.PySys_GetObject != nullptr)
+		return gblPythonApi.PySys_GetObject(name);
+	else
+		return nullptr;
+}
+
+/**********************************************************/
+PyObject *PyList_GetItem(PyObject *list, Py_ssize_t index)
+{
+	if (gblPythonApi.PyList_GetItem != nullptr)
+		return gblPythonApi.PyList_GetItem(list, index);
+	else
+		return nullptr;
+}
+
+/**********************************************************/
+PyObject *PyImport_ImportModule(const char *name)
+{
+	if (gblPythonApi.PyImport_ImportModule != nullptr)
+		return gblPythonApi.PyImport_ImportModule(name);
+	else
+		return nullptr;
 }
 
 /**********************************************************/

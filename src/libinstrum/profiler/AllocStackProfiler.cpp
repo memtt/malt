@@ -104,7 +104,7 @@ AllocStackProfiler::AllocStackProfiler(const Options & options,StackMode mode,bo
 	//open trace file
 	if (options.traceEnabled)
 	{
-		this->traceFilename = FormattedMessage(options.outputName).arg(OS::getExeName()).arg(Helpers::getFileId()).arg("trace").toString();
+		this->traceFilename = FormattedMessage(options.outputName).arg(this->getFileExeScriptName()).arg(Helpers::getFileId()).arg("trace").toString();
 		tracer.open(this->traceFilename);
 	}
 
@@ -657,13 +657,13 @@ void AllocStackProfiler::onExit(void )
 		//config
 		if (options.outputDumpConfig)
 		{
-			options.dumpConfig(FormattedMessage(options.outputName).arg(OS::getExeName()).arg(Helpers::getFileId()).arg("ini").toString().c_str());
+			options.dumpConfig(FormattedMessage(options.outputName).arg(this->getFileExeScriptName()).arg(Helpers::getFileId()).arg("ini").toString().c_str());
 		}
 		
 		//lua
 		if (options.outputLua)
 		{
-			out.open(FormattedMessage(options.outputName).arg(OS::getExeName()).arg(Helpers::getFileId()).arg("lua").toString().c_str());
+			out.open(FormattedMessage(options.outputName).arg(this->getFileExeScriptName()).arg(Helpers::getFileId()).arg("lua").toString().c_str());
 			CODE_TIMING("outputLua",htopml::convertToLua(out,*this,options.outputIndent));
 			out.close();
 		}
@@ -671,7 +671,7 @@ void AllocStackProfiler::onExit(void )
 		//json
 		if (options.outputJson)
 		{
-			out.open(FormattedMessage(options.outputName).arg(OS::getExeName()).arg(Helpers::getFileId()).arg("json").toString().c_str());
+			out.open(FormattedMessage(options.outputName).arg(this->getFileExeScriptName()).arg(Helpers::getFileId()).arg("json").toString().c_str());
 			CODE_TIMING("outputJson",htopml::convertToJson(out,*this,options.outputIndent));
 			out.close();
 		}
@@ -687,12 +687,12 @@ void AllocStackProfiler::onExit(void )
 				vout.pushStackInfo(*(itMap->first.stack),itMap->second,symbolResolver);
 			
 			//stackTracer.fillValgrindOut(vout,symbolResolver);
-			CODE_TIMING("outputCallgrind",vout.writeAsCallgrind(FormattedMessage(options.outputName).arg(OS::getExeName()).arg(Helpers::getFileId()).arg("callgrind").toString(),symbolResolver));
+			CODE_TIMING("outputCallgrind",vout.writeAsCallgrind(FormattedMessage(options.outputName).arg(this->getFileExeScriptName()).arg(Helpers::getFileId()).arg("callgrind").toString(),symbolResolver));
 		}
 
 		//To know it has been done
 		if (options.outputVerbosity >= MALT_VERBOSITY_DEFAULT)
-			fprintf(stderr,"MALT: profile dump done : %s...\n", FormattedMessage(options.outputName).arg(OS::getExeName()).arg(Helpers::getFileId()).arg("json").toString().c_str());
+			fprintf(stderr,"MALT: profile dump done : %s ...\n", FormattedMessage(options.outputName).arg(this->getFileExeScriptName()).arg(Helpers::getFileId()).arg("json").toString().c_str());
 
 		//print timings
 		#ifdef MALT_ENABLE_CODE_TIMING
@@ -1051,6 +1051,15 @@ bool AllocStackProfiler::isEnterExit(void)
 void AllocStackProfiler::registerMaltJeMallocMem(ssize_t value)
 {
 	this->maltJeMallocMem += value;
+}
+
+/**********************************************************/
+std::string AllocStackProfiler::getFileExeScriptName(void) const
+{
+	if (this->pythonSymbolTracker.getScriptName().empty())
+		return OS::getExeName();
+	else
+		return this->pythonSymbolTracker.getScriptName();
 }
 
 }

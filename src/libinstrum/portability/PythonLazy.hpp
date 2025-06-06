@@ -47,6 +47,10 @@ typedef int (*Py_IsInitializedFuncPtr)(void);
 typedef void (*Py_DecRefFuncPtr)(PyObject* /*ptr*/);
 typedef Py_ssize_t (*Py_RefCntFuncPtr)(PyObject* /*ptr*/);
 typedef void (*Py_InitializeFuncPtr)(void);
+
+typedef PyObject * (*PySys_GetObjectFuncPtr)(const char */*name*/);
+typedef PyObject *(*PyList_GetItemFuncPtr)(PyObject */*list*/, Py_ssize_t /*index*/);
+typedef PyObject *(*PyImport_ImportModuleFuncPtr)(const char */*name*/);
 //
 //typedef int (*PyThread_tss_createFuncPtr)(Py_tss_t */*key*/);
 //typedef int (*PyThread_tss_setFuncPtr)(Py_tss_t */*key*/, void */*value*/);
@@ -77,6 +81,11 @@ struct PythonAPIFuncPtrs
 	Py_DecRefFuncPtr Py_DecRef{nullptr};
 	Py_RefCntFuncPtr Py_RefCnt{nullptr};
 	Py_InitializeFuncPtr Py_Initialize{nullptr};
+
+	PySys_GetObjectFuncPtr PySys_GetObject{nullptr};
+	PyList_GetItemFuncPtr PyList_GetItem{nullptr};
+	PyImport_ImportModuleFuncPtr PyImport_ImportModule{nullptr};
+
 	//
 	//PyThread_tss_createFuncPtr PyThread_tss_create{nullptr};
 	//PyThread_tss_setFuncPtr PyThread_tss_set{nullptr};
@@ -108,6 +117,11 @@ int Py_IsInitialized(void);
 void Py_DecRef(PyObject* ptr);
 Py_ssize_t Py_RefCnt(PyObject* ptr);
 void Py_Initialize(void);
+
+PyObject *PySys_GetObject(const char *name);
+PyObject *PyList_GetItem(PyObject *list, Py_ssize_t index);
+PyObject *PyImport_ImportModule(const char *name);
+
 //
 //int PyThread_tss_create(Py_tss_t *key);
 //int PyThread_tss_set(Py_tss_t *key, void *value);

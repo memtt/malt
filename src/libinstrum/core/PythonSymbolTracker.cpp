@@ -16,6 +16,7 @@
 #include <algorithm>
 #include <unistd.h>
 #include "PythonSymbolTracker.hpp"
+#include "portability/Python.hpp"
 
 /**********************************************************/
 namespace MALT
@@ -401,6 +402,72 @@ PythonNamedCallSite PythonSymbolTracker::getNamedCallSite(LangAddress langAddr)
 	namedSite.function = this->dict.getString(site.function).c_str();
 	namedSite.line = site.line;
 	return namedSite;
+}
+
+/**********************************************************/
+void PythonSymbolTracker::solveExeName(void)
+{
+	//get path if has some
+	const std::string script = this->getPyProgramName();
+
+	//if empty exit
+	if (script.empty()) {
+		this->programDir = this->baseDir;
+		this->scriptName = "as-shell";
+		return;
+	}
+
+	//calc canonical path
+	char * scriptFullPathC = realpath(script.c_str(), nullptr);
+
+	//extract pars
+	char * scriptNameC = basename(scriptFullPathC);
+	this->scriptName = scriptNameC;
+	char * scriptDir = dirname(scriptFullPathC);
+	this->programDir = scriptDir;
+
+	//debug
+	fprintf(stderr, "PYTHON_SCRIPT = %s\n", scriptName.c_str());
+	fprintf(stderr, "PYTHON_SDIR = %s\n", programDir.c_str());
+
+	//free mem
+	free((void*)scriptFullPathC);
+}
+
+/**********************************************************/
+std::string PythonSymbolTracker::getPyProgramName(void) const
+{
+	//get sys.argv
+	PyObject * objArgv = MALT::PySys_GetObject("argv");
+	assert(objArgv != nullptr);
+
+	//get first item (sys.argv[0])
+	PyObject * objArgvZero = MALT::PyList_GetItem(objArgv, 0);
+	assert(objArgvZero != nullptr);
+
+	//UTF-8 encode
+	PyObject * objArgvZeroEncoded = MALT::PyUnicode_AsEncodedString(objArgvZero, "utf-8", "strict");
+	assert(objArgvZeroEncoded != nullptr);
+
+	//to string
+	const char * tmp = MALT::PyBytes_AsString(objArgvZeroEncoded);
+	assert(tmp != nullptr);
+	std::string result = tmp;
+
+	//dec ref
+	MALT::Py_DecRef((PyObject*)tmp);
+	MALT::Py_DecRef(objArgvZeroEncoded);
+	MALT::Py_DecRef(objArgvZero);
+	MALT::Py_DecRef(objArgv);
+
+	//ok
+	return result;
+}
+
+/**********************************************************/
+const std::string & PythonSymbolTracker::getScriptName(void) const
+{
+	return this->scriptName;
 }
 
 }
