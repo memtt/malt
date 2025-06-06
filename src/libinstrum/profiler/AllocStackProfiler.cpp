@@ -1056,10 +1056,15 @@ void AllocStackProfiler::registerMaltJeMallocMem(ssize_t value)
 /**********************************************************/
 std::string AllocStackProfiler::getFileExeScriptName(void) const
 {
-	if (this->pythonSymbolTracker.getScriptName().empty())
+	if (this->pythonSymbolTracker.getScriptName().empty()) {
 		return OS::getExeName();
-	else
-		return this->pythonSymbolTracker.getScriptName();
+	} else {
+		std::string tmp = this->pythonSymbolTracker.getScriptName();
+		for (auto & ch : tmp)
+			if (ch == '.')
+				ch = '-';
+		return tmp;
+	}
 }
 
 }

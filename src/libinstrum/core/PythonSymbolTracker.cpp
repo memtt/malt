@@ -427,8 +427,8 @@ void PythonSymbolTracker::solveExeName(void)
 	this->programDir = scriptDir;
 
 	//debug
-	fprintf(stderr, "PYTHON_SCRIPT = %s\n", scriptName.c_str());
-	fprintf(stderr, "PYTHON_SDIR = %s\n", programDir.c_str());
+	//fprintf(stderr, "PYTHON_SCRIPT = %s\n", scriptName.c_str());
+	//fprintf(stderr, "PYTHON_SDIR = %s\n", programDir.c_str());
 
 	//free mem
 	free((void*)scriptFullPathC);
@@ -455,10 +455,11 @@ std::string PythonSymbolTracker::getPyProgramName(void) const
 	std::string result = tmp;
 
 	//dec ref
-	MALT::Py_DecRef((PyObject*)tmp);
-	MALT::Py_DecRef(objArgvZeroEncoded);
-	MALT::Py_DecRef(objArgvZero);
-	MALT::Py_DecRef(objArgv);
+	#warning "Check no leak"
+	//MALT::Py_DecRef((PyObject*)tmp);
+	//MALT::Py_DecRef(objArgvZeroEncoded);
+	//MALT::Py_DecRef(objArgvZero);
+	//MALT::Py_DecRef(objArgv);
 
 	//ok
 	return result;

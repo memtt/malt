@@ -69,7 +69,7 @@ if (args.params.noauth == undefined)
 		file = args.params.authfile;
 
 	//log
-	console.log("Load http auth from "+file+", you can change your passwod with 'malt-passwd {user}' or disable auth with --no-auth\n");
+	console.log("Load http auth from "+file+", you can change your password with 'malt-passwd {user}' or disable auth with --no-auth\n");
 
 	//setup auth system
 	var basic = auth.basic({

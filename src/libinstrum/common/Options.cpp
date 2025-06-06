@@ -61,7 +61,7 @@ Options::Options(void)
 	//python
 	this->pythonStack             = "enter-exit";
 	this->pythonStackEnum         = STACK_MODE_ENTER_EXIT_FUNC;
-	this->pythonMix               = true;
+	this->pythonMix               = false;
 	this->pythonInstru            = true;
 	this->pythonObj               = true;
 	this->pythonMem               = true;
