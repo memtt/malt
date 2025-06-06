@@ -81,7 +81,8 @@ const char cstJson[] = "\
 		\"watchDog\":false\n\
 	},\n\
 	\"tools\":{\n\
-		\"nm\":true\n\
+		\"nm\":true,\n\
+		\"nmMaxSize\":\"50M\"\n\
 	}\n\
 }";
 
