@@ -84,6 +84,7 @@ struct Config
 	} dump;
 	struct {
 		bool nm;
+		std::string nmMaxSize;
 	} tools;
 };
 

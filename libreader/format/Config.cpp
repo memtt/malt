@@ -98,6 +98,7 @@ void to_json(nlohmann::json & json, const Config & config){
 		{
 			"tools", {
 				{"nm", config.tools.nm},
+				{"nmMaxSize", config.tools.nmMaxSize},
 			}
 		}
 	};
@@ -214,7 +215,9 @@ void from_json(const JsonIn & json, Config & config)
 	//maxStack
 	JsonIn jsonTools = json.at("tools");
 	assert(jsContains(jsonTools, "nm"));
+	assert(jsContains(jsonTools, "nmMaxSize"));
 	jsonTools.at("nm").get_to(config.tools.nm);
+	jsonTools.at("nmMaxSize").get_to(config.tools.nmMaxSize);
 }
 
 }

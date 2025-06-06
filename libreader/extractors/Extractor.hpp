@@ -316,9 +316,10 @@ void to_json(nlohmann::json & json, const StackMem & value);
 const InstructionInfosStrRef & Extractor::getAddrTranslation(MALTFormat::LangAddress addr) const
 {
 	assert(addr.lang == MALTFormat::LANG_TRANS_PTR);
-	assert(this->addrTranslationHidden.find(addr) != this->addrTranslationHidden.end());
+	const InstructionInfosStrRef * infos = (InstructionInfosStrRef*)addr.address;
+	assert(this->addrTranslationHidden.find(infos->origin) != this->addrTranslationHidden.end());
 	//if (addr.lang == MALTFormat::LANG_TRANS_PTR)
-	return *(InstructionInfosStrRef*)addr.address;
+	return *infos;
 	/*else
 		return this->addrTranslationHidden.at(addr);*/
 }

@@ -60,9 +60,9 @@
     "globalPeak": 1048592,
     "lifetime": {
      "count": 3,
-     "max": 3570934,
-     "min": 50544,
-     "sum": 6317723
+     "max": 3088354,
+     "min": 31676,
+     "sum": 4997460
     },
     "maxAliveReq": 1048600,
     "reallocCount": 0,
@@ -102,9 +102,9 @@
     "globalPeak": 1048592,
     "lifetime": {
      "count": 3,
-     "max": 3570934,
-     "min": 50544,
-     "sum": 6317723
+     "max": 3088354,
+     "min": 31676,
+     "sum": 4997460
     },
     "maxAliveReq": 1048600,
     "reallocCount": 0,
@@ -133,7 +133,7 @@
    }
   }
  ],
- "getCallTree": "digraph G {\nnode  [color=\"white\", fontcolor=\"white\", fontname=\"Courier New\", fontsize=\"10\", penwidth=\"1\", shape=\"record\", style=\"filled\"];\nedge  [fontname=\"Courier New\", fontsize=\"9\"];\n\n}\n",
+ "getCallTree": "digraph G {\nnode  [color=\"white\", fontcolor=\"white\", fontname=\"Courier New\", fontsize=\"10\", penwidth=\"1\", shape=\"record\", style=\"filled\"];\nedge  [fontname=\"Courier New\", fontsize=\"9\"];\nnode4294967303 [fillcolor=\"#05AA05\", label=\"_start | 3  \", tooltip=\"_start\"];\nnode4294967300 [fillcolor=\"#05AA05\", label=\"main | 3  \", tooltip=\"main\"];\nnode4294967301 [fillcolor=\"#05AA05\", label=\"__libc_init_first | 3  \", tooltip=\"__libc_init_first\"];\nnode4294967302 [fillcolor=\"#05AA05\", label=\"__libc_start_main | 3  \", tooltip=\"__libc_start_main\"];\nnode2 [fillcolor=\"#05AA05\", label=\"std::__to_chars_bfloat16_t(...) | 1  \", tooltip=\"std::__to_chars_bfloat16_t(char*, char*, float, std::chars_format)\"];\nnode3 [fillcolor=\"#05AA05\", label=\"call_init | 1  \", tooltip=\"call_init\"];\nnode4 [fillcolor=\"#05AA05\", label=\"_dl_init | 1  \", tooltip=\"_dl_init\"];\nnode5 [fillcolor=\"#05AA05\", label=\"_dl_start_user | 1  \", tooltip=\"_dl_start_user\"];\nnode3 -> node2 [color=\"#10FF10\", fontcolor=\"#10FF10\", label=\" 1  \", penwidth=\"2\"];\nnode4 -> node3 [color=\"#10FF10\", fontcolor=\"#10FF10\", label=\" 1  \", penwidth=\"2\"];\nnode5 -> node4 [color=\"#10FF10\", fontcolor=\"#10FF10\", label=\" 1  \", penwidth=\"2\"];\nnode4294967301 -> node4294967300 [color=\"#10FF10\", fontcolor=\"#10FF10\", label=\" 3  \", penwidth=\"2\"];\nnode4294967302 -> node4294967301 [color=\"#10FF10\", fontcolor=\"#10FF10\", label=\" 3  \", penwidth=\"2\"];\nnode4294967303 -> node4294967302 [color=\"#10FF10\", fontcolor=\"#10FF10\", label=\" 3  \", penwidth=\"2\"];\n\n}\n",
  "getFilterdStacks": [
   {
    "info": {
@@ -154,9 +154,9 @@
     "globalPeak": 0,
     "lifetime": {
      "count": 1,
-     "max": 50544,
-     "min": 50544,
-     "sum": 50544
+     "max": 31676,
+     "min": 31676,
+     "sum": 31676
     },
     "maxAliveReq": 8,
     "reallocCount": 0,
@@ -312,9 +312,9 @@
     "globalPeak": 16,
     "lifetime": {
      "count": 1,
-     "max": 2696245,
-     "min": 2696245,
-     "sum": 2696245
+     "max": 1877430,
+     "min": 1877430,
+     "sum": 1877430
     },
     "maxAliveReq": 16,
     "reallocCount": 0,
@@ -426,9 +426,9 @@
     "globalPeak": 1048576,
     "lifetime": {
      "count": 1,
-     "max": 3570934,
-     "min": 3570934,
-     "sum": 3570934
+     "max": 3088354,
+     "min": 3088354,
+     "sum": 3088354
     },
     "maxAliveReq": 1048576,
     "reallocCount": 0,
@@ -1026,9 +1026,9 @@
     "globalPeak": 1048592,
     "lifetime": {
      "count": 2,
-     "max": 3570934,
-     "min": 2696245,
-     "sum": 6267179
+     "max": 3088354,
+     "min": 1877430,
+     "sum": 4965784
     },
     "maxAliveReq": 1048592,
     "reallocCount": 0,
@@ -1089,9 +1089,9 @@
     "globalPeak": 1048592,
     "lifetime": {
      "count": 2,
-     "max": 3570934,
-     "min": 2696245,
-     "sum": 6267179
+     "max": 3088354,
+     "min": 1877430,
+     "sum": 4965784
     },
     "maxAliveReq": 1048592,
     "reallocCount": 0,
@@ -1118,9 +1118,9 @@
     "globalPeak": 0,
     "lifetime": {
      "count": 1,
-     "max": 50544,
-     "min": 50544,
-     "sum": 50544
+     "max": 31676,
+     "min": 31676,
+     "sum": 31676
     },
     "maxAliveReq": 8,
     "reallocCount": 0,
@@ -1155,9 +1155,9 @@
     "globalPeak": 0,
     "lifetime": {
      "count": 1,
-     "max": 50544,
-     "min": 50544,
-     "sum": 50544
+     "max": 31676,
+     "min": 31676,
+     "sum": 31676
     },
     "maxAliveReq": 8,
     "reallocCount": 0,
@@ -1181,9 +1181,9 @@
     "globalPeak": 0,
     "lifetime": {
      "count": 1,
-     "max": 50544,
-     "min": 50544,
-     "sum": 50544
+     "max": 31676,
+     "min": 31676,
+     "sum": 31676
     },
     "maxAliveReq": 8,
     "reallocCount": 0,
@@ -1210,9 +1210,9 @@
     "globalPeak": 1048592,
     "lifetime": {
      "count": 2,
-     "max": 3570934,
-     "min": 2696245,
-     "sum": 6267179
+     "max": 3088354,
+     "min": 1877430,
+     "sum": 4965784
     },
     "maxAliveReq": 1048592,
     "reallocCount": 0,
@@ -1273,9 +1273,9 @@
     "globalPeak": 1048592,
     "lifetime": {
      "count": 2,
-     "max": 3570934,
-     "min": 2696245,
-     "sum": 6267179
+     "max": 3088354,
+     "min": 1877430,
+     "sum": 4965784
     },
     "maxAliveReq": 1048592,
     "reallocCount": 0,
@@ -1302,9 +1302,9 @@
     "globalPeak": 1048592,
     "lifetime": {
      "count": 2,
-     "max": 3570934,
-     "min": 2696245,
-     "sum": 6267179
+     "max": 3088354,
+     "min": 1877430,
+     "sum": 4965784
     },
     "maxAliveReq": 1048592,
     "reallocCount": 0,
@@ -1339,9 +1339,9 @@
     "globalPeak": 1048592,
     "lifetime": {
      "count": 2,
-     "max": 3570934,
-     "min": 2696245,
-     "sum": 6267179
+     "max": 3088354,
+     "min": 1877430,
+     "sum": 4965784
     },
     "maxAliveReq": 1048592,
     "reallocCount": 0,
@@ -1365,9 +1365,9 @@
     "globalPeak": 1048592,
     "lifetime": {
      "count": 2,
-     "max": 3570934,
-     "min": 2696245,
-     "sum": 6267179
+     "max": 3088354,
+     "min": 1877430,
+     "sum": 4965784
     },
     "maxAliveReq": 1048592,
     "reallocCount": 0,
@@ -1394,9 +1394,9 @@
     "globalPeak": 1048592,
     "lifetime": {
      "count": 3,
-     "max": 3570934,
-     "min": 50544,
-     "sum": 6317723
+     "max": 3088354,
+     "min": 31676,
+     "sum": 4997460
     },
     "maxAliveReq": 1048600,
     "reallocCount": 0,
@@ -1457,9 +1457,9 @@
     "globalPeak": 1048592,
     "lifetime": {
      "count": 3,
-     "max": 3570934,
-     "min": 50544,
-     "sum": 6317723
+     "max": 3088354,
+     "min": 31676,
+     "sum": 4997460
     },
     "maxAliveReq": 1048600,
     "reallocCount": 0,
@@ -1486,9 +1486,9 @@
     "globalPeak": 1048592,
     "lifetime": {
      "count": 3,
-     "max": 3570934,
-     "min": 50544,
-     "sum": 6317723
+     "max": 3088354,
+     "min": 31676,
+     "sum": 4997460
     },
     "maxAliveReq": 1048600,
     "reallocCount": 0,
@@ -1549,9 +1549,9 @@
     "globalPeak": 1048592,
     "lifetime": {
      "count": 3,
-     "max": 3570934,
-     "min": 50544,
-     "sum": 6317723
+     "max": 3088354,
+     "min": 31676,
+     "sum": 4997460
     },
     "maxAliveReq": 1048600,
     "reallocCount": 0,
@@ -2144,12 +2144,12 @@
    "mem": 16384
   },
   "anonymous": {
-   "cnt": 10,
+   "cnt": 8,
    "mem": 2981888
   },
   "src/libinstrum/libmalt.so.1.2.6": {
    "cnt": 5,
-   "mem": 1458176
+   "mem": 1462272
   },
   "src/reader/libreader/extractors/tests/extractor-example": {
    "cnt": 5,
@@ -2164,10 +2164,10 @@
    "largestStack": 0,
    "maxChunkSize": 1048576,
    "minChunkSize": 8,
-   "physicalMem": 6881280,
+   "physicalMem": 6877184,
    "requestedMem": 1122320,
    "segments": 8752,
-   "virtualMem": 13205504
+   "virtualMem": 13209600
   }
  },
  "getSummaryV2": {
@@ -2175,11 +2175,11 @@
    "allocator": "/usr/lib64/libc.so.6",
    "allocatorWrappers": [],
    "command": "src/reader/libreader/extractors/tests/extractor-example",
-   "date": "2025-06-04 11:20",
+   "date": "2025-06-06 15:55",
    "exe": "extractor-example",
    "formatVersion": "1.1",
    "hostname": "sebv4",
-   "runtime": 2296563597,
+   "runtime": 1529423824,
    "tool": "malt-1.2.6-dev"
   },
   "summary": {
@@ -2192,13 +2192,13 @@
    "meanAllocSize": 280582.0,
    "minAllocSize": 8,
    "numGblVar": 949,
-   "peakAllocCountRate": 108096176128.0,
-   "peakAllocRate": 108096176128.0,
+   "peakAllocCountRate": 143938142208.0,
+   "peakAllocRate": 143938142208.0,
    "peakInternalMemory": 8752,
-   "peakPhysicalMemory": 6881280,
+   "peakPhysicalMemory": 6877184,
    "peakRequestedMemory": 1122320,
    "peakSegmentCount": 3,
-   "peakVirtualMemory": 13205504,
+   "peakVirtualMemory": 13209600,
    "recyclingRatio": 1.000007152557373,
    "tlsVarMem": 80,
    "totalAllocatedMemory": 1122328
@@ -2209,7 +2209,7 @@
    ]
   },
   "system": {
-   "ticksPerSecond": 3410478415,
+   "ticksPerSecond": 3411162236,
    "totalMemory": 16718684160
   },
   "threadStats": [
@@ -2232,7 +2232,7 @@
     "malloc": {
      "count": 4,
      "sum": 1122328,
-     "time": 47842
+     "time": 81030
     },
     "memalign": {
      "count": 0,
