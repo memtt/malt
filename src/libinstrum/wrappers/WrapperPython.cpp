@@ -38,7 +38,9 @@
 namespace MALT
 {
 
-//static InternalLeakTracker gblLeakTracker(false);
+#ifdef MALT_ENABLE_CODE_LEAK
+	static InternalLeakTracker gblLeakTracker(false);
+#endif //MALT_ENABLE_CODE_LEAK
 
 /**********************************************************/
 void * malt_wrap_python_malloc(void * ctx, size_t size, PythonMallocFuncPtr real_malloc, void * retaddr)
@@ -61,7 +63,9 @@ void * malt_wrap_python_malloc(void * ctx, size_t size, PythonMallocFuncPtr real
 		MALT_WRAPPER_LOCAL_STATE_ACTION_PYTHON(env.getLocalProfiler().onMalloc(res,size,t,MALLOC_KIND_MALLOC,LANG_PYTHON));
 	} else {
 		res = real_malloc(ctx, size);
-		//gblLeakTracker.onMalloc(res, size);
+		#ifdef MALT_ENABLE_CODE_LEAK
+			gblLeakTracker.onMalloc(res, size);
+		#endif
 	}
 
 	//return segment to user
@@ -83,7 +87,9 @@ void malt_wrap_python_free(void * ctx, void * ptr, PythonFreeFuncPtr real_free, 
 		assert(env.getGlobalState().status > ALLOC_WRAP_INIT_SYM);
 		real_free(ctx, ptr);
 	} else {
-		//gblLeakTracker.onFree(ptr);
+		#ifdef MALT_ENABLE_CODE_LEAK
+			gblLeakTracker.onFree(ptr);
+		#endif
 		real_free(ctx, ptr);
 	}
 }
@@ -116,7 +122,9 @@ void * malt_wrap_python_calloc(void * ctx, size_t nmemb,size_t size, PythonCallo
 		MALT_WRAPPER_LOCAL_STATE_ACTION_PYTHON(env.getLocalProfiler().onCalloc(res,nmemb,size,t,LANG_PYTHON));
 	} else {
 		res = real_calloc(ctx,nmemb,size);
-		//gblLeakTracker.onMalloc(res, nmemb*size);
+		#ifdef MALT_ENABLE_CODE_LEAK
+			gblLeakTracker.onMalloc(res, nmemb*size);
+		#endif
 	}
 
 	//return result to user
@@ -143,7 +151,9 @@ void * malt_wrap_python_realloc(void * ctx,void * ptr,size_t size, PythonRealloc
 		MALT_WRAPPER_LOCAL_STATE_ACTION_PYTHON(env.getLocalProfiler().onRealloc(ptr,res,size,t,LANG_PYTHON));
 	} else {
 		res = real_realloc(ctx,ptr,size);
-		//gblLeakTracker.onRealloc(res, size);
+		#ifdef MALT_ENABLE_CODE_LEAK
+			gblLeakTracker.onRealloc(res, size);
+		#endif
 	}
 	
 	return res;

@@ -40,6 +40,7 @@
 
 //Use code timing to help optimizing MALT code
 #cmakedefine MALT_ENABLE_CODE_TIMING
+#cmakedefine MALT_ENABLE_CODE_LEAK
 
 //if have libunwind
 #cmakedefine MALT_HAVE_LIBUNWIND
