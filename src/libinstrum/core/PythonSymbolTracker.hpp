@@ -30,6 +30,8 @@ namespace MALT
 #define MALT_PYTHON_INIT_FUNC_ID ((void*)0x2)
 #define MALT_PYTHON_NULL_FUNC_ID ((void*)0x3)
 #define MALT_PYTHON_C_BRIDGE_FUNC_ID ((void*)0x4)
+#define MALT_PYTHON_UNTRACKED_ID ((void*)0x5)
+#define MALT_C_UNTRACKED_ID ((void*)0x6)
 
 /**********************************************************/
 struct PythonCallSite

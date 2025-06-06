@@ -44,6 +44,17 @@ PythonSymbolTracker::PythonSymbolTracker(void)
 	const PythonCallSite siteCBridge = {cBridgeName, cBridgeName, 0};
 	this->siteMap[siteCBridge] = MALT_PYTHON_C_BRIDGE_FUNC_ID;
 
+	//build python untracked map
+	int sitePuntrackedName = this->dict.getId("MALT_PYTHON_UNTRACKED");
+	const PythonCallSite sitePuntracked = {sitePuntrackedName, sitePuntrackedName, 0};
+	this->siteMap[sitePuntracked] = MALT_PYTHON_UNTRACKED_ID;
+
+	//build python untracked map
+	///@TODO move this elsewhere by creating maybe a SPECIAL domain.
+	int siteCUntrackedName = this->dict.getId("MALT_C_UNTRACKED");
+	const PythonCallSite siteCUntracked = {siteCUntrackedName, siteCUntrackedName, 0};
+	this->siteMap[siteCUntracked] = MALT_C_UNTRACKED_ID;
+
 	//init basedir
 	char buffer[8192];
 	char * cwd = getcwd(buffer, sizeof(buffer));

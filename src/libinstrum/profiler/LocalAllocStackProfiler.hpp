@@ -122,6 +122,8 @@ class LocalAllocStackProfiler
 		AllocTreeStrackTracer * enterExitStackTracer;
 		AllocTreeStrackTracer::Handler enterExitHandler;
 		PerThreadAllocStats allocStats;
+		EnterExitStack noneStackC;
+		EnterExitStack noneStackPython;
 };
 
 /**********************************************************/

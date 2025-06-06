@@ -39,6 +39,9 @@ LocalAllocStackProfiler::LocalAllocStackProfiler(AllocStackProfiler* globalProfi
 	this->enterExitStackTracer = globalProfiler->getEnterExitStackTracer();
 	enterExitStack.enterFunction(LangAddress(DOMAIN_C, (void*)0x1));
 	backtraceStack.loadCurrentStack();
+
+	this->noneStackC.enterFunction(LangAddress(DOMAIN_PYTHON, MALT_C_UNTRACKED_ID));
+	this->noneStackPython.enterFunction(LangAddress(DOMAIN_PYTHON, MALT_PYTHON_UNTRACKED_ID));
 	
 	this->enterExitHandler = enterExitStackTracer->getRoot();
 }
@@ -160,6 +163,12 @@ Stack* LocalAllocStackProfiler::getStack(Language lang)
 
 	//vars
 	bool oldInUse;
+
+	//trivial
+	if (lang == LANG_C && stackMode == STACK_MODE_NONE)
+		return &noneStackC;
+	if (lang == LANG_PYTHON && gblOptions->pythonStackEnum == STACK_MODE_NONE)
+		return &noneStackPython;
 
 	//backtrance in C
 	Stack * cRef = &this->enterExitStack;
