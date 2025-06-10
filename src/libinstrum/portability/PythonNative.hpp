@@ -44,6 +44,10 @@ inline Py_ssize_t Py_RefCnt(PyObject* ptr) {return ::Py_REFCNT(ptr);};
 inline PyObject * PyUnicode_AsEncodedString(PyObject * value, const char * encoding, const char * mode) {return ::PyUnicode_AsEncodedString(value, encoding, mode);};
 inline int Py_IsInitialized(void) {return ::Py_IsInitialized();};
 
+PyObject *PySys_GetObject(const char *name) {return PySys_GetObject(name);};
+PyObject *PyList_GetItem(PyObject *list, Py_ssize_t index) {return PyList_GetItem(list, index);};
+PyObject *PyImport_ImportModule(const char *name) {return PyImport_ImportModule(name);};
+
 }
 
 #endif //MALT_PYTHON_NATIVE_HPP
