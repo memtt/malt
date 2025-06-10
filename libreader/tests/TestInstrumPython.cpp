@@ -38,14 +38,14 @@ TEST(TestInstrumPython, python_basic_array_backtrace)
 {
 	//reset MALT & enable
 	const std::string profileFile = BINARY_DIR "/malt-python-basic-array.json";
-	setenv("MALT_OPTIONS", "stack:mode=backtrace;python:mix=false;output:name=" BINARY_DIR "/malt-python-basic-array.json", 1);
+	setenv("MALT_OPTIONS", "python:stack=backtrace;python:mix=false;output:name=" BINARY_DIR "/malt-python-basic-array.json", 1);
 	MALT::globalResetForTests();
 
 	//make an alloc
 	maltEnable();
 	const char * argv[] = {"TestInstrum", CUR_SRC_DIR "/main1.py", NULL};
 	::Py_Initialize();
-	MALT::initPythonInstrumentation();
+	MALT::initPythonInstrumentation(argv[1]);
 	int status = ::Py_BytesMain(2, (char**)argv);
 	maltDisable();
 
@@ -67,17 +67,11 @@ TEST(TestInstrumPython, python_basic_array_backtrace)
 	ExtractorHelpers::jsonRemoveAbsPath(resJson, CUR_SRC_DIR "/");
 	resJson = ExtractorHelpers::buildShorterFlatProfileSummary(resJson, true);
 
-	//ref
-	std::vector<std::string> ref{
-		"main1.py:py:src.reader.libreader.tests.main1.<module>:1",
-		"main1.py:py:src.reader.libreader.tests.main1.MainClass():2",
-		"main1.py:py:src.reader.libreader.tests.main1.MainClass.a_function():7",
-		"main1.py:py:src.reader.libreader.tests.main1.main():12"
-	};
+	//load ref
+	nlohmann::json ref = nlohmann::json::parse(std::ifstream(CUR_SRC_DIR "/TestInstrumPython.json"));
 
 	//check
-	for (const auto & key : ref)
-		ASSERT_TRUE(resJson[key].is_boolean()) << key;
+	ASSERT_EQ(ref["python_basic_array_backtrace"].dump(1), resJson.dump(1));
 }
 
 /**********************************************************/
@@ -92,7 +86,7 @@ TEST(TestInstrumPython, python_basic_array_enter_exit)
 	maltEnable();
 	const char * argv[] = {"TestInstrum", CUR_SRC_DIR "/main1.py", NULL};
 	::Py_Initialize();
-	MALT::initPythonInstrumentation();
+	MALT::initPythonInstrumentation(argv[1]);
 	int status = ::Py_BytesMain(2, (char**)argv);
 	maltDisable();
 

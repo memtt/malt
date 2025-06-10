@@ -39,6 +39,7 @@ add_custom_target(
 	        ${CARGO_BINARY} build ${RUST_BUILD_OPTION}
 	WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
 )
+add_dependencies(malt-webview-2-rust malt-profile)
 
 ############################################################
 #add_test(
