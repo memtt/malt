@@ -37,8 +37,8 @@ const char cstJson[] = "\
 	},\n\
 	\"python\":{\n\
 		\"instru\":true,\n\
-		\"mix\":true,\n\
-		\"stack\":\"backtrace\",\n\
+		\"mix\":false,\n\
+		\"stack\":\"enter-exit\",\n\
 		\"obj\":true,\n\
 		\"mem\":true,\n\
 		\"raw\":true\n\

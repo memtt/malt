@@ -24,7 +24,7 @@ namespace MALT
 /**********************************************************/
 //TODO try to put in GlobalState.
 extern bool gblHavePython;
-void initPythonInstrumentation();
+void initPythonInstrumentation(const char * script = nullptr);
 typedef int (*Py_RunMainFuncPtr) (void);
 typedef int (*Py_BytesMainFuncPtr) (int argc, char ** argv);
 

@@ -48,7 +48,7 @@ struct WrapperPythonObj {
 int pythonOnPorfile(PyObject *obj, PyFrameObject *frame, int what, PyObject *arg);
 void initPythonAllocInstrumentation(void);
 void initPythonEnterExitInstrumentation(void);
-void initPythonInstrumentation(void);
+void initPythonInstrumentation(const char * script = nullptr);
 
 }
 

@@ -248,6 +248,8 @@ std::string PythonSymbolTracker::getModulePath(const std::string & filePath) con
 		//end
 		if (this->baseDir.find(remainingPath.c_str()) != std::string::npos)
 			break;
+		if (this->programDir.find(remainingPath.c_str()) != std::string::npos)
+			break;
 
 		//get name
 		std::string dname = basename((char*)tmp.c_str());
@@ -405,11 +407,8 @@ PythonNamedCallSite PythonSymbolTracker::getNamedCallSite(LangAddress langAddr)
 }
 
 /**********************************************************/
-void PythonSymbolTracker::solveExeName(void)
+void PythonSymbolTracker::setScript(const std::string & script)
 {
-	//get path if has some
-	const std::string script = this->getPyProgramName();
-
 	//if empty exit
 	if (script.empty()) {
 		this->programDir = this->baseDir;
@@ -432,6 +431,16 @@ void PythonSymbolTracker::solveExeName(void)
 
 	//free mem
 	free((void*)scriptFullPathC);
+}
+
+/**********************************************************/
+void PythonSymbolTracker::solveExeName(void)
+{
+	//get path if has some
+	const std::string script = this->getPyProgramName();
+
+	//set script
+	this->setScript(script);
 }
 
 /**********************************************************/

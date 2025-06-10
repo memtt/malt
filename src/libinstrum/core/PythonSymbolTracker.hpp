@@ -79,6 +79,7 @@ class PythonSymbolTracker
 		void makeStackPythonDomain(Stack & stack);
 		void solveExeName(void);
 		const std::string & getScriptName(void) const;
+		void setScript(const std::string & script);
 	private:
 		LangAddress fastFrameToLangAddress(PyFrameObject * frame);
 		LangAddress slowFrameToLangAddress(PyFrameObject * frame);

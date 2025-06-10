@@ -185,7 +185,7 @@ void initPythonEnterExitInstrumentation(void)
 }
 
 /**********************************************************/
-DLL_PUBLIC void initPythonInstrumentation(void)
+DLL_PUBLIC void initPythonInstrumentation(const char * script)
 {
 	//setup env
 	LazyEnv env;
@@ -197,7 +197,10 @@ DLL_PUBLIC void initPythonInstrumentation(void)
 		initPythonEnterExitInstrumentation();
 
 	assert(gblState.profiler != nullptr);
-	gblState.profiler->getPythonSymbolTracker().solveExeName();
+	if (script == nullptr)
+		gblState.profiler->getPythonSymbolTracker().solveExeName();
+	else
+		gblState.profiler->getPythonSymbolTracker().setScript(script);
 }
 
 }
