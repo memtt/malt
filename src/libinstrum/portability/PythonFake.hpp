@@ -39,8 +39,8 @@ struct PyObject{
 	char __unused__;
 };
 struct PyCodeObject{
-	const char * co_filename{nullptr};
-	const char * co_qualname{nullptr};
+	PyObject * co_filename{nullptr};
+	PyObject * co_qualname{nullptr};
 };
 struct PyFrameObject{
 	char __unused__;
@@ -97,13 +97,13 @@ inline int PyFrame_GetLineNumber(PyFrameObject * frame) {return 0;};
 inline void PyObject_Free(void * object) {};
 inline int Py_BytesMain(int argc, char ** argv) {fprintf(stderr, "MALT: Built without python support !\n"); return EXIT_FAILURE;};
 inline void Py_DecRef(void* ptr) {};
-inline PyObject * PyUnicode_AsEncodedString(const char * value, const char * encoding, const char * mode) {return nullptr;};
+inline PyObject * PyUnicode_AsEncodedString(PyObject * value, const char * encoding, const char * mode) {return nullptr;};
 inline Py_ssize_t Py_RefCnt(PyObject* ptr) {return 0;};
 inline int Py_IsInitialized(void) {return 0;};
 
-PyObject *PySys_GetObject(const char *name) {return nullptr;};
-PyObject *PyList_GetItem(PyObject *list, Py_ssize_t index) {return nullptr;};
-PyObject *PyImport_ImportModule(const char *name) {return nullptr;};
+inline PyObject *PySys_GetObject(const char *name) {return nullptr;};
+inline PyObject *PyList_GetItem(PyObject *list, Py_ssize_t index) {return nullptr;};
+inline PyObject *PyImport_ImportModule(const char *name) {return nullptr;};
 
 }
 
