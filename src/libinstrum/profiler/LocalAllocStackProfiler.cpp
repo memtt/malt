@@ -191,7 +191,7 @@ Stack* LocalAllocStackProfiler::getStack(Language lang)
 	}
 
 	//if backtrace in python is needed
-	if (gblOptions->pythonMix && gblOptions->pythonInstru) {
+	if (gblOptions->pythonMix && gblOptions->pythonInstru && lang != LANG_PYTHON) {
 		if (cRef == pythonRef) {
 			assert(cRef == &this->enterExitStack);
 			globalProfiler->getMultiLangStackMerger().removePythonLib(mixStack, *cRef);

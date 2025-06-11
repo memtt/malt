@@ -29,6 +29,7 @@ examples/fortran/01-ifort-heap-arrays/reproducer_heap
 examples/fortran/01-ifort-heap-arrays/reproducer_stack
 examples/fortran/*/*.json
 examples/python/malt-*.json
+examples/python/*.so
 
 # cache
 /podman-cache

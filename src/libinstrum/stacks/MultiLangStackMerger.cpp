@@ -35,6 +35,8 @@ void MultiLangStackMerger::checkPython(void)
 		std::string fname = basename(entry.file.c_str());
 		bool islib = (fname.find("libpython3") == 0 && entry.file.find(".so") != std::string::npos);
 		bool isexe = (fname.find("python3") == 0);
+		//It is loaded dyanmically, need to catch dlsym to get it :(
+		//bool isPyCtypes = (entry.file.find("lib-dynload/_ctypes.cpython") == 0);
 		if (islib || isexe) {
 			//fprintf(stderr, "MALT: Python lib is in %s [%p , %p]\n", fname.c_str(), entry.lower, entry.upper);
 			this->pythonRange.add(entry.lower, entry.upper);
