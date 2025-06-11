@@ -105,6 +105,7 @@ struct SummaryV2
 	} summary;
 	SummaryWarnings summaryWarnings;
 	std::vector<MALTFormat::ThreadsStats> threadStats;
+	MALTFormat::Domains summaryDomains;
 };
 
 /**********************************************************/

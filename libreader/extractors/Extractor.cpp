@@ -349,6 +349,7 @@ void to_json(nlohmann::json & json, const SummaryV2 & value)
 	};
 	json["summaryWarnings"] = value.summaryWarnings;
 	json["threadStats"] = value.threadStats;
+	json["summaryDomains"] = value.summaryDomains;
 }
 
 /**********************************************************/
@@ -723,6 +724,9 @@ SummaryV2 Extractor::getSummaryV2(void) const
 	//thread stats
 	for (const auto & it : this->profile.threads)
 		ret.threadStats.emplace_back(it.stats);
+
+	//domains
+	ret.summaryDomains = this->profile.domains;
 
 	//return
 	return ret;
