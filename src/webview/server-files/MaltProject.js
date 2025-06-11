@@ -616,7 +616,7 @@ MaltProject.prototype.getSummaryV2 = function()
 
 	//domains
 	ret.summaryDomains = {
-		"counter": this.data.domains.counters,
+		"counters": this.data.domains.counters,
 		"mem": this.data.domains.mem,
 	};
 
