@@ -1,5 +1,5 @@
 all:
-	gcc -fPIC -shared step-3-calling-c-func.c -o libstep-3-calling-c-func.so
+	gcc -g -fPIC -shared step-3-calling-c-func.c -o libstep-3-calling-c-func.so
 
 ############################################################
 malt:

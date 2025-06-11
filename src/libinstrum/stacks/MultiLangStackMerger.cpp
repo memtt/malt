@@ -65,22 +65,24 @@ void MultiLangStackMerger::mixPythonAndCStack(Stack& outStack, const Stack & cSt
 
 	//loop on C stack
 	size_t cur = 0;
-	bool alreadyCopyPythonStack = false;
-	for (size_t i = 0 ; i < cStack.getSize() ; i++) {
+	size_t alreadyCopyPythonStack = 0;//I don't like this "bidouille" to not take the fist function call from the python binary
+	for (ssize_t i = cStack.getSize() - 1 ; i >= 0 ; i--) {
 		//if encounter python
-		if (this->isPythonLibAddr(cStack[i]) && !alreadyCopyPythonStack) {
+		bool isPython = this->isPythonLibAddr(cStack[i]);
+		if (isPython)
+			alreadyCopyPythonStack++;
+		//if not already copied (this means we do not handle C => ptyhon => python ... renetrance yet)
+		//and not first to keep start of the binary
+		if (isPython && alreadyCopyPythonStack == 2) {
 			//copy
-			for (size_t j = 0 ; j < pythonStack.getSize() ; j++)
+			for (ssize_t j = pythonStack.getSize() - 1 ; j >= 0 ; j--)
 				if (pythonStack[j].getDomain() == DOMAIN_PYTHON)
 					outStack.stack[cur++] = pythonStack[j];
 			//skip
-			while (i < cStack.getSize() && this->isPythonLibAddr(cStack[i])) {
-				i++;
+			while (i >= 0 && this->isPythonLibAddr(cStack[i])) {
+				i--;
 			}
-
-			//already copied (this means we do not handle C => ptyhon => python ... renetrance yet)
-			alreadyCopyPythonStack = true;
-		} else {
+		} else if (!isPython) {
 			outStack.stack[cur++] = cStack[i];
 		}
 	}

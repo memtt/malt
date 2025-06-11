@@ -40,6 +40,7 @@
 #include <core/VmaTracker.hpp>
 #include <core/PythonSymbolTracker.hpp>
 #include <core/Trigger.hpp>
+#include <core/DomainCounters.hpp>
 #include <stacks/MultiLangStackMerger.hpp>
 //from v2
 #include <stack-tree/from-v2/RLockFreeTree.hpp>
@@ -124,15 +125,15 @@ class AllocStackProfiler
 {
 	public:
 		AllocStackProfiler(const Options & option, StackMode mode = STACK_MODE_BACKTRACE,bool threadSafe = false);
-		void onMalloc(void * ptr,size_t size,Stack * userStack = NULL);
-		void onCalloc(void * ptr,size_t nmemb,size_t size,Stack * userStack = NULL);
+		void onMalloc(void * ptr,size_t size,Stack * userStack = NULL, AllocDomain domain = DOMAIN_C_ALLOC);
+		void onCalloc(void * ptr,size_t nmemb,size_t size,Stack * userStack = NULL, AllocDomain domain = DOMAIN_C_ALLOC);
 		void onPrepareRealloc(void * oldPtr,Stack * userStack = NULL);
 		void onMmap(void * ptr,size_t size,Stack * userStack = NULL);
 		void onMunmap(void * ptr,size_t size,Stack * userStack = NULL);
 		void onLLMmap(void * ptr,size_t size,Stack * userStack = NULL);
 		void onLLMunmap(void * ptr,size_t size,Stack * userStack = NULL);
-		size_t onRealloc(void* oldPtr, void* ptr, size_t newSize, MALT::Stack* userStack = 0);
-		void onFree(void * ptr,Stack * userStack = NULL);
+		size_t onRealloc(void* oldPtr, void* ptr, size_t newSize, MALT::Stack* userStack = 0, AllocDomain domain = DOMAIN_C_ALLOC);
+		void onFree(void * ptr,Stack * userStack = NULL, AllocDomain domain = DOMAIN_C_ALLOC);
 		void onExit(void);
 		void onEnterFunction(void * funcAddr);
 		void onExitFunction(void * funcAddr);
@@ -155,8 +156,8 @@ class AllocStackProfiler
 		friend void convertToJson(htopml::JsonState& json, const AllocStackProfiler& value);
 	private:
 		MMCallStackNode getStackNode(MALT::Stack* userStack = 0);
-		void onAllocEvent(void* ptr, size_t size, Stack* userStack, MMCallStackNode* callStackNode = NULL, bool doLock = true);
-		  size_t onFreeEvent(void* ptr, MALT::Stack* userStack, MALT::MMCallStackNode* callStackNode = 0, bool doLock = true);
+		void onAllocEvent(void* ptr, size_t size, Stack* userStack, MMCallStackNode* callStackNode = NULL, bool doLock = true, AllocDomain domain = DOMAIN_C_ALLOC);
+		size_t onFreeEvent(void* ptr, MALT::Stack* userStack, MALT::MMCallStackNode* callStackNode = 0, bool doLock = true, AllocDomain domain = DOMAIN_C_ALLOC);
 		void solvePerThreadSymbols(void);
 		void memOpsLevels(void);
 		void updatePeakInfoOfStacks(void);
@@ -212,6 +213,7 @@ class AllocStackProfiler
 		std::atomic<size_t> maltJeMallocMem{0};
 		Trigger trigger;
 		StackReducer reducer{5};
+		DomainCounters domains;
 };
 
 }

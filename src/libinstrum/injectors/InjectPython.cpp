@@ -29,74 +29,74 @@ PyMemAllocatorEx gblPythonObjAlloc;
 /**********************************************************/
 void* WrapperPythonRaw::malloc(void* ctx, size_t size)
 {
-	return malt_wrap_python_malloc(gblPythonRawAlloc.ctx, size, gblPythonRawAlloc.malloc, MALT_RETADDR);
+	return malt_wrap_python_malloc(gblPythonRawAlloc.ctx, size, gblPythonRawAlloc.malloc, MALT_RETADDR, DOMAIN_PYTHON_RAW);
 }
 
 /**********************************************************/
 void WrapperPythonRaw::free(void* ctx, void* ptr)
 {
 	if (ptr != nullptr)
-		return malt_wrap_python_free(gblPythonRawAlloc.ctx, ptr, gblPythonRawAlloc.free, MALT_RETADDR);
+		return malt_wrap_python_free(gblPythonRawAlloc.ctx, ptr, gblPythonRawAlloc.free, MALT_RETADDR, DOMAIN_PYTHON_RAW);
 }
 
 /**********************************************************/
 void* WrapperPythonRaw::calloc(void* ctx, size_t nelem, size_t elsize)
 {
-	return malt_wrap_python_calloc(gblPythonRawAlloc.ctx, nelem, elsize, gblPythonRawAlloc.calloc, MALT_RETADDR);
+	return malt_wrap_python_calloc(gblPythonRawAlloc.ctx, nelem, elsize, gblPythonRawAlloc.calloc, MALT_RETADDR, DOMAIN_PYTHON_RAW);
 }
 
 /**********************************************************/
 void* WrapperPythonRaw::realloc(void* ctx, void *ptr, size_t new_size)
 {
-	return malt_wrap_python_realloc(gblPythonRawAlloc.ctx, ptr, new_size, gblPythonRawAlloc.realloc, MALT_RETADDR);
+	return malt_wrap_python_realloc(gblPythonRawAlloc.ctx, ptr, new_size, gblPythonRawAlloc.realloc, MALT_RETADDR, DOMAIN_PYTHON_RAW);
 }
 
 /**********************************************************/
 void* WrapperPythonMem::malloc(void* ctx, size_t size)
 {
-	return malt_wrap_python_malloc(gblPythonMemAlloc.ctx, size, gblPythonMemAlloc.malloc, MALT_RETADDR);
+	return malt_wrap_python_malloc(gblPythonMemAlloc.ctx, size, gblPythonMemAlloc.malloc, MALT_RETADDR, DOMAIN_PYTHON_MEM);
 }
 
 /**********************************************************/
 void WrapperPythonMem::free(void* ctx, void* ptr)
 {
-	return malt_wrap_python_free(gblPythonMemAlloc.ctx, ptr, gblPythonMemAlloc.free, MALT_RETADDR);
+	return malt_wrap_python_free(gblPythonMemAlloc.ctx, ptr, gblPythonMemAlloc.free, MALT_RETADDR, DOMAIN_PYTHON_MEM);
 }
 
 /**********************************************************/
 void* WrapperPythonMem::calloc(void* ctx, size_t nelem, size_t elsize)
 {
-	return malt_wrap_python_calloc(gblPythonMemAlloc.ctx, nelem, elsize, gblPythonMemAlloc.calloc, MALT_RETADDR);
+	return malt_wrap_python_calloc(gblPythonMemAlloc.ctx, nelem, elsize, gblPythonMemAlloc.calloc, MALT_RETADDR, DOMAIN_PYTHON_MEM);
 }
 
 /**********************************************************/
 void* WrapperPythonMem::realloc(void* ctx, void *ptr, size_t new_size)
 {
-	return malt_wrap_python_realloc(gblPythonMemAlloc.ctx, ptr, new_size, gblPythonMemAlloc.realloc, MALT_RETADDR);
+	return malt_wrap_python_realloc(gblPythonMemAlloc.ctx, ptr, new_size, gblPythonMemAlloc.realloc, MALT_RETADDR, DOMAIN_PYTHON_MEM);
 }
 
 /**********************************************************/
 void* WrapperPythonObj::malloc(void* ctx, size_t size)
 {
-	return malt_wrap_python_malloc(gblPythonObjAlloc.ctx, size, gblPythonObjAlloc.malloc, MALT_RETADDR);
+	return malt_wrap_python_malloc(gblPythonObjAlloc.ctx, size, gblPythonObjAlloc.malloc, MALT_RETADDR, DOMAIN_PYTHON_OBJ);
 }
 
 /**********************************************************/
 void WrapperPythonObj::free(void* ctx, void* ptr)
 {
-	return malt_wrap_python_free(gblPythonObjAlloc.ctx, ptr, gblPythonObjAlloc.free, MALT_RETADDR);
+	return malt_wrap_python_free(gblPythonObjAlloc.ctx, ptr, gblPythonObjAlloc.free, MALT_RETADDR, DOMAIN_PYTHON_OBJ);
 }
 
 /**********************************************************/
 void* WrapperPythonObj::calloc(void* ctx, size_t nelem, size_t elsize)
 {
-	return malt_wrap_python_calloc(gblPythonObjAlloc.ctx, nelem, elsize, gblPythonObjAlloc.calloc, MALT_RETADDR);
+	return malt_wrap_python_calloc(gblPythonObjAlloc.ctx, nelem, elsize, gblPythonObjAlloc.calloc, MALT_RETADDR, DOMAIN_PYTHON_OBJ);
 }
 
 /**********************************************************/
 void* WrapperPythonObj::realloc(void* ctx, void *ptr, size_t new_size)
 {
-	return malt_wrap_python_realloc(gblPythonObjAlloc.ctx, ptr, new_size, gblPythonObjAlloc.realloc, MALT_RETADDR);
+	return malt_wrap_python_realloc(gblPythonObjAlloc.ctx, ptr, new_size, gblPythonObjAlloc.realloc, MALT_RETADDR, DOMAIN_PYTHON_OBJ);
 }
 
 /**********************************************************/

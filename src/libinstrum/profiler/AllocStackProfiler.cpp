@@ -131,22 +131,22 @@ void AllocStackProfiler::setRealMallocAddr(MallocFuncPtr realMallocFunc)
 }
 
 /**********************************************************/
-void AllocStackProfiler::onMalloc(void* ptr, size_t size,Stack * userStack)
+void AllocStackProfiler::onMalloc(void* ptr, size_t size,Stack * userStack, AllocDomain domain)
 {
-	onAllocEvent(ptr,size,userStack);
+	onAllocEvent(ptr,size,userStack, nullptr, true, domain);
 }
 
 /**********************************************************/
-void AllocStackProfiler::onCalloc(void* ptr, size_t nmemb, size_t size,Stack * userStack)
+void AllocStackProfiler::onCalloc(void* ptr, size_t nmemb, size_t size,Stack * userStack, AllocDomain domain)
 {
-	onAllocEvent(ptr,size * nmemb,userStack);
+	onAllocEvent(ptr,size * nmemb,userStack, nullptr, true, domain);
 }
 
 /**********************************************************/
-void AllocStackProfiler::onFree(void* ptr,Stack * userStack)
+void AllocStackProfiler::onFree(void* ptr,Stack * userStack, AllocDomain domain)
 {
 	if (ptr != NULL)
-		onFreeEvent(ptr,userStack);
+		onFreeEvent(ptr,userStack, nullptr, true, domain);
 }
 
 /**********************************************************/
@@ -178,7 +178,7 @@ void AllocStackProfiler::destroyLocalStackProfiler(LocalAllocStackProfiler* loca
 }
 
 /**********************************************************/
-size_t AllocStackProfiler::onRealloc(void* oldPtr, void* ptr, size_t newSize,Stack * userStack)
+size_t AllocStackProfiler::onRealloc(void* oldPtr, void* ptr, size_t newSize,Stack * userStack, AllocDomain domain)
 {
 	size_t oldSize = 0;
 
@@ -188,11 +188,11 @@ size_t AllocStackProfiler::onRealloc(void* oldPtr, void* ptr, size_t newSize,Sta
 		
 		//free part
 		if (oldPtr != NULL)
-			oldSize = onFreeEvent(oldPtr,userStack,&callStackNode,false);
+			oldSize = onFreeEvent(oldPtr,userStack,&callStackNode,false, domain);
 		
 		//alloc part
 		if (newSize > 0)
-			onAllocEvent(ptr,newSize,userStack,&callStackNode,false);
+			onAllocEvent(ptr,newSize,userStack,&callStackNode,false, domain);
 		
 		//realloc
 		if (newSize > 0 && oldSize > 0 && newSize != oldSize)
@@ -220,7 +220,7 @@ size_t AllocStackProfiler::onRealloc(void* oldPtr, void* ptr, size_t newSize,Sta
 }
 
 /**********************************************************/
-void AllocStackProfiler::onAllocEvent(void* ptr, size_t size,Stack* userStack,MMCallStackNode * callStackNode,bool doLock)
+void AllocStackProfiler::onAllocEvent(void* ptr, size_t size,Stack* userStack,MMCallStackNode * callStackNode,bool doLock, AllocDomain domain)
 {
 	//locals
 	bool doDump = false;
@@ -240,6 +240,9 @@ void AllocStackProfiler::onAllocEvent(void* ptr, size_t size,Stack* userStack,MM
 		
 		//peak tracking
 		peakTracking(size);
+
+		//count
+		this->domains.countAlloc(domain, size);
 	
 		//update mem usage
 		if (options.timeProfileEnabled)
@@ -331,7 +334,7 @@ void AllocStackProfiler::onUpdateMem(const OSProcMemUsage & procMem, const OSMem
 }
 
 /**********************************************************/
-size_t AllocStackProfiler::onFreeEvent(void* ptr, MALT::Stack* userStack, MMCallStackNode* callStackNode, bool doLock)
+size_t AllocStackProfiler::onFreeEvent(void* ptr, MALT::Stack* userStack, MMCallStackNode* callStackNode, bool doLock, AllocDomain domain)
 {
 	//locals
 	ticks t = Clock::getticks();
@@ -803,6 +806,8 @@ void convertToJson(htopml::JsonState& json, const AllocStackProfiler& value)
 	json.closeFieldStruct("globals");
 	
 	json.printField("leaks",value.segTracker);
+
+	json.printField("domains", value.domains);
 
 	json.closeStruct();
 	//fprintf(stderr,"peakId : %zu\n",value.peakId);

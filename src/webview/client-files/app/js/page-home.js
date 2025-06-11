@@ -248,7 +248,15 @@ function MaltPageHome()
 		$scope.getAllocator = function() {
 			return $scope.summaryData.run.allocator;
 		}
+
+		$scope.getHumanCount = function(x) {
+			return maltHelper.humanReadable(x,1,'',false);
+		}
 		
+		$scope.getHumanMem = function(x) {
+			return maltHelper.humanReadable(x,1,'B',false);
+		}
+
 		//convert CPU freq
 		$scope.getFormattedTotalMemory = function() {
 			return maltHelper.humanReadable($scope.summaryData.system.totalMemory,1,'B',false);

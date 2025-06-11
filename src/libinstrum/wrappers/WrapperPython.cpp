@@ -43,7 +43,7 @@ namespace MALT
 #endif //MALT_ENABLE_CODE_LEAK
 
 /**********************************************************/
-void * malt_wrap_python_malloc(void * ctx, size_t size, PythonMallocFuncPtr real_malloc, void * retaddr)
+void * malt_wrap_python_malloc(void * ctx, size_t size, PythonMallocFuncPtr real_malloc, void * retaddr, AllocDomain domain)
 {
 	//get local TLS and check init
 	LazyEnv env;
@@ -60,7 +60,7 @@ void * malt_wrap_python_malloc(void * ctx, size_t size, PythonMallocFuncPtr real
 		res = real_malloc(ctx, size);
 		t = Clock::getticks() - t;
 
-		MALT_WRAPPER_LOCAL_STATE_ACTION_PYTHON(env.getLocalProfiler().onMalloc(res,size,t,MALLOC_KIND_MALLOC,LANG_PYTHON));
+		MALT_WRAPPER_LOCAL_STATE_ACTION_PYTHON(env.getLocalProfiler().onMalloc(res,size,t,MALLOC_KIND_MALLOC,LANG_PYTHON, domain));
 	} else {
 		res = real_malloc(ctx, size);
 		#ifdef MALT_ENABLE_CODE_LEAK
@@ -73,7 +73,7 @@ void * malt_wrap_python_malloc(void * ctx, size_t size, PythonMallocFuncPtr real
 }
 
 /**********************************************************/
-void malt_wrap_python_free(void * ctx, void * ptr, PythonFreeFuncPtr real_free, void * retaddr)
+void malt_wrap_python_free(void * ctx, void * ptr, PythonFreeFuncPtr real_free, void * retaddr, AllocDomain domain)
 {
 	//get local TLS and check init
 	LazyEnv env;
@@ -95,7 +95,7 @@ void malt_wrap_python_free(void * ctx, void * ptr, PythonFreeFuncPtr real_free, 
 }
 
 /**********************************************************/
-void * malt_wrap_python_calloc(void * ctx, size_t nmemb,size_t size, PythonCallocFuncPtr real_calloc, void * retaddr)
+void * malt_wrap_python_calloc(void * ctx, size_t nmemb,size_t size, PythonCallocFuncPtr real_calloc, void * retaddr, AllocDomain domain)
 {
 	//get local TLS and check init
 	LazyEnv env;
@@ -119,7 +119,7 @@ void * malt_wrap_python_calloc(void * ctx, size_t nmemb,size_t size, PythonCallo
 		res = real_calloc(ctx,nmemb,size);
 		t = Clock::getticks() - t;
 
-		MALT_WRAPPER_LOCAL_STATE_ACTION_PYTHON(env.getLocalProfiler().onCalloc(res,nmemb,size,t,LANG_PYTHON));
+		MALT_WRAPPER_LOCAL_STATE_ACTION_PYTHON(env.getLocalProfiler().onCalloc(res,nmemb,size,t,LANG_PYTHON, domain));
 	} else {
 		res = real_calloc(ctx,nmemb,size);
 		#ifdef MALT_ENABLE_CODE_LEAK
@@ -132,7 +132,7 @@ void * malt_wrap_python_calloc(void * ctx, size_t nmemb,size_t size, PythonCallo
 }
 
 /**********************************************************/
-void * malt_wrap_python_realloc(void * ctx,void * ptr,size_t size, PythonReallocFuncPtr real_realloc, void * retaddr)
+void * malt_wrap_python_realloc(void * ctx,void * ptr,size_t size, PythonReallocFuncPtr real_realloc, void * retaddr, AllocDomain domain)
 {
 	//get local TLS and check init
 	LazyEnv env;
@@ -148,7 +148,7 @@ void * malt_wrap_python_realloc(void * ctx,void * ptr,size_t size, PythonRealloc
 		res = real_realloc(ctx,ptr,size);
 		t = Clock::getticks() - t;
 
-		MALT_WRAPPER_LOCAL_STATE_ACTION_PYTHON(env.getLocalProfiler().onRealloc(ptr,res,size,t,LANG_PYTHON));
+		MALT_WRAPPER_LOCAL_STATE_ACTION_PYTHON(env.getLocalProfiler().onRealloc(ptr,res,size,t,LANG_PYTHON, domain));
 	} else {
 		res = real_realloc(ctx,ptr,size);
 		#ifdef MALT_ENABLE_CODE_LEAK
@@ -182,7 +182,7 @@ int malt_wrap_python_on_enter_exit(PyObject *obj, PyFrameObject *frame, int what
 		}*/
 
 		//for first make a backtrace
-		static bool needFirstBacktrace = false;
+		static bool needFirstBacktrace = true;
 		if (needFirstBacktrace && (what == PyTrace_C_CALL || what == PyTrace_RETURN)) {
 			env.getLocalProfiler().loadPythonFirstBacktrace();
 			needFirstBacktrace = false;

@@ -77,6 +77,41 @@
 			<td class='malt-help' ng-class="{'malt-hidden': !displaySummaryHelp}">{{entry.help}}</td><tr>
 		</tr>
 	</table>
+
+	<h2>Domains</h2>
+
+	<table class='table table-bordered'>
+		<tr>
+			<th class='malt-name'>Domain</th>
+			<th class='malt-value'>Count</th>
+			<th class='malt-value'>Cumulated allocations</th>
+			<th class='malt-help'>Description</th>
+		</tr>
+		<tr>
+			<td class='malt-name'>C</td>
+			<td class='malt-value'>{{getHumanCount(summaryData.summaryDomains.counter.c)}}</td>
+			<td class='malt-value'>{{getHumanMem(summaryData.summaryDomains.mem.c)}}</td>
+			<td class='malt-help'>The memory number of allocations made in C/C++/Fortran/Rust code.</td>
+		</tr>
+		<tr>
+			<td class='malt-name'>Python Objects</td>
+			<td class='malt-value'>{{getHumanCount(summaryData.summaryDomains.counter.pyObj)}}</td>
+			<td class='malt-value'>{{getHumanMem(summaryData.summaryDomains.mem.pyObj)}}</td>
+			<td class='malt-help'>The memory number of allocations made in Python for objects. Note it uses a dedicated fast allocator.</td>
+		</tr>
+		<tr>
+			<td class='malt-name'>Python Mem</td>
+			<td class='malt-value'>{{getHumanCount(summaryData.summaryDomains.counter.pyMem)}}</td>
+			<td class='malt-value'>{{getHumanMem(summaryData.summaryDomains.mem.pyMem)}}</td>
+			<td class='malt-help'>The memory number of allocations made in Python for mediaum sizes.</td>
+		</tr>
+		<tr>
+			<td class='malt-name'>Python Raw</td>
+			<td class='malt-value'>{{getHumanCount(summaryData.summaryDomains.counter.pyRaw)}}</td>
+			<td class='malt-value'>{{getHumanMem(summaryData.summaryDomains.mem.pyRaw)}}</td>
+			<td class='malt-help'>The memory number of allocations made in Python for large allocations, sent directly to the C allocator.</td>
+		</tr>
+	</table>
 	
 	<h2>Allocation count</h2>
 	<malthomefunclist metric='alloc.count' inclusive='false' functions='functions' limit='5'></malthomefunclist>

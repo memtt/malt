@@ -614,6 +614,12 @@ MaltProject.prototype.getSummaryV2 = function()
 	//summary warnings
 	ret.summaryWarnings = this.genSummaryWarnings(ret);
 
+	//domains
+	ret.summaryDomains = {
+		"counter": this.data.domains.counters,
+		"mem": this.data.domains.mem,
+	};
+
 	//thread stats
 	ret.threadStats = [];
 	for (var i in this.data.threads)
@@ -1099,7 +1105,7 @@ function filterExtractStacksCandidate(detailedStack,filter)
 /**********************************************************/
 /** Regexp to detect memory functions (new, new[], gnu and icc fortran alloc/free...). **/
 //--PORTED IN C++ VERSION--
-var allocFuncRegexp = /^((MALT::WrapperPython.*::.*)|(gomp_realloc)|(gomp_malloc)|(gomp_free)|(__gnu_cxx::new_allocator)|(operator new)|(operator delete)|(_Zn[wa])|(g_malloc)|(g_realloc)|(g_free)|(for__get_vm)|(for__free_vm)|([mc]alloc)|(free)|(realloc)|(memalign)|(posix_memalign)|(for_(de)?alloc_allocatable)|(for_(de)?allocate))/
+var allocFuncRegexp = /^((MALT::WrapperPython.*::.*)|(gomp_realloc)|(gomp_malloc)|(gomp_free)|(__gnu_cxx::new_allocator)|(operator new)|(operator delete)|(_Zn[wa])|(g_malloc)|(g_realloc)|(g_free)|(for__get_vm)|(for__free_vm)|([mc]alloc)|(free)|(realloc)|(memalign)|(posix_memalign)|(for_(de)?alloc_allocatable)|(for_(de)?allocate)|(default_malloc)|(default_realloc)|(default_calloc)|(default_free))/
 
 /**********************************************************/
 /** Quick check to detect memory functions. **/

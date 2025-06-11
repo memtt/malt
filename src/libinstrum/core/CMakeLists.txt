@@ -17,6 +17,7 @@ set(MALT_LIB_SRC Trigger.cpp
                  ThreadTracker.cpp
                  AllocTraceFile.cpp
                  SegmentTracker.cpp
+				 DomainCounters.cpp
                  ValgrindOutput.cpp
                  StackSizeTracker.cpp
                  StackSizeAnalyser.cpp

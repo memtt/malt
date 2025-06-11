@@ -4,14 +4,15 @@
 import numpy
 
 ###########################################################
-N = 400000
+N = 4000000
 
 ###########################################################
 def gen_vector(factor: float):
-    a = [None] * N
+    a = numpy.ones(N, dtype=numpy.float64)
+    k = 0
     for k in range(N):
         a[k] = k * factor
-    return numpy.array(a)
+    return a
 
 ###########################################################
 def main():

@@ -62,7 +62,7 @@ void * MALT::malt_wrap_malloc(size_t size, const MallocFuncPtr & real_malloc, vo
 		initPythonLazy();
 
 		//instru
-		MALT_WRAPPER_LOCAL_STATE_ACTION(env.getLocalProfiler().onMalloc(res,size,t,MALLOC_KIND_MALLOC), retaddr);
+		MALT_WRAPPER_LOCAL_STATE_ACTION(env.getLocalProfiler().onMalloc(res,size,t,MALLOC_KIND_MALLOC, LANG_C, DOMAIN_C_ALLOC), retaddr);
 	}
 
 	//return segment to user
@@ -116,7 +116,7 @@ void * MALT::malt_wrap_calloc(size_t nmemb,size_t size, const CallocFuncPtr & re
 
 	//profile
 	if (guard.needInstrument()) {
-		MALT_WRAPPER_LOCAL_STATE_ACTION(env.getLocalProfiler().onCalloc(res,nmemb,size,t), retaddr);
+		MALT_WRAPPER_LOCAL_STATE_ACTION(env.getLocalProfiler().onCalloc(res,nmemb,size,t, LANG_C, DOMAIN_C_ALLOC), retaddr);
 	}
 
 	//return result to user
@@ -139,7 +139,7 @@ void * MALT::malt_wrap_realloc(void * ptr,size_t size, const ReallocFuncPtr & re
 	
 	//profile
 	if (guard.needInstrument()) {
-		MALT_WRAPPER_LOCAL_STATE_ACTION(env.getLocalProfiler().onRealloc(ptr,res,size,t), retaddr);
+		MALT_WRAPPER_LOCAL_STATE_ACTION(env.getLocalProfiler().onRealloc(ptr,res,size,t, LANG_C, DOMAIN_C_ALLOC), retaddr);
 	}
 	
 	return res;
@@ -161,7 +161,7 @@ int MALT::malt_wrap_posix_memalign(void **memptr, size_t alignment, size_t size,
 
 	//profile
 	if (guard.needInstrument()) {
-		MALT_WRAPPER_LOCAL_STATE_ACTION(env.getLocalProfiler().onMalloc(*memptr,size,t,MALLOC_KIND_POSIX_MEMALIGN), retaddr);
+		MALT_WRAPPER_LOCAL_STATE_ACTION(env.getLocalProfiler().onMalloc(*memptr,size,t,MALLOC_KIND_POSIX_MEMALIGN, LANG_C, DOMAIN_C_ALLOC), retaddr);
 	}
 
 	//return segment to user
@@ -184,7 +184,7 @@ void * MALT::malt_wrap_aligned_alloc(size_t alignment, size_t size, const Aligne
 
 	//profile
 	if (guard.needInstrument()) {
-		MALT_WRAPPER_LOCAL_STATE_ACTION(env.getLocalProfiler().onMalloc(res,size,t,MALLOC_KIND_ALIGNED_ALLOC), retaddr);
+		MALT_WRAPPER_LOCAL_STATE_ACTION(env.getLocalProfiler().onMalloc(res,size,t,MALLOC_KIND_ALIGNED_ALLOC, LANG_C, DOMAIN_C_ALLOC), retaddr);
 	}
 
 	//return segment to user
@@ -207,7 +207,7 @@ void *MALT::malt_wrap_memalign(size_t alignment, size_t size, const MemalignFunc
 
 	//profile
 	if (guard.needInstrument()) {
-		MALT_WRAPPER_LOCAL_STATE_ACTION(env.getLocalProfiler().onMalloc(res,size,t,MALLOC_KIND_POSIX_MEMALIGN), retaddr);
+		MALT_WRAPPER_LOCAL_STATE_ACTION(env.getLocalProfiler().onMalloc(res,size,t,MALLOC_KIND_POSIX_MEMALIGN, LANG_C, DOMAIN_C_ALLOC), retaddr);
 	}
 
 	//return segment to user
@@ -230,7 +230,7 @@ void * MALT::malt_wrap_valloc(size_t size, const VallocFuncPtr & real_aligned_va
 
 	//profile
 	if (guard.needInstrument()) {
-		MALT_WRAPPER_LOCAL_STATE_ACTION(env.getLocalProfiler().onMalloc(res,size,t,MALLOC_KIND_VALLOC), retaddr);
+		MALT_WRAPPER_LOCAL_STATE_ACTION(env.getLocalProfiler().onMalloc(res,size,t,MALLOC_KIND_VALLOC, LANG_C, DOMAIN_C_ALLOC), retaddr);
 	}
 
 	//return segment to user
@@ -253,7 +253,7 @@ void *MALT::malt_wrap_pvalloc(size_t size, const PVallocFuncPtr & real_pvalloc, 
 
 	//profile
 	if (guard.needInstrument()) {
-		MALT_WRAPPER_LOCAL_STATE_ACTION(env.getLocalProfiler().onMalloc(res,size,t,MALLOC_KIND_PVALLOC), retaddr);
+		MALT_WRAPPER_LOCAL_STATE_ACTION(env.getLocalProfiler().onMalloc(res,size,t,MALLOC_KIND_PVALLOC, LANG_C, DOMAIN_C_ALLOC), retaddr);
 	}
 
 	//return segment to user

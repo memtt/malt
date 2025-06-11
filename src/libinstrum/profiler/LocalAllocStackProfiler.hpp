@@ -21,6 +21,7 @@
 #include <stacks/BacktracePythonStack.hpp>
 #include "AllocStackProfiler.hpp"
 #include "core/StackSizeAnalyser.hpp"
+#include "core/DomainCounters.hpp"
 
 /**********************************************************/
 
@@ -83,10 +84,10 @@ class LocalAllocStackProfiler
 	public:
 		LocalAllocStackProfiler(AllocStackProfiler * globalProfiler);
 		~LocalAllocStackProfiler(void);
-		void onMalloc(void* res, size_t size, ticks time, MALT::MallocKind kind, Language lang = LANG_C);
+		void onMalloc(void* res, size_t size, ticks time, MALT::MallocKind kind, Language lang = LANG_C, AllocDomain domain = DOMAIN_C_ALLOC);
 		void onFree(void* ptr, ticks time, Language lang = LANG_C);
-		void onCalloc(void * res,size_t nmemb,size_t size, ticks time, Language lang = LANG_C);
-		void onRealloc(void* ptr, void* res, size_t size, ticks time, Language lang = LANG_C);
+		void onCalloc(void * res,size_t nmemb,size_t size, ticks time, Language lang = LANG_C, AllocDomain domain = DOMAIN_C_ALLOC);
+		void onRealloc(void* ptr, void* res, size_t size, ticks time, Language lang = LANG_C, AllocDomain domain = DOMAIN_C_ALLOC);
 		void onMmap(void * ptr, size_t size,int flags,int fd);
 		void onMunmap(void * ptr, size_t size);
 		inline void onEnterFunc(LangAddress this_fn,LangAddress call_site,bool ignoreStack=false);
@@ -109,7 +110,7 @@ class LocalAllocStackProfiler
 		/** Object used to follow the local stack for the backtrace mode. **/
 		BacktraceStack backtraceStack;
 		/** Final mixed stack to cache faster. */
-		Stack mixStack{STACK_ORDER_ASC};
+		Stack mixStack{STACK_ORDER_DESC};
 		/** Object used to follow the local stack for backtrace mode in python */
 		BacktracePythonStack backtracePythonStack;
 		/** Follow size of stack in enter-exit mode. **/

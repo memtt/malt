@@ -410,8 +410,8 @@ app.post('/source-file',function(req, res){
 		res.send(500, 'Missing path POST parameter !');
 		res.end();
 	} else if (maltProject.isSourceFile(req.body.path)) {
-		res.sendFile(req.body.path, {}, (err) => {
-			console.log("Fail to send : " + err);
+		res.sendFile(path.resolve(req.body.path), {}, (err) => {
+			console.log("Fail to send: " + req.body.path + ": " + err);
 		});
 	} else {
 		res.send(500, 'Invalid source file path !');

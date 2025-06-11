@@ -55,10 +55,10 @@ LocalAllocStackProfiler::~LocalAllocStackProfiler(void)
 /**********************************************************/
 //TODO: Pass Stack*, may be nullptr for C CallStack
 //TODO: Pass Stack* to getStack()
-void LocalAllocStackProfiler::onMalloc(void* res, size_t size, ticks time, MallocKind kind, Language lang)
+void LocalAllocStackProfiler::onMalloc(void* res, size_t size, ticks time, MallocKind kind, Language lang, AllocDomain domain)
 {
 	//check for reentrance
-	CODE_TIMING("mallocProf",globalProfiler->onMalloc(res,size,getStack(lang)));
+	CODE_TIMING("mallocProf",globalProfiler->onMalloc(res,size,getStack(lang), domain));
 	this->cntMemOps++;
 	this->allocStats.malloc[kind].inc(size,time);
 }
@@ -73,19 +73,19 @@ void LocalAllocStackProfiler::onFree(void* ptr, ticks time, Language lang)
 }
 
 /**********************************************************/
-void LocalAllocStackProfiler::onCalloc(void * res,size_t nmemb, size_t size, ticks time, Language lang)
+void LocalAllocStackProfiler::onCalloc(void * res,size_t nmemb, size_t size, ticks time, Language lang, AllocDomain domain)
 {
 	//check for reentrance
-	CODE_TIMING("callocProf",globalProfiler->onCalloc(res,nmemb,size,getStack(lang)));
+	CODE_TIMING("callocProf",globalProfiler->onCalloc(res,nmemb,size,getStack(lang), domain));
 	this->cntMemOps++;
 	this->allocStats.calloc.inc(size,time);
 }
 
 /**********************************************************/
-void LocalAllocStackProfiler::onRealloc(void* ptr, void* res, size_t size,ticks time, Language lang)
+void LocalAllocStackProfiler::onRealloc(void* ptr, void* res, size_t size,ticks time, Language lang, AllocDomain domain)
 {
 	//check for reentrance
-	CODE_TIMING("reallocProf",globalProfiler->onRealloc(ptr,res,size,getStack(lang)));
+	CODE_TIMING("reallocProf",globalProfiler->onRealloc(ptr,res,size,getStack(lang), domain));
 	this->cntMemOps++;
 	this->allocStats.realloc.inc(size,time);
 }
@@ -149,7 +149,6 @@ void LocalAllocStackProfiler::loadPythonFirstBacktrace(void)
 {
 	CODE_TIMING("loadCurrentStack",backtracePythonStack.loadCurrentStack());
 	for (size_t i = 0 ; i < backtracePythonStack.getSize() ; i++) {
-		std::cout << backtracePythonStack[i] << std::endl;
 		this->enterExitStack.enterFunction(backtracePythonStack[i]);
 	}
 }
@@ -192,11 +191,23 @@ Stack* LocalAllocStackProfiler::getStack(Language lang)
 
 	//if backtrace in python is needed
 	if (gblOptions->pythonMix && gblOptions->pythonInstru && lang != LANG_PYTHON) {
+		//backtrace python to get last level (not captured by enter exit)
+		LangAddress currentPythonAddr;
+		if (pythonRef == &this->enterExitStack) {
+			currentPythonAddr = backtracePythonStack.getCurrentFrameAddr();
+			this->enterExitStack.enterFunction(currentPythonAddr);
+		}
+
 		if (cRef == pythonRef) {
 			assert(cRef == &this->enterExitStack);
 			globalProfiler->getMultiLangStackMerger().removePythonLib(mixStack, *cRef);
 		} else {
 			globalProfiler->getMultiLangStackMerger().mixPythonAndCStack(mixStack, *cRef, *pythonRef);
+		}
+
+		//exit last level we just added
+		if (pythonRef == &this->enterExitStack) {
+			this->enterExitStack.exitFunction(currentPythonAddr);
 		}
 		return &mixStack;
 	} else {

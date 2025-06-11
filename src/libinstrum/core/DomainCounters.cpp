@@ -1,0 +1,54 @@
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.2.6
+*    DATE     : 09/2024
+*    LICENSE  : CeCILL-C
+*    FILE     : src/lib/core/CallStackInfo.hpp
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat - 2014 - 2024
+*    AUTHOR   : Sébastien Valat (ECR) - 2014
+***********************************************************/
+
+/**********************************************************/
+//standard
+#include "DomainCounters.hpp"
+
+/**********************************************************/
+namespace MALT
+{
+
+/**********************************************************/
+DomainCounters::DomainCounters(void)
+{
+	for (size_t i = 0 ; i < ALLOC_DOMAIN_COUNT ; i++) {
+		this->counters[i] = 0;
+		this->mem[i] = 0;
+	}
+}
+
+/**********************************************************/
+DomainCounters::~DomainCounters(void)
+{
+
+}
+
+/**********************************************************/
+void convertToJson(htopml::JsonState& json, const DomainCounters & value)
+{
+	json.openStruct();
+		json.openFieldStruct("counters");
+			json.printField("c", value.counters[DOMAIN_C_ALLOC]);
+			json.printField("pyObj", value.counters[DOMAIN_PYTHON_OBJ]);
+			json.printField("pyMem", value.counters[DOMAIN_PYTHON_MEM]);
+			json.printField("pyRaw", value.counters[DOMAIN_PYTHON_RAW]);
+		json.closeFieldStruct("counters");
+		json.openFieldStruct("mem");
+			json.printField("c", value.mem[DOMAIN_C_ALLOC]);
+			json.printField("pyObj", value.mem[DOMAIN_PYTHON_OBJ]);
+			json.printField("pyMem", value.mem[DOMAIN_PYTHON_MEM]);
+			json.printField("pyRaw", value.mem[DOMAIN_PYTHON_RAW]);
+		json.closeFieldStruct("mem");
+	json.closeStruct();
+}
+
+};
