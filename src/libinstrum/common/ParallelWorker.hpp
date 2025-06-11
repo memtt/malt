@@ -29,12 +29,14 @@ bool runParallelJobs(T & jobList, int threads)
 	assert(threads > 0);
 	assert(threads < 2048);
 
-	//SKIP FOR NOW
+	//vars
 	bool finalStatus = true;
-	for (auto & job : jobList)
+
+	//SKIP FOR NOW
+	/*for (auto & job : jobList)
 		if (job.run() == false)
 			finalStatus = false;
-	return finalStatus;
+	return finalStatus;*/
 
 	//iterator
 	std::mutex mutex;
