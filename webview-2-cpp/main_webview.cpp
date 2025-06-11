@@ -12,6 +12,7 @@
 #include <iostream>
 #include <httplib.h>
 #include <vector>
+#include <fstream>
 #include "lib/BasicAuth.hpp"
 #include "api/WebProfile.hpp"
 #include "extractors/ExtractorHelpers.hpp"

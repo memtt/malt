@@ -29,6 +29,7 @@ void to_json(nlohmann::json & json, const MaltProfile & value)
 		{"memStats", value.memStats},
 		{"globals", value.globals},
 		{"leaks", value.leaks},
+		{"domains", value.domains},
 	};
 }
 
@@ -45,6 +46,7 @@ void from_json(const JsonIn & json, MaltProfile & profile)
 	assert(jsContains(json, "threads"));
 	assert(jsContains(json, "globals"));
 	assert(jsContains(json, "leaks"));
+	assert(jsContains(json, "domains"));
 	//assert(json.size() == 9);
 
 	//load
@@ -72,6 +74,8 @@ void from_json(const JsonIn & json, MaltProfile & profile)
 			json["globals"].get_to(profile.globals);
 			#pragma omp task
 			json["leaks"].get_to(profile.leaks);
+			#pragma omp task
+			json["domains"].get_to(profile.domains);
 		}
 	}
 }

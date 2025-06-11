@@ -8,47 +8,41 @@
 *    AUTHOR   : Sébastien Valat (INRIA) - 2025
 ***********************************************************/
 
-#ifndef MALT_FORMAT_MALT_PROFILE_HPP
-#define MALT_FORMAT_MALT_PROFILE_HPP
+#ifndef MALT_FORMAT_DOMAINS_HPP
+#define MALT_FORMAT_DOMAINS_HPP
 
 /**********************************************************/
 #include <string>
-#include "Run.hpp"
-#include "Config.hpp"
-#include "Stacks.hpp"
-#include "Sites.hpp"
-#include "Timeline.hpp"
-#include "Scatter.hpp"
-#include "Threads.hpp"
-#include "MemStats.hpp"
-#include "Globals.hpp"
-#include "Leaks.hpp"
-#include "Domains.hpp"
+#include <vector>
+#include "Json.hpp"
+#include "Types.hpp"
 
 /**********************************************************/
 namespace MALTFormat
 {
 
 /**********************************************************/
-struct MaltProfile
+struct DomainCounters
 {
-	Run run;
-	Config config;
-	Stacks stacks;
-	Sites sites;
-	Timeline timeline;
-	Scatter scatter;
-	Threads threads;
-	MemStats memStats;
-	Globals globals;
-	Leaks leaks;
-	Domains domains;
+	size_t c;
+	size_t pyObj;
+	size_t pyMem;
+	size_t pyRaw;
 };
 
 /**********************************************************/
-void from_json(const JsonIn & json, MaltProfile & value);
-void to_json(nlohmann::json & json, const MaltProfile & value);
+struct Domains
+{
+	DomainCounters counters;
+	DomainCounters mem;
+};
+
+/**********************************************************/
+void from_json(const JsonIn & json, DomainCounters & value);
+void from_json(const JsonIn & json, Domains & value);
+void to_json(nlohmann::json & json, const DomainCounters & value);
+void to_json(nlohmann::json & json, const Domains & value);
 
 }
 
-#endif //MALT_FORMAT_MALT_PROFILE_HPP
+#endif //MALT_FORMAT_DOMAINS_HPP

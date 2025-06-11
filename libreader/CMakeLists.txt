@@ -39,6 +39,7 @@ add_library(malt-profile SHARED
     format/MemStats.cpp
     format/Timeline.cpp
     format/Threads.cpp
+    format/Domains.cpp
     format/MaltProfile.cpp
     # EXTRACTOR
     extractors/ExtractorHelpers.cpp

@@ -114,7 +114,7 @@ FuncDescription CppDeclParser::parseCppPrototype(std::string func)
 		}
 	}
 
-	bool isFunctionParameterized = (func[func.size()-1] == '>');
+	bool isFunctionParameterized = (func[func.size()-1] == '>' && func.find("py:") == std::string::npos);
 
 	// Get function type parameters
 	if(isFunctionParameterized) {

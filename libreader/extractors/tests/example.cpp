@@ -10,6 +10,7 @@
 
 /**********************************************************/
 #include <cstdlib>
+#include <cstring>
 #include "state/malt.h"
 
 /**********************************************************/
@@ -23,6 +24,8 @@ void leaf(void)
 {
 	void * ptr1 = malloc(16);
 	void * ptr2 = malloc(1024*1024);
+	memset(ptr1, 0, 16);
+	memset(ptr2, 0, 1024*1024);
 	free(ptr1);
 	free(ptr2);
 }
