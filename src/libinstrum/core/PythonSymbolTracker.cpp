@@ -220,8 +220,8 @@ void PythonSymbolTracker::freeFrameToCallSite(TmpPythonCallSite & callsite)
 	if (strncmp((callsite.site.file + 1), "\0", 1) != 0){
 		PyObject_Free((void*) callsite.filenameObject);	
 	}*/
-	MALT::Py_DecRef((PyObject*)callsite.site.file);
-	MALT::Py_DecRef((PyObject*)callsite.site.function);
+	//MALT::Py_DecRef((PyObject*)callsite.site.file);
+	//MALT::Py_DecRef((PyObject*)callsite.site.function);
 	MALT::Py_DecRef((PyObject*)callsite.filenameObject);
 	MALT::Py_DecRef((PyObject*)callsite.framenameObject);
 	MALT::Py_DecRef((PyObject*)callsite.code);

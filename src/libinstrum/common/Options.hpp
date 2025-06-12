@@ -56,7 +56,8 @@ enum StackMode
 	STACK_MODE_BACKTRACE,
 	STACK_MODE_ENTER_EXIT_FUNC,
 	STACK_MODE_USER,
-	STACK_MODE_NONE
+	STACK_MODE_NONE,
+	STACK_MODE_PYTHON
 };
 
 /**********************************************************/

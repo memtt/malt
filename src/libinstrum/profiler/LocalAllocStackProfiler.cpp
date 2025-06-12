@@ -162,6 +162,9 @@ Stack* LocalAllocStackProfiler::getStack(Language lang)
 
 	//vars
 	bool oldInUse;
+	bool hasPythonGIL = false;
+	PyGILState_STATE pythonGilState;
+	Stack* result = nullptr;
 
 	//trivial
 	if (lang == LANG_C && stackMode == STACK_MODE_NONE)
@@ -180,6 +183,8 @@ Stack* LocalAllocStackProfiler::getStack(Language lang)
 	//backtrace in python
 	Stack * pythonRef = nullptr;
 	if (gblOptions->pythonStackEnum == STACK_MODE_BACKTRACE && MALT::Py_IsInitialized()) {
+		pythonGilState = MALT::PyGILState_Ensure();
+		hasPythonGIL = true;
 		CODE_TIMING("loadCurrentStack",backtracePythonStack.loadCurrentStack());
 		pythonRef = &backtracePythonStack;
 	} else {
@@ -189,11 +194,19 @@ Stack* LocalAllocStackProfiler::getStack(Language lang)
 		pythonRef = &this->enterExitStack;
 	}
 
+	//replace
+	if (lang == LANG_C && stackMode == STACK_MODE_PYTHON)
+		cRef = pythonRef;
+
 	//if backtrace in python is needed
 	if (gblOptions->pythonMix && gblOptions->pythonInstru && lang != LANG_PYTHON) {
 		//backtrace python to get last level (not captured by enter exit)
 		LangAddress currentPythonAddr;
 		if (pythonRef == &this->enterExitStack) {
+			if (pythonRef->getCallee().getDomain() == DOMAIN_PYTHON) {
+				pythonGilState = MALT::PyGILState_Ensure();
+				hasPythonGIL = true;
+			}
 			currentPythonAddr = backtracePythonStack.getCurrentFrameAddr();
 			this->enterExitStack.enterFunction(currentPythonAddr);
 		}
@@ -209,17 +222,23 @@ Stack* LocalAllocStackProfiler::getStack(Language lang)
 		if (pythonRef == &this->enterExitStack) {
 			this->enterExitStack.exitFunction(currentPythonAddr);
 		}
-		return &mixStack;
+		result = &mixStack;
 	} else {
 		if (lang == LANG_PYTHON && gblOptions->pythonInstru)
-			return pythonRef;
+			result = pythonRef;
 		else if (lang == LANG_C || gblOptions->pythonInstru == false)
-			return cRef;
+			result = cRef;
 		else {
 			MALT_FATAL("Invalid language, not supported !");
-			return nullptr;
+			result = nullptr;
 		}
 	}
+
+	if (hasPythonGIL)
+		MALT::PyGILState_Release(pythonGilState);
+
+	//ok
+	return result;
 }
 
 /**********************************************************/

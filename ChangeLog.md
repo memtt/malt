@@ -22,6 +22,7 @@ DEV - XX/XX/XXXX
  - Add progress bar for profile loading in webview.
  - Report the % of physical mapping of global variables.
  - Better terminal output for the webview and display + handle URL only when profile is loaded, not when not ready.
+ - Parallel solving of symbols by calling several addr2line at a time.
  - Fix NodeJs limitation to load large JSON files by increasing its allowed memory limit.
  - Fix an issue with TLS at init which induce an infinite loop in some conditions.
  - Fix some issues in the JSON file generated.

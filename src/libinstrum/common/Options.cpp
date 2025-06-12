@@ -57,7 +57,7 @@ Options::Options(void)
 	this->stackLibunwind          = false;
 	this->stackMode               = "backtrace";
 	this->stackSkip               = cstDefaultStackSkip;
-	this->stackAddr2lineBucket    = 100;
+	this->stackAddr2lineBucket    = 350;
 	this->stackAddr2lineThreads   = 8;
 	//python
 	this->pythonStack             = "enter-exit";
@@ -608,6 +608,8 @@ StackMode stackModeFromString(const std::string & value)
 		return STACK_MODE_USER;
 	else if (value == "none")
 		return STACK_MODE_NONE;
+	else if (value == "python")
+		return STACK_MODE_PYTHON;
 	else
 		MALT_FATAL_ARG("Invalid stack mode : %1").arg(value).end();
 

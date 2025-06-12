@@ -66,6 +66,8 @@ static StackMode getStackMode(Options & options)
 		ret = STACK_MODE_ENTER_EXIT_FUNC;
 	} else if (strcmp(mode,"none") == 0) {
 		ret = STACK_MODE_NONE;
+	} else if (strcmp(mode,"python") == 0) {
+		ret = STACK_MODE_PYTHON;
 	} else {
 		MALT_FATAL_ARG("Invalid mode in MALT_STACK environnement variable : '%1'! Supported : backtrace | enter-exit | none.").arg(mode).end();
 	}
