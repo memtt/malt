@@ -9,6 +9,8 @@ What is it
 MALT is a memory tool to find where you allocate your memory. It also provides you some
 statistics about memory usage and help to find memory leaks.
 
+It is done to be used on laguages : C, C++, Fortran, Rust.
+
 ![MALT GUI](https://memtt.github.io/malt/images/screenshots/screenshot-12.png)
 
 Dependencies
@@ -263,6 +265,15 @@ on-app-using-req=      ; Dump when Requested Memory of the app reach limit in %,
 on-thread-stack-using= ; Dump when one stack reach limit in %, G, M, K (empty to disable).
 on-alloc-count=        ; Dump when number of allocations reach limit in G, M, K (empty to disable).
 watch-dog=false        ; Run an active thread spying continuouly the memory of the app, not only sometimes.
+
+[python]
+instru=true            ; Enable of disable python instrumentation.
+stack=enter-exit       ; Select the Python stack instrumentation mode (backtrace, enter-exit, none).
+mix=false              ; Mix C stack with the python ones to get a uniq tree instread of two distincts
+                       ;(not this adds overhead).
+obj=true               ; Instrument of not the OBJECT allocator domain of python.
+mem=true               ; Instrument of not the MEM allocator domain of python.
+raw=true               ; Instrument of not the RAW allocator domain of python.
 ```
 
 Option values can be overridden on the fly with command :
@@ -441,16 +452,31 @@ export MANPATH=${PREFIX}/share/man:$MANPATH
 `LD_LIBRARY_PATH` is not required as the `malt` command will use the full path to get access the
 internal `.so` file.
 
-Using internal JeMalloc
------------------------
+Profiling python
+----------------
 
-MALT also support usage of JeMalloc for its internal allocations instead of the custom very light allocator.
-It is required sometimes, mostly for python support not to consume too much memory, this is done via the option
-on `configure` : `--enable-jemalloc`.
+**Note:** This is currently **experimental**.
 
-**Note:** If you use the git repo it will require an internet connection to download it, but it is embeded
-into the officiel release archive. Otherwise you can pre-download it with : `./prepare.sh` as for the NodeJS
-dependencies.
+First you need to build MALT by enabling python support : `--enable-python` and you will need to have
+the python headers (package `python3-dev or libpython3-dev or python3-devel`) on your plateform.
+
+In practice MALT after being built will be able to run over various versions of python without beeing
+rebuilt as long as they follow the standard API which is currently stable. It should also work on the
+python delivered by [Anaconda](https://www.anaconda.com/).
+
+Supported version are currently python from **version 11**.
+
+Due to large number of memory allocations in python MALT currently have a large overhead over python.
+There is in consequence several way to instrument your app which I sort in overhead increasing order :
+
+```bash
+# Disable totaly stack analysis
+malt -o "python:stack=none;python:mix=false;stack=none;" ./my_script.py
+# Have two stack domains distinct : C & Python + skip OBJ domain (which are small object allocations)
+malt -o "python:mix=false;python:obj=false;" ./my_script.py
+# Full instrumentation
+malt -o "python:mix=true;" ./my_script.py
+```
 
 Similar tools
 -------------
@@ -476,6 +502,7 @@ If you search similar tools all over the web you might find:
 - Tracing tool for parallel programs: [EZTrace](http://eztrace.gforge.inria.fr/)
 - Find Obsolete Memory: [FOM Tools](https://gitlab.cern.ch/fom/FOM-tools/wikis/home)
 - Memray: A memory profiler support C & python. <https://bloomberg.github.io/memray/>
+- Scalene: A perf and memory profiler for C & python : <https://pypi.org/project/scalene/>
 
 If ever I missed new ones, you can also look on the repos of this person keeping an up-to-date list:
 <https://github.com/MattPD/cpplinks/blob/master/performance.tools.md>
@@ -490,6 +517,7 @@ If you search some parallel memory allocators, you can find those one on the net
 - [Hoard](http://www.hoard.org/)
 - [Lockless allocator](http://locklessinc.com/downloads/)
 - [MPC](http://mpc.hpcframework.paratools.com/) memory allocator (look into mpcframework/MPC_Allocator)
+- [mimalloc](https://github.com/microsoft/mimalloc)
 
 License
 -------
