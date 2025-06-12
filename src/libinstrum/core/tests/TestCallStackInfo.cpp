@@ -1,11 +1,11 @@
 /***********************************************************
 *    PROJECT  : MALT (MALoc Tracker)
 *    VERSION  : 1.2.6
-*    DATE     : 09/2024
+*    DATE     : 01/2022
 *    LICENSE  : CeCILL-C
-*    FILE     : src/lib/core/tests/TestCallStackInfo.cpp
+*    FILE     : src/libinstrum/core/tests/TestCallStackInfo.cpp
 *-----------------------------------------------------------
-*    AUTHOR   : Sébastien Valat - 2022 - 2024
+*    AUTHOR   : Sébastien Valat - 2022
 ***********************************************************/
 
 /**********************************************************/

@@ -1,9 +1,9 @@
 /***********************************************************
 *    PROJECT  : MALT (MALoc Tracker)
-*    VERSION  : 1.2.4
+*    VERSION  : 1.2.6
 *    DATE     : 02/2025
 *    LICENSE  : CeCILL-C
-*    FILE     : src/lib/wrappers/WrapperPthreads.hpp
+*    FILE     : src/libinstrum/wrappers/WrapperPthreads.hpp
 *-----------------------------------------------------------
 *    AUTHOR   : Sébastien Valat (INRIA) - 2025
 ***********************************************************/

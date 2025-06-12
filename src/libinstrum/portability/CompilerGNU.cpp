@@ -1,12 +1,11 @@
 /***********************************************************
 *    PROJECT  : MALT (MALoc Tracker)
 *    VERSION  : 1.2.6
-*    DATE     : 09/2024
+*    DATE     : 11/2014
 *    LICENSE  : CeCILL-C
-*    FILE     : src/lib/portability/CompilerGNU.cpp
+*    FILE     : src/libinstrum/portability/CompilerGNU.cpp
 *-----------------------------------------------------------
 *    AUTHOR   : Sébastien Valat (ECR) - 2014
-*    AUTHOR   : Sébastien Valat - 2024
 ***********************************************************/
 
 /**********************************************************/

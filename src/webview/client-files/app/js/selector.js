@@ -1,12 +1,11 @@
 /***********************************************************
 *    PROJECT  : MALT (MALoc Tracker)
 *    VERSION  : 1.2.6
-*    DATE     : 09/2024
+*    DATE     : 07/2016
 *    LICENSE  : CeCILL-C
 *    FILE     : src/webview/client-files/app/js/selector.js
 *-----------------------------------------------------------
 *    AUTHOR   : Mehdi Raza Jaffery (CERN) - 2016
-*    AUTHOR   : Sébastien Valat - 2024
 ***********************************************************/
 function MaltSelector()
 {

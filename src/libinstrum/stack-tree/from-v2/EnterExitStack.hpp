@@ -1,11 +1,12 @@
 /***********************************************************
 *    PROJECT  : MALT (MALoc Tracker)
 *    VERSION  : 1.2.6
-*    DATE     : 09/2024
+*    DATE     : 07/2024
 *    LICENSE  : CeCILL-C
-*    FILE     : src/lib/stack-tree/from-v2/EnterExitStack.hpp
+*    FILE     : src/libinstrum/stack-tree/from-v2/EnterExitStack.hpp
 *-----------------------------------------------------------
-*    AUTHOR   : Sébastien Valat - 2015 - 2024
+*    AUTHOR   : Sébastien Valat - 2015
+*    AUTHOR   : Bastien Levasseur - 2024
 ***********************************************************/
 
 #ifndef MALTV2_ENTER_EXIT_STACK_HPP

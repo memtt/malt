@@ -2,13 +2,13 @@
 ###########################################################
 #    PROJECT  : MALT (MALoc Tracker)
 #    VERSION  : 1.2.6
-#    DATE     : 09/2024
+#    DATE     : 02/2025
 #    LICENSE  : Apache 2.0
 #    FILE     : configure
 #----------------------------------------------------------
 #    AUTHOR   : Sébastien Valat (ECR) - 2014
 #    AUTHOR   : Sébastien Valat - 2018 - 2024
-#    AUTHOR   : Sébastien Valat (INRIA) - 2024
+#    AUTHOR   : Sébastien Valat (INRIA) - 2024 - 2025
 #------------------------- ORIGIN -------------------------
 #    PROJECT  : numaprof
 #    VERSION  : 1.1.2

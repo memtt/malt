@@ -1,12 +1,11 @@
 /***********************************************************
 *    PROJECT  : MALT (MALoc Tracker)
 *    VERSION  : 1.2.6
-*    DATE     : 09/2024
+*    DATE     : 11/2014
 *    LICENSE  : CeCILL-C
-*    FILE     : src/lib/tools/NMCmdReader.hpp
+*    FILE     : src/libinstrum/tools/NMCmdReader.hpp
 *-----------------------------------------------------------
 *    AUTHOR   : Sébastien Valat (ECR) - 2014
-*    AUTHOR   : Sébastien Valat - 2024
 ***********************************************************/
 
 #ifndef MALT_NM_CMD_READER_HPP

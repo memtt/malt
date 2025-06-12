@@ -1,13 +1,12 @@
 /***********************************************************
 *    PROJECT  : MALT (MALoc Tracker)
 *    VERSION  : 1.2.6
-*    DATE     : 09/2024
+*    DATE     : 04/2025
 *    LICENSE  : CeCILL-C
 *    FILE     : src/webview/server-files/SimpleIdCache.js
 *-----------------------------------------------------------
 *    AUTHOR   : Mehdi Raza Jaffery (CERN) - 2016
-*    AUTHOR   : Sébastien Valat (INRIA) - 2023
-*    AUTHOR   : Sébastien Valat - 2024
+*    AUTHOR   : Sébastien Valat (INRIA) - 2023 - 2025
 ***********************************************************/
 /**
  * SimpleIdCache class

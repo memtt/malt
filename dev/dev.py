@@ -1,13 +1,12 @@
 #!/usr/bin/env python3
 ############################################################
 #    PROJECT  : MALT (MALoc Tracker)
-#    VERSION  : 1.2.4
-#    DATE     : 10/2024
+#    VERSION  : 1.2.6
+#    DATE     : 03/2025
 #    LICENSE  : CeCILL-C
-#    FILE     : dev/build_and_test_on_distributions.py
+#    FILE     : dev/dev.py
 #-----------------------------------------------------------
-#    AUTHOR   : Sébastien Valat (INRIA) - 2024
-#    AUTHOR   : Sébastien Valat - 2024
+#    AUTHOR   : Sébastien Valat (INRIA) - 2025
 ############################################################
 
 ############################################################
@@ -73,7 +72,7 @@ def main() -> None:
     # sub command
     update_file_headers = subparser.add_parser('headers', aliases=['head'], help="UPdate file headers.")
     config_arg_parser(update_file_headers)
-    coverage.set_defaults(func=command_update_file_headers)
+    update_file_headers.set_defaults(func=command_update_file_headers)
 
     # parse
     args = parser.parse_args()

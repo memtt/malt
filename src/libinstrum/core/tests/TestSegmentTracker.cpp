@@ -3,10 +3,11 @@
 *    VERSION  : 1.2.6
 *    DATE     : 02/2025
 *    LICENSE  : CeCILL-C
-*    FILE     : src/lib/core/tests/TestSegmentTracker.cpp
+*    FILE     : src/libinstrum/core/tests/TestSegmentTracker.cpp
 *-----------------------------------------------------------
-*    AUTHOR   : Sébastien Valat - 2014 - 2024
 *    AUTHOR   : Sébastien Valat (ECR) - 2014
+*    AUTHOR   : Sébastien Valat - 2014
+*    AUTHOR   : Bastien Levasseur - 2024
 *    AUTHOR   : Sébastien Valat (INRIA) - 2025
 ***********************************************************/
 

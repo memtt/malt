@@ -1,14 +1,15 @@
 /***********************************************************
 *    PROJECT  : MALT (MALoc Tracker)
 *    VERSION  : 1.2.6
-*    DATE     : 02/2025
+*    DATE     : 03/2025
 *    LICENSE  : CeCILL-C
-*    FILE     : src/lib/core/SymbolSolver.hpp
+*    FILE     : src/libinstrum/core/SymbolSolver.hpp
 *-----------------------------------------------------------
 *    AUTHOR   : Sébastien Valat (ECR) - 2014
-*    AUTHOR   : Sébastien Valat - 2019 - 2024
 *    AUTHOR   : Sébastien Valat (ATOS) - 2019
+*    AUTHOR   : Sébastien Valat - 2021
 *    AUTHOR   : Sébastien Valat (INRIA) - 2023 - 2025
+*    AUTHOR   : Bastien Levasseur - 2024
 ***********************************************************/
 
 #ifndef MALT_FUNC_NAME_DIC_HPP

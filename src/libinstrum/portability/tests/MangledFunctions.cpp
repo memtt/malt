@@ -1,11 +1,11 @@
 /***********************************************************
 *    PROJECT  : MALT (MALoc Tracker)
-*    VERSION  : 1.2.4
-*    DATE     : 10/2024
+*    VERSION  : 1.2.6
+*    DATE     : 03/2025
 *    LICENSE  : CeCILL-C
-*    FILE     : src/lib/portability/tests/TestCompiler.cpp
+*    FILE     : src/libinstrum/portability/tests/MangledFunctions.cpp
 *-----------------------------------------------------------
-*    AUTHOR   : Sébastien Valat - 2022 - 2024
+*    AUTHOR   : Sébastien Valat (INRIA) - 2025
 ***********************************************************/
 
 #include "MangledFunctions.hpp"

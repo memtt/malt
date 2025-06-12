@@ -2,11 +2,11 @@
 ############################################################
 #    PROJECT  : MALT (MALoc Tracker)
 #    VERSION  : 1.2.6
-#    DATE     : 10/2024
+#    DATE     : 06/2025
 #    LICENSE  : CeCILL-C
 #    FILE     : dev/build_and_test_on_distributions.py
 #-----------------------------------------------------------
-#    AUTHOR   : Sébastien Valat (INRIA) - 2024
+#    AUTHOR   : Sébastien Valat (INRIA) - 2024 - 2025
 #    AUTHOR   : Sébastien Valat - 2024
 ############################################################
 

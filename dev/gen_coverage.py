@@ -4,7 +4,7 @@
 #    VERSION  : 1.2.6
 #    DATE     : 02/2025
 #    LICENSE  : CeCILL-C
-#    FILE     : dev/gen-coverage.py
+#    FILE     : dev/gen_coverage.py
 #-----------------------------------------------------------
 #    AUTHOR   : Sébastien Valat - 2022 - 2024
 #    AUTHOR   : Sébastien Valat (INRIA) - 2025

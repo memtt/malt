@@ -1,12 +1,11 @@
 /***********************************************************
 *    PROJECT  : MALT (MALoc Tracker)
-*    VERSION  : 1.2.4
-*    DATE     : 10/2024
+*    VERSION  : 1.2.6
+*    DATE     : 06/2025
 *    LICENSE  : CeCILL-C
-*    FILE     : src/lib/common/Debug.hpp
+*    FILE     : src/libinstrum/portability/PythonLazy.cpp
 *-----------------------------------------------------------
-*    AUTHOR   : Sébastien Valat (ECR) - 2014
-*    AUTHOR   : Sébastien Valat - 2015 - 2024
+*    AUTHOR   : Sébastien Valat (INRIA) - 2025
 ***********************************************************/
 
 /**********************************************************/

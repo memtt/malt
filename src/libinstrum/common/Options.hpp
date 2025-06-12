@@ -1,13 +1,14 @@
 /***********************************************************
 *    PROJECT  : MALT (MALoc Tracker)
 *    VERSION  : 1.2.6
-*    DATE     : 09/2024
+*    DATE     : 06/2025
 *    LICENSE  : CeCILL-C
-*    FILE     : src/lib/common/Options.hpp
+*    FILE     : src/libinstrum/common/Options.hpp
 *-----------------------------------------------------------
-*    AUTHOR   : Sébastien Valat - 2014 - 2024
 *    AUTHOR   : Sébastien Valat (ECR) - 2014
+*    AUTHOR   : Sébastien Valat - 2014 - 2019
 *    AUTHOR   : Sébastien Valat (CERN) - 2015
+*    AUTHOR   : Sébastien Valat (INRIA) - 2025
 ***********************************************************/
 
 #ifndef MALT_OPTIONS_HPP

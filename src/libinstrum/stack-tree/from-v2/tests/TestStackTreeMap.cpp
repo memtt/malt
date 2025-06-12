@@ -1,11 +1,12 @@
 /***********************************************************
 *    PROJECT  : MALT (MALoc Tracker)
 *    VERSION  : 1.2.6
-*    DATE     : 09/2024
+*    DATE     : 07/2024
 *    LICENSE  : CeCILL-C
-*    FILE     : src/lib/stack-tree/from-v2/tests/TestStackTreeMap.cpp
+*    FILE     : src/libinstrum/stack-tree/from-v2/tests/TestStackTreeMap.cpp
 *-----------------------------------------------------------
-*    AUTHOR   : Sébastien Valat - 2015 - 2024
+*    AUTHOR   : Sébastien Valat - 2015 - 2018
+*    AUTHOR   : Bastien Levasseur - 2024
 ***********************************************************/
 
 /**********************************************************/

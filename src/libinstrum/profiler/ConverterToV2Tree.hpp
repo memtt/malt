@@ -1,11 +1,11 @@
 /***********************************************************
 *    PROJECT  : MALT (MALoc Tracker)
 *    VERSION  : 1.2.6
-*    DATE     : 09/2024
+*    DATE     : 10/2015
 *    LICENSE  : CeCILL-C
-*    FILE     : src/lib/profiler/ConverterToV2Tree.hpp
+*    FILE     : src/libinstrum/profiler/ConverterToV2Tree.hpp
 *-----------------------------------------------------------
-*    AUTHOR   : Sébastien Valat - 2015 - 2024
+*    AUTHOR   : Sébastien Valat - 2015
 ***********************************************************/
 
 #ifndef MALT_CONVERT_TO_V2_TREE_HPP

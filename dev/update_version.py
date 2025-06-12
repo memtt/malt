@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 ############################################################
 #    PROJECT  : MALT (MALoc Tracker)
-#    VERSION  : 1.2.4
-#    DATE     : 10/2024
+#    VERSION  : 1.2.6
+#    DATE     : 03/2025
 #    LICENSE  : CeCILL-C
-#    FILE     : dev/update_file_headers.py
+#    FILE     : dev/update_version.py
 #-----------------------------------------------------------
-#    AUTHOR   : Sébastien Valat - 2024
+#    AUTHOR   : Sébastien Valat (INRIA) - 2025
 ############################################################
 
 ############################################################

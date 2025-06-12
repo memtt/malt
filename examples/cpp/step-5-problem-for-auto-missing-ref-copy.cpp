@@ -1,9 +1,9 @@
 /***********************************************************
 *    PROJECT  : MALT (MALoc Tracker)
-*    VERSION  : 1.2.4
-*    DATE     : 10/2024
+*    VERSION  : 1.2.6
+*    DATE     : 02/2025
 *    LICENSE  : CeCILL-C
-*    FILE     : src/lib/config.h.in
+*    FILE     : examples/cpp/step-5-problem-for-auto-missing-ref-copy.cpp
 *-----------------------------------------------------------
 *    AUTHOR   : Sébastien Valat (INRIA) - 2025
 ***********************************************************/

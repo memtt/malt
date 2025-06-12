@@ -1,9 +1,9 @@
 /***********************************************************
 *    PROJECT  : MALT (MALoc Tracker)
-*    VERSION  : 1.2.4
+*    VERSION  : 1.2.6
 *    DATE     : 02/2025
 *    LICENSE  : CeCILL-C
-*    FILE     : src/lib/injectors/InjectFuncEnterExit.hpp
+*    FILE     : src/libinstrum/injectors/InjectFuncEnterExit.hpp
 *-----------------------------------------------------------
 *    AUTHOR   : Sébastien Valat (INRIA) - 2025
 ***********************************************************/

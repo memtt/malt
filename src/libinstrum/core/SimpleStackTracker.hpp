@@ -1,12 +1,12 @@
 /***********************************************************
 *    PROJECT  : MALT (MALoc Tracker)
 *    VERSION  : 1.2.6
-*    DATE     : 09/2024
+*    DATE     : 01/2021
 *    LICENSE  : CeCILL-C
-*    FILE     : src/lib/core/SimpleStackTracker.hpp
+*    FILE     : src/libinstrum/core/SimpleStackTracker.hpp
 *-----------------------------------------------------------
-*    AUTHOR   : Sébastien Valat - 2014 - 2024
 *    AUTHOR   : Sébastien Valat (ECR) - 2014
+*    AUTHOR   : Sébastien Valat - 2014 - 2021
 ***********************************************************/
 
 #ifndef MALT_SIMPLE_BACKTRACE_STORAGE_HPP

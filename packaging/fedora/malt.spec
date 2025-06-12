@@ -1,11 +1,11 @@
 ############################################################
 #    PROJECT  : MALT (MALoc Tracker)
 #    VERSION  : 1.2.6
-#    DATE     : 09/2024
+#    DATE     : 09/2019
 #    LICENSE  : CeCILL-C
 #    FILE     : packaging/fedora/malt.spec
 #-----------------------------------------------------------
-#    AUTHOR   : Sébastien Valat - 2015 - 2024
+#    AUTHOR   : Sébastien Valat - 2015 - 2019
 #    AUTHOR   : Tru Huynh - 2018
 ############################################################
 

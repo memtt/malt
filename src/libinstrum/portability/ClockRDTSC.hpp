@@ -1,12 +1,11 @@
 /***********************************************************
 *    PROJECT  : MALT (MALoc Tracker)
-*    VERSION  : 1.2.4
-*    DATE     : 10/2024
+*    VERSION  : 1.2.6
+*    DATE     : 02/2025
 *    LICENSE  : CeCILL-C
-*    FILE     : src/lib/portability/CompilerGNU.hpp
+*    FILE     : src/libinstrum/portability/ClockRDTSC.hpp
 *-----------------------------------------------------------
-*    AUTHOR   : Sébastien Valat (ECR) - 2014
-*    AUTHOR   : Sébastien Valat - 2024
+*    AUTHOR   : Sébastien Valat (INRIA) - 2025
 ***********************************************************/
 
 #ifndef MALT_COMPILER_CLOCK_RDTSC_HPP

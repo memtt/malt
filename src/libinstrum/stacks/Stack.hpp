@@ -1,12 +1,14 @@
 /***********************************************************
 *    PROJECT  : MALT (MALoc Tracker)
 *    VERSION  : 1.2.6
-*    DATE     : 09/2024
+*    DATE     : 05/2025
 *    LICENSE  : CeCILL-C
-*    FILE     : src/lib/stacks/Stack.hpp
+*    FILE     : src/libinstrum/stacks/Stack.hpp
 *-----------------------------------------------------------
-*    AUTHOR   : Sébastien Valat - 2014 - 2024
 *    AUTHOR   : Sébastien Valat (ECR) - 2014
+*    AUTHOR   : Sébastien Valat - 2014
+*    AUTHOR   : Bastien Levasseur - 2024
+*    AUTHOR   : Sébastien Valat (INRIA) - 2025
 ***********************************************************/
 
 #ifndef MALT_STACK_H

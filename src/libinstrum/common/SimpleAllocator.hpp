@@ -1,12 +1,13 @@
 /***********************************************************
 *    PROJECT  : MALT (MALoc Tracker)
 *    VERSION  : 1.2.6
-*    DATE     : 09/2024
+*    DATE     : 05/2025
 *    LICENSE  : CeCILL-C
-*    FILE     : src/lib/common/SimpleAllocator.hpp
+*    FILE     : src/libinstrum/common/SimpleAllocator.hpp
 *-----------------------------------------------------------
-*    AUTHOR   : Sébastien Valat - 2014 - 2024
 *    AUTHOR   : Sébastien Valat (ECR) - 2014
+*    AUTHOR   : Sébastien Valat - 2014 - 2018
+*    AUTHOR   : Sébastien Valat (INRIA) - 2025
 ***********************************************************/
 
 #ifndef MALT_SIMPLE_ALLOCATOR_HPP

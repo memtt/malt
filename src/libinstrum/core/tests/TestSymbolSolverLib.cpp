@@ -1,11 +1,11 @@
 /***********************************************************
 *    PROJECT  : MALT (MALoc Tracker)
 *    VERSION  : 1.2.6
-*    DATE     : 09/2024
+*    DATE     : 03/2020
 *    LICENSE  : CeCILL-C
-*    FILE     : src/lib/core/tests/TestSymbolSolverLib.cpp
+*    FILE     : src/libinstrum/core/tests/TestSymbolSolverLib.cpp
 *-----------------------------------------------------------
-*    AUTHOR   : Sébastien Valat - 2020 - 2024
+*    AUTHOR   : Sébastien Valat - 2020
 ***********************************************************/
 /********************  HEADERS  *********************/
 #include <stacks/BacktraceStack.hpp>

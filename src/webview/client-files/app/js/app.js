@@ -1,14 +1,13 @@
 /***********************************************************
 *    PROJECT  : MALT (MALoc Tracker)
 *    VERSION  : 1.2.6
-*    DATE     : 09/2024
+*    DATE     : 07/2016
 *    LICENSE  : CeCILL-C
 *    FILE     : src/webview/client-files/app/js/app.js
 *-----------------------------------------------------------
 *    AUTHOR   : Sébastien Valat (ECR) - 2014 - 2015
 *    AUTHOR   : Sébastien Valat (CERN) - 2015
 *    AUTHOR   : Mehdi Raza Jaffery (CERN) - 2016
-*    AUTHOR   : Sébastien Valat - 2024
 ***********************************************************/
 var maltApp = angular.module('malt.app', [
   'ngRoute',

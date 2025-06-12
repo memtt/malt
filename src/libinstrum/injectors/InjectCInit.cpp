@@ -1,9 +1,9 @@
 /***********************************************************
 *    PROJECT  : MALT (MALoc Tracker)
-*    VERSION  : 1.2.4
+*    VERSION  : 1.2.6
 *    DATE     : 02/2025
 *    LICENSE  : CeCILL-C
-*    FILE     : src/lib/injectors/InjectCInit.cpp
+*    FILE     : src/libinstrum/injectors/InjectCInit.cpp
 *-----------------------------------------------------------
 *    AUTHOR   : Sébastien Valat (INRIA) - 2025
 ***********************************************************/

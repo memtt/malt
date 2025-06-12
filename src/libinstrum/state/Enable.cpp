@@ -1,9 +1,9 @@
 /***********************************************************
 *    PROJECT  : MALT (MALoc Tracker)
-*    VERSION  : 1.2.4
-*    DATE     : 02/2025
+*    VERSION  : 1.2.6
+*    DATE     : 03/2025
 *    LICENSE  : CeCILL-C
-*    FILE     : ./src/lib/instrum/wrapper/GlobalState.cpp
+*    FILE     : src/libinstrum/state/Enable.cpp
 *-----------------------------------------------------------
 *    AUTHOR   : Sébastien Valat (INRIA) - 2025
 ***********************************************************/

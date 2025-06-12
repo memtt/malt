@@ -1,12 +1,12 @@
 /***********************************************************
 *    PROJECT  : MALT (MALoc Tracker)
 *    VERSION  : 1.2.6
-*    DATE     : 09/2024
+*    DATE     : 10/2014
 *    LICENSE  : CeCILL-C
-*    FILE     : src/lib/tests/TestFastBufferedStream.cpp
+*    FILE     : src/libinstrum/tests/TestFastBufferedStream.cpp
 *-----------------------------------------------------------
-*    AUTHOR   : Sébastien Valat - 2014 - 2024
 *    AUTHOR   : Sébastien Valat (ECR) - 2014
+*    AUTHOR   : Sébastien Valat - 2014
 ***********************************************************/
 
 /**********************************************************/

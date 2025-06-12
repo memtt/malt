@@ -1,11 +1,10 @@
 ############################################################
 #    PROJECT  : MALT (MALoc Tracker)
 #    VERSION  : 1.2.6
-#    DATE     : 10/2024
+#    DATE     : 09/2024
 #    LICENSE  : CeCILL-C
 #    FILE     : cmake/FindNpm.cmake
 #-----------------------------------------------------------
-#    AUTHOR   : Sébastien Valat - 2024
 #    AUTHOR   : Antoine Bernard (crans.org) - 2024
 ############################################################
 

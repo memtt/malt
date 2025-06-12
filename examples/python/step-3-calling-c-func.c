@@ -1,5 +1,18 @@
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.2.6
+*    DATE     : 06/2025
+*    LICENSE  : CeCILL-C
+*    FILE     : examples/python/step-3-calling-c-func.c
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat (INRIA) - 2025
+***********************************************************/
+
+/**********************************************************/
 #include <stdio.h>
 #include <stdlib.h>
+
+/**********************************************************/
 // cmult.c
 float make_allocation_inside_c_func(int int_param, float float_param) {
 	float return_value = int_param * float_param;

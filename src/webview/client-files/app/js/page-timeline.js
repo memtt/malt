@@ -1,14 +1,15 @@
 /***********************************************************
 *    PROJECT  : MALT (MALoc Tracker)
 *    VERSION  : 1.2.6
-*    DATE     : 09/2024
+*    DATE     : 05/2025
 *    LICENSE  : CeCILL-C
 *    FILE     : src/webview/client-files/app/js/page-timeline.js
 *-----------------------------------------------------------
-*    AUTHOR   : Sébastien Valat - 2014 - 2024
 *    AUTHOR   : Sébastien Valat (ECR) - 2014 - 2015
+*    AUTHOR   : Sébastien Valat - 2014 - 2016
 *    AUTHOR   : Mehdi Raza Jaffery (CERN) - 2016
 *    AUTHOR   : Sébastien Valat (DDN) - 2022
+*    AUTHOR   : Sébastien Valat (INRIA) - 2025
 ***********************************************************/
 function MaltPageTimeline()
 {

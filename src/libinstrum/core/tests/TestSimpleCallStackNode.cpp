@@ -3,7 +3,7 @@
 *    VERSION  : 1.2.6
 *    DATE     : 02/2025
 *    LICENSE  : CeCILL-C
-*    FILE     : src/lib/core/tests/TestSimpleCallStackNode.cpp
+*    FILE     : src/libinstrum/core/tests/TestSimpleCallStackNode.cpp
 *-----------------------------------------------------------
 *    AUTHOR   : Sébastien Valat (INRIA) - 2025
 ***********************************************************/

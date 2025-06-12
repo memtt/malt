@@ -1,12 +1,12 @@
 /***********************************************************
 *    PROJECT  : MALT (MALoc Tracker)
 *    VERSION  : 1.2.6
-*    DATE     : 09/2024
+*    DATE     : 06/2025
 *    LICENSE  : CeCILL-C
-*    FILE     : src/lib/profiler/LocalAllocStackProfiler.cpp
+*    FILE     : src/libinstrum/profiler/LocalAllocStackProfiler.cpp
 *-----------------------------------------------------------
-*    AUTHOR   : Sébastien Valat - 2014 - 2024
 *    AUTHOR   : Sébastien Valat (ECR) - 2014
+*    AUTHOR   : Sébastien Valat - 2014
 *    AUTHOR   : Bastien Levasseur - 2024
 *    AUTHOR   : Sébastien Valat (INRIA) - 2025
 ***********************************************************/

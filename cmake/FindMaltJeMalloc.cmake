@@ -1,12 +1,11 @@
 ############################################################
 #    PROJECT  : MALT (MALoc Tracker)
-#    VERSION  : 1.2.4
-#    DATE     : 10/2024
+#    VERSION  : 1.2.6
+#    DATE     : 03/2025
 #    LICENSE  : CeCILL-C
-#    FILE     : cmake/FindLibunwind.cmake
+#    FILE     : cmake/FindMaltJeMalloc.cmake
 #-----------------------------------------------------------
-#    AUTHOR   : Sébastien Valat (ECR) - 2014
-#    AUTHOR   : Sébastien Valat - 2020 - 2024
+#    AUTHOR   : Sébastien Valat (INRIA) - 2025
 ############################################################
 
 ############################################################

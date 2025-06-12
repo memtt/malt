@@ -1,12 +1,13 @@
 /***********************************************************
 *    PROJECT  : MALT (MALoc Tracker)
 *    VERSION  : 1.2.6
-*    DATE     : 09/2024
+*    DATE     : 04/2025
 *    LICENSE  : CeCILL-C
 *    FILE     : src/webview/server-files/CppDeclParser.js
 *-----------------------------------------------------------
 *    AUTHOR   : Mehdi Raza Jaffery (CERN) - 2016
-*    AUTHOR   : Sébastien Valat - 2019 - 2024
+*    AUTHOR   : Sébastien Valat - 2019
+*    AUTHOR   : Sébastien Valat (INRIA) - 2025
 ***********************************************************/
 /**
  * A C++ Method Declaration parser

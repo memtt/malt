@@ -1,3 +1,12 @@
+!-----------------------------------------------------------
+!    PROJECT  : MALT (MALoc Tracker)
+!    VERSION  : 1.2.6
+!    DATE     : 04/2025
+!    LICENSE  : CeCILL-C
+!    FILE     : examples/fortran/01-ifort-heap-arrays/main.f90
+!-----------------------------------------------------------
+!    AUTHOR   : Sébastien Valat (INRIA) - 2025
+!----------------------------------------------------------!
 ! declare a routing with arrays inside
 subroutine use_memory( n )
 	! decalre

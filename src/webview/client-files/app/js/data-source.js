@@ -1,14 +1,14 @@
 /***********************************************************
 *    PROJECT  : MALT (MALoc Tracker)
 *    VERSION  : 1.2.6
-*    DATE     : 09/2024
+*    DATE     : 05/2025
 *    LICENSE  : CeCILL-C
 *    FILE     : src/webview/client-files/app/js/data-source.js
 *-----------------------------------------------------------
 *    AUTHOR   : Sébastien Valat (ECR) - 2014 - 2015
-*    AUTHOR   : Sébastien Valat - 2015 - 2024
+*    AUTHOR   : Sébastien Valat - 2015 - 2023
 *    AUTHOR   : Mehdi Raza Jaffery (CERN) - 2016
-*    AUTHOR   : Sébastien Valat (INRIA) - 2023 - 2024
+*    AUTHOR   : Sébastien Valat (INRIA) - 2023 - 2025
 ***********************************************************/
 //SImple class to wrap all access to remote data, it might be easier to change or remove the server
 //this way by just rewriting this class for exemple to directly load the data inside the browser

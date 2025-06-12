@@ -1,12 +1,11 @@
 /***********************************************************
 *    PROJECT  : MALT (MALoc Tracker)
 *    VERSION  : 1.2.6
-*    DATE     : 09/2024
+*    DATE     : 11/2014
 *    LICENSE  : CeCILL-C
-*    FILE     : src/lib/common/FormattedMessage.hpp
+*    FILE     : src/libinstrum/common/FormattedMessage.hpp
 *-----------------------------------------------------------
 *    AUTHOR   : Sébastien Valat (ECR) - 2014
-*    AUTHOR   : Sébastien Valat - 2024
 ***********************************************************/
 
 #ifndef MALT_FORMALTED_MESSAGE_HPP
