@@ -139,8 +139,8 @@ bool Addr2Line::loadEntry(CallSite & callSite, FILE * fp)
 	char * file = fgets(bufferFile,sizeof(bufferFile)-1,fp);
 
 	//check
-	assert(strlen(function) < sizeof(bufferFunc) - 2);
-	assert(strlen(file) < sizeof(bufferFile) - 2);
+	assume(strlen(function) < sizeof(bufferFunc) - 2, "Overflow buffer size !");
+	assume(strlen(file) < sizeof(bufferFile) - 2, "Overflow buffer size !");
 
 	//check
 	if (function != bufferFunc || file != bufferFile)

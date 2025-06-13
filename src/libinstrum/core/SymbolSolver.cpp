@@ -395,7 +395,7 @@ void SymbolSolver::solveNames(void)
 
 	//new way of solving
 	//this->callSiteMap2 = callSiteMap;
-	std::list<Addr2Line, STLInternalAllocator<Addr2Line> > addr2lineJobs;
+	std::vector<Addr2Line*, STLInternalAllocator<Addr2Line*> > addr2lineJobs;
 	for (auto & procMapEntry : this->procMap) {
 		if (!(procMapEntry.file.empty() || procMapEntry.file[0] == '[')) {
 			Addr2Line * addr2line = nullptr;
@@ -405,8 +405,8 @@ void SymbolSolver::solveNames(void)
 					if (aslrOffset == -1)
 						aslrOffset = OS::getASLROffset(site.first.getAddress());
 					if (addr2line == nullptr || addr2line->isFull()) {
-						addr2lineJobs.emplace_back(this->stringDict, procMapEntry.file, aslrOffset, gblOptions->stackAddr2lineBucket);
-						addr2line = &addr2lineJobs.back();
+						addr2line = new Addr2Line(this->stringDict, procMapEntry.file, aslrOffset, gblOptions->stackAddr2lineBucket);
+						addr2lineJobs.push_back(addr2line);
 					}
 					addr2line->addTask(site.first, &site.second);
 				}
@@ -415,6 +415,10 @@ void SymbolSolver::solveNames(void)
 	}
 	//solve
 	runParallelJobs(addr2lineJobs, gblOptions->stackAddr2lineThreads);
+
+	//free mem
+	for (auto & addr2line : addr2lineJobs)
+		delete addr2line;
 
 	/*//loop on assemblies to extract names
 	for (LinuxProcMap::iterator it = procMap.begin() ; it != procMap.end() ; ++it)

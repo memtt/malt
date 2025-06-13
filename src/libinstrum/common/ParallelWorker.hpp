@@ -13,7 +13,7 @@
 
 /**********************************************************/
 //STL C++
-#include <mutex>
+#include <atomic>
 #include <thread>
 
 /**********************************************************/
@@ -38,24 +38,22 @@ bool runParallelJobs(T & jobList, int threads)
 	return finalStatus;*/
 
 	//iterator
-	std::mutex mutex;
-	typename T::iterator it = jobList.begin();
+	std::atomic<size_t> cursor{0};
 
 	//spawn threads
 	std::list<std::thread> workers;
 	for (size_t i = 0 ; i < threads ; i++) {
-		workers.emplace_back([&jobList, &mutex, &it, &finalStatus](){
+		workers.emplace_back([&jobList, &cursor, &finalStatus](){
 			//check has one
 			while (1) {
 				//take the data
-				mutex.lock();
-				typename T::iterator current = it++;
-				mutex.unlock();
+				size_t currentCursor = cursor.fetch_add(1);
 			
 				//make it if has one or break
-				if (current == jobList.end()) {
+				if (currentCursor >= jobList.size()) {
 					return;
 				} else {
+					auto current = jobList[currentCursor];
 					bool status = current->run();
 					if (status == false)
 						finalStatus = false;
