@@ -1,7 +1,7 @@
 /***********************************************************
 *    PROJECT  : MALT (MALoc Tracker)
-*    VERSION  : 1.2.6
-*    DATE     : 05/2025
+*    VERSION  : 1.3.0
+*    DATE     : 06/2025
 *    LICENSE  : CeCILL-C
 *    FILE     : src/webview/client-files/app/js/page-per-thread.js
 *-----------------------------------------------------------

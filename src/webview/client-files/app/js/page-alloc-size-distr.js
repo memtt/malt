@@ -1,12 +1,13 @@
 /***********************************************************
 *    PROJECT  : MALT (MALoc Tracker)
-*    VERSION  : 1.2.6
-*    DATE     : 12/2017
+*    VERSION  : 1.3.0
+*    DATE     : 06/2025
 *    LICENSE  : CeCILL-C
 *    FILE     : src/webview/client-files/app/js/page-alloc-size-distr.js
 *-----------------------------------------------------------
 *    AUTHOR   : Sébastien Valat (ECR) - 2014 - 2015
 *    AUTHOR   : Sébastien Valat - 2015 - 2017
+*    AUTHOR   : Sébastien Valat (INRIA) - 2025
 ***********************************************************/
 function MaltPageAllocSizeDistr()
 {

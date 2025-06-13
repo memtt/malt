@@ -1,8 +1,8 @@
 Change log
 ==========
  
-DEV - XX/XX/XXXX 
-----------------
+1.3.0 - 13/06/2025
+------------------
 
  - Add python profiling support (experimental, disabled by default, need to --enable-python at build time).
  - Check portability on Ubuntu (22.04, 22.10, 24.04, 25.04), Debian (10, 11, 12), Fedora (40, 41), Arch, Gentoo

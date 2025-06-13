@@ -1,7 +1,7 @@
 #!/bin/bash
 ############################################################
 #    PROJECT  : MALT (MALoc Tracker)
-#    VERSION  : 1.2.6
+#    VERSION  : 1.3.0
 #    DATE     : 08/2019
 #    LICENSE  : CeCILL-C
 #    FILE     : dev/update-version.sh

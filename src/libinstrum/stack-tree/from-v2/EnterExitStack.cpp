@@ -1,6 +1,6 @@
 /***********************************************************
 *    PROJECT  : MALT (MALoc Tracker)
-*    VERSION  : 1.2.6
+*    VERSION  : 1.3.0
 *    DATE     : 10/2015
 *    LICENSE  : CeCILL-C
 *    FILE     : src/libinstrum/stack-tree/from-v2/EnterExitStack.cpp

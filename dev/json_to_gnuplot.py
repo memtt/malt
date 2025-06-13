@@ -1,7 +1,7 @@
 #!/usr/bin/python
 ############################################################
 #    PROJECT  : MALT (MALoc Tracker)
-#    VERSION  : 1.2.6
+#    VERSION  : 1.3.0
 #    DATE     : 01/2014
 #    LICENSE  : CeCILL-C
 #    FILE     : dev/json_to_gnuplot.py

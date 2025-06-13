@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 ############################################################
 #    PROJECT  : MALT (MALoc Tracker)
-#    VERSION  : 1.2.6
+#    VERSION  : 1.3.0
 #    DATE     : 06/2025
 #    LICENSE  : CeCILL-C
 #    FILE     : dev/build_and_test_on_distributions.py

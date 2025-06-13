@@ -1,6 +1,6 @@
 /***********************************************************
 *    PROJECT  : MALT (MALoc Tracker)
-*    VERSION  : 1.2.6
+*    VERSION  : 1.3.0
 *    DATE     : 08/2016
 *    LICENSE  : CeCILL-C
 *    FILE     : src/webview/server-files/GraphGenerator.js

@@ -1,7 +1,7 @@
 #!/bin/sh
 ###########################################################
 #    PROJECT  : MALT (MALoc Tracker)
-#    VERSION  : 1.2.6
+#    VERSION  : 1.3.0
 #    DATE     : 02/2025
 #    LICENSE  : Apache 2.0
 #    FILE     : configure
