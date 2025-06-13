@@ -333,6 +333,62 @@ maltPrepMPI()
 }
 
 ############################################################
+maltSelectProfile()
+{
+	PROFILE_DEFAULT=""
+	PROFILE_PYTHON_NO_STACK="python:stack=none;python:mix=false;stack:mode=none;"
+	PROFILE_PYTHON_ONLY="python:stack=enter-exit;python:mix=false;stack:mode=python;"
+	PROFILE_PYTHON_SAMPLING="python:stack=backtrace;python:mix=true;stack:mode=backtrace;output:loop-suppress=true;stack:sampling=true;"
+	PROFILE_PYTHON_FULL="python:stack=enter-exit;python:mix=true;stack:mode=backtrace;output:loop-suppress=true;"
+	PROFILE_PYTHON_DEFAULT="${PROFILE_PYTHON_ONLY}"
+
+	# list
+	if [[ $1 == "help" ]]; then
+		echo "Profile               | Configuration"
+		echo "----------------------+-------------------------------------------"
+		echo "default               | "
+		echo "python-default        | ${PROFILE_PYTHON_DEFAULT}"
+		echo "python-no-stack       | ${PROFILE_PYTHON_NO_STACK}"
+		echo "python-only           | ${PROFILE_PYTHON_ONLY}"
+		echo "python-sampling       | ${PROFILE_PYTHON_SAMPLING}"
+		echo "python-full           | ${PROFILE_PYTHON_FULL}"
+		echo "-------------------------------------------------------------------"
+		exit 0
+	fi
+
+	# select
+	options=""
+	case $1 in
+		"default")
+			options="${PROFILE_DEFAULT}"
+			;;
+		"python-default")
+			options="${PROFILE_PYTHON_DEFAULT}"
+			;;
+		"python-no-stack")
+			options="${PROFILE_PYTHON_NO_STACK}"
+			;;
+		"python-only")
+			options="${PROFILE_PYTHON_ONLY}"
+			;;
+		"python-sampling")
+			echo "MALT: Using sampling profile, faster but not exact, look on --profile in case !"
+			options="${PROFILE_PYTHON_SAMPLING}"
+			;;
+		"python-full")
+			options="${PROFILE_PYTHON_FULL}"
+			;;
+		*)
+			echo "Invalid pre-configure profile : '${1}'"
+			exit 1
+			;;
+	esac
+
+	#export
+	export MALT_OPTIONS="${MALT_OPTIONS};${options}"
+}
+
+############################################################
 maltShowHelp()
 {
 	echo "Usage : malt [--config file] [--help] [--] YOUR_COMMAND"
@@ -353,6 +409,7 @@ maltShowHelp()
 	echo "   --wrap-prefix {prefix}      Wrap all the allocator function prefixed by the given value."
 	echo "                               (Eg. prefix by 'je_' will wrap je_malloc, je_free...)"
 	echo "   -o {SEC:NAME=VAL;...}       Override configuration values."
+	echo "   -p/--profile {PROFILE_NAME} Select a pre-configured profile, you can use 'help' to list them."
 	echo "   --version                   Print current MALT version."
 	echo "   -h/--help                   Show this help message."
 	echo ""
@@ -395,6 +452,11 @@ while true; do
 		--option|-o)
 			maltCheckArgs "$@"
 			export MALT_OPTIONS="${MALT_OPTIONS};$2"
+			shift 2
+		;;
+		--profile|-p)
+			maltCheckArgs "$@"
+			maltSelectProfile "$2"
 			shift 2
 		;;
 		--dumpconfig|-d)

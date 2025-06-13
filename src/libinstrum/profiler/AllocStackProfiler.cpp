@@ -595,7 +595,7 @@ void AllocStackProfiler::loopSuppress(void)
 	}
 	
 	//debug stats
-	MALT_INFO_ARG("Loops suppress  : stackes : %1 / %2 , calls : %3 / %4").arg(cntMerges).arg(cntStacks).arg(cntRemovedCalls).arg(cntCalls).end();
+	//MALT_INFO_ARG("Loops suppress  : stacks : %1 / %2 , calls : %3 / %4").arg(cntMerges).arg(cntStacks).arg(cntRemovedCalls).arg(cntCalls).end();
 }
 
 /**********************************************************/

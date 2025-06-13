@@ -34,15 +34,18 @@ def malt_dev_gen_archive(name: str = PACKAGE_NAME, version: str = PACKAGE_VERSIO
     prefix=f"{name}-{version}"
 
     # check if has changes in wait
-    out = subprocess.check_output("git status --porcelain | grep -v '??'", shell=True)
-    if out != "":
-        cprint("Warning: GIT has some uncommited changes", color="yellow")
+    #out = subprocess.check_output("git status --porcelain | grep -v '??'", shell=True)
+    #if out != "":
+    #    cprint("Warning: GIT has some uncommited changes", color="yellow")
     
     # check is not release
     git_head_hash = subprocess.getoutput("git rev-parse --short HEAD")
     git_version_hash = subprocess.getoutput(f"git rev-parse --short v{version}")
-    if git_head_hash != git_version_hash:
-        prefix=f"{name}-{git_head_hash}"
+    git_version_hash_beta = subprocess.getoutput(f"git rev-parse --short v{version}-beta")
+    if git_head_hash == git_version_hash_beta:
+        prefix=f"{name}-{version}-beta"
+    elif git_head_hash != git_version_hash:
+        prefix=f"{name}-{version}-{git_head_hash}"
 
     # log
     print(f"Generate {prefix}.tar.bz2...")
