@@ -37,6 +37,7 @@ function MaltPagePerThread()
 MaltPagePerThread.prototype.buildPerThreadChart = function(data,d3Selection,metric)
 {
 	//format data
+	var ticksPerSecond = data.system.ticksPerSecond;
 	var formattedData = [];
 	var allocFuncs = ["malloc","free","calloc","realloc","posix_memalign","aligned_alloc","memalign","valloc","pvalloc"];
 	for (var i in allocFuncs)
@@ -86,7 +87,14 @@ MaltPagePerThread.prototype.buildPerThreadChart = function(data,d3Selection,metr
 
 // 		$scope.chart = chart;
 		chart.yAxis
-			.tickFormat(function(d) {return maltHelper.humanReadable(d,1,'',false);});
+			.tickFormat(function(d) {
+				if (metric == 'count')
+					return maltHelper.humanReadable(d,1,'',false);
+				else if (metric == 'time')
+					return maltHelper.humanReadable(d / ticksPerSecond,1,'s',false);
+				else if (metric == 'sum')
+					return maltHelper.humanReadable(d,1,'B',false);
+			});
 			
 // 		if (onClick != undefined)
 // 			chart.multibar.dispatch.on("elementClick", function(e) {onClick(e,chart);});

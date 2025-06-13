@@ -4,7 +4,7 @@ Change log
 DEV - XX/XX/XXXX 
 ----------------
 
- - Add python profiling support (experimental, disabled by default).
+ - Add python profiling support (experimental, disabled by default, need to --enable-python at build time).
  - Check portability on Ubuntu (22.04, 22.10, 24.04, 25.04), Debian (10, 11, 12), Fedora (40, 41), Arch, Gentoo
  - Add more unit tests.
  - Refactor the injection and init of MALT in a proper way with guards.
@@ -30,6 +30,7 @@ DEV - XX/XX/XXXX
  - Fix in the webview, NaN over global variables and TLS.
  - Fix TLS size not shown correctly in summary.
  - Fix some code warnings.
+ - Fix some missing units on charts in webview.
 
 1.2.6 - 14/03/2025
 ------------------

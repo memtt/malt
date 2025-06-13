@@ -182,9 +182,15 @@ MaltPageAllocSizeDistr.prototype.plotXY = function(domId,data,logX,logY)
 // 		});
 
 		//Axis settings
-		chart.xAxis
-			.axisLabel('Time (cycles)')
-			.tickFormat(function(d) { return maltHelper.humanReadable(logX?Math.pow(2,d):d,1,'C',false); });
+		if (domId == 'malt-scatter-size-over-time') {
+			chart.xAxis
+				.axisLabel('Time (seconds)')
+				.tickFormat(function(d) { return maltHelper.humanReadable(logX?Math.pow(2,d):d,1,'s',false); });
+		} else {
+			chart.xAxis
+				.axisLabel('Time (cycles)')
+				.tickFormat(function(d) { return maltHelper.humanReadable(logX?Math.pow(2,d):d,1,'C',false); });
+		}
 		chart.yAxis
 			.axisLabel('Size (Bytes)')
 			.tickFormat(function(d) { return maltHelper.humanReadable(logY?Math.pow(2,d):d,1,'B',false); });
