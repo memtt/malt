@@ -36,6 +36,8 @@ struct Config
 		size_t stackSkip;
 		size_t addr2lineBucket;
 		size_t addr2lineThreads;
+		bool sampling;
+		size_t samplingBw;
 	} stack;
 	struct {
 		bool instru;

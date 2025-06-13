@@ -34,6 +34,8 @@ void to_json(nlohmann::json & json, const Config & config){
 				{"stackSkip", config.stack.stackSkip},
 				{"addr2lineBucket", config.stack.addr2lineBucket},
 				{"addr2lineThreads", config.stack.addr2lineThreads},
+				{"sampling", config.stack.sampling},
+				{"samplingBw", config.stack.samplingBw},
 			}
 		},
 		{
@@ -128,6 +130,8 @@ void from_json(const JsonIn & json, Config & config)
 	assert(jsContains(jsonStack, "stackSkip"));
 	assert(jsContains(jsonStack, "addr2lineBucket"));
 	assert(jsContains(jsonStack, "addr2lineThreads"));
+	assert(jsContains(jsonStack, "sampling"));
+	assert(jsContains(jsonStack, "samplingBw"));
 	jsonStack.at("enabled").get_to(config.stack.enabled);
 	jsonStack.at("mode").get_to(config.stack.mode);
 	jsonStack.at("resolve").get_to(config.stack.resolve);
@@ -135,6 +139,8 @@ void from_json(const JsonIn & json, Config & config)
 	jsonStack.at("stackSkip").get_to(config.stack.stackSkip);
 	jsonStack.at("addr2lineBucket").get_to(config.stack.addr2lineBucket);
 	jsonStack.at("addr2lineThreads").get_to(config.stack.addr2lineThreads);
+	jsonStack.at("sampling").get_to(config.stack.sampling);
+	jsonStack.at("samplingBw").get_to(config.stack.samplingBw);
 
 	//python
 	JsonIn jsonPython = json.at("python");

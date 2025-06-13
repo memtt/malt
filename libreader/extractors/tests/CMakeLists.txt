@@ -32,5 +32,5 @@ add_test(TestReaderExtractors TestReaderExtractors)
 
 ############################################################
 add_executable(extractor-example example.cpp)
-target_link_options(extractor-example PRIVATE -O0 -g -finstrument-functions)
-target_link_libraries(extractor-example PRIVATE malt)
+target_compile_options(extractor-example PUBLIC -O0 -g -finstrument-functions)
+target_link_libraries(extractor-example PUBLIC malt)

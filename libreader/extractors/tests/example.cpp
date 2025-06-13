@@ -49,6 +49,7 @@ void caller(void)
 void caller2(void)
 {
 	void * ptr1 = malloc(8);
+	memset(ptr1, 0, 8);
 	free(ptr1);
 }
 
