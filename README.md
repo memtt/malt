@@ -224,6 +224,8 @@ mode=backtrace        ; select stack tracing mode (backtrace|enter-exit)
 resolve=true          ; Automatically resolve symbols with addr2line at exit.
 libunwind=false       ; Enable of disable usage of libunwind to backtrace.
 skip=4                ; Number of stack frame to skip in order to cut at malloc level
+sampling=false        ; Sample and instrument only some stack.
+samplingBw=4093       ; Instrument the stack when seen passed 4K-3 bytes of alloc requests.
 
 [output]
 name=malt-%1-%2.%3    ; base name for output, %1 = exe, %2 = PID, %3 = extension

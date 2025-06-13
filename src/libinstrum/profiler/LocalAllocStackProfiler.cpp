@@ -27,6 +27,7 @@ namespace MALT
 /**********************************************************/
 LocalAllocStackProfiler::LocalAllocStackProfiler(AllocStackProfiler* globalProfiler)
 	:backtracePythonStack(globalProfiler->getPythonSymbolTracker())
+	,samplePrev(STACK_ORDER_DESC)
 {
 	//errors
 	assert(globalProfiler != NULL);
@@ -164,6 +165,10 @@ Stack* LocalAllocStackProfiler::getStack(Language lang, size_t size, bool isFree
 	//check sampling
 	bool rejectedBySampling = (this->globalProfiler->isAcceptedBySampling(size, isFree) == false);
 
+	//return prev
+	if (rejectedBySampling && this->samplePrev.getSize() > 0)
+		return &this->samplePrev;
+
 	//vars
 	bool oldInUse;
 	bool hasPythonGIL = false;
@@ -171,10 +176,16 @@ Stack* LocalAllocStackProfiler::getStack(Language lang, size_t size, bool isFree
 	Stack* result = nullptr;
 
 	//trivial
-	if (lang == LANG_C && (stackMode == STACK_MODE_NONE || rejectedBySampling))
+	if (lang == LANG_C && (stackMode == STACK_MODE_NONE || rejectedBySampling)) {
+		if (gblOptions->stackSampling)
+			this->samplePrev.set(noneStackC);
 		return &noneStackC;
-	if (lang == LANG_PYTHON && (gblOptions->pythonStackEnum == STACK_MODE_NONE || rejectedBySampling))
+	}
+	if (lang == LANG_PYTHON && (gblOptions->pythonStackEnum == STACK_MODE_NONE || rejectedBySampling)) {
+		if (gblOptions->stackSampling)
+			this->samplePrev.set(noneStackPython);
 		return &noneStackPython;
+	}
 
 	//backtrance in C
 	Stack * cRef = &this->enterExitStack;
@@ -240,6 +251,9 @@ Stack* LocalAllocStackProfiler::getStack(Language lang, size_t size, bool isFree
 
 	if (hasPythonGIL)
 		MALT::PyGILState_Release(pythonGilState);
+
+	if (gblOptions->stackSampling)
+		this->samplePrev.set(*result);
 
 	//ok
 	return result;

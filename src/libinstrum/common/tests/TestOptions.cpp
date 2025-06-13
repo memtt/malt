@@ -35,7 +35,7 @@ const char cstJson[] = "\
 		\"addr2lineBucket\":350,\n\
 		\"addr2lineThreads\":8,\n\
 		\"sampling\":false,\n\
-		\"samplingBw\":5242883\n\
+		\"samplingBw\":4093\n\
 	},\n\
 	\"python\":{\n\
 		\"instru\":true,\n\

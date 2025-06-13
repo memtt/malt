@@ -126,6 +126,7 @@ class LocalAllocStackProfiler
 		PerThreadAllocStats allocStats;
 		EnterExitStack noneStackC;
 		EnterExitStack noneStackPython;
+		Stack samplePrev;
 };
 
 /**********************************************************/

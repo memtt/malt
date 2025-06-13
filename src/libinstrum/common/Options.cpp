@@ -60,7 +60,7 @@ Options::Options(void)
 	this->stackAddr2lineBucket    = 350;
 	this->stackAddr2lineThreads   = 8;
 	this->stackSampling           = false;
-	this->stackSamplingBw         = 5242883; //10485767, 20971529
+	this->stackSamplingBw         = 4093; //5242883, 10485767, 20971529
 	//python
 	this->pythonStack             = "enter-exit";
 	this->pythonStackEnum         = STACK_MODE_ENTER_EXIT_FUNC;
