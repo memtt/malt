@@ -482,18 +482,25 @@ python delivered by [Anaconda](https://www.anaconda.com/).
 Supported version are currently python from **version 11**.
 
 Due to large number of memory allocations in python MALT currently have a large overhead over python.
-There is in consequence several way to instrument your app which I sort in overhead increasing order :
+There is in consequence several way to instrument your app which I sort in overhead increasing order.
 
 ```bash
-# Disable totaly stack analysis
-malt -o "python:stack=none;python:mix=false;stack=none;" ./my_script.py
-# Have two stack domains distinct : C & Python + skip OBJ domain (which are small object allocations)
-malt -o "python:mix=false;python:obj=false;" ./my_script.py
-# Instrument the stack in a sampling way (non exact)
-malt -o "python:stack=backtrace;python:mix=true;stack:sampling=true;output:loop-suppress=true;" ./my_script.py
-# Full instrumentation (heavy)
-malt -o "python:mix=true;output:loop-suppress=true;" ./my_script.py
+# Use default mode (python-only)
+malt-python ./script.py
+# profile without stacks
+malt-python --profile python-no-stack ./script.py
+# An approximativ method by sampling instead of tracking each stack (faster but not exact)
+malt-python --profile python-sampling ./script.py
+# profile considering only python stacks (C is mapped under python)
+malt-python --profile python-only ./script.py
+# Full instrumentation of Python + C
+malt-python --profile python-full ./script.py
 ```
+
+**Note**: The `malt-python` is just a wrapper over `malt` command profiding a different default
+profile sepcific for python, you can also use directly the `malt` command.
+
+**Note**: The `malt-python` command is a temporary workaround, it might disapear in future.
 
 Similar tools
 -------------
