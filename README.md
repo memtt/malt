@@ -194,6 +194,16 @@ ssh -L 8080:localhost:8080 user@ssh-server
 
 To use the webview you need to install the nodeJS package on your system : <http://nodejs.org/>.
 
+Alternatively you can use a unix socket on the server side and forward it by SSH, it avoids
+to expose the 8080 port to anyone on the server as it is protected by the user access rights.
+
+```shell
+# remote
+malt-webview -p /home/myuser/malt.sock -i malt-PROFILE.json
+# on your workstation
+ssh -L 8080:/home/myuser/malt.sock user@ssh-server
+```
+
 Config
 ------
 
