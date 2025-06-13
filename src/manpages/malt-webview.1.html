@@ -59,6 +59,7 @@
     <a href="#OPTIONS">OPTIONS</a>
     <a href="#ENVIRONMENT">ENVIRONMENT</a>
     <a href="#REMOTE-USAGE-THROUGH-SSH">REMOTE USAGE THROUGH SSH</a>
+    <a href="#AVOID-EXPOSING-THE-REMOTE-PORT">AVOID EXPOSING THE REMOTE PORT</a>
     <a href="#VERSION">VERSION</a>
     <a href="#SEE-ALSO">SEE ALSO</a>
   </div>
@@ -137,6 +138,16 @@ ssh options :</p>
 
 <p>Where the first 8080 is the local port and the second one the remote.</p>
 
+<h2 id="AVOID-EXPOSING-THE-REMOTE-PORT">AVOID EXPOSING THE REMOTE PORT</h2>
+
+<p>When working remotly you can avoid exposin the malt webview port publicly
+to other users of the cluster by using a unix socket file in place of the port.</p>
+
+<p># remote
+  malt-webview -p /home/myuser/malt.sock -i malt-PROFILE.json
+  # on your workstation
+  ssh -L 8080:/home/myuser/malt.sock user@ssh-server</p>
+
 <h2 id="VERSION">VERSION</h2>
 
 <p>This is the manpage of MALT version 1.3.0.</p>
@@ -147,7 +158,7 @@ ssh options :</p>
 
   <ol class='man-decor man-foot man foot'>
     <li class='tl'></li>
-    <li class='tc'>February 2025</li>
+    <li class='tc'>June 2025</li>
     <li class='tr'>malt-webview(1)</li>
   </ol>
 

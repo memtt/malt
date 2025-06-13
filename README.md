@@ -11,6 +11,9 @@ statistics about memory usage and help to find memory leaks.
 
 It is done to be used on laguages : C, C++, Fortran, Rust.
 
+Python is also supported but currently as prototype status which needs to be enable with `--enable-python`
+at build time.
+
 ![MALT GUI](https://memtt.github.io/malt/images/screenshots/screenshot-12.png)
 
 Dependencies
