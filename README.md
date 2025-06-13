@@ -487,7 +487,7 @@ malt -o "python:stack=none;python:mix=false;stack=none;" ./my_script.py
 # Have two stack domains distinct : C & Python + skip OBJ domain (which are small object allocations)
 malt -o "python:mix=false;python:obj=false;" ./my_script.py
 # Instrument the stack in a sampling way (non exact)
-malt -o "python:mix=true;stack:sampling=true;output:loop-suppress=true;" ./my_script.py
+malt -o "python:stack=backtrace;python:mix=true;stack:sampling=true;output:loop-suppress=true;" ./my_script.py
 # Full instrumentation (heavy)
 malt -o "python:mix=true;output:loop-suppress=true;" ./my_script.py
 ```

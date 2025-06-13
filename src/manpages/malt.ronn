@@ -94,6 +94,8 @@ The config file use INI format with sections and variables as in this example :
 	resolve                        = true
 	libunwind                      = false
 	skip                           = 4
+  sampling                       = false
+  samplingBw                     = 4093
 
 	[output]
 	name                           = malt-%1-%2.%3
@@ -134,6 +136,14 @@ The config file use INI format with sections and variables as in this example :
 	on-thread-stack-using          =
   watch-dog                      = false
 
+  [python]
+  instru                         = true
+  stack                          = enter-exit
+  mix                            = false
+  obj                            = true
+  mem                            = true
+  raw                            = true
+
 The `time` section support :
 
  * `enabled`:
@@ -150,7 +160,11 @@ The `stack` section support :
    Enable support of stack tracking.
  * `mode`:
    Override by `-s` option from the command line, it set the stack tracking method to use. See `-s` documentation
-   for more details.
+   for more details. The available values are `enter-exit`, `backtrace`, `python`, `none`. By default backtrace
+   is used as it works out of the box everywhere. It is slower than enter-exit but this last one needs recompilation
+   of the code with `-finstrument-functions` and see only the libs recompiled with this option. `python` permit
+   to project all the C allocation directly into the python stack domain so it hides the C underwood. Good to
+   improve performance over python when you are not interested into the C details.
  * `resolve`:
    Enable symbol resolution at the end of execution to extract full names and source location if debug options
    is available.
@@ -166,6 +180,14 @@ The `stack` section support :
    Notice in some cases (Gentoo, Gcc-8) we start to see LTO trashing totaly the malloc/free call in O3 mode 
    normaly seen via backtrace. There is currently no other solution except recompiling in O0/O1 to avoid
    or maybe disable LTO optimizations or consider not having the exact location of the malloc itself.
+ * `sampling`:
+   Enable sampling mode for the stacks by captuing only for a few mallocs. It is less accurate than a full
+   profile but cost less in memory and CPU. In sampling mode, the stack is processed only when we seen passed
+   a few bytes allocated, otherwise we consider the last seen call stack. With python you should also
+   enable the backtrace mode for solving stacks via `python:stack=backtrace`.
+ * `samplingBw`
+   Define the amount of data seen passed between two samples. Idealy this should be a prime number to avoid
+   some multiple base biases..
 
 The `output` section support :
 
@@ -265,10 +287,32 @@ The `dump` section permit to dump the profile whenever you want:
  * `on-thread-stack-using`:
    Will dump if one of the thread stack reach the given limit. The value is given in % of the global memory
    available or in K, M, G. Empty to disable (default).
- * watch-dog`:
+ * `watch-dog`:
    Will start a thread which will spy the memory usage of the process and trigger the dump as soon as it sees it
    going to hight. This is to balance the fact than normally the system and process memory is spied only sometimes
    by MALT in normal condition to keep the overhead low.
+
+The `python` section permit to configure how to instrument python. Notice that you need to build MALT with
+`--enable-python` so it is effective.
+
+ * `instru`:
+   Enable of disable the python instrumentation.
+ * `stack`:
+   Select the stack instrumentation mode, either `enter-exit`, `backtrace` or `none`. By default `enter-exit` is
+   faster so you should use it. When enabling sampling you need to use `bactrace` if you don't want to pay
+   an unneeded overhead. You can also disable python stack checking with `none`.
+ * `mix`:
+   By default when disabled the C & Python stacks are analysed independently which mean that is a python
+   function call a C function you will see only the C call stack. Mix allow to merge the two layeres so you
+   see that python call C. But it adds overhead on the anlysis of course because of the extra work.
+ * `obj`:
+   Analyse or ignore the object allocation domain of python. This is interesting to ignore all the small
+   allocs used by the language as it would have been on the stack in C. It improves a lot the profiling performance
+   of python but miss part of the memory consumption if your program store lots of small objets for long times.
+ * `mem`:
+   Same but for the mem allocation domain of python. In principle you should let it enabled.
+ * `raw`:
+   Same but for the raw allocation domain of python which is backed by the standard C malloc function. In principle you should let it enabled.
 
 ## ENVIRONMENT
 

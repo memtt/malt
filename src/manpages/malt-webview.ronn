@@ -48,6 +48,16 @@ ssh options :
 
 Where the first 8080 is the local port and the second one the remote.
 
+## AVOID EXPOSING THE REMOTE PORT
+
+When working remotly you can avoid exposin the malt webview port publicly
+to other users of the cluster by using a unix socket file in place of the port.
+
+  # remote
+  malt-webview -p /home/myuser/malt.sock -i malt-PROFILE.json
+  # on your workstation
+  ssh -L 8080:/home/myuser/malt.sock user@ssh-server
+
 ## VERSION
 
    This is the manpage of MALT version 1.2.6.
