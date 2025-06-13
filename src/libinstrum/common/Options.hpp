@@ -82,6 +82,8 @@ struct Options
 	int stackSkip;
 	int stackAddr2lineBucket;
 	int stackAddr2lineThreads;
+	bool stackSampling;
+	int stackSamplingBw;
 	//python
 	std::string pythonStack;
 	StackMode pythonStackEnum;

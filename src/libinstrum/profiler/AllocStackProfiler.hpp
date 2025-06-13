@@ -153,6 +153,7 @@ class AllocStackProfiler
 		MultiLangStackMerger & getMultiLangStackMerger(void) {return this->multiLangStackMerger;};
 		void registerMaltJeMallocMem(ssize_t value);
 		void onUpdateMem(const OSProcMemUsage & procMem, const OSMemUsage & sysMem);
+		inline bool isAcceptedBySampling(size_t size, bool isFree);
 	public:
 		friend void convertToJson(htopml::JsonState& json, const AllocStackProfiler& value);
 	private:
@@ -215,7 +216,31 @@ class AllocStackProfiler
 		Trigger trigger;
 		StackReducer reducer{5};
 		DomainCounters domains;
+		std::atomic<size_t> rate{0};
 };
+
+/**********************************************************/
+inline bool AllocStackProfiler::isAcceptedBySampling(size_t size, bool isFree)
+{
+	//trivial
+	if (gblOptions->stackSampling == false)
+		return true;
+
+	//trivial
+	if (isFree)
+		return !gblOptions->stackSampling;
+
+	//sum
+	size_t previous = this->rate.fetch_add(size);
+	size_t bw = gblOptions->stackSamplingBw;
+	if (previous / bw != (previous + size) / bw)
+	{
+		this->rate.fetch_sub(bw);
+		return true;
+	} else {
+		return false;
+	}
+}
 
 }
 

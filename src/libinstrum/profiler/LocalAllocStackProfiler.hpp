@@ -100,7 +100,7 @@ class LocalAllocStackProfiler
 	public:
 		friend void convertToJson(htopml::JsonState& json, const LocalAllocStackProfiler& value);
 	protected:
-		Stack * getStack(Language lang = LANG_C);
+		Stack * getStack(Language lang, size_t size, bool isFree);
 	private:
 		/** Pointer to the global state **/
 		AllocStackProfiler * globalProfiler;

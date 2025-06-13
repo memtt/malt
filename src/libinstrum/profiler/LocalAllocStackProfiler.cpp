@@ -58,7 +58,7 @@ LocalAllocStackProfiler::~LocalAllocStackProfiler(void)
 void LocalAllocStackProfiler::onMalloc(void* res, size_t size, ticks time, MallocKind kind, Language lang, AllocDomain domain)
 {
 	//check for reentrance
-	CODE_TIMING("mallocProf",globalProfiler->onMalloc(res,size,getStack(lang), domain));
+	CODE_TIMING("mallocProf",globalProfiler->onMalloc(res,size,getStack(lang, size, false), domain));
 	this->cntMemOps++;
 	this->allocStats.malloc[kind].inc(size,time);
 }
@@ -67,7 +67,7 @@ void LocalAllocStackProfiler::onMalloc(void* res, size_t size, ticks time, Mallo
 void LocalAllocStackProfiler::onFree(void* ptr, ticks time, Language lang)
 {
 	//check for reentrance
-	CODE_TIMING("freeProf",globalProfiler->onFree(ptr,getStack(lang)));
+	CODE_TIMING("freeProf",globalProfiler->onFree(ptr,getStack(lang, 0, true)));
 	this->cntMemOps++;
 	this->allocStats.free.inc(0,time);
 }
@@ -76,16 +76,17 @@ void LocalAllocStackProfiler::onFree(void* ptr, ticks time, Language lang)
 void LocalAllocStackProfiler::onCalloc(void * res,size_t nmemb, size_t size, ticks time, Language lang, AllocDomain domain)
 {
 	//check for reentrance
-	CODE_TIMING("callocProf",globalProfiler->onCalloc(res,nmemb,size,getStack(lang), domain));
+	const size_t totalSize = nmemb * size;
+	CODE_TIMING("callocProf",globalProfiler->onCalloc(res,nmemb,size,getStack(lang, totalSize, false), domain));
 	this->cntMemOps++;
-	this->allocStats.calloc.inc(size,time);
+	this->allocStats.calloc.inc(totalSize,time);
 }
 
 /**********************************************************/
 void LocalAllocStackProfiler::onRealloc(void* ptr, void* res, size_t size,ticks time, Language lang, AllocDomain domain)
 {
 	//check for reentrance
-	CODE_TIMING("reallocProf",globalProfiler->onRealloc(ptr,res,size,getStack(lang), domain));
+	CODE_TIMING("reallocProf",globalProfiler->onRealloc(ptr,res,size,getStack(lang, size, false), domain));
 	this->cntMemOps++;
 	this->allocStats.realloc.inc(size,time);
 }
@@ -98,7 +99,7 @@ void LocalAllocStackProfiler::onMmap(void* ptr, size_t size, int flags, int fd)
 		return;
 	
 	//get stack
-	Stack * stack = getStack();
+	Stack * stack = getStack(LANG_C, size, false);
 	
 	//check for renentrance
 	CODE_TIMING("userMmapProf",globalProfiler->onMmap(ptr,size,stack));
@@ -155,10 +156,13 @@ void LocalAllocStackProfiler::loadPythonFirstBacktrace(void)
 
 /**********************************************************/
 //TODO: getStack should receive a parameter iff it's a Python stack
-Stack* LocalAllocStackProfiler::getStack(Language lang)
+Stack* LocalAllocStackProfiler::getStack(Language lang, size_t size, bool isFree)
 {
 	//check
 	assert (lang == LANG_C || lang == LANG_PYTHON);
+
+	//check sampling
+	bool rejectedBySampling = (this->globalProfiler->isAcceptedBySampling(size, isFree) == false);
 
 	//vars
 	bool oldInUse;
@@ -167,9 +171,9 @@ Stack* LocalAllocStackProfiler::getStack(Language lang)
 	Stack* result = nullptr;
 
 	//trivial
-	if (lang == LANG_C && stackMode == STACK_MODE_NONE)
+	if (lang == LANG_C && (stackMode == STACK_MODE_NONE || rejectedBySampling))
 		return &noneStackC;
-	if (lang == LANG_PYTHON && gblOptions->pythonStackEnum == STACK_MODE_NONE)
+	if (lang == LANG_PYTHON && (gblOptions->pythonStackEnum == STACK_MODE_NONE || rejectedBySampling))
 		return &noneStackPython;
 
 	//backtrance in C
