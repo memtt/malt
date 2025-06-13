@@ -491,6 +491,10 @@ malt-python ./script.py
 malt-python --profile python-no-stack ./script.py
 # An approximativ method by sampling instead of tracking each stack (faster but not exact)
 malt-python --profile python-sampling ./script.py
+# Similar but with less samples
+malt-python --profile python-sampling-10M ./script.py
+# Similar but with less and less samples
+malt-python --profile python-sampling-20M ./script.py
 # profile considering only python stacks (C is mapped under python)
 malt-python --profile python-only ./script.py
 # Full instrumentation of Python + C
