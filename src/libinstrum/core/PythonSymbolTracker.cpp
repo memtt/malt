@@ -462,7 +462,8 @@ std::string PythonSymbolTracker::getPyProgramName(void) const
 	std::string result = tmp;
 
 	//dec ref
-	#warning "Check no leak"
+	///@todo Check no leak
+	//#warning "Check no leak"
 	//MALT::Py_DecRef((PyObject*)tmp);
 	//MALT::Py_DecRef(objArgvZeroEncoded);
 	//MALT::Py_DecRef(objArgvZero);
