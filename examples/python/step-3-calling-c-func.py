@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 ############################################################
 #    PROJECT  : MALT (MALoc Tracker)
 #    VERSION  : 1.3.0

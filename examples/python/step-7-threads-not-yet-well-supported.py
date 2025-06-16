@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 ############################################################
 #    PROJECT  : MALT (MALoc Tracker)
 #    VERSION  : 1.3.0
@@ -13,21 +14,20 @@ from threading import Thread
 import time
 
 ############################################################
-def thread_main(count):
-	print("start")
-	print(count)
+def thread_main(count, id):
+	print(f"Start thread...{id}")
 	a = [10] * int(count / 2)
 	time.sleep(5)
 	for i in range(int(count / 2)):
 		a.append(20)
-	print("ok")
-	print(a)
-	print("ok")
+	print(f"ok {id} : {a[0:200]} .. {a[-200:]}")
+	print(f"End thread...{id}")
 
 ############################################################
-t1 = Thread(target=thread_main, args=(1024*1024,))
+print("SPAWN THREADS...")
+t1 = Thread(target=thread_main, args=(1024*1024,1,))
 t1.start()
-t2 = Thread(target=thread_main, args=(1024*1024,))
+t2 = Thread(target=thread_main, args=(1024*1024,2,))
 t2.start()
 
 ############################################################
