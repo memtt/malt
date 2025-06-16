@@ -2,9 +2,9 @@
 ############################################################
 #    PROJECT  : MALT (MALoc Tracker)
 #    VERSION  : 1.3.0
-#    DATE     : 04/2025
+#    DATE     : 06/2025
 #    LICENSE  : CeCILL-C
-#    FILE     : examples/python/main5.py
+#    FILE     : examples/python/step-6-intermediate-vars.py
 #-----------------------------------------------------------
 #    AUTHOR   : Sébastien Valat (INRIA) - 2025
 ############################################################
