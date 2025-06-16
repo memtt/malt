@@ -1,7 +1,7 @@
 Change log
 ==========
  
-1.3.0 - 13/06/2025
+1.3.0 - 16/06/2025
 ------------------
 
  - Add python profiling support (experimental, disabled by default, need to --enable-python at build time).
