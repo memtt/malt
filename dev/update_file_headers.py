@@ -351,17 +351,22 @@ class HeaderPatcher:
         with open(file, 'w+') as fp:
             content = fp.writelines(patched_content)
 
+    def is_in_include_files(self, filename: str) -> bool:
+        # check if included
+        include = self.config['include_files']
+        for ipattern in include:
+            if fnmatch.fnmatch(filename, ipattern) or filename.startswith(ipattern):
+                return True
+        return False
+
     def patch_file(self, filename: str):
         # if exclude
         exclude = self.config['exclude_files']
         for pattern in exclude:
             if fnmatch.fnmatch(filename, pattern) or filename.startswith(pattern):
-                # check if included
-                include = self.config['include_files']
-                for ipattern in include:
-                    if not(fnmatch.fnmatch(filename, ipattern) or filename.startswith(ipattern)):
-                        print(f" - {filename} : EXCLUDED")
-                        return
+                if not self.is_in_include_files(filename):
+                    print(f" - {filename} : EXCLUDED")
+                    return
         
         # apply
         self.patch_header(filename)
