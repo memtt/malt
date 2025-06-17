@@ -39,7 +39,8 @@
 		"@ddn.com": "DDN",
 		"@lanl.gov": "LANL",
 		"@parsteur.fr": "Institut Pasteur",
-		"@crans.org": "crans.org"
+		"@crans.org": "crans.org",
+		"bastien.levasseur3@orange.fr": "University Grenoble Alpes / LIG"
 	},
 	"exclude_hashes": [
 		"d1c2f8b61ae29207e4edcf8409a73ffbd06a268d",

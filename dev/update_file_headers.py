@@ -98,6 +98,8 @@ class HeaderPatcher:
         affiliation_domains = self.config['affiliation_domains']
         if domain in affiliation_domains:
             return affiliation_domains[domain]
+        elif mail in affiliation_domains:
+            return affiliation_domains[domain]
         else:
             None
 
