@@ -31,6 +31,7 @@ namespace MALT
 #define MALT_PYTHON_C_BRIDGE_FUNC_ID ((void*)0x4)
 #define MALT_PYTHON_UNTRACKED_ID ((void*)0x5)
 #define MALT_C_UNTRACKED_ID ((void*)0x6)
+#define MALT_PYTHON_IMPORT_ID ((void*)0x7)
 
 /**********************************************************/
 struct PythonCallSite
@@ -70,7 +71,7 @@ class PythonSymbolTracker
 	public:
 		PythonSymbolTracker(void);
 		~PythonSymbolTracker(void);
-		void registerSymbolResolution(SymbolSolver & solver) const;
+		void registerSymbolResolution(SymbolSolver & solver);
 		LangAddress parentFrameToLangAddress(PyFrameObject * frame);
 		LangAddress frameToLangAddress(PyFrameObject * frame);
 		PythonCallSite getCallSite(LangAddress langAddr);
@@ -79,6 +80,7 @@ class PythonSymbolTracker
 		void solveExeName(void);
 		const std::string & getScriptName(void) const;
 		void setScript(const std::string & script);
+		const std::set<LangAddress> & getImportAddresses(void) const;
 	private:
 		LangAddress fastFrameToLangAddress(PyFrameObject * frame);
 		LangAddress slowFrameToLangAddress(PyFrameObject * frame);
@@ -97,6 +99,7 @@ class PythonSymbolTracker
 		std::string baseDir;
 		std::string programDir;
 		std::string scriptName;
+		std::set<LangAddress> importAddresses;
 };
 
 }

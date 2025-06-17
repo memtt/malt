@@ -601,6 +601,41 @@ void AllocStackProfiler::loopSuppress(void)
 }
 
 /**********************************************************/
+bool AllocStackProfiler::isImportStack(const Stack & stack) const
+{
+	const auto & importAddresses = this->pythonSymbolTracker.getImportAddresses();
+	for (size_t i = 0 ; i < stack.getSize() ; i++) {
+		LangAddress addr = stack[i];
+		if (importAddresses.find(addr) != importAddresses.end()) {
+			return true;
+		}
+	}
+	return false;
+}
+
+/**********************************************************/
+void AllocStackProfiler::pythonImportSuppress(void)
+{
+	//apply
+	StackSTLHashMap<CallStackInfo>::iterator it = this->stackTracker.begin();
+	LangAddress replStack[] = {LangAddress(DOMAIN_PYTHON, MALT_PYTHON_IMPORT_ID)};
+	Stack replacement(replStack, 1, STACK_ORDER_ASC);
+	while (it != this->stackTracker.end())
+	{
+		if (this->isImportStack(*it->first.stack))
+		{
+			//search and merge
+			this->stackTracker[replacement].merge(it->second);
+			StackSTLHashMap<CallStackInfo>::iterator toRemove = it++;
+			//remove old
+			this->stackTracker.remove(toRemove);
+		} else {
+			++it;
+		}
+	}
+}
+
+/**********************************************************/
 void AllocStackProfiler::onExit(void )
 {
 	MALT_OPTIONAL_CRITICAL(lock,threadSafe)
@@ -644,9 +679,15 @@ void AllocStackProfiler::onExit(void )
 		systemTimeline.flush();
 		memoryBandwidth.flush();
 		
+		//sumpress
+		if (gblOptions->pythonHideImports) {
+			CODE_TIMING("importSuppress", this->pythonImportSuppress());
+		}
+
 		//if enable loop suppression
-		if (this->options.outputLoopSuppress)
-			this->loopSuppress();
+		if (this->options.outputLoopSuppress) {
+			CODE_TIMING("loopSuppress", this->loopSuppress());
+		}
 		
 		//if need stack tree for more compressed output
 		if (this->stackTree != NULL)

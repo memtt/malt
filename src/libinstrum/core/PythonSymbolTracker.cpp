@@ -54,6 +54,12 @@ PythonSymbolTracker::PythonSymbolTracker(void)
 	const PythonCallSite siteCUntracked = {siteCUntrackedName, siteCUntrackedName, 0};
 	this->siteMap[siteCUntracked] = MALT_C_UNTRACKED_ID;
 
+	//build python import
+	///@TODO move this elsewhere by creating maybe a SPECIAL domain.
+	int sitePyImportName = this->dict.getId("MALT_PYTHON_HIDEN_IMPORTS");
+	const PythonCallSite sitePyImport = {sitePyImportName, sitePyImportName, 0};
+	this->siteMap[sitePyImport] = MALT_PYTHON_IMPORT_ID;
+
 	//init basedir
 	char buffer[8192];
 	char * cwd = getcwd(buffer, sizeof(buffer));
@@ -343,7 +349,7 @@ std::string PythonSymbolTracker::unfrozeFileName(const std::string & fname, cons
 }
 
 /**********************************************************/
-void PythonSymbolTracker::registerSymbolResolution(SymbolSolver & solver) const
+void PythonSymbolTracker::registerSymbolResolution(SymbolSolver & solver)
 {
 	//get python paths
 	std::map<std::string, bool> pythonPaths = this->extractorPythonPaths();
@@ -368,9 +374,23 @@ void PythonSymbolTracker::registerSymbolResolution(SymbolSolver & solver) const
 		else
 			snprintf(buffer, sizeof(buffer), "py:%s.%s()", mpath.c_str(), function);
 
+		//build address
+		LangAddress address(DOMAIN_PYTHON, site.second);
+
+		//if import address
+		if (strncmp(buffer, "py:importlib.", 13) == 0 && strcmp(buffer, "py:importlib._bootstrap._ModuleLock.__init__()") != 0) {
+			this->importAddresses.insert(address);
+		}
+
 		//register
-		solver.registerFunctionSymbol(LangAddress(DOMAIN_PYTHON, site.second), "NONE", buffer, file.c_str(), site.first.line);
+		solver.registerFunctionSymbol(address, "NONE", buffer, file.c_str(), site.first.line);
 	}
+}
+
+/**********************************************************/
+const std::set<LangAddress> & PythonSymbolTracker::getImportAddresses(void) const
+{
+	return this->importAddresses;
 }
 
 /**********************************************************/

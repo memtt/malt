@@ -167,6 +167,8 @@ class AllocStackProfiler
 		void loadGlobalVariables(void);
 		void loopSuppress(void);
 		std::string getFileExeScriptName(void) const;
+		void pythonImportSuppress(void);
+		bool isImportStack(const Stack & stack) const;
 	private:
 		//SimpleStackTracer stackTracer;
 		MultiLangStackMerger multiLangStackMerger;

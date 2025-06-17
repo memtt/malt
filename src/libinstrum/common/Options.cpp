@@ -69,6 +69,7 @@ Options::Options(void)
 	this->pythonObj               = true;
 	this->pythonMem               = true;
 	this->pythonRaw               = true;
+	this->pythonHideImports       = true;
 	//time
 	this->timeProfileEnabled      = true;
 	this->timeProfilePoints       = 512;
@@ -134,6 +135,7 @@ bool Options::operator==(const Options& value) const
 	if (pythonObj != value.pythonObj) return false;
 	if (pythonMem != value.pythonMem) return false;
 	if (pythonRaw != value.pythonRaw) return false;
+	if (pythonHideImports != value.pythonHideImports) return false;
 	//time
 	if (this->timeProfileEnabled != value.timeProfileEnabled) return false;
 	if (this->timeProfilePoints != value.timeProfilePoints) return false;
@@ -270,6 +272,7 @@ void Options::loadFromIniDic ( dictionary* iniDic )
 	this->pythonMem           = iniparser_getboolean(iniDic,"python:mem",this->pythonMem);
 	this->pythonRaw           = iniparser_getboolean(iniDic,"python:raw",this->pythonRaw);
 	this->pythonStackEnum     = stackModeFromString(this->pythonStack);
+	this->pythonHideImports   = iniparser_getboolean(iniDic,"python:hide-imports", this->pythonHideImports);
 
 	//load values for stack profiling
 	this->stackResolve        = iniparser_getboolean(iniDic,"stack:resolve",this->stackResolve);
@@ -383,6 +386,7 @@ void convertToJson(htopml::JsonState & json,const Options & value)
 			json.printField("obj", value.pythonObj);
 			json.printField("mem", value.pythonMem);
 			json.printField("raw", value.pythonRaw);
+			json.printField("hideImports", value.pythonHideImports);
 		json.closeFieldStruct("python");
 		
 		json.openFieldStruct("output");
@@ -468,6 +472,7 @@ void Options::dumpConfig(const char* fname)
 	IniParserHelper::setEntry(dic,"python:obj",this->pythonObj);
 	IniParserHelper::setEntry(dic,"python:mem",this->pythonMem);
 	IniParserHelper::setEntry(dic,"python:raw",this->pythonRaw);
+	IniParserHelper::setEntry(dic,"python:hide-imports",this->pythonHideImports);
 	
 	//output
 	IniParserHelper::setEntry(dic,"output:name",this->outputName.c_str());

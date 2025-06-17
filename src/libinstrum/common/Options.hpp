@@ -92,6 +92,7 @@ struct Options
 	bool pythonObj;
 	bool pythonMem;
 	bool pythonRaw;
+	bool pythonHideImports;
 	//vars for time profiging
 	bool timeProfileEnabled;
 	int timeProfilePoints;
