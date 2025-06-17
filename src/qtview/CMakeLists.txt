@@ -1,7 +1,7 @@
 ############################################################
 #    PROJECT  : MALT (MALoc Tracker)
-#    VERSION  : 2.3.0
-#    DATE     : 02/2025
+#    VERSION  : 1.3.0
+#    DATE     : 02/2018
 #    LICENSE  : CeCILL-C
 #    FILE     : src/qtview/CMakeLists.txt
 #-----------------------------------------------------------

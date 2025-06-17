@@ -1,11 +1,11 @@
 ############################################################
 #    PROJECT  : MALT (MALoc Tracker)
-#    VERSION  : 2.3.0
-#    DATE     : 02/2025
+#    VERSION  : 1.3.0
+#    DATE     : 02/2018
 #    LICENSE  : CeCILL-C
-#    FILE     : src/lib/stack-tree/from-v2/tests/CMakeLists.txt
+#    FILE     : src/libinstrum/stack-tree/from-v2/tests/CMakeLists.txt
 #-----------------------------------------------------------
-#    AUTHOR   : Sébastien Valat - 2015
+#    AUTHOR   : Sébastien Valat - 2015 - 2018
 ############################################################
 
 ############################################################

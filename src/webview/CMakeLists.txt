@@ -1,10 +1,12 @@
-######################################################
-#            PROJECT  : MALT                         #
-#            VERSION  :                         #
-#            DATE     : 02/2025                      #
-#            AUTHOR   : Valat Sébastien              #
-#            LICENSE  : CeCILL-C                     #
-######################################################
+############################################################
+#    PROJECT  : MALT (MALoc Tracker)
+#    VERSION  : 1.3.0
+#    DATE     : 09/2024
+#    LICENSE  : CeCILL-C
+#    FILE     : src/webview/CMakeLists.txt
+#-----------------------------------------------------------
+#    AUTHOR   : Antoine Bernard (crans.org) - 2024
+############################################################
 
 ######################################################
 # Install nodejs dependencies if needed
