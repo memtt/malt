@@ -539,12 +539,14 @@ void AllocStackProfiler::loadGlobalVariables(void)
 			size_t fsize = OS::getFileSize(it->file);
 
 			//search sources
-			if (gblOptions->toolsNm && (nmMaxFileSize == 0 || fsize <= nmMaxFileSize)) {
-				NMCmdReader reader;
-				CODE_TIMING("nm",reader.load(it->file));
-				reader.findSourcesAndDemangle(globalVariables[it->file]);
-			} else if (fsize > nmMaxFileSize) {
-				fprintf(stderr, "MALT : Skipping global var location analysis for '%s', file is too large (tools:nmMaxSize=%s)\n", it->file.c_str(), gblOptions->toolsNmMaxSize.c_str());
+			if (gblOptions->toolsNm)
+				if (nmMaxFileSize == 0 || fsize <= nmMaxFileSize) {
+					NMCmdReader reader;
+					CODE_TIMING("nm",reader.load(it->file));
+					reader.findSourcesAndDemangle(globalVariables[it->file]);
+				} else if (fsize > nmMaxFileSize) {
+					fprintf(stderr, "MALT : Skipping global var location analysis for '%s', file is too large (tools:nmMaxSize=%s)\n", it->file.c_str(), gblOptions->toolsNmMaxSize.c_str());
+				}
 			}
 		}
 	}

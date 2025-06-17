@@ -144,6 +144,10 @@ The config file use INI format with sections and variables as in this example :
   mem                            = true
   raw                            = true
 
+  [tools]
+  nm                             = true
+  nmMaxSize                      = 50M
+
 The `time` section support :
 
  * `enabled`:
@@ -313,6 +317,11 @@ The `python` section permit to configure how to instrument python. Notice that y
    Same but for the mem allocation domain of python. In principle you should let it enabled.
  * `raw`:
    Same but for the raw allocation domain of python which is backed by the standard C malloc function. In principle you should let it enabled.
+
+The `tools` section permit to configure some of the sub-tools called by MALT to perform its analysis.
+  * `nm`: Use to extract the source location of the global variables. If true (default) it is used, otherwise it is skiped.
+  * `nmMaxSize`: By default it limits the size of the .so files on which to apply NM in order to keep a decent profile dumping
+    time when running on large frameworks like PyTorch which tends to load huge .so files in memory.
 
 ## ENVIRONMENT
 
