@@ -1,6 +1,13 @@
 Change log
 ==========
  
+X.X.X - XX/XX/XXXX
+------------------
+
+ - Document tools:nm & tools:nmMaxSize.
+ - By default disable nm usage on profile python-only & python-default.
+ - Fix mistake which make the embeded google test installed with MALT.
+
 1.3.0 - 16/06/2025
 ------------------
 
