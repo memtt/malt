@@ -539,7 +539,7 @@ void AllocStackProfiler::loadGlobalVariables(void)
 			size_t fsize = OS::getFileSize(it->file);
 
 			//search sources
-			if (gblOptions->toolsNm)
+			if (gblOptions->toolsNm) {
 				if (nmMaxFileSize == 0 || fsize <= nmMaxFileSize) {
 					NMCmdReader reader;
 					CODE_TIMING("nm",reader.load(it->file));
