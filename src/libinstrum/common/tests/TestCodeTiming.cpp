@@ -1,6 +1,6 @@
 /***********************************************************
 *    PROJECT  : MALT (MALoc Tracker)
-*    VERSION  : 1.3.0
+*    VERSION  : 1.3.1
 *    DATE     : 01/2022
 *    LICENSE  : CeCILL-C
 *    FILE     : src/libinstrum/common/tests/TestCodeTiming.cpp

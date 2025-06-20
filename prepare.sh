@@ -1,7 +1,7 @@
 #!/bin/bash
 ############################################################
 #    PROJECT  : MALT (MALoc Tracker)
-#    VERSION  : 1.3.0
+#    VERSION  : 1.3.1
 #    DATE     : 05/2025
 #    LICENSE  : CeCILL-C
 #    FILE     : prepare.sh

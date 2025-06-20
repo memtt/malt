@@ -1,7 +1,7 @@
 Change log
 ==========
  
-X.X.X - XX/XX/XXXX
+1.3.1 - 20/06/2025
 ------------------
 
  - Document tools:nm & tools:nmMaxSize.
