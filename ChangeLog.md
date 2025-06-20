@@ -4,6 +4,7 @@ Change log
 1.3.1 - 20/06/2025
 ------------------
 
+ - Add python:hideImports option to group the imports in a single target not to look them (enabled by default).
  - Document tools:nm & tools:nmMaxSize.
  - By default disable nm usage on profile python-only & python-default.
  - Fix mistake which make the embeded google test installed with MALT.

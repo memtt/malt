@@ -43,7 +43,8 @@ const char cstJson[] = "\
 		\"stack\":\"enter-exit\",\n\
 		\"obj\":true,\n\
 		\"mem\":true,\n\
-		\"raw\":true\n\
+		\"raw\":true,\n\
+		\"hideImports\":true\n\
 	},\n\
 	\"output\":{\n\
 		\"callgrind\":false,\n\
