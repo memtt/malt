@@ -1,6 +1,6 @@
 ############################################################
 #    PROJECT  : MALT (MALoc Tracker)
-#    VERSION  : 1.3.0
+#    VERSION  : 1.3.1
 #    DATE     : 02/2014
 #    LICENSE  : CeCILL-C
 #    FILE     : extern-deps/iniparser/src/CMakeLists.txt

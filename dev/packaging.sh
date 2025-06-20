@@ -1,7 +1,7 @@
 #!/bin/bash
 ############################################################
 #    PROJECT  : MALT (MALoc Tracker)
-#    VERSION  : 1.3.0
+#    VERSION  : 1.3.1
 #    DATE     : 10/2024
 #    LICENSE  : CeCILL-C
 #    FILE     : dev/packaging.sh
@@ -11,7 +11,7 @@
 
 ############################################################
 #setup version
-VERSION=1.3.0
+VERSION=1.3.1
 VERSION=$(echo $VERSION | cut -f 1 -d '-')
 
 ############################################################
