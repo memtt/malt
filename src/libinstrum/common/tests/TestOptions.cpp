@@ -33,7 +33,7 @@ const char cstJson[] = "\
 		\"libunwind\":false,\n\
 		\"stackSkip\":4,\n\
 		\"addr2lineBucket\":350,\n\
-		\"addr2lineThreads\":8,\n\
+		\"addr2lineThreads\":1,\n\
 		\"sampling\":false,\n\
 		\"samplingBw\":4093\n\
 	},\n\
