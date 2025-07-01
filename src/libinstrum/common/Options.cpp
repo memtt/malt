@@ -58,7 +58,7 @@ Options::Options(void)
 	this->stackMode               = "backtrace";
 	this->stackSkip               = cstDefaultStackSkip;
 	this->stackAddr2lineBucket    = 350;
-	this->stackAddr2lineThreads   = 8;
+	this->stackAddr2lineThreads   = 1;
 	this->stackSampling           = false;
 	this->stackSamplingBw         = 4093; //5242883, 10485767, 20971529
 	//python
