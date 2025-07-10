@@ -21,6 +21,18 @@ namespace MALT
 {
 
 /**********************************************************/
+/**
+ * @brief Provide a simple way to run some parallel tasks.
+ * 
+ * The goal of this light implementation based on std::thread is to run some
+ * tasks in parallel when generating the profile. It permits avoiding to depend
+ * on OpenMP inside MALT not to conflict with the possible one used in the
+ * application we instrument.
+ * 
+ * @param jobList Define a list of jobs consisting in tasks with a run()
+ * function to execute.
+ * @param threads The number of thread to use.
+ */
 template <class T>
 bool runParallelJobs(T & jobList, int threads)
 {

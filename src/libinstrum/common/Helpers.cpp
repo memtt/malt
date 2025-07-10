@@ -71,6 +71,10 @@ int Helpers::getFileId(void )
 }
 
 /**********************************************************/
+/**
+ * @brief Load a file in a single call to help writing some unit tests.
+ * @param fname Define the name of the file to be loaded.
+ */
 std::string Helpers::loadFullFile(const std::string & fname)
 {
 	//output
@@ -97,6 +101,11 @@ std::string Helpers::loadFullFile(const std::string & fname)
 }
 
 /**********************************************************/
+/**
+ * @brief Write a file in a single call to help writting some unit tests.
+ * @param fname The name of the file to create / override.
+ * @param data The content to store in the file under string form.
+ */
 bool Helpers::writeFullFile(const std::string & fname, const std::string & data)
 {
 	//open
@@ -116,41 +125,14 @@ bool Helpers::writeFullFile(const std::string & fname, const std::string & data)
 }
 
 /**********************************************************/
-std::string Helpers::simpleProfileDump(const std::string & profileFile, const std::string & sourceFile, bool counters)
-{
-	//create tmp file
-	char tmpFile[] = "malt-unit-test-XXXXXX";
-	int fd = mkstemp(tmpFile);
-	assert(fd > 0);
-
-	//build command
-	std::stringstream cmd;
-	cmd << "node "
-		<< SRC_PATH << "/src/webview/malt-simple-dump.js "
-		<< "-i " << profileFile << " "
-		<< "-s " << sourceFile << " "
-		<< "| grep -A 100000 -e '--------------------------------------------' ";
-	if (counters == false)
-		cmd << "| egrep '^[a-zA-Z0-9/.]' ";
-	cmd << "| sed -e 's#" SRC_PATH "##g' "
-		<< "> " << tmpFile;
-
-	//run
-	int status = system(cmd.str().c_str());
-	if (status != 0)
-		return "CONVERSION_ERROR";
-
-	//read
-	std::string result = MALT::Helpers::loadFullFile(tmpFile);
-
-	//close & remove
-	close(fd);
-	unlink(tmpFile);
-
-	//ok
-	return result;
-}
-
+/**
+ * @brief Convert a string with K, M, G into an absolute number.
+ * 
+ * Note it uses a 1024 base for the unit.
+ * 
+ * @param value The memory size as a string.
+ * @return size_t The resulting number after converting to integer and taking in account the K, M, G.
+ */
 size_t Helpers::valueFromKiloMegaGiga(const std::string & value)
 {
 	//trivial
