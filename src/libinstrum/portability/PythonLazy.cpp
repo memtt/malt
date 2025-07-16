@@ -58,6 +58,7 @@ bool PyLazyInterfaceInit(void)
 	MALT_PYTHON_DLSYM(PySys_GetObject, supported);
 	MALT_PYTHON_DLSYM(PyList_GetItem, supported);
 	MALT_PYTHON_DLSYM(PyImport_ImportModule, supported);
+	MALT_PYTHON_DLSYM(Py_AtExit, supported);
 	
 	//MALT_PYTHON_DLSYM(Py_RefCnt, supported);
 	/*MALT_PYTHON_DLSYM(PyThread_tss_create, supported);
@@ -268,6 +269,15 @@ PyObject *PyImport_ImportModule(const char *name)
 		return gblPythonApi.PyImport_ImportModule(name);
 	else
 		return nullptr;
+}
+
+/**********************************************************/
+int Py_AtExit(void (*func)())
+{
+	if (gblPythonApi.Py_AtExit != nullptr)
+		return gblPythonApi.Py_AtExit(func);
+	else
+		return 0;
 }
 
 /**********************************************************/

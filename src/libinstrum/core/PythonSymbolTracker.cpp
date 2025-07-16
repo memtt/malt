@@ -499,4 +499,10 @@ const std::string & PythonSymbolTracker::getScriptName(void) const
 	return this->scriptName;
 }
 
+/**********************************************************/
+void PythonSymbolTracker::setPythonActivity(bool activ)
+{
+	this->pythonIsActiv = activ;
+}
+
 }

@@ -81,6 +81,8 @@ class PythonSymbolTracker
 		const std::string & getScriptName(void) const;
 		void setScript(const std::string & script);
 		const std::set<LangAddress> & getImportAddresses(void) const;
+		void setPythonActivity(bool activ);
+		bool getPythonIsActiv(void) const {return this->pythonIsActiv;};
 	private:
 		LangAddress fastFrameToLangAddress(PyFrameObject * frame);
 		LangAddress slowFrameToLangAddress(PyFrameObject * frame);
@@ -100,6 +102,7 @@ class PythonSymbolTracker
 		std::string programDir;
 		std::string scriptName;
 		std::set<LangAddress> importAddresses;
+		bool pythonIsActiv{false};
 };
 
 }

@@ -60,6 +60,7 @@ void LocalAllocStackProfiler::onMalloc(void* res, size_t size, ticks time, Mallo
 {
 	//check for reentrance
 	CODE_TIMING("mallocProf",globalProfiler->onMalloc(res,size,getStack(lang, size, false), domain));
+	this->popEnterExit();
 	this->cntMemOps++;
 	this->allocStats.malloc[kind].inc(size,time);
 }
@@ -69,6 +70,7 @@ void LocalAllocStackProfiler::onFree(void* ptr, ticks time, Language lang)
 {
 	//check for reentrance
 	CODE_TIMING("freeProf",globalProfiler->onFree(ptr,getStack(lang, 0, true)));
+	this->popEnterExit();
 	this->cntMemOps++;
 	this->allocStats.free.inc(0,time);
 }
@@ -79,6 +81,7 @@ void LocalAllocStackProfiler::onCalloc(void * res,size_t nmemb, size_t size, tic
 	//check for reentrance
 	const size_t totalSize = nmemb * size;
 	CODE_TIMING("callocProf",globalProfiler->onCalloc(res,nmemb,size,getStack(lang, totalSize, false), domain));
+	this->popEnterExit();
 	this->cntMemOps++;
 	this->allocStats.calloc.inc(totalSize,time);
 }
@@ -88,6 +91,7 @@ void LocalAllocStackProfiler::onRealloc(void* ptr, void* res, size_t size,ticks 
 {
 	//check for reentrance
 	CODE_TIMING("reallocProf",globalProfiler->onRealloc(ptr,res,size,getStack(lang, size, false), domain));
+	this->popEnterExit();
 	this->cntMemOps++;
 	this->allocStats.realloc.inc(size,time);
 }
@@ -104,6 +108,8 @@ void LocalAllocStackProfiler::onMmap(void* ptr, size_t size, int flags, int fd)
 	
 	//check for renentrance
 	CODE_TIMING("userMmapProf",globalProfiler->onMmap(ptr,size,stack));
+
+	this->popEnterExit();
 	
 	//CODE_TIMING("globalMmapProf",globalProfiler->onGlobalMmap(ptr,size,stack));
 }
@@ -126,6 +132,8 @@ void LocalAllocStackProfiler::onMunmap(void* ptr, size_t size)
 // 		this->cumulAlloc+=size;
 // 		inUse = oldInuse;
 // 	}
+
+	//this->popEnterExit();
 	
 	//CODE_TIMING("globalMmapProf",globalProfiler->onGlobalMunmap(ptr,size,stack));
 }
@@ -213,19 +221,21 @@ Stack* LocalAllocStackProfiler::getStack(Language lang, size_t size, bool isFree
 	if (lang == LANG_C && stackMode == STACK_MODE_PYTHON)
 		cRef = pythonRef;
 
+	//get last
+	//backtrace python to get last level (not captured by enter exit)
+	if (lang != LANG_PYTHON && pythonRef == &this->enterExitStack && MALT::Py_IsInitialized()){
+		if (pythonRef->getCallee().getDomain() == DOMAIN_PYTHON) {
+			pythonGilState = MALT::PyGILState_Ensure();
+			hasPythonGIL = true;
+		}
+		currentPythonAddr = backtracePythonStack.getCurrentFrameAddr();
+		this->enterExitStack.enterFunction(currentPythonAddr);
+		assert(this->needToPop == false);
+		this->needToPop = true;
+	}
+
 	//if backtrace in python is needed
 	if (gblOptions->pythonMix && gblOptions->pythonInstru && lang != LANG_PYTHON) {
-		//backtrace python to get last level (not captured by enter exit)
-		LangAddress currentPythonAddr;
-		if (pythonRef == &this->enterExitStack) {
-			if (pythonRef->getCallee().getDomain() == DOMAIN_PYTHON) {
-				pythonGilState = MALT::PyGILState_Ensure();
-				hasPythonGIL = true;
-			}
-			currentPythonAddr = backtracePythonStack.getCurrentFrameAddr();
-			this->enterExitStack.enterFunction(currentPythonAddr);
-		}
-
 		if (cRef == pythonRef) {
 			assert(cRef == &this->enterExitStack);
 			globalProfiler->getMultiLangStackMerger().removePythonLib(mixStack, *cRef);
@@ -233,10 +243,6 @@ Stack* LocalAllocStackProfiler::getStack(Language lang, size_t size, bool isFree
 			globalProfiler->getMultiLangStackMerger().mixPythonAndCStack(mixStack, *cRef, *pythonRef);
 		}
 
-		//exit last level we just added
-		if (pythonRef == &this->enterExitStack) {
-			this->enterExitStack.exitFunction(currentPythonAddr);
-		}
 		result = &mixStack;
 	} else {
 		if (lang == LANG_PYTHON && gblOptions->pythonInstru)
@@ -247,7 +253,7 @@ Stack* LocalAllocStackProfiler::getStack(Language lang, size_t size, bool isFree
 			MALT_FATAL("Invalid language, not supported !");
 			result = nullptr;
 		}
-	}
+	}	
 
 	if (hasPythonGIL)
 		MALT::PyGILState_Release(pythonGilState);
@@ -257,6 +263,16 @@ Stack* LocalAllocStackProfiler::getStack(Language lang, size_t size, bool isFree
 
 	//ok
 	return result;
+}
+
+/**********************************************************/
+void LocalAllocStackProfiler::popEnterExit(void)
+{
+	//exit last level we just added
+	if (this->needToPop) {
+		this->enterExitStack.exitFunction(currentPythonAddr);
+		this->needToPop = false;
+	}
 }
 
 /**********************************************************/

@@ -185,6 +185,13 @@ void initPythonEnterExitInstrumentation(void)
 }
 
 /**********************************************************/
+void pythonOnExit(void)
+{
+	gblState.profiler->getPythonSymbolTracker().setPythonActivity(false);
+	printf("MALT: Python exit...\n");
+}
+
+/**********************************************************/
 DLL_PUBLIC void initPythonInstrumentation(const char * script)
 {
 	//setup env
@@ -201,6 +208,10 @@ DLL_PUBLIC void initPythonInstrumentation(const char * script)
 		gblState.profiler->getPythonSymbolTracker().solveExeName();
 	else
 		gblState.profiler->getPythonSymbolTracker().setScript(script);
+
+	//capture exit to stop some analyses
+	gblState.profiler->getPythonSymbolTracker().setPythonActivity(true);
+	MALT::Py_AtExit(pythonOnExit);
 }
 
 }

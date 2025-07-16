@@ -101,6 +101,7 @@ class LocalAllocStackProfiler
 		friend void convertToJson(htopml::JsonState& json, const LocalAllocStackProfiler& value);
 	protected:
 		Stack * getStack(Language lang, size_t size, bool isFree);
+		void popEnterExit(void);
 	private:
 		/** Pointer to the global state **/
 		AllocStackProfiler * globalProfiler;
@@ -127,6 +128,8 @@ class LocalAllocStackProfiler
 		EnterExitStack noneStackC;
 		EnterExitStack noneStackPython;
 		Stack samplePrev;
+		bool needToPop{false};
+		LangAddress currentPythonAddr;
 };
 
 /**********************************************************/

@@ -103,6 +103,7 @@ inline int Py_IsInitialized(void) {return 0;};
 inline PyObject *PySys_GetObject(const char *name) {return nullptr;};
 inline PyObject *PyList_GetItem(PyObject *list, Py_ssize_t index){return nullptr;};
 inline PyObject *PyImport_ImportModule(const char *name){return nullptr;};
+inline int Py_AtExit(void (*func)()) {return 0;};
 
 }
 

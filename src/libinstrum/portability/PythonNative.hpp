@@ -46,6 +46,7 @@ inline int Py_IsInitialized(void) {return ::Py_IsInitialized();};
 inline PyObject *PySys_GetObject(const char *name) {return ::PySys_GetObject(name);};
 inline PyObject *PyList_GetItem(PyObject *list, Py_ssize_t index){return ::PyList_GetItem(list, index);};
 inline PyObject *PyImport_ImportModule(const char *name){return ::PyImport_ImportModule(name);};
+inline int Py_AtExit(void (*func)()) {return ::Py_AtExit(func);};
 
 }
 
