@@ -14,7 +14,7 @@ all:
 
 ############################################################
 malt:
-	malt ./step-1-hello-world.py
-	malt ./step-2-fill-list.py
-	malt ./step-3-calling-c-func.py
-	malt ./step-4-using-numpy.py
+	malt-python ./step-1-hello-world.py
+	malt-python ./step-2-fill-list.py
+	malt-python ./step-3-calling-c-func.py
+	malt-python ./step-4-using-numpy.py
