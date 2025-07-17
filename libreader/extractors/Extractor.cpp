@@ -929,6 +929,18 @@ struct NodeInfos
 };
 
 /**********************************************************/
+static std::string convertRgbStringToHex(const std::string & rgb) {
+	int r = 0, g = 0, b = 0;
+	if (sscanf(rgb.c_str(), "(%d,%d,%d)", &r, &g, &b) == 3) {
+		char buffer[256];
+		snprintf(buffer, sizeof(buffer), "#%02x%02x%02x", r, g, b);
+		return buffer;
+	} else {
+		return "#000000";
+	}
+}
+
+/**********************************************************/
 Graph Extractor::getFilteredTree(ssize_t nodeId, ssize_t depth, ssize_t height, double minCost, const std::string & metric, bool isRatio) const
 {
 	//extract metric
@@ -1037,11 +1049,11 @@ Graph Extractor::getFilteredTree(ssize_t nodeId, ssize_t depth, ssize_t height, 
 	size_t metricLocalMax = 0;
 	for (const auto & it : nodeStats) {
 		size_t val = metricDef.extractor(it.second.infos);
-		if(metricDef.ref == REF_MODE_SUM) {
+		/*if(metricDef.ref == REF_MODE_SUM) {
 			metricLocalMax += val;
-		} else {
+		} else {*/
 			metricLocalMax = std::max(metricLocalMax, val);
-		}
+		//}
 	}
 
 	//filter nodes base on costs
@@ -1093,8 +1105,28 @@ Graph Extractor::getFilteredTree(ssize_t nodeId, ssize_t depth, ssize_t height, 
 		}
 	}
 
+	//sum
+	size_t metricLocalDispMax = 0;
+	for (const auto & it : nodeStatsFiltered) {
+		size_t val = metricDef.extractor(it.second.infos);
+		/*if(metricDef.ref == REF_MODE_SUM) {
+			metricLocalDispMax += val;
+		} else {*/
+			metricLocalDispMax = std::max(metricLocalDispMax, val);
+		//}
+	}
+
 	//build final graph
 	Graph graph;
+
+	//coloring
+	// generate a mapping function from [0-max] onto [#397EBA,#FF9595]
+	D3ScaleLinearColorRange colorScale = D3ScaleLinearColorRange("#397EBA", "#ab4141", 0, metricLocalDispMax);
+	// generate a mapping function from [0-max] onto [1,4]
+	D3ScaleLinearRange thicknessScale = D3ScaleLinearRange(0.8, 8, 0, metricLocalDispMax);
+	fprintf(stderr, "Global Max : %zu\n", metricGblMax);
+	fprintf(stderr, "Local Max : %zu\n", metricLocalMax);
+	fprintf(stderr, "Local Disp Max : %zu\n", metricLocalDispMax);
 
 	//build nodes
 	for (const auto & it : nodeStatsFiltered) {
@@ -1109,8 +1141,9 @@ Graph Extractor::getFilteredTree(ssize_t nodeId, ssize_t depth, ssize_t height, 
 		//create node
 		assert(infos.addr.lang == LANG_TRANS_PTR);
 		graph.nodeList.emplace_back(infos.nodeRef.getId(), label, tooltip, infos.level, infos.infos, infos.location);
-		graph.nodeList.back().color = "#05AA05";
 		double value = metricDef.extractor(infos.infos);
+		graph.nodeList.back().score = value;
+		graph.nodeList.back().color = colorScale.getColor(value);
 		if (isRatio) {
 			char buffer[512];
 			value = 100.0 * value / (double)metricGblMax;
@@ -1141,8 +1174,9 @@ Graph Extractor::getFilteredTree(ssize_t nodeId, ssize_t depth, ssize_t height, 
 		graph.edgeList.emplace_back(0, it.second);
 		graph.edgeList.back().from = inInfos.nodeRef.getId();
 		graph.edgeList.back().to = outInfos.nodeRef.getId();
-		graph.edgeList.back().color = "#10FF10";
 		double value = metricDef.extractor(it.second);
+		graph.edgeList.back().score = value;
+		graph.edgeList.back().color = convertRgbStringToHex(colorScale.getColor(graph.edgeList.back().score));;
 		if (isRatio) {
 			char buffer[512];
 			value = 100.0 * value / (double)metricGblMax;
@@ -1151,8 +1185,7 @@ Graph Extractor::getFilteredTree(ssize_t nodeId, ssize_t depth, ssize_t height, 
 		} else {
 			graph.edgeList.back().scoreReadable = metricDef.formater(value);
 		}
-		graph.edgeList.back().score = value;
-		graph.edgeList.back().thickness = 2.0;
+		graph.edgeList.back().thickness = thicknessScale.getValue(graph.edgeList.back().score);
 	}
 
 	//ok

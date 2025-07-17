@@ -288,19 +288,6 @@ std::string CallTreeAdapter::convertRgbStringToHex(const std::string & rgb) {
 }
 
 /**********************************************************/
-class D3ScaleLinearRange
-{
-	public:
-		D3ScaleLinearRange(double valueMin, double valueMax, double rangeMin, double rangeMax);
-		double getValue(double value) const;
-	private:
-		double valueMin;
-		double valueMax;
-		double rangeMin;
-		double rangeMax;
-};
-
-/**********************************************************/
 D3ScaleLinearRange::D3ScaleLinearRange(double valueMin, double valueMax, double rangeMin, double rangeMax)
 {
 	this->valueMax = valueMax;
@@ -319,19 +306,6 @@ double D3ScaleLinearRange::getValue(double value) const
 	//calc colors
 	return this->valueMin + (double)(this->valueMax - this->valueMin) * ratio;
 }
-
-/**********************************************************/
-class D3ScaleLinearColorRange
-{
-	public:
-		D3ScaleLinearColorRange(const std::string & colorMin, const std::string & colorMax, double rangeMin, double rangeMax);
-		std::string getColor(double value) const;
-	private:
-		int colorMin_r{0}, colorMin_g{0}, colorMin_b{0};
-		int colorMax_r{0}, colorMax_g{0}, colorMax_b{0};
-		double rangeMin;
-		double rangeMax;
-};
 
 /**********************************************************/
 D3ScaleLinearColorRange::D3ScaleLinearColorRange(const std::string & colorMin, const std::string & colorMax, double rangeMin, double rangeMax)
