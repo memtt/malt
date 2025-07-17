@@ -10,7 +10,7 @@
 
 ############################################################
 RONN=ronn
-TARGETS=malt-passwd.1.bz2 malt-webview.1.bz2 malt-qt5.1.bz2 malt.1.bz2 malt-passwd.1.html malt-webview.1.html malt.1.html malt-qt5.1.html
+TARGETS=malt-passwd.1.bz2 malt-webview.1.bz2 malt.1.bz2 malt-passwd.1.html malt-webview.1.html malt.1.html
 RM=rm -f
 BZIP2=bzip2
 

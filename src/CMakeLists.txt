@@ -10,18 +10,6 @@
 ############################################################
 
 ############################################################
-if (Qt5WebEngineWidgets_FOUND OR Qt5WebKitWidgets_FOUND)
-	set(Qt5Webkit_FOUND OK)
-endif (Qt5WebEngineWidgets_FOUND OR Qt5WebKitWidgets_FOUND)
-
-if (Qt5Widgets_FOUND AND Qt5Webkit_FOUND AND Qt5Network_FOUND)
-	set(QT5_FOUND OK)
-	message(STATUS "Find QT5 to build view")
-else (Qt5Widgets_FOUND AND Qt5Webkit_FOUND AND Qt5Network_FOUND)
-	message(STATUS "QT5 webkit not found, skip QT5 view")
-endif (Qt5Widgets_FOUND AND Qt5Webkit_FOUND AND Qt5Network_FOUND)
-
-############################################################
 # check arm compilation
 # check arm execution
 include(CheckCSourceRuns)
@@ -47,6 +35,3 @@ add_subdirectory(manpages)
 if (NODE_FOUND)
 	add_subdirectory(webview)
 endif()
-if (QT5_FOUND AND NODE_FOUND)
-	add_subdirectory(qtview)
-endif ()

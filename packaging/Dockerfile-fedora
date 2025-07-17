@@ -29,5 +29,4 @@ RUN yum update -y
 RUN yum install -y make gcc gcc-c++ cmake git
 RUN yum install -y libunwind-devel elfutils-devel 
 RUN yum install -y rpm-build rpmdevtools
-RUN yum install -y qt5-qtwebkit-devel
-#RUN yum install -y --enable-repo epel qt5-qtwebkit-devel
+

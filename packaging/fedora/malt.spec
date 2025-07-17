@@ -20,8 +20,8 @@ URL: https://github.com/downloads/svalat/svUnitTest/%{name}-%{version}.tar.bz2
 Source0: %{name}-%{version}.tar.bz2
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
-BuildRequires: cmake, gcc-c++ libunwind-devel elfutils-devel qt5-qtwebkit-devel
-Requires: libunwind elfutils-libelf binutils nodejs qt5-qtwebkit graphviz
+BuildRequires: cmake, gcc-c++ libunwind-devel elfutils-devel
+Requires: libunwind elfutils-libelf binutils nodejs
 
 %description
 Memory profiling tool to track memory allocations (malloc, realloc, free...)
@@ -51,17 +51,3 @@ rm -rf $RPM_BUILD_ROOT
 %doc
 
 %changelog
-
-#sub package for QT5
-%package qt5
-Requires: malt qt5-qtwebkit
-Summary: Provide the QT5 based view if you do not want to run your browser.
-
-%description qt5
-Provide the QT5 based view if you do not want to run your browser.
-
-%files qt5
-%defattr(-,root,root,-)
-%{_bindir}/malt-qt5
-%doc
-

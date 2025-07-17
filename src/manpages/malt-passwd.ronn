@@ -26,4 +26,4 @@ more details : https://www.npmjs.com/package/htpasswd.
 
 ## SEE ALSO
 
-malt-webview(1), malt-qt5(1), malt(1)
+malt-webview(1), malt(1)

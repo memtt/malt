@@ -386,4 +386,4 @@ with a custom symbol prefix):
 
 ## SEE ALSO
 
-malt-webview(1), malt-qt5(1), malt-passwd(1)
+malt-webview(1), malt-passwd(1)

@@ -2,7 +2,7 @@ Source: malt
 Section: devel
 Priority: optional
 Maintainer: Sébastien Valat <sebastien.valat.dev@orange.fr>
-Build-Depends: debhelper (>= 7), cmake, cdbs, libunwind-dev, libelf-dev, libqt5webkit5-dev
+Build-Depends: debhelper (>= 7), cmake, cdbs, libunwind-dev, libelf-dev
 Standards-Version: 3.9.4
 Homepage: https://memtt.github.io/malt
 

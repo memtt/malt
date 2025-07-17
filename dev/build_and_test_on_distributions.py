@@ -63,7 +63,6 @@ UBUNTU_BASIC_CMDS=[
 ]
 UBUNTU_FULL_CMDS=[
     "apt install -y libunwind-dev libelf-dev libunwind-dev nodejs npm",
-    "apt install -y libqt5webkit5-dev",
     "apt install -y curl",
     "apt update && apt install -y nlohmann-json3-dev cargo graphviz",
     """curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs > /tmp/rustup-install.sh \\
@@ -76,7 +75,6 @@ UBUNTU_FULL_CMDS=[
 ]
 UBUNTU_FULL_CMDS_UBUNTU_25=[
     "apt install -y libunwind-dev libelf-dev libunwind-dev nodejs npm",
-    "apt install -y qtwebengine5-dev",
     "apt install -y curl",
     "apt update && apt install -y nlohmann-json3-dev cargo graphviz"
 ]
@@ -107,7 +105,6 @@ ROCKY_INDEV_CMDS=[
 ]
 CENTOS_FULL_CMDS=[
     "dnf install -y libunwind-devel elfutils-libelf-devel libunwind-devel nodejs npm",
-    "dnf install -y qt5-qtwebkit-devel",
     "dnf install -y curl graphviz",
 ]
 CENTOS_INDEV_CMDS=[
@@ -119,7 +116,6 @@ ARCH_BASIC_CMDS=[
 ]
 ARCH_FULL_CMDS=[
     "pacman --noconfirm -Sy libunwind libelf nodejs npm",
-    "pacman --noconfirm -Sy qt5-webengine",
     "pacman --noconfirm -Sy curl",
     "pacman --noconfirm -Sy nlohmann-json cargo rustup graphviz"
 ]
@@ -135,7 +131,6 @@ GENTOO_BASIC_CMDS=[
 GENTOO_FULL_CMDS=[
     #"eselect profile set default/linux/amd64/23.0/desktop/plasma && emerge --verbose --update --deep --newuse @world -k -g",
     "emerge -b -k -g sys-libs/libunwind elfutils nodejs",
-    #"emerge -k -g dev-qt/qtwebengine",
     "emerge -b -k -g curl",
     "emerge -b -k -g dev-cpp/nlohmann_json cargo graphviz"
 ]
