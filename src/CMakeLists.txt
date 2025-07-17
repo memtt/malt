@@ -36,7 +36,7 @@ if (ENABLE_PROFILER)
 endif()
 
 ############################################################
-if (NLOHMANN_JSON_FOUND AND EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/reader)
+if (HAVE_NLOHMANN_JSON AND EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/reader)
 	add_subdirectory(reader)
 endif()
 

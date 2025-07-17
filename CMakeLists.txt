@@ -95,8 +95,8 @@ find_package(Qt5WebKitWidgets QUIET)
 find_package(Qt5Network QUIET)
 find_package(Node QUIET)
 find_package(nlohmann_json 3.11.3 QUIET)
-find_package(Cargo QUIET)
-find_package(Zmq QUIET)
+#find_package(Cargo QUIET)
+#find_package(Zmq QUIET)
 find_package(HttpLib QUIET)
 find_package(Crypto QUIET)
 # Check for npm if needed
@@ -111,6 +111,24 @@ if (ENABLE_JEMALLOC)
 	set(MALTJEMALLOC_LIBRARY ${CMAKE_BINARY_DIR}/extern-deps/jemalloc/jemalloc-prefix/lib/libjemalloc-malt_pic.a)
 	#set(MALTJEMALLOC_INCLUDE_DIRS ${CMAKE_BINARY_DIR}/extern-deps/jemalloc/jemalloc-prefix/include/jemalloc)
 	set(MALTJEMALLOC_INCLUDE_DIRS ${CMAKE_BINARY_DIR}/extern-deps/jemalloc/jemalloc-build/include/jemalloc)
+endif()
+
+############################################################
+# use internal httplib
+set(HAVE_HTTPLIB ON)
+if (NOT HTTPLIB_FOUND)
+	set(HTTPLIB_INCLUDE_DIR ${CMAKE_BINARY_DIR}/extern-deps/from-http-lib)
+	set(HTTPLIB_LIBRARY "")
+endif()
+
+############################################################
+# use internal httplib
+set(HAVE_NLOHMANN_JSON ON)
+if (NLOHMANN_JSON_FOUND)
+	set(NLOHMANN_JSON_LIBRARIES nlohmann_json::nlohmann_json)
+else()
+	set(NLOHMANN_JSON_INCLUDE_DIR ${CMAKE_BINARY_DIR}/extern-deps/from-nlohmann-json)
+	set(NLOHMANN_JSON_LIBRARIES "")
 endif()
 
 ############################################################
