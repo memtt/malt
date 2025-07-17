@@ -224,7 +224,7 @@ Stack* LocalAllocStackProfiler::getStack(Language lang, size_t size, bool isFree
 	//get last
 	//backtrace python to get last level (not captured by enter exit)
 	if (lang != LANG_PYTHON && pythonRef == &this->enterExitStack && MALT::Py_IsInitialized()){
-		if (pythonRef->getCallee().getDomain() == DOMAIN_PYTHON) {
+		if (pythonRef->getCallee().getDomain() == DOMAIN_PYTHON && hasPythonGIL == false) {
 			pythonGilState = MALT::PyGILState_Ensure();
 			hasPythonGIL = true;
 		}
