@@ -13,6 +13,7 @@
 include_directories(.)
 include_directories(..)
 include_directories(../..)
+include_directories(${NLOHMANN_JSON_INCLUDE_DIR})
 
 ############################################################
 add_library(malt-profile SHARED
@@ -56,7 +57,7 @@ add_library(malt-profile SHARED
     api/WebProfile.cpp
 	api/Requests.cpp
 )
-target_link_libraries(malt-profile PUBLIC nlohmann_json::nlohmann_json)
+target_link_libraries(malt-profile PUBLIC ${NLOHMANN_JSON_LIBRARIES})
 target_link_libraries(malt-profile PRIVATE OpenMP::OpenMP_CXX)
 set_target_properties(malt-profile PROPERTIES VERSION ${MALT_VERSION}
                                               SOVERSION ${MALT_SO_VERSION})

@@ -12,11 +12,11 @@
 include_directories(../libreader)
 include_directories(${HTTPLIB_INCLUDE_DIR})
 include_directories(${CRYPTO_INCLUDE_DIR})
-include_directories(${NLOHMAN})
+include_directories(${NLOHMANN_JSON_INCLUDE_DIR})
 
 ############################################################
 add_library(malt-webview-new-cpp-base STATIC lib/UserDb.cpp lib/BasicAuth.cpp)
-target_link_libraries(malt-webview-new-cpp-base nlohmann_json::nlohmann_json base64 ${CRYPTO_LIBRARY} ${HTTPLIB_LIBRARY})
+target_link_libraries(malt-webview-new-cpp-base ${NLOHMANN_JSON_LIBRARIES} base64 ${CRYPTO_LIBRARY} ${HTTPLIB_LIBRARY})
 
 ############################################################
 include_directories(${CMAKE_SOURCE_DIR}/extern-deps/renenyffenegger-base64)
@@ -25,7 +25,7 @@ target_link_libraries(malt-webview-new-cpp malt-profile malt-webview-new-cpp-bas
 
 ############################################################
 add_executable(malt-passwd-new-cpp main_passwd.cpp lib/UserDb.cpp)
-target_link_libraries(malt-passwd-new-cpp nlohmann_json::nlohmann_json base64 ${CRYPTO_LIBRARY})
+target_link_libraries(malt-passwd-new-cpp ${NLOHMANN_JSON_LIBRARIES} base64 ${CRYPTO_LIBRARY})
 
 
 ############################################################
