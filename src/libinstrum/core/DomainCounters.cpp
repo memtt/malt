@@ -17,6 +17,11 @@ namespace MALT
 {
 
 /**********************************************************/
+/**
+ * @brief Constructor of the domain counter.
+ * 
+ * Init all the counters to 0.
+ */
 DomainCounters::DomainCounters(void)
 {
 	for (size_t i = 0 ; i < ALLOC_DOMAIN_COUNT ; i++) {
@@ -26,12 +31,21 @@ DomainCounters::DomainCounters(void)
 }
 
 /**********************************************************/
+/**
+ * @brief Destructor of the domain counters.
+ */
 DomainCounters::~DomainCounters(void)
 {
 
 }
 
 /**********************************************************/
+/**
+ * @brief Convert the domain counters in JSON.
+ * 
+ * @param json The JSON stream to pipe in.
+ * @param value The DomainCounter to dump.
+ */
 void convertToJson(htopml::JsonState& json, const DomainCounters & value)
 {
 	json.openStruct();

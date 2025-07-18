@@ -265,6 +265,12 @@ std::ostream& operator<<(std::ostream& out, const CallStackInfo& info)
 }
 
 /**********************************************************/
+/**
+ * Convert the quantiry history into json stream.
+ * 
+ * @param json The stream to pipe in.
+ * @param value The quantiry to dump.
+ */
 void convertToJson(htopml::JsonState& json, const SimpleQuantityHistory& value)
 {
 	json.openStruct();
@@ -292,24 +298,37 @@ void CallStackInfo::writeAsCallgrindEntry(int line, std::ostream& out) const
 }
 
 /**********************************************************/
+/**
+ * @return The alloc infos.
+ */
 const SimpleQuantityHistory & CallStackInfo::getAllocInfo ( void ) const
 {
 	return this->alloc;
 }
 
 /**********************************************************/
+/**
+ * @return The free infos
+ */
 const SimpleQuantityHistory & CallStackInfo::getFreeInfo ( void ) const
 {
 	return this->free;
 }
 
 /**********************************************************/
+/**
+ * @return the lifetime infos.
+ */
 const SimpleQuantityHistory & CallStackInfo::getLifetime ( void ) const
 {
 	return this->lifetime;
 }
 
 /**********************************************************/
+/**
+ * Check if has realloc.
+ * @return True if has seen some realloc, false otherwise.
+ */
 bool CallStackInfo::hasRealloc ( void ) const
 {
 	return reallocCount > 0;

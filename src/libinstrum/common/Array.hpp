@@ -129,6 +129,10 @@ Array<T>::Array(const Array<T>& orig)
 template <class T>
 Array<T>::Array(int initialSize, int maxExpGrow,bool defaultAlloc)
 {
+	//checks
+	assert(initialSize >= 0);
+	assert(maxExpGrow >= 0);
+
 	//params
 	this->buffer = NULL;
 	this->activSize = 0;

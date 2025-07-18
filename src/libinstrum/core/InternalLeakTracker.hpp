@@ -21,6 +21,15 @@ namespace MALT
 {
 
 /**********************************************************/
+/**
+ * @brief Helper to debug MALT internal memory leaks.
+ * 
+ * This class permit to track the memory used in MALT and report the leaks at exit.
+ * It was usefull for the python suppport adding due to reference counting issues encountered
+ * during the dev.
+ * 
+ * In MALT it is enabled at compile time using the ENABLE_CODE_LEAK option on CMake / Configure.
+ */
 class InternalLeakTracker
 {
 	public:

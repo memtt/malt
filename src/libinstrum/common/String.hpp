@@ -21,9 +21,17 @@ namespace MALT
 {
 
 /**********************************************************/
+/**
+ * @brief Define a string which is backed on top of the internal allocator.
+ */
 typedef std::basic_string<char, std::char_traits<char>, STLInternalAllocator<char> > String;
 
 /**********************************************************/
+/**
+ * @brief Handle putting the MALT string into json rendering pipeline.
+ * @param json The json object to feed.
+ * @param value The string value to push.
+ */
 inline void convertToJson(htopml::JsonState & json, const String & value)
 {
 	json.printValue(std::string(value.c_str()));

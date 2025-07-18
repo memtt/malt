@@ -20,11 +20,20 @@ namespace MALT
 {
 
 /**********************************************************/
+/**
+ * @brief Constructor of the dictionnary.
+ */
 StringIdDictionnary::StringIdDictionnary(void)
 {
 }
 
 /**********************************************************/
+/**
+ * @brief Translate an ID into a string.
+ * 
+ * @param id ID to be translated.
+ * @return The string corresponding to the ID.
+ */
 const String & StringIdDictionnary::getString(int id) const
 {
 	//check
@@ -35,6 +44,14 @@ const String & StringIdDictionnary::getString(int id) const
 }
 
 /**********************************************************/
+/**
+ * @brief Translate a string into an ID
+ * 
+ * If the string is new it is added to the dictionnary with a new ID assigned.
+ * 
+ * @param value The string value to convert and register if new.
+ * @return The ID assigned to the string value.
+ */
 int StringIdDictionnary::getId(const String & value)
 {
 	//lock
@@ -58,6 +75,12 @@ int StringIdDictionnary::getId(const String & value)
 }
 
 /**********************************************************/
+/**
+ * @brief Dump the string dictionnary into json format.
+ * 
+ * @param json The json stread to pipe in.
+ * @param value The dictionnary to dump.
+ */
 void convertToJson(htopml::JsonState & json, const StringIdDictionnary & value)
 {
 	json.openArray();
