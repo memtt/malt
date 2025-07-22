@@ -9,6 +9,7 @@
 ***********************************************************/
 
 /**********************************************************/
+#include <cstdlib>
 #include <iostream>
 #include <httplib.h>
 #include <vector>
@@ -16,11 +17,85 @@
 #include "lib/BasicAuth.hpp"
 #include "api/WebProfile.hpp"
 #include "extractors/ExtractorHelpers.hpp"
+//gnu libc
+#include <argp.h>
+#include <libgen.h>
 
 /**********************************************************/
 using namespace httplib;
 using namespace MALTWebviewCpp;
 using namespace MALTReader;
+
+/**********************************************************/
+const char *argp_program_version = "MALT 1.2.4";
+const char *argp_program_bug_address = "<sebastien.valat.dev@orange.fr>";
+
+/**********************************************************/
+struct WebviewOptions
+{
+	WebviewOptions(void);
+	void parse(int argc, char ** argv);
+	std::string filename{};
+	bool auth{true};
+	uint32_t port{8080};
+	std::string socket{};
+};
+
+/**********************************************************/
+WebviewOptions::WebviewOptions()
+{
+
+}
+
+/**********************************************************/
+static error_t parse_opt (int key, char *arg, struct argp_state *state)
+{
+	/* Get the input argument from argp_parse, which we
+		know is a pointer to our arguments structure. */
+	WebviewOptions *options = static_cast<WebviewOptions*>(state->input);
+
+	//cases
+	switch (key) {
+		case 'n':
+			options->auth = false;
+			break;
+		case 'p':
+			options->port = atoi(arg);
+			break;
+		case 's':
+			options->socket = arg;
+			break;
+		case ARGP_KEY_ARG:
+			/* Too many arguments. */
+			if (state->arg_num >= 1)
+				argp_usage (state);
+			options->filename = arg;
+			break;
+		case ARGP_KEY_END:
+			/* Not enough arguments. */
+			if (state->arg_num < 1)
+				argp_usage (state);
+			break;
+		default:
+			return ARGP_ERR_UNKNOWN;
+	}
+	return 0;
+}
+
+/**********************************************************/
+void WebviewOptions::parse(int argc, char ** argv)
+{
+	char doc[] = "malt-webview-new -- Micro-server to expose the MALT webview and brower into the MALT profile.";
+	char args_doc[] = "[--no-auth] [-p 8080] [-s UNIX_SOCKET] {PROFILE_FILE}";
+	struct argp_option options[] = {
+		{"no-auth",    'n', 0,        0,  "Disable the authentication." },
+		{"port",       'p', "PORT",   0,  "Listening on given port (8080 by default)."},
+		{"socket",     's', "FILE",   0,  "Listening on given unix socket."},
+		{ 0 }
+	};
+	struct argp argp = { options, parse_opt, args_doc, doc };
+	argp_parse(&argp, argc, argv, 0, 0, this);
+}
 
 /**********************************************************/
 //https://stackoverflow.com/questions/116038/how-do-i-read-an-entire-file-into-a-stdstring-in-c
@@ -38,44 +113,80 @@ std::string load_full_file(const std::string &fileName)
 }
 
 /**********************************************************/
+static std::string get_current_exe(void)
+{
+	char buffer[4096] = {0};
+	const ssize_t res = readlink("/proc/self/exe", buffer, sizeof(buffer));
+	buffer[res] = '\0';
+	return buffer;
+}
+
+/**********************************************************/
+static std::string get_webview_www_path(void)
+{
+	const std::string exe_path = get_current_exe();
+	const std::string bin_path = dirname((char*)exe_path.c_str());
+	const std::string prefix = dirname((char*)bin_path.c_str());
+	return prefix + std::string("/share/malt/webview");
+}
+
+/**********************************************************/
 int main(int argc, char ** argv)
 {
+	//parse options
+	WebviewOptions options;
+	options.parse(argc, argv);
+
+	//print
+	printf("Loading %s...\n", options.filename.c_str());
+
 	//loading profile
-	WebProfile profile(argv[1], true);
+	WebProfile profile(options.filename, true);
 
 	//spwn server
 	BasicAuth basicAuth("malt-webview");
 	Server svr;
 
-	svr.set_pre_routing_handler([&basicAuth](const Request& req, Response& res) {
-		return basicAuth.check(req, res);
-	});
+	//if auth is enabled
+	if (options.auth) {
+		svr.set_pre_routing_handler([&basicAuth](const Request& req, Response& res) {
+			return basicAuth.check(req, res);
+		});
+	}
 
+	//enable logging
 	svr.set_logger([](const Request& req, const Response& res) {
 		printf("[%s] %s => (%d)\n", req.method.c_str(), req.path.c_str(), res.status);
 	});
 
+	//handle home page
 	svr.Get("/", [](const Request& req, Response& res) {
 		res.set_redirect("app/index.html");
 	});
 
-	svr.set_mount_point("/app", "./client-files/app");
+	//mount app path
+	const std::string www_path = get_webview_www_path();
+	svr.set_mount_point("/app", www_path + "/client-files/app");
 
+	//data for the summary
 	svr.Get("/summary.json", [&profile](const Request& req, Response& res) {
 		nlohmann::json data = profile.getSummary();
 		res.set_content(data.dump(), "application/json");
 	});
 
+	//new version of the summary
 	svr.Get("/data/summary.json", [&profile](const Request& req, Response& res) {
 		nlohmann::json data = profile.getSummaryV2();
 		res.set_content(data.dump(), "application/json");
 	});
 
+	//flat profile
 	svr.Get("/flat.json", [&profile](const Request& req, Response& res) {
 		nlohmann::json data = profile.getFlatFunctionProfile(true, true);
 		res.set_content(data.dump(), "application/json");
 	});
 
+	//call stack tree
 	svr.Post("/stacks.json", [&profile](const Request& req, Response& res) {
 		nlohmann::json data;
 		if (req.has_param("file") && req.has_param("line")) {
@@ -86,6 +197,7 @@ int main(int argc, char ** argv)
 		res.set_content(data.dump(), "application/json");
 	});
 
+	//source file
 	svr.Post("/source-file", [&profile](const Request& req, Response& res) {
 		#warning "use the check function"
 		#warning "check parameters going in"
@@ -95,6 +207,7 @@ int main(int argc, char ** argv)
 		res.set_content(data, "plain/text");
 	});
 
+	//infos of the file
 	svr.Post("/file-infos.json", [&profile](const Request& req, Response& res) {
 		#warning "check parameters going in"
 		const nlohmann::json json = nlohmann::json::parse(req.body);
@@ -103,6 +216,7 @@ int main(int argc, char ** argv)
 		res.set_content(data, "application/json");
 	});
 
+	//dig into the call stack tree
 	svr.Post("/call-stack-next-level.json", [&profile](const Request& req, Response& res) {
 		#warning "check parameters going in"
 		const nlohmann::json json = nlohmann::json::parse(req.body);
@@ -116,11 +230,13 @@ int main(int argc, char ** argv)
 		res.set_content(data.dump(), "application/json");
 	});
 
+	//for time charts
 	svr.Get("/timed.json", [&profile](const Request& req, Response& res) {
 		nlohmann::json data = profile.getTimedValues();
 		res.set_content(data.dump(), "application/json");
 	});
 
+	//memory in stack of threads
 	svr.Get("/stacks-mem.json", [&profile](const Request& req, Response& res) {
 		nlohmann::json data = profile.getStacksMem();
 		res.set_content(data.dump(), "application/json");
@@ -167,9 +283,38 @@ int main(int argc, char ** argv)
 		res.set_content(data.dump(), "application/json");
 	});
 
+	//print
+	printf("+-------------------------------------------------------------------------+\n");
+	printf("|                                                                         |\n");
+	printf("|                    _ _                    _          _                  |\n");
+	printf("|    _ __ ___   __ _| | |_    __      _____| |____   _(_) _____      __   |\n");
+	printf("|   | '_ ` _ \\ / _` | | __|___\\ \\ /\\ / / _ \\ '_ \\ \\ / / |/ _ \\ \\ /\\ / /   |\n");
+	printf("|   | | | | | | (_| | | ||_____\\ V  V /  __/ |_) \\ V /| |  __/\\ V  V /    |\n");
+	printf("|   |_| |_| |_|\\__,_|_|\\__|     \\_/\\_/ \\___|_.__/ \\_/ |_|\\___| \\_/\\_/     |\n");
+	printf("|                                                                         |\n");
+	printf("|                                                                         |\n");
+	if (options.socket.empty()) {
+		printf("|         Starting server listening on http://localhost:%-4d/             |\n", options.port);
+	}else {
+		std::string value = std::string("unix://") + options.socket;
+		int left_padding = (71 - value.size()) / 2;
+		int right_padding = 71 - value.size() - left_padding;
+		printf("|                        Starting server listening on                     |\n");
+		printf("| %*s%s%*s |\n", left_padding, " ", value.c_str(), right_padding, " ");
+	}
+	printf("|                                                                         |\n");
+	printf("|                        To use from remote you can :                     |\n");
+	printf("|                 user> ssh -L8080:localhost:8080 myserver                |\n");
+	printf("|                                                                         |\n");
+	printf("+-------------------------------------------------------------------------+\n");
+
 	//listen
-	printf("Listening on http://localhost:8080\n");
-	svr.listen("localhost", 8080);
+	if (options.socket.empty()) {
+		svr.listen("localhost", 8080);
+	} else {
+		unlink(options.socket.c_str());
+		svr.set_address_family(AF_UNIX).listen(options.socket, 8080);
+	}
 	
 	return EXIT_SUCCESS;
 }

@@ -27,7 +27,6 @@ target_link_libraries(malt-webview-new-cpp malt-profile malt-webview-new-cpp-bas
 add_executable(malt-passwd-new-cpp main_passwd.cpp lib/UserDb.cpp)
 target_link_libraries(malt-passwd-new-cpp ${NLOHMANN_JSON_LIBRARIES} base64 ${CRYPTO_LIBRARY})
 
-
 ############################################################
 add_definitions(-DTEST_DATA_DIR="${CMAKE_CURRENT_BINARY_DIR}")
 
@@ -35,3 +34,7 @@ add_definitions(-DTEST_DATA_DIR="${CMAKE_CURRENT_BINARY_DIR}")
 add_executable(TestWebviewNewCpp lib/tests/TestUserDb.cpp)
 target_link_libraries(TestWebviewNewCpp ${GTEST_BOTH_LIBRARIES} ${GMOCK_BOTH_LIBRARIES} malt-webview-new-cpp-base)
 add_test(TestWebviewNewCpp TestWebviewNewCpp)
+
+############################################################
+install(TARGETS malt-webview-new-cpp DESTINATION ${CMAKE_INSTALL_BINDIR})
+install(TARGETS malt-passwd-new-cpp DESTINATION ${CMAKE_INSTALL_BINDIR})
