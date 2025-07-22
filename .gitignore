@@ -38,3 +38,5 @@ examples/python/*.so
 # reader
 src/reader
 
+# IDE
+.idea
