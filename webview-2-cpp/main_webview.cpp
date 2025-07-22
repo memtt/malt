@@ -9,17 +9,22 @@
 ***********************************************************/
 
 /**********************************************************/
+//std C
 #include <cstdlib>
+//std C++
 #include <iostream>
-#include <httplib.h>
-#include <vector>
 #include <fstream>
-#include "lib/BasicAuth.hpp"
-#include "api/WebProfile.hpp"
-#include "extractors/ExtractorHelpers.hpp"
+//cpp-httplib
+#include <httplib.h>
+//unix
+#include <signal.h>
 //gnu libc
 #include <argp.h>
 #include <libgen.h>
+//internal
+#include "lib/BasicAuth.hpp"
+#include "api/WebProfile.hpp"
+#include "extractors/ExtractorHelpers.hpp"
 
 /**********************************************************/
 using namespace httplib;
@@ -131,6 +136,13 @@ static std::string get_webview_www_path(void)
 }
 
 /**********************************************************/
+Server * gblServerPtr = nullptr;
+static void local_signal_ctrl_c_handler(int s){
+	printf("Stopping server...\n");
+	gblServerPtr->stop();
+}
+
+/**********************************************************/
 int main(int argc, char ** argv)
 {
 	//parse options
@@ -144,13 +156,18 @@ int main(int argc, char ** argv)
 	WebProfile profile(options.filename, true);
 
 	//spwn server
-	BasicAuth basicAuth("malt-webview");
+	BasicAuth * basicAuth = nullptr;
 	Server svr;
+	gblServerPtr = &svr;
+
+	//set signal handler
+	signal(SIGINT, local_signal_ctrl_c_handler);
 
 	//if auth is enabled
 	if (options.auth) {
-		svr.set_pre_routing_handler([&basicAuth](const Request& req, Response& res) {
-			return basicAuth.check(req, res);
+		basicAuth = new BasicAuth("malt-webview");
+		svr.set_pre_routing_handler([basicAuth](const Request& req, Response& res) {
+			return basicAuth->check(req, res);
 		});
 	}
 
@@ -312,9 +329,13 @@ int main(int argc, char ** argv)
 	if (options.socket.empty()) {
 		svr.listen("localhost", 8080);
 	} else {
-		unlink(options.socket.c_str());
 		svr.set_address_family(AF_UNIX).listen(options.socket, 8080);
+		unlink(options.socket.c_str());
 	}
+
+	//clean
+	if (basicAuth != nullptr)
+		delete basicAuth;
 	
 	return EXIT_SUCCESS;
 }

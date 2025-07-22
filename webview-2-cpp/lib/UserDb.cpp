@@ -79,8 +79,8 @@ void UserDb::load(const std::string & path, bool warn)
 
 	//fail
 	if (fileStream.fail()) {
-		if (warn)
-			fprintf(stderr, "[MALT-WEBVIEW-2] Fail to load password file (%s), need to run malt-webview-new-passwd !\n", path.c_str());
+		system("malt-passwd-new-cpp");
+		this->load(path, warn);
 		return;
 	}
 
@@ -177,7 +177,6 @@ void UserDb::makedirs(const std::string & path) const
 
 	//make dirs
 	for (auto it = dirs.rbegin() ; it != dirs.rend() ; ++it) {
-		fprintf(stderr, "MKDIR %s\n", it->c_str());
 		mkdir(it->c_str(), S_IRWXU | (S_IRGRP | S_IXGRP) | (S_IROTH | S_IXOTH));
 	}
 }
