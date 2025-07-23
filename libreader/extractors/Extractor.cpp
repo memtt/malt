@@ -987,16 +987,19 @@ Graph Extractor::getFilteredTree(ssize_t nodeId, ssize_t depth, ssize_t height, 
 		//calc depth range we accept
 		ssize_t minDepth = 0;
 		ssize_t maxDepth = depth + 1;
+		bool keep = true;
 		if (targetFuncName != nullptr) {
 			auto it = funcMinDepth.find(targetFuncName);
 			if (it == funcMinDepth.end()) {
-				continue;
+				keep = false;
+			} else if (ExtractorHelpers::isAllocFunction(this->profile.run.allocatorWrappers, *targetFuncName)) {
+				keep = false;
 			} else {
 				const ssize_t targetMinDepth = it->second;
 				if (height == -1)
 					minDepth = 0;
 				else
-					minDepth = std::min(targetMinDepth - height, 0L);
+					minDepth = std::max(targetMinDepth - height, 0L);
 				if (depth == -1)
 					maxDepth = 1000000000000;
 				else
@@ -1004,27 +1007,50 @@ Graph Extractor::getFilteredTree(ssize_t nodeId, ssize_t depth, ssize_t height, 
 			}
 		}
 
+		//add to stat if keep
+		if (keep) {
+			for (size_t i = 0 ; i < stack.size() ; i++) {
+				const size_t eid = stack.size() - i - 1;
+				const LangAddress addr = stack.at(eid);
+				const auto & location = this->getAddrTranslation(addr);
+				const std::string * funcName = location.function;
+				const size_t curMinDepth = funcMinDepth[funcName];
+				if (curMinDepth >= minDepth && curMinDepth < maxDepth) {
+					if (seen.find(funcName) == seen.end()) {
+						seen.insert(funcName);
+						acceptedNodes.insert(addr);
+						auto & entry = nodeStats[funcName];
+						if (curMinDepth < entry.level) {
+							entry.location = &location;
+							entry.addr = addr;
+							entry.level = curMinDepth;
+							entry.nodeRef.offset = eid;
+							entry.nodeRef.stackId = sid;
+						}
+					}
+				}
+			}
+		}
+	}
+
+	//merge stats on retained functions
+	for (size_t sid = 0 ; sid < this->profile.stacks.stats.size() ; sid++) {
+		const auto & stackStat = this->profile.stacks.stats[sid];
+		std::set<const std::string*> seen;
+		const auto & stack = stackStat.stack;
 		for (size_t i = 0 ; i < stack.size() ; i++) {
 			const size_t eid = stack.size() - i - 1;
 			const LangAddress addr = stack.at(eid);
 			const auto & location = this->getAddrTranslation(addr);
 			const std::string * funcName = location.function;
-			const size_t curMinDepth = funcMinDepth[funcName];
-			if (curMinDepth >= minDepth && curMinDepth < maxDepth) {
-				if (seen.find(funcName) == seen.end()) {
-					seen.insert(funcName);
-					acceptedNodes.insert(addr);
-					auto & entry = nodeStats[funcName];
-					entry.infos.merge(stackStat.infos);
-					if (curMinDepth < entry.level) {
-						entry.location = &location;
-						entry.addr = addr;
-						entry.level = curMinDepth;
-						entry.nodeRef.offset = eid;
-						entry.nodeRef.stackId = sid;
-					}
-				}
+			//const size_t curMinDepth = funcMinDepth[funcName];
+			//if (curMinDepth >= minDepth && curMinDepth < maxDepth) {
+			if (nodeStats.find(funcName) != nodeStats.end() && seen.find(funcName) == seen.end()) {
+				seen.insert(funcName);
+				auto & entry = nodeStats[funcName];
+				entry.infos.merge(stackStat.infos);
 			}
+			//}
 		}
 	}
 
@@ -1198,24 +1224,33 @@ nlohmann::json Extractor::getCallTree(ssize_t nodeId, ssize_t depth, ssize_t hei
 	// Response object
 	nlohmann::json resp;
 
-	// If tree object hasnt been created, create and cache it
-	if (this->calltreeCache == nullptr) {
-		// console.time("filteredStack");
-		//FilteredStackList filteredStack = this->getFilterdStacks(true);
-		// console.timeEnd("filteredStack");
-		//this->calltreeCache = new CallTreeAdapter(*this);
-	}
+	//search ID from name
+	if ((nodeId == -1 || nodeId == 0) && func.empty() == false) {
+		ssize_t nodeIdByName = -1;
+		ssize_t depthByName = -1;
+		for (size_t sid = 0 ; sid < this->profile.stacks.stats.size() ; sid++) {
+			const auto & stackStat = this->profile.stacks.stats[sid];
+			const auto & stack = stackStat.stack;
 
-	// If nodeId not provided, get node id by function name
-	if (nodeId == 0) {
-		const CallTreeNode* tmpnode = this->calltreeCache->getNodeByFunctionName(func);
-
-		if(tmpnode == nullptr) {
-			resp["nodeNotFoundError"] = "Node not found.";
-			return resp;
+			//calc func min depth
+			std::map<const std::string*, size_t> funcMinDepth;
+			size_t curDepth = 0;
+			for (size_t i = 0 ; i < stack.size() ; i++) {
+				const size_t eid = stack.size() - i - 1;
+				const LangAddress addr = stack.at(eid);
+				const auto & location = this->getAddrTranslation(addr);
+				if (*location.function == func && i < depthByName) {
+					nodeIdByName =  sid;
+					depthByName = eid;
+				}
+			}
 		}
 
-		nodeId = tmpnode->id;
+		//final set
+		NodeRef ref(-1);
+		ref.stackId = nodeIdByName;
+		ref.offset = depthByName;
+		nodeId = ref.getId();
 	}
 
 	//get metric
@@ -1224,14 +1259,14 @@ nlohmann::json Extractor::getCallTree(ssize_t nodeId, ssize_t depth, ssize_t hei
 
 	// Filter tree and get the focal node
 	// console.time("filterNodeLine");
-	Graph filteredTree;
+
 	bool ratio = isRatio;
 	/*if(nodeId == -1) {
 		filteredTree = this->calltreeCache->filterRootLines(depth, minCost, metricDef, ratio);
 	} else {
 		filteredTree = this->calltreeCache->filterNodeLine(nodeId, depth, height, minCost, metricDef, ratio);
 	}*/
-	filteredTree = getFilteredTree(nodeId, depth, height, minCost, metric, ratio);
+	const Graph filteredTree = getFilteredTree(nodeId, depth, height, minCost, metric, ratio);
 	// console.timeEnd("filterNodeLine");
 
 	// console.time("getNodeById");

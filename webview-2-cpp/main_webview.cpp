@@ -132,7 +132,15 @@ static std::string get_webview_www_path(void)
 	const std::string exe_path = get_current_exe();
 	const std::string bin_path = dirname((char*)exe_path.c_str());
 	const std::string prefix = dirname((char*)bin_path.c_str());
-	return prefix + std::string("/share/malt/webview");
+	const std::string webview = prefix + std::string("/share/malt/webview");
+	const std::string webviewCheckFile = webview + std::string("client-files/app/index.html");
+	FILE * fp = fopen(webviewCheckFile.c_str(), "r");
+	if (fp == nullptr) {
+		return std::string(MALT_INSTALL_PREFIX) + "/share/malt/webview";
+	} else {
+		fclose(fp);
+		return webview;
+	}
 }
 
 /**********************************************************/
@@ -289,14 +297,18 @@ int main(int argc, char ** argv)
 		const nlohmann::json json = nlohmann::json::parse(req.body);
 		std::cerr << json << std::endl;
 		const std::string format = json.value("format", "");
-		const std::string func = ""; //json.value("func", "");
-		const ssize_t nodeid = json.value("nodeid", -1);
+		std::string func = "";
+		if (json.contains("func") && json["func"].is_null() == false)
+			func = json.value("func", "");
+		ssize_t nodeId = -1;
+		if (json.contains("nodeid") && json["nodeid"].is_null() == false)
+			nodeId = json.value("nodeid", -1L);
 		const ssize_t depth = json.value("depth", -1);
 		const ssize_t height = json.value("height", -1);
 		const ssize_t mincost = json.value("mincost", 0.0);
 		const std::string metric = json.value("metric", "");
 		const bool isratio = json.value("isratio", false);
-		nlohmann::json data = profile.getCallTree(nodeid, depth, height, mincost, func, metric, isratio);
+		nlohmann::json data = profile.getCallTree(nodeId, depth, height, mincost, func, metric, isratio);
 		res.set_content(data.dump(), "application/json");
 	});
 

@@ -244,7 +244,7 @@ struct NodeRef
 		if (offset == -1)
 			return -1;
 		else
-			return this->stackId * (1UL<<32) + this->offset + 1;
+			return this->stackId * (1UL<<32) + this->offset % (1UL<<32) + 1;
 	}
 	
 	size_t stackId;
