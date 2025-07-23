@@ -1,14 +1,16 @@
 #include <cassert>
 #include <sys/mman.h>
+#include <cstring>
 #include "File.hpp"
 
 namespace MALTJson
 {
 
-JsonFile::JsonFile(const std::string & fname)
+JsonFile::JsonFile(const std::string & fname, bool progress)
 {
 	//save
 	this->filename = fname;
+	this->progress = progress;
 
 	//open
 	FILE * fp = fopen(fname.c_str(), "r");
@@ -52,6 +54,10 @@ void JsonFile::parse(void)
 	cursor.fname = &this->filename;
 	cursor.data = &this->data;
 
+	//progress bar
+	if (this->progress)
+		cursor.progressBar = new MALTReader::ProgressBar(strlen(cursor.data->value), MALT_DRAW_WIDTH_AUTO, 1);
+
 	//get next
 	JsonCharType next = cursor.forwardNextStart();
 	switch (next) {
@@ -62,6 +68,11 @@ void JsonFile::parse(void)
 		default:
 			cursor.raiseError("Invalid start, should be object or array !");
 			break;
+	}
+
+	//end
+	if (this->progress) {
+		delete cursor.progressBar;
 	}
 }
 

@@ -12,7 +12,7 @@ namespace MALTJson
 class JsonFile
 {
 	public:
-		JsonFile(const std::string & fname);
+		JsonFile(const std::string & fname, bool progress = false);
 		~JsonFile(void);
 		Json getRoot(){return Json(&root);};
 	private:
@@ -21,6 +21,7 @@ class JsonFile
 		std::string filename;
 		JsonString data;
 		JsonNode root;
+		bool progress{false};
 };
 
 }

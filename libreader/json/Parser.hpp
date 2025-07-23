@@ -6,6 +6,7 @@
 #include "Exception.hpp"
 #include "String.hpp"
 #include "Node.hpp"
+#include "../loader/ProgressBar.hpp"
 
 namespace MALTJson
 {
@@ -28,6 +29,7 @@ struct JsonFileCursor
 {
 	const std::string * fname{nullptr};
 	const JsonString * data{nullptr};
+	MALTReader::ProgressBar * progressBar{nullptr};
 	size_t line{0};
 	size_t offset{0};
 	size_t column{0};
@@ -63,6 +65,11 @@ char JsonFileCursor::getNextChar(bool forward)
 		this->line++;
 	} else {
 		this->column++;
+	}
+
+	//progress bar
+	if (this->progressBar != nullptr) {
+		this->progressBar->progress(1);
 	}
 
 	//ok

@@ -19,14 +19,13 @@ namespace MALTReader
 /**********************************************************/
 Profile::Profile(const std::string & fname, bool loadProgressBar)
 {
-	//open stream
-	FileReader reader(fname, loadProgressBar);
-
 	//load it
 	#ifdef USE_INTERNAL_JSON_IN
-		MALTJson::JsonFile file(fname);
+		MALTJson::JsonFile file(fname, loadProgressBar);
 		file.getRoot().get_to(this->profile);
 	#else
+		//open stream
+		FileReader reader(fname, loadProgressBar);
 		nlohmann::json data = nlohmann::json::parse(begin(reader), end(reader));
 		this->profile = data;
 	#endif
