@@ -533,7 +533,7 @@ If you search similar tools all over the web you might find:
 - [mpatrol](http://mpatrol.sourceforge.net/)
 - Tracing tool for parallel programs: [EZTrace](http://eztrace.gforge.inria.fr/)
 - Find Obsolete Memory: [FOM Tools](https://gitlab.cern.ch/fom/FOM-tools/wikis/home)
-- Memray: A memory profiler support C & python. <https://bloomberg.github.io/memray/>
+- Memray: A memory profiler support python. <https://bloomberg.github.io/memray/>
 - Scalene: A perf and memory profiler for C & python : <https://pypi.org/project/scalene/>
 
 If ever I missed new ones, you can also look on the repos of this person keeping an up-to-date list:
