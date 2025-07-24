@@ -237,8 +237,8 @@ int main(int argc, char ** argv)
 		#warning "check parameters going in"
 		const nlohmann::json json = nlohmann::json::parse(req.body);
 		const std::string file = json["file"];
-		const std::string data = profile.getFileLinesFlatProfile(file, true);
-		res.set_content(data, "application/json");
+		const nlohmann::json data = profile.getFileLinesFlatProfile(file, true);
+		res.set_content(data.dump(), "application/json");
 	});
 
 	//dig into the call stack tree

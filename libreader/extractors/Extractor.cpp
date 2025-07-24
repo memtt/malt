@@ -640,9 +640,9 @@ SummaryV2 Extractor::getSummaryV2(void) const
 
 	//summary
 	ret.summary = {};
-	ret.summary.peakPhysicalMemory = this->profile.timeline.memoryTimeline.peak[2];
-	ret.summary.peakVirtualMemory = this->profile.timeline.memoryTimeline.peak[1];
 	ret.summary.peakRequestedMemory = this->profile.timeline.memoryTimeline.peak[0];
+	ret.summary.peakPhysicalMemory = this->profile.timeline.memoryTimeline.peak[1];
+	ret.summary.peakVirtualMemory = this->profile.timeline.memoryTimeline.peak[2];
 	ret.summary.peakInternalMemory = this->profile.timeline.memoryTimeline.peak[3];
 	ret.summary.peakSegmentCount = this->profile.timeline.memoryTimeline.peak[4];
 
@@ -768,11 +768,11 @@ Summary Extractor::getSummary(void) const
 
 	//extract global stats
 	ret.globalStats = {};
-	ret.globalStats.physicalMem = this->profile.timeline.memoryTimeline.peak[2];//this->profile.timeline.physicalMem.peakMemory;
-	ret.globalStats.virtualMem = this->profile.timeline.memoryTimeline.peak[1];//this->profile.timeline.virtualMem.peakMemory;
 	ret.globalStats.requestedMem = this->profile.timeline.memoryTimeline.peak[0];//this->profile.timeline.requestedMem.peakMemory;
-	ret.globalStats.internalMemory = this->profile.timeline.memoryTimeline.peak[4];//this->profile.timeline.internalMem.peakMemory;
-	ret.globalStats.segments = this->profile.timeline.memoryTimeline.peak[3];//this->profile.timeline.segments.peakMemory;
+	ret.globalStats.physicalMem = this->profile.timeline.memoryTimeline.peak[1];//this->profile.timeline.physicalMem.peakMemory;
+	ret.globalStats.virtualMem = this->profile.timeline.memoryTimeline.peak[2];//this->profile.timeline.virtualMem.peakMemory;
+	ret.globalStats.internalMemory = this->profile.timeline.memoryTimeline.peak[3];//this->profile.timeline.internalMem.peakMemory;
+	ret.globalStats.segments = this->profile.timeline.memoryTimeline.peak[4];//this->profile.timeline.segments.peakMemory;
 
 	//search min/max/count size
 	ssize_t min = -1;
