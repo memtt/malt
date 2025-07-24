@@ -189,8 +189,8 @@ function MaltPageTimeline()
 	function maltConvertData(data)
 	{
 		var res = new Array();
-		res.push( maltConvertDataInternalD3JS2(data.memoryTimeline,1) );
 		res.push( maltConvertDataInternalD3JS2(data.memoryTimeline,2) );
+		res.push( maltConvertDataInternalD3JS2(data.memoryTimeline,1) );
 		res.push( maltConvertDataInternalD3JS2(data.memoryTimeline,0) );
 		
 		var labels = new Array();
@@ -204,8 +204,8 @@ function MaltPageTimeline()
 	function maltConvertData2(data)
 	{
 		var res = new Array();
-		res.push( maltConvertDataInternalD3JS2(data.memoryTimeline,1) );
 		res.push( maltConvertDataInternalD3JS2(data.memoryTimeline,2) );
+		res.push( maltConvertDataInternalD3JS2(data.memoryTimeline,1) );
 		res.push( maltConvertDataInternalD3JS2(data.memoryTimeline,0) );
 		
 		var labels = new Array();

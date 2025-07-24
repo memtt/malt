@@ -152,7 +152,7 @@ void BenchTiming::end(ostream& out)
 }
 
 /**********************************************************/
-static const char * units[] = {"","K","M","G","T","P"};
+static const char * units[] = {"","K","M","G","T","P","E","Y"};
 void BenchTiming::printTime(ostream& out, ticks value)
 {
 	double finalValue = value;

@@ -256,7 +256,12 @@ void AllocStackProfiler::onAllocEvent(void* ptr, size_t size,Stack* userStack,MM
 				{
 					OSProcMemUsage mem = OS::getProcMemoryUsage();
 					curMemoryTimeline.virtualMem = mem.virtualMemory - gblInternaAlloc->getTotalMemory() - maltJeMallocMem;
-					curMemoryTimeline.physicalMem = mem.physicalMemory - gblInternaAlloc->getTotalMemory() - maltJeMallocMem;
+					if (mem.physicalMemory < gblInternaAlloc->getTotalMemory() + maltJeMallocMem) {
+						curMemoryTimeline.physicalMem = 0;
+						fprintf(stderr, "MALT: Warning: get physical memory lower than MALT internal memory, it shows we require to fix the internal JeMalloc memory accounting way !");
+					} else {
+						curMemoryTimeline.physicalMem = mem.physicalMemory - gblInternaAlloc->getTotalMemory() - maltJeMallocMem;
+					}
 					doDump |= trigger.onProcMemUpdate(mem);
 				}
 				sizeOverTime.push(t-trefTicks,size);
@@ -965,8 +970,8 @@ void convertToJson ( htopml::JsonState& json, const TimeTrackMemory& value)
 // 	json.closeStruct();
 	json.openArray();
 	json.printValue(value.requestedMem);
-	json.printValue(value.virtualMem);
 	json.printValue(value.physicalMem);
+	json.printValue(value.virtualMem);
 	json.printValue(value.internalMem);
 	json.printValue(value.segments);
 	json.closeArray();

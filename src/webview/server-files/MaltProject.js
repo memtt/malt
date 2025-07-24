@@ -532,9 +532,9 @@ MaltProject.prototype.getSummaryV2 = function()
 
 	//summary
 	ret.summary = {};
-	ret.summary.peakPhysicalMemory = this.data.timeline.memoryTimeline.peak[2];//this.data.timeline.physicalMem.peakMemory;
-	ret.summary.peakVirtualMemory = this.data.timeline.memoryTimeline.peak[1];//this.data.timeline.virtualMem.peakMemory;
 	ret.summary.peakRequestedMemory = this.data.timeline.memoryTimeline.peak[0];//this.data.timeline.requestedMem.peakMemory;
+	ret.summary.peakPhysicalMemory = this.data.timeline.memoryTimeline.peak[1];//this.data.timeline.physicalMem.peakMemory;
+	ret.summary.peakVirtualMemory = this.data.timeline.memoryTimeline.peak[2];//this.data.timeline.virtualMem.peakMemory;
 	ret.summary.peakInternalMemory = this.data.timeline.memoryTimeline.peak[3];//this.data.timeline.internalMem.peakMemory;
 	ret.summary.peakSegmentCount = this.data.timeline.memoryTimeline.peak[4];//this.data.timeline.segments.peakMemory;
 
@@ -640,11 +640,11 @@ MaltProject.prototype.getSummary = function()
 
 	//extract global stats
 	ret.globalStats = {};
-	ret.globalStats.physicalMem = this.data.timeline.memoryTimeline.peak[2];//this.data.timeline.physicalMem.peakMemory;
-	ret.globalStats.virtualMem = this.data.timeline.memoryTimeline.peak[1];//this.data.timeline.virtualMem.peakMemory;
 	ret.globalStats.requestedMem = this.data.timeline.memoryTimeline.peak[0];//this.data.timeline.requestedMem.peakMemory;
-	ret.globalStats.internalMemory = this.data.timeline.memoryTimeline.peak[4];//this.data.timeline.internalMem.peakMemory;
-	ret.globalStats.segments = this.data.timeline.memoryTimeline.peak[3];//this.data.timeline.segments.peakMemory;
+	ret.globalStats.physicalMem = this.data.timeline.memoryTimeline.peak[1];//this.data.timeline.physicalMem.peakMemory;
+	ret.globalStats.virtualMem = this.data.timeline.memoryTimeline.peak[2];//this.data.timeline.virtualMem.peakMemory;
+	ret.globalStats.internalMemory = this.data.timeline.memoryTimeline.peak[3];//this.data.timeline.internalMem.peakMemory;
+	ret.globalStats.segments = this.data.timeline.memoryTimeline.peak[4];//this.data.timeline.segments.peakMemory;
 
 	//search min/max/count size
 	var min = -1;

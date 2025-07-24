@@ -32,7 +32,7 @@ namespace MALT
 
 /**********************************************************/
 /** Strings for unit printing. **/
-static const char * cstUnits[] = {"","K","M","G","T","P"};
+static const char * cstUnits[] = {"","K","M","G","T","P","E","Y"};
 
 /**********************************************************/
 /**

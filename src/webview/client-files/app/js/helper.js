@@ -15,8 +15,8 @@ function MaltHelper()
 {
 	/********************************************************************/
 	//--PORTED IN C++ VERSION--
-	this.MALT_POWER_PS  = ['&nbsp;','K','M','G','T','P'];
-	this.MALT_POWER_NPS = [' ','K','M','G','T','P'];
+	this.MALT_POWER_PS  = ['&nbsp;','K','M','G','T','P','E','Y'];
+	this.MALT_POWER_NPS = [' ','K','M','G','T','P','E','Y'];
 	this.MALT_SUBPOWER_PS  = ['&nbsp;','m','u','n'];
 	this.MALT_SUBPOWER_NPS = [' ','m','u','n','p'];
 }
