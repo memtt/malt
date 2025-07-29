@@ -15,15 +15,16 @@ src/webview/build
 __pycache__
 
 # examples built
-examples/cpp/step-1-basic
-examples/cpp/step-2-problem-fragmentation
-examples/cpp/step-3-problem-mem-on-stack
-examples/cpp/step-4-problem-short-life-alloc
-examples/cpp/step-5-problem-for-auto-missing-ref-copy
-examples/cpp/step-6-problem-grow-by-copy
-examples/cpp/step-7-problem-peak
-examples/cpp/step-8-problem-heavy-realloc
-examples/cpp/step-9-problem-tls-and-gbl-vars
+examples/cpp/step-01-basic
+examples/cpp/step-02-problem-fragmentation
+examples/cpp/step-03-problem-mem-on-stack
+examples/cpp/step-04-problem-short-life-alloc
+examples/cpp/step-05-problem-for-auto-missing-ref-copy
+examples/cpp/step-06-problem-grow-by-copy
+examples/cpp/step-07-problem-peak
+examples/cpp/step-08-problem-heavy-realloc
+examples/cpp/step-09-problem-tls-and-gbl-vars
+examples/cpp/step-10-problem-leak
 examples/cpp/*.json
 examples/fortran/01-ifort-heap-arrays/reproducer_heap
 examples/fortran/01-ifort-heap-arrays/reproducer_stack

@@ -27,7 +27,8 @@ TARGETS=\
 	step-06-problem-grow-by-copy \
 	step-07-problem-peak \
 	step-08-problem-heavy-realloc \
-	step-09-problem-tls-and-gbl-vars
+	step-09-problem-tls-and-gbl-vars \
+	step-10-problem-leak
 
 ############################################################
 all: $(TARGETS)
