@@ -19,15 +19,15 @@
 CXX=g++
 CXXFLAGS=-Wall -O0 -g -fopenmp -finstrument-functions
 TARGETS=\
-	step-1-basic \
-	step-2-problem-fragmentation \
-	step-3-problem-mem-on-stack \
-	step-4-problem-short-life-alloc \
-	step-5-problem-for-auto-missing-ref-copy \
-	step-6-problem-grow-by-copy \
-	step-7-problem-peak \
-	step-8-problem-heavy-realloc \
-	step-9-problem-tls-and-gbl-vars
+	step-01-basic \
+	step-02-problem-fragmentation \
+	step-03-problem-mem-on-stack \
+	step-04-problem-short-life-alloc \
+	step-05-problem-for-auto-missing-ref-copy \
+	step-06-problem-grow-by-copy \
+	step-07-problem-peak \
+	step-08-problem-heavy-realloc \
+	step-09-problem-tls-and-gbl-vars
 
 ############################################################
 all: $(TARGETS)
@@ -36,7 +36,7 @@ all: $(TARGETS)
 %:%.cpp
 	$(CXX) $(CXXFLAGS) -o $@ $<
 
-step-6-problem-grow-by-copy: step-6-problem-grow-by-copy.cpp
+step-06-problem-grow-by-copy: step-06-problem-grow-by-copy.cpp
 	$(CXX) $(CXXFLAGS) -O2 -o $@ $<
 
 ############################################################
