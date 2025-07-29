@@ -14,7 +14,9 @@ JsonFile::JsonFile(const std::string & fname, bool progress)
 
 	//open
 	FILE * fp = fopen(fname.c_str(), "r");
-	assert(fp != nullptr);
+	if (fp == nullptr) {
+		throw std::runtime_error(std::string("Fail to opening profile file :") + fname + std::string(" : ") + std::string(strerror(errno)));
+	}
 
 	//get file size
 	ssize_t status = fseek(fp, 0, SEEK_END);
