@@ -548,7 +548,7 @@ If you search some parallel memory allocators, you can find those one on the net
 - [TCMalloc (google)](https://github.com/gperftools/gperftools)
 - [Hoard](http://www.hoard.org/)
 - [Lockless allocator](http://locklessinc.com/downloads/)
-- [MPC](http://mpc.hpcframework.paratools.com/) memory allocator (look into mpcframework/MPC_Allocator)
+- [MPC](https://github.com/cea-hpc/mpc-allocator) memory allocator from Multi-Processor Computing framework.
 - [mimalloc](https://github.com/microsoft/mimalloc)
 
 License
