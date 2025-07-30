@@ -493,6 +493,8 @@ There is in consequence several way to instrument your app which I sort in overh
 malt-python ./script.py
 # profile without stacks
 malt-python --profile python-no-stack ./script.py
+# Get C and Python stack as two distinct domains (not mixed)
+malt-python --profile python-domains ./script.py
 # An approximativ method by sampling instead of tracking each stack (faster but not exact)
 malt-python --profile python-sampling ./script.py
 # Similar but with less samples

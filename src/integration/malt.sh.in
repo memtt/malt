@@ -338,6 +338,7 @@ maltSelectProfile()
 	PROFILE_DEFAULT=""
 	PROFILE_PYTHON_NO_STACK="python:stack=none;python:mix=false;stack:mode=none;"
 	PROFILE_PYTHON_ONLY="python:stack=enter-exit;python:mix=false;stack:mode=python;tools:nm=false;"
+	PROFILE_PYTHON_DOMAINS="python:stack=enter-exit;python:mix=false;stack:mode=backtrace;tools:nm=false;"
 	PROFILE_PYTHON_FULL="python:stack=enter-exit;python:mix=true;stack:mode=backtrace;output:loop-suppress=true;python:hideImports=false,"
 	PROFILE_PYTHON_DEFAULT="${PROFILE_PYTHON_ONLY}"
 	# modes inspirated from scalene configuration (https://arxiv.org/pdf/2212.07597)
@@ -354,6 +355,7 @@ maltSelectProfile()
 		echo "python-default        | ${PROFILE_PYTHON_DEFAULT}"
 		echo "python-no-stack       | ${PROFILE_PYTHON_NO_STACK}"
 		echo "python-only           | ${PROFILE_PYTHON_ONLY}"
+		echo "python-domains        | ${PROFILE_PYTHON_DOMAINS}"
 		echo "python-sampling       | ${PROFILE_PYTHON_SAMPLING}"
 		echo "python-sampling-10M   | ${PROFILE_PYTHON_SAMPLING_10M}"
 		echo "python-sampling-20M   | ${PROFILE_PYTHON_SAMPLING_20M}"
