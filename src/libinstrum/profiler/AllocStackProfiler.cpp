@@ -252,15 +252,15 @@ void AllocStackProfiler::onAllocEvent(void* ptr, size_t size,Stack* userStack,MM
 				curMemoryTimeline.segments++;
 				curMemoryTimeline.requestedMem+=size;
 				doDump |= trigger.onRequestUpdate(curMemoryTimeline.requestedMem);
-				if (memoryTimeline.isNewPoint(t))
+				if (memoryTimeline.isNewPoint(t) || size > 1024*1024)
 				{
 					OSProcMemUsage mem = OS::getProcMemoryUsage();
 					curMemoryTimeline.virtualMem = mem.virtualMemory - gblInternaAlloc->getTotalMemory() - maltJeMallocMem;
-					if (mem.physicalMemory < gblInternaAlloc->getTotalMemory() + maltJeMallocMem) {
+					size_t allocMem = gblInternaAlloc->getTotalMemory() + maltJeMallocMem;
+					if (mem.physicalMemory < allocMem) {
 						curMemoryTimeline.physicalMem = 0;
-						fprintf(stderr, "MALT: Warning: get physical memory lower than MALT internal memory, it shows we require to fix the internal JeMalloc memory accounting way !");
 					} else {
-						curMemoryTimeline.physicalMem = mem.physicalMemory - gblInternaAlloc->getTotalMemory() - maltJeMallocMem;
+						curMemoryTimeline.physicalMem = mem.physicalMemory - allocMem;
 					}
 					doDump |= trigger.onProcMemUpdate(mem);
 				}
@@ -328,6 +328,12 @@ void AllocStackProfiler::onUpdateMem(const OSProcMemUsage & procMem, const OSMem
 		{
 			curMemoryTimeline.virtualMem = procMem.virtualMemory - gblInternaAlloc->getTotalMemory() - maltJeMallocMem;
 			curMemoryTimeline.physicalMem = procMem.physicalMemory - gblInternaAlloc->getTotalMemory() - maltJeMallocMem;
+			size_t allocMem = gblInternaAlloc->getTotalMemory() + maltJeMallocMem;
+			if (procMem.physicalMemory < allocMem) {
+				curMemoryTimeline.physicalMem = 0;
+			} else {
+				curMemoryTimeline.physicalMem = procMem.physicalMemory - allocMem;
+			}
 		}
 		//update intern mem usage
 		if (options.timeProfileEnabled)
@@ -402,11 +408,16 @@ size_t AllocStackProfiler::onFreeEvent(void* ptr, MALT::Stack* userStack, MMCall
 		if (options.timeProfileEnabled)
 		{
 			//progr internal memory
-			if (memoryTimeline.isNewPoint(t))
+			if (memoryTimeline.isNewPoint(t) || size > 1024UL*1024UL)
 			{
 				OSProcMemUsage mem = OS::getProcMemoryUsage();
 				curMemoryTimeline.virtualMem = mem.virtualMemory - gblInternaAlloc->getTotalMemory() - maltJeMallocMem;
-				curMemoryTimeline.physicalMem = mem.physicalMemory - gblInternaAlloc->getTotalMemory() - maltJeMallocMem;
+				size_t allocMem = gblInternaAlloc->getTotalMemory() + maltJeMallocMem;
+				if (mem.physicalMemory < allocMem) {
+					curMemoryTimeline.physicalMem = 0;
+				} else {
+					curMemoryTimeline.physicalMem = mem.physicalMemory - allocMem;
+				}
 			}
 			curMemoryTimeline.segments--;
 			curMemoryTimeline.internalMem = gblInternaAlloc->getInuseMemory();
