@@ -49,4 +49,4 @@ add_dependencies(malt-webview-2-rust malt-profile)
 #)
 
 ############################################################
-install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/${RUST_BUILD_DIR}/malt-webview-new DESTINATION ${CMAKE_INSTALL_BINDIR})
+install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/${RUST_BUILD_DIR}/malt-webview-rust DESTINATION ${CMAKE_INSTALL_BINDIR} RENAME malt-webview)

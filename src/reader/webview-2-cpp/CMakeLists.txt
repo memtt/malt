@@ -18,26 +18,26 @@ include_directories(${NLOHMANN_JSON_INCLUDE_DIR})
 add_definitions(-DMALT_INSTALL_PREFIX=\"${CMAKE_INSTALL_PREFIX}\")
 
 ############################################################
-add_library(malt-webview-new-cpp-base STATIC lib/UserDb.cpp lib/BasicAuth.cpp)
-target_link_libraries(malt-webview-new-cpp-base ${NLOHMANN_JSON_LIBRARIES} base64 ${CRYPTO_LIBRARY} ${HTTPLIB_LIBRARY})
+add_library(malt-webview-cpp-base STATIC lib/UserDb.cpp lib/BasicAuth.cpp)
+target_link_libraries(malt-webview-cpp-base ${NLOHMANN_JSON_LIBRARIES} base64 ${CRYPTO_LIBRARY} ${HTTPLIB_LIBRARY})
 
 ############################################################
 include_directories(${CMAKE_SOURCE_DIR}/extern-deps/renenyffenegger-base64)
-add_executable(malt-webview-new-cpp main_webview.cpp)
-target_link_libraries(malt-webview-new-cpp malt-profile malt-webview-new-cpp-base )
+add_executable(malt-webview-cpp main_webview.cpp)
+target_link_libraries(malt-webview-cpp malt-profile malt-webview-cpp-base )
 
 ############################################################
-add_executable(malt-passwd-new-cpp main_passwd.cpp lib/UserDb.cpp)
-target_link_libraries(malt-passwd-new-cpp ${NLOHMANN_JSON_LIBRARIES} base64 ${CRYPTO_LIBRARY})
+add_executable(malt-passwd-cpp main_passwd.cpp lib/UserDb.cpp)
+target_link_libraries(malt-passwd-cpp ${NLOHMANN_JSON_LIBRARIES} base64 ${CRYPTO_LIBRARY})
 
 ############################################################
 add_definitions(-DTEST_DATA_DIR="${CMAKE_CURRENT_BINARY_DIR}")
 
 ############################################################
 add_executable(TestWebviewNewCpp lib/tests/TestUserDb.cpp)
-target_link_libraries(TestWebviewNewCpp ${GTEST_BOTH_LIBRARIES} ${GMOCK_BOTH_LIBRARIES} malt-webview-new-cpp-base)
+target_link_libraries(TestWebviewNewCpp ${GTEST_BOTH_LIBRARIES} ${GMOCK_BOTH_LIBRARIES} malt-webview-cpp-base)
 add_test(TestWebviewNewCpp TestWebviewNewCpp)
 
 ############################################################
-install(TARGETS malt-webview-new-cpp DESTINATION ${CMAKE_INSTALL_BINDIR})
-install(TARGETS malt-passwd-new-cpp DESTINATION ${CMAKE_INSTALL_BINDIR})
+install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/malt-webview-cpp DESTINATION ${CMAKE_INSTALL_BINDIR} RENAME malt-webview)
+install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/malt-passwd-cpp DESTINATION ${CMAKE_INSTALL_BINDIR} RENAME malt-passwd)

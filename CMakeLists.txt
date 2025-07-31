@@ -57,6 +57,8 @@ set(PORTABILITY_OS        "UNIX"     CACHE STRING "Select OS implementation to u
 set(PORTABILITY_COMPILER  "GNU"      CACHE STRING "Select compiler support to use. Currently support : 'GNU' (also valid intel).")
 set(PORTABILITY_CLOCK     "RDTSC"    CACHE STRING "Clock to be used to represent time in MALT.")
 set(PORTABILITY_PYTHON    "LAZY"     CACHE STRING "Select the instrumentation mode for python : 'LAZY', 'NATIVE'.")
+#select webvew server mode
+set(WEBVIEW_SERVER        "AUTO"      CACHE STRING "Select the webview server to use : AUTO, CPP, NODEJS, RUST, OFF.")
 
 ############################################################
 if (ENABLE_TESTS OR CMAKE_BUILD_TYPE="Debug")
@@ -91,7 +93,8 @@ find_package(LibElf QUIET)
 find_package(Libunwind QUIET)
 find_package(Node QUIET)
 find_package(nlohmann_json 3.11.3 QUIET)
-#find_package(Cargo QUIET)
+find_package(Cargo QUIET)
+#find_package(IniParser QUIET)
 #find_package(Zmq QUIET)
 find_package(HttpLib QUIET)
 find_package(Crypto QUIET)
@@ -155,6 +158,33 @@ if (ENABLE_LINK_OPTIM)
 else()
 	set(USE_LINK_OPTIM "no")
 	set(MALT_LIB_COMPILER_FLAGS "-fPIC")
+endif()
+
+############################################################
+# check allowed
+set(ALLOWED_WEBVIEW_SERVER AUTO CPP NODEJS RUST OFF)
+if (NOT WEBVIEW_SERVER IN_LIST ALLOWED_WEBVIEW_SERVER)
+	message(FATAL_ERROR "Invalid value for WEBSERVER_VIEW : ${WEBVIEW_SERVER}. Should be either : ${ALLOWED_WEBVIEW_SERVER}")
+endif()
+# apply auto
+if (WEBVIEW_SERVER STREQUAL "AUTO" AND NOT CRYPTO_FOUND)
+	set(WEBVIEW_SERVER "CPP")
+elseif (WEBVIEW_SERVER STREQUAL "AUTO" AND NOT NODEJS_FOUND)
+	set(WEBVIEW_SERVER "CPP")
+elseif (WEBVIEW_SERVER STREQUAL "AUTO" AND NOT CARGO_FOUND)
+	set(WEBVIEW_SERVER "CPP")
+else()
+	set(WEBVIEW_SERVER "OFF")
+endif()
+# check requirement is there
+if (WEBVIEW_SERVER STREQUAL "NODEJS" AND NOT NODEJS_FOUND)
+	message(FATAL_ERROR "Forcing NODEJS webview server require NODEJS to be present in the system. Currently not found !")
+endif()
+if (WEBVIEW_SERVER STREQUAL "CPP" AND NOT CRYPTO_FOUND)
+	message(FATAL_ERROR "Forcing CPP webview server require LIBCRYPTO to be present in the system. Currently not found !")
+endif()
+if (WEBVIEW_SERVER STREQUAL "RUST" AND NOT CARGO_FOUND)
+	message(FATAL_ERROR "Forcing CPP webview server require CARGO to be present in the system. Currently not found !")
 endif()
 
 ############################################################

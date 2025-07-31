@@ -28,10 +28,10 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/malt-passwd.sh.in ${CMAKE_CURRENT_BIN
 
 ############################################################
 #install
-if (NODE_FOUND)
+if (WEBVIEW_SERVER STREQUAL "NODEJS")
 	install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/malt-webview ${CMAKE_CURRENT_BINARY_DIR}/malt-passwd
-			DESTINATION bin/)
-endif (NODE_FOUND)
+			DESTINATION ${CMAKE_INSTALL_BINDIR})
+endif()
 
 ############################################################
 if (ENABLE_PROFILER)

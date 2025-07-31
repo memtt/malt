@@ -11,7 +11,7 @@
 
 ############################################################
 [package]
-name = "malt-webview-new"
+name = "malt-webview-rust"
 version = "0.0.0"
 edition = "2021"
 build = "build.rs"

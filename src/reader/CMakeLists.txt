@@ -11,9 +11,9 @@
 
 ############################################################
 add_subdirectory(libreader)
-if (CARGO_FOUND)
+if (WEBVIEW_SERVER STREQUAL "RUST")
     add_subdirectory(webview-2-rust)
 endif ()
-if (HTTPLIB_FOUND AND CRYPTO_FOUND)
+if (WEBVIEW_SERVER STREQUAL "CPP")
 	add_subdirectory(webview-2-cpp)
 endif()

@@ -64,12 +64,14 @@ static error_t parse_opt (int key, char *arg, struct argp_state *state)
 		case 'n':
 			options->auth = false;
 			break;
-		case 'p':
-			options->port = atoi(arg);
+		case 'p': {
+			int port = atoi(arg);
+			if (port == 0)
+				options->socket = arg;
+			else
+				options->port = port;
 			break;
-		case 's':
-			options->socket = arg;
-			break;
+		}
 		case ARGP_KEY_ARG:
 			/* Too many arguments. */
 			if (state->arg_num >= 1)
@@ -94,8 +96,7 @@ void WebviewOptions::parse(int argc, char ** argv)
 	char args_doc[] = "[--no-auth] [-p 8080] [-s UNIX_SOCKET] {PROFILE_FILE}";
 	struct argp_option options[] = {
 		{"no-auth",    'n', 0,        0,  "Disable the authentication." },
-		{"port",       'p', "PORT",   0,  "Listening on given port (8080 by default)."},
-		{"socket",     's', "FILE",   0,  "Listening on given unix socket."},
+		{"port",       'p', "PORT",   0,  "Listening on given port or socket file (8080 by default)."},
 		{ 0 }
 	};
 	struct argp argp = { options, parse_opt, args_doc, doc };
@@ -340,7 +341,7 @@ int main(int argc, char ** argv)
 
 		//listen
 		if (options.socket.empty()) {
-			svr.listen("localhost", 8080);
+			svr.listen("localhost", options.port);
 		} else {
 			svr.set_address_family(AF_UNIX).listen(options.socket, 8080);
 			unlink(options.socket.c_str());
