@@ -1,0 +1,27 @@
+############################################################
+#    PROJECT  : MALT (MALoc Tracker)
+#    VERSION  : 1.2.4
+#    DATE     : 10/2024
+#    LICENSE  : CeCILL-C
+#    FILE     : src/lib/CMakeLists.txt
+#-----------------------------------------------------------
+#    AUTHOR   : Sébastien Valat - 2014 - 2020
+#    AUTHOR   : Sébastien Valat (ECR) - 2014 - 2015
+############################################################
+
+############################################################
+[package]
+name = "malt-webview-new"
+version = "0.0.0"
+edition = "2021"
+build = "build.rs"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+actix-web = "4"
+actix-files = "0.6.6"
+serde = { version = "1.0", default-features = false, features = ["alloc", "derive"] }
+clap = { version = "4.5.39", features = ["derive"] }
+serde_json = { version = "1.0", default-features = false, features = ["alloc"] }
+pretty_assertions = { version = "1.4.1", features = ["alloc"] }

@@ -1,0 +1,12 @@
+--------------------------------------------
+
+TestInstrum.cpp:function_testing_c_malloc():34
+ - alloc: {"count":1,"min":16,"max":16,"sum":16}
+ - free: {"count":1,"min":16,"max":16,"sum":16}
+ - globalPeak: 0
+
+TestInstrum.cpp:TestInstrum_c_basic_malloc_Test::TestBody():47
+ - alloc: {"count":1,"min":16,"max":16,"sum":16}
+ - free: {"count":1,"min":16,"max":16,"sum":16}
+ - globalPeak: 0
+Finished processing JSON file
