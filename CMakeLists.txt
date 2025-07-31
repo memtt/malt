@@ -124,9 +124,10 @@ endif()
 # use internal httplib
 set(HAVE_NLOHMANN_JSON ON)
 if (NLOHMANN_JSON_FOUND)
+	set(NLOHMANN_JSON_INCLUDE_DIR "")
 	set(NLOHMANN_JSON_LIBRARIES nlohmann_json::nlohmann_json)
 else()
-	set(NLOHMANN_JSON_INCLUDE_DIR ${CMAKE_BINARY_DIR}/extern-deps/from-nlohmann-json)
+	set(NLOHMANN_JSON_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/extern-deps/from-nlohmann-json)
 	set(NLOHMANN_JSON_LIBRARIES "")
 endif()
 
