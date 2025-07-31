@@ -1,11 +1,24 @@
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.3.1
+*    DATE     : 07/2025
+*    LICENSE  : CeCILL-C
+*    FILE     : ./src/reader/libreader/json/File.cpp
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat (INRIA) - 2025
+***********************************************************/
+
+/**********************************************************/
 #include <cassert>
 #include <sys/mman.h>
 #include <cstring>
 #include "File.hpp"
 
+/**********************************************************/
 namespace MALTJson
 {
 
+/**********************************************************/
 JsonFile::JsonFile(const std::string & fname, bool progress)
 {
 	//save
@@ -43,12 +56,14 @@ JsonFile::JsonFile(const std::string & fname, bool progress)
 	fprintf(stderr, "end parsing...\n");
 }
 
+/**********************************************************/
 JsonFile::~JsonFile(void)
 {
 	ssize_t status = munmap((void*)this->data.value, this->data.len);
 	assert(status == 0);
 }
 
+/**********************************************************/
 void JsonFile::parse(void)
 {
 	//build cursor

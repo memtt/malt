@@ -1,13 +1,27 @@
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.3.1
+*    DATE     : 03/2025
+*    LICENSE  : CeCILL-C
+*    FILE     : ./src/reader/libreader/json/Node.hpp
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat (INRIA) - 2025
+***********************************************************/
+
+/**********************************************************/
 #ifndef MALT_JSON_NODE_HPP
 #define MALT_JSON_NODE_HPP
 
+/**********************************************************/
 #include <vector>
 #include <map>
 #include "String.hpp"
 
+/**********************************************************/
 namespace MALTJson
 {
 
+/**********************************************************/
 enum JsonNodeType
 {
 	JSON_NODE_STRING,
@@ -19,6 +33,7 @@ enum JsonNodeType
 	JSON_NODE_NONE,
 };
 
+/**********************************************************/
 struct JsonNode
 {
 	JsonNode(void) = default;

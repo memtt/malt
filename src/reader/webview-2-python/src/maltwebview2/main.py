@@ -1,3 +1,14 @@
+############################################################
+#    PROJECT  : MALT (MALoc Tracker)
+#    VERSION  : 1.3.1
+#    DATE     : 04/2025
+#    LICENSE  : CeCILL-C
+#    FILE     : ./src/reader/webview-2-python/src/maltwebview2/main.py
+#-----------------------------------------------------------
+#    AUTHOR   : Sébastien Valat (INRIA) - 2025
+############################################################
+
+############################################################
 import sys
 import os
 import argparse
@@ -7,6 +18,7 @@ import signal
 import sys
 from .apizmq import MaltProfileRequest
 
+############################################################
 def malt_profile_zqm(file):
     dir = os.path.dirname(os.path.abspath(__file__))
     subprocess.run([
@@ -16,6 +28,7 @@ def malt_profile_zqm(file):
     ], cwd=os.path.abspath(f"{dir}/../../../../../build-release"))
     print("KILLLED ==============")
 
+############################################################
 def fastapi_process(file):
     dir = os.path.dirname(os.path.abspath(__file__))
 
@@ -33,6 +46,7 @@ def fastapi_process(file):
         f"{dir}/serv.py"
     ], cwd=os.path.abspath(f"{dir}/../../../../webview/"), env=env, check=False)
 
+############################################################
 def main():
     # decl parser
     parser = argparse.ArgumentParser("malt-webview2", description="The new webview for MALT !")

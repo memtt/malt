@@ -1,11 +1,24 @@
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.3.1
+*    DATE     : 03/2025
+*    LICENSE  : CeCILL-C
+*    FILE     : ./src/reader/libreader/json/JsonIterator.cpp
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat (INRIA) - 2025
+***********************************************************/
+
+/**********************************************************/
 #include <cassert>
 #include "Exception.hpp"
 #include "JsonIterator.hpp"
 #include "Json.hpp"
 
+/**********************************************************/
 namespace MALTJson
 {
 
+/**********************************************************/
 JsonIteratorValue::JsonIteratorValue(const JsonNode * node, size_t cursor)
 {
 	assert(node != nullptr);
@@ -13,11 +26,13 @@ JsonIteratorValue::JsonIteratorValue(const JsonNode * node, size_t cursor)
 	this->cursor = cursor;
 }
 
+/**********************************************************/
 size_t JsonIteratorValue::index(void) const
 {
 	return this->cursor;
 }
 
+/**********************************************************/
 std::string JsonIteratorValue::key(void) const
 {
 	if (this->node->type != JSON_NODE_OBJECT)
@@ -25,6 +40,7 @@ std::string JsonIteratorValue::key(void) const
 	return this->node->view.vmap->at(this->cursor).first.toString();
 }
 
+/**********************************************************/
 Json JsonIteratorValue::value(void) const
 {
 	if (this->node->type == JSON_NODE_OBJECT)
@@ -36,6 +52,7 @@ Json JsonIteratorValue::value(void) const
 
 }
 
+/**********************************************************/
 Json JsonIteratorValue::operator*(void) const
 {
 	if (this->node->type == JSON_NODE_OBJECT)
@@ -46,12 +63,14 @@ Json JsonIteratorValue::operator*(void) const
 		throw JsonException("Unknown type !");
 }
 
+/**********************************************************/
 JsonIterator::JsonIterator(const JsonNode * node, size_t cursor)
 {
 	this->node = node;
 	this->cursor = cursor;
 }
 
+/**********************************************************/
 JsonIterator & JsonIterator::operator++(void)
 {
 	if (this->cursor < Json(this->node).size())
@@ -59,32 +78,38 @@ JsonIterator & JsonIterator::operator++(void)
 	return *this;
 }
 
+/**********************************************************/
 bool operator<(const JsonIterator & a, const JsonIterator & b)
 {
 	return a.cursor < b.cursor && a.node == b.node;
 }
 
+/**********************************************************/
 bool operator!=(const JsonIterator & a, const JsonIterator & b)
 {
 	return a.cursor != b.cursor || a.node != b.node;
 }
 
+/**********************************************************/
 bool operator-(const JsonIterator & a, const JsonIterator & b)
 {
 	return a.cursor - b.cursor;
 }
 
+/**********************************************************/
 JsonIteratorValue JsonIterator::operator*(void) const
 {
 	return JsonIteratorValue(this->node, this->cursor);
 }
 
+/**********************************************************/
 JsonArrayIterator::JsonArrayIterator(const JsonNode * node, size_t cursor)
 {
 	this->node = node;
 	this->cursor = cursor;
 }
 
+/**********************************************************/
 JsonArrayIterator & JsonArrayIterator::operator++(void)
 {
 	if (this->cursor < Json(this->node).size())
@@ -92,21 +117,25 @@ JsonArrayIterator & JsonArrayIterator::operator++(void)
 	return *this;
 }
 
+/**********************************************************/
 bool operator<(const JsonArrayIterator & a, const JsonArrayIterator & b)
 {
 	return a.cursor < b.cursor && a.node == b.node;
 }
 
+/**********************************************************/
 bool operator!=(const JsonArrayIterator & a, const JsonArrayIterator & b)
 {
 	return a.cursor != b.cursor || a.node != b.node;
 }
 
+/**********************************************************/
 bool operator-(const JsonArrayIterator & a, const JsonArrayIterator & b)
 {
 	return a.cursor - b.cursor;
 }
 
+/**********************************************************/
 Json JsonArrayIterator::operator*(void) const
 {
 	if (this->node->type == JSON_NODE_OBJECT)

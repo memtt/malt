@@ -1,8 +1,21 @@
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.3.1
+*    DATE     : 03/2025
+*    LICENSE  : CeCILL-C
+*    FILE     : ./src/reader/libreader/json/tests/TestParser.cpp
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat (INRIA) - 2025
+***********************************************************/
+
+/**********************************************************/
 #include <gtest/gtest.h>
 #include "../Parser.hpp"
 
+/**********************************************************/
 using namespace MALTJson;
 
+/**********************************************************/
 TEST(TestJsonParser, forwardWhite)
 {
 	const JsonString data(" \n\t {}");
@@ -16,6 +29,7 @@ TEST(TestJsonParser, forwardWhite)
 	ASSERT_EQ(cursor.offset, 4);
 }
 
+/**********************************************************/
 TEST(TestJsonParser, raiseError)
 {
 	const JsonString data("{\n}");
@@ -25,6 +39,7 @@ TEST(TestJsonParser, raiseError)
 	ASSERT_THROW(cursor.raiseError("Test error"), JsonException);
 }
 
+/**********************************************************/
 TEST(TestJsonParser, getNextChar)
 {
 	const JsonString data("{\n}");
@@ -51,6 +66,7 @@ TEST(TestJsonParser, getNextChar)
 	ASSERT_THROW(cursor.getNextChar(), JsonException);
 }
 
+/**********************************************************/
 TEST(TestJsonParser, forwardNextStart_1)
 {
 	const JsonString data(" [ \"test\" ]");
@@ -64,6 +80,7 @@ TEST(TestJsonParser, forwardNextStart_1)
 	ASSERT_EQ(cursor.offset, 3);
 }
 
+/**********************************************************/
 TEST(TestJsonParser, forwardNextStart_2)
 {
 	const JsonString data(" [ true ]");
@@ -77,6 +94,7 @@ TEST(TestJsonParser, forwardNextStart_2)
 	ASSERT_EQ(cursor.offset, 3);
 }
 
+/**********************************************************/
 TEST(TestJsonParser, forwardNextStart_3)
 {
 	const JsonString data(" [ false ]");
@@ -90,6 +108,7 @@ TEST(TestJsonParser, forwardNextStart_3)
 	ASSERT_EQ(cursor.offset, 3);
 }
 
+/**********************************************************/
 TEST(TestJsonParser, forwardNextStart_4)
 {
 	const JsonString data(" [ 158 ]");
@@ -103,6 +122,7 @@ TEST(TestJsonParser, forwardNextStart_4)
 	ASSERT_EQ(cursor.offset, 3);
 }
 
+/**********************************************************/
 TEST(TestJsonParser, forwardNextStart_5)
 {
 	const JsonString data(" [ {} ]");
@@ -116,6 +136,7 @@ TEST(TestJsonParser, forwardNextStart_5)
 	ASSERT_EQ(cursor.offset, 3);
 }
 
+/**********************************************************/
 TEST(TestJsonParser, forwardNextStart_6)
 {
 	const JsonString data(" [ [] ]");
@@ -129,6 +150,7 @@ TEST(TestJsonParser, forwardNextStart_6)
 	ASSERT_EQ(cursor.offset, 3);
 }
 
+/**********************************************************/
 TEST(TestJsonParser, forwardNextStart_7)
 {
 	const JsonString data(" [ a ]");
@@ -141,6 +163,7 @@ TEST(TestJsonParser, forwardNextStart_7)
 	ASSERT_THROW(cursor.forwardNextStart(), JsonException);
 }
 
+/**********************************************************/
 TEST(TestJsonParser, isWhite)
 {
 	const JsonString data(" \n\t");
@@ -153,6 +176,7 @@ TEST(TestJsonParser, isWhite)
 	ASSERT_FALSE(cursor.isWhite('a'));
 }
 
+/**********************************************************/
 TEST(TestJsonParser, parseBoolean_true)
 {
 	const JsonString data("true, false");
@@ -167,6 +191,7 @@ TEST(TestJsonParser, parseBoolean_true)
 	ASSERT_EQ(cursor.offset, 4);
 }
 
+/**********************************************************/
 TEST(TestJsonParser, parseBoolean_false)
 {
 	const JsonString data("false, true");
@@ -181,6 +206,7 @@ TEST(TestJsonParser, parseBoolean_false)
 	ASSERT_EQ(cursor.offset, 5);
 }
 
+/**********************************************************/
 TEST(TestJsonParser, parseBoolean_error)
 {
 	const JsonString data("10, true");
@@ -191,6 +217,7 @@ TEST(TestJsonParser, parseBoolean_error)
 	EXPECT_THROW(cursor.parseBoolean(node), JsonException);
 }
 
+/**********************************************************/
 TEST(TestJsonParser, parseNumber_int)
 {
 	const JsonString data("1024, 1025");
@@ -205,6 +232,7 @@ TEST(TestJsonParser, parseNumber_int)
 	ASSERT_EQ(cursor.offset, 4);
 }
 
+/**********************************************************/
 TEST(TestJsonParser, parseNumber_neg_int)
 {
 	const JsonString data("-1024, 1025");
@@ -219,6 +247,7 @@ TEST(TestJsonParser, parseNumber_neg_int)
 	ASSERT_EQ(cursor.offset, 5);
 }
 
+/**********************************************************/
 TEST(TestJsonParser, parseNumber_float)
 {
 	const JsonString data("1024.38, 1025");
@@ -233,6 +262,7 @@ TEST(TestJsonParser, parseNumber_float)
 	ASSERT_EQ(cursor.offset, 7);
 }
 
+/**********************************************************/
 TEST(TestJsonParser, parseNumber_float_exp)
 {
 	const JsonString data("1024.38e-39, 1025");
@@ -247,6 +277,7 @@ TEST(TestJsonParser, parseNumber_float_exp)
 	ASSERT_EQ(cursor.offset, 11);
 }
 
+/**********************************************************/
 TEST(TestJsonParser, parseString)
 {
 	const JsonString data("\"message message\", 10");
@@ -262,6 +293,7 @@ TEST(TestJsonParser, parseString)
 	ASSERT_EQ(cursor.getCurrent(), ',');
 }
 
+/**********************************************************/
 TEST(TestJsonParser, parseString_backslahes)
 {
 	const JsonString data("\"message \\\n message\", 10");
@@ -277,6 +309,7 @@ TEST(TestJsonParser, parseString_backslahes)
 	ASSERT_EQ(cursor.getCurrent(), ',');
 }
 
+/**********************************************************/
 TEST(TestJsonParser, parseString_empty)
 {
 	const JsonString data("\"\", 10");
@@ -292,6 +325,7 @@ TEST(TestJsonParser, parseString_empty)
 	ASSERT_EQ(cursor.getCurrent(), ',');
 }
 
+/**********************************************************/
 TEST(TestJsonParser, parseString_backslahes_quote)
 {
 	const JsonString data("\"message \\\" message\", 10");
@@ -307,6 +341,7 @@ TEST(TestJsonParser, parseString_backslahes_quote)
 	ASSERT_EQ(cursor.getCurrent(), ',');
 }
 
+/**********************************************************/
 TEST(TestJsonParser, parseChild_bool)
 {
 	const JsonString data("true, false");
@@ -322,6 +357,7 @@ TEST(TestJsonParser, parseChild_bool)
 	ASSERT_EQ(cursor.getCurrent(), ',');
 }
 
+/**********************************************************/
 TEST(TestJsonParser, parseChild_number)
 {
 	const JsonString data("1024.5, false");
@@ -337,6 +373,7 @@ TEST(TestJsonParser, parseChild_number)
 	ASSERT_EQ(cursor.getCurrent(), ',');
 }
 
+/**********************************************************/
 TEST(TestJsonParser, parseChild_string)
 {
 	const JsonString data("\"value\", false");
@@ -352,6 +389,7 @@ TEST(TestJsonParser, parseChild_string)
 	ASSERT_EQ(cursor.getCurrent(), ',');
 }
 
+/**********************************************************/
 TEST(TestJsonParser, parseArray_int)
 {
 	const JsonString data("[ 10, 20 , 30 ]\n");
@@ -375,6 +413,7 @@ TEST(TestJsonParser, parseArray_int)
 	ASSERT_EQ((*node.view.vector)[2].value.value, data.value+11);
 }
 
+/**********************************************************/
 TEST(TestJsonParser, parseArray_mix)
 {
 	const JsonString data("[ 10, true , \"abc\" ]\n");
@@ -398,6 +437,7 @@ TEST(TestJsonParser, parseArray_mix)
 	ASSERT_EQ((*node.view.vector)[2].value.value, data.value+14);
 }
 
+/**********************************************************/
 TEST(TestJsonParser, parseArray_mix_no_white)
 {
 	const JsonString data("[10,true,\"abc\"]\n");
@@ -421,6 +461,7 @@ TEST(TestJsonParser, parseArray_mix_no_white)
 	ASSERT_EQ((*node.view.vector)[2].value.value, data.value+10);
 }
 
+/**********************************************************/
 TEST(TestJsonParser, parseArray_mix_no_white_recurse)
 {
 	const JsonString data("[10,true,\"abc\",[25,26] ]\n");
@@ -446,6 +487,7 @@ TEST(TestJsonParser, parseArray_mix_no_white_recurse)
 	ASSERT_EQ((*node.view.vector)[3].value.value, data.value+15);
 }
 
+/**********************************************************/
 TEST(TestJsonParser, parseObject_int)
 {
 	const JsonString data("{ \"a\": 10, \"b\": 20 , \"c\": 30 }\n");
@@ -469,6 +511,7 @@ TEST(TestJsonParser, parseObject_int)
 	ASSERT_EQ((*node.view.map)["c"].value.value, data.value+26);
 }
 
+/**********************************************************/
 TEST(TestJsonParser, parseObject_recurse)
 {
 	const JsonString data("{ \"a\": 10, \"b\": 20 , \"c\": {\"z\": 55}\n} ");
@@ -492,6 +535,7 @@ TEST(TestJsonParser, parseObject_recurse)
 	ASSERT_EQ((*node.view.map)["c"].value.value, data.value+26);
 }
 
+/**********************************************************/
 TEST(TestJsonParser, parse)
 {
 

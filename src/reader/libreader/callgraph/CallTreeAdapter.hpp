@@ -1,13 +1,11 @@
 /***********************************************************
 *    PROJECT  : MALT (MALoc Tracker)
-*    VERSION  : 1.2.4
-*    DATE     : 10/2024
+*    VERSION  : 1.3.1
+*    DATE     : 07/2025
 *    LICENSE  : CeCILL-C
-*    FILE     : src/webview/server-files/CallTreeAdapter.js
+*    FILE     : ./src/reader/libreader/callgraph/CallTreeAdapter.hpp
 *-----------------------------------------------------------
-*    AUTHOR   : Mehdi Raza Jaffery (CERN) - 2016
-*    AUTHOR   : Sébastien Valat - 2022 - 2024
-*    AUTHOR   : Sébastien Valat (INRIA) - 2023
+*    AUTHOR   : Sébastien Valat (INRIA) - 2025
 ***********************************************************/
 
 /********************** AUTHOR NOTE ************************

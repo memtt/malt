@@ -1,11 +1,11 @@
 /***********************************************************
-*    PROJECT  : Gray Scott Simulation
-*    VERSION  : 0.0.0
-*    DATE     : 11/2024
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.3.1
+*    DATE     : 02/2025
 *    LICENSE  : CeCILL-C
-*    FILE     : src/lib/display/ProgressBar.cpp
+*    FILE     : ./src/reader/libreader/loader/ProgressBar.cpp
 *-----------------------------------------------------------
-*    AUTHOR   : Sébastien Valat - 2024
+*    AUTHOR   : Sébastien Valat (INRIA) - 2025
 ***********************************************************/
 #include <cassert>
 #include <cstdio>

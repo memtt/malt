@@ -1,7 +1,18 @@
+############################################################
+#    PROJECT  : MALT (MALoc Tracker)
+#    VERSION  : 1.3.1
+#    DATE     : 04/2025
+#    LICENSE  : CeCILL-C
+#    FILE     : ./src/reader/webview-2-python/src/maltwebview2/api.py
+#-----------------------------------------------------------
+#    AUTHOR   : Sébastien Valat (INRIA) - 2025
+############################################################
+
+############################################################
 import os
-import json
 import ctypes
 
+############################################################
 class MaltProfileRequest:
     def __init__(self, file_path: str):
         self.need_load = True

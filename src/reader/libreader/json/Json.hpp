@@ -1,15 +1,29 @@
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.3.1
+*    DATE     : 03/2025
+*    LICENSE  : CeCILL-C
+*    FILE     : ./src/reader/libreader/json/Json.hpp
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat (INRIA) - 2025
+***********************************************************/
+
+/**********************************************************/
 #ifndef MALT_JSON_JSON_HPP
 #define MALT_JSON_JSON_HPP
 
+/**********************************************************/
 #include <ostream>
 #include <vector>
 #include <list>
 #include <map>
 #include "JsonIterator.hpp"
 
+/**********************************************************/
 namespace MALTJson
 {
 
+/**********************************************************/
 class JsonItems
 {
 	public:
@@ -27,6 +41,7 @@ class JsonItems
 		const JsonNode * node;
 };
 
+/**********************************************************/
 class Json
 {
 	public:
@@ -65,6 +80,7 @@ class Json
 		const JsonNode * node;
 };
 
+/**********************************************************/
 class JsonRoot : public Json
 {
 	public:
@@ -74,9 +90,11 @@ class JsonRoot : public Json
 		virtual ~JsonRoot(void);
 };
 
+/**********************************************************/
 JsonRoot parse(const std::string & value, const std::string & filename = "MEMORY");
 JsonRoot parse(const char * value, size_t size, const std::string & filename = "MEMORY");
 
+/**********************************************************/
 template <class T>
 bool Json::operator==(const T & value) const
 {
@@ -85,12 +103,14 @@ bool Json::operator==(const T & value) const
 	return cur == value;
 }
 
+/**********************************************************/
 template <class T>
 void Json::get_to(T & value) const
 {
 	from_json(*this, value);
 }
 
+/**********************************************************/
 template<class T>
 void from_json(const Json & json, std::vector<T> & value)
 {
@@ -103,6 +123,7 @@ void from_json(const Json & json, std::vector<T> & value)
 	}
 }
 
+/**********************************************************/
 template<class T, class U>
 void from_json(const Json & json, std::map<T, U> & value)
 {

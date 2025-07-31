@@ -1,13 +1,14 @@
 /***********************************************************
 *    PROJECT  : MALT (MALoc Tracker)
-*    VERSION  : 1.2.4
-*    DATE     : 10/2024
+*    VERSION  : 1.3.1
+*    DATE     : 03/2025
 *    LICENSE  : CeCILL-C
-*    FILE     : src/lib/core/tests/TestAllocTraceFile.cpp
+*    FILE     : ./src/reader/libreader/format/tests/GetJson.hpp
 *-----------------------------------------------------------
-*    AUTHOR   : Sébastien Valat - 2022 - 2024
+*    AUTHOR   : Sébastien Valat (INRIA) - 2025
 ***********************************************************/
 
+/**********************************************************/
 #ifndef MALT_FORMAT_TEST_GET_JSON_HPP
 #define MALT_FORMAT_TEST_GET_JSON_HPP
 

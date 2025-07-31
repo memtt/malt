@@ -1,6 +1,18 @@
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.3.1
+*    DATE     : 07/2025
+*    LICENSE  : CeCILL-C
+*    FILE     : ./src/reader/libreader/json/Parser.hpp
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat (INRIA) - 2025
+***********************************************************/
+
+/**********************************************************/
 #ifndef MALT_JSON_PARSER_HPP
 #define MALT_JSON_PARSER_HPP
 
+/**********************************************************/
 #include <list>
 #include <cassert>
 #include "Exception.hpp"
@@ -8,9 +20,11 @@
 #include "Node.hpp"
 #include "../loader/ProgressBar.hpp"
 
+/**********************************************************/
 namespace MALTJson
 {
 
+/**********************************************************/
 enum JsonCharType
 {
 	JSON_CHAR_SEPARATOR,
@@ -25,6 +39,7 @@ enum JsonCharType
 	JSON_CHAR_ERROR,
 };
 
+/**********************************************************/
 struct JsonFileCursor
 {
 	const std::string * fname{nullptr};
@@ -49,6 +64,7 @@ struct JsonFileCursor
 	void pushObjectChilds(JsonNode & node, std::vector<std::pair<JsonString, JsonNode> > & childs);
 };
 
+/**********************************************************/
 char JsonFileCursor::getNextChar(bool forward)
 {
 	//error
@@ -76,17 +92,20 @@ char JsonFileCursor::getNextChar(bool forward)
 	return this->data->value[this->offset];
 }
 
+/**********************************************************/
 char JsonFileCursor::getCurrent(void) const
 {
 	assert(this->offset < this->data->len);
 	return this->data->value[this->offset];
 }
 
+/**********************************************************/
 bool JsonFileCursor::isWhite(char value) const
 {
 	return value == '\t' || value == '\n' || value == ' ';
 }
 
+/**********************************************************/
 void JsonFileCursor::forwardWhite(void)
 {
 	while(this->isWhite(this->getCurrent())) {

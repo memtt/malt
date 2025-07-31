@@ -1,5 +1,15 @@
 #!/usr/bin/env python3
+############################################################
+#    PROJECT  : MALT (MALoc Tracker)
+#    VERSION  : 1.3.1
+#    DATE     : 05/2025
+#    LICENSE  : CeCILL-C
+#    FILE     : ./src/reader/webview-2-python/checker.py
+#-----------------------------------------------------------
+#    AUTHOR   : Sébastien Valat (INRIA) - 2025
+############################################################
 
+############################################################
 import subprocess
 import threading
 import urllib.request
@@ -9,10 +19,12 @@ import timeit
 import urllib
 import collections
 
+############################################################
 def order_dict(dictionary):
     return {k: order_dict(v) if isinstance(v, dict) else v
             for k, v in sorted(dictionary.items())}
 
+############################################################
 def check(entry_point: str, data = None, sort = False) -> None:
     req = urllib.request.Request(f"http://localhost:8080/{entry_point}", data=data)
     req.add_header('Content-Type', 'application/json')
@@ -45,11 +57,13 @@ def check(entry_point: str, data = None, sort = False) -> None:
         print(order_dict(data2[0]))
         print("-------------------------------")
 
+############################################################
 def main() -> None:
     check("summary.json")
     check("data/summary.json")
     check("flat.json", sort=True)
     check("call-stack-next-level.json", data='{"parentStackDepth": 0, "parentStackId": 0}'.encode('utf-8') )
 
+############################################################
 if __name__ == "__main__":
     main()

@@ -1,13 +1,28 @@
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.3.1
+*    DATE     : 03/2025
+*    LICENSE  : CeCILL-C
+*    FILE     : ./src/reader/libreader/json/JsonIterator.hpp
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat (INRIA) - 2025
+***********************************************************/
+
+/**********************************************************/
 #ifndef MALT_JSON_JSON_ITERATOR_HPP
 #define MALT_JSON_JSON_ITERATOR_HPP
 
+/**********************************************************/
 #include "Node.hpp"
 
+/**********************************************************/
 namespace MALTJson
 {
 
+/**********************************************************/
 class Json;
 
+/**********************************************************/
 class JsonIteratorValue
 {
 	public:
@@ -21,6 +36,7 @@ class JsonIteratorValue
 		size_t cursor{0};
 };
 
+/**********************************************************/
 class JsonIterator
 {
 	public:
@@ -36,6 +52,7 @@ class JsonIterator
 		size_t cursor{0};
 };
 
+/**********************************************************/
 class JsonArrayIterator
 {
 	public:

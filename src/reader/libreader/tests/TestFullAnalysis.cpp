@@ -1,12 +1,11 @@
 /***********************************************************
 *    PROJECT  : MALT (MALoc Tracker)
-*    VERSION  : 1.2.4
-*    DATE     : 10/2024
+*    VERSION  : 1.3.1
+*    DATE     : 03/2025
 *    LICENSE  : CeCILL-C
-*    FILE     : src/lib/instrum/core/tests/TestVmaTracker.cpp
+*    FILE     : ./src/reader/libreader/tests/TestFullAnalysis.cpp
 *-----------------------------------------------------------
-*    AUTHOR   : Sébastien Valat - 2014 - 2024
-*    AUTHOR   : Sébastien Valat (ECR) - 2014
+*    AUTHOR   : Sébastien Valat (INRIA) - 2025
 ***********************************************************/
 
 /**********************************************************/

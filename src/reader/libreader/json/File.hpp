@@ -1,14 +1,28 @@
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.3.1
+*    DATE     : 07/2025
+*    LICENSE  : CeCILL-C
+*    FILE     : ./src/reader/libreader/json/File.hpp
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat (INRIA) - 2025
+***********************************************************/
+
+/**********************************************************/
 #ifndef MALT_JSON_FILE_HPP
 #define MALT_JSON_FILE_HPP
 
+/**********************************************************/
 #include <string>
 #include "Node.hpp"
 #include "Parser.hpp"
 #include "Json.hpp"
 
+/**********************************************************/
 namespace MALTJson
 {
 
+/**********************************************************/
 class JsonFile
 {
 	public:

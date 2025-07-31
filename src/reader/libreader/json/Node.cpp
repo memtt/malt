@@ -1,8 +1,21 @@
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.3.1
+*    DATE     : 03/2025
+*    LICENSE  : CeCILL-C
+*    FILE     : ./src/reader/libreader/json/Node.cpp
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat (INRIA) - 2025
+***********************************************************/
+
+/**********************************************************/
 #include "Node.hpp"
 
+/**********************************************************/
 namespace MALTJson
 {
 
+/**********************************************************/
 JsonNode::JsonNode(JsonNode && orig)
 {
 	//copy all
@@ -15,6 +28,7 @@ JsonNode::JsonNode(JsonNode && orig)
 	orig.view.map = nullptr;
 }
 
+/**********************************************************/
 JsonNode::~JsonNode(void)
 {
 	if (this->type == JSON_NODE_ARRAY &&  this->view.vector != nullptr) {

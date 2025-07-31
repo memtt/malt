@@ -1,12 +1,25 @@
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.3.1
+*    DATE     : 03/2025
+*    LICENSE  : CeCILL-C
+*    FILE     : ./src/reader/libreader/json/Parser.cpp
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat (INRIA) - 2025
+***********************************************************/
+
+/**********************************************************/
 #include <cassert>
 #include <sstream>
 #include <list>
 #include <cstring>
 #include "Parser.hpp"
 
+/**********************************************************/
 namespace MALTJson
 {
 
+/**********************************************************/
 void JsonFileCursor::raiseError(const std::string & message) const
 {
 	std::stringstream out;
@@ -14,6 +27,7 @@ void JsonFileCursor::raiseError(const std::string & message) const
 	throw JsonException(out.str());
 }
 
+/**********************************************************/
 JsonCharType JsonFileCursor::forwardNextStart(void)
 {
 	//skip white
@@ -56,6 +70,7 @@ JsonCharType JsonFileCursor::forwardNextStart(void)
 	}
 }
 
+/**********************************************************/
 void JsonFileCursor::parseObject(JsonNode & node)
 {
 	//check
@@ -132,6 +147,7 @@ void JsonFileCursor::parseObject(JsonNode & node)
 	this->getNextChar();
 }
 
+/**********************************************************/
 void JsonFileCursor::pushObjectChilds(JsonNode & node, std::vector<std::pair<JsonString, JsonNode> > & childs)
 {
 	//copy
@@ -144,6 +160,7 @@ void JsonFileCursor::pushObjectChilds(JsonNode & node, std::vector<std::pair<Jso
 	assert(childs.size() == 0);
 }
 
+/**********************************************************/
 void JsonFileCursor::pushObjectChilds(JsonNode & node, std::list<std::pair<JsonString, JsonNode> > & childs)
 {
 	//copy
@@ -155,6 +172,7 @@ void JsonFileCursor::pushObjectChilds(JsonNode & node, std::list<std::pair<JsonS
 	childs.clear();
 }
 
+/**********************************************************/
 void JsonFileCursor::parseArray(JsonNode & node)
 {
 	//check
@@ -211,6 +229,7 @@ void JsonFileCursor::parseArray(JsonNode & node)
 	this->getNextChar();
 }
 
+/**********************************************************/
 void JsonFileCursor::parseString(JsonNode & node)
 {
 	//check
@@ -235,6 +254,7 @@ void JsonFileCursor::parseString(JsonNode & node)
 	next = this->getNextChar();
 }
 
+/**********************************************************/
 void JsonFileCursor::parseNumber(JsonNode & node)
 {
 	//check
@@ -257,6 +277,7 @@ void JsonFileCursor::parseNumber(JsonNode & node)
 	node.value.len = this->offset - startOffset;
 }
 
+/**********************************************************/
 void JsonFileCursor::parseBoolean(JsonNode & node)
 {
 	if (strncmp("true", this->data->value + this->offset, 4) == 0) {
@@ -274,6 +295,7 @@ void JsonFileCursor::parseBoolean(JsonNode & node)
 		this->getNextChar();
 }
 
+/**********************************************************/
 void JsonFileCursor::parseChild(JsonNode & node)
 {
 	//get it

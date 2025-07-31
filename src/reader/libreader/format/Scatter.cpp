@@ -1,9 +1,9 @@
 /***********************************************************
 *    PROJECT  : MALT (MALoc Tracker)
-*    VERSION  : 1.2.4
-*    DATE     : 10/2024
+*    VERSION  : 1.3.1
+*    DATE     : 03/2025
 *    LICENSE  : CeCILL-C
-*    FILE     : src/lib/tools/Backtrace.hpp
+*    FILE     : ./src/reader/libreader/format/Scatter.cpp
 *-----------------------------------------------------------
 *    AUTHOR   : Sébastien Valat (INRIA) - 2025
 ***********************************************************/

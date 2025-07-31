@@ -1,20 +1,35 @@
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.3.1
+*    DATE     : 03/2025
+*    LICENSE  : CeCILL-C
+*    FILE     : ./src/reader/libreader/json/String.cpp
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat (INRIA) - 2025
+***********************************************************/
+
+/**********************************************************/
 #include <iterator>
 #include <cstring>
 #include "String.hpp"
 
+/**********************************************************/
 namespace MALTJson
 {
 
+/**********************************************************/
 JsonString::JsonString(void)
 {
 }
 
+/**********************************************************/
 JsonString::JsonString(const char * input)
 {
 	this->value = input;
 	this->len = strlen(input);
 }
 
+/**********************************************************/
 std::string JsonString::toString(void) const
 {
 	char buffer[4096];
@@ -29,6 +44,7 @@ std::string JsonString::toString(void) const
 	return res;
 }
 
+/**********************************************************/
 bool operator<(const JsonString & a, const JsonString & b)
 {
 	size_t commonSize = std::min(a.len, b.len);
@@ -41,6 +57,7 @@ bool operator<(const JsonString & a, const JsonString & b)
 		return false;
 }
 
+/**********************************************************/
 bool operator==(const JsonString & a, const JsonString & b)
 {
 	if (a.len != b.len)

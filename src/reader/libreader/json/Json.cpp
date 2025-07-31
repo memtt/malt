@@ -1,19 +1,34 @@
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.3.1
+*    DATE     : 03/2025
+*    LICENSE  : CeCILL-C
+*    FILE     : ./src/reader/libreader/json/Json.cpp
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat (INRIA) - 2025
+***********************************************************/
+
+/**********************************************************/
 #include "Parser.hpp"
 #include "Json.hpp"
 
+/**********************************************************/
 namespace MALTJson
 {
 
+/**********************************************************/
 Json::Json(const JsonNode * node)
 {
 	this->node = node;
 }
 
+/**********************************************************/
 Json::~Json(void)
 {
 	//nothing
 }
 
+/**********************************************************/
 Json Json::at(const std::string & key) const
 {
 	//error
@@ -30,6 +45,7 @@ Json Json::at(const std::string & key) const
 	return Json(nullptr);
 }
 
+/**********************************************************/
 Json Json::at(size_t id) const
 {
 	//error
@@ -43,6 +59,7 @@ Json Json::at(size_t id) const
 		return Json(nullptr);
 }
 
+/**********************************************************/
 bool Json::contains(const std::string & key) const
 {
 	//error
@@ -59,16 +76,19 @@ bool Json::contains(const std::string & key) const
 	return false;
 }
 
+/**********************************************************/
 Json Json::operator[](const std::string & key) const
 {
 	return this->at(key);
 }
 
+/**********************************************************/
 Json Json::operator[](size_t id) const
 {
 	return this->at(id);
 }
 
+/**********************************************************/
 void Json::get_to(std::string & value) const
 {
 	//error
@@ -79,6 +99,7 @@ void Json::get_to(std::string & value) const
 	value = this->node->value.toString();
 }
 
+/**********************************************************/
 void Json::get_to(size_t & value) const
 {
 	//error
@@ -94,6 +115,7 @@ void Json::get_to(size_t & value) const
 		throw JsonException("Failed to convert the number into size_t !");
 }
 
+/**********************************************************/
 void Json::get_to(ssize_t & value) const
 {
 	//error
@@ -109,6 +131,7 @@ void Json::get_to(ssize_t & value) const
 		throw JsonException("Failed to convert the number into ssize_t !");
 }
 
+/**********************************************************/
 void Json::get_to(unsigned long long & value) const
 {
 	//error
@@ -124,6 +147,7 @@ void Json::get_to(unsigned long long & value) const
 		throw JsonException("Failed to convert the number into size_t !");
 }
 
+/**********************************************************/
 void Json::get_to(bool & value) const
 {
 	//error
@@ -140,6 +164,7 @@ void Json::get_to(bool & value) const
 		throw JsonException("Invalid value for a boolean, should be (true|false) !");
 }
 
+/**********************************************************/
 void Json::get_to(int & value) const
 {
 	//error
@@ -159,6 +184,7 @@ void Json::get_to(int & value) const
 		throw JsonException("Overflow while converting the number into int !");
 }
 
+/**********************************************************/
 size_t Json::size(void) const
 {
 	//error
@@ -174,36 +200,43 @@ size_t Json::size(void) const
 		throw JsonException("Unsupported mode !");
 }
 
+/**********************************************************/
 bool Json::is_array(void) const
 {
 	return (this->node != nullptr && this->node->type == JSON_NODE_ARRAY);
 }
 
+/**********************************************************/
 bool Json::is_object(void) const
 {
 	return (this->node != nullptr && this->node->type == JSON_NODE_OBJECT);
 }
 
+/**********************************************************/
 bool Json::is_string(void) const
 {
 	return (this->node != nullptr && this->node->type == JSON_NODE_STRING);
 }
 
+/**********************************************************/
 bool Json::is_bool(void) const
 {
 	return (this->node != nullptr && this->node->type == JSON_NODE_BOOL);
 }
 
+/**********************************************************/
 bool Json::is_iterable(void) const
 {
 	return (this->node != nullptr && (this->node->type == JSON_NODE_ARRAY || this->node->type == JSON_NODE_OBJECT));
 }
 
+/**********************************************************/
 bool JsonItems::is_iterable(void) const
 {
 	return (this->node != nullptr && (this->node->type == JSON_NODE_ARRAY || this->node->type == JSON_NODE_OBJECT));
 }
 
+/**********************************************************/
 Json::iterator Json::begin()
 {
 	if (this->is_iterable() == false)
@@ -211,6 +244,7 @@ Json::iterator Json::begin()
 	return Json::iterator(this->node, 0);
 }
 
+/**********************************************************/
 Json::iterator Json::end()
 {
 	if (this->is_iterable() == false)
@@ -218,6 +252,7 @@ Json::iterator Json::end()
 	return Json::iterator(this->node, this->size());
 }
 
+/**********************************************************/
 Json::const_iterator Json::begin() const
 {
 	if (this->is_iterable() == false)
@@ -225,6 +260,7 @@ Json::const_iterator Json::begin() const
 	return Json::const_iterator(this->node, 0);
 }
 
+/**********************************************************/
 Json::const_iterator Json::end() const
 {
 	if (this->is_iterable() == false)
@@ -232,6 +268,7 @@ Json::const_iterator Json::end() const
 	return Json::const_iterator(this->node, this->size());
 }
 
+/**********************************************************/
 JsonItems::iterator JsonItems::begin()
 {
 	if (this->is_iterable() == false)
@@ -239,6 +276,7 @@ JsonItems::iterator JsonItems::begin()
 	return JsonItems::iterator(this->node, 0);
 }
 
+/**********************************************************/
 JsonItems::iterator JsonItems::end()
 {
 	if (this->is_iterable() == false)
@@ -246,6 +284,7 @@ JsonItems::iterator JsonItems::end()
 	return JsonItems::iterator(this->node, Json(this->node).size());
 }
 
+/**********************************************************/
 JsonItems::const_iterator JsonItems::begin() const
 {
 	if (this->is_iterable() == false)
@@ -253,6 +292,7 @@ JsonItems::const_iterator JsonItems::begin() const
 	return JsonItems::const_iterator(this->node, 0);
 }
 
+/**********************************************************/
 JsonItems::const_iterator JsonItems::end() const
 {
 	if (this->is_iterable() == false)
@@ -260,12 +300,14 @@ JsonItems::const_iterator JsonItems::end() const
 	return JsonItems::const_iterator(this->node, Json(this->node).size());
 }
 
+/**********************************************************/
 std::ostream & operator<<(std::ostream & out, const Json & json)
 {
 	out << "{\"TODO\": \"TODO\"}";
 	return out;
 }
 
+/**********************************************************/
 JsonRoot parse(const char * value, size_t size, const std::string & filename)
 {
 	//build
@@ -295,6 +337,7 @@ JsonRoot parse(const char * value, size_t size, const std::string & filename)
 	return JsonRoot(root);
 }
 
+/**********************************************************/
 JsonRoot::JsonRoot(JsonNode * node)
 	:Json(node)
 {
@@ -302,12 +345,14 @@ JsonRoot::JsonRoot(JsonNode * node)
 	this->node = node;
 }
 
+/**********************************************************/
 JsonRoot::JsonRoot(JsonRoot && node)
 	:Json(node)
 {
 	node.node = nullptr;
 }
 
+/**********************************************************/
 JsonRoot::~JsonRoot(void)
 {
 	if (this->node != nullptr) {
@@ -316,6 +361,7 @@ JsonRoot::~JsonRoot(void)
 	}
 }
 
+/**********************************************************/
 JsonRoot parse(const std::string & value, const std::string & filename)
 {
 	return parse(value.c_str(), value.size(), filename);

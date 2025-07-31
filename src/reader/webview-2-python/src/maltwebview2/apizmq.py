@@ -1,8 +1,18 @@
-import os
+############################################################
+#    PROJECT  : MALT (MALoc Tracker)
+#    VERSION  : 1.3.1
+#    DATE     : 05/2025
+#    LICENSE  : CeCILL-C
+#    FILE     : ./src/reader/webview-2-python/src/maltwebview2/apizmq.py
+#-----------------------------------------------------------
+#    AUTHOR   : Sébastien Valat (INRIA) - 2025
+############################################################
+
+############################################################
 import json
-import ctypes
 import zmq
 
+import zmq
 class MaltProfileRequest:
     def __init__(self, socket_path: str = "ipc:///tmp/socket"):
         context = zmq.Context()

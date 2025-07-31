@@ -36,8 +36,5 @@ examples/python/*.so
 /podman-cache
 .venv
 
-# reader
-src/reader
-
 # IDE
 .idea
