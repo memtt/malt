@@ -46,6 +46,7 @@ struct Config
 		bool obj;
 		bool mem;
 		bool raw;
+		bool hideImports;
 	} python;
 	struct {
 		bool callgrind;

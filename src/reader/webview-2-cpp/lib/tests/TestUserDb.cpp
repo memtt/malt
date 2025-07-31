@@ -18,13 +18,13 @@ using namespace MALTWebviewCpp;
 /**********************************************************/
 TEST(TestUserDb, constructor)
 {
-	UserDb db(TEST_DATA_DIR "/db-test-constructor.json");
+	UserDb db(TEST_DATA_DIR "/db-test-constructor.json", true, false);
 }
 
 /**********************************************************/
 TEST(TestUserDb, add_check)
 {
-	UserDb db(TEST_DATA_DIR "/db-test-add-check.json");
+	UserDb db(TEST_DATA_DIR "/db-test-add-check.json", true, false);
 
 	//set
 	db.set("toto", "tutu");
@@ -45,12 +45,12 @@ TEST(TestUserDb, add_save_load_check)
 	unlink(TEST_DATA_DIR "/db-test-add-save-load-check.json");
 
 	//build & save
-	UserDb db(TEST_DATA_DIR "/db-test-add-save-load-check.json");
+	UserDb db(TEST_DATA_DIR "/db-test-add-save-load-check.json", true, false);
 	db.set("toto", "tutu");
 	db.save();
 
 	//load & check
-	UserDb db2(TEST_DATA_DIR "/db-test-add-save-load-check.json");
+	UserDb db2(TEST_DATA_DIR "/db-test-add-save-load-check.json", true, false);
 	ASSERT_TRUE(db2.check("toto", "tutu"));
 	ASSERT_FALSE(db2.check("toto", "TUTU"));
 	ASSERT_FALSE(db2.check("Toto", "tutu"));

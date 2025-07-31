@@ -26,7 +26,7 @@ class UserDb
 {
 	public:
 		UserDb(void);
-		UserDb(const std::string & dbPath, bool warn = true);
+		UserDb(const std::string & dbPath, bool warn = true, bool auto_passwd = true);
 		~UserDb(void);
 		bool check(const std::string & login, const std::string & password) const;
 		void set(const std::string & login, const std::string & password);
@@ -34,7 +34,7 @@ class UserDb
 		void save(void) const;
 	private:
 		void makedirs(const std::string & path) const;
-		void load(const std::string & path, bool warn);
+		void load(const std::string & path, bool warn, bool auto_passwd = true);
 		static std::string calcDefaultDbPath(void);
 		static std::string sha256sum(const std::string & value);
 	private:

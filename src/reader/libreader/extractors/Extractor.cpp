@@ -815,6 +815,8 @@ FlattenMaxStackInfo Extractor::getFlattenMaxStackInfo(const LocaltionOnlyMapping
 		//get some vars
 		LangAddress addr = maxStack.stack[i];
 		ssize_t mem = maxStack.mem[i] - maxStack.mem[i+1];
+		if (mem < 0)
+			mem = 0;
 		//assert(mem >= 0);
 		const InstructionInfosStrRef & info = this->getAddrTranslation(addr);
 		std::string key = to_string(addr);
@@ -828,7 +830,7 @@ FlattenMaxStackInfo Extractor::getFlattenMaxStackInfo(const LocaltionOnlyMapping
 			auto it = ret.find(key);
 			//create or merge
 			if (it == ret.end()) {
-				ret[key] = FlattenMaxStackInfoEntry{&info, 1, (size_t)mem};
+				ret[key] = FlattenMaxStackInfoEntry{&info, (size_t)mem, 1};
 			} else {
 				ret[key].mem += mem;
 				ret[key].count++;

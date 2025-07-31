@@ -35,10 +35,10 @@ UserDb::UserDb(void)
 }
 
 /**********************************************************/
-UserDb::UserDb(const std::string & dbPath, bool warn)
+UserDb::UserDb(const std::string & dbPath, bool warn, bool auto_passwd)
 {
 	this->dbPath = dbPath;
-	this->load(dbPath, warn);
+	this->load(dbPath, warn, auto_passwd);
 }
 
 /**********************************************************/
@@ -72,15 +72,19 @@ bool UserDb::has(const std::string & login) const
 }
 
 /**********************************************************/
-void UserDb::load(const std::string & path, bool warn)
+void UserDb::load(const std::string & path, bool warn, bool auto_passwd)
 {
 	//load
 	std::ifstream fileStream(path);
 
 	//fail
 	if (fileStream.fail()) {
-		system("malt-passwd-new-cpp");
-		this->load(path, warn);
+		if (auto_passwd) {
+			const int status = system("malt-passwd");
+			if (status != 0)
+				throw std::runtime_error("Fail to call malt-passwd !");
+			this->load(path, warn);
+		}
 		return;
 	}
 
