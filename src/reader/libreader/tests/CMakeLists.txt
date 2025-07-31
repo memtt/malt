@@ -26,7 +26,7 @@ add_definitions(-DEXE_PATH="${CMAKE_BINARY_DIR}/src/libinstrum/tests")
 set(TEST_NAMES TestInstrum)
 
 ############################################################
-if (PYTHON3_INSTRUM_FOUND AND NLOHMANN_JSON_FOUND)
+if (PYTHON3_INSTRUM_FOUND)
 	list(APPEND TEST_NAMES TestInstrumPython)
 endif ()
 
@@ -38,14 +38,12 @@ FOREACH(test_name ${TEST_NAMES})
 ENDFOREACH(test_name)
 
 ############################################################
-if (NLOHMANN_JSON_FOUND)
-	target_link_libraries(TestInstrum malt-injectors)
-	target_compile_options(TestInstrum PRIVATE -g -O0)
-	target_link_libraries(TestInstrum malt-profile)
-endif ()
+target_link_libraries(TestInstrum malt-injectors)
+target_compile_options(TestInstrum PRIVATE -g -O0)
+target_link_libraries(TestInstrum malt-profile)
 
 ############################################################
-if (PYTHON3_INSTRUM_FOUND AND NLOHMANN_JSON_FOUND)
+if (PYTHON3_INSTRUM_FOUND)
 	target_compile_options(TestInstrumPython PRIVATE -g)
 	target_link_libraries(TestInstrumPython ${Python3_LIBRARIES})
 	target_link_libraries(TestInstrumPython malt-profile)
