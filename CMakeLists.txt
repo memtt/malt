@@ -116,7 +116,7 @@ endif()
 # use internal httplib
 set(HAVE_HTTPLIB ON)
 if (NOT HTTPLIB_FOUND)
-	set(HTTPLIB_INCLUDE_DIR ${CMAKE_BINARY_DIR}/extern-deps/from-http-lib)
+	set(HTTPLIB_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/extern-deps/from-http-lib)
 	set(HTTPLIB_LIBRARY "")
 endif()
 
