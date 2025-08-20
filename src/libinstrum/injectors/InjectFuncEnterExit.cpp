@@ -35,8 +35,9 @@ DLL_PUBLIC void __cyg_profile_func_enter (void *this_fn,void *call_site)
 	LazyEnv env;
 	
 	//stack tracking
-	if (env.isMaltReady())
+	if (env.isMaltReady()) {
 		env.getLocalProfiler().onEnterFunc(LangAddress(DOMAIN_C, this_fn),LangAddress(DOMAIN_C, call_site));
+	}
 }
 
 /**********************************************************/

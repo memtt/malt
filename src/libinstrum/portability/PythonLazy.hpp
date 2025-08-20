@@ -33,6 +33,7 @@ typedef void (*PyMem_GetAllocatorFuncPtr)(PyMemAllocatorDomain /*domain*/, PyMem
 typedef void (*PyMem_SetAllocatorFuncPtr)(PyMemAllocatorDomain /*domain*/, PyMemAllocatorEx * /*allocator*/);
 typedef PyGILState_STATE (*PyGILState_EnsureFuncPtr)(void);
 typedef void (*PyGILState_ReleaseFuncPtr)(PyGILState_STATE /*state*/);
+typedef void (*PyEval_SetProfileFuncPtr)(Py_tracefunc /*func*/, PyObject * /*obj*/);
 typedef void (*PyEval_SetProfileAllThreadsFuncPtr)(Py_tracefunc /*func*/, PyObject * /*obj*/);
 typedef void (*PyEval_SetTraceAllThreadsFuncPtr)(Py_tracefunc /*func*/, PyObject * /*obj*/);
 typedef PyCodeObject * (*PyFrame_GetCodeFuncPtr)(PyFrameObject * /*frame*/);
@@ -68,6 +69,7 @@ struct PythonAPIFuncPtrs
 	PyMem_SetAllocatorFuncPtr PyMem_SetAllocator{nullptr};
 	PyGILState_EnsureFuncPtr PyGILState_Ensure{nullptr};
 	PyGILState_ReleaseFuncPtr PyGILState_Release{nullptr};
+	PyEval_SetProfileFuncPtr PyEval_SetProfile{nullptr};
 	PyEval_SetProfileAllThreadsFuncPtr PyEval_SetProfileAllThreads{nullptr};
 	PyEval_SetTraceAllThreadsFuncPtr PyEval_SetTraceAllThreads{nullptr};
 	PyFrame_GetCodeFuncPtr PyFrame_GetCode{nullptr};
@@ -105,6 +107,7 @@ void PyMem_GetAllocator(PyMemAllocatorDomain domain, PyMemAllocatorEx *allocator
 void PyMem_SetAllocator(PyMemAllocatorDomain domain, PyMemAllocatorEx *allocator);
 PyGILState_STATE PyGILState_Ensure(void);
 void PyGILState_Release(PyGILState_STATE state);
+void PyEval_SetProfile(Py_tracefunc func, PyObject *obj);
 void PyEval_SetProfileAllThreads(Py_tracefunc func, PyObject *obj);
 void PyEval_SetTraceAllThreads(Py_tracefunc func, PyObject *obj);
 PyCodeObject * PyFrame_GetCode(PyFrameObject * frame);

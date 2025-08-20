@@ -37,6 +37,10 @@ typedef bool PyGILState_STATE;
 struct PyObject{
 	char __unused__;
 };
+struct PyThreadState
+{
+	char __unused__;
+};
 struct PyCodeObject{
 	PyObject * co_filename{nullptr};
 	PyObject * co_qualname{nullptr};
@@ -81,12 +85,13 @@ inline bool PyLazyInterfaceInit(void){return false;};
 /**********************************************************/
 //inline void * _PyThreadState_UncheckedGet(){return nullptr;};
 inline PyFrameObject * PyThreadState_GetFrame(PyGILState_STATE gilState){return nullptr;};
-inline PyGILState_STATE PyGILState_GetThisThreadState() {return false;};
+inline PyThreadState * PyGILState_GetThisThreadState() {return NULL;};
 inline PyFrameObject * PyFrame_GetBack(PyFrameObject * frame) {return nullptr;};
 inline void PyMem_GetAllocator(PyMemDomain domain, PyMemAllocatorEx * alloc) {};
 inline void PyMem_SetAllocator(PyMemDomain domain, const PyMemAllocatorEx * alloc) {};
 inline PyGILState_STATE PyGILState_Ensure(void) {return false;};
 inline void PyGILState_Release(PyGILState_STATE state) {};
+void PyEval_SetProfile(Py_tracefunc func, PyObject *obj){};
 inline void PyEval_SetProfileAllThreads(Py_tracefunc func, PyObject *obj){};
 inline void PyEval_SetTraceAllThreads(Py_tracefunc func, PyObject *obj){};
 inline PyCodeObject * PyFrame_GetCode(PyFrameObject * frame) {return nullptr;};

@@ -25,7 +25,7 @@ namespace MALT
 /**
  * Static instance of thread tracker data.
 **/
-ThreadTrackerData gblThreadTrackerData = {1,1,NULL,PTHREAD_MUTEX_INITIALIZER, true};
+ThreadTrackerData gblThreadTrackerData = {1,1,NULL,PTHREAD_MUTEX_INITIALIZER, NULL, true};
 
 /**********************************************************/
 /**

@@ -164,6 +164,8 @@ extern AllocWrapperGlobal gblState;
 extern __thread ThreadLocalState tlsState;
 /** Temporary buffer to return on first realloc used by dlsym and split infinit call loops. **/
 extern char gblCallocIniBuffer[4096];
+/** Init TLS state */
+extern const ThreadLocalState TLS_STATE_INIT;
 
 /**********************************************************/
 void globalResetForTests(void);

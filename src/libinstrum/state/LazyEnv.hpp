@@ -57,8 +57,10 @@ LazyEnv::LazyEnv()
 	}
 
 	/*check init */
-	if ( this->threadLocalState->status == ALLOC_WRAP_NOT_READY )
+	if ( this->threadLocalState->status == ALLOC_WRAP_NOT_READY ) {
+		//fprintf(stderr, "MALT: init local on thread\n");
 		this->threadLocalState->init();
+	}
 
 	this->enterExit = true;
 	if (threadLocalState->profiler != NULL){

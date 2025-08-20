@@ -14,6 +14,7 @@
 //standard
 #include "WrapperPthreads.hpp"
 #include "core/ThreadTracker.hpp"
+#include "state/GlobalState.hpp"
 #include <cstdio>
 #include <cassert>
 //libc POSIX.1, here we use GNU specific RTLD_NEXT (need _GNU_SOURCE)
@@ -55,6 +56,12 @@ void * pthreadWrapperStartRoutine(void * arg)
 	pthread_setspecific(gblThreadTrackerData.key, (void*)0x1);
 	
 	//fprintf(stderr,"Create thread : %d / %d !\n",gblThreadTrackerData.threadCount,gblThreadTrackerData.maxThreadCount);
+
+	//allocate the current one
+	ThreadLocalState * firstLocalState = (ThreadLocalState*)MALT_MALLOC(sizeof(ThreadLocalState));
+	assert(firstLocalState != nullptr);
+	*firstLocalState = TLS_STATE_INIT;
+	pthread_setspecific(gblState.tlsKey, firstLocalState);
 	
 	//run child
 	ThreadTrackerArg * subarg = (ThreadTrackerArg *)arg;

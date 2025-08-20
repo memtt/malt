@@ -43,6 +43,7 @@ bool PyLazyInterfaceInit(void)
 	MALT_PYTHON_DLSYM(PyMem_SetAllocator, supported);
 	MALT_PYTHON_DLSYM(PyGILState_Ensure, supported);
 	MALT_PYTHON_DLSYM(PyGILState_Release, supported);
+	MALT_PYTHON_DLSYM(PyEval_SetProfile, supported);
 	MALT_PYTHON_DLSYM(PyEval_SetProfileAllThreads, supported);
 	MALT_PYTHON_DLSYM(PyEval_SetTraceAllThreads, supported);
 	MALT_PYTHON_DLSYM(PyFrame_GetCode, supported);
@@ -132,6 +133,13 @@ void PyGILState_Release(PyGILState_STATE state)
 {
 	if (gblPythonApi.PyGILState_Release != nullptr)
 		gblPythonApi.PyGILState_Release(state);
+}
+
+/**********************************************************/
+void PyEval_SetProfile(Py_tracefunc func, PyObject *obj)
+{
+	if (gblPythonApi.PyEval_SetProfile != nullptr)
+		gblPythonApi.PyEval_SetProfile(func, obj);
 }
 
 /**********************************************************/

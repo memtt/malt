@@ -30,6 +30,7 @@ inline void PyMem_GetAllocator(PyMemAllocatorDomain domain, PyMemAllocatorEx * a
 inline void PyMem_SetAllocator(PyMemAllocatorDomain domain, PyMemAllocatorEx * alloc) {::PyMem_SetAllocator(domain, alloc);};
 inline PyGILState_STATE PyGILState_Ensure(void) {return ::PyGILState_Ensure();};
 inline void PyGILState_Release(PyGILState_STATE state) {::PyGILState_Release(state);};
+inline void PyEval_SetProfile(Py_tracefunc func, PyObject *obj){::PyEval_SetProfile(func, obj);};
 inline void PyEval_SetProfileAllThreads(Py_tracefunc func, PyObject *obj){::PyEval_SetProfileAllThreads(func, obj);};
 inline void PyEval_SetTraceAllThreads(Py_tracefunc func, PyObject *obj){::PyEval_SetTraceAllThreads(func, obj);};
 inline PyCodeObject * PyFrame_GetCode(PyFrameObject * frame) {return ::PyFrame_GetCode(frame);};

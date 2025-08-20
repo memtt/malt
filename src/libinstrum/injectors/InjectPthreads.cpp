@@ -34,7 +34,7 @@ DLL_PUBLIC int pthread_create(pthread_t *thread, const pthread_attr_t *attr,void
 	}
 
 	// trivial no instrum
-	if (MALT::gblThreadTrackerData.trackingIsEnabled)
+	if (MALT::gblThreadTrackerData.trackingIsEnabled == false)
 	{
 		return MALT::gblThreadTrackerData.pthread_create(thread,attr,start_routine,arg);
 	}

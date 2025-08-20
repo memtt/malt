@@ -215,3 +215,32 @@ DLL_PUBLIC void initPythonInstrumentation(const char * script)
 }
 
 }
+
+/**********************************************************/
+/**
+ * We need to override the GIL checking to get notified of new threads created
+ * so register the stack tracking hooks.
+ */
+/*
+DLL_PUBLIC PyGILState_STATE PyGILState_Ensure(void)
+{
+	//get previous state
+	PyThreadState * state = MALT::PyGILState_GetThisThreadState();
+
+	//get native API
+	typedef PyGILState_STATE (*nativ_PyGILState_Ensure)(void);
+	static nativ_PyGILState_Ensure native = NULL;
+	if (native == NULL) {
+		fprintf(stderr, "MALT: Register in thread !\n");
+		native = (nativ_PyGILState_Ensure)dlsym(RTLD_NEXT, "PyGILState_Ensure");
+	}
+
+	//call
+	PyGILState_STATE result = native();
+
+	//register hooks
+	if (state == NULL)
+		MALT::PyEval_SetProfile(MALT::malt_wrap_python_on_enter_exit, NULL);
+	return result;
+}
+*/
