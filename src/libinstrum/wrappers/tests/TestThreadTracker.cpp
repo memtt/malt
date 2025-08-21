@@ -12,6 +12,8 @@
 /**********************************************************/
 #include <gtest/gtest.h>
 #include <thread>
+#include <common/Options.hpp>
+#include <common/SimpleAllocator.hpp>
 #include <core/ThreadTracker.hpp>
 
 /**********************************************************/
@@ -40,4 +42,16 @@ TEST(TestThreadTracker, one_thread)
 
 	EXPECT_EQ(1, ThreadTracker::getThreadCount());
 	EXPECT_EQ(11, ThreadTracker::getMaxThreadCount());
+}
+
+/**********************************************************/
+int main(int argc, char ** argv)
+{
+	//init internal allocator
+	gblInternaAlloc = new SimpleAllocator(true);
+	gblOptions = new Options;
+
+	// This allows the user to override the flag on the command line.
+	::testing::InitGoogleTest(&argc, argv);
+	return RUN_ALL_TESTS();
 }

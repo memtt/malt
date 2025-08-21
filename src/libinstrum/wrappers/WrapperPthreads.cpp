@@ -65,11 +65,13 @@ void * pthreadWrapperStartRoutine(void * arg)
 	
 	//run child
 	ThreadTrackerArg * subarg = (ThreadTrackerArg *)arg;
-	void * res = subarg->routine(subarg->arg);
-	
+	void * userArt = subarg->arg;
 	//delete
-	delete subarg;
-	
+	MALT_FREE(subarg);
+
+	//run
+	void * res = subarg->routine(subarg->arg);
+		
 	//return
 	return res;
 }
