@@ -50,6 +50,8 @@ static const char * CST_ALLOC_FUNC_NAMES[] = {
 	"default_free",
 	"default_calloc",
 	"default_realloc",
+	"PyDataMem_UserNEW",
+	"PyArray_NewFromDescr",
 	nullptr
 };
 

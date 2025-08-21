@@ -481,7 +481,7 @@ String Stack::toDebugString(SymbolSolver & dic) const
 		for (int i = 0 ; i < size ; i++) {
 			const CallSite * site = dic.getCallSiteInfo(this->stack[size - i - 1]);
 			char padding[4096];
-			char buffer[4096];
+			char buffer[4099];
 			memset(padding, ' ', 2*i);
 			padding[2*i] = '\0';
 			snprintf(buffer, sizeof(buffer), "%s%s:%d\n",padding, dic.getString(site->file).c_str(), site->line);
