@@ -23,6 +23,8 @@ of memory allocations, about :
 #include <cstdio>
 #include <cstring>
 #include <list>
+#include <thread>
+#include <unistd.h>
 
 /**********************************************************/
 // Here a global varaible
@@ -158,9 +160,36 @@ void function_realloc(void)
 }
 
 /**********************************************************/
+void function_stack_mem_usage_recurse(int cnt, char * parent_buffer)
+{
+	if (cnt > 0) {
+		char buffer[256];
+		memcpy(buffer, parent_buffer, sizeof(buffer));
+		usleep(100);
+		function_stack_mem_usage_recurse(cnt - 1, buffer);
+		usleep(100);
+	}
+}
+
+/**********************************************************/
+void function_stack_mem_usage(void)
+{
+	char buffer[32*1024];
+	memset(buffer, 0, sizeof(buffer));
+
+	//run locally
+	usleep(200);
+
+	#pragma omp parallel for
+	for (size_t i = 0 ; i < 4 ; i++)
+		function_stack_mem_usage_recurse(10, buffer);
+}
+
+/**********************************************************/
 int main(void)
 {
 	//call all
+	function_stack_mem_usage();
 	function_using_c_malloc();
 	function_using_cpp_new();
 	function_using_indirect_allocs_printf();
