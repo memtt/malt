@@ -166,6 +166,12 @@ FormattedMessage& FormattedMessage::arg(const char* value)
 }
 
 /**********************************************************/
+/**
+ * Send the message to an std stream.
+ * @param out The output stream in which to send the message.
+ * @param message The message to be generated and writtent into the stream.
+ * @return A reference to the input stream so we can chain the operations.
+ */
 std::ostream& operator<<(std::ostream& out, const FormattedMessage& message)
 {
 	message.toStream(out);
@@ -173,6 +179,11 @@ std::ostream& operator<<(std::ostream& out, const FormattedMessage& message)
 }
 
 /**********************************************************/
+/**
+ * Replace the next argument in the string by the message associated
+ * to the errno value (by calling strerrno()).
+ * @return A reference to the current message so we can chain calls.
+ */
 FormattedMessage & FormattedMessage::argStrErrno(void)
 {
 	this->arg(strerror(errno));

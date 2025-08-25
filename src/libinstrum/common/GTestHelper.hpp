@@ -20,9 +20,21 @@ namespace MALT
 {
 
 /**********************************************************/
+/**
+ * Extend the EXPECT_EQ to check nullity with right casting.
+ */
 #define EXPECT_NULL(x) EXPECT_EQ((void*)NULL,(x))
+/**
+ * Extend the EXPECT_NE to check non nullity with right casting.
+ */
 #define EXPECT_NOT_NULL(x) EXPECT_NE((void*)NULL,(x))
+/**
+ * Extend the ASSERT_EQ to check nullity with right casting.
+ */
 #define ASSERT_NULL(x) ASSERT_EQ((void*)NULL,(x))
+/**
+ * Extend the ASSERT_NE to check non nullity with right casting.
+ */
 #define ASSERT_NOT_NULL(x) ASSERT_NE((void*)NULL,(x))
 
 }

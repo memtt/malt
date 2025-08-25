@@ -21,6 +21,10 @@ namespace MALT
 {
 
 /**********************************************************/
+/**
+ * Constructor of the PythonSymbolTracker. It mostly define and register the infos
+ * for the static and generic code location to assign them with an ID.
+ */
 PythonSymbolTracker::PythonSymbolTracker(void)
 {
 	//build unknown map
@@ -69,14 +73,29 @@ PythonSymbolTracker::PythonSymbolTracker(void)
 }
 
 /**********************************************************/
+/**
+ * Destructor of the object.
+ */
 PythonSymbolTracker::~PythonSymbolTracker(void)
 {
 
 }
 
 /**********************************************************/
+/**
+ * Convert a Python parent frame object into a LangAddress ready to be placed
+ * into the MALT internal call stack representation. It first make a backtrace
+ * up to get the parent, then make the translation. The link between
+ * the raw addr using in LangAddress and the translation is stored into
+ * this PythonSymbolTracker object.
+ * @param frame The frame to translate.
+ * @return A LangAddress in the Python domain.
+ */
 LangAddress PythonSymbolTracker::parentFrameToLangAddress(PyFrameObject * frame)
 {
+	//check
+	assert(frame != nullptr);
+
 	//get up
 	PyFrameObject * parentFrame = MALT::PyFrame_GetBack(frame);
 
@@ -91,6 +110,12 @@ LangAddress PythonSymbolTracker::parentFrameToLangAddress(PyFrameObject * frame)
 }
 
 /**********************************************************/
+/**
+ * Convert by batch all the stack content which is cached python frame
+ * for latter solving into and standard LangAddress and get ride of the
+ * blocked memory by those frames.
+ * @param stack The stack to convert.
+ */
 void PythonSymbolTracker::makeStackPythonDomain(Stack & stack)
 {
 	for (size_t i = 0 ; i < stack.getSize() ; i++) {
@@ -102,6 +127,14 @@ void PythonSymbolTracker::makeStackPythonDomain(Stack & stack)
 }
 
 /**********************************************************/
+/**
+ * Convert a Python frame object into a LangAddress ready to be placed
+ * into the MALT internal call stack representation. The link between
+ * the raw addr using in LangAddress and the translation is stored into
+ * this PythonSymbolTracker object.
+ * @param frame The frame to translate.
+ * @return A LangAddress in the Python domain.
+ */
 LangAddress PythonSymbolTracker::frameToLangAddress(PyFrameObject * frame)
 {
 	//get fast
@@ -118,6 +151,12 @@ LangAddress PythonSymbolTracker::frameToLangAddress(PyFrameObject * frame)
 }
 
 /**********************************************************/
+/**
+ * Slow approach to make the translation by making the full work of
+ * extracting the strings and comparing them.
+ * @param frame The frame to convert.
+ * @return A LangAddress in the Python domain.
+ */
 LangAddress PythonSymbolTracker::slowFrameToLangAddress(PyFrameObject * frame)
 {
 	//convert
@@ -157,6 +196,15 @@ LangAddress PythonSymbolTracker::slowFrameToLangAddress(PyFrameObject * frame)
 }
 
 /**********************************************************/
+/**
+ * Trying a faster approach by playing with pointers to cache a value.
+ * 
+ * @b Note: this is not working !
+ * 
+ * @param frame The frame to translate.
+ * @return A LangAddress in the Python domain.
+ * @todo To remove.
+ */
 LangAddress PythonSymbolTracker::fastFrameToLangAddress(PyFrameObject * frame)
 {
 	//get code
@@ -173,6 +221,17 @@ LangAddress PythonSymbolTracker::fastFrameToLangAddress(PyFrameObject * frame)
 }
 
 /**********************************************************/
+/**
+ * Convert a frame to get a temporary python call site description. It means
+ * a call site containing directly the python internal pointers not yet
+ * translated to MALT strings.
+ * 
+ * It latter needs to be transposed to a PythonCallSite and to free the related
+ * memory.
+ * 
+ * @param frame The frame to convert.
+ * @return A TmpPythonCallSite object with the infos extracted from python about the call site.
+ */
 TmpPythonCallSite PythonSymbolTracker::frameToCallSite(PyFrameObject * frame)
 {
 	//decl some vars
@@ -216,6 +275,10 @@ TmpPythonCallSite PythonSymbolTracker::frameToCallSite(PyFrameObject * frame)
 }
 
 /**********************************************************/
+/**
+ * Free the memory of the call site.
+ * @param callsite The temporary python call site infos coming from python.
+ */
 void PythonSymbolTracker::freeFrameToCallSite(TmpPythonCallSite & callsite)
 {
 	//Valid names with a single chararacter are not alloced, so we don't free them
@@ -234,6 +297,15 @@ void PythonSymbolTracker::freeFrameToCallSite(TmpPythonCallSite & callsite)
 }
 
 /**********************************************************/
+/**
+ * Extract the module path from the given filePath.
+ * 
+ * It is mostly required to some frozen modules to be translated so we get access to the sources
+ * of to find some paths related to the launch directory.
+ * 
+ * @param filePath The path of the module to convert (extracted from python call site infos).
+ * @return The final path as std::string.
+ */
 std::string PythonSymbolTracker::getModulePath(const std::string & filePath) const
 {
 	//var
@@ -281,6 +353,12 @@ std::string PythonSymbolTracker::getModulePath(const std::string & filePath) con
 }
 
 /**********************************************************/
+/**
+ * Extrace the python path from the given path.
+ * It walk up until seeking "python3.*".
+ * @param path The path from which to extract the python path.
+ * @return The computed python path.
+ */
 std::string PythonSymbolTracker::getPythonPath(const std::string & path) const
 {
 	//var
@@ -306,6 +384,13 @@ std::string PythonSymbolTracker::getPythonPath(const std::string & path) const
 }
 
 /**********************************************************/
+/**
+ * Walk into the obtained paths to find the python one in order
+ * to know how to build the paths to frozen modules or non full path
+ * modules.
+ * @return Return a map with the different python paths.
+ * @todo Could be a std::set in place.
+ */
 std::map<std::string, bool> PythonSymbolTracker::extractorPythonPaths(void) const
 {
 	//search path in python install or venv or prefix
@@ -323,6 +408,13 @@ std::map<std::string, bool> PythonSymbolTracker::extractorPythonPaths(void) cons
 }
 
 /**********************************************************/
+/**
+ * Convert a frozen module name into a valid module path so the GUI can
+ * access the source code of this frozen python module.
+ * @param fname Frozen name.
+ * @param paths List of python paths in which to search the forzen module.
+ * @return The unfrozed full path to the module.
+ */
 std::string PythonSymbolTracker::unfrozeFileName(const std::string & fname, const std::map<std::string, bool> & paths) const
 {
 	//check
@@ -349,6 +441,16 @@ std::string PythonSymbolTracker::unfrozeFileName(const std::string & fname, cons
 }
 
 /**********************************************************/
+/**
+ * This function should be cassed at the end of the execution to register the symbol
+ * translation into the SymbolSolver to be saved into the final profile file.
+ * 
+ * In python this is a trivial step at this stage because we simply has to lookup in
+ * the PythonSymbolTracker std::map to get access to this info in memory as it
+ * has already been solved on the fly during execution.
+ * 
+ * @param solver The SymbolSolver to fill.
+ */
 void PythonSymbolTracker::registerSymbolResolution(SymbolSolver & solver)
 {
 	//get python paths
@@ -388,12 +490,24 @@ void PythonSymbolTracker::registerSymbolResolution(SymbolSolver & solver)
 }
 
 /**********************************************************/
+/**
+ * Return the table of import addresses to we can fold all those calls (optionally)
+ * under an IMPORT symbol in the MALT profile. It avoids to bother the user
+ * in the final profile with tons of allocs which are juste due to python importing
+ * its modules.
+ */
 const std::set<LangAddress> & PythonSymbolTracker::getImportAddresses(void) const
 {
 	return this->importAddresses;
 }
 
 /**********************************************************/
+/**
+ * From a LangAddress convert the raw pointer it contains into a PythonCallSite thanks
+ * the the translation std::map containing the infos.
+ * @param langAddr The LangAddress to convert.
+ * @return Return all the call site infos.
+ */
 PythonCallSite PythonSymbolTracker::getCallSite(LangAddress langAddr)
 {
 	//check
@@ -414,6 +528,11 @@ PythonCallSite PythonSymbolTracker::getCallSite(LangAddress langAddr)
 }
 
 /**********************************************************/
+/**
+ * Get the callsite infos with full names instead of the default StringIds.
+ * @param langAddr The address to translate back to a call site.
+ * @return The call site infos composed of full MALT strings.
+ */
 PythonNamedCallSite PythonSymbolTracker::getNamedCallSite(LangAddress langAddr)
 {
 	PythonCallSite site = this->getCallSite(langAddr);
@@ -425,6 +544,10 @@ PythonNamedCallSite PythonSymbolTracker::getNamedCallSite(LangAddress langAddr)
 }
 
 /**********************************************************/
+/**
+ * Set the Python script name in use.
+ * @param script Define the path to the script in use.
+ */
 void PythonSymbolTracker::setScript(const std::string & script)
 {
 	//if empty exit
@@ -452,6 +575,10 @@ void PythonSymbolTracker::setScript(const std::string & script)
 }
 
 /**********************************************************/
+/**
+ * Solve the name of the python program in order to build the correct profile file,
+ * not just to see malt-python...... as the profile file name.
+ */
 void PythonSymbolTracker::solveExeName(void)
 {
 	//get path if has some
@@ -462,6 +589,10 @@ void PythonSymbolTracker::solveExeName(void)
 }
 
 /**********************************************************/
+/**
+ * Use python internal routines to get the python program name in run.
+ * @return The name as string.
+ */
 std::string PythonSymbolTracker::getPyProgramName(void) const
 {
 	//get sys.argv
@@ -494,12 +625,19 @@ std::string PythonSymbolTracker::getPyProgramName(void) const
 }
 
 /**********************************************************/
+/**
+ * Return the current script name.
+ * @param return The script name under the form of a std::string.
+ */
 const std::string & PythonSymbolTracker::getScriptName(void) const
 {
 	return this->scriptName;
 }
 
 /**********************************************************/
+/**
+ * Mark python as activ.
+ */
 void PythonSymbolTracker::setPythonActivity(bool activ)
 {
 	this->pythonIsActiv = activ;
