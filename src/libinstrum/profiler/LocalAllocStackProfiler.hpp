@@ -66,6 +66,9 @@ struct PerThreadAllocStats
 	FunctionStat free;
 	FunctionStat calloc;
 	FunctionStat realloc;
+	FunctionStat mmap;
+	FunctionStat munmap;
+	FunctionStat mremap;
 };
 
 /**********************************************************/
@@ -89,8 +92,9 @@ class LocalAllocStackProfiler
 		void onFree(void* ptr, ticks time, Language lang = LANG_C);
 		void onCalloc(void * res,size_t nmemb,size_t size, ticks time, Language lang = LANG_C, AllocDomain domain = DOMAIN_C_ALLOC);
 		void onRealloc(void* ptr, void* res, size_t size, ticks time, Language lang = LANG_C, AllocDomain domain = DOMAIN_C_ALLOC);
-		void onMmap(void * ptr, size_t size,int flags,int fd);
-		void onMunmap(void * ptr, size_t size);
+		void onMmap(void * ptr, size_t size,int flags,int fd, ticks time);
+		void onMunmap(void * ptr, size_t size, ticks time);
+		void onMremap(void * ptr, size_t size, void * new_ptr, size_t new_size, ticks time);
 		inline void onEnterFunc(LangAddress this_fn,LangAddress call_site,bool ignoreStack=false);
 		inline void onExitFunc(LangAddress this_fn,LangAddress call_site,bool ignoreStack=false);
 		void solveSymbols(SymbolSolver & symbolResolver) const;

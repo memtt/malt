@@ -69,9 +69,9 @@ struct CallStackInfo
 		void onFreeEvent(size_t value,size_t peakId);
 		void onReallocEvent(size_t oldSize,size_t newSize);
 		void onFreeLinkedMemory(size_t value,ticks lifetime,size_t peakId);
-		void onMmap(size_t value);
-		void onMunmap(size_t value);
-		void onMremap(size_t value);
+		void onMmap(ssize_t value);
+		void onMunmap(ssize_t value);
+		void onMremap(ssize_t value);
 		void merge(const MALT::CallStackInfo& info);
 		void writeAsCallgrindEntry(int line, std::ostream & out) const;
 		void writeAsCallgrindCallEntry(int line, std::ostream& out) const;
@@ -95,7 +95,9 @@ struct CallStackInfo
 		/** Track the min/max/sum/count of each chunk lifetime. **/
 		SimpleQuantityHistory lifetime;
 		/** Track the min/max/sum/count of each memory allocation sizes from mmap. **/
-		//SimpleQuantityHistory mmap;
+		SimpleQuantityHistory mmap;
+		/** Track the min/max/sum/count of each memory allocation sizes from mmap. **/
+		SimpleQuantityHistory munmap;
 		/** Count number of null size allocations. **/
 		ssize_t cntZeros;
 		/** Count the current allocated (alive) memory from this call site. **/

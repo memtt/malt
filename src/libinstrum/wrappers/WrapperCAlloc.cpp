@@ -273,14 +273,18 @@ void * MALT::malt_wrap_mmap(void *start,size_t length,int prot,int flags,int fd,
 		flags += MAP_POPULATE;
 	}
 
-	//run the default function
+	//check
 	assert(gblState.status > ALLOC_WRAP_INIT_SYM);
+
+	//run
+	ticks t = Clock::getticks();
 	void * res = real_mmap(start,length,prot,flags,fd,offset);
+	t = Clock::getticks() - t;
 
 	//profile
-	//if (guard.needInstrument()) {
-	//	MALT_WRAPPER_LOCAL_STATE_ACTION(localState.profiler->onMmap(res,length,flags,fd));
-	//}
+	if (guard.needInstrument() && res != MAP_FAILED) {
+		MALT_WRAPPER_LOCAL_STATE_ACTION(env.getLocalProfiler().onMmap(res,length,flags,fd,t), retaddr);
+	}
 
 	//return segment to user
 	return res;
@@ -300,19 +304,22 @@ int MALT::malt_wrap_munmap(void * start, size_t length, const MunmapFuncPtr & re
 
 	//run the default function
 	assert(gblState.status > ALLOC_WRAP_INIT_SYM);
+
+	ticks t = Clock::getticks();
 	int res = real_munmap(start,length);
+	t = Clock::getticks() - t;
 
 	//profile
-	//if (guard.needInstrument()) {
-	//	MALT_WRAPPER_LOCAL_STATE_ACTION(localState.profiler->onMalloc(res,size));
-	//}
+	if (guard.needInstrument() && res == 0) {
+		MALT_WRAPPER_LOCAL_STATE_ACTION(env.getLocalProfiler().onMunmap(start,length, t), retaddr);
+	}
 
 	//return segment to user
 	return res;
 }
 
 /**********************************************************/
-void * MALT::malt_wrap_mremap(void *old_address, size_t old_size , size_t new_size, int flags, const MremapFuncPtr & real_mremap, void * retaddr)
+void * MALT::malt_wrap_mremap(void *old_address, size_t old_size , void * new_address, size_t new_size, int flags, const MremapFuncPtr & real_mremap, void * retaddr)
 {
 	//get local TLS and check init
 	LazyEnv env;
@@ -320,12 +327,15 @@ void * MALT::malt_wrap_mremap(void *old_address, size_t old_size , size_t new_si
 
 	//run the default function
 	assert(gblState.status > ALLOC_WRAP_INIT_SYM);
-	void * res = real_mremap(old_address,old_size,new_size,flags);
+
+	ticks t = Clock::getticks();
+	void * res = real_mremap(old_address,old_size,new_size,flags,new_address);
+	t = Clock::getticks() - t;
 
 	//profile
-	//if (guard.needInstrument()) {
-	//	MALT_WRAPPER_LOCAL_STATE_ACTION(localState.profiler->onMalloc(res,size));
-	//}
+	if (guard.needInstrument() && res != MAP_FAILED) {
+		MALT_WRAPPER_LOCAL_STATE_ACTION(env.getLocalProfiler().onMremap(old_address,old_size, res, new_size, t), retaddr);
+	}
 
 	//return segment to user
 	return res;

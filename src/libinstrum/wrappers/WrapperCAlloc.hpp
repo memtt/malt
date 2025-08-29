@@ -37,7 +37,7 @@ typedef void *(*MemalignFuncPtr)(size_t alignment, size_t size);
 typedef void *(*PVallocFuncPtr)(size_t size);
 typedef void *(*MmapFuncPtr)(void *start,size_t length,int prot,int flags,int fd,off_t offset);
 typedef int (*MunmapFuncPtr)(void *start,size_t length);
-typedef void *(*MremapFuncPtr)(void *old_address, size_t old_size , size_t new_size, int flags);
+typedef void *(*MremapFuncPtr)(void *old_address, size_t old_size , size_t new_size, int flags, void * new_address);
 
 //instrument
 void * malt_wrap_malloc(size_t size, const MallocFuncPtr & real_malloc, void * retaddr);
@@ -51,7 +51,7 @@ void * malt_wrap_memalign(size_t alignment, size_t size, const MemalignFuncPtr &
 void * malt_wrap_pvalloc(size_t size, const PVallocFuncPtr & real_pvalloc, void * retaddr);
 void * malt_wrap_mmap(void *start,size_t length,int prot,int flags,int fd,off_t offset, const MmapFuncPtr & real_mmap, void * retaddr);
 int malt_wrap_munmap(void * start, size_t length, const MunmapFuncPtr & real_munmap, void * retaddr);
-void * malt_wrap_mremap(void *old_address, size_t old_size , size_t new_size, int flags, const MremapFuncPtr & real_munmap, void * retaddr);
+void * malt_wrap_mremap(void *old_address, size_t old_size , void * new_address, size_t new_size, int flags, const MremapFuncPtr & real_munmap, void * retaddr);
 
 //load symbols
 void malt_wrap_extended_symbols(void);

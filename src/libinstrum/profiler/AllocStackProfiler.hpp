@@ -131,6 +131,7 @@ class AllocStackProfiler
 		void onPrepareRealloc(void * oldPtr,Stack * userStack = NULL);
 		void onMmap(void * ptr,size_t size,Stack * userStack = NULL);
 		void onMunmap(void * ptr,size_t size,Stack * userStack = NULL);
+		void onMremap(void * ptr,size_t size,void * new_ptr, size_t new_size, Stack * userStack = NULL);
 		void onLLMmap(void * ptr,size_t size,Stack * userStack = NULL);
 		void onLLMunmap(void * ptr,size_t size,Stack * userStack = NULL);
 		size_t onRealloc(void* oldPtr, void* ptr, size_t newSize, MALT::Stack* userStack = 0, AllocDomain domain = DOMAIN_C_ALLOC);

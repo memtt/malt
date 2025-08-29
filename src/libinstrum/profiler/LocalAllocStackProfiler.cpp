@@ -97,11 +97,11 @@ void LocalAllocStackProfiler::onRealloc(void* ptr, void* res, size_t size,ticks 
 }
 
 /**********************************************************/
-void LocalAllocStackProfiler::onMmap(void* ptr, size_t size, int flags, int fd)
+void LocalAllocStackProfiler::onMmap(void* ptr, size_t size, int flags, int fd, ticks time)
 {
 	//skip file and non anon
-	if ((flags & (MAP_ANON|MAP_ANONYMOUS)) == 0 || fd != 0)
-		return;
+	//if ((flags & (MAP_ANON|MAP_ANONYMOUS)) == 0)
+	//	return;
 	
 	//get stack
 	Stack * stack = getStack(LANG_C, size, false);
@@ -110,32 +110,41 @@ void LocalAllocStackProfiler::onMmap(void* ptr, size_t size, int flags, int fd)
 	CODE_TIMING("userMmapProf",globalProfiler->onMmap(ptr,size,stack));
 
 	this->popEnterExit();
+
+	this->cntMemOps++;
+	this->allocStats.mmap.inc(size,time);
 	
 	//CODE_TIMING("globalMmapProf",globalProfiler->onGlobalMmap(ptr,size,stack));
 }
 
 /**********************************************************/
-void LocalAllocStackProfiler::onMunmap(void* ptr, size_t size)
+void LocalAllocStackProfiler::onMunmap(void* ptr, size_t size, ticks time)
 {
-// 	//old state
-// 	bool oldInuse = inUse;
-// 	
-// 	//get stack
-// 	Stack * stack = getStack();
-// 	
-// 	//check for renentrance
-// 	if (!reentrance || !oldInuse)
-// 	{
-// 		inUse = true;
-// 		CODE_TIMING("userMmapProf",globalProfiler->onFree(ptr,stack));
-// 		this->cntMemOps++;
-// 		this->cumulAlloc+=size;
-// 		inUse = oldInuse;
-// 	}
-
-	//this->popEnterExit();
+	//get stack
+	Stack * stack = getStack(LANG_C, size, false);
 	
-	//CODE_TIMING("globalMmapProf",globalProfiler->onGlobalMunmap(ptr,size,stack));
+	//check for renentrance
+	CODE_TIMING("userMmapProf",globalProfiler->onMunmap(ptr,size,stack));
+
+	this->popEnterExit();
+
+	this->cntMemOps++;
+	this->allocStats.munmap.inc(size,time);
+}
+
+/**********************************************************/
+void LocalAllocStackProfiler::onMremap(void * ptr, size_t size, void * new_ptr, size_t new_size, ticks time)
+{
+	//get stack
+	Stack * stack = getStack(LANG_C, size, false);
+	
+	//check for renentrance
+	CODE_TIMING("userMmapProf",globalProfiler->onMremap(ptr,size,new_ptr,new_size,stack));
+
+	this->popEnterExit();
+
+	this->cntMemOps++;
+	this->allocStats.mremap.inc(size,time);
 }
 
 /**********************************************************/

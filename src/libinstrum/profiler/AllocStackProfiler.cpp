@@ -458,10 +458,34 @@ void AllocStackProfiler::onMmap ( void* ptr, size_t size, Stack* userStack )
 {
 	if (options.stackProfileEnabled)
 	{
-		vmaTracker.mmap(ptr,size);
+		ssize_t delta = vmaTracker.mmap(ptr,size);
 		//search call stack info if not provided
 		MMCallStackNode callStackNode = getStackNode(userStack);
-		callStackNode.infos->onMmap(size);
+		callStackNode.infos->onMmap(delta);
+	}
+}
+
+/**********************************************************/
+void AllocStackProfiler::onMunmap ( void* ptr, size_t size, Stack* userStack )
+{
+	if (options.stackProfileEnabled)
+	{
+		ssize_t delta = vmaTracker.munmap(ptr,size);
+		//search call stack info if not provided
+		MMCallStackNode callStackNode = getStackNode(userStack);
+		callStackNode.infos->onMmap(delta);
+	}
+}
+
+/**********************************************************/
+void AllocStackProfiler::onMremap(void * ptr,size_t size,void * new_ptr, size_t new_size, Stack * userStack)
+{
+	if (options.stackProfileEnabled)
+	{
+		ssize_t delta = vmaTracker.mremap(ptr,size,new_ptr,new_size);
+		//search call stack info if not provided
+		MMCallStackNode callStackNode = getStackNode(userStack);
+		callStackNode.infos->onMmap(delta);
 	}
 }
 

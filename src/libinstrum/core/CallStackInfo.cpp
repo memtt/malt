@@ -161,9 +161,24 @@ void CallStackInfo::onAllocEvent(size_t value,size_t peakId)
 }
 
 /**********************************************************/
-void CallStackInfo::onMmap ( size_t value )
+void CallStackInfo::onMmap ( ssize_t value )
 {
-	//this->mmap.addEvent(value);
+	this->mmap.addEvent(value);
+}
+
+/**********************************************************/
+void CallStackInfo::onMunmap ( ssize_t value )
+{
+	this->mmap.addEvent(value);
+}
+
+/**********************************************************/
+void CallStackInfo::onMremap ( ssize_t value )
+{
+	if (value >= 0)
+		this->mmap.addEvent(value);
+	else if (value < 0)
+		this->munmap.addEvent(value);
 }
 
 /**********************************************************/
@@ -246,6 +261,8 @@ void convertToJson(htopml::JsonState& json, const CallStackInfo& value)
 	json.printField("aliveReq",value.alive);
 	json.printField("alloc",value.alloc);
 	json.printField("free",value.free);
+	json.printField("mmap",value.mmap);
+	json.printField("munmap",value.munmap);
 	json.printField("lifetime",value.lifetime);
 	json.printField("globalPeak",value.peak);
 	json.printField("reallocCount",value.reallocCount);

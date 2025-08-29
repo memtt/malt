@@ -147,7 +147,7 @@ DLL_PUBLIC int munmap(void *start, size_t length)
  * Wrapper of the pvalloc function to capture allocations. The original symbol will be
  * search by dlsym() in AllocWrapperGlobal::init() .
 **/
-DLL_PUBLIC void * mremap(void *old_address, size_t old_size , size_t new_size, int flags)
+DLL_PUBLIC void * mremap(void *old_address, size_t old_size , size_t new_size, int flags, void * new_address)
 {
-	return malt_wrap_mremap(old_address, old_size, new_size, flags, gblState.mmapFuncs.mremap, MALT_RETADDR);
+	return malt_wrap_mremap(old_address, old_size, new_address, new_size, flags, gblState.mmapFuncs.mremap, MALT_RETADDR);
 }
