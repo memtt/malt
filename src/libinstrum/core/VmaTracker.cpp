@@ -20,7 +20,7 @@
 #include "VmaTracker.hpp"
 
 /**********************************************************/
-#define MALT_VMA_TRACKER_DEFAULT_SIZE 10
+#define MALT_VMA_TRACKER_DEFAULT_SIZE 256
 
 /**********************************************************/
 namespace MALT
@@ -61,21 +61,31 @@ void VmaTracker::compact ( void )
 			curWrite++;
 	}
 	lastInsert = curWrite;
-	this->count = curWrite + 1;
 }
 
 /**********************************************************/
 void VmaTracker::grow ( void )
 {
+	//check
 	assert(this->count == this->size);
 	
-	size *= 2;
-	vmas = (VmaInfo*)MALT_REALLOC(vmas,size);
-	memset(vmas+size/2,0,size/2);
+	//keep track
+	size_t oldSize = this->size;
+
+	//incr
+	this->size *= 2;
+	printf("GROW %zu\n", this->size);
+
+	//realloc
+	this->vmas = (VmaInfo*)MALT_REALLOC(vmas,this->size);
+
+	//Reset new part
+	for (size_t i = oldSize ; i < this->size ; i++)
+		this->vmas[i].start = this->vmas[i].end = 0;
 }
 
 /**********************************************************/
-void VmaTracker::mmap ( void* ptr, size_t size )
+ssize_t VmaTracker::mmap ( void* ptr, size_t size )
 {
 	//check resize and compact
 	if (lastInsert >= this->size)
@@ -100,10 +110,13 @@ void VmaTracker::mmap ( void* ptr, size_t size )
 	//increase
 	lastInsert++;
 	count++;
+
+	//return
+	return res + size;
 }
 
 /**********************************************************/
-size_t VmaTracker::munmap ( void* ptr, size_t size )
+ssize_t VmaTracker::munmap ( void* ptr, size_t size )
 {
 	size_t removed = 0;
 	size_t start = (size_t)ptr;
@@ -111,43 +124,43 @@ size_t VmaTracker::munmap ( void* ptr, size_t size )
 	//loop on all to find intersects and remove them
 	for (size_t i = 0 ; i < lastInsert ; i++)
 	{
+		//get current
 		VmaInfo & vma = vmas[i];
+
 		//overlap left part
-		if (start <= vma.start && end > vma.start && end < vma.end)
-		{
+		if (start <= vma.start && end > vma.start && end < vma.end) {
 			removed += end - vma.start;
 			vma.start = end;
 		}
+
 		//overlap right part
-		if (start > vma.start && start < vma.end && end >= vma.end)
-		{
+		if (start > vma.start && start < vma.end && end >= vma.end) {
 			removed += vma.end - start;
 			vma.end = start;
 		}
+
 		//complete remove
-		if (start <= vma.start && end >= vma.end)
-		{
+		if (start <= vma.start && end >= vma.end) {
 			removed += vma.end - vma.start;
 			vma.end = vma.start = 0;
 			count--;
 		}
 		//split
-		if (start > vma.start && end < vma.end)
-		{
+		if (start > vma.start && end < vma.end) {
 			mmap((void*)end,vma.end-end);
 			vma.end = start;
 			removed += end-start;
 		}
 	}
-	return removed;
+	return -removed;
 }
 
 /**********************************************************/
-size_t VmaTracker::mremap ( void* oldPtr, size_t oldSize, void* newPtr, size_t newSize )
+ssize_t VmaTracker::mremap ( void* oldPtr, size_t oldSize, void* newPtr, size_t newSize )
 {
-	size_t ret = munmap( oldPtr,oldSize);
-	mmap(newPtr,newSize);
-	return ret;
+	ssize_t deltaMunmap = munmap( oldPtr,oldSize);
+	ssize_t deltaMmap = mmap(newPtr,newSize);
+	return deltaMmap + deltaMunmap;
 }
 
 /**********************************************************/
@@ -175,7 +188,7 @@ size_t VmaTracker::getInsertPosition(void) const
 std::ostream & operator<<(std::ostream & out, VmaTracker & tracker)
 {
 	for (size_t i = 0; i < tracker.count ; i++)
-		out << "[" << tracker.vmas[i].start << " - " << tracker.vmas[i].end << "]" << std::endl;
+		out << "[" << tracker.vmas[i].start << " - " << tracker.vmas[i].end << " / " << (tracker.vmas[i].end - tracker.vmas[i].start) << "]" << std::endl;
 	return out;
 }
 
