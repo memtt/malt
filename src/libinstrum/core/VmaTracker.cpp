@@ -49,18 +49,19 @@ void VmaTracker::compact ( void )
 	size_t curWrite = 0;
 	
 	//loop
-	for (size_t i = 0 ; i < size ; i++)
+	for (size_t i = 0 ; i < this->size ; i++)
 	{
-		bool hasData = (vmas[i].start > 0);
+		bool hasData = (this->vmas[i].start > 0 || this->vmas[i].end > 0);
 		if (curWrite < i && hasData)
 		{
-			vmas[curWrite] = vmas[i];
-			vmas[i].end = vmas[i].start = 0;
+			this->vmas[curWrite] = this->vmas[i];
+			this->vmas[i].end = this->vmas[i].start = 0;
 		}
 		if (hasData)
 			curWrite++;
 	}
-	lastInsert = curWrite;
+	this->lastInsert = curWrite;
+	assert(this->lastInsert == this->count);
 }
 
 /**********************************************************/
@@ -74,10 +75,9 @@ void VmaTracker::grow ( void )
 
 	//incr
 	this->size *= 2;
-	printf("GROW %zu\n", this->size);
 
 	//realloc
-	this->vmas = (VmaInfo*)MALT_REALLOC(vmas,this->size);
+	this->vmas = (VmaInfo*)MALT_REALLOC(vmas,this->size*sizeof(VmaInfo));
 
 	//Reset new part
 	for (size_t i = oldSize ; i < this->size ; i++)

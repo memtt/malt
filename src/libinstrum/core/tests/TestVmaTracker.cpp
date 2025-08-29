@@ -81,8 +81,9 @@ TEST(TestVmaTracker,compact_ok)
 	ASSERT_EQ(-100, tracker.munmap((void*)0xA00,100));
 	for (size_t i = 0 ; i < 1500 ; i++)
 		ASSERT_EQ(4096, tracker.mmap((void*)(4096 + 4096 * i),4096));
-	EXPECT_EQ(tracker.getCount(), 1);
-	EXPECT_EQ(tracker.getInsertPosition(), 1);
+	ASSERT_EQ(tracker.getCount(), 1500);
+	ASSERT_EQ(tracker.getInsertPosition(), 1500);
+	ASSERT_EQ(tracker.munmap((void*)(4096ul*10ul), 2ul*4096ul), -2ul*4096ul);
 }
 
 /**********************************************************/
@@ -93,8 +94,9 @@ TEST(TestVmaTracker,compact_holes)
 	ASSERT_EQ(-100, tracker.munmap((void*)0xA00,100));
 	for (size_t i = 0 ; i < 1500 ; i++)
 		ASSERT_EQ(100, tracker.mmap((void*)(4096 + 4096 * i),100));
-	EXPECT_EQ(tracker.getCount(), 1500);
-	EXPECT_EQ(tracker.getInsertPosition(), 1500);
+	ASSERT_EQ(tracker.getCount(), 1500);
+	ASSERT_EQ(tracker.getInsertPosition(), 1500);
+	ASSERT_EQ(tracker.munmap((void*)(4096ul*10ul), 2ul*4096ul), -2ul*100ul);
 }
 
 /**********************************************************/
