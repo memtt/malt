@@ -52,6 +52,8 @@ void to_json(nlohmann::json & json, const StackInfos & value)
 		{"aliveReq", value.aliveReq},
 		{"alloc", value.alloc},
 		{"free", value.free},
+		{"mmap", value.mmap},
+		{"munmap", value.munmap},
 		{"lifetime", value.lifetime},
 		{"globalPeak", value.globalPeak},
 		{"reallocCount", value.reallocCount},
@@ -79,6 +81,8 @@ void from_json(const JsonIn & json, StackInfos & value)
 	json.at("aliveReq").get_to(value.aliveReq);
 	json.at("alloc").get_to(value.alloc);
 	json.at("free").get_to(value.free);
+	json.at("mmap").get_to(value.mmap);
+	json.at("munmap").get_to(value.munmap);
 	json.at("lifetime").get_to(value.lifetime);
 	json.at("globalPeak").get_to(value.globalPeak);
 	json.at("reallocCount").get_to(value.reallocCount);

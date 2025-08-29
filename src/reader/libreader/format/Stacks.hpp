@@ -40,6 +40,8 @@ struct StackInfos
 	size_t aliveReq{0};
 	CountMinMaxSum alloc;
 	CountMinMaxSum free;
+	CountMinMaxSum mmap;
+	CountMinMaxSum munmap;
 	CountMinMaxSum lifetime;
 	size_t globalPeak{0};
 	size_t reallocCount{0};

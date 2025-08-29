@@ -156,7 +156,37 @@ void MaltFuncMetrics::fillMetrics(void)
 	this->metrics["realloc.sum"] = {
 		"Realloc sum",
 		[](const MALTFormat::StackInfos & infos) {return infos.reallocSumDelta;},
+		[](size_t value) {return ExtractorHelpers::humanReadable(value,1,"B",false);},
+		SORT_DESC,
+		REF_MODE_SUM,
+	};
+
+	//mmap
+	this->metrics["mmap.count"] = {
+		"Mmap count",
+		[](const MALTFormat::StackInfos & infos) {return infos.mmap.count;},
 		[](size_t value) {return ExtractorHelpers::humanReadable(value,1,"",false);},
+		SORT_DESC,
+		REF_MODE_SUM,
+	};
+	this->metrics["mmap.sum"] = {
+		"Mmap sum",
+		[](const MALTFormat::StackInfos & infos) {return infos.mmap.sum;},
+		[](size_t value) {return ExtractorHelpers::humanReadable(value,1,"B",false);},
+		SORT_DESC,
+		REF_MODE_SUM,
+	};
+	this->metrics["munmap.count"] = {
+		"Munmap count",
+		[](const MALTFormat::StackInfos & infos) {return infos.munmap.count;},
+		[](size_t value) {return ExtractorHelpers::humanReadable(value,1,"",false);},
+		SORT_DESC,
+		REF_MODE_SUM,
+	};
+	this->metrics["munmap.sum"] = {
+		"Munmap sum",
+		[](const MALTFormat::StackInfos & infos) {return infos.munmap.sum;},
+		[](size_t value) {return ExtractorHelpers::humanReadable(value,1,"B",false);},
 		SORT_DESC,
 		REF_MODE_SUM,
 	};
