@@ -2233,13 +2233,15 @@
     "c": 4,
     "pyMem": 0,
     "pyObj": 0,
-    "pyRaw": 0
+    "pyRaw": 0,
+    "mmap": 0
    },
    "mem": {
     "c": 1122328,
     "pyMem": 0,
     "pyObj": 0,
-    "pyRaw": 0
+    "pyRaw": 0,
+    "mmap": 0
    }
   },
   "summaryWarnings": {

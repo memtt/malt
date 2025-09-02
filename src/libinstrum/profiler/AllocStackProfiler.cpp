@@ -275,7 +275,10 @@ void AllocStackProfiler::onAllocEvent(void* ptr, size_t size,Stack* userStack,MM
 				*callStackNode = getStackNode(userStack);
 			
 			//count events
-			CODE_TIMING("updateInfoAlloc",callStackNode->infos->onAllocEvent(size,peakId));
+			if (domain == DOMAIN_MMAP)
+				CODE_TIMING("updateInfoAlloc",callStackNode->infos->onMmap(size,peakId));
+			else
+				CODE_TIMING("updateInfoAlloc",callStackNode->infos->onAllocEvent(size,peakId));
 		}
 
 		//register for segment history tracking
@@ -391,7 +394,10 @@ size_t AllocStackProfiler::onFreeEvent(void* ptr, MALT::Stack* userStack, MMCall
 				*callStackNode = getStackNode(userStack);
 			
 			//count events
-			CODE_TIMING("updateInfoFree",callStackNode->infos->onFreeEvent(size,peakId));
+			if (domain == DOMAIN_MMAP)
+				CODE_TIMING("updateInfoFree",callStackNode->infos->onMunmap(size,peakId));
+			else
+				CODE_TIMING("updateInfoFree",callStackNode->infos->onFreeEvent(size,peakId));
 			
 			//update alive (TODO, need to move this into a new function on StackNodeInfo)
 			CODE_TIMING("freeLinkedMemory",segInfo->callStack.infos->onFreeLinkedMemory(size,lifetime,peakId));
@@ -454,40 +460,25 @@ size_t AllocStackProfiler::onFreeEvent(void* ptr, MALT::Stack* userStack, MMCall
 }
 
 /**********************************************************/
-void AllocStackProfiler::onMmap ( void* ptr, size_t size, Stack* userStack )
+void AllocStackProfiler::onMmap ( void* ptr, size_t size, Stack* userStack, MMCallStackNode* callStackNode )
 {
-	if (options.stackProfileEnabled)
-	{
-		ssize_t delta = vmaTracker.mmap(ptr,size);
-		//search call stack info if not provided
-		MMCallStackNode callStackNode = getStackNode(userStack);
-		callStackNode.infos->onMmap(delta);
-	}
+	ssize_t delta = vmaTracker.mmap(ptr,size);
+	this->onAllocEvent(ptr,delta,userStack, callStackNode, true, DOMAIN_MMAP);
 }
 
 /**********************************************************/
-void AllocStackProfiler::onMunmap ( void* ptr, size_t size, Stack* userStack )
+void AllocStackProfiler::onMunmap ( void* ptr, size_t size, Stack* userStack, MMCallStackNode* callStackNode )
 {
-	if (options.stackProfileEnabled)
-	{
-		ssize_t delta = vmaTracker.munmap(ptr,size);
-		//search call stack info if not provided
-		MMCallStackNode callStackNode = getStackNode(userStack);
-		callStackNode.infos->onMunmap(-delta);
-	}
+	ssize_t delta = vmaTracker.munmap(ptr,size);
+	this->onFreeEvent(ptr,userStack, callStackNode, true, DOMAIN_MMAP);
 }
 
 /**********************************************************/
 void AllocStackProfiler::onMremap(void * ptr,size_t size,void * new_ptr, size_t new_size, Stack * userStack)
 {
-	if (options.stackProfileEnabled)
-	{
-		fprintf(stderr, "MREMAP\n");
-		ssize_t delta = vmaTracker.mremap(ptr,size,new_ptr,new_size);
-		//search call stack info if not provided
-		MMCallStackNode callStackNode = getStackNode(userStack);
-		callStackNode.infos->onMremap(delta);
-	}
+	MMCallStackNode callStackNode;
+	this->onMunmap(new_ptr, new_size, userStack, &callStackNode);
+	this->onMmap(ptr, size, userStack, &callStackNode);
 }
 
 /**********************************************************/

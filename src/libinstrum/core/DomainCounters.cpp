@@ -54,12 +54,14 @@ void convertToJson(htopml::JsonState& json, const DomainCounters & value)
 			json.printField("pyObj", value.counters[DOMAIN_PYTHON_OBJ]);
 			json.printField("pyMem", value.counters[DOMAIN_PYTHON_MEM]);
 			json.printField("pyRaw", value.counters[DOMAIN_PYTHON_RAW]);
+			json.printField("mmap", value.counters[DOMAIN_MMAP]);
 		json.closeFieldStruct("counters");
 		json.openFieldStruct("mem");
 			json.printField("c", value.mem[DOMAIN_C_ALLOC]);
 			json.printField("pyObj", value.mem[DOMAIN_PYTHON_OBJ]);
 			json.printField("pyMem", value.mem[DOMAIN_PYTHON_MEM]);
 			json.printField("pyRaw", value.mem[DOMAIN_PYTHON_RAW]);
+			json.printField("mmap", value.mem[DOMAIN_MMAP]);
 		json.closeFieldStruct("mem");
 	json.closeStruct();
 }

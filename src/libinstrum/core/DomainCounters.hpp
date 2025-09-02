@@ -35,6 +35,8 @@ enum AllocDomain
 	DOMAIN_PYTHON_MEM,
 	/** Domain for large memory segements in python. */
 	DOMAIN_PYTHON_RAW,
+	/** Domain for low level memory mapping. */
+	DOMAIN_MMAP,
 	/** Number of allocation domain. */
 	ALLOC_DOMAIN_COUNT,
 };

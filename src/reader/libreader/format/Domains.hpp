@@ -28,6 +28,7 @@ struct DomainCounters
 	size_t pyObj;
 	size_t pyMem;
 	size_t pyRaw;
+	size_t mmap;
 };
 
 /**********************************************************/

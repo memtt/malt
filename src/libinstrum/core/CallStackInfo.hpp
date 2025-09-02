@@ -69,9 +69,8 @@ struct CallStackInfo
 		void onFreeEvent(size_t value,size_t peakId);
 		void onReallocEvent(size_t oldSize,size_t newSize);
 		void onFreeLinkedMemory(size_t value,ticks lifetime,size_t peakId);
-		void onMmap(ssize_t value);
-		void onMunmap(ssize_t value);
-		void onMremap(ssize_t value);
+		void onMmap(ssize_t value,size_t peakId);
+		void onMunmap(ssize_t value,size_t peakId);
 		void merge(const MALT::CallStackInfo& info);
 		void writeAsCallgrindEntry(int line, std::ostream & out) const;
 		void writeAsCallgrindCallEntry(int line, std::ostream& out) const;

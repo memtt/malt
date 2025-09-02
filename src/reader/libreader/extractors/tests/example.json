@@ -8244,13 +8244,15 @@
 			"c":4,
 			"pyObj":0,
 			"pyMem":0,
-			"pyRaw":0
+			"pyRaw":0,
+			"mmap":0
 		},
 		"mem":{
 			"c":1122328,
 			"pyObj":0,
 			"pyMem":0,
-			"pyRaw":0
+			"pyRaw":0,
+			"mmap":0
 		}
 	}
 }

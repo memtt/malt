@@ -161,24 +161,17 @@ void CallStackInfo::onAllocEvent(size_t value,size_t peakId)
 }
 
 /**********************************************************/
-void CallStackInfo::onMmap ( ssize_t value )
+void CallStackInfo::onMmap ( ssize_t value,size_t peakId )
 {
 	this->mmap.addEvent(value);
+	this->onAllocEvent(value, peakId);
 }
 
 /**********************************************************/
-void CallStackInfo::onMunmap ( ssize_t value )
+void CallStackInfo::onMunmap ( ssize_t value,size_t peakId )
 {
 	this->mmap.addEvent(value);
-}
-
-/**********************************************************/
-void CallStackInfo::onMremap ( ssize_t value )
-{
-	if (value >= 0)
-		this->mmap.addEvent(value);
-	else if (value < 0)
-		this->munmap.addEvent(-value);
+	this->onFreeEvent(value, peakId);
 }
 
 /**********************************************************/

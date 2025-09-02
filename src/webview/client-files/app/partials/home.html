@@ -111,6 +111,12 @@
 			<td class='malt-value'>{{getHumanMem(summaryData.summaryDomains.mem.pyRaw)}}</td>
 			<td class='malt-help'>The memory number of allocations made in Python for large allocations, sent directly to the C allocator.</td>
 		</tr>
+		<tr>
+			<td class='malt-name'>Mmap</td>
+			<td class='malt-value'>{{getHumanCount(summaryData.summaryDomains.counters.mmap)}}</td>
+			<td class='malt-value'>{{getHumanMem(summaryData.summaryDomains.mem.mmap)}}</td>
+			<td class='malt-help'>The memory directory allocated by the mmap/munmap/mremap calls.</td>
+		</tr>
 	</table>
 	
 	<h2>Allocation count</h2>
@@ -125,4 +131,6 @@
 	<h2>Leaks</h2>
 	<malthomefunclist metric='leaks' inclusive='false' functions='functions' limit='5'></malthomefunclist>
 
+	<h2>Mmap volume</h2>
+	<malthomefunclist metric='mmap.sum' inclusive='false' functions='functions' limit='5'></malthomefunclist>
 </div>
