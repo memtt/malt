@@ -217,6 +217,8 @@ MaltSourceEditor.prototype.internalMergeStackInfoDatas = function(onto,value)
 	onto.aliveReq += value.aliveReq;
 	this.internalMergeStackMinMaxInfo(onto.alloc,value.alloc);
 	this.internalMergeStackMinMaxInfo(onto.free,value.free);
+	this.internalMergeStackMinMaxInfo(onto.mmap,value.mmap);
+	this.internalMergeStackMinMaxInfo(onto.munmap,value.munmap);
 	this.internalMergeStackMinMaxInfo(onto.lifetime,value.lifetime);
 }
 

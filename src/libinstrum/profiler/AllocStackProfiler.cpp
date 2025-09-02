@@ -473,7 +473,7 @@ void AllocStackProfiler::onMunmap ( void* ptr, size_t size, Stack* userStack )
 		ssize_t delta = vmaTracker.munmap(ptr,size);
 		//search call stack info if not provided
 		MMCallStackNode callStackNode = getStackNode(userStack);
-		callStackNode.infos->onMmap(delta);
+		callStackNode.infos->onMunmap(-delta);
 	}
 }
 
@@ -482,10 +482,11 @@ void AllocStackProfiler::onMremap(void * ptr,size_t size,void * new_ptr, size_t 
 {
 	if (options.stackProfileEnabled)
 	{
+		fprintf(stderr, "MREMAP\n");
 		ssize_t delta = vmaTracker.mremap(ptr,size,new_ptr,new_size);
 		//search call stack info if not provided
 		MMCallStackNode callStackNode = getStackNode(userStack);
-		callStackNode.infos->onMmap(delta);
+		callStackNode.infos->onMremap(delta);
 	}
 }
 

@@ -186,7 +186,10 @@ MaltHelper.prototype.mergeStackInfoDatas = function(onto,value)
 
 	this.mergeStackMinMaxInfo(onto.alloc,value.alloc);
 	this.mergeStackMinMaxInfo(onto.free,value.free);
+	this.mergeStackMinMaxInfo(onto.mmap,value.mmap);
+	this.mergeStackMinMaxInfo(onto.munmap,value.munmap);
 	this.mergeStackMinMaxInfo(onto.lifetime,value.lifetime);
+
 }
 
 /**********************************************************************/

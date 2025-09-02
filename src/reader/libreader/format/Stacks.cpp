@@ -70,6 +70,8 @@ void from_json(const JsonIn & json, StackInfos & value)
 	assert(jsContains(json, "aliveReq"));
 	assert(jsContains(json, "alloc"));
 	assert(jsContains(json, "free"));
+	assert(jsContains(json, "mmap"));
+	assert(jsContains(json, "munmap"));
 	assert(jsContains(json, "lifetime"));
 	assert(jsContains(json, "globalPeak"));
 	assert(jsContains(json, "reallocCount"));
@@ -180,6 +182,8 @@ void StackInfos::merge(const StackInfos & value)
 	this->reallocSumDelta += value.reallocSumDelta;
 	this->alloc.merge(value.alloc);
 	this->free.merge(value.free);
+	this->mmap.merge(value.mmap);
+	this->munmap.merge(value.munmap);
 	this->lifetime.merge(value.lifetime);
 }
 

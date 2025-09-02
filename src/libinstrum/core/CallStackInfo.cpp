@@ -178,7 +178,7 @@ void CallStackInfo::onMremap ( ssize_t value )
 	if (value >= 0)
 		this->mmap.addEvent(value);
 	else if (value < 0)
-		this->munmap.addEvent(value);
+		this->munmap.addEvent(-value);
 }
 
 /**********************************************************/

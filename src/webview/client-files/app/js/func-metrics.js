@@ -131,7 +131,35 @@ MaltFuncMetrics.prototype.maltMetrics = {
 		formalter: function(x) {return maltHelper.humanReadable(x,1,'',false);},
 		defaultOrder: 'desc',
 		ref: 'sum'
-	}
+	},
+	'mmap.sum': {
+		name: 'Mmap mem.',
+		extractor: function(x) {return x.mmap.sum;},
+		formalter: function(x) {return maltHelper.humanReadable(x,1,'B',false);},
+		defaultOrder: 'desc',
+		ref: 'sum'
+	},
+	'mmap.count': {
+		name: 'Mmap count',
+		extractor: function(x) {return x.mmap.count;},
+		formalter: function(x) {return maltHelper.humanReadable(x,1,'',false);},
+		defaultOrder: 'desc',
+		ref: 'sum'
+	},
+	'munmap.sum': {
+		name: 'Munmap mem.',
+		extractor: function(x) {return x.munmap.sum;},
+		formalter: function(x) {return maltHelper.humanReadable(x,1,'B',false);},
+		defaultOrder: 'desc',
+		ref: 'sum'
+	},
+	'munmap.count': {
+		name: 'Munmap count',
+		extractor: function(x) {return x.munmap.count;},
+		formalter: function(x) {return maltHelper.humanReadable(x,1,'',false);},
+		defaultOrder: 'desc',
+		ref: 'sum'
+	},
 };
 
 MaltFuncMetrics.prototype.getMetricList = function()

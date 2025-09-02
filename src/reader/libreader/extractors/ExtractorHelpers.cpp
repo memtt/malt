@@ -52,6 +52,9 @@ static const char * CST_ALLOC_FUNC_NAMES[] = {
 	"default_realloc",
 	"PyDataMem_UserNEW",
 	"PyArray_NewFromDescr",
+	"mmap",
+	"munmap",
+	"mremap",
 	nullptr
 };
 

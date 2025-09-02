@@ -1105,7 +1105,7 @@ function filterExtractStacksCandidate(detailedStack,filter)
 /**********************************************************/
 /** Regexp to detect memory functions (new, new[], gnu and icc fortran alloc/free...). **/
 //--PORTED IN C++ VERSION--
-var allocFuncRegexp = /^((MALT::WrapperPython.*::.*)|(gomp_realloc)|(gomp_malloc)|(gomp_free)|(__gnu_cxx::new_allocator)|(operator new)|(operator delete)|(_Zn[wa])|(g_malloc)|(g_realloc)|(g_free)|(for__get_vm)|(for__free_vm)|([mc]alloc)|(free)|(realloc)|(memalign)|(posix_memalign)|(for_(de)?alloc_allocatable)|(for_(de)?allocate)|(default_malloc)|(default_realloc)|(default_calloc)|(default_free)|(PyDataMem_UserNEW)|(PyArray_NewFromDescr[_a-z]+))/
+var allocFuncRegexp = /^((MALT::WrapperPython.*::.*)|(gomp_realloc)|(gomp_malloc)|(gomp_free)|(__gnu_cxx::new_allocator)|(operator new)|(operator delete)|(_Zn[wa])|(g_malloc)|(g_realloc)|(g_free)|(for__get_vm)|(for__free_vm)|([mc]alloc)|(free)|(realloc)|(memalign)|(posix_memalign)|(for_(de)?alloc_allocatable)|(for_(de)?allocate)|(default_malloc)|(default_realloc)|(default_calloc)|(default_free)|(PyDataMem_UserNEW)|(PyArray_NewFromDescr[_a-z]+)|(mmap)|(mremap)|(munmap))/
 
 /**********************************************************/
 /** Quick check to detect memory functions. **/
@@ -1142,6 +1142,8 @@ function mergeStackInfoDatas(onto,value)
 	onto.reallocSumDelta += value.reallocSumDelta;
 	mergeStackMinMaxInfo(onto.alloc,value.alloc);
 	mergeStackMinMaxInfo(onto.free,value.free);
+	mergeStackMinMaxInfo(onto.mmap,value.mmap);
+	mergeStackMinMaxInfo(onto.munmap,value.munmap);
 	mergeStackMinMaxInfo(onto.lifetime,value.lifetime);
 }
 
@@ -1255,6 +1257,8 @@ function rebuildChilds(finalStacks,stack,cur,data,addresses)
 		var realloc = data.realloc[cur.dataId];
 		var alloc = data.alloc[cur.dataId];
 		var free = data.free[cur.dataId];
+		var mmap = data.mmap[cur.dataId];
+		var munmap = data.munmap[cur.dataId];
 		var lifetime = data.lifetime[cur.dataId];
 
 		//fill
@@ -1279,6 +1283,18 @@ function rebuildChilds(finalStacks,stack,cur,data,addresses)
 					min: (free != undefined) ? free.min : 0,
 					max: (free != undefined) ? free.max : 0,
 					sum: (free != undefined) ? free.sum : 0,
+				},
+				mmap: {
+					count: (mmap != undefined) ? mmap.count : 0,
+					min: (mmap != undefined) ? mmap.min : 0,
+					max: (mmap != undefined) ? mmap.max : 0,
+					sum: (mmap != undefined) ? mmap.sum : 0,
+				},
+				munmap: {
+					count: (munmap != undefined) ? munmap.count : 0,
+					min: (munmap != undefined) ? munmap.min : 0,
+					max: (munmap != undefined) ? munmap.max : 0,
+					sum: (munmap != undefined) ? munmap.sum : 0,
 				},
 				lifetime: {
 					count: (lifetime != undefined) ? lifetime.count : 0,
