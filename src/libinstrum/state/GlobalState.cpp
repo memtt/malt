@@ -290,7 +290,8 @@ void AllocWrapperGlobal::init(void )
 		StackMode mode = getStackMode(*gblState.options);
 		
 		//ok do it
-		gblState.profiler = new AllocStackProfiler(*gblState.options,mode,true);
+		void * profilerMem = MALT_MALLOC(sizeof(AllocStackProfiler));
+		gblState.profiler = new (profilerMem) AllocStackProfiler(*gblState.options,mode,true);
 		gblState.profiler->setRealMallocAddr(gblState.allocFuncs.malloc);
 
 		//filter exe
@@ -356,7 +357,9 @@ void AllocWrapperGlobal::onExit(void)
 	{
 		gblState.status = ALLOC_WRAP_FINISH;
 		gblState.profiler->onExit();
-		delete gblState.profiler;
+		gblState.profiler->~AllocStackProfiler();
+		MALT_FREE(gblState.profiler);
+		gblState.profiler = nullptr;
 	} else {
 		gblState.status = ALLOC_WRAP_FINISH;
 	}

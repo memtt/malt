@@ -674,6 +674,10 @@ void AllocStackProfiler::onExit(void )
 		//to not instrument childs
 		unsetenv("LD_PRELOAD");
 
+		//stop tracking threads
+		bool oldTrackingValue = MALT::gblThreadTrackerData.trackingIsEnabled;
+		MALT::gblThreadTrackerData.trackingIsEnabled = false;
+
 		//register symbols
 		this->pythonSymbolTracker.registerSymbolResolution(this->symbolResolver);
 
@@ -778,6 +782,9 @@ void AllocStackProfiler::onExit(void )
 		CodeTiming::printAll();
 		gblInternaAlloc->printState();
 		#endif //MALT_ENABLE_CODE_TIMING
+
+		//stop tracking threads
+		MALT::gblThreadTrackerData.trackingIsEnabled = oldTrackingValue;
 	MALT_END_CRITICAL
 }
 

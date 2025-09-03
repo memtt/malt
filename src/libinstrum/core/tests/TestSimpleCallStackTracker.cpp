@@ -34,19 +34,31 @@ const char * CST_REF_1 = "{\n\
 \t\t\"stack\":[\"0x20\", \"0x40\"],\n\
 \t\t\"infos\":{\n\
 \t\t\t\"countZeros\":0,\n\
-\t\t\t\"maxAliveReq\":128,\n\
+\t\t\t\"maxAliveReq\":4096,\n\
 \t\t\t\"aliveReq\":0,\n\
 \t\t\t\"alloc\":{\n\
-\t\t\t\t\"count\":2,\n\
+\t\t\t\t\"count\":3,\n\
 \t\t\t\t\"min\":64,\n\
-\t\t\t\t\"max\":128,\n\
-\t\t\t\t\"sum\":192\n\
+\t\t\t\t\"max\":4096,\n\
+\t\t\t\t\"sum\":4288\n\
 \t\t\t},\n\
 \t\t\t\"free\":{\n\
-\t\t\t\t\"count\":2,\n\
+\t\t\t\t\"count\":3,\n\
 \t\t\t\t\"min\":64,\n\
-\t\t\t\t\"max\":128,\n\
-\t\t\t\t\"sum\":192\n\
+\t\t\t\t\"max\":4096,\n\
+\t\t\t\t\"sum\":4288\n\
+\t\t\t},\n\
+\t\t\t\"mmap\":{\n\
+\t\t\t\t\"count\":1,\n\
+\t\t\t\t\"min\":4096,\n\
+\t\t\t\t\"max\":4096,\n\
+\t\t\t\t\"sum\":4096\n\
+\t\t\t},\n\
+\t\t\t\"munmap\":{\n\
+\t\t\t\t\"count\":1,\n\
+\t\t\t\t\"min\":4096,\n\
+\t\t\t\t\"max\":4096,\n\
+\t\t\t\t\"sum\":4096\n\
 \t\t\t},\n\
 \t\t\t\"lifetime\":{\n\
 \t\t\t\t\"count\":2,\n\
@@ -215,6 +227,8 @@ TEST(TestSimpleStackTracker, convertToJson)
 	infos.onAllocEvent(128, 2);
 	infos.onFreeEvent(128, 2);
 	infos.onFreeLinkedMemory(128, 100, 2);
+	infos.onMmap(4096, 3);
+	infos.onMunmap(4096, 3);
 
 	//to stream
 	std::stringstream out;

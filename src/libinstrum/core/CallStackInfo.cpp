@@ -170,8 +170,9 @@ void CallStackInfo::onMmap ( ssize_t value,size_t peakId )
 /**********************************************************/
 void CallStackInfo::onMunmap ( ssize_t value,size_t peakId )
 {
-	this->mmap.addEvent(value);
+	this->munmap.addEvent(value);
 	this->onFreeEvent(value, peakId);
+	this->alive -= value;
 }
 
 /**********************************************************/

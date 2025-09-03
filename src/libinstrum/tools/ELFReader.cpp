@@ -235,7 +235,8 @@ void ElfReader::loadGlobalVariables(ElfGlobalVariableVector& variables)
 	Elf_Scn * sec = getSectionByType(SHT_SYMTAB);
 	if (sec == NULL)
 		sec = getSectionByType(SHT_DYNSYM);
-	assert(sec != NULL);
+	if (sec == nullptr)
+		return;
 	
 	//check header
 	ElfArch_Shdr * secHeader = elfarch_getshdr(sec);

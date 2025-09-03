@@ -74,7 +74,7 @@ class ProfiledValue
 		ProfiledValue & operator = (const ProfiledValue & orig);
 	private:
 		/** It uses a first minimal number of points to determine a good time steps before accumulating. **/
-		int cntFirstPoints;
+		int cntFirstPoints{0};
 		/** Storage for the first steps before accumulation (data). **/
 		T firstPoints[MALT_PROFILED_STATE_VALUE_FIRST_STEPS];
 		/** Storage for the first steps before accumulation (times). **/
@@ -82,44 +82,44 @@ class ProfiledValue
 		/** Storage for the first steps before accumulation (locations).**/
 		void * firstLocations[MALT_PROFILED_STATE_VALUE_FIRST_STEPS];
 		/** Storage of time points data corresponding to CELL_ID * perPoints in time. **/
-		T * points;
+		T * points{nullptr};
 		/** 
 		 * Storage of the old time points data corresponding to CELL_ID * perPoints in time. 
 		 * It is used as temporar storage by swaping arrays for reshaping when requiring to update
 		 * the perPoints variable.
 		 **/
-		T * oldPoints;
+		T * oldPoints{nullptr};
 		/** Track the peak value.**/
 		T peak;
 		/** Remembre if it is touched or not to complete datas before generating json output. **/
-		bool * touched;
+		bool * touched{nullptr};
 		/** Remembre if it is touched or not to complete datas before generating json output. **/
-		bool * oldTouched;
+		bool * oldTouched{nullptr};
 		/** 
 		 * Storage of call location of the last update of the current cell, so the generator of the
 		 * largest value if push() use a "larger than" operator.
 		**/
-		void ** locations;
+		void ** locations{nullptr};
 		/**
 		 * Storage of call location of the last update of the current cell, so the generator of the
 		 * largest value if push() use a "larger than" operator.
 		**/
-		void ** oldLocations;
+		void ** oldLocations{nullptr};
 		/** Remember the final timetep to compute the total tracking time. **/
-		ticks start;
+		ticks start{0};
 		/** Remember the final timetep to compute the total tracking time. **/
-		ticks end;
+		ticks end{0};
 		/** Count the number of steps in use. **/
-		int steps;
+		int steps{0};
 		/** Define the time (ticks) per point to convert ids to time. **/
-		ticks perPoints;
+		ticks perPoints{0};
 		/** Check if already flushed before using json conversion. **/
-		bool flushed;
+		bool flushed{false};
 		/** 
 		 * Determine with we are measuring bandiwdth or fixed values, so if we need to propagate
 		 * previous values or zero values on untouched intervals.
 		**/
-		bool bandwidth;
+		bool bandwidth{false};
 };
 
 /**********************************************************/
@@ -312,7 +312,7 @@ void ProfiledValue<T>::updateStartEnd(ticks start, ticks end)
 	end = start + (end - start) * 2;
 	
 	//setup per points
-	this->perPoints = (end - start) / steps;
+	this->perPoints = (end - start) / this->steps;
 	
 	//fix min
 	if (this->perPoints <= 0)
@@ -320,7 +320,7 @@ void ProfiledValue<T>::updateStartEnd(ticks start, ticks end)
 	
 	//round end
 	this->start = start;
-	this->end = start + (steps * perPoints);
+	this->end = start + (this->steps * perPoints);
 }
 
 /**********************************************************/
@@ -345,11 +345,11 @@ void ProfiledValue<T>::reshape(ticks t)
 	swap(locations,oldLocations);
 	
 	//reset touched
-	for (int i = 0 ; i < steps ; i++)
+	for (int i = 0 ; i < this->steps ; i++)
 		touched[i] = false;
 	
 	//refill
-	for (int i = 0 ; i < steps ; i++)
+	for (int i = 0 ; i < this->steps ; i++)
 	{
 		if (oldTouched[i])
 		{
@@ -366,7 +366,7 @@ int ProfiledValue<T>::getLastTouchedId(void ) const
 {
 	int last = -1;
 	
-	for (int i = 0 ; i < steps ; i++)
+	for (int i = 0 ; i < this->steps ; i++)
 		if (touched[i])
 			last = i;
 		

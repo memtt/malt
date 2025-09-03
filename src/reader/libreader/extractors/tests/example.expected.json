@@ -25,6 +25,18 @@
      "sum": 0
     },
     "maxAliveReq": 73728,
+    "mmap": {
+     "count": 0,
+     "max": 0,
+     "min": 0,
+     "sum": 0
+    },
+    "munmap": {
+     "count": 0,
+     "max": 0,
+     "min": 0,
+     "sum": 0
+    },
     "reallocCount": 0,
     "reallocSumDelta": 0
    },
@@ -60,11 +72,23 @@
     "globalPeak": 1048592,
     "lifetime": {
      "count": 3,
-     "max": 2541382,
-     "min": 21112,
-     "sum": 4793386
+     "max": 1954547,
+     "min": 7840,
+     "sum": 3592992
     },
     "maxAliveReq": 1048600,
+    "mmap": {
+     "count": 0,
+     "max": 0,
+     "min": 0,
+     "sum": 0
+    },
+    "munmap": {
+     "count": 0,
+     "max": 0,
+     "min": 0,
+     "sum": 0
+    },
     "reallocCount": 0,
     "reallocSumDelta": 0
    },
@@ -102,11 +126,23 @@
     "globalPeak": 1048592,
     "lifetime": {
      "count": 3,
-     "max": 2541382,
-     "min": 21112,
-     "sum": 4793386
+     "max": 1954547,
+     "min": 7840,
+     "sum": 3592992
     },
     "maxAliveReq": 1048600,
+    "mmap": {
+     "count": 0,
+     "max": 0,
+     "min": 0,
+     "sum": 0
+    },
+    "munmap": {
+     "count": 0,
+     "max": 0,
+     "min": 0,
+     "sum": 0
+    },
     "reallocCount": 0,
     "reallocSumDelta": 0
    },
@@ -133,7 +169,7 @@
    }
   }
  ],
- "getCallTree": "digraph G {\nnode  [color=\"white\", fontcolor=\"white\", fontname=\"Courier New\", fontsize=\"10\", penwidth=\"1\", shape=\"record\", style=\"filled\"];\nedge  [fontname=\"Courier New\", fontsize=\"9\"];\nnode4294967302 [fillcolor=\"#ab4141\", label=\"_start | 3  \", tooltip=\"_start\"];\nnode4294967299 [fillcolor=\"#ab4141\", label=\"main | 3  \", tooltip=\"main\"];\nnode1 [fillcolor=\"#5f6991\", label=\"std::__to_chars_bfloat16_t(...) | 1  \", tooltip=\"std::__to_chars_bfloat16_t(char*, char*, float, std::chars_format)\"];\nnode3 [fillcolor=\"#5f6991\", label=\"call_init | 1  \", tooltip=\"call_init\"];\nnode4 [fillcolor=\"#5f6991\", label=\"_dl_start_user | 1  \", tooltip=\"_dl_start_user\"];\nnode4294967300 [fillcolor=\"#ab4141\", label=\"__libc_start_call_main | 3  \", tooltip=\"__libc_start_call_main\"];\nnode4294967301 [fillcolor=\"#ab4141\", label=\"__libc_start_main_impl | 3  \", tooltip=\"__libc_start_main_impl\"];\nnode3 -> node3 [color=\"#000000\", fontcolor=\"#000000\", label=\" 1  \", penwidth=\"3.2\"];\nnode3 -> node1 [color=\"#000000\", fontcolor=\"#000000\", label=\" 1  \", penwidth=\"3.2\"];\nnode4 -> node3 [color=\"#000000\", fontcolor=\"#000000\", label=\" 1  \", penwidth=\"3.2\"];\nnode4294967300 -> node4294967299 [color=\"#000000\", fontcolor=\"#000000\", label=\" 3  \", penwidth=\"8\"];\nnode4294967301 -> node4294967300 [color=\"#000000\", fontcolor=\"#000000\", label=\" 3  \", penwidth=\"8\"];\nnode4294967302 -> node4294967301 [color=\"#000000\", fontcolor=\"#000000\", label=\" 3  \", penwidth=\"8\"];\n\n}\n",
+ "getCallTree": "digraph G {\nnode  [color=\"white\", fontcolor=\"white\", fontname=\"Courier New\", fontsize=\"10\", penwidth=\"1\", shape=\"record\", style=\"filled\"];\nedge  [fontname=\"Courier New\", fontsize=\"9\"];\nnode4294967302 [fillcolor=\"#ab4141\", label=\"_start | 3  \", tooltip=\"_start\"];\nnode4294967299 [fillcolor=\"#ab4141\", label=\"main | 3  \", tooltip=\"main\"];\nnode1 [fillcolor=\"#5f6991\", label=\"std::__to_chars_bfloat16_t(...) | 1  \", tooltip=\"std::__to_chars_bfloat16_t(char*, char*, float, std::chars_format)\"];\nnode3 [fillcolor=\"#5f6991\", label=\"call_init | 1  \", tooltip=\"call_init\"];\nnode4 [fillcolor=\"#5f6991\", label=\"_dl_start_user | 1  \", tooltip=\"_dl_start_user\"];\nnode4294967300 [fillcolor=\"#ab4141\", label=\"__libc_start_call_main | 3  \", tooltip=\"__libc_start_call_main\"];\nnode4294967301 [fillcolor=\"#ab4141\", label=\"__libc_start_main_impl | 3  \", tooltip=\"__libc_start_main_impl\"];\nnode4 -> node3 [color=\"#000000\", fontcolor=\"#000000\", label=\" 1  \", penwidth=\"3.2\"];\nnode4294967300 -> node4294967299 [color=\"#000000\", fontcolor=\"#000000\", label=\" 3  \", penwidth=\"8\"];\nnode4294967301 -> node4294967300 [color=\"#000000\", fontcolor=\"#000000\", label=\" 3  \", penwidth=\"8\"];\nnode4294967302 -> node4294967301 [color=\"#000000\", fontcolor=\"#000000\", label=\" 3  \", penwidth=\"8\"];\nnode3 -> node1 [color=\"#000000\", fontcolor=\"#000000\", label=\" 1  \", penwidth=\"3.2\"];\nnode3 -> node3 [color=\"#000000\", fontcolor=\"#000000\", label=\" 1  \", penwidth=\"3.2\"];\n\n}\n",
  "getFilterdStacks": [
   {
    "info": {
@@ -154,11 +190,23 @@
     "globalPeak": 0,
     "lifetime": {
      "count": 1,
-     "max": 21112,
-     "min": 21112,
-     "sum": 21112
+     "max": 7840,
+     "min": 7840,
+     "sum": 7840
     },
     "maxAliveReq": 8,
+    "mmap": {
+     "count": 0,
+     "max": 0,
+     "min": 0,
+     "sum": 0
+    },
+    "munmap": {
+     "count": 0,
+     "max": 0,
+     "min": 0,
+     "sum": 0
+    },
     "reallocCount": 0,
     "reallocSumDelta": 0
    },
@@ -231,6 +279,18 @@
      "sum": 0
     },
     "maxAliveReq": 0,
+    "mmap": {
+     "count": 0,
+     "max": 0,
+     "min": 0,
+     "sum": 0
+    },
+    "munmap": {
+     "count": 0,
+     "max": 0,
+     "min": 0,
+     "sum": 0
+    },
     "reallocCount": 0,
     "reallocSumDelta": 0
    },
@@ -298,11 +358,23 @@
     "globalPeak": 16,
     "lifetime": {
      "count": 1,
-     "max": 2230892,
-     "min": 2230892,
-     "sum": 2230892
+     "max": 1630605,
+     "min": 1630605,
+     "sum": 1630605
     },
     "maxAliveReq": 16,
+    "mmap": {
+     "count": 0,
+     "max": 0,
+     "min": 0,
+     "sum": 0
+    },
+    "munmap": {
+     "count": 0,
+     "max": 0,
+     "min": 0,
+     "sum": 0
+    },
     "reallocCount": 0,
     "reallocSumDelta": 0
    },
@@ -405,11 +477,23 @@
     "globalPeak": 1048576,
     "lifetime": {
      "count": 1,
-     "max": 2541382,
-     "min": 2541382,
-     "sum": 2541382
+     "max": 1954547,
+     "min": 1954547,
+     "sum": 1954547
     },
     "maxAliveReq": 1048576,
+    "mmap": {
+     "count": 0,
+     "max": 0,
+     "min": 0,
+     "sum": 0
+    },
+    "munmap": {
+     "count": 0,
+     "max": 0,
+     "min": 0,
+     "sum": 0
+    },
     "reallocCount": 0,
     "reallocSumDelta": 0
    },
@@ -517,6 +601,18 @@
      "sum": 0
     },
     "maxAliveReq": 0,
+    "mmap": {
+     "count": 0,
+     "max": 0,
+     "min": 0,
+     "sum": 0
+    },
+    "munmap": {
+     "count": 0,
+     "max": 0,
+     "min": 0,
+     "sum": 0
+    },
     "reallocCount": 0,
     "reallocSumDelta": 0
    },
@@ -624,6 +720,18 @@
      "sum": 0
     },
     "maxAliveReq": 0,
+    "mmap": {
+     "count": 0,
+     "max": 0,
+     "min": 0,
+     "sum": 0
+    },
+    "munmap": {
+     "count": 0,
+     "max": 0,
+     "min": 0,
+     "sum": 0
+    },
     "reallocCount": 0,
     "reallocSumDelta": 0
    },
@@ -720,6 +828,12 @@
     },
     "lifetime": {
      "count": 2
+    },
+    "mmap": {
+     "count": 0
+    },
+    "munmap": {
+     "count": 0
     }
    },
    "location": {
@@ -738,6 +852,12 @@
     },
     "lifetime": {
      "count": 0
+    },
+    "mmap": {
+     "count": 0
+    },
+    "munmap": {
+     "count": 0
     }
    },
    "total": {
@@ -749,6 +869,12 @@
     },
     "lifetime": {
      "count": 2
+    },
+    "mmap": {
+     "count": 0
+    },
+    "munmap": {
+     "count": 0
     }
    }
   },
@@ -762,6 +888,12 @@
     },
     "lifetime": {
      "count": 1
+    },
+    "mmap": {
+     "count": 0
+    },
+    "munmap": {
+     "count": 0
     }
    },
    "location": {
@@ -780,6 +912,12 @@
     },
     "lifetime": {
      "count": 1
+    },
+    "mmap": {
+     "count": 0
+    },
+    "munmap": {
+     "count": 0
     }
    },
    "total": {
@@ -791,6 +929,12 @@
     },
     "lifetime": {
      "count": 1
+    },
+    "mmap": {
+     "count": 0
+    },
+    "munmap": {
+     "count": 0
     }
    }
   },
@@ -804,6 +948,12 @@
     },
     "lifetime": {
      "count": 2
+    },
+    "mmap": {
+     "count": 0
+    },
+    "munmap": {
+     "count": 0
     }
    },
    "location": {
@@ -822,6 +972,12 @@
     },
     "lifetime": {
      "count": 0
+    },
+    "mmap": {
+     "count": 0
+    },
+    "munmap": {
+     "count": 0
     }
    },
    "total": {
@@ -833,6 +989,12 @@
     },
     "lifetime": {
      "count": 2
+    },
+    "mmap": {
+     "count": 0
+    },
+    "munmap": {
+     "count": 0
     }
    }
   },
@@ -846,6 +1008,12 @@
     },
     "lifetime": {
      "count": 2
+    },
+    "mmap": {
+     "count": 0
+    },
+    "munmap": {
+     "count": 0
     }
    },
    "location": {
@@ -864,6 +1032,12 @@
     },
     "lifetime": {
      "count": 2
+    },
+    "mmap": {
+     "count": 0
+    },
+    "munmap": {
+     "count": 0
     }
    },
    "total": {
@@ -875,6 +1049,12 @@
     },
     "lifetime": {
      "count": 2
+    },
+    "mmap": {
+     "count": 0
+    },
+    "munmap": {
+     "count": 0
     }
    }
   },
@@ -888,6 +1068,12 @@
     },
     "lifetime": {
      "count": 3
+    },
+    "mmap": {
+     "count": 0
+    },
+    "munmap": {
+     "count": 0
     }
    },
    "location": {
@@ -906,6 +1092,12 @@
     },
     "lifetime": {
      "count": 0
+    },
+    "mmap": {
+     "count": 0
+    },
+    "munmap": {
+     "count": 0
     }
    },
    "total": {
@@ -917,6 +1109,12 @@
     },
     "lifetime": {
      "count": 3
+    },
+    "mmap": {
+     "count": 0
+    },
+    "munmap": {
+     "count": 0
     }
    }
   },
@@ -930,6 +1128,12 @@
     },
     "lifetime": {
      "count": 3
+    },
+    "mmap": {
+     "count": 0
+    },
+    "munmap": {
+     "count": 0
     }
    },
    "location": {
@@ -948,6 +1152,12 @@
     },
     "lifetime": {
      "count": 0
+    },
+    "mmap": {
+     "count": 0
+    },
+    "munmap": {
+     "count": 0
     }
    },
    "total": {
@@ -959,6 +1169,12 @@
     },
     "lifetime": {
      "count": 3
+    },
+    "mmap": {
+     "count": 0
+    },
+    "munmap": {
+     "count": 0
     }
    }
   }
@@ -984,11 +1200,23 @@
     "globalPeak": 1048592,
     "lifetime": {
      "count": 2,
-     "max": 2541382,
-     "min": 2230892,
-     "sum": 4772274
+     "max": 1954547,
+     "min": 1630605,
+     "sum": 3585152
     },
     "maxAliveReq": 1048592,
+    "mmap": {
+     "count": 0,
+     "max": 0,
+     "min": 0,
+     "sum": 0
+    },
+    "munmap": {
+     "count": 0,
+     "max": 0,
+     "min": 0,
+     "sum": 0
+    },
     "reallocCount": 0,
     "reallocSumDelta": 0
    },
@@ -1026,6 +1254,18 @@
      "sum": 0
     },
     "maxAliveReq": 0,
+    "mmap": {
+     "count": 0,
+     "max": 0,
+     "min": 0,
+     "sum": 0
+    },
+    "munmap": {
+     "count": 0,
+     "max": 0,
+     "min": 0,
+     "sum": 0
+    },
     "reallocCount": 0,
     "reallocSumDelta": 0
    },
@@ -1047,11 +1287,23 @@
     "globalPeak": 1048592,
     "lifetime": {
      "count": 2,
-     "max": 2541382,
-     "min": 2230892,
-     "sum": 4772274
+     "max": 1954547,
+     "min": 1630605,
+     "sum": 3585152
     },
     "maxAliveReq": 1048592,
+    "mmap": {
+     "count": 0,
+     "max": 0,
+     "min": 0,
+     "sum": 0
+    },
+    "munmap": {
+     "count": 0,
+     "max": 0,
+     "min": 0,
+     "sum": 0
+    },
     "reallocCount": 0,
     "reallocSumDelta": 0
    }
@@ -1076,11 +1328,23 @@
     "globalPeak": 0,
     "lifetime": {
      "count": 1,
-     "max": 21112,
-     "min": 21112,
-     "sum": 21112
+     "max": 7840,
+     "min": 7840,
+     "sum": 7840
     },
     "maxAliveReq": 8,
+    "mmap": {
+     "count": 0,
+     "max": 0,
+     "min": 0,
+     "sum": 0
+    },
+    "munmap": {
+     "count": 0,
+     "max": 0,
+     "min": 0,
+     "sum": 0
+    },
     "reallocCount": 0,
     "reallocSumDelta": 0
    },
@@ -1113,11 +1377,23 @@
     "globalPeak": 0,
     "lifetime": {
      "count": 1,
-     "max": 21112,
-     "min": 21112,
-     "sum": 21112
+     "max": 7840,
+     "min": 7840,
+     "sum": 7840
     },
     "maxAliveReq": 8,
+    "mmap": {
+     "count": 0,
+     "max": 0,
+     "min": 0,
+     "sum": 0
+    },
+    "munmap": {
+     "count": 0,
+     "max": 0,
+     "min": 0,
+     "sum": 0
+    },
     "reallocCount": 0,
     "reallocSumDelta": 0
    },
@@ -1139,11 +1415,23 @@
     "globalPeak": 0,
     "lifetime": {
      "count": 1,
-     "max": 21112,
-     "min": 21112,
-     "sum": 21112
+     "max": 7840,
+     "min": 7840,
+     "sum": 7840
     },
     "maxAliveReq": 8,
+    "mmap": {
+     "count": 0,
+     "max": 0,
+     "min": 0,
+     "sum": 0
+    },
+    "munmap": {
+     "count": 0,
+     "max": 0,
+     "min": 0,
+     "sum": 0
+    },
     "reallocCount": 0,
     "reallocSumDelta": 0
    }
@@ -1168,11 +1456,23 @@
     "globalPeak": 1048592,
     "lifetime": {
      "count": 2,
-     "max": 2541382,
-     "min": 2230892,
-     "sum": 4772274
+     "max": 1954547,
+     "min": 1630605,
+     "sum": 3585152
     },
     "maxAliveReq": 1048592,
+    "mmap": {
+     "count": 0,
+     "max": 0,
+     "min": 0,
+     "sum": 0
+    },
+    "munmap": {
+     "count": 0,
+     "max": 0,
+     "min": 0,
+     "sum": 0
+    },
     "reallocCount": 0,
     "reallocSumDelta": 0
    },
@@ -1210,6 +1510,18 @@
      "sum": 0
     },
     "maxAliveReq": 0,
+    "mmap": {
+     "count": 0,
+     "max": 0,
+     "min": 0,
+     "sum": 0
+    },
+    "munmap": {
+     "count": 0,
+     "max": 0,
+     "min": 0,
+     "sum": 0
+    },
     "reallocCount": 0,
     "reallocSumDelta": 0
    },
@@ -1231,11 +1543,23 @@
     "globalPeak": 1048592,
     "lifetime": {
      "count": 2,
-     "max": 2541382,
-     "min": 2230892,
-     "sum": 4772274
+     "max": 1954547,
+     "min": 1630605,
+     "sum": 3585152
     },
     "maxAliveReq": 1048592,
+    "mmap": {
+     "count": 0,
+     "max": 0,
+     "min": 0,
+     "sum": 0
+    },
+    "munmap": {
+     "count": 0,
+     "max": 0,
+     "min": 0,
+     "sum": 0
+    },
     "reallocCount": 0,
     "reallocSumDelta": 0
    }
@@ -1260,11 +1584,23 @@
     "globalPeak": 1048592,
     "lifetime": {
      "count": 2,
-     "max": 2541382,
-     "min": 2230892,
-     "sum": 4772274
+     "max": 1954547,
+     "min": 1630605,
+     "sum": 3585152
     },
     "maxAliveReq": 1048592,
+    "mmap": {
+     "count": 0,
+     "max": 0,
+     "min": 0,
+     "sum": 0
+    },
+    "munmap": {
+     "count": 0,
+     "max": 0,
+     "min": 0,
+     "sum": 0
+    },
     "reallocCount": 0,
     "reallocSumDelta": 0
    },
@@ -1297,11 +1633,23 @@
     "globalPeak": 1048592,
     "lifetime": {
      "count": 2,
-     "max": 2541382,
-     "min": 2230892,
-     "sum": 4772274
+     "max": 1954547,
+     "min": 1630605,
+     "sum": 3585152
     },
     "maxAliveReq": 1048592,
+    "mmap": {
+     "count": 0,
+     "max": 0,
+     "min": 0,
+     "sum": 0
+    },
+    "munmap": {
+     "count": 0,
+     "max": 0,
+     "min": 0,
+     "sum": 0
+    },
     "reallocCount": 0,
     "reallocSumDelta": 0
    },
@@ -1323,11 +1671,23 @@
     "globalPeak": 1048592,
     "lifetime": {
      "count": 2,
-     "max": 2541382,
-     "min": 2230892,
-     "sum": 4772274
+     "max": 1954547,
+     "min": 1630605,
+     "sum": 3585152
     },
     "maxAliveReq": 1048592,
+    "mmap": {
+     "count": 0,
+     "max": 0,
+     "min": 0,
+     "sum": 0
+    },
+    "munmap": {
+     "count": 0,
+     "max": 0,
+     "min": 0,
+     "sum": 0
+    },
     "reallocCount": 0,
     "reallocSumDelta": 0
    }
@@ -1352,11 +1712,23 @@
     "globalPeak": 1048592,
     "lifetime": {
      "count": 3,
-     "max": 2541382,
-     "min": 21112,
-     "sum": 4793386
+     "max": 1954547,
+     "min": 7840,
+     "sum": 3592992
     },
     "maxAliveReq": 1048600,
+    "mmap": {
+     "count": 0,
+     "max": 0,
+     "min": 0,
+     "sum": 0
+    },
+    "munmap": {
+     "count": 0,
+     "max": 0,
+     "min": 0,
+     "sum": 0
+    },
     "reallocCount": 0,
     "reallocSumDelta": 0
    },
@@ -1394,6 +1766,18 @@
      "sum": 0
     },
     "maxAliveReq": 0,
+    "mmap": {
+     "count": 0,
+     "max": 0,
+     "min": 0,
+     "sum": 0
+    },
+    "munmap": {
+     "count": 0,
+     "max": 0,
+     "min": 0,
+     "sum": 0
+    },
     "reallocCount": 0,
     "reallocSumDelta": 0
    },
@@ -1415,11 +1799,23 @@
     "globalPeak": 1048592,
     "lifetime": {
      "count": 3,
-     "max": 2541382,
-     "min": 21112,
-     "sum": 4793386
+     "max": 1954547,
+     "min": 7840,
+     "sum": 3592992
     },
     "maxAliveReq": 1048600,
+    "mmap": {
+     "count": 0,
+     "max": 0,
+     "min": 0,
+     "sum": 0
+    },
+    "munmap": {
+     "count": 0,
+     "max": 0,
+     "min": 0,
+     "sum": 0
+    },
     "reallocCount": 0,
     "reallocSumDelta": 0
    }
@@ -1444,11 +1840,23 @@
     "globalPeak": 1048592,
     "lifetime": {
      "count": 3,
-     "max": 2541382,
-     "min": 21112,
-     "sum": 4793386
+     "max": 1954547,
+     "min": 7840,
+     "sum": 3592992
     },
     "maxAliveReq": 1048600,
+    "mmap": {
+     "count": 0,
+     "max": 0,
+     "min": 0,
+     "sum": 0
+    },
+    "munmap": {
+     "count": 0,
+     "max": 0,
+     "min": 0,
+     "sum": 0
+    },
     "reallocCount": 0,
     "reallocSumDelta": 0
    },
@@ -1486,6 +1894,18 @@
      "sum": 0
     },
     "maxAliveReq": 0,
+    "mmap": {
+     "count": 0,
+     "max": 0,
+     "min": 0,
+     "sum": 0
+    },
+    "munmap": {
+     "count": 0,
+     "max": 0,
+     "min": 0,
+     "sum": 0
+    },
     "reallocCount": 0,
     "reallocSumDelta": 0
    },
@@ -1507,11 +1927,23 @@
     "globalPeak": 1048592,
     "lifetime": {
      "count": 3,
-     "max": 2541382,
-     "min": 21112,
-     "sum": 4793386
+     "max": 1954547,
+     "min": 7840,
+     "sum": 3592992
     },
     "maxAliveReq": 1048600,
+    "mmap": {
+     "count": 0,
+     "max": 0,
+     "min": 0,
+     "sum": 0
+    },
+    "munmap": {
+     "count": 0,
+     "max": 0,
+     "min": 0,
+     "sum": 0
+    },
     "reallocCount": 0,
     "reallocSumDelta": 0
    }
@@ -2174,7 +2606,7 @@
   },
   "src/libinstrum/libmalt.so.1.3.1": {
    "cnt": 5,
-   "mem": 1236992
+   "mem": 1241088
   },
   "src/reader/libreader/extractors/tests/extractor-example": {
    "cnt": 5,
@@ -2189,10 +2621,10 @@
    "largestStack": 288,
    "maxChunkSize": 1048576,
    "minChunkSize": 8,
-   "physicalMem": 7864320,
+   "physicalMem": 7667712,
    "requestedMem": 1122320,
    "segments": 3,
-   "virtualMem": 23773184
+   "virtualMem": 23777280
   }
  },
  "getSummaryV2": {
@@ -2200,11 +2632,11 @@
    "allocator": "/usr/lib/x86_64-linux-gnu/libc.so.6",
    "allocatorWrappers": [],
    "command": "src/reader/libreader/extractors/tests/extractor-example",
-   "date": "2025-07-31 17:02",
+   "date": "2025-09-03 10:43",
    "exe": "extractor-example",
    "formatVersion": "1.1",
    "hostname": "sebv6",
-   "runtime": 1539411865,
+   "runtime": 1832880729,
    "tool": "malt-1.3.1-dev"
   },
   "summary": {
@@ -2217,13 +2649,13 @@
    "meanAllocSize": 280582.0,
    "minAllocSize": 8,
    "numGblVar": 789,
-   "peakAllocCountRate": 233118646272.0,
-   "peakAllocRate": 233118646272.0,
+   "peakAllocCountRate": 181614346240.0,
+   "peakAllocRate": 181614346240.0,
    "peakInternalMemory": 0,
-   "peakPhysicalMemory": 7864320,
+   "peakPhysicalMemory": 7667712,
    "peakRequestedMemory": 1122320,
    "peakSegmentCount": 3,
-   "peakVirtualMemory": 23773184,
+   "peakVirtualMemory": 23777280,
    "recyclingRatio": 1.000007152557373,
    "tlsVarMem": 400,
    "totalAllocatedMemory": 1122328
@@ -2231,17 +2663,17 @@
   "summaryDomains": {
    "counters": {
     "c": 4,
+    "mmap": 0,
     "pyMem": 0,
     "pyObj": 0,
-    "pyRaw": 0,
-    "mmap": 0
+    "pyRaw": 0
    },
    "mem": {
     "c": 1122328,
+    "mmap": 0,
     "pyMem": 0,
     "pyObj": 0,
-    "pyRaw": 0,
-    "mmap": 0
+    "pyRaw": 0
    }
   },
   "summaryWarnings": {
@@ -2250,8 +2682,8 @@
    ]
   },
   "system": {
-   "ticksPerSecond": 1991980680,
-   "totalMemory": 16400842752
+   "ticksPerSecond": 1991983943,
+   "totalMemory": 16400846848
   },
   "threadStats": [
    {
@@ -2273,7 +2705,7 @@
     "malloc": {
      "count": 4,
      "sum": 1122328,
-     "time": 42084
+     "time": 21186
     },
     "memalign": {
      "count": 0,
