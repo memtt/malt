@@ -15,6 +15,7 @@
 //STL C++
 #include <atomic>
 #include <thread>
+#include "core/ThreadTracker.hpp"
 
 /**********************************************************/
 namespace MALT
@@ -39,6 +40,10 @@ bool runParallelJobs(T & jobList, int threads)
 	//check
 	assert(threads > 0);
 	assert(threads < 2048);
+
+	//stop tracking threads
+	bool oldTrackingValue = MALT::gblThreadTrackerData.trackingIsEnabled;
+	MALT::gblThreadTrackerData.trackingIsEnabled = false;
 
 	//vars
 	bool finalStatus = true;
@@ -77,6 +82,9 @@ bool runParallelJobs(T & jobList, int threads)
 	//wait all
 	for (auto & worker : workers)
 		worker.join();
+
+	//stop tracking threads
+	MALT::gblThreadTrackerData.trackingIsEnabled = oldTrackingValue;
 
 	//ok
 	return finalStatus;

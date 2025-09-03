@@ -15,6 +15,7 @@
 #include <common/Options.hpp>
 #include <common/SimpleAllocator.hpp>
 #include <core/ThreadTracker.hpp>
+#include <state/GlobalState.hpp>
 
 /**********************************************************/
 using namespace MALT;
@@ -51,7 +52,14 @@ int main(int argc, char ** argv)
 	gblInternaAlloc = new SimpleAllocator(true);
 	gblOptions = new Options;
 
+	//create key
+	pthread_key_create(&MALT::gblState.tlsKey,nullptr);
+	pthread_key_create(&MALT::gblThreadTrackerData.key,MALT::pthreadWrapperOnExit);
+	pthread_setspecific(MALT::gblThreadTrackerData.key, (void*)0x2);
+
 	// This allows the user to override the flag on the command line.
 	::testing::InitGoogleTest(&argc, argv);
+
+	//run
 	return RUN_ALL_TESTS();
 }

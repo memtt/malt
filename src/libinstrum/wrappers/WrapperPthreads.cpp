@@ -28,8 +28,9 @@ namespace MALT
  * Function called on thread exit via pthread_key system.
  * Argument is not used, only defined for signature compatibility.
 **/
-void pthreadWrapperOnExit(void *)
+void pthreadWrapperOnExit(void * arg)
 {
+	assert(arg == (void*)0x1);
 	pthread_mutex_lock(&(gblThreadTrackerData.lock));
 	//fprintf(stderr,"Destroy thread : %d / %d !\n",gblThreadTrackerData.threadCount,gblThreadTrackerData.maxThreadCount);
 	gblThreadTrackerData.threadCount--;
@@ -65,12 +66,13 @@ void * pthreadWrapperStartRoutine(void * arg)
 	
 	//run child
 	ThreadTrackerArg * subarg = (ThreadTrackerArg *)arg;
-	void * userArt = subarg->arg;
-	//delete
-	MALT_FREE(subarg);
+	void * userArg = subarg->arg;
 
 	//run
-	void * res = subarg->routine(subarg->arg);
+	void * res = subarg->routine(userArg);
+
+	//delete
+	MALT_FREE(subarg);
 		
 	//return
 	return res;
