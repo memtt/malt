@@ -59,7 +59,7 @@ LocalAllocStackProfiler::~LocalAllocStackProfiler(void)
 void LocalAllocStackProfiler::onMalloc(void* res, size_t size, ticks time, MallocKind kind, Language lang, AllocDomain domain)
 {
 	//check for reentrance
-	CODE_TIMING("mallocProf",globalProfiler->onMalloc(res,size,getStack(lang, size, false), domain));
+	CODE_TIMING("mallocProf",globalProfiler->onMalloc(res,size,getStack(lang, size, false, false), domain));
 	this->popEnterExit();
 	this->cntMemOps++;
 	this->allocStats.malloc[kind].inc(size,time);
@@ -69,7 +69,7 @@ void LocalAllocStackProfiler::onMalloc(void* res, size_t size, ticks time, Mallo
 void LocalAllocStackProfiler::onFree(void* ptr, ticks time, Language lang)
 {
 	//check for reentrance
-	CODE_TIMING("freeProf",globalProfiler->onFree(ptr,getStack(lang, 0, true)));
+	CODE_TIMING("freeProf",globalProfiler->onFree(ptr,getStack(lang, 0, true, false)));
 	this->popEnterExit();
 	this->cntMemOps++;
 	this->allocStats.free.inc(0,time);
@@ -80,7 +80,7 @@ void LocalAllocStackProfiler::onCalloc(void * res,size_t nmemb, size_t size, tic
 {
 	//check for reentrance
 	const size_t totalSize = nmemb * size;
-	CODE_TIMING("callocProf",globalProfiler->onCalloc(res,nmemb,size,getStack(lang, totalSize, false), domain));
+	CODE_TIMING("callocProf",globalProfiler->onCalloc(res,nmemb,size,getStack(lang, totalSize, false, false), domain));
 	this->popEnterExit();
 	this->cntMemOps++;
 	this->allocStats.calloc.inc(totalSize,time);
@@ -90,7 +90,7 @@ void LocalAllocStackProfiler::onCalloc(void * res,size_t nmemb, size_t size, tic
 void LocalAllocStackProfiler::onRealloc(void* ptr, void* res, size_t size,ticks time, Language lang, AllocDomain domain)
 {
 	//check for reentrance
-	CODE_TIMING("reallocProf",globalProfiler->onRealloc(ptr,res,size,getStack(lang, size, false), domain));
+	CODE_TIMING("reallocProf",globalProfiler->onRealloc(ptr,res,size,getStack(lang, size, false, false), domain));
 	this->popEnterExit();
 	this->cntMemOps++;
 	this->allocStats.realloc.inc(size,time);
@@ -104,7 +104,7 @@ void LocalAllocStackProfiler::onMmap(void* ptr, size_t size, int flags, int fd, 
 	//	return;
 	
 	//get stack
-	Stack * stack = getStack(LANG_C, size, false);
+	Stack * stack = getStack(LANG_C, size, false, true);
 	
 	//check for renentrance
 	CODE_TIMING("userMmapProf",globalProfiler->onMmap(ptr,size,stack));
@@ -121,7 +121,7 @@ void LocalAllocStackProfiler::onMmap(void* ptr, size_t size, int flags, int fd, 
 void LocalAllocStackProfiler::onMunmap(void* ptr, size_t size, ticks time)
 {
 	//get stack
-	Stack * stack = getStack(LANG_C, size, false);
+	Stack * stack = getStack(LANG_C, size, false, true);
 	
 	//check for renentrance
 	CODE_TIMING("userMmapProf",globalProfiler->onMunmap(ptr,size,stack));
@@ -136,7 +136,7 @@ void LocalAllocStackProfiler::onMunmap(void* ptr, size_t size, ticks time)
 void LocalAllocStackProfiler::onMremap(void * ptr, size_t size, void * new_ptr, size_t new_size, ticks time)
 {
 	//get stack
-	Stack * stack = getStack(LANG_C, size, false);
+	Stack * stack = getStack(LANG_C, size, false, true);
 	
 	//check for renentrance
 	CODE_TIMING("userMmapProf",globalProfiler->onMremap(ptr,size,new_ptr,new_size,stack));
@@ -174,10 +174,18 @@ void LocalAllocStackProfiler::loadPythonFirstBacktrace(void)
 
 /**********************************************************/
 //TODO: getStack should receive a parameter iff it's a Python stack
-Stack* LocalAllocStackProfiler::getStack(Language lang, size_t size, bool isFree)
+Stack* LocalAllocStackProfiler::getStack(Language lang, size_t size, bool isFree, bool isMmmap)
 {
 	//check
 	assert (lang == LANG_C || lang == LANG_PYTHON);
+
+	//copy localy
+	StackMode localCStackMode = this->stackMode;
+	StackMode localPyStackMode = this->options->pythonStackEnum;
+
+	//apply tricks
+	if (isMmmap)
+		localPyStackMode = StackMode::STACK_MODE_NONE;
 
 	//check sampling
 	bool rejectedBySampling = (this->globalProfiler->isAcceptedBySampling(size, isFree) == false);
@@ -193,12 +201,12 @@ Stack* LocalAllocStackProfiler::getStack(Language lang, size_t size, bool isFree
 	Stack* result = nullptr;
 
 	//trivial
-	if (lang == LANG_C && (stackMode == STACK_MODE_NONE || rejectedBySampling)) {
+	if (lang == LANG_C && (localCStackMode == STACK_MODE_NONE || rejectedBySampling)) {
 		if (gblOptions->stackSampling)
 			this->samplePrev.set(noneStackC);
 		return &noneStackC;
 	}
-	if (lang == LANG_PYTHON && (gblOptions->pythonStackEnum == STACK_MODE_NONE || rejectedBySampling)) {
+	if (lang == LANG_PYTHON && (localPyStackMode == STACK_MODE_NONE || rejectedBySampling)) {
 		if (gblOptions->stackSampling)
 			this->samplePrev.set(noneStackPython);
 		return &noneStackPython;
@@ -206,7 +214,7 @@ Stack* LocalAllocStackProfiler::getStack(Language lang, size_t size, bool isFree
 
 	//backtrance in C
 	Stack * cRef = &this->enterExitStack;
-	if(stackMode == STACK_MODE_BACKTRACE && (lang == LANG_C || gblOptions->pythonMix)) {
+	if(localCStackMode == STACK_MODE_BACKTRACE && (lang == LANG_C || gblOptions->pythonMix)) {
 		CODE_TIMING("loadCurrentStack",backtraceStack.loadCurrentStack());
 		backtraceStack.fastSkip(gblOptions->stackSkip);
 		cRef = &backtraceStack;
@@ -214,7 +222,9 @@ Stack* LocalAllocStackProfiler::getStack(Language lang, size_t size, bool isFree
 
 	//backtrace in python
 	Stack * pythonRef = nullptr;
-	if (gblOptions->pythonStackEnum == STACK_MODE_BACKTRACE && MALT::Py_IsInitialized()) {
+	if (localPyStackMode == STACK_MODE_NONE) {
+		pythonRef = cRef;
+	} else if (localPyStackMode == STACK_MODE_BACKTRACE && MALT::Py_IsInitialized()) {
 		pythonGilState = MALT::PyGILState_Ensure();
 		hasPythonGIL = true;
 		CODE_TIMING("loadCurrentStack",backtracePythonStack.loadCurrentStack());
@@ -227,12 +237,12 @@ Stack* LocalAllocStackProfiler::getStack(Language lang, size_t size, bool isFree
 	}
 
 	//replace
-	if (lang == LANG_C && stackMode == STACK_MODE_PYTHON)
+	if (lang == LANG_C && localCStackMode == STACK_MODE_PYTHON)
 		cRef = pythonRef;
 
 	//get last
 	//backtrace python to get last level (not captured by enter exit)
-	if (lang != LANG_PYTHON && pythonRef == &this->enterExitStack && MALT::Py_IsInitialized()){
+	if (lang != LANG_PYTHON && pythonRef == &this->enterExitStack && MALT::Py_IsInitialized() && isMmmap == false){
 		if (pythonRef->getCallee().getDomain() == DOMAIN_PYTHON && hasPythonGIL == false) {
 			pythonGilState = MALT::PyGILState_Ensure();
 			hasPythonGIL = true;
