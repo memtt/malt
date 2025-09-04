@@ -23,6 +23,7 @@
 #include <libgen.h>
 //internal
 #include "lib/BasicAuth.hpp"
+#include "lib/ArgChecker.hpp"
 #include "api/WebProfile.hpp"
 #include "extractors/ExtractorHelpers.hpp"
 
@@ -44,6 +45,7 @@ struct WebviewOptions
 	bool auth{true};
 	uint32_t port{8080};
 	std::string socket{};
+	std::list<std::string> overrides;
 };
 
 /**********************************************************/
@@ -72,6 +74,9 @@ static error_t parse_opt (int key, char *arg, struct argp_state *state)
 				options->port = port;
 			break;
 		}
+		case 'o':
+			options->overrides.push_back(arg);
+			break;
 		case ARGP_KEY_ARG:
 			/* Too many arguments. */
 			if (state->arg_num >= 1)
@@ -97,6 +102,7 @@ void WebviewOptions::parse(int argc, char ** argv)
 	struct argp_option options[] = {
 		{"no-auth",    'n', 0,        0,  "Disable the authentication." },
 		{"port",       'p', "PORT",   0,  "Listening on given port or socket file (8080 by default)."},
+		{"override",   'o', "OLD:NEW",0,  "Override some source path by the given path, in the form : OLD:NEW. Can be called several times."},
 		{ 0 }
 	};
 	struct argp argp = { options, parse_opt, args_doc, doc };
@@ -170,6 +176,11 @@ int main(int argc, char ** argv)
 		Server svr;
 		gblServerPtr = &svr;
 
+		//arg checker
+		ArgChecker argChecker;
+		argChecker.allowPaths(profile.getExtractor().getSourceFileMap());
+		argChecker.overridePaths(options.overrides);
+
 		//set signal handler
 		signal(SIGINT, local_signal_ctrl_c_handler);
 
@@ -225,11 +236,8 @@ int main(int argc, char ** argv)
 		});
 
 		//source file
-		svr.Post("/source-file", [&profile](const Request& req, Response& res) {
-			#warning "use the check function"
-			#warning "check parameters going in"
-			const nlohmann::json json = nlohmann::json::parse(req.body);
-			const std::string path = json["path"];
+		svr.Post("/source-file", [&profile, &argChecker](const Request& req, Response& res) {
+			const std::string path = argChecker.checkJsonArgPath(req, "path");
 			const std::string data = load_full_file(path);
 			res.set_content(data, "plain/text");
 		});
@@ -335,7 +343,15 @@ int main(int argc, char ** argv)
 		}
 		printf("|                                                                         |\n");
 		printf("|                        To use from remote you can :                     |\n");
-		printf("|                 user> ssh -L8080:localhost:8080 myserver                |\n");
+		if (options.socket.empty()) {
+			printf("|               user> ssh -L8080:localhost:%-4d myserver                  |\n", options.port);
+		}else {
+			std::string value = std::string("user> ssh -L8080:localhost:") + options.socket + (" myserver");
+			int left_padding = (71 - value.size()) / 2;
+			int right_padding = 71 - value.size() - left_padding;
+			printf("|                        Starting server listening on                     |\n");
+			printf("| %*s%s%*s |\n", left_padding, " ", value.c_str(), right_padding, " ");
+		}
 		printf("|                                                                         |\n");
 		printf("+-------------------------------------------------------------------------+\n");
 

@@ -873,7 +873,7 @@ FlattenMaxStackInfo Extractor::getStackInfoOnFunction(size_t id)
 }
 
 /**********************************************************/
-SourceFileMap Extractor::getSourceFileMap(void)
+SourceFileMap Extractor::getSourceFileMap(void) const
 {
 	//vars
 	SourceFileMap sourceFiles;

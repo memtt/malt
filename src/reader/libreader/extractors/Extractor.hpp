@@ -272,7 +272,7 @@ class Extractor
 		FlattenMaxStackInfo getFlattenMaxStackInfo(const LocaltionOnlyMappingFunc & mapping,const LocaltionOnlyFilterFunc & accept, const MALTFormat::ThreadStackMem & maxStack);
 		FlattenMaxStackInfo getMaxStackInfoOnFunction(void);
 		FlattenMaxStackInfo getStackInfoOnFunction(size_t id);
-		SourceFileMap getSourceFileMap(void);
+		SourceFileMap getSourceFileMap(void) const;
 		FullTreeNode getFullTree(void) const;
 		nlohmann::json getCallTree(ssize_t nodeId, ssize_t depth, ssize_t height, double minCost, const std::string & func, const std::string & metric, bool isRatio);
 		CallStackChildList getCallStackNextLevel(size_t parentStackId, size_t parentDepth, const LocationFilter & filter) const;

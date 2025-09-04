@@ -18,7 +18,7 @@ include_directories(${NLOHMANN_JSON_INCLUDE_DIR})
 add_definitions(-DMALT_INSTALL_PREFIX=\"${CMAKE_INSTALL_PREFIX}\")
 
 ############################################################
-add_library(malt-webview-cpp-base STATIC lib/UserDb.cpp lib/BasicAuth.cpp)
+add_library(malt-webview-cpp-base STATIC lib/UserDb.cpp lib/BasicAuth.cpp lib/ArgChecker.cpp)
 target_link_libraries(malt-webview-cpp-base ${NLOHMANN_JSON_LIBRARIES} base64 ${CRYPTO_LIBRARY} ${HTTPLIB_LIBRARY})
 
 ############################################################
