@@ -16,10 +16,7 @@ def load_1GB_of_data():
 
 ############################################################
 def process_data():
-    data = load_1GB_of_data()
-    tmp1 = modify1(data)
-    tmp2 = modify2(tmp1)
-    return tmp2
+    return modify2(modify1(load_1GB_of_data()))
 
 ############################################################
 def modify1(data):
