@@ -48,8 +48,8 @@ function MaltPageAllocSizeDistr()
 		});
 		
 		maltDataSource.getScatter($http,function(data) {
-			cur.plotXY('malt-scatter-size-over-time',data.sizeOverTime,false,true);
-			cur.plotYX('malt-scatter-lifetime-over-size',data.lifetimeOverSize,true,true);
+			cur.plotXY('malt-scatter-size-over-time',data.sizeOverTime,false,true,data.ticksPerSecond);
+			cur.plotYX('malt-scatter-lifetime-over-size',data.lifetimeOverSize,true,true,data.ticksPerSecond);
 			/*cur.plotScatter('malt-scatter-size-over-time-2',data.sizeOverTime,{
 				xaxis: {
 					title: "Time (cycles)",
@@ -114,7 +114,7 @@ MaltPageAllocSizeDistr.prototype.plotScatter = function(domId,data,config)
 // 	canvas.style("position","absolute");
 	
 	//sizes
-	var margin = {top: 20, right: 150, bottom: 30, left: 70};
+	var margin = {top: 20, right: 300, bottom: 30, left: 140};
 	var width = parseInt(svg.style("width")) - margin.left - margin.right;
     var height = parseInt(svg.style("height")) - margin.top - margin.bottom;
 	
@@ -167,7 +167,7 @@ MaltPageAllocSizeDistr.prototype.plotScatter = function(domId,data,config)
 	});
 }
 
-MaltPageAllocSizeDistr.prototype.plotXY = function(domId,data,logX,logY)
+MaltPageAllocSizeDistr.prototype.plotXY = function(domId,data,logX,logY,ticksPerSecond)
 {
 	var cur = this;
 	nv.addGraph(function() {
@@ -186,7 +186,7 @@ MaltPageAllocSizeDistr.prototype.plotXY = function(domId,data,logX,logY)
 		if (domId == 'malt-scatter-size-over-time') {
 			chart.xAxis
 				.axisLabel('Time (seconds)')
-				.tickFormat(function(d) { return maltHelper.humanReadable(logX?Math.pow(2,d):d,1,'s',false); });
+				.tickFormat(function(d) { return maltHelper.humanReadableTimes((logX?Math.pow(2,d):d)/ticksPerSecond); });
 		} else {
 			chart.xAxis
 				.axisLabel('Time (cycles)')
@@ -207,7 +207,7 @@ MaltPageAllocSizeDistr.prototype.plotXY = function(domId,data,logX,logY)
 		});
 }
 
-MaltPageAllocSizeDistr.prototype.plotYX = function(domId,data,logX,logY)
+MaltPageAllocSizeDistr.prototype.plotYX = function(domId,data,logX,logY,ticksPerSecond)
 {
 	var cur = this;
 	nv.addGraph(function() {
@@ -230,8 +230,8 @@ MaltPageAllocSizeDistr.prototype.plotYX = function(domId,data,logX,logY)
 
 		//Axis settings
 		chart.yAxis
-			.axisLabel('Lifetime (Cycles)')
-			.tickFormat(function(d) { return maltHelper.humanReadable(logY?Math.pow(2,d):d,1,'C',false); });
+			.axisLabel('Lifetime (seconds)')
+			.tickFormat(function(d) { return maltHelper.humanReadableTimes((logY?Math.pow(2,d):d)/ticksPerSecond); });
 		chart.xAxis
 			.axisLabel('Size (Bytes)')
 			.tickFormat(function(d) { return maltHelper.humanReadable(logX?Math.pow(2,d):d,1,'B',false); });

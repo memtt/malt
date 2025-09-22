@@ -141,7 +141,14 @@ nlohmann::json WebProfile::getProcMapDistr(void) const
 /**********************************************************/
 nlohmann::json WebProfile::getScatter(void) const
 {
-	return this->profile.scatter;
+	//convert
+	nlohmann::json json = this->profile.scatter;
+
+	//append
+	json["ticksPerSecond"] = this->profile.globals.ticksPerSecond;
+
+	//ok
+	return json;
 }
 
 /**********************************************************/

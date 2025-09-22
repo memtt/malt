@@ -393,7 +393,14 @@ MaltProject.prototype.getProcMapDistr = function()
 //--PORTED IN C++ VERSION--
 MaltProject.prototype.getScatter = function()
 {
-	return this.data.scatter;
+	//default
+	var result = clone(this.data.scatter);
+	
+	//append
+	json["ticksPerSecond"] = this.data.globals.ticksPerSecond;
+
+	//ok
+	return result;
 }
 
 /**********************************************************/

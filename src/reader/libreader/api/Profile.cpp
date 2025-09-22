@@ -31,6 +31,7 @@ Profile::Profile(const std::string & fname, bool loadProgressBar)
 	#endif
 
 	//build extractor
+	printf("Pre-computing some data...\n");
 	this->extractor = new Extractor(this->profile);
 }
 

@@ -170,10 +170,10 @@ function MaltPageTimeline()
 		var res = new Array();
 		//????? why need to /10, dont understand??????
 		var scale = data.perPoints/10;
-		console.log("scake rate : "+scale+" => "+(600*scale/ticksPerSecond));
+		//console.log("scale rate : "+scale+" => "+(600*scale/ticksPerSecond));
 		//alert(data.startTime + " -> "+data.endTime+" -> "+data.steps);
 		res.push({x:0,y:0});
-		console.log("=> "+data.perPoint);
+		//console.log("=> "+data.perPoint);
 		for (var i in data.values)
 		{
 			//if (data.startTime + data.scale*i <= data.endTime)

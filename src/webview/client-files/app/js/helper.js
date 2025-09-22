@@ -138,14 +138,15 @@ MaltHelper.prototype.humanReadableTimes = function(value)
 {
 	if (value > 0 && value < 1)
 	{
+		const unit = ['ks', 'ms', 'us', 'ns'];
 		var tmp = value;
-		var exp = 1;
-		while (tmp < 1)
+		var exp = 0;
+		while (tmp < 1 && exp < 3)
 		{
-			tmp*=10;
+			tmp*=1000;
 			exp++;
 		}
-		return value.toFixed(exp);
+		return tmp.toFixed(2) + unit[exp];
 	}
 	
 	days=Math.floor(value/(60*60*24));
