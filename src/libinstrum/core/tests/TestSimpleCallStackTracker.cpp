@@ -61,10 +61,10 @@ const char * CST_REF_1 = "{\n\
 \t\t\t\t\"sum\":4096\n\
 \t\t\t},\n\
 \t\t\t\"lifetime\":{\n\
-\t\t\t\t\"count\":2,\n\
+\t\t\t\t\"count\":3,\n\
 \t\t\t\t\"min\":50,\n\
-\t\t\t\t\"max\":100,\n\
-\t\t\t\t\"sum\":150\n\
+\t\t\t\t\"max\":120,\n\
+\t\t\t\t\"sum\":270\n\
 \t\t\t},\n\
 \t\t\t\"globalPeak\":0,\n\
 \t\t\t\"reallocCount\":0,\n\
@@ -229,6 +229,7 @@ TEST(TestSimpleStackTracker, convertToJson)
 	infos.onFreeLinkedMemory(128, 100, 2);
 	infos.onMmap(4096, 3);
 	infos.onMunmap(4096, 3, false);
+	infos.onFreeLinkedMemory(4096, 120, 3);
 
 	//to stream
 	std::stringstream out;
