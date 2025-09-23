@@ -9,6 +9,7 @@
 ***********************************************************/
 
 /**********************************************************/
+#include <iostream>
 #include "Parser.hpp"
 #include "Json.hpp"
 
@@ -303,7 +304,25 @@ JsonItems::const_iterator JsonItems::end() const
 /**********************************************************/
 std::ostream & operator<<(std::ostream & out, const Json & json)
 {
-	out << "{\"TODO\": \"TODO\"}";
+	if (json.is_array()) {
+		out << "[";
+		for (const auto & it : json.items()) {
+			out << it.value() << ",";
+		}
+		out << "]";
+	} else if (json.is_object()) {
+		out << "{";
+		for (const auto & it : json.items()) {
+			out << '"' << it.key() << '"' << ":" << it.value() << ",";
+		}
+		out << "}";
+	} else if (json.is_string()) {
+		std::string tmp;
+		json.get_to(tmp);
+		out << '"' << tmp << '"';
+	} else {
+		out << json.node->value.toString();
+	}
 	return out;
 }
 

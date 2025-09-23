@@ -160,7 +160,7 @@ class AllocStackProfiler
 	private:
 		MMCallStackNode getStackNode(MALT::Stack* userStack = 0);
 		void onAllocEvent(void* ptr, size_t size, Stack* userStack, MMCallStackNode* callStackNode = NULL, bool doLock = true, AllocDomain domain = DOMAIN_C_ALLOC);
-		size_t onFreeEvent(void* ptr, MALT::Stack* userStack, MALT::MMCallStackNode* callStackNode = 0, bool doLock = true, AllocDomain domain = DOMAIN_C_ALLOC);
+		size_t onFreeEvent(void* ptr, MALT::Stack* userStack, MALT::MMCallStackNode* callStackNode = 0, bool doLock = true, AllocDomain domain = DOMAIN_C_ALLOC, bool subMunmap = false);
 		void solvePerThreadSymbols(void);
 		void memOpsLevels(void);
 		void updatePeakInfoOfStacks(void);
@@ -170,6 +170,7 @@ class AllocStackProfiler
 		std::string getFileExeScriptName(void) const;
 		void pythonImportSuppress(void);
 		bool isImportStack(const Stack & stack) const;
+		void applyVmaPatches(Stack* userStack, MMCallStackNode* callStackNode, VmaSegmentPatches & vmaPatches);
 	private:
 		//SimpleStackTracer stackTracer;
 		MultiLangStackMerger multiLangStackMerger;

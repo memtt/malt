@@ -383,12 +383,12 @@ void SymbolSolver::solveNames(void)
 	if (!maqaoSites.empty())
 	{
 		if (gblOptions != NULL && gblOptions->outputVerbosity >= MALT_VERBOSITY_DEFAULT)
-			fprintf(stderr,"MALT : Resolving symbols with maqao infos...\n");
+			fprintf(stderr,"MALT: Resolving symbols with maqao infos...\n");
 		this->solveMaqaoNames();
 	}
 
 	if (gblOptions != NULL && gblOptions->outputVerbosity >= MALT_VERBOSITY_DEFAULT)
-		fprintf(stderr,"MALT : Resolving symbols with addr2line...\n");
+		fprintf(stderr,"MALT: Resolving symbols with addr2line...\n");
 
 	//avoid to LD_PRELOAD otherwise we will create fork bomb
 	setenv("LD_PRELOAD","",1);

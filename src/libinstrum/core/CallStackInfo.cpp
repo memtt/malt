@@ -168,11 +168,13 @@ void CallStackInfo::onMmap ( ssize_t value,size_t peakId )
 }
 
 /**********************************************************/
-void CallStackInfo::onMunmap ( ssize_t value,size_t peakId )
+void CallStackInfo::onMunmap ( ssize_t value,size_t peakId, bool subMunmap )
 {
 	this->munmap.addEvent(value);
+	//if sub munmap, we should not count
+	if (subMunmap)
+		this->munmap.count--;
 	this->onFreeEvent(value, peakId);
-	this->alive -= value;
 }
 
 /**********************************************************/

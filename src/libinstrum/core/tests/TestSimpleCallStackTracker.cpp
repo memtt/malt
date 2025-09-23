@@ -228,7 +228,7 @@ TEST(TestSimpleStackTracker, convertToJson)
 	infos.onFreeEvent(128, 2);
 	infos.onFreeLinkedMemory(128, 100, 2);
 	infos.onMmap(4096, 3);
-	infos.onMunmap(4096, 3);
+	infos.onMunmap(4096, 3, false);
 
 	//to stream
 	std::stringstream out;

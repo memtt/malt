@@ -70,7 +70,7 @@ struct CallStackInfo
 		void onReallocEvent(size_t oldSize,size_t newSize);
 		void onFreeLinkedMemory(size_t value,ticks lifetime,size_t peakId);
 		void onMmap(ssize_t value,size_t peakId);
-		void onMunmap(ssize_t value,size_t peakId);
+		void onMunmap(ssize_t value,size_t peakId,bool subMunmap);
 		void merge(const MALT::CallStackInfo& info);
 		void writeAsCallgrindEntry(int line, std::ostream & out) const;
 		void writeAsCallgrindCallEntry(int line, std::ostream& out) const;

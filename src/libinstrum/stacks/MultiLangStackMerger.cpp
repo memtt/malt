@@ -91,9 +91,9 @@ void MultiLangStackMerger::mixPythonAndCStack(Stack& outStack, const Stack & cSt
 
 	//debug
 	/*std::cerr << "-------------------------------------------" << std::endl;
-	std::cerr << "MALT : C stack  : " << cStack << std::endl;
-	std::cerr << "MALT : PY stack : " << pythonStack << std::endl;
-	std::cerr << "MALT : out stack : " << outStack << std::endl;*/
+	std::cerr << "MALT: C stack  : " << cStack << std::endl;
+	std::cerr << "MALT: PY stack : " << pythonStack << std::endl;
+	std::cerr << "MALT: out stack : " << outStack << std::endl;*/
 }
 
 /**********************************************************/
@@ -117,8 +117,8 @@ void MultiLangStackMerger::removePythonLib(Stack& outStack, const Stack & inStac
 
 	//debug
 	/*std::cerr << "-------------------------------------------" << std::endl;
-	std::cerr << "MALT : in stack  : " << inStack << std::endl;
-	std::cerr << "MALT : out stack : " << outStack << std::endl;*/
+	std::cerr << "MALT: in stack  : " << inStack << std::endl;
+	std::cerr << "MALT: out stack : " << outStack << std::endl;*/
 }
 
 }

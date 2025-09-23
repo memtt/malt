@@ -349,7 +349,7 @@ void AllocStackProfiler::onUpdateMem(const OSProcMemUsage & procMem, const OSMem
 }
 
 /**********************************************************/
-size_t AllocStackProfiler::onFreeEvent(void* ptr, MALT::Stack* userStack, MMCallStackNode* callStackNode, bool doLock, AllocDomain domain)
+size_t AllocStackProfiler::onFreeEvent(void* ptr, MALT::Stack* userStack, MMCallStackNode* callStackNode, bool doLock, AllocDomain domain, bool subMunmap)
 {
 	//locals
 	ticks t = Clock::getticks();
@@ -394,10 +394,11 @@ size_t AllocStackProfiler::onFreeEvent(void* ptr, MALT::Stack* userStack, MMCall
 				*callStackNode = getStackNode(userStack);
 			
 			//count events
-			if (domain == DOMAIN_MMAP)
-				CODE_TIMING("updateInfoFree",callStackNode->infos->onMunmap(size,peakId));
-			else
+			if (domain == DOMAIN_MMAP) {
+				CODE_TIMING("updateInfoFree",callStackNode->infos->onMunmap(size,peakId, subMunmap));
+			} else {
 				CODE_TIMING("updateInfoFree",callStackNode->infos->onFreeEvent(size,peakId));
+			}
 			
 			//update alive (TODO, need to move this into a new function on StackNodeInfo)
 			CODE_TIMING("freeLinkedMemory",segInfo->callStack.infos->onFreeLinkedMemory(size,lifetime,peakId));
@@ -467,18 +468,85 @@ void AllocStackProfiler::onMmap ( void* ptr, size_t size, Stack* userStack, MMCa
 }
 
 /**********************************************************/
+void AllocStackProfiler::applyVmaPatches(Stack* userStack, MMCallStackNode* callStackNode, VmaSegmentPatches & vmaPatches)
+{
+	//search original stack infos
+	MALT_OPTIONAL_CRITICAL(lock,threadSafe)
+		std::map<size_t, const SegmentInfo *> ptrTrack;
+		for (auto & patch : vmaPatches) {
+			if (patch.oldAddr != 0) {
+				const SegmentInfo * segInfos = this->segTracker.get((void*)patch.oldAddr);
+				if (segInfos == nullptr) {
+					const auto it = ptrTrack.find(patch.oldAddr);
+					if (it != ptrTrack.end())
+						segInfos = it->second;
+				}
+				if (segInfos != nullptr) {
+					patch.stack = segInfos->callStack.stack;
+					patch.infos = segInfos->callStack.infos;
+					patch.allocTime = segInfos->allocTime;
+					ptrTrack[patch.newAddr] = segInfos;
+				}
+			}
+		}
+
+		//apply patches
+		bool subMunmap = false;
+		for (const auto & patch : vmaPatches) {
+			if (patch.infos == nullptr) {
+				fprintf(stderr,"MALT: Warning: ignore some unmapped segment due to missing stack infos !\n");
+			} if (patch.oldSize == 0) {
+				//insert new one
+				//fprintf(stderr, "ADD %zx - %zu\n", patch.newAddr, patch.newSize);
+				SegmentInfo * infos = this->segTracker.add((void*)patch.newAddr, patch.newSize, MMCallStackNode(patch.stack,patch.infos));
+				infos->allocTime = patch.allocTime;
+			} else if (patch.newSize == 0) {
+				//free it fully
+				//fprintf(stderr, "FREE %zx - %zu\n", patch.oldAddr, patch.oldSize);
+				this->onFreeEvent((void*)patch.oldAddr,userStack, callStackNode, false, DOMAIN_MMAP, subMunmap);
+				subMunmap = true;
+			} else if (patch.oldAddr == patch.newAddr) {
+				//change size of old
+				SegmentInfo * segInfos = this->segTracker.get((void*)patch.oldAddr);
+				segInfos->size = patch.newSize;
+				//fprintf(stderr, "RSIZE %zx - %zu => %zu\n", patch.oldAddr, patch.oldSize, patch.newSize);
+			} else {
+				std::cerr << "MALT: This should never reach this portion of code !" << std::endl;
+				std::cerr << patch << std::endl;
+				abort();
+			}
+		}
+	MALT_END_CRITICAL
+}
+
+/**********************************************************/
 void AllocStackProfiler::onMunmap ( void* ptr, size_t size, Stack* userStack, MMCallStackNode* callStackNode )
 {
-	ssize_t delta = vmaTracker.munmap(ptr,size);
-	this->onFreeEvent(ptr,userStack, callStackNode, true, DOMAIN_MMAP);
+	VmaSegmentPatches vmaPatches;
+	ssize_t delta = vmaTracker.munmap(ptr,size,&vmaPatches);
+	this->applyVmaPatches(userStack, callStackNode, vmaPatches);
 }
 
 /**********************************************************/
 void AllocStackProfiler::onMremap(void * ptr,size_t size,void * new_ptr, size_t new_size, Stack * userStack)
 {
 	MMCallStackNode callStackNode;
-	this->onMunmap(new_ptr, new_size, userStack, &callStackNode);
-	this->onMmap(ptr, size, userStack, &callStackNode);
+	VmaSegmentPatches vmaPatches;
+	vmaTracker.munmap(ptr,size,&vmaPatches);
+	vmaTracker.munmap(new_ptr,new_size,&vmaPatches);
+	this->applyVmaPatches(userStack, &callStackNode, vmaPatches);
+	this->onMmap(new_ptr, new_size, userStack, &callStackNode);
+
+	//register size jump
+	if (options.distrReallocJump)
+	{
+		ReallocJump jump = {size,new_size};
+		ReallocJumpMap::iterator it = reallocJumpMap.find(jump);
+		if (it == reallocJumpMap.end())
+			reallocJumpMap[jump] = 1;
+		else
+			it->second++;
+	}
 }
 
 /**********************************************************/
@@ -577,7 +645,7 @@ void AllocStackProfiler::loadGlobalVariables(void)
 					CODE_TIMING("nm",reader.load(it->file));
 					reader.findSourcesAndDemangle(globalVariables[it->file]);
 				} else if (fsize > nmMaxFileSize) {
-					fprintf(stderr, "MALT : Skipping global var location analysis for '%s', file is too large (tools:nmMaxSize=%s)\n", it->file.c_str(), gblOptions->toolsNmMaxSize.c_str());
+					fprintf(stderr, "MALT: Skipping global var location analysis for '%s', file is too large (tools:nmMaxSize=%s)\n", it->file.c_str(), gblOptions->toolsNmMaxSize.c_str());
 				}
 			}
 		}

@@ -110,7 +110,7 @@ void Scatter2DValues::resize(uint64_t x, uint64_t y)
 	//reset
 	memset(this->oldValues,0,sizeof(size_t)*xAxis.size*yAxis.size);
 	
-		//swap values
+	//swap values
 	size_t * tmp = values;
 	values = oldValues;
 	oldValues = tmp;

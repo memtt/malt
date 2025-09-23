@@ -23,6 +23,7 @@ using namespace MALT;
 /**********************************************************/
 namespace MALT {
 	static std::list<std::string> * gblMaltWrappedSymbols = nullptr;
+	static const bool cstInstrMmap = true;
 }
 
 /**********************************************************/
@@ -282,7 +283,7 @@ void * MALT::malt_wrap_mmap(void *start,size_t length,int prot,int flags,int fd,
 	t = Clock::getticks() - t;
 
 	//profile
-	if (guard.needInstrument() && res != MAP_FAILED) {
+	if (guard.needInstrument() && res != MAP_FAILED && cstInstrMmap) {
 		MALT_WRAPPER_LOCAL_STATE_ACTION(env.getLocalProfiler().onMmap(res,length,flags,fd,t), retaddr);
 	}
 
@@ -333,7 +334,7 @@ void * MALT::malt_wrap_mremap(void *old_address, size_t old_size , void * new_ad
 	t = Clock::getticks() - t;
 
 	//profile
-	if (guard.needInstrument() && res != MAP_FAILED) {
+	if (guard.needInstrument() && res != MAP_FAILED && cstInstrMmap) {
 		MALT_WRAPPER_LOCAL_STATE_ACTION(env.getLocalProfiler().onMremap(old_address,old_size, res, new_size, t), retaddr);
 	}
 

@@ -27,6 +27,41 @@ namespace MALT
 {
 
 /**********************************************************/
+VmaSegmentPatch::VmaSegmentPatch(size_t oldAddr, size_t oldSize, size_t newAddr, size_t newSize)
+	:oldAddr(oldAddr)
+	,oldSize(oldSize)
+	,newAddr(newAddr)
+	,newSize(newSize)
+{
+}
+
+/**********************************************************/
+bool VmaSegmentPatch::operator==(const VmaSegmentPatch & value) const
+{
+	return (
+		this->newAddr == value.newAddr &&
+		this->newSize == value.newSize &&
+		this->oldAddr == value.oldAddr &&
+		this->oldSize == value.oldSize
+	);
+}
+
+/**********************************************************/
+std::ostream & operator<<(std::ostream & out, const VmaSegmentPatch & value)
+{
+	out << "{ (" << value.oldAddr << ", " << value.oldSize << ") => (" << value.newAddr << ", " << value.newSize  << ") }";
+	return out;
+}
+
+/**********************************************************/
+std::ostream & operator<<(std::ostream & out, const VmaSegmentPatches & value)
+{
+	for (const auto & item : value)
+		out << item << std::endl;
+	return out;
+}
+
+/**********************************************************/
 VmaTracker::VmaTracker ( void )
 {
 	this->count = 0;
@@ -116,7 +151,7 @@ ssize_t VmaTracker::mmap ( void* ptr, size_t size )
 }
 
 /**********************************************************/
-ssize_t VmaTracker::munmap ( void* ptr, size_t size )
+ssize_t VmaTracker::munmap ( void* ptr, size_t size, VmaSegmentPatches * patches )
 {
 	size_t removed = 0;
 	size_t start = (size_t)ptr;
@@ -127,40 +162,66 @@ ssize_t VmaTracker::munmap ( void* ptr, size_t size )
 		//get current
 		VmaInfo & vma = vmas[i];
 
+		//split
+		if (start > vma.start && end < vma.end) {
+			if (patches != nullptr) {
+				const size_t newSize = start - vma.start;
+				const size_t oldSize = vma.end - vma.start;
+				const size_t remainingSize = vma.end - end;
+				const size_t middleSize = end-start;
+				//left
+				patches->emplace_back(vma.start, oldSize, vma.start, newSize);
+				//middle add + remove
+				patches->emplace_back(vma.start, 0, vma.start + newSize,middleSize);
+				patches->emplace_back(vma.start + newSize,middleSize, 0, 0);
+				//rright
+				patches->emplace_back(vma.start, 0, end,remainingSize);
+			}
+			size_t oldEnd = vma.end;
+			vma.end = start;
+			removed += end-start;
+			mmap((void*)end,oldEnd-end);
+		}
+
 		//overlap left part
 		if (start <= vma.start && end > vma.start && end < vma.end) {
+			if (patches != nullptr) {
+				patches->emplace_back(vma.start, vma.end - vma.start, vma.start, end - vma.start);
+				patches->emplace_back(vma.start, end - vma.start, 0, 0);
+				patches->emplace_back(vma.start, 0, end, vma.end - end);
+			}
 			removed += end - vma.start;
 			vma.start = end;
 		}
 
 		//overlap right part
 		if (start > vma.start && start < vma.end && end >= vma.end) {
+			if (patches != nullptr)
+				patches->emplace_back(vma.start, vma.end - vma.start, vma.start, start - vma.start);
 			removed += vma.end - start;
 			vma.end = start;
 		}
 
 		//complete remove
 		if (start <= vma.start && end >= vma.end) {
+			if (patches != nullptr)
+				patches->emplace_back(vma.start, vma.end - vma.start, 0, 0);
 			removed += vma.end - vma.start;
 			vma.end = vma.start = 0;
 			count--;
-		}
-		//split
-		if (start > vma.start && end < vma.end) {
-			mmap((void*)end,vma.end-end);
-			vma.end = start;
-			removed += end-start;
 		}
 	}
 	return -removed;
 }
 
 /**********************************************************/
-ssize_t VmaTracker::mremap ( void* oldPtr, size_t oldSize, void* newPtr, size_t newSize )
+ssize_t VmaTracker::mremap ( void* oldPtr, size_t oldSize, void* newPtr, size_t newSize, VmaSegmentPatches * patches )
 {
-	ssize_t deltaMunmap = munmap( oldPtr,oldSize);
-	ssize_t deltaMmap = mmap(newPtr,newSize);
-	return deltaMmap + deltaMunmap;
+	fprintf(stderr, "=====> MREMAP %p %zu %p %zu\n", oldPtr, oldSize, newPtr, newSize);
+	ssize_t deltaMunmap = this->munmap( oldPtr,oldSize, patches);
+	ssize_t deltaMunmap2 = this->munmap( newPtr,newSize, patches);
+	ssize_t deltaMmap = this->mmap(newPtr,newSize);
+	return deltaMmap + deltaMunmap + deltaMunmap2;
 }
 
 /**********************************************************/

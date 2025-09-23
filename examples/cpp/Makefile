@@ -29,7 +29,8 @@ TARGETS=\
 	step-08-problem-heavy-realloc \
 	step-09-problem-tls-and-gbl-vars \
 	step-10-problem-leak \
-	step-11-direct-mmap-munmap
+	step-11-direct-mmap-munmap \
+	step-12-direct-mmap-munmap-middle
 
 ############################################################
 all: $(TARGETS)

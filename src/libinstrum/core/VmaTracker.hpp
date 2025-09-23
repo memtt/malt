@@ -15,6 +15,9 @@
 
 /**********************************************************/
 //standard
+#include <ostream>
+//from fftw
+#include <portability/Clock.hpp>
 
 /**********************************************************/
 namespace MALT
@@ -26,6 +29,29 @@ struct VmaInfo
 	size_t start;
 	size_t end;
 };
+
+/**********************************************************/
+class Stack;
+class CallStackInfo;
+
+/**********************************************************/
+struct VmaSegmentPatch
+{
+	VmaSegmentPatch(size_t oldAddr, size_t oldSize, size_t newAddr, size_t newSize);
+	bool operator==(const VmaSegmentPatch & value) const;
+	size_t oldAddr{0};
+	size_t oldSize{0};
+	size_t newAddr{0};
+	size_t newSize{0};
+	const Stack * stack{nullptr};
+	CallStackInfo * infos{nullptr};
+	ticks allocTime{0};
+};
+
+/**********************************************************/
+typedef std::vector<VmaSegmentPatch> VmaSegmentPatches;
+std::ostream & operator<<(std::ostream & out, const VmaSegmentPatch & value);
+std::ostream & operator<<(std::ostream & out, const VmaSegmentPatches & value);
 
 /**********************************************************/
 /**
@@ -40,8 +66,8 @@ class VmaTracker
 		VmaTracker(void);
 		~VmaTracker(void);
 		ssize_t mmap(void * ptr,size_t size);
-		ssize_t mremap(void * oldPtr,size_t oldSize,void * newPtr,size_t newSize);
-		ssize_t munmap(void * ptr,size_t size);
+		ssize_t mremap(void * oldPtr,size_t oldSize,void * newPtr,size_t newSize, VmaSegmentPatches * patches = nullptr);
+		ssize_t munmap(void * ptr,size_t size, VmaSegmentPatches * patches = nullptr);
 		std::vector<VmaInfo> getAsVector(void) const;
 		size_t getCount(void) const;
 		size_t getInsertPosition(void) const;

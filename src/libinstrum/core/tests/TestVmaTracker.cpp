@@ -100,6 +100,62 @@ TEST(TestVmaTracker,compact_holes)
 }
 
 /**********************************************************/
+TEST(TestVmaTracker,patches_unmap_left)
+{
+	VmaTracker tracker;
+	VmaSegmentPatches patches;
+	tracker.mmap((void*)0xA00,8);
+	tracker.munmap((void*)0xA00,4, &patches);
+	ASSERT_EQ(patches.size(), 1);
+	ASSERT_EQ(patches[0], VmaSegmentPatch(0xA00, 8, 0xA04, 4));
+}
+
+/**********************************************************/
+TEST(TestVmaTracker,patches_unmap_right)
+{
+	VmaTracker tracker;
+	VmaSegmentPatches patches;
+	tracker.mmap((void*)0xA00,8);
+	tracker.munmap((void*)0xA04,4, &patches);
+	ASSERT_EQ(patches.size(), 1);
+	ASSERT_EQ(patches[0], VmaSegmentPatch(0xA00, 8, 0xA00, 4));
+}
+
+/**********************************************************/
+TEST(TestVmaTracker,patches_unmap_all)
+{
+	VmaTracker tracker;
+	VmaSegmentPatches patches;
+	tracker.mmap((void*)0xA00,8);
+	tracker.munmap((void*)0xA00,8, &patches);
+	ASSERT_EQ(patches.size(), 1);
+	ASSERT_EQ(patches[0], VmaSegmentPatch(0xA00, 8, 0, 0));
+}
+
+/**********************************************************/
+TEST(TestVmaTracker,patches_unmap_all_more)
+{
+	VmaTracker tracker;
+	VmaSegmentPatches patches;
+	tracker.mmap((void*)0xA00,8);
+	tracker.munmap((void*)0x900,10000, &patches);
+	ASSERT_EQ(patches.size(), 1);
+	ASSERT_EQ(patches[0], VmaSegmentPatch(0xA00, 8, 0, 0));
+}
+
+/**********************************************************/
+TEST(TestVmaTracker,patches_unmap_split)
+{
+	VmaTracker tracker;
+	VmaSegmentPatches patches;
+	tracker.mmap((void*)0xA00,8);
+	tracker.munmap((void*)0xA02,4, &patches);
+	ASSERT_EQ(patches.size(), 2) << patches;
+	EXPECT_EQ(patches[0], VmaSegmentPatch(0xA00, 8, 0xA00, 2));
+	EXPECT_EQ(patches[1], VmaSegmentPatch(0, 0, 0xA06, 2));
+}
+
+/**********************************************************/
 int main(int argc, char ** argv)
 {
 	//init internal allocator

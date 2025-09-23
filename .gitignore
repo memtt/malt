@@ -26,6 +26,7 @@ examples/cpp/step-08-problem-heavy-realloc
 examples/cpp/step-09-problem-tls-and-gbl-vars
 examples/cpp/step-10-problem-leak
 examples/cpp/step-11-direct-mmap-munmap
+examples/cpp/step-12-direct-mmap-munmap-middle
 examples/cpp/*.json
 examples/fortran/01-ifort-heap-arrays/reproducer_heap
 examples/fortran/01-ifort-heap-arrays/reproducer_stack
