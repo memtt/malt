@@ -106,8 +106,10 @@ TEST(TestVmaTracker,patches_unmap_left)
 	VmaSegmentPatches patches;
 	tracker.mmap((void*)0xA00,8);
 	tracker.munmap((void*)0xA00,4, &patches);
-	ASSERT_EQ(patches.size(), 1);
-	ASSERT_EQ(patches[0], VmaSegmentPatch(0xA00, 8, 0xA04, 4));
+	ASSERT_EQ(patches.size(), 3) << patches;
+	ASSERT_EQ(patches[0], VmaSegmentPatch(0xA00, 8, 0xA00, 4));
+	ASSERT_EQ(patches[1], VmaSegmentPatch(0xA00, 4, 0, 0));
+	ASSERT_EQ(patches[2], VmaSegmentPatch(0xA00, 0, 0xA04, 4));
 }
 
 /**********************************************************/
@@ -150,9 +152,11 @@ TEST(TestVmaTracker,patches_unmap_split)
 	VmaSegmentPatches patches;
 	tracker.mmap((void*)0xA00,8);
 	tracker.munmap((void*)0xA02,4, &patches);
-	ASSERT_EQ(patches.size(), 2) << patches;
+	ASSERT_EQ(patches.size(), 4) << patches;
 	EXPECT_EQ(patches[0], VmaSegmentPatch(0xA00, 8, 0xA00, 2));
-	EXPECT_EQ(patches[1], VmaSegmentPatch(0, 0, 0xA06, 2));
+	EXPECT_EQ(patches[1], VmaSegmentPatch(0xA00, 0, 0xA02, 4));
+	EXPECT_EQ(patches[2], VmaSegmentPatch(0xA02, 4, 0, 0));
+	EXPECT_EQ(patches[3], VmaSegmentPatch(0xA00, 0, 0xA06, 2));
 }
 
 /**********************************************************/
