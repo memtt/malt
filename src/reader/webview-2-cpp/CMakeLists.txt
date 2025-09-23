@@ -34,9 +34,11 @@ target_link_libraries(malt-passwd-cpp ${NLOHMANN_JSON_LIBRARIES} base64 ${CRYPTO
 add_definitions(-DTEST_DATA_DIR="${CMAKE_CURRENT_BINARY_DIR}")
 
 ############################################################
-add_executable(TestWebviewNewCpp lib/tests/TestUserDb.cpp)
-target_link_libraries(TestWebviewNewCpp ${GTEST_BOTH_LIBRARIES} ${GMOCK_BOTH_LIBRARIES} malt-webview-cpp-base)
-add_test(TestWebviewNewCpp TestWebviewNewCpp)
+if (ENABLE_TESTS)
+	add_executable(TestWebviewNewCpp lib/tests/TestUserDb.cpp)
+	target_link_libraries(TestWebviewNewCpp ${GTEST_BOTH_LIBRARIES} ${GMOCK_BOTH_LIBRARIES} malt-webview-cpp-base)
+	add_test(TestWebviewNewCpp TestWebviewNewCpp)
+endif()
 
 ############################################################
 install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/malt-webview-cpp DESTINATION ${CMAKE_INSTALL_BINDIR} RENAME malt-webview)
