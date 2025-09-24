@@ -9,15 +9,15 @@
 ############################################################
 
 ############################################################
-# - Try to find httplib (https://github.com/yhirose/cpp-httplib)
+# - Try to find OPENSSL (https://www.openssl-library.org/source/index.html)
 # Once done this will define
-#  CRYPTO_FOUND - System has httplib
-#  CRYPTO_INCLUDE_DIRS - The httplib include directories
-#  CRYPTO_LIBRARIES - The libraries needed to use httplib
-#  CRYPTO_DEFINITIONS - Compiler switches required for using httplib
+#  CRYPTO_FOUND - System has openssl
+#  CRYPTO_INCLUDE_DIRS - The openssl include directories
+#  CRYPTO_LIBRARIES - The libraries needed to use openssl
+#  CRYPTO_DEFINITIONS - Compiler switches required for using openssl
 
 ############################################################
-set(CRYPTO_PREFIX "${CMAKE_INSTALL_PREFIX}" CACHE STRING "Help cmake to find httplib library (https://zeromq.org/) into your system.")
+set(CRYPTO_PREFIX "${CMAKE_INSTALL_PREFIX}" CACHE STRING "Help cmake to find openssl library (https://www.openssl-library.org/source/index.html) into your system.")
 
 ############################################################
 find_path(CRYPTO_INCLUDE_DIR openssl/sha.h
@@ -35,7 +35,7 @@ set(CRYPTO_INCLUDE_DIRS ${CRYPTO_INCLUDE_DIR} )
 include(FindPackageHandleStandardArgs)
 # handle the QUIETLY and REQUIRED arguments and set CRYPTO_FOUND to TRUE
 # if all listed variables are TRUE
-find_package_handle_standard_args(Crypto  DEFAULT_MSG
+find_package_handle_standard_args(Crypto DEFAULT_MSG
 	CRYPTO_LIBRARY CRYPTO_INCLUDE_DIR)
 
 ############################################################

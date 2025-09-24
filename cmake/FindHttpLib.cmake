@@ -17,7 +17,7 @@
 #  HTTPLIB_DEFINITIONS - Compiler switches required for using httplib
 
 ############################################################
-set(HTTPLIB_PREFIX "${CMAKE_INSTALL_PREFIX}" CACHE STRING "Help cmake to find httplib library (https://zeromq.org/) into your system.")
+set(HTTPLIB_PREFIX "${CMAKE_INSTALL_PREFIX}" CACHE STRING "Help cmake to find httplib library (https://github.com/yhirose/cpp-httplib) into your system.")
 
 ############################################################
 find_path(HTTPLIB_INCLUDE_DIR httplib.h

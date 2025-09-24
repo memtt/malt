@@ -101,6 +101,16 @@ cfg_add_with_option --name='webview' \
 						--doc='Define which webview server implementation to use [AUTO] : AUTO, CPP, NODEJS, RUST, OFF' \
 						--var='WEBVIEW_SERVER'
 
+#where to search python
+cfg_add_with_option --name='nodejs' \
+						--doc='Define prefix to find NodeJS [/usr]' \
+						--var='NODEJS_PREFIX'
+
+#where to search python
+cfg_add_with_option --name='npm' \
+						--doc='Define prefix to find NPM [/usr]' \
+						--var='NPM_PREFIX'
+
 ############################################################
 #If we want to document extra options
 #CFG_CUSTOM_HELP="My custom options:"

@@ -15,7 +15,11 @@
 #  NPM_BINARY - Path to the npm binary file
 
 ############################################################
-find_program(NPM_BINARY npm)
+set(NPM_PREFIX ${CMAKE_INSTALL_PREFIX} CACHE STRING "Prefix where to search NPM command (npm).")
+
+############################################################
+find_program(NPM_BINARY npm
+    HINTS ${NPM_PREFIX}/bin ${NODEJS_PATH}/bin)
 
 ############################################################
 include(FindPackageHandleStandardArgs)

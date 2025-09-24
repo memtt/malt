@@ -15,11 +15,11 @@
 #  NODE_BINARY - Path to the npm binary file
 
 ############################################################
-set(NODEJS_PATH ${CMAKE_INSTALL_PREFIX} CACHE STRING "Prefix where to search NodeJs command (node).")
+set(NODEJS_PREFIX ${CMAKE_INSTALL_PREFIX} CACHE STRING "Prefix where to search NodeJs command (node).")
 
 ############################################################
 find_program(NODE_BINARY node
-    HINTS ${NODEJS_PATH}/bin)
+    HINTS ${NODEJS_PREFIX}/bin)
 
 ############################################################
 include(FindPackageHandleStandardArgs)
