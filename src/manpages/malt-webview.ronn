@@ -3,7 +3,7 @@ malt-webview(1) -- Webserver for the MALT web GUI
 
 ## SYNOPSIS
 
-`malt-webview` [OPTIONS] -i {malt-profile.json}
+`malt-webview` [OPTIONS] {malt-profile.json}
 
 ## DESCRIPTION
 
@@ -13,8 +13,6 @@ http://localhost:8080.
 
 ## OPTIONS
 
- * `-i`, `--input-file`:
-   This option is required and provide the input profile file (json format) to explore.
  * `-n`, '--no-auth':
    Disable usage of HTTP authentification to secure the pages of the GUI. Caution, all the
    users connected on the machine can access the GUI so to your code.
@@ -54,7 +52,7 @@ When working remotly you can avoid exposin the malt webview port publicly
 to other users of the cluster by using a unix socket file in place of the port.
 
   # remote
-  malt-webview -p /home/myuser/malt.sock -i malt-PROFILE.json
+  malt-webview -p /home/myuser/malt.sock malt-PROFILE.json
   # on your workstation
   ssh -L 8080:/home/myuser/malt.sock user@ssh-server
 

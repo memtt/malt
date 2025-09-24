@@ -60,6 +60,7 @@ UBUNTU_BASIC_CMDS=[
     "apt update",
     "apt upgrade -y",
     "apt install -y cmake g++ make clang ccache",
+    "apt install -y libssl-dev"
 ]
 UBUNTU_FULL_CMDS=[
     "apt install -y libunwind-dev libelf-dev libunwind-dev nodejs npm",
@@ -94,7 +95,8 @@ ROCKY_BASIC_CMDS=[
     "echo 'keepcache=true' >> /etc/dnf/dnf.conf",
     "dnf makecache --refresh",
     "dnf update -y",
-    "dnf install -y cmake gcc-c++ make clang"
+    "dnf install -y cmake gcc-c++ make clang",
+    "dnf install -y openssl-devel"
 ]
 ROCKY_FULL_CMDS=[
     "dnf install -y elfutils-libelf-devel nodejs npm",
@@ -112,7 +114,8 @@ CENTOS_INDEV_CMDS=[
 ]
 ARCH_BASIC_CMDS=[
     "pacman --noconfirm -Syu",
-    "pacman --noconfirm -Sy cmake gcc make clang ccache"
+    "pacman --noconfirm -Sy cmake gcc make clang ccache",
+    "pacman --noconfirm -Sy openssl"
 ]
 ARCH_FULL_CMDS=[
     "pacman --noconfirm -Sy libunwind libelf nodejs npm",
@@ -127,12 +130,14 @@ GENTOO_BASIC_CMDS=[
     "yes | getuto",
     "emerge --verbose --update --deep --newuse @world -k -g",
     "emerge -k -g cmake gcc make llvm-core/clang ccache",
+    "emerge -k -g openssl",
 ]
 GENTOO_FULL_CMDS=[
     #"eselect profile set default/linux/amd64/23.0/desktop/plasma && emerge --verbose --update --deep --newuse @world -k -g",
     "emerge -b -k -g sys-libs/libunwind elfutils nodejs",
+    #"emerge -k -g dev-qt/qtwebengine",
     "emerge -b -k -g curl",
-    "emerge -b -k -g dev-cpp/nlohmann_json cargo graphviz"
+    "emerge -b -k -g dev-cpp/nlohmann_json dev-util/cargo-c media-gfx/graphviz"
 ]
 GENTOO_INDEV_CMDS=[
 ]
@@ -165,19 +170,6 @@ BUILD_PARAMETERS = {
             "base": "malt/ubuntu-full:24.04",
             "cmds": UBUNTU_INDEV_CMDS
         },
-        ############ ubuntu:22.10
-        "malt/ubuntu-basic:24.10": {
-            "base": "ubuntu:24.10",
-            "cmds": UBUNTU_BASIC_CMDS
-        },
-        "malt/ubuntu-full:24.10": {
-            "base": "malt/ubuntu-basic:24.10",
-            "cmds": UBUNTU_FULL_CMDS
-        },
-        "malt/ubuntu-indev:24.10": {
-            "base": "malt/ubuntu-full:24.10",
-            "cmds": UBUNTU_INDEV_CMDS
-        },
         ############ ubuntu:25.04
         "malt/ubuntu-basic:25.04": {
             "base": "ubuntu:25.04",
@@ -191,17 +183,17 @@ BUILD_PARAMETERS = {
             "base": "malt/ubuntu-full:25.04",
             "cmds": UBUNTU_INDEV_CMDS_UBUNTU_25
         },
-        ############ debian:10
-        "malt/debian-basic:10": {
-            "base": "debian:10",
+        ############ ubuntu:25.10
+        "malt/ubuntu-basic:25.10": {
+            "base": "ubuntu:25.10",
             "cmds": UBUNTU_BASIC_CMDS
         },
-        "malt/debian-full:10": {
-            "base": "malt/debian-basic:10",
+        "malt/ubuntu-full:25.10": {
+            "base": "malt/ubuntu-basic:25.10",
             "cmds": UBUNTU_FULL_CMDS
         },
-        "malt/debian-indev:10": {
-            "base": "malt/debian-full:10",
+        "malt/ubuntu-indev:25.10": {
+            "base": "malt/ubuntu-full:25.10",
             "cmds": UBUNTU_INDEV_CMDS
         },
         ############ debian:11
@@ -228,6 +220,19 @@ BUILD_PARAMETERS = {
         },
         "malt/debian-indev:12": {
             "base": "malt/debian-full:12",
+            "cmds": UBUNTU_INDEV_CMDS
+        },
+        ############ debian:13
+        "malt/debian-basic:13": {
+            "base": "debian:13",
+            "cmds": UBUNTU_BASIC_CMDS
+        },
+        "malt/debian-full:13": {
+            "base": "malt/debian-basic:13",
+            "cmds": UBUNTU_FULL_CMDS
+        },
+        "malt/debian-indev:13": {
+            "base": "malt/debian-full:13",
             "cmds": UBUNTU_INDEV_CMDS
         },
         ############ fedora:41

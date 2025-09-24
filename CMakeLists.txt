@@ -58,7 +58,7 @@ set(PORTABILITY_COMPILER  "GNU"      CACHE STRING "Select compiler support to us
 set(PORTABILITY_CLOCK     "RDTSC"    CACHE STRING "Clock to be used to represent time in MALT.")
 set(PORTABILITY_PYTHON    "LAZY"     CACHE STRING "Select the instrumentation mode for python : 'LAZY', 'NATIVE'.")
 #select webvew server mode
-set(WEBVIEW_SERVER        "AUTO"      CACHE STRING "Select the webview server to use : AUTO, CPP, NODEJS, RUST, OFF.")
+set(WEBVIEW_SERVER        "CPP"      CACHE STRING "Select the webview server to use : AUTO, CPP, NODEJS, RUST, OFF.")
 
 ############################################################
 if (ENABLE_TESTS OR CMAKE_BUILD_TYPE="Debug")
@@ -182,7 +182,7 @@ if (WEBVIEW_SERVER STREQUAL "NODEJS" AND NOT NODEJS_FOUND)
 	message(FATAL_ERROR "Forcing NODEJS webview server require NODEJS to be present in the system. Currently not found !")
 endif()
 if (WEBVIEW_SERVER STREQUAL "CPP" AND NOT CRYPTO_FOUND)
-	message(FATAL_ERROR "Forcing CPP webview server require LIBCRYPTO to be present in the system. Currently not found !")
+	message(FATAL_ERROR "Forcing CPP webview server require LIBSSL to be present in the system. Currently not found !")
 endif()
 if (WEBVIEW_SERVER STREQUAL "RUST" AND NOT CARGO_FOUND)
 	message(FATAL_ERROR "Forcing CPP webview server require CARGO to be present in the system. Currently not found !")

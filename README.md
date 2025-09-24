@@ -22,6 +22,7 @@ Dependencies
 MALT depends on the presence of :
 
 - binutils (nm and add2line) to extract symbols. Tested version is 2.24 - 2.38.
+- openssl (libssl.so) to run the C++ webview. Tested version is 3.0.13.
 
 It optionally depends on :
 
@@ -176,7 +177,7 @@ Using webview
 You can use the webview by calling command `malt-webview` as :
 
 ```shell
-malt-webview [-p PORT] [--no-auth] -i malt-YOUR_PROGRAM-1234.json
+malt-webview [-p PORT] [--no-auth] malt-YOUR_PROGRAM-1234.json
 ```
 
 It will open a server listening locally on port 8080 so you can open your web browser
@@ -195,14 +196,12 @@ If you are running the view remotely thought SSH you can redirect the ports by u
 ssh -L 8080:localhost:8080 user@ssh-server
 ```
 
-To use the webview you need to install the nodeJS package on your system : <http://nodejs.org/>.
-
 Alternatively you can use a unix socket on the server side and forward it by SSH, it avoids
 to expose the 8080 port to anyone on the server as it is protected by the user access rights.
 
 ```shell
 # remote
-malt-webview -p /home/myuser/malt.sock -i malt-PROFILE.json
+malt-webview -p /home/myuser/malt.sock malt-PROFILE.json
 # on your workstation
 ssh -L 8080:/home/myuser/malt.sock user@ssh-server
 ```
@@ -427,29 +426,6 @@ Experimental maqao mode
 MALT can also use binary instrumentation with MAQAO (<http://maqao.org/>).
 
 Please check usage into src/maqao directory.
-
-Dealing with big files
-----------------------
-
-In some cases you might get really big files. I get up to 600 MB on one code. The issue is that you
-cannot load this kind of file into nodejs due to some limits into the string used to read the file
-into json parsor functions.
-
-The first alternative is to try to generate more compressed file by enabling usage of `stackTree` output
-options to store the stacks as a tree into the file. It is more efficient in terms of space (in the 600 MB
-case it lower the file to 200 MB) but need an on-fly conversion by the server to get back the supported format.
-
-```shell
-malt -o "output:stackTree=true" ./PROGRAM
-```
-
-Currently you can still find cases where you cannot load the file into nodejs, I'm working on a workaround.
-Please provide me your files if it appends. By compressing it in gzip you will get less than 30-40 MB.
-
-As of 25/07/2024, the JSON are read and processed using streams, and thus, we by-pass the internal hard limit of NodeJs requiring string to be < 512 MB.
-However, keep in mind that such big files makes the web interface a bit less responsive. This was tested with files up to 1 GB.
-
-Due to another limitations, you may encounter the following error `FATAL ERROR: Reached heap limit Allocation failed - JavaScript heap out of memory`. You want to modify the heap size limit of nodeJs, with the following options `NODE_OPTIONS="--max-old-space-size=<SIZE>"` with `SIZE` in megabytes.
 
 Packaging
 ---------
