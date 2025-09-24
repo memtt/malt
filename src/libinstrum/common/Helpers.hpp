@@ -16,10 +16,15 @@
 /**********************************************************/
 //STL C++
 #include <ostream>
+#include <set>
+#include "STLInternalAllocator.hpp"
 
 /**********************************************************/
 namespace MALT
 {
+
+/**********************************************************/
+typedef std::set<int, std::less<int>, STLInternalAllocator<int>> IntSet;
 
 /**********************************************************/
 /**
@@ -31,9 +36,11 @@ struct Helpers
 {
 	static void printValue(std::ostream & out,double value, const char* unit = "");
 	static int getFileId(void);
+	static bool fileIdIsRank(void);
 	static std::string loadFullFile(const std::string & fname);
 	static bool writeFullFile(const std::string & fname, const std::string & data);
 	static size_t valueFromKiloMegaGiga(const std::string & value);
+	static IntSet rankStrToIntSet(const std::string & value);
 };
 
 }

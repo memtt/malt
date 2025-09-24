@@ -15,6 +15,7 @@
 #include "injectors/InjectPythonInit.hpp"
 #include "LazyEnv.hpp"
 #include "ReentranceGuard.hpp"
+#include "common/Helpers.hpp"
 
 /**********************************************************/
 namespace MALT
@@ -410,6 +411,31 @@ void globalResetForTests(void)
 void globalDump(void)
 {
 	MALT::gblState.onExit();
+}
+
+/**********************************************************/
+void initMpiRankFilter(void)
+{
+	//lazytrigger check
+	static bool gblMpiRankCheckDone = false;
+	if (gblMpiRankCheckDone == false && Helpers::fileIdIsRank()) {
+		//no filter
+		if (gblState.options->filterRanks.empty()) {
+			gblMpiRankCheckDone = true;
+		} else if (Helpers::getFileId() != OS::getPID()) {
+			//split & convert to numbers
+			IntSet whiteList = Helpers::rankStrToIntSet(gblState.options->filterRanks);
+
+			//filter rank
+			if (whiteList.find(Helpers::getFileId()) != whiteList.end())
+				gblState.status = ALLOC_WRAP_FINISH;
+			else
+				fprintf(stderr,"MALT: instrument only MPI rank %d being in : %s\n",Helpers::getFileId(), gblState.options->filterRanks.c_str());
+			
+			//do not lazy check anymore
+			gblMpiRankCheckDone = true;
+		}
+	}
 }
 
 }

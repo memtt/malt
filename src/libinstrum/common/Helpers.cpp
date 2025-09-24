@@ -20,6 +20,7 @@
 //portability wrappers
 #include <portability/OS.hpp>
 #include "Debug.hpp"
+#include "String.hpp"
 //header to implement
 #include "Helpers.hpp"
 
@@ -68,6 +69,15 @@ void Helpers::printValue(std::ostream & out,double value, const char* unit)
 int Helpers::getFileId(void )
 {
 	return OS::getPID();
+}
+
+/**********************************************************/
+/**
+ * Tells if the file ID comes from a rank or not.
+ */
+bool Helpers::fileIdIsRank(void)
+{
+	return true;
 }
 
 /**********************************************************/
@@ -159,6 +169,72 @@ size_t Helpers::valueFromKiloMegaGiga(const std::string & value)
 		MALT_FATAL_ARG("Invalid format for parameter : %2").arg(value).end();
 		return 0;
 	}
+}
+
+/**********************************************************/
+/**
+ * Convert a string under the form of 1,2,3,5-8,9 as a list of
+ * allowed ranks in a set.
+ */
+IntSet Helpers::rankStrToIntSet(const std::string & value)
+{
+	//var
+	IntSet result;
+
+	//had a coma so it will handle the flush of last value
+	String patchedValue = value.c_str();
+	patchedValue += ",";
+
+	//trivial
+	if (value.empty())
+		return result;
+
+	//check format
+	for (const auto & c : value)
+		if (!(c == '-' || c == ',' || (c >= '0' && c <= '9')))
+			MALT_FATAL_ARG("MALT: Error: Invalid rank list format : %1").arg(value).end();
+
+	//split & fill
+	String buffer;
+	String rangeStart;
+	for (const auto & c : patchedValue) {
+		if (c >= '0' && c <= '9') {
+			buffer += c;
+		} else if (c == ',' && rangeStart.empty() && buffer.empty() == false) {
+			//convert & check
+			const int vint = atoi(buffer.c_str());
+			assumeArg(vint >= 0, "Ranks should be positive value : %1").arg(buffer).end();
+
+			//insert & reset
+			result.insert(vint);
+			buffer = "";
+		} else if (c == ',' && rangeStart.empty() == false && buffer.empty() == false) {
+			//convert
+			const int vintStart = atoi(rangeStart.c_str());
+			const int vintEnd = atoi(buffer.c_str());
+
+			//check
+			assumeArg(vintStart >= 0, "Ranks should be positive value : %1").arg(buffer).end();
+			assumeArg(vintEnd >= 0, "Ranks should be positive value : %1").arg(buffer).end();
+			assumeArg(vintStart < vintEnd, "Rank range should be in right order : %1 - %2").arg(rangeStart).arg(buffer).end();
+			assumeArg(vintEnd - vintStart < 1000, "Rank range is too wide, maybe this is a mistake : %1 - %2").arg(rangeStart).arg(buffer).end();
+
+			//insert all
+			for (int i = vintStart ; i <= vintEnd ; i++)
+				result.insert(i);
+
+			//reset
+			buffer = rangeStart = "";
+		} else if (c == '-' && rangeStart.empty()) {
+			rangeStart = buffer;
+			buffer = "";
+		} else {
+			MALT_FATAL_ARG("Invalid rank list format : %1").arg(value).end();
+		}
+	}
+
+	//ok
+	return result;
 }
 
 }

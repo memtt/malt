@@ -171,6 +171,7 @@ extern const ThreadLocalState TLS_STATE_INIT;
 void globalResetForTests(void);
 ThreadLocalState * maltGetLocalState();
 void globalDump(void);
+void initMpiRankFilter(void);
 
 }
 

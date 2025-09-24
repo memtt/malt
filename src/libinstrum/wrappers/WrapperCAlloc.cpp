@@ -14,6 +14,7 @@
 #include "state/LazyEnv.hpp"
 #include "state/ReentranceGuard.hpp"
 #include "WrapperCAlloc.hpp"
+#include "common/Helpers.hpp"
 #include "injectors/InjectPythonInit.hpp"
 #include <sys/mman.h>
 
@@ -61,6 +62,7 @@ void * MALT::malt_wrap_malloc(size_t size, const MallocFuncPtr & real_malloc, vo
 		//This is required for Ubuntu & Debian Python because we cannot hook in
 		//Py_RunMain() as I tried first.
 		initPythonLazy();
+		initMpiRankFilter();
 
 		//instru
 		MALT_WRAPPER_LOCAL_STATE_ACTION(env.getLocalProfiler().onMalloc(res,size,t,MALLOC_KIND_MALLOC, LANG_C, DOMAIN_C_ALLOC), retaddr);

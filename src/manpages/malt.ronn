@@ -125,6 +125,7 @@ The config file use INI format with sections and variables as in this example :
 	exec                           = 
 	childs                         = true
 	enabled                        = true
+  ranks                          =
 
 	[dump]
 	on-signal                      = 
@@ -260,6 +261,9 @@ The `filter` section support:
  * `enabled`:
    Enable profiling by default. Can be disable to be able to activate via C function call in the app 
    when you want.
+ * `ranks`:
+   When running in MPI mode, instrument only the given ranks. The list is provided under the form
+   `1,2-4,6`.
 
 The `dump` section permit to dump the profile whenever you want:
 

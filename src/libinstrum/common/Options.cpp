@@ -97,6 +97,7 @@ Options::Options(void)
 	this->exe                     = "";
 	this->childs                  = true;
 	this->enabled                 = true;
+	this->filterRanks             = "";
 	//dump
 	this->dumpOnSignal            = MALT_NO_DUMP_SIGNAL;
 	this->dumpAfterSeconds        = 0;
@@ -163,6 +164,7 @@ bool Options::operator==(const Options& value) const
 	if (this->exe != value.exe) return false;
 	if (this->childs != value.childs) return false;
 	if (this->enabled != value.enabled) return false;
+	if (this->filterRanks != value.filterRanks) return false;
 	//dump
 	if (this->dumpOnSignal != value.dumpOnSignal) return false;
 	if (this->dumpAfterSeconds != value.dumpAfterSeconds) return false;
@@ -313,6 +315,7 @@ void Options::loadFromIniDic ( dictionary* iniDic )
 	this->exe                 = iniparser_getstring(iniDic,"filter:exe",(char*)this->exe.c_str());
 	this->childs              = iniparser_getboolean(iniDic,"filter:childs",this->childs);
 	this->enabled             = iniparser_getboolean(iniDic,"filter:enabled",this->enabled);
+	this->filterRanks         = iniparser_getstring(iniDic,"filter:ranks",(char*)this->filterRanks.c_str());
 
 	//dump
 	this->dumpOnSignal        = iniparser_getstring(iniDic,"dump:on-signal",(char*)this->dumpOnSignal.c_str());
@@ -418,6 +421,7 @@ void convertToJson(htopml::JsonState & json,const Options & value)
 			json.printField("exe",value.exe);
 			json.printField("childs",value.childs);
 			json.printField("enabled",value.enabled);
+			json.printField("ranks",value.filterRanks);
 		json.closeFieldStruct("filter");
 
 		json.openFieldStruct("dump");
@@ -502,6 +506,7 @@ void Options::dumpConfig(const char* fname)
 	IniParserHelper::setEntry(dic,"filter:exe",this->exe.c_str());
 	IniParserHelper::setEntry(dic,"filter:childs",this->childs);
 	IniParserHelper::setEntry(dic,"filter:enabled",this->enabled);
+	IniParserHelper::setEntry(dic,"filter:ranks",this->filterRanks.c_str());
 
 	//dump
 	IniParserHelper::setEntry(dic,"dump:on-signal",this->dumpOnSignal.c_str());

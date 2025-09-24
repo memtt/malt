@@ -268,6 +268,7 @@ hidden=false          ; try to hide possible sensible names from profile (exe, h
 exe=                  ; Only apply malt on given exe (empty for all)
 childs=true           ; Instrument child processes or not
 enabled=true          ; Enable or disable MALT when threads start
+ranks=                ; Instrument only the given ranks from list as : 1,2-4,6
 
 [dump]
 on-signal=             ; Dump on signal. Can be comma separated list from SIGINT, SIGUSR1,

@@ -25,7 +25,14 @@ static int mpiRank = -1;
 struct Helpers
 {
 	static int getFileId(void);
+	static bool fileIdIsRank(void);
 };
+
+/**********************************************************/
+bool Helpers::fileIdIsRank(void)
+{
+	return true;
+}
 
 /**********************************************************/
 int Helpers::getFileId(void )
@@ -51,6 +58,7 @@ int MPI_Init(int *argc, char ***argv)
 	//extract rank
 	MPI_Comm_rank(MPI_COMM_WORLD,&MALT::mpiRank);
 
+	//ok
 	return res;
 }
 

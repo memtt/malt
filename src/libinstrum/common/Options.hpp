@@ -121,6 +121,7 @@ struct Options
 	std::string exe;
 	bool childs;
 	bool enabled;
+	std::string filterRanks;
 	//dump
 	std::string dumpOnSignal;
 	int dumpAfterSeconds;

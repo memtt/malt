@@ -61,3 +61,51 @@ TEST(TestHelpers, writeFullFile)
 	const std::string value = Helpers::loadFullFile(TEST_BUILD_DIR "/data-full-write.txt");
 	ASSERT_EQ(value, cstData1);
 }
+
+/**********************************************************/
+TEST(TestHelpers, rankStrToIntSet_empty)
+{
+	IntSet ranks = Helpers::rankStrToIntSet("");
+	ASSERT_TRUE(ranks.empty());
+}
+
+/**********************************************************/
+TEST(TestHelpers, rankStrToIntSet_single)
+{
+	IntSet ranks = Helpers::rankStrToIntSet("1");
+	ASSERT_TRUE(ranks.find(1) != ranks.end());
+	ASSERT_EQ(ranks.size(), 1);
+}
+
+/**********************************************************/
+TEST(TestHelpers, rankStrToIntSet_many)
+{
+	IntSet ranks = Helpers::rankStrToIntSet("1,2,3,4");
+	ASSERT_TRUE(ranks.find(1) != ranks.end());
+	ASSERT_TRUE(ranks.find(2) != ranks.end());
+	ASSERT_TRUE(ranks.find(3) != ranks.end());
+	ASSERT_TRUE(ranks.find(4) != ranks.end());
+	ASSERT_EQ(ranks.size(), 4);
+}
+
+/**********************************************************/
+TEST(TestHelpers, rankStrToIntSet_single_range)
+{
+	IntSet ranks = Helpers::rankStrToIntSet("1-4");
+	ASSERT_TRUE(ranks.find(1) != ranks.end());
+	ASSERT_TRUE(ranks.find(2) != ranks.end());
+	ASSERT_TRUE(ranks.find(3) != ranks.end());
+	ASSERT_TRUE(ranks.find(4) != ranks.end());
+	ASSERT_EQ(ranks.size(), 4);
+}
+
+/**********************************************************/
+TEST(TestHelpers, rankStrToIntSet_list_and_range)
+{
+	IntSet ranks = Helpers::rankStrToIntSet("1,2-3,4");
+	ASSERT_TRUE(ranks.find(1) != ranks.end());
+	ASSERT_TRUE(ranks.find(2) != ranks.end());
+	ASSERT_TRUE(ranks.find(3) != ranks.end());
+	ASSERT_TRUE(ranks.find(4) != ranks.end());
+	ASSERT_EQ(ranks.size(), 4);
+}
