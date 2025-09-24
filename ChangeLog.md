@@ -1,6 +1,23 @@
 Change log
 ==========
- 
+
+NEXT
+----
+
+ - Replace the webiew backend in NodeJS by a C++ one (faster and no deps to NodeJS required).
+ - Add MPI rank filtering via -o filter:ranks=1,2-4,6 to only instrument some MPI ranks.
+ - Add instrumentation of mmap / munmap / mremap.
+ - Add more exemples.
+ - Report python & C domains counters in profile.
+ - Hide calls to PyDataMem_\*New\* in reports.
+ - Remove malt-qt5.
+ - Fix bugs on chart axis rendering in webview.
+ - Fix some build issues when tests are disabled.
+ - Fix broken thread tracking such that threads was not seen in the report.
+ - Fix some issues in some page rendering (annotations.)
+ - Fix segfault in calling addr2line in parallel.
+ - Fix bugs about python support.
+
 1.3.1 - 20/06/2025
 ------------------
 
