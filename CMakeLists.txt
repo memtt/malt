@@ -58,7 +58,7 @@ set(PORTABILITY_COMPILER  "GNU"      CACHE STRING "Select compiler support to us
 set(PORTABILITY_CLOCK     "RDTSC"    CACHE STRING "Clock to be used to represent time in MALT.")
 set(PORTABILITY_PYTHON    "LAZY"     CACHE STRING "Select the instrumentation mode for python : 'LAZY', 'NATIVE'.")
 #select webvew server mode
-set(WEBVIEW_SERVER        "CPP"      CACHE STRING "Select the webview server to use : AUTO, CPP, NODEJS, RUST, OFF.")
+set(WEBVIEW_SERVER        "AUTO"     CACHE STRING "Select the webview server to use : AUTO, CPP, NODEJS, RUST, OFF.")
 
 ############################################################
 if (ENABLE_TESTS OR CMAKE_BUILD_TYPE="Debug")
