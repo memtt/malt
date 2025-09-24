@@ -72,9 +72,9 @@
     "globalPeak": 1048592,
     "lifetime": {
      "count": 3,
-     "max": 1954547,
-     "min": 7840,
-     "sum": 3592992
+     "max": 1273461,
+     "min": 11310,
+     "sum": 2414909
     },
     "maxAliveReq": 1048600,
     "mmap": {
@@ -126,9 +126,9 @@
     "globalPeak": 1048592,
     "lifetime": {
      "count": 3,
-     "max": 1954547,
-     "min": 7840,
-     "sum": 3592992
+     "max": 1273461,
+     "min": 11310,
+     "sum": 2414909
     },
     "maxAliveReq": 1048600,
     "mmap": {
@@ -169,7 +169,7 @@
    }
   }
  ],
- "getCallTree": "digraph G {\nnode  [color=\"white\", fontcolor=\"white\", fontname=\"Courier New\", fontsize=\"10\", penwidth=\"1\", shape=\"record\", style=\"filled\"];\nedge  [fontname=\"Courier New\", fontsize=\"9\"];\nnode4294967302 [fillcolor=\"#ab4141\", label=\"_start | 3  \", tooltip=\"_start\"];\nnode4294967299 [fillcolor=\"#ab4141\", label=\"main | 3  \", tooltip=\"main\"];\nnode1 [fillcolor=\"#5f6991\", label=\"std::__to_chars_bfloat16_t(...) | 1  \", tooltip=\"std::__to_chars_bfloat16_t(char*, char*, float, std::chars_format)\"];\nnode3 [fillcolor=\"#5f6991\", label=\"call_init | 1  \", tooltip=\"call_init\"];\nnode4 [fillcolor=\"#5f6991\", label=\"_dl_start_user | 1  \", tooltip=\"_dl_start_user\"];\nnode4294967300 [fillcolor=\"#ab4141\", label=\"__libc_start_call_main | 3  \", tooltip=\"__libc_start_call_main\"];\nnode4294967301 [fillcolor=\"#ab4141\", label=\"__libc_start_main_impl | 3  \", tooltip=\"__libc_start_main_impl\"];\nnode4 -> node3 [color=\"#000000\", fontcolor=\"#000000\", label=\" 1  \", penwidth=\"3.2\"];\nnode4294967300 -> node4294967299 [color=\"#000000\", fontcolor=\"#000000\", label=\" 3  \", penwidth=\"8\"];\nnode4294967301 -> node4294967300 [color=\"#000000\", fontcolor=\"#000000\", label=\" 3  \", penwidth=\"8\"];\nnode4294967302 -> node4294967301 [color=\"#000000\", fontcolor=\"#000000\", label=\" 3  \", penwidth=\"8\"];\nnode3 -> node1 [color=\"#000000\", fontcolor=\"#000000\", label=\" 1  \", penwidth=\"3.2\"];\nnode3 -> node3 [color=\"#000000\", fontcolor=\"#000000\", label=\" 1  \", penwidth=\"3.2\"];\n\n}\n",
+ "getCallTree": "digraph G {\nnode  [color=\"white\", fontcolor=\"white\", fontname=\"Courier New\", fontsize=\"10\", penwidth=\"1\", shape=\"record\", style=\"filled\"];\nedge  [fontname=\"Courier New\", fontsize=\"9\"];\nnode4294967302 [fillcolor=\"#ab4141\", label=\"_start | 3  \", tooltip=\"_start\"];\nnode4294967299 [fillcolor=\"#ab4141\", label=\"main | 3  \", tooltip=\"main\"];\nnode1 [fillcolor=\"#5f6991\", label=\"std::__to_chars_bfloat16_t(...) | 1  \", tooltip=\"std::__to_chars_bfloat16_t(char*, char*, float, std::chars_format)\"];\nnode3 [fillcolor=\"#5f6991\", label=\"call_init | 1  \", tooltip=\"call_init\"];\nnode4 [fillcolor=\"#5f6991\", label=\"_dl_start_user | 1  \", tooltip=\"_dl_start_user\"];\nnode4294967300 [fillcolor=\"#ab4141\", label=\"__libc_start_call_main | 3  \", tooltip=\"__libc_start_call_main\"];\nnode4294967301 [fillcolor=\"#ab4141\", label=\"__libc_start_main_impl | 3  \", tooltip=\"__libc_start_main_impl\"];\nnode3 -> node3 [color=\"#000000\", fontcolor=\"#000000\", label=\" 1  \", penwidth=\"3.2\"];\nnode3 -> node1 [color=\"#000000\", fontcolor=\"#000000\", label=\" 1  \", penwidth=\"3.2\"];\nnode4 -> node3 [color=\"#000000\", fontcolor=\"#000000\", label=\" 1  \", penwidth=\"3.2\"];\nnode4294967300 -> node4294967299 [color=\"#000000\", fontcolor=\"#000000\", label=\" 3  \", penwidth=\"8\"];\nnode4294967301 -> node4294967300 [color=\"#000000\", fontcolor=\"#000000\", label=\" 3  \", penwidth=\"8\"];\nnode4294967302 -> node4294967301 [color=\"#000000\", fontcolor=\"#000000\", label=\" 3  \", penwidth=\"8\"];\n\n}\n",
  "getFilterdStacks": [
   {
    "info": {
@@ -190,9 +190,9 @@
     "globalPeak": 0,
     "lifetime": {
      "count": 1,
-     "max": 7840,
-     "min": 7840,
-     "sum": 7840
+     "max": 11310,
+     "min": 11310,
+     "sum": 11310
     },
     "maxAliveReq": 8,
     "mmap": {
@@ -358,9 +358,9 @@
     "globalPeak": 16,
     "lifetime": {
      "count": 1,
-     "max": 1630605,
-     "min": 1630605,
-     "sum": 1630605
+     "max": 1130138,
+     "min": 1130138,
+     "sum": 1130138
     },
     "maxAliveReq": 16,
     "mmap": {
@@ -477,9 +477,9 @@
     "globalPeak": 1048576,
     "lifetime": {
      "count": 1,
-     "max": 1954547,
-     "min": 1954547,
-     "sum": 1954547
+     "max": 1273461,
+     "min": 1273461,
+     "sum": 1273461
     },
     "maxAliveReq": 1048576,
     "mmap": {
@@ -1200,9 +1200,9 @@
     "globalPeak": 1048592,
     "lifetime": {
      "count": 2,
-     "max": 1954547,
-     "min": 1630605,
-     "sum": 3585152
+     "max": 1273461,
+     "min": 1130138,
+     "sum": 2403599
     },
     "maxAliveReq": 1048592,
     "mmap": {
@@ -1287,9 +1287,9 @@
     "globalPeak": 1048592,
     "lifetime": {
      "count": 2,
-     "max": 1954547,
-     "min": 1630605,
-     "sum": 3585152
+     "max": 1273461,
+     "min": 1130138,
+     "sum": 2403599
     },
     "maxAliveReq": 1048592,
     "mmap": {
@@ -1328,9 +1328,9 @@
     "globalPeak": 0,
     "lifetime": {
      "count": 1,
-     "max": 7840,
-     "min": 7840,
-     "sum": 7840
+     "max": 11310,
+     "min": 11310,
+     "sum": 11310
     },
     "maxAliveReq": 8,
     "mmap": {
@@ -1377,9 +1377,9 @@
     "globalPeak": 0,
     "lifetime": {
      "count": 1,
-     "max": 7840,
-     "min": 7840,
-     "sum": 7840
+     "max": 11310,
+     "min": 11310,
+     "sum": 11310
     },
     "maxAliveReq": 8,
     "mmap": {
@@ -1415,9 +1415,9 @@
     "globalPeak": 0,
     "lifetime": {
      "count": 1,
-     "max": 7840,
-     "min": 7840,
-     "sum": 7840
+     "max": 11310,
+     "min": 11310,
+     "sum": 11310
     },
     "maxAliveReq": 8,
     "mmap": {
@@ -1456,9 +1456,9 @@
     "globalPeak": 1048592,
     "lifetime": {
      "count": 2,
-     "max": 1954547,
-     "min": 1630605,
-     "sum": 3585152
+     "max": 1273461,
+     "min": 1130138,
+     "sum": 2403599
     },
     "maxAliveReq": 1048592,
     "mmap": {
@@ -1543,9 +1543,9 @@
     "globalPeak": 1048592,
     "lifetime": {
      "count": 2,
-     "max": 1954547,
-     "min": 1630605,
-     "sum": 3585152
+     "max": 1273461,
+     "min": 1130138,
+     "sum": 2403599
     },
     "maxAliveReq": 1048592,
     "mmap": {
@@ -1584,9 +1584,9 @@
     "globalPeak": 1048592,
     "lifetime": {
      "count": 2,
-     "max": 1954547,
-     "min": 1630605,
-     "sum": 3585152
+     "max": 1273461,
+     "min": 1130138,
+     "sum": 2403599
     },
     "maxAliveReq": 1048592,
     "mmap": {
@@ -1633,9 +1633,9 @@
     "globalPeak": 1048592,
     "lifetime": {
      "count": 2,
-     "max": 1954547,
-     "min": 1630605,
-     "sum": 3585152
+     "max": 1273461,
+     "min": 1130138,
+     "sum": 2403599
     },
     "maxAliveReq": 1048592,
     "mmap": {
@@ -1671,9 +1671,9 @@
     "globalPeak": 1048592,
     "lifetime": {
      "count": 2,
-     "max": 1954547,
-     "min": 1630605,
-     "sum": 3585152
+     "max": 1273461,
+     "min": 1130138,
+     "sum": 2403599
     },
     "maxAliveReq": 1048592,
     "mmap": {
@@ -1712,9 +1712,9 @@
     "globalPeak": 1048592,
     "lifetime": {
      "count": 3,
-     "max": 1954547,
-     "min": 7840,
-     "sum": 3592992
+     "max": 1273461,
+     "min": 11310,
+     "sum": 2414909
     },
     "maxAliveReq": 1048600,
     "mmap": {
@@ -1799,9 +1799,9 @@
     "globalPeak": 1048592,
     "lifetime": {
      "count": 3,
-     "max": 1954547,
-     "min": 7840,
-     "sum": 3592992
+     "max": 1273461,
+     "min": 11310,
+     "sum": 2414909
     },
     "maxAliveReq": 1048600,
     "mmap": {
@@ -1840,9 +1840,9 @@
     "globalPeak": 1048592,
     "lifetime": {
      "count": 3,
-     "max": 1954547,
-     "min": 7840,
-     "sum": 3592992
+     "max": 1273461,
+     "min": 11310,
+     "sum": 2414909
     },
     "maxAliveReq": 1048600,
     "mmap": {
@@ -1927,9 +1927,9 @@
     "globalPeak": 1048592,
     "lifetime": {
      "count": 3,
-     "max": 1954547,
-     "min": 7840,
-     "sum": 3592992
+     "max": 1273461,
+     "min": 11310,
+     "sum": 2414909
     },
     "maxAliveReq": 1048600,
     "mmap": {
@@ -2582,7 +2582,7 @@
   },
   "[heap]": {
    "cnt": 1,
-   "mem": 569344
+   "mem": 565248
   },
   "[stack]": {
    "cnt": 1,
@@ -2601,12 +2601,12 @@
    "mem": 16384
   },
   "anonymous": {
-   "cnt": 10,
+   "cnt": 11,
    "mem": 13283328
   },
   "src/libinstrum/libmalt.so.1.3.1": {
    "cnt": 5,
-   "mem": 1241088
+   "mem": 1269760
   },
   "src/reader/libreader/extractors/tests/extractor-example": {
    "cnt": 5,
@@ -2621,10 +2621,10 @@
    "largestStack": 288,
    "maxChunkSize": 1048576,
    "minChunkSize": 8,
-   "physicalMem": 7667712,
+   "physicalMem": 7602176,
    "requestedMem": 1122320,
    "segments": 3,
-   "virtualMem": 23777280
+   "virtualMem": 23801856
   }
  },
  "getSummaryV2": {
@@ -2632,11 +2632,11 @@
    "allocator": "/usr/lib/x86_64-linux-gnu/libc.so.6",
    "allocatorWrappers": [],
    "command": "src/reader/libreader/extractors/tests/extractor-example",
-   "date": "2025-09-03 10:43",
+   "date": "2025-09-24 14:21",
    "exe": "extractor-example",
    "formatVersion": "1.1",
    "hostname": "sebv6",
-   "runtime": 1832880729,
+   "runtime": 1133980865,
    "tool": "malt-1.3.1-dev"
   },
   "summary": {
@@ -2649,15 +2649,15 @@
    "meanAllocSize": 280582.0,
    "minAllocSize": 8,
    "numGblVar": 789,
-   "peakAllocCountRate": 181614346240.0,
-   "peakAllocRate": 181614346240.0,
+   "peakAllocCountRate": 483956523008.0,
+   "peakAllocRate": 483956523008.0,
    "peakInternalMemory": 0,
-   "peakPhysicalMemory": 7667712,
+   "peakPhysicalMemory": 7602176,
    "peakRequestedMemory": 1122320,
    "peakSegmentCount": 3,
-   "peakVirtualMemory": 23777280,
+   "peakVirtualMemory": 23801856,
    "recyclingRatio": 1.000007152557373,
-   "tlsVarMem": 400,
+   "tlsVarMem": 80,
    "totalAllocatedMemory": 1122328
   },
   "summaryDomains": {
@@ -2682,8 +2682,8 @@
    ]
   },
   "system": {
-   "ticksPerSecond": 1991983943,
-   "totalMemory": 16400846848
+   "ticksPerSecond": 1991993245,
+   "totalMemory": 16400842752
   },
   "threadStats": [
    {
@@ -2705,7 +2705,7 @@
     "malloc": {
      "count": 4,
      "sum": 1122328,
-     "time": 21186
+     "time": 19648
     },
     "memalign": {
      "count": 0,

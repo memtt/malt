@@ -109,3 +109,14 @@ TEST(TestHelpers, rankStrToIntSet_list_and_range)
 	ASSERT_TRUE(ranks.find(4) != ranks.end());
 	ASSERT_EQ(ranks.size(), 4);
 }
+
+/**********************************************************/
+int main(int argc, char ** argv)
+{
+	//init internal allocator
+	gblInternaAlloc = new SimpleAllocator(true);
+	
+	// This allows the user to override the flag on the command line.
+	::testing::InitGoogleTest(&argc, argv);
+	return RUN_ALL_TESTS();
+}

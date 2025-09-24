@@ -70,7 +70,8 @@ const char cstJson[] = "\
 	\"filter\":{\n\
 		\"exe\":\"\",\n\
 		\"childs\":true,\n\
-		\"enabled\":true\n\
+		\"enabled\":true,\n\
+		\"ranks\":\"\"\n\
 	},\n\
 	\"dump\":{\n\
 		\"onSignal\":\"\",\n\

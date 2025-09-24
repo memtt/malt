@@ -73,6 +73,7 @@ struct Config
 		std::string exe;
 		bool childs;
 		bool enabled;
+		std::string ranks;
 	} filter;
 	struct {
 		std::string onSignal;

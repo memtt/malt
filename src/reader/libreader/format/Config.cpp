@@ -83,6 +83,7 @@ void to_json(nlohmann::json & json, const Config & config){
 				{"exe", config.filter.exe},
 				{"childs", config.filter.childs},
 				{"enabled", config.filter.enabled},
+				{"ranks", config.filter.ranks},
 			}
 		},
 		{
@@ -203,9 +204,11 @@ void from_json(const JsonIn & json, Config & config)
 	assert(jsContains(jsonFilter, "exe"));
 	assert(jsContains(jsonFilter, "childs"));
 	assert(jsContains(jsonFilter, "enabled"));
+	assert(jsContains(jsonFilter, "ranks"));
 	jsonFilter.at("exe").get_to(config.filter.exe);
 	jsonFilter.at("childs").get_to(config.filter.childs);
 	jsonFilter.at("enabled").get_to(config.filter.enabled);
+	jsonFilter.at("ranks").get_to(config.filter.ranks);
 
 	//maxStack
 	JsonIn jsonDump = json.at("dump");
