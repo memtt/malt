@@ -184,8 +184,17 @@ Stack* LocalAllocStackProfiler::getStack(Language lang, size_t size, bool isFree
 	StackMode localPyStackMode = this->options->pythonStackEnum;
 
 	//apply tricks
-	if (isMmmap)
+	//currently has an issue if python trigger an internal mmap call for its own handling
+	//because then we cannot walk the stack due to GIL locking and re-entrance issue.
+	if (isMmmap) {
+		if (localCStackMode == StackMode::STACK_MODE_NONE && localPyStackMode != StackMode::STACK_MODE_NONE)
+			localCStackMode = StackMode::STACK_MODE_BACKTRACE;
+		else if (localCStackMode == StackMode::STACK_MODE_PYTHON && localPyStackMode == StackMode::STACK_MODE_ENTER_EXIT_FUNC)
+			localCStackMode = StackMode::STACK_MODE_BACKTRACE;//StackMode::STACK_MODE_ENTER_EXIT_FUNC;
+		else if (localCStackMode == StackMode::STACK_MODE_PYTHON && localPyStackMode != StackMode::STACK_MODE_NONE)
+			localCStackMode = StackMode::STACK_MODE_BACKTRACE;
 		localPyStackMode = StackMode::STACK_MODE_NONE;
+	}
 
 	//check sampling
 	bool rejectedBySampling = (this->globalProfiler->isAcceptedBySampling(size, isFree) == false);

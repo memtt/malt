@@ -379,23 +379,26 @@ maltSelectProfile()
 		"python-only")
 			options="${PROFILE_PYTHON_ONLY}"
 			;;
+		"python-domains")
+			options="${PROFILE_PYTHON_DOMAINS}"
+			;;
 		"python-sampling-10M")
-			echo "MALT: Using sampling profile, faster but not exact, look on --profile in case !"
+			echo "MALT: Using sampling profile, faster but not exact, look on --profile in case !" 1>&2
 			options="${PROFILE_PYTHON_SAMPLING_10M}"
 			;;
 		"python-sampling-20M")
-			echo "MALT: Using sampling profile, faster but not exact, look on --profile in case !"
+			echo "MALT: Using sampling profile, faster but not exact, look on --profile in case !" 1>&2
 			options="${PROFILE_PYTHON_SAMPLING_20M}"
 			;;
 		"python-sampling")
-			echo "MALT: Using sampling profile, faster but not exact, look on --profile in case !"
+			echo "MALT: Using sampling profile, faster but not exact, look on --profile in case !" 1>&2
 			options="${PROFILE_PYTHON_SAMPLING}"
 			;;
 		"python-full")
 			options="${PROFILE_PYTHON_FULL}"
 			;;
 		*)
-			echo "Invalid pre-configure profile : '${1}'"
+			echo "MALT: Invalid pre-configure profile : '${1}'" 1>&2
 			exit 1
 			;;
 	esac
