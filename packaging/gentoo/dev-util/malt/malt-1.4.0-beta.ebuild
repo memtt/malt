@@ -8,24 +8,37 @@
 #    AUTHOR   : Sébastien Valat (INRIA) - 2025
 ############################################################
 
-EAPI=4
+EAPI=8
 
-inherit cmake-utils
+inherit cmake
 
-RESTRICT="primaryuri"
-DESCRIPTION="Memory profiling tool to track memory allocations (malloc,free,realloc...)."
-HOMEPAGE="https://github.com/svalat/malt"
-SRC_URI="https://github.com/downloads/svalat/malt/malt-1.4.0-beta.tar.bz2"
-
+DESCRIPTION="A memory allocation profiling tool for C/C++/Fortran."
+HOMEPAGE="https://memtt.github.io/malt/"
+SRC_URI="https://github.com/memtt/malt/releases/download/v${PV}/malt-${PV}.tar.bz2"
 LICENSE="CeCILL-C"
 SLOT="0"
-KEYWORDS="~x86 ~amd64"
-IUSE=""
-
-DEPEND="sys-libs/libunwindd dev-libs/elfutils"
-RDEPEND="sys-libs/libunwind dev-libs/elfutils net-libs/nodejs"
+KEYWORDS="~amd64 ~x86"
+IUSE="test +python +jemalloc"
+RESTRICT=""
+DEPEND="
+	virtual/libelf
+	sys-libs/libunwind
+	dev-cpp/nlohmann_json
+	dev-cpp/cpp-httplib
+	dev-libs/openssl
+	python? ( dev-lang/python )
+	test? ( dev-cpp/gtest )
+"
+RDEPEND="
+	${DEPEND}
+	sys-devel/binutils
+"
 
 src_configure() {
-	#local mycmakeargs=(-DXXX=YYY)
-	cmake-utils_src_configure
+	mycmakeargs=(
+		-DENABLE_TESTS=$(usex test)
+		-DENABLE_PYTHON=$(usex python)
+		-DENABLE_JEMALLOC=$(usex jemalloc)
+	)
+	cmake_src_configure
 }
