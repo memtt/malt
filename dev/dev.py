@@ -15,6 +15,7 @@ import argparse
 from gen_archive import malt_dev_gen_archive
 from gen_coverage import malt_gen_coverage
 from update_file_headers import config_arg_parser, run_from_args
+from update_version import malt_update_version
 
 ############################################################
 def get_malt_source_dir() -> str:
@@ -48,6 +49,14 @@ def command_coverage(args: object) -> None:
 ############################################################
 def command_update_file_headers(args: object) -> None:
     run_from_args(args)
+    
+def command_version(args) -> None:
+    extra = ""
+    if args.beta:
+        extra = "-beta"
+    elif args.dev:
+        extra = "-dev"
+    malt_update_version(args.version, extra)
 
 ############################################################
 def main() -> None:
@@ -73,6 +82,13 @@ def main() -> None:
     update_file_headers = subparser.add_parser('headers', aliases=['head'], help="UPdate file headers.")
     config_arg_parser(update_file_headers)
     update_file_headers.set_defaults(func=command_update_file_headers)
+    
+    # sub command
+    update_version = subparser.add_parser('version', aliases=['ver'], help="Update version in sources")
+    update_version.add_argument('version', help="Set the version number")
+    update_version.add_argument('--beta', help="Mark the version as beta", action="store_true")
+    update_version.add_argument('--dev', help="Mark the version as dev branch", action="store_true")
+    update_version.set_defaults(func=command_version)
 
     # parse
     args = parser.parse_args()

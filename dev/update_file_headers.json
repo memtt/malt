@@ -79,7 +79,8 @@
 				"Makefile",
 				"makefile",
 				"makefile.rules",
-				"*.yml"
+				"*.yml",
+				"*.toml"
 			]
 		},
 		"c": {
@@ -98,7 +99,8 @@
 				"*.hxx",
 				"*.h.in",
 				"*.js",
-				"*.css"
+				"*.css",
+				"*.rs"
 			]
 		},
 		"html": {
@@ -134,6 +136,7 @@
 		"extern-deps/iniparser",
 		"*.yml",
 		".gitignore",
+		"src/reader/.gitignore",
 		"*.json",
 		"*.md",
 		"Doxyfile",
@@ -155,7 +158,8 @@
 		"src/webview/client-files/app/bower_components",
 		"*.png",
 		"extern-deps/renenyffenegger-base64/*.h",
-		"extern-deps/renenyffenegger-base64/*.cpp"
+		"extern-deps/renenyffenegger-base64/*.cpp",
+		"src/reader/webview-2-rust/Cargo.lock"
 	],
 	"include_files": [
 		"src/**/CMakeLists.txt",
