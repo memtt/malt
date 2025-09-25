@@ -357,7 +357,7 @@ class HeaderPatcher:
         # check if included
         include = self.config['include_files']
         for ipattern in include:
-            if fnmatch.fnmatch(filename, ipattern) or filename.startswith(ipattern):
+            if fnmatch.fnmatch(filename, ipattern) or filename.startswith(ipattern) or filename == ipattern:
                 return True
         return False
 
@@ -365,7 +365,7 @@ class HeaderPatcher:
         # if exclude
         exclude = self.config['exclude_files']
         for pattern in exclude:
-            if fnmatch.fnmatch(filename, pattern) or filename.startswith(pattern):
+            if fnmatch.fnmatch(filename, pattern) or filename.startswith(pattern) or filename == pattern:
                 if not self.is_in_include_files(filename):
                     print(f" - {filename} : EXCLUDED")
                     return

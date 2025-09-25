@@ -162,8 +162,21 @@
 		"src/reader/webview-2-rust/Cargo.lock"
 	],
 	"include_files": [
-		"src/**/CMakeLists.txt",
+		"configure",
+		"CMakeLists.txt",
+		"src/CMakeLists.txt",
+		"src/*/CMakeLists.txt",
+		"src/*/*/CMakeLists.txt",
+		"src/*/*/*/CMakeLists.txt",
+		"src/*/*/*/*/CMakeLists.txt",
 		".github/workflows/malt.yml",
-		".gitlab-ci.yml"
+		".gitlab-ci.yml",
+		"extern-deps/CMakeLists.txt",
+		"extern-deps/from-htopml/CMakeLists.txt",
+		"extern-deps/from-htopml/json/CMakeLists.txt",
+		"extern-deps/iniparser/CMakeLists.txt",
+		"extern-deps/iniparser/src/CMakeLists.txt",
+		"extern-deps/jemalloc/CMakeLists.txt",
+		"extern-deps/renenyffenegger-base64/CMakeLists.txt"
 	]
 }

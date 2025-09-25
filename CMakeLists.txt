@@ -24,7 +24,7 @@ endif()
 ############################################################
 #set versions to dispatch in code
 set(MALT_VERSION "1.3.1")
-set(MALT_VERSION_NOTE "-dev")
+set(MALT_VERSION_NOTE "")
 set(MALT_SO_VERSION "1")
 set(MALT_JSON_FORMAT_VERSION "1.1")
 
