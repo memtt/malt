@@ -41,6 +41,7 @@ execute_process(
 		--enable-shared
 		--disable-cxx
 		--without-export
+		--disable-doc
 	WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/jemalloc-build
 	RESULT_VARIABLE jemalloc_configure_status
 )
