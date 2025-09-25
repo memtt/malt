@@ -1,13 +1,13 @@
 {
     "python_basic_array_backtrace": {
-        "main1.py:py:main1.<module>:12":true,
-        "main1.py:py:main1.MainClass():13":true,
-        "main1.py:py:main1.MainClass.a_function():18":true,
-        "main1.py:py:main1.main():24":true},
-    "python_basic_array_enter_exit": {
-        "main1.py:py:main1.<module>:12":true,
+        "main1.py:py:main1.<module>:11":true,
         "main1.py:py:main1.MainClass():12":true,
-		"main1.py:py:main1.MainClass.__init__():13": true,
-        "main1.py:py:main1.MainClass.a_function():16":true,
-        "main1.py:py:main1.main():23":true}
+        "main1.py:py:main1.MainClass.a_function():17":true,
+        "main1.py:py:main1.main():23":true},
+    "python_basic_array_enter_exit": {
+        "main1.py:py:main1.<module>:11":true,
+        "main1.py:py:main1.MainClass():11":true,
+		"main1.py:py:main1.MainClass.__init__():12": true,
+        "main1.py:py:main1.MainClass.a_function():15":true,
+        "main1.py:py:main1.main():22":true}
 }
