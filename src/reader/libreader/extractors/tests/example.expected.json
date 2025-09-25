@@ -2604,7 +2604,7 @@
    "cnt": 11,
    "mem": 13283328
   },
-  "src/libinstrum/libmalt.so.1.3.1": {
+  "src/libinstrum/libmalt.so.1.4.0-beta": {
    "cnt": 5,
    "mem": 1269760
   },
@@ -2637,7 +2637,7 @@
    "formatVersion": "1.1",
    "hostname": "sebv6",
    "runtime": 1133980865,
-   "tool": "malt-1.3.1"
+   "tool": "malt-1.4.0-beta"
   },
   "summary": {
    "allocCount": 4,

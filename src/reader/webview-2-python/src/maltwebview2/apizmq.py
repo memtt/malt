@@ -1,9 +1,8 @@
 ############################################################
 #    PROJECT  : MALT (MALoc Tracker)
-#    VERSION  : 1.3.1
-#    DATE     : 05/2025
+#    DATE     : 07/2025
 #    LICENSE  : CeCILL-C
-#    FILE     : ./src/reader/webview-2-python/src/maltwebview2/apizmq.py
+#    FILE     : src/reader/webview-2-python/src/maltwebview2/apizmq.py
 #-----------------------------------------------------------
 #    AUTHOR   : Sébastien Valat (INRIA) - 2025
 ############################################################

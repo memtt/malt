@@ -1,7 +1,6 @@
 /***********************************************************
 *    PROJECT  : MALT (MALoc Tracker)
-*    VERSION  : 1.3.1
-*    DATE     : 03/2025
+*    DATE     : 09/2025
 *    LICENSE  : CeCILL-C
 *    FILE     : src/libinstrum/core/tests/TestSimpleCallStackTracker.cpp
 *-----------------------------------------------------------
@@ -103,7 +102,7 @@ const char * CST_REF_2 = "{\n\
 
 const char * CST_REF_3 = "\
 version: 1\n\
-creator: MALT-1.3.1\n\
+creator: MALT-1.4.0-beta\n\
 pid: 10000\n\
 cmd: TestSimpleCallStackTracker\n\
 part: 1\n\

@@ -1,3 +1,12 @@
+############################################################
+#    PROJECT  : MALT (MALoc Tracker)
+#    DATE     : 04/2025
+#    LICENSE  : CeCILL-C
+#    FILE     : src/reader/webview-2-python/pyproject.toml
+#-----------------------------------------------------------
+#    AUTHOR   : Sébastien Valat (INRIA) - 2025
+############################################################
+
 [build-system]
 requires = ["hatchling >= 1.26"]
 build-backend = "hatchling.build"

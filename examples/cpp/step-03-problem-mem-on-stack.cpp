@@ -1,9 +1,8 @@
 /***********************************************************
 *    PROJECT  : MALT (MALoc Tracker)
-*    VERSION  : 1.3.1
 *    DATE     : 02/2025
 *    LICENSE  : CeCILL-C
-*    FILE     : examples/cpp/step-3-problem-mem-on-stack.cpp
+*    FILE     : examples/cpp/step-03-problem-mem-on-stack.cpp
 *-----------------------------------------------------------
 *    AUTHOR   : Sébastien Valat (INRIA) - 2025
 ***********************************************************/

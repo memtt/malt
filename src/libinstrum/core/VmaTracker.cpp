@@ -1,7 +1,6 @@
 /***********************************************************
 *    PROJECT  : MALT (MALoc Tracker)
-*    VERSION  : 1.3.1
-*    DATE     : 02/2025
+*    DATE     : 09/2025
 *    LICENSE  : CeCILL-C
 *    FILE     : src/libinstrum/core/VmaTracker.cpp
 *-----------------------------------------------------------

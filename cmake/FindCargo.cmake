@@ -1,6 +1,5 @@
 ############################################################
 #    PROJECT  : MALT (MALoc Tracker)
-#    VERSION  : 1.3.1
 #    DATE     : 06/2025
 #    LICENSE  : CeCILL-C
 #    FILE     : cmake/FindCargo.cmake

@@ -1,12 +1,12 @@
 /***********************************************************
 *    PROJECT  : MALT (MALoc Tracker)
-*    VERSION  : 1.3.1
-*    DATE     : 11/2014
+*    DATE     : 08/2025
 *    LICENSE  : CeCILL-C
 *    FILE     : src/libinstrum/common/GTestHelper.hpp
 *-----------------------------------------------------------
 *    AUTHOR   : Sébastien Valat - 2014
 *    AUTHOR   : Sébastien Valat (ECR) - 2014
+*    AUTHOR   : Sébastien Valat (INRIA) - 2025
 ***********************************************************/
 
 #ifndef MALT_GTEST_HELPER_HPP

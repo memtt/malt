@@ -1,9 +1,8 @@
 /***********************************************************
 *    PROJECT  : MALT (MALoc Tracker)
-*    VERSION  : 1.3.1
 *    DATE     : 07/2025
 *    LICENSE  : CeCILL-C
-*    FILE     : ./src/reader/libreader/json/Parser.hpp
+*    FILE     : src/reader/libreader/json/Parser.hpp
 *-----------------------------------------------------------
 *    AUTHOR   : Sébastien Valat (INRIA) - 2025
 ***********************************************************/

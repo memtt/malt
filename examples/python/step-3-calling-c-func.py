@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 ############################################################
 #    PROJECT  : MALT (MALoc Tracker)
-#    VERSION  : 1.3.1
 #    DATE     : 06/2025
 #    LICENSE  : CeCILL-C
 #    FILE     : examples/python/step-3-calling-c-func.py

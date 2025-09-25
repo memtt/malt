@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta http-equiv='content-type' content='text/html;charset=utf8'>
-  <meta name='generator' content='Ronn-NG/v0.9.1 (http://github.com/apjanke/ronn-ng/tree/0.9.1)'>
+  <meta http-equiv='content-type' content='text/html;charset=utf-8'>
+  <meta name='generator' content='Ronn-NG/v0.10.1 (http://github.com/apjanke/ronn-ng/tree/0.10.1)'>
   <title>malt(1) - A memory profiling tool</title>
   <style type='text/css' media='all'>
   /* style: man */
@@ -145,6 +145,9 @@ Automatically wrap all the memory managment functions under the given prefix. Yo
 several prefixes separated by comma. For exemple giving <code>je_</code> will wrap all the <code>je_malloc</code>,
 <code>je_free</code>, <code>je_realloc</code>... functions.</li>
   <li>
+<code>--gdb</code>:
+Run the program into GDB by configuring Automatically GDB to work properly with MALT.</li>
+  <li>
 <code>-h</code>, <code>--help</code>:
 Display help message with a list of available command line options.</li>
 </ul>
@@ -182,7 +185,7 @@ enabled                        = true
 mode                           = backtrace
 resolve                        = true
 libunwind                      = false
-skip                           = 4
+skip                           = 4   sampling                       = false   samplingBw                     = 4093
 
 [output]
 name                           = malt-%1-%2.%3
@@ -211,12 +214,29 @@ hidden                         = false
 [filter]
 exec                           = 
 childs                         = true
-enabled                        = true
+enabled                        = true   ranks                          =
 
 [dump]
 on-signal                      = 
 after-seconds                  = 0
+on-sys-full-at                 =
+on-app-using-rss               =
+on-app-using-virt              =
+on-app-using-req               =
+on-thread-stack-using          =   watch-dog                      = false
 </code></pre>
+
+<p>[python]
+  instru                         = true
+  stack                          = enter-exit
+  mix                            = false
+  obj                            = true
+  mem                            = true
+  raw                            = true</p>
+
+<p>[tools]
+  nm                             = true
+  nmMaxSize                      = 50M</p>
 
 <p>The <code>time</code> section support :</p>
 
@@ -232,19 +252,28 @@ not to shrink intensive allocation steps on a long program which mostly not do a
 
 <p>The <code>stack</code> section support :</p>
 
-<dl>
-<dt><code>enabled</code></dt>
-<dd>Enable support of stack tracking.</dd>
-<dt><code>mode</code></dt>
-<dd>Override by <code>-s</code> option from the command line, it set the stack tracking method to use. See <code>-s</code> documentation
-for more details.</dd>
-<dt><code>resolve</code></dt>
-<dd>Enable symbol resolution at the end of execution to extract full names and source location if debug options
-is available.</dd>
-<dt><code>libunwind</code></dt>
-<dd>Use linunwind backtrace method instead of the one from glibc.</dd>
-<dt><code>skip</code></dt>
-<dd>In backtrace mode, the backtrace is called inside our instrumentation function itself called by malloc/free....
+<ul>
+  <li>
+<code>enabled</code>:
+Enable support of stack tracking.</li>
+  <li>
+<code>mode</code>:
+Override by <code>-s</code> option from the command line, it set the stack tracking method to use. See <code>-s</code> documentation
+for more details. The available values are <code>enter-exit</code>, <code>backtrace</code>, <code>python</code>, <code>none</code>. By default backtrace
+is used as it works out of the box everywhere. It is slower than enter-exit but this last one needs recompilation
+of the code with <code>-finstrument-functions</code> and see only the libs recompiled with this option. <code>python</code> permit
+to project all the C allocation directly into the python stack domain so it hides the C underwood. Good to
+improve performance over python when you are not interested into the C details.</li>
+  <li>
+<code>resolve</code>:
+Enable symbol resolution at the end of execution to extract full names and source location if debug options
+is available.</li>
+  <li>
+<code>libunwind</code>:
+Use linunwind backtrace method instead of the one from glibc.</li>
+  <li>
+<code>skip</code>:
+In backtrace mode, the backtrace is called inside our instrumentation function itself called by malloc/free....
 In order to skip our internal code we need to remove them. But on some compilers or distros, inlining and LTO
 configuration make wrong detection. This can be fixed by playing with this value to keep malloc/free/calloc
 as leaf for every calltree extracted by MALT.
@@ -252,8 +281,18 @@ If you don't see malloc as leaf, you should increase this value. Decrease if you
 function inside.
 Notice in some cases (Gentoo, Gcc-8) we start to see LTO trashing totaly the malloc/free call in O3 mode 
 normaly seen via backtrace. There is currently no other solution except recompiling in O0/O1 to avoid
-or maybe disable LTO optimizations or consider not having the exact location of the malloc itself.</dd>
-</dl>
+or maybe disable LTO optimizations or consider not having the exact location of the malloc itself.</li>
+  <li>
+<code>sampling</code>:
+Enable sampling mode for the stacks by captuing only for a few mallocs. It is less accurate than a full
+profile but cost less in memory and CPU. In sampling mode, the stack is processed only when we seen passed
+a few bytes allocated, otherwise we consider the last seen call stack. With python you should also
+enable the backtrace mode for solving stacks via <code>python:stack=backtrace</code>.</li>
+  <li>
+<code>samplingBw</code>
+Define the amount of data seen passed between two samples. Idealy this should be a prime number to avoid
+some multiple base biases..</li>
+</ul>
 
 <p>The <code>output</code> section support :</p>
 
@@ -342,6 +381,9 @@ MALT on all executable.</dd>
 <dt><code>enabled</code></dt>
 <dd>Enable profiling by default. Can be disable to be able to activate via C function call in the app 
 when you want.</dd>
+<dt><code>ranks</code></dt>
+<dd>When running in MPI mode, instrument only the given ranks. The list is provided under the form
+<code>1,2-4,6</code>.</dd>
 </dl>
 
 <p>The <code>dump</code> section permit to dump the profile whenever you want:</p>
@@ -356,7 +398,63 @@ You can get the list of availble list by using <code>help</code> or <code>avail<
 <dd>Will dump profile after X seconds.
 Notice profiling will currently stop from this point app will continue without profiling.
 To be fixed latter.</dd>
+<dt><code>on-sys-full-at</code></dt>
+<dd>Will dump if the system memory if globaly filled at x%. Use empty string to disable.
+Remark it consider free the free memory and the cached memory. A good value in practice is
+more 70% / 80% than going to 95% due to necessity to let room for the cached memory and because
+it will starts to swap before that. Consider also that MALT itself adds up memory on top of your
+one (considered in the % here.). Values can be in %, K, M, G by ending with the corresponding
+character.</dd>
+<dt><code>on-app-using-rss</code></dt>
+<dd>Will dump if the application reach the given RSS limit. The value is given in % of the global memory
+available or in K, M, G. Empty to disable (default).</dd>
+<dt><code>on-app-using-virt</code></dt>
+<dd>Will dump if the application reach the given virtual memory limit. The value is given in % of the global memory
+available or in K, M, G. Empty to disable (default).</dd>
+<dt><code>on-app-using-req</code></dt>
+<dd>Will dump if the application reach the given requested memory limit. The value is given in % of the global memory
+available or in K, M, G. Empty to disable (default).</dd>
+<dt><code>on-thread-stack-using</code></dt>
+<dd>Will dump if one of the thread stack reach the given limit. The value is given in % of the global memory
+available or in K, M, G. Empty to disable (default).</dd>
+<dt><code>watch-dog</code></dt>
+<dd>Will start a thread which will spy the memory usage of the process and trigger the dump as soon as it sees it
+going to hight. This is to balance the fact than normally the system and process memory is spied only sometimes
+by MALT in normal condition to keep the overhead low.</dd>
 </dl>
+
+<p>The <code>python</code> section permit to configure how to instrument python. Notice that you need to build MALT with
+<code>--enable-python</code> so it is effective.</p>
+
+<dl>
+<dt><code>instru</code></dt>
+<dd>Enable of disable the python instrumentation.</dd>
+<dt><code>stack</code></dt>
+<dd>Select the stack instrumentation mode, either <code>enter-exit</code>, <code>backtrace</code> or <code>none</code>. By default <code>enter-exit</code> is
+faster so you should use it. When enabling sampling you need to use <code>bactrace</code> if you don't want to pay
+an unneeded overhead. You can also disable python stack checking with <code>none</code>.</dd>
+<dt><code>mix</code></dt>
+<dd>By default when disabled the C &amp; Python stacks are analysed independently which mean that is a python
+function call a C function you will see only the C call stack. Mix allow to merge the two layeres so you
+see that python call C. But it adds overhead on the anlysis of course because of the extra work.</dd>
+<dt><code>obj</code></dt>
+<dd>Analyse or ignore the object allocation domain of python. This is interesting to ignore all the small
+allocs used by the language as it would have been on the stack in C. It improves a lot the profiling performance
+of python but miss part of the memory consumption if your program store lots of small objets for long times.</dd>
+<dt><code>mem</code></dt>
+<dd>Same but for the mem allocation domain of python. In principle you should let it enabled.</dd>
+<dt><code>raw</code></dt>
+<dd>Same but for the raw allocation domain of python which is backed by the standard C malloc function. In principle you should let it enabled.</dd>
+</dl>
+
+<p>The <code>tools</code> section permit to configure some of the sub-tools called by MALT to perform its analysis.</p>
+<ul>
+  <li>
+<code>nm</code>: Use to extract the source location of the global variables. If true (default) it is used, otherwise it is skiped.</li>
+  <li>
+<code>nmMaxSize</code>: By default it limits the size of the .so files on which to apply NM in order to keep a decent profile dumping
+time when running on large frameworks like PyTorch which tends to load huge .so files in memory.</li>
+</ul>
 
 <h2 id="ENVIRONMENT">ENVIRONMENT</h2>
 
@@ -422,15 +520,15 @@ malt --wrap-prefix je_,another_custom_
 
 <h2 id="VERSION">VERSION</h2>
 
-<p>This is the manpage of MALT version 1.3.1.</p>
+<p>This is the manpage of MALT version 1.4.0-beta.</p>
 
 <h2 id="SEE-ALSO">SEE ALSO</h2>
 
-<p><span class="man-ref">malt-webview<span class="s">(1)</span></span>, <span class="man-ref">malt-qt5<span class="s">(1)</span></span>, <span class="man-ref">malt-passwd<span class="s">(1)</span></span></p>
+<p><span class="man-ref">malt-webview<span class="s">(1)</span></span>, <span class="man-ref">malt-passwd<span class="s">(1)</span></span></p>
 
   <ol class='man-decor man-foot man foot'>
     <li class='tl'></li>
-    <li class='tc'>February 2025</li>
+    <li class='tc'>September 2025</li>
     <li class='tr'>malt(1)</li>
   </ol>
 

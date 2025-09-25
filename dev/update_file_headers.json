@@ -159,7 +159,11 @@
 		"*.png",
 		"extern-deps/renenyffenegger-base64/*.h",
 		"extern-deps/renenyffenegger-base64/*.cpp",
-		"src/reader/webview-2-rust/Cargo.lock"
+		"src/reader/webview-2-rust/Cargo.lock",
+		"extern-deps/from-http-lib/httplib.h",
+		"extern-deps/from-nlohmann-json/nlohmann/json.hpp",
+		"src/webview/client-files/app/js/prism.js",
+		"src/webview/client-files/app/css/prism.css"
 	],
 	"include_files": [
 		"configure",

@@ -1,11 +1,11 @@
 ############################################################
 #    PROJECT  : MALT (MALoc Tracker)
-#    VERSION  : 1.3.1
-#    DATE     : 10/2024
+#    DATE     : 07/2025
 #    LICENSE  : CeCILL-C
 #    FILE     : packaging/Dockerfile-debian
 #-----------------------------------------------------------
 #    AUTHOR   : Sébastien Valat - 2019 - 2024
+#    AUTHOR   : Sébastien Valat (INRIA) - 2025
 ############################################################
 
 #distri we want

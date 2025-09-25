@@ -1,9 +1,8 @@
 /***********************************************************
 *    PROJECT  : MALT (MALoc Tracker)
-*    VERSION  : 1.3.1
 *    DATE     : 02/2025
 *    LICENSE  : CeCILL-C
-*    FILE     : examples/cpp/step-4-problem-short-life-alloc.cpp
+*    FILE     : examples/cpp/step-04-problem-short-life-alloc.cpp
 *-----------------------------------------------------------
 *    AUTHOR   : Sébastien Valat (INRIA) - 2025
 ***********************************************************/

@@ -1,10 +1,9 @@
 #!/usr/bin/env python3
 ############################################################
 #    PROJECT  : MALT (MALoc Tracker)
-#    VERSION  : 1.3.1
-#    DATE     : 05/2025
+#    DATE     : 07/2025
 #    LICENSE  : CeCILL-C
-#    FILE     : ./src/reader/webview-2-python/checker.py
+#    FILE     : src/reader/webview-2-python/checker.py
 #-----------------------------------------------------------
 #    AUTHOR   : Sébastien Valat (INRIA) - 2025
 ############################################################

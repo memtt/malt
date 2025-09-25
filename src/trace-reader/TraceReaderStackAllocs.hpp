@@ -1,6 +1,5 @@
 /***********************************************************
 *    PROJECT  : MALT (MALoc Tracker)
-*    VERSION  : 1.3.1
 *    DATE     : 11/2014
 *    LICENSE  : CeCILL-C
 *    FILE     : src/trace-reader/TraceReaderStackAllocs.hpp

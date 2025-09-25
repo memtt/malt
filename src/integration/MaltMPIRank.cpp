@@ -1,13 +1,12 @@
 /***********************************************************
 *    PROJECT  : MALT (MALoc Tracker)
-*    VERSION  : 1.3.1
-*    DATE     : 06/2023
+*    DATE     : 09/2025
 *    LICENSE  : CeCILL-C
 *    FILE     : src/integration/MaltMPIRank.cpp
 *-----------------------------------------------------------
 *    AUTHOR   : Sébastien Valat - 2014
 *    AUTHOR   : Sébastien Valat (ECR) - 2014
-*    AUTHOR   : Sébastien Valat (INRIA) - 2023
+*    AUTHOR   : Sébastien Valat (INRIA) - 2023 - 2025
 ***********************************************************/
 
 #include <mpi.h>

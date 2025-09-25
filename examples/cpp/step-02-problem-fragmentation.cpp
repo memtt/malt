@@ -1,9 +1,8 @@
 /***********************************************************
 *    PROJECT  : MALT (MALoc Tracker)
-*    VERSION  : 1.3.1
 *    DATE     : 02/2025
 *    LICENSE  : CeCILL-C
-*    FILE     : examples/cpp/step-2-problem-fragmentation.cpp
+*    FILE     : examples/cpp/step-02-problem-fragmentation.cpp
 *-----------------------------------------------------------
 *    AUTHOR   : Sébastien Valat (INRIA) - 2025
 ***********************************************************/

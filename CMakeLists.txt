@@ -1,13 +1,12 @@
 ############################################################
 #    PROJECT  : MALT (MALoc Tracker)
-#    VERSION  : 1.3.1
-#    DATE     : 02/2025
+#    DATE     : 09/2025
 #    LICENSE  : CeCILL-C
 #    FILE     : CMakeLists.txt
 #-----------------------------------------------------------
-#    AUTHOR   : Sébastien Valat - 2014 - 2024
 #    AUTHOR   : Sébastien Valat (ECR) - 2014 - 2015
-#    AUTHOR   : Sébastien Valat (INRIA) - 2023 - 2024
+#    AUTHOR   : Sébastien Valat - 2014 - 2024
+#    AUTHOR   : Sébastien Valat (INRIA) - 2024 - 2025
 ############################################################
 
 ############################################################
@@ -18,13 +17,13 @@ if (CMAKE_VERSION VERSION_LESS 3.0)
 	project(MALT)	
 else()
 	cmake_policy(SET CMP0048 NEW)	
-	project(MALT VERSION 1.3.1)
+	project(MALT VERSION 1.4.0)
 endif()
 
 ############################################################
 #set versions to dispatch in code
-set(MALT_VERSION "1.3.1")
-set(MALT_VERSION_NOTE "")
+set(MALT_VERSION "1.4.0")
+set(MALT_VERSION_NOTE "-beta")
 set(MALT_SO_VERSION "1")
 set(MALT_JSON_FORMAT_VERSION "1.1")
 

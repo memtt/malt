@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 ############################################################
 #    PROJECT  : MALT (MALoc Tracker)
-#    VERSION  : 1.3.1
 #    DATE     : 02/2025
 #    LICENSE  : CeCILL-C
 #    FILE     : dev/gen_coverage.py

@@ -1,10 +1,9 @@
 #!/usr/bin/env python3
 ############################################################
 #    PROJECT  : MALT (MALoc Tracker)
-#    VERSION  : 1.3.1
 #    DATE     : 06/2025
 #    LICENSE  : CeCILL-C
-#    FILE     : examples/python/step-7-threads-not-yet-well-supported.py
+#    FILE     : examples/python/step-7-threads.py
 #-----------------------------------------------------------
 #    AUTHOR   : Sébastien Valat (INRIA) - 2025
 ############################################################

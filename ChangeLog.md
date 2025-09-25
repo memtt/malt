@@ -1,8 +1,8 @@
 Change log
 ==========
 
-NEXT
-----
+1.4.0 - 25/09/2025
+------------------
 
  - Enable python support by default if python lib and headers are found.
  - Replace the webiew backend in NodeJS by a C++ one (faster and no deps to NodeJS required).

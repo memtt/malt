@@ -1,6 +1,5 @@
 /***********************************************************
 *    PROJECT  : MALT (MALoc Tracker)
-*    VERSION  : 1.3.1
 *    DATE     : 08/2014
 *    LICENSE  : CeCILL-C
 *    FILE     : src/webview/client-files/test/protractor-conf.js

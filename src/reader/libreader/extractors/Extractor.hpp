@@ -1,9 +1,8 @@
 /***********************************************************
 *    PROJECT  : MALT (MALoc Tracker)
-*    VERSION  : 1.3.1
-*    DATE     : 07/2025
+*    DATE     : 09/2025
 *    LICENSE  : CeCILL-C
-*    FILE     : ./src/reader/libreader/extractors/Extractor.hpp
+*    FILE     : src/reader/libreader/extractors/Extractor.hpp
 *-----------------------------------------------------------
 *    AUTHOR   : Sébastien Valat (INRIA) - 2025
 ***********************************************************/

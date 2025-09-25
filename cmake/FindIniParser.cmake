@@ -1,6 +1,5 @@
 ############################################################
 #    PROJECT  : MALT (MALoc Tracker)
-#    VERSION  : 1.3.1
 #    DATE     : 10/2024
 #    LICENSE  : CeCILL-C
 #    FILE     : cmake/FindIniParser.cmake

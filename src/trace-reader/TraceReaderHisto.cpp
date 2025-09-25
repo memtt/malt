@@ -1,6 +1,5 @@
 /***********************************************************
 *    PROJECT  : MALT (MALoc Tracker)
-*    VERSION  : 1.3.1
 *    DATE     : 03/2020
 *    LICENSE  : CeCILL-C
 *    FILE     : src/trace-reader/TraceReaderHisto.cpp
