@@ -40,10 +40,7 @@ def malt_dev_gen_archive(name: str = PACKAGE_NAME, version: str = PACKAGE_VERSIO
     # check is not release
     git_head_hash = subprocess.getoutput("git rev-parse --short HEAD")
     git_version_hash = subprocess.getoutput(f"git rev-parse --short v{version}")
-    git_version_hash_beta = subprocess.getoutput(f"git rev-parse --short v{version}-beta")
-    if git_head_hash == git_version_hash_beta:
-        prefix=f"{name}-{version}-beta"
-    elif git_head_hash != git_version_hash:
+    if git_head_hash != git_version_hash:
         prefix=f"{name}-{version}-{git_head_hash}"
 
     # log
