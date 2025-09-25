@@ -45,7 +45,7 @@ set(ENABLE_TESTS          "no"       CACHE BOOL   "Enable build of internal test
 set(ENABLE_GCC_COVERAGE   "no"       CACHE BOOL   "Enable coverage compile flags to be enabled.")
 set(ENABLE_LINK_OPTIM     "yes"      CACHE BOOL   "Enable link optimisation (LTO & -fvisibility-hidden). Note: it is not compatible with compilation of unit tests.")
 set(ENABLE_IPO            "yes"      CACHE BOOL   "Allow usage of IPO specfic optimization when ENABLE_LINK_OPTIM is enabled.")
-set(ENABLE_PYTHON         "no"       CACHE BOOL   "Enable compiling with the python support.")
+set(ENABLE_PYTHON         "yes"      CACHE BOOL   "Enable compiling with the python support.")
 set(ENABLE_JEMALLOC       "yes"      CACHE BOOL   "Enable building internal JeMalloc.")
 #Code options
 set(ENABLE_CODE_TIMING    "no"       CACHE BOOL   "Enable some tricks to quickly check timings of hostspots of MALT internal code.")

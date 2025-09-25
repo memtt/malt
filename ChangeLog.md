@@ -4,6 +4,7 @@ Change log
 NEXT
 ----
 
+ - Enable python support by default if python lib and headers are found.
  - Replace the webiew backend in NodeJS by a C++ one (faster and no deps to NodeJS required).
  - Add MPI rank filtering via -o filter:ranks=1,2-4,6 to only instrument some MPI ranks.
  - Add instrumentation of mmap / munmap / mremap.
