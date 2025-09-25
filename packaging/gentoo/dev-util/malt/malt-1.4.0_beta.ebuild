@@ -14,7 +14,7 @@ inherit cmake
 
 DESCRIPTION="A memory allocation profiling tool for C/C++/Fortran."
 HOMEPAGE="https://memtt.github.io/malt/"
-SRC_URI="https://github.com/memtt/malt/releases/download/v${PV}/malt-${PV}.tar.bz2"
+SRC_URI="https://github.com/memtt/malt/releases/download/v1.4.0-beta/malt-1.4.0-beta.tar.bz2"
 LICENSE="CeCILL-C"
 SLOT="0"
 KEYWORDS="~amd64 ~x86"
@@ -26,13 +26,18 @@ DEPEND="
 	dev-cpp/nlohmann_json
 	dev-cpp/cpp-httplib
 	dev-libs/openssl
-	python? ( dev-lang/python )
+	python? ( >=dev-lang/python-3.11 )
 	test? ( dev-cpp/gtest )
 "
 RDEPEND="
 	${DEPEND}
 	sys-devel/binutils
 "
+PATCHES=(
+	"${FILESDIR}"/${P}-jemalloc-disable-doc.patch
+)
+MY_PV="${PV/_/-}"
+S="${WORKDIR}/${PN}-${MY_PV}"
 
 src_configure() {
 	mycmakeargs=(

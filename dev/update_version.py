@@ -108,8 +108,10 @@ class UpdateVersion:
         print("[patch] Patch specific files done")
 
     def rename_some_files_with_version(self, target_version, extra):
-        subprocess.run(['git','mv',f'packaging/gentoo/dev-util/malt/malt-{self.old_version}.ebuild', f'packaging/gentoo/dev-util/malt/malt-{target_version}{extra}.ebuild'])
-        self.patch_specific_file(f'packaging/gentoo/dev-util/malt/malt-{target_version}{extra}.ebuild', ['FILE'], self.old_version, target_version + extra)
+        old=self.old_version.replace("-", "_")
+        fixed_extra=extra.replace("-", "_")
+        subprocess.run(['git','mv',f'packaging/gentoo/dev-util/malt/malt-{old}.ebuild', f'packaging/gentoo/dev-util/malt/malt-{target_version}{fixed_extra}.ebuild'])
+        self.patch_specific_file(f'packaging/gentoo/dev-util/malt/malt-{target_version}{fixed_extra}.ebuild', ['FILE'], self.old_version, target_version + extra)
 
     def save_version(self, target_version, extra):
         with open("./.version", "w+") as fp:

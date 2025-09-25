@@ -112,25 +112,25 @@ static void maltSigHandler(int signum)
 /**********************************************************/
 void maltForkHandlerPrepare(void)
 {
-	fprintf(stderr, "MALT: PREPARE_FORK\n");
+	//fprintf(stderr, "MALT: PREPARE_FORK\n");
 }
 
 /**********************************************************/
 void maltForkHandlerChild(void)
 {
-	fprintf(stderr, "MALT: FORK_DONE_NOW_IN_CHILD\n");
+	//fprintf(stderr, "MALT: FORK_DONE_NOW_IN_CHILD\n");
 }
 
 /**********************************************************/
 void maltForkHandlerParent(void)
 {
-	fprintf(stderr, "MALT: FORK_DONE_NOW_IN_PARENT\n");
+	//fprintf(stderr, "MALT: FORK_DONE_NOW_IN_PARENT\n");
 }
 
 /**********************************************************/
 void maltRegisterPthreadAtFork(void)
 {
-	pthread_atfork(maltForkHandlerPrepare, maltForkHandlerParent, maltForkHandlerChild);
+	//pthread_atfork(maltForkHandlerPrepare, maltForkHandlerParent, maltForkHandlerChild);
 }
 
 /**********************************************************/
