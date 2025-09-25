@@ -30,14 +30,15 @@ class UpdateVersion:
          self.extract_old_version()
 
     def extract_old_version(self):
-        self.old_version = subprocess.check_output('cat configure | grep VERSION | xargs echo | cut -d " " -f 4', shell=True).decode("utf-8").replace("\n", "")
+        with open("./.version", "r") as fp:
+            self.old_version = fp.readline().replace("\n", "")
         self.old_short_version = self.old_version.replace("-dev", "").replace("-beta", "").replace("\n", "")
         self.old_extra = self.old_version.replace(self.old_short_version, "")
         print(f"[version] Old version is {self.old_version}, short is {self.old_short_version}")
 
     def check_is_source_root_dir(self):
         print("[check] Source dir")
-        if not os.path.exists("./dev/update-version.sh"):
+        if not os.path.exists("./dev/dev.py"):
             raise Exception("Caution, you must call this script from the project root directory !")
 
     def rebuild_manpages(self):
@@ -101,7 +102,7 @@ class UpdateVersion:
         self.patch_specific_file("packaging/README.md", [], self.old_short_version, target_version)
         self.patch_specific_file("packaging/debian/changelog", ['Version', 'of malt'], self.old_short_version, target_version)
         self.patch_specific_file("packaging/debian/changelog", ['malt', 'UNRELEASED'], self.old_short_version, target_version)
-        self.patch_specific_file(f"packaging/gentoo/dev-util/malt/malt-{self.old_version}.ebuild", ['tar.bz2', 'downloads'], self.old_short_version, target_version)
+        self.patch_specific_file(f"packaging/gentoo/dev-util/malt/malt-{self.old_version}.ebuild", ['tar.bz2', 'SRC_URI'], self.old_version, target_version + extra)
         self.patch_specific_file("src/reader/libreader/extractors/tests/example.json", [], self.old_version, target_version + extra)
         self.patch_specific_file("src/reader/libreader/extractors/tests/example.expected.json", [], self.old_version, target_version + extra)
         self.patch_specific_file("src/doc/file-format.md", [], self.old_short_version, target_version)
@@ -110,6 +111,10 @@ class UpdateVersion:
     def rename_some_files_with_version(self, target_version, extra):
         subprocess.run(['git','mv',f'packaging/gentoo/dev-util/malt/malt-{self.old_version}.ebuild', f'packaging/gentoo/dev-util/malt/malt-{target_version}{extra}.ebuild'])
         self.patch_specific_file(f'packaging/gentoo/dev-util/malt/malt-{target_version}{extra}.ebuild', ['FILE'], self.old_version, target_version + extra)
+
+    def save_version(self, target_version, extra):
+        with open("./.version", "w+") as fp:
+            fp.write(f"{target_version}{extra}\n")
 
 ############################################################
 def malt_update_version(target_version, extra):
@@ -121,4 +126,4 @@ def malt_update_version(target_version, extra):
     updater.update_file_headers_version_and_authors(target_version + extra)
     updater.rebuild_manpages()
     updater.rename_some_files_with_version(target_version, extra)
-
+    updater.save_version(target_version, extra)

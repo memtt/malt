@@ -3,7 +3,7 @@
 #    VERSION  : 1.3.1
 #    DATE     : 08/2015
 #    LICENSE  : CeCILL-C
-#    FILE     : packaging/gentoo/dev-util/malt/malt-1.3.1-dev.ebuild
+#    FILE     : packaging/gentoo/dev-util/malt/malt-1.3.1.ebuild
 #-----------------------------------------------------------
 #    AUTHOR   : Sébastien Valat - 2015
 ############################################################
