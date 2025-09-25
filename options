@@ -58,7 +58,8 @@ cfg_add_enable_option --name='ipo' \
 #test
 cfg_add_enable_option --name='python' \
 						--on='-DENABLE_PYTHON=${ON}' \
-						--doc='Enable the python support.'
+						--doc='Disable the python support.' \
+						--invert-help
 
 #JeMalloc built for MALT
 cfg_add_enable_option --name='jemalloc' \
