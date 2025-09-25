@@ -29,6 +29,7 @@ It optionally depends on :
 - nodejs (<http://nodejs.org/>) to run the webview GUI. Tested version is 0.10.30 - 12.22.9.
 - libelf (<http://www.mr511.de/software/english.html>) to extract global variable list from executables and libs. Tested version is 0.128 - 0.183.
 - libunwind (<http://www.nongnu.org/libunwind/>) as an alternative implementation of glibc backtrace method. Tested version is 1.1 - 1.3.2.
+- libpython (<https://www.python.org/>) if enabling python support. Tested version is 3.11 - 3.13.
 
 Supported system (known):
 
