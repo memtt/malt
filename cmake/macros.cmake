@@ -113,8 +113,4 @@ function(malt_print_status)
 	message(STATUS "|  All cxxflags     : ${CMAKE_BUILD_TYPE_FLAGS} ${MALT_CXX_FLAGS_STR} ${CMAKE_CXX_FLAGS}")
 	message(STATUS "|  malt cxxflags    : ${MALT_LIB_COMPILER_FLAGS}")
 	message(STATUS "==============================================================")
-
-	if (Python3_FOUND AND NOT PYTHON3_INSTRUM_FOUND)
-		message(WARNING "Got python but built in a way which does not permit to use MALT, Python should be built with --shared and without LTO !")
-	endif()
 endfunction()

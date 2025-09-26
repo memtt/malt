@@ -118,7 +118,6 @@
 	"git.repositoryScanMaxDepth": 2,
 	"output.smartScroll.enabled": false,
 	"cmake.configureArgs": [
-		"-DENABLE_PYTHON=yes",
 		"-DENABLE_TESTS=yes",
 		"-DENABLE_JEMALLOC=no",
 	],
