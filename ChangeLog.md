@@ -1,7 +1,7 @@
 Change log
 ==========
 
-1.4.0 - 25/09/2025
+1.4.0 - 26/09/2025
 ------------------
 
  - Enable python support by default if python lib and headers are found.
