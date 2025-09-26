@@ -178,6 +178,7 @@ class AllocStackProfiler
 // 		AbstractStackTree<CallStackInfo> stackTree;
 		AllocSizeDistrMap sizeMap;
 		SegmentTracker segTracker;
+		SegmentTracker mmapSegTracker;
 		GlobalVariableMap globalVariables;
 		StackMode mode;
 		Spinlock lock;

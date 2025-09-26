@@ -230,6 +230,15 @@ void AllocStackProfiler::onAllocEvent(void* ptr, size_t size,Stack* userStack,MM
 		callStackNode = &localCallStackNode;
 	
 	MALT_OPTIONAL_CRITICAL(lock,threadSafe && doLock)
+		//trigger free if python make reuse internally some blocks without passing by the garbare collector
+		bool isPython = (domain == DOMAIN_PYTHON_MEM || domain == DOMAIN_PYTHON_OBJ || domain == DOMAIN_PYTHON_RAW);
+		if (isPython) {
+			SegmentInfo * segInfo = segTracker.get(ptr);
+			if (segInfo != nullptr) {
+				this->onFreeEvent(ptr, userStack, callStackNode, false, domain);
+			}
+		}
+
 		//update shared linear index
 		this->sharedLinearIndex++;
 		this->memOpsLevels();
@@ -281,8 +290,13 @@ void AllocStackProfiler::onAllocEvent(void* ptr, size_t size,Stack* userStack,MM
 		}
 
 		//register for segment history tracking
-		if (ptr != NULL)
-			CODE_TIMING("segTracerAdd",segTracker.add(ptr,size,*callStackNode));
+		if (ptr != NULL) {
+			if (domain == DOMAIN_MMAP) {
+				CODE_TIMING("segTracerAdd",mmapSegTracker.add(ptr,size,*callStackNode));
+			} else {
+				CODE_TIMING("segTracerAdd",segTracker.add(ptr,size,*callStackNode));
+			}
+		}
 		
 		//update size map
 		if (options.distrAllocSize)
@@ -365,8 +379,13 @@ size_t AllocStackProfiler::onFreeEvent(void* ptr, MALT::Stack* userStack, MMCall
 
 		//search segment info to link with previous history
 		SegmentInfo * segInfo = NULL;
-		if (options.timeProfileEnabled || options.stackProfileEnabled)
-			CODE_TIMING("segTracerGet",segInfo = segTracker.get(ptr));
+		if (options.timeProfileEnabled || options.stackProfileEnabled) {
+			if (domain == DOMAIN_MMAP) {
+				CODE_TIMING("segTracerGet",segInfo = mmapSegTracker.get(ptr));
+			} else {
+				CODE_TIMING("segTracerGet",segInfo = segTracker.get(ptr));
+			}
+		}
 		
 		//check unknown
 		if (segInfo == NULL)
@@ -408,7 +427,11 @@ size_t AllocStackProfiler::onFreeEvent(void* ptr, MALT::Stack* userStack, MMCall
 			tracer.traceChunk(segInfo->callStack.stack,callStackNode->stack,ptr,size,segInfo->allocTime - trefTicks,lifetime);
 		
 		//remove tracking info
-		CODE_TIMING("segTracerRemove",segTracker.remove(ptr));
+		if (domain == DOMAIN_MMAP) {
+			CODE_TIMING("segTracerRemove",mmapSegTracker.remove(ptr));
+		} else {
+			CODE_TIMING("segTracerRemove",segTracker.remove(ptr));
+		}
 		
 		//update timeline
 		if (options.timeProfileEnabled)
@@ -474,7 +497,7 @@ void AllocStackProfiler::applyVmaPatches(Stack* userStack, MMCallStackNode* call
 		std::map<size_t, const SegmentInfo *> ptrTrack;
 		for (auto & patch : vmaPatches) {
 			if (patch.oldAddr != 0) {
-				const SegmentInfo * segInfos = this->segTracker.get((void*)patch.oldAddr);
+				const SegmentInfo * segInfos = this->mmapSegTracker.get((void*)patch.oldAddr);
 				if (segInfos == nullptr) {
 					const auto it = ptrTrack.find(patch.oldAddr);
 					if (it != ptrTrack.end())
@@ -497,7 +520,7 @@ void AllocStackProfiler::applyVmaPatches(Stack* userStack, MMCallStackNode* call
 			} if (patch.oldSize == 0) {
 				//insert new one
 				//fprintf(stderr, "ADD %zx - %zu\n", patch.newAddr, patch.newSize);
-				SegmentInfo * infos = this->segTracker.add((void*)patch.newAddr, patch.newSize, MMCallStackNode(patch.stack,patch.infos));
+				SegmentInfo * infos = this->mmapSegTracker.add((void*)patch.newAddr, patch.newSize, MMCallStackNode(patch.stack,patch.infos));
 				infos->allocTime = patch.allocTime;
 			} else if (patch.newSize == 0) {
 				//free it fully
@@ -506,7 +529,7 @@ void AllocStackProfiler::applyVmaPatches(Stack* userStack, MMCallStackNode* call
 				subMunmap = true;
 			} else if (patch.oldAddr == patch.newAddr) {
 				//change size of old
-				SegmentInfo * segInfos = this->segTracker.get((void*)patch.oldAddr);
+				SegmentInfo * segInfos = this->mmapSegTracker.get((void*)patch.oldAddr);
 				segInfos->size = patch.newSize;
 				//fprintf(stderr, "RSIZE %zx - %zu => %zu\n", patch.oldAddr, patch.oldSize, patch.newSize);
 			} else {
@@ -955,7 +978,12 @@ void convertToJson(htopml::JsonState& json, const AllocStackProfiler& value)
 		json.printField("maxThreadCount",ThreadTracker::getMaxThreadCount());
 	json.closeFieldStruct("globals");
 	
-	json.printField("leaks",value.segTracker);
+	//merge
+	SegmentTracker mergedLeaks;
+	mergedLeaks.merge(value.segTracker);
+	mergedLeaks.merge(value.mmapSegTracker);
+
+	json.printField("leaks",mergedLeaks);
 
 	json.printField("domains", value.domains);
 

@@ -242,17 +242,15 @@ int main(int argc, char ** argv)
 		});
 
 		//infos of the file
-		svr.Post("/file-infos.json", [&profile](const Request& req, Response& res) {
-			#warning "check parameters going in"
-			const nlohmann::json json = nlohmann::json::parse(req.body);
-			const std::string file = json["file"];
+		svr.Post("/file-infos.json", [&profile, &argChecker](const Request& req, Response& res) {
+			const std::string file = argChecker.checkJsonArgPath(req, "file");
 			const nlohmann::json data = profile.getFileLinesFlatProfile(file, true);
 			res.set_content(data.dump(), "application/json");
 		});
 
 		//dig into the call stack tree
 		svr.Post("/call-stack-next-level.json", [&profile](const Request& req, Response& res) {
-			#warning "check parameters going in"
+			//#warning "check parameters going in"
 			const nlohmann::json json = nlohmann::json::parse(req.body);
 			LocationFilter filter;
 			filter.function = json["filter"].value("function", "");

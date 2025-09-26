@@ -295,9 +295,10 @@ void AllocWrapperGlobal::init(void )
 		gblState.profiler->setRealMallocAddr(gblState.allocFuncs.malloc);
 
 		//filter exe
-		if (gblState.options->exe.empty() == false && OS::getExeName() != gblState.options->exe)
+		if ((gblState.options->exe.empty() == false && OS::getExeName() != gblState.options->exe) || OS::getExeName() == "addr2line")
 		{
-			fprintf(stderr,"MALT: skip %s != %s\n",OS::getExeName().c_str(),gblState.options->exe.c_str());
+			if (gblOptions->outputVerbosity >= MALT_VERBOSITY_DEFAULT)
+				fprintf(stderr,"MALT: skip %s != %s\n",OS::getExeName().c_str(),gblState.options->exe.c_str());
 			skip = true;
 		}
 		

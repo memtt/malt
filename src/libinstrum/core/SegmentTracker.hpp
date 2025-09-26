@@ -81,6 +81,7 @@ class SegmentTracker
 		SegmentInfo * get(void * ptr);
 		void remove(void * ptr);
 		void munmap(void * ptr,size_t size);
+		void merge(const SegmentTracker & tracker);
 	public:
 		friend void convertToJson(htopml::JsonState & json,const SegmentTracker & value);
 	private:

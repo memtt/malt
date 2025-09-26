@@ -252,4 +252,15 @@ void SegmentTracker::split(SegmentInfoMap::iterator it, void* ptr, size_t size)
 	}
 }
 
+/*******************  FUNCTION  *********************/
+/**
+ * Merge two segment tracker for final reporting of leaks.
+ * @param tracker The tracker to merge in the current one.
+**/
+void SegmentTracker::merge(const SegmentTracker & tracker)
+{
+	for (const auto & it : tracker.map)
+		this->map[it.first] = it.second;
+}
+
 }
