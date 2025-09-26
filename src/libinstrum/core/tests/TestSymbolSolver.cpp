@@ -1,10 +1,10 @@
 /***********************************************************
 *    PROJECT  : MALT (MALoc Tracker)
-*    DATE     : 06/2025
+*    DATE     : 09/2025
 *    LICENSE  : CeCILL-C
 *    FILE     : src/libinstrum/core/tests/TestSymbolSolver.cpp
 *-----------------------------------------------------------
-*    AUTHOR   : Sébastien Valat - 2019 - 2024
+*    AUTHOR   : Sébastien Valat - 2019 - 2020
 *    AUTHOR   : Bastien Levasseur - 2024
 *    AUTHOR   : Sébastien Valat (INRIA) - 2025
 ***********************************************************/

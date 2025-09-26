@@ -1,8 +1,8 @@
 ############################################################
 #    PROJECT  : MALT (MALoc Tracker)
-#    DATE     : 06/2025
+#    DATE     : 09/2025
 #    LICENSE  : CeCILL-C
-#    FILE     : cmake/FindGraphviz.cmake
+#    FILE     : cmake/FindBinutils.cmake
 #-----------------------------------------------------------
 #    AUTHOR   : Sébastien Valat (INRIA) - 2025
 ############################################################

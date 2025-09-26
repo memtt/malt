@@ -1,6 +1,6 @@
 /***********************************************************
 *    PROJECT  : MALT (MALoc Tracker)
-*    DATE     : 07/2025
+*    DATE     : 02/2025
 *    LICENSE  : CeCILL-C
 *    FILE     : src/reader/libreader/loader/ProgressBar.hpp
 *-----------------------------------------------------------
