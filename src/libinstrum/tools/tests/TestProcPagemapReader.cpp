@@ -9,6 +9,7 @@
 ***********************************************************/
 
 /**********************************************************/
+#include <sys/mman.h>
 #include <gtest/gtest.h>
 #include <tools/ProcPagemapReader.hpp>
 #include <common/SimpleAllocator.hpp>
@@ -43,11 +44,12 @@ TEST(ProcPagemapReader,medium)
 TEST(ProcPagemapReader,largeFull)
 {
 	const size_t size = 32*1024*1024;
-	char * buffer = new char[size];
+	char * buffer = (char*)mmap(nullptr, size, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANON, 0, 0);
+	ASSERT_NE(buffer, MAP_FAILED);
 	memset(buffer,0,size);
 	size_t phys = ProcPageMapReader::getPhysicalSize(buffer,size);
 	EXPECT_EQ(size,phys);
-	delete [] buffer;
+	munmap(buffer, size);
 }
 
 /**********************************************************/

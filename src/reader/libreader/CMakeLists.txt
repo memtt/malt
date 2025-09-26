@@ -14,6 +14,11 @@ include_directories(../..)
 include_directories(${NLOHMANN_JSON_INCLUDE_DIR})
 
 ############################################################
+if (GRAPHVIZ_FOUND)
+	add_definitions(-DHAVE_GRAPHVIZ)
+endif()
+
+############################################################
 add_library(malt-profile SHARED
     # JSON
     json/File.cpp

@@ -316,7 +316,8 @@ TEST(TestExtractor, getSourceFileMap)
 
 
 /**********************************************************/
-TEST(TestExtractor, getCallTree)
+#ifdef HAVE_GRAPHVIZ
+TEST(TestExtractor, getCallTree_svg)
 {
 	//load
 	JsonFileIn JsonFileIn(CUR_SRC_DIR "/example.json");
@@ -338,6 +339,7 @@ TEST(TestExtractor, getCallTree)
 	const std::string svg = resJson["svg"];
 	ASSERT_TRUE(svg.find("<svg") != -1);
 }
+#endif //HAVE_GRAPHVIZ
 
 /**********************************************************/
 TEST(TestExtractor, getCallStackNextLevel_1)

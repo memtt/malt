@@ -111,6 +111,16 @@ cfg_add_with_option --name='npm' \
 						--doc='Define prefix to find NPM [/usr]' \
 						--var='NPM_PREFIX'
 
+#where to search graphviz
+cfg_add_with_option --name='graphviz' \
+						--doc='Define prefix to find DOT from graphviz [/usr]' \
+						--var='GRAPHVIZ_PREFIX'
+
+#where to search nm from binutils
+cfg_add_with_option --name='nm' \
+						--doc='Define prefix to find NM from binutils [/usr]' \
+						--var='NM_PREFIX'
+
 ############################################################
 #If we want to document extra options
 #CFG_CUSTOM_HELP="My custom options:"

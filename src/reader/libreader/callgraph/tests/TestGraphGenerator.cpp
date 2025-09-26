@@ -22,13 +22,17 @@ digraph A {\n\
 ";
 
 /**********************************************************/
+#ifdef HAVE_GRAPHVIZ
 TEST(TestGraphGenerator, isDotInstalled)
 {
 	ASSERT_TRUE(GraphGenerator::isDotInstalled());
 }
+#endif //HAVE_GRAPHVIZ
 
 /**********************************************************/
+#ifdef HAVE_GRAPHVIZ
 TEST(TestGraphGenerator, convertDotToSvg)
 {
 	ASSERT_TRUE(GraphGenerator::convertDotToSvg(CST_DOT_1).find("<svg ") != -1);
 }
+#endif //HAVE_GRAPHVIZ
