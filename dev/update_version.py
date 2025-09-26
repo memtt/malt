@@ -101,17 +101,17 @@ class UpdateVersion:
         self.patch_specific_file("packaging/README.md", [], self.old_short_version, target_version)
         self.patch_specific_file("packaging/debian/changelog", ['Version', 'of malt'], self.old_short_version, target_version)
         self.patch_specific_file("packaging/debian/changelog", ['malt', 'UNRELEASED'], self.old_short_version, target_version)
-        self.patch_specific_file(f"packaging/gentoo/dev-util/malt/malt-{self.old_version}.ebuild", ['tar.bz2', 'SRC_URI'], self.old_version, target_version + extra)
         self.patch_specific_file("src/reader/libreader/extractors/tests/example.json", [], self.old_version, target_version + extra)
         self.patch_specific_file("src/reader/libreader/extractors/tests/example.expected.json", [], self.old_version, target_version + extra)
         self.patch_specific_file("src/doc/file-format.md", [], self.old_short_version, target_version)
         print("[patch] Patch specific files done")
 
     def rename_some_files_with_version(self, target_version, extra):
-        old=self.old_version.replace("-", "_")
+        old=self.old_version.replace("-beta", "_beta").replace("-dev", "_dev")
         fixed_extra=extra.replace("-", "_")
         subprocess.run(['git','mv',f'packaging/gentoo/dev-util/malt/malt-{old}.ebuild', f'packaging/gentoo/dev-util/malt/malt-{target_version}{fixed_extra}.ebuild'])
         self.patch_specific_file(f'packaging/gentoo/dev-util/malt/malt-{target_version}{fixed_extra}.ebuild', ['FILE'], self.old_version, target_version + extra)
+        self.patch_specific_file(f"packaging/gentoo/dev-util/malt/malt-{target_version}{fixed_extra}.ebuild", ['tar.bz2', 'SRC_URI'], self.old_version, target_version + extra)
 
     def save_version(self, target_version, extra):
         with open("./.version", "w+") as fp:
