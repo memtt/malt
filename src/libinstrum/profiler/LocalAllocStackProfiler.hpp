@@ -100,6 +100,7 @@ class LocalAllocStackProfiler
 		bool isEnterExit(void);
 		inline BacktracePythonStack getBacktracePythonStack(void);
 		void loadPythonFirstBacktrace(void);
+		void flushPythonCacheSolver(void);
 	public:
 		friend void convertToJson(htopml::JsonState& json, const LocalAllocStackProfiler& value);
 	protected:

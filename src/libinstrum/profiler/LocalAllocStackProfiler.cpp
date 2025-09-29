@@ -160,6 +160,7 @@ void convertToJson(htopml::JsonState& json, const LocalAllocStackProfiler& value
 void LocalAllocStackProfiler::solveSymbols(SymbolSolver& symbolResolver) const
 {
 	this->stackSizeAnalyser.solveSymbols(symbolResolver);
+	this->backtracePythonStack.displayCacheStats();
 }
 
 /**********************************************************/
@@ -235,7 +236,7 @@ Stack* LocalAllocStackProfiler::getStack(Language lang, size_t size, bool isFree
 	} else if (localPyStackMode == STACK_MODE_BACKTRACE && MALT::Py_IsInitialized()) {
 		pythonGilState = MALT::PyGILState_Ensure();
 		hasPythonGIL = true;
-		CODE_TIMING("loadCurrentStack",backtracePythonStack.loadCurrentStack());
+		CODE_TIMING("loadCurrentStackPy",backtracePythonStack.loadCurrentStack());
 		pythonRef = &backtracePythonStack;
 	} else {
 		//oldInUse = this->markInUseAndGetOldStatus();
@@ -255,7 +256,7 @@ Stack* LocalAllocStackProfiler::getStack(Language lang, size_t size, bool isFree
 			pythonGilState = MALT::PyGILState_Ensure();
 			hasPythonGIL = true;
 		}
-		currentPythonAddr = backtracePythonStack.getCurrentFrameAddr();
+		CODE_TIMING("loadCurrentFramePy",currentPythonAddr = backtracePythonStack.getCurrentFrameAddr());
 		this->enterExitStack.enterFunction(currentPythonAddr);
 		assert(this->needToPop == false);
 		this->needToPop = true;
@@ -265,9 +266,9 @@ Stack* LocalAllocStackProfiler::getStack(Language lang, size_t size, bool isFree
 	if (gblOptions->pythonMix && gblOptions->pythonInstru && lang != LANG_PYTHON) {
 		if (cRef == pythonRef) {
 			assert(cRef == &this->enterExitStack);
-			globalProfiler->getMultiLangStackMerger().removePythonLib(mixStack, *cRef);
+			CODE_TIMING("mixLang",globalProfiler->getMultiLangStackMerger().removePythonLib(mixStack, *cRef));
 		} else {
-			globalProfiler->getMultiLangStackMerger().mixPythonAndCStack(mixStack, *cRef, *pythonRef);
+			CODE_TIMING("mixLang",globalProfiler->getMultiLangStackMerger().mixPythonAndCStack(mixStack, *cRef, *pythonRef));
 		}
 
 		result = &mixStack;
@@ -306,6 +307,12 @@ void LocalAllocStackProfiler::popEnterExit(void)
 bool LocalAllocStackProfiler::isEnterExit(void)
 {
 	return stackMode == STACK_MODE_ENTER_EXIT_FUNC;
+}
+
+/**********************************************************/
+void LocalAllocStackProfiler::flushPythonCacheSolver(void)
+{
+	this->backtracePythonStack.flushLineCache();
 }
 
 /**********************************************************/

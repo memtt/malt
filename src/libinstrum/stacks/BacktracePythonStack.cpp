@@ -107,7 +107,7 @@ LangAddress BacktracePythonStack::getCurrentFrameAddr(void)
 		MALT::PyGILState_Release(gilState);
 		return this->stack[0];
 	} else {
-		LangAddress res = this->pythonSymbolTracker.frameToLangAddress(currentFrame);
+		LangAddress res = this->pythonSymbolTracker.frameToLangAddress(currentFrame, &this->lineCache);
 		MALT::Py_DecRef((PyObject*)currentFrame);
 		MALT::PyGILState_Release(gilState);
 		return res;
@@ -173,6 +173,12 @@ bool operator<(const PythonCallSite & a, const PythonCallSite & b)
 	} else {
 		return false;
 	}
+}
+
+/**********************************************************/
+void BacktracePythonStack::flushLineCache(void)
+{
+	this->lineCache.flush();
 }
 
 }

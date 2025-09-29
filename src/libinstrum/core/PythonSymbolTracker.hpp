@@ -20,6 +20,8 @@
 #include "SymbolSolver.hpp"
 #include "stacks/LangAddress.hpp"
 #include "stacks/Stack.hpp"
+//extern
+#include <StaticAssoCache.hpp>
 
 /**********************************************************/
 namespace MALT
@@ -57,17 +59,33 @@ struct PythonCallSite
 };
 
 /**********************************************************/
+/** 
+ * Cache some solving because when looping in enter-exit mode in a function
+ * We can solve faster based on the line number.
+ * Cache is flushed while exiting a function.
+*/
+typedef PythonCallSite BacktracePythonStackTlbEntry;
+
+/**********************************************************/
+/** 
+ * Cache some solving because when looping in enter-exit mode in a function
+ * We can solve faster based on the line number.
+ * Cache is flushed while exiting a function.
+*/
+typedef numaprof::StaticAssoCache<BacktracePythonStackTlbEntry,4,32> PythonTranslationLineCache;
+
+/**********************************************************/
 /**
  * Similar to PythonCallSite but by containing directly the pointers to the strings.
  */
 struct PythonNamedCallSite
 {
 	/** Path of the source file. */
-	const char * file;
+	const char * file{nullptr};
 	/** Name of the running function. */
-	const char * function;
+	const char * function{nullptr};
 	/** Line of the instruction in the source file. */
-	int line;
+	int line{-1};
 };
 
 /**********************************************************/
@@ -84,11 +102,15 @@ struct TmpPythonCallSite
 	/** Definition of the site with names. */
 	PythonNamedCallSite site;
 	/** Python object containing the filename. */
-	PyObject* filenameObject;
+	PyObject* filenameObject{nullptr};
 	/** Python object containing the frame */
-	PyObject* framenameObject;
+	PyObject* framenameObject{nullptr};
 	/** Python object pointing to the source code associated to the frame. */
-	PyCodeObject* code;
+	PyCodeObject* code{nullptr};
+	/** Is solved by cache */
+	bool cached{false};
+	/** Value of the cache */
+	BacktracePythonStackTlbEntry cacheEntry;
 };
 
 /**********************************************************/
@@ -125,7 +147,7 @@ class PythonSymbolTracker
 		~PythonSymbolTracker(void);
 		void registerSymbolResolution(SymbolSolver & solver);
 		LangAddress parentFrameToLangAddress(PyFrameObject * frame);
-		LangAddress frameToLangAddress(PyFrameObject * frame);
+		LangAddress frameToLangAddress(PyFrameObject * frame, PythonTranslationLineCache * lineCache = nullptr);
 		PythonCallSite getCallSite(LangAddress langAddr);
 		PythonNamedCallSite getNamedCallSite(LangAddress langAddr);
 		void makeStackPythonDomain(Stack & stack);
@@ -137,8 +159,8 @@ class PythonSymbolTracker
 		bool getPythonIsActiv(void) const {return this->pythonIsActiv;};
 	private:
 		LangAddress fastFrameToLangAddress(PyFrameObject * frame);
-		LangAddress slowFrameToLangAddress(PyFrameObject * frame);
-		static TmpPythonCallSite frameToCallSite(PyFrameObject * frame);
+		LangAddress slowFrameToLangAddress(PyFrameObject * frame, PythonTranslationLineCache * lineCache = nullptr);
+		static TmpPythonCallSite frameToCallSite(PyFrameObject * frame, PythonTranslationLineCache * lineCache = nullptr);
 		static void freeFrameToCallSite(TmpPythonCallSite & callsite);
 		std::string getModulePath(const std::string & filePath) const;
 		std::map<std::string, bool> extractorPythonPaths(void) const;

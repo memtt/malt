@@ -12,6 +12,7 @@
 #include <cassert>
 #include <climits>
 //internal
+#include <common/CodeTiming.hpp>
 #include "StringIdDictionnary.hpp"
 
 /**********************************************************/
@@ -57,7 +58,8 @@ int StringIdDictionnary::getId(const String & value)
 	std::lock_guard<std::mutex> guard(this->mutex);
 
 	//loop to search
-	const auto it = this->stringToId.find(value);
+	std::map<MALT::String, size_t>::iterator it;
+	CODE_TIMING("stringSearch", it = this->stringToId.find(value));
 	if (it != this->stringToId.end())
 		return it->second;
 

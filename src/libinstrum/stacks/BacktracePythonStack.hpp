@@ -39,8 +39,11 @@ class BacktracePythonStack : public Stack
 		void loadCurrentStack(void);
 		LangAddress getCurrentFrameAddr(void);
 		PyFrameObject * loadCurrentFrame(void);
+		void flushLineCache(void);
+		void displayCacheStats(void) const {lineCache.printStats("PythonTranslationLineCache");};
 	private:
 		PythonSymbolTracker & pythonSymbolTracker;
+		PythonTranslationLineCache lineCache;
 };
 
 }
