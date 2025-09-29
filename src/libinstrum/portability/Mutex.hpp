@@ -27,6 +27,8 @@
 	{
 		typedef StaticMutexPthread StaticMutex;
 		typedef MutexPthread Mutex;
+		typedef RwLockPthread RwLock;
+		typedef RwLockAccess RwLockAccess;
 	}
 #elif defined(MALT_PORTABILITY_MUTEX_DUMMY)
 	//dummy mode (not thread safe, only for quik portability)
