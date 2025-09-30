@@ -26,6 +26,28 @@ TEST(TestStringIdDictionnary, flow)
 	StringIdDictionnary dict;
 	int id1 = dict.getId("stringA");
 	int id2 = dict.getId("stringB");
+	ASSERT_EQ(id1, 0);
+	ASSERT_EQ(id2, 1);
+	ASSERT_EQ(dict.getString(id1), "stringA");
+	ASSERT_EQ(dict.getString(id2), "stringB");
+}
+
+/**********************************************************/
+TEST(TestStringIdDictionnary, flow_cache)
+{
+	StringIdDictionnary dict;
+	int id1 = dict.getId("stringA");
+	int id2 = dict.getId("stringB");
+	ASSERT_EQ(id1, 0);
+	ASSERT_EQ(id2, 1);
+	ASSERT_EQ(dict.getString(id1), "stringA");
+	ASSERT_EQ(dict.getString(id2), "stringB");
+
+	//use cache
+	id1 = dict.getId("stringA");
+	id2 = dict.getId("stringB");
+	ASSERT_EQ(id1, 0);
+	ASSERT_EQ(id2, 1);
 	ASSERT_EQ(dict.getString(id1), "stringA");
 	ASSERT_EQ(dict.getString(id2), "stringB");
 }

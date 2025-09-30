@@ -157,6 +157,7 @@ class PythonSymbolTracker
 		const std::set<LangAddress> & getImportAddresses(void) const;
 		void setPythonActivity(bool activ);
 		bool getPythonIsActiv(void) const {return this->pythonIsActiv;};
+		void printStats(void) const;
 	private:
 		LangAddress fastFrameToLangAddress(PyFrameObject * frame);
 		LangAddress slowFrameToLangAddress(PyFrameObject * frame, PythonTranslationLineCache * lineCache = nullptr);

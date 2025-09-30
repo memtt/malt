@@ -875,6 +875,7 @@ void AllocStackProfiler::onExit(void )
 			it->printStats();
 		this->segTracker.printStats();
 		this->mmapSegTracker.printStats();
+		this->pythonSymbolTracker.printStats();
 		#endif //MALT_ENABLE_CODE_TIMING
 
 		//stop tracking threads

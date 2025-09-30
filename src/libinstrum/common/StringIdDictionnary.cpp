@@ -24,6 +24,7 @@ namespace MALT
  * @brief Constructor of the dictionnary.
  */
 StringIdDictionnary::StringIdDictionnary(void)
+	:cache(97)
 {
 }
 
@@ -57,11 +58,23 @@ int StringIdDictionnary::getId(const String & value)
 	//lock
 	std::lock_guard<std::mutex> guard(this->mutex);
 
+	//use cache
+	#ifdef MALT_ENABLE_CACHING
+		const size_t * cacheResult = this->cache.get(value);
+		if (cacheResult != nullptr) {
+			return *cacheResult;
+		}
+	#endif //MALT_ENABLE_CACHING
+
 	//loop to search
 	std::map<MALT::String, size_t>::iterator it;
 	CODE_TIMING("stringSearch", it = this->stringToId.find(value));
-	if (it != this->stringToId.end())
+	if (it != this->stringToId.end()) {
+		#ifdef MALT_ENABLE_CACHING
+			this->cache.set(&it->first, it->second);
+		#endif //MALT_ENABLE_CACHING
 		return it->second;
+	}
 
 	//not found => insert
 	strings.emplace_back(value);
@@ -70,6 +83,11 @@ int StringIdDictionnary::getId(const String & value)
 
 	//set id
 	this->stringToId[value] = id;
+
+	#ifdef MALT_ENABLE_CACHING
+		const auto & it2 = this->stringToId.find(value);
+		this->cache.set(&it2->first, id);
+	#endif //MALT_ENABLE_CACHING
 
 	//ok
 	return id;
@@ -88,6 +106,12 @@ void convertToJson(htopml::JsonState & json, const StringIdDictionnary & value)
 		for (const auto & it : value.strings)
 			json.printValue(it, false);
 	json.closeArray();
+}
+
+/**********************************************************/
+void StringIdDictionnary::printStats(void) const
+{
+	this->cache.printStats("StringIdDictionnary");
 }
 
 }

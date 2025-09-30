@@ -678,4 +678,11 @@ void PythonSymbolTracker::setPythonActivity(bool activ)
 	this->pythonIsActiv = activ;
 }
 
+/**********************************************************/
+/** Print statistics at exit. */
+void PythonSymbolTracker::printStats(void) const
+{
+	this->dict.printStats();
+}
+
 }
