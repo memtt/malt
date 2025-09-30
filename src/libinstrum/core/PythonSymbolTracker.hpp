@@ -120,6 +120,7 @@ struct TmpPythonCallSite
  * as an index in an std::map.
  */
 bool operator<(const PythonCallSite & a, const PythonCallSite & b);
+bool operator==(const PythonCallSite & a, const PythonCallSite & b);
 
 /**********************************************************/
 /**
@@ -176,7 +177,7 @@ class PythonSymbolTracker
 		 * base stack representation from C in the rest the MALT code base.
 		 */
 		PythonStrCallSiteMap siteMap;
-		TreeCache<PythonCallSite, void*> siteMapCache{64};
+		TreeCache<PythonCallSite, void*> siteMapCache{32};
 		/** Next index to assigned as a raw address to a new uniq call site. */
 		size_t nextIndex{10};
 		/** Convert a python code to a uniq raw pointer value. */

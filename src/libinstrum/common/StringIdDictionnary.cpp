@@ -60,7 +60,8 @@ int StringIdDictionnary::getId(const String & value)
 
 	//use cache
 	#ifdef MALT_ENABLE_CACHING
-		const size_t * cacheResult = this->cache.get(value);
+		const size_t * cacheResult = nullptr;
+		CODE_TIMING("stringSearchCacheGet", cacheResult = this->cache.get(value));
 		if (cacheResult != nullptr) {
 			return *cacheResult;
 		}
@@ -71,7 +72,7 @@ int StringIdDictionnary::getId(const String & value)
 	CODE_TIMING("stringSearch", it = this->stringToId.find(value));
 	if (it != this->stringToId.end()) {
 		#ifdef MALT_ENABLE_CACHING
-			this->cache.set(&it->first, it->second);
+			CODE_TIMING("stringSearchCacheSet", this->cache.set(&it->first, it->second));
 		#endif //MALT_ENABLE_CACHING
 		return it->second;
 	}

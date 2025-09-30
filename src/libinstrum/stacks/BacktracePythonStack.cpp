@@ -158,6 +158,12 @@ void BacktracePythonStack::loadCurrentStack(void)
 }
 
 /**********************************************************/
+bool operator==(const PythonCallSite & a, const PythonCallSite & b)
+{
+	return a.file == b.file && a.function == b.function && a.line == b.line;
+}
+
+/**********************************************************/
 bool operator<(const PythonCallSite & a, const PythonCallSite & b)
 {
 	if (a.line < b.line) {

@@ -30,6 +30,7 @@ namespace MALT
 template <class Key, class Value>
 class TreeCache
 {
+	const size_t cstFallbackToSmall = 4;
 	public:
 		TreeCache(size_t size);
 		~TreeCache(void);
@@ -40,6 +41,7 @@ class TreeCache
 	private:
 		std::map<Key, Value, std::less<Key>, STLInternalAllocator<std::pair<Key, Value> > > dict;
 		std::vector<const Key *> keyHistory;
+		std::vector<Value> directSmall;
 		size_t size{0};
 		size_t cursor{0};
 		mutable size_t hits{0};
@@ -54,6 +56,11 @@ TreeCache<Key, Value>::TreeCache(size_t size)
 {
 	this->size = size;
 	this->keyHistory.reserve(size);
+	if (size <= cstFallbackToSmall) {
+		directSmall.reserve(size);
+		for (size_t i = 0 ; i < size ; i++)
+			directSmall.emplace_back();
+	}
 	for (size_t i = 0 ; i < size ; i++)
 		this->keyHistory.push_back(nullptr);
 }
@@ -68,20 +75,37 @@ TreeCache<Key, Value>::~TreeCache(void)
 template <class Key, class Value>
 const Value * TreeCache<Key, Value>::get(const Key & key) const
 {
-	//search in tree
-	const auto & it = this->dict.find(key);
-
-	//check
-	if (it != this->dict.end()) {
-		#ifdef MALT_ENABLE_CODE_TIMING
-			this->hits++;
-		#endif //MALT_ENABLE_CODE_TIMING
-		return &it->second;
-	} else {
-		#ifdef MALT_ENABLE_CODE_TIMING
-			this->misses++;
-		#endif //MALT_ENABLE_CODE_TIMING
+	if (this->size <= cstFallbackToSmall) {
+		for (size_t i = 0 ; i < size ; i++) {
+			if (this->keyHistory[i] != nullptr && *this->keyHistory[i] == key) {
+				#ifdef MALT_ENABLE_CODE_TIMING
+					this->hits++;
+				#endif //MALT_ENABLE_CODE_TIMING
+				return &directSmall[i];
+			} else {
+				#ifdef MALT_ENABLE_CODE_TIMING
+					this->misses++;
+				#endif //MALT_ENABLE_CODE_TIMING
+				return nullptr;
+			}
+		}
 		return nullptr;
+	} else {
+		//search in tree
+		const auto & it = this->dict.find(key);
+
+		//check
+		if (it != this->dict.end()) {
+			#ifdef MALT_ENABLE_CODE_TIMING
+				this->hits++;
+			#endif //MALT_ENABLE_CODE_TIMING
+			return &it->second;
+		} else {
+			#ifdef MALT_ENABLE_CODE_TIMING
+				this->misses++;
+			#endif //MALT_ENABLE_CODE_TIMING
+			return nullptr;
+		}
 	}
 }
 
@@ -92,26 +116,36 @@ void TreeCache<Key, Value>::set(const Key * key, const Value & value)
 	//check
 	assert(key != nullptr);
 
-	//remove one
-	if (this->keyHistory[this->cursor] != nullptr) {
-		this->dict.erase(*this->keyHistory[this->cursor]);
-		this->keyHistory[this->cursor] = nullptr;
+	if (this->size <= cstFallbackToSmall) {
+		//set it
+		this->directSmall[this->cursor] = value;
+		this->keyHistory[this->cursor] = key;
+
+		//incr with wrapping
+		this->cursor = (this->cursor + 1) % this->size;
+	} else {
+		//remove one
+		if (this->keyHistory[this->cursor] != nullptr) {
+			this->dict.erase(*this->keyHistory[this->cursor]);
+			this->keyHistory[this->cursor] = nullptr;
+		}
+
+		//set it
+		this->dict[*key] = value;
+		this->keyHistory[this->cursor] = key;
+
+		//incr with wrapping
+		this->cursor = (this->cursor + 1) % this->size;
 	}
-
-	//set it
-	this->dict[*key] = value;
-	this->keyHistory[this->cursor] = key;
-
-	//incr with wrapping
-	this->cursor = (this->cursor + 1) % this->size;
 }
 
 /**********************************************************/
 template <class Key, class Value>
 void TreeCache<Key, Value>::flush(void)
 {
-	for (auto & it : this->dict)
-		this->dict.remove(it);
+	if (this->size > cstFallbackToSmall)
+		for (auto & it : this->dict)
+			this->dict.remove(it);
 	for (size_t i = 0 ; i < this->size ; i++)
 		this->keyHistory[i] = nullptr;
 	#ifdef MALT_ENABLE_CODE_TIMING
