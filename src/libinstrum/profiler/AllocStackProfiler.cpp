@@ -586,9 +586,24 @@ void AllocStackProfiler::peakTracking(ssize_t delta)
 MMCallStackNode AllocStackProfiler::getStackNode(Stack* userStack)
 {
 	MMStackMap::Node * node;
+	MMCallStackNode res;
 	//CODE_TIMING("stackReducer",this->reducer.reduce(*userStack));
-	CODE_TIMING("searchInfo",node = &stackTracker.getNode(*userStack));
-	MMCallStackNode res(node->first.stack,&node->second);
+	CODE_TIMING("searchInfo", {
+		const MMCallStackNode * cacheResult = nullptr;
+		#ifdef MALT_ENABLE_CACHING
+			cacheResult = this->stackTrackerCache.get(*userStack);
+		#endif //MALT_ENABLE_CACHING
+		if (cacheResult != nullptr) {
+			res = *cacheResult;
+		} else {
+			node = &stackTracker.getNode(*userStack);
+			MMCallStackNode tmp(node->first.stack,&node->second);
+			res = tmp;
+			#ifdef MALT_ENABLE_CACHING
+				this->stackTrackerCache.set(node->first.stack, res);
+			#endif //MALT_ENABLE_CACHING
+		}
+	});
 	return res;
 }
 
@@ -876,6 +891,7 @@ void AllocStackProfiler::onExit(void )
 		this->segTracker.printStats();
 		this->mmapSegTracker.printStats();
 		this->pythonSymbolTracker.printStats();
+		this->stackTrackerCache.printStats("stackTrackerCache");
 		#endif //MALT_ENABLE_CODE_TIMING
 
 		//stop tracking threads

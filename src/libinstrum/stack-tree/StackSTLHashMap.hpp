@@ -44,7 +44,7 @@ extern unsigned long gblUseFakeIdInOutput;
  * The ordering operator (<) will only compare the next  key if previous one provide equal reqults with
  * the compared stack.
 **/
-template <class T>
+template <class T, bool doCloneStack = true>
 class StackSTLHashMap
 {
 	public:
@@ -71,35 +71,38 @@ class StackSTLHashMap
 		Node & getNode(const MALT::Stack& stack);
 		iterator begin();
 		iterator end();
+		iterator find(const Stack & stack);
+		void erase(const Stack & stack);
 		const_iterator begin() const;
 		const_iterator end() const;
+		const_iterator find(const Stack & stack) const;
 		void solveSymbols(SymbolSolver & symbolResolver);
 		bool empty() const;
 		void remove(iterator & it);
 	public:
-		template <class U> friend void convertToJson(htopml::JsonState & json, const StackSTLHashMap<U> & value);
+		template <class U, bool doCloneStackU> friend void convertToJson(htopml::JsonState & json, const StackSTLHashMap<U, doCloneStackU> & value);
 	private:
 		/** Instal STL map. **/
 		InternalMap map;
 };
 
 /**********************************************************/
-template <class T>
-StackSTLHashMap<T>::StackSTLHashMap(void)
+template <class T, bool doCloneStack>
+StackSTLHashMap<T, doCloneStack>::StackSTLHashMap(void)
 {
 
 }
 
 /**********************************************************/
-template <class T>
-StackSTLHashMap<T>::~StackSTLHashMap(void)
+template <class T, bool doCloneStack>
+StackSTLHashMap<T, doCloneStack>::~StackSTLHashMap(void)
 {
 
 }
 
 /**********************************************************/
-template <class T>
-typename StackSTLHashMap<T>::Node & StackSTLHashMap<T>::getNode(const Stack& stack)
+template <class T, bool doCloneStack>
+typename StackSTLHashMap<T, doCloneStack>::Node & StackSTLHashMap<T, doCloneStack>::getNode(const Stack& stack)
 {
 	//build key
 	Key key(&stack);
@@ -120,22 +123,22 @@ typename StackSTLHashMap<T>::Node & StackSTLHashMap<T>::getNode(const Stack& sta
 }
 
 /**********************************************************/
-template <class T>
-T& StackSTLHashMap<T>::getValueRef(const Stack& stack)
+template <class T, bool doCloneStack>
+T& StackSTLHashMap<T, doCloneStack>::getValueRef(const Stack& stack)
 {
 	return getNode(stack).second;
 }
 
 /**********************************************************/
-template <class T>
-T& StackSTLHashMap<T>::operator[](const Stack& stack)
+template <class T, bool doCloneStack>
+T& StackSTLHashMap<T, doCloneStack>::operator[](const Stack& stack)
 {
 	return getNode(stack).second;
 }
 
 /**********************************************************/
-template <class T>
-StackSTLHashMap<T>::Key::Key(const Stack* stack)
+template <class T, bool doCloneStack>
+StackSTLHashMap<T, doCloneStack>::Key::Key(const Stack* stack)
 {
 	assert(stack != NULL);
 	this->stack = stack;
@@ -143,8 +146,8 @@ StackSTLHashMap<T>::Key::Key(const Stack* stack)
 }
 
 /**********************************************************/
-template <class T>
-bool StackSTLHashMap<T>::Key::operator==(const Key& node) const
+template <class T, bool doCloneStack>
+bool StackSTLHashMap<T, doCloneStack>::Key::operator==(const Key& node) const
 {
 	if (!(hash == node.hash))
 		return false;
@@ -153,8 +156,8 @@ bool StackSTLHashMap<T>::Key::operator==(const Key& node) const
 }
 
 /**********************************************************/
-template <class T>
-bool StackSTLHashMap<T>::Key::operator<(const Key& node) const
+template <class T, bool doCloneStack>
+bool StackSTLHashMap<T, doCloneStack>::Key::operator<(const Key& node) const
 {
 	if (hash < node.hash)
 	{
@@ -167,21 +170,21 @@ bool StackSTLHashMap<T>::Key::operator<(const Key& node) const
 }
 
 /**********************************************************/
-template <class U>
-void convertToJson(htopml::JsonState& json, const StackSTLHashMap< U >& value)
+template <class U, bool doCloneStackU = true>
+void convertToJson(htopml::JsonState& json, const StackSTLHashMap< U, doCloneStackU >& value)
 {
 	json.openStruct();
 	json.openFieldArray("stats");
-	for (typename StackSTLHashMap< U >::InternalMap::const_iterator it = value.map.begin() ; it != value.map.end() ; ++it)
+	for (const auto & it : value.map)
 	{
 		json.printListSeparator();
 		json.openStruct();
-		json.printField("stack",*it->first.stack);
+		json.printField("stack",*it.first.stack);
 		if (gblUseFakeIdInOutput > 0) //for unit tests
 			json.printField("stackId",(void*)(gblUseFakeIdInOutput++));
 		else
-			json.printField("stackId",(void*)it->first.stack);
-		json.printField("infos",it->second);
+			json.printField("stackId",(void*)it.first.stack);
+		json.printField("infos",it.second);
 		json.closeStruct();
 	}
 	json.closeFieldArray("stats");
@@ -190,60 +193,95 @@ void convertToJson(htopml::JsonState& json, const StackSTLHashMap< U >& value)
 }
 
 /**********************************************************/
-template <class T>
-typename StackSTLHashMap<T>::iterator StackSTLHashMap<T>::begin()
+template <class T, bool doCloneStack>
+typename StackSTLHashMap<T, doCloneStack>::iterator StackSTLHashMap<T, doCloneStack>::find(const Stack & stack)
+{
+	//build key
+	Key key(&stack);
+
+	//search
+	return map.find(key);
+}
+
+/**********************************************************/
+template <class T, bool doCloneStack>
+void StackSTLHashMap<T, doCloneStack>::erase(const Stack & stack)
+{
+	//build key
+	Key key(&stack);
+
+	//erase
+	map.erase(key);
+}
+
+/**********************************************************/
+template <class T, bool doCloneStack>
+typename StackSTLHashMap<T, doCloneStack>::const_iterator StackSTLHashMap<T, doCloneStack>::find(const Stack & stack) const
+{
+	//build key
+	Key key(&stack);
+
+	//search
+	return map.find(key);
+}
+
+/**********************************************************/
+template <class T, bool doCloneStack>
+typename StackSTLHashMap<T, doCloneStack>::iterator StackSTLHashMap<T, doCloneStack>::begin()
 {
 	return map.begin();
 }
 
 /**********************************************************/
-template <class T>
-typename StackSTLHashMap<T>::iterator StackSTLHashMap<T>::end()
+template <class T, bool doCloneStack>
+typename StackSTLHashMap<T, doCloneStack>::iterator StackSTLHashMap<T, doCloneStack>::end()
 {
 	return map.end();
 }
 
 /**********************************************************/
-template <class T>
-typename StackSTLHashMap<T>::const_iterator StackSTLHashMap<T>::begin() const
+template <class T, bool doCloneStack>
+typename StackSTLHashMap<T, doCloneStack>::const_iterator StackSTLHashMap<T, doCloneStack>::begin() const
 {
 	return map.begin();
 }
 
 /**********************************************************/
-template <class T>
-typename StackSTLHashMap<T>::const_iterator StackSTLHashMap<T>::end() const
+template <class T, bool doCloneStack>
+typename StackSTLHashMap<T, doCloneStack>::const_iterator StackSTLHashMap<T, doCloneStack>::end() const
 {
 	return map.end();
 }
 
 /**********************************************************/
-template <class T>
-void StackSTLHashMap<T>::solveSymbols(SymbolSolver& symbolResolver)
+template <class T, bool doCloneStack>
+void StackSTLHashMap<T, doCloneStack>::solveSymbols(SymbolSolver& symbolResolver)
 {
 	for (typename StackSTLHashMap< T >::InternalMap::const_iterator it = map.begin() ; it != map.end() ; ++it)
 		it->first.stack->solveSymbols(symbolResolver);
 }
 
 /**********************************************************/
-template <class T>
-void StackSTLHashMap<T>::Key::cloneStack(void)
+template <class T, bool doCloneStack>
+void StackSTLHashMap<T, doCloneStack>::Key::cloneStack(void)
 {
-	assert(stack != NULL);
-	void * ptr = MALT_MALLOC(sizeof(Stack));
-	stack = new(ptr) Stack(*stack);
+	if (doCloneStack) {
+		assert(stack != NULL);
+		void * ptr = MALT_MALLOC(sizeof(Stack));
+		stack = new(ptr) Stack(*stack);
+	}
 }
 
 /**********************************************************/
-template <class T>
-bool StackSTLHashMap<T>::empty() const
+template <class T, bool doCloneStack>
+bool StackSTLHashMap<T, doCloneStack>::empty() const
 {
 	return map.empty();
 }
 
 /**********************************************************/
-template <class T>
-void StackSTLHashMap<T>::remove ( iterator& it )
+template <class T, bool doCloneStack>
+void StackSTLHashMap<T, doCloneStack>::remove ( iterator& it )
 {
 	this->map.erase(it);
 }

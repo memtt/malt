@@ -27,6 +27,7 @@
 #include <stacks/EnterExitStack.hpp>
 #include <stack-tree/StackSTLHashMap.hpp>
 #include <stack-tree/RLockFreeTree.hpp>
+#include <stack-tree/StackTreeCache.hpp>
 // #include <stack-tree/AbstractStackTree.hpp>
 #include <valprof/ProfiledStateValue.hpp>
 #include <valprof/ProfiledCumulValue.hpp>
@@ -174,6 +175,7 @@ class AllocStackProfiler
 		//SimpleStackTracer stackTracer;
 		MultiLangStackMerger multiLangStackMerger;
 		StackSTLHashMap<CallStackInfo> stackTracker;
+		StackTreeCache<MMCallStackNode> stackTrackerCache{4096};
 		RLockFreeTree<CallStackInfo> treeStackTracker;
 // 		AbstractStackTree<CallStackInfo> stackTree;
 		AllocSizeDistrMap sizeMap;
@@ -218,7 +220,7 @@ class AllocStackProfiler
 		bool skipThreadRegister{false};
 		std::atomic<size_t> maltJeMallocMem{0};
 		Trigger trigger;
-		StackReducer reducer{5};
+		StackReducer reducer{10};
 		DomainCounters domains;
 		std::atomic<size_t> rate{0};
 };

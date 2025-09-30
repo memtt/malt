@@ -252,6 +252,7 @@ StackHash Stack::hash (LangAddress* stack, int size ,StackOrder order)
 // 				res ^= (StackHash)(cur+i+size);
 // 				res ^= (StackHash)(cur-i+size) << (i%32);
 				res += (StackHash)(cur) << (i%32);
+				res += (StackHash)(cur);
 			}
 			res*=size;
 			break;
