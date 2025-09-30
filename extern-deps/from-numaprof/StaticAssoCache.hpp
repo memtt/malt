@@ -29,7 +29,7 @@ namespace numaprof
  * as an associative cache with N ways and M rows per way. It is built in template
  * to be faster and optimized by compiler.
 **/
-template<class T,int ways,int rows>
+template<class T,size_t ways,size_t rows>
 class StaticAssoCache
 {
 	public:
@@ -37,6 +37,7 @@ class StaticAssoCache
 		void flush(void);
 		const T * get(size_t addr) const;
 		void set(size_t addr,const T & value);
+		void unset(size_t addr);
 		void printStats(const char * name) const;
 	private:
 		/** Store content **/

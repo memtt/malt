@@ -873,6 +873,8 @@ void AllocStackProfiler::onExit(void )
 		gblInternaAlloc->printState();
 		for (const auto & it : this->perThreadProfiler)
 			it->printStats();
+		this->segTracker.printStats();
+		this->mmapSegTracker.printStats();
 		#endif //MALT_ENABLE_CODE_TIMING
 
 		//stop tracking threads

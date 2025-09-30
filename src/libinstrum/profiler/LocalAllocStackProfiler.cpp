@@ -160,7 +160,6 @@ void convertToJson(htopml::JsonState& json, const LocalAllocStackProfiler& value
 void LocalAllocStackProfiler::solveSymbols(SymbolSolver& symbolResolver) const
 {
 	this->stackSizeAnalyser.solveSymbols(symbolResolver);
-	this->backtracePythonStack.displayCacheStats();
 }
 
 /**********************************************************/

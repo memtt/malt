@@ -14,12 +14,14 @@
 /**********************************************************/
 //STD
 #include <map>
+//config
+#include <config.h>
 //from fftw
 #include <portability/Clock.hpp>
 //internals
 #include <common/STLInternalAllocator.hpp>
 #include "SimpleCallStackNode.hpp"
-
+#include <StaticAssoCache.hpp>
 
 /**********************************************************/
 namespace MALT
@@ -82,6 +84,7 @@ class SegmentTracker
 		void remove(void * ptr);
 		void munmap(void * ptr,size_t size);
 		void merge(const SegmentTracker & tracker);
+		void printStats(void) const;
 	public:
 		friend void convertToJson(htopml::JsonState & json,const SegmentTracker & value);
 	private:
@@ -90,6 +93,9 @@ class SegmentTracker
 	private:
 		/** Map used to store the allocated segment informations. **/
 		SegmentInfoMap map;
+		#ifdef MALT_ENABLE_CACHING
+			numaprof::StaticAssoCache<SegmentInfo*,4,67> cache;
+		#endif //MALT_ENABLE_CACHING
 };
 
 /**********************************************************/
