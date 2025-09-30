@@ -53,6 +53,20 @@ TEST(TestStringIdDictionnary, flow_cache)
 }
 
 /**********************************************************/
+TEST(TestStringIdDictionnary, flow_cache_full)
+{
+	StringIdDictionnary dict;
+	for (size_t i = 0 ; i < 10000 ; i++) {
+		char buffer[4096];
+		sprintf(buffer, "string-%zu", i);
+		int id1 = dict.getId(buffer);
+		int id2 = dict.getId(buffer);
+		ASSERT_EQ(id1, id2);
+		ASSERT_EQ(dict.getString(id2), buffer);
+	}
+}
+
+/**********************************************************/
 int main(int argc, char ** argv)
 {
 	//init internal allocator
