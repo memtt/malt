@@ -22,6 +22,7 @@
 #include "stacks/Stack.hpp"
 //extern
 #include <StaticAssoCache.hpp>
+#include <common/TreeCache.hpp>
 
 /**********************************************************/
 namespace MALT
@@ -175,6 +176,7 @@ class PythonSymbolTracker
 		 * base stack representation from C in the rest the MALT code base.
 		 */
 		PythonStrCallSiteMap siteMap;
+		TreeCache<PythonCallSite, void*> siteMapCache{64};
 		/** Next index to assigned as a raw address to a new uniq call site. */
 		size_t nextIndex{10};
 		/** Convert a python code to a uniq raw pointer value. */

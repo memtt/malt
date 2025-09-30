@@ -190,16 +190,28 @@ LangAddress PythonSymbolTracker::slowFrameToLangAddress(PyFrameObject * frame, P
 	}
 
 	//search entry
-	PythonStrCallSiteMap::iterator it;
-	CODE_TIMING("pySearchInsertSite",it = this->siteMap.find(site));
-	void * currentId;
-
-	//is new or not
-	if (it == this->siteMap.end()) {
-		currentId = this->siteMap[site] = (void*)(this->nextIndex++);
-	} else {
-		currentId = it->second;
-	}
+	void * currentId = nullptr;
+	CODE_TIMING("pySearchInsertSite",{
+		void * const * cacheResult = nullptr;
+		#ifdef MALT_ENABLE_CACHING
+			cacheResult = siteMapCache.get(site);
+		#endif //MALT_ENABLE_CACHING
+		if (cacheResult != nullptr) {
+			currentId = *cacheResult;
+		} else {
+			auto it = this->siteMap.find(site);
+			//is new or not
+			if (it == this->siteMap.end()) {
+				currentId = this->siteMap[site] = (void*)(this->nextIndex++);
+				it = this->siteMap.find(site);
+			} else {
+				currentId = it->second;
+			}
+			#ifdef MALT_ENABLE_CACHING
+				siteMapCache.set(&it->first, currentId);
+			#endif //MALT_ENABLE_CACHING
+		}
+	});
 
 	//free
 	freeFrameToCallSite(tmpsite);
@@ -683,6 +695,7 @@ void PythonSymbolTracker::setPythonActivity(bool activ)
 void PythonSymbolTracker::printStats(void) const
 {
 	this->dict.printStats();
+	this->siteMapCache.printStats("pySiteMapCache");
 }
 
 }
