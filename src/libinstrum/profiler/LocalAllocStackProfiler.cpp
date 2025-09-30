@@ -316,6 +316,14 @@ void LocalAllocStackProfiler::flushPythonCacheSolver(void)
 }
 
 /**********************************************************/
+void LocalAllocStackProfiler::printStats(void) const
+{
+	#ifdef MALT_ENABLE_CODE_TIMING
+		this->backtracePythonStack.displayCacheStats();
+	#endif //MALT_ENABLE_CODE_TIMING
+}
+
+/**********************************************************/
 FunctionStat::FunctionStat(void)
 {
 	this->count = 0;

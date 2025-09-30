@@ -140,14 +140,19 @@ LangAddress PythonSymbolTracker::frameToLangAddress(PyFrameObject * frame, Pytho
 	//get fast
 	//LangAddress addrFast = this->fastFrameToLangAddress(frame);
 
+	//skip if disabled
+	#ifndef MALT_ENABLE_CACHING
+		lineCache = nullptr;
+	#endif //MALT_ENABLE_CACHING
+
 	//get slow
 	LangAddress addrSlow = this->slowFrameToLangAddress(frame, lineCache);
 
 	//check
-	#ifndef NDEBUG
+	/*#ifndef NDEBUG
 		LangAddress addrSlow2 = this->slowFrameToLangAddress(frame, nullptr);
 		assume(addrSlow == addrSlow2, "Cache made mistakes !");
-	#endif
+	#endif*/
 
 	//check equal
 	//assert(addrFast.isNULL() || addrSlow == addrFast);
@@ -171,9 +176,11 @@ LangAddress PythonSymbolTracker::slowFrameToLangAddress(PyFrameObject * frame, P
 	//if not cache, set
 	PythonCallSite site;
 	if (tmpsite.cached) {
+		assert(lineCache != nullptr);
 		site = tmpsite.cacheEntry;
 	} else {
 		//build call site
+		assert(tmpsite.site.function[0] != '\0');
 		site.file = this->dict.getId(tmpsite.site.file);
 		site.function = this->dict.getId(tmpsite.site.function);
 		site.line = tmpsite.site.line;
@@ -186,8 +193,6 @@ LangAddress PythonSymbolTracker::slowFrameToLangAddress(PyFrameObject * frame, P
 	PythonStrCallSiteMap::iterator it;
 	CODE_TIMING("pySearchInsertSite",it = this->siteMap.find(site));
 	void * currentId;
-
-	assert(tmpsite.site.function[0] != '\0');
 
 	//is new or not
 	if (it == this->siteMap.end()) {
@@ -271,8 +276,6 @@ TmpPythonCallSite PythonSymbolTracker::frameToCallSite(PyFrameObject * frame, Py
 			tmpsite.cacheEntry = *entry;
 			//fprintf(stderr, "CACHE : %d, %d; %d\n", tmpsite.cacheEntry.file, tmpsite.cacheEntry.function, tmpsite.cacheEntry.line);
 			return tmpsite;
-		} else {
-			tmpsite.cached = false;
 		}
 	}
 
@@ -298,6 +301,7 @@ TmpPythonCallSite PythonSymbolTracker::frameToCallSite(PyFrameObject * frame, Py
 	tmpsite.site.line = line;
 	tmpsite.filenameObject = currentFilenameObject;
 	tmpsite.framenameObject = currentFramenameObject;
+	tmpsite.cached = false;
 
 	//ok
 	return tmpsite;

@@ -46,6 +46,7 @@ set(ENABLE_LINK_OPTIM     "yes"      CACHE BOOL   "Enable link optimisation (LTO
 set(ENABLE_IPO            "yes"      CACHE BOOL   "Allow usage of IPO specfic optimization when ENABLE_LINK_OPTIM is enabled.")
 set(ENABLE_PYTHON         "yes"      CACHE BOOL   "Enable compiling with the python support.")
 set(ENABLE_JEMALLOC       "yes"      CACHE BOOL   "Enable building internal JeMalloc.")
+set(ENABLE_CACHING        "yes"      CACHE BOOL   "Enable some internal caches.")
 #Code options
 set(ENABLE_CODE_TIMING    "no"       CACHE BOOL   "Enable some tricks to quickly check timings of hostspots of MALT internal code.")
 set(ENABLE_CODE_LEAK      "no"       CACHE BOOL   "Enable internal analysis of memory leak.")

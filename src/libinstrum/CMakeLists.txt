@@ -43,6 +43,9 @@ endif (ENABLE_GCC_COVERAGE)
 if (MALTJEMALLOC_FOUND)
 	set(MALT_ENABLE_INTERNAL_JEMALLOC yes)
 endif()
+if (ENABLE_CACHING)
+	set(MALT_ENABLE_CACHING yes)
+endif()
 
 ############################################################
 set(LIB_MALT_DEPS pthread dl)

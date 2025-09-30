@@ -9,8 +9,6 @@
 #ifndef NUMAPROF_STATIC_ASSO_CACHE_IMPL_HPP
 #define NUMAPROF_STATIC_ASSO_CACHE_IMPL_HPP
 
-#define NUMAPROF_CACHE_STATS
-
 /********************  HEADERS  *********************/
 //std
 #include <cstdio>
@@ -38,13 +36,25 @@ StaticAssoCache<T,ways,rows>::StaticAssoCache(void)
 template<class T,int ways,int rows>
 void StaticAssoCache<T,ways,rows>::flush(void)
 {
-	this->flushCnt++;
+	//tribial
+	if (dirty == false)
+		return;
+
+	//count
+	#ifdef NUMAPROF_CACHE_STATS
+		this->flushCnt++;
+	#endif //NUMAPROF_CACHE_STATS
+
+	//flush
 	for (int r = 0 ; r < rows ; r++)
 	{
 		next[r] = 0;
 		for (int w = 0 ; w < ways ; w++)
 			addr[r][w] = -1UL;
 	}
+
+	//remember done
+	this->dirty = false;
 }
 
 /*******************  FUNCTION  *********************/
@@ -98,6 +108,9 @@ void StaticAssoCache<T,ways,rows>::set(size_t addr, const T & value)
 	
 	//increment with round robin
 	next[r] = (w+1)%ways;
+
+	//mark dirty
+	this->dirty = true;
 }
 
 /*******************  FUNCTION  *********************/

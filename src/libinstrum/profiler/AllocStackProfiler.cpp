@@ -871,6 +871,8 @@ void AllocStackProfiler::onExit(void )
 		#ifdef MALT_ENABLE_CODE_TIMING
 		CodeTiming::printAll();
 		gblInternaAlloc->printState();
+		for (const auto & it : this->perThreadProfiler)
+			it->printStats();
 		#endif //MALT_ENABLE_CODE_TIMING
 
 		//stop tracking threads

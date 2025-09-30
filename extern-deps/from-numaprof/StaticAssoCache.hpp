@@ -12,9 +12,12 @@
 /********************  HEADERS  *********************/
 //std
 #include <cstdlib>
+#include <config.h>
 
 /********************  MACRO  ***********************/
-// #define NUMAPROF_CACHE_STATS
+#ifdef MALT_ENABLE_CODE_TIMING
+	#define NUMAPROF_CACHE_STATS
+#endif //MALT_ENABLE_CODE_TIMING
 
 /*******************  NAMESPACE  ********************/
 namespace numaprof
@@ -48,6 +51,8 @@ class StaticAssoCache
 		mutable size_t hits{0};
 		/** counter flush */
 		mutable size_t flushCnt{0};
+		/** Has been flushed recently, not do do again */
+		bool dirty{true};
 };
 
 }
