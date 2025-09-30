@@ -223,6 +223,7 @@ class AllocStackProfiler
 		StackReducer reducer{10};
 		DomainCounters domains;
 		std::atomic<size_t> rate{0};
+		std::atomic<size_t> rateCnt{0};
 };
 
 /**********************************************************/
@@ -238,14 +239,22 @@ inline bool AllocStackProfiler::isAcceptedBySampling(size_t size, bool isFree)
 
 	//sum
 	size_t previous = this->rate.fetch_add(size);
+	size_t previousCnt = this->rateCnt.fetch_add(1);
 	size_t bw = gblOptions->stackSamplingBw;
 	if (previous / bw != (previous + size) / bw)
 	{
 		this->rate.fetch_sub(bw);
 		return true;
-	} else {
-		return false;
 	}
+
+	//count
+	size_t cnt = gblOptions->stackSamplingCnt;
+	if (cnt != 0 && previousCnt >= cnt) {
+		this->rateCnt.fetch_sub(cnt);
+		return true;
+	}
+
+	return false;
 }
 
 }

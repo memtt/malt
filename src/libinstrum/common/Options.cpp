@@ -60,6 +60,7 @@ Options::Options(void)
 	this->stackAddr2lineThreads   = 8;
 	this->stackSampling           = false;
 	this->stackSamplingBw         = 4093; //5242883, 10485767, 20971529
+	this->stackSamplingCnt        = 571;
 	//python
 	this->pythonStack             = "enter-exit";
 	this->pythonStackEnum         = STACK_MODE_ENTER_EXIT_FUNC;
@@ -285,6 +286,7 @@ void Options::loadFromIniDic ( dictionary* iniDic )
 	this->stackAddr2lineThreads= iniparser_getint(iniDic,"stack:addr2lineThreads",this->stackAddr2lineThreads);
 	this->stackSampling       = iniparser_getboolean(iniDic,"stack:sampling",this->stackSampling);
 	this->stackSamplingBw     = iniparser_getint(iniDic,"stack:samplingBw",this->stackSamplingBw);
+	this->stackSamplingCnt    = iniparser_getint(iniDic,"stack:samplingCnt",this->stackSamplingCnt);
 	
 	//load values for output
 	this->outputName          = iniparser_getstring(iniDic,"output:name",(char*)this->outputName.c_str());
@@ -379,6 +381,7 @@ void convertToJson(htopml::JsonState & json,const Options & value)
 			json.printField("addr2lineThreads",value.stackAddr2lineThreads);
 			json.printField("sampling", value.stackSampling);
 			json.printField("samplingBw", value.stackSamplingBw);
+			json.printField("samplingCnt", value.stackSamplingCnt);
 		json.closeFieldStruct("stack");
 
 		json.openFieldStruct("python");
@@ -467,6 +470,7 @@ void Options::dumpConfig(const char* fname)
 	IniParserHelper::setEntry(dic,"stack:addr2lineThreads",this->stackAddr2lineThreads);
 	IniParserHelper::setEntry(dic,"stack:sampling",this->stackSampling);
 	IniParserHelper::setEntry(dic,"stack:samplingBw",this->stackSamplingBw);
+	IniParserHelper::setEntry(dic,"stack:samplingCnt",this->stackSamplingCnt);
 
 	//python
 	IniParserHelper::setEntry(dic,"python:intru",this->pythonInstru);
