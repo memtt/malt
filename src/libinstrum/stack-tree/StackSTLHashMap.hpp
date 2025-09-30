@@ -14,6 +14,7 @@
 /**********************************************************/
 //std
 #include <map>
+#include <unordered_map>
 #include <cassert>
 //from htpoml for json export
 #include <json/JsonState.h>
@@ -22,6 +23,33 @@
 //internal stacks
 #include <stacks/Stack.hpp>
 #include <core/SymbolSolver.hpp>
+
+/**********************************************************/
+namespace MALT
+{
+
+/** Quicly define the key formed by pointer to the stack and the hash **/
+template <bool doStackClone = true>
+struct StackKey {
+	StackKey(const Stack * stack);
+	void cloneStack(void);
+	bool operator == (const StackKey<doStackClone> & node) const;
+	bool operator < (const StackKey<doStackClone> & node) const;
+	/** Keep ref to the stack. **/
+	const Stack * stack;
+	/** Keep the hash for fast compare on search. **/
+	StackHash hash;
+};
+
+}
+
+/**********************************************************/
+template<bool doStackClone>
+struct std::hash<MALT::StackKey<doStackClone> > {
+    std::size_t operator()(MALT::StackKey<doStackClone> const& s) const noexcept {
+        return s.hash;
+    }
+};
 
 /**********************************************************/
 namespace MALT
@@ -59,8 +87,10 @@ class StackSTLHashMap
 			/** Keep the hash for fast compare on search. **/
 			StackHash hash;
 		};
-		typedef typename std::pair<const Key,T> Node;
-		typedef typename std::map<Key,T,std::less<Key>,STLInternalAllocator< Node > > InternalMap;
+		//typedef typename std::pair<const StackKey<doCloneStack>,T> Node;
+		//typedef typename std::map<Key,T,std::less<Key>,STLInternalAllocator< Node > > InternalMap;
+		typedef typename std::pair<const StackKey<doCloneStack> ,T> Node;
+		typedef typename std::unordered_map<StackKey<doCloneStack>,T,std::hash<StackKey<doCloneStack> >,std::equal_to<StackKey<doCloneStack> >,STLInternalAllocator< Node > > InternalMap;
 		typedef typename InternalMap::iterator iterator;
 		typedef typename InternalMap::const_iterator const_iterator;
 	public:
@@ -105,7 +135,7 @@ template <class T, bool doCloneStack>
 typename StackSTLHashMap<T, doCloneStack>::Node & StackSTLHashMap<T, doCloneStack>::getNode(const Stack& stack)
 {
 	//build key
-	Key key(&stack);
+	StackKey<doCloneStack> key(&stack);
 	
 	//search
 	typename InternalMap::iterator it = map.find(key);
@@ -137,8 +167,8 @@ T& StackSTLHashMap<T, doCloneStack>::operator[](const Stack& stack)
 }
 
 /**********************************************************/
-template <class T, bool doCloneStack>
-StackSTLHashMap<T, doCloneStack>::Key::Key(const Stack* stack)
+template<bool T>
+inline StackKey<T>::StackKey(const Stack* stack)
 {
 	assert(stack != NULL);
 	this->stack = stack;
@@ -146,8 +176,8 @@ StackSTLHashMap<T, doCloneStack>::Key::Key(const Stack* stack)
 }
 
 /**********************************************************/
-template <class T, bool doCloneStack>
-bool StackSTLHashMap<T, doCloneStack>::Key::operator==(const Key& node) const
+template<bool T>
+inline bool StackKey<T>::operator==(const StackKey& node) const
 {
 	if (!(hash == node.hash))
 		return false;
@@ -156,8 +186,8 @@ bool StackSTLHashMap<T, doCloneStack>::Key::operator==(const Key& node) const
 }
 
 /**********************************************************/
-template <class T, bool doCloneStack>
-bool StackSTLHashMap<T, doCloneStack>::Key::operator<(const Key& node) const
+template<bool T>
+inline bool StackKey<T>::operator<(const StackKey& node) const
 {
 	if (hash < node.hash)
 	{
@@ -197,7 +227,7 @@ template <class T, bool doCloneStack>
 typename StackSTLHashMap<T, doCloneStack>::iterator StackSTLHashMap<T, doCloneStack>::find(const Stack & stack)
 {
 	//build key
-	Key key(&stack);
+	StackKey<doCloneStack> key(&stack);
 
 	//search
 	return map.find(key);
@@ -208,7 +238,7 @@ template <class T, bool doCloneStack>
 void StackSTLHashMap<T, doCloneStack>::erase(const Stack & stack)
 {
 	//build key
-	Key key(&stack);
+	StackKey<doCloneStack> key(&stack);
 
 	//erase
 	map.erase(key);
@@ -219,7 +249,7 @@ template <class T, bool doCloneStack>
 typename StackSTLHashMap<T, doCloneStack>::const_iterator StackSTLHashMap<T, doCloneStack>::find(const Stack & stack) const
 {
 	//build key
-	Key key(&stack);
+	StackKey<doCloneStack> key(&stack);
 
 	//search
 	return map.find(key);
@@ -262,8 +292,8 @@ void StackSTLHashMap<T, doCloneStack>::solveSymbols(SymbolSolver& symbolResolver
 }
 
 /**********************************************************/
-template <class T, bool doCloneStack>
-void StackSTLHashMap<T, doCloneStack>::Key::cloneStack(void)
+template<bool doCloneStack>
+void StackKey<doCloneStack>::cloneStack(void)
 {
 	if (doCloneStack) {
 		assert(stack != NULL);
