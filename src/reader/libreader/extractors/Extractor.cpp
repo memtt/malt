@@ -139,7 +139,7 @@ FlatProfileVector Extractor::getFlatProfile(const LocaltionMappingFunc & mapping
 			}
 
 			//childs
-			std::map<std::string, bool> done;
+			std::unordered_map<std::string, bool> done;
 			for (size_t j = 0 ; j < stack.size() ; j++)
 			{
 				//skip firsts for 'own' mode, otherwise keep them
@@ -805,7 +805,7 @@ Summary Extractor::getSummary(void) const
 FlattenMaxStackInfo Extractor::getFlattenMaxStackInfo(const LocaltionOnlyMappingFunc & mapping,const LocaltionOnlyFilterFunc & accept, const ThreadStackMem & maxStack)
 {
 	//init hash map to flat on addresses
-	std::map<std::string, FlattenMaxStackInfoEntry> ret;
+	std::unordered_map<std::string, FlattenMaxStackInfoEntry> ret;
 	//var maxStack = this.data.maxStack;
 	//var maxStack = this.getMaxStack();
 
@@ -960,7 +960,7 @@ Graph Extractor::getFilteredTree(ssize_t nodeId, ssize_t depth, ssize_t height, 
 	}
 
 	//loop on all stack and extract nodes that are OK
-	std::map<const std::string*, NodeInfos> nodeStats;
+	std::unordered_map<const std::string*, NodeInfos> nodeStats;
 	std::set<LangAddress> acceptedNodes;
 	for (size_t sid = 0 ; sid < this->profile.stacks.stats.size() ; sid++) {
 		const auto & stackStat = this->profile.stacks.stats[sid];
@@ -968,7 +968,7 @@ Graph Extractor::getFilteredTree(ssize_t nodeId, ssize_t depth, ssize_t height, 
 		const auto & stack = stackStat.stack;
 
 		//calc func min depth
-		std::map<const std::string*, size_t> funcMinDepth;
+		std::unordered_map<const std::string*, size_t> funcMinDepth;
 		size_t curDepth = 0;
 		for (size_t i = 0 ; i < stack.size() ; i++)
 		{
@@ -1085,7 +1085,7 @@ Graph Extractor::getFilteredTree(ssize_t nodeId, ssize_t depth, ssize_t height, 
 	}
 
 	//filter nodes base on costs
-	std::map<const std::string*, NodeInfos> nodeStatsFiltered;
+	std::unordered_map<const std::string*, NodeInfos> nodeStatsFiltered;
 	if (minCost > 0.0)
 	{
 		//filter
@@ -1235,7 +1235,7 @@ nlohmann::json Extractor::getCallTree(ssize_t nodeId, ssize_t depth, ssize_t hei
 			const auto & stack = stackStat.stack;
 
 			//calc func min depth
-			std::map<const std::string*, size_t> funcMinDepth;
+			std::unordered_map<const std::string*, size_t> funcMinDepth;
 			size_t curDepth = 0;
 			for (size_t i = 0 ; i < stack.size() ; i++) {
 				const size_t eid = stack.size() - i - 1;
@@ -1379,7 +1379,7 @@ CallStackChildList Extractor::getCallStackNextLevel(size_t parentStackId, size_t
 	//vars
 	const auto & parentStack = this->profile.stacks.stats[parentStackId].stack;
 	CallStackChildList result;
-	std::map<std::string, CallStackChild> alreadySeen;
+	std::unordered_map<std::string, CallStackChild> alreadySeen;
 
 	//search stacks starting by
 	#pragma omp parallel for

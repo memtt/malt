@@ -14,7 +14,16 @@
 #include <string>
 #include <vector>
 #include <map>
+#include <unordered_map>
 #include "Json.hpp"
+
+/**********************************************************/
+template<>
+struct std::hash<MALTFormat::LangAddress> {
+    std::size_t operator()(MALTFormat::LangAddress const& s) const noexcept {
+        return (size_t)s.address;
+    }
+};
 
 /**********************************************************/
 namespace MALTFormat
@@ -40,7 +49,7 @@ struct InstructionInfos
 };
 
 /**********************************************************/
-typedef std::map<LangAddress, InstructionInfos> SitesInstrMap;
+typedef std::unordered_map<LangAddress, InstructionInfos> SitesInstrMap;
 
 /**********************************************************/
 struct Sites
