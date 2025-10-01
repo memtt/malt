@@ -273,12 +273,13 @@ TmpPythonCallSite PythonSymbolTracker::frameToCallSite(PyFrameObject * frame, Py
 	TmpPythonCallSite tmpsite;
 
 	//get code
-	currentPyCode = MALT::PyFrame_GetCode(frame);
+	CODE_TIMING("PyFrame_GetCode",currentPyCode = MALT::PyFrame_GetCode(frame););
 	assert(currentPyCode != NULL);
 	tmpsite.code = currentPyCode;
 
 	//get line
-	const int line = MALT::PyFrame_GetLineNumber(frame);
+	int line;
+	CODE_TIMING("PyFrame_GetLineNumber",line = MALT::PyFrame_GetLineNumber(frame));
 
 	//check cache
 	if (lineCache != nullptr && line > -1) {

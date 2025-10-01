@@ -15,6 +15,7 @@
 //internals
 #include <common/Debug.hpp>
 #include <common/NoFreeAllocator.hpp>
+#include <common/CodeTiming.hpp>
 //portability
 #include <tools/Backtrace.hpp>
 #include "tools/BacktraceGlibc.hpp"
@@ -71,7 +72,8 @@ PyFrameObject * BacktracePythonStack::loadCurrentFrame(void)
 	}
 
 	//Get the Python Frame
-	PyFrameObject* currentFrame = MALT::PyThreadState_GetFrame(MALT::PyGILState_GetThisThreadState());
+	PyFrameObject* currentFrame;
+	CODE_TIMING("PyThreadState_GetFrame", currentFrame = MALT::PyThreadState_GetFrame(MALT::PyGILState_GetThisThreadState()));
 	if (currentFrame == NULL) {
 		assert(this->memSize >= 1);
 		if (this->memSize < 2)
