@@ -47,7 +47,12 @@ struct Config
 		bool mem;
 		bool raw;
 		bool hideImports;
+		std::string mode;
 	} python;
+	struct {
+		bool malloc;
+		bool mmap;
+	} c;
 	struct {
 		bool callgrind;
 		bool dumpConfig;

@@ -181,7 +181,14 @@ void initPythonEnterExitInstrumentation(void)
 		printf("MALT: Instument Python profiling...\n");
 	PyGILState_STATE gstate;
 	gstate = MALT::PyGILState_Ensure();
-	MALT::PyEval_SetProfileAllThreads(malt_wrap_python_on_enter_exit, NULL);
+	if (gblOptions->pythonMode == "profile") {
+		MALT::PyEval_SetProfileAllThreads(malt_wrap_python_on_enter_exit, NULL);
+	} else if (gblOptions->pythonMode == "trace") {
+		MALT::PyEval_SetProfileAllThreads(malt_wrap_python_on_enter_exit, NULL);
+		MALT::PyEval_SetTraceAllThreads(malt_wrap_python_on_enter_exit, NULL);
+	} else {
+		MALT_FATAL_ARG("Invalid value for option python:mode=%1").arg(gblOptions->pythonMode).end();
+	}
 	MALT::PyGILState_Release(gstate);
 }
 

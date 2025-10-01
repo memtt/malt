@@ -47,6 +47,13 @@ void to_json(nlohmann::json & json, const Config & config){
 				{"mem", config.python.mem},
 				{"raw", config.python.raw},
 				{"hideImports", config.python.hideImports},
+				{"mode", config.python.mode},
+			}
+		},
+		{
+			"c", {
+				{"malloc", config.c.malloc},
+				{"mmap", config.c.mmap},
 			}
 		},
 		{
@@ -162,6 +169,14 @@ void from_json(const JsonIn & json, Config & config)
 	jsonPython.at("mem").get_to(config.python.mem);
 	jsonPython.at("raw").get_to(config.python.raw);
 	jsonPython.at("hideImports").get_to(config.python.hideImports);
+	jsonPython.at("mode").get_to(config.python.mode);
+
+	//python
+	JsonIn jsonC = json.at("c");
+	assert(jsContains(jsonC, "malloc"));
+	assert(jsContains(jsonC, "mmap"));
+	jsonC.at("malloc").get_to(config.c.malloc);
+	jsonC.at("mmap").get_to(config.c.mmap);
 
 	//output
 	JsonIn jsonOutput = json.at("output");

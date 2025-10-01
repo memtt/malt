@@ -23,7 +23,6 @@ using namespace MALT;
 /**********************************************************/
 namespace MALT {
 	static std::list<std::string> * gblMaltWrappedSymbols = nullptr;
-	static const bool cstInstrMmap = true;
 }
 
 /**********************************************************/
@@ -64,7 +63,9 @@ void * MALT::malt_wrap_malloc(size_t size, const MallocFuncPtr & real_malloc, vo
 		initMpiRankFilter();
 
 		//instru
-		MALT_WRAPPER_LOCAL_STATE_ACTION(env.getLocalProfiler().onMalloc(res,size,t,MALLOC_KIND_MALLOC, LANG_C, DOMAIN_C_ALLOC), retaddr);
+		if (gblOptions->cMalloc) {
+			MALT_WRAPPER_LOCAL_STATE_ACTION(env.getLocalProfiler().onMalloc(res,size,t,MALLOC_KIND_MALLOC, LANG_C, DOMAIN_C_ALLOC), retaddr);
+		}
 	}
 
 	//return segment to user
@@ -84,7 +85,7 @@ void MALT::malt_wrap_free(void * ptr, const FreeFuncPtr & real_free, void * reta
 	ReentranceGuard guard(env);
 
 	//profile
-	if (guard.needInstrument()) {
+	if (guard.needInstrument() && gblOptions->cMalloc) {
 		MALT_WRAPPER_LOCAL_STATE_ACTION(env.getLocalProfiler().onFree(ptr,0), retaddr);
 	}
 
@@ -117,7 +118,7 @@ void * MALT::malt_wrap_calloc(size_t nmemb,size_t size, const CallocFuncPtr & re
 	t = Clock::getticks() - t;
 
 	//profile
-	if (guard.needInstrument()) {
+	if (guard.needInstrument() && gblOptions->cMalloc) {
 		MALT_WRAPPER_LOCAL_STATE_ACTION(env.getLocalProfiler().onCalloc(res,nmemb,size,t, LANG_C, DOMAIN_C_ALLOC), retaddr);
 	}
 
@@ -140,7 +141,7 @@ void * MALT::malt_wrap_realloc(void * ptr,size_t size, const ReallocFuncPtr & re
 	t = Clock::getticks() - t;
 	
 	//profile
-	if (guard.needInstrument()) {
+	if (guard.needInstrument() && gblOptions->cMalloc) {
 		MALT_WRAPPER_LOCAL_STATE_ACTION(env.getLocalProfiler().onRealloc(ptr,res,size,t, LANG_C, DOMAIN_C_ALLOC), retaddr);
 	}
 	
@@ -162,7 +163,7 @@ int MALT::malt_wrap_posix_memalign(void **memptr, size_t alignment, size_t size,
 	t = Clock::getticks() - t;
 
 	//profile
-	if (guard.needInstrument()) {
+	if (guard.needInstrument() && gblOptions->cMalloc) {
 		MALT_WRAPPER_LOCAL_STATE_ACTION(env.getLocalProfiler().onMalloc(*memptr,size,t,MALLOC_KIND_POSIX_MEMALIGN, LANG_C, DOMAIN_C_ALLOC), retaddr);
 	}
 
@@ -185,7 +186,7 @@ void * MALT::malt_wrap_aligned_alloc(size_t alignment, size_t size, const Aligne
 	t = Clock::getticks() - t;
 
 	//profile
-	if (guard.needInstrument()) {
+	if (guard.needInstrument() && gblOptions->cMalloc) {
 		MALT_WRAPPER_LOCAL_STATE_ACTION(env.getLocalProfiler().onMalloc(res,size,t,MALLOC_KIND_ALIGNED_ALLOC, LANG_C, DOMAIN_C_ALLOC), retaddr);
 	}
 
@@ -208,7 +209,7 @@ void *MALT::malt_wrap_memalign(size_t alignment, size_t size, const MemalignFunc
 	t = Clock::getticks() - t;
 
 	//profile
-	if (guard.needInstrument()) {
+	if (guard.needInstrument() && gblOptions->cMalloc) {
 		MALT_WRAPPER_LOCAL_STATE_ACTION(env.getLocalProfiler().onMalloc(res,size,t,MALLOC_KIND_POSIX_MEMALIGN, LANG_C, DOMAIN_C_ALLOC), retaddr);
 	}
 
@@ -231,7 +232,7 @@ void * MALT::malt_wrap_valloc(size_t size, const VallocFuncPtr & real_aligned_va
 	t = Clock::getticks() - t;
 
 	//profile
-	if (guard.needInstrument()) {
+	if (guard.needInstrument() && gblOptions->cMalloc) {
 		MALT_WRAPPER_LOCAL_STATE_ACTION(env.getLocalProfiler().onMalloc(res,size,t,MALLOC_KIND_VALLOC, LANG_C, DOMAIN_C_ALLOC), retaddr);
 	}
 
@@ -254,7 +255,7 @@ void *MALT::malt_wrap_pvalloc(size_t size, const PVallocFuncPtr & real_pvalloc, 
 	t = Clock::getticks() - t;
 
 	//profile
-	if (guard.needInstrument()) {
+	if (guard.needInstrument() && gblOptions->cMalloc) {
 		MALT_WRAPPER_LOCAL_STATE_ACTION(env.getLocalProfiler().onMalloc(res,size,t,MALLOC_KIND_PVALLOC, LANG_C, DOMAIN_C_ALLOC), retaddr);
 	}
 
@@ -284,7 +285,7 @@ void * MALT::malt_wrap_mmap(void *start,size_t length,int prot,int flags,int fd,
 	t = Clock::getticks() - t;
 
 	//profile
-	if (guard.needInstrument() && res != MAP_FAILED && cstInstrMmap) {
+	if (guard.needInstrument() && res != MAP_FAILED && gblOptions->cMmap) {
 		MALT_WRAPPER_LOCAL_STATE_ACTION(env.getLocalProfiler().onMmap(res,length,flags,fd,t), retaddr);
 	}
 
@@ -312,7 +313,7 @@ int MALT::malt_wrap_munmap(void * start, size_t length, const MunmapFuncPtr & re
 	t = Clock::getticks() - t;
 
 	//profile
-	if (guard.needInstrument() && res == 0) {
+	if (guard.needInstrument() && res == 0 && gblOptions->cMmap) {
 		MALT_WRAPPER_LOCAL_STATE_ACTION(env.getLocalProfiler().onMunmap(start,length, t), retaddr);
 	}
 
@@ -335,7 +336,7 @@ void * MALT::malt_wrap_mremap(void *old_address, size_t old_size , void * new_ad
 	t = Clock::getticks() - t;
 
 	//profile
-	if (guard.needInstrument() && res != MAP_FAILED && cstInstrMmap) {
+	if (guard.needInstrument() && res != MAP_FAILED && gblOptions->cMmap) {
 		MALT_WRAPPER_LOCAL_STATE_ACTION(env.getLocalProfiler().onMremap(old_address,old_size, res, new_size, t), retaddr);
 	}
 

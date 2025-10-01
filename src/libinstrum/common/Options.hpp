@@ -93,6 +93,10 @@ struct Options
 	bool pythonMem;
 	bool pythonRaw;
 	bool pythonHideImports;
+	std::string pythonMode;
+	//c
+	bool cMalloc;
+	bool cMmap;
 	//vars for time profiging
 	bool timeProfileEnabled;
 	int timeProfilePoints;

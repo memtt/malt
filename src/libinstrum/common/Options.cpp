@@ -70,6 +70,10 @@ Options::Options(void)
 	this->pythonMem               = true;
 	this->pythonRaw               = true;
 	this->pythonHideImports       = true;
+	this->pythonMode              = "trace";
+	//c
+	this->cMalloc                 = true;
+	this->cMmap                   = true;
 	//time
 	this->timeProfileEnabled      = true;
 	this->timeProfilePoints       = 512;
@@ -137,6 +141,10 @@ bool Options::operator==(const Options& value) const
 	if (pythonMem != value.pythonMem) return false;
 	if (pythonRaw != value.pythonRaw) return false;
 	if (pythonHideImports != value.pythonHideImports) return false;
+	if (pythonMode != value.pythonMode) return false;
+	//c
+	if (cMalloc != value.cMalloc) return false;
+	if (cMmap != value.cMmap) return false;
 	//time
 	if (this->timeProfileEnabled != value.timeProfileEnabled) return false;
 	if (this->timeProfilePoints != value.timeProfilePoints) return false;
@@ -275,6 +283,11 @@ void Options::loadFromIniDic ( dictionary* iniDic )
 	this->pythonRaw           = iniparser_getboolean(iniDic,"python:raw",this->pythonRaw);
 	this->pythonStackEnum     = stackModeFromString(this->pythonStack);
 	this->pythonHideImports   = iniparser_getboolean(iniDic,"python:hide-imports", this->pythonHideImports);
+	this->pythonMode          = iniparser_getstring(iniDic,"python:mode",(char*)this->pythonMode.c_str());
+
+	//c
+	this->cMalloc             = iniparser_getboolean(iniDic,"c:malloc", this->cMalloc);
+	this->cMmap               = iniparser_getboolean(iniDic,"c:mmap", this->cMmap);
 
 	//load values for stack profiling
 	this->stackResolve        = iniparser_getboolean(iniDic,"stack:resolve",this->stackResolve);
@@ -392,7 +405,13 @@ void convertToJson(htopml::JsonState & json,const Options & value)
 			json.printField("mem", value.pythonMem);
 			json.printField("raw", value.pythonRaw);
 			json.printField("hideImports", value.pythonHideImports);
+			json.printField("mode", value.pythonMode);
 		json.closeFieldStruct("python");
+
+		json.openFieldStruct("c");
+			json.printField("malloc", value.cMalloc);
+			json.printField("mmap", value.cMmap);
+		json.closeFieldStruct("c");
 		
 		json.openFieldStruct("output");
 			json.printField("callgrind",value.outputCallgrind);
@@ -480,6 +499,11 @@ void Options::dumpConfig(const char* fname)
 	IniParserHelper::setEntry(dic,"python:mem",this->pythonMem);
 	IniParserHelper::setEntry(dic,"python:raw",this->pythonRaw);
 	IniParserHelper::setEntry(dic,"python:hide-imports",this->pythonHideImports);
+	IniParserHelper::setEntry(dic,"python:mode",this->pythonMode.c_str());
+
+	//c
+	IniParserHelper::setEntry(dic,"c:malloc",this->cMalloc);
+	IniParserHelper::setEntry(dic,"c:mmap",this->cMmap);
 	
 	//output
 	IniParserHelper::setEntry(dic,"output:name",this->outputName.c_str());
