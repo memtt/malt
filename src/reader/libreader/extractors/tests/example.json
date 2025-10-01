@@ -25,7 +25,8 @@
 			"addr2lineBucket":350,
 			"addr2lineThreads":8,
 			"sampling":false,
-			"samplingBw":4093
+			"samplingBw":4093,
+			"samplingCnt": 517
 		},
 		"python":{
 			"instru":true,

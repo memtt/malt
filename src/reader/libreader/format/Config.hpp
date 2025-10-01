@@ -37,6 +37,7 @@ struct Config
 		size_t addr2lineThreads;
 		bool sampling;
 		size_t samplingBw;
+		size_t samplingCnt;
 	} stack;
 	struct {
 		bool instru;

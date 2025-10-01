@@ -21,13 +21,13 @@ using namespace MALT;
 void * CST_VALUE_1[] = {(void*)0x1,(void*)0x2,(void*)0x3,(void*)0x4};
 const char CST_VALUE_2[] = "{\n\
 	\"stats\":[{\n\
-		\"stack\":[\"0x1\", \"0x2\", \"0x3\"],\n\
-		\"stackId\":\"0x1\",\n\
-		\"infos\":10\n\
-	}, {\n\
 		\"stack\":[\"0x1\", \"0x2\", \"0x3\", \"0x4\"],\n\
-		\"stackId\":\"0x2\",\n\
+		\"stackId\":\"0x1\",\n\
 		\"infos\":11\n\
+	}, {\n\
+		\"stack\":[\"0x1\", \"0x2\", \"0x3\"],\n\
+		\"stackId\":\"0x2\",\n\
+		\"infos\":10\n\
 	}],\n\
 	\"count\":2\n\
 }";
@@ -83,15 +83,17 @@ TEST(StackSTLHashMap,iterator)
 	map[stack1] = 10;
 	Stack stack2(CST_VALUE_1,4,STACK_ORDER_ASC, DOMAIN_C);
 	map[stack2] = 11;
+	Stack stack3(CST_VALUE_1,2,STACK_ORDER_ASC, DOMAIN_C);
 	
-	StackSTLHashMap<int>::iterator it = map.begin();
+	StackSTLHashMap<int>& cmap = map;
+	StackSTLHashMap<int>::iterator it = cmap.find(stack1);
 	EXPECT_EQ(stack1,*it->first.stack);
 	EXPECT_EQ(10,it->second);
-	++it;
+	it = cmap.find(stack2);
 	EXPECT_EQ(stack2,*it->first.stack);
 	EXPECT_EQ(11,it->second);
-	++it;
-	EXPECT_EQ(map.end(),it);
+	it = cmap.find(stack3);
+	EXPECT_EQ(cmap.end(),it);
 }
 
 /**********************************************************/
@@ -103,15 +105,16 @@ TEST(StackSTLHashMap,const_iterator)
 	map[stack1] = 10;
 	Stack stack2(CST_VALUE_1,4,STACK_ORDER_ASC, DOMAIN_C);
 	map[stack2] = 11;
+	Stack stack3(CST_VALUE_1,2,STACK_ORDER_ASC, DOMAIN_C);
 	
 	StackSTLHashMap<int>& cmap = map;
-	StackSTLHashMap<int>::const_iterator it = cmap.begin();
+	StackSTLHashMap<int>::const_iterator it = cmap.find(stack1);
 	EXPECT_EQ(stack1,*it->first.stack);
 	EXPECT_EQ(10,it->second);
-	++it;
+	it = cmap.find(stack2);
 	EXPECT_EQ(stack2,*it->first.stack);
 	EXPECT_EQ(11,it->second);
-	++it;
+	it = cmap.find(stack3);
 	EXPECT_EQ(cmap.end(),it);
 }
 
