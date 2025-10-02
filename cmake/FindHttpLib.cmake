@@ -19,9 +19,6 @@
 set(HTTPLIB_PREFIX "${CMAKE_INSTALL_PREFIX}" CACHE STRING "Help cmake to find httplib library (https://github.com/yhirose/cpp-httplib) into your system.")
 
 ############################################################
-include(GNUInstallDirs)
-
-############################################################
 find_path(HTTPLIB_INCLUDE_DIR httplib.h
 	HINTS ${HTTPLIB_PREFIX}/include)
 
