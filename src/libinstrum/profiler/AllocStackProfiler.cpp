@@ -541,7 +541,10 @@ void AllocStackProfiler::onMmap (AllocTracerEvent & traceEntry, void* ptr, size_
 
 	//trace
 	if (this->options.traceEnabled) {
-		traceEntry.callStack = callStackNode->stack;
+		if (callStackNode == nullptr)
+			traceEntry.callStack = nullptr;
+		else
+			traceEntry.callStack = callStackNode->stack;
 		this->tracer.pushEvent(traceEntry);
 	}
 }

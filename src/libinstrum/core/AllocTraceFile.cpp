@@ -29,8 +29,9 @@ namespace MALT
 AllocTraceFile::AllocTraceFile(const std::string& file,size_t bufferSize)
 {
 	this->bufferSize = bufferSize;
+	this->writingBufferSize = bufferSize * 128;
 	this->buffer = new AllocTracerEvent[bufferSize];
-	this->writingBuffer = new char[bufferSize*1024];
+	this->writingBuffer = new char[writingBufferSize];
 	this->pos = 0;
 	this->fp = NULL;
 	if ( ! file.empty() )
@@ -141,7 +142,9 @@ void AllocTraceFile::flush(void)
 	size_t cur = 0;
 	for (size_t i = 0 ; i < pos ; i++) {
 		AllocTracerEvent & event = this->buffer[i];
-		cur += sprintf(this->writingBuffer + cur, "%x\t%zx\t%zx\t%llx\t%llx\t%zx\t%zx\t%zx\t%zx\n", event.type, event.threadId, (size_t)event.callStack, event.time, event.cost, (size_t)event.addr, event.size, event.extra.generic.extra1, event.extra.generic.extra2);
+		size_t size = event.toCString(this->writingBuffer + cur, this->writingBufferSize - cur);
+		cur += size;
+		assert(cur < this->writingBufferSize);
 	}
 	
 	//write
@@ -149,7 +152,7 @@ void AllocTraceFile::flush(void)
 	assumeArg(size == cur,"Failed to write all datas with fwrite, check for interuption, need a loop here for some thread context. %1 != %2").arg(size).arg(pos).end();
 	
 	//reset pos
-	pos = 0;
+	this->pos = 0;
 }
 
 }

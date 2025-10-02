@@ -11,7 +11,10 @@
 include_directories(.)
 include_directories(..)
 include_directories(../..)
+include_directories(../../libinstrum)
 include_directories(${NLOHMANN_JSON_INCLUDE_DIR})
+include_directories(${CMAKE_SOURCE_DIR}/extern-deps/from-fftw)
+include_directories(${CMAKE_BINARY_DIR}/src/libinstrum)
 
 ############################################################
 if (GRAPHVIZ_FOUND)
@@ -59,6 +62,8 @@ add_library(malt-profile SHARED
     api/Profile.cpp
     api/WebProfile.cpp
 	api/Requests.cpp
+    # Traces
+    trace/TraceReader.cpp
 )
 target_link_libraries(malt-profile PUBLIC ${NLOHMANN_JSON_LIBRARIES})
 target_link_libraries(malt-profile PRIVATE OpenMP::OpenMP_CXX)

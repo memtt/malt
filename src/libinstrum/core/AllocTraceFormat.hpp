@@ -17,6 +17,7 @@
 #include <cstdlib>
 #include <cycle.h>
 #include <string>
+#include <common/Debug.hpp>
 
 /**********************************************************/
 namespace MALT
@@ -71,6 +72,10 @@ enum AllocTraceEventType
 **/
 struct AllocTracerEvent
 {
+	inline size_t toCString(char * buffer, size_t bufferSize) const;
+	inline bool fromCString(const char * buffer);
+	inline bool fromFilePointer(FILE * fp);
+
 	/** Define the event type */
 	AllocTraceEventType type{EVENT_NOP};
 	/** thread ID */
@@ -112,6 +117,83 @@ struct AllocTracerEvent
 		} generic;
 	} extra;
 };
+
+/**********************************************************/
+/**
+ * Dump the struct under a textual line to be dumped in to a file.
+ * @param buffer The textual buffer to fill.
+ * @param bufferSize The size of the buffer not to overflow.
+ */
+size_t AllocTracerEvent::toCString(char * buffer, size_t bufferSize) const
+{
+	int status = snprintf(buffer, bufferSize, "%x\t%zx\t%zx\t%llx\t%llx\t%zx\t%zx\t%zx\t%zx\n",
+		this->type,
+		this->threadId, 
+		(size_t)this->callStack, 
+		this->time, 
+		this->cost,
+		(size_t)this->addr,
+		this->size,
+		this->extra.generic.extra1,
+		this->extra.generic.extra2
+	);
+	assume(status >= 0, "Invalid status !");
+	return status;
+}
+
+/**********************************************************/
+/**
+ * Load the content from the C string.
+ * @param buffer The buffer to load from.
+ */
+bool AllocTracerEvent::fromCString(const char * buffer)
+{
+	int intType = EVENT_NOP;
+	int cnt = sscanf(buffer, "%x\t%zx\t%zx\t%llx\t%llx\t%zx\t%zx\t%zx\t%zx\n",
+		&intType,
+		&this->threadId, 
+		(size_t*)&this->callStack, 
+		&this->time, 
+		&this->cost,
+		(size_t*)&this->addr,
+		&this->size,
+		&this->extra.generic.extra1,
+		&this->extra.generic.extra2
+	);
+	if (cnt == 9) {
+		this->type = (AllocTraceEventType)intType;
+		return true;
+	} else {
+		return false;
+	}
+}
+
+/**********************************************************/
+/**
+ * Load the content from the FILE pointer.
+ * @param fp The file to load from.
+ */
+bool AllocTracerEvent::fromFilePointer(FILE * fp)
+{
+	int intType = EVENT_NOP;
+	int cnt = fscanf(fp, "%x\t%zx\t%zx\t%llx\t%llx\t%zx\t%zx\t%zx\t%zx\n",
+		&intType,
+		&this->threadId, 
+		(size_t*)&this->callStack, 
+		&this->time, 
+		&this->cost,
+		(size_t*)&this->addr,
+		&this->size,
+		&this->extra.generic.extra1,
+		&this->extra.generic.extra2
+	);
+	if (cnt == 9) {
+		this->type = (AllocTraceEventType)intType;
+		return true;
+	} else {
+		return false;
+	}
+}
 
 }
 

@@ -55,6 +55,7 @@ class AllocTraceFile
 		volatile size_t pos{0};
 		/** Size of the current buffer. Buffer is flushed when pos==size.**/
 		size_t bufferSize{MALT_ALLOC_TRACER_BUFFER_SIZE};
+		size_t writingBufferSize{MALT_ALLOC_TRACER_BUFFER_SIZE * 128};
 		/** Pointer to the intenral buffer to accumulate before writing.**/
 		AllocTracerEvent * buffer{nullptr};
 		/** Writing buffer */

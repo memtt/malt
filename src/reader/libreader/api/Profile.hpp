@@ -13,6 +13,7 @@
 /**********************************************************/
 #include "format/MaltProfile.hpp"
 #include "extractors/Extractor.hpp"
+#include "trace/TraceReader.hpp"
 
 /**********************************************************/
 namespace MALTReader
@@ -28,6 +29,7 @@ class Profile
 	protected:
 		MALTFormat::MaltProfile profile;
 		Extractor * extractor{nullptr};
+		TraceReader * traceReader{nullptr};
 };
 
 }
