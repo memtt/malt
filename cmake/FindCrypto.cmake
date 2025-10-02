@@ -19,6 +19,9 @@
 set(CRYPTO_PREFIX "${CMAKE_INSTALL_PREFIX}" CACHE STRING "Help cmake to find openssl library (https://www.openssl-library.org/source/index.html) into your system.")
 
 ############################################################
+include(GNUInstallDirs)
+
+############################################################
 find_path(CRYPTO_INCLUDE_DIR openssl/sha.h
 	HINTS ${CRYPTO_PREFIX}/include)
 

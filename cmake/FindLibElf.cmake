@@ -21,6 +21,9 @@
 set(LIBELF_PREFIX "${CMAKE_INSTALL_PREFIX}" CACHE STRING "Help cmake to find libelf library (http://directory.fsf.org/wiki/Libelf) into your system.")
 
 ############################################################
+include(GNUInstallDirs)
+
+############################################################
 find_path(LIBELF_INCLUDE_DIR libelf.h elf.h
 	HINTS ${LIBELF_PREFIX}/include)
 
