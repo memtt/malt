@@ -487,7 +487,7 @@ TEST(TestExtractor, getCallStackNextLevel_virtual_3)
 	resJson = ExtractorHelpers::toJsonFiltered(resJson, {"*.alloc.count", "*.hasChild", "*.location.function"});
 
 	//load ref
-	std::istringstream file(R"json([{"hasChild":true,"infos":{"alloc":{"count":10}},"location":{"function":"0x3"}},{"hasChild":true,"infos":{"alloc":{"count":53}},"location":{"function":"0x5"}}])json");
+	std::istringstream file(R"json([{"hasChild":true,"infos":{"alloc":{"count":53}},"location":{"function":"0x5"}},{"hasChild":true,"infos":{"alloc":{"count":10}},"location":{"function":"0x3"}}])json");
 	nlohmann::json dataExpected = nlohmann::json::parse(file);
 
 	//check
@@ -529,7 +529,7 @@ TEST(TestExtractor, getCallStackNextLevel_virtual_4_2)
 	resJson = ExtractorHelpers::toJsonFiltered(resJson, {"*.alloc.count", "*.hasChild", "*.location.function"});
 
 	//load ref
-	std::istringstream file(R"json([{"hasChild":false,"infos":{"alloc":{"count":21}},"location":{"function":"0x6"}},{"hasChild":false,"infos":{"alloc":{"count":32}},"location":{"function":"0x7"}}])json");
+	std::istringstream file(R"json([{"hasChild":false,"infos":{"alloc":{"count":32}},"location":{"function":"0x7"}},{"hasChild":false,"infos":{"alloc":{"count":21}},"location":{"function":"0x6"}}])json");
 	nlohmann::json dataExpected = nlohmann::json::parse(file);
 
 	//check

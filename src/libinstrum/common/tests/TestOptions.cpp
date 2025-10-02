@@ -45,7 +45,7 @@ const char cstJson[] = "\
 		\"mem\":true,\n\
 		\"raw\":true,\n\
 		\"hideImports\":true,\n\
-		\"mode\":\"trace\"\n\
+		\"mode\":\"profile\"\n\
 	},\n\
 	\"c\":{\n\
 		\"malloc\":true,\n\

@@ -50,7 +50,7 @@
    "parentStackDepth": 0,
    "parentStackId": 0,
    "stackDepth": 1,
-   "stackId": 0
+   "stackId": 6
   },
   {
    "hasChild": true,
@@ -72,9 +72,9 @@
     "globalPeak": 1048592,
     "lifetime": {
      "count": 3,
-     "max": 1273461,
-     "min": 11310,
-     "sum": 2414909
+     "max": 2973039,
+     "min": 12968,
+     "sum": 5448002
     },
     "maxAliveReq": 1048600,
     "mmap": {
@@ -102,7 +102,7 @@
    "parentStackDepth": 0,
    "parentStackId": 0,
    "stackDepth": 1,
-   "stackId": 1
+   "stackId": 0
   }
  ],
  "getCallStackNextLevel2": [
@@ -126,9 +126,9 @@
     "globalPeak": 1048592,
     "lifetime": {
      "count": 3,
-     "max": 1273461,
-     "min": 11310,
-     "sum": 2414909
+     "max": 2973039,
+     "min": 12968,
+     "sum": 5448002
     },
     "maxAliveReq": 1048600,
     "mmap": {
@@ -156,7 +156,7 @@
    "parentStackDepth": 1,
    "parentStackId": 1,
    "stackDepth": 2,
-   "stackId": 1
+   "stackId": 0
   }
  ],
  "getCallStackNextLevel_virtual_1": [
@@ -169,92 +169,8 @@
    }
   }
  ],
- "getCallTree": "digraph G {\nnode  [color=\"white\", fontcolor=\"white\", fontname=\"Courier New\", fontsize=\"10\", penwidth=\"1\", shape=\"record\", style=\"filled\"];\nedge  [fontname=\"Courier New\", fontsize=\"9\"];\nnode4294967302 [fillcolor=\"#ab4141\", label=\"_start | 3  \", tooltip=\"_start\"];\nnode4294967299 [fillcolor=\"#ab4141\", label=\"main | 3  \", tooltip=\"main\"];\nnode1 [fillcolor=\"#5f6991\", label=\"std::__to_chars_bfloat16_t(...) | 1  \", tooltip=\"std::__to_chars_bfloat16_t(char*, char*, float, std::chars_format)\"];\nnode3 [fillcolor=\"#5f6991\", label=\"call_init | 1  \", tooltip=\"call_init\"];\nnode4 [fillcolor=\"#5f6991\", label=\"_dl_start_user | 1  \", tooltip=\"_dl_start_user\"];\nnode4294967300 [fillcolor=\"#ab4141\", label=\"__libc_start_call_main | 3  \", tooltip=\"__libc_start_call_main\"];\nnode4294967301 [fillcolor=\"#ab4141\", label=\"__libc_start_main_impl | 3  \", tooltip=\"__libc_start_main_impl\"];\nnode3 -> node3 [color=\"#000000\", fontcolor=\"#000000\", label=\" 1  \", penwidth=\"3.2\"];\nnode3 -> node1 [color=\"#000000\", fontcolor=\"#000000\", label=\" 1  \", penwidth=\"3.2\"];\nnode4 -> node3 [color=\"#000000\", fontcolor=\"#000000\", label=\" 1  \", penwidth=\"3.2\"];\nnode4294967300 -> node4294967299 [color=\"#000000\", fontcolor=\"#000000\", label=\" 3  \", penwidth=\"8\"];\nnode4294967301 -> node4294967300 [color=\"#000000\", fontcolor=\"#000000\", label=\" 3  \", penwidth=\"8\"];\nnode4294967302 -> node4294967301 [color=\"#000000\", fontcolor=\"#000000\", label=\" 3  \", penwidth=\"8\"];\n\n}\n",
+ "getCallTree": "digraph G {\nnode  [color=\"white\", fontcolor=\"white\", fontname=\"Courier New\", fontsize=\"10\", penwidth=\"1\", shape=\"record\", style=\"filled\"];\nedge  [fontname=\"Courier New\", fontsize=\"9\"];\nnode6 [fillcolor=\"#ab4141\", label=\"_start | 3  \", tooltip=\"_start\"];\nnode5 [fillcolor=\"#ab4141\", label=\"__libc_start_main_impl | 3  \", tooltip=\"__libc_start_main_impl\"];\nnode4 [fillcolor=\"#ab4141\", label=\"__libc_start_call_main | 3  \", tooltip=\"__libc_start_call_main\"];\nnode3 [fillcolor=\"#ab4141\", label=\"main | 3  \", tooltip=\"main\"];\nnode25769803780 [fillcolor=\"#5f6991\", label=\"_dl_start_user | 1  \", tooltip=\"_dl_start_user\"];\nnode25769803779 [fillcolor=\"#5f6991\", label=\"call_init | 1  \", tooltip=\"call_init\"];\nnode25769803777 [fillcolor=\"#5f6991\", label=\"std::__to_chars_bfloat16_t(...) | 1  \", tooltip=\"std::__to_chars_bfloat16_t(char*, char*, float, std::chars_format)\"];\nnode4 -> node3 [color=\"#000000\", fontcolor=\"#000000\", label=\" 3  \", penwidth=\"8\"];\nnode5 -> node4 [color=\"#000000\", fontcolor=\"#000000\", label=\" 3  \", penwidth=\"8\"];\nnode6 -> node5 [color=\"#000000\", fontcolor=\"#000000\", label=\" 3  \", penwidth=\"8\"];\nnode25769803779 -> node25769803777 [color=\"#000000\", fontcolor=\"#000000\", label=\" 1  \", penwidth=\"3.2\"];\nnode25769803779 -> node25769803779 [color=\"#000000\", fontcolor=\"#000000\", label=\" 1  \", penwidth=\"3.2\"];\nnode25769803780 -> node25769803779 [color=\"#000000\", fontcolor=\"#000000\", label=\" 1  \", penwidth=\"3.2\"];\n\n}\n",
  "getFilterdStacks": [
-  {
-   "info": {
-    "aliveReq": 0,
-    "alloc": {
-     "count": 1,
-     "max": 8,
-     "min": 8,
-     "sum": 8
-    },
-    "countZeros": 0,
-    "free": {
-     "count": 0,
-     "max": 0,
-     "min": 0,
-     "sum": 0
-    },
-    "globalPeak": 0,
-    "lifetime": {
-     "count": 1,
-     "max": 11310,
-     "min": 11310,
-     "sum": 11310
-    },
-    "maxAliveReq": 8,
-    "mmap": {
-     "count": 0,
-     "max": 0,
-     "min": 0,
-     "sum": 0
-    },
-    "munmap": {
-     "count": 0,
-     "max": 0,
-     "min": 0,
-     "sum": 0
-    },
-    "reallocCount": 0,
-    "reallocSumDelta": 0
-   },
-   "stack": [
-    {
-     "binary": "src/reader/libreader/extractors/tests/extractor-example",
-     "file": "src/reader/libreader/extractors/tests/example.cpp",
-     "function": "caller2()",
-     "functionShort": "caller2()",
-     "line": 51
-    },
-    {
-     "binary": "src/reader/libreader/extractors/tests/extractor-example",
-     "file": "src/reader/libreader/extractors/tests/example.cpp",
-     "function": "main_sim()",
-     "functionShort": "main_sim()",
-     "line": 60
-    },
-    {
-     "binary": "src/reader/libreader/extractors/tests/extractor-example",
-     "file": "src/reader/libreader/extractors/tests/example.cpp",
-     "function": "main",
-     "functionShort": "main",
-     "line": 67
-    },
-    {
-     "binary": "/usr/lib/x86_64-linux-gnu/libc.so.6",
-     "file": "./csu/../sysdeps/x86/libc-start.c",
-     "function": "__libc_start_call_main",
-     "functionShort": "__libc_start_call_main",
-     "line": 58
-    },
-    {
-     "binary": "/usr/lib/x86_64-linux-gnu/libc.so.6",
-     "file": "./csu/../csu/libc-start.c",
-     "function": "__libc_start_main_impl",
-     "functionShort": "__libc_start_main_impl",
-     "line": 360
-    },
-    {
-     "binary": "src/reader/libreader/extractors/tests/extractor-example",
-     "file": "??",
-     "function": "_start",
-     "functionShort": "_start",
-     "line": -1
-    }
-   ]
-  },
   {
    "info": {
     "aliveReq": 0,
@@ -300,21 +216,259 @@
      "file": "src/reader/libreader/extractors/tests/example.cpp",
      "function": "caller2()",
      "functionShort": "caller2()",
-     "line": 53
+     "line": 52
     },
     {
      "binary": "src/reader/libreader/extractors/tests/extractor-example",
      "file": "src/reader/libreader/extractors/tests/example.cpp",
      "function": "main_sim()",
      "functionShort": "main_sim()",
-     "line": 60
+     "line": 59
     },
     {
      "binary": "src/reader/libreader/extractors/tests/extractor-example",
      "file": "src/reader/libreader/extractors/tests/example.cpp",
      "function": "main",
      "functionShort": "main",
-     "line": 67
+     "line": 66
+    },
+    {
+     "binary": "/usr/lib/x86_64-linux-gnu/libc.so.6",
+     "file": "./csu/../sysdeps/x86/libc-start.c",
+     "function": "__libc_start_call_main",
+     "functionShort": "__libc_start_call_main",
+     "line": 58
+    },
+    {
+     "binary": "/usr/lib/x86_64-linux-gnu/libc.so.6",
+     "file": "./csu/../csu/libc-start.c",
+     "function": "__libc_start_main_impl",
+     "functionShort": "__libc_start_main_impl",
+     "line": 360
+    },
+    {
+     "binary": "src/reader/libreader/extractors/tests/extractor-example",
+     "file": "??",
+     "function": "_start",
+     "functionShort": "_start",
+     "line": -1
+    }
+   ]
+  },
+  {
+   "info": {
+    "aliveReq": 0,
+    "alloc": {
+     "count": 0,
+     "max": 0,
+     "min": 0,
+     "sum": 0
+    },
+    "countZeros": 0,
+    "free": {
+     "count": 1,
+     "max": 1048576,
+     "min": 1048576,
+     "sum": 1048576
+    },
+    "globalPeak": 0,
+    "lifetime": {
+     "count": 0,
+     "max": 0,
+     "min": 0,
+     "sum": 0
+    },
+    "maxAliveReq": 0,
+    "mmap": {
+     "count": 0,
+     "max": 0,
+     "min": 0,
+     "sum": 0
+    },
+    "munmap": {
+     "count": 0,
+     "max": 0,
+     "min": 0,
+     "sum": 0
+    },
+    "reallocCount": 0,
+    "reallocSumDelta": 0
+   },
+   "stack": [
+    {
+     "binary": "src/reader/libreader/extractors/tests/extractor-example",
+     "file": "src/reader/libreader/extractors/tests/example.cpp",
+     "function": "leaf()",
+     "functionShort": "leaf()",
+     "line": 29
+    },
+    {
+     "binary": "src/reader/libreader/extractors/tests/extractor-example",
+     "file": "src/reader/libreader/extractors/tests/example.cpp",
+     "function": "callerRecurse(int)",
+     "functionShort": "callerRecurse(int)",
+     "line": 36
+    },
+    {
+     "binary": "src/reader/libreader/extractors/tests/extractor-example",
+     "file": "src/reader/libreader/extractors/tests/example.cpp",
+     "function": "callerRecurse(int)",
+     "functionShort": "callerRecurse(int)",
+     "line": 38
+    },
+    {
+     "binary": "src/reader/libreader/extractors/tests/extractor-example",
+     "file": "src/reader/libreader/extractors/tests/example.cpp",
+     "function": "callerRecurse(int)",
+     "functionShort": "callerRecurse(int)",
+     "line": 38
+    },
+    {
+     "binary": "src/reader/libreader/extractors/tests/extractor-example",
+     "file": "src/reader/libreader/extractors/tests/example.cpp",
+     "function": "callerRecurse(int)",
+     "functionShort": "callerRecurse(int)",
+     "line": 38
+    },
+    {
+     "binary": "src/reader/libreader/extractors/tests/extractor-example",
+     "file": "src/reader/libreader/extractors/tests/example.cpp",
+     "function": "caller()",
+     "functionShort": "caller()",
+     "line": 44
+    },
+    {
+     "binary": "src/reader/libreader/extractors/tests/extractor-example",
+     "file": "src/reader/libreader/extractors/tests/example.cpp",
+     "function": "main_sim()",
+     "functionShort": "main_sim()",
+     "line": 58
+    },
+    {
+     "binary": "src/reader/libreader/extractors/tests/extractor-example",
+     "file": "src/reader/libreader/extractors/tests/example.cpp",
+     "function": "main",
+     "functionShort": "main",
+     "line": 66
+    },
+    {
+     "binary": "/usr/lib/x86_64-linux-gnu/libc.so.6",
+     "file": "./csu/../sysdeps/x86/libc-start.c",
+     "function": "__libc_start_call_main",
+     "functionShort": "__libc_start_call_main",
+     "line": 58
+    },
+    {
+     "binary": "/usr/lib/x86_64-linux-gnu/libc.so.6",
+     "file": "./csu/../csu/libc-start.c",
+     "function": "__libc_start_main_impl",
+     "functionShort": "__libc_start_main_impl",
+     "line": 360
+    },
+    {
+     "binary": "src/reader/libreader/extractors/tests/extractor-example",
+     "file": "??",
+     "function": "_start",
+     "functionShort": "_start",
+     "line": -1
+    }
+   ]
+  },
+  {
+   "info": {
+    "aliveReq": 0,
+    "alloc": {
+     "count": 0,
+     "max": 0,
+     "min": 0,
+     "sum": 0
+    },
+    "countZeros": 0,
+    "free": {
+     "count": 1,
+     "max": 16,
+     "min": 16,
+     "sum": 16
+    },
+    "globalPeak": 0,
+    "lifetime": {
+     "count": 0,
+     "max": 0,
+     "min": 0,
+     "sum": 0
+    },
+    "maxAliveReq": 0,
+    "mmap": {
+     "count": 0,
+     "max": 0,
+     "min": 0,
+     "sum": 0
+    },
+    "munmap": {
+     "count": 0,
+     "max": 0,
+     "min": 0,
+     "sum": 0
+    },
+    "reallocCount": 0,
+    "reallocSumDelta": 0
+   },
+   "stack": [
+    {
+     "binary": "src/reader/libreader/extractors/tests/extractor-example",
+     "file": "src/reader/libreader/extractors/tests/example.cpp",
+     "function": "leaf()",
+     "functionShort": "leaf()",
+     "line": 28
+    },
+    {
+     "binary": "src/reader/libreader/extractors/tests/extractor-example",
+     "file": "src/reader/libreader/extractors/tests/example.cpp",
+     "function": "callerRecurse(int)",
+     "functionShort": "callerRecurse(int)",
+     "line": 36
+    },
+    {
+     "binary": "src/reader/libreader/extractors/tests/extractor-example",
+     "file": "src/reader/libreader/extractors/tests/example.cpp",
+     "function": "callerRecurse(int)",
+     "functionShort": "callerRecurse(int)",
+     "line": 38
+    },
+    {
+     "binary": "src/reader/libreader/extractors/tests/extractor-example",
+     "file": "src/reader/libreader/extractors/tests/example.cpp",
+     "function": "callerRecurse(int)",
+     "functionShort": "callerRecurse(int)",
+     "line": 38
+    },
+    {
+     "binary": "src/reader/libreader/extractors/tests/extractor-example",
+     "file": "src/reader/libreader/extractors/tests/example.cpp",
+     "function": "callerRecurse(int)",
+     "functionShort": "callerRecurse(int)",
+     "line": 38
+    },
+    {
+     "binary": "src/reader/libreader/extractors/tests/extractor-example",
+     "file": "src/reader/libreader/extractors/tests/example.cpp",
+     "function": "caller()",
+     "functionShort": "caller()",
+     "line": 44
+    },
+    {
+     "binary": "src/reader/libreader/extractors/tests/extractor-example",
+     "file": "src/reader/libreader/extractors/tests/example.cpp",
+     "function": "main_sim()",
+     "functionShort": "main_sim()",
+     "line": 58
+    },
+    {
+     "binary": "src/reader/libreader/extractors/tests/extractor-example",
+     "file": "src/reader/libreader/extractors/tests/example.cpp",
+     "function": "main",
+     "functionShort": "main",
+     "line": 66
     },
     {
      "binary": "/usr/lib/x86_64-linux-gnu/libc.so.6",
@@ -344,9 +498,9 @@
     "aliveReq": 0,
     "alloc": {
      "count": 1,
-     "max": 16,
-     "min": 16,
-     "sum": 16
+     "max": 8,
+     "min": 8,
+     "sum": 8
     },
     "countZeros": 0,
     "free": {
@@ -355,14 +509,14 @@
      "min": 0,
      "sum": 0
     },
-    "globalPeak": 16,
+    "globalPeak": 0,
     "lifetime": {
      "count": 1,
-     "max": 1130138,
-     "min": 1130138,
-     "sum": 1130138
+     "max": 12968,
+     "min": 12968,
+     "sum": 12968
     },
-    "maxAliveReq": 16,
+    "maxAliveReq": 8,
     "mmap": {
      "count": 0,
      "max": 0,
@@ -382,44 +536,9 @@
     {
      "binary": "src/reader/libreader/extractors/tests/extractor-example",
      "file": "src/reader/libreader/extractors/tests/example.cpp",
-     "function": "leaf()",
-     "functionShort": "leaf()",
-     "line": 25
-    },
-    {
-     "binary": "src/reader/libreader/extractors/tests/extractor-example",
-     "file": "src/reader/libreader/extractors/tests/example.cpp",
-     "function": "callerRecurse(int)",
-     "functionShort": "callerRecurse(int)",
-     "line": 37
-    },
-    {
-     "binary": "src/reader/libreader/extractors/tests/extractor-example",
-     "file": "src/reader/libreader/extractors/tests/example.cpp",
-     "function": "callerRecurse(int)",
-     "functionShort": "callerRecurse(int)",
-     "line": 39
-    },
-    {
-     "binary": "src/reader/libreader/extractors/tests/extractor-example",
-     "file": "src/reader/libreader/extractors/tests/example.cpp",
-     "function": "callerRecurse(int)",
-     "functionShort": "callerRecurse(int)",
-     "line": 39
-    },
-    {
-     "binary": "src/reader/libreader/extractors/tests/extractor-example",
-     "file": "src/reader/libreader/extractors/tests/example.cpp",
-     "function": "callerRecurse(int)",
-     "functionShort": "callerRecurse(int)",
-     "line": 39
-    },
-    {
-     "binary": "src/reader/libreader/extractors/tests/extractor-example",
-     "file": "src/reader/libreader/extractors/tests/example.cpp",
-     "function": "caller()",
-     "functionShort": "caller()",
-     "line": 45
+     "function": "caller2()",
+     "functionShort": "caller2()",
+     "line": 50
     },
     {
      "binary": "src/reader/libreader/extractors/tests/extractor-example",
@@ -433,7 +552,7 @@
      "file": "src/reader/libreader/extractors/tests/example.cpp",
      "function": "main",
      "functionShort": "main",
-     "line": 67
+     "line": 66
     },
     {
      "binary": "/usr/lib/x86_64-linux-gnu/libc.so.6",
@@ -477,9 +596,9 @@
     "globalPeak": 1048576,
     "lifetime": {
      "count": 1,
-     "max": 1273461,
-     "min": 1273461,
-     "sum": 1273461
+     "max": 2973039,
+     "min": 2973039,
+     "sum": 2973039
     },
     "maxAliveReq": 1048576,
     "mmap": {
@@ -503,56 +622,56 @@
      "file": "src/reader/libreader/extractors/tests/example.cpp",
      "function": "leaf()",
      "functionShort": "leaf()",
-     "line": 26
+     "line": 25
     },
     {
      "binary": "src/reader/libreader/extractors/tests/extractor-example",
      "file": "src/reader/libreader/extractors/tests/example.cpp",
      "function": "callerRecurse(int)",
      "functionShort": "callerRecurse(int)",
-     "line": 37
+     "line": 36
     },
     {
      "binary": "src/reader/libreader/extractors/tests/extractor-example",
      "file": "src/reader/libreader/extractors/tests/example.cpp",
      "function": "callerRecurse(int)",
      "functionShort": "callerRecurse(int)",
-     "line": 39
+     "line": 38
     },
     {
      "binary": "src/reader/libreader/extractors/tests/extractor-example",
      "file": "src/reader/libreader/extractors/tests/example.cpp",
      "function": "callerRecurse(int)",
      "functionShort": "callerRecurse(int)",
-     "line": 39
+     "line": 38
     },
     {
      "binary": "src/reader/libreader/extractors/tests/extractor-example",
      "file": "src/reader/libreader/extractors/tests/example.cpp",
      "function": "callerRecurse(int)",
      "functionShort": "callerRecurse(int)",
-     "line": 39
+     "line": 38
     },
     {
      "binary": "src/reader/libreader/extractors/tests/extractor-example",
      "file": "src/reader/libreader/extractors/tests/example.cpp",
      "function": "caller()",
      "functionShort": "caller()",
-     "line": 45
+     "line": 44
     },
     {
      "binary": "src/reader/libreader/extractors/tests/extractor-example",
      "file": "src/reader/libreader/extractors/tests/example.cpp",
      "function": "main_sim()",
      "functionShort": "main_sim()",
-     "line": 59
+     "line": 58
     },
     {
      "binary": "src/reader/libreader/extractors/tests/extractor-example",
      "file": "src/reader/libreader/extractors/tests/example.cpp",
      "function": "main",
      "functionShort": "main",
-     "line": 67
+     "line": 66
     },
     {
      "binary": "/usr/lib/x86_64-linux-gnu/libc.so.6",
@@ -581,26 +700,26 @@
    "info": {
     "aliveReq": 0,
     "alloc": {
-     "count": 0,
-     "max": 0,
-     "min": 0,
-     "sum": 0
-    },
-    "countZeros": 0,
-    "free": {
      "count": 1,
      "max": 16,
      "min": 16,
      "sum": 16
     },
-    "globalPeak": 0,
-    "lifetime": {
+    "countZeros": 0,
+    "free": {
      "count": 0,
      "max": 0,
      "min": 0,
      "sum": 0
     },
-    "maxAliveReq": 0,
+    "globalPeak": 16,
+    "lifetime": {
+     "count": 1,
+     "max": 2461995,
+     "min": 2461995,
+     "sum": 2461995
+    },
+    "maxAliveReq": 16,
     "mmap": {
      "count": 0,
      "max": 0,
@@ -622,175 +741,56 @@
      "file": "src/reader/libreader/extractors/tests/example.cpp",
      "function": "leaf()",
      "functionShort": "leaf()",
-     "line": 29
+     "line": 24
     },
     {
      "binary": "src/reader/libreader/extractors/tests/extractor-example",
      "file": "src/reader/libreader/extractors/tests/example.cpp",
      "function": "callerRecurse(int)",
      "functionShort": "callerRecurse(int)",
-     "line": 37
+     "line": 36
     },
     {
      "binary": "src/reader/libreader/extractors/tests/extractor-example",
      "file": "src/reader/libreader/extractors/tests/example.cpp",
      "function": "callerRecurse(int)",
      "functionShort": "callerRecurse(int)",
-     "line": 39
+     "line": 38
     },
     {
      "binary": "src/reader/libreader/extractors/tests/extractor-example",
      "file": "src/reader/libreader/extractors/tests/example.cpp",
      "function": "callerRecurse(int)",
      "functionShort": "callerRecurse(int)",
-     "line": 39
+     "line": 38
     },
     {
      "binary": "src/reader/libreader/extractors/tests/extractor-example",
      "file": "src/reader/libreader/extractors/tests/example.cpp",
      "function": "callerRecurse(int)",
      "functionShort": "callerRecurse(int)",
-     "line": 39
+     "line": 38
     },
     {
      "binary": "src/reader/libreader/extractors/tests/extractor-example",
      "file": "src/reader/libreader/extractors/tests/example.cpp",
      "function": "caller()",
      "functionShort": "caller()",
-     "line": 45
+     "line": 44
     },
     {
      "binary": "src/reader/libreader/extractors/tests/extractor-example",
      "file": "src/reader/libreader/extractors/tests/example.cpp",
      "function": "main_sim()",
      "functionShort": "main_sim()",
-     "line": 59
-    },
-    {
-     "binary": "src/reader/libreader/extractors/tests/extractor-example",
-     "file": "src/reader/libreader/extractors/tests/example.cpp",
-     "function": "main",
-     "functionShort": "main",
-     "line": 67
-    },
-    {
-     "binary": "/usr/lib/x86_64-linux-gnu/libc.so.6",
-     "file": "./csu/../sysdeps/x86/libc-start.c",
-     "function": "__libc_start_call_main",
-     "functionShort": "__libc_start_call_main",
      "line": 58
     },
     {
-     "binary": "/usr/lib/x86_64-linux-gnu/libc.so.6",
-     "file": "./csu/../csu/libc-start.c",
-     "function": "__libc_start_main_impl",
-     "functionShort": "__libc_start_main_impl",
-     "line": 360
-    },
-    {
-     "binary": "src/reader/libreader/extractors/tests/extractor-example",
-     "file": "??",
-     "function": "_start",
-     "functionShort": "_start",
-     "line": -1
-    }
-   ]
-  },
-  {
-   "info": {
-    "aliveReq": 0,
-    "alloc": {
-     "count": 0,
-     "max": 0,
-     "min": 0,
-     "sum": 0
-    },
-    "countZeros": 0,
-    "free": {
-     "count": 1,
-     "max": 1048576,
-     "min": 1048576,
-     "sum": 1048576
-    },
-    "globalPeak": 0,
-    "lifetime": {
-     "count": 0,
-     "max": 0,
-     "min": 0,
-     "sum": 0
-    },
-    "maxAliveReq": 0,
-    "mmap": {
-     "count": 0,
-     "max": 0,
-     "min": 0,
-     "sum": 0
-    },
-    "munmap": {
-     "count": 0,
-     "max": 0,
-     "min": 0,
-     "sum": 0
-    },
-    "reallocCount": 0,
-    "reallocSumDelta": 0
-   },
-   "stack": [
-    {
-     "binary": "src/reader/libreader/extractors/tests/extractor-example",
-     "file": "src/reader/libreader/extractors/tests/example.cpp",
-     "function": "leaf()",
-     "functionShort": "leaf()",
-     "line": 30
-    },
-    {
-     "binary": "src/reader/libreader/extractors/tests/extractor-example",
-     "file": "src/reader/libreader/extractors/tests/example.cpp",
-     "function": "callerRecurse(int)",
-     "functionShort": "callerRecurse(int)",
-     "line": 37
-    },
-    {
-     "binary": "src/reader/libreader/extractors/tests/extractor-example",
-     "file": "src/reader/libreader/extractors/tests/example.cpp",
-     "function": "callerRecurse(int)",
-     "functionShort": "callerRecurse(int)",
-     "line": 39
-    },
-    {
-     "binary": "src/reader/libreader/extractors/tests/extractor-example",
-     "file": "src/reader/libreader/extractors/tests/example.cpp",
-     "function": "callerRecurse(int)",
-     "functionShort": "callerRecurse(int)",
-     "line": 39
-    },
-    {
-     "binary": "src/reader/libreader/extractors/tests/extractor-example",
-     "file": "src/reader/libreader/extractors/tests/example.cpp",
-     "function": "callerRecurse(int)",
-     "functionShort": "callerRecurse(int)",
-     "line": 39
-    },
-    {
-     "binary": "src/reader/libreader/extractors/tests/extractor-example",
-     "file": "src/reader/libreader/extractors/tests/example.cpp",
-     "function": "caller()",
-     "functionShort": "caller()",
-     "line": 45
-    },
-    {
-     "binary": "src/reader/libreader/extractors/tests/extractor-example",
-     "file": "src/reader/libreader/extractors/tests/example.cpp",
-     "function": "main_sim()",
-     "functionShort": "main_sim()",
-     "line": 59
-    },
-    {
      "binary": "src/reader/libreader/extractors/tests/extractor-example",
      "file": "src/reader/libreader/extractors/tests/example.cpp",
      "function": "main",
      "functionShort": "main",
-     "line": 67
+     "line": 66
     },
     {
      "binary": "/usr/lib/x86_64-linux-gnu/libc.so.6",
@@ -841,7 +841,7 @@
     "file": "src/reader/libreader/extractors/tests/example.cpp",
     "function": "caller()",
     "functionShort": "caller()",
-    "line": 45
+    "line": 44
    },
    "own": {
     "alloc": {
@@ -901,7 +901,7 @@
     "file": "src/reader/libreader/extractors/tests/example.cpp",
     "function": "caller2()",
     "functionShort": "caller2()",
-    "line": 51
+    "line": 50
    },
    "own": {
     "alloc": {
@@ -961,7 +961,7 @@
     "file": "src/reader/libreader/extractors/tests/example.cpp",
     "function": "callerRecurse(int)",
     "functionShort": "callerRecurse(int)",
-    "line": 37
+    "line": 36
    },
    "own": {
     "alloc": {
@@ -1021,7 +1021,7 @@
     "file": "src/reader/libreader/extractors/tests/example.cpp",
     "function": "leaf()",
     "functionShort": "leaf()",
-    "line": 25
+    "line": 24
    },
    "own": {
     "alloc": {
@@ -1081,7 +1081,7 @@
     "file": "src/reader/libreader/extractors/tests/example.cpp",
     "function": "main",
     "functionShort": "main",
-    "line": 67
+    "line": 66
    },
    "own": {
     "alloc": {
@@ -1141,7 +1141,7 @@
     "file": "src/reader/libreader/extractors/tests/example.cpp",
     "function": "main_sim()",
     "functionShort": "main_sim()",
-    "line": 59
+    "line": 58
    },
    "own": {
     "alloc": {
@@ -1200,9 +1200,9 @@
     "globalPeak": 1048592,
     "lifetime": {
      "count": 2,
-     "max": 1273461,
-     "min": 1130138,
-     "sum": 2403599
+     "max": 2973039,
+     "min": 2461995,
+     "sum": 5435034
     },
     "maxAliveReq": 1048592,
     "mmap": {
@@ -1223,13 +1223,13 @@
    "file": "src/reader/libreader/extractors/tests/example.cpp",
    "function": "caller()",
    "functionShort": "caller()",
-   "line": 45,
+   "line": 44,
    "location": {
     "binary": "src/reader/libreader/extractors/tests/extractor-example",
     "file": "src/reader/libreader/extractors/tests/example.cpp",
     "function": "caller()",
     "functionShort": "caller()",
-    "line": 45
+    "line": 44
    },
    "own": {
     "aliveReq": 0,
@@ -1287,9 +1287,9 @@
     "globalPeak": 1048592,
     "lifetime": {
      "count": 2,
-     "max": 1273461,
-     "min": 1130138,
-     "sum": 2403599
+     "max": 2973039,
+     "min": 2461995,
+     "sum": 5435034
     },
     "maxAliveReq": 1048592,
     "mmap": {
@@ -1328,9 +1328,9 @@
     "globalPeak": 0,
     "lifetime": {
      "count": 1,
-     "max": 11310,
-     "min": 11310,
-     "sum": 11310
+     "max": 12968,
+     "min": 12968,
+     "sum": 12968
     },
     "maxAliveReq": 8,
     "mmap": {
@@ -1351,13 +1351,13 @@
    "file": "src/reader/libreader/extractors/tests/example.cpp",
    "function": "caller2()",
    "functionShort": "caller2()",
-   "line": 51,
+   "line": 50,
    "location": {
     "binary": "src/reader/libreader/extractors/tests/extractor-example",
     "file": "src/reader/libreader/extractors/tests/example.cpp",
     "function": "caller2()",
     "functionShort": "caller2()",
-    "line": 51
+    "line": 50
    },
    "own": {
     "aliveReq": 0,
@@ -1377,9 +1377,9 @@
     "globalPeak": 0,
     "lifetime": {
      "count": 1,
-     "max": 11310,
-     "min": 11310,
-     "sum": 11310
+     "max": 12968,
+     "min": 12968,
+     "sum": 12968
     },
     "maxAliveReq": 8,
     "mmap": {
@@ -1415,9 +1415,9 @@
     "globalPeak": 0,
     "lifetime": {
      "count": 1,
-     "max": 11310,
-     "min": 11310,
-     "sum": 11310
+     "max": 12968,
+     "min": 12968,
+     "sum": 12968
     },
     "maxAliveReq": 8,
     "mmap": {
@@ -1456,9 +1456,9 @@
     "globalPeak": 1048592,
     "lifetime": {
      "count": 2,
-     "max": 1273461,
-     "min": 1130138,
-     "sum": 2403599
+     "max": 2973039,
+     "min": 2461995,
+     "sum": 5435034
     },
     "maxAliveReq": 1048592,
     "mmap": {
@@ -1479,13 +1479,13 @@
    "file": "src/reader/libreader/extractors/tests/example.cpp",
    "function": "callerRecurse(int)",
    "functionShort": "callerRecurse(int)",
-   "line": 37,
+   "line": 36,
    "location": {
     "binary": "src/reader/libreader/extractors/tests/extractor-example",
     "file": "src/reader/libreader/extractors/tests/example.cpp",
     "function": "callerRecurse(int)",
     "functionShort": "callerRecurse(int)",
-    "line": 37
+    "line": 36
    },
    "own": {
     "aliveReq": 0,
@@ -1543,9 +1543,9 @@
     "globalPeak": 1048592,
     "lifetime": {
      "count": 2,
-     "max": 1273461,
-     "min": 1130138,
-     "sum": 2403599
+     "max": 2973039,
+     "min": 2461995,
+     "sum": 5435034
     },
     "maxAliveReq": 1048592,
     "mmap": {
@@ -1584,9 +1584,9 @@
     "globalPeak": 1048592,
     "lifetime": {
      "count": 2,
-     "max": 1273461,
-     "min": 1130138,
-     "sum": 2403599
+     "max": 2973039,
+     "min": 2461995,
+     "sum": 5435034
     },
     "maxAliveReq": 1048592,
     "mmap": {
@@ -1607,13 +1607,13 @@
    "file": "src/reader/libreader/extractors/tests/example.cpp",
    "function": "leaf()",
    "functionShort": "leaf()",
-   "line": 25,
+   "line": 24,
    "location": {
     "binary": "src/reader/libreader/extractors/tests/extractor-example",
     "file": "src/reader/libreader/extractors/tests/example.cpp",
     "function": "leaf()",
     "functionShort": "leaf()",
-    "line": 25
+    "line": 24
    },
    "own": {
     "aliveReq": 0,
@@ -1633,9 +1633,9 @@
     "globalPeak": 1048592,
     "lifetime": {
      "count": 2,
-     "max": 1273461,
-     "min": 1130138,
-     "sum": 2403599
+     "max": 2973039,
+     "min": 2461995,
+     "sum": 5435034
     },
     "maxAliveReq": 1048592,
     "mmap": {
@@ -1671,9 +1671,9 @@
     "globalPeak": 1048592,
     "lifetime": {
      "count": 2,
-     "max": 1273461,
-     "min": 1130138,
-     "sum": 2403599
+     "max": 2973039,
+     "min": 2461995,
+     "sum": 5435034
     },
     "maxAliveReq": 1048592,
     "mmap": {
@@ -1712,9 +1712,9 @@
     "globalPeak": 1048592,
     "lifetime": {
      "count": 3,
-     "max": 1273461,
-     "min": 11310,
-     "sum": 2414909
+     "max": 2973039,
+     "min": 12968,
+     "sum": 5448002
     },
     "maxAliveReq": 1048600,
     "mmap": {
@@ -1735,13 +1735,13 @@
    "file": "src/reader/libreader/extractors/tests/example.cpp",
    "function": "main",
    "functionShort": "main",
-   "line": 67,
+   "line": 66,
    "location": {
     "binary": "src/reader/libreader/extractors/tests/extractor-example",
     "file": "src/reader/libreader/extractors/tests/example.cpp",
     "function": "main",
     "functionShort": "main",
-    "line": 67
+    "line": 66
    },
    "own": {
     "aliveReq": 0,
@@ -1799,9 +1799,9 @@
     "globalPeak": 1048592,
     "lifetime": {
      "count": 3,
-     "max": 1273461,
-     "min": 11310,
-     "sum": 2414909
+     "max": 2973039,
+     "min": 12968,
+     "sum": 5448002
     },
     "maxAliveReq": 1048600,
     "mmap": {
@@ -1840,9 +1840,9 @@
     "globalPeak": 1048592,
     "lifetime": {
      "count": 3,
-     "max": 1273461,
-     "min": 11310,
-     "sum": 2414909
+     "max": 2973039,
+     "min": 12968,
+     "sum": 5448002
     },
     "maxAliveReq": 1048600,
     "mmap": {
@@ -1863,13 +1863,13 @@
    "file": "src/reader/libreader/extractors/tests/example.cpp",
    "function": "main_sim()",
    "functionShort": "main_sim()",
-   "line": 59,
+   "line": 58,
    "location": {
     "binary": "src/reader/libreader/extractors/tests/extractor-example",
     "file": "src/reader/libreader/extractors/tests/example.cpp",
     "function": "main_sim()",
     "functionShort": "main_sim()",
-    "line": 59
+    "line": 58
    },
    "own": {
     "aliveReq": 0,
@@ -1927,9 +1927,9 @@
     "globalPeak": 1048592,
     "lifetime": {
      "count": 3,
-     "max": 1273461,
-     "min": 11310,
-     "sum": 2414909
+     "max": 2973039,
+     "min": 12968,
+     "sum": 5448002
     },
     "maxAliveReq": 1048600,
     "mmap": {
@@ -2482,42 +2482,9 @@
     "info": {
      "binary": "src/reader/libreader/extractors/tests/extractor-example",
      "file": "src/reader/libreader/extractors/tests/example.cpp",
-     "function": "caller()",
-     "functionShort": "caller()",
-     "line": 44
-    },
-    "mem": 32
-   },
-   {
-    "count": 4,
-    "info": {
-     "binary": "src/reader/libreader/extractors/tests/extractor-example",
-     "file": "src/reader/libreader/extractors/tests/example.cpp",
-     "function": "callerRecurse(int)",
-     "functionShort": "callerRecurse(int)",
-     "line": 35
-    },
-    "mem": 192
-   },
-   {
-    "count": 1,
-    "info": {
-     "binary": "src/reader/libreader/extractors/tests/extractor-example",
-     "file": "src/reader/libreader/extractors/tests/example.cpp",
-     "function": "leaf()",
-     "functionShort": "leaf()",
-     "line": 24
-    },
-    "mem": 32
-   },
-   {
-    "count": 1,
-    "info": {
-     "binary": "src/reader/libreader/extractors/tests/extractor-example",
-     "file": "src/reader/libreader/extractors/tests/example.cpp",
      "function": "main",
      "functionShort": "main",
-     "line": 65
+     "line": 64
     },
     "mem": 0
    },
@@ -2528,7 +2495,40 @@
      "file": "src/reader/libreader/extractors/tests/example.cpp",
      "function": "main_sim()",
      "functionShort": "main_sim()",
-     "line": 58
+     "line": 57
+    },
+    "mem": 32
+   },
+   {
+    "count": 1,
+    "info": {
+     "binary": "src/reader/libreader/extractors/tests/extractor-example",
+     "file": "src/reader/libreader/extractors/tests/example.cpp",
+     "function": "caller()",
+     "functionShort": "caller()",
+     "line": 43
+    },
+    "mem": 32
+   },
+   {
+    "count": 4,
+    "info": {
+     "binary": "src/reader/libreader/extractors/tests/extractor-example",
+     "file": "src/reader/libreader/extractors/tests/example.cpp",
+     "function": "callerRecurse(int)",
+     "functionShort": "callerRecurse(int)",
+     "line": 34
+    },
+    "mem": 192
+   },
+   {
+    "count": 1,
+    "info": {
+     "binary": "src/reader/libreader/extractors/tests/extractor-example",
+     "file": "src/reader/libreader/extractors/tests/example.cpp",
+     "function": "leaf()",
+     "functionShort": "leaf()",
+     "line": 23
     },
     "mem": 32
    }
@@ -2582,7 +2582,7 @@
   },
   "[heap]": {
    "cnt": 1,
-   "mem": 565248
+   "mem": 557056
   },
   "[stack]": {
    "cnt": 1,
@@ -2601,12 +2601,12 @@
    "mem": 16384
   },
   "anonymous": {
-   "cnt": 11,
-   "mem": 13283328
+   "cnt": 10,
+   "mem": 17616896
   },
   "src/libinstrum/libmalt.so.1.4.0": {
    "cnt": 5,
-   "mem": 1269760
+   "mem": 1318912
   },
   "src/reader/libreader/extractors/tests/extractor-example": {
    "cnt": 5,
@@ -2621,10 +2621,10 @@
    "largestStack": 288,
    "maxChunkSize": 1048576,
    "minChunkSize": 8,
-   "physicalMem": 7602176,
+   "physicalMem": 8126464,
    "requestedMem": 1122320,
    "segments": 3,
-   "virtualMem": 23801856
+   "virtualMem": 28176384
   }
  },
  "getSummaryV2": {
@@ -2632,11 +2632,11 @@
    "allocator": "/usr/lib/x86_64-linux-gnu/libc.so.6",
    "allocatorWrappers": [],
    "command": "src/reader/libreader/extractors/tests/extractor-example",
-   "date": "2025-09-24 14:21",
+   "date": "2025-10-02 05:16",
    "exe": "extractor-example",
    "formatVersion": "1.1",
    "hostname": "sebv6",
-   "runtime": 1133980865,
+   "runtime": 1408435142,
    "tool": "malt-1.4.0"
   },
   "summary": {
@@ -2649,13 +2649,13 @@
    "meanAllocSize": 280582.0,
    "minAllocSize": 8,
    "numGblVar": 789,
-   "peakAllocCountRate": 483956523008.0,
-   "peakAllocRate": 483956523008.0,
+   "peakAllocCountRate": 211905036288.0,
+   "peakAllocRate": 211905036288.0,
    "peakInternalMemory": 0,
-   "peakPhysicalMemory": 7602176,
+   "peakPhysicalMemory": 8126464,
    "peakRequestedMemory": 1122320,
    "peakSegmentCount": 3,
-   "peakVirtualMemory": 23801856,
+   "peakVirtualMemory": 28176384,
    "recyclingRatio": 1.000007152557373,
    "tlsVarMem": 80,
    "totalAllocatedMemory": 1122328
@@ -2682,7 +2682,7 @@
    ]
   },
   "system": {
-   "ticksPerSecond": 1991993245,
+   "ticksPerSecond": 1991985294,
    "totalMemory": 16400842752
   },
   "threadStats": [
@@ -2705,7 +2705,7 @@
     "malloc": {
      "count": 4,
      "sum": 1122328,
-     "time": 19648
+     "time": 20550
     },
     "memalign": {
      "count": 0,

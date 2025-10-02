@@ -70,7 +70,7 @@ Options::Options(void)
 	this->pythonMem               = true;
 	this->pythonRaw               = true;
 	this->pythonHideImports       = true;
-	this->pythonMode              = "trace";
+	this->pythonMode              = "profile";
 	//c
 	this->cMalloc                 = true;
 	this->cMmap                   = true;
