@@ -28,10 +28,13 @@ examples/cpp/step-10-problem-leak
 examples/cpp/step-11-direct-mmap-munmap
 examples/cpp/step-12-direct-mmap-munmap-middle
 examples/cpp/*.json
+examples/cpp/*.trace
 examples/fortran/01-ifort-heap-arrays/reproducer_heap
 examples/fortran/01-ifort-heap-arrays/reproducer_stack
-examples/fortran/*/*.json
+examples/fortran/*/malt-*.json
+examples/fortran/*/malt-*.trace
 examples/python/malt-*.json
+examples/python/malt-*.trace
 examples/python/*.so
 
 # cache
@@ -40,3 +43,6 @@ examples/python/*.so
 
 # IDE
 .idea
+
+# doc
+src/doc/sphinx/build
