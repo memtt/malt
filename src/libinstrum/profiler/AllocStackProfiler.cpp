@@ -131,22 +131,41 @@ void AllocStackProfiler::setRealMallocAddr(MallocFuncPtr realMallocFunc)
 }
 
 /**********************************************************/
-void AllocStackProfiler::onMalloc(void* ptr, size_t size,Stack * userStack, AllocDomain domain)
+void AllocStackProfiler::onMalloc(AllocTracerEvent & traceEntry, void* ptr, size_t size,Stack * userStack, AllocDomain domain)
 {
-	onAllocEvent(ptr,size,userStack, nullptr, true, domain);
+	MMCallStackNode node;
+	onAllocEvent(ptr,size,userStack, &node, true, domain);
+	if (this->options.traceEnabled) {
+		traceEntry.callStack = node.stack;
+		this->tracer.pushEvent(traceEntry);
+	}
 }
 
 /**********************************************************/
-void AllocStackProfiler::onCalloc(void* ptr, size_t nmemb, size_t size,Stack * userStack, AllocDomain domain)
+void AllocStackProfiler::onCalloc(AllocTracerEvent & traceEntry, void* ptr, size_t nmemb, size_t size,Stack * userStack, AllocDomain domain)
 {
-	onAllocEvent(ptr,size * nmemb,userStack, nullptr, true, domain);
+	MMCallStackNode node;
+	onAllocEvent(ptr,size * nmemb,userStack, &node, true, domain);
+	if (this->options.traceEnabled) {
+		traceEntry.callStack = node.stack;
+		this->tracer.pushEvent(traceEntry);
+	}
 }
 
 /**********************************************************/
-void AllocStackProfiler::onFree(void* ptr,Stack * userStack, AllocDomain domain)
+void AllocStackProfiler::onFree(AllocTracerEvent & traceEntry, void* ptr,Stack * userStack, AllocDomain domain)
 {
-	if (ptr != NULL)
-		onFreeEvent(ptr,userStack, nullptr, true, domain);
+	if (ptr != NULL) {
+		MMCallStackNode node;
+		FreeFinalInfos infos = onFreeEvent(ptr,userStack, &node, true, domain);
+		if (this->options.traceEnabled) {
+			traceEntry.callStack = node.stack;
+			traceEntry.size = infos.size;
+			traceEntry.extra.free.lifetime = infos.lifetime;
+			traceEntry.extra.free.allocStack = infos.allocStack;
+			this->tracer.pushEvent(traceEntry);
+		}
+	}
 }
 
 /**********************************************************/
@@ -164,8 +183,9 @@ void AllocStackProfiler::onPrepareRealloc(void* oldPtr,Stack * userStack)
 /**********************************************************/
 LocalAllocStackProfiler* AllocStackProfiler::createLocalStackProfiler()
 {
+	size_t id = this->nextThreadId.fetch_add(1);
 	void * mem = MALT_MALLOC(sizeof(LocalAllocStackProfiler));
-	LocalAllocStackProfiler* res = new(mem) LocalAllocStackProfiler(this);
+	LocalAllocStackProfiler* res = new(mem) LocalAllocStackProfiler(this, id);
 	this->registerPerThreadProfiler(res);
 	return res;
 }
@@ -178,7 +198,7 @@ void AllocStackProfiler::destroyLocalStackProfiler(LocalAllocStackProfiler* loca
 }
 
 /**********************************************************/
-size_t AllocStackProfiler::onRealloc(void* oldPtr, void* ptr, size_t newSize,Stack * userStack, AllocDomain domain)
+size_t AllocStackProfiler::onRealloc(AllocTracerEvent & traceEntry, void* oldPtr, void* ptr, size_t newSize,Stack * userStack, AllocDomain domain)
 {
 	size_t oldSize = 0;
 
@@ -187,13 +207,34 @@ size_t AllocStackProfiler::onRealloc(void* oldPtr, void* ptr, size_t newSize,Sta
 		MMCallStackNode callStackNode;
 		
 		//free part
-		if (oldPtr != NULL)
-			oldSize = onFreeEvent(oldPtr,userStack,&callStackNode,false, domain);
+		if (oldPtr != NULL) {
+			FreeFinalInfos freeInfos = onFreeEvent(oldPtr,userStack,&callStackNode,false, domain);
+			oldSize = freeInfos.size;
+			traceEntry.extra.realloc.oldSize = oldSize;
+
+			//insert realloc lifetime notified in trace
+			AllocTracerEvent freeTraceEntry = traceEntry;
+			freeTraceEntry.type = EVENT_C_REALLOC_LFTIME;
+			freeTraceEntry.callStack = callStackNode.stack;
+			freeTraceEntry.addr = oldPtr;
+			freeTraceEntry.size = oldSize;
+			freeTraceEntry.extra.free.lifetime = freeInfos.lifetime;
+			freeTraceEntry.extra.free.allocStack = freeInfos.allocStack;
+
+			//dump
+			if (options.traceEnabled)
+				this->tracer.pushEvent(freeTraceEntry);
+		} else {
+			traceEntry.extra.realloc.oldSize = 0;
+		}
 		
 		//alloc part
 		if (newSize > 0)
 			onAllocEvent(ptr,newSize,userStack,&callStackNode,false, domain);
 		
+		//set
+		traceEntry.callStack = callStackNode.stack;
+
 		//realloc
 		if (newSize > 0 && oldSize > 0 && newSize != oldSize)
 		{
@@ -215,6 +256,10 @@ size_t AllocStackProfiler::onRealloc(void* oldPtr, void* ptr, size_t newSize,Sta
 				it->second++;
 		}
 	MALT_END_CRITICAL
+
+	//dump
+	if (options.traceEnabled)
+		this->tracer.pushEvent(traceEntry);
 	
 	return oldSize;
 }
@@ -362,9 +407,10 @@ void AllocStackProfiler::onUpdateMem(const OSProcMemUsage & procMem, const OSMem
 }
 
 /**********************************************************/
-size_t AllocStackProfiler::onFreeEvent(void* ptr, MALT::Stack* userStack, MMCallStackNode* callStackNode, bool doLock, AllocDomain domain, bool subMunmap)
+FreeFinalInfos AllocStackProfiler::onFreeEvent(void* ptr, MALT::Stack* userStack, MMCallStackNode* callStackNode, bool doLock, AllocDomain domain, bool subMunmap)
 {
 	//locals
+	FreeFinalInfos result;
 	ticks t = Clock::getticks();
 	size_t size = 0;
 	bool doDump = false;
@@ -391,13 +437,19 @@ size_t AllocStackProfiler::onFreeEvent(void* ptr, MALT::Stack* userStack, MMCall
 		if (segInfo == NULL)
 		{
 			//fprintf(stderr,"Caution, get unknown free segment : %p, ingore it.\n",ptr);
-			return 0;
+			FreeFinalInfos r;
+			return r;
 		}
 		
 			
 		//update mem usage
 		size = segInfo->size;
 		ticks lifetime = segInfo->getLifetime();
+
+		//set result
+		result.size = size;
+		result.lifetime = lifetime;
+		result.allocStack = segInfo->callStack.stack;
 		
 		//peak tracking
 		peakTracking(-size);
@@ -413,7 +465,7 @@ size_t AllocStackProfiler::onFreeEvent(void* ptr, MALT::Stack* userStack, MMCall
 			
 			//count events
 			if (domain == DOMAIN_MMAP) {
-				CODE_TIMING("updateInfoFree",callStackNode->infos->onMunmap(size,peakId, subMunmap));
+				CODE_TIMING("updateInfoFree",callStackNode->infos->onMunmap(size,peakId,subMunmap));
 			} else {
 				CODE_TIMING("updateInfoFree",callStackNode->infos->onFreeEvent(size,peakId));
 			}
@@ -421,10 +473,6 @@ size_t AllocStackProfiler::onFreeEvent(void* ptr, MALT::Stack* userStack, MMCall
 			//update alive (TODO, need to move this into a new function on StackNodeInfo)
 			CODE_TIMING("freeLinkedMemory",segInfo->callStack.infos->onFreeLinkedMemory(size,lifetime,peakId));
 		}
-		
-		//trace
-		if (options.traceEnabled)
-			tracer.traceChunk(segInfo->callStack.stack,callStackNode->stack,ptr,size,segInfo->allocTime - trefTicks,lifetime);
 		
 		//remove tracking info
 		if (domain == DOMAIN_MMAP) {
@@ -479,14 +527,23 @@ size_t AllocStackProfiler::onFreeEvent(void* ptr, MALT::Stack* userStack, MMCall
 	if (doDump)
 		maltDumpOnEvent();
 
-	return size;
+	return result;
 }
 
 /**********************************************************/
-void AllocStackProfiler::onMmap ( void* ptr, size_t size, Stack* userStack, MMCallStackNode* callStackNode )
+void AllocStackProfiler::onMmap (AllocTracerEvent & traceEntry, void* ptr, size_t size, Stack* userStack, MMCallStackNode* callStackNode )
 {
+	//handle VMA
 	ssize_t delta = vmaTracker.mmap(ptr,size);
+
+	//register memory tracking
 	this->onAllocEvent(ptr,delta,userStack, callStackNode, true, DOMAIN_MMAP);
+
+	//trace
+	if (this->options.traceEnabled) {
+		traceEntry.callStack = callStackNode->stack;
+		this->tracer.pushEvent(traceEntry);
+	}
 }
 
 /**********************************************************/
@@ -542,22 +599,33 @@ void AllocStackProfiler::applyVmaPatches(Stack* userStack, MMCallStackNode* call
 }
 
 /**********************************************************/
-void AllocStackProfiler::onMunmap ( void* ptr, size_t size, Stack* userStack, MMCallStackNode* callStackNode )
+void AllocStackProfiler::onMunmap (AllocTracerEvent & traceEntry, void* ptr, size_t size, Stack* userStack, MMCallStackNode* callStackNode )
 {
 	VmaSegmentPatches vmaPatches;
 	ssize_t delta = vmaTracker.munmap(ptr,size,&vmaPatches);
 	this->applyVmaPatches(userStack, callStackNode, vmaPatches);
+
+	//trace
+	if (this->options.traceEnabled) {
+		if (callStackNode == nullptr)
+			traceEntry.callStack = nullptr;
+		else
+			traceEntry.callStack = callStackNode->stack;
+		this->tracer.pushEvent(traceEntry);
+	}
 }
 
 /**********************************************************/
-void AllocStackProfiler::onMremap(void * ptr,size_t size,void * new_ptr, size_t new_size, Stack * userStack)
+void AllocStackProfiler::onMremap(AllocTracerEvent & traceEntry, void * ptr,size_t size,void * new_ptr, size_t new_size, Stack * userStack)
 {
 	MMCallStackNode callStackNode;
 	VmaSegmentPatches vmaPatches;
 	vmaTracker.munmap(ptr,size,&vmaPatches);
 	vmaTracker.munmap(new_ptr,new_size,&vmaPatches);
 	this->applyVmaPatches(userStack, &callStackNode, vmaPatches);
-	this->onMmap(new_ptr, new_size, userStack, &callStackNode);
+
+	AllocTracerEvent nop;
+	this->onMmap(nop, new_ptr, new_size, userStack, &callStackNode);
 
 	//register size jump
 	if (options.distrReallocJump)
@@ -568,6 +636,12 @@ void AllocStackProfiler::onMremap(void * ptr,size_t size,void * new_ptr, size_t 
 			reallocJumpMap[jump] = 1;
 		else
 			it->second++;
+	}
+
+	//trace
+	if (this->options.traceEnabled) {
+		traceEntry.callStack = callStackNode.stack;
+		this->tracer.pushEvent(traceEntry);
 	}
 }
 
@@ -878,9 +952,20 @@ void AllocStackProfiler::onExit(void )
 			CODE_TIMING("outputCallgrind",vout.writeAsCallgrind(FormattedMessage(options.outputName).arg(this->getFileExeScriptName()).arg(Helpers::getFileId()).arg("callgrind").toString(),symbolResolver));
 		}
 
+		//trace rename
+		if (options.traceEnabled) {
+			std::string traceName = FormattedMessage(options.outputName).arg(this->getFileExeScriptName()).arg(Helpers::getFileId()).arg("trace").toString();
+			this->tracer.rename(traceName);
+			this->traceFilename = traceName;
+			if (options.outputVerbosity >= MALT_VERBOSITY_DEFAULT) {
+				fprintf(stderr,"MALT: trace dump done : %s ...\n", traceName.c_str());
+			}
+		}
+
 		//To know it has been done
-		if (options.outputVerbosity >= MALT_VERBOSITY_DEFAULT)
+		if (options.outputVerbosity >= MALT_VERBOSITY_DEFAULT) {
 			fprintf(stderr,"MALT: profile dump done : %s ...\n", FormattedMessage(options.outputName).arg(this->getFileExeScriptName()).arg(Helpers::getFileId()).arg("json").toString().c_str());
+		}
 
 		//print timings
 		#ifdef MALT_ENABLE_CODE_TIMING

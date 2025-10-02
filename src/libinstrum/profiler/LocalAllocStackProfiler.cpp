@@ -14,6 +14,7 @@
 //locals from common/
 #include <common/Debug.hpp>
 #include <common/CodeTiming.hpp>
+#include <portability/Clock.hpp>
 //Unix for mmap flags (need to move to portability directory)
 #include <sys/mman.h>
 //locals
@@ -24,7 +25,7 @@ namespace MALT
 {
 
 /**********************************************************/
-LocalAllocStackProfiler::LocalAllocStackProfiler(AllocStackProfiler* globalProfiler)
+LocalAllocStackProfiler::LocalAllocStackProfiler(AllocStackProfiler* globalProfiler, size_t threadId)
 	:backtracePythonStack(globalProfiler->getPythonSymbolTracker())
 	,samplePrev(STACK_ORDER_DESC)
 {
@@ -33,6 +34,7 @@ LocalAllocStackProfiler::LocalAllocStackProfiler(AllocStackProfiler* globalProfi
 	
 	//setup fields
 	this->cntMemOps = 0;
+	this->threadId = threadId;
 	this->globalProfiler = globalProfiler;
 	this->options = globalProfiler->getOptions();
 	this->stackMode = globalProfiler->getStackMode();
@@ -53,12 +55,46 @@ LocalAllocStackProfiler::~LocalAllocStackProfiler(void)
 }
 
 /**********************************************************/
+AllocTraceEventType LocalAllocStackProfiler::allocKindToTraceType(MallocKind kind)
+{
+	switch (kind) {
+		case MALLOC_KIND_MALLOC:
+			return EVENT_C_MALLOC;
+		case MALLOC_KIND_POSIX_MEMALIGN:
+			return EVENT_C_POSIX_MEMALIGN;
+		case MALLOC_KIND_ALIGNED_ALLOC:
+			return EVENT_C_ALIGNED_ALLOC;
+		case MALLOC_KIND_MEMALIGN:
+			return EVENT_C_MEMALIGN;
+		case MALLOC_KIND_VALLOC:
+			return EVENT_C_VALLOC;
+		case MALLOC_KIND_PVALLOC:
+			return EVENT_C_PVALLOC;
+		default:
+			MALT_FATAL("Should never reach this line !");
+			return EVENT_NOP;
+	}
+}
+
+/**********************************************************/
 //TODO: Pass Stack*, may be nullptr for C CallStack
 //TODO: Pass Stack* to getStack()
 void LocalAllocStackProfiler::onMalloc(void* res, size_t size, ticks time, MallocKind kind, Language lang, AllocDomain domain)
 {
+	//build trace entry
+	AllocTracerEvent traceEntry;
+	traceEntry.type = allocKindToTraceType(kind);
+	traceEntry.threadId = this->threadId;
+	traceEntry.callStack = nullptr; //not yet known at this stage
+	traceEntry.time = Clock::getticks();
+	traceEntry.cost = time;
+	traceEntry.addr = res;
+	traceEntry.size = size;
+	traceEntry.extra.generic.extra1 = 0;
+	traceEntry.extra.generic.extra2 = 0;
+
 	//check for reentrance
-	CODE_TIMING("mallocProf",globalProfiler->onMalloc(res,size,getStack(lang, size, false, false), domain));
+	CODE_TIMING("mallocProf",globalProfiler->onMalloc(traceEntry, res,size,getStack(lang, size, false, false), domain));
 	this->popEnterExit();
 	this->cntMemOps++;
 	this->allocStats.malloc[kind].inc(size,time);
@@ -67,8 +103,20 @@ void LocalAllocStackProfiler::onMalloc(void* res, size_t size, ticks time, Mallo
 /**********************************************************/
 void LocalAllocStackProfiler::onFree(void* ptr, ticks time, Language lang)
 {
+	//build trace entry
+	AllocTracerEvent traceEntry;
+	traceEntry.type = EVENT_C_FREE;
+	traceEntry.threadId = this->threadId;
+	traceEntry.callStack = nullptr; //not yet known at this stage
+	traceEntry.time = Clock::getticks();
+	traceEntry.cost = time;
+	traceEntry.addr = ptr;
+	traceEntry.size = 0;
+	traceEntry.extra.free.lifetime = 0;
+	traceEntry.extra.free.allocStack = 0;
+
 	//check for reentrance
-	CODE_TIMING("freeProf",globalProfiler->onFree(ptr,getStack(lang, 0, true, false)));
+	CODE_TIMING("freeProf",globalProfiler->onFree(traceEntry, ptr,getStack(lang, 0, true, false)));
 	this->popEnterExit();
 	this->cntMemOps++;
 	this->allocStats.free.inc(0,time);
@@ -77,9 +125,21 @@ void LocalAllocStackProfiler::onFree(void* ptr, ticks time, Language lang)
 /**********************************************************/
 void LocalAllocStackProfiler::onCalloc(void * res,size_t nmemb, size_t size, ticks time, Language lang, AllocDomain domain)
 {
+	//build trace entry
+	AllocTracerEvent traceEntry;
+	traceEntry.type = EVENT_C_CALLOC;
+	traceEntry.threadId = this->threadId;
+	traceEntry.callStack = nullptr; //not yet known at this stage
+	traceEntry.time = Clock::getticks();
+	traceEntry.cost = time;
+	traceEntry.addr = res;
+	traceEntry.size = size;
+	traceEntry.extra.generic.extra1 = 0;
+	traceEntry.extra.generic.extra2 = 0;
+
 	//check for reentrance
 	const size_t totalSize = nmemb * size;
-	CODE_TIMING("callocProf",globalProfiler->onCalloc(res,nmemb,size,getStack(lang, totalSize, false, false), domain));
+	CODE_TIMING("callocProf",globalProfiler->onCalloc(traceEntry, res,nmemb,size,getStack(lang, totalSize, false, false), domain));
 	this->popEnterExit();
 	this->cntMemOps++;
 	this->allocStats.calloc.inc(totalSize,time);
@@ -88,8 +148,20 @@ void LocalAllocStackProfiler::onCalloc(void * res,size_t nmemb, size_t size, tic
 /**********************************************************/
 void LocalAllocStackProfiler::onRealloc(void* ptr, void* res, size_t size,ticks time, Language lang, AllocDomain domain)
 {
+	//build trace entry
+	AllocTracerEvent traceEntry;
+	traceEntry.type = EVENT_C_REALLOC;
+	traceEntry.threadId = this->threadId;
+	traceEntry.callStack = nullptr; //not yet known at this stage
+	traceEntry.time = Clock::getticks();
+	traceEntry.cost = time;
+	traceEntry.addr = res;
+	traceEntry.size = size;
+	traceEntry.extra.realloc.oldAddr = ptr;
+	traceEntry.extra.realloc.oldSize = 0;
+
 	//check for reentrance
-	CODE_TIMING("reallocProf",globalProfiler->onRealloc(ptr,res,size,getStack(lang, size, false, false), domain));
+	CODE_TIMING("reallocProf",globalProfiler->onRealloc(traceEntry, ptr,res,size,getStack(lang, size, false, false), domain));
 	this->popEnterExit();
 	this->cntMemOps++;
 	this->allocStats.realloc.inc(size,time);
@@ -104,9 +176,21 @@ void LocalAllocStackProfiler::onMmap(void* ptr, size_t size, int flags, int fd, 
 	
 	//get stack
 	Stack * stack = getStack(LANG_C, size, false, true);
+
+	//build trace entry
+	AllocTracerEvent traceEntry;
+	traceEntry.type = EVENT_C_MMAP;
+	traceEntry.threadId = this->threadId;
+	traceEntry.callStack = nullptr; //not yet known at this stage
+	traceEntry.time = Clock::getticks();
+	traceEntry.cost = time;
+	traceEntry.addr = ptr;
+	traceEntry.size = size;
+	traceEntry.extra.generic.extra1 = 0;
+	traceEntry.extra.generic.extra2 = 0;
 	
 	//check for renentrance
-	CODE_TIMING("userMmapProf",globalProfiler->onMmap(ptr,size,stack));
+	CODE_TIMING("userMmapProf",globalProfiler->onMmap(traceEntry,ptr,size,stack));
 
 	this->popEnterExit();
 
@@ -121,9 +205,21 @@ void LocalAllocStackProfiler::onMunmap(void* ptr, size_t size, ticks time)
 {
 	//get stack
 	Stack * stack = getStack(LANG_C, size, false, true);
+
+	//build trace entry
+	AllocTracerEvent traceEntry;
+	traceEntry.type = EVENT_C_MUNMAP;
+	traceEntry.threadId = this->threadId;
+	traceEntry.callStack = nullptr; //not yet known at this stage
+	traceEntry.time = Clock::getticks();
+	traceEntry.cost = time;
+	traceEntry.addr = ptr;
+	traceEntry.size = size;
+	traceEntry.extra.generic.extra1 = 0;
+	traceEntry.extra.generic.extra2 = 0;
 	
 	//check for renentrance
-	CODE_TIMING("userMmapProf",globalProfiler->onMunmap(ptr,size,stack));
+	CODE_TIMING("userMmapProf",globalProfiler->onMunmap(traceEntry,ptr,size,stack));
 
 	this->popEnterExit();
 
@@ -136,9 +232,21 @@ void LocalAllocStackProfiler::onMremap(void * ptr, size_t size, void * new_ptr, 
 {
 	//get stack
 	Stack * stack = getStack(LANG_C, size, false, true);
+
+	//build trace entry
+	AllocTracerEvent traceEntry;
+	traceEntry.type = EVENT_C_MREMAP;
+	traceEntry.threadId = this->threadId;
+	traceEntry.callStack = nullptr; //not yet known at this stage
+	traceEntry.time = Clock::getticks();
+	traceEntry.cost = time;
+	traceEntry.addr = ptr;
+	traceEntry.size = size;
+	traceEntry.extra.mremap.newAddr = new_ptr;
+	traceEntry.extra.mremap.newSize = new_size;
 	
 	//check for renentrance
-	CODE_TIMING("userMmapProf",globalProfiler->onMremap(ptr,size,new_ptr,new_size,stack));
+	CODE_TIMING("userMmapProf",globalProfiler->onMremap(traceEntry, ptr,size,new_ptr,new_size,stack));
 
 	this->popEnterExit();
 

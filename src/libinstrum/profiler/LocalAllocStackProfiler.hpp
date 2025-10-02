@@ -85,7 +85,7 @@ void convertToJson(htopml::JsonState& json, const PerThreadAllocStats& value);
 class LocalAllocStackProfiler
 {
 	public:
-		LocalAllocStackProfiler(AllocStackProfiler * globalProfiler);
+		LocalAllocStackProfiler(AllocStackProfiler * globalProfiler, size_t threadId);
 		~LocalAllocStackProfiler(void);
 		void onMalloc(void* res, size_t size, ticks time, MALT::MallocKind kind, Language lang = LANG_C, AllocDomain domain = DOMAIN_C_ALLOC);
 		void onFree(void* ptr, ticks time, Language lang = LANG_C);
@@ -107,6 +107,7 @@ class LocalAllocStackProfiler
 	protected:
 		Stack * getStack(Language lang, size_t size, bool isFree, bool isMmmap);
 		void popEnterExit(void);
+		static AllocTraceEventType allocKindToTraceType(MallocKind kind);
 	private:
 		/** Pointer to the global state **/
 		AllocStackProfiler * globalProfiler;
@@ -135,6 +136,7 @@ class LocalAllocStackProfiler
 		Stack samplePrev;
 		bool needToPop{false};
 		LangAddress currentPythonAddr;
+		size_t threadId;
 };
 
 /**********************************************************/

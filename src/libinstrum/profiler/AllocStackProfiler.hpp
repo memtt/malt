@@ -88,6 +88,14 @@ struct TimeTrackMemory
 };
 
 /**********************************************************/
+struct FreeFinalInfos
+{
+	size_t size{0};
+	ticks lifetime{0};
+	const Stack * allocStack{nullptr};
+};
+
+/**********************************************************/
 struct TimeTrackSysMemory
 {
 	//constructor & usefull funcs
@@ -126,16 +134,16 @@ class AllocStackProfiler
 {
 	public:
 		AllocStackProfiler(const Options & option, StackMode mode = STACK_MODE_BACKTRACE,bool threadSafe = false);
-		void onMalloc(void * ptr,size_t size,Stack * userStack = NULL, AllocDomain domain = DOMAIN_C_ALLOC);
-		void onCalloc(void * ptr,size_t nmemb,size_t size,Stack * userStack = NULL, AllocDomain domain = DOMAIN_C_ALLOC);
+		void onMalloc(AllocTracerEvent & traceEntry, void * ptr,size_t size,Stack * userStack = NULL, AllocDomain domain = DOMAIN_C_ALLOC);
+		void onCalloc(AllocTracerEvent & traceEntry, void * ptr,size_t nmemb,size_t size,Stack * userStack = NULL, AllocDomain domain = DOMAIN_C_ALLOC);
 		void onPrepareRealloc(void * oldPtr,Stack * userStack = NULL);
-		void onMmap(void * ptr,size_t size,Stack * userStack = NULL, MMCallStackNode* callStackNode = NULL);
-		void onMunmap(void * ptr,size_t size,Stack * userStack = NULL, MMCallStackNode* callStackNode = NULL);
-		void onMremap(void * ptr,size_t size,void * new_ptr, size_t new_size, Stack * userStack = NULL);
-		void onLLMmap(void * ptr,size_t size,Stack * userStack = NULL);
-		void onLLMunmap(void * ptr,size_t size,Stack * userStack = NULL);
-		size_t onRealloc(void* oldPtr, void* ptr, size_t newSize, MALT::Stack* userStack = 0, AllocDomain domain = DOMAIN_C_ALLOC);
-		void onFree(void * ptr,Stack * userStack = NULL, AllocDomain domain = DOMAIN_C_ALLOC);
+		void onMmap(AllocTracerEvent & traceEntry, void * ptr,size_t size,Stack * userStack = NULL, MMCallStackNode* callStackNode = NULL);
+		void onMunmap(AllocTracerEvent & traceEntry, void * ptr,size_t size,Stack * userStack = NULL, MMCallStackNode* callStackNode = NULL);
+		void onMremap(AllocTracerEvent & traceEntry, void * ptr,size_t size,void * new_ptr, size_t new_size, Stack * userStack = NULL);
+		void onLLMmap(AllocTracerEvent & traceEntry, void * ptr,size_t size,Stack * userStack = NULL);
+		void onLLMunmap(AllocTracerEvent & traceEntry, void * ptr,size_t size,Stack * userStack = NULL);
+		size_t onRealloc(AllocTracerEvent & traceEntry, void* oldPtr, void* ptr, size_t newSize, MALT::Stack* userStack = 0, AllocDomain domain = DOMAIN_C_ALLOC);
+		void onFree(AllocTracerEvent & traceEntry, void * ptr,Stack * userStack = NULL, AllocDomain domain = DOMAIN_C_ALLOC);
 		void onExit(void);
 		void onEnterFunction(void * funcAddr);
 		void onExitFunction(void * funcAddr);
@@ -160,7 +168,7 @@ class AllocStackProfiler
 	private:
 		MMCallStackNode getStackNode(MALT::Stack* userStack = 0);
 		void onAllocEvent(void* ptr, size_t size, Stack* userStack, MMCallStackNode* callStackNode = NULL, bool doLock = true, AllocDomain domain = DOMAIN_C_ALLOC);
-		size_t onFreeEvent(void* ptr, MALT::Stack* userStack, MALT::MMCallStackNode* callStackNode = 0, bool doLock = true, AllocDomain domain = DOMAIN_C_ALLOC, bool subMunmap = false);
+		FreeFinalInfos onFreeEvent(void* ptr, MALT::Stack* userStack, MALT::MMCallStackNode* callStackNode = 0, bool doLock = true, AllocDomain domain = DOMAIN_C_ALLOC, bool subMunmap = false);
 		void solvePerThreadSymbols(void);
 		void memOpsLevels(void);
 		void updatePeakInfoOfStacks(void);
@@ -224,6 +232,7 @@ class AllocStackProfiler
 		DomainCounters domains;
 		std::atomic<size_t> rate{0};
 		std::atomic<size_t> rateCnt{0};
+		std::atomic<size_t> nextThreadId{0};
 };
 
 /**********************************************************/

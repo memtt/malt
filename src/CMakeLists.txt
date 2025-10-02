@@ -30,7 +30,7 @@ endif()
 
 ############################################################
 add_subdirectory(integration)
-add_subdirectory(trace-reader)
+#add_subdirectory(trace-reader)
 add_subdirectory(manpages)
 if (NOT WEBVIEW_SERVER STREQUAL "OFF")
 	add_subdirectory(webview)

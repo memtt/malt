@@ -13,6 +13,7 @@
 #include <cassert>
 #include <common/Debug.hpp>
 #include "AllocTraceFile.hpp"
+#include "common/TakeLock.hpp"
 
 /**********************************************************/
 namespace MALT
@@ -28,7 +29,8 @@ namespace MALT
 AllocTraceFile::AllocTraceFile(const std::string& file,size_t bufferSize)
 {
 	this->bufferSize = bufferSize;
-	this->buffer = new AllocTracerChunk[bufferSize];
+	this->buffer = new AllocTracerEvent[bufferSize];
+	this->writingBuffer = new char[bufferSize*1024];
 	this->pos = 0;
 	this->fp = NULL;
 	if ( ! file.empty() )
@@ -44,6 +46,7 @@ AllocTraceFile::~AllocTraceFile(void)
 {
 	this->close();
 	delete [] buffer;
+	delete [] writingBuffer;
 }
 
 /**********************************************************/
@@ -64,6 +67,21 @@ void AllocTraceFile::open(const std::string& file)
 	
 	//reset pos in buffer
 	this->pos = 0;
+
+	//remember
+	this->fname = file;
+}
+
+/**********************************************************/
+void AllocTraceFile::rename(const std::string & newFname)
+{
+	//nothing to do
+	if (this->fname == newFname)
+		return;
+
+	//rename
+	::rename(this->fname.c_str(), newFname.c_str());
+	this->fname = newFname;
 }
 
 /**********************************************************/
@@ -83,34 +101,26 @@ void AllocTraceFile::close(void)
 }
 
 /**********************************************************/
-/**
- * Add a trace event for the given memory chunk. It can generate a write() to the file
- * if the buffer is full.
- * @param allocStack Define the call stack responsible of the allocation of the current chunk.
- * @param freeStack Define the call stack responsible of the deallocation of the current chunk.
- * @param size Define the requested size of the chuink at allocation time.
- * @param timestamp Define the allocation timestamp.
- * @param lifetime Define the lifetime of the current chunk.
-**/
-void AllocTraceFile::traceChunk(const MALT::Stack* allocStack, const MALT::Stack* freeStack, void* addr, size_t size, ticks timestamp, ticks lifetime)
+void AllocTraceFile::pushEvent(const AllocTracerEvent & event)
 {
-	//check errors
-	assert(pos < bufferSize);
-	
-	//write value
-	AllocTracerChunk & entry = buffer[pos];
-	entry.allocStack = allocStack;
-	entry.lifetime = lifetime;
-	entry.size = size;
-	entry.addr = addr;
-	entry.allocTime = timestamp;
-	
-	//inc pos
-	this->pos++;
+	//skip NOP
+	if (event.type == EVENT_NOP)
+		return;
 
-	//need flush
-	if (pos == bufferSize)
-		this->flush();
+	MALT_START_CRITICAL(this->mutex);
+		//check errors
+		assert(this->pos < this->bufferSize);
+
+		//set
+		this->buffer[pos] = event;
+
+		//inc pos
+		this->pos++;
+
+		//need flush
+		if (pos == bufferSize)
+			this->flush();
+	MALT_END_CRITICAL;
 }
 
 /**********************************************************/
@@ -126,10 +136,17 @@ void AllocTraceFile::flush(void)
 	//no file
 	if (this->fp == NULL)
 		return;
+
+	//convert
+	size_t cur = 0;
+	for (size_t i = 0 ; i < pos ; i++) {
+		AllocTracerEvent & event = this->buffer[i];
+		cur += sprintf(this->writingBuffer + cur, "%x\t%zx\t%zx\t%llx\t%llx\t%zx\t%zx\t%zx\t%zx\n", event.type, event.threadId, (size_t)event.callStack, event.time, event.cost, (size_t)event.addr, event.size, event.extra.generic.extra1, event.extra.generic.extra2);
+	}
 	
 	//write
-	size_t size = fwrite(buffer,sizeof(buffer[0]),pos,fp);
-	assumeArg(size == pos,"Failed to write all datas with fwrite, check for interuption, need a loop here for some thread context. %1 != %2").arg(size).arg(pos).end();
+	size_t size = fwrite(this->writingBuffer,1,cur,fp);
+	assumeArg(size == cur,"Failed to write all datas with fwrite, check for interuption, need a loop here for some thread context. %1 != %2").arg(size).arg(pos).end();
 	
 	//reset pos
 	pos = 0;
