@@ -88,7 +88,7 @@ class LocalAllocStackProfiler
 		LocalAllocStackProfiler(AllocStackProfiler * globalProfiler, size_t threadId);
 		~LocalAllocStackProfiler(void);
 		void onMalloc(void* res, size_t size, ticks time, MALT::MallocKind kind, Language lang = LANG_C, AllocDomain domain = DOMAIN_C_ALLOC);
-		void onFree(void* ptr, ticks time, Language lang = LANG_C);
+		void onFree(void* ptr, ticks time, Language lang = LANG_C, AllocDomain domain = DOMAIN_C_ALLOC);
 		void onCalloc(void * res,size_t nmemb,size_t size, ticks time, Language lang = LANG_C, AllocDomain domain = DOMAIN_C_ALLOC);
 		void onRealloc(void* ptr, void* res, size_t size, ticks time, Language lang = LANG_C, AllocDomain domain = DOMAIN_C_ALLOC);
 		void onMmap(void * ptr, size_t size,int flags,int fd, ticks time);
@@ -107,7 +107,7 @@ class LocalAllocStackProfiler
 	protected:
 		Stack * getStack(Language lang, size_t size, bool isFree, bool isMmmap);
 		void popEnterExit(void);
-		static AllocTraceEventType allocKindToTraceType(MallocKind kind);
+		static AllocTraceEventType allocKindToTraceType(MallocKind kind, AllocDomain domain);
 	private:
 		/** Pointer to the global state **/
 		AllocStackProfiler * globalProfiler;

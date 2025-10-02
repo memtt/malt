@@ -86,7 +86,7 @@ void MALT::malt_wrap_free(void * ptr, const FreeFuncPtr & real_free, void * reta
 
 	//profile
 	if (guard.needInstrument() && gblOptions->cMalloc) {
-		MALT_WRAPPER_LOCAL_STATE_ACTION(env.getLocalProfiler().onFree(ptr,0), retaddr);
+		MALT_WRAPPER_LOCAL_STATE_ACTION(env.getLocalProfiler().onFree(ptr,0, LANG_C, DOMAIN_C_ALLOC), retaddr);
 	}
 
 	//run the default function

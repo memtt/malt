@@ -55,11 +55,24 @@ LocalAllocStackProfiler::~LocalAllocStackProfiler(void)
 }
 
 /**********************************************************/
-AllocTraceEventType LocalAllocStackProfiler::allocKindToTraceType(MallocKind kind)
+AllocTraceEventType LocalAllocStackProfiler::allocKindToTraceType(MallocKind kind, AllocDomain domain)
 {
 	switch (kind) {
-		case MALLOC_KIND_MALLOC:
-			return EVENT_C_MALLOC;
+		case MALLOC_KIND_MALLOC: {
+			switch (domain) {
+				case DOMAIN_C_ALLOC:
+					return EVENT_C_MALLOC;
+				case DOMAIN_PYTHON_OBJ:
+					return EVENT_PY_OBJ_MALLOC;
+				case DOMAIN_PYTHON_MEM:
+					return EVENT_PY_MEM_MALLOC;
+				case DOMAIN_PYTHON_RAW:
+					return EVENT_PY_RAW_MALLOC;
+				default:
+					MALT_FATAL("Should not reach this line !");
+					return EVENT_NOP;
+			}
+		};
 		case MALLOC_KIND_POSIX_MEMALIGN:
 			return EVENT_C_POSIX_MEMALIGN;
 		case MALLOC_KIND_ALIGNED_ALLOC:
@@ -83,7 +96,7 @@ void LocalAllocStackProfiler::onMalloc(void* res, size_t size, ticks time, Mallo
 {
 	//build trace entry
 	AllocTracerEvent traceEntry;
-	traceEntry.type = allocKindToTraceType(kind);
+	traceEntry.type = allocKindToTraceType(kind, domain);
 	traceEntry.threadId = this->threadId;
 	traceEntry.callStack = nullptr; //not yet known at this stage
 	traceEntry.time = Clock::getticks();
@@ -101,11 +114,28 @@ void LocalAllocStackProfiler::onMalloc(void* res, size_t size, ticks time, Mallo
 }
 
 /**********************************************************/
-void LocalAllocStackProfiler::onFree(void* ptr, ticks time, Language lang)
+void LocalAllocStackProfiler::onFree(void* ptr, ticks time, Language lang, AllocDomain domain)
 {
 	//build trace entry
 	AllocTracerEvent traceEntry;
-	traceEntry.type = EVENT_C_FREE;
+	switch (domain) {
+		case DOMAIN_C_ALLOC:
+			traceEntry.type = EVENT_C_FREE;
+			break;
+		case DOMAIN_PYTHON_OBJ:
+			traceEntry.type = EVENT_PY_OBJ_FREE;
+			break;
+		case DOMAIN_PYTHON_MEM:
+			traceEntry.type = EVENT_PY_MEM_FREE;
+			break;
+		case DOMAIN_PYTHON_RAW:
+			traceEntry.type = EVENT_PY_RAW_FREE;
+			break;
+		default:
+			MALT_FATAL("Should not reach this line !");
+			traceEntry.type = EVENT_NOP;
+			break;
+	}
 	traceEntry.threadId = this->threadId;
 	traceEntry.callStack = nullptr; //not yet known at this stage
 	traceEntry.time = Clock::getticks();
@@ -127,7 +157,24 @@ void LocalAllocStackProfiler::onCalloc(void * res,size_t nmemb, size_t size, tic
 {
 	//build trace entry
 	AllocTracerEvent traceEntry;
-	traceEntry.type = EVENT_C_CALLOC;
+	switch (domain) {
+		case DOMAIN_C_ALLOC:
+			traceEntry.type = EVENT_C_CALLOC;
+			break;
+		case DOMAIN_PYTHON_OBJ:
+			traceEntry.type = EVENT_PY_OBJ_CALLOC;
+			break;
+		case DOMAIN_PYTHON_MEM:
+			traceEntry.type = EVENT_PY_MEM_CALLOC;
+			break;
+		case DOMAIN_PYTHON_RAW:
+			traceEntry.type = EVENT_PY_RAW_CALLOC;
+			break;
+		default:
+			MALT_FATAL("Should not reach this line !");
+			traceEntry.type = EVENT_NOP;
+			break;
+	}
 	traceEntry.threadId = this->threadId;
 	traceEntry.callStack = nullptr; //not yet known at this stage
 	traceEntry.time = Clock::getticks();
@@ -150,7 +197,24 @@ void LocalAllocStackProfiler::onRealloc(void* ptr, void* res, size_t size,ticks 
 {
 	//build trace entry
 	AllocTracerEvent traceEntry;
-	traceEntry.type = EVENT_C_REALLOC;
+	switch (domain) {
+		case DOMAIN_C_ALLOC:
+			traceEntry.type = EVENT_C_REALLOC;
+			break;
+		case DOMAIN_PYTHON_OBJ:
+			traceEntry.type = EVENT_PY_OBJ_REALLOC;
+			break;
+		case DOMAIN_PYTHON_MEM:
+			traceEntry.type = EVENT_PY_MEM_REALLOC;
+			break;
+		case DOMAIN_PYTHON_RAW:
+			traceEntry.type = EVENT_PY_RAW_REALLOC;
+			break;
+		default:
+			MALT_FATAL("Should not reach this line !");
+			traceEntry.type = EVENT_NOP;
+			break;
+	}
 	traceEntry.threadId = this->threadId;
 	traceEntry.callStack = nullptr; //not yet known at this stage
 	traceEntry.time = Clock::getticks();

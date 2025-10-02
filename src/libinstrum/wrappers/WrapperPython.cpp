@@ -80,7 +80,7 @@ void malt_wrap_python_free(void * ctx, void * ptr, PythonFreeFuncPtr real_free, 
 
 	//profile
 	if (guard.needInstrument()) {
-		MALT_WRAPPER_LOCAL_STATE_ACTION_PYTHON(env.getLocalProfiler().onFree(ptr,0,LANG_PYTHON));
+		MALT_WRAPPER_LOCAL_STATE_ACTION_PYTHON(env.getLocalProfiler().onFree(ptr,0,LANG_PYTHON, domain));
 
 		//run the default function
 		assert(env.getGlobalState().status > ALLOC_WRAP_INIT_SYM);

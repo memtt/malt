@@ -117,7 +117,7 @@ SegmentInfo* SegmentTracker::get(void* ptr)
 	#endif //MALT_ENABLE_CACHING
 	
 	//check
-	if (fromCache != nullptr) {
+	if (fromCache != nullptr && *fromCache != nullptr) {
 		result = *fromCache;
 	} else {
 		SegmentInfoMap::iterator it = map.find(ptr);
