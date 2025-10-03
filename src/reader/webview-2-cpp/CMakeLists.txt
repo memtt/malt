@@ -25,12 +25,12 @@ target_link_libraries(malt-webview-cpp-base ${NLOHMANN_JSON_LIBRARIES} base64 ${
 
 ############################################################
 include_directories(${CMAKE_SOURCE_DIR}/extern-deps/renenyffenegger-base64)
-add_executable(malt-webview-cpp main_webview.cpp)
-target_link_libraries(malt-webview-cpp malt-profile malt-webview-cpp-base )
+add_executable(malt-webview main_webview.cpp)
+target_link_libraries(malt-webview malt-profile malt-webview-cpp-base )
 
 ############################################################
-add_executable(malt-passwd-cpp main_passwd.cpp lib/UserDb.cpp)
-target_link_libraries(malt-passwd-cpp ${NLOHMANN_JSON_LIBRARIES} base64 ${CRYPTO_LIBRARY})
+add_executable(malt-passwd main_passwd.cpp lib/UserDb.cpp)
+target_link_libraries(malt-passwd ${NLOHMANN_JSON_LIBRARIES} base64 ${CRYPTO_LIBRARY})
 
 ############################################################
 add_definitions(-DTEST_DATA_DIR="${CMAKE_CURRENT_BINARY_DIR}")
@@ -43,5 +43,5 @@ if (ENABLE_TESTS)
 endif()
 
 ############################################################
-install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/malt-webview-cpp DESTINATION ${CMAKE_INSTALL_BINDIR} RENAME malt-webview)
-install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/malt-passwd-cpp DESTINATION ${CMAKE_INSTALL_BINDIR} RENAME malt-passwd)
+install(TARGETS malt-webview DESTINATION ${CMAKE_INSTALL_BINDIR})
+install(TARGETS malt-passwd DESTINATION ${CMAKE_INSTALL_BINDIR})

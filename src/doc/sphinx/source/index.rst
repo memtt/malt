@@ -6,14 +6,6 @@
 MALT documentation
 ==================
 
-.. toctree::
-   :maxdepth: 1
-   :hidden:
-   :caption: Getting started
-
-   /start/dependencies.rst
-   /start/installation.rst
-
 What is it
 ----------
 
@@ -38,3 +30,26 @@ We have a few places for you to get started:
 
 :doc:`/start/installation`
   Follow the **installation procedure**.
+
+Advanced topics
+---------------
+
+:doc:`/advanced/packaging`
+  Building **packaging** for common distributions.
+
+.. the global tocs
+
+.. toctree::
+   :maxdepth: 1
+   :hidden:
+   :caption: Getting started
+
+   /start/dependencies.rst
+   /start/installation.rst
+
+.. toctree::
+   :maxdepth: 1
+   :hidden:
+   :caption: Advanced topics
+
+   /advanced/packaging.rst

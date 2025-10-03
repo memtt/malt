@@ -18,6 +18,7 @@ if (CMAKE_VERSION VERSION_LESS 3.0)
 else()
 	cmake_policy(SET CMP0048 NEW)	
 	project(MALT VERSION 1.4.0)
+	enable_language(C CXX)
 endif()
 
 ############################################################

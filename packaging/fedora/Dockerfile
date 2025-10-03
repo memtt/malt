@@ -9,24 +9,18 @@
 ############################################################
 
 #distri we want
-FROM fedora:30
+FROM fedora:41
 
 #workdir
 WORKDIR /workdir
-ENV IN_DOCKER yes
 
-## RHEL/CentOS 7 64-Bit ##
-#RUN yum update
-#RUN yum install -y wget
-#RUN wget http://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
-#RUN rpm -ivh epel-release-latest-7.noarch.rpm
-
-#get list of packages
-RUN yum update -y
-#RUN yum upgrade -y
-
-#install deps
-RUN yum install -y make gcc gcc-c++ cmake git
-RUN yum install -y libunwind-devel elfutils-devel 
+# update list of packages and system
+RUN dnf update -y && dnf upgrade -y
+# install deps for build system
+RUN yum install -y make gcc gcc-c++ cmake
+# deps for the project
+RUN yum install -y libunwind-devel elfutils-devel openssl-devel graphviz nlohmann-json-devel cpp-httplib-devel python3-devel gtest
+# to play with the git sources
+RUN yum install -y git nodejs curl
+# to build the RPM
 RUN yum install -y rpm-build rpmdevtools
-
