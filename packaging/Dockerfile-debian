@@ -9,7 +9,7 @@
 ############################################################
 
 #distri we want
-FROM debian:bookworm
+FROM debian:trixie
 
 #workdir
 WORKDIR /workdir

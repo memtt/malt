@@ -10,8 +10,9 @@
 
 ############################################################
 import os
+import sys
 import argparse
-from gen_archive import malt_dev_gen_archive
+from gen_archive import malt_dev_gen_archive, HashMode
 from gen_coverage import malt_gen_coverage
 from update_file_headers import config_arg_parser, run_from_args
 from update_version import malt_update_version
@@ -19,6 +20,12 @@ from update_version import malt_update_version
 ############################################################
 def get_malt_source_dir() -> str:
     return os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+############################################################
+def get_malt_version() -> str:
+    version_file = os.path.join(get_malt_source_dir(), ".version")
+    with open(version_file, 'r') as fp:
+        return fp.read().replace('\n', '')
 
 ############################################################
 def command_portability(args: object) -> None:
@@ -39,7 +46,16 @@ def command_portability(args: object) -> None:
 ############################################################
 def command_archive(args: object) -> None:
     os.chdir(get_malt_source_dir())
-    malt_dev_gen_archive()
+    if args.hash and args.no_hash:
+        print("Error: cannot use --hash and --no-hash at same time !")
+        sys.exit(1)
+    elif args.hash:
+        hash_mode = HashMode.YES
+    elif args.no_hash:
+        hash_mode = HashMode.NO
+    else:
+        hash_mode = HashMode.AUTO
+    malt_dev_gen_archive(version = args.version, hash_mode=hash_mode, commit=args.commit)
 
 ############################################################
 def command_coverage(args: object) -> None:
@@ -48,7 +64,8 @@ def command_coverage(args: object) -> None:
 ############################################################
 def command_update_file_headers(args: object) -> None:
     run_from_args(args)
-    
+
+############################################################
 def command_version(args) -> None:
     extra = ""
     if args.beta:
@@ -71,6 +88,10 @@ def main() -> None:
 
     # sub command
     archive = subparser.add_parser('archive', aliases=['ar'], help="Generate delivery archive.")
+    archive.add_argument("--version", "-v", help="Version to generate, by default the value in .version file.", default=get_malt_version())
+    archive.add_argument("--hash", help="Add the git hash to the archive version name (by default only if not on a release commit).", action="store_true")
+    archive.add_argument("--no-hash", help="Skip the git hash to the archive version.", action="store_true")
+    archive.add_argument("--commit", "-c", help="Commit to use to generate the archive.", default="HEAD")
     archive.set_defaults(func=command_archive)
 
     # sub command
