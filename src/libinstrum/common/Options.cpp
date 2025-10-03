@@ -45,6 +45,85 @@ static const char * cstVerbosityLevels[MALT_VERBOSITY_COUNT] = {
 };
 
 /**********************************************************/
+static const char * cstValidOptionNames[] = {
+	//fill
+	"time:enabled",
+	"time:points",
+	"time:linear-index",
+	
+	//stack
+	"stack:enabled",
+	"stack:mode",
+	"stack:resolve",
+	"stack:libunwind",
+	"stack:skip",
+	"stack:addr2lineBucket",
+	"stack:addr2lineThreads",
+	"stack:sampling",
+	"stack:samplingBw",
+	"stack:samplingCnt",
+
+	//python
+	"python:intru",
+	"python:stack",
+	"python:mix",
+	"python:obj",
+	"python:mem",
+	"python:raw",
+	"python:hide-imports",
+	"python:mode",
+
+	//c
+	"c:malloc",
+	"c:mmap",
+	
+	//output
+	"output:name",
+	"output:lua",
+	"output:json",
+	"output:callgrind",
+	"output:indent",
+	"output:config",
+	"output:verbosity",
+	"output:stack-tree",
+	"output:loop-suppress",
+	
+	//max stack
+	"max-stack:enabled",
+	
+	//maps
+	"distr:alloc-size",
+	"distr:realloc-jump",
+	
+	//trace
+	"trace:enabled",
+	
+	//info
+	"info:hidden",
+
+	//exe
+	"filter:exe",
+	"filter:childs",
+	"filter:enabled",
+	"filter:ranks",
+
+	//dump
+	"dump:on-signal",
+	"dump:after-seconds",
+	"dump:on-sys-full-at",
+	"dump:on-app-using-rss",
+	"dump:on-app-using-virt",
+	"dump:on-app-using-req",
+	"dump:on-thread-stack-using",
+	"dump:on-alloc-count",
+	"dump:watch-dog",
+
+	//tools
+	"tools:nm",
+	"tools:nm-max-size",
+};
+
+/**********************************************************/
 /**
  * Constructor to setup the default values for each options
 **/
@@ -582,6 +661,10 @@ std::string IniParserHelper::extractSectionName ( const char * key )
 **/
 void IniParserHelper::setEntry(dictionary* dic, const char* key, const char* value)
 {
+	if (validateOptionName(key) == false) {
+		fprintf(stderr, "MALT: Error: Invalid option : --option %s !\n", key);
+		exit(1);
+	}
 	iniparser_set(dic,extractSectionName(key).c_str(),NULL);
 	iniparser_set(dic,key,value);
 }
@@ -695,6 +778,22 @@ std::ostream & operator << (std::ostream & out, Verbosity value)
 {
 	out << verbosityToString(value);
 	return out;
+}
+
+/**********************************************************/
+/**
+ * In order to display an error if the user didn't gave the right name
+ * in the command line.
+ * @param value The option name to validate.
+ * @return True if valid, false otherwise.
+ */
+bool validateOptionName(const std::string & value)
+{
+	const size_t cnt = sizeof(cstValidOptionNames) / sizeof(*cstValidOptionNames);
+	for (size_t i = 0 ; i < cnt ; i++)
+		if (value == cstValidOptionNames[i])
+			return true;
+	return false;
 }
 
 }
