@@ -36,9 +36,10 @@ If you are using `Spack <https://spack.io/>`_ you can simply use it to build the
 
     ./bin/spack install malt
 
-.. gentoo_overlay:
 Installing via Gentoo Overlay
 -----------------------------
+
+.. gentoo_overlay:
 
 On Gentoo you can also directly install MALT by using the given **overleay** :
 

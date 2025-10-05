@@ -22,11 +22,11 @@ tar -xf ~/rpmbuild/SOURCES/malt-${VERSION}.tar.bz2 malt-${VERSION}/packaging/fed
 rpmbuild -ba malt-${VERSION}/packaging/fedora/malt.spec
 
 # Copy out
-cp ~/rpmbuild/?RPMS/*/malt-*${VERSION}*.rpm /sources/
+cp ~/rpmbuild/?RPMS/malt-*${VERSION}*.rpm ~/rpmbuild/RPMS/*/malt-*${VERSION}*.rpm /sources/
 
 # end command print
 set +x
 
 # Final
 echo "----------------------- DONE -----------------------"
-ls -l malt-*${VERSION}*.rpm
+ls -l /sources/malt-*${VERSION}*.rpm
