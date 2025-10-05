@@ -32,7 +32,7 @@ If you want to build your package for Fedora or related RPM based distribution,
 you can follow the given commands.
 
 ```sh
-# Extract the packging dir
+# Extract the packging dir if you are not in git sources
 tar --strip-components 1 -xvf malt-1.4.0.tar.bz2 malt-1.4.0/packaging/fedora
 
 # build the podman image
