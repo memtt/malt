@@ -41,3 +41,20 @@ podman build -t malt/fedora-rpmbuild -f packaging/fedora/Dockerfile
 # Call the script inside docker
 podman run --rm -ti -v .:/sources:rw malt/fedora-rpmbuild /sources/packaging/fedora/build.sh 1.4.0
 ```
+
+APT : Debian and others
+-----------------------
+
+If you want to build your package for Debian, Ubuntu or related APT based distributions,
+you can follow the given commands.
+
+```sh
+# Extract the packging dir if you are not in git sources
+tar --strip-components 1 -xvf malt-1.4.0.tar.bz2 malt-1.4.0/packaging/debian
+
+# build the podman image
+podman build -t malt/debian-debbuild -f packaging/debian/Dockerfile
+
+# Call the script inside docker
+podman run --rm -ti -v .:/sources:rw malt/debian-debbuild /sources/packaging/debian/build.sh 1.4.0
+```
