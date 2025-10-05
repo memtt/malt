@@ -29,10 +29,11 @@ Memory profiling tool to track memory allocations (malloc, realloc, free...)
 %setup -q
 
 %build
-%cmake -DENABLE_TESTS=yes
+%cmake
 %cmake_build
 
 %install
+rm -rf $RPM_BUILD_ROOT
 %cmake_install
 
 %clean
