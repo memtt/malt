@@ -33,7 +33,7 @@ class MaltProfileRequest:
 
     def load_dll(self) -> None:
         # Load the shared library into ctypes
-        libname = os.path.abspath("../../build-release/src/reader/libreader/libmalt-profile.so")
+        libname = os.path.abspath("../../build-release/src/reader/libreader/libmalt-reader.so")
         self.reader = ctypes.CDLL(libname)
 
     def define_return_types(self) -> None:

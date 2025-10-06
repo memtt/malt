@@ -41,19 +41,19 @@ ENDFOREACH(test_name)
 ############################################################
 target_link_libraries(TestInstrum malt-injectors)
 target_compile_options(TestInstrum PRIVATE -g -O0)
-target_link_libraries(TestInstrum malt-profile)
+target_link_libraries(TestInstrum malt-reader)
 
 ############################################################
 if (PYTHON3_INSTRUM_FOUND)
 	target_compile_options(TestInstrumPython PRIVATE -g)
 	target_link_libraries(TestInstrumPython ${Python3_LIBRARIES})
-	target_link_libraries(TestInstrumPython malt-profile)
+	target_link_libraries(TestInstrumPython malt-reader)
 endif ()
 
 ############################################################
 if (NLOHMANNJSON_FOUND)
 	add_executable(TestFullAnalysis TestFullAnalysis.cpp)
-	target_link_libraries(TestFullAnalysis ${GTEST_BOTH_LIBRARIES} ${GMOCK_BOTH_LIBRARIES} malt-base malt-profile)
+	target_link_libraries(TestFullAnalysis ${GTEST_BOTH_LIBRARIES} ${GMOCK_BOTH_LIBRARIES} malt-base malt-reader)
 	target_compile_options(TestFullAnalysis PRIVATE -g -O0)
 	add_test(TestFullAnalysis TestFullAnalysis)
 endif()

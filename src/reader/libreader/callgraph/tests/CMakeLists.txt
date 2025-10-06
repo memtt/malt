@@ -26,7 +26,7 @@ add_executable(TestReaderCallGraph
     TestDotCode.cpp
     TestGraphGenerator.cpp
 )
-target_link_libraries(TestReaderCallGraph malt-profile)
+target_link_libraries(TestReaderCallGraph malt-reader)
 target_link_libraries(TestReaderCallGraph ${GTEST_BOTH_LIBRARIES} ${GMOCK_BOTH_LIBRARIES})
 target_link_libraries(TestReaderCallGraph OpenMP::OpenMP_CXX)
 add_test(TestReaderCallGraph TestReaderCallGraph)

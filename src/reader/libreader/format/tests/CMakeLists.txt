@@ -20,7 +20,7 @@ add_executable(TestReaderFormat
     TestFormat.cpp
     TestStacks.cpp
 )
-target_link_libraries(TestReaderFormat malt-profile)
+target_link_libraries(TestReaderFormat malt-reader)
 target_link_libraries(TestReaderFormat ${GTEST_BOTH_LIBRARIES} ${GMOCK_BOTH_LIBRARIES})
 add_test(TestReaderFormat TestReaderFormat)
 

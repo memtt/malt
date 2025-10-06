@@ -26,7 +26,7 @@ target_link_libraries(malt-webview-cpp-base ${NLOHMANN_JSON_LIBRARIES} base64 ${
 ############################################################
 include_directories(${CMAKE_SOURCE_DIR}/extern-deps/renenyffenegger-base64)
 add_executable(malt-webview main_webview.cpp)
-target_link_libraries(malt-webview malt-profile malt-webview-cpp-base )
+target_link_libraries(malt-webview malt-reader malt-webview-cpp-base )
 
 ############################################################
 add_executable(malt-passwd main_passwd.cpp lib/UserDb.cpp)

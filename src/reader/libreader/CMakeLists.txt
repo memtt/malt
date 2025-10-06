@@ -22,7 +22,7 @@ if (GRAPHVIZ_FOUND)
 endif()
 
 ############################################################
-add_library(malt-profile SHARED
+add_library(malt-reader SHARED
     # JSON
     json/File.cpp
     json/Parser.cpp
@@ -65,25 +65,25 @@ add_library(malt-profile SHARED
     # Traces
     trace/TraceReader.cpp
 )
-target_link_libraries(malt-profile PUBLIC ${NLOHMANN_JSON_LIBRARIES})
-target_link_libraries(malt-profile PRIVATE OpenMP::OpenMP_CXX)
-set_target_properties(malt-profile PROPERTIES VERSION ${MALT_VERSION}
+target_link_libraries(malt-reader PUBLIC ${NLOHMANN_JSON_LIBRARIES})
+target_link_libraries(malt-reader PRIVATE OpenMP::OpenMP_CXX)
+set_target_properties(malt-reader PROPERTIES VERSION ${MALT_VERSION}
                                               SOVERSION ${MALT_SO_VERSION})
 
 ############################################################
-add_executable(malt-reader main.cpp)
-target_link_libraries(malt-reader malt-profile)
+add_executable(malt-reader-cmd main.cpp)
+target_link_libraries(malt-reader-cmd malt-reader)
 
 ############################################################
 if (ZMQ_FOUND)
 	include_directories(${ZMQ_INCLUDE_DIR})
 	add_executable(malt-zmq-reader main_zmq.cpp)
-	target_link_libraries(malt-zmq-reader malt-profile ${ZMQ_LIBRARY})
+	target_link_libraries(malt-zmq-reader malt-reader ${ZMQ_LIBRARY})
 endif()
 
 ############################################################
 add_executable(malt-stream-reader main_stream.cpp)
-target_link_libraries(malt-stream-reader malt-profile)
+target_link_libraries(malt-stream-reader malt-reader)
 
 ############################################################
 if (ENABLE_TESTS)
@@ -95,6 +95,6 @@ if (ENABLE_TESTS)
 endif()
 
 ############################################################
-INSTALL(TARGETS malt-profile
+INSTALL(TARGETS malt-reader
 	ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
 	LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
