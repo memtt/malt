@@ -207,6 +207,21 @@ nlohmann::json WebProfile::getFilterdStacksOnSymbol(const std::string & func) co
 }
 
 /**********************************************************/
+nlohmann::json getFilterdStacksOnBinaryObjAddr(const std::string & binaryObject, const std::vector<size_t> & allowedOffsets) const
+{
+	std::vector<size_t> allowedVirtualAddresses;
+	this->extractor->toVirtualAddresses(allowedVirtualAddresses, binaryObject);
+	FilteredStackList result = this->extractor->getFilterdStacksOnBinaryObjAddr(binaryObject, allowedVirtualAddresses);
+	
+	nlohmann::json output = nlohmann::json::object();
+	for (const auto & it : result) {
+		char buffer[1024];
+		//snprintf(buffer, sizeof(buffer), "%p", it.)
+		#error "TODO"
+	}
+}
+
+/**********************************************************/
 nlohmann::json WebProfile::getCallStackNextLevel(size_t parentStackId, size_t parentDepth, const LocationFilter & filter) const
 {
 	return this->extractor->getCallStackNextLevel(parentStackId, parentDepth, filter);

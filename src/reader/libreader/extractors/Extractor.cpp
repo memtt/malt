@@ -579,6 +579,49 @@ FilteredStackList Extractor::getFilterdStacksOnSymbol(const std::string & func) 
 }
 
 /**********************************************************/
+size_t Extractor::toVirtualAddress(const std::string & binaryObject, size_t inObjectaddress)
+{
+	//vars
+	size_t virtualAddress = 0;
+
+	//convert to virtual address
+	for (const auto & procEntry : this->profile.sites.map) {
+		if (procEntry.file == binaryObject) {
+			const size_t sectionSize = (size_t)procEntry.upper - (size_t)procEntry.lower;
+			if (inObjectaddress >= procEntry.offset && inObjectaddress < procEntry.offset + sectionSize) {
+				const size_t offsetInSection = inObjectaddress - procEntry.offset;
+				virtualAddress = offsetInSection + procEntry.aslrOffset;
+				return virtualAddress;
+			}
+		}
+	}
+
+	//not found
+	return 0;
+}
+
+/**********************************************************/
+bool Extractor::toVirtualAddresses(std::vector<size_t> & addresses, const std::string & binaryObject)
+{
+	bool status = true;
+	for (auto & it : addresses) {
+		it = this->toVirtualAddress(binaryObject, it);
+		if (it == 0)
+			status = false;
+	}
+	return status;
+}
+
+/**********************************************************/
+FilteredStackList Extractor::getFilterdStacksOnBinaryObjAddr(const std::string & binaryObject, const std::vector<size_t> & allowedVirtualAddresses) const
+{
+	//filter
+	return this->getFilterdStacks([&allowedVirtualAddresses](const InstructionInfosStrRef & location) {
+		return location.origin.lang == LANG_C && (std::find(allowedVirtualAddresses.begin(), allowedVirtualAddresses.end(), (size_t)location.origin.address) != allowedVirtualAddresses.end());
+	});
+}
+
+/**********************************************************/
 TimedValues Extractor::getTimedValues(void) const
 {
 	TimedValues tmp;

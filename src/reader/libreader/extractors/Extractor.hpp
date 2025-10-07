@@ -13,6 +13,7 @@
 /**********************************************************/
 #include <functional>
 #include <vector>
+#include <cstdlib>
 #include <nlohmann/json.hpp>
 #include "../format/MaltProfile.hpp"
 
@@ -264,6 +265,7 @@ class Extractor
 		FilteredStackList getFilterdStacks(const LocaltionOnlyFilterFunc & filter) const;
 		FilteredStackList getFilterdStacksOnFileLine(const std::string & file, size_t line) const;
 		FilteredStackList getFilterdStacksOnSymbol(const std::string & func) const;
+		FilteredStackList getFilterdStacksOnBinaryObjAddr(const std::string & binaryObject, const std::vector<size_t> & allowedAddresses) const;
 		TimedValues getTimedValues(void) const;
 		SummaryWarnings genSummaryWarnings(const SummaryV2 & data) const;
 		SummaryV2 getSummaryV2(void) const;
@@ -278,6 +280,8 @@ class Extractor
 		const MALTFormat::ThreadStackMem & getMaxStack(void) const;
 		StackMem getStackMem(void) const;
 		const MALTFormat::MaltProfile & getProfile(void) const;
+		size_t toVirtualAddress(const std::string & binaryObject, size_t inObjectaddress);
+		bool toVirtualAddresses(std::vector<size_t> & addresses, const std::string & binaryObject);
 	private:
 		Graph getFilteredTree(ssize_t nodeId, ssize_t depth, ssize_t height, double minCost, const std::string & metric, bool isRatio) const;
 		inline const InstructionInfosStrRef & getAddrTranslation(MALTFormat::LangAddress addr) const;

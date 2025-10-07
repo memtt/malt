@@ -61,7 +61,8 @@ add_library(malt-reader SHARED
     # API
     api/Profile.cpp
     api/WebProfile.cpp
-	api/Requests.cpp
+    # PUBLIC API
+	public-api/malt-reader.cpp
     # Traces
     trace/TraceReader.cpp
 )
@@ -95,6 +96,8 @@ if (ENABLE_TESTS)
 endif()
 
 ############################################################
-INSTALL(TARGETS malt-reader
+install(TARGETS malt-reader
 	ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
 	LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
+install(FILES public-api/malt-reader.h
+	DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/malt)

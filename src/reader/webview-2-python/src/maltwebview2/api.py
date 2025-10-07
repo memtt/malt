@@ -38,33 +38,33 @@ class MaltProfileRequest:
 
     def define_return_types(self) -> None:
         self.reader.malt_reader_init.restype = ctypes.c_void_p
-        self.reader.malt_reader_get_summary.restype = ctypes.c_char_p
-        self.reader.malt_reader_get_summary_v2.restype = ctypes.c_void_p
-        self.reader.malt_reader_get_flat_profile.restype = ctypes.c_void_p
+        self.reader.malt_reader_json_get_summary.restype = ctypes.c_char_p
+        self.reader.malt_reader_json_get_summary_v2.restype = ctypes.c_void_p
+        self.reader.malt_reader_json_get_flat_profile.restype = ctypes.c_void_p
 
     def get_summary(self) -> str:
         self.lazy_load()
-        str:ctypes.c_void_p = self.reader.malt_reader_get_summary(ctypes.c_void_p(self.reader_handler))
+        str:ctypes.c_void_p = self.reader.malt_reader_json_get_summary(ctypes.c_void_p(self.reader_handler))
         if (str == 0):
             raise Exception("Error, get C++ execption and no response !")
         data = ctypes.cast(str, ctypes.c_char_p).value.decode("utf-8")
-        #self.reader_handler.malt_reader_free_response(str)
+        #self.reader_handler.malt_reader_json_free_response(str)
         return data
 
     def get_summary_v2(self) -> str:
         self.lazy_load()
-        str:ctypes.c_void_p = self.reader.malt_reader_get_summary_v2(ctypes.c_void_p(self.reader_handler))
+        str:ctypes.c_void_p = self.reader.malt_reader_json_get_summary_v2(ctypes.c_void_p(self.reader_handler))
         if (str == 0):
             raise Exception("Error, get C++ execption and no response !")
         data = ctypes.cast(str, ctypes.c_char_p).value.decode("utf-8")
-        #self.reader.malt_reader_free_response(str)
+        #self.reader.malt_reader_json_free_response(str)
         return data
 
     def get_flat_profile(self) -> str:
         self.lazy_load()
-        str:ctypes.c_void_p = self.reader.malt_reader_get_flat_profile(ctypes.c_void_p(self.reader_handler))
+        str:ctypes.c_void_p = self.reader.malt_reader_json_get_flat_profile(ctypes.c_void_p(self.reader_handler))
         if (str == 0):
             raise Exception("Error, get C++ execption and no response !")
         data = ctypes.cast(str, ctypes.c_char_p).value.decode("utf-8")
-        #self.reader.malt_reader_free_response(str)
+        #self.reader.malt_reader_json_free_response(str)
         return data

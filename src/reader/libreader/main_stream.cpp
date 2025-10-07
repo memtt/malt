@@ -10,7 +10,7 @@
 /**********************************************************/
 #include <iostream>
 #include <nlohmann/json.hpp>
-#include "api/Requests.h"
+#include "public-api/malt-reader.h"
 
 /**********************************************************/
 int main(int argc, char ** argv)
