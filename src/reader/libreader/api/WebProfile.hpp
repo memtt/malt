@@ -27,6 +27,7 @@ class WebProfile : public Profile
 		nlohmann::json getDebugStackList(void) const;
 		nlohmann::json getGlobalVariables(void) const;
 		nlohmann::json getFileLinesFlatProfile(const std::string & file, bool total) const;
+		nlohmann::json getBinaryAddressesFlatProfile(const std::string & binaryFile, const std::vector<size_t> & offsets, bool total) const;
 		nlohmann::json getFlatFunctionProfile(bool own, bool total) const;
 		nlohmann::json getProcMapDistr(void) const;
 		nlohmann::json getScatter(void) const;
@@ -37,7 +38,6 @@ class WebProfile : public Profile
 		nlohmann::json getSummary(void) const;
 		nlohmann::json getFilterdStacksOnFileLine(const std::string & file, size_t line) const;
 		nlohmann::json getFilterdStacksOnSymbol(const std::string & func) const;
-		nlohmann::json getFilterdStacksOnBinaryObjAddr(const std::string & binaryObject, const std::vector<size_t> & allowedOffsets) const;
 		nlohmann::json getCallStackNextLevel(size_t parentStackId, size_t parentDepth, const LocationFilter & filter) const;
 		nlohmann::json getStacksMem(void) const;
 		nlohmann::json getStackInfoOnFunction(size_t thread_id) const;

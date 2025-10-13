@@ -84,6 +84,40 @@ nlohmann::json WebProfile::getFileLinesFlatProfile(const std::string & file, boo
 }
 
 /**********************************************************/
+nlohmann::json WebProfile::getBinaryAddressesFlatProfile(const std::string & binaryFile, const std::vector<size_t> & offsets, bool total) const
+{
+	//convert the offsets
+	std::vector<size_t> virtualAddresses = offsets;
+	this->extractor->toVirtualAddresses(virtualAddresses, binaryFile);
+
+	//extract
+	FlatProfileVector res = this->extractor->getFlatProfile([](const InstructionInfosStrRef & location, const MALTFormat::StackInfos & infos){
+		char buffer[256];
+		snprintf(buffer, sizeof(buffer), "%p", location.origin.address);
+		return std::string(buffer);
+	},[&virtualAddresses](const InstructionInfosStrRef & location, const MALTFormat::StackInfos & infos){
+		return location.origin.lang == LANG_C &&  (std::find(virtualAddresses.begin(), virtualAddresses.end(), (size_t)location.origin.address) != virtualAddresses.end());
+	});
+
+	//select
+	std::vector<std::string> subset{
+		"*.own",
+		"*.line",
+		"*.function"
+	};
+	if (total)
+		subset.push_back("*.total");
+	else
+		subset.push_back("*.childs");
+
+	//filter
+	nlohmann::json resJson = ExtractorHelpers::toJsonFiltered(res, subset);
+
+	//ok
+	return resJson;
+}
+
+/**********************************************************/
 nlohmann::json WebProfile::getFlatFunctionProfile(bool own, bool total) const
 {
 	//cached
@@ -204,21 +238,6 @@ nlohmann::json WebProfile::getFilterdStacksOnFileLine(const std::string & file, 
 nlohmann::json WebProfile::getFilterdStacksOnSymbol(const std::string & func) const
 {
 	return this->extractor->getFilterdStacksOnSymbol(func);
-}
-
-/**********************************************************/
-nlohmann::json getFilterdStacksOnBinaryObjAddr(const std::string & binaryObject, const std::vector<size_t> & allowedOffsets) const
-{
-	std::vector<size_t> allowedVirtualAddresses;
-	this->extractor->toVirtualAddresses(allowedVirtualAddresses, binaryObject);
-	FilteredStackList result = this->extractor->getFilterdStacksOnBinaryObjAddr(binaryObject, allowedVirtualAddresses);
-	
-	nlohmann::json output = nlohmann::json::object();
-	for (const auto & it : result) {
-		char buffer[1024];
-		//snprintf(buffer, sizeof(buffer), "%p", it.)
-		#error "TODO"
-	}
 }
 
 /**********************************************************/

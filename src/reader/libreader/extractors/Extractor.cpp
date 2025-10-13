@@ -613,15 +613,6 @@ bool Extractor::toVirtualAddresses(std::vector<size_t> & addresses, const std::s
 }
 
 /**********************************************************/
-FilteredStackList Extractor::getFilterdStacksOnBinaryObjAddr(const std::string & binaryObject, const std::vector<size_t> & allowedVirtualAddresses) const
-{
-	//filter
-	return this->getFilterdStacks([&allowedVirtualAddresses](const InstructionInfosStrRef & location) {
-		return location.origin.lang == LANG_C && (std::find(allowedVirtualAddresses.begin(), allowedVirtualAddresses.end(), (size_t)location.origin.address) != allowedVirtualAddresses.end());
-	});
-}
-
-/**********************************************************/
 TimedValues Extractor::getTimedValues(void) const
 {
 	TimedValues tmp;

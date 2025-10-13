@@ -47,6 +47,7 @@ const char * malt_reader_json_get_summary(malt_reader_t * reader);
 const char * malt_reader_json_get_summary_v2(malt_reader_t * reader);
 const char * malt_reader_json_get_file_lines_flat_profile(malt_reader_t * reader, const char * file, bool total);
 const char * malt_reader_json_get_flat_function_profile(malt_reader_t * reader, bool own, bool total);
+const char * malt_reader_json_get_binary_addresses_profile(malt_reader_t * reader, bool own, bool total);
 const char * malt_reader_json_get_proc_map_distr(malt_reader_t * reader);
 const char * malt_reader_json_get_scatter(malt_reader_t * reader);
 const char * malt_reader_json_get_size_map(malt_reader_t * reader);

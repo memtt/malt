@@ -207,6 +207,21 @@ const char * malt_reader_json_get_filterd_stacks_on_symbol(malt_reader_t  *reade
 }
 
 /**********************************************************/
+const char * malt_reader_json_get_binary_addresses_profile(malt_reader_t * reader, const char * binary, void ** addresses, size_t addr_count, bool total)
+{
+	//build array
+	std::vector<size_t> addr;
+	addr.reserve(addr_count);
+	for (size_t i = 0; i < addr_count ; i++)
+		addr.push_back((size_t)addresses[i]);
+
+	//call
+	return malt_reader_hanle_request(reader, "GET_BINARY_ADDRESSSES_PROFILE", [reader, binary, addr, addr_count, total]() {
+		return reader->profile->getBinaryAddressesFlatProfile(binary, addr, total);
+	});
+}
+
+/**********************************************************/
 const char * malt_reader_json_get_call_stack_next_level(malt_reader_t * reader, size_t parentStackId, size_t parentDepth, const char * function, const char * file, int line)
 {
 	return malt_reader_hanle_request(reader, "GET_CALL_STACK_NEXT_LEVEL", [reader, parentStackId, parentDepth, file, function, line]() {
@@ -314,6 +329,12 @@ std::string malt_reader_json_request_cpp(malt_reader_t * reader, const std::stri
 			responseJson = reader->profile->getReallocMap();
 		} else if (reqJson["operation"] == "getGlobalVariables") {
 			responseJson = reader->profile->getGlobalVariables();
+		} else if (reqJson["operation"] == "getBinaryAddressesProfile") {
+			std::string binary = reqJson["binary"];
+			std::vector<size_t> addresses;
+			reqJson["addresses"].get_to(addresses);
+			bool total = reqJson["total"];
+			responseJson = reader->profile->getBinaryAddressesFlatProfile(binary, addresses, total);
 		} else if (reqJson["operation"] == "getCallTree") {
 			size_t nodeid = reqJson["nodeid"];
 			size_t depth = reqJson["depth"];
