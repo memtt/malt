@@ -24,7 +24,7 @@ from common import print_exception, run_shell, jump_in_dir, jump_in_tmpdir
 ############################################################
 #extract version
 PACKAGE_NAME="malt"
-PACKAGE_VERSION="1.4.0"
+PACKAGE_VERSION="1.4.1"
 
 ############################################################
 # Generate MALT archive

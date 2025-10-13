@@ -386,7 +386,7 @@ with a custom symbol prefix):
 
 ## VERSION
 
-   This is the manpage of MALT version 1.4.0.
+   This is the manpage of MALT version 1.4.1.
 
 ## SEE ALSO
 
