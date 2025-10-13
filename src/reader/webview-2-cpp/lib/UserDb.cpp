@@ -26,11 +26,11 @@ namespace MALTWebviewCpp
 {
 
 /**********************************************************/
-UserDb::UserDb(void)
+UserDb::UserDb(bool warn, bool auto_passwd)
 {
 	const std::string defaultPath = this->calcDefaultDbPath();
 	this->dbPath = defaultPath;
-	this->load(defaultPath, true);
+	this->load(defaultPath, warn, auto_passwd);
 }
 
 /**********************************************************/
@@ -71,6 +71,43 @@ bool UserDb::has(const std::string & login) const
 }
 
 /**********************************************************/
+std::string UserDb::escapeUserNameForShell(const std::string & value)
+{
+	//escape & replace
+	std::string usernameSafe;
+	for (const auto it : value) {
+		if (it == '"')
+			usernameSafe += "\\\"";
+		else if (it == '\n')
+			{}
+		else
+			usernameSafe += it;
+	}
+	return usernameSafe;
+}
+
+/**********************************************************/
+std::string UserDb::promptUserName(void)
+{
+	//get user name
+	char username[4096] = "";
+
+	//prompt
+	while (username[0] == '\0' || username[0] == '\n') {
+		//prompt
+		printf("Username: ");
+		fflush(stdout);
+
+		//get
+		char * fgetsStatus = fgets(username, sizeof(username), stdin);
+		if (fgetsStatus !=  username)
+			throw std::runtime_error("Fail to ask username for malt-passwd !");
+	}
+
+	return username;
+}
+
+/**********************************************************/
 void UserDb::load(const std::string & path, bool warn, bool auto_passwd)
 {
 	//load
@@ -79,7 +116,16 @@ void UserDb::load(const std::string & path, bool warn, bool auto_passwd)
 	//fail
 	if (fileStream.fail()) {
 		if (auto_passwd) {
-			const int status = system("malt-passwd");
+			//prompt
+			printf("\nFirst use : create your password to access the web interface :\n");
+			std::string username = this->promptUserName();
+
+			//build command
+			std::stringstream cmd;
+			cmd << MALT_PREFIX_BIN << "/malt-passwd \"" << escapeUserNameForShell(username) <<  + "\"";
+
+			//call malt-passwd to create the DB
+			const int status = system(cmd.str().c_str());
 			if (status != 0)
 				throw std::runtime_error("Fail to call malt-passwd !");
 			this->load(path, warn);

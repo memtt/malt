@@ -34,16 +34,21 @@ int main(int argc, char **argv)
 	}
 
 	//ask passwd
-	char * pass1 = getpass("Password: ");
-	char * pass2 = getpass("Confirmation: ");
+	std::string pass1 = getpass("Password: ");
+	std::string pass2 = getpass("Confirmation: ");
 
 	//check equal
-	if (strcmp(pass1, pass2) != 0) {
-		fprintf(stderr, "Invalid password, not matching confirmation !");
+	if (pass1 != pass2) {
+		fprintf(stderr, "Invalid password, not matching confirmation !\n");
+		return EXIT_FAILURE;
+	}
+	if (pass1 == "") {
+		fprintf(stderr, "Password cannot be invalid !\n");
+		return EXIT_FAILURE;
 	}
 
 	//set
-	UserDb db;
+	UserDb db(true, false);
 	db.set(login, pass1);
 	db.save();
 
