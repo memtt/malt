@@ -10,7 +10,14 @@
 
 ############################################################
 RONN=ronn
-TARGETS=malt-passwd.1 malt-webview.1 malt.1 malt-passwd.1.html malt-webview.1.html malt.1.html
+TARGETS=malt-passwd.1 \
+        malt-passwd.1.html \
+        malt-webview.1 \
+        malt-webview.1.html \
+        malt.1 \
+        malt.1.html \
+        malt-python.1 \
+        malt-python.1.html
 RM=rm -f
 
 ############################################################

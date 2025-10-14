@@ -17,4 +17,4 @@ the first time you call `malt-webview`.
 
 ## SEE ALSO
 
-malt-webview(1), malt(1)
+malt-webview(1), malt(1), malt-python(1)

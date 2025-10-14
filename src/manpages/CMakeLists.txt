@@ -25,10 +25,15 @@
 
 ############################################################
 if (ENABLE_PROFILER)
-        install(FILES malt.1 DESTINATION share/man/man1)
+	install(FILES malt.1 DESTINATION share/man/man1)
 endif (ENABLE_PROFILER)
+
+############################################################
+if (ENABLE_PROFILER AND PYTHON3_INSTRUM_FOUND)
+	install(FILES malt-python.1 DESTINATION share/man/man1)
+endif ()
 
 ############################################################
 #install
 install(FILES malt-passwd.1 malt-webview.1
-        DESTINATION share/man/man1)
+	DESTINATION share/man/man1)
