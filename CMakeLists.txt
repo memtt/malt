@@ -95,13 +95,21 @@ find_package(nlohmann_json 3.11.3 QUIET)
 find_package(Cargo QUIET)
 find_package(Graphviz QUIET)
 find_package(Binutils QUIET)
-#find_package(IniParser QUIET)
+find_package(IniParser QUIET)
 #find_package(Zmq QUIET)
 find_package(HttpLib QUIET)
 find_package(Crypto QUIET)
 # Check for npm if needed
 if (NODE_FOUND AND NOT IS_DIRECTORY ${CMAKE_SOURCE_DIR}/src/webview/node_modules)
 	find_package(Npm REQUIRED)
+endif()
+
+############################################################
+# set iniparser fallback
+if (NOT INIPARSER_FOUND)
+	set(INIPARSER_INCLUDE_DIRS ${CMAKE_SOURCE_DIR}/extern-deps/iniparser/src)
+	set(INIPARSER_LIBRARIES "")
+	set(INIPARSER_OBJECTS $<TARGET_OBJECTS:iniparser>)
 endif()
 
 ############################################################

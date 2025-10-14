@@ -67,7 +67,7 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config.h.in ${CMAKE_CURRENT_BINARY_DI
 ############################################################
 include_directories(.)
 include_directories(../../extern-deps/from-fftw)
-include_directories(../../extern-deps/iniparser/src)
+include_directories(${INIPARSER_INCLUDE_DIRS})
 include_directories(../../extern-deps/from-htopml)
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 if (PYTHON3_INSTRUM_FOUND)
@@ -91,11 +91,11 @@ set(COMMON_OBJS $<TARGET_OBJECTS:htopml-json>
 				$<TARGET_OBJECTS:malt-port>
 				$<TARGET_OBJECTS:malt-state>
 				$<TARGET_OBJECTS:malt-injectors-ok-for-tests>
-				$<TARGET_OBJECTS:iniparser>)
+				${INIPARSER_OBJECT})
 
 ############################################################
 add_library(malt-base SHARED ${COMMON_OBJS})
-target_link_libraries(malt-base ${LIB_MALT_DEPS})
+target_link_libraries(malt-base ${LIB_MALT_DEPS} ${INIPARSER_LIBRARIES})
 if (USE_LINK_OPTIM)
 	set_property(TARGET malt-base PROPERTY INTERPROCEDURAL_OPTIMIZATION TRUE)
 endif()
