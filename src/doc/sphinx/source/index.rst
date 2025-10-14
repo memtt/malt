@@ -31,6 +31,9 @@ We have a few places for you to get started:
 :doc:`/start/installation`
   Follow the **installation procedure**.
 
+:doc:`/start/basic-usage`
+  Make your first steps by **using malt**.
+
 Advanced topics
 ---------------
 
@@ -46,6 +49,7 @@ Advanced topics
 
    /start/dependencies.rst
    /start/installation.rst
+   /start/basic-usage.rst
 
 .. toctree::
    :maxdepth: 1
