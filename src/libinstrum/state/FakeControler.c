@@ -8,11 +8,14 @@
 ***********************************************************/
 
 /**********************************************************/
-void maltEnable(void)
+#include "portability/Visibility.hpp"
+
+/**********************************************************/
+DLL_PUBLIC void maltEnable(void)
 {
 };
 
 /**********************************************************/
-void maltDisable(void)
+DLL_PUBLIC void maltDisable(void)
 {
 }
