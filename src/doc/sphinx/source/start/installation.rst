@@ -46,3 +46,9 @@ On Gentoo you can also directly install MALT by using the given **overleay** :
     sudo eselect repository add memtt git https://github.com/memtt/gentoo-memtt-overlay.git
     sudo eselect repository enable memtt
     sudo emerge -a malt
+
+Building distribution packages
+------------------------------
+
+MALT provide the files necessary to produce the **APT** and **RPM** packages, you will
+find the procedure to use them in the :ref:`advanced section <packaging>`.
