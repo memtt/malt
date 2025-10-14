@@ -13,7 +13,7 @@ set(MALT_VALPROF_SRC ProfiledStateValue.cpp Scatter2DValues.cpp)
 
 ############################################################
 add_library(malt-valprof OBJECT ${MALT_VALPROF_SRC})
-SET_TARGET_PROPERTIES(malt-valprof PROPERTIES COMPILE_FLAGS -fPIC)
+SET_TARGET_PROPERTIES(malt-valprof PROPERTIES COMPILE_FLAGS ${MALT_LIB_COMPILER_FLAGS})
 
 ############################################################
 if (ENABLE_TESTS)

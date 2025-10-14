@@ -19,3 +19,9 @@ DLL_PUBLIC void maltEnable(void)
 DLL_PUBLIC void maltDisable(void)
 {
 }
+
+/**********************************************************/
+DLL_PUBLIC int maltInitStatus(void)
+{
+	return 0;
+}

@@ -16,7 +16,7 @@ set(MALT_STACKS_SRC Stack.cpp
 
 ############################################################
 add_library(matt-stacks-v2 OBJECT ${MALT_STACKS_SRC})
-SET_TARGET_PROPERTIES(matt-stacks-v2 PROPERTIES COMPILE_FLAGS -fPIC)
+SET_TARGET_PROPERTIES(matt-stacks-v2 PROPERTIES COMPILE_FLAGS ${MALT_LIB_COMPILER_FLAGS})
 
 ############################################################
 if (ENABLE_TESTS)

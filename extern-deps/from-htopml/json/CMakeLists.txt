@@ -13,7 +13,7 @@ set(JSON_HEADERS JsonState.h ConvertToJson.h JsonState_impl.h ConvertToJson_impl
 
 ######################################################
 add_library(htopml-json OBJECT ${JSON_SOURCES})
-SET_TARGET_PROPERTIES(htopml-json PROPERTIES COMPILE_FLAGS -fPIC)
+set_target_properties(htopml-json PROPERTIES COMPILE_FLAGS ${MALT_LIB_COMPILER_FLAGS})
 
 ######################################################
 #install procedure

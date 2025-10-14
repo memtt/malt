@@ -194,7 +194,7 @@ void pythonOnExit(void)
 }
 
 /**********************************************************/
-DLL_PUBLIC void initPythonInstrumentation(const char * script)
+void initPythonInstrumentation(const char * script)
 {
 	//setup env
 	LazyEnv env;
