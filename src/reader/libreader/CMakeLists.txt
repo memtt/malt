@@ -64,6 +64,7 @@ target_link_libraries(malt-profile PUBLIC ${NLOHMANN_JSON_LIBRARIES})
 target_link_libraries(malt-profile PRIVATE OpenMP::OpenMP_CXX)
 set_target_properties(malt-profile PROPERTIES VERSION ${MALT_VERSION}
                                               SOVERSION ${MALT_SO_VERSION})
+set_target_properties(malt-profile PROPERTIES COMPILE_FLAGS ${MALT_LIB_COMPILER_FLAGS})
 
 ############################################################
 add_executable(malt-reader main.cpp)

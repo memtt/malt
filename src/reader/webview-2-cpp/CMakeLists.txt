@@ -13,6 +13,7 @@ include_directories(${HTTPLIB_INCLUDE_DIR})
 include_directories(${CRYPTO_INCLUDE_DIR})
 include_directories(${NLOHMANN_JSON_INCLUDE_DIR})
 include_directories(../../libinstrum)
+include_directories(${CMAKE_SOURCE_DIR}/src/)
 include_directories(${CMAKE_BINARY_DIR}/src/libinstrum)
 include_directories(${CMAKE_SOURCE_DIR}/extern-deps/from-fftw)
 

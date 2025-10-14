@@ -182,7 +182,7 @@ int main(int argc, char ** argv)
 
 		//arg checker
 		ArgChecker argChecker;
-		argChecker.allowPaths(profile.getExtractor().getSourceFileMap());
+		argChecker.allowPaths(profile.getSourceFileMap());
 		argChecker.overridePaths(options.overrides);
 
 		//set signal handler

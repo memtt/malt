@@ -227,5 +227,11 @@ bool WebProfile::isSourceFile(const std::string & path) const
 	return it != this->sourceFiles.end();
 }
 
+/**********************************************************/
+SourceFileMap WebProfile::getSourceFileMap(void) const
+{
+	return this->getExtractor().getSourceFileMap();
+}
+
 }
 
