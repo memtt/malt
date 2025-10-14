@@ -25,10 +25,10 @@
 
 ############################################################
 if (ENABLE_PROFILER)
-install(FILES malt.1.bz2 DESTINATION share/man/man1)
+        install(FILES malt.1 DESTINATION share/man/man1)
 endif (ENABLE_PROFILER)
 
 ############################################################
 #install
-install(FILES malt-passwd.1.bz2 malt-webview.1.bz2
+install(FILES malt-passwd.1 malt-webview.1
         DESTINATION share/man/man1)

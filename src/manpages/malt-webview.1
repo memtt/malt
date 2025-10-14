@@ -1,0 +1,46 @@
+.\" generated with Ronn-NG/v0.9.1
+.\" http://github.com/apjanke/ronn-ng/tree/0.9.1
+.TH "MALT\-WEBVIEW" "1" "October 2025" ""
+.SH "NAME"
+\fBmalt\-webview\fR \- Webserver for the MALT web GUI
+.SH "SYNOPSIS"
+\fBmalt\-webview\fR \fIOPTIONS\fR {malt\-profile\.json}
+.SH "DESCRIPTION"
+The MALT web GUI is hosted by a nodeJS script managed by \fBmalt\-webview\fR command\. It will by default open a socket listening on \fBlocalhost\fR and port \fB8080\fR so reachable with address http://localhost:8080\.
+.SH "OPTIONS"
+.TP
+\fB\-n\fR, '\-\-no\-auth'
+Disable usage of HTTP authentification to secure the pages of the GUI\. Caution, all the users connected on the machine can access the GUI so to your code\.
+.TP
+\fB\-o\fR, \fB\-\-override\fR
+If you copy a profile file from a remote machine to your local one, your code might be stored into another place (not same user, not same path)\. Thanks to override options you can alias some paths to make it transparent to the GUI and be able to find your source code\. The format is \fIsrc_path1:dest_path1,src_path2,dest_path2\fR\. The easiest use is to override the root directory of your project\.
+.TP
+\fBp\fR, \fB\-\-port\fR
+Force to use another port than default 8080\.
+.TP
+\fBversion\fR
+Display the current version of MALT you are using\.
+.TP
+\fB\-H\fR, \fB\-\-host\fR
+Permit to provide the host to listen on if not want default one (localhost)\.
+.TP
+\fB\-h\fR, \fB\-\-help\fR
+Display a short help message to summarize the available options\.
+.SH "ENVIRONMENT"
+.TP
+\fBMALT_NODEJS\fR
+Can be setup to tel which nodeJS to use if the script cannot find it by itself\.
+.SH "REMOTE USAGE THROUGH SSH"
+On clusters you might be interesting by launching the \fBmalt\-webview\fR remotly and forward it through ssh to get it on your local machine\. You can achieve this port redirection with ssh options :
+.P
+ssh {YOUR_HOST} \-L 8080:localhost:8080
+.P
+Where the first 8080 is the local port and the second one the remote\.
+.SH "AVOID EXPOSING THE REMOTE PORT"
+When working remotly you can avoid exposin the malt webview port publicly to other users of the cluster by using a unix socket file in place of the port\.
+.P
+# remote malt\-webview \-p /home/myuser/malt\.sock malt\-PROFILE\.json # on your workstation ssh \-L 8080:/home/myuser/malt\.sock user@ssh\-server
+.SH "VERSION"
+This is the manpage of MALT version 1\.4\.1\.
+.SH "SEE ALSO"
+malt\-passwd(1), malt(1)

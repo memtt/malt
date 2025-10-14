@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta http-equiv='content-type' content='text/html;charset=utf-8'>
-  <meta name='generator' content='Ronn-NG/v0.10.1 (http://github.com/apjanke/ronn-ng/tree/0.10.1)'>
+  <meta http-equiv='content-type' content='text/html;charset=utf8'>
+  <meta name='generator' content='Ronn-NG/v0.9.1 (http://github.com/apjanke/ronn-ng/tree/0.9.1)'>
   <title>malt(1) - A memory profiling tool</title>
   <style type='text/css' media='all'>
   /* style: man */
@@ -447,14 +447,10 @@ of python but miss part of the memory consumption if your program store lots of 
 <dd>Same but for the raw allocation domain of python which is backed by the standard C malloc function. In principle you should let it enabled.</dd>
 </dl>
 
-<p>The <code>tools</code> section permit to configure some of the sub-tools called by MALT to perform its analysis.</p>
-<ul>
-  <li>
-<code>nm</code>: Use to extract the source location of the global variables. If true (default) it is used, otherwise it is skiped.</li>
-  <li>
-<code>nmMaxSize</code>: By default it limits the size of the .so files on which to apply NM in order to keep a decent profile dumping
-time when running on large frameworks like PyTorch which tends to load huge .so files in memory.</li>
-</ul>
+<p>The <code>tools</code> section permit to configure some of the sub-tools called by MALT to perform its analysis.
+  * <code>nm</code>: Use to extract the source location of the global variables. If true (default) it is used, otherwise it is skiped.
+  * <code>nmMaxSize</code>: By default it limits the size of the .so files on which to apply NM in order to keep a decent profile dumping
+    time when running on large frameworks like PyTorch which tends to load huge .so files in memory.</p>
 
 <h2 id="ENVIRONMENT">ENVIRONMENT</h2>
 
