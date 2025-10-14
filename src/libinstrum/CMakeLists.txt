@@ -141,6 +141,6 @@ if (ENABLE_TESTS)
 endif (ENABLE_TESTS)
 
 ############################################################
-INSTALL(TARGETS malt malt-base malt-controler
+INSTALL(TARGETS malt malt-controler
 	ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
 	LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
