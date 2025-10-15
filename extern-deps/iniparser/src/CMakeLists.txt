@@ -7,4 +7,4 @@
 #    AUTHOR   : Sébastien Valat (ECR) - 2014
 ############################################################
 add_library(iniparser OBJECT dictionary.c iniparser.c)
-SET_TARGET_PROPERTIES(iniparser PROPERTIES COMPILE_FLAGS -fPIC)
+SET_TARGET_PROPERTIES(iniparser PROPERTIES COMPILE_FLAGS ${MALT_LIB_COMPILER_FLAGS})

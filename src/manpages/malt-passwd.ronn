@@ -3,22 +3,13 @@ malt-passwd(1) -- Password editor for MALT web GUI
 
 ## SYNOPSIS
 
-`malt-passwd` {username} [password]
+`malt-passwd` {username}
 
 ## DESCRIPTION
 
 The MALT web GUI provided by malt-webview(1) is secured by a local password which is configured
-by `malt-passwd` command and stored into `~/.malt/passwd` file. It will be called automatically
+by `malt-passwd` command and stored into `~/.local/share/malt/passwd.json` file. It will be called automatically
 the first time you call `malt-webview`.
-
-`malt-passwd` is essentially a wrapper to call a script provided by nodeJS module `htpasswd` so it
-also supports all the options it provides. You can refer to the documentation of this module for
-more details : https://www.npmjs.com/package/htpasswd.
-
-## ENVIRONMENT
-
- * `MALT_NODEJS`:
-   Can be setup to tell which nodeJS to use if the script cannot find it by itself.
 
 ## VERSION
 
@@ -26,4 +17,4 @@ more details : https://www.npmjs.com/package/htpasswd.
 
 ## SEE ALSO
 
-malt-webview(1), malt(1)
+malt-webview(1), malt(1), malt-python(1)

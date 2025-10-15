@@ -761,7 +761,7 @@ const char * verbosityToString(Verbosity value)
 Verbosity iniparser_getverbosity(dictionary * dic, const char * key, Verbosity notFound)
 {
 	//tansmit
-	char * tmp = iniparser_getstring(dic,key,(char*)verbosityToString(notFound));
+	const char * tmp = iniparser_getstring(dic,key,(char*)verbosityToString(notFound));
 
 	//convert back
 	Verbosity res = verbosityFromString(tmp);

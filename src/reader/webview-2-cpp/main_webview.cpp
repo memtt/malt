@@ -45,6 +45,7 @@ struct WebviewOptions
 	uint32_t port{8080};
 	std::string socket{};
 	std::list<std::string> overrides;
+	std::string host{"localhost"};
 };
 
 /**********************************************************/
@@ -76,6 +77,9 @@ static error_t parse_opt (int key, char *arg, struct argp_state *state)
 		case 'o':
 			options->overrides.push_back(arg);
 			break;
+		case 'H':
+			options->host = arg;
+			break;
 		case ARGP_KEY_ARG:
 			/* Too many arguments. */
 			if (state->arg_num >= 1)
@@ -97,11 +101,12 @@ static error_t parse_opt (int key, char *arg, struct argp_state *state)
 void WebviewOptions::parse(int argc, char ** argv)
 {
 	char doc[] = "malt-webview-new -- Micro-server to expose the MALT webview and brower into the MALT profile.";
-	char args_doc[] = "[--no-auth] [-p 8080] [-s UNIX_SOCKET] {PROFILE_FILE}";
+	char args_doc[] = "[--no-auth] [-H localhost] [-p 8080] [-s UNIX_SOCKET] {PROFILE_FILE}";
 	struct argp_option options[] = {
 		{"no-auth",    'n', 0,        0,  "Disable the authentication." },
 		{"port",       'p', "PORT",   0,  "Listening on given port or socket file (8080 by default)."},
 		{"override",   'o', "OLD:NEW",0,  "Override some source path by the given path, in the form : OLD:NEW. Can be called several times."},
+		{"host",       'H', "HOST",   0,  "The host interface to listen on (localhost by default)."},
 		{ 0 }
 	};
 	struct argp argp = { options, parse_opt, args_doc, doc };
@@ -177,7 +182,7 @@ int main(int argc, char ** argv)
 
 		//arg checker
 		ArgChecker argChecker;
-		argChecker.allowPaths(profile.getExtractor().getSourceFileMap());
+		argChecker.allowPaths(profile.getSourceFileMap());
 		argChecker.overridePaths(options.overrides);
 
 		//set signal handler
@@ -330,7 +335,7 @@ int main(int argc, char ** argv)
 		printf("|                                                                         |\n");
 		printf("|                                                                         |\n");
 		if (options.socket.empty()) {
-			printf("|         Starting server listening on http://localhost:%-4d/             |\n", options.port);
+			printf("|         Starting server listening on http://%s:%-4d/             |\n", options.host.c_str(), options.port);
 		}else {
 			std::string value = std::string("unix://") + options.socket;
 			int left_padding = (71 - value.size()) / 2;
@@ -341,9 +346,9 @@ int main(int argc, char ** argv)
 		printf("|                                                                         |\n");
 		printf("|                        To use from remote you can :                     |\n");
 		if (options.socket.empty()) {
-			printf("|               user> ssh -L8080:localhost:%-4d myserver                  |\n", options.port);
+			printf("|               user> ssh -L8080:%s:%-4d myserver                  |\n", options.host.c_str(), options.port);
 		}else {
-			std::string value = std::string("user> ssh -L8080:localhost:") + options.socket + (" myserver");
+			std::string value = std::string("user> ssh -L8080:") + options.host + std::string(":") + options.socket + (" myserver");
 			int left_padding = (71 - value.size()) / 2;
 			int right_padding = 71 - value.size() - left_padding;
 			printf("|                        Starting server listening on                     |\n");
@@ -354,7 +359,7 @@ int main(int argc, char ** argv)
 
 		//listen
 		if (options.socket.empty()) {
-			svr.listen("localhost", options.port);
+			svr.listen(options.host, options.port);
 		} else {
 			svr.set_address_family(AF_UNIX).listen(options.socket, 8080);
 			unlink(options.socket.c_str());

@@ -62,6 +62,9 @@ endif()
 if (MALT_HAVE_PYTHON AND MALT_PORTABILITY_PYTHON_NATIVE)
 	list(APPEND LIB_MALT_DEPS ${Python3_LIBRARIES})
 endif()
+if (INIPARSER_FOUND)
+	list(APPEND LIB_MALT_DEPS ${INIPARSER_LIBRARIES})
+endif()
 
 ############################################################
 #gen config.h
@@ -70,7 +73,7 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config.h.in ${CMAKE_CURRENT_BINARY_DI
 ############################################################
 include_directories(.)
 include_directories(../../extern-deps/from-fftw)
-include_directories(../../extern-deps/iniparser/src)
+include_directories(${INIPARSER_INCLUDE_DIRS})
 include_directories(../../extern-deps/from-htopml)
 include_directories(../../extern-deps/from-numaprof)
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
@@ -95,7 +98,7 @@ set(COMMON_OBJS $<TARGET_OBJECTS:htopml-json>
 				$<TARGET_OBJECTS:malt-port>
 				$<TARGET_OBJECTS:malt-state>
 				$<TARGET_OBJECTS:malt-injectors-ok-for-tests>
-				$<TARGET_OBJECTS:iniparser>)
+				${INIPARSER_OBJECT})
 
 ############################################################
 add_library(malt-base SHARED ${COMMON_OBJS})
@@ -145,6 +148,6 @@ if (ENABLE_TESTS)
 endif (ENABLE_TESTS)
 
 ############################################################
-INSTALL(TARGETS malt malt-base malt-controler
+INSTALL(TARGETS malt malt-controler
 	ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
 	LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})

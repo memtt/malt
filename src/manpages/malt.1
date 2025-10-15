@@ -1,0 +1,299 @@
+.\" generated with Ronn-NG/v0.9.1
+.\" http://github.com/apjanke/ronn-ng/tree/0.9.1
+.TH "MALT" "1" "October 2025" ""
+.SH "NAME"
+\fBmalt\fR \- A memory profiling tool
+.SH "SYNOPSIS"
+\fBmalt\fR [MALT_OPTIONS\|\.\|\.\|\.] {YOUR_PROGRAM} [YOUR_OPTIONS]
+.SH "DESCRIPTION"
+MALT is a memory profiling tool wrapping your system memory allocation and applying backtrace on each call\. It will provide you a memory allocation profile which can be viewed with malt\-webview(1)\.
+.P
+MALT work out of the box but to profiling your application it might be better to compile it with debug symbols (\fB\-g\fR) and also to disable inlining to get more accurate stacks (\fB\-O0\fR or \fB\-fno\-inline\fR)\.
+.SH "OPTIONS"
+.IP "\[ci]" 4
+\fB\-c\fR, \fB\-\-config\fR: Provide a config file as parameters with formats described in the next part of this manpage\. You can also get a dump of the default configuration with \fB\-d\fR\.
+.IP "\[ci]" 4
+\fB\-s\fR, \fB\-\-stack\fR: Select the stack tracking mode to use\. It can be \fBbacktrace\fR (default) to use the backtrace function from glibc\. If you compile with libunwind you can also use the libunwind function with \fBlibunwind\fR in place of glibc backtrace\. It fix some bugs with programs compiled with Intel compiler or using Intel libraries (like Intel OpenMP)\. But it as a side effect as libunwind as an internal memory leak\. The other approach is to instrument your code with \fB\-finstrument\-function\fR and in this case you need to use the \fBenter\-exit\fR to use it\.
+.IP "\[ci]" 4
+\fB\-q\fR, \fB\-\-quiet\fR: Make MALT silent to avoid mixing with default output of your program\. Useful if you use the output to feed a script\.
+.IP "\[ci]" 4
+\fB\-v\fR, \fB\-\-verbose\fR: Add more infos about MALT running\.
+.IP "\[ci]" 4
+\fB\-d\fR, \fB\-\-dumpconfig\fR: Dump the current MALT configuration in a file with the same name as profile file\. It helps for quick start in the configuration by getting all the options and default value\.
+.IP "\[ci]" 4
+\fB\-o\fR: Permit to pass some specific options from the config file in the command line\. The value is a list of options separated by commas and formatted like \fBSECTION:NAME=VALUE\fR\. See the configuration file format (INI format) to find the available sections and names\.
+.IP "\[ci]" 4
+\fB\-\-mpi\fR: Enable MPI support to name the output files with rank IDs instead of process IDs\. MALT will LD_PRELOAD the library bridge from \fB~/\.malt/libmaltmpi\.so\fR\.
+.IP "\[ci]" 4
+\fB\-\-prep\-mpi\fR: Build the MPI bridge library : \fB~/\.malt/libmaltmpi\.so\fR\. MALT requires it to get access to MPI_Comm_rank function depending on your MPI implementation\. You need to do this command each tome you switch your MPI implementation\.
+.IP "\[ci]" 4
+\fB\-\-wrap\fR: Permit to wrap and capture a custom memory allocator\. The wrap option expect a list of function to wrap separated by commas (or call multiple time)\. The values should provide the type of function (\fBmalloc\fR, \fBfree\fR, \fBrealloc\fR, \fBcalloc\fR\|\.\|\.\|\.) and the symbol to wrap on the form : \fB{type}:{symbol}\fR\.
+.IP "\[ci]" 4
+\fB\-\-wrap\-prefix\fR Automatically wrap all the memory managment functions under the given prefix\. You can list several prefixes separated by comma\. For exemple giving \fBje_\fR will wrap all the \fBje_malloc\fR, \fBje_free\fR, \fBje_realloc\fR\|\.\|\.\|\. functions\.
+.IP "\[ci]" 4
+\fB\-\-gdb\fR: Run the program into GDB by configuring Automatically GDB to work properly with MALT\.
+.IP "\[ci]" 4
+\fB\-h\fR, \fB\-\-help\fR: Display help message with a list of available command line options\.
+.IP "" 0
+.SH "USING ON MPI APPLICATIONS"
+MALT natively provides a lightweight support of MPI applications\. Each process is tracked separately but MALT can help by numbering the output files with the task rank instead of process ID\. To get this, you need to compile a small wrapper adapted to your current MPI implementation\. You need to do it once :
+.P
+malt \-\-prep\-mpi [mpicxx]
+.P
+Then take care of using the \fB\-\-mpi\fR option on the profiling tool :
+.P
+mpirun malt \-\-mpi \./you_program
+.SH "GET THE GUI"
+With MALT you can use directly \fBkcachegrind\fR if you enable the valgrind compatible format in configuration (output:callgrind)\. But by default MALT will generate a JSON file to be used with malt\-webview(1)\.
+.SH "CONFIGURATION FILE"
+You can get an example of this config file with \fB\-d\fR option and setup the config file to use with \fB\-c\fR one\. The config file use INI format with sections and variables as in this example :
+.IP "" 4
+.nf
+[time]
+enabled                        = true
+points                         = 512
+linear_index                   = false
+
+[stack]
+enabled                        = true
+mode                           = backtrace
+resolve                        = true
+libunwind                      = false
+skip                           = 4   sampling                       = false   samplingBw                     = 4093
+
+[output]
+name                           = malt\-%1\-%2\.%3
+lua                            = false
+json                           = true
+callgrind                      = false
+indent                         = true
+config                         = true
+verbosity                      = default
+stack\-tree                     = false
+loop\-suppress                  = false
+
+[max\-stack]
+enabled                        = true
+
+[distr]
+alloc\-size                     = true
+realloc\-jump                   = true
+
+[trace]
+enabled                        = false
+
+[info]
+hidden                         = false
+
+[filter]
+exec                           =
+childs                         = true
+enabled                        = true   ranks                          =
+
+[dump]
+on\-signal                      =
+after\-seconds                  = 0
+on\-sys\-full\-at                 =
+on\-app\-using\-rss               =
+on\-app\-using\-virt              =
+on\-app\-using\-req               =
+on\-thread\-stack\-using          =   watch\-dog                      = false
+.fi
+.IP "" 0
+.P
+[python] instru = true stack = enter\-exit mix = false obj = true mem = true raw = true
+.P
+[tools] nm = true nmMaxSize = 50M
+.P
+The \fBtime\fR section support :
+.TP
+\fBenabled\fR
+Enable support of tracking state values over time to build time charts\.
+.TP
+\fBpoints\fR
+Define the number of points used to discretized the execution time of the application\.
+.TP
+\fBlinear_index\fR
+Do not use time to index data but a linear value increased on each call (might be interesting not to shrink intensive allocation steps on a long program which mostly not do allocation over the run\.
+.P
+The \fBstack\fR section support :
+.IP "\[ci]" 4
+\fBenabled\fR: Enable support of stack tracking\.
+.IP "\[ci]" 4
+\fBmode\fR: Override by \fB\-s\fR option from the command line, it set the stack tracking method to use\. See \fB\-s\fR documentation for more details\. The available values are \fBenter\-exit\fR, \fBbacktrace\fR, \fBpython\fR, \fBnone\fR\. By default backtrace is used as it works out of the box everywhere\. It is slower than enter\-exit but this last one needs recompilation of the code with \fB\-finstrument\-functions\fR and see only the libs recompiled with this option\. \fBpython\fR permit to project all the C allocation directly into the python stack domain so it hides the C underwood\. Good to improve performance over python when you are not interested into the C details\.
+.IP "\[ci]" 4
+\fBresolve\fR: Enable symbol resolution at the end of execution to extract full names and source location if debug options is available\.
+.IP "\[ci]" 4
+\fBlibunwind\fR: Use linunwind backtrace method instead of the one from glibc\.
+.IP "\[ci]" 4
+\fBskip\fR: In backtrace mode, the backtrace is called inside our instrumentation function itself called by malloc/free\|\.\|\.\|\.\. In order to skip our internal code we need to remove them\. But on some compilers or distros, inlining and LTO configuration make wrong detection\. This can be fixed by playing with this value to keep malloc/free/calloc as leaf for every calltree extracted by MALT\. If you don't see malloc as leaf, you should increase this value\. Decrease if you start to see MALT internal function inside\. Notice in some cases (Gentoo, Gcc\-8) we start to see LTO trashing totaly the malloc/free call in O3 mode normaly seen via backtrace\. There is currently no other solution except recompiling in O0/O1 to avoid or maybe disable LTO optimizations or consider not having the exact location of the malloc itself\.
+.IP "\[ci]" 4
+\fBsampling\fR: Enable sampling mode for the stacks by captuing only for a few mallocs\. It is less accurate than a full profile but cost less in memory and CPU\. In sampling mode, the stack is processed only when we seen passed a few bytes allocated, otherwise we consider the last seen call stack\. With python you should also enable the backtrace mode for solving stacks via \fBpython:stack=backtrace\fR\.
+.IP "\[ci]" 4
+\fBsamplingBw\fR Define the amount of data seen passed between two samples\. Idealy this should be a prime number to avoid some multiple base biases\.\.
+.IP "" 0
+.P
+The \fBoutput\fR section support :
+.IP "\[ci]" 4
+\fBname\fR: Define the name of the profile file\. %1 is replaced by the program name, %2 by the PID or MPI rank and %3 by extension\.
+.IP "\[ci]" 4
+\fBlua\fR: Enable output in LUA format (same structure as JSON files but in LUA)\.
+.IP "\[ci]" 4
+\fBjson\fR: Enable output of the default JSON file format\.
+.IP "\[ci]" 4
+\fBcallgrind\fR: Enable output of the compatibility format with callgrind/kcachegrind\. Cannot contain all data but can be used with compatible existing tools\.
+.IP "\[ci]" 4
+\fBindent\fR: Enable indentations in the JSON/LUA files\. Useful for debugging but generate bigger files\.
+.IP "\[ci]" 4
+\fBconfig\fR: Dump the config INI file\.
+.IP "\[ci]" 4
+\fBverbosity\fR: Set the verbosity mode of MALT\. By \fBdefault\fR it print at start and end\. You can use \fBsilent\fR mode to disable any ouptput for example if you instrument shell script parsing the output of child processes\. You can also use \fBverbose\fR to have more debugging infos in case if does not work as expected, mostly at the symbol extraction step while dumping outputs\.
+.IP "\[ci]" 4
+\fBstack\-tree\fR: Enable storage of the stacks as a tree inside the output file\. It produces smaller files but require conversion at storage time and loading time to stay compatible with the basic expected format\. You can use this option to get smaller files\. In one case it lowers a 600 MB file to 200 MB to give an idea\.
+.IP "\[ci]" 4
+\fBloop\-suppress\fR: Enable recursive loop calls to remove them and provide a more simplified equivalent call stack\. It helps to reduce the size of profiles from applications using intensively this kind of call chain\. In one case it lowers file from 200 MB to 85 MB\. It can help if nodejs failed to load the fail because of the size\. This parameter can also provide more readable stacks as you don't care to much how many times you cycle to call loops you just want to see one of them\.
+.IP "" 0
+.P
+The \fBmax\-stack\fR section support:
+.TP
+\fBenabled\fR
+Enable or disable the tracking of stack size and memory used by functions on stacks (require \fB\-\-finstrument\-function\fR on your code to provide data)\.
+.P
+The \fBdistr\fR section support:
+.TP
+\fBalloc\-size\fR
+Generate distribution of the allocated chunk size\.
+.TP
+\fBrealloc\-jump\fR
+Generate distribution of the realloc size jumps\.
+.P
+The \fBtrace\fR section support:
+.TP
+\fBenabled\fR
+Enable or disable the tracing (currently not used by the GUI, work in progress)\.
+.P
+The \fBinfo\fR section support:
+.TP
+\fBenabled\fR
+Enable hiding execution information\. This option remove some possibility sensitive information from the output file, like executable names, hostname and command options\. It is still recommended taking a look at the file for example to replace (sed(1)) the paths which might also be removed\. This option target some companies which might want to hide their internal applications when exchanging with external partners\.
+.P
+The \fBfilter\fR section support:
+.TP
+\fBexe\fR
+Enable filtering of executable to enable MALT and ignore otherwise\. By default empty value enable MALT on all executable\.
+.TP
+\fBchilds\fR
+Enable instrumentation of children processes or not\. By default instruments all\.
+.TP
+\fBenabled\fR
+Enable profiling by default\. Can be disable to be able to activate via C function call in the app when you want\.
+.TP
+\fBranks\fR
+When running in MPI mode, instrument only the given ranks\. The list is provided under the form \fB1,2\-4,6\fR\.
+.P
+The \fBdump\fR section permit to dump the profile whenever you want:
+.TP
+\fBon\-signal\fR
+Will dump on given signal\. Can be on or comma separated list of: \fBSIGINT\fR, \fBSIGUSR1\fR, \fBSIGUSR2\fR, \|\.\|\.\|\. Notice profiling will currently stop from this point app will continue without profiling\. To be fixed latter\. You can get the list of availble list by using \fBhelp\fR or \fBavail\fR in place of name\.
+.TP
+\fBafter\-seconds\fR
+Will dump profile after X seconds\. Notice profiling will currently stop from this point app will continue without profiling\. To be fixed latter\.
+.TP
+\fBon\-sys\-full\-at\fR
+Will dump if the system memory if globaly filled at x%\. Use empty string to disable\. Remark it consider free the free memory and the cached memory\. A good value in practice is more 70% / 80% than going to 95% due to necessity to let room for the cached memory and because it will starts to swap before that\. Consider also that MALT itself adds up memory on top of your one (considered in the % here\.)\. Values can be in %, K, M, G by ending with the corresponding character\.
+.TP
+\fBon\-app\-using\-rss\fR
+Will dump if the application reach the given RSS limit\. The value is given in % of the global memory available or in K, M, G\. Empty to disable (default)\.
+.TP
+\fBon\-app\-using\-virt\fR
+Will dump if the application reach the given virtual memory limit\. The value is given in % of the global memory available or in K, M, G\. Empty to disable (default)\.
+.TP
+\fBon\-app\-using\-req\fR
+Will dump if the application reach the given requested memory limit\. The value is given in % of the global memory available or in K, M, G\. Empty to disable (default)\.
+.TP
+\fBon\-thread\-stack\-using\fR
+Will dump if one of the thread stack reach the given limit\. The value is given in % of the global memory available or in K, M, G\. Empty to disable (default)\.
+.TP
+\fBwatch\-dog\fR
+Will start a thread which will spy the memory usage of the process and trigger the dump as soon as it sees it going to hight\. This is to balance the fact than normally the system and process memory is spied only sometimes by MALT in normal condition to keep the overhead low\.
+.P
+The \fBpython\fR section permit to configure how to instrument python\. Notice that you need to build MALT with \fB\-\-enable\-python\fR so it is effective\.
+.TP
+\fBinstru\fR
+Enable of disable the python instrumentation\.
+.TP
+\fBstack\fR
+Select the stack instrumentation mode, either \fBenter\-exit\fR, \fBbacktrace\fR or \fBnone\fR\. By default \fBenter\-exit\fR is faster so you should use it\. When enabling sampling you need to use \fBbactrace\fR if you don't want to pay an unneeded overhead\. You can also disable python stack checking with \fBnone\fR\.
+.TP
+\fBmix\fR
+By default when disabled the C & Python stacks are analysed independently which mean that is a python function call a C function you will see only the C call stack\. Mix allow to merge the two layeres so you see that python call C\. But it adds overhead on the anlysis of course because of the extra work\.
+.TP
+\fBobj\fR
+Analyse or ignore the object allocation domain of python\. This is interesting to ignore all the small allocs used by the language as it would have been on the stack in C\. It improves a lot the profiling performance of python but miss part of the memory consumption if your program store lots of small objets for long times\.
+.TP
+\fBmem\fR
+Same but for the mem allocation domain of python\. In principle you should let it enabled\.
+.TP
+\fBraw\fR
+Same but for the raw allocation domain of python which is backed by the standard C malloc function\. In principle you should let it enabled\.
+.P
+The \fBtools\fR section permit to configure some of the sub\-tools called by MALT to perform its analysis\. * \fBnm\fR: Use to extract the source location of the global variables\. If true (default) it is used, otherwise it is skiped\. * \fBnmMaxSize\fR: By default it limits the size of the \.so files on which to apply NM in order to keep a decent profile dumping time when running on large frameworks like PyTorch which tends to load huge \.so files in memory\.
+.SH "ENVIRONMENT"
+You can also directly LD_PRELOAD the MALT library in your program if the wrapper script has some issues for you\.
+.P
+LD_PRELOAD={PREFIX}/lib/libmalt\.so {YOUR_PROGRAM}
+.P
+In that case you can setup some environment variables to configure MALT :
+.TP
+\fBMALT_CONFIG\fR
+Define the configuration file to use (equivalent of \fB\-c\fR option)\.
+.TP
+\fBMALT_STACK\fR
+Define the stack mode to use (equivalent of \fB\-s\fR option)\.
+.TP
+\fBMALT_OPTIONS\fR
+List of options to transmit to MALT (equivalent of \fB\-o\fR option, see its documentation for format)\.
+.SH "ON SUB\-PART OF YOUR PROGRAM"
+If you run on a really big program doing millions of allocation you might get a big overhead, and maybe you are just interested in a sub\-part of the program\. You can do it by including \fBmalt/malt\.h\fR in your files and use \fBmaltEnable()\fR an \fBmaltDisable()\fR to controle MALT on each thread\. It is also a nice way to detect leaks of sub\-parts of your code\.
+.IP "" 4
+.nf
+#include <malt/malt\.h>
+
+int main()
+{
+	maltDisable();
+	//ignored
+	malloc(16);
+
+	maltEnable();
+	//tracked
+	malloc(16);
+}
+.fi
+.IP "" 0
+.P
+You will need to link the \fBlibmalt\-controler\.so\fR to get the default fake symbols when not using MALT\. You can also just provide the two empty functions in your own dynamic library (not static)\.
+.P
+If you have some allocation not under your control before your first call you can disable MALT by default on threads using the \fBfilter:enabled\fR option, then enable it by hand\.
+.SH "WRAPPING A CUSTOM ALLOCATOR"
+If your application use a custom allocator with a different namespce than the default \fBmalloc\fR, \fBfree\fR\|\.\|\.\|\. you can use the \fB\-\-wrap\fR or \fB\-\-wrap\-prefix\fR options\.
+.P
+You can select in details the function by doing:
+.IP "" 4
+.nf
+malt \-\-wrap malloc:je_malloc \./prgm
+malt \-\-wrap malloc:je_malloc,free:je_free,calloc:je_calloc,malloc:another_custom_malloc \./prgm
+.fi
+.IP "" 0
+.P
+You can also simply use a common prefix for all by using (typically usefull if you embed jemalloc with a custom symbol prefix):
+.IP "" 4
+.nf
+malt \-\-wrap\-prefix je_
+malt \-\-wrap\-prefix je_,another_custom_
+.fi
+.IP "" 0
+.SH "VERSION"
+This is the manpage of MALT version 1\.4\.1\.
+.SH "SEE ALSO"
+malt\-webview(1), malt\-passwd(1)
