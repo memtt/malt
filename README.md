@@ -551,4 +551,4 @@ Parallel Systems (SEPS 2017). Association for Computing Machinery, New York, NY,
 Discussion
 ----------
 
-You can join the google group to exchange ideas and ask questions : <https://groups.google.com/forum/#!forum/memtt-malt>.
+If you have questions of remarks, you can also send me a mail at **memtt@progranet.ovh**.
