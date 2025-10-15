@@ -490,7 +490,7 @@ while true; do
 		--mpi)
 			ENABLE_MPI=true
 			if [ ! -e "${MPI_WRAPPER_DIR}/libmaltmpi.so" ]; then
-				echo "Missing MPI wrapper to extract ranks, please prepare it with 'malt --prep-mpi=MPICXX' !"
+				echo "Missing MPI wrapper to extract ranks, please prepare it with 'malt --prep-mpi MPICXX' !"
 				exit 1
 			fi
 			shift 1

@@ -18,6 +18,7 @@
 #include <sstream>
 //portability wrappers
 #include <portability/OS.hpp>
+#include <portability/Visibility.hpp>
 #include "Debug.hpp"
 #include "String.hpp"
 //header to implement
@@ -65,7 +66,7 @@ void Helpers::printValue(std::ostream & out,double value, const char* unit)
  * Return a numeric identifier to add to output filename. By default it uses the current
  * PID but it can also be override by LD_PRELOAD to support MPI ranks.
 **/
-int Helpers::getFileId(void )
+DLL_PUBLIC int Helpers::getFileId(void )
 {
 	return OS::getPID();
 }
@@ -74,7 +75,7 @@ int Helpers::getFileId(void )
 /**
  * Tells if the file ID comes from a rank or not.
  */
-bool Helpers::fileIdIsRank(void)
+DLL_PUBLIC bool Helpers::fileIdIsRank(void)
 {
 	return true;
 }

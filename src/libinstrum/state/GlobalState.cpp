@@ -428,9 +428,9 @@ void initMpiRankFilter(void)
 
 			//filter rank
 			if (whiteList.find(Helpers::getFileId()) != whiteList.end())
-				gblState.status = ALLOC_WRAP_FINISH;
-			else
 				fprintf(stderr,"MALT: instrument only MPI rank %d being in : %s\n",Helpers::getFileId(), gblState.options->filterRanks.c_str());
+			else
+				gblState.status = ALLOC_WRAP_FINISH;
 			
 			//do not lazy check anymore
 			gblMpiRankCheckDone = true;
