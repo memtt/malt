@@ -54,89 +54,133 @@ BUILD_CUSTOM_PYTHON = f"""cd /tmp \\
     && cd .. \\
     && rm -rfd Python-{PYTHON_VERSION} """
 ############################################################
-UBUNTU_BASIC_CMDS=[
-    "rm -f /etc/apt/apt.conf.d/docker-clean; echo 'Binary::apt::APT::Keep-Downloaded-Packages \"true\";' > /etc/apt/apt.conf.d/keep-cache",
-    "apt update",
-    "apt upgrade -y",
-    "apt install -y cmake g++ make clang ccache",
-    "apt install -y libssl-dev"
-]
-UBUNTU_FULL_CMDS=[
-    "apt install -y libunwind-dev libelf-dev libunwind-dev nodejs npm",
-    "apt install -y curl",
-    "apt update && apt install -y nlohmann-json3-dev cargo graphviz",
-    """curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs > /tmp/rustup-install.sh \\
+RUST_SETUP_LAST="""curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs > /tmp/rustup-install.sh \\
     && sh /tmp/rustup-install.sh -y \\
     && rm -f /tmp/rustup-install.sh \\
     && export PATH=$HOME/.cargo/bin:$PATH \\
     && echo 'export PATH=$HOME/.cargo/bin:$PATH' >> ~/.bashrc \\
     && rustup update stable
-    """
+"""
+UBUNTU_BASIC_CMDS=[
+    # for local cache usage
+    "rm -f /etc/apt/apt.conf.d/docker-clean; echo 'Binary::apt::APT::Keep-Downloaded-Packages \"true\";' > /etc/apt/apt.conf.d/keep-cache",
+    # update
+    "apt update",
+    # upgrade
+    "apt upgrade -y",
+    # install deps for build system
+    "apt install -y make gcc cmake g++ clang ccache",
+    # install minimal deps
+    "apt install -y libssl-dev"
+]
+UBUNTU_FULL_CMDS=[
+    # to build with everything
+    "apt install -y libunwind-dev libelf-dev libssl-dev graphviz nlohmann-json3-dev libcpp-httplib-dev python3-dev googletest libiniparser-dev",
+    # to play with sources
+    "apt install -y git nodejs npm curl",
+    # Last cargo / rust
+    RUST_SETUP_LAST,
+]
+UBUNTU_FULL_CMDS_DEBIAN_11=[
+    # to build with everything
+    "apt install -y libunwind-dev libelf-dev libssl-dev graphviz nlohmann-json3-dev python3-dev googletest libiniparser-dev",
+    # to play with sources
+    "apt install -y git nodejs npm curl",
+    # Last cargo / rust
+    RUST_SETUP_LAST,
 ]
 UBUNTU_FULL_CMDS_UBUNTU_25=[
-    "apt install -y libunwind-dev libelf-dev libunwind-dev nodejs npm",
-    "apt install -y curl",
-    "apt update && apt install -y nlohmann-json3-dev cargo graphviz"
+    # to build with everything
+    "apt install -y libunwind-dev libelf-dev libssl-dev graphviz nlohmann-json3-dev libcpp-httplib-dev python3-dev googletest libiniparser-dev",
+    # to play with sources
+    "apt install -y git nodejs npm curl",
+    # Cargo / rust (recent enougth)
+    "apt install -y cargo",
 ]
 UBUNTU_INDEV_CMDS=[
-    "apt update && apt install -y python3-dev"
-]
-UBUNTU_INDEV_CMDS_UBUNTU_25=[
-    "apt update && apt install -y libpython3-dev"
 ]
 CENTOS_BASIC_CMDS=[
+    # for local cache usage
     "echo 'keepcache=true' >> /etc/dnf/dnf.conf",
+    # refresh cache
     "dnf makecache --refresh",
+    # update
     "dnf update -y",
-    "dnf install -y cmake gcc-c++ make clang ccache"
+    # install minimal
+    "dnf install -y cmake gcc-c++ make clang ccache",
+    # install minimal deps
+    "dnf install -y openssl-devel",
 ]
 ROCKY_BASIC_CMDS=[
+    # for local cache usage
     "echo 'keepcache=true' >> /etc/dnf/dnf.conf",
+    # refresh cache
     "dnf makecache --refresh",
+    # update
     "dnf update -y",
+    # install minimal
     "dnf install -y cmake gcc-c++ make clang",
-    "dnf install -y openssl-devel"
+    # install minimal deps
+    "dnf install -y openssl-devel",
 ]
 ROCKY_FULL_CMDS=[
-    "dnf install -y elfutils-libelf-devel nodejs npm",
-    "dnf install -y curl bzip2 xz",
+    # all deps
+    "dnf install -y libunwind-devel elfutils-devel openssl-devel graphviz nlohmann-json-devel cpp-httplib-devel python3-devel gtest libiniparser-devel",
+    # playsing with sources
+    "dnf install -y git nodejs npm curl bzip2 xz",
+    # cargo
+    "dnf install -y cargo"
 ]
 ROCKY_INDEV_CMDS=[
-    "dnf install -y python3-devel"
 ]
 CENTOS_FULL_CMDS=[
-    "dnf install -y libunwind-devel elfutils-libelf-devel libunwind-devel nodejs npm",
-    "dnf install -y curl graphviz",
+    # all deps
+    "dnf install -y libunwind-devel elfutils-devel openssl-devel graphviz nlohmann-json-devel cpp-httplib-devel python3-devel gtest libiniparser-devel",
+    # playsing with sources
+    "dnf install -y git nodejs npm curl",
+    # cargo
+    "dnf install -y cargo"
 ]
 CENTOS_INDEV_CMDS=[
-    "dnf install -y python3-devel",
 ]
 ARCH_BASIC_CMDS=[
+    # update
     "pacman --noconfirm -Syu",
+    # install build deps
     "pacman --noconfirm -Sy cmake gcc make clang ccache",
+    # minimap deps
     "pacman --noconfirm -Sy openssl"
 ]
 ARCH_FULL_CMDS=[
-    "pacman --noconfirm -Sy libunwind libelf nodejs npm",
-    "pacman --noconfirm -Sy curl",
-    "pacman --noconfirm -Sy nlohmann-json cargo rustup graphviz"
+    # full deps
+    "pacman --noconfirm -Sy libunwind libelf openssl graphviz nlohmann-json python3 gtest iniparser",
+    # play with sources
+    "pacman --noconfirm -Sy git nodejs npm curl"
+    # cargo
+    "pacman --noconfirm -Sy cargo"
 ]
 ARCH_INDEV_CMDS=[
-    "pacman --noconfirm -Sy python3"
 ]
 GENTOO_BASIC_CMDS=[
+    # get package list
     "emerge-webrsync",
+    # set OK for bin packages
     "yes | getuto",
+    # update
     "emerge --verbose --update --deep --newuse @world -k -g",
+    # install build deps
     "emerge -k -g cmake gcc make llvm-core/clang ccache",
+    # minimap deps
     "emerge -k -g openssl",
 ]
 GENTOO_FULL_CMDS=[
     #"eselect profile set default/linux/amd64/23.0/desktop/plasma && emerge --verbose --update --deep --newuse @world -k -g",
-    "emerge -b -k -g sys-libs/libunwind elfutils nodejs",
-    #"emerge -k -g dev-qt/qtwebengine",
-    "emerge -b -k -g curl",
-    "emerge -b -k -g dev-cpp/nlohmann_json dev-util/cargo-c media-gfx/graphviz"
+    # install full deps
+    "emerge -b -k -g sys-libs/libunwind dev-libs/elfutils dev-libs/openssl media-gfx/graphviz dev-cpp/nlohmann_json dev-cpp/cpp-httplib dev-lang/python:3 dev-cpp/gtest dev-libs/iniparser",
+    # play with sources
+    "emerge -b -k -g dev-vcs/git net-libs/nodejs net-misc/curl",
+    # rust
+    "emerge -b -k -g dev-util/cargo-c"
 ]
 GENTOO_INDEV_CMDS=[
 ]
@@ -180,7 +224,7 @@ BUILD_PARAMETERS = {
         },
         "malt/ubuntu-indev:25.04": {
             "base": "malt/ubuntu-full:25.04",
-            "cmds": UBUNTU_INDEV_CMDS_UBUNTU_25
+            "cmds": UBUNTU_INDEV_CMDS
         },
         ############ ubuntu:25.10
         "malt/ubuntu-basic:25.10": {
@@ -202,7 +246,7 @@ BUILD_PARAMETERS = {
         },
         "malt/debian-full:11": {
             "base": "malt/debian-basic:11",
-            "cmds": UBUNTU_FULL_CMDS
+            "cmds": UBUNTU_FULL_CMDS_DEBIAN_11
         },
         "malt/debian-indev:11": {
             "base": "malt/debian-full:11",
@@ -232,6 +276,19 @@ BUILD_PARAMETERS = {
         },
         "malt/debian-indev:13": {
             "base": "malt/debian-full:13",
+            "cmds": UBUNTU_INDEV_CMDS
+        },
+        ############ debian:sid
+        "malt/debian-basic:sid": {
+            "base": "debian:sid",
+            "cmds": UBUNTU_BASIC_CMDS
+        },
+        "malt/debian-full:sid": {
+            "base": "malt/debian-basic:sid",
+            "cmds": UBUNTU_FULL_CMDS
+        },
+        "malt/debian-indev:sid": {
+            "base": "malt/debian-full:sid",
             "cmds": UBUNTU_INDEV_CMDS
         },
         ############ fedora:41

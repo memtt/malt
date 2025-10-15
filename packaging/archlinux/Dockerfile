@@ -22,4 +22,4 @@ RUN pacman --noconfirm -Sy cmake gcc make
 #  - Missing on this distro : cpp-httplib
 RUN pacman --noconfirm -Sy libunwind libelf openssl graphviz nlohmann-json python3 gtest iniparser
 # to play with the git sources
-RUN pacman --noconfirm -Sy git nodejs curl
+RUN pacman --noconfirm -Sy git nodejs npm curl
