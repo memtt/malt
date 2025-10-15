@@ -1,6 +1,6 @@
 ############################################################
 #    PROJECT  : MALT (MALoc Tracker)
-#    DATE     : 09/2025
+#    DATE     : 10/2025
 #    LICENSE  : CeCILL-C
 #    FILE     : src/reader/webview-2-cpp/CMakeLists.txt
 #-----------------------------------------------------------
@@ -34,6 +34,7 @@ target_link_libraries(malt-passwd ${NLOHMANN_JSON_LIBRARIES} base64 ${CRYPTO_LIB
 
 ############################################################
 add_definitions(-DTEST_DATA_DIR="${CMAKE_CURRENT_BINARY_DIR}")
+add_definitions(-DMALT_PREFIX_BIN="${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_BINDIR}")
 
 ############################################################
 if (ENABLE_TESTS)

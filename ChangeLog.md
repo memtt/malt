@@ -1,6 +1,11 @@
 Change log
 ==========
 
+1.4.1 - 14/10/2025
+------------------
+
+ - Fix blocking issue in malt-passwd command (issue #136).
+
 1.4.0 - 26/09/2025
 ------------------
 

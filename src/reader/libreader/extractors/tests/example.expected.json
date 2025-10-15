@@ -41,7 +41,7 @@
     "reallocSumDelta": 0
    },
    "location": {
-    "binary": "/usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2",
+    "binary": "/usr/lib64/ld-linux-x86-64.so.2",
     "file": "",
     "function": "_dl_start_user",
     "functionShort": "_dl_start_user",
@@ -72,9 +72,9 @@
     "globalPeak": 1048592,
     "lifetime": {
      "count": 3,
-     "max": 2973039,
-     "min": 12968,
-     "sum": 5448002
+     "max": 3906443,
+     "min": 21207,
+     "sum": 7224200
     },
     "maxAliveReq": 1048600,
     "mmap": {
@@ -94,7 +94,7 @@
    },
    "location": {
     "binary": "src/reader/libreader/extractors/tests/extractor-example",
-    "file": "??",
+    "file": "",
     "function": "_start",
     "functionShort": "_start",
     "line": -1
@@ -126,9 +126,9 @@
     "globalPeak": 1048592,
     "lifetime": {
      "count": 3,
-     "max": 2973039,
-     "min": 12968,
-     "sum": 5448002
+     "max": 3906443,
+     "min": 21207,
+     "sum": 7224200
     },
     "maxAliveReq": 1048600,
     "mmap": {
@@ -147,11 +147,11 @@
     "reallocSumDelta": 0
    },
    "location": {
-    "binary": "/usr/lib/x86_64-linux-gnu/libc.so.6",
-    "file": "./csu/../csu/libc-start.c",
-    "function": "__libc_start_main_impl",
-    "functionShort": "__libc_start_main_impl",
-    "line": 360
+    "binary": "/usr/lib64/libc.so.6",
+    "file": "??",
+    "function": "__libc_start_main",
+    "functionShort": "__libc_start_main",
+    "line": -1
    },
    "parentStackDepth": 1,
    "parentStackId": 1,
@@ -169,7 +169,7 @@
    }
   }
  ],
- "getCallTree": "digraph G {\nnode  [color=\"white\", fontcolor=\"white\", fontname=\"Courier New\", fontsize=\"10\", penwidth=\"1\", shape=\"record\", style=\"filled\"];\nedge  [fontname=\"Courier New\", fontsize=\"9\"];\nnode6 [fillcolor=\"#ab4141\", label=\"_start | 3  \", tooltip=\"_start\"];\nnode5 [fillcolor=\"#ab4141\", label=\"__libc_start_main_impl | 3  \", tooltip=\"__libc_start_main_impl\"];\nnode4 [fillcolor=\"#ab4141\", label=\"__libc_start_call_main | 3  \", tooltip=\"__libc_start_call_main\"];\nnode3 [fillcolor=\"#ab4141\", label=\"main | 3  \", tooltip=\"main\"];\nnode25769803780 [fillcolor=\"#5f6991\", label=\"_dl_start_user | 1  \", tooltip=\"_dl_start_user\"];\nnode25769803779 [fillcolor=\"#5f6991\", label=\"call_init | 1  \", tooltip=\"call_init\"];\nnode25769803777 [fillcolor=\"#5f6991\", label=\"std::__to_chars_bfloat16_t(...) | 1  \", tooltip=\"std::__to_chars_bfloat16_t(char*, char*, float, std::chars_format)\"];\nnode4 -> node3 [color=\"#000000\", fontcolor=\"#000000\", label=\" 3  \", penwidth=\"8\"];\nnode5 -> node4 [color=\"#000000\", fontcolor=\"#000000\", label=\" 3  \", penwidth=\"8\"];\nnode6 -> node5 [color=\"#000000\", fontcolor=\"#000000\", label=\" 3  \", penwidth=\"8\"];\nnode25769803779 -> node25769803777 [color=\"#000000\", fontcolor=\"#000000\", label=\" 1  \", penwidth=\"3.2\"];\nnode25769803779 -> node25769803779 [color=\"#000000\", fontcolor=\"#000000\", label=\" 1  \", penwidth=\"3.2\"];\nnode25769803780 -> node25769803779 [color=\"#000000\", fontcolor=\"#000000\", label=\" 1  \", penwidth=\"3.2\"];\n\n}\n",
+ "getCallTree": "digraph G {\nnode  [color=\"white\", fontcolor=\"white\", fontname=\"Courier New\", fontsize=\"10\", penwidth=\"1\", shape=\"record\", style=\"filled\"];\nedge  [fontname=\"Courier New\", fontsize=\"9\"];\nnode6 [fillcolor=\"#ab4141\", label=\"_start | 3  \", tooltip=\"_start\"];\nnode5 [fillcolor=\"#ab4141\", label=\"__libc_start_main | 3  \", tooltip=\"__libc_start_main\"];\nnode4 [fillcolor=\"#ab4141\", label=\"__libc_init_first | 3  \", tooltip=\"__libc_init_first\"];\nnode3 [fillcolor=\"#ab4141\", label=\"main | 3  \", tooltip=\"main\"];\nnode25769803780 [fillcolor=\"#5f6991\", label=\"_dl_start_user | 1  \", tooltip=\"_dl_start_user\"];\nnode25769803779 [fillcolor=\"#5f6991\", label=\"_dl_init | 1  \", tooltip=\"_dl_init\"];\nnode25769803778 [fillcolor=\"#5f6991\", label=\"call_init | 1  \", tooltip=\"call_init\"];\nnode25769803777 [fillcolor=\"#5f6991\", label=\"std::__to_chars_bfloat16_t(...) | 1  \", tooltip=\"std::__to_chars_bfloat16_t(char*, char*, float, std::chars_format)\"];\nnode25769803778 -> node25769803777 [color=\"#000000\", fontcolor=\"#000000\", label=\" 1  \", penwidth=\"3.2\"];\nnode25769803779 -> node25769803778 [color=\"#000000\", fontcolor=\"#000000\", label=\" 1  \", penwidth=\"3.2\"];\nnode25769803780 -> node25769803779 [color=\"#000000\", fontcolor=\"#000000\", label=\" 1  \", penwidth=\"3.2\"];\nnode4 -> node3 [color=\"#000000\", fontcolor=\"#000000\", label=\" 3  \", penwidth=\"8\"];\nnode5 -> node4 [color=\"#000000\", fontcolor=\"#000000\", label=\" 3  \", penwidth=\"8\"];\nnode6 -> node5 [color=\"#000000\", fontcolor=\"#000000\", label=\" 3  \", penwidth=\"8\"];\n\n}\n",
  "getFilterdStacks": [
   {
    "info": {
@@ -233,22 +233,106 @@
      "line": 66
     },
     {
-     "binary": "/usr/lib/x86_64-linux-gnu/libc.so.6",
-     "file": "./csu/../sysdeps/x86/libc-start.c",
-     "function": "__libc_start_call_main",
-     "functionShort": "__libc_start_call_main",
-     "line": 58
+     "binary": "/usr/lib64/libc.so.6",
+     "file": "??",
+     "function": "__libc_init_first",
+     "functionShort": "__libc_init_first",
+     "line": -1
     },
     {
-     "binary": "/usr/lib/x86_64-linux-gnu/libc.so.6",
-     "file": "./csu/../csu/libc-start.c",
-     "function": "__libc_start_main_impl",
-     "functionShort": "__libc_start_main_impl",
-     "line": 360
+     "binary": "/usr/lib64/libc.so.6",
+     "file": "??",
+     "function": "__libc_start_main",
+     "functionShort": "__libc_start_main",
+     "line": -1
     },
     {
      "binary": "src/reader/libreader/extractors/tests/extractor-example",
+     "file": "",
+     "function": "_start",
+     "functionShort": "_start",
+     "line": -1
+    }
+   ]
+  },
+  {
+   "info": {
+    "aliveReq": 0,
+    "alloc": {
+     "count": 1,
+     "max": 8,
+     "min": 8,
+     "sum": 8
+    },
+    "countZeros": 0,
+    "free": {
+     "count": 0,
+     "max": 0,
+     "min": 0,
+     "sum": 0
+    },
+    "globalPeak": 0,
+    "lifetime": {
+     "count": 1,
+     "max": 21207,
+     "min": 21207,
+     "sum": 21207
+    },
+    "maxAliveReq": 8,
+    "mmap": {
+     "count": 0,
+     "max": 0,
+     "min": 0,
+     "sum": 0
+    },
+    "munmap": {
+     "count": 0,
+     "max": 0,
+     "min": 0,
+     "sum": 0
+    },
+    "reallocCount": 0,
+    "reallocSumDelta": 0
+   },
+   "stack": [
+    {
+     "binary": "src/reader/libreader/extractors/tests/extractor-example",
+     "file": "src/reader/libreader/extractors/tests/example.cpp",
+     "function": "caller2()",
+     "functionShort": "caller2()",
+     "line": 50
+    },
+    {
+     "binary": "src/reader/libreader/extractors/tests/extractor-example",
+     "file": "src/reader/libreader/extractors/tests/example.cpp",
+     "function": "main_sim()",
+     "functionShort": "main_sim()",
+     "line": 59
+    },
+    {
+     "binary": "src/reader/libreader/extractors/tests/extractor-example",
+     "file": "src/reader/libreader/extractors/tests/example.cpp",
+     "function": "main",
+     "functionShort": "main",
+     "line": 66
+    },
+    {
+     "binary": "/usr/lib64/libc.so.6",
      "file": "??",
+     "function": "__libc_init_first",
+     "functionShort": "__libc_init_first",
+     "line": -1
+    },
+    {
+     "binary": "/usr/lib64/libc.so.6",
+     "file": "??",
+     "function": "__libc_start_main",
+     "functionShort": "__libc_start_main",
+     "line": -1
+    },
+    {
+     "binary": "src/reader/libreader/extractors/tests/extractor-example",
+     "file": "",
      "function": "_start",
      "functionShort": "_start",
      "line": -1
@@ -352,22 +436,22 @@
      "line": 66
     },
     {
-     "binary": "/usr/lib/x86_64-linux-gnu/libc.so.6",
-     "file": "./csu/../sysdeps/x86/libc-start.c",
-     "function": "__libc_start_call_main",
-     "functionShort": "__libc_start_call_main",
-     "line": 58
+     "binary": "/usr/lib64/libc.so.6",
+     "file": "??",
+     "function": "__libc_init_first",
+     "functionShort": "__libc_init_first",
+     "line": -1
     },
     {
-     "binary": "/usr/lib/x86_64-linux-gnu/libc.so.6",
-     "file": "./csu/../csu/libc-start.c",
-     "function": "__libc_start_main_impl",
-     "functionShort": "__libc_start_main_impl",
-     "line": 360
+     "binary": "/usr/lib64/libc.so.6",
+     "file": "??",
+     "function": "__libc_start_main",
+     "functionShort": "__libc_start_main",
+     "line": -1
     },
     {
      "binary": "src/reader/libreader/extractors/tests/extractor-example",
-     "file": "??",
+     "file": "",
      "function": "_start",
      "functionShort": "_start",
      "line": -1
@@ -471,106 +555,22 @@
      "line": 66
     },
     {
-     "binary": "/usr/lib/x86_64-linux-gnu/libc.so.6",
-     "file": "./csu/../sysdeps/x86/libc-start.c",
-     "function": "__libc_start_call_main",
-     "functionShort": "__libc_start_call_main",
-     "line": 58
-    },
-    {
-     "binary": "/usr/lib/x86_64-linux-gnu/libc.so.6",
-     "file": "./csu/../csu/libc-start.c",
-     "function": "__libc_start_main_impl",
-     "functionShort": "__libc_start_main_impl",
-     "line": 360
-    },
-    {
-     "binary": "src/reader/libreader/extractors/tests/extractor-example",
+     "binary": "/usr/lib64/libc.so.6",
      "file": "??",
-     "function": "_start",
-     "functionShort": "_start",
+     "function": "__libc_init_first",
+     "functionShort": "__libc_init_first",
      "line": -1
-    }
-   ]
-  },
-  {
-   "info": {
-    "aliveReq": 0,
-    "alloc": {
-     "count": 1,
-     "max": 8,
-     "min": 8,
-     "sum": 8
-    },
-    "countZeros": 0,
-    "free": {
-     "count": 0,
-     "max": 0,
-     "min": 0,
-     "sum": 0
-    },
-    "globalPeak": 0,
-    "lifetime": {
-     "count": 1,
-     "max": 12968,
-     "min": 12968,
-     "sum": 12968
-    },
-    "maxAliveReq": 8,
-    "mmap": {
-     "count": 0,
-     "max": 0,
-     "min": 0,
-     "sum": 0
-    },
-    "munmap": {
-     "count": 0,
-     "max": 0,
-     "min": 0,
-     "sum": 0
-    },
-    "reallocCount": 0,
-    "reallocSumDelta": 0
-   },
-   "stack": [
-    {
-     "binary": "src/reader/libreader/extractors/tests/extractor-example",
-     "file": "src/reader/libreader/extractors/tests/example.cpp",
-     "function": "caller2()",
-     "functionShort": "caller2()",
-     "line": 50
     },
     {
-     "binary": "src/reader/libreader/extractors/tests/extractor-example",
-     "file": "src/reader/libreader/extractors/tests/example.cpp",
-     "function": "main_sim()",
-     "functionShort": "main_sim()",
-     "line": 59
-    },
-    {
-     "binary": "src/reader/libreader/extractors/tests/extractor-example",
-     "file": "src/reader/libreader/extractors/tests/example.cpp",
-     "function": "main",
-     "functionShort": "main",
-     "line": 66
-    },
-    {
-     "binary": "/usr/lib/x86_64-linux-gnu/libc.so.6",
-     "file": "./csu/../sysdeps/x86/libc-start.c",
-     "function": "__libc_start_call_main",
-     "functionShort": "__libc_start_call_main",
-     "line": 58
-    },
-    {
-     "binary": "/usr/lib/x86_64-linux-gnu/libc.so.6",
-     "file": "./csu/../csu/libc-start.c",
-     "function": "__libc_start_main_impl",
-     "functionShort": "__libc_start_main_impl",
-     "line": 360
-    },
-    {
-     "binary": "src/reader/libreader/extractors/tests/extractor-example",
+     "binary": "/usr/lib64/libc.so.6",
      "file": "??",
+     "function": "__libc_start_main",
+     "functionShort": "__libc_start_main",
+     "line": -1
+    },
+    {
+     "binary": "src/reader/libreader/extractors/tests/extractor-example",
+     "file": "",
      "function": "_start",
      "functionShort": "_start",
      "line": -1
@@ -596,9 +596,9 @@
     "globalPeak": 1048576,
     "lifetime": {
      "count": 1,
-     "max": 2973039,
-     "min": 2973039,
-     "sum": 2973039
+     "max": 3906443,
+     "min": 3906443,
+     "sum": 3906443
     },
     "maxAliveReq": 1048576,
     "mmap": {
@@ -674,22 +674,22 @@
      "line": 66
     },
     {
-     "binary": "/usr/lib/x86_64-linux-gnu/libc.so.6",
-     "file": "./csu/../sysdeps/x86/libc-start.c",
-     "function": "__libc_start_call_main",
-     "functionShort": "__libc_start_call_main",
-     "line": 58
+     "binary": "/usr/lib64/libc.so.6",
+     "file": "??",
+     "function": "__libc_init_first",
+     "functionShort": "__libc_init_first",
+     "line": -1
     },
     {
-     "binary": "/usr/lib/x86_64-linux-gnu/libc.so.6",
-     "file": "./csu/../csu/libc-start.c",
-     "function": "__libc_start_main_impl",
-     "functionShort": "__libc_start_main_impl",
-     "line": 360
+     "binary": "/usr/lib64/libc.so.6",
+     "file": "??",
+     "function": "__libc_start_main",
+     "functionShort": "__libc_start_main",
+     "line": -1
     },
     {
      "binary": "src/reader/libreader/extractors/tests/extractor-example",
-     "file": "??",
+     "file": "",
      "function": "_start",
      "functionShort": "_start",
      "line": -1
@@ -715,9 +715,9 @@
     "globalPeak": 16,
     "lifetime": {
      "count": 1,
-     "max": 2461995,
-     "min": 2461995,
-     "sum": 2461995
+     "max": 3296550,
+     "min": 3296550,
+     "sum": 3296550
     },
     "maxAliveReq": 16,
     "mmap": {
@@ -793,22 +793,22 @@
      "line": 66
     },
     {
-     "binary": "/usr/lib/x86_64-linux-gnu/libc.so.6",
-     "file": "./csu/../sysdeps/x86/libc-start.c",
-     "function": "__libc_start_call_main",
-     "functionShort": "__libc_start_call_main",
-     "line": 58
+     "binary": "/usr/lib64/libc.so.6",
+     "file": "??",
+     "function": "__libc_init_first",
+     "functionShort": "__libc_init_first",
+     "line": -1
     },
     {
-     "binary": "/usr/lib/x86_64-linux-gnu/libc.so.6",
-     "file": "./csu/../csu/libc-start.c",
-     "function": "__libc_start_main_impl",
-     "functionShort": "__libc_start_main_impl",
-     "line": 360
+     "binary": "/usr/lib64/libc.so.6",
+     "file": "??",
+     "function": "__libc_start_main",
+     "functionShort": "__libc_start_main",
+     "line": -1
     },
     {
      "binary": "src/reader/libreader/extractors/tests/extractor-example",
-     "file": "??",
+     "file": "",
      "function": "_start",
      "functionShort": "_start",
      "line": -1
@@ -1200,9 +1200,9 @@
     "globalPeak": 1048592,
     "lifetime": {
      "count": 2,
-     "max": 2973039,
-     "min": 2461995,
-     "sum": 5435034
+     "max": 3906443,
+     "min": 3296550,
+     "sum": 7202993
     },
     "maxAliveReq": 1048592,
     "mmap": {
@@ -1287,9 +1287,9 @@
     "globalPeak": 1048592,
     "lifetime": {
      "count": 2,
-     "max": 2973039,
-     "min": 2461995,
-     "sum": 5435034
+     "max": 3906443,
+     "min": 3296550,
+     "sum": 7202993
     },
     "maxAliveReq": 1048592,
     "mmap": {
@@ -1328,9 +1328,9 @@
     "globalPeak": 0,
     "lifetime": {
      "count": 1,
-     "max": 12968,
-     "min": 12968,
-     "sum": 12968
+     "max": 21207,
+     "min": 21207,
+     "sum": 21207
     },
     "maxAliveReq": 8,
     "mmap": {
@@ -1377,9 +1377,9 @@
     "globalPeak": 0,
     "lifetime": {
      "count": 1,
-     "max": 12968,
-     "min": 12968,
-     "sum": 12968
+     "max": 21207,
+     "min": 21207,
+     "sum": 21207
     },
     "maxAliveReq": 8,
     "mmap": {
@@ -1415,9 +1415,9 @@
     "globalPeak": 0,
     "lifetime": {
      "count": 1,
-     "max": 12968,
-     "min": 12968,
-     "sum": 12968
+     "max": 21207,
+     "min": 21207,
+     "sum": 21207
     },
     "maxAliveReq": 8,
     "mmap": {
@@ -1456,9 +1456,9 @@
     "globalPeak": 1048592,
     "lifetime": {
      "count": 2,
-     "max": 2973039,
-     "min": 2461995,
-     "sum": 5435034
+     "max": 3906443,
+     "min": 3296550,
+     "sum": 7202993
     },
     "maxAliveReq": 1048592,
     "mmap": {
@@ -1543,9 +1543,9 @@
     "globalPeak": 1048592,
     "lifetime": {
      "count": 2,
-     "max": 2973039,
-     "min": 2461995,
-     "sum": 5435034
+     "max": 3906443,
+     "min": 3296550,
+     "sum": 7202993
     },
     "maxAliveReq": 1048592,
     "mmap": {
@@ -1584,9 +1584,9 @@
     "globalPeak": 1048592,
     "lifetime": {
      "count": 2,
-     "max": 2973039,
-     "min": 2461995,
-     "sum": 5435034
+     "max": 3906443,
+     "min": 3296550,
+     "sum": 7202993
     },
     "maxAliveReq": 1048592,
     "mmap": {
@@ -1633,9 +1633,9 @@
     "globalPeak": 1048592,
     "lifetime": {
      "count": 2,
-     "max": 2973039,
-     "min": 2461995,
-     "sum": 5435034
+     "max": 3906443,
+     "min": 3296550,
+     "sum": 7202993
     },
     "maxAliveReq": 1048592,
     "mmap": {
@@ -1671,9 +1671,9 @@
     "globalPeak": 1048592,
     "lifetime": {
      "count": 2,
-     "max": 2973039,
-     "min": 2461995,
-     "sum": 5435034
+     "max": 3906443,
+     "min": 3296550,
+     "sum": 7202993
     },
     "maxAliveReq": 1048592,
     "mmap": {
@@ -1712,9 +1712,9 @@
     "globalPeak": 1048592,
     "lifetime": {
      "count": 3,
-     "max": 2973039,
-     "min": 12968,
-     "sum": 5448002
+     "max": 3906443,
+     "min": 21207,
+     "sum": 7224200
     },
     "maxAliveReq": 1048600,
     "mmap": {
@@ -1799,9 +1799,9 @@
     "globalPeak": 1048592,
     "lifetime": {
      "count": 3,
-     "max": 2973039,
-     "min": 12968,
-     "sum": 5448002
+     "max": 3906443,
+     "min": 21207,
+     "sum": 7224200
     },
     "maxAliveReq": 1048600,
     "mmap": {
@@ -1840,9 +1840,9 @@
     "globalPeak": 1048592,
     "lifetime": {
      "count": 3,
-     "max": 2973039,
-     "min": 12968,
-     "sum": 5448002
+     "max": 3906443,
+     "min": 21207,
+     "sum": 7224200
     },
     "maxAliveReq": 1048600,
     "mmap": {
@@ -1927,9 +1927,9 @@
     "globalPeak": 1048592,
     "lifetime": {
      "count": 3,
-     "max": 2973039,
-     "min": 12968,
-     "sum": 5448002
+     "max": 3906443,
+     "min": 21207,
+     "sum": 7224200
     },
     "maxAliveReq": 1048600,
     "mmap": {
@@ -2536,49 +2536,49 @@
   "totalMem": 288
  },
  "getProcMapDistr": {
-  "/usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2": {
+  "/usr/lib/gcc/x86_64-pc-linux-gnu/14/libgcc_s.so.1": {
    "cnt": 5,
-   "mem": 237568
+   "mem": 184320
   },
-  "/usr/lib/x86_64-linux-gnu/libc.so.6": {
+  "/usr/lib/gcc/x86_64-pc-linux-gnu/14/libstdc++.so.6.0.33": {
    "cnt": 5,
-   "mem": 2117632
+   "mem": 2572288
   },
-  "/usr/lib/x86_64-linux-gnu/libelf-0.190.so": {
+  "/usr/lib64/ld-linux-x86-64.so.2": {
    "cnt": 5,
-   "mem": 126976
+   "mem": 229376
   },
-  "/usr/lib/x86_64-linux-gnu/libgcc_s.so.1": {
+  "/usr/lib64/libc.so.6": {
    "cnt": 5,
-   "mem": 188416
+   "mem": 1986560
   },
-  "/usr/lib/x86_64-linux-gnu/liblzma.so.5.4.5": {
-   "cnt": 5,
-   "mem": 204800
-  },
-  "/usr/lib/x86_64-linux-gnu/libm.so.6": {
-   "cnt": 5,
-   "mem": 954368
-  },
-  "/usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.33": {
-   "cnt": 5,
-   "mem": 2596864
-  },
-  "/usr/lib/x86_64-linux-gnu/libunwind-x86_64.so.8.0.1": {
-   "cnt": 5,
-   "mem": 73728
-  },
-  "/usr/lib/x86_64-linux-gnu/libunwind.so.8.0.1": {
-   "cnt": 5,
-   "mem": 69632
-  },
-  "/usr/lib/x86_64-linux-gnu/libz.so.1.3": {
+  "/usr/lib64/libelf-0.193.so": {
    "cnt": 5,
    "mem": 114688
   },
-  "/usr/lib/x86_64-linux-gnu/libzstd.so.1.5.5": {
+  "/usr/lib64/liblzma.so.5.8.1": {
    "cnt": 5,
-   "mem": 761856
+   "mem": 184320
+  },
+  "/usr/lib64/libm.so.6": {
+   "cnt": 5,
+   "mem": 966656
+  },
+  "/usr/lib64/libunwind-x86_64.so.8.2.0": {
+   "cnt": 5,
+   "mem": 90112
+  },
+  "/usr/lib64/libunwind.so.8.2.0": {
+   "cnt": 5,
+   "mem": 81920
+  },
+  "/usr/lib64/libz.so.1.3.1": {
+   "cnt": 5,
+   "mem": 106496
+  },
+  "/usr/lib64/libzstd.so.1.5.7": {
+   "cnt": 5,
+   "mem": 827392
   },
   "[heap]": {
    "cnt": 1,
@@ -2602,11 +2602,11 @@
   },
   "anonymous": {
    "cnt": 10,
-   "mem": 17616896
+   "mem": 13922304
   },
-  "src/libinstrum/libmalt.so.1.4.0": {
+  "src/libinstrum/libmalt.so.1.4.1": {
    "cnt": 5,
-   "mem": 1318912
+   "mem": 1306624
   },
   "src/reader/libreader/extractors/tests/extractor-example": {
    "cnt": 5,
@@ -2621,41 +2621,41 @@
    "largestStack": 288,
    "maxChunkSize": 1048576,
    "minChunkSize": 8,
-   "physicalMem": 8126464,
+   "physicalMem": 8216576,
    "requestedMem": 1122320,
    "segments": 3,
-   "virtualMem": 28176384
+   "virtualMem": 24367104
   }
  },
  "getSummaryV2": {
   "run": {
-   "allocator": "/usr/lib/x86_64-linux-gnu/libc.so.6",
+   "allocator": "/usr/lib64/libc.so.6",
    "allocatorWrappers": [],
    "command": "src/reader/libreader/extractors/tests/extractor-example",
-   "date": "2025-10-02 05:16",
+   "date": "2025-10-15 11:59",
    "exe": "extractor-example",
    "formatVersion": "1.1",
-   "hostname": "sebv6",
-   "runtime": 1408435142,
-   "tool": "malt-1.4.0"
+   "hostname": "sebv4",
+   "runtime": 836326449,
+   "tool": "malt-1.4.1"
   },
   "summary": {
    "allocCount": 4,
-   "globalVarMem": 44915,
+   "globalVarMem": 61885,
    "largestStack": 288,
    "leakedCount": 1,
    "leakedMem": 73728,
    "maxAllocSize": 1048576,
    "meanAllocSize": 280582.0,
    "minAllocSize": 8,
-   "numGblVar": 789,
-   "peakAllocCountRate": 211905036288.0,
-   "peakAllocRate": 211905036288.0,
+   "numGblVar": 957,
+   "peakAllocCountRate": 248669978624.0,
+   "peakAllocRate": 248669978624.0,
    "peakInternalMemory": 0,
-   "peakPhysicalMemory": 8126464,
+   "peakPhysicalMemory": 8216576,
    "peakRequestedMemory": 1122320,
    "peakSegmentCount": 3,
-   "peakVirtualMemory": 28176384,
+   "peakVirtualMemory": 24367104,
    "recyclingRatio": 1.000007152557373,
    "tlsVarMem": 80,
    "totalAllocatedMemory": 1122328
@@ -2682,8 +2682,8 @@
    ]
   },
   "system": {
-   "ticksPerSecond": 1991985294,
-   "totalMemory": 16400842752
+   "ticksPerSecond": 3411168284,
+   "totalMemory": 16718671872
   },
   "threadStats": [
    {
@@ -2705,7 +2705,7 @@
     "malloc": {
      "count": 4,
      "sum": 1122328,
-     "time": 20550
+     "time": 48546
     },
     "memalign": {
      "count": 0,

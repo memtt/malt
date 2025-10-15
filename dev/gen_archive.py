@@ -25,7 +25,7 @@ from enum import Enum
 ############################################################
 #extract version
 PACKAGE_NAME="malt"
-PACKAGE_VERSION="1.4.0"
+PACKAGE_VERSION="1.4.1"
 
 ############################################################
 class HashMode(Enum):

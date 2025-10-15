@@ -9,7 +9,7 @@
 
 # Maintainer: Sebastien Valat <sebastien.valat-dev@orange.fr>
 pkgname=MALT
-pkgver=1.4.0
+pkgver=1.4.1
 pkgrel=1
 pkgdesc="Memory profiling tool to track memory allocations (malloc,free,realloc...)."
 arch=('i686' 'x86_64')

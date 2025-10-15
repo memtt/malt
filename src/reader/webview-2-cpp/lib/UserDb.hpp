@@ -1,6 +1,6 @@
 /***********************************************************
 *    PROJECT  : MALT (MALoc Tracker)
-*    DATE     : 07/2025
+*    DATE     : 10/2025
 *    LICENSE  : CeCILL-C
 *    FILE     : src/reader/webview-2-cpp/lib/UserDb.hpp
 *-----------------------------------------------------------
@@ -24,7 +24,7 @@ namespace MALTWebviewCpp
 class UserDb
 {
 	public:
-		UserDb(void);
+		UserDb(bool warn = true, bool auto_passwd = true);
 		UserDb(const std::string & dbPath, bool warn = true, bool auto_passwd = true);
 		~UserDb(void);
 		bool check(const std::string & login, const std::string & password) const;
@@ -36,6 +36,8 @@ class UserDb
 		void load(const std::string & path, bool warn, bool auto_passwd = true);
 		static std::string calcDefaultDbPath(void);
 		static std::string sha256sum(const std::string & value);
+		static std::string escapeUserNameForShell(const std::string & value);
+		static std::string promptUserName(void);
 	private:
 		std::string dbPath;
 		std::map<std::string, std::string> users;
