@@ -9,18 +9,18 @@
 ############################################################
 
 #distri we want
-FROM fedora:41
+FROM docker.io/gentoo/stage3:latest
 
 #workdir
 WORKDIR /workdir
 
 # update list of packages and system
-RUN dnf update -y && dnf upgrade -y
+RUN emerge-webrsync && yes | getuto && emerge --verbose --update --deep --newuse @world -k -g
 # install deps for build system
-RUN yum install -y make gcc gcc-c++ cmake
+RUN emerge -k -g cmake gcc make
 # deps for the project
-RUN yum install -y libunwind-devel elfutils-devel openssl-devel graphviz nlohmann-json-devel cpp-httplib-devel python3-devel gtest libiniparser-devel
+RUN emerge -k -g sys-libs/libunwind dev-libs/elfutils dev-libs/openssl media-gfx/graphviz \
+                 dev-cpp/nlohmann_json dev-cpp/cpp-httplib dev-lang/python:3 dev-cpp/gtest \
+                 dev-libs/iniparser
 # to play with the git sources
-RUN yum install -y git nodejs curl
-# to build the RPM
-RUN yum install -y rpm-build rpmdevtools
+RUN yum install -y dev-vcs/git net-libs/nodejs net-misc/curl

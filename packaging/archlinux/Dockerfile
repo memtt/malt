@@ -15,12 +15,11 @@ FROM debian:trixie
 WORKDIR /workdir
 
 # upgrade
-RUN apt update && apt upgrade -y
+RUN pacman --noconfirm -Syu
 # install deps for build system
-RUN apt install -y build-essential make gcc cmake g++
+RUN pacman --noconfirm -Sy cmake gcc make
 # deps for the project
-RUN apt install -y libunwind-dev libelf-dev libssl-dev graphviz nlohmann-json3-dev libcpp-httplib-dev python3-dev googletest libiniparser-dev
+#  - Missing on this distro : cpp-httplib
+RUN pacman --noconfirm -Sy libunwind libelf openssl graphviz nlohmann-json python3 gtest iniparser
 # to play with the git sources
-RUN apt install -y git nodejs curl
-# to build the RPM
-RUN apt install -y pbuilder debootstrap devscripts cdbs debhelper
+RUN pacman --noconfirm -Sy git nodejs curl
