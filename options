@@ -81,10 +81,10 @@ cfg_add_with_option --name='python' \
 						--doc='Define prefix to find python [/usr]' \
 						--var='Python3_ROOT_DIR'
 
-#JeMalloc built for MALT
-#cfg_add_with_option --name='malt-jemalloc' \
-#						--doc='Define prefix to find JeMalloc built for MALT internals [/usr]' \
-#						--var='MALTJEMALLOC_PREFIX'
+#iniparser
+cfg_add_with_option --name='iniparser' \
+						--doc='Define prefix to find iniparser [/usr]' \
+						--var='INIPARSER_PREFIX'
 
 #Python linking way for MALT
 cfg_add_with_option --name='python-linking' \
