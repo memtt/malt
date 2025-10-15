@@ -27,6 +27,25 @@ you can also call directly **cmake**:
     make -j8
     make install
 
+Note about Intel Compiler
+-------------------------
+
+MALT is written in C++ so you might possibly encounterd some issue with you build it with GCC and
+profile applications built with Intel Compiler. In most cases it should work out of the box without
+any issues.
+
+But, I got once an error report about that. In that case, try to compile MALT also with intel compiler
+instead if GCC to match the app :
+
+.. code-block:: shell
+
+    # with the configure script
+    ../configure CC=icc CXX=icpc
+    make
+
+    # with the cmake script directly
+    cmake -DCMAKE_C_COMPILER=icc -DCMAKE_CXX_COMPILER=icpc
+
 Installing via spack
 --------------------
 
