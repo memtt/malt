@@ -125,7 +125,7 @@ The config file use INI format with sections and variables as in this example :
 	exec                           = 
 	childs                         = true
 	enabled                        = true
-  ranks                          =
+	ranks                          =
 
 	[dump]
 	on-signal                      = 
