@@ -98,7 +98,7 @@ set(COMMON_OBJS $<TARGET_OBJECTS:htopml-json>
 				$<TARGET_OBJECTS:malt-port>
 				$<TARGET_OBJECTS:malt-state>
 				$<TARGET_OBJECTS:malt-injectors-ok-for-tests>
-				${INIPARSER_OBJECT})
+				${INIPARSER_OBJECTS})
 
 ############################################################
 add_library(malt-base SHARED ${COMMON_OBJS})
