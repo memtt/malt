@@ -48,6 +48,7 @@ set(ENABLE_IPO            "yes"      CACHE BOOL   "Allow usage of IPO specfic op
 set(ENABLE_PYTHON         "yes"      CACHE BOOL   "Enable compiling with the python support.")
 set(ENABLE_JEMALLOC       "yes"      CACHE BOOL   "Enable building internal JeMalloc.")
 set(ENABLE_CACHING        "yes"      CACHE BOOL   "Enable some internal caches.")
+set(ENABLE_PREFER_EMBED   "no"       CACHE BOOL   "Prefer using the embeded dependencies that using system one by default.")
 #Code options
 set(ENABLE_CODE_TIMING    "no"       CACHE BOOL   "Enable some tricks to quickly check timings of hostspots of MALT internal code.")
 set(ENABLE_CODE_LEAK      "no"       CACHE BOOL   "Enable internal analysis of memory leak.")
@@ -88,18 +89,20 @@ set(ENABLE_PROFILER "yes" CACHE BOOL "Enable the installation of the profiler.")
 
 ############################################################
 # search deps
-find_package(GTest QUIET)
+if (NOT ENABLE_PREFER_EMBED)
+	find_package(GTest QUIET)
+	find_package(nlohmann_json 3.11.3 QUIET)
+	find_package(IniParser QUIET)
+	find_package(HttpLib QUIET)
+endif()
 find_package(OpenMP QUIET)
 find_package(LibElf QUIET)
 find_package(Libunwind QUIET)
 find_package(Node QUIET)
-find_package(nlohmann_json 3.11.3 QUIET)
 find_package(Cargo QUIET)
 find_package(Graphviz QUIET)
 find_package(Binutils QUIET)
-find_package(IniParser QUIET)
 #find_package(Zmq QUIET)
-find_package(HttpLib QUIET)
 find_package(Crypto QUIET)
 # Check for npm if needed
 if (NODE_FOUND AND NOT IS_DIRECTORY ${CMAKE_SOURCE_DIR}/src/webview/node_modules)
