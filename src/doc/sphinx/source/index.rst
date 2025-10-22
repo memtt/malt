@@ -34,8 +34,23 @@ We have a few places for you to get started:
 :doc:`/start/basic-usage`
   Make your first steps by **using malt**.
 
+:doc:`/start/metrics`
+  The metrics exported by **malt**.
+
+:doc:`/start/infos`
+  General informations about **malt**.
+
 Advanced topics
 ---------------
+
+:doc:`/advanced/mpi`
+  Using MALT for **MPI** applications.
+
+:doc:`/advanced/custom-allocs`
+  Using MALT with **custom memory allocators**.
+
+:doc:`/advanced/options`
+  Using MALT **options**.
 
 :doc:`/advanced/packaging`
   Building **packaging** for common distributions.
@@ -50,10 +65,15 @@ Advanced topics
    /start/dependencies.rst
    /start/installation.rst
    /start/basic-usage.rst
+   /start/metrics.rst
+   /start/infos.rst
 
 .. toctree::
    :maxdepth: 1
    :hidden:
    :caption: Advanced topics
 
+   /advanced/mpi.rst
+   /advanced/custom-allocs.rst
+   /advanced/options.rst
    /advanced/packaging.rst

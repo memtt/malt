@@ -66,6 +66,10 @@ void AllocTraceFile::open(const std::string& file)
 	if (this->fp == NULL)
 		MALT_ERROR_ARG("Failed to open file %1 : %2\n").arg(file).argStrErrno();
 	
+	//write header
+	fprintf(this->fp, "# TRACE CREATED BY MALT-%s\n", MALT_VERSION);
+	fprintf(this->fp, "# Type\tThreadID\tStack\tTime\tCost\tAddr\tSize\tExtra1\tExtra2\n");
+
 	//reset pos in buffer
 	this->pos = 0;
 

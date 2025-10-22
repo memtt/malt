@@ -45,6 +45,38 @@ the mini-server is ready to render the pages.
     malt-webview ./malt-basic-example-5656.json
     # open your browser on http://localhost:8080.
 
+
+Browsing remotely
+-----------------
+
+MALT has been developped for **HPC clusters**, in this case you might have made your
+profiling **run** on a **remote cluster** and want to visualize the output on your **localhost
+workstation**.
+
+In this case proceed by using the **port forwarding** feature of the `ssh` command.
+
+The more secure approch as supported by recent version of `ssh` is by using a local **socket file**:
+
+.. code-block:: shell
+
+    # ssh with port forwaring
+    ssh -L 8080:localhost:~/.malt-socket.1 user@server
+
+    # launch the webview as normal
+    malt-webview --port=~/.malt-socket.1 ./malt-basic-example-5656.json
+
+You can either use a **port forwarding** but it opens to other people on the server and
+needs to select **another port** if you are many using MALT on the server.
+
+.. code-block:: shell
+
+    # ssh with port forwaring
+    ssh -L 8080:localhost:8080 user@server
+
+    # launch the webview as normal
+    malt-webview --port 8080 ./malt-basic-example-5656.json
+
+
 Fast profiling
 --------------
 

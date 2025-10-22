@@ -158,7 +158,7 @@ void AllocStackProfiler::onFree(AllocTracerEvent & traceEntry, void* ptr,Stack *
 	if (ptr != NULL) {
 		MMCallStackNode node;
 		FreeFinalInfos infos = onFreeEvent(ptr,userStack, &node, true, domain);
-		if (this->options.traceEnabled) {
+		if (this->options.traceEnabled && ptr != nullptr) {
 			traceEntry.callStack = node.stack;
 			traceEntry.size = infos.size;
 			traceEntry.extra.free.lifetime = infos.lifetime;
