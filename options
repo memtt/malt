@@ -70,6 +70,12 @@ cfg_add_enable_option --name='prefer-embed' \
 						--on='-DENABLE_PREFER_EMBED=${ON}' \
 						--doc='Prefer using the embedded dependencies instead of search the system onces.'
 
+#caching
+cfg_add_enable_option --name='caching' \
+						--on='-DENABLE_CACHING=${ON}' \
+						--doc='Enable usage of some internal caches to reduce the overhead of MALT.' \
+						--invert-help
+
 ############################################################
 #libunwind
 cfg_add_with_option --name='libunwind' \

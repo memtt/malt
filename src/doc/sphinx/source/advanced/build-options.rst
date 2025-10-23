@@ -147,17 +147,137 @@ memory allocator.
     ../configure --enable-jemalloc
     ../configure --disable-jemalloc
 
-.. 
- ENABLE_CACHING        yes      Enable some internal caches.)
- #Code options
- ENABLE_CODE_TIMING    no       Enable some tricks to quickly check timings of hostspots of MALT internal code.)
- ENABLE_CODE_LEAK      no       Enable internal analysis of memory leak.)
- #select portability mode
- PORTABILITY_SPINLOCK  PTHREAD  Select spinlock implementation to use. Currently support : 'PTHREAD', 'DUMMY'.)
- PORTABILITY_MUTEX     PTHREAD  Select mutex implementation to use. Currently support : 'PTHREAD', 'DUMMY'.)
- PORTABILITY_OS        UNIX     Select OS implementation to use. Currently support : 'UNIX'.)
- PORTABILITY_COMPILER  GNU      Select compiler support to use. Currently support : 'GNU' (also valid intel).)
- PORTABILITY_CLOCK     RDTSC    Clock to be used to represent time in MALT.)
- PORTABILITY_PYTHON    LAZY     Select the instrumentation mode for python : 'LAZY', 'NATIVE'.)
- #select webvew server mode
- WEBVIEW_SERVER        AUTO     Select the webview server to use : AUTO, CPP, NODEJS, RUST, OFF.)
+Option ENABLE_CACHING
+^^^^^^^^^^^^^^^^^^^^^
+
+Enable some internal caches to boost the performance of MALT and reduce its overhead.
+
+You can get some statistics about the number of miss / hits by using the ENABLE_CODE_TIMING
+option.
+
+**Default**: yes.
+
+.. code-block:: shell
+
+    cmake .. -DENABLE_CACHING=no
+    cmake .. -DENABLE_CACHING=yes
+    ../configure --enable-caching
+    ../configure --disable-caching
+
+Developer options
+-----------------
+
+Option ENABLE_CODE_TIMING
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Enable some tricks to quickly check timings of hostspots of MALT internal code.
+The **metrics** will be printed **at the exit** of MALT in the **terminal**.
+
+**Default**: no
+
+.. code-block:: shell
+
+    cmake .. -DENABLE_CODE_TIMING=no
+    cmake .. -DENABLE_CODE_TIMING=yes
+
+Option ENABLE_CODE_LEAK
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Enable some internal analysis of the MALT core to detect internal memory leaks in the tool itself.
+
+**Default**: no
+
+.. code-block:: shell
+
+    cmake .. -DENABLE_CODE_LEAK=no
+    cmake .. -DENABLE_CODE_LEAK=yes
+
+Portability options
+-------------------
+
+Those option are there to ease the portability of MALT and to adapt it to the system in use.
+
+Option PORTABILITY_SPINLOCK
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Select spinlock implementation to use. Currently support : **PTHREAD**, **DUMMY**.
+
+**Default**: PTHREAD
+
+.. code-block:: shell
+
+    cmake .. -DPORTABILITY_SPINLOCK=PTHREAD
+    cmake .. -DPORTABILITY_SPINLOCK=DUMMY
+
+Option PORTABILITY_MUTEX
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+Select mutex implementation to use. Currently support : **PTHREAD**, **DUMMY**.
+
+**Default**: PTHREAD
+
+.. code-block:: shell
+
+    cmake .. -DPORTABILITY_MUTEX=PTHREAD
+    cmake .. -DPORTABILITY_MUTEX=DUMMY
+
+Option PORTABILITY_OS
+^^^^^^^^^^^^^^^^^^^^^
+
+Select OS implementation to use. Currently support : **UNIX**.
+
+**Default**: UNIX
+
+.. code-block:: shell
+
+    cmake .. -DPORTABILITY_OS=UNIX
+
+Option PORTABILITY_COMPILER
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+ Select compiler support to use. Currently support : **GNU** (also valid intel compiler toolchain).
+
+**Default**: GNU
+
+.. code-block:: shell
+
+    cmake .. -DPORTABILITY_COMPILER=GNU
+
+Option PORTABILITY_CLOCK
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+Clock to be used to represent time in MALT.
+
+**Default**: RDTSC
+
+.. code-block:: shell
+
+    cmake .. -DPORTABILITY_CLOCK=RDTSC
+
+Option PORTABILITY_PYTHON
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+elect the instrumentation mode for python : **LAZY**, **NATIVE**.
+
+**Default**: LAZY
+
+.. code-block:: shell
+
+    cmake .. -DPORTABILITY_PYTHON=LAZY
+    cmake .. -DPORTABILITY_PYTHON=NATIVE
+
+Option WEBVIEW_SERVER
+^^^^^^^^^^^^^^^^^^^^^
+
+Select the webview server implementation to use : **AUTO**, **CPP**, **NODEJS**, **RUST**, **OFF**.
+
+**Default**: AUTO
+
+.. code-block:: shell
+
+    cmake .. -DWEBVIEW_SERVER=AUTO
+    cmake .. -DWEBVIEW_SERVER=CPP
+    cmake .. -DWEBVIEW_SERVER=NODEJS
+    cmake .. -DWEBVIEW_SERVER=OFF
+    # experimental, not yet production ready
+    cmake .. -DWEBVIEW_SERVER=RUST
