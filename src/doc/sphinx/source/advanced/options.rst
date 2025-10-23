@@ -44,7 +44,7 @@ Example of config file :
 
     [time]
     enabled=true           ; enable time profiles
-    points=1000            ; keep 1000 points
+    points=512             ; keep 512 points
     linar-index=false      ; use action ID instead of time
 
     [stack]
@@ -110,3 +110,419 @@ Example of config file :
     [tools]
     nm=true                ; Enable usage of NM to find the source locatoin of the global variables.
     nmMaxSize=50M          ; Do not call nm on .so larger than 50 MB to limit the profile dump overhead.
+
+Section `time`
+--------------
+
+This set of option permits to configure the time charts about the dynamic of the application.
+
+Option `time:enabled`
+^^^^^^^^^^^^^^^^^^^^^
+
+Enable support of tracking state values over time to build time charts.
+
+**Default**: true.
+
+.. code-block:: shell
+
+    malt -o time:enabled=true ./my_program
+    malt -o time:enabled=false ./my_program
+
+Option `time:points`
+^^^^^^^^^^^^^^^^^^^^
+
+Define the number of points used to discretized the execution time of the application.
+
+**Default**: 512.
+
+.. code-block:: shell
+
+    malt -o time:points=512 ./my_program
+
+Option `time:linear_index`
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Do not use time to index data but a linear value increased on each call (might be interesting
+not to shrink intensive allocation steps on a long program which mostly not do allocation over the run.
+
+**Default**: false.
+
+.. code-block:: shell
+
+    malt -o time:linear_index=true ./my_program
+    malt -o time:linear_index=false ./my_program
+
+Section `stack`
+---------------
+
+Option `stack:enabled`
+^^^^^^^^^^^^^^^^^^^^^^
+
+Enable support of stack tracking.
+
+**Default**: true.
+
+.. code-block:: shell
+
+    malt -o stack:enabled=true ./my_program
+    malt -o stack:enabled=false ./my_program
+
+Option `stack:mode`
+^^^^^^^^^^^^^^^^^^^
+
+Override by `-s` option from the command line, it set the stack tracking method to use. See `-s` documentation
+for more details. The available values are `enter-exit`, `backtrace`, `python`, `none`. By default backtrace
+is used as it works out of the box everywhere. It is slower than enter-exit but this last one needs recompilation
+of the code with `-finstrument-functions` and see only the libs recompiled with this option. `python` permit
+to project all the C allocation directly into the python stack domain so it hides the C underwood. Good to
+improve performance over python when you are not interested into the C details.
+
+**Default**: backtrace.
+
+.. code-block:: shell
+
+    malt -o stack:mode=backtrace ./my_program
+    malt -o stack:mode=enter-exit ./my_program
+    malt -o stack:mode=python ./my_program
+    malt -o stack:mode=none ./my_program
+
+Option `stack:resolve`
+^^^^^^^^^^^^^^^^^^^^^^
+
+Enable symbol resolution at the end of execution to extract full names and source location if debug options
+is available.
+
+**Default**: true.
+
+.. code-block:: shell
+
+    malt -o stack:resolve=true ./my_program
+    malt -o stack:resolve=false ./my_program
+
+Option `stack:libunwind`
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+Use linunwind backtrace method instead of the one from glibc.
+
+**Default**: false.
+
+.. code-block:: shell
+
+    malt -o stack:libunwind=true ./my_program
+    malt -o stack:libunwind=false ./my_program
+
+Option `stack:skip`
+^^^^^^^^^^^^^^^^^^^
+
+In backtrace mode, the backtrace is called inside our instrumentation function itself called by malloc/free....
+In order to skip our internal code we need to remove them. But on some compilers or distros, inlining and LTO
+configuration make wrong detection. This can be fixed by playing with this value to keep malloc/free/calloc
+as leaf for every calltree extracted by MALT.
+
+If you don't see malloc as leaf, you should increase this value. Decrease if you start to see MALT internal
+function inside.
+
+Notice in some cases (Gentoo, Gcc-8) we start to see LTO trashing totaly the malloc/free call in O3 mode 
+normaly seen via backtrace. There is currently no other solution except recompiling in O0/O1 to avoid
+or maybe disable LTO optimizations or consider not having the exact location of the malloc itself.
+
+**Default**: 4.
+
+.. code-block:: shell
+
+    malt -o stack:skip=4 ./my_program
+
+Option `stack:sampling`
+^^^^^^^^^^^^^^^^^^^^^^^
+
+Enable sampling mode for the stacks by captuing only for a few mallocs. It is less accurate than a full
+profile but cost less in memory and CPU. In sampling mode, the stack is processed only when we seen passed
+a few bytes allocated, otherwise we consider the last seen call stack. With python you should also
+enable the backtrace mode for solving stacks via `python:stack=backtrace`.
+
+It will use the options `stack:samplingBw` and `stack:samplingCnt` to know at which rate to sample.
+
+**Default**: false.
+
+.. code-block:: shell
+
+    malt -o stack:sampling=true ./my_program
+    malt -o stack:sampling=false ./my_program
+
+Option `stack:samplingBw`
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Define the amount of data seen passed between two samples. Idealy this should be a prime number to avoid
+some multiple base biases..
+
+It is completed by also sampling on count with `stack:samplingCnt`.
+
+**Default**: 4093.
+
+.. code-block:: shell
+
+    malt -o stack:samplingBw=4093 ./my_program
+    malt -o stack:samplingBw=5242883 ./my_program
+    malt -o stack:samplingBw=10485767 ./my_program
+    malt -o stack:samplingBw=20971529 ./my_program
+
+Option `stack:samplingCnt`
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Define the number of operations passing between two sampling. Idealy this should be a prime number to avoid
+some multiple base biases..
+
+It is completed by also sampling on count with `stack:samplingBw`.
+
+**Default**: 571.
+
+.. code-block:: shell
+
+    malt -o stack:samplingCnt=13 ./my_program
+    malt -o stack:samplingCnt=31 ./my_program
+    malt -o stack:samplingCnt=67 ./my_program
+    malt -o stack:samplingCnt=67 ./my_program
+    malt -o stack:samplingCnt=257 ./my_program
+    malt -o stack:samplingCnt=571 ./my_program
+
+Section `output`
+----------------
+
+Option `output:name`
+^^^^^^^^^^^^^^^^^^^^
+
+Define the name of the profile file. %1 is replaced by the program name, %2 by the PID or MPI rank and %3 by extension.
+
+Option `output:lua`
+^^^^^^^^^^^^^^^^^^^
+
+Enable output in LUA format (same structure as JSON files but in LUA).
+
+Option `output:json`
+^^^^^^^^^^^^^^^^^^^^
+
+Enable output of the default JSON file format.
+
+Option `output:callgrind`
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Enable output of the compatibility format with callgrind/kcachegrind. Cannot contain all data but can be used
+with compatible existing tools.
+
+Option `output:indent`
+^^^^^^^^^^^^^^^^^^^^^^
+
+Enable indentations in the JSON/LUA files. Useful for debugging but generate bigger files.
+
+Option `output:config`
+^^^^^^^^^^^^^^^^^^^^^^
+
+Dump the config INI file.
+
+Option `verbosity`
+^^^^^^^^^^^^^^^^^^
+
+Set the verbosity mode of MALT. By `default` it print at start and end. You can use `silent` mode to disable any ouptput for 
+example if you instrument shell script parsing the output of child processes. You can also use `verbose` to have more 
+debugging infos in case if does not work as expected, mostly at the symbol extraction step while dumping outputs.
+
+Option `stack-tree`
+^^^^^^^^^^^^^^^^^^^
+
+Enable storage of the stacks as a tree inside the output file. It produces smaller files but require conversion
+at storage time and loading time to stay compatible with the basic expected format. You can use this option
+to get smaller files. In one case it lowers a 600 MB file to 200 MB to give an idea.
+
+Option `output:loop-suppress`
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Enable recursive loop calls to remove them and provide a more simplified equivalent call stack. It helps
+to reduce the size of profiles from applications using intensively this kind of call chain. In one case it lowers
+file from 200 MB to 85 MB. It can help if nodejs failed to load the fail because of the size. This parameter
+can also provide more readable stacks as you don't care to much how many times you cycle to call loops you
+just want to see one of them.
+
+Section `max-stack`
+-------------------
+
+Option `max-stack:enabled`
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Enable or disable the tracking of stack size and memory used by functions on stacks 
+(require  `--finstrument-function` on your code to provide data).
+
+Section `distr`
+---------------
+
+Option `distr:alloc-size`
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Generate distribution of the allocated chunk size.
+
+Option `distr:realloc-jump`
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Generate distribution of the realloc size jumps.
+
+Section `trace`
+---------------
+
+Option `trace:enabled`
+^^^^^^^^^^^^^^^^^^^^^^
+
+Enable or disable the tracing (currently not used by the GUI, work in progress).
+
+Section `info`
+--------------
+
+Option `info:enabled`
+^^^^^^^^^^^^^^^^^^^^^
+
+Enable hiding execution information. This option remove some possibility sensitive information
+from the output file, like executable names, hostname and command options. It is still recommended
+taking a look at the file for example to replace the paths which might also be removed.
+This option target some companies which might want to hide their internal applications when exchanging
+with external partners.
+
+Section `filter`
+----------------
+
+Option `filter:exe`
+^^^^^^^^^^^^^^^^^^^
+
+Enable filtering of executable to enable MALT and ignore otherwise. By default empty value enable
+MALT on all executable.
+
+Option `filter:childs`
+^^^^^^^^^^^^^^^^^^^^^^
+
+Enable instrumentation of children processes or not. By default instruments all.
+
+Option `filter:enabled`
+^^^^^^^^^^^^^^^^^^^^^^^
+
+Enable profiling by default. Can be disable to be able to activate via C function call in the app 
+when you want.
+
+Option `filter:ranks`
+^^^^^^^^^^^^^^^^^^^^^
+
+When running in MPI mode, instrument only the given ranks. The list is provided under the form
+`1,2-4,6`.
+
+Section `dump`
+--------------
+
+Option `dump:on-signal`
+^^^^^^^^^^^^^^^^^^^^^^^
+
+Will dump on given signal. Can be on or comma separated list of: `SIGINT`, `SIGUSR1`, `SIGUSR2`, ...
+Notice profiling will currently stop from this point app will continue without profiling.
+To be fixed latter.
+You can get the list of availble list by using `help` or `avail` in place of name.
+
+Option `dump:after-seconds`
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Will dump profile after X seconds.
+Notice profiling will currently stop from this point app will continue without profiling.
+To be fixed latter.
+
+Option `dump:on-sys-full-at`
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Will dump if the system memory if globaly filled at x%. Use empty string to disable.
+Remark it consider free the free memory and the cached memory. A good value in practice is
+more 70% / 80% than going to 95% due to necessity to let room for the cached memory and because
+it will starts to swap before that. Consider also that MALT itself adds up memory on top of your
+one (considered in the % here.). Values can be in %, K, M, G by ending with the corresponding
+character.
+
+Option `dump:on-app-using-rss`
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Will dump if the application reach the given RSS limit. The value is given in % of the global memory
+available or in K, M, G. Empty to disable (default).
+
+Option `dump:on-app-using-virt`
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Will dump if the application reach the given virtual memory limit. The value is given in % of the global memory
+available or in K, M, G. Empty to disable (default).
+
+Option `dump:on-app-using-req`
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Will dump if the application reach the given requested memory limit. The value is given in % of the global memory
+available or in K, M, G. Empty to disable (default).
+
+Option `dump:on-thread-stack-using`
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Will dump if one of the thread stack reach the given limit. The value is given in % of the global memory
+available or in K, M, G. Empty to disable (default).
+
+Option `dump:watch-dog`
+^^^^^^^^^^^^^^^^^^^^^^^
+
+Will start a thread which will spy the memory usage of the process and trigger the dump as soon as it sees it
+going to hight. This is to balance the fact than normally the system and process memory is spied only sometimes
+by MALT in normal condition to keep the overhead low.
+
+Section `python`
+----------------
+
+The `python` section permit to configure how to instrument python. Notice that you need to build MALT with
+`--enable-python` so it is effective.
+
+Option `python:instru`
+^^^^^^^^^^^^^^^^^^^^^^
+
+Enable of disable the python instrumentation.
+
+Option `python:stack`
+^^^^^^^^^^^^^^^^^^^^^
+
+Select the stack instrumentation mode, either `enter-exit`, `backtrace` or `none`. By default `enter-exit` is
+faster so you should use it. When enabling sampling you need to use `bactrace` if you don't want to pay
+an unneeded overhead. You can also disable python stack checking with `none`.
+
+Option `python:mix`
+^^^^^^^^^^^^^^^^^^^
+
+By default when disabled the C & Python stacks are analysed independently which mean that is a python
+function call a C function you will see only the C call stack. Mix allow to merge the two layeres so you
+see that python call C. But it adds overhead on the anlysis of course because of the extra work.
+
+Option `python:obj`
+^^^^^^^^^^^^^^^^^^^
+
+Analyse or ignore the object allocation domain of python. This is interesting to ignore all the small
+allocs used by the language as it would have been on the stack in C. It improves a lot the profiling performance
+of python but miss part of the memory consumption if your program store lots of small objets for long times.
+
+Option `python:mem`
+^^^^^^^^^^^^^^^^^^^
+
+Same but for the mem allocation domain of python. In principle you should let it enabled.
+
+Option `python:raw`
+^^^^^^^^^^^^^^^^^^^
+
+Same but for the raw allocation domain of python which is backed by the standard C malloc function. In principle you should let it enabled.
+
+Section `tools`
+---------------
+
+The `tools` section permit to configure some of the sub-tools called by MALT to perform its analysis.
+
+Option `tools:nm`
+^^^^^^^^^^^^^^^^^
+
+Use to extract the source location of the global variables. If true (default) it is used, otherwise it is skiped.
+
+Option `tools:nmMaxSize`
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+By default it limits the size of the .so files on which to apply NM in order to keep a decent profile dumping
+time when running on large frameworks like PyTorch which tends to load huge .so files in memory.

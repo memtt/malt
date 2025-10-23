@@ -11,7 +11,7 @@ To cite
 
 If you publish about MALT, you cite this research paper as reference :
 
-.. code-block:: plein
+.. code-block:: text
 
   Sébastien Valat, Andres S. Charif-Rubial, and William Jalby. 2017. MALT: a Malloc tracker.
   In Proceedings of the 4th ACM SIGPLAN International Workshop on Software Engineering for

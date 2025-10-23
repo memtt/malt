@@ -6,6 +6,10 @@
 MALT documentation
 ==================
 
+.. image:: _static/images/malt-logo.png
+   :width: 40%
+   :align: center
+
 What is it
 ----------
 
@@ -52,6 +56,9 @@ Advanced topics
 :doc:`/advanced/options`
   Using MALT **options**.
 
+:doc:`/advanced/build-options`
+  Compiling MALT with extra **build options**.
+
 :doc:`/advanced/packaging`
   Building **packaging** for common distributions.
 
@@ -76,4 +83,5 @@ Advanced topics
    /advanced/mpi.rst
    /advanced/custom-allocs.rst
    /advanced/options.rst
+   /advanced/build-options.rst
    /advanced/packaging.rst

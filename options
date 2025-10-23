@@ -65,6 +65,11 @@ cfg_add_enable_option --name='jemalloc' \
 						--on='-DENABLE_JEMALLOC=${ON}' \
 						--doc='Enable building the internal jemalloc to get better internal memory handling.' \
 
+#profiler
+cfg_add_enable_option --name='prefer-embed' \
+						--on='-DENABLE_PREFER_EMBED=${ON}' \
+						--doc='Prefer using the embedded dependencies instead of search the system onces.'
+
 ############################################################
 #libunwind
 cfg_add_with_option --name='libunwind' \

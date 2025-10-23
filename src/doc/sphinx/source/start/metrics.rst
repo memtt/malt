@@ -14,7 +14,7 @@ the language semantic.
 
 You can find the general view here :
 
-.. figure:: ../_static/images/memory-pools.svg
+.. figure:: /_static/images/memory-pools.png
    :width: 95 %
    :alt: The 4 memory consumption parts.
 
