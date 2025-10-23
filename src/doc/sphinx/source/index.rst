@@ -10,8 +10,8 @@ MALT documentation
    :width: 40%
    :align: center
 
-What is it
-----------
+What is MALT ?
+--------------
 
 MALT is a memory tool to find where you allocate your memory. It also provides you some statistics
 about memory usage and help to find memory leaks.

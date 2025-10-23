@@ -9,7 +9,7 @@
 project = 'MALT'
 copyright = '2025, Sébastien Valat'
 author = 'Sébastien Valat'
-release = '1.4.0'
+release = '1.4.1'
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
