@@ -56,6 +56,9 @@ Advanced topics
 :doc:`/advanced/sub-part`
   Using MALT on a **sub-part of your programe**.
 
+:doc:`/advanced/finstrum`
+  Using MALT with **-finstrument-functions**.
+
 :doc:`/advanced/options`
   Using MALT **options**.
 
@@ -70,6 +73,9 @@ Advanced topics
 
 :doc:`/advanced/other-allocators`
   Discovering some **alternative memory allocators**.
+
+:doc:`/advanced/documentation`
+  Documentation about **memory managment**.
 
 .. the global tocs
 
@@ -92,8 +98,10 @@ Advanced topics
    /advanced/mpi.rst
    /advanced/custom-allocs.rst
    /advanced/sub-part.rst
+   /advanced/finstrum.rst
    /advanced/options.rst
    /advanced/build-options.rst
    /advanced/packaging.rst
    /advanced/other-tools.rst
    /advanced/other-allocators.rst 
+   /advanced/documentation.rst 
