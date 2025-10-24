@@ -45,4 +45,5 @@ examples/python/*.so
 .idea
 
 # doc
-src/doc/sphinx/build
+doc/build
+doxygen
