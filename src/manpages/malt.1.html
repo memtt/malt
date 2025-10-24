@@ -473,18 +473,18 @@ of python but miss part of the memory consumption if your program store lots of 
 
 <p>If you run on a really big program doing millions of allocation you might get a big overhead, and maybe
 you are just interested in a sub-part of the program. You can do it by including <code>malt/malt.h</code> in
-your files and use <code>maltEnable()</code> an <code>maltDisable()</code> to controle MALT on each thread. It is also a nice
+your files and use <code>malt_enable()</code> an <code>malt_disable()</code> to controle MALT on each thread. It is also a nice
 way to detect leaks of sub-parts of your code.</p>
 
 <pre><code>#include &lt;malt/malt.h&gt;
 
 int main() 
 {
-	maltDisable();
+	malt_disable();
 	//ignored
 	malloc(16);
 
-	maltEnable();
+	malt_enable();
 	//tracked
 	malloc(16);
 }

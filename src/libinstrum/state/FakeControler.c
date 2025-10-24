@@ -11,17 +11,17 @@
 #include "portability/Visibility.hpp"
 
 /**********************************************************/
-DLL_PUBLIC void maltEnable(void)
+DLL_PUBLIC void malt_enable(void)
 {
 };
 
 /**********************************************************/
-DLL_PUBLIC void maltDisable(void)
+DLL_PUBLIC void malt_disable(void)
 {
 }
 
 /**********************************************************/
-DLL_PUBLIC int maltInitStatus(void)
+DLL_PUBLIC int malt_init_status(void)
 {
 	return 0;
 }

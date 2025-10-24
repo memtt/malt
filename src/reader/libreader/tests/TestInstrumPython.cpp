@@ -41,12 +41,12 @@ TEST(TestInstrumPython, python_basic_array_backtrace)
 	MALT::globalResetForTests();
 
 	//make an alloc
-	maltEnable();
+	malt_enable();
 	const char * argv[] = {"TestInstrum", CUR_SRC_DIR "/main1.py", NULL};
 	::Py_Initialize();
 	MALT::initPythonInstrumentation(argv[1]);
 	int status = ::Py_BytesMain(2, (char**)argv);
-	maltDisable();
+	malt_disable();
 
 	//check
 	ASSERT_EQ(status, 0);
@@ -82,12 +82,12 @@ TEST(TestInstrumPython, python_basic_array_enter_exit)
 	MALT::globalResetForTests();
 
 	//make an alloc
-	maltEnable();
+	malt_enable();
 	const char * argv[] = {"TestInstrum", CUR_SRC_DIR "/main1.py", NULL};
 	::Py_Initialize();
 	MALT::initPythonInstrumentation(argv[1]);
 	int status = ::Py_BytesMain(2, (char**)argv);
-	maltDisable();
+	malt_disable();
 
 	//check
 	ASSERT_EQ(status, 0);

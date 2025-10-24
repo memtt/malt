@@ -21,7 +21,7 @@ DLL_PUBLIC int maltInitStatus(void)
 }
 
 /**********************************************************/
-DLL_PUBLIC void maltEnable(void)
+DLL_PUBLIC void malt_enable(void)
 {
 	//env
 	MALT::LazyEnv env;
@@ -29,7 +29,7 @@ DLL_PUBLIC void maltEnable(void)
 }
 
 /**********************************************************/
-DLL_PUBLIC void maltDisable(void)
+DLL_PUBLIC void malt_disable(void)
 {
 	//env
 	MALT::LazyEnv env;

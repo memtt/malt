@@ -44,9 +44,9 @@ TEST(TestInstrum, c_basic_malloc)
 	MALT::globalResetForTests();
 
 	//make an alloc
-	maltEnable();
+	malt_enable();
 	void * ptr = function_testing_c_malloc();
-	maltDisable();
+	malt_disable();
 
 	//check
 	ASSERT_NE(ptr, nullptr);

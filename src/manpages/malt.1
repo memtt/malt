@@ -254,18 +254,18 @@ Define the stack mode to use (equivalent of \fB\-s\fR option)\.
 \fBMALT_OPTIONS\fR
 List of options to transmit to MALT (equivalent of \fB\-o\fR option, see its documentation for format)\.
 .SH "ON SUB\-PART OF YOUR PROGRAM"
-If you run on a really big program doing millions of allocation you might get a big overhead, and maybe you are just interested in a sub\-part of the program\. You can do it by including \fBmalt/malt\.h\fR in your files and use \fBmaltEnable()\fR an \fBmaltDisable()\fR to controle MALT on each thread\. It is also a nice way to detect leaks of sub\-parts of your code\.
+If you run on a really big program doing millions of allocation you might get a big overhead, and maybe you are just interested in a sub\-part of the program\. You can do it by including \fBmalt/malt\.h\fR in your files and use \fBmalt_enable()\fR an \fBmalt_disable()\fR to controle MALT on each thread\. It is also a nice way to detect leaks of sub\-parts of your code\.
 .IP "" 4
 .nf
 #include <malt/malt\.h>
 
 int main()
 {
-	maltDisable();
+	malt_disable();
 	//ignored
 	malloc(16);
 
-	maltEnable();
+	malt_enable();
 	//tracked
 	malloc(16);
 }

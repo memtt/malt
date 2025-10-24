@@ -53,6 +53,9 @@ Advanced topics
 :doc:`/advanced/custom-allocs`
   Using MALT with **custom memory allocators**.
 
+:doc:`/advanced/sub-part`
+  Using MALT on a **sub-part of your programe**.
+
 :doc:`/advanced/options`
   Using MALT **options**.
 
@@ -61,6 +64,12 @@ Advanced topics
 
 :doc:`/advanced/packaging`
   Building **packaging** for common distributions.
+
+:doc:`/advanced/other-tools`
+  Discovering some other **alternative tools**.
+
+:doc:`/advanced/other-allocators`
+  Discovering some **alternative memory allocators**.
 
 .. the global tocs
 
@@ -82,6 +91,9 @@ Advanced topics
 
    /advanced/mpi.rst
    /advanced/custom-allocs.rst
+   /advanced/sub-part.rst
    /advanced/options.rst
    /advanced/build-options.rst
    /advanced/packaging.rst
+   /advanced/other-tools.rst
+   /advanced/other-allocators.rst 

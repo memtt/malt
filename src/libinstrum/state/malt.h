@@ -17,9 +17,9 @@ extern "C"
 #endif
 
 /**********************************************************/
-void maltEnable(void);
-void maltDisable(void);
-int maltInitStatus(void);
+void malt_enable(void);
+void malt_disable(void);
+int malt_init_status(void);
 
 #ifdef __cplusplus
 }

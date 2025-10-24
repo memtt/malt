@@ -46,6 +46,20 @@ instead if GCC to match the app :
     # with the cmake script directly
     cmake -DCMAKE_C_COMPILER=icc -DCMAKE_CXX_COMPILER=icpc
 
+Installation in non-standard directory
+--------------------------------------
+
+If you install MALT in a directory other than `/usr` and `/usr/local`, eg. in your home, you might
+be interested by setting some environment variables integrating it to your shell :
+
+.. code:: shell
+
+   export PATH=${PREFIX}/bin:$PATH
+   export MANPATH=${PREFIX}/share/man:$MANPATH
+
+`LD_LIBRARY_PATH` is not required as the `malt` command will use the full path to get access the
+internal `.so` file.
+
 Installing via spack
 --------------------
 

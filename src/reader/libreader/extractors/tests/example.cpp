@@ -62,8 +62,8 @@ void main_sim(void)
 /**********************************************************/
 int main(int argc, char * argv[])
 {
-	maltEnable();	
+	malt_enable();	
 	main_sim();
-	maltDisable();
+	malt_disable();
 	return EXIT_SUCCESS;
 }
