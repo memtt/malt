@@ -68,13 +68,16 @@ Advanced topics
 :doc:`/advanced/packaging`
   Building **packaging** for common distributions.
 
-:doc:`/advanced/other-tools`
+External pointers
+-----------------
+
+:doc:`/external/other-tools`
   Discovering some other **alternative tools**.
 
-:doc:`/advanced/other-allocators`
+:doc:`/external/other-allocators`
   Discovering some **alternative memory allocators**.
 
-:doc:`/advanced/documentation`
+:doc:`/external/documentation`
   Documentation about **memory managment**.
 
 .. the global tocs
@@ -102,6 +105,12 @@ Advanced topics
    /advanced/options.rst
    /advanced/build-options.rst
    /advanced/packaging.rst
-   /advanced/other-tools.rst
-   /advanced/other-allocators.rst 
-   /advanced/documentation.rst 
+
+.. toctree::
+   :maxdepth: 1
+   :hidden:
+   :caption: External pointers
+
+   /external/other-tools.rst
+   /external/other-allocators.rst 
+   /external/documentation.rst 
