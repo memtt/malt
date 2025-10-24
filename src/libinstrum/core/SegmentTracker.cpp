@@ -14,6 +14,7 @@
 #include <cassert>
 #include <cstdio>
 #include <json/ConvertToJson.h>
+#include "stacks/BacktraceStack.hpp"
 #include "SegmentTracker.hpp"
 
 /*******************  NAMESPACE  ********************/
@@ -196,7 +197,11 @@ LeakInfo::LeakInfo(void)
 void convertToJson(htopml::JsonState& json, const LeakInfoMap::const_iterator& it)
 {
 	json.openStruct();
-	json.printField("stack",*(it->first));
+	if (it->first == nullptr) {
+		json.printFieldArray("stack", (char*)nullptr, 0);
+	} else {
+		json.printField("stack",*(it->first));
+	}
 	json.printField("count",it->second.cnt);
 	json.printField("memory",it->second.mem);
 	json.closeStruct();

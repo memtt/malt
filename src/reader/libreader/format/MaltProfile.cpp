@@ -57,8 +57,10 @@ void from_json(const JsonIn & json, MaltProfile & profile)
 			json["run"].get_to(profile.run);
 			#pragma omp task
 			json["config"].get_to(profile.config);
-			#pragma omp task
-			json["stacks"].get_to(profile.stacks);
+			if (json.contains("stacks")) {
+				#pragma omp task
+				json["stacks"].get_to(profile.stacks);
+			}
 			#pragma omp task
 			json["sites"].get_to(profile.sites);
 			#pragma omp task
