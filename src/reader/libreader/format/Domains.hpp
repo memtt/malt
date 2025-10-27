@@ -35,6 +35,8 @@ struct Domains
 {
 	DomainCounters counters;
 	DomainCounters mem;
+	DomainCounters atGlobalPeak;
+	DomainCounters localPeak;
 };
 
 /**********************************************************/
