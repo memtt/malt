@@ -138,12 +138,12 @@ bool Addr2Line::loadEntry(CallSite & callSite, FILE * fp)
 	char * file = fgets(bufferFile,sizeof(bufferFile)-1,fp);
 
 	//check
-	assume(strlen(function) < sizeof(bufferFunc) - 2, "Overflow buffer size !");
-	assume(strlen(file) < sizeof(bufferFile) - 2, "Overflow buffer size !");
-
-	//check
 	if (function != bufferFunc || file != bufferFile)
 		return false;
+
+	//check
+	assume(strlen(function) < sizeof(bufferFunc) - 2, "Overflow buffer size !");
+	assume(strlen(file) < sizeof(bufferFile) - 2, "Overflow buffer size !");
 
 	//debug
 	//MALT_DEBUG_ARG("addr2line", "function=%1, source=%2").arg(bufferFunc).arg(bufferFile).end();

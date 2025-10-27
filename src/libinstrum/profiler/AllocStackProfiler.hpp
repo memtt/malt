@@ -172,7 +172,7 @@ class AllocStackProfiler
 		void solvePerThreadSymbols(void);
 		void memOpsLevels(void);
 		void updatePeakInfoOfStacks(void);
-		void peakTracking(ssize_t delta);
+		bool peakTracking(ssize_t delta);
 		void loadGlobalVariables(void);
 		void loopSuppress(void);
 		std::string getFileExeScriptName(void) const;

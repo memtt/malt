@@ -292,11 +292,12 @@ void AllocStackProfiler::onAllocEvent(void* ptr, size_t size,Stack* userStack,MM
 		this->nbAllocSeen++;
 		this->trigger.onAllocOp(this->nbAllocSeen);
 		
-		//peak tracking
-		peakTracking(size);
-
 		//count
 		this->domains.countAlloc(domain, size);
+
+		//peak tracking
+		if (peakTracking(size))
+			this->domains.updatePeak(domain);
 	
 		//update mem usage
 		if (options.timeProfileEnabled)
@@ -450,6 +451,9 @@ FreeFinalInfos AllocStackProfiler::onFreeEvent(void* ptr, MALT::Stack* userStack
 		result.size = size;
 		result.lifetime = lifetime;
 		result.allocStack = segInfo->callStack.stack;
+
+		//count
+		this->domains.countFree(domain, size);
 		
 		//peak tracking
 		peakTracking(-size);
@@ -649,14 +653,17 @@ void AllocStackProfiler::onMremap(AllocTracerEvent & traceEntry, void * ptr,size
 }
 
 /**********************************************************/
-void AllocStackProfiler::peakTracking(ssize_t delta)
+bool AllocStackProfiler::peakTracking(ssize_t delta)
 {
+	bool isPeak = false;
 	if (this->curReq > this->peak)
-		{
-			this->peakId++;
-			this->peak = this->curReq;
-		}
-		this->curReq += delta;
+	{
+		this->peakId++;
+		this->peak = this->curReq;
+		isPeak = true;
+	}
+	this->curReq += delta;
+	return isPeak;
 }
 
 /**********************************************************/

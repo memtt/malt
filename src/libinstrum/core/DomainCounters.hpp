@@ -15,6 +15,8 @@
 #include <cassert>
 //extern deps
 #include <json/JsonState.h>
+//malt
+#include <common/Debug.hpp>
 
 /**********************************************************/
 namespace MALT
@@ -50,13 +52,21 @@ class DomainCounters
 		DomainCounters(void);
 		~DomainCounters(void);
 		inline void countAlloc(AllocDomain domain, size_t mem);
+		inline void countFree(AllocDomain domain, size_t mem);
+		inline void updatePeak(AllocDomain domain);
 	public:
 		friend void convertToJson(htopml::JsonState& json, const DomainCounters & value);
 	private:
 		/** Count number of operations. */
 		size_t counters[ALLOC_DOMAIN_COUNT];
+		/** Amount total managed by domain. */
+		size_t sum[ALLOC_DOMAIN_COUNT];
 		/** Amount of memory per domain. */
 		size_t mem[ALLOC_DOMAIN_COUNT];
+		/** Memory peak of the domain */
+		size_t localPeak[ALLOC_DOMAIN_COUNT];
+		/** peak value */
+		size_t atGlobalPeak[ALLOC_DOMAIN_COUNT];
 };
 
 /**********************************************************/
@@ -72,7 +82,38 @@ void DomainCounters::countAlloc(AllocDomain domain, size_t mem)
 
 	//increement
 	this->counters[domain]++;
+	this->sum[domain] += mem;
 	this->mem[domain] += mem;
+	
+	//peak
+	if (this->mem[domain] > this->localPeak[domain])
+		this->localPeak[domain] = this->mem[domain];
+}
+
+/**********************************************************/
+/**
+ * Decrease the counters about peak memory about the size.
+ * @param domain Language domain in which the call rise up.
+ * @param mem The amount of memory freed.
+ */
+void DomainCounters::countFree(AllocDomain domain, size_t mem)
+{
+	//check
+	assert(domain >=0 && domain < ALLOC_DOMAIN_COUNT);
+
+	//decrement
+	if (this->mem[domain] >= mem)
+		this->mem[domain] -= mem;
+}
+
+/**********************************************************/
+void DomainCounters::updatePeak(AllocDomain domain)
+{
+	//check
+	assert(domain >=0 && domain < ALLOC_DOMAIN_COUNT);
+
+	//copy
+	this->atGlobalPeak[domain] = this->mem[domain];
 }
 
 }
