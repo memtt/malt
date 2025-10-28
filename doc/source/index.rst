@@ -59,6 +59,9 @@ Advanced topics
 :doc:`/advanced/finstrum`
   Using MALT with **-finstrument-functions**.
 
+:doc:`/advanced/track-oom`
+  Using MALT to track **out of memory** on a program.
+
 :doc:`/advanced/options`
   Using MALT **options**.
 
@@ -102,6 +105,7 @@ External pointers
    /advanced/custom-allocs.rst
    /advanced/sub-part.rst
    /advanced/finstrum.rst
+   /advanced/track-oom.rst
    /advanced/options.rst
    /advanced/build-options.rst
    /advanced/packaging.rst
