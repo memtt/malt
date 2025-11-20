@@ -1,5 +1,6 @@
 /***********************************************************
 *    PROJECT  : MALT (MALoc Tracker)
+*    VERSION  : 1.3.1
 *    DATE     : 06/2025
 *    LICENSE  : CeCILL-C
 *    FILE     : src/webview/malt-webserver.js
@@ -23,6 +24,7 @@ var child       = require('child_process');
 var auth        = require('http-auth');
 var process     = require('process');
 var path        = require('path');
+var crypto      = require('crypto');
 
 //internal classes
 var MaltProject = require('./server-files/MaltProject.js');
@@ -46,6 +48,7 @@ args.add({ name: 'port',  desc: 'Port to use to wait for HTTP requests', switche
 args.add({ name: 'override',  desc: 'Override source dirs. Format is src1:dest1,src2:dest2...', switches: [ '-o', '--override'],       value: 'redirections', required: false });
 args.add({ name: 'noauth',    desc: 'Disable http authentification', switches: ['-n', '--no-auth'], required: false });
 args.add({ name: 'authfile',    desc: 'Use custom authentification file', switches: ['-A', '--authfile'], value:'file', required: false });
+args.add({ name: 'tokenreset',    desc: 'Reset the token used by the server', switches: ['-R', '--reset-token'], required: false });
 if (!args.parse())
 {
 	console.error("Invalid parameters, please check with -h");
@@ -60,24 +63,58 @@ function getUserHome() {
 
 /**********************************************************/
 //Setup http auth if enabled
-if (args.params.noauth == undefined)
-{
+var accessToken = "";
+
+/**********************************************************/
+async function setTokenAuth() {
 	//fil
-	var file = getUserHome() + "/.malt/passwd";
+	var file = getUserHome() + "/.malt/token";
 	if (args.params.authfile != undefined)
 		file = args.params.authfile;
 
-	//log
-	console.log("Load http auth from "+file+", you can change your password with 'malt-passwd {user}' or disable auth with --no-auth\n");
+	//check exist
+	if (fs.existsSync(file) && args.params.tokenreset == undefined) {
+		accessToken = fs.readFileSync(file);
+	} else {
+		buffer = await crypto.randomBytes(24);
+		accessToken = buffer.toString('hex');
+		if (!fs.existsSync(getUserHome() + "/.malt"))
+			fs.mkdirSync(getUserHome() + "/.malt");
+		var fd = fs.openSync(file, 'w+');
+		fs.chmodSync(file, '600');
+		fs.writeFileSync(fd, accessToken);
+		fs.closeSync(fd);
+	}
 
 	//setup auth system
 	var basic = auth.basic({
 	    realm: "MALT web GUI.",
 	    file: file
 	});
+
 	//inserto into express
 	app.use(auth.connect(basic));
+
+
+	//ok
+	return accessToken;
 }
+
+/**********************************************************/
+// Middleware for token verification
+const authenticateToken = (req, res, next) => {
+	if (accessToken != "") {
+		const authHeader = req.headers['authorization'];
+		const reqtoken = authHeader && authHeader.split(' ')[1];
+		const keyword = authHeader && authHeader.split(' ')[0];
+		if (!reqtoken) return res.status(401).send('Token required');
+		if (keyword != "Bearer") return res.status(401).send('Invalid bearer keyword');
+		if (reqtoken != accessToken) return res.status(403).send('Invalid or expired token');
+	}
+
+	//ok
+	next();
+};
 
 /**********************************************************/
 var host = 'localhost';
@@ -103,13 +140,17 @@ if (args.params.override != undefined)
 
 /**********************************************************/
 //load file
-var maltProject = new MaltProject(args.params.input, () => {
+var maltProject = new MaltProject(args.params.input, async () => {
 
 	//listen add
 	var listening = `http://${host}:${port}/`.padEnd(30);
 
 	//ssh
 	var sshAddr = `-L8080:localhost:${port} {SERVER}`.padEnd(40);
+
+	var token = "";
+	if (args.params.noauth == undefined)
+		token = await setTokenAuth();
 
 	
 	//run express
@@ -128,6 +169,11 @@ var maltProject = new MaltProject(args.params.input, () => {
 	console.log( "|                  To use from remote you can :                           |");
 	console.log( `|           user> ssh ${sshAddr}            |`);
 	console.log( "|                                                                         |");
+	if (token != "") {
+		console.log( "|                    Authentication token is :                            |");
+		console.log( `|         ${token}                |`);
+		console.log( "|                                                                         |");
+	}
 	console.log( "+-------------------------------------------------------------------------+");
 
 	//remove
@@ -144,7 +190,7 @@ var maltProject = new MaltProject(args.params.input, () => {
 });
 
 /**********************************************************/
-app.get('/flat.json',function(req,res) {
+app.get('/flat.json', authenticateToken,function(req,res) {
 	var tmp = null;
 
 	//check cache
@@ -164,7 +210,7 @@ app.get('/flat.json',function(req,res) {
 });
 
 /**********************************************************/
-app.get('/summary.json',function(req,res) {
+app.get('/summary.json', authenticateToken,function(req,res) {
 	var tmp = maltProject.getSummary();
 	res.json(tmp);
 	res.end();
@@ -172,7 +218,7 @@ app.get('/summary.json',function(req,res) {
 
 /**********************************************************/
 //export timed value to build charts
-app.get('/timed.json',function(req,res) {
+app.get('/timed.json', authenticateToken,function(req,res) {
 	var tmp = maltProject.getTimedValues();
 	res.json(tmp);
 	res.end();
@@ -180,7 +226,7 @@ app.get('/timed.json',function(req,res) {
 
 /**********************************************************/
 //export max stack info
-app.get('/max-stack-infos.json',function (req,res){
+app.get('/max-stack-infos.json', authenticateToken,function (req,res){
 	var tmp = maltProject.getMaxStack();
 	res.json(tmp);
 	res.end();
@@ -188,7 +234,7 @@ app.get('/max-stack-infos.json',function (req,res){
 
 /**********************************************************/
 //export max stack info
-app.get('/stacks-mem.json',function (req,res){
+app.get('/stacks-mem.json', authenticateToken,function (req,res){
 	var tmp = maltProject.getStacksMem();
 	res.json(tmp);
 	res.end();
@@ -196,7 +242,7 @@ app.get('/stacks-mem.json',function (req,res){
 
 /**********************************************************/
 //export max stack info
-app.get('/procmap.json',function (req,res){
+app.get('/procmap.json', authenticateToken,function (req,res){
 	var tmp = maltProject.getProcMap();
 	res.json(tmp);
 	res.end();
@@ -204,14 +250,14 @@ app.get('/procmap.json',function (req,res){
 
 /**********************************************************/
 //export max stack info
-app.get('/global-variables.json',function (req,res){
+app.get('/global-variables.json', authenticateToken,function (req,res){
 	var tmp = maltProject.getGlobalVariables();
 	res.json(tmp);
 	res.end();
 });
 
 /**********************************************************/
-app.post('/stacks.json',function(req,res){
+app.post('/stacks.json', authenticateToken,function(req,res){
 	//extratc file from request
 	var file = req.body.file;
 	var line = req.body.line;
@@ -234,7 +280,7 @@ app.post('/stacks.json',function(req,res){
 });
 
 /**********************************************************/
-app.get('/memtrace-at.json',function(req,res) {
+app.get('/memtrace-at.json', authenticateToken,function(req,res) {
 	console.log("At : "+req.query.at);
 	console.log(maltProject.getTraceFilename());
 
@@ -258,7 +304,7 @@ app.get('/memtrace-at.json',function(req,res) {
 });
 
 /**********************************************************/
-app.post('/file-infos.json',function(req,res) {
+app.post('/file-infos.json', authenticateToken,function(req,res) {
 	//extract file from request
 	var file = req.body.file;
 
@@ -285,14 +331,14 @@ app.post('/file-infos.json',function(req,res) {
 });
 
 /**********************************************************/
-app.get('/max-stack.json',function(req,res) {
+app.get('/max-stack.json', authenticateToken,function(req,res) {
 	var tmp = maltProject.getMaxStackInfoOnFunction();
 	res.json(tmp);
 	res.end();
 });
 
 /**********************************************************/
-app.get('/stack.json',function(req,res) {
+app.get('/stack.json', authenticateToken,function(req,res) {
 	var id = req.query.id;
 	var tmp = maltProject.getStackInfoOnFunction(id);
 	res.json(tmp);
@@ -300,7 +346,7 @@ app.get('/stack.json',function(req,res) {
 });
 
 /**********************************************************/
-app.get('/proc-map-distr.json',function(req,res) {
+app.get('/proc-map-distr.json', authenticateToken,function(req,res) {
 	var tmp = maltProject.getProcMapDistr();
 	res.json(tmp);
 	res.end();
@@ -308,42 +354,42 @@ app.get('/proc-map-distr.json',function(req,res) {
 
 /**********************************************************/
 //export scatter info
-app.get('/scatter.json',function (req,res){
+app.get('/scatter.json', authenticateToken,function (req,res){
 	var tmp = maltProject.getScatter();
 	res.json(tmp);
 	res.end();
 });
 
 /**********************************************************/
-app.get('/size-map.json',function(req,res) {
+app.get('/size-map.json', authenticateToken,function(req,res) {
 	var tmp = maltProject.getSizeMap();
 	res.json(tmp);
 	res.end();
 });
 
 /**********************************************************/
-app.get('/realloc-map.json',function(req,res) {
+app.get('/realloc-map.json', authenticateToken,function(req,res) {
 	var tmp = maltProject.getReallocMap();
 	res.json(tmp);
 	res.end();
 });
 
 /**********************************************************/
-app.get('/debug-stack-list.json',function(req,res) {
+app.get('/debug-stack-list.json', authenticateToken,function(req,res) {
 	var tmp = maltProject.getDebugStackList();
 	res.json(tmp);
 	res.end();
 });
 
 /**********************************************************/
-app.get('/data/summary.json',function(req,res) {
+app.get('/data/summary.json', authenticateToken,function(req,res) {
 	var tmp = maltProject.getSummaryV2();
 	res.json(tmp);
 	res.end();
 });
 
 /**********************************************************/
-app.get('/calltree', function(req, res) {
+app.get('/calltree', authenticateToken, function(req, res) {
 	maltProject.getCallTree(req.query.nodeid, req.query.depth, 
 		req.query.height, req.query.mincost, req.query.func, req.query.metric, 
 		req.query.isratio, function(data) {
@@ -364,7 +410,7 @@ app.get('/calltree', function(req, res) {
 });
 
 /**********************************************************/
-app.post('/calltree', function(req, res) {
+app.post('/calltree', authenticateToken, function(req, res) {
 	maltProject.getCallTree(req.body.nodeid, req.body.depth, 
 		req.body.height, req.body.mincost, req.body.func, req.body.metric, 
 		req.body.isratio, function(data) {
@@ -385,7 +431,7 @@ app.post('/calltree', function(req, res) {
 });
 
 /**********************************************************/
-app.get('/active-chunks', function(req, res) {
+app.get('/active-chunks', authenticateToken, function(req, res) {
 	maltProject.getActiveChunks(req.query.timestamp, function(result) {
 		res.json(result);
 	});
@@ -398,12 +444,12 @@ app.get('/',function(eq,res,next){
 });
 
 /**********************************************************/
-app.get('/data.json',function(eq,res,next){
+app.get('/data.json', authenticateToken,function(eq,res,next){
 	res.sendfile(args.params.input);
 });
 
 /**********************************************************/
-app.post('/source-file',function(req, res){
+app.post('/source-file', authenticateToken,function(req, res){
 	console.log(req.body.path);
 	if (req.body.path == undefined) {
 		res.send(500, 'Missing path POST parameter !');
@@ -419,7 +465,7 @@ app.post('/source-file',function(req, res){
 });
 
 /**********************************************************/
-app.post("/call-stack-next-level.json", function(req, res) {
+app.post("/call-stack-next-level.json", authenticateToken, function(req, res) {
 	filter = {"function": req.body.filter.function, "file": req.body.filter.file, "line": req.body.filter.line};
 
 	if (filter.function == null)
@@ -435,7 +481,7 @@ app.post("/call-stack-next-level.json", function(req, res) {
 
 /**********************************************************/
 var staticSourceServer = Express.static('/');
-app.use('/app-sources/',function(req,res,next){
+app.use('/app-sources/', authenticateToken,function(req,res,next){
 	var reqPath = decodeURIComponent(req.path)
 		.replace('/{..}/','../')
 		.replace('/{.}/','./')
