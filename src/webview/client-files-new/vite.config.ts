@@ -1,0 +1,99 @@
+import { defineConfig } from 'vite'
+import vue from '@vitejs/plugin-vue'
+import { resolve } from 'node:path'
+import svgLoader from 'vite-svg-loader'
+
+export default defineConfig({
+  plugins: [
+    vue(),
+    svgLoader({
+      svgoConfig: {
+        plugins: [
+          {
+            name: 'prefixIds',
+            params: {
+              // Generate unique IDs for each SVG instance
+              delim: '_',
+              prefix: () => Math.random().toString(36).substring(2, 9),
+            },
+          },
+        ],
+      },
+    }),
+  ],
+  resolve: {
+    alias: {
+      '@': resolve(__dirname, 'src'),
+    },
+  },
+  build: {
+    rollupOptions: {
+      output: {
+        // Disable code splitting - generate single JS and CSS files
+        manualChunks: undefined,
+        inlineDynamicImports: true,
+        entryFileNames: 'assets/[name].js',
+        chunkFileNames: 'assets/[name].js',
+        assetFileNames: 'assets/[name].[ext]',
+      },
+    },
+    cssCodeSplit: false,
+  },
+  server: {
+    proxy: {
+      // Proxy API requests to the backend server
+      '/global-variables.json': {
+        target: 'http://localhost:8080',
+        changeOrigin: true,
+      },
+      '/data/summary.json': {
+        target: 'http://localhost:8080',
+        changeOrigin: true,
+      },
+      '/timed.json': {
+        target: 'http://localhost:8080',
+        changeOrigin: true,
+      },
+      '/stacks-mem.json': {
+        target: 'http://localhost:8080',
+        changeOrigin: true,
+      },
+      '/stack.json': {
+        target: 'http://localhost:8080',
+        changeOrigin: true,
+      },
+      '/flat.json': {
+        target: 'http://localhost:8080',
+        changeOrigin: true,
+      },
+      '/scatter.json': {
+        target: 'http://localhost:8080',
+        changeOrigin: true,
+      },
+      '/size-map.json': {
+        target: 'http://localhost:8080',
+        changeOrigin: true,
+      },
+      '/realloc-map.json': {
+        target: 'http://localhost:8080',
+        changeOrigin: true,
+      },
+      '/source-file': {
+        target: 'http://localhost:8080',
+        changeOrigin: true,
+      },
+      '/file-infos.json': {
+        target: 'http://localhost:8080',
+        changeOrigin: true,
+      },
+      '/call-stack-next-level.json': {
+        target: 'http://localhost:8080',
+        changeOrigin: true,
+      },
+      '/calltree': {
+        target: 'http://localhost:8080',
+        changeOrigin: true,
+      },
+    },
+  },
+})

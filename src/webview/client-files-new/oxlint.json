@@ -1,0 +1,9 @@
+{
+  "rules": {
+    "typescript": "warn",
+    "correctness": "warn",
+    "suspicious": "warn",
+    "perf": "warn"
+  },
+  "ignore": ["node_modules", "dist", "build"]
+}
