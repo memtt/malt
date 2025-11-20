@@ -1,3 +1,11 @@
+<!----------------------------------------------------------
+|    PROJECT  : MALT (MALoc Tracker)
+|    DATE     : 11/2025
+|    LICENSE  : CeCILL-C
+|    FILE     : src/webview/client-files/src/components/core/BasePagination.vue
+|-----------------------------------------------------------
+|    AUTHOR   : Emeric GUYON - 2025
+----------------------------------------------------------->
 <template>
   <div v-if="props.totalPages > 1" class="pagination">
     <!-- Previous button -->

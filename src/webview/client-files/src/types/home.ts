@@ -1,3 +1,11 @@
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    DATE     : 11/2025
+*    LICENSE  : CeCILL-C
+*    FILE     : src/webview/client-files/src/types/home.ts
+*-----------------------------------------------------------
+*    AUTHOR   : Emeric GUYON - 2025
+***********************************************************/
 /**
  * Home Page Types
  * Types for the home dashboard summary data

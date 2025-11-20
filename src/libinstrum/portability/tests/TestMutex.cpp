@@ -1,10 +1,11 @@
 /***********************************************************
 *    PROJECT  : MALT (MALoc Tracker)
-*    DATE     : 01/2022
+*    DATE     : 09/2025
 *    LICENSE  : CeCILL-C
 *    FILE     : src/libinstrum/portability/tests/TestMutex.cpp
 *-----------------------------------------------------------
 *    AUTHOR   : Sébastien Valat - 2022
+*    AUTHOR   : Sébastien Valat (INRIA) - 2025
 ***********************************************************/
 
 /**********************************************************/

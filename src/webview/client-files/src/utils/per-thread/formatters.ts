@@ -1,3 +1,11 @@
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    DATE     : 11/2025
+*    LICENSE  : CeCILL-C
+*    FILE     : src/webview/client-files/src/utils/per-thread/formatters.ts
+*-----------------------------------------------------------
+*    AUTHOR   : Emeric GUYON - 2025
+***********************************************************/
 /**
  * Formatters for per-thread data
  */

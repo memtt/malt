@@ -1,3 +1,11 @@
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    DATE     : 11/2025
+*    LICENSE  : CeCILL-C
+*    FILE     : src/webview/client-files/src/composables/useCallTreeNavigation.ts
+*-----------------------------------------------------------
+*    AUTHOR   : Emeric GUYON - 2025
+***********************************************************/
 /**
  * Composable for Call Tree Navigation History
  * Manages back/forward navigation through call tree nodes

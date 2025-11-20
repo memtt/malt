@@ -1,4 +1,12 @@
 #!/bin/bash
+############################################################
+#    PROJECT  : MALT (MALoc Tracker)
+#    DATE     : 10/2025
+#    LICENSE  : CeCILL-C
+#    FILE     : packaging/debian/build.sh
+#-----------------------------------------------------------
+#    AUTHOR   : Sébastien Valat (INRIA) - 2025
+############################################################
 
 # check
 if [[ $1 == '' ]]; then

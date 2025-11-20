@@ -1,3 +1,11 @@
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    DATE     : 11/2025
+*    LICENSE  : CeCILL-C
+*    FILE     : src/webview/client-files/src/services/stackPeaksService.ts
+*-----------------------------------------------------------
+*    AUTHOR   : Emeric GUYON - 2025
+***********************************************************/
 import type { StackPeaksData, StackDetailsData } from '@/types/stack-peaks'
 import { request } from '@/lib/request'
 

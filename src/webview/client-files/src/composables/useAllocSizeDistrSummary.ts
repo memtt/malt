@@ -1,3 +1,11 @@
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    DATE     : 11/2025
+*    LICENSE  : CeCILL-C
+*    FILE     : src/webview/client-files/src/composables/useAllocSizeDistrSummary.ts
+*-----------------------------------------------------------
+*    AUTHOR   : Emeric GUYON - 2025
+***********************************************************/
 import { computed, type Ref } from 'vue'
 import type { SizeMapData } from '@/types/alloc-size-distr'
 import { humanReadable } from '@/lib/helpers'

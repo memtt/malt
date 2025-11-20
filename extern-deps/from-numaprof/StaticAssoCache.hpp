@@ -1,3 +1,11 @@
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    DATE     : 09/2025
+*    LICENSE  : CeCILL-C
+*    FILE     : extern-deps/from-numaprof/StaticAssoCache.hpp
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat (INRIA) - 2025
+***********************************************************/
 /*****************************************************
              PROJECT  : numaprof
              VERSION  : 1.1.6

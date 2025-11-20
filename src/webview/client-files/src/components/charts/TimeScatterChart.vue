@@ -1,3 +1,11 @@
+<!----------------------------------------------------------
+|    PROJECT  : MALT (MALoc Tracker)
+|    DATE     : 11/2025
+|    LICENSE  : CeCILL-C
+|    FILE     : src/webview/client-files/src/components/charts/TimeScatterChart.vue
+|-----------------------------------------------------------
+|    AUTHOR   : Emeric GUYON - 2025
+----------------------------------------------------------->
 <template>
   <div class="time-scatter-chart-wrapper">
     <div ref="chartContainer" class="time-scatter-chart"></div>

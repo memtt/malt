@@ -1,3 +1,11 @@
+<!----------------------------------------------------------
+|    PROJECT  : MALT (MALoc Tracker)
+|    DATE     : 11/2025
+|    LICENSE  : CeCILL-C
+|    FILE     : src/webview/client-files/src/layouts/AppLayout.vue
+|-----------------------------------------------------------
+|    AUTHOR   : Emeric GUYON - 2025
+----------------------------------------------------------->
 <template>
   <div v-if="isReady" class="app-layout">
     <AppHeader v-if="!isLoginPage" />

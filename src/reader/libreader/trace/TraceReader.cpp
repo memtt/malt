@@ -1,8 +1,8 @@
 /***********************************************************
 *    PROJECT  : MALT (MALoc Tracker)
-*    DATE     : 02/2025
+*    DATE     : 10/2025
 *    LICENSE  : CeCILL-C
-*    FILE     : src/reader/libreader/loader/FileReader.cpp
+*    FILE     : src/reader/libreader/trace/TraceReader.cpp
 *-----------------------------------------------------------
 *    AUTHOR   : Sébastien Valat (INRIA) - 2025
 ***********************************************************/

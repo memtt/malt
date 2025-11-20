@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 ############################################################
 #    PROJECT  : MALT (MALoc Tracker)
-#    DATE     : 09/2025
+#    DATE     : 10/2025
 #    LICENSE  : CeCILL-C
-#    FILE     : examples/python/step-6-intermediate-vars.py
+#    FILE     : examples/python/step-6-intermediate-vars-better-none.py
 #-----------------------------------------------------------
 #    AUTHOR   : Sébastien Valat (INRIA) - 2025
 ############################################################

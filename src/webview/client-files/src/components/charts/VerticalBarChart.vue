@@ -1,3 +1,11 @@
+<!----------------------------------------------------------
+|    PROJECT  : MALT (MALoc Tracker)
+|    DATE     : 11/2025
+|    LICENSE  : CeCILL-C
+|    FILE     : src/webview/client-files/src/components/charts/VerticalBarChart.vue
+|-----------------------------------------------------------
+|    AUTHOR   : Emeric GUYON - 2025
+----------------------------------------------------------->
 <template>
   <div class="vertical-bar-chart-wrapper">
     <!-- Chart Container -->

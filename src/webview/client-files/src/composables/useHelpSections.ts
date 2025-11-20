@@ -1,3 +1,11 @@
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    DATE     : 11/2025
+*    LICENSE  : CeCILL-C
+*    FILE     : src/webview/client-files/src/composables/useHelpSections.ts
+*-----------------------------------------------------------
+*    AUTHOR   : Emeric GUYON - 2025
+***********************************************************/
 import type { HelpSection } from '@/components/home/HelpModal.vue'
 import IconRules from '@/assets/icons/icon-rules.svg?component'
 import IconWeight from '@/assets/icons/icon-weight.svg?component'

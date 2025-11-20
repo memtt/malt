@@ -1,3 +1,11 @@
+<!----------------------------------------------------------
+|    PROJECT  : MALT (MALoc Tracker)
+|    DATE     : 11/2025
+|    LICENSE  : CeCILL-C
+|    FILE     : src/webview/client-files/src/components/core/WarningTooltip.vue
+|-----------------------------------------------------------
+|    AUTHOR   : Emeric GUYON - 2025
+----------------------------------------------------------->
 <template>
   <div class="warning-tooltip-wrapper" @mouseenter="showTooltip" @mouseleave="hideTooltip">
     <slot></slot>

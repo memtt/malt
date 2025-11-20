@@ -1,3 +1,12 @@
+<!----------------------------------------------------------
+|    PROJECT  : MALT (MALoc Tracker)
+|    DATE     : 11/2025
+|    LICENSE  : CeCILL-C
+|    FILE     : src/webview/client-files/src/components/charts/StackTimelineChart.vue
+|-----------------------------------------------------------
+|    AUTHOR   : Emeric GUYON - 2025
+----------------------------------------------------------->
+
 <template>
   <div class="stack-timeline-chart">
     <svg ref="svgRef" :width="width" :height="height"></svg>

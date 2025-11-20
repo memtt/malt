@@ -1,3 +1,11 @@
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    DATE     : 11/2025
+*    LICENSE  : CeCILL-C
+*    FILE     : src/webview/client-files/src/composables/usePerThreadData.ts
+*-----------------------------------------------------------
+*    AUTHOR   : Emeric GUYON - 2025
+***********************************************************/
 import { useQuery } from '@tanstack/vue-query'
 import { perThreadService } from '@/services/perThreadService'
 import type { PerThreadData } from '@/types/per-thread'

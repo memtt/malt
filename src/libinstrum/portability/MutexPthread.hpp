@@ -1,11 +1,12 @@
 /***********************************************************
 *    PROJECT  : MALT (MALoc Tracker)
-*    DATE     : 01/2022
+*    DATE     : 09/2025
 *    LICENSE  : CeCILL-C
 *    FILE     : src/libinstrum/portability/MutexPthread.hpp
 *-----------------------------------------------------------
 *    AUTHOR   : Sébastien Valat (ECR) - 2014
 *    AUTHOR   : Sébastien Valat - 2022
+*    AUTHOR   : Sébastien Valat (INRIA) - 2025
 ***********************************************************/
 
 #ifndef MALT_MUTEX_PTHREAD_HPP

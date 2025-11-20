@@ -1,11 +1,10 @@
 /***********************************************************
 *    PROJECT  : MALT (MALoc Tracker)
-*    DATE     : 11/2014
+*    DATE     : 09/2025
 *    LICENSE  : CeCILL-C
-*    FILE     : src/libinstrum/common/TakeLock.hpp
+*    FILE     : src/libinstrum/common/TakeRwLock.hpp
 *-----------------------------------------------------------
-*    AUTHOR   : Sébastien Valat (ECR) - 2014
-*    AUTHOR   : Sébastien Valat - 2014
+*    AUTHOR   : Sébastien Valat (INRIA) - 2025
 ***********************************************************/
 
 #ifndef MALT_TAKE_RW_LOCK_HPP

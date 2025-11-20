@@ -1,3 +1,12 @@
+############################################################
+#    PROJECT  : MALT (MALoc Tracker)
+#    DATE     : 10/2025
+#    LICENSE  : CeCILL-C
+#    FILE     : doc/source/conf.py
+#-----------------------------------------------------------
+#    AUTHOR   : Sébastien Valat (INRIA) - 2025
+############################################################
+
 # Configuration file for the Sphinx documentation builder.
 #
 # For the full list of built-in configuration values, see the documentation:

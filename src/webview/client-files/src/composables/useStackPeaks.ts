@@ -1,3 +1,11 @@
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    DATE     : 11/2025
+*    LICENSE  : CeCILL-C
+*    FILE     : src/webview/client-files/src/composables/useStackPeaks.ts
+*-----------------------------------------------------------
+*    AUTHOR   : Emeric GUYON - 2025
+***********************************************************/
 import { ref, computed } from 'vue'
 import { useStackPeaksData } from '@/composables/useStackPeaksData'
 import { useStackDetails } from '@/composables/useStackDetails'

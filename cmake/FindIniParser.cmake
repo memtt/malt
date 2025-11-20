@@ -1,11 +1,12 @@
 ############################################################
 #    PROJECT  : MALT (MALoc Tracker)
-#    DATE     : 10/2024
+#    DATE     : 10/2025
 #    LICENSE  : CeCILL-C
 #    FILE     : cmake/FindIniParser.cmake
 #-----------------------------------------------------------
 #    AUTHOR   : Sébastien Valat (ECR) - 2014
 #    AUTHOR   : Sébastien Valat - 2024
+#    AUTHOR   : Sébastien Valat (INRIA) - 2025
 ############################################################
 
 ############################################################

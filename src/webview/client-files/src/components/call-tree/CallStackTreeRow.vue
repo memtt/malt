@@ -1,3 +1,12 @@
+<!----------------------------------------------------------
+|    PROJECT  : MALT (MALoc Tracker)
+|    DATE     : 11/2025
+|    LICENSE  : CeCILL-C
+|    FILE     : src/webview/client-files/src/components/call-tree/CallStackTreeRow.vue
+|-----------------------------------------------------------
+|    AUTHOR   : Emeric GUYON - 2025
+----------------------------------------------------------->
+
 <template>
   <div class="tree-row" :class="{ expanded: node.expanded }">
     <div class="node-name">

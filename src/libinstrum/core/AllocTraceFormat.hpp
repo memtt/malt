@@ -1,11 +1,10 @@
 /***********************************************************
 *    PROJECT  : MALT (MALoc Tracker)
-*    DATE     : 11/2014
+*    DATE     : 10/2025
 *    LICENSE  : CeCILL-C
-*    FILE     : src/libinstrum/core/AllocTraceFile.hpp
+*    FILE     : src/libinstrum/core/AllocTraceFormat.hpp
 *-----------------------------------------------------------
-*    AUTHOR   : Sébastien Valat (ECR) - 2014
-*    AUTHOR   : Sébastien Valat - 2014
+*    AUTHOR   : Sébastien Valat (INRIA) - 2025
 ***********************************************************/
  
 #ifndef MALT_ALLOC_TRACE_FORMAT_HPP

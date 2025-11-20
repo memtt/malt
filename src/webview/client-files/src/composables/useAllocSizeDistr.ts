@@ -1,3 +1,11 @@
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    DATE     : 11/2025
+*    LICENSE  : CeCILL-C
+*    FILE     : src/webview/client-files/src/composables/useAllocSizeDistr.ts
+*-----------------------------------------------------------
+*    AUTHOR   : Emeric GUYON - 2025
+***********************************************************/
 import { useAllocSizeDistrData } from '@/composables/useAllocSizeDistrData'
 import { useAllocSizeDistrScatterData } from '@/composables/useAllocSizeDistrScatterData'
 import { useAllocSizeDistrSummary } from '@/composables/useAllocSizeDistrSummary'

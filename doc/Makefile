@@ -1,3 +1,12 @@
+############################################################
+#    PROJECT  : MALT (MALoc Tracker)
+#    DATE     : 10/2025
+#    LICENSE  : CeCILL-C
+#    FILE     : doc/Makefile
+#-----------------------------------------------------------
+#    AUTHOR   : Sébastien Valat (INRIA) - 2025
+############################################################
+
 # Minimal makefile for Sphinx documentation
 #
 

@@ -1,11 +1,12 @@
 /***********************************************************
 *    PROJECT  : MALT (MALoc Tracker)
-*    DATE     : 10/2015
+*    DATE     : 09/2025
 *    LICENSE  : CeCILL-C
 *    FILE     : src/libinstrum/stack-tree/StackSTLHashMap.hpp
 *-----------------------------------------------------------
 *    AUTHOR   : Sébastien Valat (ECR) - 2014
 *    AUTHOR   : Sébastien Valat - 2015
+*    AUTHOR   : Sébastien Valat (INRIA) - 2025
 ***********************************************************/
 
 #ifndef MALT_STACK_STL_HASH_HPP
