@@ -12,8 +12,8 @@ var d3scale = require("d3-scale");
 var extend = require("extend");
 var union = require('lodash.union');
 var SimpleIdCache = require("./SimpleIdCache.js");
-var MaltHelper = require("../client-files/app/js/helper.js");
-var MaltFuncMetrics = require("../client-files/app/js/func-metrics.js");
+var MaltHelper = require("./helper.js");
+var MaltFuncMetrics = require("./func-metrics.js");
 var CppDeclParser = require("./CppDeclParser.js");
 
 /**

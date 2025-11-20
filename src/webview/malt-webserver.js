@@ -438,9 +438,35 @@ app.get('/active-chunks', authenticateToken, function(req, res) {
 });
 
 /**********************************************************/
-app.get('/',function(eq,res,next){
-	res.redirect('app/index.html');
-// 	res.render("page-summary",maltProject.getSummary());
+app.get('/home',function(eq,res,next){
+	res.sendfile("client-files/dist/index.html");
+});
+app.get('/sources',function(eq,res,next){
+	res.sendfile("client-files/dist/index.html");
+});
+app.get('/call-tree',function(eq,res,next){
+	res.sendfile("client-files/dist/index.html");
+});
+app.get('/timeline',function(eq,res,next){
+	res.sendfile("client-files/dist/index.html");
+});
+app.get('/allocSizeDistr',function(eq,res,next){
+	res.sendfile("client-files/dist/index.html");
+});
+app.get('/globalVars',function(eq,res,next){
+	res.sendfile("client-files/dist/index.html");
+});
+app.get('/stackPeaks',function(eq,res,next){
+	res.sendfile("client-files/dist/index.html");
+});
+app.get('/stackPeaks',function(eq,res,next){
+	res.sendfile("client-files/dist/index.html");
+});
+app.get('/per-thread',function(eq,res,next){
+	res.sendfile("client-files/dist/index.html");
+});
+app.get('/realloc',function(eq,res,next){
+	res.sendfile("client-files/dist/index.html");
 });
 
 /**********************************************************/
@@ -527,10 +553,7 @@ app.use('/app-sources/', authenticateToken,function(req,res,next){
 
 /**********************************************************/
 //export static deps
-app.use('/',Express.static(__dirname+'/client_files'));
-app.use('/app',Express.static(__dirname+'/client-files/app'));
-app.use('/deps/angular',Express.static(__dirname+'/bower_components/angular'));
-app.use('/deps/angular-route',Express.static(__dirname+'/bower_components/angular-route'));
+app.use('/',Express.static(__dirname+'/client-files/dist'));
 
 // for (var i in redirs)
 // {
