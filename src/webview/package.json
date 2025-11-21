@@ -24,14 +24,10 @@
     "big-json": "^3.2.0",
     "cli-progress": "^3.12.0",
     "clone": "0.1.11",
-    "d3-scale": "^1.0.1",
+    "d3-scale": "^4.0.2",
     "express": "4.21.x",
     "extend": "^3.0.0",
-    "htpasswd": "^2.4.6",
     "http-auth": "^2.4.11",
     "lodash.union": "^4.5.0"
-  },
-  "devDependencies": {
-    "bower": "^1.8.13"
   }
 }

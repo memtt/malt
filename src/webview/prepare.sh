@@ -31,23 +31,15 @@ fi
 #node executable as nodejs which break bower
 if ! which node
 then
-	if which nodejs
-	then
-		echo "Create NodeJS -> Node fix for ubuntu/debian !"
-		mkdir -p ./node_modules/.bin/
-		ln -s $(which nodejs) ./node_modules/.bin/node
-	else
-		echo "You should install NodeJS to fetch web GUI components"
-		echo "Or download a release archive as it already contains all those files"
-		exit 1
-	fi
+	echo "You should install NodeJS to fetch web GUI components"
+	echo "Or download a release archive as it already contains all those files"
+	exit 1
 fi
 
 ############################################################
 set -e
 set -x
 npm ci
-rm -f ./node_modules/.bin/node
 set +x
 if [ ! -z "$1" ]; then
 	echo > deps-loaded
