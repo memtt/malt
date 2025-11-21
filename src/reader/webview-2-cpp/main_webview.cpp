@@ -203,12 +203,12 @@ int main(int argc, char ** argv)
 
 		//handle home page
 		svr.Get("/", [](const Request& req, Response& res) {
-			res.set_redirect("app/index.html");
+			res.set_redirect("index.html");
 		});
 
 		//mount app path
 		const std::string www_path = get_webview_www_path();
-		svr.set_mount_point("/app", www_path + "/client-files/app");
+		svr.set_mount_point("/", www_path + "/dist");
 
 		//data for the summary
 		svr.Get("/summary.json", [&profile](const Request& req, Response& res) {

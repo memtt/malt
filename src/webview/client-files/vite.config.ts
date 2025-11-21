@@ -11,6 +11,7 @@ import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import { resolve } from 'node:path'
 import svgLoader from 'vite-svg-loader'
+import path from "path";
 
 export default defineConfig({
   plugins: [
@@ -36,6 +37,8 @@ export default defineConfig({
     },
   },
   build: {
+	outDir: path.join(<string>process.env.MALT_VITE_BUILD_DIR, "dist"),
+    emptyOutDir: true, // also necessary
     rollupOptions: {
       output: {
         // Disable code splitting - generate single JS and CSS files

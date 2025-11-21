@@ -15,7 +15,6 @@ SOURCE_DIR=$PWD
 ############################################################
 if [ ! -z "$1" ]
 then
-	cp bower.json "$1"
 	cd "$1"
 fi
 
@@ -39,7 +38,7 @@ fi
 ############################################################
 set -e
 set -x
-npm ci
+npm install
 set +x
 if [ ! -z "$1" ]; then
 	echo > deps-loaded
