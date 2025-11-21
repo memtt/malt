@@ -21,17 +21,12 @@ include_directories(${CMAKE_SOURCE_DIR}/extern-deps/from-fftw)
 add_definitions(-DMALT_INSTALL_PREFIX=\"${CMAKE_INSTALL_PREFIX}\")
 
 ############################################################
-add_library(malt-webview-cpp-base STATIC lib/UserDb.cpp lib/BasicAuth.cpp lib/ArgChecker.cpp)
-target_link_libraries(malt-webview-cpp-base ${NLOHMANN_JSON_LIBRARIES} base64 ${CRYPTO_LIBRARY} ${HTTPLIB_LIBRARY})
+add_library(malt-webview-cpp-base STATIC lib/ArgChecker.cpp lib/TokenAuth.cpp lib/Helpers.cpp)
+target_link_libraries(malt-webview-cpp-base ${NLOHMANN_JSON_LIBRARIES} ${CRYPTO_LIBRARY} ${HTTPLIB_LIBRARY})
 
 ############################################################
-include_directories(${CMAKE_SOURCE_DIR}/extern-deps/renenyffenegger-base64)
 add_executable(malt-webview main_webview.cpp)
-target_link_libraries(malt-webview malt-reader malt-webview-cpp-base )
-
-############################################################
-add_executable(malt-passwd main_passwd.cpp lib/UserDb.cpp)
-target_link_libraries(malt-passwd ${NLOHMANN_JSON_LIBRARIES} base64 ${CRYPTO_LIBRARY})
+target_link_libraries(malt-webview malt-reader malt-webview-cpp-base)
 
 ############################################################
 add_definitions(-DTEST_DATA_DIR="${CMAKE_CURRENT_BINARY_DIR}")
@@ -46,4 +41,3 @@ endif()
 
 ############################################################
 install(TARGETS malt-webview DESTINATION ${CMAKE_INSTALL_BINDIR})
-install(TARGETS malt-passwd DESTINATION ${CMAKE_INSTALL_BINDIR})

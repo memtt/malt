@@ -8,33 +8,35 @@
 ***********************************************************/
 
 /**********************************************************/
-#ifndef MALT_WEBVIEW_CPP_BASIC_AUTH_HPP
-#define MALT_WEBVIEW_CPP_BASIC_AUTH_HPP
+#ifndef MALT_WEBVIEW_CPP_TOKEN_AUTH_HPP
+#define MALT_WEBVIEW_CPP_TOKEN_AUTH_HPP
 
 /**********************************************************/
 #include <httplib.h>
-#include "UserDb.hpp"
 
 /**********************************************************/
 namespace MALTWebviewCpp
 {
 
 /**********************************************************/
-class BasicAuth
+class TokenAuth
 {
 	public:
-		BasicAuth(const std::string & realm);
-		BasicAuth(const std::string & realm, const std::string & dbPath, bool warn = true);
-		~BasicAuth(void);
+		TokenAuth(bool regenToken = false);
+		~TokenAuth(void);
 		bool check(const std::string & authenticate) const;
 		httplib::Server::HandlerResponse check(const httplib::Request& req, httplib::Response& res) const;
+		std::string getToken(void) const;
 	private:
-		static std::pair<std::string, std::string> decode(const std::string & authenticate);
+		static std::string loadToken(bool regrenToken = false);
+		static std::string regenToken(void);
+		static std::string decode(const std::string & authenticate);
+		static std::string getTokenFilePath(void);
+		static std::string generateRandomKey(void);
 	private:
-		std::string realm;
-		UserDb userDb;
+		std::string expectedToken;
 };
 
 }
 
-#endif //MALT_WEBVIEW_CPP_BASIC_AUTH_HPP
+#endif //MALT_WEBVIEW_CPP_TOKEN_AUTH_HPP

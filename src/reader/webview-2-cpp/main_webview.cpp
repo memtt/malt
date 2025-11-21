@@ -21,7 +21,7 @@
 #include <argp.h>
 #include <libgen.h>
 //internal
-#include "lib/BasicAuth.hpp"
+#include "lib/TokenAuth.hpp"
 #include "lib/ArgChecker.hpp"
 #include "api/WebProfile.hpp"
 #include "extractors/ExtractorHelpers.hpp"
@@ -46,6 +46,7 @@ struct WebviewOptions
 	std::string socket{};
 	std::list<std::string> overrides;
 	std::string host{"localhost"};
+	bool regenToken{false};
 };
 
 /**********************************************************/
@@ -80,6 +81,9 @@ static error_t parse_opt (int key, char *arg, struct argp_state *state)
 		case 'H':
 			options->host = arg;
 			break;
+		case 'r':
+			options->regenToken = true;
+			break;
 		case ARGP_KEY_ARG:
 			/* Too many arguments. */
 			if (state->arg_num >= 1)
@@ -107,6 +111,7 @@ void WebviewOptions::parse(int argc, char ** argv)
 		{"port",       'p', "PORT",   0,  "Listening on given port or socket file (8080 by default)."},
 		{"override",   'o', "OLD:NEW",0,  "Override some source path by the given path, in the form : OLD:NEW. Can be called several times."},
 		{"host",       'H', "HOST",   0,  "The host interface to listen on (localhost by default)."},
+		{"regen-token",'r', 0,        0,  "Regenerate the token."},
 		{ 0 }
 	};
 	struct argp argp = { options, parse_opt, args_doc, doc };
@@ -176,7 +181,7 @@ int main(int argc, char ** argv)
 		WebProfile profile(options.filename, true);
 
 		//spwn server
-		BasicAuth * basicAuth = nullptr;
+		TokenAuth * tokenAuth = nullptr;
 		Server svr;
 		gblServerPtr = &svr;
 
@@ -188,11 +193,24 @@ int main(int argc, char ** argv)
 		//set signal handler
 		signal(SIGINT, local_signal_ctrl_c_handler);
 
+		//no auth files
+		std::set<std::string> noAuthFiles;
+		noAuthFiles.insert("/");
+		noAuthFiles.insert("/index.html");
+		noAuthFiles.insert("/favicon.ico");
+		noAuthFiles.insert("/assets/index.js");
+		noAuthFiles.insert("/assets/style.css");
+
 		//if auth is enabled
 		if (options.auth) {
-			basicAuth = new BasicAuth("malt-webview");
-			svr.set_pre_routing_handler([basicAuth](const Request& req, Response& res) {
-				return basicAuth->check(req, res);
+			tokenAuth = new TokenAuth(options.regenToken);
+			svr.set_pre_routing_handler([tokenAuth, &noAuthFiles](const Request& req, Response& res) {
+				//we let access to the app index.html/js/css
+				if (noAuthFiles.find(req.path) != noAuthFiles.end())
+					return Server::HandlerResponse::Unhandled;
+
+				//secrure all the rest
+				return tokenAuth->check(req, res);
 			});
 		}
 
@@ -354,6 +372,12 @@ int main(int argc, char ** argv)
 			printf("|                        Starting server listening on                     |\n");
 			printf("| %*s%s%*s |\n", left_padding, " ", value.c_str(), right_padding, " ");
 		}
+		if (tokenAuth != nullptr) {
+			printf("|                                                                         |\n");
+			const std::string token = tokenAuth->getToken();
+			printf("|                          Authentication token                           |\n");
+			printf("|             %s            |\n", token.c_str());
+		}
 		printf("|                                                                         |\n");
 		printf("+-------------------------------------------------------------------------+\n");
 
@@ -366,8 +390,8 @@ int main(int argc, char ** argv)
 		}
 
 		//clean
-		if (basicAuth != nullptr)
-			delete basicAuth;
+		if (tokenAuth != nullptr)
+			delete tokenAuth;
 	} catch (std::runtime_error & error) {
 		std::cerr << "ERROR : " << error.what() << std::endl;
 		return EXIT_FAILURE;
