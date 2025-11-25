@@ -10,22 +10,27 @@
 ######################################################
 # Install nodejs dependencies if needed
 # then install node_modules into share directory
-if (NOT EXISTS ${CMAKE_SOURCE_DIR}/extern-deps/node_modules)
-	message(STATUS "Copying package.json and package-lock.json to build directory")
-	set(NODE_MODULES ${CMAKE_CURRENT_BINARY_DIR}/node_modules)
-	set(NODE_MODULES_DEPS deps-loaded)
-	configure_file(${CMAKE_CURRENT_SOURCE_DIR}/package.json ${CMAKE_CURRENT_BINARY_DIR}/package.json COPYONLY)
-	configure_file(${CMAKE_CURRENT_SOURCE_DIR}/package-lock.json ${CMAKE_CURRENT_BINARY_DIR}/package-lock.json COPYONLY)
-	add_custom_command (OUTPUT deps-loaded
-					COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/../prepare.sh ${CMAKE_CURRENT_BINARY_DIR}
-					COMMENT "Fetching webview javascript dependencies..."
-					DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/../prepare.sh
-					WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
-	add_custom_target(run-client-deps-loaded ALL DEPENDS deps-loaded package.json package-lock.json)
-else ()
-	set(NODE_MODULES ${CMAKE_SOURCE_DIR}/extern-deps/node_modules)
+if (WEBVIEW_DEPS STREQUAL "SYSTEM")
+	set(NODE_MODULES "")
 	set(NODE_MODULES_DEPS "")
-endif ()
+else()
+	if (NOT EXISTS ${CMAKE_SOURCE_DIR}/extern-deps/node_modules AND WEBVIEW_DEPS STREQUAL "AUTO")
+		message(STATUS "Copying package.json and package-lock.json to build directory")
+		set(NODE_MODULES ${CMAKE_CURRENT_BINARY_DIR}/node_modules)
+		set(NODE_MODULES_DEPS deps-loaded)
+		configure_file(${CMAKE_CURRENT_SOURCE_DIR}/package.json ${CMAKE_CURRENT_BINARY_DIR}/package.json COPYONLY)
+		configure_file(${CMAKE_CURRENT_SOURCE_DIR}/package-lock.json ${CMAKE_CURRENT_BINARY_DIR}/package-lock.json COPYONLY)
+		add_custom_command (OUTPUT deps-loaded
+						COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/../prepare.sh ${CMAKE_CURRENT_BINARY_DIR}
+						COMMENT "Fetching webview javascript dependencies..."
+						DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/../prepare.sh
+						WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
+		add_custom_target(run-client-deps-loaded ALL DEPENDS deps-loaded package.json package-lock.json)
+	else ()
+		set(NODE_MODULES ${CMAKE_SOURCE_DIR}/extern-deps/node_modules)
+		set(NODE_MODULES_DEPS "")
+	endif ()
+endif()
 
 #######################################################
 # pre-build is older than sources

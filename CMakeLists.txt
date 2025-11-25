@@ -62,6 +62,7 @@ set(PORTABILITY_PYTHON    "LAZY"     CACHE STRING "Select the instrumentation mo
 #select webvew server mode
 set(WEBVIEW_SERVER        "AUTO"     CACHE STRING "Select the webview server to use : AUTO, CPP, OFF.")
 set(WEBVIEW_REBUILD       "AUTO"     CACHE STRING "Select webview client rebuild mode : AUTO, FORCE")
+set(WEBVIEW_DEPS          "AUTO"     CACHE STRING "Select webview client rebuild mode : AUTO, DOWNLOAD, SYSTEM")
 
 ############################################################
 if (ENABLE_TESTS OR CMAKE_BUILD_TYPE="Debug")
@@ -104,7 +105,6 @@ find_package(Cargo QUIET)
 find_package(Graphviz QUIET)
 find_package(Binutils QUIET)
 #find_package(Zmq QUIET)
-find_package(Crypto QUIET)
 # Check for npm if needed
 if (NODE_FOUND AND NOT IS_DIRECTORY ${CMAKE_SOURCE_DIR}/src/webview/node_modules)
 	find_package(Npm REQUIRED)

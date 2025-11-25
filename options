@@ -138,10 +138,9 @@ cfg_add_with_option --name='nm' \
 						--doc='Define prefix to find NM from binutils [/usr]' \
 						--var='NM_PREFIX'
 
-#where to search openssl
-cfg_add_with_option --name='openssl' \
-						--doc='Define prefix to find openssl [/usr]' \
-						--var='CRYPTO_PREFIX'
+cfg_add_with_option --name='node-modules' \
+						--doc='Define which node_modules to use (AUTO, DOWNLOAD, SYSTEM) [AUTO]' \
+						--var='WEBVIEW_DEPS'
 
 ############################################################
 #If we want to document extra options
