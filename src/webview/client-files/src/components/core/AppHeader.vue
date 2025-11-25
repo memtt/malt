@@ -78,7 +78,7 @@ const navigationRoutes = [
   font-size: $font-size-xl;
   line-height: 1;
   white-space: nowrap;
-  color: $color-text-primary;
+  color: $color-header-title;
 }
 
 .nav-menu {

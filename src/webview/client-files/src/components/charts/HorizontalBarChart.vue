@@ -124,7 +124,7 @@ const buildBarChart = () => {
 
   d3.select(chartContainer.value).selectAll('*').remove()
 
-  const margin = { top: 30, right: 120, bottom: 50, left: 80 }
+  const margin = { top: 30, right: 120, bottom: 50, left: 175 }
   const width = chartContainer.value.clientWidth || 800
   const height = dynamicHeight.value - margin.top - margin.bottom
 

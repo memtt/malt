@@ -41,7 +41,7 @@ withDefaults(defineProps<Props>(), {
   position: relative;
   margin: 0 auto $spacing-md;
   padding: $spacing-2xl $spacing-3xl $spacing-3xl;
-  background: rgba(255, 255, 255, 0.8);
+  background: $blue-section-bg;
   border: 1px solid $color-border-light;
   border-radius: $radius-xl;
   display: flex;

@@ -92,8 +92,8 @@ const renderChart = () => {
 
   // Use logarithmic scale for better color distribution if logColor is enabled
   const colorScale = props.logColor
-    ? d3.scaleSequential(d3.interpolateBlues).domain([Math.log(minValue), Math.log(maxValue + 1)])
-    : d3.scaleSequential(d3.interpolateBlues).domain([minValue, maxValue])
+    ? d3.scaleSequential(d3.interpolateTurbo).domain([Math.log(minValue), Math.log(maxValue + 1)])
+    : d3.scaleSequential(d3.interpolateTurbo).domain([minValue, maxValue])
 
   // Draw heatmap cells
   svg

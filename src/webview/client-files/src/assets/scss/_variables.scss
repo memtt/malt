@@ -66,10 +66,13 @@ $color-info: #0ea5e9;              // Info state
 // -----------------------------------------------------------------------------
 // Gradients
 // -----------------------------------------------------------------------------
-$gradient-primary: linear-gradient(159.19deg, #f2f9fd 0%, #c2e3f5 100%);
+//$gradient-primary: linear-gradient(159.19deg, #f2f9fd 0%, #c2e3f5 100%);
+$gradient-primary: linear-gradient(159.19deg, #184358 0%, #1d4858 100%);
 $gradient-card: linear-gradient(95.58deg, #f2f9fd 0%, #e4f1fa 100%);
 $gradient-section: linear-gradient(90deg, #e4f1fa 0%, #c2e3f5 100%);
 $gradient-login: linear-gradient(135deg, #e4f1fa 0%, #f8fcfe 100%);
+$blue-section-bg: #afcedd;
+$color-header-title: white;
 
 // -----------------------------------------------------------------------------
 // Spacing

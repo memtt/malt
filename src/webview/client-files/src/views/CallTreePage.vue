@@ -317,7 +317,7 @@ onMounted(() => {
   flex-direction: column;
   border: 1px solid $color-border-light;
   border-radius: $radius-xl;
-  background: rgba(255, 255, 255, 0.8);
+  background: $blue-section-bg;
 }
 
 .loading-state {
@@ -326,6 +326,7 @@ onMounted(() => {
   align-items: center;
   justify-content: center;
   height: 100vh;
+  background-color: $blue-section-bg;
 }
 
 .call-tree-layout {
@@ -356,7 +357,7 @@ onMounted(() => {
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  background: white;
+  background-color: $blue-section-bg;
   gap: $spacing-xl;
   margin-bottom: $spacing-lg;
 }

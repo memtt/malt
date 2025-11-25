@@ -165,8 +165,6 @@ watch(() => props.data, buildBarChart, { deep: true })
   position: relative;
   width: 100%;
   min-height: 300px;
-  background: white;
-  border: 1px solid #e5e7eb;
   border-radius: 6px;
   padding: 8px;
   overflow: auto;

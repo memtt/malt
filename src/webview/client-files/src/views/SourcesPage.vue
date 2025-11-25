@@ -280,7 +280,7 @@ watch(
   flex-direction: column;
   border: 1px solid $color-border-light;
   border-radius: $radius-xl;
-  background: rgba(255, 255, 255, 0.8);
+  background: $blue-section-bg;
 }
 
 .loading-state {
@@ -289,6 +289,7 @@ watch(
   align-items: center;
   justify-content: center;
   height: 100vh;
+  background: white;;
 }
 
 .sources-layout {
