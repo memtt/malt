@@ -22,11 +22,9 @@ if (NOT EXISTS ${CMAKE_SOURCE_DIR}/extern-deps/node_modules)
 					DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/../prepare.sh
 					WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
 	add_custom_target(run-client-deps-loaded ALL DEPENDS deps-loaded package.json package-lock.json)
-	install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/node_modules DESTINATION share/malt/webview)
 else ()
 	set(NODE_MODULES ${CMAKE_SOURCE_DIR}/extern-deps/node_modules)
 	set(NODE_MODULES_DEPS "")
-	install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/node_modules DESTINATION share/malt/webview)
 endif ()
 
 #######################################################
