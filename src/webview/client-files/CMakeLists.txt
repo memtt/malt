@@ -28,12 +28,21 @@ else ()
 endif ()
 
 #######################################################
+# pre-build is older than sources
+file(GLOB_RECURSE WEBVIEW_SRCS LIST_DIRECTORIES false *.css *.scss *.vue *.ts)
+list(APPEND ${WEBVIEW_SRCS} package.json package-lock.json vite.config.ts eslint.config.ts env.d.ts)
+set(WEBVIEW_SRC_NEWER off)
+foreach(item ${WEBVIEW_SRCS})
+	if (${item} IS_NEWER_THAN ${CMAKE_CURRENT_SOURCE_DIR}/dist/index.html)
+		set(WEBVIEW_SRC_NEWER on)
+	endif()
+endforeach()
+
+#######################################################
 # build
-if (NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/dist/index.html OR ${CMAKE_CURRENT_SOURCE_DIR}/src IS_NEWER_THAN ${CMAKE_CURRENT_SOURCE_DIR}/dist/index.html)
+if (NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/dist/index.html OR ${WEBVIEW_SRC_NEWER})
 	message(STATUS "Need building webview-client")
 	if (NODE_FOUND)
-		file(GLOB_RECURSE WEBVIEW_SRCS LIST_DIRECTORIES false *.css *.scss *.vue *.ts)
-		list(APPEND ${WEBVIEW_SRCS} package.json package-lock.json vite.config.ts eslint.config.ts env.d.ts)
 		add_custom_command(
 			OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/dist/index.html
 			COMMENT "Building client webview..."
@@ -44,19 +53,21 @@ if (NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/dist/index.html OR ${CMAKE_CURRENT_SO
 			DEPENDS ${NODE_MODULES_DEPS} ${WEBVIEW_SRCS}
 			WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
 		)
-		set(CLIENT_DIST_DIR ${CMAKE_CURRENT_BINARY_DIR}/dist/index.html)
+		set(CLIENT_DIST_DIR ${CMAKE_CURRENT_BINARY_DIR}/dist)
+		set(CLIENT_BUILD_DEPS ${CLIENT_DIST_DIR}/index.html)
 	else()
 		message(FATAL_ERROR "Webview client code not pre-built and not have NodeJS to build it !")
 	endif()
 else()
 	message(STATUS "Using pre-built webview-client")
 	set(CLIENT_DIST_DIR ${CMAKE_CURRENT_SOURCE_DIR}/dist)
+	set(CLIENT_BUILD_DEPS "")
 endif()
 
 #######################################################
 add_custom_target(webview-client-all
 	ALL
-	DEPENDS ${NODE_MODULES_DEPS} ${CLIENT_DIST_DIR}
+	DEPENDS ${NODE_MODULES_DEPS} ${CLIENT_BUILD_DEPS}
 )
 	
 #######################################################

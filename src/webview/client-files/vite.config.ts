@@ -57,6 +57,7 @@ export default defineConfig({
   build: {
     outDir: path.join(gen_build_path(), "dist"),
     emptyOutDir: true, // also necessary
+    //minify: false,
     rollupOptions: {
       output: {
         // Disable code splitting - generate single JS and CSS files
