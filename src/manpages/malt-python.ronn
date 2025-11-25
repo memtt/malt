@@ -26,4 +26,4 @@ the python script if it has the necessary bash shebang as its first line.
 
 ## SEE ALSO
 
-malt-passwd(1), malt(1), malt-python(1)
+malt-webview(1), malt(1)

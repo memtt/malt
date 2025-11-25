@@ -62,4 +62,4 @@ to other users of the cluster by using a unix socket file in place of the port.
 
 ## SEE ALSO
 
-malt-passwd(1), malt(1), malt-python(1)
+malt-python(1), malt-webview(1)

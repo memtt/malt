@@ -36,5 +36,5 @@ endif ()
 
 ############################################################
 #install
-install(FILES malt-passwd.1 malt-webview.1
+install(FILES malt-webview.1
 	DESTINATION share/man/man1)
