@@ -64,9 +64,9 @@ def malt_dev_gen_archive(name: str = PACKAGE_NAME, version: str = PACKAGE_VERSIO
             print("  --------------------------------------------")
             run_shell("./prepare.sh 2>&1 | sed -e 's/^/  /g'")
             print("  --------------------------------------------")
-        run_shell(f"tar -cjf {prefix}.tar.bz2 {prefix}")
-        print(f"  + mv '{prefix}.tar.bz2' '{origdir}/{prefix}.tar.bz2'")
-        shutil.move(f"{prefix}.tar.bz2", f"{origdir}/{prefix}.tar.bz2")
+        run_shell(f"tar -cJf {prefix}.tar.xz {prefix}")
+        print(f"  + mv '{prefix}.tar.xz' '{origdir}/{prefix}.tar.xz'")
+        shutil.move(f"{prefix}.tar.xz", f"{origdir}/{prefix}.tar.xz")
 
     # log
     print("")

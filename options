@@ -76,6 +76,12 @@ cfg_add_enable_option --name='caching' \
 						--doc='Enable usage of some internal caches to reduce the overhead of MALT.' \
 						--invert-help
 
+#caching
+cfg_add_enable_option --name='webview-rebuild' \
+						--on-enable='-DWEBVIEW_REBUILD=FORCE' \
+						--on-disable='-DWEBVIEW_REBUILD=AUTO' \
+						--doc='Force rebuilding the webview.'
+
 ############################################################
 #libunwind
 cfg_add_with_option --name='libunwind' \

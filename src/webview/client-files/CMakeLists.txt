@@ -40,7 +40,7 @@ endforeach()
 
 #######################################################
 # build
-if (NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/dist/index.html OR ${WEBVIEW_SRC_NEWER})
+if (NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/dist/index.html OR ${WEBVIEW_SRC_NEWER} OR ${WEBVIEW_REBUILD} STREQUAL "FORCE")
 	message(STATUS "Need building webview-client")
 	if (NODE_FOUND)
 		add_custom_command(
