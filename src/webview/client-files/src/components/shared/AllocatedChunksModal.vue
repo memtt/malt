@@ -43,7 +43,7 @@
                 class="stack-item"
               >
                 <a
-                  :href="`#/sources?func=${encodeURIComponent(stackItem.function)}&metric=alloc.count`"
+                  :href="`#/sources?func=${encodeURIComponent(stackItem.function)}&metric=peakmem.global`"
                   class="function-link"
                 >
                   <code>{{ stackItem.function }}</code>

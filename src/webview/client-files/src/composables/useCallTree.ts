@@ -31,7 +31,7 @@ export function useCallTree(options: UseCallTreeOptions = {}) {
   const navigation = useCallTreeNavigation()
 
   // Metric selection
-  const selectedMetric = ref<string>(options.initialMetric || 'alloc.count')
+  const selectedMetric = ref<string>(options.initialMetric || 'peakmem.global')
   const ratio = ref<boolean>(options.initialRatio || false)
 
   /**

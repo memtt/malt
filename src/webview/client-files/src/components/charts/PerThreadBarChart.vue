@@ -57,7 +57,7 @@ const svgRef = ref<SVGSVGElement | null>(null)
 const mode = ref<ChartMode>('stacked')
 
 // Margins for the chart
-const margin = { top: 30, right: 60, bottom: 50, left: 175 }
+const margin = { top: 30, right: 130, bottom: 50, left: 80 }
 
 /**
  * Calculate dynamic height based on number of threads
@@ -102,6 +102,7 @@ const renderChart = () => {
   const containerWidth = svgRef.value.clientWidth || 800
   const width = containerWidth - margin.left - margin.right
   const height = chartHeight.value - margin.top - margin.bottom
+  const width_graph = width - 60;
 
   // Create main group
   const g = svg.append('g').attr('transform', `translate(${margin.left},${margin.top})`)
@@ -123,7 +124,7 @@ const renderChart = () => {
   }
 
   // Create scales
-  const xScale = d3.scaleLinear().domain([0, maxValue]).range([0, width]).nice()
+  const xScale = d3.scaleLinear().domain([0, maxValue]).range([0, width_graph]).nice()
 
   const yScale = d3.scaleBand().domain(threadNames).range([0, height]).padding(0.2)
 

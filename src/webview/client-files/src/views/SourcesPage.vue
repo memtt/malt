@@ -118,7 +118,7 @@ const route = useRoute()
 
 // Composables
 const { loading, error, selector, functions } = useSources({
-  initialMetric: (route.query.metric as any) || 'alloc.count',
+  initialMetric: (route.query.metric as any) || 'peakmem.global',
 })
 
 /**

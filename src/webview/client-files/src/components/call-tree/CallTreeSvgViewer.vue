@@ -135,7 +135,7 @@ interface Emits {
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  metric: 'alloc.count',
+  metric: 'peakmem.global',
   ratio: false,
   depth: 3,
   height: -1,

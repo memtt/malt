@@ -167,7 +167,7 @@ const selectedFunction = ref<string | undefined>(undefined)
 const previousFunction = ref<string | null>(null)
 
 // Get initial metric from route query
-const initialMetric = (route.query.metric as string) || 'alloc.count'
+const initialMetric = (route.query.metric as string) || 'peakmem.global'
 
 // Sources data (for function list in sidebar)
 const {
