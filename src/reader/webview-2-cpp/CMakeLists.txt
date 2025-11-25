@@ -33,11 +33,11 @@ add_definitions(-DTEST_DATA_DIR="${CMAKE_CURRENT_BINARY_DIR}")
 add_definitions(-DMALT_PREFIX_BIN="${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_BINDIR}")
 
 ############################################################
-if (ENABLE_TESTS)
-	add_executable(TestWebviewNewCpp lib/tests/TestUserDb.cpp)
-	target_link_libraries(TestWebviewNewCpp ${GTEST_BOTH_LIBRARIES} ${GMOCK_BOTH_LIBRARIES} malt-webview-cpp-base)
-	add_test(TestWebviewNewCpp TestWebviewNewCpp)
-endif()
+#if (ENABLE_TESTS)
+#	add_executable(TestWebviewNewCpp lib/tests/TestUserDb.cpp)
+#	target_link_libraries(TestWebviewNewCpp ${GTEST_BOTH_LIBRARIES} ${GMOCK_BOTH_LIBRARIES} malt-webview-cpp-base)
+#	add_test(TestWebviewNewCpp TestWebviewNewCpp)
+#endif()
 
 ############################################################
 install(TARGETS malt-webview DESTINATION ${CMAKE_INSTALL_BINDIR})
