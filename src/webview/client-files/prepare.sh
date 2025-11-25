@@ -39,6 +39,7 @@ fi
 set -e
 set -x
 npm install
+npm run build
 set +x
 if [ ! -z "$1" ]; then
 	echo > "${1}/deps-loaded"

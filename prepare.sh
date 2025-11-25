@@ -17,9 +17,15 @@ set -x
 # prepare webview
 cd ./src/webview
 ./prepare.sh
-cd ../../
+cd -
+
+###########################################################
+# prepare webview client (download & pre-build)
+cd ./src/webview/client-files
+./prepare.sh
+cd -
 
 ###########################################################
 cd ./extern-deps/jemalloc/
 ./prepare.sh
-cd ../../
+cd -

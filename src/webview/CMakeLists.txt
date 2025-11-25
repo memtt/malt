@@ -18,7 +18,7 @@ if (NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/node_modules)
 					COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/prepare.sh ${CMAKE_CURRENT_BINARY_DIR}
 					COMMENT "Fetching webview javascript dependencies..."
 					DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/prepare.sh
-					WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
+					WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
 	add_custom_target(run-deps-loaded ALL DEPENDS deps-loaded package.json package-lock.json)
 	install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/node_modules DESTINATION share/malt/webview)
 else (NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/node_modules)

@@ -13,15 +13,15 @@
 if (NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/node_modules)
 	message(STATUS "Copying package.json and package-lock.json to build directory")
 	set(NODE_MODULES ${CMAKE_CURRENT_BINARY_DIR}/node_modules)
-	set(NODE_MODULES_DEPS client-deps-loaded)
+	set(NODE_MODULES_DEPS deps-loaded)
 	configure_file(${CMAKE_CURRENT_SOURCE_DIR}/package.json ${CMAKE_CURRENT_BINARY_DIR}/package.json COPYONLY)
 	configure_file(${CMAKE_CURRENT_SOURCE_DIR}/package-lock.json ${CMAKE_CURRENT_BINARY_DIR}/package-lock.json COPYONLY)
-	add_custom_command (OUTPUT client-deps-loaded
+	add_custom_command (OUTPUT deps-loaded
 					COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/../prepare.sh ${CMAKE_CURRENT_BINARY_DIR}
-					COMMENT "Fetching webview client javascript dependencies..."
+					COMMENT "Fetching webview javascript dependencies..."
 					DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/../prepare.sh
-					WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
-	add_custom_target(run-client-deps-loaded ALL DEPENDS client-deps-loaded package.json package-lock.json)
+					WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
+	add_custom_target(run-client-deps-loaded ALL DEPENDS deps-loaded package.json package-lock.json)
 	install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/node_modules DESTINATION share/malt/webview)
 else (NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/node_modules)
 	set(NODE_MODULES ${CMAKE_CURRENT_SOURCE_DIR}/node_modules)
@@ -31,13 +31,35 @@ endif (NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/node_modules)
 
 #######################################################
 # build
-add_custom_command (OUTPUT webview-client-generated
-					COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/build.sh "${CMAKE_CURRENT_BINARY_DIR}" "${NODE_MODULES}"
-					COMMENT "Building client webview..."
-					DEPENDS package.json package-lock.json
-					WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
-add_custom_target(webview-client-build ALL DEPENDS webview-client-generated ${NODE_MODULES_DEPS} src package.json package-lock.json vite.config.ts eslint.config.ts env.d.ts)
+if (NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/dist/index.html AND ${CMAKE_CURRENT_SOURCE_DIR}/src IS_NEWER_THAN ${CMAKE_CURRENT_SOURCE_DIR}/dist/index.html)
+	if (NODE_FOUND)
+		file(GLOB_RECURSE WEBVIEW_SRCS LIST_DIRECTORIES false RELATIVE src *.css *.scss *.vue *.ts)
+		list(APPEND ${WEBVIEW_SRCS} package.json package-lock.json vite.config.ts eslint.config.ts env.d.ts)
+		add_custom_command(
+			OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/dist/index.html
+			COMMENT "Building client webview..."
+			BYPRODUCTS ${CMAKE_CURRENT_BINARY_DIR}/dist/assets/index.js
+					${CMAKE_CURRENT_BINARY_DIR}/dist/index.html
+					${CMAKE_CURRENT_BINARY_DIR}/dist/assets/style.css
+			COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/build.sh "${CMAKE_CURRENT_BINARY_DIR}" "${NODE_MODULES}"
+			DEPENDS ${NODE_MODULES_DEPS} ${WEBVIEW_SRCS}
+			WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+		)
+		set(CLIENT_DIST_DIR ${CMAKE_CURRENT_BINARY_DIR}/dist)
+	else()
+		message(FATAL_ERROR "Webview client code not pre-built and not have NodeJS to build it !")
+	endif()
+else()
+	message(STATUS "Using pre-built webview-client")
+	set(CLIENT_DIST_DIR ${CMAKE_CURRENT_SOURCE_DIR}/dist)
+endif()
 
 #######################################################
+add_custom_target(webview-client-all
+	ALL
+	DEPENDS ${NODE_MODULES_DEPS} ${CLIENT_DIST_DIR}
+)
+	
+#######################################################
 ## Install the webview into share directory
-install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/dist/ DESTINATION share/malt/webview/dist)
+install(DIRECTORY ${CLIENT_DIST_DIR} DESTINATION share/malt/webview/dist)

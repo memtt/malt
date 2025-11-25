@@ -13,6 +13,14 @@ import { resolve } from 'node:path'
 import svgLoader from 'vite-svg-loader'
 import path from "path";
 
+function gen_build_path() : string
+{
+	if (process.env.MALT_VITE_BUILD_DIR != undefined)
+		return <string>process.env.MALT_VITE_BUILD_DIR;
+	else
+		return "./";
+}
+
 export default defineConfig({
   plugins: [
     vue(),
@@ -37,7 +45,7 @@ export default defineConfig({
     },
   },
   build: {
-	outDir: path.join(<string>process.env.MALT_VITE_BUILD_DIR, "dist"),
+	outDir: path.join(gen_build_path(), "dist"),
     emptyOutDir: true, // also necessary
     rollupOptions: {
       output: {

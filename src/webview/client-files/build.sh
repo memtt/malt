@@ -16,6 +16,15 @@ if [[ ${2} != "" ]]; then
 fi
 
 ###############################################################################
-ln -sf ${NODE_PATH} ./node_modules
-npm run build
-rm ./node_modules
+# Because VITE does not support not having node_modules locally
+if [[ ${NODE_PATH} != './node_modules' ]]; then
+	pwd
+	ln -sf ${NODE_PATH} ./node_modules
+	rm -f ./node_modules/node_modules
+	npm run build
+	if [[ -L ./node_modules ]]; then
+		rm ./node_modules
+	fi
+else
+	npm run build
+fi
