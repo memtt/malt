@@ -38,6 +38,8 @@ fi
 ############################################################
 set -e
 set -x
+mkdir -p ../../../extern-deps/node_modules
+ln -sf ../../../extern-deps/node_modules ./
 npm install
 npm run build
 set +x

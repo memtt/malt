@@ -17,14 +17,16 @@ fi
 
 ###############################################################################
 # Because VITE does not support not having node_modules locally
-if [[ ${NODE_PATH} != './node_modules' ]]; then
-	pwd
-	ln -sf ${NODE_PATH} ./node_modules
-	rm -f ./node_modules/node_modules
+if [[ ${MALT_VITE_BUILD_DIR} != '' && ${MALT_VITE_BUILD_DIR} != '.' ]]; then
+	export MALT_VITE_ORIG_DIR="${PWD}"
+	mkdir -p "${MALT_VITE_BUILD_DIR}"
+	for tmp in .* *.*; do
+		cp "${PWD}/$tmp" "${MALT_VITE_BUILD_DIR}/$tmp"
+	done
+	cp -r "${PWD}/src" "${MALT_VITE_BUILD_DIR}"
+	cp -r "${PWD}/public" "${MALT_VITE_BUILD_DIR}"
+	cd "${MALT_VITE_BUILD_DIR}"
 	npm run build
-	if [[ -L ./node_modules ]]; then
-		rm ./node_modules
-	fi
 else
 	npm run build
 fi

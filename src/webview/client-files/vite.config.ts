@@ -21,6 +21,16 @@ function gen_build_path() : string
 		return "./";
 }
 
+function gen_orig_path() : string
+{
+	if (process.env.MALT_VITE_ORIG_DIR != undefined) {
+		console.log(<string>process.env.MALT_VITE_ORIG_DIR);
+		return <string>process.env.MALT_VITE_ORIG_DIR;
+	} else {
+		return __dirname;
+	}
+}
+
 export default defineConfig({
   plugins: [
     vue(),
@@ -45,7 +55,7 @@ export default defineConfig({
     },
   },
   build: {
-	outDir: path.join(gen_build_path(), "dist"),
+    outDir: path.join(gen_build_path(), "dist"),
     emptyOutDir: true, // also necessary
     rollupOptions: {
       output: {

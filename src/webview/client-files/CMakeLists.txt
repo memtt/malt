@@ -10,7 +10,7 @@
 ######################################################
 # Install nodejs dependencies if needed
 # then install node_modules into share directory
-if (NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/node_modules)
+if (NOT EXISTS ${CMAKE_SOURCE_DIR}/extern-deps/node_modules)
 	message(STATUS "Copying package.json and package-lock.json to build directory")
 	set(NODE_MODULES ${CMAKE_CURRENT_BINARY_DIR}/node_modules)
 	set(NODE_MODULES_DEPS deps-loaded)
@@ -23,17 +23,18 @@ if (NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/node_modules)
 					WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
 	add_custom_target(run-client-deps-loaded ALL DEPENDS deps-loaded package.json package-lock.json)
 	install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/node_modules DESTINATION share/malt/webview)
-else (NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/node_modules)
-	set(NODE_MODULES ${CMAKE_CURRENT_SOURCE_DIR}/node_modules)
+else ()
+	set(NODE_MODULES ${CMAKE_SOURCE_DIR}/extern-deps/node_modules)
 	set(NODE_MODULES_DEPS "")
 	install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/node_modules DESTINATION share/malt/webview)
-endif (NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/node_modules)
+endif ()
 
 #######################################################
 # build
-if (NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/dist/index.html AND ${CMAKE_CURRENT_SOURCE_DIR}/src IS_NEWER_THAN ${CMAKE_CURRENT_SOURCE_DIR}/dist/index.html)
+if (NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/dist/index.html OR ${CMAKE_CURRENT_SOURCE_DIR}/src IS_NEWER_THAN ${CMAKE_CURRENT_SOURCE_DIR}/dist/index.html)
+	message(STATUS "Need building webview-client")
 	if (NODE_FOUND)
-		file(GLOB_RECURSE WEBVIEW_SRCS LIST_DIRECTORIES false RELATIVE src *.css *.scss *.vue *.ts)
+		file(GLOB_RECURSE WEBVIEW_SRCS LIST_DIRECTORIES false *.css *.scss *.vue *.ts)
 		list(APPEND ${WEBVIEW_SRCS} package.json package-lock.json vite.config.ts eslint.config.ts env.d.ts)
 		add_custom_command(
 			OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/dist/index.html
@@ -45,7 +46,7 @@ if (NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/dist/index.html AND ${CMAKE_CURRENT_S
 			DEPENDS ${NODE_MODULES_DEPS} ${WEBVIEW_SRCS}
 			WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
 		)
-		set(CLIENT_DIST_DIR ${CMAKE_CURRENT_BINARY_DIR}/dist)
+		set(CLIENT_DIST_DIR ${CMAKE_CURRENT_BINARY_DIR}/dist/index.html)
 	else()
 		message(FATAL_ERROR "Webview client code not pre-built and not have NodeJS to build it !")
 	endif()
