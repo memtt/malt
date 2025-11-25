@@ -26,6 +26,13 @@ cd ./src/webview/client-files
 cd -
 
 ###########################################################
+# download jemalloc sources to embed them
 cd ./extern-deps/jemalloc/
+./prepare.sh
+cd -
+
+###########################################################
+# pre-build the doc
+cd ./doc
 ./prepare.sh
 cd -

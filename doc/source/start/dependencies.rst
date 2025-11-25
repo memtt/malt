@@ -20,9 +20,6 @@ Optional dependencies
 
 Those dependencies are not required but will permit to **enable some features** support of MALT.
 
-`OpenSSL <https://www.openssl-library.org/source/index.html>`_
-  - 0.128 - 0.183
-  - Required if you want to have the graphical interface installed in order to handle the authentication via **libcrypto** to hash the passwords.
 `libelf <http://www.mr511.de/software/english.html>`_
   - 0.128 - 0.183
   - To extract **global variables** list from executables and libraries.
@@ -52,6 +49,19 @@ most of the time not present by default on available systems. **If present** MAL
 `Nlohmann-json <https://github.com/nlohmann/json>`_
   - 3.12.0
   - Use to decode / encoder the **JSON** data in the **webview**.
+
+NodeJS dependencies
+-------------------
+
+The **webview** is based on the `VueJS` framework, so it requires some dependencies
+for **NodeJS** in order to be built.
+
+The CMake script automatically **download** them if you are using the **git** repository
+as it does not contains those dependencies.
+
+The **official release archive** embed them and contains a pre-build version of the webview
+so you do not requires **NodeJS** / **NPM** nor the **node_modules** to get it running on
+your system.
 
 Dependencies for the GIT repo
 -----------------------------
