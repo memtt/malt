@@ -29,18 +29,12 @@
         <template #title>Run <span>informations</span></template>
 
         <InfoCard title="Run summary" :icon="IconTimer" main>
-          <div class="info-row">
-            <div class="info-label">Physical memory peak</div>
-            <div class="info-value">{{ getFormattedValueFromKey('peakPhysicalMemory') }}</div>
-          </div>
+          <SummaryMetric name='peakPhysicalMemory' title='Physical memory peak'></SummaryMetric>
           <div class="info-row">
             <div class="info-label">Available physical memory</div>
             <div class="info-value">{{ formattedTotalMemory }}</div>
           </div>
-          <div class="info-row">
-            <div class="info-label">Allocation count</div>
-            <div class="info-value">{{ getFormattedValueFromKey('allocCount') }}</div>
-          </div>
+          <SummaryMetric name='allocCount' title='Allocation count'></SummaryMetric>
         </InfoCard>
 
         <InfoCard title="Run details" :icon="IconList">
@@ -113,152 +107,54 @@
 
         <!-- Peak Statistics -->
         <InfoCard title="Peak" :icon="IconRules">
-          <div class="info-row">
-            <div class="info-label">Physical memory peak</div>
-            <div class="info-value highlight">
-              {{ getFormattedValueFromKey('peakPhysicalMemory') }}
-              <IconWarning v-if="hasWarningForKey('peakPhysicalMemory')" class="warning-icon" />
-            </div>
-          </div>
-          <div class="info-row">
-            <div class="info-label">Virtual memory peak</div>
-            <div class="info-value">{{ getFormattedValueFromKey('peakVirtualMemory') }}</div>
-          </div>
-          <div class="info-row">
-            <div class="info-label">Requested memory peak</div>
-            <div class="info-value">{{ getFormattedValueFromKey('peakRequestedMemory') }}</div>
-          </div>
-          <div class="info-row">
-            <div class="info-label">Alive object peak</div>
-            <div class="info-value">{{ getFormattedValueFromKey('peakSegmentCount') }}</div>
-          </div>
+          <SummaryMetric name='peakPhysicalMemory' title='Physical memory peak'></SummaryMetric>
+          <SummaryMetric name='peakVirtualMemory' title='Virtual memory peak'></SummaryMetric>
+          <SummaryMetric name='peakRequestedMemory' title='Requested memory peak'></SummaryMetric>
+          <SummaryMetric name='peakSegmentCount' title='Alive object peak'></SummaryMetric>
         </InfoCard>
 
         <!-- Allocator Pressure (card 1) -->
         <InfoCard title="Allocator pressure" :icon="IconWeight">
-          <div class="info-row">
-            <div class="info-label">Cumulated memory allocations</div>
-            <div class="info-value highlight">
-              {{ getFormattedValueFromKey('totalAllocatedMemory') }}
-            </div>
-          </div>
-          <div class="info-row">
-            <div class="info-label">Allocation count</div>
-            <div class="info-value">{{ getFormattedValueFromKey('allocCount') }}</div>
-          </div>
+          <SummaryMetric name='totalAllocatedMemory' title='Cumulated memory allocations'></SummaryMetric>
+          <SummaryMetric name='allocCount' title='Allocation count'></SummaryMetric>
         </InfoCard>
 
         <!-- Allocator Pressure (card 2) -->
         <InfoCard title="Allocator pressure" :icon="IconChrono">
-          <div class="info-row">
-            <div class="info-label">Peak allocation rate (volume)</div>
-            <div class="info-value">{{ getFormattedValueFromKey('peakAllocRate') }}</div>
-          </div>
-          <div class="info-row">
-            <div class="info-label">Peak allocation rate (count)</div>
-            <div class="info-value">{{ getFormattedValueFromKey('peakAllocCountRate') }}</div>
-          </div>
-          <div class="info-row">
-            <div class="info-label">Recycling ratio</div>
-            <div class="info-value">{{ formatRecyclingRatio(data.summary.recyclingRatio) }}</div>
-          </div>
+          <SummaryMetric name='peakAllocRate' title='Peak allocation rate (volume)'></SummaryMetric>
+          <SummaryMetric name='peakAllocCountRate' title='Peak allocation rate (count)'></SummaryMetric>
+          <SummaryMetric name='recyclingRatio' title='Recycling ratio'></SummaryMetric>
         </InfoCard>
 
         <!-- Call stacks -->
         <InfoCard title="Call stacks" :icon="IconStack">
-          <div class="info-row">
-            <div class="info-label">Number of threads</div>
-            <div class="info-value highlight">
-              {{ getFormattedValueFromKey('peakPhysicalMemory') }}
-            </div>
-          </div>
-          <div class="info-row">
-            <div class="info-label">Largest stack</div>
-            <div class="info-value">{{ getFormattedValueFromKey('largestStack') }}</div>
-          </div>
+          <SummaryMetric name='maxThreadCount' title='Number of threads'></SummaryMetric>
+          <SummaryMetric name='largestStack' title='Largest stack'></SummaryMetric>
         </InfoCard>
 
         <!-- Variables globales / TLS -->
         <InfoCard title="Variables globales / TLS" :icon="IconVariable">
-          <div class="info-row">
-            <div class="info-label">Global variables memory</div>
-            <div class="info-value" :class="{ warning: hasWarningForKey('globalVarMem') }">
-              {{ getFormattedValueFromKey('globalVarMem') }}
-              <WarningTooltip
-                v-if="hasWarningForKey('globalVarMem')"
-                :message="getWarningMessage('globalVarMem')"
-              >
-                <IconWarning class="warning-icon" />
-              </WarningTooltip>
-            </div>
-          </div>
-          <div v-if="data.summary.tlsVarMem !== undefined" class="info-row">
-            <div class="info-label">TLS variables memory</div>
-            <div class="info-value" :class="{ warning: hasWarningForKey('tlsVarMem') }">
-              {{ getFormattedValueFromKey('tlsVarMem') }}
-              <WarningTooltip
-                v-if="hasWarningForKey('tlsVarMem')"
-                :message="getWarningMessage('tlsVarMem')"
-              >
-                <IconWarning class="warning-icon" />
-              </WarningTooltip>
-            </div>
-          </div>
-          <div v-if="data.summary.numGblVar !== undefined" class="info-row">
-            <div class="info-label">Global variable count</div>
-            <div class="info-value" :class="{ warning: hasWarningForKey('numGblVar') }">
-              {{ data.summary.numGblVar }}
-              <WarningTooltip
-                v-if="hasWarningForKey('numGblVar')"
-                :message="getWarningMessage('numGblVar')"
-              >
-                <IconWarning class="warning-icon" />
-              </WarningTooltip>
-            </div>
-          </div>
+          <SummaryMetric name='globalVarMem' title='Global variables memory'></SummaryMetric>
+          <SummaryMetric name='tlsVarMem' title='TLS variables memory'></SummaryMetric>
+          <SummaryMetric name='numGblVar' title='Global variable count'></SummaryMetric>
         </InfoCard>
 
         <!-- Memory leak -->
         <InfoCard title="Memory leak" :icon="IconWater">
-          <div class="info-row">
-            <div class="info-label">Leaked memory</div>
-            <div class="info-value" :class="{ warning: hasWarningForKey('leakedMem') }">
-              {{ getFormattedValueFromKey('leakedMem') }}
-              <IconWarning v-if="hasWarningForKey('leakedMem')" class="warning-icon" />
-            </div>
-          </div>
-          <div class="info-row">
-            <div class="info-label">Leaked object count</div>
-            <div class="info-value">{{ getFormattedValueFromKey('leakedCount') }}</div>
-          </div>
-          <div class="info-row">
-            <div class="info-label">Recycling ratio</div>
-            <div class="info-value">{{ formatRecyclingRatio(data.summary.recyclingRatio) }}</div>
-          </div>
+          <SummaryMetric name='leakedMem' title='Leaked memory'></SummaryMetric>
+          <SummaryMetric name='leakedCount' title='Leaked object count'></SummaryMetric>
         </InfoCard>
 
         <!-- Block sizes used -->
         <InfoCard title="Block sizes used" :icon="IconScale">
-          <div class="info-row">
-            <div class="info-label">Smallest allocations</div>
-            <div class="info-value">{{ getFormattedValueFromKey('minAllocSize') }}</div>
-          </div>
-          <div class="info-row">
-            <div class="info-label">Mean allocations</div>
-            <div class="info-value">{{ getFormattedValueFromKey('meanAllocSize') }}</div>
-          </div>
-          <div class="info-row">
-            <div class="info-label">Largest allocations</div>
-            <div class="info-value">{{ getFormattedValueFromKey('maxAllocSize') }}</div>
-          </div>
+          <SummaryMetric name='minAllocSize' title='Smallest allocations'></SummaryMetric>
+          <SummaryMetric name='meanAllocSize' title='Mean allocations'></SummaryMetric>
+          <SummaryMetric name='maxAllocSize' title='Largest allocations'></SummaryMetric>
         </InfoCard>
 
         <!-- MALT -->
         <InfoCard title="MALT" :icon="IconSearch">
-          <div class="info-row">
-            <div class="info-label">MALT peak memory</div>
-            <div class="info-value">{{ getFormattedValueFromKey('peakInternalMemory') }}</div>
-          </div>
+          <SummaryMetric name='peakInternalMemory' title='MALT peak memory'></SummaryMetric>
         </InfoCard>
       </PageSection>
 
@@ -419,6 +315,7 @@ import WarningTooltip from '@/components/core/WarningTooltip.vue'
 import HelpModal from '@/components/home/HelpModal.vue'
 import PythonDetailsModal from '@/components/home/PythonDetailsModal.vue'
 import MetricHelpModal from '@/components/home/MetricHelpModal.vue'
+import SummaryMetric from '@/components/home/SummaryMetric.vue'
 import IconTimer from '@/assets/icons/icon-timer.svg?component'
 import IconList from '@/assets/icons/icon-list.svg?component'
 import IconDevice from '@/assets/icons/icon-device.svg?component'
@@ -463,12 +360,6 @@ const hasWarningForKey = (key: string): boolean => {
   return warnings && warnings.length > 0
 }
 
-// Helper to format recycling ratio with 8 decimal places
-const formatRecyclingRatio = (value: number | undefined): string => {
-  if (value === undefined) return 'N/A'
-  return value.toFixed(8)
-}
-
 // Modal state
 const showHelpModal = ref(false)
 const showPythonDetailsModal = ref(false)
@@ -483,15 +374,8 @@ const openMetricHelp = (metricKey: string) => {
 
 // Helper to get warning message for a specific key
 const getWarningMessage = (key: string): string => {
-  const messages: Record<string, string> = {
-    globalVarMem:
-      'Caution, a large part of your memory is consummed by global variables, check if it is normal.',
-    tlsVarMem:
-      'Caution, a large part of your memory is consummed by TLS variables, check if it is normal.',
-    numGblVar:
-      'Caution, you get a realy big number of global variable, your code is likely to be buggy.',
-  }
-  return messages[key] || 'Warning'
+  const value = data.value?.summaryWarnings[key] || ['Internal error !!!!']
+  return value[0];
 }
 
 // Helper to format bytes with human-readable units

@@ -102,6 +102,7 @@ struct SummaryV2
 		size_t numGblVar{0};
 		size_t globalVarMem{0};
 		size_t tlsVarMem{0};
+		size_t maxThreadCount{0};
 	} summary;
 	SummaryWarnings summaryWarnings;
 	std::vector<MALTFormat::ThreadsStats> threadStats;

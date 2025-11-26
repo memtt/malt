@@ -103,6 +103,8 @@ export interface SummaryStats {
   tlsVarMem?: number;
   /** Number of global variables */
   numGblVar?: number;
+  /** Max number of threads at same time */
+  maxThreadCount?: number;
 }
 
 /**

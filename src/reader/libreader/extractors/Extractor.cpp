@@ -346,6 +346,7 @@ void to_json(nlohmann::json & json, const SummaryV2 & value)
 		{"numGblVar", value.summary.numGblVar},
 		{"globalVarMem", value.summary.globalVarMem},
 		{"tlsVarMem", value.summary.tlsVarMem},
+		{"maxThreadCount", value.summary.maxThreadCount},
 	};
 	json["summaryWarnings"] = value.summaryWarnings;
 	json["threadStats"] = value.threadStats;
@@ -751,6 +752,7 @@ SummaryV2 Extractor::getSummaryV2(void) const
 	ret.summary.numGblVar = cntVars;
 	ret.summary.globalVarMem = gblMem;
 	ret.summary.tlsVarMem = tlsMem * (this->profile.globals.maxThreadCount + 1);
+	ret.summary.maxThreadCount = this->profile.globals.maxThreadCount;
 
 	//summary warnings
 	ret.summaryWarnings = this->genSummaryWarnings(ret);
@@ -791,6 +793,8 @@ SummaryWarnings Extractor::genSummaryWarnings(const SummaryV2 & data) const
 		ret["tlsVarMem"].push_back("Caution, a large part of your memory is consummed by TLS variables, check if it is normal.");
 	if (data.summary.numGblVar > 500)
 		ret["numGblVar"].push_back("Caution, you get a realy big number of global variable, your code is likely to be buggy.");
+	if (data.summary.maxThreadCount > 2048)
+		ret["maxThreadCount"].push_back("Strange very high number of thread ?");
 
 	return ret;
 }

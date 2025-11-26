@@ -175,6 +175,13 @@ export const summaryViewEntries: SummaryViewEntry[] = [
     format: (x) => humanReadable(x, 1, 'B', true),
   },
   {
+    key: 'maxThreadCount',
+    name: 'Number of threads',
+    level: 1,
+    help: 'Maximium number of thread running at same time.',
+    format: (x) => humanReadable(x, 1, '', false),
+  },
+  {
     key: 'numGblVar',
     name: 'Global variable count',
     level: 2,
