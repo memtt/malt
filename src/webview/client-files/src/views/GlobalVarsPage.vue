@@ -120,6 +120,8 @@ onMounted(() => {
   justify-content: center;
   padding: $spacing-xl 0;
   text-align: center;
+  background-color: $blue-section-bg;
+  border-radius: $radius-xl;
 }
 
 /* Spinner */

@@ -289,7 +289,8 @@ watch(
   align-items: center;
   justify-content: center;
   height: 100vh;
-  background: white;;
+  background: $blue-section-bg;
+  border-radius: $radius-xl;
 }
 
 .sources-layout {

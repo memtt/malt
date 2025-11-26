@@ -327,6 +327,7 @@ onMounted(() => {
   justify-content: center;
   height: 100vh;
   background-color: $blue-section-bg;
+  border-radius: $radius-xl;
 }
 
 .call-tree-layout {

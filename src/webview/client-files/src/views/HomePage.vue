@@ -400,6 +400,8 @@ const formatBytes = (bytes: number): string => {
   align-items: center;
   justify-content: center;
   height: 100vh;
+  background-color: $blue-section-bg;
+  border-radius: $radius-xl;
 }
 
 .home-content {

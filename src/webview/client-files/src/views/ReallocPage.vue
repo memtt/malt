@@ -121,6 +121,17 @@ const mostUsedBarData = computed((): BarSeries[] => {
   margin: 0 auto;
 }
 
+/* Loading State */
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: $spacing-5xl 20px;
+  background-color: $blue-section-bg;
+  border-radius: $radius-xl;
+}
+
 .loading-container,
 .error-container {
   padding: 2rem;

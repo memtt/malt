@@ -90,6 +90,8 @@ const {
   align-items: center;
   justify-content: center;
   padding: $spacing-5xl 20px;
+  background-color: $blue-section-bg;
+  border-radius: $radius-xl;
 }
 
 .spinner {
