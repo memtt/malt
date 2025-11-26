@@ -18,6 +18,7 @@ import type {
   CallTreeParams,
   CallTreeDownloadFormat,
 } from '@/types/call-tree';
+import { boolean } from 'zod';
 
 /**
  * Fetch call tree graph data
@@ -83,8 +84,18 @@ export async function downloadCallTreeFile(
 
   // Fetch with authentication
   const response = await fetch(url, {
-    method: 'GET',
+    method: 'POST',
     headers: (token ? { Authorization: `Bearer ${token}` } : {}),
+    body: JSON.stringify({
+      func: params.func ?? null,
+      nodeid: params.nodeid ?? -1,
+      depth: params.depth,
+      height: params.height,
+      mincost: params.mincost,
+      metric: params.metric,
+      isratio: params.isratio,
+      format: format,
+    }),
   });
 
   if (!response.ok) {
@@ -92,10 +103,18 @@ export async function downloadCallTreeFile(
   }
 
   // Get content as blob
-  const blob = await response.blob();
+  const response_json = await response.json();
+
+  //key
+  var key: string = "svg";
+  var mimetype: string = "image/svg+xml";
+  if (format == "dot") {
+    key = "dotCode";
+    mimetype = "text/vnd.graphviz";
+  }
 
   // Create temporary URL and trigger download
-  const blobUrl = URL.createObjectURL(blob);
+  const blobUrl = URL.createObjectURL(new Blob([response_json[key]], {type: mimetype}));
   const link = document.createElement('a');
   link.href = blobUrl;
   link.download = filename;
