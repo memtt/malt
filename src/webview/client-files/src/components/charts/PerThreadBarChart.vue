@@ -222,7 +222,7 @@ const renderStackedBars = (
             .attr('dy', '0.35em')
             .attr('text-anchor', 'middle')
             .attr('fill', 'white')
-            .style('font-size', '10px')
+            .style('font-size', '12px')
             .style('font-weight', 'bold')
             .text(formatValue(value))
         }
@@ -272,7 +272,7 @@ const renderGroupedBars = (
             .attr('y', yPosition + barHeight / 2)
             .attr('dy', '0.35em')
             .attr('fill', 'black')
-            .style('font-size', '10px')
+            .style('font-size', '12px')
             .text(formatValue(value))
         }
       }

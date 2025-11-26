@@ -40,6 +40,7 @@
         <TopGlobalVariablesList
           v-model:search-query="topListSearchQuery"
           :filtered-variables="topListVariables"
+          :maxThreadCount="activeThreads"
         />
       </PageSection>
 

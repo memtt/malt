@@ -70,7 +70,7 @@ const formatSize = (bytes: number): string => {
   align-self: flex-start;
   position: sticky;
   top: 20px;
-  background: $color-bg-primary;
+  background: $blue-section-bg;
   border-radius: $radius-xl;
   padding: $spacing-3xl;
   width: 228px;

@@ -46,14 +46,18 @@
 
         <!-- Variable Size -->
         <div class="variable-info">
-          <span class="info-label">Variable size:</span>
+          <span class="info-label">Virtual size:</span>
           <span class="info-value">{{ formatSize(variable.totalSize) }}</span>
         </div>
 
         <!-- Size Used (if different from total size) -->
-        <div v-if="variable.usedSize !== undefined" class="variable-info">
+        <div v-if="variable.usedSize !== undefined && variable.tls == false" class="variable-info">
           <span class="info-label">Size used:</span>
           <span class="info-value">{{ formatSize(variable.usedSize) }}</span>
+        </div>
+        <div v-else-if="variable.tls == true" class="variable-info">
+          <span class="info-label">Variable size:</span>
+          <span class="info-value">{{ formatSize(variable.size) }} * {{ props.maxThreadCount }}</span>
         </div>
       </div>
     </div>
@@ -71,6 +75,7 @@ import TooltipWrapper from '@/components/core/TooltipWrapper.vue'
 
 type Props = {
   filteredVariables: TopVariable[]
+  maxThreadCount: number,
   searchQuery: string
 }
 

@@ -65,11 +65,11 @@
           <div class="metric-row">
             <span class="metric-label">Lifetime (cycles) [ Min. / Avg. / Max. ]:</span>
             <span class="metric-value">
-              [ {{ formatValue(annotation?.total?.lifetime.min, 'M') }} /
+              [ {{ formatValue(annotation?.total?.lifetime.min, 'C') }} /
               {{
-                formatMean(annotation?.total?.lifetime.sum, annotation?.total?.lifetime.count, 'M')
+                formatMean(annotation?.total?.lifetime.sum, annotation?.total?.lifetime.count, 'C')
               }}
-              / {{ formatValue(annotation?.total?.lifetime.max, 'M') }} ]
+              / {{ formatValue(annotation?.total?.lifetime.max, 'C') }} ]
             </span>
           </div>
         </div>
@@ -119,9 +119,9 @@
           <div class="metric-row">
             <span class="metric-label">Lifetime (cycles) [ Min. / Avg. / Max. ]:</span>
             <span class="metric-value">
-              [ {{ formatValue(annotation?.own?.lifetime.min, 'M') }} /
-              {{ formatMean(annotation?.own?.lifetime.sum, annotation?.own?.lifetime.count, 'M') }}
-              / {{ formatValue(annotation?.own?.lifetime.max, 'M') }} ]
+              [ {{ formatValue(annotation?.own?.lifetime.min, 'C') }} /
+              {{ formatMean(annotation?.own?.lifetime.sum, annotation?.own?.lifetime.count, 'C') }}
+              / {{ formatValue(annotation?.own?.lifetime.max, 'C') }} ]
             </span>
           </div>
         </div>

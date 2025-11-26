@@ -59,6 +59,57 @@ export function humanReadable(
 }
 
 /**
+ * Format time value in ticks to human-readable time string
+ * @param ticks - Time value in ticks
+ * @param ticksPerSecond - Conversion factor
+ * @param precision - Number of decimal places (default: 1)
+ * @param withUnit - Include unit suffix (default: true)
+ * @returns Formatted time string (e.g., "1.5s", "2m30s", "1h15m")
+ */
+export function humanReadableTimes(
+  ticks: number,
+  ticksPerSecond: number,
+  precision: number = 1,
+  withUnit: boolean = true,
+): string {
+  const seconds = ticks / ticksPerSecond
+
+  if (seconds < 60) {
+    return withUnit ? `${seconds.toFixed(precision)}s` : seconds.toFixed(precision)
+  } else if (seconds < 3600) {
+    const minutes = Math.floor(seconds / 60)
+    const secs = Math.floor(seconds % 60)
+    return withUnit ? `${minutes}m${secs}s` : `${minutes}:${secs.toString().padStart(2, '0')}`
+  } else {
+    const hours = Math.floor(seconds / 3600)
+    const minutes = Math.floor((seconds % 3600) / 60)
+    return withUnit
+      ? `${hours}h${minutes}m`
+      : `${hours}:${minutes.toString().padStart(2, '0')}`
+  }
+}
+
+/**
+ * Convert ticks to seconds
+ * @param ticks - Time value in ticks
+ * @param ticksPerSecond - Conversion factor
+ * @returns Time in seconds
+ */
+export function ticksToSeconds(ticks: number, ticksPerSecond: number): number {
+  return ticks / ticksPerSecond
+}
+
+/**
+ * Convert seconds to ticks
+ * @param seconds - Time value in seconds
+ * @param ticksPerSecond - Conversion factor
+ * @returns Time in ticks
+ */
+export function secondsToTicks(seconds: number, ticksPerSecond: number): number {
+  return seconds * ticksPerSecond
+}
+
+/**
  * Sort data by value in descending order
  */
 export function sortByValue<T extends { value: number }>(data: T[]): T[] {

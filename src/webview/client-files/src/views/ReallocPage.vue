@@ -89,12 +89,14 @@ const summaryItems = computed(() => [
 // Limit data for performance
 // ScatterChart: top 500 points by count
 const scatterData = computed(() => {
-  return [...data.value].sort((a, b) => b.count - a.count).slice(0, 500)
+  //@TODO: in order to slice, select the one covering 90% of the calls (summing the number of calls per size)
+  return [...data.value].sort((a, b) => b.count - a.count);//.slice(0, 500)
 })
 
 // ReallocBundleChart: top 100 links by count
 const bundleData = computed(() => {
-  return [...data.value].sort((a, b) => b.count - a.count).slice(0, 100)
+  //@TODO: in order to slice, select the one covering 90% of the calls (summing the number of calls per size)
+  return [...data.value].sort((a, b) => b.count - a.count);//.slice(0, 10000)
 })
 
 // Prepare data for bar chart
