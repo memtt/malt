@@ -30,6 +30,8 @@ export const stackInfoDataSchema = z.object({
   alloc: stackMinMaxInfoSchema,
   free: stackMinMaxInfoSchema,
   lifetime: stackMinMaxInfoSchema,
+  mmap: stackMinMaxInfoSchema,
+  munmap: stackMinMaxInfoSchema,
   // Additional fields that exist in backend data
   globalPeak: z.number().optional(),
   reallocCount: z.number().optional(),
@@ -122,7 +124,18 @@ export type MetricKey =
   | 'lifetime.min'
   | 'recycling.ratio'
   | 'realloc.count'
-  | 'realloc.sum';
+  | 'realloc.sum'
+  | 'mmap.sum'
+  | 'mmap.count'
+  | 'mmap.min'
+  | 'mmap.mean'
+  | 'mmap.max'
+  | 'munmap.sum'
+  | 'munmap.count'
+  | 'munmap.min'
+  | 'munmap.mean'
+  | 'munmap.max';
+  
 
 export type MetricOrder = 'asc' | 'desc';
 

@@ -223,11 +223,11 @@
         <InfoCard title="MMap">
           <div class="info-row">
             <div class="info-label">Count</div>
-            <div class="info-value">0</div>
+            <div class="info-value">{{ data.summaryDomains.counters.mmap.toLocaleString() }}</div>
           </div>
           <div class="info-row">
             <div class="info-label">Cumulated allocations</div>
-            <div class="info-value">0 B</div>
+            <div class="info-value">{{ formatBytes(data.summaryDomains.mem.mmap) }}</div>
           </div>
           <div class="info-row">
             <div class="info-label">Description</div>

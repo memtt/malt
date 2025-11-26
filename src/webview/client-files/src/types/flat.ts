@@ -30,6 +30,8 @@ export interface FunctionMemStats {
   alloc: AllocStats
   free: AllocStats
   lifetime: AllocStats
+  mmap: AllocStats
+  munmap: AllocStats
   globalPeak: number
   reallocCount: number
   reallocSumDelta: number
@@ -79,3 +81,13 @@ export type MetricType =
   | 'recycling.ratio'
   | 'realloc.count'
   | 'realloc.sum'
+    | 'mmap.sum'
+  | 'mmap.count'
+  | 'mmap.min'
+  | 'mmap.mean'
+  | 'mmap.max'
+  | 'munmap.sum'
+  | 'munmap.count'
+  | 'munmap.min'
+  | 'munmap.mean'
+  | 'munmap.max';

@@ -147,6 +147,86 @@ export const FUNC_METRICS: Record<MetricKey, MetricDefinition> = {
     defaultOrder: 'desc',
     ref: 'sum',
   },
+    'mmap.sum': {
+    name: 'Mmap mem.',
+    key: 'mmap.sum',
+    extractor: (x) => x.mmap.sum,
+    formatter: (x) => humanReadable(x),
+    defaultOrder: 'desc',
+    ref: 'sum',
+  },
+  'mmap.count': {
+    name: 'Mmap count',
+    key: 'mmap.count',
+    extractor: (x) => x.mmap.count,
+    formatter: (x) => humanReadable(x, 1, '', true),
+    defaultOrder: 'desc',
+    ref: 'sum',
+  },
+  'mmap.min': {
+    name: 'Min. mmap size',
+    key: 'mmap.min',
+    extractor: (x) => x.mmap.min,
+    formatter: (x) => humanReadable(x),
+    defaultOrder: 'asc',
+    ref: 'max',
+  },
+  'mmap.mean': {
+    name: 'Mean mmap size',
+    key: 'mmap.mean',
+    extractor: (x) => (x.mmap.count === 0 ? 0 : x.mmap.sum / x.mmap.count),
+    formatter: (x) => humanReadable(x),
+    defaultOrder: 'asc',
+    ref: 'max',
+  },
+  'mmap.max': {
+    name: 'Max. mmap size',
+    key: 'mmap.max',
+    extractor: (x) => x.mmap.max,
+    formatter: (x) => humanReadable(x),
+    defaultOrder: 'desc',
+    ref: 'max',
+  },
+  'munmap.sum': {
+    name: 'Munmap mem.',
+    key: 'munmap.sum',
+    extractor: (x) => x.munmap.sum,
+    formatter: (x) => humanReadable(x),
+    defaultOrder: 'desc',
+    ref: 'sum',
+  },
+  'munmap.count': {
+    name: 'Munmap count',
+    key: 'munmap.count',
+    extractor: (x) => x.munmap.count,
+    formatter: (x) => humanReadable(x, 1, '', true),
+    defaultOrder: 'desc',
+    ref: 'sum',
+  },
+  'munmap.min': {
+    name: 'Min. munmap size',
+    key: 'munmap.min',
+    extractor: (x) => x.munmap.min,
+    formatter: (x) => humanReadable(x),
+    defaultOrder: 'asc',
+    ref: 'max',
+  },
+  'munmap.mean': {
+    name: 'Mean munmap size',
+    key: 'munmap.mean',
+    extractor: (x) => (x.munmap.count === 0 ? 0 : x.munmap.sum / x.munmap.count),
+    formatter: (x) => humanReadable(x),
+    defaultOrder: 'asc',
+    ref: 'max',
+  },
+  'munmap.max': {
+    name: 'Max. munmap size',
+    key: 'munmap.max',
+    extractor: (x) => x.munmap.max,
+    formatter: (x) => humanReadable(x),
+    defaultOrder: 'desc',
+    ref: 'max',
+  },
 }
 
 /**
@@ -188,6 +268,20 @@ const METRIC_CATEGORIES: Record<string, MetricKey[]> = {
     'realloc.count', // Realloc count
     'realloc.sum', // Realloc sum
   ],
+  Mmap: [
+    'mmap.sum', // Allocated memory
+    'mmap.count', // Allocated count
+    'mmap.min', // Min. allocated size
+    'mmap.mean', // Mean allocated size
+    'mmap.max', // Max. allocated size
+  ],
+  Munmap: [
+    'munmap.sum', // Allocated memory
+    'munmap.count', // Allocated count
+    'munmap.min', // Min. allocated size
+    'munmap.mean', // Mean allocated size
+    'munmap.max', // Max. allocated size
+  ]
 }
 
 /**
