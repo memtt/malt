@@ -68,6 +68,18 @@ const convertedFunctions = computed<FunctionStat[]>(() => {
         min: 0,
         max: 0,
       },
+      mmap: {
+        count: 0,
+        sum: 0,
+        min: 0,
+        max: 0,
+      },
+      munmap: {
+        count: 0,
+        sum: 0,
+        min: 0,
+        max: 0,
+      },
     },
     globalPeak: 0,
     _link: item.link,

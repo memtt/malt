@@ -114,6 +114,7 @@ export interface SummaryDomains {
   /** Allocation counts by domain */
   counters: {
     c: number;
+    mmap: number;
     pyObj: number;
     pyMem: number;
     pyRaw: number;
@@ -121,6 +122,7 @@ export interface SummaryDomains {
   /** Memory usage by domain */
   mem: {
     c: number;
+    mmap: number;
     pyObj: number;
     pyMem: number;
     pyRaw: number;
