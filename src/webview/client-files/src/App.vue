@@ -14,3 +14,10 @@ import AppLayout from '@/layouts/AppLayout.vue'
 <template>
   <AppLayout />
 </template>
+
+<style>
+@font-face {
+  font-family: "Maven Pro";
+  src: url('@/assets/fonts/Maven_Pro/MavenPro-VariableFont_wght.ttf');
+}
+</style>

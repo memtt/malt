@@ -209,6 +209,7 @@ int main(int argc, char ** argv)
 		noAuthFiles.insert("/favicon.ico");
 		noAuthFiles.insert("/assets/index.js");
 		noAuthFiles.insert("/assets/style.css");
+		noAuthFiles.insert("/assets/MavenPro-VariableFont_wght.ttf");
 
 		//if auth is enabled
 		if (options.auth) {
