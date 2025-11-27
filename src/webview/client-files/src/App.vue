@@ -5,6 +5,7 @@
 |    FILE     : src/webview/client-files/src/App.vue
 |-----------------------------------------------------------
 |    AUTHOR   : Emeric GUYON - 2025
+|    AUTHOR   : Sébastien Valat (INRIA) - 2025
 ----------------------------------------------------------->
 
 <script setup lang="ts">

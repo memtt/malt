@@ -5,6 +5,7 @@
 *    FILE     : src/webview/client-files/src/services/callTreeService.ts
 *-----------------------------------------------------------
 *    AUTHOR   : Emeric GUYON - 2025
+*    AUTHOR   : Sébastien Valat (INRIA) - 2025
 ***********************************************************/
 /**
  * Call Tree API Service

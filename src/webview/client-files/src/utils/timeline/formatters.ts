@@ -5,6 +5,7 @@
 *    FILE     : src/webview/client-files/src/utils/timeline/formatters.ts
 *-----------------------------------------------------------
 *    AUTHOR   : Emeric GUYON - 2025
+*    AUTHOR   : Sébastien Valat (INRIA) - 2025
 ***********************************************************/
 /**
  * Formatters for timeline data

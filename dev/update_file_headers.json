@@ -148,6 +148,7 @@
 		"*.ini",
 		"*.bat",
 		"*.ico",
+		"*.ttf",
 		"packaging/debian/changelog",
 		"packaging/debian/compat",
 		"packaging/debian/control",

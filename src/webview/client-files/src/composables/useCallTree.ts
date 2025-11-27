@@ -5,6 +5,7 @@
 *    FILE     : src/webview/client-files/src/composables/useCallTree.ts
 *-----------------------------------------------------------
 *    AUTHOR   : Emeric GUYON - 2025
+*    AUTHOR   : Sébastien Valat (INRIA) - 2025
 ***********************************************************/
 /**
  * Main Call Tree Composable

@@ -5,6 +5,7 @@
 |    FILE     : src/webview/client-files/src/components/home/TopGlobalVariablesList.vue
 |-----------------------------------------------------------
 |    AUTHOR   : Emeric GUYON - 2025
+|    AUTHOR   : Sébastien Valat (INRIA) - 2025
 ----------------------------------------------------------->
 <template>
   <div class="top-variables-container">

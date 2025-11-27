@@ -1,10 +1,10 @@
 ############################################################
 #    PROJECT  : MALT (MALoc Tracker)
-#    DATE     : 09/2024
+#    DATE     : 11/2025
 #    LICENSE  : CeCILL-C
-#    FILE     : src/webview/CMakeLists.txt
+#    FILE     : src/webview/client-files/CMakeLists.txt
 #-----------------------------------------------------------
-#    AUTHOR   : Antoine Bernard (crans.org) - 2024
+#    AUTHOR   : Sébastien Valat (INRIA) - 2025
 ############################################################
 
 ######################################################

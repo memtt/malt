@@ -5,6 +5,7 @@
 *    FILE     : src/webview/client-files/src/types/flat.ts
 *-----------------------------------------------------------
 *    AUTHOR   : Emeric GUYON - 2025
+*    AUTHOR   : Sébastien Valat (INRIA) - 2025
 ***********************************************************/
 /**
  * Types for flat.json - Function statistics

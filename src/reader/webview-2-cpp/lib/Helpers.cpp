@@ -1,8 +1,8 @@
 /***********************************************************
 *    PROJECT  : MALT (MALoc Tracker)
-*    DATE     : 06/2025
+*    DATE     : 11/2025
 *    LICENSE  : CeCILL-C
-*    FILE     : src/reader/webview-2-cpp/lib/BasicAuth.cpp
+*    FILE     : src/reader/webview-2-cpp/lib/Helpers.cpp
 *-----------------------------------------------------------
 *    AUTHOR   : Sébastien Valat (INRIA) - 2025
 ***********************************************************/

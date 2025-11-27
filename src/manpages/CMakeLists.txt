@@ -1,6 +1,6 @@
 ############################################################
 #    PROJECT  : MALT (MALoc Tracker)
-#    DATE     : 10/2025
+#    DATE     : 11/2025
 #    LICENSE  : CeCILL-C
 #    FILE     : src/manpages/CMakeLists.txt
 #-----------------------------------------------------------

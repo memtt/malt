@@ -5,6 +5,7 @@
 |    FILE     : src/webview/client-files/src/views/HomePage.vue
 |-----------------------------------------------------------
 |    AUTHOR   : Emeric GUYON - 2025
+|    AUTHOR   : Sébastien Valat (INRIA) - 2025
 ----------------------------------------------------------->
 <template>
   <div class="home-page">

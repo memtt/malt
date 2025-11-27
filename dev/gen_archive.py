@@ -1,7 +1,7 @@
 #!/bin/env python3
 ############################################################
 #    PROJECT  : MALT (MALoc Tracker)
-#    DATE     : 10/2025
+#    DATE     : 11/2025
 #    LICENSE  : CeCILL-C
 #    FILE     : dev/gen_archive.py
 #-----------------------------------------------------------

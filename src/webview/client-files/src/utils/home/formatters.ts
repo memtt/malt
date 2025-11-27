@@ -5,6 +5,7 @@
 *    FILE     : src/webview/client-files/src/utils/home/formatters.ts
 *-----------------------------------------------------------
 *    AUTHOR   : Emeric GUYON - 2025
+*    AUTHOR   : Sébastien Valat (INRIA) - 2025
 ***********************************************************/
 /**
  * Home page formatters and utilities

@@ -2,9 +2,9 @@
 |    PROJECT  : MALT (MALoc Tracker)
 |    DATE     : 11/2025
 |    LICENSE  : CeCILL-C
-|    FILE     : src/webview/client-files/src/components/home/InfoCard.vue
+|    FILE     : src/webview/client-files/src/components/home/SummaryMetric.vue
 |-----------------------------------------------------------
-|    AUTHOR   : Sébastien Valat - 2025
+|    AUTHOR   : Sébastien Valat (INRIA) - 2025
 ----------------------------------------------------------->
 <template>
   <div class="info-row">
