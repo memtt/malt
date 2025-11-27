@@ -81,7 +81,8 @@
               :loading="callStackTree.loading.value"
               :error="callStackTree.error.value"
               :metric-name="selector.currentMetricName.value"
-              :get-formatted-value="getCallStackNodeValue"
+              :get-formatted-value="getCallStackNodeFormattedValue"
+              :get-value="getCallStackNodeValue"
               @expand="callStackTree.expandNode"
               @collapse="callStackTree.collapseNode"
               @function-click="onCallStackFunctionClick"
@@ -217,8 +218,19 @@ const getFormattedAnnotationValue = (annotation: SourceAnnotation): string => {
 /**
  * Get formatted call stack node value
  */
-const getCallStackNodeValue = (node: CallStackNode): string => {
+const getCallStackNodeFormattedValue = (node: CallStackNode): string => {
   return selector.getFormattedValue({
+    function: node.location.function,
+    total: node.infos,
+    own: node.infos,
+  } as FunctionStat)
+}
+
+/**
+ * Get call stack node value
+ */
+const getCallStackNodeValue = (node: CallStackNode): number => {
+  return selector.getValue({
     function: node.location.function,
     total: node.infos,
     own: node.infos,

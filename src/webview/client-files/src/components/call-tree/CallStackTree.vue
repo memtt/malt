@@ -33,7 +33,7 @@
       <!-- Tree rows -->
       <div class="tree-rows">
         <CallStackTreeRow
-          v-for="node in nodes"
+          v-for="node in sortedNodes(nodes)"
           :key="`${node.stackId}-${node.stackDepth}`"
           :node="node"
           :depth="node.depth"
@@ -56,6 +56,7 @@ interface Props {
   error?: string | null
   metricName: string
   getFormattedValue: (node: CallStackNode) => string
+  getValue: (node: CallStackNode) => number
 }
 
 interface Emits {
@@ -64,7 +65,7 @@ interface Emits {
   (e: 'functionClick', node: CallStackNode): void
 }
 
-withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<Props>(), {
   loading: false,
   error: null,
 })
@@ -87,6 +88,11 @@ const onToggle = (node: CallStackNode) => {
  */
 const onFunctionClick = (node: CallStackNode) => {
   emit('functionClick', node)
+}
+
+function sortedNodes(nodes: CallStackNode[]): CallStackNode[]
+{
+	return nodes.sort((a, b) => props.getValue(b) - props.getValue(a))
 }
 </script>
 
