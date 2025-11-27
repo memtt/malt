@@ -290,7 +290,41 @@ std::string OSUnix::getDateTime(void)
 /**********************************************************/
 std::string OSUnix::getCmdLine(void)
 {
-	return loadTextFile("/proc/self/cmdline");
+	//vars
+	const char * file = "/proc/self/cmdline";
+	char buffer[1024];
+	std::string res;
+
+	//open an check
+	FILE * fp = fopen(file,"r");
+	assumeArg(fp != NULL,"Failed to read file %1 : %2 !")
+		.arg(file)
+		.argStrErrno()
+		.end();
+
+	//load content
+	while (!feof(fp)){
+		size_t tmp = fread(buffer,1,sizeof(buffer),fp);
+		if (tmp > 0)
+		{
+			//replace arg separator \0 by space
+			for (size_t i = 0 ; i < tmp ; i++)
+				if (buffer[i] == '\0')
+					buffer[i] = ' ';
+
+			//close
+			buffer[tmp] = '\0';
+
+			//concat
+			res += buffer;
+		}
+	}
+	
+	//close file
+	fclose(fp);
+
+	//ok
+	return res;
 }
 
 /**********************************************************/
