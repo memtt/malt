@@ -291,6 +291,10 @@ obj=true               ; Instrument of not the OBJECT allocator domain of python
 mem=true               ; Instrument of not the MEM allocator domain of python.
 raw=true               ; Instrument of not the RAW allocator domain of python.
 
+[c]
+malloc=true            ; Track the C Malloc.
+mmap=true              ; Track the C direct calls to mmap.
+
 [tools]
 nm=true                ; Enable usage of NM to find the source locatoin of the global variables.
 nmMaxSize=50M           ; Do not call nm on .so larger than 50 MB to limit the profile dump overhead.

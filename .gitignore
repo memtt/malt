@@ -43,6 +43,8 @@ examples/python/*.so
 
 # IDE
 .idea
+.kdev4
+malt.kdev4
 
 # doc
 doc/build

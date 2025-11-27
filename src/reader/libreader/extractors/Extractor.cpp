@@ -1140,6 +1140,7 @@ Graph Extractor::getFilteredTree(ssize_t nodeId, ssize_t depth, ssize_t height, 
 	std::map<Link, StackInfos> acceptedLinks;
 	for (const auto & stackStat : this->profile.stacks.stats) {
 		const auto & stack = stackStat.stack;
+		std::set<std::pair<const std::string *, const std::string *>> seenLinks;
 		for (size_t i = 0 ; i < stack.size() - 1 ; i++) {
 			//reverse
 			const size_t eid = stack.size() - i - 1;
@@ -1156,7 +1157,12 @@ Graph Extractor::getFilteredTree(ssize_t nodeId, ssize_t depth, ssize_t height, 
 			const auto & inIt = nodeStatsFiltered.find(inFunc);
 			const auto & outIt = nodeStatsFiltered.find(outFunc);
 
-			if (inIt != nodeStatsFiltered.end() && outIt != nodeStatsFiltered.end()) {
+			//avoid nodes not retained & avoid recursion counted N times
+			std::pair<const std::string*, const std::string*> linkName(inFunc, outFunc);
+			if (inIt != nodeStatsFiltered.end() && outIt != nodeStatsFiltered.end() && seenLinks.find(linkName) == seenLinks.end()) {
+				//insert not to recurse
+				seenLinks.insert(linkName);
+
 				//get node
 				const NodeInfos & inInfos = inIt->second;
 				const NodeInfos & outInfos = outIt->second;

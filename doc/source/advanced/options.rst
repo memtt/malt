@@ -107,6 +107,10 @@ Example of config file :
     mem=true               ; Instrument of not the MEM allocator domain of python.
     raw=true               ; Instrument of not the RAW allocator domain of python.
 
+    [c]
+    malloc=true            ; Track C malloc.
+    mmap=true              ; Track C mmap direct calls.
+
     [tools]
     nm=true                ; Enable usage of NM to find the source locatoin of the global variables.
     nmMaxSize=50M          ; Do not call nm on .so larger than 50 MB to limit the profile dump overhead.
@@ -510,6 +514,19 @@ Option `python:raw`
 ^^^^^^^^^^^^^^^^^^^
 
 Same but for the raw allocation domain of python which is backed by the standard C malloc function. In principle you should let it enabled.
+
+Section `c`
+-----------
+
+Option `c:malloc`
+^^^^^^^^^^^^^^^^^
+
+Track the C `malloc` calls.
+
+Option `c:mmap`
+^^^^^^^^^^^^^^^
+
+Track the direct C `mmap` calls.
 
 Section `tools`
 ---------------

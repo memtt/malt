@@ -52,7 +52,6 @@ if (NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/dist/index.html OR ${WEBVIEW_SRC_NEWE
 			OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/dist/index.html
 			COMMENT "Building client webview..."
 			BYPRODUCTS ${CMAKE_CURRENT_BINARY_DIR}/dist/assets/index.js
-					${CMAKE_CURRENT_BINARY_DIR}/dist/index.html
 					${CMAKE_CURRENT_BINARY_DIR}/dist/assets/style.css
 			COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/build.sh "${CMAKE_CURRENT_BINARY_DIR}" "${NODE_MODULES}"
 			DEPENDS ${NODE_MODULES_DEPS} ${WEBVIEW_SRCS}
