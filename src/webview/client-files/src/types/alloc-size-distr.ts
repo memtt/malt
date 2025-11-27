@@ -28,6 +28,7 @@ export const scatterSeriesSchema = z.object({
 export const scatterDataSchema = z.object({
   sizeOverTime: scatterSeriesSchema,
   lifetimeOverSize: scatterSeriesSchema,
+  ticksPerSecond: z.number(),
 })
 
 // Export types inferred from schemas

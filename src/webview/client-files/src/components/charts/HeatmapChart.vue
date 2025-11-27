@@ -14,6 +14,7 @@
 <script setup lang="ts">
 import { ref, onMounted, onBeforeUnmount, watch } from 'vue'
 import * as d3 from 'd3'
+import { humanReadableTimes } from '@/lib/helpers'
 
 export interface HeatmapCell {
   x: number // Bin index X
@@ -37,6 +38,7 @@ interface Props {
   binsX?: number
   binsY?: number
   logColor?: boolean
+  ticksPerSecond?: number
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -50,6 +52,7 @@ const props = withDefaults(defineProps<Props>(), {
   binsX: 50,
   binsY: 50,
   logColor: true,
+  ticksPerSecond: 1
 })
 
 const chartContainer = ref<HTMLDivElement | null>(null)
@@ -120,7 +123,9 @@ const renderChart = () => {
       const cell = props.data.find((c) => String(c.x) === d)
       if (!cell) return ''
       const val = (cell.xMin + cell.xMax) / 2
-      return props.xUnit === 'B' ? humanReadable(val) : val.toFixed(0)
+      if (props.xUnit === 'B') return humanReadable(val)
+	  if (props.xUnit === 's') return humanReadableTimes(val, props.ticksPerSecond, 1, true)
+      return val.toFixed(0)
     })
 
   svg
@@ -144,7 +149,9 @@ const renderChart = () => {
       const cell = props.data.find((c) => String(c.y) === d)
       if (!cell) return ''
       const val = (cell.yMin + cell.yMax) / 2
-      return props.yUnit === 'B' ? humanReadable(val) : val.toFixed(0)
+	  if (props.yUnit === 'B') return humanReadable(val)
+	  if (props.yUnit === 's') return humanReadableTimes(val, props.ticksPerSecond, 1, true)
+      return val.toFixed(0)
     })
 
   svg.append('g').call(yAxis).selectAll('text').style('font-size', '11px').style('fill', 'black')

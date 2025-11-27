@@ -57,8 +57,9 @@
         y-unit="B"
         :log-x="false"
         :log-y="true"
-        :bins-x="50"
-        :bins-y="50"
+        :bins-x="binX"
+        :bins-y="binY"
+        :ticksPerSecond="scatterData?.ticksPerSecond"
       />
     </PageSection>
 
@@ -82,9 +83,10 @@
         y-unit="C"
         :log-x="true"
         :log-y="true"
-        :bins-x="50"
-        :bins-y="50"
+        :bins-x="binX"
+        :bins-y="binY"
         :log-color="true"
+		:ticksPerSecond="scatterData?.ticksPerSecond"
       />
     </PageSection>
   </div>
@@ -113,10 +115,13 @@ const {
   histogramData,
 } = useAllocSizeDistr()
 
+const binX = 64;
+const binY = 64;
+
 const { sizeOverTimeHeatmap, lifetimeOverSizeHeatmap } = useAllocSizeDistrHeatmaps(
   computed(() => scatterData.value),
-  50,
-  50,
+  binX,
+  binY,
 )
 
 const summaryItems = computed(() => [
