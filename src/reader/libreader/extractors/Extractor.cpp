@@ -1147,15 +1147,25 @@ Graph Extractor::getFilteredTree(ssize_t nodeId, ssize_t depth, ssize_t height, 
 
 			//get
 			const LangAddress in = stack.at(eid);
-			const LangAddress out = stack.at(eid - 1);
-
-			//func names
 			const std::string * inFunc = this->getAddrTranslation(in).function;
-			const std::string * outFunc = this->getAddrTranslation(out).function;
-
-			//search
 			const auto & inIt = nodeStatsFiltered.find(inFunc);
-			const auto & outIt = nodeStatsFiltered.find(outFunc);
+
+			//skip if node is masked
+			if (inIt == nodeStatsFiltered.end())
+				continue;
+
+			//find out not (jumping over ignore once to keep a readable tree)
+			//TODO: maybe store an info on the link to make it dashed in that case.
+			ssize_t gap = 0;
+			LangAddress out;
+			const std::string * outFunc = nullptr;
+			std::unordered_map<const std::string*, NodeInfos>::iterator outIt;
+			do {
+				gap++;
+				out = stack.at(eid - gap);
+				outFunc = this->getAddrTranslation(out).function;
+				outIt = nodeStatsFiltered.find(outFunc);
+			} while (gap < eid && outIt == nodeStatsFiltered.end());
 
 			//avoid nodes not retained & avoid recursion counted N times
 			std::pair<const std::string*, const std::string*> linkName(inFunc, outFunc);
@@ -1338,6 +1348,7 @@ nlohmann::json Extractor::getCallTree(ssize_t nodeId, ssize_t depth, ssize_t hei
 	}*/
 	// console.time("getDotCodeForTree");
 	resp["dotCode"] = GraphGenerator::getDotCodeForTree(filteredTree, nodeId);
+	std::cerr << resp["dotCode"] << std::endl;
 	// console.timeEnd("getDotCodeForTree");
 	resp["svg"] = nullptr;
 
