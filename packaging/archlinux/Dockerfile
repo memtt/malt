@@ -20,6 +20,6 @@ RUN pacman --noconfirm -Syu
 RUN pacman --noconfirm -Sy cmake gcc make
 # deps for the project
 #  - Missing on this distro : cpp-httplib
-RUN pacman --noconfirm -Sy libunwind libelf openssl graphviz nlohmann-json python3 gtest iniparser
+RUN pacman --noconfirm -Sy libunwind libelf graphviz nlohmann-json python3 gtest iniparser
 # to play with the git sources
 RUN pacman --noconfirm -Sy git nodejs npm curl

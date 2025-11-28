@@ -19,7 +19,7 @@ RUN emerge-webrsync && yes | getuto && emerge --verbose --update --deep --newuse
 # install deps for build system
 RUN emerge -k -g cmake gcc make
 # deps for the project
-RUN emerge -k -g sys-libs/libunwind dev-libs/elfutils dev-libs/openssl media-gfx/graphviz \
+RUN emerge -k -g sys-libs/libunwind dev-libs/elfutils media-gfx/graphviz \
                  dev-cpp/nlohmann_json dev-cpp/cpp-httplib dev-lang/python:3 dev-cpp/gtest \
                  dev-libs/iniparser
 # to play with the git sources

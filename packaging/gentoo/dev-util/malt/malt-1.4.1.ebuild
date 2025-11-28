@@ -14,7 +14,7 @@ inherit cmake
 
 DESCRIPTION="A memory allocation profiling tool for C/C++/Fortran."
 HOMEPAGE="https://memtt.github.io/malt/"
-SRC_URI="https://github.com/memtt/malt/releases/download/v${PV}/malt-${PV}.tar.bz2"
+SRC_URI="https://github.com/memtt/malt/releases/download/v${PV}/malt-${PV}.tar.xz"
 LICENSE="CeCILL-C"
 SLOT="0"
 KEYWORDS="~amd64 ~x86"
@@ -25,7 +25,6 @@ DEPEND="
 	sys-libs/libunwind
 	dev-cpp/nlohmann_json
 	dev-cpp/cpp-httplib
-	dev-libs/openssl
 	dev-libs/iniparser
 	python? ( >=dev-lang/python-3.11 )
 	test? ( dev-cpp/gtest )

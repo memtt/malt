@@ -19,7 +19,7 @@ RUN apt update && apt upgrade -y
 # install deps for build system
 RUN apt install -y build-essential make gcc cmake g++
 # deps for the project
-RUN apt install -y libunwind-dev libelf-dev libssl-dev graphviz nlohmann-json3-dev libcpp-httplib-dev python3-dev googletest libiniparser-dev
+RUN apt install -y libunwind-dev libelf-dev graphviz nlohmann-json3-dev libcpp-httplib-dev python3-dev googletest libiniparser-dev
 # to play with the git sources
 RUN apt install -y git nodejs npm curl
 # to build the RPM

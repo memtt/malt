@@ -8,7 +8,6 @@ Build-Depends:
   cdbs,
   libunwind-dev,
   libelf-dev,
-  libssl-dev,
   graphviz,
   nlohmann-json3-dev,
   libcpp-httplib-dev,

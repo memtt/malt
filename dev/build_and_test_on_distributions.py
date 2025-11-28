@@ -70,12 +70,10 @@ UBUNTU_BASIC_CMDS=[
     "apt upgrade -y",
     # install deps for build system
     "apt install -y make gcc cmake g++ clang ccache",
-    # install minimal deps
-    "apt install -y libssl-dev"
 ]
 UBUNTU_FULL_CMDS=[
     # to build with everything
-    "apt install -y libunwind-dev libelf-dev libssl-dev graphviz nlohmann-json3-dev libcpp-httplib-dev python3-dev googletest libiniparser-dev",
+    "apt install -y libunwind-dev libelf-dev graphviz nlohmann-json3-dev libcpp-httplib-dev python3-dev googletest libiniparser-dev",
     # to play with sources
     "apt install -y git nodejs npm curl",
     # Last cargo / rust
@@ -83,7 +81,7 @@ UBUNTU_FULL_CMDS=[
 ]
 UBUNTU_FULL_CMDS_DEBIAN_11=[
     # to build with everything
-    "apt install -y libunwind-dev libelf-dev libssl-dev graphviz nlohmann-json3-dev python3-dev googletest libiniparser-dev",
+    "apt install -y libunwind-dev libelf-dev graphviz nlohmann-json3-dev python3-dev googletest libiniparser-dev",
     # to play with sources
     "apt install -y git nodejs npm curl",
     # Last cargo / rust
@@ -91,7 +89,7 @@ UBUNTU_FULL_CMDS_DEBIAN_11=[
 ]
 UBUNTU_FULL_CMDS_UBUNTU_25=[
     # to build with everything
-    "apt install -y libunwind-dev libelf-dev libssl-dev graphviz nlohmann-json3-dev libcpp-httplib-dev python3-dev googletest libiniparser-dev",
+    "apt install -y libunwind-dev libelf-dev graphviz nlohmann-json3-dev libcpp-httplib-dev python3-dev googletest libiniparser-dev",
     # to play with sources
     "apt install -y git nodejs npm curl",
     # Cargo / rust (recent enougth)
@@ -108,8 +106,6 @@ CENTOS_BASIC_CMDS=[
     "dnf update -y",
     # install minimal
     "dnf install -y cmake gcc-c++ make clang ccache",
-    # install minimal deps
-    "dnf install -y openssl-devel",
 ]
 ROCKY_BASIC_CMDS=[
     # for local cache usage
@@ -120,12 +116,10 @@ ROCKY_BASIC_CMDS=[
     "dnf update -y",
     # install minimal
     "dnf install -y cmake gcc-c++ make clang",
-    # install minimal deps
-    "dnf install -y openssl-devel",
 ]
 ROCKY_FULL_CMDS=[
     # all deps
-    "dnf install -y libunwind-devel elfutils-devel openssl-devel graphviz nlohmann-json-devel cpp-httplib-devel python3-devel gtest libiniparser-devel",
+    "dnf install -y libunwind-devel elfutils-devel graphviz nlohmann-json-devel cpp-httplib-devel python3-devel gtest libiniparser-devel",
     # playsing with sources
     "dnf install -y git nodejs npm curl bzip2 xz",
     # cargo
@@ -135,7 +129,7 @@ ROCKY_INDEV_CMDS=[
 ]
 CENTOS_FULL_CMDS=[
     # all deps
-    "dnf install -y libunwind-devel elfutils-devel openssl-devel graphviz nlohmann-json-devel cpp-httplib-devel python3-devel gtest libiniparser-devel",
+    "dnf install -y libunwind-devel elfutils-devel graphviz nlohmann-json-devel cpp-httplib-devel python3-devel gtest libiniparser-devel",
     # playsing with sources
     "dnf install -y git nodejs npm curl",
     # cargo
@@ -148,12 +142,10 @@ ARCH_BASIC_CMDS=[
     "pacman --noconfirm -Syu",
     # install build deps
     "pacman --noconfirm -Sy cmake gcc make clang ccache",
-    # minimap deps
-    "pacman --noconfirm -Sy openssl"
 ]
 ARCH_FULL_CMDS=[
     # full deps
-    "pacman --noconfirm -Sy libunwind libelf openssl graphviz nlohmann-json python3 gtest iniparser",
+    "pacman --noconfirm -Sy libunwind libelf graphviz nlohmann-json python3 gtest iniparser",
     # play with sources
     "pacman --noconfirm -Sy git nodejs npm curl"
     # cargo
@@ -170,13 +162,11 @@ GENTOO_BASIC_CMDS=[
     "emerge --verbose --update --deep --newuse @world -k -g",
     # install build deps
     "emerge -k -g cmake gcc make llvm-core/clang ccache",
-    # minimap deps
-    "emerge -k -g openssl",
 ]
 GENTOO_FULL_CMDS=[
     #"eselect profile set default/linux/amd64/23.0/desktop/plasma && emerge --verbose --update --deep --newuse @world -k -g",
     # install full deps
-    "emerge -b -k -g sys-libs/libunwind dev-libs/elfutils dev-libs/openssl media-gfx/graphviz dev-cpp/nlohmann_json dev-cpp/cpp-httplib dev-lang/python:3 dev-cpp/gtest dev-libs/iniparser",
+    "emerge -b -k -g sys-libs/libunwind dev-libs/elfutils media-gfx/graphviz dev-cpp/nlohmann_json dev-cpp/cpp-httplib dev-lang/python:3 dev-cpp/gtest dev-libs/iniparser",
     # play with sources
     "emerge -b -k -g dev-vcs/git net-libs/nodejs net-misc/curl",
     # rust
