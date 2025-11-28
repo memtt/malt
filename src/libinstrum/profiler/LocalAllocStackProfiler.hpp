@@ -133,7 +133,7 @@ class LocalAllocStackProfiler
 		PerThreadAllocStats allocStats;
 		EnterExitStack noneStackC;
 		EnterExitStack noneStackPython;
-		Stack samplePrev;
+		Stack samplePrev{STACK_ORDER_DESC};
 		bool needToPop{false};
 		LangAddress currentPythonAddr;
 		size_t threadId;

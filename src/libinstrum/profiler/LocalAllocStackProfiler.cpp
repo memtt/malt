@@ -27,7 +27,6 @@ namespace MALT
 /**********************************************************/
 LocalAllocStackProfiler::LocalAllocStackProfiler(AllocStackProfiler* globalProfiler, size_t threadId)
 	:backtracePythonStack(globalProfiler->getPythonSymbolTracker())
-	,samplePrev(STACK_ORDER_DESC)
 {
 	//errors
 	assert(globalProfiler != NULL);

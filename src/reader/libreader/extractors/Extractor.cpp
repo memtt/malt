@@ -1348,7 +1348,6 @@ nlohmann::json Extractor::getCallTree(ssize_t nodeId, ssize_t depth, ssize_t hei
 	}*/
 	// console.time("getDotCodeForTree");
 	resp["dotCode"] = GraphGenerator::getDotCodeForTree(filteredTree, nodeId);
-	std::cerr << resp["dotCode"] << std::endl;
 	// console.timeEnd("getDotCodeForTree");
 	resp["svg"] = nullptr;
 
