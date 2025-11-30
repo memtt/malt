@@ -138,8 +138,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
-import { useRoute } from 'vue-router'
+import { ref } from 'vue'
 import { useSources } from '@/composables/useSources'
 import { useCallTree } from '@/composables/useCallTree'
 import {
@@ -154,8 +153,6 @@ import CallTreeSvgViewer from '@/components/call-tree/CallTreeSvgViewer.vue'
 import FileHeader from '@/components/shared/FileHeader.vue'
 import type { FunctionStat, SourceAnnotation } from '@/types/sources'
 
-const route = useRoute()
-
 // Filter options
 const heightOptions = HEIGHT_OPTIONS
 const depthOptions = DEPTH_OPTIONS
@@ -168,7 +165,7 @@ const selectedFunction = ref<string | undefined>(undefined)
 const previousFunction = ref<string | null>(null)
 
 // Get initial metric from route query
-const initialMetric = (route.query.metric as string) || 'peakmem.global'
+const initialMetric = 'peakmem.global'
 
 // Sources data (for function list in sidebar)
 const {
@@ -195,13 +192,9 @@ const {
   goBack,
   goForward,
 } = useCallTree({
-  initialMetric,
-  initialRatio: false,
+  metric: selector.metric,
+  ratio: selector.ratio,
 })
-
-// Sync selected metric with selector
-selectedMetric.value = computed(() => selector.metric.value).value
-ratio.value = computed(() => selector.ratio.value).value
 
 /**
  * Handle function selection from sidebar
@@ -294,20 +287,6 @@ const onNavigateForward = async () => {
     }
   }
 }
-
-/**
- * Initialize from route params
- */
-onMounted(() => {
-  // Auto-select function from route query
-  if (route.query.func) {
-    const funcName = route.query.func as string
-    const func = functions.value.find((f) => f.function === funcName)
-    if (func) {
-      onFunctionSelect(func)
-    }
-  }
-})
 </script>
 
 <style scoped lang="scss">

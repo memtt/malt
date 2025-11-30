@@ -12,7 +12,7 @@
  * Combines data fetching, filters, and navigation
  */
 
-import { computed, ref, watch } from 'vue'
+import { computed, toValue, watch, type MaybeRef } from 'vue'
 import { useCallTreeData } from '@/composables/useCallTreeData'
 import { useCallTreeFilters } from '@/composables/useCallTreeFilters'
 import { useCallTreeNavigation } from '@/composables/useCallTreeNavigation'
@@ -20,10 +20,10 @@ import type { CallTreeParams } from '@/types/call-tree'
 import type { FunctionStat } from '@/types/sources'
 
 interface UseCallTreeOptions {
-  /** Initial metric to use */
-  initialMetric?: string
-  /** Initial ratio mode */
-  initialRatio?: boolean
+  /** Metric to use (reactive ref or initial value) */
+  metric?: MaybeRef<string>
+  /** Ratio mode (reactive ref or initial value) */
+  ratio?: MaybeRef<boolean>
 }
 
 export function useCallTree(options: UseCallTreeOptions = {}) {
@@ -32,8 +32,8 @@ export function useCallTree(options: UseCallTreeOptions = {}) {
   const navigation = useCallTreeNavigation()
 
   // Metric selection
-  const selectedMetric = ref<string>(options.initialMetric || 'peakmem.global')
-  const ratio = ref<boolean>(options.initialRatio || false)
+  const selectedMetric = computed(() => toValue(options.metric) ?? 'peakmem.global')
+  const ratio = computed(() => toValue(options.ratio) ?? false)
 
   /**
    * Build API request parameters
