@@ -64,6 +64,7 @@ struct InOutEdge
 	double thickness{0.0};
 	double score{0.0};
 	std::string scoreReadable;
+	bool hasSkipedNodes{false};
 };
 
 /**********************************************************/

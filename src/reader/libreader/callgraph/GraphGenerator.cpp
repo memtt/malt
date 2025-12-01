@@ -128,11 +128,15 @@ std::string GraphGenerator::getDotCodeForTree(const Graph & tree, ssize_t focuse
 				from << "node" << vertices[i].from;
 				to << "node" << vertices[i].to;
 				label << " " << vertices[i].scoreReadable;
+				std::string style = "solid";
+				if (vertices[i].hasSkipedNodes)
+					style = "dashed";
 				d.edge(from.str(), to.str(), {
 					{"label", label.str()},
 					{"color", toString(vertices[i].color)},
 					{"penwidth", toString(vertices[i].thickness)},
-					{"fontcolor", toString(vertices[i].color)}
+					{"fontcolor", toString(vertices[i].color)},
+					{"style", style}
 				});
 			}
 		})

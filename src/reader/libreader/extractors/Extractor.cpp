@@ -1182,7 +1182,8 @@ Graph Extractor::getFilteredTree(ssize_t nodeId, ssize_t depth, ssize_t height, 
 				const LangAddress func2 = outInfos.addr;
 
 				//add
-				acceptedLinks[Link{func1, func2}].merge(stackStat.infos);
+				bool hasSkipedNodes = (gap > 1);
+				acceptedLinks[Link{func1, func2, hasSkipedNodes}].merge(stackStat.infos);
 			}
 		}
 	}

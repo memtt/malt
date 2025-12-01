@@ -207,6 +207,7 @@ struct Link
 {
 	MALTFormat::LangAddress in;
 	MALTFormat::LangAddress out;
+	bool hasSkipedNodes;
 };
 
 /**********************************************************/
