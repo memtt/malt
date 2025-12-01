@@ -34,7 +34,7 @@
       <!-- Tree rows -->
       <div class="tree-rows">
         <CallStackTreeRow
-          v-for="node in sortedNodes(nodes)"
+          v-for="node in nodes"
           :key="`${node.stackId}-${node.stackDepth}`"
           :node="node"
           :depth="node.depth"
