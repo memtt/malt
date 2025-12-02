@@ -90,11 +90,6 @@ const onToggle = (node: CallStackNode) => {
 const onFunctionClick = (node: CallStackNode) => {
   emit('functionClick', node)
 }
-
-function sortedNodes(nodes: CallStackNode[]): CallStackNode[]
-{
-	return nodes.sort((a, b) => props.getValue(b) - props.getValue(a))
-}
 </script>
 
 <style scoped lang="scss">
