@@ -14,12 +14,6 @@ set -u
 set -x
 
 ###########################################################
-# prepare webview
-cd ./src/webview
-./prepare.sh
-cd -
-
-###########################################################
 # prepare webview client (download & pre-build)
 cd ./src/webview/client-files
 ./prepare.sh

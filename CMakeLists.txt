@@ -106,7 +106,7 @@ find_package(Graphviz QUIET)
 find_package(Binutils QUIET)
 #find_package(Zmq QUIET)
 # Check for npm if needed
-if (NODE_FOUND AND NOT IS_DIRECTORY ${CMAKE_SOURCE_DIR}/src/webview/node_modules)
+if (NODE_FOUND AND NOT IS_DIRECTORY ${CMAKE_SOURCE_DIR}/extern-deps/node_modules)
 	find_package(Npm REQUIRED)
 endif()
 

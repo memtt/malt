@@ -38,10 +38,15 @@ fi
 ############################################################
 set -e
 set -x
-mkdir -p ../../../extern-deps/node_modules
-ln -sf ../../../extern-deps/node_modules ./
+rm -rfd ./../../../extern-deps/node_modules
+cd ./../../../extern-deps
+ln -sf ../src/webview/client-files/package.json ./package.json
+ln -sf ../src/webview/client-files/package-lock.json ./package-lock.json
 npm install
+cd -
+ln -sf ./../../../extern-deps/node_modules ./
 npm run build
+rm -f node_modules
 set +x
 if [ ! -z "$1" ]; then
 	echo > "${1}/deps-loaded"

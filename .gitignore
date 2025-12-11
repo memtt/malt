@@ -49,3 +49,8 @@ malt.kdev4
 # doc
 doc/build
 doxygen
+
+# built for release
+doc/dist
+extern-deps/package.json
+extern-deps/package-lock.json

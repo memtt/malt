@@ -39,7 +39,8 @@ fi
 ############################################################
 set -e
 set -x
-npm install
+ln -sf ../../../extern-deps/node_modules ./
+npm install --pefix ../../../extern-deps/node_modules
 set +x
 if [ ! -z "$1" ]; then
 	echo > "${1}/deps-loaded"

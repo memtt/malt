@@ -19,7 +19,8 @@ pip install -r requirements.txt
 make html
 make latexpdf
 mkdir -p dist
+rm -rfd ./dist
 mv build/html ./dist
 mv build/latex/malt.pdf ./dist
-rm -rfvd ./build
-rm -rfvd "${VENV_DIR}"
+rm -rfd ./build
+rm -rfd "${VENV_DIR}"
