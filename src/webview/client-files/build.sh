@@ -33,7 +33,9 @@ if [[ ${MALT_VITE_BUILD_DIR} != '' && ${MALT_VITE_BUILD_DIR} != '.' ]]; then
 	done
 	cp -r "${PWD}/src" "${MALT_VITE_BUILD_DIR}"
 	cp -r "${PWD}/public" "${MALT_VITE_BUILD_DIR}"
-	ln -sf "${PWD}/../../../extern-deps/node_modules" "${MALT_VITE_BUILD_DIR}"
+	if [[ ! -d "${MALT_VITE_BUILD_DIR}/node_modules" ]]; then
+		ln -sf "${PWD}/../../../extern-deps/node_modules" "${MALT_VITE_BUILD_DIR}"
+	fi
 	cd "${MALT_VITE_BUILD_DIR}"
 	npm run build
 else

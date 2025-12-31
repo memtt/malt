@@ -11,6 +11,13 @@
 ############################################################
 export PATH=./node_modules/.bin/:$PATH
 SOURCE_DIR=$PWD
+BUILD='yes'
+
+############################################################
+if [[ "$1" == "--no-build" ]]; then
+	shift 1
+	BUILD='no'
+fi
 
 ############################################################
 if [ ! -z "$1" ]
@@ -44,9 +51,11 @@ ln -sf ../src/webview/client-files/package.json ./package.json
 ln -sf ../src/webview/client-files/package-lock.json ./package-lock.json
 npm install
 cd -
-ln -sf ./../../../extern-deps/node_modules ./
-npm run build
-rm -f node_modules
+if [[ ${BUILD} == 'yes' ]]; then
+	ln -sf ./../../../extern-deps/node_modules ./
+	npm run build
+	rm -f node_modules
+fi
 set +x
 if [ ! -z "$1" ]; then
 	echo > "${1}/deps-loaded"

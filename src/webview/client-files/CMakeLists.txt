@@ -21,7 +21,7 @@ else()
 		configure_file(${CMAKE_CURRENT_SOURCE_DIR}/package.json ${CMAKE_CURRENT_BINARY_DIR}/package.json COPYONLY)
 		configure_file(${CMAKE_CURRENT_SOURCE_DIR}/package-lock.json ${CMAKE_CURRENT_BINARY_DIR}/package-lock.json COPYONLY)
 		add_custom_command (OUTPUT deps-loaded
-						COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/prepare.sh ${CMAKE_CURRENT_BINARY_DIR}
+						COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/prepare.sh --no-build ${CMAKE_CURRENT_BINARY_DIR}
 						COMMENT "Fetching webview javascript dependencies..."
 						DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/prepare.sh
 						WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
