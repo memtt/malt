@@ -34,8 +34,22 @@ endif()
 
 #######################################################
 # pre-build is older than sources
-file(GLOB_RECURSE ${WEBVIEW_SRCS} LIST_DIRECTORIES false *.css *.scss *.vue *.ts tsconfig.*)
-list(APPEND ${WEBVIEW_SRCS} package.json package-lock.json vite.config.ts eslint.config.ts env.d.ts index.html .prettierrc.json .styleinitrc.json oxlint.json .editorconfig)
+file(GLOB_RECURSE ${WEBVIEW_SRCS} LIST_DIRECTORIES false *.css *.scss *.vue *.ts)
+list(APPEND ${WEBVIEW_SRCS}
+	package.json
+	package-lock.json
+	vite.config.ts
+	eslint.config.ts
+	env.d.ts
+	index.html
+	.prettierrc.json
+	.styleinitrc.json
+	oxlint.json
+	.editorconfig
+	tsconfig.json
+	tsconfig.node.json
+	tsconfig.app.json
+)
 set(WEBVIEW_SRC_NEWER off)
 foreach(item ${WEBVIEW_SRCS})
 	if (${item} IS_NEWER_THAN ${CMAKE_CURRENT_SOURCE_DIR}/dist/index.html)
