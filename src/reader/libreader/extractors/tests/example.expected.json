@@ -2650,6 +2650,7 @@
    "leakedCount": 1,
    "leakedMem": 73728,
    "maxAllocSize": 1048576,
+   "maxThreadCount": 1,
    "meanAllocSize": 280582.0,
    "minAllocSize": 8,
    "numGblVar": 789,
