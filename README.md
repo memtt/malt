@@ -1,39 +1,25 @@
 MALT : Malloc Tracker
 =====================
 
-[![Build Status](https://travis-ci.org/memtt/malt.svg?branch=master)](https://travis-ci.org/memtt/malt)
-
 What is it
 ----------
 
 MALT is a memory tool to find where you allocate your memory. It also provides you some
 statistics about memory usage and help to find memory leaks.
 
-It is done to be used on laguages : C, C++, Fortran, Rust.
+It is done to be used on laguages : **C**, **C++**, **Fortran**, **Rust** and **Python**.
 
-Python is also supported but currently as prototype status which needs to be enable with `--enable-python`
-at build time.
+![MALT GUI](./screenshot.png)
 
-![MALT GUI](https://memtt.github.io/malt/images/screenshots/screenshot-12.png)
+Documentation
+-------------
 
-Dependencies
-------------
+You will find all the details about using **MALT** into the Your will find the dependences into the [official documentation](http://memtt.github.io/malt/doc/latest/).
 
-MALT depends on the presence of :
+Dependences
+-----------
 
-- binutils (nm and add2line) to extract symbols. Tested version is 2.24 - 2.38.
-- openssl (libssl.so) to run the C++ webview. Tested version is 3.0.13.
-
-It optionally depends on :
-
-- nodejs (<http://nodejs.org/>) to run the webview GUI. Tested version is 0.10.30 - 12.22.9.
-- libelf (<http://www.mr511.de/software/english.html>) to extract global variable list from executables and libs. Tested version is 0.128 - 0.183.
-- libunwind (<http://www.nongnu.org/libunwind/>) as an alternative implementation of glibc backtrace method. Tested version is 1.1 - 1.3.2.
-- libpython (<https://www.python.org/>) if enabling python support. Tested version is 3.11 - 3.13.
-
-Supported system (known):
-
- - Linux (Gentoo / Debian / Ubuntu / Centos / RedHat)
+Your will find the dependences into the [official documentation](http://memtt.github.io/malt/doc/latest/start/dependencies.html).
 
 How to install
 --------------
@@ -50,71 +36,7 @@ make test
 make install
 ```
 
-If you want more advance usage, you need to call cmake by yourself so you can install it
-by following the procedure :
-
-```shell
-mkdir build
-cd build
-cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX={YOUR_PREFIX}
-make
-make test
-make install
-```
-
-If you are a user of spack you can also install it easily by using :
-
-```shell
-spack install malt
-```
-
-Into distributions
-------------------
-
-**Gentoo**
-
-I provide an overlay containing both MALT & NUMAPROF, you can use it by calling :
-
-```sh
-# MALT using gentoo overlay memtt :
-sudo eselect repository add memtt git https://github.com/memtt/gentoo-memtt-overlay.git
-sudo eselect repository enable memtt
-sudo emerge -a malt numaprof
-```
-
-**Debian / Ubuntu / Centos / RedHat / Fedora / Arch**
-
-You can give a look into [packaging/README.md](packaging/README.md) if you want to yourself build
-packages for those distributions with the embeded scripts.
-
-Build options
--------------
-
-MALT build support several options to define with -D option of CMake :
-
-- `-DENABLE_CODE_TIMING={yes|no}` : Enable quick and dirty function to measure MALT internal
-  performances.
-- `-DENABLE_TESTS={yes|no}`       : Enable build of unit tests.
-- `-DJUNIT_OUTPUT={yes|no}`       : Enable generation of junit files for jenkins integration.
-- `-DENABLE_VALGRIND={yes|no}`    : Run unit tests inside valgrind memcheck and generate XML report.
-- `-DPORTABILITY_OS={UNIX}`       : Set portability build options to fix OS specific calls.
-- `-DPORTABILITY_MUTEX={PTHREAD}` : Set portability build option to select mutex implementation.
-- `-DENABLE_JEMALLOC={yes|no}`    : Enable or disable usage of jemalloc internally to MALT.
-
-Note about Intel Compiler
--------------------------
-
-MALT is written in C++ so you might possibly encounterd some issue with you build it with GCC and
-profile applications built with Intel Compiler. In most cases it should work out of the box without
-any issues.
-
-But, I got once an error report about that. In that case, try to compile MALT also with intel compiler
-instead if GCC to match the app :
-
-```sh
-../configure CC=icc CXX=icpc
-make
-```
+Your will find the dependences into the [official documentation](http://memtt.github.io/malt/doc/latest/).
 
 How to use
 ----------
@@ -125,52 +47,10 @@ wrap the default memory allocator. It provides two basic instrumentation modes.
 By default MALT use backtrace to reconstruct you stack on malloc/free/... calls :
 
 ```shell
-{YOUR_PREFIX}/bin/malt {YOUR_PROGRAM} [OPTIONS]
+malt {YOUR_PROGRAM} [OPTIONS]
 ```
 
-You can get better performance but less detailed stack by using option
--finstrument-function or similar for your compiler. Then, you need to tel MALT to use
-the "enter-exit" stack mode :
-
-```shell
-{YOUR_PREFIX}/bin/malt -s=enter-exit {YOUR_PROGRAM} [OPTIONS]
-```
-
-The malt script only provides a wrapper to automatically preload a dynamic library
-into the executable, you can also do it by hand in cas of issues :
-
-```shell
-LD_PRELOAD={YOUR_PREFIX}/lib/libmalt.so {YOUR_PROGRAM} [OPTIONS]
-```
-
-Options to compile your program
--------------------------------
-
-MALT work out of the box with your program but it required you to compile your program with
-debug options (`-g`) to get access to the source code attached to each call sites.
-
-It might also be better to use `-O0` or use `-fno-inline` to disable inlining which might
-provide more accurate call stacks to you.
-
-How to use with MPI
--------------------
-
-MALT also provides a lightweight support of MPI to generate profile files named with MPI rank ID instead of process ID.
-In order to support this you first need to compile the MPI interface on top of your MPI. It will generate a
-small library in your home directory.
-
-```shell
-{YOUR_PREFIX}/bin/malt --prep-mpi [mpicxx]
-```
-
-Caution it will link malt to the current MPI version you are using, if you want to switch to another you will need to
-redo the previous command.
-
-Then to profile you mpi application proceed like :
-
-```shell
-mpirun -np X {YOUR_PREFIX}/bin/malt --mpi {YOUR_PROGRAM} [OPTIONS]
-```
+Your will find the dependences into the [official documentation](http://memtt.github.io/malt/doc/latest/).
 
 Using webview
 -------------
@@ -181,284 +61,12 @@ You can use the webview by calling command `malt-webview` as :
 malt-webview [-p PORT] [--no-auth] malt-YOUR_PROGRAM-1234.json
 ```
 
-It will open a server listening locally on port 8080 so you can open your web browser
-to connect to the web interface via <http://localhost:8080>.
-
-At first usage malt-webview will create the password file `$HOME/.malt/passwd` and ask you a
-protection password for http authentification. You can change it at any time with
-
-```shell
-malt-passwd {USER}
-```
-
-If you are running the view remotely thought SSH you can redirect the ports by using :
-
-```shell
-ssh -L 8080:localhost:8080 user@ssh-server
-```
-
-Alternatively you can use a unix socket on the server side and forward it by SSH, it avoids
-to expose the 8080 port to anyone on the server as it is protected by the user access rights.
-
-```shell
-# remote
-malt-webview -p /home/myuser/malt.sock malt-PROFILE.json
-# on your workstation
-ssh -L 8080:/home/myuser/malt.sock user@ssh-server
-```
-
-Config
-------
-
-You can provide a config file to MALT to setup some features. This file uses the INI
-format. With the malt script :
-
-```shell
-{YOUR_PREFIX}/bin/malt -c=config.ini" {YOUR_PROGRAM} [OPTIONS]
-```
-
-By hand :
-
-```shell
-MALT_CONFIG="config.ini" LD_PRELOAD=libmalt.so {YOUR_PROGRAM} [OPTIONS]
-```
-
-Example of config file :
-
-```ini
-[time]
-enabled=true          ; enable time profiles
-points=1000           ; keep 1000 points
-linar-index=false     ; use action ID instead of time
-
-[stack]
-enabled=true          ; enable stack profiles
-mode=backtrace        ; select stack tracing mode (backtrace|enter-exit)
-resolve=true          ; Automatically resolve symbols with addr2line at exit.
-libunwind=false       ; Enable of disable usage of libunwind to backtrace.
-skip=4                ; Number of stack frame to skip in order to cut at malloc level
-sampling=false        ; Sample and instrument only some stack.
-samplingBw=4093       ; Instrument the stack when seen passed 4K-3 bytes of alloc requests.
-
-[output]
-name=malt-%1-%2.%3    ; base name for output, %1 = exe, %2 = PID, %3 = extension
-lua=true              ; enable LUA output
-json=true             ; enable json output
-callgrind=true        ; enable callgrind output
-indent=false          ; indent the output profile files
-config=true           ; dump current config
-verbosity=default     ; malt verbosity level (silent, default, verbose)
-stack-tree=false       ; store the call tree as a tree (smaller file, but need conversion)
-loop-suppress=false    ; Simplify recursive loop calls to get smaller profile file if too big
-
-[max-stack]
-enabled=true          ; enable of disable strack size tracking (require -finstrument-functions)
-
-[distr]
-alloc-size=true       ; generate distribution of allocation size
-realloc-jump=true     ; generate distribution of realloc jumps
-
-[trace]
-enable=false          ; enable dumping allocation event tracing (not yet used by GUI)
-
-[info]
-hidden=false          ; try to hide possible sensible names from profile (exe, hostname...)
-
-[filter]
-exe=                  ; Only apply malt on given exe (empty for all)
-childs=true           ; Instrument child processes or not
-enabled=true          ; Enable or disable MALT when threads start
-ranks=                ; Instrument only the given ranks from list as : 1,2-4,6
-
-[dump]
-on-signal=             ; Dump on signal. Can be comma separated list from SIGINT, SIGUSR1,
-                       ; SIGUSR2... help, avail (limited to only one dump)
-after-seconds=0        ; Dump after X seconds (limited to only one time)
-on-sys-full-at=        ; Dump when system memory become full at x%, xG, xM, xK, x  (empty to disable).
-on-app-using-rss=      ; Dump when RSS of the app reach the given limit in %, G, M, K (empty to disable).
-on-app-using-virt=     ; Dump when Virtual Memory of the app reach limit in %, G, M, K (empty to disable).
-on-app-using-req=      ; Dump when Requested Memory of the app reach limit in %, G, M, K (empty to disable).
-on-thread-stack-using= ; Dump when one stack reach limit in %, G, M, K (empty to disable).
-on-alloc-count=        ; Dump when number of allocations reach limit in G, M, K (empty to disable).
-watch-dog=false        ; Run an active thread spying continuouly the memory of the app, not only sometimes.
-
-[python]
-instru=true            ; Enable of disable python instrumentation.
-stack=enter-exit       ; Select the Python stack instrumentation mode (backtrace, enter-exit, none).
-mix=false              ; Mix C stack with the python ones to get a uniq tree instread of two distincts
-                       ;(not this adds overhead).
-obj=true               ; Instrument of not the OBJECT allocator domain of python.
-mem=true               ; Instrument of not the MEM allocator domain of python.
-raw=true               ; Instrument of not the RAW allocator domain of python.
-
-[c]
-malloc=true            ; Track the C Malloc.
-mmap=true              ; Track the C direct calls to mmap.
-
-[tools]
-nm=true                ; Enable usage of NM to find the source locatoin of the global variables.
-nmMaxSize=50M           ; Do not call nm on .so larger than 50 MB to limit the profile dump overhead.
-```
-
-Option values can be overridden on the fly with command :
-
-```shell
-{YOUR_PREFIX}/bin/malt -o "stack:enabled=true;output:indent=true;" {YOUR_PROGRAM} [OPTIONS]
-```
-
-Environnement variables
------------------------
-
-If you do not use the malt wrapper and use directly LD_PRELOAD you can use the Environnement variables :
-
-```shell
-MALT_OPTIONS="stack:enabled=true;output:indent=true;"
-MALT_CONFIG="config.ini"
-MALT_STACK="libunwind"
-```
-
-Analysing sub-parts
--------------------
-
-If you run on a really big program doing millions of allocation you might get a big overhead, and maybe
-you are just interested in a sub-part of the program. You can do it by including `malt/malt.h` in
-your files and use `malt_enable()` an `malt_disable()` to controle MALT on each thread. It is also a nice
-way to detect leaks of sub-parts of your code.
-
-```c
-#include <malt/controler.h>
-
-int main()
-{
-    malt_disable();
-    //ignored
-    malloc(16);
-
-    malt_enable();
-    //tracked
-    malloc(16);
-}
-```
-
-You will need to link the `libmalt-controler.so` to get the default fake symbols when not using MALT.
-You can also just provide the two empty functions in your own dynamic library (not static).
-
-If you have some allocation not under your control before your first call you can disable MALT by default
-on threads using the `filter:enabled` option, then enable it by hand.
-
-About stacks
-------------
-
-MALT use two ways to rebuild stacks, the default one relies on glibc backtrace but we observe several
-segfaults on some intel tools such as Intel OpenMP and Intel MPI so we also provide a more robust
-approach based on libunwind if present on your system at build time. You can provide it with :
-
-```shell
-../configure --with-libunwind=PREFIX
-```
-
-or on cmake :
-
-```shell
-cmake -DLIBUNWIND_PREFIX=PREFIX ..
-```
-
-You now can use it with malt by using :
-
-```shell
-malt -s libunwind {PROGRAM}
-```
-
-The alternative relies on function instrumentation by adding prove on start/end for each function.
-It can be done by using -finstrument-function on your compiler just as described in "How to use" section
-or by using binary instrumentation tools just as explained at the end of this document.
-
-If you want to use the source instrumentation appraoch, you need to recompiler your program
-and the interesting libraries with :
-
-```sh
-gcc -finstrument-functions
-```
-
-Then running malt with :
-
-```sh
-${YOUR_PREFIX}/bin/malt -s enter-exit {YOUR_PROGRAM}
-```
-
-Tracking stack size
--------------------
-
-Malt can also track the memory used by stacks over time, but for this support it is required to
-enable a compiler flag :
-
-```shell
-gcc -finstrument-functions {YOUR FILES}
-```
-
-Wrapping a custom allocator
----------------------------
-
-If your application use a custom allocator with a different namespce than the default `malloc`, `free`...
-you can use the `--wrap` or `--wrap-prefix` options.
-
-You can select in details the function by doing:
-
-```sh
-malt --wrap malloc:je_malloc ./prgm
-malt --wrap malloc:je_malloc,free:je_free,calloc:je_calloc,malloc:another_custom_malloc ./prgm
-```
-
-You can also simply use a common prefix for all by using (typically usefull if you embed jemalloc
-with a custom symbol prefix):
-
-```sh
-malt --wrap-prefix je_
-malt --wrap-prefix je_,another_custom_
-```
-
-Experimental pintool mode
--------------------------
-
-MALT can also use binary instrumentation mode through pintool
-(<http://software.intel.com/en-us/articles/pin-a-dynamic-binary-instrumentation-tool>)
-
-Please, check usage into src/pintool directory.
-
-Experimental maqao mode
------------------------
-
-MALT can also use binary instrumentation with MAQAO (<http://maqao.org/>).
-
-Please check usage into src/maqao directory.
-
-Packaging
----------
-
-You can find packaging instructions inside packaging/README.md.
-For quicker use you can use the dev/packagin.sh script which do
-the steps automatically.
-
-Installation in non-standard directory
---------------------------------------
-
-If you install MALT in a directory other than `/usr` and `/usr/local`, eg. in your home, you might
-be interested by setting some environment variables integrating it to your shell :
-
-```shell
-export PATH=${PREFIX}/bin:$PATH
-export MANPATH=${PREFIX}/share/man:$MANPATH
-```
-
-`LD_LIBRARY_PATH` is not required as the `malt` command will use the full path to get access the
-internal `.so` file.
-
 Profiling python
 ----------------
 
-**Note:** This is currently **experimental**.
+**Note:** This is currently **fresh released**, there are for sure still some issues.
 
-First you need to build MALT by enabling python support : `--enable-python` and you will need to have
+First you need to build MALT by enabling python support : you will need to have
 the python headers (package `python3-dev or libpython3-dev or python3-devel`) on your plateform.
 
 In practice MALT after being built will be able to run over various versions of python without beeing
