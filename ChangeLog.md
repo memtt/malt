@@ -1,6 +1,21 @@
 Change log
 ==========
 
+NEXT - XX/01/2025
+-----------------
+
+ - Replace the old webview in Angular 2.0 by a new one in VueJS.
+ - Many fixes about python support, now should work relatively correctly.
+ - Write the documentation in sphinx format.
+ - Remove usage of login/password by a token
+ - Remove malt-passwd command.
+ - Remove dependency to libcrypto.
+ - Rename maltDisable/Enable => malt_enable/malt_disable.
+ - Add option to use embeded options or system onces.
+ - Use iniparser of the system.
+ - Make patches to get in better state for a debian packaging close to offical way.
+ - Hide internal symbols with -fvisbility
+
 1.4.1 - 14/10/2025
 ------------------
 
