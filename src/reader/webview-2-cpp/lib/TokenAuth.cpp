@@ -63,7 +63,7 @@ Server::HandlerResponse TokenAuth::check(const httplib::Request& req, httplib::R
 	} else {
 		res.set_header("www-authenticate", std::string("Bearer"));
 		res.set_content("error", "text/html");
-		res.status = StatusCode::Unauthorized_401;
+		res.status = 401;//StatusCode::Unauthorized_401;
 		return Server::HandlerResponse::Handled;
 	}
 }

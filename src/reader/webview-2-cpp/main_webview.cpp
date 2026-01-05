@@ -431,9 +431,9 @@ int main(int argc, char ** argv)
 
 		//listen
 		if (options.socket.empty()) {
-			svr.listen(options.host, options.port);
+			svr.listen(options.host.c_str(), options.port);
 		} else {
-			svr.set_address_family(AF_UNIX).listen(options.socket, 8080);
+			svr.set_address_family(AF_UNIX).listen(options.socket.c_str(), 8080);
 			unlink(options.socket.c_str());
 		}
 

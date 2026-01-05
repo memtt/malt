@@ -175,6 +175,16 @@ void initPythonAllocInstrumentation()
 }
 
 /**********************************************************/
+void finiPythonAllocInstrumentation(void)
+{
+	if (gblOptions->outputVerbosity >= MALT_VERBOSITY_DEFAULT)
+		printf("MALT: Un-instument Python allocator...\n");
+	MALT::PyMem_SetAllocator(PYMEM_DOMAIN_RAW, &gblPythonRawAlloc);
+	MALT::PyMem_SetAllocator(PYMEM_DOMAIN_MEM, &gblPythonRawAlloc);
+	MALT::PyMem_SetAllocator(PYMEM_DOMAIN_OBJ, &gblPythonMemAlloc);
+}
+
+/**********************************************************/
 void initPythonEnterExitInstrumentation(void)
 {
 	if (gblOptions->outputVerbosity >= MALT_VERBOSITY_DEFAULT)
@@ -196,6 +206,7 @@ void initPythonEnterExitInstrumentation(void)
 void pythonOnExit(void)
 {
 	gblState.profiler->getPythonSymbolTracker().setPythonActivity(false);
+	finiPythonAllocInstrumentation();
 	if (gblOptions->outputVerbosity >= MALT_VERBOSITY_VERBOSE)
 		printf("MALT: Python exit...\n");
 }

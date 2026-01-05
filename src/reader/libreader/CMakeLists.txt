@@ -67,7 +67,8 @@ add_library(malt-reader SHARED
     trace/TraceReader.cpp
 )
 target_link_libraries(malt-reader PUBLIC ${NLOHMANN_JSON_LIBRARIES})
-target_link_libraries(malt-reader PRIVATE OpenMP::OpenMP_CXX)
+target_link_libraries(malt-reader PUBLIC OpenMP::OpenMP_CXX)
+target_link_libraries(malt-reader PUBLIC Threads::Threads)
 set_target_properties(malt-reader PROPERTIES VERSION ${MALT_VERSION}
                                               SOVERSION ${MALT_SO_VERSION})
 set_target_properties(malt-reader PROPERTIES COMPILE_FLAGS ${MALT_LIB_COMPILER_FLAGS})

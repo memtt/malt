@@ -43,7 +43,7 @@ import pytest
 COMMON_CONF_OPTIONS = "--with-cargo=$HOME/.cargo"
 ############################################################
 PYTHON_VERSION="3.13.2"
-BUILD_CUSTOM_CORES=4
+BUILD_CUSTOM_CORES=8
 BUILD_CUSTOM_PYTHON = f"""cd /tmp \\
     && curl --continue-at - -o /var/sources/Python-{PYTHON_VERSION}.tar.xz https://www.python.org/ftp/python/3.13.2/Python-{PYTHON_VERSION}.tar.xz \\
     && tar -xf /var/sources/Python-{PYTHON_VERSION}.tar.xz \\
@@ -119,7 +119,7 @@ ROCKY_BASIC_CMDS=[
 ]
 ROCKY_FULL_CMDS=[
     # all deps
-    "dnf install -y libunwind-devel elfutils-devel graphviz nlohmann-json-devel cpp-httplib-devel python3-devel gtest libiniparser-devel",
+    "dnf install -y libunwind-devel elfutils-devel graphviz nlohmann-json-devel cpp-httplib-devel python3-devel gtest iniparser-devel",
     # playsing with sources
     "dnf install -y git nodejs npm curl bzip2 xz",
     # cargo
@@ -129,7 +129,7 @@ ROCKY_INDEV_CMDS=[
 ]
 CENTOS_FULL_CMDS=[
     # all deps
-    "dnf install -y libunwind-devel elfutils-devel graphviz nlohmann-json-devel cpp-httplib-devel python3-devel gtest libiniparser-devel",
+    "dnf install -y libunwind-devel elfutils-devel graphviz nlohmann-json-devel cpp-httplib-devel python3-devel gtest iniparser-devel",
     # playsing with sources
     "dnf install -y git nodejs npm curl",
     # cargo
@@ -147,7 +147,7 @@ ARCH_FULL_CMDS=[
     # full deps
     "pacman --noconfirm -Sy libunwind libelf graphviz nlohmann-json python3 gtest iniparser",
     # play with sources
-    "pacman --noconfirm -Sy git nodejs npm curl"
+    "pacman --noconfirm -Sy git nodejs npm curl",
     # cargo
     "pacman --noconfirm -Sy cargo"
 ]
@@ -165,8 +165,10 @@ GENTOO_BASIC_CMDS=[
 ]
 GENTOO_FULL_CMDS=[
     #"eselect profile set default/linux/amd64/23.0/desktop/plasma && emerge --verbose --update --deep --newuse @world -k -g",
+    # Set use flags
+    "echo 'media-libs/gd fontconfig truetype' > /etc/portage/package.use/01-malt",
     # install full deps
-    "emerge -b -k -g sys-libs/libunwind dev-libs/elfutils media-gfx/graphviz dev-cpp/nlohmann_json dev-cpp/cpp-httplib dev-lang/python:3 dev-cpp/gtest dev-libs/iniparser",
+    "emerge -b -k -g sys-libs/libunwind dev-libs/elfutils media-gfx/graphviz dev-cpp/nlohmann_json dev-cpp/cpp-httplib dev-lang/python dev-cpp/gtest dev-libs/iniparser",
     # play with sources
     "emerge -b -k -g dev-vcs/git net-libs/nodejs net-misc/curl",
     # rust
@@ -308,14 +310,14 @@ BUILD_PARAMETERS = {
             "cmds": CENTOS_INDEV_CMDS
         },
         ############ rocky:8.9
-        "malt/rocky-basic:8.9": {
-            "base": "rockylinux:8.9",
-            "cmds": ROCKY_BASIC_CMDS
-        },
-        "malt/rocky-full:8.9": {
-            "base": "malt/rocky-basic:8.9",
-            "cmds": ROCKY_FULL_CMDS
-        },
+        #"malt/rocky-basic:8.9": {
+        #    "base": "rockylinux:8.9",
+        #    "cmds": ROCKY_BASIC_CMDS
+        #},
+        #"malt/rocky-full:8.9": {
+        #    "base": "malt/rocky-basic:8.9",
+        #    "cmds": ROCKY_FULL_CMDS
+        #},
         #"malt/rocky-indev:8.9": {
         #    "base": "malt/rocky-full:8.9",
         #    "cmds": ROCKY_INDEV_CMDS
@@ -387,7 +389,7 @@ CACHES = {
 ############################################################
 
 def get_make_jobs() -> int:
-    cores = int(multiprocessing.cpu_count() / 2)
+    cores = int(multiprocessing.cpu_count())
     return cores
 
 ############################################################

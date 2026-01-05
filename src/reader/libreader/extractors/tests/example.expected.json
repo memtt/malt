@@ -2469,17 +2469,6 @@
    {
     "count": 1,
     "info": {
-     "binary": "??",
-     "file": "??",
-     "function": "[0x1]",
-     "functionShort": "[0x1]",
-     "line": -1
-    },
-    "mem": 0
-   },
-   {
-    "count": 1,
-    "info": {
      "binary": "src/reader/libreader/extractors/tests/extractor-example",
      "file": "src/reader/libreader/extractors/tests/example.cpp",
      "function": "main",

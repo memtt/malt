@@ -33,6 +33,17 @@ int maltInitStatus(void)
 }
 
 /**********************************************************/
+#if PY_MAJOR_VERSION == 3 && PY_MINOR_VERSION <= 10
+	const std::string cstRefFile = CUR_SRC_DIR "/TestInstrumPython-3.10.json";
+#elif PY_MAJOR_VERSION == 3 && PY_MINOR_VERSION <= 11
+	const std::string cstRefFile = CUR_SRC_DIR "/TestInstrumPython-3.11.json";
+//#elif PY_MAJOR_VERSION == 3 && PY_MINOR_VERSION > 13 || (PY_MINOR_VERSION == 13 && PY_MICRO_VERSION >= 9)
+//	const std::string cstRefFile = CUR_SRC_DIR "/TestInstrumPython-3.13.json";
+#else
+	const std::string cstRefFile = CUR_SRC_DIR "/TestInstrumPython.json";
+#endif
+
+/**********************************************************/
 TEST(TestInstrumPython, python_basic_array_backtrace)
 {
 	//reset MALT & enable
@@ -67,7 +78,7 @@ TEST(TestInstrumPython, python_basic_array_backtrace)
 	resJson = ExtractorHelpers::buildShorterFlatProfileSummary(resJson, true);
 
 	//load ref
-	nlohmann::json ref = nlohmann::json::parse(std::ifstream(CUR_SRC_DIR "/TestInstrumPython.json"));
+	nlohmann::json ref = nlohmann::json::parse(std::ifstream(cstRefFile));
 
 	//check
 	ASSERT_EQ(ref["python_basic_array_backtrace"].dump(1), resJson.dump(1));
@@ -96,7 +107,7 @@ TEST(TestInstrumPython, python_basic_array_enter_exit)
 	MALT::globalDump();
 
 	//load ref
-	nlohmann::json ref = nlohmann::json::parse(std::ifstream(CUR_SRC_DIR "/TestInstrumPython.json"));
+	nlohmann::json ref = nlohmann::json::parse(std::ifstream(cstRefFile));
 
 	//convert
 	Profile profile(profileFile);

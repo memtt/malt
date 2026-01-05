@@ -88,6 +88,7 @@ endif(ENABLE_GCC_COVERAGE)
 
 ############################################################
 set(ENABLE_PROFILER "yes" CACHE BOOL "Enable the installation of the profiler.")
+set(THREADS_PREFER_PTHREAD_FLAG ON)
 
 ############################################################
 # search deps
@@ -97,6 +98,7 @@ if (NOT ENABLE_PREFER_EMBED)
 	find_package(IniParser QUIET)
 	find_package(HttpLib QUIET)
 endif()
+find_package(Threads REQUIRED)
 find_package(OpenMP QUIET)
 find_package(LibElf QUIET)
 find_package(Libunwind QUIET)

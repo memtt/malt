@@ -49,6 +49,8 @@ void initPythonAllocInstrumentation(void);
 void initPythonEnterExitInstrumentation(void);
 void initPythonInstrumentation(const char * script = nullptr);
 
+void finiPythonAllocInstrumentation(void);
+
 }
 
 #endif //MALT_INJECT_PYTHON_ALLOC_HPP

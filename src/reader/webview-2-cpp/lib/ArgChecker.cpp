@@ -44,15 +44,15 @@ ArgChecker::~ArgChecker(void)
 std::string ArgChecker::checkArgString(const httplib::Request& req, const std::string & name, bool allowEmpty) const
 {
 	//do not have
-	if (req.has_param(name) == false) {
+	if (req.has_param(name.c_str()) == false) {
 		throw std::runtime_error(std::string("Missing field : ") + name);
 	}
 	//is empty
-	if (req.get_param_value(name).empty() && allowEmpty == false) {
+	if (req.get_param_value(name.c_str()).empty() && allowEmpty == false) {
 		throw std::runtime_error(std::string("Empty field : ") + name);
 	}
 	//ok
-	return req.get_param_value(name);
+	return req.get_param_value(name.c_str());
 }
 
 /**********************************************************/
