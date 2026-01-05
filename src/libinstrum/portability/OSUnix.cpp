@@ -288,12 +288,12 @@ std::string OSUnix::getDateTime(void)
 }
 
 /**********************************************************/
-std::string OSUnix::getCmdLine(void)
+OSCmdLine OSUnix::getCmdLine(void)
 {
 	//vars
 	const char * file = "/proc/self/cmdline";
-	char buffer[1024];
-	std::string res;
+	char buffer[16*4096];
+	OSCmdLine res;
 
 	//open an check
 	FILE * fp = fopen(file,"r");
@@ -308,15 +308,13 @@ std::string OSUnix::getCmdLine(void)
 		if (tmp > 0)
 		{
 			//replace arg separator \0 by space
-			for (size_t i = 0 ; i < tmp ; i++)
-				if (buffer[i] == '\0')
-					buffer[i] = ' ';
-
-			//close
-			buffer[tmp] = '\0';
-
-			//concat
-			res += buffer;
+			size_t last_start = 0;
+			for (size_t i = 0 ; i < tmp ; i++) {
+				if (buffer[i] == '\0') {
+					res.push_back(&buffer[last_start]);
+					last_start = i+1;
+				}
+			}
 		}
 	}
 	

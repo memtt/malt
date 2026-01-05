@@ -1011,7 +1011,7 @@ void convertToJson(htopml::JsonState& json, const AllocStackProfiler& value)
 		if (value.getOptions()->infoHidden == false)
 		{
 			json.printField("exe",OS::getExeName());
-			json.printField("command",OS::getCmdLine());
+			json.printField("command",cmdToString(OS::getCmdLine()));
 			json.printField("hostname",OS::getHostname());
 		}
 	json.closeFieldStruct("run");
@@ -1143,6 +1143,23 @@ void AllocStackProfiler::registerPerThreadProfiler(LocalAllocStackProfiler* prof
 	MALT_OPTIONAL_CRITICAL(lock,threadSafe)
 		this->perThreadProfiler.push_back(profiler);
 	MALT_END_CRITICAL;
+}
+
+/**********************************************************/
+std::string cmdToString(const OSCmdLine & cmdline)
+{
+	std::stringstream buffer;
+	bool space = false;
+	for (const auto & cmd : cmdline) {
+		if (space)
+			buffer << ' ';
+		if (cmd.find(' ') != std::string::npos)
+			buffer << '"' << cmd << '"';
+		else
+			buffer << cmd;
+		space = true;
+	}
+	return buffer.str();
 }
 
 /**********************************************************/

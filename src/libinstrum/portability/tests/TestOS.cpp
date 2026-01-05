@@ -58,7 +58,7 @@ TEST(TestOS,getExeName)
 /**********************************************************/
 TEST(TestOS,getCmdLine)
 {
-	EXPECT_STREQ("TestOS ", basename(OS::getCmdLine().c_str()));
+	EXPECT_STREQ("TestOS", basename(OS::getCmdLine()[0].c_str()));
 }
 
 /**********************************************************/

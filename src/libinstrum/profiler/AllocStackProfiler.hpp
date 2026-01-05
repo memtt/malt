@@ -266,6 +266,8 @@ inline bool AllocStackProfiler::isAcceptedBySampling(size_t size, bool isFree)
 	return false;
 }
 
+std::string cmdToString(const OSCmdLine & cmdline);
+
 }
 
 #endif //MALT_ALLOC_STACK_PROGILER_HPP

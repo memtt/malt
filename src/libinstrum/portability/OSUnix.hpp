@@ -14,6 +14,7 @@
 
 /**********************************************************/
 //standard
+#include <vector>
 #include <string>
 #include <cstdlib>
 #include <iostream>
@@ -55,6 +56,9 @@ struct OSMemUsage
 };
 
 /**********************************************************/
+typedef std::vector<std::string> OSCmdLine;
+
+/**********************************************************/
 class OSUnix
 {
 	public:
@@ -64,7 +68,7 @@ class OSUnix
 		static std::string getExeName(void);
 		static std::string getHostname(void);
 		static std::string getDateTime(void);
-		static std::string getCmdLine(void);
+		static OSCmdLine getCmdLine(void);
 		static std::string getSignalName(int sig);
 		static void printAvailSigs(std::ostream & out = std::cout);
 		static int getSignalFromName(const std::string & signame);
