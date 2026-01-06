@@ -29,7 +29,7 @@ if [[ ${MALT_VITE_BUILD_DIR} != '' && ${MALT_VITE_BUILD_DIR} != '.' ]]; then
 	export MALT_VITE_ORIG_DIR="${PWD}"
 	mkdir -p "${MALT_VITE_BUILD_DIR}"
 	for tmp in .* *.*; do
-		cp "${PWD}/$tmp" "${MALT_VITE_BUILD_DIR}/$tmp"
+		cp -r "${PWD}/$tmp" "${MALT_VITE_BUILD_DIR}/$tmp"
 	done
 	cp -r "${PWD}/src" "${MALT_VITE_BUILD_DIR}"
 	cp -r "${PWD}/public" "${MALT_VITE_BUILD_DIR}"
