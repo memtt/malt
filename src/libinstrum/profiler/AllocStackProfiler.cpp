@@ -766,7 +766,7 @@ void AllocStackProfiler::loadGlobalVariables(void)
 					CODE_TIMING("nm",reader.load(it->file));
 					reader.findSourcesAndDemangle(globalVariables[it->file]);
 				} else if (fsize > nmMaxFileSize) {
-					fprintf(stderr, "MALT: Skipping global var location analysis for '%s', file is too large (tools:nmMaxSize=%s)\n", it->file.c_str(), gblOptions->toolsNmMaxSize.c_str());
+					fprintf(stderr, "MALT: Skipping global var location analysis for '%s', file is too large (tools:nm-max-size=%s)\n", it->file.c_str(), gblOptions->toolsNmMaxSize.c_str());
 				}
 			}
 		}
