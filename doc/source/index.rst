@@ -83,6 +83,12 @@ External pointers
 :doc:`/external/documentation`
   Documentation about **memory managment**.
 
+For developpers
+---------------
+
+:doc:`/developer/debug`
+  Documentation about **debugging** MALT crashed.
+
 .. the global tocs
 
 .. toctree::
@@ -118,3 +124,10 @@ External pointers
    /external/other-tools.rst
    /external/other-allocators.rst 
    /external/documentation.rst 
+
+.. toctree::
+   :maxdepth: 1
+   :hidden:
+   :caption: For developpers
+
+   /developer/debug.rst
