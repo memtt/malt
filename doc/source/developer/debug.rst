@@ -37,3 +37,28 @@ In some case you want to **unmix** the output which, by default are merged in a
 	mpirun -np 4 xterm -e "malt --mpi --gdb ./my_program"
 	# or
 	mpirun -np 4 xterm -e "malt --mpi --gdb-bt ./my_program"
+
+Using AdressSanitizer onto MALT
+-------------------------------
+
+ASAN is a nice tool to debug memory issues. It can be used onto MALT itself but
+you need to enable it via the dedicated build option :
+
+.. code:: shell
+
+	../configure --prefix=/home/sebv/usr-malt --enable-asan --enable-debug
+
+It will : 
+
+- Disable the internal **JeMalloc**.
+- Disable the MALT **internal memory allocator**.
+- Inject **preload** of `libasan.so` before malt.
+
+**Known issue**:
+
+There is currently sometimes an issue at init with **OpenMP** you might want to
+run with a single thread in that case :
+
+.. code:: shell
+
+	OMP_NUM_THREADS=1 malt ./my_program

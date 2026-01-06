@@ -75,7 +75,7 @@ OSMemUsage OSUnix::getMemoryUsage(void)
 	static FILE * fp = NULL;
 	static StaticMutex gblMeminfoMutex = MALT_STATIC_MUTEX_INIT;
 	OSMemUsage finalRes = {0,0,0,0,0,0,0};
-	char buffer[4096];
+	char buffer[512];
 	
 	//secure for threads
 	MALT_START_CRITICAL(gblMeminfoMutex)

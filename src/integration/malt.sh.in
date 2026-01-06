@@ -26,6 +26,7 @@ MALT_OPTIONS=""
 MALT_VERSION="@MALT_VERSION@@MALT_VERSION_NOTE@"
 MALT_ALLOC_WRAPPER=""
 MALT_WRAP_DIR=""
+ENABLE_ASAN="@ENABLE_ASAN@"
 
 ############################################################
 # calc MALT root dir relative to this script
@@ -557,6 +558,11 @@ elif [ -z "${LD_PRELOAD}" ]; then
 	ld_preload="${MALT_LIB}"
 else
 	ld_preload="${MALT_LIB}:${LD_PRELOAD}"
+fi
+
+############################################################
+if [[ "${ENABLE_ASAN}" = "yes" ]]; then
+	ld_preload="libasan.so:${ld_preload}"
 fi
 
 ############################################################

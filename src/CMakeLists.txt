@@ -55,6 +55,10 @@ endif()
 if (ENABLE_CACHING)
 	set(MALT_ENABLE_CACHING yes)
 endif()
+if (ENABLE_ASAN)
+	set(MALT_USE_STD_MALLOC)
+	set(ENABLE_ASAN "yes")
+endif()
 
 ############################################################
 #gen config.h

@@ -64,4 +64,7 @@
 #cmakedefine MALT_PORTABILITY_PYTHON_NATIVE
 #cmakedefine MALT_PORTABILITY_PYTHON_LAZY
 
+//When using ASAN we need to disable the internal allocator to test malt internals
+#cmakedefine MALT_USE_STD_MALLOC
+
 #endif //MALT_CONFIG_H

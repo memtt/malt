@@ -76,11 +76,16 @@ cfg_add_enable_option --name='caching' \
 						--doc='Enable usage of some internal caches to reduce the overhead of MALT.' \
 						--invert-help
 
-#caching
+#webview rebuild
 cfg_add_enable_option --name='webview-rebuild' \
 						--on-enable='-DWEBVIEW_REBUILD=FORCE' \
 						--on-disable='-DWEBVIEW_REBUILD=AUTO' \
 						--doc='Force rebuilding the webview.'
+
+#asan
+cfg_add_enable_option --name='asan' \
+						--on='-DENABLE_ASAN=${ON}' \
+						--doc='Enable usage of GCC / CLANG address sanitizer.'
 
 ############################################################
 #libunwind

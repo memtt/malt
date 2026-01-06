@@ -50,6 +50,7 @@ set(ENABLE_JEMALLOC       "yes"      CACHE BOOL   "Enable building internal JeMa
 set(ENABLE_CACHING        "yes"      CACHE BOOL   "Enable some internal caches.")
 set(ENABLE_PREFER_EMBED   "no"       CACHE BOOL   "Prefer using the embeded dependencies that using system one by default.")
 set(ENABLE_PROFILER       "yes"      CACHE BOOL   "Enable the installation of the profiler.")
+set(ENABLE_ASAN           "no"       CACHE BOOL   "Enable ASAN memory checker to debug MALT.")
 #Code options
 set(ENABLE_CODE_TIMING    "no"       CACHE BOOL   "Enable some tricks to quickly check timings of hostspots of MALT internal code.")
 set(ENABLE_CODE_LEAK      "no"       CACHE BOOL   "Enable internal analysis of memory leak.")
@@ -64,6 +65,12 @@ set(PORTABILITY_PYTHON    "LAZY"     CACHE STRING "Select the instrumentation mo
 set(WEBVIEW_SERVER        "AUTO"     CACHE STRING "Select the webview server to use : AUTO, CPP, OFF.")
 set(WEBVIEW_REBUILD       "AUTO"     CACHE STRING "Select webview client rebuild mode : AUTO, FORCE")
 set(WEBVIEW_DEPS          "AUTO"     CACHE STRING "Select webview client rebuild mode : AUTO, DOWNLOAD, SYSTEM")
+
+############################################################
+if (ENABLE_ASAN)
+	set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} -fsanitize=address)
+	set(ENABLE_JEMALLOC "no")
+endif ()
 
 ############################################################
 if (ENABLE_TESTS OR CMAKE_BUILD_TYPE="Debug")
