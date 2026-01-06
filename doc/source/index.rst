@@ -88,6 +88,8 @@ For developpers
 
 :doc:`/developer/debug`
   Documentation about **debugging** MALT crashed.
+:doc:`/developer/lifecycle`
+  Documentation about **lifecycle** of MALT sources.
 
 .. the global tocs
 
@@ -131,3 +133,4 @@ For developpers
    :caption: For developpers
 
    /developer/debug.rst
+   /developer/lifecycle.rst
