@@ -20,6 +20,7 @@ set -e
 ############################################################
 ENABLE_MPI=false
 ENABLE_GDB=false
+ENABLE_GDB_BACKTRACE=false
 MPI_WRAPPER_DIR="$HOME/.malt"
 MALT_OPTIONS=""
 MALT_VERSION="@MALT_VERSION@@MALT_VERSION_NOTE@"
@@ -423,6 +424,7 @@ maltShowHelp()
 	echo "   -t/--trace                  Enable the tracing mode."
 	echo "   -d/--dumpconfig             Enable the dump of config file at exit."
 	echo "   -g/--gdb                    Enable GDB with MALT required options while launching the program."
+	echo "   -G/--gdb-bt                 Enable GDB with MALT and also automatically bactrace on error."
 	echo "   --wrap {type}:{func_name}   Wrap the given allocation (type=malloc,free...) with the"
 	echo "                               given use defined symbol (eg. je_malloc). Can list with"
 	echo "                               coma as separator or call several time."
@@ -485,6 +487,11 @@ while true; do
 			;;
 		--gdb|-g)
 			ENABLE_GDB=true
+			shift 1
+			;;
+		--gdb-bt|-G)
+			ENABLE_GDB=true
+			ENABLE_GDB_BACKTRACE=true
 			shift 1
 			;;
 		--mpi)
@@ -554,7 +561,11 @@ fi
 
 ############################################################
 if [ "${ENABLE_GDB}" = "true" ]; then
-	gdb -iex "set environment LD_PRELOAD=${ld_preload}" --args "$@"
+	if [ "${ENABLE_GDB_BACKTRACE}" = "true" ]; then
+		gdb -iex "set environment LD_PRELOAD=${ld_preload}" -ex "run" -ex "bt" -ex "set confirm off" -ex "exit" --args "$@"
+	else
+		gdb -iex "set environment LD_PRELOAD=${ld_preload}" --args "$@"
+	fi
 else
 	LD_PRELOAD="${ld_preload}" "$@"
 fi
