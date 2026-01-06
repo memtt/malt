@@ -848,30 +848,33 @@ FlattenMaxStackInfo Extractor::getFlattenMaxStackInfo(const LocaltionOnlyMapping
 	//var maxStack = this.getMaxStack();
 
 	//loop on all entries
-	for (size_t i = 0 ; i < maxStack.stack.size() ; i++)
+	if (maxStack.stack.empty() == false)
 	{
-		//get some vars
-		LangAddress addr = maxStack.stack[i];
-		ssize_t mem = maxStack.mem[i] - maxStack.mem[i+1];
-		if (mem < 0)
-			mem = 0;
-		//assert(mem >= 0);
-		const InstructionInfosStrRef & info = this->getAddrTranslation(addr);
-		std::string key = to_string(addr);
-		//if (info != undefined)
-		key = mapping(info);
-		//else
-		//info = {function:addr};
+		for (size_t i = 0 ; i < maxStack.stack.size() - 1 ; i++)
+		{
+			//get some vars
+			LangAddress addr = maxStack.stack[i];
+			ssize_t mem = maxStack.mem[i] - maxStack.mem[i+1];
+			if (mem < 0)
+				mem = 0;
+			//assert(mem >= 0);
+			const InstructionInfosStrRef & info = this->getAddrTranslation(addr);
+			std::string key = to_string(addr);
+			//if (info != undefined)
+			key = mapping(info);
+			//else
+			//info = {function:addr};
 
-		//check filter
-		if (accept(info)) {
-			auto it = ret.find(key);
-			//create or merge
-			if (it == ret.end()) {
-				ret[key] = FlattenMaxStackInfoEntry{&info, (size_t)mem, 1};
-			} else {
-				ret[key].mem += mem;
-				ret[key].count++;
+			//check filter
+			if (accept(info)) {
+				auto it = ret.find(key);
+				//create or merge
+				if (it == ret.end()) {
+					ret[key] = FlattenMaxStackInfoEntry{&info, (size_t)mem, 1};
+				} else {
+					ret[key].mem += mem;
+					ret[key].count++;
+				}
 			}
 		}
 	}
