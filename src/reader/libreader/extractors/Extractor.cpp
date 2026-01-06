@@ -848,7 +848,7 @@ FlattenMaxStackInfo Extractor::getFlattenMaxStackInfo(const LocaltionOnlyMapping
 	//var maxStack = this.getMaxStack();
 
 	//loop on all entries
-	for (size_t i = 0 ; i < maxStack.stack.size() - 1 ; i++)
+	for (size_t i = 0 ; i < maxStack.stack.size() ; i++)
 	{
 		//get some vars
 		LangAddress addr = maxStack.stack[i];
