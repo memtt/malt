@@ -14,7 +14,6 @@ include_directories(../..)
 include_directories(../../libinstrum)
 include_directories(${NLOHMANN_JSON_INCLUDE_DIR})
 include_directories(${CMAKE_SOURCE_DIR}/extern-deps/from-fftw)
-include_directories(${CMAKE_BINARY_DIR}/src/libinstrum)
 
 ############################################################
 if (GRAPHVIZ_FOUND)

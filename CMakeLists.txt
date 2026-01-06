@@ -49,6 +49,7 @@ set(ENABLE_PYTHON         "yes"      CACHE BOOL   "Enable compiling with the pyt
 set(ENABLE_JEMALLOC       "yes"      CACHE BOOL   "Enable building internal JeMalloc.")
 set(ENABLE_CACHING        "yes"      CACHE BOOL   "Enable some internal caches.")
 set(ENABLE_PREFER_EMBED   "no"       CACHE BOOL   "Prefer using the embeded dependencies that using system one by default.")
+set(ENABLE_PROFILER       "yes"      CACHE BOOL   "Enable the installation of the profiler.")
 #Code options
 set(ENABLE_CODE_TIMING    "no"       CACHE BOOL   "Enable some tricks to quickly check timings of hostspots of MALT internal code.")
 set(ENABLE_CODE_LEAK      "no"       CACHE BOOL   "Enable internal analysis of memory leak.")
@@ -87,7 +88,6 @@ if (ENABLE_GCC_COVERAGE)
 endif(ENABLE_GCC_COVERAGE)
 
 ############################################################
-set(ENABLE_PROFILER "yes" CACHE BOOL "Enable the installation of the profiler.")
 set(THREADS_PREFER_PTHREAD_FLAG ON)
 
 ############################################################
@@ -150,7 +150,7 @@ endif()
 
 ############################################################
 # check for python support
-if (ENABLE_PYTHON)
+if (ENABLE_PYTHON AND ENABLE_PROFILER)
 	find_package(Python3 QUIET COMPONENTS Interpreter Development QUIET)
 	# we currently support only Python
 	if (Python3_FOUND AND Python3_INCLUDE_DIR AND NOT Python3_INTERPRETER_ID STREQUAL "Python")

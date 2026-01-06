@@ -11,7 +11,6 @@
 #Use gtest
 include_directories(${GTEST_INCLUDE_DIRS} ${GMOCK_INCLUDE_DIRS})
 include_directories(../)
-include_directories(${CMAKE_BINARY_DIR}/src/libinstrum/)
 if (PYTHON3_INSTRUM_FOUND)
 	include_directories(${Python3_INCLUDE_DIRS})
 endif()
