@@ -17,7 +17,7 @@ else()
 	if (NOT EXISTS ${CMAKE_SOURCE_DIR}/extern-deps/node_modules AND WEBVIEW_DEPS STREQUAL "AUTO")
 		message(STATUS "Copying package.json and package-lock.json to build directory")
 		set(NODE_MODULES ${CMAKE_BINARY_DIR}/extern-deps/node_modules)
-		set(NODE_MODULES_DEPS deps-loaded)
+		set(NODE_MODULES_DEPS deps-loaded run-client-deps-loaded)
 		configure_file(${CMAKE_CURRENT_SOURCE_DIR}/package.json ${CMAKE_CURRENT_BINARY_DIR}/package.json COPYONLY)
 		configure_file(${CMAKE_CURRENT_SOURCE_DIR}/package-lock.json ${CMAKE_CURRENT_BINARY_DIR}/package-lock.json COPYONLY)
 		add_custom_command (OUTPUT deps-loaded
