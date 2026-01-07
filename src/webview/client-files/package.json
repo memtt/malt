@@ -25,7 +25,7 @@
     "d3": "^7.9.0",
     "pinia": "^3.0.3",
     "pinia-plugin-persistedstate": "^4.5.0",
-    "prismjs": "^1.29.0",
+    "prismjs": "^1.30.0",
     "sass-embedded": "^1.93.2",
     "svg-pan-zoom": "^3.6.2",
     "vue": "^3.5.18",
