@@ -1,11 +1,11 @@
 /***********************************************************
 *    PROJECT  : MALT (MALoc Tracker)
-*    DATE     : 09/2025
+*    DATE     : 01/2026
 *    LICENSE  : CeCILL-C
 *    FILE     : src/libinstrum/profiler/AllocStackProfiler.cpp
 *-----------------------------------------------------------
 *    AUTHOR   : Sébastien Valat (ECR) - 2014
-*    AUTHOR   : Sébastien Valat - 2014 - 2020
+*    AUTHOR   : Sébastien Valat - 2014 - 2026
 *    AUTHOR   : Sébastien Valat (CERN) - 2015
 *    AUTHOR   : Sébastien Valat (INRIA) - 2023 - 2025
 *    AUTHOR   : Bastien Levasseur - 2024
@@ -82,9 +82,6 @@ AllocStackProfiler::AllocStackProfiler(const Options & options,StackMode mode,bo
 	,lifetimeOverSize(64,64,true,true)
 	,trigger(options, true)
 {
-	//vars
-	bool doDump = false;
-
 	this->mode = mode;
 	this->threadSafe = threadSafe;
 	this->options = options;
@@ -131,22 +128,41 @@ void AllocStackProfiler::setRealMallocAddr(MallocFuncPtr realMallocFunc)
 }
 
 /**********************************************************/
-void AllocStackProfiler::onMalloc(void* ptr, size_t size,Stack * userStack, AllocDomain domain)
+void AllocStackProfiler::onMalloc(AllocTracerEvent & traceEntry, void* ptr, size_t size,Stack * userStack, AllocDomain domain)
 {
-	onAllocEvent(ptr,size,userStack, nullptr, true, domain);
+	MMCallStackNode node;
+	onAllocEvent(ptr,size,userStack, &node, true, domain);
+	if (this->options.traceEnabled) {
+		traceEntry.callStack = node.stack;
+		this->tracer.pushEvent(traceEntry);
+	}
 }
 
 /**********************************************************/
-void AllocStackProfiler::onCalloc(void* ptr, size_t nmemb, size_t size,Stack * userStack, AllocDomain domain)
+void AllocStackProfiler::onCalloc(AllocTracerEvent & traceEntry, void* ptr, size_t nmemb, size_t size,Stack * userStack, AllocDomain domain)
 {
-	onAllocEvent(ptr,size * nmemb,userStack, nullptr, true, domain);
+	MMCallStackNode node;
+	onAllocEvent(ptr,size * nmemb,userStack, &node, true, domain);
+	if (this->options.traceEnabled) {
+		traceEntry.callStack = node.stack;
+		this->tracer.pushEvent(traceEntry);
+	}
 }
 
 /**********************************************************/
-void AllocStackProfiler::onFree(void* ptr,Stack * userStack, AllocDomain domain)
+void AllocStackProfiler::onFree(AllocTracerEvent & traceEntry, void* ptr,Stack * userStack, AllocDomain domain)
 {
-	if (ptr != NULL)
-		onFreeEvent(ptr,userStack, nullptr, true, domain);
+	if (ptr != NULL) {
+		MMCallStackNode node;
+		FreeFinalInfos infos = onFreeEvent(ptr,userStack, &node, true, domain);
+		if (this->options.traceEnabled && ptr != nullptr) {
+			traceEntry.callStack = node.stack;
+			traceEntry.size = infos.size;
+			traceEntry.extra.free.lifetime = infos.lifetime;
+			traceEntry.extra.free.allocStack = infos.allocStack;
+			this->tracer.pushEvent(traceEntry);
+		}
+	}
 }
 
 /**********************************************************/
@@ -164,8 +180,9 @@ void AllocStackProfiler::onPrepareRealloc(void* oldPtr,Stack * userStack)
 /**********************************************************/
 LocalAllocStackProfiler* AllocStackProfiler::createLocalStackProfiler()
 {
+	size_t id = this->nextThreadId.fetch_add(1);
 	void * mem = MALT_MALLOC(sizeof(LocalAllocStackProfiler));
-	LocalAllocStackProfiler* res = new(mem) LocalAllocStackProfiler(this);
+	LocalAllocStackProfiler* res = new(mem) LocalAllocStackProfiler(this, id);
 	this->registerPerThreadProfiler(res);
 	return res;
 }
@@ -178,7 +195,7 @@ void AllocStackProfiler::destroyLocalStackProfiler(LocalAllocStackProfiler* loca
 }
 
 /**********************************************************/
-size_t AllocStackProfiler::onRealloc(void* oldPtr, void* ptr, size_t newSize,Stack * userStack, AllocDomain domain)
+size_t AllocStackProfiler::onRealloc(AllocTracerEvent & traceEntry, void* oldPtr, void* ptr, size_t newSize,Stack * userStack, AllocDomain domain)
 {
 	size_t oldSize = 0;
 
@@ -187,13 +204,34 @@ size_t AllocStackProfiler::onRealloc(void* oldPtr, void* ptr, size_t newSize,Sta
 		MMCallStackNode callStackNode;
 		
 		//free part
-		if (oldPtr != NULL)
-			oldSize = onFreeEvent(oldPtr,userStack,&callStackNode,false, domain);
+		if (oldPtr != NULL) {
+			FreeFinalInfos freeInfos = onFreeEvent(oldPtr,userStack,&callStackNode,false, domain);
+			oldSize = freeInfos.size;
+			traceEntry.extra.realloc.oldSize = oldSize;
+
+			//insert realloc lifetime notified in trace
+			AllocTracerEvent freeTraceEntry = traceEntry;
+			freeTraceEntry.type = EVENT_C_REALLOC_LFTIME;
+			freeTraceEntry.callStack = callStackNode.stack;
+			freeTraceEntry.addr = oldPtr;
+			freeTraceEntry.size = oldSize;
+			freeTraceEntry.extra.free.lifetime = freeInfos.lifetime;
+			freeTraceEntry.extra.free.allocStack = freeInfos.allocStack;
+
+			//dump
+			if (options.traceEnabled)
+				this->tracer.pushEvent(freeTraceEntry);
+		} else {
+			traceEntry.extra.realloc.oldSize = 0;
+		}
 		
 		//alloc part
 		if (newSize > 0)
 			onAllocEvent(ptr,newSize,userStack,&callStackNode,false, domain);
 		
+		//set
+		traceEntry.callStack = callStackNode.stack;
+
 		//realloc
 		if (newSize > 0 && oldSize > 0 && newSize != oldSize)
 		{
@@ -215,6 +253,10 @@ size_t AllocStackProfiler::onRealloc(void* oldPtr, void* ptr, size_t newSize,Sta
 				it->second++;
 		}
 	MALT_END_CRITICAL
+
+	//dump
+	if (options.traceEnabled)
+		this->tracer.pushEvent(traceEntry);
 	
 	return oldSize;
 }
@@ -247,11 +289,12 @@ void AllocStackProfiler::onAllocEvent(void* ptr, size_t size,Stack* userStack,MM
 		this->nbAllocSeen++;
 		this->trigger.onAllocOp(this->nbAllocSeen);
 		
-		//peak tracking
-		peakTracking(size);
-
 		//count
 		this->domains.countAlloc(domain, size);
+
+		//peak tracking
+		if (peakTracking(size))
+			this->domains.updatePeak(domain);
 	
 		//update mem usage
 		if (options.timeProfileEnabled)
@@ -362,9 +405,10 @@ void AllocStackProfiler::onUpdateMem(const OSProcMemUsage & procMem, const OSMem
 }
 
 /**********************************************************/
-size_t AllocStackProfiler::onFreeEvent(void* ptr, MALT::Stack* userStack, MMCallStackNode* callStackNode, bool doLock, AllocDomain domain, bool subMunmap)
+FreeFinalInfos AllocStackProfiler::onFreeEvent(void* ptr, MALT::Stack* userStack, MMCallStackNode* callStackNode, bool doLock, AllocDomain domain, bool subMunmap)
 {
 	//locals
+	FreeFinalInfos result;
 	ticks t = Clock::getticks();
 	size_t size = 0;
 	bool doDump = false;
@@ -391,13 +435,22 @@ size_t AllocStackProfiler::onFreeEvent(void* ptr, MALT::Stack* userStack, MMCall
 		if (segInfo == NULL)
 		{
 			//fprintf(stderr,"Caution, get unknown free segment : %p, ingore it.\n",ptr);
-			return 0;
+			FreeFinalInfos r;
+			return r;
 		}
 		
 			
 		//update mem usage
 		size = segInfo->size;
 		ticks lifetime = segInfo->getLifetime();
+
+		//set result
+		result.size = size;
+		result.lifetime = lifetime;
+		result.allocStack = segInfo->callStack.stack;
+
+		//count
+		this->domains.countFree(domain, size);
 		
 		//peak tracking
 		peakTracking(-size);
@@ -413,7 +466,7 @@ size_t AllocStackProfiler::onFreeEvent(void* ptr, MALT::Stack* userStack, MMCall
 			
 			//count events
 			if (domain == DOMAIN_MMAP) {
-				CODE_TIMING("updateInfoFree",callStackNode->infos->onMunmap(size,peakId, subMunmap));
+				CODE_TIMING("updateInfoFree",callStackNode->infos->onMunmap(size,peakId,subMunmap));
 			} else {
 				CODE_TIMING("updateInfoFree",callStackNode->infos->onFreeEvent(size,peakId));
 			}
@@ -421,10 +474,6 @@ size_t AllocStackProfiler::onFreeEvent(void* ptr, MALT::Stack* userStack, MMCall
 			//update alive (TODO, need to move this into a new function on StackNodeInfo)
 			CODE_TIMING("freeLinkedMemory",segInfo->callStack.infos->onFreeLinkedMemory(size,lifetime,peakId));
 		}
-		
-		//trace
-		if (options.traceEnabled)
-			tracer.traceChunk(segInfo->callStack.stack,callStackNode->stack,ptr,size,segInfo->allocTime - trefTicks,lifetime);
 		
 		//remove tracking info
 		if (domain == DOMAIN_MMAP) {
@@ -479,14 +528,26 @@ size_t AllocStackProfiler::onFreeEvent(void* ptr, MALT::Stack* userStack, MMCall
 	if (doDump)
 		maltDumpOnEvent();
 
-	return size;
+	return result;
 }
 
 /**********************************************************/
-void AllocStackProfiler::onMmap ( void* ptr, size_t size, Stack* userStack, MMCallStackNode* callStackNode )
+void AllocStackProfiler::onMmap (AllocTracerEvent & traceEntry, void* ptr, size_t size, Stack* userStack, MMCallStackNode* callStackNode )
 {
+	//handle VMA
 	ssize_t delta = vmaTracker.mmap(ptr,size);
+
+	//register memory tracking
 	this->onAllocEvent(ptr,delta,userStack, callStackNode, true, DOMAIN_MMAP);
+
+	//trace
+	if (this->options.traceEnabled) {
+		if (callStackNode == nullptr)
+			traceEntry.callStack = nullptr;
+		else
+			traceEntry.callStack = callStackNode->stack;
+		this->tracer.pushEvent(traceEntry);
+	}
 }
 
 /**********************************************************/
@@ -542,22 +603,33 @@ void AllocStackProfiler::applyVmaPatches(Stack* userStack, MMCallStackNode* call
 }
 
 /**********************************************************/
-void AllocStackProfiler::onMunmap ( void* ptr, size_t size, Stack* userStack, MMCallStackNode* callStackNode )
+void AllocStackProfiler::onMunmap (AllocTracerEvent & traceEntry, void* ptr, size_t size, Stack* userStack, MMCallStackNode* callStackNode )
 {
 	VmaSegmentPatches vmaPatches;
-	ssize_t delta = vmaTracker.munmap(ptr,size,&vmaPatches);
+	vmaTracker.munmap(ptr,size,&vmaPatches);
 	this->applyVmaPatches(userStack, callStackNode, vmaPatches);
+
+	//trace
+	if (this->options.traceEnabled) {
+		if (callStackNode == nullptr)
+			traceEntry.callStack = nullptr;
+		else
+			traceEntry.callStack = callStackNode->stack;
+		this->tracer.pushEvent(traceEntry);
+	}
 }
 
 /**********************************************************/
-void AllocStackProfiler::onMremap(void * ptr,size_t size,void * new_ptr, size_t new_size, Stack * userStack)
+void AllocStackProfiler::onMremap(AllocTracerEvent & traceEntry, void * ptr,size_t size,void * new_ptr, size_t new_size, Stack * userStack)
 {
 	MMCallStackNode callStackNode;
 	VmaSegmentPatches vmaPatches;
 	vmaTracker.munmap(ptr,size,&vmaPatches);
 	vmaTracker.munmap(new_ptr,new_size,&vmaPatches);
 	this->applyVmaPatches(userStack, &callStackNode, vmaPatches);
-	this->onMmap(new_ptr, new_size, userStack, &callStackNode);
+
+	AllocTracerEvent nop;
+	this->onMmap(nop, new_ptr, new_size, userStack, &callStackNode);
 
 	//register size jump
 	if (options.distrReallocJump)
@@ -569,26 +641,50 @@ void AllocStackProfiler::onMremap(void * ptr,size_t size,void * new_ptr, size_t 
 		else
 			it->second++;
 	}
+
+	//trace
+	if (this->options.traceEnabled) {
+		traceEntry.callStack = callStackNode.stack;
+		this->tracer.pushEvent(traceEntry);
+	}
 }
 
 /**********************************************************/
-void AllocStackProfiler::peakTracking(ssize_t delta)
+bool AllocStackProfiler::peakTracking(ssize_t delta)
 {
+	bool isPeak = false;
 	if (this->curReq > this->peak)
-		{
-			this->peakId++;
-			this->peak = this->curReq;
-		}
-		this->curReq += delta;
+	{
+		this->peakId++;
+		this->peak = this->curReq;
+		isPeak = true;
+	}
+	this->curReq += delta;
+	return isPeak;
 }
 
 /**********************************************************/
 MMCallStackNode AllocStackProfiler::getStackNode(Stack* userStack)
 {
 	MMStackMap::Node * node;
+	MMCallStackNode res;
 	//CODE_TIMING("stackReducer",this->reducer.reduce(*userStack));
-	CODE_TIMING("searchInfo",node = &stackTracker.getNode(*userStack));
-	MMCallStackNode res(node->first.stack,&node->second);
+	CODE_TIMING("searchInfo", {
+		const MMCallStackNode * cacheResult = nullptr;
+		#ifdef MALT_ENABLE_CACHING
+			cacheResult = this->stackTrackerCache.get(*userStack);
+		#endif //MALT_ENABLE_CACHING
+		if (cacheResult != nullptr) {
+			res = *cacheResult;
+		} else {
+			node = &stackTracker.getNode(*userStack);
+			MMCallStackNode tmp(node->first.stack,&node->second);
+			res = tmp;
+			#ifdef MALT_ENABLE_CACHING
+				this->stackTrackerCache.set(node->first.stack, res);
+			#endif //MALT_ENABLE_CACHING
+		}
+	});
 	return res;
 }
 
@@ -667,7 +763,7 @@ void AllocStackProfiler::loadGlobalVariables(void)
 					CODE_TIMING("nm",reader.load(it->file));
 					reader.findSourcesAndDemangle(globalVariables[it->file]);
 				} else if (fsize > nmMaxFileSize) {
-					fprintf(stderr, "MALT: Skipping global var location analysis for '%s', file is too large (tools:nmMaxSize=%s)\n", it->file.c_str(), gblOptions->toolsNmMaxSize.c_str());
+					fprintf(stderr, "MALT: Skipping global var location analysis for '%s', file is too large (tools:nm-max-size=%s)\n", it->file.c_str(), gblOptions->toolsNmMaxSize.c_str());
 				}
 			}
 		}
@@ -726,7 +822,7 @@ void AllocStackProfiler::loopSuppress(void)
 bool AllocStackProfiler::isImportStack(const Stack & stack) const
 {
 	const auto & importAddresses = this->pythonSymbolTracker.getImportAddresses();
-	for (size_t i = 0 ; i < stack.getSize() ; i++) {
+	for (int i = 0 ; i < stack.getSize() ; i++) {
 		LangAddress addr = stack[i];
 		if (importAddresses.find(addr) != importAddresses.end()) {
 			return true;
@@ -863,14 +959,31 @@ void AllocStackProfiler::onExit(void )
 			CODE_TIMING("outputCallgrind",vout.writeAsCallgrind(FormattedMessage(options.outputName).arg(this->getFileExeScriptName()).arg(Helpers::getFileId()).arg("callgrind").toString(),symbolResolver));
 		}
 
+		//trace rename
+		if (options.traceEnabled) {
+			std::string traceName = FormattedMessage(options.outputName).arg(this->getFileExeScriptName()).arg(Helpers::getFileId()).arg("trace").toString();
+			this->tracer.rename(traceName);
+			this->traceFilename = traceName;
+			if (options.outputVerbosity >= MALT_VERBOSITY_DEFAULT) {
+				fprintf(stderr,"MALT: trace dump done : %s ...\n", traceName.c_str());
+			}
+		}
+
 		//To know it has been done
-		if (options.outputVerbosity >= MALT_VERBOSITY_DEFAULT)
+		if (options.outputVerbosity >= MALT_VERBOSITY_DEFAULT) {
 			fprintf(stderr,"MALT: profile dump done : %s ...\n", FormattedMessage(options.outputName).arg(this->getFileExeScriptName()).arg(Helpers::getFileId()).arg("json").toString().c_str());
+		}
 
 		//print timings
 		#ifdef MALT_ENABLE_CODE_TIMING
 		CodeTiming::printAll();
 		gblInternaAlloc->printState();
+		for (const auto & it : this->perThreadProfiler)
+			it->printStats();
+		this->segTracker.printStats();
+		this->mmapSegTracker.printStats();
+		this->pythonSymbolTracker.printStats();
+		this->stackTrackerCache.printStats("stackTrackerCache");
 		#endif //MALT_ENABLE_CODE_TIMING
 
 		//stop tracking threads
@@ -895,7 +1008,7 @@ void convertToJson(htopml::JsonState& json, const AllocStackProfiler& value)
 		if (value.getOptions()->infoHidden == false)
 		{
 			json.printField("exe",OS::getExeName());
-			json.printField("command",OS::getCmdLine());
+			json.printField("command",cmdToString(OS::getCmdLine()));
 			json.printField("hostname",OS::getHostname());
 		}
 	json.closeFieldStruct("run");
@@ -1027,6 +1140,23 @@ void AllocStackProfiler::registerPerThreadProfiler(LocalAllocStackProfiler* prof
 	MALT_OPTIONAL_CRITICAL(lock,threadSafe)
 		this->perThreadProfiler.push_back(profiler);
 	MALT_END_CRITICAL;
+}
+
+/**********************************************************/
+std::string cmdToString(const OSCmdLine & cmdline)
+{
+	std::stringstream buffer;
+	bool space = false;
+	for (const auto & cmd : cmdline) {
+		if (space)
+			buffer << ' ';
+		if (cmd.find(' ') != std::string::npos)
+			buffer << '"' << cmd << '"';
+		else
+			buffer << cmd;
+		space = true;
+	}
+	return buffer.str();
 }
 
 /**********************************************************/

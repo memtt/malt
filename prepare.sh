@@ -1,7 +1,7 @@
 #!/bin/bash
 ############################################################
 #    PROJECT  : MALT (MALoc Tracker)
-#    DATE     : 05/2025
+#    DATE     : 11/2025
 #    LICENSE  : CeCILL-C
 #    FILE     : prepare.sh
 #-----------------------------------------------------------
@@ -14,12 +14,19 @@ set -u
 set -x
 
 ###########################################################
-# prepare webview
-cd ./src/webview
+# prepare webview client (download & pre-build)
+cd ./src/webview/client-files
 ./prepare.sh
-cd ../../
+cd -
 
 ###########################################################
+# download jemalloc sources to embed them
 cd ./extern-deps/jemalloc/
 ./prepare.sh
-cd ../../
+cd -
+
+###########################################################
+# pre-build the doc
+cd ./doc
+./prepare.sh
+cd -

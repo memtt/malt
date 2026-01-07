@@ -1,6 +1,6 @@
 /***********************************************************
 *    PROJECT  : MALT (MALoc Tracker)
-*    DATE     : 07/2025
+*    DATE     : 09/2025
 *    LICENSE  : CeCILL-C
 *    FILE     : src/libinstrum/common/StringIdDictionnary.hpp
 *-----------------------------------------------------------
@@ -19,6 +19,7 @@
 //internal
 #include "String.hpp"
 #include "STLInternalAllocator.hpp"
+#include "common/TreeCache.hpp"
 
 /**********************************************************/
 namespace MALT
@@ -40,15 +41,18 @@ class StringIdDictionnary
 		StringIdDictionnary(void);
 		const String & getString(int id) const;
 		int getId(const String & value);
+		void printStats(void) const;
 	public:
 		friend void convertToJson(htopml::JsonState & json, const StringIdDictionnary & value);
 	private:
 		/** Keep track of the list of strings. */
 		std::vector<String, STLInternalAllocator<String> > strings;
 		/** Permit to get the ID from the string. */
-		std::map<String, size_t> stringToId;
+		std::map<String, size_t, std::less<String>, STLInternalAllocator<std::pair<String, size_t> > > stringToId;
 		/** Mutex to protect the access to the disctionnary so we can use it in threads. */
 		std::mutex mutex;
+		/** Cache for faster search on large tree */
+		TreeCache<String, size_t> cache;
 };
 
 }

@@ -1,6 +1,6 @@
 ############################################################
 #    PROJECT  : MALT (MALoc Tracker)
-#    DATE     : 09/2025
+#    DATE     : 10/2025
 #    LICENSE  : CeCILL-C
 #    FILE     : src/reader/libreader/tests/CMakeLists.txt
 #-----------------------------------------------------------
@@ -11,7 +11,6 @@
 #Use gtest
 include_directories(${GTEST_INCLUDE_DIRS} ${GMOCK_INCLUDE_DIRS})
 include_directories(../)
-include_directories(${CMAKE_BINARY_DIR}/src/libinstrum/)
 if (PYTHON3_INSTRUM_FOUND)
 	include_directories(${Python3_INCLUDE_DIRS})
 endif()
@@ -41,19 +40,19 @@ ENDFOREACH(test_name)
 ############################################################
 target_link_libraries(TestInstrum malt-injectors)
 target_compile_options(TestInstrum PRIVATE -g -O0)
-target_link_libraries(TestInstrum malt-profile)
+target_link_libraries(TestInstrum malt-reader)
 
 ############################################################
 if (PYTHON3_INSTRUM_FOUND)
 	target_compile_options(TestInstrumPython PRIVATE -g)
 	target_link_libraries(TestInstrumPython ${Python3_LIBRARIES})
-	target_link_libraries(TestInstrumPython malt-profile)
+	target_link_libraries(TestInstrumPython malt-reader)
 endif ()
 
 ############################################################
 if (NLOHMANNJSON_FOUND)
 	add_executable(TestFullAnalysis TestFullAnalysis.cpp)
-	target_link_libraries(TestFullAnalysis ${GTEST_BOTH_LIBRARIES} ${GMOCK_BOTH_LIBRARIES} malt-base malt-profile)
+	target_link_libraries(TestFullAnalysis ${GTEST_BOTH_LIBRARIES} ${GMOCK_BOTH_LIBRARIES} malt-base malt-reader)
 	target_compile_options(TestFullAnalysis PRIVATE -g -O0)
 	add_test(TestFullAnalysis TestFullAnalysis)
 endif()

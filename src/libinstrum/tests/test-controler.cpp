@@ -1,6 +1,6 @@
 /***********************************************************
 *    PROJECT  : MALT (MALoc Tracker)
-*    DATE     : 02/2025
+*    DATE     : 10/2025
 *    LICENSE  : CeCILL-C
 *    FILE     : src/libinstrum/tests/test-controler.cpp
 *-----------------------------------------------------------
@@ -18,14 +18,14 @@
 int main(void)
 {
 	//start disabling malt
-	maltDisable();
+	malt_disable();
 	
 	//ignored alloc
 	void * buffer = malloc(1024);
 	memset(buffer,0,1024);
 	
 	//enabling malt
-	maltEnable();
+	malt_enable();
 	
 	for (int i = 0 ; i < 100 ; i++)
 	{
@@ -35,7 +35,7 @@ int main(void)
 	}
 	
 	//disabling malt
-	maltDisable();
+	malt_disable();
 	
 	//ignored free
 	free(buffer);

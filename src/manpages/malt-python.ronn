@@ -1,0 +1,29 @@
+malt-python(1) -- MALT instrumentation command for python
+=========================================================
+
+## SYNOPSIS
+
+`malt-python` [OPTIONS] {prgm} [prgm-options]
+
+## DESCRIPTION
+
+This command is a simple wrapper onto the `malt` default command by passing
+the required options to run over python. In practice it corresponds simply
+to :
+
+  malt --profile python-default [OPTIONS] {prgm} [prgm-options]
+
+## OPTIONS
+
+See the options listed into manpage of `malt` command.
+
+The given program can be either the `python` command either directly
+the python script if it has the necessary bash shebang as its first line.
+
+## VERSION
+
+   This is the manpage of MALT version 1.5.0-beta.
+
+## SEE ALSO
+
+malt-webview(1), malt(1)

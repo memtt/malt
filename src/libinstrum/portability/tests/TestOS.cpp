@@ -1,10 +1,10 @@
 /***********************************************************
 *    PROJECT  : MALT (MALoc Tracker)
-*    DATE     : 06/2025
+*    DATE     : 01/2026
 *    LICENSE  : CeCILL-C
 *    FILE     : src/libinstrum/portability/tests/TestOS.cpp
 *-----------------------------------------------------------
-*    AUTHOR   : Sébastien Valat - 2019 - 2022
+*    AUTHOR   : Sébastien Valat - 2019 - 2026
 *    AUTHOR   : Sébastien Valat (INRIA) - 2023 - 2025
 ***********************************************************/
 
@@ -58,7 +58,7 @@ TEST(TestOS,getExeName)
 /**********************************************************/
 TEST(TestOS,getCmdLine)
 {
-	EXPECT_STREQ("TestOS", basename(OS::getCmdLine().c_str()));
+	EXPECT_STREQ("TestOS", basename(OS::getCmdLine()[0].c_str()));
 }
 
 /**********************************************************/

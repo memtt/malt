@@ -1,6 +1,6 @@
 /***********************************************************
 *    PROJECT  : MALT (MALoc Tracker)
-*    DATE     : 02/2025
+*    DATE     : 09/2025
 *    LICENSE  : CeCILL-C
 *    FILE     : src/libinstrum/stacks/BacktracePythonStack.hpp
 *-----------------------------------------------------------
@@ -39,8 +39,11 @@ class BacktracePythonStack : public Stack
 		void loadCurrentStack(void);
 		LangAddress getCurrentFrameAddr(void);
 		PyFrameObject * loadCurrentFrame(void);
+		void flushLineCache(void);
+		void displayCacheStats(void) const {lineCache.printStats("PythonTranslationLineCache");};
 	private:
 		PythonSymbolTracker & pythonSymbolTracker;
+		PythonTranslationLineCache lineCache;
 };
 
 }

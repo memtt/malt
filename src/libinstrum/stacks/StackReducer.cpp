@@ -38,7 +38,7 @@ void StackReducer::reduce(Stack & stack)
 	LangAddress bufferFinal[256];
 
 	//copy the base
-	size_t offset = 0;
+	int offset = 0;
 	size_t finalOffset = 1;
 	for (offset = 0 ; stack.getSize() - offset > this->groupeSize; offset += this->groupeSize) {
 		//start
@@ -49,7 +49,7 @@ void StackReducer::reduce(Stack & stack)
 		}
 
 		//extract base
-		for (size_t i = start ; i < this->groupeSize ; i++)
+		for (int i = start ; i < this->groupeSize ; i++)
 			bufferGroup[i] = stack[stack.getSize() - offset - i - 1];
 
 		//search in

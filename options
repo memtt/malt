@@ -1,11 +1,11 @@
 #!/bin/sh
 ############################################################
 #    PROJECT  : MALT (MALoc Tracker)
-#    DATE     : 09/2025
+#    DATE     : 01/2026
 #    LICENSE  : CeCILL-C
 #    FILE     : options
 #-----------------------------------------------------------
-#    AUTHOR   : Sébastien Valat - 2018 - 2022
+#    AUTHOR   : Sébastien Valat - 2018 - 2026
 #    AUTHOR   : Sébastien Valat (INRIA) - 2024 - 2025
 ############################################################
 
@@ -65,6 +65,40 @@ cfg_add_enable_option --name='jemalloc' \
 						--on='-DENABLE_JEMALLOC=${ON}' \
 						--doc='Enable building the internal jemalloc to get better internal memory handling.' \
 
+#profiler
+cfg_add_enable_option --name='prefer-embed' \
+						--on='-DENABLE_PREFER_EMBED=${ON}' \
+						--doc='Prefer using the embedded dependencies instead of search the system onces.'
+
+#caching
+cfg_add_enable_option --name='caching' \
+						--on='-DENABLE_CACHING=${ON}' \
+						--doc='Enable usage of some internal caches to reduce the overhead of MALT.' \
+						--invert-help
+
+#profiler
+cfg_add_enable_option --name='profiler' \
+						--on='-DENABLE_PROFILER=${ON}' \
+						--doc='Disable building of the MALT profiling part.' \
+						--invert-help
+
+#webview
+cfg_add_enable_option --name='webview' \
+						--on='-DENABLE_WEBVIEW=${ON}' \
+						--doc='Disable building of the MALT webview part.' \
+						--invert-help
+
+#webview rebuild
+cfg_add_enable_option --name='webview-rebuild' \
+						--on-enable='-DWEBVIEW_REBUILD=FORCE' \
+						--on-disable='-DWEBVIEW_REBUILD=AUTO' \
+						--doc='Force rebuilding the webview.'
+
+#asan
+cfg_add_enable_option --name='asan' \
+						--on='-DENABLE_ASAN=${ON}' \
+						--doc='Enable usage of GCC / CLANG address sanitizer.'
+
 ############################################################
 #libunwind
 cfg_add_with_option --name='libunwind' \
@@ -81,10 +115,10 @@ cfg_add_with_option --name='python' \
 						--doc='Define prefix to find python [/usr]' \
 						--var='Python3_ROOT_DIR'
 
-#JeMalloc built for MALT
-#cfg_add_with_option --name='malt-jemalloc' \
-#						--doc='Define prefix to find JeMalloc built for MALT internals [/usr]' \
-#						--var='MALTJEMALLOC_PREFIX'
+#iniparser
+cfg_add_with_option --name='iniparser' \
+						--doc='Define prefix to find iniparser [/usr]' \
+						--var='INIPARSER_PREFIX'
 
 #Python linking way for MALT
 cfg_add_with_option --name='python-linking' \
@@ -120,6 +154,10 @@ cfg_add_with_option --name='graphviz' \
 cfg_add_with_option --name='nm' \
 						--doc='Define prefix to find NM from binutils [/usr]' \
 						--var='NM_PREFIX'
+
+cfg_add_with_option --name='node-modules' \
+						--doc='Define which node_modules to use (AUTO, DOWNLOAD, SYSTEM) [AUTO]' \
+						--var='WEBVIEW_DEPS'
 
 ############################################################
 #If we want to document extra options

@@ -1,6 +1,6 @@
 ############################################################
 #    PROJECT  : MALT (MALoc Tracker)
-#    DATE     : 03/2025
+#    DATE     : 10/2025
 #    LICENSE  : CeCILL-C
 #    FILE     : src/reader/libreader/format/tests/CMakeLists.txt
 #-----------------------------------------------------------
@@ -20,7 +20,7 @@ add_executable(TestReaderFormat
     TestFormat.cpp
     TestStacks.cpp
 )
-target_link_libraries(TestReaderFormat malt-profile)
+target_link_libraries(TestReaderFormat malt-reader)
 target_link_libraries(TestReaderFormat ${GTEST_BOTH_LIBRARIES} ${GMOCK_BOTH_LIBRARIES})
 add_test(TestReaderFormat TestReaderFormat)
 

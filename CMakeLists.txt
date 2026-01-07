@@ -1,11 +1,11 @@
 ############################################################
 #    PROJECT  : MALT (MALoc Tracker)
-#    DATE     : 09/2025
+#    DATE     : 01/2026
 #    LICENSE  : CeCILL-C
 #    FILE     : CMakeLists.txt
 #-----------------------------------------------------------
 #    AUTHOR   : Sébastien Valat (ECR) - 2014 - 2015
-#    AUTHOR   : Sébastien Valat - 2014 - 2024
+#    AUTHOR   : Sébastien Valat - 2014 - 2026
 #    AUTHOR   : Sébastien Valat (INRIA) - 2024 - 2025
 ############################################################
 
@@ -17,15 +17,16 @@ if (CMAKE_VERSION VERSION_LESS 3.0)
 	project(MALT)	
 else()
 	cmake_policy(SET CMP0048 NEW)	
-	project(MALT VERSION 1.4.1)
+	project(MALT VERSION 1.5.0)
+	enable_language(C CXX)
 endif()
 
 ############################################################
 #set versions to dispatch in code
-set(MALT_VERSION "1.4.1")
-set(MALT_VERSION_NOTE "")
+set(MALT_VERSION "1.5.0")
+set(MALT_VERSION_NOTE "-beta")
 set(MALT_SO_VERSION "1")
-set(MALT_JSON_FORMAT_VERSION "1.1")
+set(MALT_JSON_FORMAT_VERSION "1.5")
 
 ############################################################
 set (CMAKE_CXX_STANDARD 11)
@@ -46,6 +47,11 @@ set(ENABLE_LINK_OPTIM     "yes"      CACHE BOOL   "Enable link optimisation (LTO
 set(ENABLE_IPO            "yes"      CACHE BOOL   "Allow usage of IPO specfic optimization when ENABLE_LINK_OPTIM is enabled.")
 set(ENABLE_PYTHON         "yes"      CACHE BOOL   "Enable compiling with the python support.")
 set(ENABLE_JEMALLOC       "yes"      CACHE BOOL   "Enable building internal JeMalloc.")
+set(ENABLE_CACHING        "yes"      CACHE BOOL   "Enable some internal caches.")
+set(ENABLE_PREFER_EMBED   "no"       CACHE BOOL   "Prefer using the embeded dependencies that using system one by default.")
+set(ENABLE_PROFILER       "yes"      CACHE BOOL   "Enable the installation of the profiler.")
+set(ENABLE_WEBVIEW        "yes"      CACHE BOOL   "Enable the installation of the webview.")
+set(ENABLE_ASAN           "no"       CACHE BOOL   "Enable ASAN memory checker to debug MALT.")
 #Code options
 set(ENABLE_CODE_TIMING    "no"       CACHE BOOL   "Enable some tricks to quickly check timings of hostspots of MALT internal code.")
 set(ENABLE_CODE_LEAK      "no"       CACHE BOOL   "Enable internal analysis of memory leak.")
@@ -57,7 +63,15 @@ set(PORTABILITY_COMPILER  "GNU"      CACHE STRING "Select compiler support to us
 set(PORTABILITY_CLOCK     "RDTSC"    CACHE STRING "Clock to be used to represent time in MALT.")
 set(PORTABILITY_PYTHON    "LAZY"     CACHE STRING "Select the instrumentation mode for python : 'LAZY', 'NATIVE'.")
 #select webvew server mode
-set(WEBVIEW_SERVER        "AUTO"     CACHE STRING "Select the webview server to use : AUTO, CPP, NODEJS, RUST, OFF.")
+set(WEBVIEW_SERVER        "AUTO"     CACHE STRING "Select the webview server to use : AUTO, CPP, OFF.")
+set(WEBVIEW_REBUILD       "AUTO"     CACHE STRING "Select webview client rebuild mode : AUTO, FORCE")
+set(WEBVIEW_DEPS          "AUTO"     CACHE STRING "Select webview client rebuild mode : AUTO, DOWNLOAD, SYSTEM")
+
+############################################################
+if (ENABLE_ASAN)
+	set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} -fsanitize=address)
+	set(ENABLE_JEMALLOC "no")
+endif ()
 
 ############################################################
 if (ENABLE_TESTS OR CMAKE_BUILD_TYPE="Debug")
@@ -82,26 +96,36 @@ if (ENABLE_GCC_COVERAGE)
 endif(ENABLE_GCC_COVERAGE)
 
 ############################################################
-set(ENABLE_PROFILER "yes" CACHE BOOL "Enable the installation of the profiler.")
+set(THREADS_PREFER_PTHREAD_FLAG ON)
 
 ############################################################
 # search deps
-find_package(GTest QUIET)
+if (NOT ENABLE_PREFER_EMBED)
+	find_package(GTest QUIET)
+	find_package(nlohmann_json 3.11.3 QUIET)
+	find_package(IniParser QUIET)
+	find_package(HttpLib QUIET)
+endif()
+find_package(Threads REQUIRED)
 find_package(OpenMP QUIET)
 find_package(LibElf QUIET)
 find_package(Libunwind QUIET)
 find_package(Node QUIET)
-find_package(nlohmann_json 3.11.3 QUIET)
 find_package(Cargo QUIET)
 find_package(Graphviz QUIET)
 find_package(Binutils QUIET)
-#find_package(IniParser QUIET)
 #find_package(Zmq QUIET)
-find_package(HttpLib QUIET)
-find_package(Crypto QUIET)
 # Check for npm if needed
-if (NODE_FOUND AND NOT IS_DIRECTORY ${CMAKE_SOURCE_DIR}/src/webview/node_modules)
+if (NODE_FOUND AND NOT IS_DIRECTORY ${CMAKE_SOURCE_DIR}/extern-deps/node_modules)
 	find_package(Npm REQUIRED)
+endif()
+
+############################################################
+# set iniparser fallback
+if (NOT INIPARSER_FOUND)
+	set(INIPARSER_INCLUDE_DIRS ${CMAKE_SOURCE_DIR}/extern-deps/iniparser/src)
+	set(INIPARSER_LIBRARIES "")
+	set(INIPARSER_OBJECTS $<TARGET_OBJECTS:iniparser>)
 endif()
 
 ############################################################
@@ -134,7 +158,7 @@ endif()
 
 ############################################################
 # check for python support
-if (ENABLE_PYTHON)
+if (ENABLE_PYTHON AND ENABLE_PROFILER)
 	find_package(Python3 QUIET COMPONENTS Interpreter Development QUIET)
 	# we currently support only Python
 	if (Python3_FOUND AND Python3_INCLUDE_DIR AND NOT Python3_INTERPRETER_ID STREQUAL "Python")
@@ -163,13 +187,18 @@ else()
 endif()
 
 ############################################################
+if (NOT ENABLE_WEBVIEW)
+	set(WEBVIEW_SERVER "OFF")
+endif()
+
+############################################################
 # check allowed
 set(ALLOWED_WEBVIEW_SERVER AUTO CPP NODEJS RUST OFF)
 if (NOT WEBVIEW_SERVER IN_LIST ALLOWED_WEBVIEW_SERVER)
 	message(FATAL_ERROR "Invalid value for WEBSERVER_VIEW : ${WEBVIEW_SERVER}. Should be either : ${ALLOWED_WEBVIEW_SERVER}")
 endif()
 # apply auto
-if (WEBVIEW_SERVER STREQUAL "AUTO" AND CRYPTO_FOUND)
+if (WEBVIEW_SERVER STREQUAL "AUTO")
 	set(WEBVIEW_SERVER "CPP")
 elseif (WEBVIEW_SERVER STREQUAL "AUTO" AND NODE_FOUND)
 	set(WEBVIEW_SERVER "NODEJS")
@@ -179,9 +208,6 @@ endif()
 # check requirement is there
 if (WEBVIEW_SERVER STREQUAL "NODEJS" AND NOT NODE_FOUND)
 	message(FATAL_ERROR "Forcing NODEJS webview server require NODEJS to be present in the system. Currently not found !")
-endif()
-if (WEBVIEW_SERVER STREQUAL "CPP" AND NOT CRYPTO_FOUND)
-	message(FATAL_ERROR "Forcing CPP webview server require LIBSSL to be present in the system. Currently not found !")
 endif()
 if (WEBVIEW_SERVER STREQUAL "RUST" AND NOT CARGO_FOUND)
 	message(FATAL_ERROR "Forcing RUST webview server require CARGO to be present in the system. Currently not found !")

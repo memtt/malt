@@ -1,6 +1,6 @@
 /***********************************************************
 *    PROJECT  : MALT (MALoc Tracker)
-*    DATE     : 09/2025
+*    DATE     : 10/2025
 *    LICENSE  : CeCILL-C
 *    FILE     : src/libinstrum/core/SegmentTracker.cpp
 *-----------------------------------------------------------
@@ -14,6 +14,7 @@
 #include <cassert>
 #include <cstdio>
 #include <json/ConvertToJson.h>
+#include "stacks/BacktraceStack.hpp"
 #include "SegmentTracker.hpp"
 
 /*******************  NAMESPACE  ********************/
@@ -56,7 +57,6 @@ ticks SegmentInfo::getLifetime(void ) const
 **/
 SegmentTracker::SegmentTracker(void)
 {
-	
 }
 
 /*******************  FUNCTION  *********************/
@@ -65,7 +65,6 @@ SegmentTracker::SegmentTracker(void)
 **/
 SegmentTracker::~SegmentTracker(void)
 {
-
 }
 
 /*******************  FUNCTION  *********************/
@@ -79,7 +78,7 @@ SegmentTracker::~SegmentTracker(void)
 SegmentInfo* SegmentTracker::add(void* ptr, size_t size, MALT::MMCallStackNode callStack)
 {
 	//check errors
-	assert(this->get(ptr) == NULL);
+	//assert(this->get(ptr) == NULL);
 	assert(callStack.valid());
 	//assert(size > 0);
 
@@ -89,6 +88,11 @@ SegmentInfo* SegmentTracker::add(void* ptr, size_t size, MALT::MMCallStackNode c
 	//setup content
 	res.callStack = callStack;
 	res.size = size;
+
+	//set in cache
+	#ifdef MALT_ENABLE_CACHING
+		this->cache.set((size_t)ptr, &res);
+	#endif //MALT_ENABLE_CACHING
 
 	//ok return
 	return &res;
@@ -102,11 +106,31 @@ SegmentInfo* SegmentTracker::add(void* ptr, size_t size, MALT::MMCallStackNode c
 **/
 SegmentInfo* SegmentTracker::get(void* ptr)
 {
-	SegmentInfoMap::iterator it = map.find(ptr);
-	if (it == map.end())
-		return NULL;
-	else
-		return &it->second;
+	//Var
+	SegmentInfo * result = nullptr;
+
+	//search in cache
+	SegmentInfo * const * fromCache = nullptr;
+	
+	//use cache
+	#ifdef MALT_ENABLE_CACHING
+		fromCache = this->cache.get((size_t)ptr);
+	#endif //MALT_ENABLE_CACHING
+	
+	//check
+	if (fromCache != nullptr && *fromCache != nullptr) {
+		result = *fromCache;
+	} else {
+		SegmentInfoMap::iterator it = map.find(ptr);
+		if (it != map.end())
+			result = &it->second;
+		#ifdef MALT_ENABLE_CACHING
+			this->cache.set((size_t)ptr, result);
+		#endif
+	}
+
+	//ok
+	return result;
 }
 
 /*******************  FUNCTION  *********************/
@@ -116,6 +140,12 @@ SegmentInfo* SegmentTracker::get(void* ptr)
 **/
 void SegmentTracker::remove(void* ptr)
 {
+	//set in cache
+	#ifdef MALT_ENABLE_CACHING
+		this->cache.unset((size_t)ptr);
+	#endif //MALT_ENABLE_CACHING
+
+	//erase
 	map.erase(ptr);
 }
 
@@ -167,7 +197,11 @@ LeakInfo::LeakInfo(void)
 void convertToJson(htopml::JsonState& json, const LeakInfoMap::const_iterator& it)
 {
 	json.openStruct();
-	json.printField("stack",*(it->first));
+	if (it->first == nullptr) {
+		json.printFieldArray("stack", (char*)nullptr, 0);
+	} else {
+		json.printField("stack",*(it->first));
+	}
 	json.printField("count",it->second.cnt);
 	json.printField("memory",it->second.mem);
 	json.closeStruct();
@@ -239,7 +273,7 @@ void SegmentTracker::split(SegmentInfoMap::iterator it, void* ptr, size_t size)
 		size_t end = (size_t)ptr;
 		it->second.size = end-start;
 	} else {
-		map.erase(it);
+		this->remove(it->first);
 	}
 	
 	//compute right part if has one
@@ -259,8 +293,23 @@ void SegmentTracker::split(SegmentInfoMap::iterator it, void* ptr, size_t size)
 **/
 void SegmentTracker::merge(const SegmentTracker & tracker)
 {
-	for (const auto & it : tracker.map)
+	for (const auto & it : tracker.map) {
 		this->map[it.first] = it.second;
+		#ifdef MALT_ENABLE_CACHING
+			this->cache.set((size_t)it.first, &this->map[it.first]);
+		#endif //MALT_ENABLE_CACHING
+	}
+}
+
+/*******************  FUNCTION  *********************/
+/**
+ * Print some statistics at exit if enabled.
+ */
+void SegmentTracker::printStats(void) const
+{
+	#ifdef MALT_ENABLE_CACHING
+		this->cache.printStats("SegmentTrackerCache");
+	#endif //MALT_ENABLE_CACHING
 }
 
 }

@@ -1,6 +1,6 @@
 /***********************************************************
 *    PROJECT  : MALT (MALoc Tracker)
-*    DATE     : 07/2025
+*    DATE     : 10/2025
 *    LICENSE  : CeCILL-C
 *    FILE     : src/reader/libreader/json/File.cpp
 *-----------------------------------------------------------
@@ -32,9 +32,11 @@ JsonFile::JsonFile(const std::string & fname, bool progress)
 
 	//get file size
 	ssize_t status = fseek(fp, 0, SEEK_END);
-	assert(status == 0);
+	if (status != 0)
+		throw std::runtime_error(std::string("Fail to get file size : " + std::string(strerror(errno)) + std::string(" : ") + fname));
 	ssize_t size = ftell(fp);
-	assert(size >= 0);
+	if (size < 0 || size > 1024L*1024L*1024L*1024L)
+		throw std::runtime_error(std::string("Fail to get file size : " + std::string(strerror(errno)) + std::string(" : ") + fname));
 
 	//round to 4K limit
 	const size_t pageSize = 4096;
@@ -43,7 +45,8 @@ JsonFile::JsonFile(const std::string & fname, bool progress)
 
 	//map
 	const char * data = (char*)mmap(nullptr, size, PROT_READ, MAP_FILE|MAP_PRIVATE, fileno(fp), 0);
-	assert(data != MAP_FAILED);
+	if (data == MAP_FAILED)
+		throw std::runtime_error(std::string("Fail to mmap the file : " + std::string(strerror(errno)) + std::string(" : ") + fname));
 
 	//assign
 	this->data.value = data;

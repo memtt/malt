@@ -9,18 +9,18 @@
 ############################################################
 
 Name: malt
-Version: 1.4.1
+Version: 1.5.0
 Release: 1%{?dist}
 Summary: Memory profiling tool to track memory allocations (malloc, realloc, free...)
 
 Group: Development/Libraries
 License: CeCILL-C
-URL: https://github.com/downloads/svalat/svUnitTest/%{name}-%{version}.tar.bz2
-Source0: %{name}-%{version}.tar.bz2
+URL: https://github.com/downloads/svalat/svUnitTest/%{name}-%{version}.tar.xz
+Source0: %{name}-%{version}.tar.xz
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
-BuildRequires: cmake, gcc-c++ libunwind-devel elfutils-devel
-Requires: libunwind elfutils-libelf binutils nodejs
+BuildRequires: make cmake gcc-c++ libunwind-devel elfutils-devel graphviz nlohmann-json-devel cpp-httplib-devel python3-devel gtest iniparser-devel
+Requires: libunwind elfutils-libelf binutils nodejs graphviz nlohmann-json-devel cpp-httplib python3 libiniparser
 
 %description
 Memory profiling tool to track memory allocations (malloc, realloc, free...)
@@ -30,20 +30,23 @@ Memory profiling tool to track memory allocations (malloc, realloc, free...)
 
 %build
 %cmake
-make %{?_smp_mflags}
+%cmake_build
 
 %install
 rm -rf $RPM_BUILD_ROOT
-make install DESTDIR=$RPM_BUILD_ROOT
+%cmake_install
 
 %clean
 rm -rf $RPM_BUILD_ROOT
+
+%check
+%ctest
 
 %files
 %defattr(-,root,root,-)
 %{_bindir}/malt
 %{_bindir}/malt-webview
-%{_bindir}/malt-passwd
+%{_bindir}/malt-python
 %{_libdir}/*
 %{_datadir}/*
 %{_includedir}/*

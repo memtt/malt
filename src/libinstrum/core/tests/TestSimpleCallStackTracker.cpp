@@ -102,7 +102,7 @@ const char * CST_REF_2 = "{\n\
 
 const char * CST_REF_3 = "\
 version: 1\n\
-creator: MALT-1.4.1\n\
+creator: MALT-1.5.0-beta\n\
 pid: 10000\n\
 cmd: TestSimpleCallStackTracker\n\
 part: 1\n\
@@ -249,7 +249,7 @@ TEST(TestSimpleStackTracker, solveSymbols)
 	SimpleStackTracker tracker;
 
 	//load stack in
-	auto & infos = tracker.getBacktraceInfo(stack, 0);
+	tracker.getBacktraceInfo(stack, 0);
 
 	//resolve
 	SymbolSolver solver;
@@ -279,7 +279,7 @@ TEST(TestSimpleStackTracker, ValgrindOutput)
 	SimpleStackTracker tracker;
 
 	//load stack in
-	auto & infos = tracker.getBacktraceInfo(stack, 0);
+	tracker.getBacktraceInfo(stack, 0);
 
 	//resolve
 	SymbolSolver solver;

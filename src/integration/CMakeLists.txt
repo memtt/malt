@@ -1,6 +1,6 @@
 ############################################################
 #    PROJECT  : MALT (MALoc Tracker)
-#    DATE     : 07/2025
+#    DATE     : 11/2025
 #    LICENSE  : CeCILL-C
 #    FILE     : src/integration/CMakeLists.txt
 #-----------------------------------------------------------
@@ -23,12 +23,11 @@ endif ()
 ############################################################
 #Generate file with full paths
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/malt-webview.sh.in ${CMAKE_CURRENT_BINARY_DIR}/malt-webview @ONLY)
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/malt-passwd.sh.in ${CMAKE_CURRENT_BINARY_DIR}/malt-passwd @ONLY)
 
 ############################################################
 #install
 if (WEBVIEW_SERVER STREQUAL "NODEJS")
-	install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/malt-webview ${CMAKE_CURRENT_BINARY_DIR}/malt-passwd
+	install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/malt-webview
 			DESTINATION ${CMAKE_INSTALL_BINDIR})
 endif()
 

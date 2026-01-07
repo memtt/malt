@@ -1,0 +1,24 @@
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    DATE     : 11/2025
+*    LICENSE  : CeCILL-C
+*    FILE     : src/webview/client-files/src/services/homeService.ts
+*-----------------------------------------------------------
+*    AUTHOR   : Emeric GUYON - 2025
+***********************************************************/
+/**
+ * Home API Service
+ * Handles API calls for home dashboard summary data
+ */
+
+import { request } from '@/lib/request';
+import type { HomeSummaryData } from '@/types/home';
+
+/**
+ * Fetch home summary data
+ * @returns Promise with home summary data
+ */
+export async function fetchHomeSummary(): Promise<HomeSummaryData> {
+  const data = await request<HomeSummaryData>('/data/summary.json', 'GET');
+  return data;
+}

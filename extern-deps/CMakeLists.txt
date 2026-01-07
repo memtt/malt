@@ -1,6 +1,6 @@
 ############################################################
 #    PROJECT  : MALT (MALoc Tracker)
-#    DATE     : 06/2025
+#    DATE     : 10/2025
 #    LICENSE  : CeCILL-C
 #    FILE     : extern-deps/CMakeLists.txt
 #-----------------------------------------------------------
@@ -10,8 +10,12 @@
 
 ############################################################
 add_subdirectory(from-htopml)
-add_subdirectory(iniparser)
 add_subdirectory(renenyffenegger-base64)
+# only if not found on system
+if (NOT INIPARSER_FOUND)
+	add_subdirectory(iniparser)
+endif()
+# only if enabled
 if (ENABLE_JEMALLOC)
 	add_subdirectory(jemalloc)
 endif()

@@ -1,10 +1,11 @@
 ############################################################
 #    PROJECT  : MALT (MALoc Tracker)
-#    DATE     : 01/2022
+#    DATE     : 11/2025
 #    LICENSE  : CeCILL-C
 #    FILE     : src/manpages/CMakeLists.txt
 #-----------------------------------------------------------
 #    AUTHOR   : Sébastien Valat - 2015 - 2022
+#    AUTHOR   : Sébastien Valat (INRIA) - 2025
 ############################################################
 
 ############################################################
@@ -25,10 +26,15 @@
 
 ############################################################
 if (ENABLE_PROFILER)
-install(FILES malt.1.bz2 DESTINATION share/man/man1)
+	install(FILES malt.1 DESTINATION share/man/man1)
 endif (ENABLE_PROFILER)
 
 ############################################################
+if (ENABLE_PROFILER AND PYTHON3_INSTRUM_FOUND)
+	install(FILES malt-python.1 DESTINATION share/man/man1)
+endif ()
+
+############################################################
 #install
-install(FILES malt-passwd.1.bz2 malt-webview.1.bz2
-        DESTINATION share/man/man1)
+install(FILES malt-webview.1
+	DESTINATION share/man/man1)

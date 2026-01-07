@@ -1,6 +1,6 @@
 ############################################################
 #    PROJECT  : MALT (MALoc Tracker)
-#    DATE     : 06/2025
+#    DATE     : 10/2025
 #    LICENSE  : CeCILL-C
 #    FILE     : src/reader/libreader/extractors/tests/CMakeLists.txt
 #-----------------------------------------------------------
@@ -23,7 +23,7 @@ add_executable(TestReaderExtractors
     TestExtractorHelpers.cpp
     TestExtractor.cpp
 )
-target_link_libraries(TestReaderExtractors malt-profile)
+target_link_libraries(TestReaderExtractors malt-reader)
 target_link_libraries(TestReaderExtractors ${GTEST_BOTH_LIBRARIES} ${GMOCK_BOTH_LIBRARIES})
 target_link_libraries(TestReaderExtractors OpenMP::OpenMP_CXX)
 add_test(TestReaderExtractors TestReaderExtractors)

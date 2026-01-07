@@ -1,11 +1,11 @@
 ############################################################
 #    PROJECT  : MALT (MALoc Tracker)
-#    DATE     : 09/2025
+#    DATE     : 01/2026
 #    LICENSE  : CeCILL-C
 #    FILE     : cmake/macros.cmake
 #-----------------------------------------------------------
 #    AUTHOR   : Sébastien Valat (ECR) - 2014 - 2015
-#    AUTHOR   : Sébastien Valat - 2014 - 2024
+#    AUTHOR   : Sébastien Valat - 2014 - 2026
 #    AUTHOR   : Sébastien Valat (INRIA) - 2024 - 2025
 ############################################################
 
@@ -83,9 +83,12 @@ function(malt_print_status)
 	message(STATUS "--------------------------------------------------------------")
 	message(STATUS "|  tests            : ${ENABLE_TESTS}")
 	message(STATUS "|  profiler         : ${ENABLE_PROFILER}")
+	message(STATUS "|  webview          : ${ENABLE_WEBVIEW}")
 	message(STATUS "|  gcc-coverage     : ${ENABLE_GCC_COVERAGE}")
 	message(STATUS "|  valgrind         : ${ENABLE_VALGRIND}")
-	message(STATUS "|  valgrind         : ${ENABLE_LINK_OPTIM}")
+	message(STATUS "|  link-optim       : ${ENABLE_LINK_OPTIM}")
+	message(STATUS "|  asan             : ${ENABLE_ASAN}")
+	message(STATUS "|  jemalloc         : ${ENABLE_JEMALLOC}")
 	message(STATUS "--------------------------------------------------------------")
 	message(STATUS "|  port_mutex       : ${PORTABILITY_MUTEX}")
 	message(STATUS "|  port_os          : ${PORTABILITY_OS}")
@@ -93,22 +96,25 @@ function(malt_print_status)
 	message(STATUS "|  port_clock       : ${PORTABILITY_CLOCK}")
 	message(STATUS "--------------------------------------------------------------")
 	message(STATUS "|  webview          : ${WEBVIEW_SERVER}")
+	message(STATUS "|  webview-rebuild  : ${WEBVIEW_REBUILD}")
+	message(STATUS "|  webview-deps     : ${WEBVIEW_DEPS}")
+	message(STATUS "|  profiler         : ${ENABLE_PROFILER}")
 	message(STATUS "--------------------------------------------------------------")
 	message(STATUS "|  openmp           : ${OpenMP_CXX_FLAGS}")
 	message(STATUS "|  libunwind        : ${LIBUNWIND_LIBRARIES}")
 	message(STATUS "|  libelf           : ${LIBELF_LIBRARY}")
-	#message(STATUS "|  iniparser        : ${INIPARSER_LIBRARY}")
+	message(STATUS "|  iniparser        : ${INIPARSER_LIBRARY}")
 	message(STATUS "|  gtest            : ${GTEST_INCLUDE_DIR}")
-	message(STATUS "|  Python3          : ${Python3_EXECUTABLE}")
-	message(STATUS "|  Python3 instrum. : ${PYTHON3_INSTRUM_FOUND}")
-	message(STATUS "|  Node             : ${NODE_BINARY}")
-	message(STATUS "|  Cargo            : ${CARGO_BINARY}")
-	message(STATUS "|  Dot              : ${DOT_BINARY}")
-	message(STATUS "|  Nm               : ${NM_BINARY}")
-	message(STATUS "|  Addr2line        : ${ADDR2LINE_BINARY}")
+	message(STATUS "|  python3          : ${Python3_EXECUTABLE}")
+	message(STATUS "|  python3 instrum. : ${PYTHON3_INSTRUM_FOUND}")
+	message(STATUS "|  node             : ${NODE_BINARY}")
+	message(STATUS "|  cargo            : ${CARGO_BINARY}")
+	message(STATUS "|  dot              : ${DOT_BINARY}")
+	message(STATUS "|  nm               : ${NM_BINARY}")
+	message(STATUS "|  addr2line        : ${ADDR2LINE_BINARY}")
 	#message(STATUS "|  ZeroMQ          : ${CARGO_BINARY}")
 	message(STATUS "|  httplib          : ${HTTPLIB_INCLUDE_DIR}")
-	message(STATUS "|  nlohmann-json    : ${NLOHMANN_JSON_INCLUDE_DIR}")
+	message(STATUS "|  nlohmann-json    : ${NLOHMANN_JSON_FOUND}")
 	message(STATUS "--------------------------------------------------------------")
 	message(STATUS "|  CMake build type : ${CMAKE_BUILD_TYPE}")
 	message(STATUS "|  CMake cxxflags   : ${CMAKE_BUILD_TYPE_FLAGS}")

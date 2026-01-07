@@ -173,8 +173,8 @@ void Json::get_to(int & value) const
 
 	//do it
 	std::string str = this->node->value.toString();
-	size_t v;
-	ssize_t status = sscanf(str.c_str(), "%zu", &v);
+	ssize_t v;
+	ssize_t status = sscanf(str.c_str(), "%zd", &v);
 	value = v;
 
 	//error

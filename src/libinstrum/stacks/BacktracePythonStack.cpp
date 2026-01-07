@@ -1,6 +1,6 @@
 /***********************************************************
 *    PROJECT  : MALT (MALoc Tracker)
-*    DATE     : 06/2025
+*    DATE     : 10/2025
 *    LICENSE  : CeCILL-C
 *    FILE     : src/libinstrum/stacks/BacktracePythonStack.cpp
 *-----------------------------------------------------------
@@ -15,6 +15,7 @@
 //internals
 #include <common/Debug.hpp>
 #include <common/NoFreeAllocator.hpp>
+#include <common/CodeTiming.hpp>
 //portability
 #include <tools/Backtrace.hpp>
 #include "tools/BacktraceGlibc.hpp"
@@ -71,7 +72,8 @@ PyFrameObject * BacktracePythonStack::loadCurrentFrame(void)
 	}
 
 	//Get the Python Frame
-	PyFrameObject* currentFrame = MALT::PyThreadState_GetFrame(MALT::PyGILState_GetThisThreadState());
+	PyFrameObject* currentFrame;
+	CODE_TIMING("PyThreadState_GetFrame", currentFrame = MALT::PyThreadState_GetFrame(MALT::PyGILState_GetThisThreadState()));
 	if (currentFrame == NULL) {
 		assert(this->memSize >= 1);
 		if (this->memSize < 2)
@@ -107,7 +109,7 @@ LangAddress BacktracePythonStack::getCurrentFrameAddr(void)
 		MALT::PyGILState_Release(gilState);
 		return this->stack[0];
 	} else {
-		LangAddress res = this->pythonSymbolTracker.frameToLangAddress(currentFrame);
+		LangAddress res = this->pythonSymbolTracker.frameToLangAddress(currentFrame, &this->lineCache);
 		MALT::Py_DecRef((PyObject*)currentFrame);
 		MALT::PyGILState_Release(gilState);
 		return res;
@@ -158,6 +160,12 @@ void BacktracePythonStack::loadCurrentStack(void)
 }
 
 /**********************************************************/
+bool operator==(const PythonCallSite & a, const PythonCallSite & b)
+{
+	return a.file == b.file && a.function == b.function && a.line == b.line;
+}
+
+/**********************************************************/
 bool operator<(const PythonCallSite & a, const PythonCallSite & b)
 {
 	if (a.line < b.line) {
@@ -173,6 +181,12 @@ bool operator<(const PythonCallSite & a, const PythonCallSite & b)
 	} else {
 		return false;
 	}
+}
+
+/**********************************************************/
+void BacktracePythonStack::flushLineCache(void)
+{
+	this->lineCache.flush();
 }
 
 }

@@ -1,17 +1,20 @@
 ############################################################
 #    PROJECT  : MALT (MALoc Tracker)
-#    DATE     : 09/2025
+#    DATE     : 01/2026
 #    LICENSE  : CeCILL-C
 #    FILE     : src/reader/libreader/CMakeLists.txt
 #-----------------------------------------------------------
 #    AUTHOR   : Sébastien Valat (INRIA) - 2025
+#    AUTHOR   : Sébastien Valat - 2026
 ############################################################
 
 ############################################################
 include_directories(.)
 include_directories(..)
 include_directories(../..)
+include_directories(../../libinstrum)
 include_directories(${NLOHMANN_JSON_INCLUDE_DIR})
+include_directories(${CMAKE_SOURCE_DIR}/extern-deps/from-fftw)
 
 ############################################################
 if (GRAPHVIZ_FOUND)
@@ -19,7 +22,7 @@ if (GRAPHVIZ_FOUND)
 endif()
 
 ############################################################
-add_library(malt-profile SHARED
+add_library(malt-reader SHARED
     # JSON
     json/File.cpp
     json/Parser.cpp
@@ -58,27 +61,32 @@ add_library(malt-profile SHARED
     # API
     api/Profile.cpp
     api/WebProfile.cpp
-	api/Requests.cpp
+    # PUBLIC API
+	public-api/malt-reader.cpp
+    # Traces
+    trace/TraceReader.cpp
 )
-target_link_libraries(malt-profile PUBLIC ${NLOHMANN_JSON_LIBRARIES})
-target_link_libraries(malt-profile PRIVATE OpenMP::OpenMP_CXX)
-set_target_properties(malt-profile PROPERTIES VERSION ${MALT_VERSION}
+target_link_libraries(malt-reader PUBLIC ${NLOHMANN_JSON_LIBRARIES})
+target_link_libraries(malt-reader PUBLIC OpenMP::OpenMP_CXX)
+target_link_libraries(malt-reader PUBLIC Threads::Threads)
+set_target_properties(malt-reader PROPERTIES VERSION ${MALT_VERSION}
                                               SOVERSION ${MALT_SO_VERSION})
+set_target_properties(malt-reader PROPERTIES COMPILE_FLAGS ${MALT_LIB_COMPILER_FLAGS})
 
 ############################################################
-add_executable(malt-reader main.cpp)
-target_link_libraries(malt-reader malt-profile)
+add_executable(malt-reader-cmd main.cpp)
+target_link_libraries(malt-reader-cmd malt-reader)
 
 ############################################################
 if (ZMQ_FOUND)
 	include_directories(${ZMQ_INCLUDE_DIR})
 	add_executable(malt-zmq-reader main_zmq.cpp)
-	target_link_libraries(malt-zmq-reader malt-profile ${ZMQ_LIBRARY})
+	target_link_libraries(malt-zmq-reader malt-reader ${ZMQ_LIBRARY})
 endif()
 
 ############################################################
 add_executable(malt-stream-reader main_stream.cpp)
-target_link_libraries(malt-stream-reader malt-profile)
+target_link_libraries(malt-stream-reader malt-reader)
 
 ############################################################
 if (ENABLE_TESTS)
@@ -90,6 +98,8 @@ if (ENABLE_TESTS)
 endif()
 
 ############################################################
-INSTALL(TARGETS malt-profile
+install(TARGETS malt-reader
 	ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
 	LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
+install(FILES public-api/malt-reader.h
+	DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/malt)

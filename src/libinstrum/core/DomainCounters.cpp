@@ -1,6 +1,6 @@
 /***********************************************************
 *    PROJECT  : MALT (MALoc Tracker)
-*    DATE     : 09/2025
+*    DATE     : 10/2025
 *    LICENSE  : CeCILL-C
 *    FILE     : src/libinstrum/core/DomainCounters.cpp
 *-----------------------------------------------------------
@@ -26,6 +26,9 @@ DomainCounters::DomainCounters(void)
 	for (size_t i = 0 ; i < ALLOC_DOMAIN_COUNT ; i++) {
 		this->counters[i] = 0;
 		this->mem[i] = 0;
+		this->sum[i] = 0;
+		this->localPeak[i] = 0;
+		this->atGlobalPeak[i] = 0;
 	}
 }
 
@@ -56,12 +59,26 @@ void convertToJson(htopml::JsonState& json, const DomainCounters & value)
 			json.printField("mmap", value.counters[DOMAIN_MMAP]);
 		json.closeFieldStruct("counters");
 		json.openFieldStruct("mem");
-			json.printField("c", value.mem[DOMAIN_C_ALLOC]);
-			json.printField("pyObj", value.mem[DOMAIN_PYTHON_OBJ]);
-			json.printField("pyMem", value.mem[DOMAIN_PYTHON_MEM]);
-			json.printField("pyRaw", value.mem[DOMAIN_PYTHON_RAW]);
-			json.printField("mmap", value.mem[DOMAIN_MMAP]);
+			json.printField("c", value.sum[DOMAIN_C_ALLOC]);
+			json.printField("pyObj", value.sum[DOMAIN_PYTHON_OBJ]);
+			json.printField("pyMem", value.sum[DOMAIN_PYTHON_MEM]);
+			json.printField("pyRaw", value.sum[DOMAIN_PYTHON_RAW]);
+			json.printField("mmap", value.sum[DOMAIN_MMAP]);
 		json.closeFieldStruct("mem");
+		json.openFieldStruct("localPeak");
+			json.printField("c", value.localPeak[DOMAIN_C_ALLOC]);
+			json.printField("pyObj", value.localPeak[DOMAIN_PYTHON_OBJ]);
+			json.printField("pyMem", value.localPeak[DOMAIN_PYTHON_MEM]);
+			json.printField("pyRaw", value.localPeak[DOMAIN_PYTHON_RAW]);
+			json.printField("mmap", value.localPeak[DOMAIN_MMAP]);
+		json.closeFieldStruct("localPeak");
+		json.openFieldStruct("atGlobalPeak");
+			json.printField("c", value.atGlobalPeak[DOMAIN_C_ALLOC]);
+			json.printField("pyObj", value.atGlobalPeak[DOMAIN_PYTHON_OBJ]);
+			json.printField("pyMem", value.atGlobalPeak[DOMAIN_PYTHON_MEM]);
+			json.printField("pyRaw", value.atGlobalPeak[DOMAIN_PYTHON_RAW]);
+			json.printField("mmap", value.atGlobalPeak[DOMAIN_MMAP]);
+		json.closeFieldStruct("atGlobalPeak");
 	json.closeStruct();
 }
 

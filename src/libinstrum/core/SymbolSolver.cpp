@@ -305,7 +305,7 @@ size_t SymbolSolver::extractElfVaddr(const std::string & obj) const
 	}
 
 	//close
-	fclose(fp);
+	pclose(fp);
 
 	//warn
 	if (res == 0)
@@ -401,7 +401,7 @@ void SymbolSolver::solveNames(void)
 			size_t aslrOffset = -1;
 			for (auto & site : callSiteMap) {
 				if (site.first.getDomain() == DOMAIN_C && site.second.mapEntry == &procMapEntry) {
-					if (aslrOffset == -1)
+					if (aslrOffset == size_t(-1))
 						aslrOffset = OS::getASLROffset(site.first.getAddress());
 					if (addr2line == nullptr || addr2line->isFull()) {
 						addr2line = new Addr2Line(this->stringDict, procMapEntry.file, aslrOffset, gblOptions->stackAddr2lineBucket);
@@ -600,7 +600,6 @@ void SymbolSolver::solveMissings(void)
 	//search
 	for (CallSiteMap::const_iterator it = callSiteMap.begin() ; it != callSiteMap.end() ; ++it)
 		if (it->second.function == -1 || getString(it->second.function) == "??"){
-			CallSite dummyCallSite = it->second;
 			if (it->first.getDomain() == DOMAIN_C) {
 				assert(it->first.getAddress() != nullptr);
 				toResolve.push_back(it->first.getAddress());

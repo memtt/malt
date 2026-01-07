@@ -1,10 +1,11 @@
 /***********************************************************
 *    PROJECT  : MALT (MALoc Tracker)
-*    DATE     : 03/2015
+*    DATE     : 09/2025
 *    LICENSE  : CeCILL-C
 *    FILE     : src/libinstrum/portability/Mutex.hpp
 *-----------------------------------------------------------
 *    AUTHOR   : Sébastien Valat (ECR) - 2014 - 2015
+*    AUTHOR   : Sébastien Valat (INRIA) - 2025
 ***********************************************************/
 
 #ifndef MALT_MUTEX_HPP
@@ -27,6 +28,8 @@
 	{
 		typedef StaticMutexPthread StaticMutex;
 		typedef MutexPthread Mutex;
+		typedef RwLockPthread RwLock;
+		typedef RwLockAccess RwLockAccess;
 	}
 #elif defined(MALT_PORTABILITY_MUTEX_DUMMY)
 	//dummy mode (not thread safe, only for quik portability)

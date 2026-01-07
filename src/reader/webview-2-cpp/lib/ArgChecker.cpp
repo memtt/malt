@@ -1,10 +1,11 @@
 /***********************************************************
 *    PROJECT  : MALT (MALoc Tracker)
-*    DATE     : 09/2025
+*    DATE     : 01/2026
 *    LICENSE  : CeCILL-C
 *    FILE     : src/reader/webview-2-cpp/lib/ArgChecker.cpp
 *-----------------------------------------------------------
 *    AUTHOR   : Sébastien Valat (INRIA) - 2025
+*    AUTHOR   : Sébastien Valat - 2026
 ***********************************************************/
 
 /**********************************************************/
@@ -44,15 +45,15 @@ ArgChecker::~ArgChecker(void)
 std::string ArgChecker::checkArgString(const httplib::Request& req, const std::string & name, bool allowEmpty) const
 {
 	//do not have
-	if (req.has_param(name) == false) {
+	if (req.has_param(name.c_str()) == false) {
 		throw std::runtime_error(std::string("Missing field : ") + name);
 	}
 	//is empty
-	if (req.get_param_value(name).empty() && allowEmpty == false) {
+	if (req.get_param_value(name.c_str()).empty() && allowEmpty == false) {
 		throw std::runtime_error(std::string("Empty field : ") + name);
 	}
 	//ok
-	return req.get_param_value(name);
+	return req.get_param_value(name.c_str());
 }
 
 /**********************************************************/
@@ -158,7 +159,7 @@ void ArgChecker::allowPaths(const std::map<std::string, bool> & paths)
 void ArgChecker::overridePaths(const std::list<std::string> & paths)
 {
 	for (const auto & it : paths) {
-		ssize_t separatorPos = it.find(':');
+		size_t separatorPos = it.find(':');
 		if (separatorPos != it.npos) {
 			const std::string orig = it.substr(0, separatorPos);
 			const std::string overrided = it.substr(separatorPos + 1, it.size() - separatorPos - 1);

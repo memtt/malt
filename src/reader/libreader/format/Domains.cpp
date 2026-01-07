@@ -1,6 +1,6 @@
 /***********************************************************
 *    PROJECT  : MALT (MALoc Tracker)
-*    DATE     : 09/2025
+*    DATE     : 10/2025
 *    LICENSE  : CeCILL-C
 *    FILE     : src/reader/libreader/format/Domains.cpp
 *-----------------------------------------------------------
@@ -51,6 +51,8 @@ void to_json(nlohmann::json & json, const Domains & value)
 	json = nlohmann::json{
 		{"counters", value.counters},
 		{"mem", value.mem},
+		{"atGlobalPeak", value.atGlobalPeak},
+		{"localPeak", value.localPeak},
 	};
 }
 
@@ -64,6 +66,8 @@ void from_json(const JsonIn & json, Domains & value)
 	//load
 	json.at("counters").get_to(value.counters);
 	json.at("mem").get_to(value.mem);
+	json.at("atGlobalPeak").get_to(value.atGlobalPeak);
+	json.at("localPeak").get_to(value.localPeak);
 }
 
 }

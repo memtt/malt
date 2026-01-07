@@ -1,0 +1,18 @@
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    DATE     : 11/2025
+*    LICENSE  : CeCILL-C
+*    FILE     : src/webview/client-files/src/style.css
+*-----------------------------------------------------------
+*    AUTHOR   : Emeric GUYON - 2025
+***********************************************************/
+
+body {
+  margin: 0;
+  font-family: 'Maven Pro', sans-serif;
+}
+
+#app {
+  width: 100%;
+  min-height: 100vh;
+}

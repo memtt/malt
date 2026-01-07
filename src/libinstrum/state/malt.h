@@ -1,6 +1,6 @@
 /***********************************************************
 *    PROJECT  : MALT (MALoc Tracker)
-*    DATE     : 02/2025
+*    DATE     : 10/2025
 *    LICENSE  : CeCILL-C
 *    FILE     : src/libinstrum/state/malt.h
 *-----------------------------------------------------------
@@ -17,9 +17,9 @@ extern "C"
 #endif
 
 /**********************************************************/
-void maltEnable(void);
-void maltDisable(void);
-int maltInitStatus(void);
+void malt_enable(void);
+void malt_disable(void);
+int malt_init_status(void);
 
 #ifdef __cplusplus
 }

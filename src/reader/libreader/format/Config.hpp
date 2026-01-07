@@ -1,6 +1,6 @@
 /***********************************************************
 *    PROJECT  : MALT (MALoc Tracker)
-*    DATE     : 09/2025
+*    DATE     : 10/2025
 *    LICENSE  : CeCILL-C
 *    FILE     : src/reader/libreader/format/Config.hpp
 *-----------------------------------------------------------
@@ -37,6 +37,7 @@ struct Config
 		size_t addr2lineThreads;
 		bool sampling;
 		size_t samplingBw;
+		size_t samplingCnt;
 	} stack;
 	struct {
 		bool instru;
@@ -46,7 +47,12 @@ struct Config
 		bool mem;
 		bool raw;
 		bool hideImports;
+		std::string mode;
 	} python;
+	struct {
+		bool malloc;
+		bool mmap;
+	} c;
 	struct {
 		bool callgrind;
 		bool dumpConfig;

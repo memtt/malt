@@ -1,6 +1,6 @@
 ############################################################
 #    PROJECT  : MALT (MALoc Tracker)
-#    DATE     : 07/2025
+#    DATE     : 11/2025
 #    LICENSE  : CeCILL-C
 #    FILE     : src/manpages/Makefile
 #-----------------------------------------------------------
@@ -10,9 +10,13 @@
 
 ############################################################
 RONN=ronn
-TARGETS=malt-passwd.1.bz2 malt-webview.1.bz2 malt.1.bz2 malt-passwd.1.html malt-webview.1.html malt.1.html
+TARGETS=malt-webview.1 \
+        malt-webview.1.html \
+        malt.1 \
+        malt.1.html \
+        malt-python.1 \
+        malt-python.1.html
 RM=rm -f
-BZIP2=bzip2
 
 ############################################################
 all: $(TARGETS)
@@ -22,8 +26,8 @@ clean:
 	$(RM) $(TARGETS)
 
 ############################################################
-%.1.bz2: %.ronn
-	$(RONN) -r --pipe $< | $(BZIP2) > $@
+%.1: %.ronn
+	$(RONN) -r --pipe $< > $@
 
 ############################################################
 %.1.html: %.ronn

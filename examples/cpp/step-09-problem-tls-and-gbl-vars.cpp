@@ -1,6 +1,6 @@
 /***********************************************************
 *    PROJECT  : MALT (MALoc Tracker)
-*    DATE     : 02/2025
+*    DATE     : 11/2025
 *    LICENSE  : CeCILL-C
 *    FILE     : examples/cpp/step-09-problem-tls-and-gbl-vars.cpp
 *-----------------------------------------------------------
@@ -12,6 +12,8 @@
 #include <cstdio>
 #include <cstring>
 #include <list>
+#include <thread>
+#include <omp.h>
 
 /**********************************************************/
 const size_t MBYTES = 1024UL*1024UL;
@@ -25,8 +27,9 @@ __thread char tlsVariable[TLS_SIZE];
 /**********************************************************/
 void function_doing_things_with_memory(void)
 {
-	char * ptr = (char*)malloc(1024*1024);
-	memset(ptr, 1, 1024*1024);
+	const size_t size = 1024*1024;
+	char * ptr = (char*)malloc(size);
+	memset(ptr, 1, size);
 	free(ptr);
 	memset(gblVariable, 1, GBL_SIZE);
 	#pragma omp parallel
@@ -34,8 +37,24 @@ void function_doing_things_with_memory(void)
 }
 
 /**********************************************************/
+//to check if not accounted in max thread number alive
+void function_spawning_threads_one_at_a_time()
+{
+	size_t omp_threads = omp_get_max_threads();
+	for (size_t i = 0 ; i < omp_threads * 2 ; i++) {
+		printf("Spawning thread %zu\n", i);
+		std::thread thread([]{
+			void * ptr = malloc(1);
+			free(ptr);
+		});
+		thread.join();
+	}
+}
+
+/**********************************************************/
 int main(void)
 {
 	function_doing_things_with_memory();
+	function_spawning_threads_one_at_a_time();
 	return EXIT_SUCCESS;
 }

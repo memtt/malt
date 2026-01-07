@@ -1,7 +1,7 @@
 #!/bin/env python3
 ############################################################
 #    PROJECT  : MALT (MALoc Tracker)
-#    DATE     : 09/2025
+#    DATE     : 11/2025
 #    LICENSE  : CeCILL-C
 #    FILE     : dev/gen_archive.py
 #-----------------------------------------------------------
@@ -20,15 +20,22 @@ import shutil
 import subprocess
 from termcolor import cprint
 from common import print_exception, run_shell, jump_in_dir, jump_in_tmpdir
+from enum import Enum
 
 ############################################################
 #extract version
 PACKAGE_NAME="malt"
-PACKAGE_VERSION="1.4.1"
+PACKAGE_VERSION="1.5.0-beta"
+
+############################################################
+class HashMode(Enum):
+    NO = 0
+    YES= 1
+    AUTO = 2
 
 ############################################################
 # Generate MALT archive
-def malt_dev_gen_archive(name: str = PACKAGE_NAME, version: str = PACKAGE_VERSION) -> None:
+def malt_dev_gen_archive(name: str = PACKAGE_NAME, version: str = PACKAGE_VERSION, commit: str = 'HEAD', hash_mode: HashMode = HashMode.AUTO) -> None:
     # build default prefix
     prefix=f"{name}-{version}"
 
@@ -38,16 +45,16 @@ def malt_dev_gen_archive(name: str = PACKAGE_NAME, version: str = PACKAGE_VERSIO
     #    cprint("Warning: GIT has some uncommited changes", color="yellow")
     
     # check is not release
-    git_head_hash = subprocess.getoutput("git rev-parse --short HEAD")
+    git_head_hash = subprocess.getoutput(f"git rev-parse --short {commit}")
     git_version_hash = subprocess.getoutput(f"git rev-parse --short v{version}")
-    if git_head_hash != git_version_hash:
+    if (git_head_hash != git_version_hash and hash_mode == HashMode.AUTO) or hash_mode == HashMode.YES:
         prefix=f"{name}-{version}-{git_head_hash}"
 
     # log
     print(f"Generate {prefix}.tar.bz2...")
 
     # gen native archive
-    run_shell(f"git archive --format=tar --prefix={prefix}/ HEAD | bzip2 > /tmp/{prefix}.tar.bz2")
+    run_shell(f"git archive --format=tar --prefix={prefix}/ {commit} | bzip2 > /tmp/{prefix}.tar.bz2")
 
     # extract to fetch deps & regen
     origdir = os.getcwd()
@@ -57,9 +64,9 @@ def malt_dev_gen_archive(name: str = PACKAGE_NAME, version: str = PACKAGE_VERSIO
             print("  --------------------------------------------")
             run_shell("./prepare.sh 2>&1 | sed -e 's/^/  /g'")
             print("  --------------------------------------------")
-        run_shell(f"tar -cjf {prefix}.tar.bz2 {prefix}")
-        print(f"  + mv '{prefix}.tar.bz2' '{origdir}/{prefix}.tar.bz2'")
-        shutil.move(f"{prefix}.tar.bz2", f"{origdir}/{prefix}.tar.bz2")
+        run_shell(f"tar -cJf {prefix}.tar.xz {prefix}")
+        print(f"  + mv '{prefix}.tar.xz' '{origdir}/{prefix}.tar.xz'")
+        shutil.move(f"{prefix}.tar.xz", f"{origdir}/{prefix}.tar.xz")
 
     # log
     print("")

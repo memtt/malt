@@ -1,10 +1,11 @@
 /***********************************************************
 *    PROJECT  : MALT (MALoc Tracker)
-*    DATE     : 09/2025
+*    DATE     : 01/2026
 *    LICENSE  : CeCILL-C
 *    FILE     : src/reader/libreader/extractors/Extractor.cpp
 *-----------------------------------------------------------
 *    AUTHOR   : Sébastien Valat (INRIA) - 2025
+*    AUTHOR   : Sébastien Valat - 2026
 ***********************************************************/
 
 /**********************************************************/
@@ -124,8 +125,8 @@ FlatProfileVector Extractor::getFlatProfile(const LocaltionMappingFunc & mapping
 			{
 				std::cerr << "Warning : get call stacks with only allocation function ??? : " << std::endl;
 				//TODO make serialization of stacks
-				for (const auto it : stack) {
-					InstructionInfosStrRef infosRef = getAddrTranslation(stack[skip]);
+				for (const auto & it : stack) {
+					InstructionInfosStrRef infosRef = getAddrTranslation(it);
 					std::cerr << "           - " << *infosRef.file << ":" << infosRef.line << " (" << *infosRef.function << ")" << std::endl;
 				}
 				//TODO print infos
@@ -139,7 +140,7 @@ FlatProfileVector Extractor::getFlatProfile(const LocaltionMappingFunc & mapping
 			}
 
 			//childs
-			std::map<std::string, bool> done;
+			std::unordered_map<std::string, bool> done;
 			for (size_t j = 0 ; j < stack.size() ; j++)
 			{
 				//skip firsts for 'own' mode, otherwise keep them
@@ -346,6 +347,7 @@ void to_json(nlohmann::json & json, const SummaryV2 & value)
 		{"numGblVar", value.summary.numGblVar},
 		{"globalVarMem", value.summary.globalVarMem},
 		{"tlsVarMem", value.summary.tlsVarMem},
+		{"maxThreadCount", value.summary.maxThreadCount},
 	};
 	json["summaryWarnings"] = value.summaryWarnings;
 	json["threadStats"] = value.threadStats;
@@ -566,7 +568,7 @@ FilteredStackList Extractor::getFilterdStacks(const LocaltionOnlyFilterFunc & fi
 FilteredStackList Extractor::getFilterdStacksOnFileLine(const std::string & file, size_t line) const
 {
 	return this->getFilterdStacks([&file, line](const InstructionInfosStrRef & location) {
-		return *location.file == file && location.line == line;
+		return *location.file == file && location.line == static_cast<ssize_t>(line);
 	});
 }
 
@@ -576,6 +578,40 @@ FilteredStackList Extractor::getFilterdStacksOnSymbol(const std::string & func) 
 	return this->getFilterdStacks([&func](const InstructionInfosStrRef & location) {
 		return *location.function == func;
 	});
+}
+
+/**********************************************************/
+size_t Extractor::toVirtualAddress(const std::string & binaryObject, size_t inObjectaddress)
+{
+	//vars
+	size_t virtualAddress = 0;
+
+	//convert to virtual address
+	for (const auto & procEntry : this->profile.sites.map) {
+		if (procEntry.file == binaryObject) {
+			const size_t sectionSize = (size_t)procEntry.upper - (size_t)procEntry.lower;
+			if (inObjectaddress >= procEntry.offset && inObjectaddress < procEntry.offset + sectionSize) {
+				const size_t offsetInSection = inObjectaddress - procEntry.offset;
+				virtualAddress = offsetInSection + procEntry.aslrOffset;
+				return virtualAddress;
+			}
+		}
+	}
+
+	//not found
+	return 0;
+}
+
+/**********************************************************/
+bool Extractor::toVirtualAddresses(std::vector<size_t> & addresses, const std::string & binaryObject)
+{
+	bool status = true;
+	for (auto & it : addresses) {
+		it = this->toVirtualAddress(binaryObject, it);
+		if (it == 0)
+			status = false;
+	}
+	return status;
 }
 
 /**********************************************************/
@@ -667,9 +703,9 @@ SummaryV2 Extractor::getSummaryV2(void) const
 	for(const auto & it : stats)
 	{
 		const StackInfos & info = it.infos;
-		if ((info.alloc.min < min || min == -1) && info.alloc.min > 0)
+		if ((info.alloc.min < static_cast<size_t>(min) || min == -1) && info.alloc.min > 0)
 			min = info.alloc.min;
-		if (info.alloc.max > max || max == -1)
+		if (info.alloc.max > static_cast<size_t>(max) || max == -1)
 			max = info.alloc.max;
 		count += info.alloc.count;
 		sum += info.alloc.sum;
@@ -717,6 +753,7 @@ SummaryV2 Extractor::getSummaryV2(void) const
 	ret.summary.numGblVar = cntVars;
 	ret.summary.globalVarMem = gblMem;
 	ret.summary.tlsVarMem = tlsMem * (this->profile.globals.maxThreadCount + 1);
+	ret.summary.maxThreadCount = this->profile.globals.maxThreadCount;
 
 	//summary warnings
 	ret.summaryWarnings = this->genSummaryWarnings(ret);
@@ -757,6 +794,8 @@ SummaryWarnings Extractor::genSummaryWarnings(const SummaryV2 & data) const
 		ret["tlsVarMem"].push_back("Caution, a large part of your memory is consummed by TLS variables, check if it is normal.");
 	if (data.summary.numGblVar > 500)
 		ret["numGblVar"].push_back("Caution, you get a realy big number of global variable, your code is likely to be buggy.");
+	if (data.summary.maxThreadCount > 2048)
+		ret["maxThreadCount"].push_back("Strange very high number of thread ?");
 
 	return ret;
 }
@@ -783,9 +822,9 @@ Summary Extractor::getSummary(void) const
 	for (const auto & it : stats)
 	{
 		const auto & info = it.infos;
-		if ((info.alloc.min < min || min == -1) && info.alloc.min > 0)
+		if ((info.alloc.min < static_cast<size_t>(min) || min == -1) && info.alloc.min > 0)
 			min = info.alloc.min;
-		if (info.alloc.max > max || max == -1)
+		if (info.alloc.max > static_cast<size_t>(max) || max == -1)
 			max = info.alloc.max;
 		count += info.alloc.count;
 		sum += info.alloc.sum;
@@ -805,35 +844,38 @@ Summary Extractor::getSummary(void) const
 FlattenMaxStackInfo Extractor::getFlattenMaxStackInfo(const LocaltionOnlyMappingFunc & mapping,const LocaltionOnlyFilterFunc & accept, const ThreadStackMem & maxStack)
 {
 	//init hash map to flat on addresses
-	std::map<std::string, FlattenMaxStackInfoEntry> ret;
+	std::unordered_map<std::string, FlattenMaxStackInfoEntry> ret;
 	//var maxStack = this.data.maxStack;
 	//var maxStack = this.getMaxStack();
 
 	//loop on all entries
-	for (size_t i = 0 ; i < maxStack.stack.size() ; i++)
+	if (maxStack.stack.empty() == false)
 	{
-		//get some vars
-		LangAddress addr = maxStack.stack[i];
-		ssize_t mem = maxStack.mem[i] - maxStack.mem[i+1];
-		if (mem < 0)
-			mem = 0;
-		//assert(mem >= 0);
-		const InstructionInfosStrRef & info = this->getAddrTranslation(addr);
-		std::string key = to_string(addr);
-		//if (info != undefined)
-		key = mapping(info);
-		//else
-		//info = {function:addr};
+		for (size_t i = 0 ; i < maxStack.stack.size() - 1 ; i++)
+		{
+			//get some vars
+			LangAddress addr = maxStack.stack[i];
+			ssize_t mem = maxStack.mem[i] - maxStack.mem[i+1];
+			if (mem < 0)
+				mem = 0;
+			//assert(mem >= 0);
+			const InstructionInfosStrRef & info = this->getAddrTranslation(addr);
+			std::string key = to_string(addr);
+			//if (info != undefined)
+			key = mapping(info);
+			//else
+			//info = {function:addr};
 
-		//check filter
-		if (accept(info)) {
-			auto it = ret.find(key);
-			//create or merge
-			if (it == ret.end()) {
-				ret[key] = FlattenMaxStackInfoEntry{&info, (size_t)mem, 1};
-			} else {
-				ret[key].mem += mem;
-				ret[key].count++;
+			//check filter
+			if (accept(info)) {
+				auto it = ret.find(key);
+				//create or merge
+				if (it == ret.end()) {
+					ret[key] = FlattenMaxStackInfoEntry{&info, (size_t)mem, 1};
+				} else {
+					ret[key].mem += mem;
+					ret[key].count++;
+				}
 			}
 		}
 	}
@@ -960,7 +1002,7 @@ Graph Extractor::getFilteredTree(ssize_t nodeId, ssize_t depth, ssize_t height, 
 	}
 
 	//loop on all stack and extract nodes that are OK
-	std::map<const std::string*, NodeInfos> nodeStats;
+	std::unordered_map<const std::string*, NodeInfos> nodeStats;
 	std::set<LangAddress> acceptedNodes;
 	for (size_t sid = 0 ; sid < this->profile.stacks.stats.size() ; sid++) {
 		const auto & stackStat = this->profile.stacks.stats[sid];
@@ -968,7 +1010,7 @@ Graph Extractor::getFilteredTree(ssize_t nodeId, ssize_t depth, ssize_t height, 
 		const auto & stack = stackStat.stack;
 
 		//calc func min depth
-		std::map<const std::string*, size_t> funcMinDepth;
+		std::unordered_map<const std::string*, size_t> funcMinDepth;
 		size_t curDepth = 0;
 		for (size_t i = 0 ; i < stack.size() ; i++)
 		{
@@ -987,8 +1029,8 @@ Graph Extractor::getFilteredTree(ssize_t nodeId, ssize_t depth, ssize_t height, 
 		}
 
 		//calc depth range we accept
-		ssize_t minDepth = 0;
-		ssize_t maxDepth = depth + 1;
+		size_t minDepth = 0;
+		size_t maxDepth = depth + 1;
 		bool keep = true;
 		if (targetFuncName != nullptr) {
 			auto it = funcMinDepth.find(targetFuncName);
@@ -1085,7 +1127,7 @@ Graph Extractor::getFilteredTree(ssize_t nodeId, ssize_t depth, ssize_t height, 
 	}
 
 	//filter nodes base on costs
-	std::map<const std::string*, NodeInfos> nodeStatsFiltered;
+	std::unordered_map<const std::string*, NodeInfos> nodeStatsFiltered;
 	if (minCost > 0.0)
 	{
 		//filter
@@ -1102,23 +1144,39 @@ Graph Extractor::getFilteredTree(ssize_t nodeId, ssize_t depth, ssize_t height, 
 	std::map<Link, StackInfos> acceptedLinks;
 	for (const auto & stackStat : this->profile.stacks.stats) {
 		const auto & stack = stackStat.stack;
+		std::set<std::pair<const std::string *, const std::string *>> seenLinks;
 		for (size_t i = 0 ; i < stack.size() - 1 ; i++) {
 			//reverse
-			const size_t eid = stack.size() - i - 1;
+			const ssize_t eid = stack.size() - i - 1;
 
 			//get
 			const LangAddress in = stack.at(eid);
-			const LangAddress out = stack.at(eid - 1);
-
-			//func names
 			const std::string * inFunc = this->getAddrTranslation(in).function;
-			const std::string * outFunc = this->getAddrTranslation(out).function;
-
-			//search
 			const auto & inIt = nodeStatsFiltered.find(inFunc);
-			const auto & outIt = nodeStatsFiltered.find(outFunc);
 
-			if (inIt != nodeStatsFiltered.end() && outIt != nodeStatsFiltered.end()) {
+			//skip if node is masked
+			if (inIt == nodeStatsFiltered.end())
+				continue;
+
+			//find out not (jumping over ignore once to keep a readable tree)
+			//TODO: maybe store an info on the link to make it dashed in that case.
+			ssize_t gap = 0;
+			LangAddress out;
+			const std::string * outFunc = nullptr;
+			std::unordered_map<const std::string*, NodeInfos>::iterator outIt;
+			do {
+				gap++;
+				out = stack.at(eid - gap);
+				outFunc = this->getAddrTranslation(out).function;
+				outIt = nodeStatsFiltered.find(outFunc);
+			} while (gap < eid && outIt == nodeStatsFiltered.end());
+
+			//avoid nodes not retained & avoid recursion counted N times
+			std::pair<const std::string*, const std::string*> linkName(inFunc, outFunc);
+			if (inIt != nodeStatsFiltered.end() && outIt != nodeStatsFiltered.end() && seenLinks.find(linkName) == seenLinks.end()) {
+				//insert not to recurse
+				seenLinks.insert(linkName);
+
 				//get node
 				const NodeInfos & inInfos = inIt->second;
 				const NodeInfos & outInfos = outIt->second;
@@ -1128,7 +1186,8 @@ Graph Extractor::getFilteredTree(ssize_t nodeId, ssize_t depth, ssize_t height, 
 				const LangAddress func2 = outInfos.addr;
 
 				//add
-				acceptedLinks[Link{func1, func2}].merge(stackStat.infos);
+				bool hasSkipedNodes = (gap > 1);
+				acceptedLinks[Link{func1, func2, hasSkipedNodes}].merge(stackStat.infos);
 			}
 		}
 	}
@@ -1235,10 +1294,9 @@ nlohmann::json Extractor::getCallTree(ssize_t nodeId, ssize_t depth, ssize_t hei
 			const auto & stack = stackStat.stack;
 
 			//calc func min depth
-			std::map<const std::string*, size_t> funcMinDepth;
-			size_t curDepth = 0;
-			for (size_t i = 0 ; i < stack.size() ; i++) {
-				const size_t eid = stack.size() - i - 1;
+			std::unordered_map<const std::string*, size_t> funcMinDepth;
+			for (ssize_t i = 0 ; i < static_cast<ssize_t>(stack.size()) ; i++) {
+				const int eid = stack.size() - i - 1;
 				const LangAddress addr = stack.at(eid);
 				const auto & location = this->getAddrTranslation(addr);
 				if (*location.function == func && i < depthByName) {
@@ -1257,7 +1315,7 @@ nlohmann::json Extractor::getCallTree(ssize_t nodeId, ssize_t depth, ssize_t hei
 
 	//get metric
 	MaltFuncMetrics metrics;
-	const MaltMetric & metricDef = metrics.getMetrics().at(metric);
+	//const MaltMetric & metricDef = metrics.getMetrics().at(metric);
 
 	// Filter tree and get the focal node
 	// console.time("filterNodeLine");
@@ -1379,7 +1437,7 @@ CallStackChildList Extractor::getCallStackNextLevel(size_t parentStackId, size_t
 	//vars
 	const auto & parentStack = this->profile.stacks.stats[parentStackId].stack;
 	CallStackChildList result;
-	std::map<std::string, CallStackChild> alreadySeen;
+	std::unordered_map<std::string, CallStackChild> alreadySeen;
 
 	//search stacks starting by
 	#pragma omp parallel for

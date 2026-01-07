@@ -1,18 +1,28 @@
 /***********************************************************
 *    PROJECT  : MALT (MALoc Tracker)
-*    DATE     : 01/2016
+*    DATE     : 10/2025
 *    LICENSE  : CeCILL-C
 *    FILE     : src/libinstrum/state/FakeControler.c
 *-----------------------------------------------------------
 *    AUTHOR   : Sébastien Valat - 2016
+*    AUTHOR   : Sébastien Valat (INRIA) - 2025
 ***********************************************************/
 
 /**********************************************************/
-void maltEnable(void)
+#include "portability/Visibility.hpp"
+
+/**********************************************************/
+DLL_PUBLIC void malt_enable(void)
 {
 };
 
 /**********************************************************/
-void maltDisable(void)
+DLL_PUBLIC void malt_disable(void)
 {
+}
+
+/**********************************************************/
+DLL_PUBLIC int malt_init_status(void)
+{
+	return 0;
 }

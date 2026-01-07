@@ -1,10 +1,11 @@
 /***********************************************************
 *    PROJECT  : MALT (MALoc Tracker)
-*    DATE     : 01/2022
+*    DATE     : 09/2025
 *    LICENSE  : CeCILL-C
 *    FILE     : src/libinstrum/portability/tests/TestMutex.cpp
 *-----------------------------------------------------------
 *    AUTHOR   : Sébastien Valat - 2022
+*    AUTHOR   : Sébastien Valat (INRIA) - 2025
 ***********************************************************/
 
 /**********************************************************/
@@ -47,4 +48,32 @@ TEST(TestStaticMutex, try_lock)
 	ASSERT_TRUE(mutex.tryLock());
 	ASSERT_FALSE(mutex.tryLock());
 	mutex.unlock();
+}
+
+/**********************************************************/
+TEST(TestRwLock, lock_unlock_basic)
+{
+	RwLockPthread rwlock;
+	rwlock.lock(RW_LOCK_READ);
+	rwlock.unlock();
+	rwlock.lock(RW_LOCK_WRITE);
+	rwlock.unlock();
+}
+
+/**********************************************************/
+TEST(TestRwLock, try_lock)
+{
+	RwLockPthread rwlock;
+	
+	//seq 1
+	ASSERT_TRUE(rwlock.tryLock(RW_LOCK_WRITE));
+	ASSERT_FALSE(rwlock.tryLock(RW_LOCK_WRITE));
+	ASSERT_FALSE(rwlock.tryLock(RW_LOCK_READ));
+	rwlock.unlock();
+
+	//seq 2
+	ASSERT_TRUE(rwlock.tryLock(RW_LOCK_READ));
+	ASSERT_FALSE(rwlock.tryLock(RW_LOCK_WRITE));
+	ASSERT_TRUE(rwlock.tryLock(RW_LOCK_READ));
+	rwlock.unlock();
 }

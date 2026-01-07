@@ -1,6 +1,6 @@
 /***********************************************************
 *    PROJECT  : MALT (MALoc Tracker)
-*    DATE     : 08/2025
+*    DATE     : 10/2025
 *    LICENSE  : CeCILL-C
 *    FILE     : src/libinstrum/stacks/Stack.cpp
 *-----------------------------------------------------------
@@ -189,7 +189,7 @@ void Stack::set (void** stack, int size, StackOrder order, DomainType domain)
 	//copy
 	if (this->order == order) 
 	{
-		for (size_t i = 0; i < size; i++)
+		for (int i = 0; i < size; i++)
 			this->stack[i].set(domain, stack[i]);
 		
 	} else {
@@ -252,6 +252,7 @@ StackHash Stack::hash (LangAddress* stack, int size ,StackOrder order)
 // 				res ^= (StackHash)(cur+i+size);
 // 				res ^= (StackHash)(cur-i+size) << (i%32);
 				res += (StackHash)(cur) << (i%32);
+				res += (StackHash)(cur);
 			}
 			res*=size;
 			break;
@@ -264,6 +265,7 @@ StackHash Stack::hash (LangAddress* stack, int size ,StackOrder order)
 // 				res ^= (StackHash)(cur+i+size);
 // 				res ^= (StackHash)(cur-i+size) << (i%32);
 				res += (StackHash)(cur) << ((size-i-1)%32);
+				res += (StackHash)(cur);
 			}
 			res*=size;
 			break;
@@ -624,7 +626,7 @@ Stack & Stack::operator+=(Stack & stack)
 		this->grow();
 
 	//add
-	for (size_t i = 0 ; i < stack.size ; i++)
+	for (int i = 0 ; i < stack.size ; i++)
 		this->stack[this->size++] = stack.stack[i];
 
 	//ok

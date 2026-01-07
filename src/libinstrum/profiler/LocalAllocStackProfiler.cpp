@@ -1,6 +1,6 @@
 /***********************************************************
 *    PROJECT  : MALT (MALoc Tracker)
-*    DATE     : 09/2025
+*    DATE     : 10/2025
 *    LICENSE  : CeCILL-C
 *    FILE     : src/libinstrum/profiler/LocalAllocStackProfiler.cpp
 *-----------------------------------------------------------
@@ -14,6 +14,7 @@
 //locals from common/
 #include <common/Debug.hpp>
 #include <common/CodeTiming.hpp>
+#include <portability/Clock.hpp>
 //Unix for mmap flags (need to move to portability directory)
 #include <sys/mman.h>
 //locals
@@ -24,15 +25,15 @@ namespace MALT
 {
 
 /**********************************************************/
-LocalAllocStackProfiler::LocalAllocStackProfiler(AllocStackProfiler* globalProfiler)
+LocalAllocStackProfiler::LocalAllocStackProfiler(AllocStackProfiler* globalProfiler, size_t threadId)
 	:backtracePythonStack(globalProfiler->getPythonSymbolTracker())
-	,samplePrev(STACK_ORDER_DESC)
 {
 	//errors
 	assert(globalProfiler != NULL);
 	
 	//setup fields
 	this->cntMemOps = 0;
+	this->threadId = threadId;
 	this->globalProfiler = globalProfiler;
 	this->options = globalProfiler->getOptions();
 	this->stackMode = globalProfiler->getStackMode();
@@ -53,22 +54,98 @@ LocalAllocStackProfiler::~LocalAllocStackProfiler(void)
 }
 
 /**********************************************************/
+AllocTraceEventType LocalAllocStackProfiler::allocKindToTraceType(MallocKind kind, AllocDomain domain)
+{
+	switch (kind) {
+		case MALLOC_KIND_MALLOC: {
+			switch (domain) {
+				case DOMAIN_C_ALLOC:
+					return EVENT_C_MALLOC;
+				case DOMAIN_PYTHON_OBJ:
+					return EVENT_PY_OBJ_MALLOC;
+				case DOMAIN_PYTHON_MEM:
+					return EVENT_PY_MEM_MALLOC;
+				case DOMAIN_PYTHON_RAW:
+					return EVENT_PY_RAW_MALLOC;
+				default:
+					MALT_FATAL("Should not reach this line !");
+					return EVENT_NOP;
+			}
+		};
+		case MALLOC_KIND_POSIX_MEMALIGN:
+			return EVENT_C_POSIX_MEMALIGN;
+		case MALLOC_KIND_ALIGNED_ALLOC:
+			return EVENT_C_ALIGNED_ALLOC;
+		case MALLOC_KIND_MEMALIGN:
+			return EVENT_C_MEMALIGN;
+		case MALLOC_KIND_VALLOC:
+			return EVENT_C_VALLOC;
+		case MALLOC_KIND_PVALLOC:
+			return EVENT_C_PVALLOC;
+		default:
+			MALT_FATAL("Should never reach this line !");
+			return EVENT_NOP;
+	}
+}
+
+/**********************************************************/
 //TODO: Pass Stack*, may be nullptr for C CallStack
 //TODO: Pass Stack* to getStack()
 void LocalAllocStackProfiler::onMalloc(void* res, size_t size, ticks time, MallocKind kind, Language lang, AllocDomain domain)
 {
+	//build trace entry
+	AllocTracerEvent traceEntry;
+	traceEntry.type = allocKindToTraceType(kind, domain);
+	traceEntry.threadId = this->threadId;
+	traceEntry.callStack = nullptr; //not yet known at this stage
+	traceEntry.time = Clock::getticks();
+	traceEntry.cost = time;
+	traceEntry.addr = res;
+	traceEntry.size = size;
+	traceEntry.extra.generic.extra1 = 0;
+	traceEntry.extra.generic.extra2 = 0;
+
 	//check for reentrance
-	CODE_TIMING("mallocProf",globalProfiler->onMalloc(res,size,getStack(lang, size, false, false), domain));
+	CODE_TIMING("mallocProf",globalProfiler->onMalloc(traceEntry, res,size,getStack(lang, size, false, false), domain));
 	this->popEnterExit();
 	this->cntMemOps++;
 	this->allocStats.malloc[kind].inc(size,time);
 }
 
 /**********************************************************/
-void LocalAllocStackProfiler::onFree(void* ptr, ticks time, Language lang)
+void LocalAllocStackProfiler::onFree(void* ptr, ticks time, Language lang, AllocDomain domain)
 {
+	//build trace entry
+	AllocTracerEvent traceEntry;
+	switch (domain) {
+		case DOMAIN_C_ALLOC:
+			traceEntry.type = EVENT_C_FREE;
+			break;
+		case DOMAIN_PYTHON_OBJ:
+			traceEntry.type = EVENT_PY_OBJ_FREE;
+			break;
+		case DOMAIN_PYTHON_MEM:
+			traceEntry.type = EVENT_PY_MEM_FREE;
+			break;
+		case DOMAIN_PYTHON_RAW:
+			traceEntry.type = EVENT_PY_RAW_FREE;
+			break;
+		default:
+			MALT_FATAL("Should not reach this line !");
+			traceEntry.type = EVENT_NOP;
+			break;
+	}
+	traceEntry.threadId = this->threadId;
+	traceEntry.callStack = nullptr; //not yet known at this stage
+	traceEntry.time = Clock::getticks();
+	traceEntry.cost = time;
+	traceEntry.addr = ptr;
+	traceEntry.size = 0;
+	traceEntry.extra.free.lifetime = 0;
+	traceEntry.extra.free.allocStack = 0;
+
 	//check for reentrance
-	CODE_TIMING("freeProf",globalProfiler->onFree(ptr,getStack(lang, 0, true, false)));
+	CODE_TIMING("freeProf",globalProfiler->onFree(traceEntry, ptr,getStack(lang, 0, true, false)));
 	this->popEnterExit();
 	this->cntMemOps++;
 	this->allocStats.free.inc(0,time);
@@ -77,9 +154,38 @@ void LocalAllocStackProfiler::onFree(void* ptr, ticks time, Language lang)
 /**********************************************************/
 void LocalAllocStackProfiler::onCalloc(void * res,size_t nmemb, size_t size, ticks time, Language lang, AllocDomain domain)
 {
+	//build trace entry
+	AllocTracerEvent traceEntry;
+	switch (domain) {
+		case DOMAIN_C_ALLOC:
+			traceEntry.type = EVENT_C_CALLOC;
+			break;
+		case DOMAIN_PYTHON_OBJ:
+			traceEntry.type = EVENT_PY_OBJ_CALLOC;
+			break;
+		case DOMAIN_PYTHON_MEM:
+			traceEntry.type = EVENT_PY_MEM_CALLOC;
+			break;
+		case DOMAIN_PYTHON_RAW:
+			traceEntry.type = EVENT_PY_RAW_CALLOC;
+			break;
+		default:
+			MALT_FATAL("Should not reach this line !");
+			traceEntry.type = EVENT_NOP;
+			break;
+	}
+	traceEntry.threadId = this->threadId;
+	traceEntry.callStack = nullptr; //not yet known at this stage
+	traceEntry.time = Clock::getticks();
+	traceEntry.cost = time;
+	traceEntry.addr = res;
+	traceEntry.size = size;
+	traceEntry.extra.generic.extra1 = 0;
+	traceEntry.extra.generic.extra2 = 0;
+
 	//check for reentrance
 	const size_t totalSize = nmemb * size;
-	CODE_TIMING("callocProf",globalProfiler->onCalloc(res,nmemb,size,getStack(lang, totalSize, false, false), domain));
+	CODE_TIMING("callocProf",globalProfiler->onCalloc(traceEntry, res,nmemb,size,getStack(lang, totalSize, false, false), domain));
 	this->popEnterExit();
 	this->cntMemOps++;
 	this->allocStats.calloc.inc(totalSize,time);
@@ -88,8 +194,37 @@ void LocalAllocStackProfiler::onCalloc(void * res,size_t nmemb, size_t size, tic
 /**********************************************************/
 void LocalAllocStackProfiler::onRealloc(void* ptr, void* res, size_t size,ticks time, Language lang, AllocDomain domain)
 {
+	//build trace entry
+	AllocTracerEvent traceEntry;
+	switch (domain) {
+		case DOMAIN_C_ALLOC:
+			traceEntry.type = EVENT_C_REALLOC;
+			break;
+		case DOMAIN_PYTHON_OBJ:
+			traceEntry.type = EVENT_PY_OBJ_REALLOC;
+			break;
+		case DOMAIN_PYTHON_MEM:
+			traceEntry.type = EVENT_PY_MEM_REALLOC;
+			break;
+		case DOMAIN_PYTHON_RAW:
+			traceEntry.type = EVENT_PY_RAW_REALLOC;
+			break;
+		default:
+			MALT_FATAL("Should not reach this line !");
+			traceEntry.type = EVENT_NOP;
+			break;
+	}
+	traceEntry.threadId = this->threadId;
+	traceEntry.callStack = nullptr; //not yet known at this stage
+	traceEntry.time = Clock::getticks();
+	traceEntry.cost = time;
+	traceEntry.addr = res;
+	traceEntry.size = size;
+	traceEntry.extra.realloc.oldAddr = ptr;
+	traceEntry.extra.realloc.oldSize = 0;
+
 	//check for reentrance
-	CODE_TIMING("reallocProf",globalProfiler->onRealloc(ptr,res,size,getStack(lang, size, false, false), domain));
+	CODE_TIMING("reallocProf",globalProfiler->onRealloc(traceEntry, ptr,res,size,getStack(lang, size, false, false), domain));
 	this->popEnterExit();
 	this->cntMemOps++;
 	this->allocStats.realloc.inc(size,time);
@@ -104,9 +239,21 @@ void LocalAllocStackProfiler::onMmap(void* ptr, size_t size, int flags, int fd, 
 	
 	//get stack
 	Stack * stack = getStack(LANG_C, size, false, true);
+
+	//build trace entry
+	AllocTracerEvent traceEntry;
+	traceEntry.type = EVENT_C_MMAP;
+	traceEntry.threadId = this->threadId;
+	traceEntry.callStack = nullptr; //not yet known at this stage
+	traceEntry.time = Clock::getticks();
+	traceEntry.cost = time;
+	traceEntry.addr = ptr;
+	traceEntry.size = size;
+	traceEntry.extra.generic.extra1 = 0;
+	traceEntry.extra.generic.extra2 = 0;
 	
 	//check for renentrance
-	CODE_TIMING("userMmapProf",globalProfiler->onMmap(ptr,size,stack));
+	CODE_TIMING("userMmapProf",globalProfiler->onMmap(traceEntry,ptr,size,stack));
 
 	this->popEnterExit();
 
@@ -121,9 +268,21 @@ void LocalAllocStackProfiler::onMunmap(void* ptr, size_t size, ticks time)
 {
 	//get stack
 	Stack * stack = getStack(LANG_C, size, false, true);
+
+	//build trace entry
+	AllocTracerEvent traceEntry;
+	traceEntry.type = EVENT_C_MUNMAP;
+	traceEntry.threadId = this->threadId;
+	traceEntry.callStack = nullptr; //not yet known at this stage
+	traceEntry.time = Clock::getticks();
+	traceEntry.cost = time;
+	traceEntry.addr = ptr;
+	traceEntry.size = size;
+	traceEntry.extra.generic.extra1 = 0;
+	traceEntry.extra.generic.extra2 = 0;
 	
 	//check for renentrance
-	CODE_TIMING("userMmapProf",globalProfiler->onMunmap(ptr,size,stack));
+	CODE_TIMING("userMmapProf",globalProfiler->onMunmap(traceEntry,ptr,size,stack));
 
 	this->popEnterExit();
 
@@ -136,9 +295,21 @@ void LocalAllocStackProfiler::onMremap(void * ptr, size_t size, void * new_ptr, 
 {
 	//get stack
 	Stack * stack = getStack(LANG_C, size, false, true);
+
+	//build trace entry
+	AllocTracerEvent traceEntry;
+	traceEntry.type = EVENT_C_MREMAP;
+	traceEntry.threadId = this->threadId;
+	traceEntry.callStack = nullptr; //not yet known at this stage
+	traceEntry.time = Clock::getticks();
+	traceEntry.cost = time;
+	traceEntry.addr = ptr;
+	traceEntry.size = size;
+	traceEntry.extra.mremap.newAddr = new_ptr;
+	traceEntry.extra.mremap.newSize = new_size;
 	
 	//check for renentrance
-	CODE_TIMING("userMmapProf",globalProfiler->onMremap(ptr,size,new_ptr,new_size,stack));
+	CODE_TIMING("userMmapProf",globalProfiler->onMremap(traceEntry, ptr,size,new_ptr,new_size,stack));
 
 	this->popEnterExit();
 
@@ -166,7 +337,7 @@ void LocalAllocStackProfiler::solveSymbols(SymbolSolver& symbolResolver) const
 void LocalAllocStackProfiler::loadPythonFirstBacktrace(void)
 {
 	CODE_TIMING("loadCurrentStack",backtracePythonStack.loadCurrentStack());
-	for (size_t i = 0 ; i < backtracePythonStack.getSize() ; i++) {
+	for (int i = 0 ; i < backtracePythonStack.getSize() ; i++) {
 		this->enterExitStack.enterFunction(backtracePythonStack[i]);
 	}
 }
@@ -203,7 +374,6 @@ Stack* LocalAllocStackProfiler::getStack(Language lang, size_t size, bool isFree
 		return &this->samplePrev;
 
 	//vars
-	bool oldInUse;
 	bool hasPythonGIL = false;
 	PyGILState_STATE pythonGilState;
 	Stack* result = nullptr;
@@ -235,7 +405,7 @@ Stack* LocalAllocStackProfiler::getStack(Language lang, size_t size, bool isFree
 	} else if (localPyStackMode == STACK_MODE_BACKTRACE && MALT::Py_IsInitialized()) {
 		pythonGilState = MALT::PyGILState_Ensure();
 		hasPythonGIL = true;
-		CODE_TIMING("loadCurrentStack",backtracePythonStack.loadCurrentStack());
+		CODE_TIMING("loadCurrentStackPy",backtracePythonStack.loadCurrentStack());
 		pythonRef = &backtracePythonStack;
 	} else {
 		//oldInUse = this->markInUseAndGetOldStatus();
@@ -255,7 +425,7 @@ Stack* LocalAllocStackProfiler::getStack(Language lang, size_t size, bool isFree
 			pythonGilState = MALT::PyGILState_Ensure();
 			hasPythonGIL = true;
 		}
-		currentPythonAddr = backtracePythonStack.getCurrentFrameAddr();
+		CODE_TIMING("loadCurrentFramePy",currentPythonAddr = backtracePythonStack.getCurrentFrameAddr());
 		this->enterExitStack.enterFunction(currentPythonAddr);
 		assert(this->needToPop == false);
 		this->needToPop = true;
@@ -265,9 +435,9 @@ Stack* LocalAllocStackProfiler::getStack(Language lang, size_t size, bool isFree
 	if (gblOptions->pythonMix && gblOptions->pythonInstru && lang != LANG_PYTHON) {
 		if (cRef == pythonRef) {
 			assert(cRef == &this->enterExitStack);
-			globalProfiler->getMultiLangStackMerger().removePythonLib(mixStack, *cRef);
+			CODE_TIMING("mixLang",globalProfiler->getMultiLangStackMerger().removePythonLib(mixStack, *cRef));
 		} else {
-			globalProfiler->getMultiLangStackMerger().mixPythonAndCStack(mixStack, *cRef, *pythonRef);
+			CODE_TIMING("mixLang",globalProfiler->getMultiLangStackMerger().mixPythonAndCStack(mixStack, *cRef, *pythonRef));
 		}
 
 		result = &mixStack;
@@ -306,6 +476,20 @@ void LocalAllocStackProfiler::popEnterExit(void)
 bool LocalAllocStackProfiler::isEnterExit(void)
 {
 	return stackMode == STACK_MODE_ENTER_EXIT_FUNC;
+}
+
+/**********************************************************/
+void LocalAllocStackProfiler::flushPythonCacheSolver(void)
+{
+	this->backtracePythonStack.flushLineCache();
+}
+
+/**********************************************************/
+void LocalAllocStackProfiler::printStats(void) const
+{
+	#ifdef MALT_ENABLE_CODE_TIMING
+		this->backtracePythonStack.displayCacheStats();
+	#endif //MALT_ENABLE_CODE_TIMING
 }
 
 /**********************************************************/

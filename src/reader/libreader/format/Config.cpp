@@ -1,6 +1,6 @@
 /***********************************************************
 *    PROJECT  : MALT (MALoc Tracker)
-*    DATE     : 09/2025
+*    DATE     : 10/2025
 *    LICENSE  : CeCILL-C
 *    FILE     : src/reader/libreader/format/Config.cpp
 *-----------------------------------------------------------
@@ -35,6 +35,7 @@ void to_json(nlohmann::json & json, const Config & config){
 				{"addr2lineThreads", config.stack.addr2lineThreads},
 				{"sampling", config.stack.sampling},
 				{"samplingBw", config.stack.samplingBw},
+				{"samplingCnt", config.stack.samplingCnt},
 			}
 		},
 		{
@@ -46,6 +47,13 @@ void to_json(nlohmann::json & json, const Config & config){
 				{"mem", config.python.mem},
 				{"raw", config.python.raw},
 				{"hideImports", config.python.hideImports},
+				{"mode", config.python.mode},
+			}
+		},
+		{
+			"c", {
+				{"malloc", config.c.malloc},
+				{"mmap", config.c.mmap},
 			}
 		},
 		{
@@ -133,6 +141,7 @@ void from_json(const JsonIn & json, Config & config)
 	assert(jsContains(jsonStack, "addr2lineThreads"));
 	assert(jsContains(jsonStack, "sampling"));
 	assert(jsContains(jsonStack, "samplingBw"));
+	assert(jsContains(jsonStack, "samplingCnt"));
 	jsonStack.at("enabled").get_to(config.stack.enabled);
 	jsonStack.at("mode").get_to(config.stack.mode);
 	jsonStack.at("resolve").get_to(config.stack.resolve);
@@ -142,6 +151,7 @@ void from_json(const JsonIn & json, Config & config)
 	jsonStack.at("addr2lineThreads").get_to(config.stack.addr2lineThreads);
 	jsonStack.at("sampling").get_to(config.stack.sampling);
 	jsonStack.at("samplingBw").get_to(config.stack.samplingBw);
+	jsonStack.at("samplingCnt").get_to(config.stack.samplingCnt);
 
 	//python
 	JsonIn jsonPython = json.at("python");
@@ -159,6 +169,14 @@ void from_json(const JsonIn & json, Config & config)
 	jsonPython.at("mem").get_to(config.python.mem);
 	jsonPython.at("raw").get_to(config.python.raw);
 	jsonPython.at("hideImports").get_to(config.python.hideImports);
+	jsonPython.at("mode").get_to(config.python.mode);
+
+	//python
+	JsonIn jsonC = json.at("c");
+	assert(jsContains(jsonC, "malloc"));
+	assert(jsContains(jsonC, "mmap"));
+	jsonC.at("malloc").get_to(config.c.malloc);
+	jsonC.at("mmap").get_to(config.c.mmap);
 
 	//output
 	JsonIn jsonOutput = json.at("output");

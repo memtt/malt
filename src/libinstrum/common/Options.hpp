@@ -1,6 +1,6 @@
 /***********************************************************
 *    PROJECT  : MALT (MALoc Tracker)
-*    DATE     : 09/2025
+*    DATE     : 10/2025
 *    LICENSE  : CeCILL-C
 *    FILE     : src/libinstrum/common/Options.hpp
 *-----------------------------------------------------------
@@ -83,6 +83,7 @@ struct Options
 	int stackAddr2lineThreads;
 	bool stackSampling;
 	int stackSamplingBw;
+	int stackSamplingCnt;
 	//python
 	std::string pythonStack;
 	StackMode pythonStackEnum;
@@ -92,6 +93,10 @@ struct Options
 	bool pythonMem;
 	bool pythonRaw;
 	bool pythonHideImports;
+	std::string pythonMode;
+	//c
+	bool cMalloc;
+	bool cMmap;
 	//vars for time profiging
 	bool timeProfileEnabled;
 	int timeProfilePoints;
@@ -158,6 +163,7 @@ StackMode stackModeFromString(const std::string & value);
 const char * verbosityToString(Verbosity value);
 Verbosity iniparser_getverbosity(dictionary * d, const char * key, Verbosity notfound);
 std::ostream & operator << (std::ostream & out, Verbosity value);
+bool validateOptionName(const std::string & value);
 
 /**********************************************************/
 /** Safer function to access to the option, with check in debug mode.**/

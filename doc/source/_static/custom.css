@@ -1,0 +1,12 @@
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    DATE     : 10/2025
+*    LICENSE  : CeCILL-C
+*    FILE     : doc/source/_static/custom.css
+*-----------------------------------------------------------
+*    AUTHOR   : Sébastien Valat (INRIA) - 2025
+***********************************************************/
+
+.wy-table-responsive table td {
+    white-space: normal; text-wrap: wrap;
+}

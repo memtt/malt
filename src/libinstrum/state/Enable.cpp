@@ -1,6 +1,6 @@
 /***********************************************************
 *    PROJECT  : MALT (MALoc Tracker)
-*    DATE     : 03/2025
+*    DATE     : 10/2025
 *    LICENSE  : CeCILL-C
 *    FILE     : src/libinstrum/state/Enable.cpp
 *-----------------------------------------------------------
@@ -21,7 +21,7 @@ DLL_PUBLIC int maltInitStatus(void)
 }
 
 /**********************************************************/
-DLL_PUBLIC void maltEnable(void)
+DLL_PUBLIC void malt_enable(void)
 {
 	//env
 	MALT::LazyEnv env;
@@ -29,7 +29,7 @@ DLL_PUBLIC void maltEnable(void)
 }
 
 /**********************************************************/
-DLL_PUBLIC void maltDisable(void)
+DLL_PUBLIC void malt_disable(void)
 {
 	//env
 	MALT::LazyEnv env;

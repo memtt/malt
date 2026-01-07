@@ -1,6 +1,6 @@
 ############################################################
 #    PROJECT  : MALT (MALoc Tracker)
-#    DATE     : 07/2025
+#    DATE     : 10/2025
 #    LICENSE  : CeCILL-C
 #    FILE     : src/reader/webview-2-rust/CMakeLists.txt
 #-----------------------------------------------------------
@@ -37,7 +37,7 @@ add_custom_target(
 	        ${CARGO_BINARY} build ${RUST_BUILD_OPTION}
 	WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
 )
-add_dependencies(malt-webview-2-rust malt-profile)
+add_dependencies(malt-webview-2-rust malt-reader)
 
 ############################################################
 #add_test(

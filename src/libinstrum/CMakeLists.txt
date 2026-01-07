@@ -1,6 +1,6 @@
 ############################################################
 #    PROJECT  : MALT (MALoc Tracker)
-#    DATE     : 06/2025
+#    DATE     : 10/2025
 #    LICENSE  : CeCILL-C
 #    FILE     : src/libinstrum/CMakeLists.txt
 #-----------------------------------------------------------
@@ -8,41 +8,6 @@
 #    AUTHOR   : Sébastien Valat (ECR) - 2014 - 2015
 #    AUTHOR   : Sébastien Valat (INRIA) - 2025
 ############################################################
-
-############################################################
-#set default
-if (LIBUNWIND_FOUND)
-	set(MALT_HAVE_LIBUNWIND "yes")
-else (LIBUNWIND_FOUND)
-	unset(MALT_HAVE_LIBUNWIND)
-endif (LIBUNWIND_FOUND)
-
-############################################################
-# python
-set (MALT_HAVE_PYTHON ${PYTHON3_INSTRUM_FOUND})
-
-############################################################
-#select portability definitions
-set(MALT_PORTABILITY_SPINLOCK_${PORTABILITY_SPINLOCK}  yes)
-set(MALT_PORTABILITY_MUTEX_${PORTABILITY_MUTEX}        yes)
-set(MALT_PORTABILITY_OS_${PORTABILITY_OS}              yes)
-set(MALT_PORTABILITY_COMPILER_${PORTABILITY_COMPILER}  yes)
-set(MALT_PORTABILITY_BACKTRACE_${PORTABILITY_BACKTRACE}  yes)
-set(MALT_PORTABILITY_CLOCK_${PORTABILITY_CLOCK}        yes)
-set(MALT_PORTABILITY_PYTHON_${PORTABILITY_PYTHON}      yes)
-#enabling features
-if (ENABLE_CODE_TIMING)
-	set(MALT_ENABLE_CODE_TIMING yes)
-endif(ENABLE_CODE_TIMING)
-if (ENABLE_CODE_LEAK)
-	set(MALT_ENABLE_CODE_LEAK yes)
-endif()
-if (ENABLE_GCC_COVERAGE)
-	malt_enable_gcc_coverage()
-endif (ENABLE_GCC_COVERAGE)
-if (MALTJEMALLOC_FOUND)
-	set(MALT_ENABLE_INTERNAL_JEMALLOC yes)
-endif()
 
 ############################################################
 set(LIB_MALT_DEPS pthread dl)
@@ -59,17 +24,16 @@ endif()
 if (MALT_HAVE_PYTHON AND MALT_PORTABILITY_PYTHON_NATIVE)
 	list(APPEND LIB_MALT_DEPS ${Python3_LIBRARIES})
 endif()
-
-############################################################
-#gen config.h
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config.h.in ${CMAKE_CURRENT_BINARY_DIR}/config.h)
+if (INIPARSER_FOUND)
+	list(APPEND LIB_MALT_DEPS ${INIPARSER_LIBRARIES})
+endif()
 
 ############################################################
 include_directories(.)
 include_directories(../../extern-deps/from-fftw)
-include_directories(../../extern-deps/iniparser/src)
+include_directories(${INIPARSER_INCLUDE_DIRS})
 include_directories(../../extern-deps/from-htopml)
-include_directories(${CMAKE_CURRENT_BINARY_DIR})
+include_directories(../../extern-deps/from-numaprof)
 if (PYTHON3_INSTRUM_FOUND)
 	include_directories(${Python3_INCLUDE_DIRS})
 endif()
@@ -91,7 +55,7 @@ set(COMMON_OBJS $<TARGET_OBJECTS:htopml-json>
 				$<TARGET_OBJECTS:malt-port>
 				$<TARGET_OBJECTS:malt-state>
 				$<TARGET_OBJECTS:malt-injectors-ok-for-tests>
-				$<TARGET_OBJECTS:iniparser>)
+				${INIPARSER_OBJECTS})
 
 ############################################################
 add_library(malt-base SHARED ${COMMON_OBJS})
@@ -141,6 +105,6 @@ if (ENABLE_TESTS)
 endif (ENABLE_TESTS)
 
 ############################################################
-INSTALL(TARGETS malt malt-base malt-controler
+INSTALL(TARGETS malt malt-controler
 	ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
 	LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})

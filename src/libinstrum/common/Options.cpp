@@ -1,6 +1,6 @@
 /***********************************************************
 *    PROJECT  : MALT (MALoc Tracker)
-*    DATE     : 09/2025
+*    DATE     : 10/2025
 *    LICENSE  : CeCILL-C
 *    FILE     : src/libinstrum/common/Options.cpp
 *-----------------------------------------------------------
@@ -45,6 +45,85 @@ static const char * cstVerbosityLevels[MALT_VERBOSITY_COUNT] = {
 };
 
 /**********************************************************/
+static const char * cstValidOptionNames[] = {
+	//fill
+	"time:enabled",
+	"time:points",
+	"time:linear-index",
+	
+	//stack
+	"stack:enabled",
+	"stack:mode",
+	"stack:resolve",
+	"stack:libunwind",
+	"stack:skip",
+	"stack:addr2lineBucket",
+	"stack:addr2lineThreads",
+	"stack:sampling",
+	"stack:samplingBw",
+	"stack:samplingCnt",
+
+	//python
+	"python:intru",
+	"python:stack",
+	"python:mix",
+	"python:obj",
+	"python:mem",
+	"python:raw",
+	"python:hide-imports",
+	"python:mode",
+
+	//c
+	"c:malloc",
+	"c:mmap",
+	
+	//output
+	"output:name",
+	"output:lua",
+	"output:json",
+	"output:callgrind",
+	"output:indent",
+	"output:config",
+	"output:verbosity",
+	"output:stack-tree",
+	"output:loop-suppress",
+	
+	//max stack
+	"max-stack:enabled",
+	
+	//maps
+	"distr:alloc-size",
+	"distr:realloc-jump",
+	
+	//trace
+	"trace:enabled",
+	
+	//info
+	"info:hidden",
+
+	//exe
+	"filter:exe",
+	"filter:childs",
+	"filter:enabled",
+	"filter:ranks",
+
+	//dump
+	"dump:on-signal",
+	"dump:after-seconds",
+	"dump:on-sys-full-at",
+	"dump:on-app-using-rss",
+	"dump:on-app-using-virt",
+	"dump:on-app-using-req",
+	"dump:on-thread-stack-using",
+	"dump:on-alloc-count",
+	"dump:watch-dog",
+
+	//tools
+	"tools:nm",
+	"tools:nm-max-size",
+};
+
+/**********************************************************/
 /**
  * Constructor to setup the default values for each options
 **/
@@ -60,6 +139,7 @@ Options::Options(void)
 	this->stackAddr2lineThreads   = 8;
 	this->stackSampling           = false;
 	this->stackSamplingBw         = 4093; //5242883, 10485767, 20971529
+	this->stackSamplingCnt        = 571;
 	//python
 	this->pythonStack             = "enter-exit";
 	this->pythonStackEnum         = STACK_MODE_ENTER_EXIT_FUNC;
@@ -69,6 +149,10 @@ Options::Options(void)
 	this->pythonMem               = true;
 	this->pythonRaw               = true;
 	this->pythonHideImports       = true;
+	this->pythonMode              = "profile";
+	//c
+	this->cMalloc                 = true;
+	this->cMmap                   = true;
 	//time
 	this->timeProfileEnabled      = true;
 	this->timeProfilePoints       = 512;
@@ -136,6 +220,10 @@ bool Options::operator==(const Options& value) const
 	if (pythonMem != value.pythonMem) return false;
 	if (pythonRaw != value.pythonRaw) return false;
 	if (pythonHideImports != value.pythonHideImports) return false;
+	if (pythonMode != value.pythonMode) return false;
+	//c
+	if (cMalloc != value.cMalloc) return false;
+	if (cMmap != value.cMmap) return false;
 	//time
 	if (this->timeProfileEnabled != value.timeProfileEnabled) return false;
 	if (this->timeProfilePoints != value.timeProfilePoints) return false;
@@ -274,6 +362,11 @@ void Options::loadFromIniDic ( dictionary* iniDic )
 	this->pythonRaw           = iniparser_getboolean(iniDic,"python:raw",this->pythonRaw);
 	this->pythonStackEnum     = stackModeFromString(this->pythonStack);
 	this->pythonHideImports   = iniparser_getboolean(iniDic,"python:hide-imports", this->pythonHideImports);
+	this->pythonMode          = iniparser_getstring(iniDic,"python:mode",(char*)this->pythonMode.c_str());
+
+	//c
+	this->cMalloc             = iniparser_getboolean(iniDic,"c:malloc", this->cMalloc);
+	this->cMmap               = iniparser_getboolean(iniDic,"c:mmap", this->cMmap);
 
 	//load values for stack profiling
 	this->stackResolve        = iniparser_getboolean(iniDic,"stack:resolve",this->stackResolve);
@@ -285,6 +378,7 @@ void Options::loadFromIniDic ( dictionary* iniDic )
 	this->stackAddr2lineThreads= iniparser_getint(iniDic,"stack:addr2lineThreads",this->stackAddr2lineThreads);
 	this->stackSampling       = iniparser_getboolean(iniDic,"stack:sampling",this->stackSampling);
 	this->stackSamplingBw     = iniparser_getint(iniDic,"stack:samplingBw",this->stackSamplingBw);
+	this->stackSamplingCnt    = iniparser_getint(iniDic,"stack:samplingCnt",this->stackSamplingCnt);
 	
 	//load values for output
 	this->outputName          = iniparser_getstring(iniDic,"output:name",(char*)this->outputName.c_str());
@@ -379,6 +473,7 @@ void convertToJson(htopml::JsonState & json,const Options & value)
 			json.printField("addr2lineThreads",value.stackAddr2lineThreads);
 			json.printField("sampling", value.stackSampling);
 			json.printField("samplingBw", value.stackSamplingBw);
+			json.printField("samplingCnt", value.stackSamplingCnt);
 		json.closeFieldStruct("stack");
 
 		json.openFieldStruct("python");
@@ -389,7 +484,13 @@ void convertToJson(htopml::JsonState & json,const Options & value)
 			json.printField("mem", value.pythonMem);
 			json.printField("raw", value.pythonRaw);
 			json.printField("hideImports", value.pythonHideImports);
+			json.printField("mode", value.pythonMode);
 		json.closeFieldStruct("python");
+
+		json.openFieldStruct("c");
+			json.printField("malloc", value.cMalloc);
+			json.printField("mmap", value.cMmap);
+		json.closeFieldStruct("c");
 		
 		json.openFieldStruct("output");
 			json.printField("callgrind",value.outputCallgrind);
@@ -467,6 +568,7 @@ void Options::dumpConfig(const char* fname)
 	IniParserHelper::setEntry(dic,"stack:addr2lineThreads",this->stackAddr2lineThreads);
 	IniParserHelper::setEntry(dic,"stack:sampling",this->stackSampling);
 	IniParserHelper::setEntry(dic,"stack:samplingBw",this->stackSamplingBw);
+	IniParserHelper::setEntry(dic,"stack:samplingCnt",this->stackSamplingCnt);
 
 	//python
 	IniParserHelper::setEntry(dic,"python:intru",this->pythonInstru);
@@ -476,6 +578,11 @@ void Options::dumpConfig(const char* fname)
 	IniParserHelper::setEntry(dic,"python:mem",this->pythonMem);
 	IniParserHelper::setEntry(dic,"python:raw",this->pythonRaw);
 	IniParserHelper::setEntry(dic,"python:hide-imports",this->pythonHideImports);
+	IniParserHelper::setEntry(dic,"python:mode",this->pythonMode.c_str());
+
+	//c
+	IniParserHelper::setEntry(dic,"c:malloc",this->cMalloc);
+	IniParserHelper::setEntry(dic,"c:mmap",this->cMmap);
 	
 	//output
 	IniParserHelper::setEntry(dic,"output:name",this->outputName.c_str());
@@ -554,6 +661,10 @@ std::string IniParserHelper::extractSectionName ( const char * key )
 **/
 void IniParserHelper::setEntry(dictionary* dic, const char* key, const char* value)
 {
+	if (validateOptionName(key) == false) {
+		fprintf(stderr, "MALT: Error: Invalid option : --option %s !\n", key);
+		exit(1);
+	}
 	iniparser_set(dic,extractSectionName(key).c_str(),NULL);
 	iniparser_set(dic,key,value);
 }
@@ -650,7 +761,7 @@ const char * verbosityToString(Verbosity value)
 Verbosity iniparser_getverbosity(dictionary * dic, const char * key, Verbosity notFound)
 {
 	//tansmit
-	char * tmp = iniparser_getstring(dic,key,(char*)verbosityToString(notFound));
+	const char * tmp = iniparser_getstring(dic,key,(char*)verbosityToString(notFound));
 
 	//convert back
 	Verbosity res = verbosityFromString(tmp);
@@ -667,6 +778,22 @@ std::ostream & operator << (std::ostream & out, Verbosity value)
 {
 	out << verbosityToString(value);
 	return out;
+}
+
+/**********************************************************/
+/**
+ * In order to display an error if the user didn't gave the right name
+ * in the command line.
+ * @param value The option name to validate.
+ * @return True if valid, false otherwise.
+ */
+bool validateOptionName(const std::string & value)
+{
+	const size_t cnt = sizeof(cstValidOptionNames) / sizeof(*cstValidOptionNames);
+	for (size_t i = 0 ; i < cnt ; i++)
+		if (value == cstValidOptionNames[i])
+			return true;
+	return false;
 }
 
 }

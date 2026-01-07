@@ -7,7 +7,7 @@
     "python_basic_array_enter_exit": {
         "main1.py:py:main1.<module>:11":true,
         "main1.py:py:main1.MainClass():11":true,
-		"main1.py:py:main1.MainClass.__init__():12": true,
+        "main1.py:py:main1.MainClass.__init__():12": true,
         "main1.py:py:main1.MainClass.a_function():15":true,
         "main1.py:py:main1.main():22":true}
 }

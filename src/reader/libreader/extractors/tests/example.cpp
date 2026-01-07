@@ -1,6 +1,6 @@
 /***********************************************************
 *    PROJECT  : MALT (MALoc Tracker)
-*    DATE     : 07/2025
+*    DATE     : 10/2025
 *    LICENSE  : CeCILL-C
 *    FILE     : src/reader/libreader/extractors/tests/example.cpp
 *-----------------------------------------------------------
@@ -62,8 +62,8 @@ void main_sim(void)
 /**********************************************************/
 int main(int argc, char * argv[])
 {
-	maltEnable();	
+	malt_enable();	
 	main_sim();
-	maltDisable();
+	malt_disable();
 	return EXIT_SUCCESS;
 }

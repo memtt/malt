@@ -1,6 +1,6 @@
 /***********************************************************
 *    PROJECT  : MALT (MALoc Tracker)
-*    DATE     : 09/2025
+*    DATE     : 11/2025
 *    LICENSE  : CeCILL-C
 *    FILE     : src/libinstrum/profiler/LocalAllocStackProfiler.hpp
 *-----------------------------------------------------------
@@ -85,10 +85,10 @@ void convertToJson(htopml::JsonState& json, const PerThreadAllocStats& value);
 class LocalAllocStackProfiler
 {
 	public:
-		LocalAllocStackProfiler(AllocStackProfiler * globalProfiler);
+		LocalAllocStackProfiler(AllocStackProfiler * globalProfiler, size_t threadId);
 		~LocalAllocStackProfiler(void);
 		void onMalloc(void* res, size_t size, ticks time, MALT::MallocKind kind, Language lang = LANG_C, AllocDomain domain = DOMAIN_C_ALLOC);
-		void onFree(void* ptr, ticks time, Language lang = LANG_C);
+		void onFree(void* ptr, ticks time, Language lang = LANG_C, AllocDomain domain = DOMAIN_C_ALLOC);
 		void onCalloc(void * res,size_t nmemb,size_t size, ticks time, Language lang = LANG_C, AllocDomain domain = DOMAIN_C_ALLOC);
 		void onRealloc(void* ptr, void* res, size_t size, ticks time, Language lang = LANG_C, AllocDomain domain = DOMAIN_C_ALLOC);
 		void onMmap(void * ptr, size_t size,int flags,int fd, ticks time);
@@ -100,11 +100,14 @@ class LocalAllocStackProfiler
 		bool isEnterExit(void);
 		inline BacktracePythonStack getBacktracePythonStack(void);
 		void loadPythonFirstBacktrace(void);
+		void flushPythonCacheSolver(void);
+		void printStats(void) const;
 	public:
 		friend void convertToJson(htopml::JsonState& json, const LocalAllocStackProfiler& value);
 	protected:
 		Stack * getStack(Language lang, size_t size, bool isFree, bool isMmmap);
 		void popEnterExit(void);
+		static AllocTraceEventType allocKindToTraceType(MallocKind kind, AllocDomain domain);
 	private:
 		/** Pointer to the global state **/
 		AllocStackProfiler * globalProfiler;
@@ -130,9 +133,10 @@ class LocalAllocStackProfiler
 		PerThreadAllocStats allocStats;
 		EnterExitStack noneStackC;
 		EnterExitStack noneStackPython;
-		Stack samplePrev;
+		Stack samplePrev{STACK_ORDER_DESC};
 		bool needToPop{false};
 		LangAddress currentPythonAddr;
+		size_t threadId;
 };
 
 /**********************************************************/

@@ -1,6 +1,6 @@
 /***********************************************************
 *    PROJECT  : MALT (MALoc Tracker)
-*    DATE     : 08/2025
+*    DATE     : 10/2025
 *    LICENSE  : CeCILL-C
 *    FILE     : src/libinstrum/core/PythonSymbolTracker.cpp
 *-----------------------------------------------------------
@@ -14,6 +14,7 @@
 #include <unistd.h>
 #include "PythonSymbolTracker.hpp"
 #include "portability/Python.hpp"
+#include "common/CodeTiming.hpp"
 
 /**********************************************************/
 namespace MALT
@@ -117,7 +118,9 @@ LangAddress PythonSymbolTracker::parentFrameToLangAddress(PyFrameObject * frame)
  */
 void PythonSymbolTracker::makeStackPythonDomain(Stack & stack)
 {
-	for (size_t i = 0 ; i < stack.getSize() ; i++) {
+	MALT_ASSERT(stack.getSize() >= 0);
+
+	for (int i = 0 ; i < stack.getSize() ; i++) {
 		if (stack[i].getDomain() == DOMAIN_PYTHON_FRAME) {
 			PyFrameObject * frame = (PyFrameObject *)stack[i].getAddress();
 			stack[i] = this->frameToLangAddress(frame);
@@ -134,13 +137,24 @@ void PythonSymbolTracker::makeStackPythonDomain(Stack & stack)
  * @param frame The frame to translate.
  * @return A LangAddress in the Python domain.
  */
-LangAddress PythonSymbolTracker::frameToLangAddress(PyFrameObject * frame)
+LangAddress PythonSymbolTracker::frameToLangAddress(PyFrameObject * frame, PythonTranslationLineCache * lineCache)
 {
 	//get fast
 	//LangAddress addrFast = this->fastFrameToLangAddress(frame);
 
+	//skip if disabled
+	#ifndef MALT_ENABLE_CACHING
+		lineCache = nullptr;
+	#endif //MALT_ENABLE_CACHING
+
 	//get slow
-	LangAddress addrSlow = this->slowFrameToLangAddress(frame);
+	LangAddress addrSlow = this->slowFrameToLangAddress(frame, lineCache);
+
+	//check
+	/*#ifndef NDEBUG
+		LangAddress addrSlow2 = this->slowFrameToLangAddress(frame, nullptr);
+		assume(addrSlow == addrSlow2, "Cache made mistakes !");
+	#endif*/
 
 	//check equal
 	//assert(addrFast.isNULL() || addrSlow == addrFast);
@@ -156,29 +170,50 @@ LangAddress PythonSymbolTracker::frameToLangAddress(PyFrameObject * frame)
  * @param frame The frame to convert.
  * @return A LangAddress in the Python domain.
  */
-LangAddress PythonSymbolTracker::slowFrameToLangAddress(PyFrameObject * frame)
+LangAddress PythonSymbolTracker::slowFrameToLangAddress(PyFrameObject * frame, PythonTranslationLineCache * lineCache)
 {
 	//convert
-	TmpPythonCallSite tmpsite = frameToCallSite(frame);
+	TmpPythonCallSite tmpsite = frameToCallSite(frame, lineCache);
 
-	//build call site
+	//if not cache, set
 	PythonCallSite site;
-	site.file = this->dict.getId(tmpsite.site.file);
-	site.function = this->dict.getId(tmpsite.site.function);
-	site.line = tmpsite.site.line;
+	if (tmpsite.cached) {
+		assert(lineCache != nullptr);
+		site = tmpsite.cacheEntry;
+	} else {
+		//build call site
+		assert(tmpsite.site.function[0] != '\0');
+		site.file = this->dict.getId(tmpsite.site.file);
+		site.function = this->dict.getId(tmpsite.site.function);
+		site.line = tmpsite.site.line;
+		if (lineCache != nullptr && site.line >= 0 && site.function >= 0 && site.file >= 0) {
+			lineCache->set(site.line, site);
+		}
+	}
 
 	//search entry
-	auto it = this->siteMap.find(site);
-	void * currentId;
-
-	assert(tmpsite.site.function[0] != '\0');
-
-	//is new or not
-	if (it == this->siteMap.end()) {
-		currentId = this->siteMap[site] = (void*)(this->nextIndex++);
-	} else {
-		currentId = it->second;
-	}
+	void * currentId = nullptr;
+	CODE_TIMING("pySearchInsertSite",{
+		void * const * cacheResult = nullptr;
+		#ifdef MALT_ENABLE_CACHING
+			cacheResult = siteMapCache.get(site);
+		#endif //MALT_ENABLE_CACHING
+		if (cacheResult != nullptr) {
+			currentId = *cacheResult;
+		} else {
+			auto it = this->siteMap.find(site);
+			//is new or not
+			if (it == this->siteMap.end()) {
+				currentId = this->siteMap[site] = (void*)(this->nextIndex++);
+				it = this->siteMap.find(site);
+			} else {
+				currentId = it->second;
+			}
+			#ifdef MALT_ENABLE_CACHING
+				siteMapCache.set(&it->first, currentId);
+			#endif //MALT_ENABLE_CACHING
+		}
+	});
 
 	//free
 	freeFrameToCallSite(tmpsite);
@@ -231,18 +266,33 @@ LangAddress PythonSymbolTracker::fastFrameToLangAddress(PyFrameObject * frame)
  * @param frame The frame to convert.
  * @return A TmpPythonCallSite object with the infos extracted from python about the call site.
  */
-TmpPythonCallSite PythonSymbolTracker::frameToCallSite(PyFrameObject * frame)
+TmpPythonCallSite PythonSymbolTracker::frameToCallSite(PyFrameObject * frame, PythonTranslationLineCache * lineCache)
 {
 	//decl some vars
 	PyCodeObject* currentPyCode = NULL;
 	PyObject* currentFilenameObject = NULL;
 	PyObject* currentFramenameObject = NULL;
-	char* currentFileName = NULL;
-	char* currentFrameName = NULL;
-	int currentLineNumber = 0;
+	TmpPythonCallSite tmpsite;
 
-	currentPyCode = MALT::PyFrame_GetCode(frame);
+	//get code
+	CODE_TIMING("PyFrame_GetCode",currentPyCode = MALT::PyFrame_GetCode(frame););
 	assert(currentPyCode != NULL);
+	tmpsite.code = currentPyCode;
+
+	//get line
+	int line;
+	CODE_TIMING("PyFrame_GetLineNumber",line = MALT::PyFrame_GetLineNumber(frame));
+
+	//check cache
+	if (lineCache != nullptr && line > -1) {
+		const BacktracePythonStackTlbEntry * entry = lineCache->get(line);
+		if (entry != nullptr) {
+			tmpsite.cached = true;
+			tmpsite.cacheEntry = *entry;
+			//fprintf(stderr, "CACHE : %d, %d; %d\n", tmpsite.cacheEntry.file, tmpsite.cacheEntry.function, tmpsite.cacheEntry.line);
+			return tmpsite;
+		}
+	}
 
 	//Fetch the file name and frame name i.e. function name in the current PyCode
 	//FIXME: Currently, this makes many allocations, maybe there's a way to avoid this
@@ -261,13 +311,12 @@ TmpPythonCallSite PythonSymbolTracker::frameToCallSite(PyFrameObject * frame)
 	//TODO: And this https://peps.python.org/pep-0626/
 	//This should be way more performant, currently this is the major overhead
 	//Intuition : Py_Addr2Line is called way too many times, can we refractor the filename, framename and line number into one call of Addr2Line ??
-	TmpPythonCallSite tmpsite;
 	tmpsite.site.file = MALT::PyBytes_AsString(currentFilenameObject);
 	tmpsite.site.function = MALT::PyBytes_AsString(currentFramenameObject);
-	tmpsite.site.line = MALT::PyFrame_GetLineNumber(frame);
+	tmpsite.site.line = line;
 	tmpsite.filenameObject = currentFilenameObject;
 	tmpsite.framenameObject = currentFramenameObject;
-	tmpsite.code = currentPyCode;
+	tmpsite.cached = false;
 
 	//ok
 	return tmpsite;
@@ -290,8 +339,10 @@ void PythonSymbolTracker::freeFrameToCallSite(TmpPythonCallSite & callsite)
 	}*/
 	//MALT::Py_DecRef((PyObject*)callsite.site.file);
 	//MALT::Py_DecRef((PyObject*)callsite.site.function);
-	MALT::Py_DecRef((PyObject*)callsite.filenameObject);
-	MALT::Py_DecRef((PyObject*)callsite.framenameObject);
+	if (callsite.filenameObject != nullptr)
+		MALT::Py_DecRef((PyObject*)callsite.filenameObject);
+	if (callsite.framenameObject != nullptr)
+		MALT::Py_DecRef((PyObject*)callsite.framenameObject);
 	MALT::Py_DecRef((PyObject*)callsite.code);
 }
 
@@ -640,6 +691,14 @@ const std::string & PythonSymbolTracker::getScriptName(void) const
 void PythonSymbolTracker::setPythonActivity(bool activ)
 {
 	this->pythonIsActiv = activ;
+}
+
+/**********************************************************/
+/** Print statistics at exit. */
+void PythonSymbolTracker::printStats(void) const
+{
+	this->dict.printStats();
+	this->siteMapCache.printStats("pySiteMapCache");
 }
 
 }

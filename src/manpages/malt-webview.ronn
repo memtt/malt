@@ -58,8 +58,8 @@ to other users of the cluster by using a unix socket file in place of the port.
 
 ## VERSION
 
-   This is the manpage of MALT version 1.4.1.
+   This is the manpage of MALT version 1.5.0-beta.
 
 ## SEE ALSO
 
-malt-passwd(1), malt(1)
+malt-python(1), malt-webview(1)

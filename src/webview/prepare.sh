@@ -1,11 +1,12 @@
 #!/bin/bash
 ############################################################
 #    PROJECT  : MALT (MALoc Tracker)
-#    DATE     : 09/2024
+#    DATE     : 12/2025
 #    LICENSE  : CeCILL-C
 #    FILE     : src/webview/prepare.sh
 #-----------------------------------------------------------
 #    AUTHOR   : Antoine Bernard (crans.org) - 2024
+#    AUTHOR   : Sébastien Valat (INRIA) - 2025
 ############################################################
 
 ############################################################
@@ -15,7 +16,6 @@ SOURCE_DIR=$PWD
 ############################################################
 if [ ! -z "$1" ]
 then
-	cp bower.json "$1"
 	cd "$1"
 fi
 
@@ -31,25 +31,17 @@ fi
 #node executable as nodejs which break bower
 if ! which node
 then
-	if which nodejs
-	then
-		echo "Create NodeJS -> Node fix for ubuntu/debian !"
-		mkdir -p ./node_modules/.bin/
-		ln -s $(which nodejs) ./node_modules/.bin/node
-	else
-		echo "You should install NodeJS to fetch web GUI components"
-		echo "Or download a release archive as it already contains all those files"
-		exit 1
-	fi
+	echo "You should install NodeJS to fetch web GUI components"
+	echo "Or download a release archive as it already contains all those files"
+	exit 1
 fi
 
 ############################################################
 set -e
 set -x
-npm ci
-rm -f ./node_modules/.bin/node
+ln -sf ../../../extern-deps/node_modules ./
+npm install --pefix ../../../extern-deps/node_modules
 set +x
 if [ ! -z "$1" ]; then
-	echo > deps-loaded
+	echo > "${1}/deps-loaded"
 fi
-

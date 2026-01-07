@@ -1,6 +1,6 @@
 /***********************************************************
 *    PROJECT  : MALT (MALoc Tracker)
-*    DATE     : 09/2025
+*    DATE     : 10/2025
 *    LICENSE  : CeCILL-C
 *    FILE     : src/libinstrum/common/tests/TestOptions.cpp
 *-----------------------------------------------------------
@@ -34,7 +34,8 @@ const char cstJson[] = "\
 		\"addr2lineBucket\":350,\n\
 		\"addr2lineThreads\":8,\n\
 		\"sampling\":false,\n\
-		\"samplingBw\":4093\n\
+		\"samplingBw\":4093,\n\
+		\"samplingCnt\":571\n\
 	},\n\
 	\"python\":{\n\
 		\"instru\":true,\n\
@@ -43,7 +44,12 @@ const char cstJson[] = "\
 		\"obj\":true,\n\
 		\"mem\":true,\n\
 		\"raw\":true,\n\
-		\"hideImports\":true\n\
+		\"hideImports\":true,\n\
+		\"mode\":\"profile\"\n\
+	},\n\
+	\"c\":{\n\
+		\"malloc\":true,\n\
+		\"mmap\":true\n\
 	},\n\
 	\"output\":{\n\
 		\"callgrind\":false,\n\

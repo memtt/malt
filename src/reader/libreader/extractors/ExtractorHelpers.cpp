@@ -1,6 +1,6 @@
 /***********************************************************
 *    PROJECT  : MALT (MALoc Tracker)
-*    DATE     : 09/2025
+*    DATE     : 10/2025
 *    LICENSE  : CeCILL-C
 *    FILE     : src/reader/libreader/extractors/ExtractorHelpers.cpp
 *-----------------------------------------------------------
@@ -30,6 +30,7 @@ static const char * CST_ALLOC_FUNC_NAMES[] = {
 	"_Zna",
 	"_Znw",
 	"g_malloc",
+	"g_malloc0",
 	"g_realloc",
 	"g_free",
 	"for__get_vm",

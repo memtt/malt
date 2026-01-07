@@ -1,1 +1,0 @@
-./node_modules/.bin/browserify server-files/MaltProject.js -s MaltProject -o MaltBundle.js

@@ -1,11 +1,11 @@
 /***********************************************************
 *    PROJECT  : MALT (MALoc Tracker)
-*    DATE     : 09/2025
+*    DATE     : 01/2026
 *    LICENSE  : CeCILL-C
 *    FILE     : src/libinstrum/profiler/AllocStackProfiler.hpp
 *-----------------------------------------------------------
 *    AUTHOR   : Sébastien Valat (ECR) - 2014
-*    AUTHOR   : Sébastien Valat - 2014 - 2019
+*    AUTHOR   : Sébastien Valat - 2014 - 2026
 *    AUTHOR   : Sébastien Valat (INRIA) - 2025
 ***********************************************************/
 
@@ -27,6 +27,7 @@
 #include <stacks/EnterExitStack.hpp>
 #include <stack-tree/StackSTLHashMap.hpp>
 #include <stack-tree/RLockFreeTree.hpp>
+#include <stack-tree/StackTreeCache.hpp>
 // #include <stack-tree/AbstractStackTree.hpp>
 #include <valprof/ProfiledStateValue.hpp>
 #include <valprof/ProfiledCumulValue.hpp>
@@ -87,6 +88,14 @@ struct TimeTrackMemory
 };
 
 /**********************************************************/
+struct FreeFinalInfos
+{
+	size_t size{0};
+	ticks lifetime{0};
+	const Stack * allocStack{nullptr};
+};
+
+/**********************************************************/
 struct TimeTrackSysMemory
 {
 	//constructor & usefull funcs
@@ -125,16 +134,16 @@ class AllocStackProfiler
 {
 	public:
 		AllocStackProfiler(const Options & option, StackMode mode = STACK_MODE_BACKTRACE,bool threadSafe = false);
-		void onMalloc(void * ptr,size_t size,Stack * userStack = NULL, AllocDomain domain = DOMAIN_C_ALLOC);
-		void onCalloc(void * ptr,size_t nmemb,size_t size,Stack * userStack = NULL, AllocDomain domain = DOMAIN_C_ALLOC);
+		void onMalloc(AllocTracerEvent & traceEntry, void * ptr,size_t size,Stack * userStack = NULL, AllocDomain domain = DOMAIN_C_ALLOC);
+		void onCalloc(AllocTracerEvent & traceEntry, void * ptr,size_t nmemb,size_t size,Stack * userStack = NULL, AllocDomain domain = DOMAIN_C_ALLOC);
 		void onPrepareRealloc(void * oldPtr,Stack * userStack = NULL);
-		void onMmap(void * ptr,size_t size,Stack * userStack = NULL, MMCallStackNode* callStackNode = NULL);
-		void onMunmap(void * ptr,size_t size,Stack * userStack = NULL, MMCallStackNode* callStackNode = NULL);
-		void onMremap(void * ptr,size_t size,void * new_ptr, size_t new_size, Stack * userStack = NULL);
-		void onLLMmap(void * ptr,size_t size,Stack * userStack = NULL);
-		void onLLMunmap(void * ptr,size_t size,Stack * userStack = NULL);
-		size_t onRealloc(void* oldPtr, void* ptr, size_t newSize, MALT::Stack* userStack = 0, AllocDomain domain = DOMAIN_C_ALLOC);
-		void onFree(void * ptr,Stack * userStack = NULL, AllocDomain domain = DOMAIN_C_ALLOC);
+		void onMmap(AllocTracerEvent & traceEntry, void * ptr,size_t size,Stack * userStack = NULL, MMCallStackNode* callStackNode = NULL);
+		void onMunmap(AllocTracerEvent & traceEntry, void * ptr,size_t size,Stack * userStack = NULL, MMCallStackNode* callStackNode = NULL);
+		void onMremap(AllocTracerEvent & traceEntry, void * ptr,size_t size,void * new_ptr, size_t new_size, Stack * userStack = NULL);
+		void onLLMmap(AllocTracerEvent & traceEntry, void * ptr,size_t size,Stack * userStack = NULL);
+		void onLLMunmap(AllocTracerEvent & traceEntry, void * ptr,size_t size,Stack * userStack = NULL);
+		size_t onRealloc(AllocTracerEvent & traceEntry, void* oldPtr, void* ptr, size_t newSize, MALT::Stack* userStack = 0, AllocDomain domain = DOMAIN_C_ALLOC);
+		void onFree(AllocTracerEvent & traceEntry, void * ptr,Stack * userStack = NULL, AllocDomain domain = DOMAIN_C_ALLOC);
 		void onExit(void);
 		void onEnterFunction(void * funcAddr);
 		void onExitFunction(void * funcAddr);
@@ -159,11 +168,11 @@ class AllocStackProfiler
 	private:
 		MMCallStackNode getStackNode(MALT::Stack* userStack = 0);
 		void onAllocEvent(void* ptr, size_t size, Stack* userStack, MMCallStackNode* callStackNode = NULL, bool doLock = true, AllocDomain domain = DOMAIN_C_ALLOC);
-		size_t onFreeEvent(void* ptr, MALT::Stack* userStack, MALT::MMCallStackNode* callStackNode = 0, bool doLock = true, AllocDomain domain = DOMAIN_C_ALLOC, bool subMunmap = false);
+		FreeFinalInfos onFreeEvent(void* ptr, MALT::Stack* userStack, MALT::MMCallStackNode* callStackNode = 0, bool doLock = true, AllocDomain domain = DOMAIN_C_ALLOC, bool subMunmap = false);
 		void solvePerThreadSymbols(void);
 		void memOpsLevels(void);
 		void updatePeakInfoOfStacks(void);
-		void peakTracking(ssize_t delta);
+		bool peakTracking(ssize_t delta);
 		void loadGlobalVariables(void);
 		void loopSuppress(void);
 		std::string getFileExeScriptName(void) const;
@@ -174,6 +183,7 @@ class AllocStackProfiler
 		//SimpleStackTracer stackTracer;
 		MultiLangStackMerger multiLangStackMerger;
 		StackSTLHashMap<CallStackInfo> stackTracker;
+		StackTreeCache<MMCallStackNode> stackTrackerCache{4096};
 		RLockFreeTree<CallStackInfo> treeStackTracker;
 // 		AbstractStackTree<CallStackInfo> stackTree;
 		AllocSizeDistrMap sizeMap;
@@ -218,9 +228,11 @@ class AllocStackProfiler
 		bool skipThreadRegister{false};
 		std::atomic<size_t> maltJeMallocMem{0};
 		Trigger trigger;
-		StackReducer reducer{5};
+		StackReducer reducer{10};
 		DomainCounters domains;
 		std::atomic<size_t> rate{0};
+		std::atomic<size_t> rateCnt{0};
+		std::atomic<size_t> nextThreadId{0};
 };
 
 /**********************************************************/
@@ -236,15 +248,25 @@ inline bool AllocStackProfiler::isAcceptedBySampling(size_t size, bool isFree)
 
 	//sum
 	size_t previous = this->rate.fetch_add(size);
+	size_t previousCnt = this->rateCnt.fetch_add(1);
 	size_t bw = gblOptions->stackSamplingBw;
 	if (previous / bw != (previous + size) / bw)
 	{
 		this->rate.fetch_sub(bw);
 		return true;
-	} else {
-		return false;
 	}
+
+	//count
+	size_t cnt = gblOptions->stackSamplingCnt;
+	if (cnt != 0 && previousCnt >= cnt) {
+		this->rateCnt.fetch_sub(cnt);
+		return true;
+	}
+
+	return false;
 }
+
+std::string cmdToString(const OSCmdLine & cmdline);
 
 }
 

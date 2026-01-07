@@ -33,6 +33,6 @@ TEST(TestGraphGenerator, isDotInstalled)
 #ifdef HAVE_GRAPHVIZ
 TEST(TestGraphGenerator, convertDotToSvg)
 {
-	ASSERT_TRUE(GraphGenerator::convertDotToSvg(CST_DOT_1).find("<svg ") != -1);
+	ASSERT_TRUE(GraphGenerator::convertDotToSvg(CST_DOT_1).find("<svg ") != std::string::npos);
 }
 #endif //HAVE_GRAPHVIZ

@@ -1,10 +1,11 @@
 /***********************************************************
 *    PROJECT  : MALT (MALoc Tracker)
-*    DATE     : 09/2025
+*    DATE     : 01/2026
 *    LICENSE  : CeCILL-C
 *    FILE     : src/libinstrum/injectors/InjectPython.cpp
 *-----------------------------------------------------------
 *    AUTHOR   : Sébastien Valat (INRIA) - 2025
+*    AUTHOR   : Sébastien Valat - 2026
 ***********************************************************/
 
 /**********************************************************/
@@ -175,13 +176,30 @@ void initPythonAllocInstrumentation()
 }
 
 /**********************************************************/
+void finiPythonAllocInstrumentation(void)
+{
+	if (gblOptions->outputVerbosity >= MALT_VERBOSITY_DEFAULT)
+		printf("MALT: Un-instument Python allocator...\n");
+	MALT::PyMem_SetAllocator(PYMEM_DOMAIN_RAW, &gblPythonRawAlloc);
+	MALT::PyMem_SetAllocator(PYMEM_DOMAIN_MEM, &gblPythonRawAlloc);
+	MALT::PyMem_SetAllocator(PYMEM_DOMAIN_OBJ, &gblPythonMemAlloc);
+}
+
+/**********************************************************/
 void initPythonEnterExitInstrumentation(void)
 {
 	if (gblOptions->outputVerbosity >= MALT_VERBOSITY_DEFAULT)
 		printf("MALT: Instument Python profiling...\n");
 	PyGILState_STATE gstate;
 	gstate = MALT::PyGILState_Ensure();
-	MALT::PyEval_SetProfileAllThreads(malt_wrap_python_on_enter_exit, NULL);
+	if (gblOptions->pythonMode == "profile") {
+		MALT::PyEval_SetProfileAllThreads(malt_wrap_python_on_enter_exit, NULL);
+	} else if (gblOptions->pythonMode == "trace") {
+		MALT::PyEval_SetProfileAllThreads(malt_wrap_python_on_enter_exit, NULL);
+		MALT::PyEval_SetTraceAllThreads(malt_wrap_python_on_enter_exit, NULL);
+	} else {
+		MALT_FATAL_ARG("Invalid value for option python:mode=%1").arg(gblOptions->pythonMode).end();
+	}
 	MALT::PyGILState_Release(gstate);
 }
 
@@ -189,12 +207,13 @@ void initPythonEnterExitInstrumentation(void)
 void pythonOnExit(void)
 {
 	gblState.profiler->getPythonSymbolTracker().setPythonActivity(false);
+	finiPythonAllocInstrumentation();
 	if (gblOptions->outputVerbosity >= MALT_VERBOSITY_VERBOSE)
 		printf("MALT: Python exit...\n");
 }
 
 /**********************************************************/
-DLL_PUBLIC void initPythonInstrumentation(const char * script)
+void initPythonInstrumentation(const char * script)
 {
 	//setup env
 	LazyEnv env;

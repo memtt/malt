@@ -1,6 +1,6 @@
 /***********************************************************
 *    PROJECT  : MALT (MALoc Tracker)
-*    DATE     : 09/2025
+*    DATE     : 10/2025
 *    LICENSE  : CeCILL-C
 *    FILE     : src/reader/libreader/format/Domains.hpp
 *-----------------------------------------------------------
@@ -35,6 +35,8 @@ struct Domains
 {
 	DomainCounters counters;
 	DomainCounters mem;
+	DomainCounters atGlobalPeak;
+	DomainCounters localPeak;
 };
 
 /**********************************************************/

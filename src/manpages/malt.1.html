@@ -145,8 +145,11 @@ Automatically wrap all the memory managment functions under the given prefix. Yo
 several prefixes separated by comma. For exemple giving <code>je_</code> will wrap all the <code>je_malloc</code>,
 <code>je_free</code>, <code>je_realloc</code>... functions.</li>
   <li>
-<code>--gdb</code>:
+<code>-g</code>, <code>--gdb</code>:
 Run the program into GDB by configuring Automatically GDB to work properly with MALT.</li>
+  <li>
+<code>-G</code>, <code>--gdb-bt</code>
+Enable GDB with MALT and also automatically bactrace on error.</li>
   <li>
 <code>-h</code>, <code>--help</code>:
 Display help message with a list of available command line options.</li>
@@ -214,7 +217,8 @@ hidden                         = false
 [filter]
 exec                           = 
 childs                         = true
-enabled                        = true   ranks                          =
+enabled                        = true
+ranks                          =
 
 [dump]
 on-signal                      = 
@@ -477,18 +481,18 @@ time when running on large frameworks like PyTorch which tends to load huge .so 
 
 <p>If you run on a really big program doing millions of allocation you might get a big overhead, and maybe
 you are just interested in a sub-part of the program. You can do it by including <code>malt/malt.h</code> in
-your files and use <code>maltEnable()</code> an <code>maltDisable()</code> to controle MALT on each thread. It is also a nice
+your files and use <code>malt_enable()</code> an <code>malt_disable()</code> to controle MALT on each thread. It is also a nice
 way to detect leaks of sub-parts of your code.</p>
 
 <pre><code>#include &lt;malt/malt.h&gt;
 
 int main() 
 {
-	maltDisable();
+	malt_disable();
 	//ignored
 	malloc(16);
 
-	maltEnable();
+	malt_enable();
 	//tracked
 	malloc(16);
 }
@@ -499,6 +503,31 @@ You can also just provide the two empty functions in your own dynamic library (n
 
 <p>If you have some allocation not under your control before your first call you can disable MALT by default
 on threads using the <code>filter:enabled</code> option, then enable it by hand.</p>
+
+<p>If you want to change the initial status (make it disabled at start), you can simply redefine in your program
+the function :</p>
+
+<pre><code>#include &lt;stdlib.h&gt;
+#include &lt;malt/malt.h&gt;
+
+//malt will be disabled at start
+int malt_init_status(void)
+{
+	return 0;
+}
+
+int main()
+{
+	//perform some costly code
+
+	malt_enable();
+	//perform some costly code you want to analyse
+	malt_disable();
+
+	//ok
+	return EXIT_SUCCESS;
+}
+</code></pre>
 
 <h2 id="WRAPPING-A-CUSTOM-ALLOCATOR">WRAPPING A CUSTOM ALLOCATOR</h2>
 
@@ -520,7 +549,7 @@ malt --wrap-prefix je_,another_custom_
 
 <h2 id="VERSION">VERSION</h2>
 
-<p>This is the manpage of MALT version 1.4.1.</p>
+<p>This is the manpage of MALT version 1.5.0-beta.</p>
 
 <h2 id="SEE-ALSO">SEE ALSO</h2>
 
@@ -528,7 +557,7 @@ malt --wrap-prefix je_,another_custom_
 
   <ol class='man-decor man-foot man foot'>
     <li class='tl'></li>
-    <li class='tc'>October 2025</li>
+    <li class='tc'>January 2026</li>
     <li class='tr'>malt(1)</li>
   </ol>
 

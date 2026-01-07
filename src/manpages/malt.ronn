@@ -55,8 +55,10 @@ it with debug symbols (`-g`) and also to disable inlining to get more accurate s
    Automatically wrap all the memory managment functions under the given prefix. You can list
    several prefixes separated by comma. For exemple giving `je_` will wrap all the `je_malloc`,
    `je_free`, `je_realloc`... functions.
- * `--gdb`:
+ * `-g`, `--gdb`:
    Run the program into GDB by configuring Automatically GDB to work properly with MALT.
+ * `-G`, `--gdb-bt`
+   Enable GDB with MALT and also automatically bactrace on error.
  * `-h`, `--help`:
    Display help message with a list of available command line options.
 
@@ -125,7 +127,7 @@ The config file use INI format with sections and variables as in this example :
 	exec                           = 
 	childs                         = true
 	enabled                        = true
-  ranks                          =
+	ranks                          =
 
 	[dump]
 	on-signal                      = 
@@ -346,18 +348,18 @@ In that case you can setup some environment variables to configure MALT :
 
 If you run on a really big program doing millions of allocation you might get a big overhead, and maybe
 you are just interested in a sub-part of the program. You can do it by including `malt/malt.h` in
-your files and use `maltEnable()` an `maltDisable()` to controle MALT on each thread. It is also a nice
+your files and use `malt_enable()` an `malt_disable()` to controle MALT on each thread. It is also a nice
 way to detect leaks of sub-parts of your code.
 
 	#include <malt/malt.h>
 
 	int main() 
 	{
-		maltDisable();
+		malt_disable();
 		//ignored
 		malloc(16);
 	
-		maltEnable();
+		malt_enable();
 		//tracked
 		malloc(16);
 	}
@@ -367,6 +369,30 @@ You can also just provide the two empty functions in your own dynamic library (n
 
 If you have some allocation not under your control before your first call you can disable MALT by default
 on threads using the `filter:enabled` option, then enable it by hand.
+
+If you want to change the initial status (make it disabled at start), you can simply redefine in your program
+the function :
+
+	#include <stdlib.h>
+	#include <malt/malt.h>
+
+	//malt will be disabled at start
+	int malt_init_status(void)
+	{
+		return 0;
+	}
+
+	int main()
+	{
+		//perform some costly code
+
+		malt_enable();
+		//perform some costly code you want to analyse
+		malt_disable();
+
+		//ok
+		return EXIT_SUCCESS;
+	}
 
 ## WRAPPING A CUSTOM ALLOCATOR
 
@@ -386,7 +412,7 @@ with a custom symbol prefix):
 
 ## VERSION
 
-   This is the manpage of MALT version 1.4.1.
+   This is the manpage of MALT version 1.5.0-beta.
 
 ## SEE ALSO
 

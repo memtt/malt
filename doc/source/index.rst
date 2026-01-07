@@ -1,0 +1,136 @@
+.. MALT documentation master file, created by
+   sphinx-quickstart on Thu Oct  2 15:33:24 2025.
+   You can adapt this file completely to your liking, but it should at least
+   contain the root `toctree` directive.
+
+MALT documentation
+==================
+
+.. image:: _static/images/malt-logo.png
+   :width: 40%
+   :align: center
+
+What is MALT ?
+--------------
+
+MALT is a memory tool to find where you allocate your memory. It also provides you some statistics
+about memory usage and help to find memory leaks.
+
+It is done to be used on laguages : **C**, **C++**, **Fortran**, **Rust**, **Python** *(expérimental)*.
+
+It comes with a web-based graphical interface to navigate the profile :
+
+.. image:: _static/images/malt-source-annot.png
+
+First time here?
+----------------
+
+We have a few places for you to get started:
+
+.. descriptions here are active
+
+:doc:`/start/dependencies`
+  Start by installing the **required** or **optional** dependencies.
+
+:doc:`/start/installation`
+  Follow the **installation procedure**.
+
+:doc:`/start/basic-usage`
+  Make your first steps by **using malt**.
+
+:doc:`/start/metrics`
+  The metrics exported by **malt**.
+
+:doc:`/start/infos`
+  General informations about **malt**.
+
+Advanced topics
+---------------
+
+:doc:`/advanced/mpi`
+  Using MALT for **MPI** applications.
+
+:doc:`/advanced/custom-allocs`
+  Using MALT with **custom memory allocators**.
+
+:doc:`/advanced/sub-part`
+  Using MALT on a **sub-part of your programe**.
+
+:doc:`/advanced/finstrum`
+  Using MALT with **-finstrument-functions**.
+
+:doc:`/advanced/track-oom`
+  Using MALT to track **out of memory** on a program.
+
+:doc:`/advanced/options`
+  Using MALT **options**.
+
+:doc:`/advanced/build-options`
+  Compiling MALT with extra **build options**.
+
+:doc:`/advanced/packaging`
+  Building **packaging** for common distributions.
+
+External pointers
+-----------------
+
+:doc:`/external/other-tools`
+  Discovering some other **alternative tools**.
+
+:doc:`/external/other-allocators`
+  Discovering some **alternative memory allocators**.
+
+:doc:`/external/documentation`
+  Documentation about **memory managment**.
+
+For developpers
+---------------
+
+:doc:`/developer/debug`
+  Documentation about **debugging** MALT crashed.
+:doc:`/developer/lifecycle`
+  Documentation about **lifecycle** of MALT sources.
+
+.. the global tocs
+
+.. toctree::
+   :maxdepth: 1
+   :hidden:
+   :caption: Getting started
+
+   /start/dependencies.rst
+   /start/installation.rst
+   /start/basic-usage.rst
+   /start/metrics.rst
+   /start/infos.rst
+
+.. toctree::
+   :maxdepth: 1
+   :hidden:
+   :caption: Advanced topics
+
+   /advanced/mpi.rst
+   /advanced/custom-allocs.rst
+   /advanced/sub-part.rst
+   /advanced/finstrum.rst
+   /advanced/track-oom.rst
+   /advanced/options.rst
+   /advanced/build-options.rst
+   /advanced/packaging.rst
+
+.. toctree::
+   :maxdepth: 1
+   :hidden:
+   :caption: External pointers
+
+   /external/other-tools.rst
+   /external/other-allocators.rst 
+   /external/documentation.rst 
+
+.. toctree::
+   :maxdepth: 1
+   :hidden:
+   :caption: For developpers
+
+   /developer/debug.rst
+   /developer/lifecycle.rst

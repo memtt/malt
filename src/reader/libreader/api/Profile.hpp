@@ -1,6 +1,6 @@
 /***********************************************************
 *    PROJECT  : MALT (MALoc Tracker)
-*    DATE     : 03/2025
+*    DATE     : 10/2025
 *    LICENSE  : CeCILL-C
 *    FILE     : src/reader/libreader/api/Profile.hpp
 *-----------------------------------------------------------
@@ -13,6 +13,7 @@
 /**********************************************************/
 #include "format/MaltProfile.hpp"
 #include "extractors/Extractor.hpp"
+#include "trace/TraceReader.hpp"
 
 /**********************************************************/
 namespace MALTReader
@@ -28,6 +29,7 @@ class Profile
 	protected:
 		MALTFormat::MaltProfile profile;
 		Extractor * extractor{nullptr};
+		TraceReader * traceReader{nullptr};
 };
 
 }

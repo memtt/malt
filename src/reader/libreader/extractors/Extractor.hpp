@@ -1,6 +1,6 @@
 /***********************************************************
 *    PROJECT  : MALT (MALoc Tracker)
-*    DATE     : 09/2025
+*    DATE     : 12/2025
 *    LICENSE  : CeCILL-C
 *    FILE     : src/reader/libreader/extractors/Extractor.hpp
 *-----------------------------------------------------------
@@ -13,6 +13,7 @@
 /**********************************************************/
 #include <functional>
 #include <vector>
+#include <cstdlib>
 #include <nlohmann/json.hpp>
 #include "../format/MaltProfile.hpp"
 
@@ -101,6 +102,7 @@ struct SummaryV2
 		size_t numGblVar{0};
 		size_t globalVarMem{0};
 		size_t tlsVarMem{0};
+		size_t maxThreadCount{0};
 	} summary;
 	SummaryWarnings summaryWarnings;
 	std::vector<MALTFormat::ThreadsStats> threadStats;
@@ -205,6 +207,7 @@ struct Link
 {
 	MALTFormat::LangAddress in;
 	MALTFormat::LangAddress out;
+	bool hasSkipedNodes;
 };
 
 /**********************************************************/
@@ -278,6 +281,8 @@ class Extractor
 		const MALTFormat::ThreadStackMem & getMaxStack(void) const;
 		StackMem getStackMem(void) const;
 		const MALTFormat::MaltProfile & getProfile(void) const;
+		size_t toVirtualAddress(const std::string & binaryObject, size_t inObjectaddress);
+		bool toVirtualAddresses(std::vector<size_t> & addresses, const std::string & binaryObject);
 	private:
 		Graph getFilteredTree(ssize_t nodeId, ssize_t depth, ssize_t height, double minCost, const std::string & metric, bool isRatio) const;
 		inline const InstructionInfosStrRef & getAddrTranslation(MALTFormat::LangAddress addr) const;

@@ -1,11 +1,12 @@
 ############################################################
 #    PROJECT  : MALT (MALoc Tracker)
-#    DATE     : 10/2024
+#    DATE     : 10/2025
 #    LICENSE  : CeCILL-C
 #    FILE     : cmake/FindIniParser.cmake
 #-----------------------------------------------------------
 #    AUTHOR   : Sébastien Valat (ECR) - 2014
 #    AUTHOR   : Sébastien Valat - 2024
+#    AUTHOR   : Sébastien Valat (INRIA) - 2025
 ############################################################
 
 ############################################################
@@ -17,7 +18,7 @@
 #  INIPARSER_DEFINITIONS - Compiler switches required for using iniparser
 
 ############################################################
-set(INIPARSER_PREFIX "" STRING CACHE "Help cmake to find iniparser library (http://ndevilla.free.fr/iniparser) into your system.")
+set(INIPARSER_PREFIX "${CMAKE_INSTALL_PREFIX}" CACHE STRING "Help cmake to find iniparser library (http://ndevilla.free.fr/iniparser) into your system.")
 
 ############################################################
 find_package(PkgConfig)
@@ -41,7 +42,7 @@ set(INIPARSER_INCLUDE_DIRS ${INIPARSER_INCLUDE_DIR} )
 include(FindPackageHandleStandardArgs)
 # handle the QUIETLY and REQUIRED arguments and set INIPARSER_FOUND to TRUE
 # if all listed variables are TRUE
-find_package_handle_standard_args(iniparser  DEFAULT_MSG
+find_package_handle_standard_args(IniParser  DEFAULT_MSG
 	INIPARSER_LIBRARY INIPARSER_INCLUDE_DIR)
 
 ############################################################

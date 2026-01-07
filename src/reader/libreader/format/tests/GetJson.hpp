@@ -38,7 +38,7 @@ static void get_json_in(MALTFormat::JsonIn & data)
 	static bool doneOnce = false;
 	if (fp == nullptr || doneOnce == false) {
 		//generate
-		int status = system("MALT_OPTIONS='output:indent=true;output:name=" CUR_BUILD_DIR "/malt-%1.%3' " BUILD_DIR "/src/libinstrum/tests/simple-case-finstr-linked");
+		system("MALT_OPTIONS='output:indent=true;output:name=" CUR_BUILD_DIR "/malt-%1.%3' " BUILD_DIR "/src/libinstrum/tests/simple-case-finstr-linked");
 		doneOnce = true;
 	} else {
 		fclose(fp);

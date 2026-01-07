@@ -1,10 +1,11 @@
 /***********************************************************
 *    PROJECT  : MALT (MALoc Tracker)
-*    DATE     : 09/2025
+*    DATE     : 01/2026
 *    LICENSE  : CeCILL-C
 *    FILE     : src/reader/webview-2-cpp/main_webview.cpp
 *-----------------------------------------------------------
 *    AUTHOR   : Sébastien Valat (INRIA) - 2025
+*    AUTHOR   : Sébastien Valat - 2026
 ***********************************************************/
 
 /**********************************************************/
@@ -21,7 +22,7 @@
 #include <argp.h>
 #include <libgen.h>
 //internal
-#include "lib/BasicAuth.hpp"
+#include "lib/TokenAuth.hpp"
 #include "lib/ArgChecker.hpp"
 #include "api/WebProfile.hpp"
 #include "extractors/ExtractorHelpers.hpp"
@@ -45,6 +46,8 @@ struct WebviewOptions
 	uint32_t port{8080};
 	std::string socket{};
 	std::list<std::string> overrides;
+	std::string host{"localhost"};
+	bool regenToken{false};
 };
 
 /**********************************************************/
@@ -76,6 +79,12 @@ static error_t parse_opt (int key, char *arg, struct argp_state *state)
 		case 'o':
 			options->overrides.push_back(arg);
 			break;
+		case 'H':
+			options->host = arg;
+			break;
+		case 'r':
+			options->regenToken = true;
+			break;
 		case ARGP_KEY_ARG:
 			/* Too many arguments. */
 			if (state->arg_num >= 1)
@@ -97,11 +106,13 @@ static error_t parse_opt (int key, char *arg, struct argp_state *state)
 void WebviewOptions::parse(int argc, char ** argv)
 {
 	char doc[] = "malt-webview-new -- Micro-server to expose the MALT webview and brower into the MALT profile.";
-	char args_doc[] = "[--no-auth] [-p 8080] [-s UNIX_SOCKET] {PROFILE_FILE}";
+	char args_doc[] = "[--no-auth] [-H localhost] [-p 8080] [-s UNIX_SOCKET] {PROFILE_FILE}";
 	struct argp_option options[] = {
 		{"no-auth",    'n', 0,        0,  "Disable the authentication." },
 		{"port",       'p', "PORT",   0,  "Listening on given port or socket file (8080 by default)."},
 		{"override",   'o', "OLD:NEW",0,  "Override some source path by the given path, in the form : OLD:NEW. Can be called several times."},
+		{"host",       'H', "HOST",   0,  "The host interface to listen on (localhost by default)."},
+		{"regen-token",'r', 0,        0,  "Regenerate the token."},
 		{ 0 }
 	};
 	struct argp argp = { options, parse_opt, args_doc, doc };
@@ -113,6 +124,9 @@ void WebviewOptions::parse(int argc, char ** argv)
 std::string load_full_file(const std::string &fileName)
 {
 	std::ifstream ifs(fileName.c_str(), std::ios::in | std::ios::binary | std::ios::ate);
+
+	if (ifs.fail())
+		return "";
 
 	std::ifstream::pos_type fileSize = ifs.tellg();
 	ifs.seekg(0, std::ios::beg);
@@ -171,23 +185,46 @@ int main(int argc, char ** argv)
 		WebProfile profile(options.filename, true);
 
 		//spwn server
-		BasicAuth * basicAuth = nullptr;
+		TokenAuth * tokenAuth = nullptr;
 		Server svr;
 		gblServerPtr = &svr;
 
 		//arg checker
 		ArgChecker argChecker;
-		argChecker.allowPaths(profile.getExtractor().getSourceFileMap());
+		argChecker.allowPaths(profile.getSourceFileMap());
 		argChecker.overridePaths(options.overrides);
 
 		//set signal handler
 		signal(SIGINT, local_signal_ctrl_c_handler);
 
+		//no auth files
+		std::set<std::string> noAuthFiles;
+		noAuthFiles.insert("/");
+		noAuthFiles.insert("/home");
+		noAuthFiles.insert("/sources");
+		noAuthFiles.insert("/call-tree");
+		noAuthFiles.insert("/timeline");
+		noAuthFiles.insert("/allocSizeDistr");
+		noAuthFiles.insert("/globalVars");
+		noAuthFiles.insert("/stackPeaks");
+		noAuthFiles.insert("/per-thread");
+		noAuthFiles.insert("/realloc");
+		noAuthFiles.insert("/index.html");
+		noAuthFiles.insert("/favicon.ico");
+		noAuthFiles.insert("/assets/index.js");
+		noAuthFiles.insert("/assets/style.css");
+		noAuthFiles.insert("/assets/MavenPro-VariableFont_wght.ttf");
+
 		//if auth is enabled
 		if (options.auth) {
-			basicAuth = new BasicAuth("malt-webview");
-			svr.set_pre_routing_handler([basicAuth](const Request& req, Response& res) {
-				return basicAuth->check(req, res);
+			tokenAuth = new TokenAuth(options.regenToken);
+			svr.set_pre_routing_handler([tokenAuth, &noAuthFiles](const Request& req, Response& res) {
+				//we let access to the app index.html/js/css
+				if (noAuthFiles.find(req.path) != noAuthFiles.end())
+					return Server::HandlerResponse::Unhandled;
+
+				//secrure all the rest
+				return tokenAuth->check(req, res);
 			});
 		}
 
@@ -198,12 +235,50 @@ int main(int argc, char ** argv)
 
 		//handle home page
 		svr.Get("/", [](const Request& req, Response& res) {
-			res.set_redirect("app/index.html");
+			res.set_redirect("index.html");
 		});
 
 		//mount app path
 		const std::string www_path = get_webview_www_path();
-		svr.set_mount_point("/app", www_path + "/client-files/app");
+		svr.set_mount_point("/", www_path + "/dist");
+
+		//handle addresses
+		svr.Get("/home", [&www_path](const Request& req, Response& res) {
+			const std::string data = load_full_file(www_path + "/dist/index.html");
+			res.set_content(data, "text/html");
+		});
+		svr.Get("/sources", [&www_path](const Request& req, Response& res) {
+			const std::string data = load_full_file(www_path + "/dist/index.html");
+			res.set_content(data, "text/html");
+		});
+		svr.Get("/call-tree", [&www_path](const Request& req, Response& res) {
+			const std::string data = load_full_file(www_path + "/dist/index.html");
+			res.set_content(data, "text/html");
+		});
+		svr.Get("/timeline", [&www_path](const Request& req, Response& res) {
+			const std::string data = load_full_file(www_path + "/dist/index.html");
+			res.set_content(data, "text/html");
+		});
+		svr.Get("/allocSizeDistr", [&www_path](const Request& req, Response& res) {
+			const std::string data = load_full_file(www_path + "/dist/index.html");
+			res.set_content(data, "text/html");
+		});
+		svr.Get("/globalVars", [&www_path](const Request& req, Response& res) {
+			const std::string data = load_full_file(www_path + "/dist/index.html");
+			res.set_content(data, "text/html");
+		});
+		svr.Get("/stackPeaks", [&www_path](const Request& req, Response& res) {
+			const std::string data = load_full_file(www_path + "/dist/index.html");
+			res.set_content(data, "text/html");
+		});
+		svr.Get("/per-thread", [&www_path](const Request& req, Response& res) {
+			const std::string data = load_full_file(www_path + "/dist/index.html");
+			res.set_content(data, "text/html");
+		});
+		svr.Get("/realloc", [&www_path](const Request& req, Response& res) {
+			const std::string data = load_full_file(www_path + "/dist/index.html");
+			res.set_content(data, "text/html");
+		});
 
 		//data for the summary
 		svr.Get("/summary.json", [&profile](const Request& req, Response& res) {
@@ -330,7 +405,7 @@ int main(int argc, char ** argv)
 		printf("|                                                                         |\n");
 		printf("|                                                                         |\n");
 		if (options.socket.empty()) {
-			printf("|         Starting server listening on http://localhost:%-4d/             |\n", options.port);
+			printf("|         Starting server listening on http://%s:%-4d/             |\n", options.host.c_str(), options.port);
 		}else {
 			std::string value = std::string("unix://") + options.socket;
 			int left_padding = (71 - value.size()) / 2;
@@ -341,28 +416,34 @@ int main(int argc, char ** argv)
 		printf("|                                                                         |\n");
 		printf("|                        To use from remote you can :                     |\n");
 		if (options.socket.empty()) {
-			printf("|               user> ssh -L8080:localhost:%-4d myserver                  |\n", options.port);
+			printf("|               user> ssh -L8080:%s:%-4d myserver                  |\n", options.host.c_str(), options.port);
 		}else {
-			std::string value = std::string("user> ssh -L8080:localhost:") + options.socket + (" myserver");
+			std::string value = std::string("user> ssh -L8080:") + options.host + std::string(":") + options.socket + (" myserver");
 			int left_padding = (71 - value.size()) / 2;
 			int right_padding = 71 - value.size() - left_padding;
 			printf("|                        Starting server listening on                     |\n");
 			printf("| %*s%s%*s |\n", left_padding, " ", value.c_str(), right_padding, " ");
+		}
+		if (tokenAuth != nullptr) {
+			printf("|                                                                         |\n");
+			const std::string token = tokenAuth->getToken();
+			printf("|                          Authentication token                           |\n");
+			printf("|             %s            |\n", token.c_str());
 		}
 		printf("|                                                                         |\n");
 		printf("+-------------------------------------------------------------------------+\n");
 
 		//listen
 		if (options.socket.empty()) {
-			svr.listen("localhost", options.port);
+			svr.listen(options.host.c_str(), options.port);
 		} else {
-			svr.set_address_family(AF_UNIX).listen(options.socket, 8080);
+			svr.set_address_family(AF_UNIX).listen(options.socket.c_str(), 8080);
 			unlink(options.socket.c_str());
 		}
 
 		//clean
-		if (basicAuth != nullptr)
-			delete basicAuth;
+		if (tokenAuth != nullptr)
+			delete tokenAuth;
 	} catch (std::runtime_error & error) {
 		std::cerr << "ERROR : " << error.what() << std::endl;
 		return EXIT_FAILURE;

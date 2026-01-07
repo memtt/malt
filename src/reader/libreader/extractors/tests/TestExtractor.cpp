@@ -1,6 +1,6 @@
 /***********************************************************
 *    PROJECT  : MALT (MALoc Tracker)
-*    DATE     : 09/2025
+*    DATE     : 10/2025
 *    LICENSE  : CeCILL-C
 *    FILE     : src/reader/libreader/extractors/tests/TestExtractor.cpp
 *-----------------------------------------------------------
@@ -337,7 +337,7 @@ TEST(TestExtractor, getCallTree_svg)
 	//check
 	//ASSERT_EQ(dataExpected["getCallTree"], resJson["dotCode"]) << " Diff: " << nlohmann::json::diff(dataExpected["getCallTree"], resJson["dotCode"]);
 	const std::string svg = resJson["svg"];
-	ASSERT_TRUE(svg.find("<svg") != -1);
+	ASSERT_TRUE(svg.find("<svg") != std::string::npos);
 }
 #endif //HAVE_GRAPHVIZ
 
@@ -487,7 +487,7 @@ TEST(TestExtractor, getCallStackNextLevel_virtual_3)
 	resJson = ExtractorHelpers::toJsonFiltered(resJson, {"*.alloc.count", "*.hasChild", "*.location.function"});
 
 	//load ref
-	std::istringstream file(R"json([{"hasChild":true,"infos":{"alloc":{"count":10}},"location":{"function":"0x3"}},{"hasChild":true,"infos":{"alloc":{"count":53}},"location":{"function":"0x5"}}])json");
+	std::istringstream file(R"json([{"hasChild":true,"infos":{"alloc":{"count":53}},"location":{"function":"0x5"}},{"hasChild":true,"infos":{"alloc":{"count":10}},"location":{"function":"0x3"}}])json");
 	nlohmann::json dataExpected = nlohmann::json::parse(file);
 
 	//check
@@ -529,7 +529,7 @@ TEST(TestExtractor, getCallStackNextLevel_virtual_4_2)
 	resJson = ExtractorHelpers::toJsonFiltered(resJson, {"*.alloc.count", "*.hasChild", "*.location.function"});
 
 	//load ref
-	std::istringstream file(R"json([{"hasChild":false,"infos":{"alloc":{"count":21}},"location":{"function":"0x6"}},{"hasChild":false,"infos":{"alloc":{"count":32}},"location":{"function":"0x7"}}])json");
+	std::istringstream file(R"json([{"hasChild":false,"infos":{"alloc":{"count":32}},"location":{"function":"0x7"}},{"hasChild":false,"infos":{"alloc":{"count":21}},"location":{"function":"0x6"}}])json");
 	nlohmann::json dataExpected = nlohmann::json::parse(file);
 
 	//check

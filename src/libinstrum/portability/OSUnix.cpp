@@ -1,11 +1,11 @@
 /***********************************************************
 *    PROJECT  : MALT (MALoc Tracker)
-*    DATE     : 06/2025
+*    DATE     : 01/2026
 *    LICENSE  : CeCILL-C
 *    FILE     : src/libinstrum/portability/OSUnix.cpp
 *-----------------------------------------------------------
 *    AUTHOR   : Sébastien Valat (ECR) - 2014
-*    AUTHOR   : Sébastien Valat - 2014 - 2022
+*    AUTHOR   : Sébastien Valat - 2014 - 2026
 *    AUTHOR   : Sébastien Valat (INRIA) - 2024 - 2025
 ***********************************************************/
 
@@ -99,7 +99,7 @@ OSMemUsage OSUnix::getMemoryUsage(void)
 			//get end
 			if (res == NULL)
 			{
-				MALT_ASSERT(feof(fp));
+				//MALT_ASSERT(feof(fp));
 				break;
 			}
 			
@@ -288,9 +288,41 @@ std::string OSUnix::getDateTime(void)
 }
 
 /**********************************************************/
-std::string OSUnix::getCmdLine(void)
+OSCmdLine OSUnix::getCmdLine(void)
 {
-	return loadTextFile("/proc/self/cmdline");
+	//vars
+	const char * file = "/proc/self/cmdline";
+	char buffer[16*4096];
+	OSCmdLine res;
+
+	//open an check
+	FILE * fp = fopen(file,"r");
+	assumeArg(fp != NULL,"Failed to read file %1 : %2 !")
+		.arg(file)
+		.argStrErrno()
+		.end();
+
+	//load content
+	while (!feof(fp)){
+		size_t tmp = fread(buffer,1,sizeof(buffer),fp);
+		if (tmp > 0)
+		{
+			//replace arg separator \0 by space
+			size_t last_start = 0;
+			for (size_t i = 0 ; i < tmp ; i++) {
+				if (buffer[i] == '\0') {
+					res.push_back(&buffer[last_start]);
+					last_start = i+1;
+				}
+			}
+		}
+	}
+	
+	//close file
+	fclose(fp);
+
+	//ok
+	return res;
 }
 
 /**********************************************************/

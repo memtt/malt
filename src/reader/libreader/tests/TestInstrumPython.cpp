@@ -1,10 +1,11 @@
 /***********************************************************
 *    PROJECT  : MALT (MALoc Tracker)
-*    DATE     : 06/2025
+*    DATE     : 01/2026
 *    LICENSE  : CeCILL-C
 *    FILE     : src/reader/libreader/tests/TestInstrumPython.cpp
 *-----------------------------------------------------------
 *    AUTHOR   : Sébastien Valat (INRIA) - 2025
+*    AUTHOR   : Sébastien Valat - 2026
 ***********************************************************/
 
 /**********************************************************/
@@ -33,6 +34,17 @@ int maltInitStatus(void)
 }
 
 /**********************************************************/
+#if PY_MAJOR_VERSION == 3 && PY_MINOR_VERSION <= 10
+	const std::string cstRefFile = CUR_SRC_DIR "/TestInstrumPython-3.10.json";
+#elif PY_MAJOR_VERSION == 3 && PY_MINOR_VERSION <= 11
+	const std::string cstRefFile = CUR_SRC_DIR "/TestInstrumPython-3.11.json";
+//#elif PY_MAJOR_VERSION == 3 && PY_MINOR_VERSION > 13 || (PY_MINOR_VERSION == 13 && PY_MICRO_VERSION >= 9)
+//	const std::string cstRefFile = CUR_SRC_DIR "/TestInstrumPython-3.13.json";
+#else
+	const std::string cstRefFile = CUR_SRC_DIR "/TestInstrumPython.json";
+#endif
+
+/**********************************************************/
 TEST(TestInstrumPython, python_basic_array_backtrace)
 {
 	//reset MALT & enable
@@ -41,12 +53,12 @@ TEST(TestInstrumPython, python_basic_array_backtrace)
 	MALT::globalResetForTests();
 
 	//make an alloc
-	maltEnable();
+	malt_enable();
 	const char * argv[] = {"TestInstrum", CUR_SRC_DIR "/main1.py", NULL};
 	::Py_Initialize();
 	MALT::initPythonInstrumentation(argv[1]);
 	int status = ::Py_BytesMain(2, (char**)argv);
-	maltDisable();
+	malt_disable();
 
 	//check
 	ASSERT_EQ(status, 0);
@@ -67,7 +79,7 @@ TEST(TestInstrumPython, python_basic_array_backtrace)
 	resJson = ExtractorHelpers::buildShorterFlatProfileSummary(resJson, true);
 
 	//load ref
-	nlohmann::json ref = nlohmann::json::parse(std::ifstream(CUR_SRC_DIR "/TestInstrumPython.json"));
+	nlohmann::json ref = nlohmann::json::parse(std::ifstream(cstRefFile));
 
 	//check
 	ASSERT_EQ(ref["python_basic_array_backtrace"].dump(1), resJson.dump(1));
@@ -82,12 +94,12 @@ TEST(TestInstrumPython, python_basic_array_enter_exit)
 	MALT::globalResetForTests();
 
 	//make an alloc
-	maltEnable();
+	malt_enable();
 	const char * argv[] = {"TestInstrum", CUR_SRC_DIR "/main1.py", NULL};
 	::Py_Initialize();
 	MALT::initPythonInstrumentation(argv[1]);
 	int status = ::Py_BytesMain(2, (char**)argv);
-	maltDisable();
+	malt_disable();
 
 	//check
 	ASSERT_EQ(status, 0);
@@ -96,7 +108,7 @@ TEST(TestInstrumPython, python_basic_array_enter_exit)
 	MALT::globalDump();
 
 	//load ref
-	nlohmann::json ref = nlohmann::json::parse(std::ifstream(CUR_SRC_DIR "/TestInstrumPython.json"));
+	nlohmann::json ref = nlohmann::json::parse(std::ifstream(cstRefFile));
 
 	//convert
 	Profile profile(profileFile);

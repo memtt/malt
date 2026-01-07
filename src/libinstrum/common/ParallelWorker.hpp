@@ -58,7 +58,7 @@ bool runParallelJobs(T & jobList, int threads)
 
 	//spawn threads
 	std::list<std::thread> workers;
-	for (size_t i = 0 ; i < threads ; i++) {
+	for (int i = 0 ; i < threads ; i++) {
 		workers.emplace_back([&jobList, &cursor, &finalStatus](){
 			//check has one
 			while (1) {

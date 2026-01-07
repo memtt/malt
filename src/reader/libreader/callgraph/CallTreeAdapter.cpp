@@ -12,7 +12,7 @@ This file is originally written in pure JS by
  - Mehdi Raza Jaffery (CERN) - 2016
 It has been rewritten in C++ by
  - Sébastien Valat (INRIA) - 2025
-/**********************************************************/
+***********************************************************/
 
 /**********************************************************/
 #include <algorithm>
@@ -599,7 +599,7 @@ const CallTreeNode * CallTreeAdapter::getNodeByFunctionName(const std::string & 
  */
 const CallTreeNode * CallTreeAdapter::getNodeById(ssize_t nodeId)
 {
-	if (nodeId < 0 || nodeId >= fulltree.nodes.size())
+	if (nodeId < 0 || static_cast<size_t>(nodeId) >= fulltree.nodes.size())
 		return nullptr;
 	else
 		return &fulltree.nodes[nodeId-1];

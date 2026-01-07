@@ -1,6 +1,6 @@
 /***********************************************************
 *    PROJECT  : MALT (MALoc Tracker)
-*    DATE     : 09/2025
+*    DATE     : 10/2025
 *    LICENSE  : CeCILL-C
 *    FILE     : src/libinstrum/state/GlobalState.cpp
 *-----------------------------------------------------------
@@ -422,15 +422,15 @@ void initMpiRankFilter(void)
 		//no filter
 		if (gblState.options->filterRanks.empty()) {
 			gblMpiRankCheckDone = true;
-		} else if (Helpers::getFileId() != OS::getPID()) {
+		} else if (Helpers::getFileId() != static_cast<int>(OS::getPID())) {
 			//split & convert to numbers
 			IntSet whiteList = Helpers::rankStrToIntSet(gblState.options->filterRanks);
 
 			//filter rank
 			if (whiteList.find(Helpers::getFileId()) != whiteList.end())
-				gblState.status = ALLOC_WRAP_FINISH;
-			else
 				fprintf(stderr,"MALT: instrument only MPI rank %d being in : %s\n",Helpers::getFileId(), gblState.options->filterRanks.c_str());
+			else
+				gblState.status = ALLOC_WRAP_FINISH;
 			
 			//do not lazy check anymore
 			gblMpiRankCheckDone = true;

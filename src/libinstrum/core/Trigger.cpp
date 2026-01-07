@@ -183,7 +183,7 @@ void Trigger::pauseAllButMe(void)
 	dirent *pent = NULL;
 	pid_t cur = getpid();
 
-	while (pent = readdir (pdir)) 
+	while ((pent = readdir (pdir))) 
 	{
 		if (pent->d_name[0] == '.')
 			continue;

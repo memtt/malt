@@ -1,6 +1,6 @@
 /***********************************************************
 *    PROJECT  : MALT (MALoc Tracker)
-*    DATE     : 06/2025
+*    DATE     : 10/2025
 *    LICENSE  : CeCILL-C
 *    FILE     : src/libinstrum/wrappers/WrapperPython.cpp
 *-----------------------------------------------------------
@@ -22,7 +22,7 @@
 	{ \
 		LangAddress __retAddr__ = nullAddr; \
 		if (gblOptions->pythonStackEnum == STACK_MODE_ENTER_EXIT_FUNC) { \
-			__retAddr__ = env.getLocalProfiler().getBacktracePythonStack().getCurrentFrameAddr(); \
+			CODE_TIMING("loadCurrentFramePyLL",__retAddr__ = env.getLocalProfiler().getBacktracePythonStack().getCurrentFrameAddr()); \
 		} \
 		if (gblOptions->pythonStackEnum == STACK_MODE_ENTER_EXIT_FUNC)\
 		{\
@@ -80,7 +80,7 @@ void malt_wrap_python_free(void * ctx, void * ptr, PythonFreeFuncPtr real_free, 
 
 	//profile
 	if (guard.needInstrument()) {
-		MALT_WRAPPER_LOCAL_STATE_ACTION_PYTHON(env.getLocalProfiler().onFree(ptr,0,LANG_PYTHON));
+		MALT_WRAPPER_LOCAL_STATE_ACTION_PYTHON(env.getLocalProfiler().onFree(ptr,0,LANG_PYTHON, domain));
 
 		//run the default function
 		assert(env.getGlobalState().status > ALLOC_WRAP_INIT_SYM);
@@ -198,6 +198,7 @@ int malt_wrap_python_on_enter_exit(PyObject *obj, PyFrameObject *frame, int what
 				//////////////////////
 				//get up
 				env.getLocalProfiler().onEnterFunc(nullAddr,parentAddr,true);
+				env.getLocalProfiler().flushPythonCacheSolver();
 				/*PyFrameObject * parentFrame = PyFrame_GetBack(frame);
 				if (parentFrame != nullptr) {
 					env.getLocalProfiler().onEnterFunc(nullAddr,LangAddress(DOMAIN_PYTHON_FRAME, parentFrame),true);
@@ -214,6 +215,7 @@ int malt_wrap_python_on_enter_exit(PyObject *obj, PyFrameObject *frame, int what
 				//printf("exit in %s:%s:%d\n", site.file, site.function, site.line);
 				//////////////
 				env.getLocalProfiler().onExitFunc(nullAddr,parentAddr,true);
+				env.getLocalProfiler().flushPythonCacheSolver();
 				/*PyFrameObject * parentFrame = PyFrame_GetBack(frame);
 				if (parentFrame != nullptr) {
 					env.getLocalProfiler().onExitFunc(nullAddr,LangAddress(DOMAIN_PYTHON_FRAME, parentFrame),true);

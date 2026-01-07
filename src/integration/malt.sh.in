@@ -1,11 +1,11 @@
 #!/bin/bash
 ############################################################
 #    PROJECT  : MALT (MALoc Tracker)
-#    DATE     : 09/2025
+#    DATE     : 01/2026
 #    LICENSE  : CeCILL-C
 #    FILE     : src/integration/malt.sh.in
 #-----------------------------------------------------------
-#    AUTHOR   : Sébastien Valat - 2014 - 2022
+#    AUTHOR   : Sébastien Valat - 2014 - 2026
 #    AUTHOR   : Sébastien Valat (ECR) - 2014 - 2015
 #    AUTHOR   : Sébastien Valat (CERN) - 2015
 #    AUTHOR   : Sébastien Valat (INRIA) - 2023 - 2025
@@ -20,11 +20,13 @@ set -e
 ############################################################
 ENABLE_MPI=false
 ENABLE_GDB=false
+ENABLE_GDB_BACKTRACE=false
 MPI_WRAPPER_DIR="$HOME/.malt"
 MALT_OPTIONS=""
 MALT_VERSION="@MALT_VERSION@@MALT_VERSION_NOTE@"
 MALT_ALLOC_WRAPPER=""
 MALT_WRAP_DIR=""
+ENABLE_ASAN="@ENABLE_ASAN@"
 
 ############################################################
 # calc MALT root dir relative to this script
@@ -338,12 +340,13 @@ maltSelectProfile()
 	PROFILE_PYTHON_NO_STACK="python:stack=none;python:mix=false;stack:mode=none;"
 	PROFILE_PYTHON_ONLY="python:stack=enter-exit;python:mix=false;stack:mode=python;tools:nm=false;"
 	PROFILE_PYTHON_DOMAINS="python:stack=enter-exit;python:mix=false;stack:mode=backtrace;tools:nm=false;"
+	PROFILE_PYTHON_MIX="python:stack=enter-exit;python:mix=true;stack:mode=backtrace;tools:nm=false;"
 	PROFILE_PYTHON_FULL="python:stack=enter-exit;python:mix=true;stack:mode=backtrace;output:loop-suppress=true;python:hide-imports=false;"
 	PROFILE_PYTHON_DEFAULT="${PROFILE_PYTHON_ONLY}"
 	# modes inspirated from scalene configuration (https://arxiv.org/pdf/2212.07597)
 	PROFILE_PYTHON_SAMPLING="python:stack=backtrace;python:mix=true;stack:mode=backtrace;output:loop-suppress=true;stack:sampling=true;"
-	PROFILE_PYTHON_SAMPLING_10M="python:stack=backtrace;python:mix=true;stack:mode=backtrace;output:loop-suppress=true;stack:sampling=true;samplingBw=10485767"
-	PROFILE_PYTHON_SAMPLING_20M="python:stack=backtrace;python:mix=true;stack:mode=backtrace;output:loop-suppress=true;stack:sampling=true;samplingBw=20971529"
+	PROFILE_PYTHON_SAMPLING_10M="python:stack=backtrace;python:mix=true;stack:mode=backtrace;output:loop-suppress=true;stack:sampling=true;stack:samplingBw=10485767"
+	PROFILE_PYTHON_SAMPLING_20M="python:stack=backtrace;python:mix=true;stack:mode=backtrace;output:loop-suppress=true;stack:sampling=true;stack:samplingBw=20971529"
 	
 
 	# list
@@ -355,6 +358,7 @@ maltSelectProfile()
 		echo "python-no-stack       | ${PROFILE_PYTHON_NO_STACK}"
 		echo "python-only           | ${PROFILE_PYTHON_ONLY}"
 		echo "python-domains        | ${PROFILE_PYTHON_DOMAINS}"
+		echo "python-mix            | ${PROFILE_PYTHON_MIX}"
 		echo "python-sampling       | ${PROFILE_PYTHON_SAMPLING}"
 		echo "python-sampling-10M   | ${PROFILE_PYTHON_SAMPLING_10M}"
 		echo "python-sampling-20M   | ${PROFILE_PYTHON_SAMPLING_20M}"
@@ -421,6 +425,7 @@ maltShowHelp()
 	echo "   -t/--trace                  Enable the tracing mode."
 	echo "   -d/--dumpconfig             Enable the dump of config file at exit."
 	echo "   -g/--gdb                    Enable GDB with MALT required options while launching the program."
+	echo "   -G/--gdb-bt                 Enable GDB with MALT and also automatically bactrace on error."
 	echo "   --wrap {type}:{func_name}   Wrap the given allocation (type=malloc,free...) with the"
 	echo "                               given use defined symbol (eg. je_malloc). Can list with"
 	echo "                               coma as separator or call several time."
@@ -485,10 +490,15 @@ while true; do
 			ENABLE_GDB=true
 			shift 1
 			;;
+		--gdb-bt|-G)
+			ENABLE_GDB=true
+			ENABLE_GDB_BACKTRACE=true
+			shift 1
+			;;
 		--mpi)
 			ENABLE_MPI=true
 			if [ ! -e "${MPI_WRAPPER_DIR}/libmaltmpi.so" ]; then
-				echo "Missing MPI wrapper to extract ranks, please prepare it with 'malt --prep-mpi=MPICXX' !"
+				echo "Missing MPI wrapper to extract ranks, please prepare it with 'malt --prep-mpi MPICXX' !"
 				exit 1
 			fi
 			shift 1
@@ -551,8 +561,17 @@ else
 fi
 
 ############################################################
+if [[ "${ENABLE_ASAN}" = "yes" ]]; then
+	ld_preload="libasan.so:${ld_preload}"
+fi
+
+############################################################
 if [ "${ENABLE_GDB}" = "true" ]; then
-	gdb -iex "set environment LD_PRELOAD=${ld_preload}" --args "$@"
+	if [ "${ENABLE_GDB_BACKTRACE}" = "true" ]; then
+		gdb -iex "set environment LD_PRELOAD=${ld_preload}" -ex "run" -ex "bt" -ex "set confirm off" -ex "exit" --args "$@"
+	else
+		gdb -iex "set environment LD_PRELOAD=${ld_preload}" --args "$@"
+	fi
 else
 	LD_PRELOAD="${ld_preload}" "$@"
 fi

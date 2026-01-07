@@ -1,0 +1,19 @@
+.\" generated with Ronn-NG/v0.10.1
+.\" http://github.com/apjanke/ronn-ng/tree/0.10.1
+.TH "MALT\-PYTHON" "1" "January 2026" ""
+.SH "NAME"
+\fBmalt\-python\fR \- MALT instrumentation command for python
+.SH "SYNOPSIS"
+\fBmalt\-python\fR \fIOPTIONS\fR {prgm} [prgm\-options]
+.SH "DESCRIPTION"
+This command is a simple wrapper onto the \fBmalt\fR default command by passing the required options to run over python\. In practice it corresponds simply to :
+.P
+malt \-\-profile python\-default \fIOPTIONS\fR {prgm} [prgm\-options]
+.SH "OPTIONS"
+See the options listed into manpage of \fBmalt\fR command\.
+.P
+The given program can be either the \fBpython\fR command either directly the python script if it has the necessary bash shebang as its first line\.
+.SH "VERSION"
+This is the manpage of MALT version 1\.5\.0\-beta\.
+.SH "SEE ALSO"
+malt\-webview(1), malt(1)

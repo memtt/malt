@@ -1,0 +1,278 @@
+/***********************************************************
+*    PROJECT  : MALT (MALoc Tracker)
+*    DATE     : 11/2025
+*    LICENSE  : CeCILL-C
+*    FILE     : src/webview/client-files/src/assets/scss/_utilities.scss
+*-----------------------------------------------------------
+*    AUTHOR   : Emeric GUYON - 2025
+***********************************************************/
+
+// =============================================================================
+// MALT Design System - Utility Classes
+// =============================================================================
+// These utility classes replace Tailwind classes for consistency with SCSS
+
+@use './variables' as *;
+
+// -----------------------------------------------------------------------------
+// Layout
+// -----------------------------------------------------------------------------
+.flex {
+  display: flex;
+}
+
+.grid {
+  display: grid;
+}
+
+.block {
+  display: block;
+}
+
+.items-center {
+  align-items: center;
+}
+
+.items-start {
+  align-items: flex-start;
+}
+
+.justify-center {
+  justify-content: center;
+}
+
+.justify-between {
+  justify-content: space-between;
+}
+
+.flex-col {
+  flex-direction: column;
+}
+
+.overflow-hidden {
+  overflow: hidden;
+}
+
+.overflow-y-auto {
+  overflow-y: auto;
+}
+
+// -----------------------------------------------------------------------------
+// Spacing - Gap
+// -----------------------------------------------------------------------------
+.gap-1 {
+  gap: $spacing-xs;
+}
+
+.gap-2 {
+  gap: $spacing-sm;
+}
+
+.gap-4 {
+  gap: $spacing-md;
+}
+
+// -----------------------------------------------------------------------------
+// Spacing - Padding
+// -----------------------------------------------------------------------------
+.p-1 {
+  padding: $spacing-xs;
+}
+
+.p-2 {
+  padding: $spacing-sm;
+}
+
+.p-4 {
+  padding: $spacing-md;
+}
+
+.p-6 {
+  padding: $spacing-lg;
+}
+
+.p-8 {
+  padding: $spacing-xl;
+}
+
+.px-4 {
+  padding-left: $spacing-md;
+  padding-right: $spacing-md;
+}
+
+.py-2 {
+  padding-top: $spacing-sm;
+  padding-bottom: $spacing-sm;
+}
+
+.py-3 {
+  padding-top: $spacing-md;
+  padding-bottom: $spacing-md;
+}
+
+.py-8 {
+  padding-top: $spacing-xl;
+  padding-bottom: $spacing-xl;
+}
+
+.pl-2 {
+  padding-left: $spacing-sm;
+}
+
+.pr-3 {
+  padding-right: $spacing-md;
+}
+
+// -----------------------------------------------------------------------------
+// Spacing - Margin
+// -----------------------------------------------------------------------------
+.m-4 {
+  margin: $spacing-md;
+}
+
+.mt-3 {
+  margin-top: $spacing-md;
+}
+
+// -----------------------------------------------------------------------------
+// Width & Height
+// -----------------------------------------------------------------------------
+.w-full {
+  width: 100%;
+}
+
+.h-96 {
+  height: 384px;
+}
+
+// -----------------------------------------------------------------------------
+// Border Radius
+// -----------------------------------------------------------------------------
+.rounded-md {
+  border-radius: $radius-md;
+}
+
+.rounded-lg {
+  border-radius: $radius-lg;
+}
+
+.rounded-xl {
+  border-radius: $radius-xl;
+}
+
+.rounded-full {
+  border-radius: $radius-full;
+}
+
+// -----------------------------------------------------------------------------
+// Text Alignment
+// -----------------------------------------------------------------------------
+.text-left {
+  text-align: left;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.text-right {
+  text-align: right;
+}
+
+// -----------------------------------------------------------------------------
+// Text Size
+// -----------------------------------------------------------------------------
+.text-xs {
+  font-size: $font-size-xs;
+}
+
+.text-sm {
+  font-size: $font-size-sm;
+}
+
+.text-3xl {
+  font-size: $font-size-3xl;
+}
+
+// -----------------------------------------------------------------------------
+// Text Style
+// -----------------------------------------------------------------------------
+.font-medium {
+  font-weight: $font-weight-medium;
+}
+
+.font-bold {
+  font-weight: $font-weight-bold;
+}
+
+.italic {
+  font-style: italic;
+}
+
+.whitespace-nowrap {
+  white-space: nowrap;
+}
+
+.text-ellipsis {
+  text-overflow: ellipsis;
+}
+
+// -----------------------------------------------------------------------------
+// Text Colors
+// -----------------------------------------------------------------------------
+.text-gray-500 {
+  color: $gray-500;
+}
+
+.text-gray-600 {
+  color: $gray-600;
+}
+
+.text-gray-900 {
+  color: $gray-900;
+}
+
+.text-red-800 {
+  color: #991b1b;
+}
+
+.text-primary {
+  color: $color-primary;
+}
+
+// -----------------------------------------------------------------------------
+// Background Colors
+// -----------------------------------------------------------------------------
+.bg-white {
+  background-color: $color-bg-primary;
+}
+
+.bg-red-50 {
+  background-color: $color-error-bg;
+}
+
+// -----------------------------------------------------------------------------
+// Borders
+// -----------------------------------------------------------------------------
+.border {
+  border: 1px solid;
+}
+
+.border-red-200 {
+  border-color: $color-error-border;
+}
+
+// -----------------------------------------------------------------------------
+// Transitions
+// -----------------------------------------------------------------------------
+.transition-all {
+  transition: all $transition-base $transition-ease;
+}
+
+.duration-150 {
+  transition-duration: $transition-fast;
+}
+
+.duration-300 {
+  transition-duration: $transition-slow;
+}

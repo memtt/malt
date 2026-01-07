@@ -1,6 +1,6 @@
 /***********************************************************
 *    PROJECT  : MALT (MALoc Tracker)
-*    DATE     : 06/2025
+*    DATE     : 10/2025
 *    LICENSE  : CeCILL-C
 *    FILE     : src/reader/libreader/main_stream.cpp
 *-----------------------------------------------------------
@@ -10,7 +10,7 @@
 /**********************************************************/
 #include <iostream>
 #include <nlohmann/json.hpp>
-#include "api/Requests.h"
+#include "public-api/malt-reader.h"
 
 /**********************************************************/
 int main(int argc, char ** argv)

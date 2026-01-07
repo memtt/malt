@@ -1,6 +1,6 @@
 /***********************************************************
 *    PROJECT  : MALT (MALoc Tracker)
-*    DATE     : 09/2025
+*    DATE     : 11/2025
 *    LICENSE  : CeCILL-C
 *    FILE     : src/libinstrum/stacks/MultiLangStackMerger.cpp
 *-----------------------------------------------------------
@@ -62,6 +62,9 @@ void MultiLangStackMerger::mixPythonAndCStack(Stack& outStack, const Stack & cSt
 	//reset
 	outStack.size = 0;
 
+	//TODO: currently we don't consider python -> c -> python -> c ....
+	//to handle it, we need to replace a C call to the EvalFrame function one by one.
+
 	//loop on C stack
 	size_t cur = 0;
 	size_t alreadyCopyPythonStack = 0;//I don't like this "bidouille" to not take the fist function call from the python binary
@@ -107,7 +110,7 @@ void MultiLangStackMerger::removePythonLib(Stack& outStack, const Stack & inStac
 
 	//copy only non python addresses
 	size_t cur = 0;
-	for (size_t i = 0 ; i < inStack.getSize() ; i++) {
+	for (ssize_t i = inStack.getSize() - 1 ; i >= 0 ; i--) {
 		if (this->isPythonLibAddr(inStack[i]) == false)
 			outStack.stack[cur++] = inStack[i];
 	}

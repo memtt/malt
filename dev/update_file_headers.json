@@ -99,7 +99,9 @@
 				"*.h.in",
 				"*.js",
 				"*.css",
-				"*.rs"
+				"*.rs",
+				"*.ts",
+				"*.scss"
 			]
 		},
 		"html": {
@@ -110,7 +112,8 @@
 			"close_start": "",
 			"close_end": "-->",
 			"apply_on": [
-				"*.html"
+				"*.html",
+				"*.vue"
 			]
 		},
 		"fortran": {
@@ -143,6 +146,9 @@
 		"*.txt",
 		"*.xmi",
 		"*.ini",
+		"*.bat",
+		"*.ico",
+		"*.ttf",
 		"packaging/debian/changelog",
 		"packaging/debian/compat",
 		"packaging/debian/control",
@@ -157,13 +163,24 @@
 		"src/webview/client-files/app/partials",
 		"src/webview/client-files/app/bower_components",
 		"*.png",
+		"*.jpg",
+		"*.jpeg",
+		"*.jpeg",
+		"*.rst",
+		"*.svg",
+		"packaging/*",
+		"packaging/*",
+		"*.1",
 		"extern-deps/renenyffenegger-base64/*.h",
 		"extern-deps/renenyffenegger-base64/*.cpp",
 		"src/reader/webview-2-rust/Cargo.lock",
 		"extern-deps/from-http-lib/httplib.h",
 		"extern-deps/from-nlohmann-json/nlohmann/json.hpp",
 		"src/webview/client-files/app/js/prism.js",
-		"src/webview/client-files/app/css/prism.css"
+		"src/webview/client-files/app/css/prism.css",
+		"src/webview/client-files/.editorconfig",
+		"src/webview/client-files/.gitattributes",
+		"src/webview/client-files/.gitignore"
 	],
 	"include_files": [
 		"configure",

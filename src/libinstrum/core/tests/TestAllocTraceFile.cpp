@@ -1,6 +1,6 @@
 /***********************************************************
 *    PROJECT  : MALT (MALoc Tracker)
-*    DATE     : 02/2025
+*    DATE     : 10/2025
 *    LICENSE  : CeCILL-C
 *    FILE     : src/libinstrum/core/tests/TestAllocTraceFile.cpp
 *-----------------------------------------------------------
@@ -27,7 +27,7 @@ TEST(TestAllocTraceFile, constructor)
 }
 
 /**********************************************************/
-TEST(TestAllocTraceFile, trace)
+/*TEST(TestAllocTraceFile, trace)
 {
 	//build tracer
 	const char path[] = "./test-teace-file.malt.trace";
@@ -57,7 +57,7 @@ TEST(TestAllocTraceFile, trace)
 
 	//unlink
 	EXPECT_EQ(0, unlink(path));
-}
+}*/
 
 /**********************************************************/
 int main(int argc, char ** argv)

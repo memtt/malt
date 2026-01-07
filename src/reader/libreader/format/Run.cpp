@@ -1,13 +1,16 @@
 /***********************************************************
 *    PROJECT  : MALT (MALoc Tracker)
-*    DATE     : 06/2025
+*    DATE     : 01/2026
 *    LICENSE  : CeCILL-C
 *    FILE     : src/reader/libreader/format/Run.cpp
 *-----------------------------------------------------------
 *    AUTHOR   : Sébastien Valat (INRIA) - 2025
+*    AUTHOR   : Sébastien Valat - 2026
 ***********************************************************/
 
 /**********************************************************/
+#include "config.h"
+#include <stdexcept>
 #include "Run.hpp"
 
 /**********************************************************/
@@ -45,6 +48,15 @@ void from_json(const JsonIn & json, Run & run)
 
 	//load
 	json.at("formatVersion").get_to(run.formatVersion);
+
+	//check
+	if (run.formatVersion != MALT_JSON_FORMAT_VERSION) {
+		char buffer[4096];
+		snprintf(buffer, sizeof(buffer), "Invalid file format version, has %s where we expecte %s !", run.formatVersion.c_str(), MALT_JSON_FORMAT_VERSION);
+		throw std::runtime_error(buffer);
+	}
+
+	//load
 	json.at("tool").get_to(run.tool);
 	json.at("runtime").get_to(run.runtime);
 	json.at("allocator").get_to(run.allocator);
