@@ -22,7 +22,7 @@ set -x
 VERSION="${1}"
 
 # Extract the sources
-tar -xf /sources/malt-${VERSION}.tar.bz2
+tar -xf /sources/malt-${VERSION}.tar.xz
 
 # move debian dir
 cd malt-${VERSION}
