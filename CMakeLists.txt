@@ -50,6 +50,7 @@ set(ENABLE_JEMALLOC       "yes"      CACHE BOOL   "Enable building internal JeMa
 set(ENABLE_CACHING        "yes"      CACHE BOOL   "Enable some internal caches.")
 set(ENABLE_PREFER_EMBED   "no"       CACHE BOOL   "Prefer using the embeded dependencies that using system one by default.")
 set(ENABLE_PROFILER       "yes"      CACHE BOOL   "Enable the installation of the profiler.")
+set(ENABLE_WEBVIEW        "yes"      CACHE BOOL   "Enable the installation of the webview.")
 set(ENABLE_ASAN           "no"       CACHE BOOL   "Enable ASAN memory checker to debug MALT.")
 #Code options
 set(ENABLE_CODE_TIMING    "no"       CACHE BOOL   "Enable some tricks to quickly check timings of hostspots of MALT internal code.")
@@ -183,6 +184,11 @@ if (ENABLE_LINK_OPTIM)
 else()
 	set(USE_LINK_OPTIM "no")
 	set(MALT_LIB_COMPILER_FLAGS "-fPIC")
+endif()
+
+############################################################
+if (NOT ENABLE_WEBVIEW)
+	set(WEBVIEW_SERVER "OFF")
 endif()
 
 ############################################################

@@ -15,6 +15,7 @@ NEXT - XX/01/2025
  - Use iniparser of the system.
  - Make patches to get in better state for a debian packaging close to offical way.
  - Hide internal symbols with -fvisbility
+ - Add build option --disable-webview and --disable-profiler
 
 1.4.1 - 14/10/2025
 ------------------

@@ -76,6 +76,18 @@ cfg_add_enable_option --name='caching' \
 						--doc='Enable usage of some internal caches to reduce the overhead of MALT.' \
 						--invert-help
 
+#profiler
+cfg_add_enable_option --name='profiler' \
+						--on='-DENABLE_PROFILER=${ON}' \
+						--doc='Disable building of the MALT profiling part.' \
+						--invert-help
+
+#webview
+cfg_add_enable_option --name='webview' \
+						--on='-DENABLE_WEBVIEW=${ON}' \
+						--doc='Disable building of the MALT webview part.' \
+						--invert-help
+
 #webview rebuild
 cfg_add_enable_option --name='webview-rebuild' \
 						--on-enable='-DWEBVIEW_REBUILD=FORCE' \
