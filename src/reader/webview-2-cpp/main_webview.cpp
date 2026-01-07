@@ -124,6 +124,9 @@ std::string load_full_file(const std::string &fileName)
 {
 	std::ifstream ifs(fileName.c_str(), std::ios::in | std::ios::binary | std::ios::ate);
 
+	if (ifs.fail())
+		return "";
+
 	std::ifstream::pos_type fileSize = ifs.tellg();
 	ifs.seekg(0, std::ios::beg);
 
