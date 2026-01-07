@@ -1,10 +1,10 @@
 /***********************************************************
 *    PROJECT  : MALT (MALoc Tracker)
-*    DATE     : 02/2025
+*    DATE     : 01/2026
 *    LICENSE  : CeCILL-C
 *    FILE     : src/libinstrum/stack-tree/from-v2/Stack.cpp
 *-----------------------------------------------------------
-*    AUTHOR   : Sébastien Valat - 2015
+*    AUTHOR   : Sébastien Valat - 2015 - 2026
 *    AUTHOR   : Bastien Levasseur - 2024
 *    AUTHOR   : Sébastien Valat (INRIA) - 2025
 ***********************************************************/

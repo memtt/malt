@@ -1,10 +1,11 @@
 /***********************************************************
 *    PROJECT  : MALT (MALoc Tracker)
-*    DATE     : 07/2025
+*    DATE     : 01/2026
 *    LICENSE  : CeCILL-C
 *    FILE     : src/reader/libreader/format/tests/GetJson.hpp
 *-----------------------------------------------------------
 *    AUTHOR   : Sébastien Valat (INRIA) - 2025
+*    AUTHOR   : Sébastien Valat - 2026
 ***********************************************************/
 
 /**********************************************************/
@@ -38,8 +39,9 @@ static void get_json_in(MALTFormat::JsonIn & data)
 	static bool doneOnce = false;
 	if (fp == nullptr || doneOnce == false) {
 		//generate
-		system("MALT_OPTIONS='output:indent=true;output:name=" CUR_BUILD_DIR "/malt-%1.%3' " BUILD_DIR "/src/libinstrum/tests/simple-case-finstr-linked");
-		doneOnce = true;
+		int status = system("MALT_OPTIONS='output:indent=true;output:name=" CUR_BUILD_DIR "/malt-%1.%3' " BUILD_DIR "/src/libinstrum/tests/simple-case-finstr-linked");
+		if (status == 0)
+			doneOnce = true;
 	} else {
 		fclose(fp);
 	}

@@ -1,11 +1,11 @@
 /***********************************************************
 *    PROJECT  : MALT (MALoc Tracker)
-*    DATE     : 05/2025
+*    DATE     : 01/2026
 *    LICENSE  : CeCILL-C
 *    FILE     : src/libinstrum/tools/NMCmdReader.cpp
 *-----------------------------------------------------------
 *    AUTHOR   : Sébastien Valat (ECR) - 2014
-*    AUTHOR   : Sébastien Valat - 2015 - 2022
+*    AUTHOR   : Sébastien Valat - 2015 - 2026
 *    AUTHOR   : Sébastien Valat (INRIA) - 2025
 ***********************************************************/
 

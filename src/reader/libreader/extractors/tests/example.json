@@ -1,7 +1,7 @@
 {
 	"run":{
 		"formatVersion":"1.5",
-		"tool":"malt-1.5.0-beta",
+		"tool":"malt-1.5.0",
 		"date":"2025-10-27 18:05",
 		"runtime":1296175474,
 		"allocator":"/usr/lib/x86_64-linux-gnu/libc.so.6",
@@ -766,31 +766,31 @@
 			"upper":"0x7808fda28000",
 			"offset":"0x0",
 			"aslrOffset":18446744073709551615,
-			"file":"src/libinstrum/libmalt.so.1.5.0-beta"
+			"file":"src/libinstrum/libmalt.so.1.5.0"
 		}, {
 			"lower":"0x7808fda28000",
 			"upper":"0x7808fdb08000",
 			"offset":"0x28000",
 			"aslrOffset":18446744073709551615,
-			"file":"src/libinstrum/libmalt.so.1.5.0-beta"
+			"file":"src/libinstrum/libmalt.so.1.5.0"
 		}, {
 			"lower":"0x7808fdb08000",
 			"upper":"0x7808fdb33000",
 			"offset":"0x108000",
 			"aslrOffset":18446744073709551615,
-			"file":"src/libinstrum/libmalt.so.1.5.0-beta"
+			"file":"src/libinstrum/libmalt.so.1.5.0"
 		}, {
 			"lower":"0x7808fdb33000",
 			"upper":"0x7808fdb3a000",
 			"offset":"0x132000",
 			"aslrOffset":18446744073709551615,
-			"file":"src/libinstrum/libmalt.so.1.5.0-beta"
+			"file":"src/libinstrum/libmalt.so.1.5.0"
 		}, {
 			"lower":"0x7808fdb3a000",
 			"upper":"0x7808fdb3c000",
 			"offset":"0x139000",
 			"aslrOffset":18446744073709551615,
-			"file":"src/libinstrum/libmalt.so.1.5.0-beta"
+			"file":"src/libinstrum/libmalt.so.1.5.0"
 		}, {
 			"lower":"0x7808fdb3c000",
 			"upper":"0x7808fdf48000",
