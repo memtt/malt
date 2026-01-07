@@ -299,7 +299,7 @@ void ElfReader::loadGlobalVariables(ElfGlobalVariableVector& variables)
 				//fix name
 				//get short name to cut on recent GCC (eg. _ZSt4cout@GLIBCXX_3.4)
 				std::string shortName = var.symbol;
-				int pos = shortName.find("@");
+				size_t pos = shortName.find("@");
 				if (pos != std::string::npos)
 					shortName = shortName.substr(0, pos);
 				

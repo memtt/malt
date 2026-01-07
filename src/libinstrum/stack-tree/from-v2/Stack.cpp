@@ -188,7 +188,7 @@ void Stack::set (void** stack, int size, StackOrder order, MALT::DomainType doma
 	//copy
 	if (this->order == order) 
 	{
-		for (size_t i = 0; i < size; i++)
+		for (int i = 0; i < size; i++)
 			this->stack[i].set(domain, stack[i]);
 		
 	} else {

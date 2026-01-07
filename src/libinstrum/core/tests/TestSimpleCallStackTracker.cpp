@@ -249,7 +249,7 @@ TEST(TestSimpleStackTracker, solveSymbols)
 	SimpleStackTracker tracker;
 
 	//load stack in
-	auto & infos = tracker.getBacktraceInfo(stack, 0);
+	tracker.getBacktraceInfo(stack, 0);
 
 	//resolve
 	SymbolSolver solver;
@@ -279,7 +279,7 @@ TEST(TestSimpleStackTracker, ValgrindOutput)
 	SimpleStackTracker tracker;
 
 	//load stack in
-	auto & infos = tracker.getBacktraceInfo(stack, 0);
+	tracker.getBacktraceInfo(stack, 0);
 
 	//resolve
 	SymbolSolver solver;

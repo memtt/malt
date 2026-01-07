@@ -189,7 +189,7 @@ void Stack::set (void** stack, int size, StackOrder order, DomainType domain)
 	//copy
 	if (this->order == order) 
 	{
-		for (size_t i = 0; i < size; i++)
+		for (int i = 0; i < size; i++)
 			this->stack[i].set(domain, stack[i]);
 		
 	} else {
@@ -626,7 +626,7 @@ Stack & Stack::operator+=(Stack & stack)
 		this->grow();
 
 	//add
-	for (size_t i = 0 ; i < stack.size ; i++)
+	for (int i = 0 ; i < stack.size ; i++)
 		this->stack[this->size++] = stack.stack[i];
 
 	//ok

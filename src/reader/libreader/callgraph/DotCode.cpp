@@ -12,7 +12,7 @@ This file is originally written in pure JS by
  - Mehdi Raza Jaffery (CERN) - 2016
 It has been rewritten in C++ by
  - Sébastien Valat (INRIA) - 2025
-/**********************************************************/
+***********************************************************/
 
 /**********************************************************/
 #include <sstream>

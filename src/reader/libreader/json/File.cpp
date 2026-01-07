@@ -35,7 +35,7 @@ JsonFile::JsonFile(const std::string & fname, bool progress)
 	if (status != 0)
 		throw std::runtime_error(std::string("Fail to get file size : " + std::string(strerror(errno)) + std::string(" : ") + fname));
 	ssize_t size = ftell(fp);
-	if (size < 0 || size > 1024UL*1024UL*1024UL*1024UL)
+	if (size < 0 || size > 1024L*1024L*1024L*1024L)
 		throw std::runtime_error(std::string("Fail to get file size : " + std::string(strerror(errno)) + std::string(" : ") + fname));
 
 	//round to 4K limit

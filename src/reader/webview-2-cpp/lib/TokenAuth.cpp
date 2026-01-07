@@ -160,7 +160,7 @@ std::string TokenAuth::regenToken(void)
 		throw new std::runtime_error(std::string("Fail to chmod ") + path + " to secure the token !");
 
 	//write
-	const ssize_t size = fwrite(token.c_str(), 1, token.size(), fp);
+	const size_t size = fwrite(token.c_str(), 1, token.size(), fp);
 	if (size != token.size())
 		throw new std::runtime_error(std::string("Fail to fully write ") + path + " to store the token !");
 

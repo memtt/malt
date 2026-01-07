@@ -46,7 +46,6 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-,root,root,-)
 %{_bindir}/malt
 %{_bindir}/malt-webview
-%{_bindir}/malt-passwd
 %{_bindir}/malt-python
 %{_libdir}/*
 %{_datadir}/*

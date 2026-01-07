@@ -337,7 +337,7 @@ void LocalAllocStackProfiler::solveSymbols(SymbolSolver& symbolResolver) const
 void LocalAllocStackProfiler::loadPythonFirstBacktrace(void)
 {
 	CODE_TIMING("loadCurrentStack",backtracePythonStack.loadCurrentStack());
-	for (size_t i = 0 ; i < backtracePythonStack.getSize() ; i++) {
+	for (int i = 0 ; i < backtracePythonStack.getSize() ; i++) {
 		this->enterExitStack.enterFunction(backtracePythonStack[i]);
 	}
 }
@@ -374,7 +374,6 @@ Stack* LocalAllocStackProfiler::getStack(Language lang, size_t size, bool isFree
 		return &this->samplePrev;
 
 	//vars
-	bool oldInUse;
 	bool hasPythonGIL = false;
 	PyGILState_STATE pythonGilState;
 	Stack* result = nullptr;

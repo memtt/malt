@@ -337,7 +337,7 @@ TEST(TestExtractor, getCallTree_svg)
 	//check
 	//ASSERT_EQ(dataExpected["getCallTree"], resJson["dotCode"]) << " Diff: " << nlohmann::json::diff(dataExpected["getCallTree"], resJson["dotCode"]);
 	const std::string svg = resJson["svg"];
-	ASSERT_TRUE(svg.find("<svg") != -1);
+	ASSERT_TRUE(svg.find("<svg") != std::string::npos);
 }
 #endif //HAVE_GRAPHVIZ
 

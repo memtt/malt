@@ -125,8 +125,8 @@ FlatProfileVector Extractor::getFlatProfile(const LocaltionMappingFunc & mapping
 			{
 				std::cerr << "Warning : get call stacks with only allocation function ??? : " << std::endl;
 				//TODO make serialization of stacks
-				for (const auto it : stack) {
-					InstructionInfosStrRef infosRef = getAddrTranslation(stack[skip]);
+				for (const auto & it : stack) {
+					InstructionInfosStrRef infosRef = getAddrTranslation(it);
 					std::cerr << "           - " << *infosRef.file << ":" << infosRef.line << " (" << *infosRef.function << ")" << std::endl;
 				}
 				//TODO print infos
@@ -568,7 +568,7 @@ FilteredStackList Extractor::getFilterdStacks(const LocaltionOnlyFilterFunc & fi
 FilteredStackList Extractor::getFilterdStacksOnFileLine(const std::string & file, size_t line) const
 {
 	return this->getFilterdStacks([&file, line](const InstructionInfosStrRef & location) {
-		return *location.file == file && location.line == line;
+		return *location.file == file && location.line == static_cast<ssize_t>(line);
 	});
 }
 
@@ -703,9 +703,9 @@ SummaryV2 Extractor::getSummaryV2(void) const
 	for(const auto & it : stats)
 	{
 		const StackInfos & info = it.infos;
-		if ((info.alloc.min < min || min == -1) && info.alloc.min > 0)
+		if ((info.alloc.min < static_cast<size_t>(min) || min == -1) && info.alloc.min > 0)
 			min = info.alloc.min;
-		if (info.alloc.max > max || max == -1)
+		if (info.alloc.max > static_cast<size_t>(max) || max == -1)
 			max = info.alloc.max;
 		count += info.alloc.count;
 		sum += info.alloc.sum;
@@ -822,9 +822,9 @@ Summary Extractor::getSummary(void) const
 	for (const auto & it : stats)
 	{
 		const auto & info = it.infos;
-		if ((info.alloc.min < min || min == -1) && info.alloc.min > 0)
+		if ((info.alloc.min < static_cast<size_t>(min) || min == -1) && info.alloc.min > 0)
 			min = info.alloc.min;
-		if (info.alloc.max > max || max == -1)
+		if (info.alloc.max > static_cast<size_t>(max) || max == -1)
 			max = info.alloc.max;
 		count += info.alloc.count;
 		sum += info.alloc.sum;
@@ -1029,8 +1029,8 @@ Graph Extractor::getFilteredTree(ssize_t nodeId, ssize_t depth, ssize_t height, 
 		}
 
 		//calc depth range we accept
-		ssize_t minDepth = 0;
-		ssize_t maxDepth = depth + 1;
+		size_t minDepth = 0;
+		size_t maxDepth = depth + 1;
 		bool keep = true;
 		if (targetFuncName != nullptr) {
 			auto it = funcMinDepth.find(targetFuncName);
@@ -1147,7 +1147,7 @@ Graph Extractor::getFilteredTree(ssize_t nodeId, ssize_t depth, ssize_t height, 
 		std::set<std::pair<const std::string *, const std::string *>> seenLinks;
 		for (size_t i = 0 ; i < stack.size() - 1 ; i++) {
 			//reverse
-			const size_t eid = stack.size() - i - 1;
+			const ssize_t eid = stack.size() - i - 1;
 
 			//get
 			const LangAddress in = stack.at(eid);
@@ -1295,9 +1295,8 @@ nlohmann::json Extractor::getCallTree(ssize_t nodeId, ssize_t depth, ssize_t hei
 
 			//calc func min depth
 			std::unordered_map<const std::string*, size_t> funcMinDepth;
-			size_t curDepth = 0;
-			for (size_t i = 0 ; i < stack.size() ; i++) {
-				const size_t eid = stack.size() - i - 1;
+			for (ssize_t i = 0 ; i < static_cast<ssize_t>(stack.size()) ; i++) {
+				const int eid = stack.size() - i - 1;
 				const LangAddress addr = stack.at(eid);
 				const auto & location = this->getAddrTranslation(addr);
 				if (*location.function == func && i < depthByName) {
@@ -1316,7 +1315,7 @@ nlohmann::json Extractor::getCallTree(ssize_t nodeId, ssize_t depth, ssize_t hei
 
 	//get metric
 	MaltFuncMetrics metrics;
-	const MaltMetric & metricDef = metrics.getMetrics().at(metric);
+	//const MaltMetric & metricDef = metrics.getMetrics().at(metric);
 
 	// Filter tree and get the focal node
 	// console.time("filterNodeLine");

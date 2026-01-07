@@ -12,7 +12,7 @@ This file is originally written in pure JS by
  - Mehdi Raza Jaffery (CERN) - 2016
 It has been rewritten in C++ by
  - Sébastien Valat (INRIA) - 2025
-/**********************************************************/
+***********************************************************/
 
 #ifndef MALT_READER_CALL_TREE_ADAPTER_HPP
 #define MALT_READER_CALL_TREE_ADAPTER_HPP
@@ -80,7 +80,7 @@ struct CallTreeNode
 {
 	CallTreeNode(size_t id, std::string label, std::string tooltip, size_t level, MALTFormat::StackInfos stats, const InstructionInfosStrRef * location);
 	CallTreeNode(const CallTreeNode & orig) = default;
-	size_t id{0};
+	ssize_t id{0};
 	std::string label;
 	std::string tooltip;
 	size_t level{0};

@@ -84,9 +84,7 @@ void JsonFileCursor::parseObject(JsonNode & node)
 	this->getNextChar();
 
 	//map
-	const size_t block = 10240;
 	std::list<std::pair<JsonString, JsonNode> > tmpMap;
-	//tmpMap.reserve(block);
 
 	while (1) {
 		//vars

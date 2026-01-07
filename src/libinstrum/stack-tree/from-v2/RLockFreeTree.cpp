@@ -257,7 +257,6 @@ void convertToJson(htopml::JsonState& json, const std::map<void*,void*>  & value
 /**********************************************************/
 void convertToJson(htopml::JsonState& json, const RLockFreeTree& tree)
 {
-	char buffer[128];
 	json.openStruct();
 		json.openFieldStruct("addresses");
 			for (std::map<MALT::LangAddress,MALT::LangAddress>::const_iterator it = tree.addrToId.begin() ; it != tree.addrToId.end() ; ++it)
@@ -282,7 +281,6 @@ void convertToJson(htopml::JsonState& json, const RLockFreeTree& tree)
 /**********************************************************/
 void convertToJson(htopml::JsonState& json, const RLockFreeTreeNode& tree)
 {
-	char buffer[64];
 	json.openStruct();
 		//data ID
 		bool haveData = false;

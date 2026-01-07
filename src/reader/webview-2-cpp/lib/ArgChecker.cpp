@@ -159,7 +159,7 @@ void ArgChecker::allowPaths(const std::map<std::string, bool> & paths)
 void ArgChecker::overridePaths(const std::list<std::string> & paths)
 {
 	for (const auto & it : paths) {
-		ssize_t separatorPos = it.find(':');
+		size_t separatorPos = it.find(':');
 		if (separatorPos != it.npos) {
 			const std::string orig = it.substr(0, separatorPos);
 			const std::string overrided = it.substr(separatorPos + 1, it.size() - separatorPos - 1);

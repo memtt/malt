@@ -115,7 +115,7 @@ void BacktraceStack::loadCurrentStack(void)
  */
 void BacktraceStack::onGrow(size_t newSize)
 {
-	assert(newSize = this->memSize);
+	assert(newSize == static_cast<size_t>(this->memSize));
 	this->stackBuffer = (void**)MALT_REALLOC(this->stackBuffer,newSize * sizeof(void*));
 }
 

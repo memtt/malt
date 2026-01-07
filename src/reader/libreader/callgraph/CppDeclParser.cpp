@@ -12,7 +12,7 @@ This file is originally written in pure JS by
  - Mehdi Raza Jaffery (CERN) - 2016
 It has been rewritten in C++ by
  - Sébastien Valat (INRIA) - 2025
-/**********************************************************/
+***********************************************************/
 
 /**********************************************************/
 #include <algorithm> 
@@ -121,7 +121,7 @@ FuncDescription CppDeclParser::parseCppPrototype(std::string func)
 	}
 
 	size_t doubleColonPosition = func.find_last_of("::");
-	bool hasClass = (doubleColonPosition != -1) && (func.substr(doubleColonPosition).find_last_of(' ') == -1);
+	bool hasClass = (doubleColonPosition != std::string::npos) && (func.substr(doubleColonPosition).find_last_of(' ') == std::string::npos);
 
 	// Get function name if there is class
 	if(hasClass) {
@@ -140,7 +140,7 @@ FuncDescription CppDeclParser::parseCppPrototype(std::string func)
 	}
 
 	size_t lastSpacePosition = func.find_last_of(' ');
-	bool hasReturnValue = (lastSpacePosition != -1);
+	bool hasReturnValue = (lastSpacePosition != std::string::npos);
 
 	// Get class name and namespace
 	if(hasClass) {
@@ -152,7 +152,7 @@ FuncDescription CppDeclParser::parseCppPrototype(std::string func)
 		}
 
 		// Is namespaced?
-		if(className.find_last_of("::") != -1) {
+		if(className.find_last_of("::") != std::string::npos) {
 			funcDescription.nameSpace = className.substr(START_END_TO_START_SIZE(0, className.find_last_of("::")-1));
  			className = className.substr(className.find_last_of("::") + 1);
 		}

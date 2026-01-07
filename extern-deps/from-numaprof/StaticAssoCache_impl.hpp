@@ -54,10 +54,10 @@ void StaticAssoCache<T,ways,rows>::flush(void)
 	#endif //NUMAPROF_CACHE_STATS
 
 	//flush
-	for (int r = 0 ; r < rows ; r++)
+	for (size_t r = 0 ; r < rows ; r++)
 	{
 		next[r] = 0;
-		for (int w = 0 ; w < ways ; w++)
+		for (size_t w = 0 ; w < ways ; w++)
 			addr[r][w] = -1UL;
 	}
 
@@ -76,7 +76,7 @@ const T * StaticAssoCache<T,ways,rows>::get(size_t addr) const
 	int r = addr % rows;
 
 	//loop on ways
-	for (int w = 0 ; w < ways ; w++)
+	for (size_t w = 0 ; w < ways ; w++)
 	{
 		if (this->addr[r][w] == addr)
 		{
@@ -129,7 +129,7 @@ void StaticAssoCache<T,ways,rows>::unset(size_t addr)
 	int r = addr % rows;
 
 	//loop on ways
-	for (int w = 0 ; w < ways ; w++)
+	for (size_t w = 0 ; w < ways ; w++)
 	{
 		if (this->addr[r][w] == addr)
 			this->addr[r][w] = -1UL;

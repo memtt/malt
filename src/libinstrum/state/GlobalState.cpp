@@ -422,7 +422,7 @@ void initMpiRankFilter(void)
 		//no filter
 		if (gblState.options->filterRanks.empty()) {
 			gblMpiRankCheckDone = true;
-		} else if (Helpers::getFileId() != OS::getPID()) {
+		} else if (Helpers::getFileId() != static_cast<int>(OS::getPID())) {
 			//split & convert to numbers
 			IntSet whiteList = Helpers::rankStrToIntSet(gblState.options->filterRanks);
 

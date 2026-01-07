@@ -81,7 +81,7 @@ bool NMCmdReader::load(const std::string& binaryFile)
 	}
 
 	//close
-	fclose(fp);
+	pclose(fp);
 	
 	//mark as done
 	this->binaryFile = binaryFile;

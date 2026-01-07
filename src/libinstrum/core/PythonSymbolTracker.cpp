@@ -118,7 +118,9 @@ LangAddress PythonSymbolTracker::parentFrameToLangAddress(PyFrameObject * frame)
  */
 void PythonSymbolTracker::makeStackPythonDomain(Stack & stack)
 {
-	for (size_t i = 0 ; i < stack.getSize() ; i++) {
+	MALT_ASSERT(stack.getSize() >= 0);
+
+	for (int i = 0 ; i < stack.getSize() ; i++) {
 		if (stack[i].getDomain() == DOMAIN_PYTHON_FRAME) {
 			PyFrameObject * frame = (PyFrameObject *)stack[i].getAddress();
 			stack[i] = this->frameToLangAddress(frame);

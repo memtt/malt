@@ -82,9 +82,6 @@ AllocStackProfiler::AllocStackProfiler(const Options & options,StackMode mode,bo
 	,lifetimeOverSize(64,64,true,true)
 	,trigger(options, true)
 {
-	//vars
-	bool doDump = false;
-
 	this->mode = mode;
 	this->threadSafe = threadSafe;
 	this->options = options;
@@ -609,7 +606,7 @@ void AllocStackProfiler::applyVmaPatches(Stack* userStack, MMCallStackNode* call
 void AllocStackProfiler::onMunmap (AllocTracerEvent & traceEntry, void* ptr, size_t size, Stack* userStack, MMCallStackNode* callStackNode )
 {
 	VmaSegmentPatches vmaPatches;
-	ssize_t delta = vmaTracker.munmap(ptr,size,&vmaPatches);
+	vmaTracker.munmap(ptr,size,&vmaPatches);
 	this->applyVmaPatches(userStack, callStackNode, vmaPatches);
 
 	//trace
@@ -825,7 +822,7 @@ void AllocStackProfiler::loopSuppress(void)
 bool AllocStackProfiler::isImportStack(const Stack & stack) const
 {
 	const auto & importAddresses = this->pythonSymbolTracker.getImportAddresses();
-	for (size_t i = 0 ; i < stack.getSize() ; i++) {
+	for (int i = 0 ; i < stack.getSize() ; i++) {
 		LangAddress addr = stack[i];
 		if (importAddresses.find(addr) != importAddresses.end()) {
 			return true;

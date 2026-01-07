@@ -12,7 +12,7 @@ This file is originally written in pure JS by
  - Mehdi Raza Jaffery (CERN) - 2016
 It has been rewritten in C++ by
  - Sébastien Valat (INRIA) - 2025
-/**********************************************************/
+***********************************************************/
 
 /**********************************************************/
 #include <unistd.h>
@@ -161,8 +161,8 @@ std::string GraphGenerator::convertDotToSvg(const std::string & dotCode)
 	//dump dot in
 	FILE * fpFile = fopen(fname, "w+");
 	const ssize_t status2 = fwrite(dotCode.c_str(), 1, dotCode.size(), fpFile);
-	assert(status2 == dotCode.size());
-	if (status2 != dotCode.size())
+	assert(status2 == (ssize_t)dotCode.size());
+	if (status2 != (ssize_t)dotCode.size())
 		return "";
 	fclose(fpFile);
 
@@ -184,7 +184,7 @@ std::string GraphGenerator::convertDotToSvg(const std::string & dotCode)
 		buffer[size] = '\0';
 		rbuffer << buffer;
 	}
-	fclose(fpDot);
+	pclose(fpDot);
 
 	//remove
 	unlink(fname);

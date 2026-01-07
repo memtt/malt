@@ -44,6 +44,9 @@ std::string to_string(const LangAddress & value)
 		case LANG_PYTHON:
 			lang = "PY-";
 			break;
+		case LANG_TRANS_PTR:
+			lang = "PYPTR-";
+			break;
 		case LANG_C:
 			break;
 	}

@@ -39,7 +39,7 @@ struct GlobalVariable
 	size_t offset;
 	size_t secOffset;
 	bool tls;
-	size_t line;
+	ssize_t line;
 	std::string sourceFile;
 	std::string binaryFile;
 };
