@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 ############################################################
 #    PROJECT  : MALT (MALoc Tracker)
-#    DATE     : 10/2025
+#    DATE     : 01/2026
 #    LICENSE  : CeCILL-C
 #    FILE     : dev/build_and_test_on_distributions.py
 #-----------------------------------------------------------
 #    AUTHOR   : Sébastien Valat (INRIA) - 2024 - 2025
-#    AUTHOR   : Sébastien Valat - 2024
+#    AUTHOR   : Sébastien Valat - 2024 - 2026
 ############################################################
 
 ############################################################

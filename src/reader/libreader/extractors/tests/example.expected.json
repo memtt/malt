@@ -2597,7 +2597,7 @@
    "cnt": 11,
    "mem": 13938688
   },
-  "src/libinstrum/libmalt.so.1.4.1": {
+  "src/libinstrum/libmalt.so.1.5.0-beta": {
    "cnt": 5,
    "mem": 1294336
   },
@@ -2627,10 +2627,10 @@
    "command": "src/reader/libreader/extractors/tests/extractor-example",
    "date": "2025-10-27 18:05",
    "exe": "extractor-example",
-   "formatVersion": "1.1",
+   "formatVersion": "1.5",
    "hostname": "sebv6",
    "runtime": 1296175474,
-   "tool": "malt-1.4.1"
+   "tool": "malt-1.5.0-beta"
   },
   "summary": {
    "allocCount": 4,

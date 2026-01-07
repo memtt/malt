@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta http-equiv='content-type' content='text/html;charset=utf8'>
-  <meta name='generator' content='Ronn-NG/v0.9.1 (http://github.com/apjanke/ronn-ng/tree/0.9.1)'>
+  <meta http-equiv='content-type' content='text/html;charset=utf-8'>
+  <meta name='generator' content='Ronn-NG/v0.10.1 (http://github.com/apjanke/ronn-ng/tree/0.10.1)'>
   <title>malt(1) - A memory profiling tool</title>
   <style type='text/css' media='all'>
   /* style: man */
@@ -145,8 +145,11 @@ Automatically wrap all the memory managment functions under the given prefix. Yo
 several prefixes separated by comma. For exemple giving <code>je_</code> will wrap all the <code>je_malloc</code>,
 <code>je_free</code>, <code>je_realloc</code>... functions.</li>
   <li>
-<code>--gdb</code>:
+<code>-g</code>, <code>--gdb</code>:
 Run the program into GDB by configuring Automatically GDB to work properly with MALT.</li>
+  <li>
+<code>-G</code>, <code>--gdb-bt</code>
+Enable GDB with MALT and also automatically bactrace on error.</li>
   <li>
 <code>-h</code>, <code>--help</code>:
 Display help message with a list of available command line options.</li>
@@ -214,7 +217,8 @@ hidden                         = false
 [filter]
 exec                           = 
 childs                         = true
-enabled                        = true   ranks                          =
+enabled                        = true
+ranks                          =
 
 [dump]
 on-signal                      = 
@@ -447,10 +451,14 @@ of python but miss part of the memory consumption if your program store lots of 
 <dd>Same but for the raw allocation domain of python which is backed by the standard C malloc function. In principle you should let it enabled.</dd>
 </dl>
 
-<p>The <code>tools</code> section permit to configure some of the sub-tools called by MALT to perform its analysis.
-  * <code>nm</code>: Use to extract the source location of the global variables. If true (default) it is used, otherwise it is skiped.
-  * <code>nmMaxSize</code>: By default it limits the size of the .so files on which to apply NM in order to keep a decent profile dumping
-    time when running on large frameworks like PyTorch which tends to load huge .so files in memory.</p>
+<p>The <code>tools</code> section permit to configure some of the sub-tools called by MALT to perform its analysis.</p>
+<ul>
+  <li>
+<code>nm</code>: Use to extract the source location of the global variables. If true (default) it is used, otherwise it is skiped.</li>
+  <li>
+<code>nmMaxSize</code>: By default it limits the size of the .so files on which to apply NM in order to keep a decent profile dumping
+time when running on large frameworks like PyTorch which tends to load huge .so files in memory.</li>
+</ul>
 
 <h2 id="ENVIRONMENT">ENVIRONMENT</h2>
 
@@ -496,6 +504,31 @@ You can also just provide the two empty functions in your own dynamic library (n
 <p>If you have some allocation not under your control before your first call you can disable MALT by default
 on threads using the <code>filter:enabled</code> option, then enable it by hand.</p>
 
+<p>If you want to change the initial status (make it disabled at start), you can simply redefine in your program
+the function :</p>
+
+<pre><code>#include &lt;stdlib.h&gt;
+#include &lt;malt/malt.h&gt;
+
+//malt will be disabled at start
+int malt_init_status(void)
+{
+	return 0;
+}
+
+int main()
+{
+	//perform some costly code
+
+	malt_enable();
+	//perform some costly code you want to analyse
+	malt_disable();
+
+	//ok
+	return EXIT_SUCCESS;
+}
+</code></pre>
+
 <h2 id="WRAPPING-A-CUSTOM-ALLOCATOR">WRAPPING A CUSTOM ALLOCATOR</h2>
 
 <p>If your application use a custom allocator with a different namespce than the default <code>malloc</code>, <code>free</code>...
@@ -516,7 +549,7 @@ malt --wrap-prefix je_,another_custom_
 
 <h2 id="VERSION">VERSION</h2>
 
-<p>This is the manpage of MALT version 1.4.1.</p>
+<p>This is the manpage of MALT version 1.5.0-beta.</p>
 
 <h2 id="SEE-ALSO">SEE ALSO</h2>
 
@@ -524,7 +557,7 @@ malt --wrap-prefix je_,another_custom_
 
   <ol class='man-decor man-foot man foot'>
     <li class='tl'></li>
-    <li class='tc'>October 2025</li>
+    <li class='tc'>January 2026</li>
     <li class='tr'>malt(1)</li>
   </ol>
 

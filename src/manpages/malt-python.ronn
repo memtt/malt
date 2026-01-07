@@ -22,7 +22,7 @@ the python script if it has the necessary bash shebang as its first line.
 
 ## VERSION
 
-   This is the manpage of MALT version 1.4.1.
+   This is the manpage of MALT version 1.5.0-beta.
 
 ## SEE ALSO
 

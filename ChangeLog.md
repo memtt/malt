@@ -1,8 +1,8 @@
 Change log
 ==========
 
-NEXT - XX/01/2025
------------------
+1.5.0-beta - 07/01/2025
+-----------------------
 
  - Replace the old webview in Angular 2.0 by a new one in VueJS.
  - Many fixes about python support, now should work relatively correctly.

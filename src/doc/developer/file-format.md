@@ -49,9 +49,9 @@ This section provide a global summary to give meta informations about the run.
 ```json5
 "run":{
     /* MALT json format version */
-    "formatVersion":"1.1",
+    "formatVersion":"1.4",
     /* Tools and version used to generate the file */
-    "tool":"malt-1.4.1",
+    "tool":"malt-1.5.0",
     /* Date and time of the run (profile generation time, so exit time) */
     "date":"2014-11-01 18:56",
     /* Total exacution time from start to profile dump in CPU cycles */

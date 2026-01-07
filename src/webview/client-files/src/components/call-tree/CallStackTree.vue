@@ -1,6 +1,6 @@
 <!----------------------------------------------------------
 |    PROJECT  : MALT (MALoc Tracker)
-|    DATE     : 11/2025
+|    DATE     : 12/2025
 |    LICENSE  : CeCILL-C
 |    FILE     : src/webview/client-files/src/components/call-tree/CallStackTree.vue
 |-----------------------------------------------------------

@@ -1,7 +1,7 @@
 #!/bin/bash
 ############################################################
 #    PROJECT  : MALT (MALoc Tracker)
-#    DATE     : 11/2025
+#    DATE     : 12/2025
 #    LICENSE  : CeCILL-C
 #    FILE     : src/webview/prepare.sh
 #-----------------------------------------------------------
