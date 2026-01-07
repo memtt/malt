@@ -97,7 +97,7 @@ class UpdateVersion:
         self.patch_specific_file("src/libinstrum/tests/TestValgrindOutput.cpp", ['creator:', "MALT-"], self.old_version, target_version + extra)
         self.patch_specific_file("src/libinstrum/core/tests/TestSimpleCallStackTracker.cpp", ['creator:', "MALT-"], self.old_version, target_version + extra)
         self.patch_specific_file("packaging/archlinux/PKGBUILD", ['pkgver='], self.old_version, target_version + extra)
-        self.patch_specific_file("packaging/fedora/malt.spec", ['Version: '], self.old_version, target_version + extra)
+        self.patch_specific_file("packaging/fedora/malt.spec", ['Version: '], self.old_version, target_version)
         self.patch_specific_file("packaging/README.md", [], self.old_short_version, target_version)
         self.patch_specific_file("packaging/debian/pkg/changelog", ['Version', 'of malt'], self.old_short_version, target_version)
         self.patch_specific_file("packaging/debian/pkg/changelog", ['malt', 'UNRELEASED'], self.old_short_version, target_version)
@@ -105,6 +105,7 @@ class UpdateVersion:
         self.patch_specific_file("src/reader/libreader/extractors/tests/example.expected.json", [], self.old_version, target_version + extra)
         self.patch_specific_file("src/doc/developer/file-format.md", [], self.old_short_version, target_version)
         self.patch_specific_file("doc/source/conf.py", [], self.old_version, target_version + extra)
+        self.patch_specific_file("doc/source/advanced/packaging.rst", [], self.old_short_version, target_version)
         print("[patch] Patch specific files done")
 
     def rename_some_files_with_version(self, target_version, extra):

@@ -9,17 +9,17 @@
 ############################################################
 
 Name: malt
-Version: 1.5.0-beta
+Version: 1.5.0
 Release: 1%{?dist}
 Summary: Memory profiling tool to track memory allocations (malloc, realloc, free...)
 
 Group: Development/Libraries
 License: CeCILL-C
-URL: https://github.com/downloads/svalat/svUnitTest/%{name}-%{version}.tar.bz2
-Source0: %{name}-%{version}.tar.bz2
+URL: https://github.com/downloads/svalat/svUnitTest/%{name}-%{version}.tar.xz
+Source0: %{name}-%{version}.tar.xz
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
-BuildRequires: make cmake gcc-c++ libunwind-devel elfutils-devel graphviz nlohmann-json-devel cpp-httplib-devel python3-devel gtest libiniparser-devel
+BuildRequires: make cmake gcc-c++ libunwind-devel elfutils-devel graphviz nlohmann-json-devel cpp-httplib-devel python3-devel gtest iniparser-devel
 Requires: libunwind elfutils-libelf binutils nodejs graphviz nlohmann-json-devel cpp-httplib python3 libiniparser
 
 %description

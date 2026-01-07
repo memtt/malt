@@ -15,10 +15,10 @@ VERSION="${1}"
 
 # Put the sources in place
 mkdir -p ~/rpmbuild/SOURCES/
-cp -f /sources/malt-${VERSION}.tar.bz2 ~/rpmbuild/SOURCES/
+cp -f /sources/malt-${VERSION}.tar.xz ~/rpmbuild/SOURCES/
 
 # Get the .spec & build
-tar -xf ~/rpmbuild/SOURCES/malt-${VERSION}.tar.bz2 malt-${VERSION}/packaging/fedora/malt.spec
+tar -xf ~/rpmbuild/SOURCES/malt-${VERSION}.tar.xz malt-${VERSION}/packaging/fedora/malt.spec
 rpmbuild -ba malt-${VERSION}/packaging/fedora/malt.spec
 
 # Copy out
