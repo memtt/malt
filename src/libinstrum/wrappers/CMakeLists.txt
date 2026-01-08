@@ -14,6 +14,7 @@ add_library(malt-wrappers OBJECT
       WrapperCAlloc.cpp
       WrapperPython.cpp
       WrapperPthreads.cpp
+      WrapperGpuAlloc.cpp
 )
 set_target_properties(malt-wrappers PROPERTIES COMPILE_FLAGS ${MALT_LIB_COMPILER_FLAGS})
 

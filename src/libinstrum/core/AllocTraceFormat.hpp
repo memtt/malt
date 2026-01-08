@@ -62,6 +62,9 @@ enum AllocTraceEventType
 	EVENT_PY_RAW_FREE       = 0x51,
 	EVENT_PY_RAW_REALLOC    = 0x52,
 	EVENT_PY_RAW_CALLOC     = 0x53,
+	//GPU MALLOC
+	EVENT_GPU_MALLOC        = 0x60,
+	EVENT_GPU_FREE          = 0x61,
 };
 
 /**********************************************************/

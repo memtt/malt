@@ -67,6 +67,8 @@ AllocTraceEventType LocalAllocStackProfiler::allocKindToTraceType(MallocKind kin
 					return EVENT_PY_MEM_MALLOC;
 				case DOMAIN_PYTHON_RAW:
 					return EVENT_PY_RAW_MALLOC;
+				case DOMAIN_GPU_ALLOC:
+					return EVENT_GPU_MALLOC;
 				default:
 					MALT_FATAL("Should not reach this line !");
 					return EVENT_NOP;
@@ -130,6 +132,9 @@ void LocalAllocStackProfiler::onFree(void* ptr, ticks time, Language lang, Alloc
 		case DOMAIN_PYTHON_RAW:
 			traceEntry.type = EVENT_PY_RAW_FREE;
 			break;
+		case DOMAIN_GPU_ALLOC:
+			traceEntry.type = EVENT_GPU_FREE;
+			break;
 		default:
 			MALT_FATAL("Should not reach this line !");
 			traceEntry.type = EVENT_NOP;
@@ -145,7 +150,7 @@ void LocalAllocStackProfiler::onFree(void* ptr, ticks time, Language lang, Alloc
 	traceEntry.extra.free.allocStack = 0;
 
 	//check for reentrance
-	CODE_TIMING("freeProf",globalProfiler->onFree(traceEntry, ptr,getStack(lang, 0, true, false)));
+	CODE_TIMING("freeProf",globalProfiler->onFree(traceEntry, ptr,getStack(lang, 0, true, false), domain));
 	this->popEnterExit();
 	this->cntMemOps++;
 	this->allocStats.free.inc(0,time);

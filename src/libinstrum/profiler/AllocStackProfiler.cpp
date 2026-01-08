@@ -78,6 +78,7 @@ void maltDumpOnEvent(void);
 AllocStackProfiler::AllocStackProfiler(const Options & options,StackMode mode,bool threadSafe)
 	:largestStack(STACK_ORDER_DESC)
 	,memoryBandwidth(1024,true)
+	,memoryGpuBandwidth(1024,true)
 	,sizeOverTime(64,64,false,true)
 	,lifetimeOverSize(64,64,true,true)
 	,trigger(options, true)
@@ -305,6 +306,8 @@ void AllocStackProfiler::onAllocEvent(void* ptr, size_t size,Stack* userStack,MM
 			//count events
 			if (domain == DOMAIN_MMAP)
 				CODE_TIMING("updateInfoAlloc",callStackNode->infos->onMmap(size,peakId));
+			else if (domain == DOMAIN_GPU_ALLOC)
+				CODE_TIMING("updateInfoAlloc",callStackNode->infos->onGpuAllocEvent(size,peakId));
 			else
 				CODE_TIMING("updateInfoAlloc",callStackNode->infos->onAllocEvent(size,peakId));
 		}
@@ -313,6 +316,8 @@ void AllocStackProfiler::onAllocEvent(void* ptr, size_t size,Stack* userStack,MM
 		if (ptr != NULL) {
 			if (domain == DOMAIN_MMAP) {
 				CODE_TIMING("segTracerAdd",mmapSegTracker.add(ptr,size,*callStackNode));
+			} else if (domain == DOMAIN_GPU_ALLOC) {
+				CODE_TIMING("segTracerAdd",segGpuTracker.add(ptr,size,*callStackNode));
 			} else {
 				CODE_TIMING("segTracerAdd",segTracker.add(ptr,size,*callStackNode));
 			}
@@ -352,7 +357,11 @@ void AllocStackProfiler::onAllocEvent(void* ptr, size_t size,Stack* userStack,MM
 		TimeTrackAllocBandwidth allocBw;
 		allocBw.allocCount = 1;
 		allocBw.allocMem = size;
-		memoryBandwidth.push(t,allocBw,(void*)callStackNode->stack);
+		if (domain == DOMAIN_GPU_ALLOC) {
+			memoryGpuBandwidth.push(t,allocBw,(void*)callStackNode->stack);
+		} else {
+			memoryBandwidth.push(t,allocBw,(void*)callStackNode->stack);
+		}
 	MALT_END_CRITICAL
 
 	//trigger dump
@@ -433,6 +442,8 @@ FreeFinalInfos AllocStackProfiler::onFreeEvent(void* ptr, MALT::Stack* userStack
 		if (options.time.enabled || options.stack.enabled) {
 			if (domain == DOMAIN_MMAP) {
 				CODE_TIMING("segTracerGet",segInfo = mmapSegTracker.get(ptr));
+			} else if (domain == DOMAIN_GPU_ALLOC) {
+				CODE_TIMING("segTracerGet",segInfo = segGpuTracker.get(ptr));
 			} else {
 				CODE_TIMING("segTracerGet",segInfo = segTracker.get(ptr));
 			}
@@ -474,6 +485,8 @@ FreeFinalInfos AllocStackProfiler::onFreeEvent(void* ptr, MALT::Stack* userStack
 			//count events
 			if (domain == DOMAIN_MMAP) {
 				CODE_TIMING("updateInfoFree",callStackNode->infos->onMunmap(size,peakId,subMunmap));
+			} else if (domain == DOMAIN_GPU_ALLOC) {
+				CODE_TIMING("updateInfoFree",callStackNode->infos->onGpuFreeEvent(size,peakId));
 			} else {
 				CODE_TIMING("updateInfoFree",callStackNode->infos->onFreeEvent(size,peakId));
 			}
@@ -485,6 +498,8 @@ FreeFinalInfos AllocStackProfiler::onFreeEvent(void* ptr, MALT::Stack* userStack
 		//remove tracking info
 		if (domain == DOMAIN_MMAP) {
 			CODE_TIMING("segTracerRemove",mmapSegTracker.remove(ptr));
+		} else if (domain == DOMAIN_GPU_ALLOC) {
+			CODE_TIMING("segTracerRemove",segGpuTracker.remove(ptr));
 		} else {
 			CODE_TIMING("segTracerRemove",segTracker.remove(ptr));
 		}
@@ -506,7 +521,10 @@ FreeFinalInfos AllocStackProfiler::onFreeEvent(void* ptr, MALT::Stack* userStack
 		TimeTrackAllocBandwidth allocBw;
 		allocBw.freeCount = 1;
 		allocBw.freeMem = size;
-		memoryBandwidth.push(t,allocBw,(void*)callStackNode->stack);
+		if (domain == DOMAIN_GPU_ALLOC)
+			memoryGpuBandwidth.push(t,allocBw,(void*)callStackNode->stack);
+		else
+			memoryBandwidth.push(t,allocBw,(void*)callStackNode->stack);
 	MALT_END_CRITICAL
 	
 	//trigger dump
@@ -969,6 +987,7 @@ void AllocStackProfiler::onExit(void )
 		for (const auto & it : this->perThreadProfiler)
 			it->printStats();
 		this->segTracker.printStats();
+		this->segGpuTracker.printStats();
 		this->mmapSegTracker.printStats();
 		this->pythonSymbolTracker.printStats();
 		this->stackTrackerCache.printStats("stackTrackerCache");
@@ -1019,6 +1038,7 @@ void convertToJson(htopml::JsonState& json, const AllocStackProfiler& value)
 			json.printField("memoryTimeline",value.memoryTimeline);
 			json.printField("systemTimeline",value.systemTimeline);
 			json.printField("memoryBandwidth",value.memoryBandwidth);
+			json.printField("memoryGpuBandwidth",value.memoryGpuBandwidth);
 		json.closeFieldStruct("timeline");
 		json.openFieldStruct("scatter");
 			json.printField("sizeOverTime",value.sizeOverTime);
@@ -1083,6 +1103,7 @@ void convertToJson(htopml::JsonState& json, const AllocStackProfiler& value)
 	SegmentTracker mergedLeaks;
 	mergedLeaks.merge(value.segTracker);
 	mergedLeaks.merge(value.mmapSegTracker);
+	mergedLeaks.merge(value.segGpuTracker);
 
 	json.printField("leaks",mergedLeaks);
 

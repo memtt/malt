@@ -38,6 +38,8 @@ enum AllocDomain
 	DOMAIN_PYTHON_RAW,
 	/** Domain for low level memory mapping. */
 	DOMAIN_MMAP,
+	/** Domain for GPU memory managment. */
+	DOMAIN_GPU_ALLOC,
 	/** Number of allocation domain. */
 	ALLOC_DOMAIN_COUNT,
 };

@@ -34,6 +34,7 @@
 #include <profiler/AllocStackProfiler.hpp>
 #include <profiler/LocalAllocStackProfiler.hpp>
 #include "wrappers/WrapperCAlloc.hpp"
+#include "wrappers/WrapperGpuAlloc.hpp"
 //locals
 #include "malt.h"
 
@@ -112,6 +113,12 @@ struct AllocWrapperGlobal
 		/** Pointer to the old (libc) mremap symbol. **/
 		MremapFuncPtr mremap;
 	} mmapFuncs;
+	struct {
+		/** Pointer to the old (PGI) cuda alloc symbol. */
+		PgiUaccCudaAllocPtr pgiUaccCudaAlloc;
+		/** Pointer to the old (PGI) cuda free symbol. */
+		PgiUaccCudaFreePtr pgiUaccCudaFree;
+	} gpuFuncs;
 	/** Pointer to the profiler (use pointer due to use before main, only way to ensure init before first malloc usage). **/
 	AllocStackProfiler * profiler;
 	/** Keep track of user options. **/

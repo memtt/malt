@@ -70,6 +70,8 @@ struct CallStackInfo
 		void onFreeLinkedMemory(size_t value,ticks lifetime,size_t peakId);
 		void onMmap(ssize_t value,size_t peakId);
 		void onMunmap(ssize_t value,size_t peakId,bool subMunmap);
+		void onGpuAllocEvent(size_t value,size_t peakId);
+		void onGpuFreeEvent(size_t value,size_t peakId);
 		void merge(const MALT::CallStackInfo& info);
 		void writeAsCallgrindEntry(int line, std::ostream & out) const;
 		void writeAsCallgrindCallEntry(int line, std::ostream& out) const;
@@ -96,6 +98,10 @@ struct CallStackInfo
 		SimpleQuantityHistory mmap;
 		/** Track the min/max/sum/count of each memory allocation sizes from mmap. **/
 		SimpleQuantityHistory munmap;
+		/** Track the min/max/sum/count of each memory allocation sizes from mmap. **/
+		SimpleQuantityHistory gpuAlloc;
+		/** Track the min/max/sum/count of each memory allocation sizes from mmap. **/
+		SimpleQuantityHistory gpuFree;
 		/** Count number of null size allocations. **/
 		ssize_t cntZeros;
 		/** Count the current allocated (alive) memory from this call site. **/

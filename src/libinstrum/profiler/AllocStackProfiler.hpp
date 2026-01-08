@@ -188,6 +188,7 @@ class AllocStackProfiler
 // 		AbstractStackTree<CallStackInfo> stackTree;
 		AllocSizeDistrMap sizeMap;
 		SegmentTracker segTracker;
+		SegmentTracker segGpuTracker;
 		SegmentTracker mmapSegTracker;
 		GlobalVariableMap globalVariables;
 		StackMode mode;
@@ -219,6 +220,7 @@ class AllocStackProfiler
 		ProfiledValue<TimeTrackSysMemory> systemTimeline;
 		TimeTrackSysMemory curSystemTimeline;
 		ProfiledValue<TimeTrackAllocBandwidth> memoryBandwidth;
+		ProfiledValue<TimeTrackAllocBandwidth> memoryGpuBandwidth;
 		VmaTracker vmaTracker;
 		MALTV2::RLockFreeTree * stackTree;
 		Scatter2DValues sizeOverTime;

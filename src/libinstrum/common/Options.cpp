@@ -83,6 +83,7 @@ bool Options::operator==(const Options& value) const
 	//c
 	if (c.malloc != value.c.malloc) return false;
 	if (c.mmap != value.c.mmap) return false;
+	if (c.gpuMalloc != value.c.gpuMalloc) return false;
 	//time
 	if (this->time.enabled != value.time.enabled) return false;
 	if (this->time.points != value.time.points) return false;
@@ -439,6 +440,7 @@ OptionsMeta::OptionsMeta(Options & value)
 	//c
 	this->add("c", "malloc", value.c.malloc).setDoc("Instrument the C memory allocator.");
 	this->add("c", "mmap", value.c.mmap).setDoc("Instrument the C direct mmap calls done by the app.");
+	this->add("c", "gpu-malloc", value.c.gpuMalloc).setDoc("Instrument the C calls to GPU malloc (cudaMalloc, hipMalloc...).");
 
 	//load values for stack profiling
 	this->add("stack", "resolve", value.stack.resolve).setDoc("Automatically resolve symbols with addr2line at exit.");

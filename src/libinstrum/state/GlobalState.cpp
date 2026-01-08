@@ -22,7 +22,7 @@ namespace MALT
 {
 
 /**********************************************************/
-#define GBL_STATE_INIT {ALLOC_WRAP_NOT_READY,MALT_STATIC_MUTEX_INIT,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL};
+#define GBL_STATE_INIT {ALLOC_WRAP_NOT_READY,MALT_STATIC_MUTEX_INIT,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL, NULL, NULL};
 const ThreadLocalState TLS_STATE_INIT = {NULL,ALLOC_WRAP_NOT_READY,false, false};
 
 /**********************************************************/
@@ -235,6 +235,10 @@ void AllocWrapperGlobal::init(void )
 		gblState.allocFuncs.valloc = (VallocFuncPtr)dlsym(RTLD_NEXT,"valloc");
 		gblState.allocFuncs.memalign = (MemalignFuncPtr)dlsym(RTLD_NEXT,"memalign");
 		gblState.allocFuncs.pvalloc = (PVallocFuncPtr)dlsym(RTLD_NEXT,"pvalloc");
+
+		//search addresses for GPU allocators
+		gblState.gpuFuncs.pgiUaccCudaAlloc = (PgiUaccCudaAllocPtr)dlsym(RTLD_NEXT,"__pgi_uacc_cuda_alloc");
+		gblState.gpuFuncs.pgiUaccCudaFree = (PgiUaccCudaFreePtr)dlsym(RTLD_NEXT,"__pgi_uacc_cuda_free");
 
 		//init profiler
 		gblState.status = ALLOC_WRAP_INIT_PROFILER;

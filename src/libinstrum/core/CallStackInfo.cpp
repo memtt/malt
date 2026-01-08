@@ -102,6 +102,24 @@ void CallStackInfo::onFreeEvent(size_t value,size_t peakId)
 
 /**********************************************************/
 /**
+ * Register a free event on the call stack info object.
+ * @param value Define the size of the chunk we deallocate.
+ * @param peakId Define the ID of the last global peak seen by the caller. If larger
+ * than the local one, update the local peak with current status.
+**/
+void CallStackInfo::onGpuFreeEvent(size_t value,size_t peakId)
+{
+	if (value == 0)
+	{
+		cntZeros++;
+	} else {
+		updatePeak(peakId);
+		this->gpuFree.addEvent(value);
+	}
+}
+
+/**********************************************************/
+/**
  * @return Compute and return the mean size.
 **/
 ssize_t SimpleQuantityHistory::getMean(void) const
@@ -150,6 +168,30 @@ void CallStackInfo::onAllocEvent(size_t value,size_t peakId)
 		cntZeros++;
 	else
 		this->alloc.addEvent(value);
+	
+	//update peak
+	updatePeak(peakId);
+	
+	//update alive memory
+	this->alive+=value;
+	if (this->alive > this->maxAlive)
+		this->maxAlive = this->alive;
+}
+
+/**********************************************************/
+/**
+ * Register a free event on the call stack info object.
+ * @param value Define the size of the chunk we allocate.
+ * @param peakId Define the ID of the last global peak seen by the caller. If larger
+ * than the local one, update the local peak with current status.
+**/
+void CallStackInfo::onGpuAllocEvent(size_t value,size_t peakId)
+{
+	//update alloc counters
+	if (value == 0)
+		cntZeros++;
+	else
+		this->gpuAlloc.addEvent(value);
 	
 	//update peak
 	updatePeak(peakId);
@@ -257,6 +299,8 @@ void convertToJson(htopml::JsonState& json, const CallStackInfo& value)
 	json.printField("aliveReq",value.alive);
 	json.printField("alloc",value.alloc);
 	json.printField("free",value.free);
+	json.printField("gpuAlloc",value.gpuAlloc);
+	json.printField("gpuFree",value.gpuFree);
 	json.printField("mmap",value.mmap);
 	json.printField("munmap",value.munmap);
 	json.printField("lifetime",value.lifetime);

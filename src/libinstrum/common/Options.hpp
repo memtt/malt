@@ -141,6 +141,7 @@ struct Options
 	struct {
 		bool malloc{true};
 		bool mmap{true};
+		bool gpuMalloc{true};
 	} c;
 	//vars for time profiging
 	struct {

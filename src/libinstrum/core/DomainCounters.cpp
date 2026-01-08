@@ -57,6 +57,7 @@ void convertToJson(htopml::JsonState& json, const DomainCounters & value)
 			json.printField("pyMem", value.counters[DOMAIN_PYTHON_MEM]);
 			json.printField("pyRaw", value.counters[DOMAIN_PYTHON_RAW]);
 			json.printField("mmap", value.counters[DOMAIN_MMAP]);
+			json.printField("gpu", value.counters[DOMAIN_GPU_ALLOC]);
 		json.closeFieldStruct("counters");
 		json.openFieldStruct("mem");
 			json.printField("c", value.sum[DOMAIN_C_ALLOC]);
@@ -64,6 +65,7 @@ void convertToJson(htopml::JsonState& json, const DomainCounters & value)
 			json.printField("pyMem", value.sum[DOMAIN_PYTHON_MEM]);
 			json.printField("pyRaw", value.sum[DOMAIN_PYTHON_RAW]);
 			json.printField("mmap", value.sum[DOMAIN_MMAP]);
+			json.printField("gpu", value.sum[DOMAIN_GPU_ALLOC]);
 		json.closeFieldStruct("mem");
 		json.openFieldStruct("localPeak");
 			json.printField("c", value.localPeak[DOMAIN_C_ALLOC]);
@@ -71,6 +73,7 @@ void convertToJson(htopml::JsonState& json, const DomainCounters & value)
 			json.printField("pyMem", value.localPeak[DOMAIN_PYTHON_MEM]);
 			json.printField("pyRaw", value.localPeak[DOMAIN_PYTHON_RAW]);
 			json.printField("mmap", value.localPeak[DOMAIN_MMAP]);
+			json.printField("gpu", value.localPeak[DOMAIN_GPU_ALLOC]);
 		json.closeFieldStruct("localPeak");
 		json.openFieldStruct("atGlobalPeak");
 			json.printField("c", value.atGlobalPeak[DOMAIN_C_ALLOC]);
@@ -78,6 +81,7 @@ void convertToJson(htopml::JsonState& json, const DomainCounters & value)
 			json.printField("pyMem", value.atGlobalPeak[DOMAIN_PYTHON_MEM]);
 			json.printField("pyRaw", value.atGlobalPeak[DOMAIN_PYTHON_RAW]);
 			json.printField("mmap", value.atGlobalPeak[DOMAIN_MMAP]);
+			json.printField("gpu", value.atGlobalPeak[DOMAIN_GPU_ALLOC]);
 		json.closeFieldStruct("atGlobalPeak");
 	json.closeStruct();
 }
