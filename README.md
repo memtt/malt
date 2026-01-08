@@ -9,7 +9,7 @@ statistics about memory usage and help to find memory leaks.
 
 It is done to be used on laguages : **C**, **C++**, **Fortran**, **Rust** and **Python**.
 
-![MALT GUI](./screenshot.png)
+<img src='./screenshot.png' alt="Screenshot" width="100%"/>
 
 Documentation
 -------------
@@ -50,7 +50,7 @@ By default MALT use backtrace to reconstruct you stack on malloc/free/... calls 
 malt {YOUR_PROGRAM} [OPTIONS]
 ```
 
-Your will find the [dependencies](https://memtt.github.io/malt/doc/latest/start/dependencies.html) and [options](https://memtt.github.io/malt/doc/latest/advanced/options.html) into the [official documentation](http://memtt.github.io/malt/doc/latest/).
+Your will find the dependences into the [official documentation](http://memtt.github.io/malt/doc/latest/).
 
 Using webview
 -------------
