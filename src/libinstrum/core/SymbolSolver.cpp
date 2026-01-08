@@ -395,36 +395,42 @@ void SymbolSolver::solveNames(void)
 	//new way of solving
 	//this->callSiteMap2 = callSiteMap;
 	std::vector<Addr2Line*, STLInternalAllocator<Addr2Line*> > addr2lineJobs;
+	std::vector<Addr2Line*, STLInternalAllocator<Addr2Line*> > addr2lineHugeSeq;
 	for (auto & procMapEntry : this->procMap) {
 		if (!(procMapEntry.file.empty() || procMapEntry.file[0] == '[')) {
 			Addr2Line * addr2line = nullptr;
 			size_t aslrOffset = -1;
 			for (auto & site : callSiteMap) {
 				if (site.first.getDomain() == DOMAIN_C && site.second.mapEntry == &procMapEntry) {
+					//solve ASLR offsets
 					if (aslrOffset == size_t(-1))
 						aslrOffset = OS::getASLROffset(site.first.getAddress());
+
+					//if last is full
 					if (addr2line == nullptr || addr2line->isFull()) {
+						//spawn a new one
 						addr2line = new Addr2Line(this->stringDict, procMapEntry.file, aslrOffset, gblOptions->stackAddr2lineBucket);
-						addr2lineJobs.push_back(addr2line);
+
+						//push in the right queue
+						if (addr2line->isHugeElf())
+							addr2lineHugeSeq.push_back(addr2line);
+						else
+							addr2lineJobs.push_back(addr2line);
 					}
+
+					//add address to the task
 					addr2line->addTask(site.first, &site.second);
 				}
 			}
 		}
 	}
-	//solve
+	//solve parallel the smalls and seq the huges not to trash the machine in MPI
 	runParallelJobs(addr2lineJobs, gblOptions->stackAddr2lineThreads);
+	runParallelJobs(addr2lineHugeSeq, 1);
 
 	//free mem
 	for (auto & addr2line : addr2lineJobs)
 		delete addr2line;
-
-	/*//loop on assemblies to extract names
-	for (LinuxProcMap::iterator it = procMap.begin() ; it != procMap.end() ; ++it)
-	{
-		if (!(it->file.empty() || it->file[0] == '['))
-			solveNames(&(*it));
-	}*/
 
 	//final check for not found
 	solveMissings();

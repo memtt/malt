@@ -81,6 +81,7 @@ struct Options
 	int stackSkip;
 	int stackAddr2lineBucket;
 	int stackAddr2lineThreads;
+	int stackAddr2lineHuge;
 	bool stackSampling;
 	int stackSamplingBw;
 	int stackSamplingCnt;

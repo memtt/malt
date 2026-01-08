@@ -59,6 +59,7 @@ static const char * cstValidOptionNames[] = {
 	"stack:skip",
 	"stack:addr2lineBucket",
 	"stack:addr2lineThreads",
+	"stack:addr2lineHuge",
 	"stack:sampling",
 	"stack:samplingBw",
 	"stack:samplingCnt",
@@ -137,6 +138,7 @@ Options::Options(void)
 	this->stackSkip               = cstDefaultStackSkip;
 	this->stackAddr2lineBucket    = 350;
 	this->stackAddr2lineThreads   = 8;
+	this->stackAddr2lineHuge      = 50UL * 1024UL *1024UL;
 	this->stackSampling           = false;
 	this->stackSamplingBw         = 4093; //5242883, 10485767, 20971529
 	this->stackSamplingCnt        = 571;
@@ -210,6 +212,7 @@ bool Options::operator==(const Options& value) const
 	if (stackSkip != value.stackSkip) return false;
 	if (stackAddr2lineBucket != value.stackAddr2lineBucket) return false;
 	if (stackAddr2lineThreads != value.stackAddr2lineThreads) return false;
+	if (stackAddr2lineHuge != value.stackAddr2lineHuge) return false;
 	if (stackSampling != value.stackSampling) return false;
 	if (stackSamplingBw != value.stackSamplingBw) return false;
 	//python
@@ -376,6 +379,7 @@ void Options::loadFromIniDic ( dictionary* iniDic )
 	this->stackSkip           = iniparser_getint(iniDic,"stack:skip",this->stackSkip);
 	this->stackAddr2lineBucket= iniparser_getint(iniDic,"stack:addr2lineBucket",this->stackAddr2lineBucket);
 	this->stackAddr2lineThreads= iniparser_getint(iniDic,"stack:addr2lineThreads",this->stackAddr2lineThreads);
+	this->stackAddr2lineHuge  = iniparser_getint(iniDic,"stack:addr2lineHuge",this->stackAddr2lineHuge);
 	this->stackSampling       = iniparser_getboolean(iniDic,"stack:sampling",this->stackSampling);
 	this->stackSamplingBw     = iniparser_getint(iniDic,"stack:samplingBw",this->stackSamplingBw);
 	this->stackSamplingCnt    = iniparser_getint(iniDic,"stack:samplingCnt",this->stackSamplingCnt);
@@ -471,6 +475,7 @@ void convertToJson(htopml::JsonState & json,const Options & value)
 			json.printField("stackSkip",value.stackSkip);
 			json.printField("addr2lineBucket",value.stackAddr2lineBucket);
 			json.printField("addr2lineThreads",value.stackAddr2lineThreads);
+			json.printField("addr2lineHuge", value.stackAddr2lineHuge);
 			json.printField("sampling", value.stackSampling);
 			json.printField("samplingBw", value.stackSamplingBw);
 			json.printField("samplingCnt", value.stackSamplingCnt);
@@ -566,6 +571,7 @@ void Options::dumpConfig(const char* fname)
 	IniParserHelper::setEntry(dic,"stack:skip",this->stackSkip);
 	IniParserHelper::setEntry(dic,"stack:addr2lineBucket",this->stackAddr2lineBucket);
 	IniParserHelper::setEntry(dic,"stack:addr2lineThreads",this->stackAddr2lineThreads);
+	IniParserHelper::setEntry(dic,"stack:addr2lineHuge",this->stackAddr2lineHuge);
 	IniParserHelper::setEntry(dic,"stack:sampling",this->stackSampling);
 	IniParserHelper::setEntry(dic,"stack:samplingBw",this->stackSamplingBw);
 	IniParserHelper::setEntry(dic,"stack:samplingCnt",this->stackSamplingCnt);

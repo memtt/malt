@@ -33,6 +33,7 @@ void to_json(nlohmann::json & json, const Config & config){
 				{"stackSkip", config.stack.stackSkip},
 				{"addr2lineBucket", config.stack.addr2lineBucket},
 				{"addr2lineThreads", config.stack.addr2lineThreads},
+				{"addr2lineHuge", config.stack.addr2lineHuge},
 				{"sampling", config.stack.sampling},
 				{"samplingBw", config.stack.samplingBw},
 				{"samplingCnt", config.stack.samplingCnt},
@@ -139,6 +140,7 @@ void from_json(const JsonIn & json, Config & config)
 	assert(jsContains(jsonStack, "stackSkip"));
 	assert(jsContains(jsonStack, "addr2lineBucket"));
 	assert(jsContains(jsonStack, "addr2lineThreads"));
+	assert(jsContains(jsonStack, "addr2lineHuge"));
 	assert(jsContains(jsonStack, "sampling"));
 	assert(jsContains(jsonStack, "samplingBw"));
 	assert(jsContains(jsonStack, "samplingCnt"));
@@ -149,6 +151,7 @@ void from_json(const JsonIn & json, Config & config)
 	jsonStack.at("stackSkip").get_to(config.stack.stackSkip);
 	jsonStack.at("addr2lineBucket").get_to(config.stack.addr2lineBucket);
 	jsonStack.at("addr2lineThreads").get_to(config.stack.addr2lineThreads);
+	jsonStack.at("addr2lineHuge").get_to(config.stack.addr2lineHuge);
 	jsonStack.at("sampling").get_to(config.stack.sampling);
 	jsonStack.at("samplingBw").get_to(config.stack.samplingBw);
 	jsonStack.at("samplingCnt").get_to(config.stack.samplingCnt);

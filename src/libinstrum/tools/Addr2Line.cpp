@@ -10,8 +10,10 @@
 /**********************************************************/
 #include <cassert>
 #include <sstream>
+#include <fstream>
 #include <common/Debug.hpp>
 #include <common/Options.hpp>
+#include <portability/OS.hpp>
 #include "Addr2Line.hpp"
 
 /**********************************************************/
@@ -25,16 +27,29 @@ Addr2Line::Addr2Line(StringIdDictionnary & dict, const std::string & elfFile, si
 	//checks
 	assert(elfFile.empty() == false);
 
+	//set
 	this->elfFile = elfFile;
 	this->elfFileId = this->dict.getId(String(elfFile.c_str()));
 	this->aslrOffset = aslrOffset;
 	this->bucketSize = bucketSize;
+
+	//check if huge (> 50 MB)
+	if (OS::getFileSize(elfFile) > gblOptions->stackAddr2lineHuge) {
+		this->isHugeElfFile = true;
+		this->bucketSize = SIZE_MAX;
+	}
 }
 
 /**********************************************************/
 bool Addr2Line::isFull(void) const
 {
 	return this->tasks.size() >= this->bucketSize;
+}
+
+/**********************************************************/
+bool Addr2Line::isHugeElf(void) const
+{
+	return this->isHugeElfFile;
 }
 
 /**********************************************************/
@@ -66,8 +81,22 @@ bool Addr2Line::run(void)
 	if (this->tasks.empty())
 		return true;
 
+	//file buffer
+	std::string fileBuffer;
+	int fd = 0;
+	if (this->isHugeElfFile) {
+		char templ[] = "/tmp/malt-addr2line-XXXXXX";
+		fd = mkstemp(templ);
+		char buffer[4096];
+		char path[4096];
+		snprintf(path, sizeof(path), "/proc/self/fd/%d", fd);
+		ssize_t status = readlink(path, buffer, sizeof(buffer));
+		assumeArg(status > 0, "Fail to get symlink translation : %1").arg(path).end();
+		fileBuffer = buffer;
+	}
+
 	//build command
-	std::string command = this->buildCommandLine();
+	std::string command = this->buildCommandLine(fileBuffer);
 	//MALT_DEBUG_ARG("addr2line", "Command : %1").arg(command).end();
 	assert(command.size() < 4096);
 
@@ -91,6 +120,14 @@ bool Addr2Line::run(void)
 
 	//close
 	int res = pclose(fp);
+
+	//remove temp file
+	if (fileBuffer.empty() == false) {
+		unlink(fileBuffer.c_str());
+		close(fd);
+	}
+
+	//check result
 	if (res != 0)
 	{
 		MALT_ERROR_ARG("Get error while using addr2line on %1 to load symbols : %2.").arg(elfFile).argStrErrno().end();
@@ -102,7 +139,7 @@ bool Addr2Line::run(void)
 }
 
 /**********************************************************/
-std::string Addr2Line::buildCommandLine(void) const
+std::string Addr2Line::buildCommandLine(const std::string & fileBuffer) const
 {
 	//build
 	std::stringstream command;
@@ -110,13 +147,24 @@ std::string Addr2Line::buildCommandLine(void) const
 	//base
 	command << "addr2line -C -f -e " << elfFile;
 
+	//pointer to the stream
+	std::ostream * addresses = &command;
+	std::ofstream file;
+	if (fileBuffer.empty() == false) {
+		file.open(fileBuffer);
+		assumeArg(file.good(), "Fail to open %1 : %2").arg(fileBuffer).argStrErrno().end();
+		addresses = &file;
+		command << " @" << fileBuffer;
+	}
+	command << " ";
+
 	//add the addresses
 	for (auto task : tasks) {
 		//check
 		assert(task.address.getDomain() == DOMAIN_C);
 
 		//append
-		command << ' ' << (void*)((((size_t)task.address.getAddress()) - this->aslrOffset));
+		*addresses << (void*)((((size_t)task.address.getAddress()) - this->aslrOffset)) << ' ';
 	}
 
 	//silent

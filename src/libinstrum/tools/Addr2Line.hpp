@@ -60,9 +60,10 @@ class Addr2Line
 		bool addTask(const LangAddress & address, CallSite * callSite);
 		bool run(void);
 		bool isFull(void) const;
+		bool isHugeElf(void) const;
 	private:
 		bool loadEntry(CallSite & callSite, FILE * fp);
-		std::string buildCommandLine(void) const;
+		std::string buildCommandLine(const std::string & fileBuffer = "") const;
 	private:
 		StringIdDictionnary & dict;
 		std::string elfFile;
@@ -72,6 +73,7 @@ class Addr2Line
 		Addr2LineTaskVector tasks;
 		char bufferFunc[512*4096];
 		char bufferFile[512*4096];
+		bool isHugeElfFile{false};
 };
 
 }
