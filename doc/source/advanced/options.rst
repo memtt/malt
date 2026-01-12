@@ -55,6 +55,9 @@ Example of config file :
     skip=4                 ; Number of stack frame to skip in order to cut at malloc level
     sampling=false         ; Sample and instrument only some stack.
     samplingBw=4093        ; Instrument the stack when seen passed 4K-3 bytes of alloc requests.
+    addr2lineBucket=350    ; Handle the addr2line calls by buckets and treat each bucket in parallel.
+    addr2lineThreads=8     ; Number of threasd to use to call addr2line in parallel.
+    stackAddr2lineHuge=52428800; For larger elf files, do not treat them in parallel nor buckets.
 
     [output]
     name=malt-%1-%2.%3     ; base name for output, %1 = exe, %2 = PID, %3 = extension
@@ -288,6 +291,44 @@ It is completed by also sampling on count with `stack:samplingBw`.
     malt -o stack:samplingCnt=67 ./my_program
     malt -o stack:samplingCnt=257 ./my_program
     malt -o stack:samplingCnt=571 ./my_program
+
+Option `stack:addr2lineBucket`
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Define the number of addresses to place in the bucket to resolve while calling `addr2line`.
+Each bucket is executed in parallel so it goes faster. Except for the **huge** ELF files which
+are treated as a single bucket and in sequentiel, not to kill the memory in MPI and not
+loading the large file many times.
+
+**Default**: 350.
+
+.. code-block:: shell
+
+    malt -o stack:addr2lineBucket=350 ./my_program
+
+Option `stack:addr2lineThreads`
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Define the number of threads to use to make multiple calls to `addr2line` in parallel.
+
+**Default**: 8.
+
+.. code-block:: shell
+
+    malt -o stack:addr2lineThreads=8 ./my_program
+
+Option `stack:stackAddr2lineHuge`
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Define the threashold for bucket splitting. For files larger than this limit, consider them
+as huge and not using nor buckets, not parallelism not to trash the memory of the node with
+too many large memory usage processes (especially in MPI).
+
+**Default**: 52428800 (50 MB).
+
+.. code-block:: shell
+
+    malt -o stack:addr2lineHuge=52428800 ./my_program
 
 Section `output`
 ----------------
