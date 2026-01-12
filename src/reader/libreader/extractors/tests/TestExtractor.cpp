@@ -209,6 +209,11 @@ TEST(TestExtractor, getMaxStackInfoOnFunction)
 	omp_set_num_threads(1);
 	FlattenMaxStackInfo res = extractor.getMaxStackInfoOnFunction();
 
+	//sort
+	std::sort(res.details.begin(), res.details.end(), [](const FlattenMaxStackInfoEntry& a, const FlattenMaxStackInfoEntry & b){
+		return a.info->line < b.info->line;
+	});
+
 	//load ref
 	std::ifstream exampleExpected(CUR_SRC_DIR "/example.expected.json");
 	nlohmann::json dataExpected = nlohmann::json::parse(exampleExpected);
