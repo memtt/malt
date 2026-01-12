@@ -24,6 +24,7 @@
 			"stackSkip":4,
 			"addr2lineBucket":350,
 			"addr2lineThreads":8,
+			"addr2lineHuge":52428800,
 			"sampling":false,
 			"samplingBw":4093,
 			"samplingCnt":571

@@ -33,6 +33,7 @@ const char cstJson[] = "\
 		\"stackSkip\":4,\n\
 		\"addr2lineBucket\":350,\n\
 		\"addr2lineThreads\":8,\n\
+		\"addr2lineHuge\":52428800,\n\
 		\"sampling\":false,\n\
 		\"samplingBw\":4093,\n\
 		\"samplingCnt\":571\n\
