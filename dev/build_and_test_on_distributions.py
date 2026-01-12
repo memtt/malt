@@ -127,6 +127,14 @@ ROCKY_FULL_CMDS=[
 ]
 ROCKY_INDEV_CMDS=[
 ]
+REDHAT_OLD_FULL_CMDS=[
+    # install basics
+    "dnf install -y graphviz python3-devel",
+    # playsing with sources
+    "dnf install -y --allowerasing wget git nodejs npm curl bzip2 xz",
+    # cargo
+    "dnf install -y cargo"
+]
 CENTOS_FULL_CMDS=[
     # all deps
     "dnf install -y libunwind-devel elfutils-devel graphviz nlohmann-json-devel cpp-httplib-devel python3-devel gtest iniparser-devel",
@@ -309,34 +317,71 @@ BUILD_PARAMETERS = {
             "base": "malt/fedora-full:41",
             "cmds": CENTOS_INDEV_CMDS
         },
+        ############ redhat 8
+        "malt/redhat-basic:8": {
+            "base": "ubi8",
+            "cmds": ROCKY_BASIC_CMDS
+        },
+        "malt/redhat-full:8": {
+            "base": "malt/redhat-basic:8",
+            "cmds": REDHAT_OLD_FULL_CMDS
+        },
+        "malt/reshat-indev:8": {
+            "base": "malt/redhat-full:8",
+            "cmds": ROCKY_INDEV_CMDS
+        },
+        "malt/redhat-basic:9": {
+            "base": "ubi9",
+            "cmds": ROCKY_BASIC_CMDS
+        },
+        "malt/redhat-full:9": {
+            "base": "malt/redhat-basic:9",
+            "cmds": REDHAT_OLD_FULL_CMDS
+        },
+        "malt/reshat-indev:9": {
+            "base": "malt/redhat-full:9",
+            "cmds": ROCKY_INDEV_CMDS
+        },
+        "malt/redhat-basic:10": {
+            "base": "ubi10",
+            "cmds": ROCKY_BASIC_CMDS
+        },
+        "malt/redhat-full:10": {
+            "base": "malt/redhat-basic:10",
+            "cmds": REDHAT_OLD_FULL_CMDS
+        },
+        "malt/reshat-indev:10": {
+            "base": "malt/redhat-full:10",
+            "cmds": ROCKY_INDEV_CMDS
+        },
         ############ rocky:8.9
-        #"malt/rocky-basic:8.9": {
-        #    "base": "rockylinux:8.9",
-        #    "cmds": ROCKY_BASIC_CMDS
-        #},
-        #"malt/rocky-full:8.9": {
-        #    "base": "malt/rocky-basic:8.9",
-        #    "cmds": ROCKY_FULL_CMDS
-        #},
-        #"malt/rocky-indev:8.9": {
-        #    "base": "malt/rocky-full:8.9",
-        #    "cmds": ROCKY_INDEV_CMDS
-        #},
+        "malt/rocky-basic:8.9": {
+            "base": "rockylinux:8.9",
+            "cmds": ROCKY_BASIC_CMDS
+        },
+        "malt/rocky-full:8.9": {
+            "base": "malt/rocky-basic:8.9",
+            "cmds": ROCKY_FULL_CMDS
+        },
+        "malt/rocky-indev:8.9": {
+            "base": "malt/rocky-full:8.9",
+            "cmds": ROCKY_INDEV_CMDS
+        },
         ############ rocky:9.3
-        #"malt/rocky-basic:9.3": {
-        #    "base": "rockylinux:9.3",
-        #    "cmds": ROCKY_BASIC_CMDS
-        #},
-        #"malt/rocky-full:9.3": {
-        #    "base": "malt/rocky-basic:9.3",
-        #    "cmds": ROCKY_FULL_CMDS
-        #},
-        #"malt/rocky-indev:9.3": {
-        #    "base": "malt/rocky-full:9.3",
-        #    "cmds": [
-        #        BUILD_CUSTOM_PYTHON
-        #    ]
-        #},
+        "malt/rocky-basic:9.3": {
+            "base": "rockylinux:9.3",
+            "cmds": ROCKY_BASIC_CMDS
+        },
+        "malt/rocky-full:9.3": {
+            "base": "malt/rocky-basic:9.3",
+            "cmds": ROCKY_FULL_CMDS
+        },
+        "malt/rocky-indev:9.3": {
+            "base": "malt/rocky-full:9.3",
+            "cmds": [
+                BUILD_CUSTOM_PYTHON
+            ]
+        },
         ############ archlinux:latest
         "malt/archlinux-basic:latest": {
             "base": "docker.io/library/archlinux:latest",
