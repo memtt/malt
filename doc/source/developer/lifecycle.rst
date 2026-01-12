@@ -70,6 +70,8 @@ The script validates on :
    Ubuntu                22.04, 24.04, 25.04, 25.10
    Debian                11, 12, 13, sid
    Fedora                40, 41
+   RedHat                8, 9, 10
+   Rocky                 8.9, 9.3
    Archlinux             latest
    Gentoo                latest stable
    ===================   ================================================
