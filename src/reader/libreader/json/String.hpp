@@ -23,6 +23,7 @@ namespace MALTJson
 struct JsonString
 {
 	JsonString(void);
+	JsonString(const JsonString & orig) = default;
 	JsonString(const char * input);
 	const char * value{nullptr};
 	size_t len{0};

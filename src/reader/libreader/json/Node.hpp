@@ -36,7 +36,7 @@ enum JsonNodeType
 struct JsonNode
 {
 	JsonNode(void) = default;
-	JsonNode(JsonNode & orig) = default;
+	JsonNode(const JsonNode & orig) = default;
 	JsonNode(JsonNode && orig);
 	~JsonNode(void);
 	JsonNode & operator=(const JsonNode & value) = default;

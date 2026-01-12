@@ -547,8 +547,11 @@ FilteredStackList Extractor::getFilterdStacks(const LocaltionOnlyFilterFunc & fi
 
 	//loop on stat entries
 	#pragma omp parallel for
-	for (const auto & statEntry : stats)
+	for (size_t i = 0 ; i < stats.size() ; i++)
 	{
+		//get element
+		const auto & statEntry = stats[i];
+
 		//get stack
 		const Stack & stack = statEntry.stack;
 		const StackInfos & infos = statEntry.infos;
