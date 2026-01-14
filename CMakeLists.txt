@@ -26,7 +26,7 @@ endif()
 set(MALT_VERSION "1.5.0")
 set(MALT_VERSION_NOTE "")
 set(MALT_SO_VERSION "1")
-set(MALT_JSON_FORMAT_VERSION "1.5")
+set(MALT_JSON_FORMAT_VERSION "1.6")
 
 ############################################################
 set (CMAKE_CXX_STANDARD 11)
