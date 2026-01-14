@@ -87,12 +87,14 @@ bool Addr2Line::run(void)
 	if (this->isHugeElfFile) {
 		char templ[] = "/tmp/malt-addr2line-XXXXXX";
 		fd = mkstemp(templ);
-		char buffer[4096];
-		char path[4096];
+		char * buffer = (char*)MALT_MALLOC(4096);
+		char * path = (char*)MALT_MALLOC(4096);
 		snprintf(path, sizeof(path), "/proc/self/fd/%d", fd);
 		ssize_t status = readlink(path, buffer, sizeof(buffer));
 		assumeArg(status > 0, "Fail to get symlink translation : %1").arg(path).end();
 		fileBuffer = buffer;
+		MALT_FREE(path);
+		MALT_FREE(buffer);
 	}
 
 	//build command
