@@ -12,7 +12,7 @@ The dependencies of MALT are the following if you use the **official releases** 
   - 2.24 - 2.38
   - Required for the **nm** and **addr2line** tools to solve the symbols and get the global variables informations.
 `CMake <https://cmake.org/>`_
-  - 2.8 - 3.28.3
+  - 3.13 - 3.28.3
   - Required to **build** MALT from source.
 
 Optional dependencies

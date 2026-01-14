@@ -62,7 +62,7 @@ add_library(malt-reader SHARED
     api/Profile.cpp
     api/WebProfile.cpp
     # PUBLIC API
-	public-api/malt-reader.cpp
+    public-api/malt-reader.cpp
     # Traces
     trace/TraceReader.cpp
 )

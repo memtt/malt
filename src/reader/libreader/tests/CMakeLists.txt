@@ -32,13 +32,16 @@ endif ()
 
 ############################################################
 FOREACH(test_name ${TEST_NAMES})
-	add_executable(${test_name} ${test_name}.cpp)
+	set(extra_sources "")
+	if (${test_name} STREQUAL TestInstrum)
+		set(extra_sources $<TARGET_OBJECTS:malt-injectors>)
+	endif()
+	add_executable(${test_name} ${test_name}.cpp ${extra_sources})
 	target_link_libraries(${test_name} ${GTEST_BOTH_LIBRARIES} ${GMOCK_BOTH_LIBRARIES} malt-base)
 	malt_add_test(${test_name} ${test_name})
 ENDFOREACH(test_name)
 
 ############################################################
-target_link_libraries(TestInstrum malt-injectors)
 target_compile_options(TestInstrum PRIVATE -g -O0)
 target_link_libraries(TestInstrum malt-reader)
 

@@ -45,12 +45,15 @@ struct StackKey {
 }
 
 /**********************************************************/
-template<bool doStackClone>
-struct std::hash<MALT::StackKey<doStackClone> > {
-    std::size_t operator()(MALT::StackKey<doStackClone> const& s) const noexcept {
-        return s.hash;
-    }
-};
+namespace std
+{
+	template<bool doStackClone>
+	struct hash<MALT::StackKey<doStackClone> > {
+		std::size_t operator()(MALT::StackKey<doStackClone> const& s) const noexcept {
+        		return s.hash;
+    		}
+	};
+}
 
 /**********************************************************/
 namespace MALT

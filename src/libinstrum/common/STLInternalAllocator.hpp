@@ -73,8 +73,8 @@ class STLInternalAllocator {
 		inline void construct(pointer p, const T& t) { new(p) T(t); }
 		inline void destroy(pointer p) { p->~T(); }
 
-		inline bool operator==(STLInternalAllocator<T> const&) { return true; }
-		inline bool operator!=(STLInternalAllocator<T> const& a) { return !operator==(a); }
+		inline bool operator==(STLInternalAllocator<T> const&) const { return true; }
+		inline bool operator!=(STLInternalAllocator<T> const& a) const { return !operator==(a); }
 };    //    end of class Allocator
 
 }

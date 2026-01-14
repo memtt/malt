@@ -117,6 +117,22 @@ ROCKY_BASIC_CMDS=[
     # install minimal
     "dnf install -y cmake gcc-c++ make clang",
 ]
+
+CENTOS_YUM_BASIC_CMDS=[
+    # Due to URL changed
+    "sed -i 's/mirrorlist/#mirrorlist/g' /etc/yum.repos.d/CentOS-*",
+    "sed -i 's|#baseurl=http://mirror.centos.org|baseurl=http://vault.centos.org|g' /etc/yum.repos.d/CentOS-*",
+    # update
+    "yum update -y",
+    # install minimal
+    "yum install -y cmake gcc-c++ make clang",
+]
+CENTOS_YMU_FULL_CMDS=[
+    # install basics
+    "yum install -y graphviz python3-devel",
+    # playsing with sources
+    "yum install -y wget git nodejs npm curl bzip2 xz",
+]
 ROCKY_FULL_CMDS=[
     # all deps
     "dnf install -y libunwind-devel elfutils-devel graphviz nlohmann-json-devel cpp-httplib-devel python3-devel gtest iniparser-devel",
@@ -381,6 +397,42 @@ BUILD_PARAMETERS = {
             "cmds": [
                 BUILD_CUSTOM_PYTHON
             ]
+        },
+        ############ centos:9
+        "malt/centos-basic:7": {
+            "base": "centos:7",
+            "cmds": CENTOS_YUM_BASIC_CMDS + [
+                "yum install -y wget libopenssl-devel",
+                f"cd /tmp && wget https://github.com/Kitware/CMake/releases/download/v3.13.3/cmake-3.13.3.tar.gz && tar -xvf cmake-3.13.3.tar.gz && cd cmake-3.13.3 && ./configure && make -j4 && make install && cd .. && rm -rfvd cmake-3.13.3*"
+            ]
+        },
+        "malt/centos-full:7": {
+            "base": "malt/centos-basic:7",
+            "cmds": CENTOS_YMU_FULL_CMDS
+        },
+        "malt/centos-basic:8": {
+            "base": "centos:8",
+            "cmds": CENTOS_YUM_BASIC_CMDS
+        },
+        "malt/centos-full:8": {
+            "base": "malt/centos-basic:8",
+            "cmds": CENTOS_YMU_FULL_CMDS
+        },
+        "malt/centos-basic:9": {
+            "base": "centos:9",
+            "cmds": ROCKY_BASIC_CMDS
+        },
+        "malt/centos-full:9": {
+            "base": "malt/centos-basic:9",
+            "cmds": REDHAT_OLD_FULL_CMDS
+        },
+        "malt/centos-basic:10": {
+            "base": "centos:10",
+            "cmds": ROCKY_BASIC_CMDS
+        },
+        "malt/centos-full:10": {
+            "base": "malt/centos-basic:10",
+            "cmds": REDHAT_OLD_FULL_CMDS
         },
         ############ archlinux:latest
         "malt/archlinux-basic:latest": {
