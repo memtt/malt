@@ -2623,7 +2623,7 @@
    "command": "src/reader/libreader/extractors/tests/extractor-example",
    "date": "2026-01-12 21:43",
    "exe": "extractor-example",
-   "formatVersion": "1.5",
+   "formatVersion": "1.6",
    "hostname": "sebv6",
    "runtime": 1004070594,
    "tool": "malt-1.5.0"
