@@ -125,6 +125,60 @@ static const char * cstValidOptionNames[] = {
 };
 
 /**********************************************************/
+OptionMetaBase::OptionMetaBase(const std::string & group, const std::string & key)
+{
+	this->group = group;
+	this->key = key;
+}
+
+/**********************************************************/
+OptionMetaBase::~OptionMetaBase(void)
+{
+}
+
+/**********************************************************/
+OptionMetaBase & OptionMetaBase::setDoc(const std::string & value)
+{
+	this->doc = value;
+}
+
+/**********************************************************/
+OptionMetaBase & OptionMetaBase::setDefault(const std::string & value)
+{
+	this->defaultValue = value;
+}
+
+/**********************************************************/
+const std::string & OptionMetaBase::getGroup(void) const
+{
+	return this->group;
+}
+
+/**********************************************************/
+const std::string & OptionMetaBase::getKey(void) const
+{
+	return this->key;
+}
+
+/**********************************************************/
+const std::string & OptionMetaBase::getDoc(void) const
+{
+	return this->doc;
+}
+
+/**********************************************************/
+const std::string & OptionMetaBase::getDefaultValue(void) const
+{
+	return this->defaultValue;
+}
+
+/**********************************************************/
+const std::string & OptionMetaBase::getGroupKey(void) const
+{
+	return this->group + std::string(":") + this->key;
+}
+
+/**********************************************************/
 /**
  * Constructor to setup the default values for each options
 **/
