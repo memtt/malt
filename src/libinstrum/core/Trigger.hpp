@@ -20,6 +20,10 @@
 namespace MALT
 {
 
+/**********************************************************/
+/**
+ * @brief Class used to trigger dump on some events inside MALT.
+**/
 class Trigger
 {
 	public:
@@ -35,19 +39,34 @@ class Trigger
 		void runSpyingThread(void);
 		void pauseAllButMe(void);
 	private:
+		/** Reference to the option object to configurer the app **/
 		const Options & options;
+		/** Limit to apply on system memory, in bytes. **/
 		size_t sysMemLimit{0};
+		/** Limit to apply on RSS memory, in bytes. **/
 		size_t appRssLimit{0};
+		/** Limit to apply on virtual memory, in bytes. **/
 		size_t appVirtLimit{0};
+		/** Limit to appky on requested memory, in bytes. **/
 		size_t appReqLimit{0};
+		/** Limit to apply on the total memory. **/
 		size_t totalMemory{0};
+		/** Limit to apply on thread stack memory. **/
 		size_t threadStackLimit{0};
+		/** Limit to apply on number of memory allocations. **/
 		size_t allocCountLimit{0};
+		/** Handler for the watchdog thread. **/
 		std::thread spyingThread;
+		/** Used to notify the spyingThread to stop. **/
 		volatile bool spyingThreadKeepRunning{false};
 };
 
 /**********************************************************/
+/**
+ * On thread stack update, perform the check.
+ * @param threadStackSize Size of the current thread stack (in bytes).
+ * @return Return true, if need to dump, false to continue running.
+**/
 bool Trigger::onThreadStackUpdate(size_t threadStackSize) const
 {
 	//compute

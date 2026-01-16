@@ -28,6 +28,12 @@ namespace MALT
 {
 
 /**********************************************************/
+/**
+ * Constructor of the trigger class.
+ * @param options Reference to the option object used to configure the app.
+ * @param canHostSpyingThread allow spawning the spying thread or not depending
+ * on the configuration.
+**/
 Trigger::Trigger(const Options & options, bool canHostSpyingThread)
 	:options(options)
 {
@@ -49,6 +55,10 @@ Trigger::Trigger(const Options & options, bool canHostSpyingThread)
 }
 
 /**********************************************************/
+/**
+ * Destructor of the trigger classe, mostly stop the spying thread if
+ * is running.
+**/
 Trigger::~Trigger(void)
 {
 	if (this->spyingThreadKeepRunning) {
@@ -58,6 +68,12 @@ Trigger::~Trigger(void)
 }
 
 /**********************************************************/
+/**
+ * Notify the trigger class that OS memory metrics has been updated, so we
+ * need to check if we need to dump.
+ * @param memUsage Define the memory metric for the current status.
+ * @return True, if need to dump, false otherwise.
+**/
 bool Trigger::onSysUpdate(const OSMemUsage & memUsage) const
 {
 	//compute
@@ -77,6 +93,11 @@ bool Trigger::onSysUpdate(const OSMemUsage & memUsage) const
 }
 
 /**********************************************************/
+/**
+ * Notify the trigger object when the proc mem has be readed again.
+ * @param mem Define the memory metric.
+ * @return True, if need to dump, false otherwise.
+**/
 bool Trigger::onProcMemUpdate(const OSProcMemUsage & mem) const
 {
 	//check
@@ -106,6 +127,11 @@ bool Trigger::onProcMemUpdate(const OSProcMemUsage & mem) const
 }
 
 /**********************************************************/
+/**
+ * Notify the trigger when a memory allocation has been treated.
+ * @param nbAlloc Define the number of allocations performed in total.
+ * @return True if needs to dump, false otherwise.
+**/
 bool Trigger::onAllocOp(size_t nbAlloc) const
 {
 	//check
@@ -122,6 +148,11 @@ bool Trigger::onAllocOp(size_t nbAlloc) const
 }
 
 /**********************************************************/
+/**
+ * Notify the trigger class when the requested memory has changed.
+ * @param reqMem to the current requested memory (total) in bytes.
+ * @return True if needs to dump, false otherwise.
+**/
 bool Trigger::onRequestUpdate(size_t reqMem) const
 {
 	//check
@@ -143,6 +174,9 @@ bool Trigger::onRequestUpdate(size_t reqMem) const
 void maltDumpOnEvent();
 
 /**********************************************************/
+/**
+ * Starts the spying thread.
+**/
 void Trigger::runSpyingThread(void)
 {
 	
@@ -175,6 +209,9 @@ void Trigger::runSpyingThread(void)
 }
 
 /**********************************************************/
+/**
+ * Try to pause all the other threads expecpt self.
+**/
 void Trigger::pauseAllButMe(void)
 {
 	//open dir
@@ -196,6 +233,18 @@ void Trigger::pauseAllButMe(void)
 }
 
 /**********************************************************/
+/**
+ * Calculare the limit from a given parameter.
+ * It allows the semantif :
+ *   - 100G
+ *   - 100M
+ *   - 100K
+ *   - 50%
+ * @param value The string value defining the paramater value.
+ * @param ref The refrence max memory (for %).
+ * @param paramName Name of the parameter to print in debug if the value has wrong format.
+ * @return The size in bytes.
+**/
 size_t Trigger::calcLimit(const std::string & value, size_t ref, const std::string & paramName)
 {
 	//trivial
