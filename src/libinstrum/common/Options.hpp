@@ -69,6 +69,11 @@ enum PythonMode
 };
 
 /**********************************************************/
+void convertToJson(htopml::JsonState & json,const StackMode & value);
+void convertToJson(htopml::JsonState & json,const PythonMode & value);
+void convertToJson(htopml::JsonState & json,const Verbosity & value);
+
+/**********************************************************/
 std::ostream & operator<<(std::ostream & out, StackMode mode);
 std::ostream & operator<<(std::ostream & out, PythonMode mode);
 

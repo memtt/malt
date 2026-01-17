@@ -20,80 +20,83 @@ using namespace MALT;
 /**********************************************************/
 const char cstJson[] = "\
 {\n\
-	\"time\":{\n\
-		\"enabled\":true,\n\
-		\"points\":512,\n\
-		\"linear\":false\n\
-	},\n\
-	\"stack\":{\n\
-		\"enabled\":true,\n\
-		\"mode\":\"backtrace\",\n\
-		\"resolve\":true,\n\
-		\"libunwind\":false,\n\
-		\"stackSkip\":4,\n\
-		\"addr2lineBucket\":350,\n\
-		\"addr2lineThreads\":8,\n\
-		\"addr2lineHuge\":52428800,\n\
-		\"sampling\":false,\n\
-		\"samplingBw\":4093,\n\
-		\"samplingCnt\":571\n\
-	},\n\
-	\"python\":{\n\
-		\"instru\":true,\n\
-		\"mix\":false,\n\
-		\"stack\":\"enter-exit\",\n\
-		\"obj\":true,\n\
-		\"mem\":true,\n\
-		\"raw\":true,\n\
-		\"hideImports\":true,\n\
-		\"mode\":\"profile\"\n\
-	},\n\
-	\"c\":{\n\
-		\"malloc\":true,\n\
-		\"mmap\":true\n\
-	},\n\
-	\"output\":{\n\
-		\"callgrind\":false,\n\
-		\"dumpConfig\":false,\n\
-		\"index\":false,\n\
-		\"json\":true,\n\
-		\"lua\":false,\n\
-		\"name\":\"malt-%1-%2.%3\",\n\
-		\"verbosity\":\"default\",\n\
-		\"stackTree\":false,\n\
-		\"loopSuppress\":false\n\
-	},\n\
-	\"maxStack\":{\n\
-		\"enabled\":true\n\
-	},\n\
-	\"distr\":{\n\
-		\"allocSize\":true,\n\
-		\"reallocJump\":true\n\
-	},\n\
-	\"info\":{\n\
-		\"hidden\":false\n\
-	},\n\
-	\"filter\":{\n\
-		\"exe\":\"\",\n\
-		\"childs\":true,\n\
-		\"enabled\":true,\n\
-		\"ranks\":\"\"\n\
-	},\n\
-	\"dump\":{\n\
-		\"onSignal\":\"\",\n\
-		\"afterSeconds\":0,\n\
-		\"onSysFullAt\":\"\",\n\
-		\"onAppUsingRss\":\"\",\n\
-		\"onAppUsingVirt\":\"\",\n\
-		\"onAppUsingReq\":\"\",\n\
-		\"onThreadStackUsing\":\"\",\n\
-		\"onAllocCount\":\"\",\n\
-		\"watchDog\":false\n\
-	},\n\
-	\"tools\":{\n\
-		\"nm\":true,\n\
-		\"nmMaxSize\":\"50M\"\n\
-	}\n\
+\t\"c\":{\n\
+\t\t\"malloc\":true,\n\
+\t\t\"mmap\":true\n\
+\t},\n\
+\t\"distr\":{\n\
+\t\t\"alloc-size\":true,\n\
+\t\t\"realloc-jump\":true\n\
+\t},\n\
+\t\"dump\":{\n\
+\t\t\"after-seconds\":0,\n\
+\t\t\"on-alloc-count\":\"\",\n\
+\t\t\"on-app-using-req\":\"\",\n\
+\t\t\"on-app-using-rss\":\"\",\n\
+\t\t\"on-app-using-virt\":\"\",\n\
+\t\t\"on-signal\":\"\",\n\
+\t\t\"on-sys-full-at\":\"\",\n\
+\t\t\"on-thread-stack-using\":\"\",\n\
+\t\t\"watch-dog\":false\n\
+\t},\n\
+\t\"filter\":{\n\
+\t\t\"childs\":true,\n\
+\t\t\"enabled\":true,\n\
+\t\t\"exe\":\"\",\n\
+\t\t\"ranks\":\"\"\n\
+\t},\n\
+\t\"info\":{\n\
+\t\t\"hidden\":false\n\
+\t},\n\
+\t\"max-stack\":{\n\
+\t\t\"enabled\":true\n\
+\t},\n\
+\t\"output\":{\n\
+\t\t\"callgrind\":false,\n\
+\t\t\"config\":false,\n\
+\t\t\"indent\":false,\n\
+\t\t\"json\":true,\n\
+\t\t\"loop-suppress\":false,\n\
+\t\t\"lua\":false,\n\
+\t\t\"name\":\"malt-%1-%2.%3\",\n\
+\t\t\"stack-tree\":false,\n\
+\t\t\"verbosity\":\"default\"\n\
+\t},\n\
+\t\"python\":{\n\
+\t\t\"hide-imports\":true,\n\
+\t\t\"instru\":true,\n\
+\t\t\"mem\":true,\n\
+\t\t\"mix\":false,\n\
+\t\t\"mode\":\"profile\",\n\
+\t\t\"obj\":true,\n\
+\t\t\"raw\":true,\n\
+\t\t\"stack\":\"enter-exit\"\n\
+\t},\n\
+\t\"stack\":{\n\
+\t\t\"addr2lineBucket\":350,\n\
+\t\t\"addr2lineHuge\":52428800,\n\
+\t\t\"addr2lineThreads\":8,\n\
+\t\t\"enabled\":true,\n\
+\t\t\"libunwind\":false,\n\
+\t\t\"mode\":\"backtrace\",\n\
+\t\t\"resolve\":true,\n\
+\t\t\"sampling\":false,\n\
+\t\t\"samplingBw\":4093,\n\
+\t\t\"samplingCnt\":571,\n\
+\t\t\"skip\":4\n\
+\t},\n\
+\t\"time\":{\n\
+\t\t\"enabled\":true,\n\
+\t\t\"linear-index\":false,\n\
+\t\t\"points\":512\n\
+\t},\n\
+\t\"tools\":{\n\
+\t\t\"nm\":true,\n\
+\t\t\"nm-max-size\":\"50M\"\n\
+\t},\n\
+\t\"trace\":{\n\
+\t\t\"enabled\":false\n\
+\t}\n\
 }";
 
 /**********************************************************/

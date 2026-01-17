@@ -118,7 +118,7 @@ bool Addr2Line::run(void)
 	//parse output
 	for (auto & task : tasks) {
 		const bool status = this->loadEntry(*task.callSite, fp);
-		if (status != 0) assert(false);
+		if (status == false) assert(false);
 	}
 
 	//close

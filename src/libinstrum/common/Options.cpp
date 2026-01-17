@@ -376,7 +376,7 @@ OptionsMeta::OptionsMeta(Options & value)
 	//load values for time profiling
 	this->add("time", "enabled", value.timeProfileEnabled).setDoc("Enable time profiles.");
 	this->add("time", "points", value.timeProfilePoints).setDoc("Number of points to keep in the cart.");
-	this->add("time", "linear-index", value.timeProfileLinear).setDoc("Use operation index instead of time.");
+	this->add("time", "linear", value.timeProfileLinear).setDoc("Use operation index instead of time.");
 	
 	//python
 	this->add("python", "instru", value.pythonInstru).setDoc("Enable of disable python instrumentation.");
@@ -400,7 +400,7 @@ OptionsMeta::OptionsMeta(Options & value)
 	this->add("stack", "skip", value.stackSkip).setDoc("Number of stack frame to skip in order to cut at malloc level.");
 	this->add("stack", "addr2lineBucket", value.stackAddr2lineBucket).setDoc("Handle the addr2line calls by buckets and treat each bucket in parallel.");
 	this->add("stack", "addr2lineThreads", value.stackAddr2lineThreads).setDoc("Number of threasd to use to call addr2line in parallel.");
-	this->add("stack", "stackAddr2lineHuge", value.stackAddr2lineHuge).setDoc("For larger elf files, do not treat them in parallel nor buckets.");
+	this->add("stack", "addr2lineHuge", value.stackAddr2lineHuge).setDoc("For larger elf files, do not treat them in parallel nor buckets.");
 	this->add("stack", "sampling", value.stackSampling).setDoc("Sample and instrument only some stack.");
 	this->add("stack", "samplingBw", value.stackSamplingBw).setDoc("Instrument the stack when seen passed 4K-3 bytes of alloc requests (ideally should be prime number).");
 	this->add("stack", "samplingCnt", value.stackSamplingCnt).setDoc("Instrument the stack when seen passed X alloc requests (ideally should be prime number).");;
@@ -576,6 +576,9 @@ void OptionsMeta::dumpAsJson(htopml::JsonState & json) const
 
 			//close
 			json.closeFieldStruct(group.c_str());
+
+			//done
+			done.insert(group);
 		}
 	}
 
@@ -649,6 +652,30 @@ std::ostream & operator<<(std::ostream & out, const Options & options)
 bool OptionsMeta::isValidGroupKey(const std::string & value) const
 {
 	return this->meta.find(value) != this->meta.end();
+}
+
+/**********************************************************/
+void convertToJson(htopml::JsonState & json,const StackMode & value)
+{
+	std::stringstream buffer;
+	buffer << value;
+	convertToJson(json, buffer.str());
+}
+
+/**********************************************************/
+void convertToJson(htopml::JsonState & json,const PythonMode & value)
+{
+	std::stringstream buffer;
+	buffer << value;
+	convertToJson(json, buffer.str());
+}
+
+/**********************************************************/
+void convertToJson(htopml::JsonState & json,const Verbosity & value)
+{
+	std::stringstream buffer;
+	buffer << value;
+	convertToJson(json, buffer.str());
 }
 
 }

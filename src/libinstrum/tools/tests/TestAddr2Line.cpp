@@ -10,6 +10,7 @@
 /**********************************************************/
 #include <gtest/gtest.h>
 #include <portability/OS.hpp>
+#include <common/Options.hpp>
 #include <common/STLInternalAllocator.hpp>
 #include "../Addr2Line.hpp"
 
@@ -64,6 +65,7 @@ int main(int argc, char ** argv)
 {
 	//init internal allocator
 	gblInternaAlloc = new SimpleAllocator(true);
+	gblOptions = new Options;
 	
 	// This allows the user to override the flag on the command line.
 	::testing::InitGoogleTest(&argc, argv);

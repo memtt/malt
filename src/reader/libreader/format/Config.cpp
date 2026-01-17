@@ -137,7 +137,7 @@ void from_json(const JsonIn & json, Config & config)
 	assert(jsContains(jsonStack, "mode"));
 	assert(jsContains(jsonStack, "resolve"));
 	assert(jsContains(jsonStack, "libunwind"));
-	assert(jsContains(jsonStack, "stackSkip"));
+	assert(jsContains(jsonStack, "skip"));
 	assert(jsContains(jsonStack, "addr2lineBucket"));
 	assert(jsContains(jsonStack, "addr2lineThreads"));
 	assert(jsContains(jsonStack, "addr2lineHuge"));
@@ -148,7 +148,7 @@ void from_json(const JsonIn & json, Config & config)
 	jsonStack.at("mode").get_to(config.stack.mode);
 	jsonStack.at("resolve").get_to(config.stack.resolve);
 	jsonStack.at("libunwind").get_to(config.stack.libunwind);
-	jsonStack.at("stackSkip").get_to(config.stack.stackSkip);
+	jsonStack.at("skip").get_to(config.stack.stackSkip);
 	jsonStack.at("addr2lineBucket").get_to(config.stack.addr2lineBucket);
 	jsonStack.at("addr2lineThreads").get_to(config.stack.addr2lineThreads);
 	jsonStack.at("addr2lineHuge").get_to(config.stack.addr2lineHuge);
