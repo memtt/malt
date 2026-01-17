@@ -63,7 +63,8 @@ JsonFile::JsonFile(const std::string & fname, bool progress)
 JsonFile::~JsonFile(void)
 {
 	ssize_t status = munmap((void*)this->data.value, this->data.len);
-	assert(status == 0);
+	if (status != 0)
+		assert(false);
 }
 
 /**********************************************************/

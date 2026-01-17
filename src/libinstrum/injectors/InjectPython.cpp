@@ -192,9 +192,9 @@ void initPythonEnterExitInstrumentation(void)
 		printf("MALT: Instument Python profiling...\n");
 	PyGILState_STATE gstate;
 	gstate = MALT::PyGILState_Ensure();
-	if (gblOptions->pythonMode == "profile") {
+	if (gblOptions->pythonMode == PYTHON_MODE_PROFILE) {
 		MALT::PyEval_SetProfileAllThreads(malt_wrap_python_on_enter_exit, NULL);
-	} else if (gblOptions->pythonMode == "trace") {
+	} else if (gblOptions->pythonMode == PYTHON_MODE_TRACE) {
 		MALT::PyEval_SetProfileAllThreads(malt_wrap_python_on_enter_exit, NULL);
 		MALT::PyEval_SetTraceAllThreads(malt_wrap_python_on_enter_exit, NULL);
 	} else {
@@ -221,7 +221,7 @@ void initPythonInstrumentation(const char * script)
 
 	//init python
 	initPythonAllocInstrumentation();
-	if (gblOptions->pythonStackEnum == STACK_MODE_ENTER_EXIT_FUNC)
+	if (gblOptions->pythonStack == STACK_MODE_ENTER_EXIT_FUNC)
 		initPythonEnterExitInstrumentation();
 
 	assert(gblState.profiler != nullptr);

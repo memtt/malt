@@ -51,27 +51,8 @@ static StackMode getStackMode(Options & options)
 	StackMode ret = MALT::STACK_MODE_BACKTRACE;
 	
 	//if not env use config file
-	if (mode == NULL)
-		mode = options.stackMode.c_str();
-
-	//switches
-	if (mode == NULL)
-	{
-		ret = STACK_MODE_BACKTRACE;
-	} else if (strcmp(mode,"backtrace") == 0 || strcmp(mode,"") == 0) {
-		ret = STACK_MODE_BACKTRACE;
-	} else if (strcmp(mode,"libunwind") == 0 || strcmp(mode,"") == 0) {
-		ret = STACK_MODE_BACKTRACE;
-		options.stackLibunwind = true;
-	} else if (strcmp(mode,"enter-exit") == 0) {
-		ret = STACK_MODE_ENTER_EXIT_FUNC;
-	} else if (strcmp(mode,"none") == 0) {
-		ret = STACK_MODE_NONE;
-	} else if (strcmp(mode,"python") == 0) {
-		ret = STACK_MODE_PYTHON;
-	} else {
-		MALT_FATAL_ARG("Invalid mode in MALT_STACK environnement variable : '%1'! Supported : backtrace | enter-exit | none.").arg(mode).end();
-	}
+	if (mode != NULL)
+		setByString(options.stackMode, mode);
 	
 	//ok done
 	return ret;

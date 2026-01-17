@@ -47,7 +47,7 @@ void MultiLangStackMerger::checkPython(void)
 	if (hasOne == false) {
 		//fprintf(stderr, "MALT: No python detected, skip python analysis");
 		gblOptions->pythonMix = false;
-		gblOptions->pythonStackEnum = STACK_MODE_NONE;
+		gblOptions->pythonStack = STACK_MODE_NONE;
 	}
 }
 

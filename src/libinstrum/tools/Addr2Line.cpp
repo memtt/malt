@@ -11,6 +11,7 @@
 #include <cassert>
 #include <sstream>
 #include <fstream>
+#include <unistd.h>
 #include <common/Debug.hpp>
 #include <common/Options.hpp>
 #include <portability/OS.hpp>
@@ -89,7 +90,7 @@ bool Addr2Line::run(void)
 		fd = mkstemp(templ);
 		char * buffer = (char*)MALT_MALLOC(4096);
 		char * path = (char*)MALT_MALLOC(4096);
-		snprintf(path, sizeof(path), "/proc/self/fd/%d", fd);
+		snprintf(path, 4096, "/proc/self/fd/%d", fd);
 		ssize_t status = readlink(path, buffer, sizeof(buffer));
 		assumeArg(status > 0, "Fail to get symlink translation : %1").arg(path).end();
 		fileBuffer = buffer;
@@ -117,7 +118,7 @@ bool Addr2Line::run(void)
 	//parse output
 	for (auto & task : tasks) {
 		const bool status = this->loadEntry(*task.callSite, fp);
-		assert(status);
+		if (status != 0) assert(false);
 	}
 
 	//close

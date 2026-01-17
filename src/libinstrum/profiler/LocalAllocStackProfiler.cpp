@@ -351,7 +351,7 @@ Stack* LocalAllocStackProfiler::getStack(Language lang, size_t size, bool isFree
 
 	//copy localy
 	StackMode localCStackMode = this->stackMode;
-	StackMode localPyStackMode = this->options->pythonStackEnum;
+	StackMode localPyStackMode = this->options->pythonStack;
 
 	//apply tricks
 	//currently has an issue if python trigger an internal mmap call for its own handling
