@@ -174,18 +174,28 @@ void Options::loadFromString ( const char* value )
 		
 		//is end
 		bool isEnd = (*cur == '\0');
-		assumeArg(sep != NULL,"Invalid string format to setup option : '%1', expect SECTION:NAME=VALUE.").arg(start).end();
-		
-		//cut strings
+		if (sep == NULL) {
+			fprintf(stderr, "Invalid string format to setup option : '%s', expect SECTION:NAME=VALUE.\n", start);
+			exit(1);
+		}
+
+		//cut end
 		*cur = '\0';
+
+		//cut on separator
 		*sep = '\0';
 		sep++;
+
+		//validate
+		if (validateOptionName(start) == false) {
+			fprintf(stderr, "Invalid option given to MALT : %s !\n", start);
+			exit(1);
+		}
 
 		//rename
 		const char * key = sep;
 		
 		//setup in INI
-		validateOptionName(start);
 		IniParserHelper::setEntry(dic,start,key);
 		
 		//move
