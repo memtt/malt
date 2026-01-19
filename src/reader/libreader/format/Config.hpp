@@ -57,17 +57,20 @@ struct Config
 	struct {
 		bool callgrind;
 		bool dumpConfig;
-		bool index;
 		bool json;
 		bool lua;
 		std::string name;
 		std::string verbosity;
 		bool stackTree;
 		bool loopSuppress;
+		bool indent;
 	} output;
 	struct {
 		bool enabled;
 	} maxStack;
+	struct {
+		bool enabled;
+	} trace;
 	struct {
 		bool allocSize;
 		bool reallocJump;

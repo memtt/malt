@@ -30,7 +30,7 @@ void to_json(nlohmann::json & json, const Config & config){
 				{"mode", config.stack.mode},
 				{"resolve", config.stack.resolve},
 				{"libunwind", config.stack.libunwind},
-				{"stackSkip", config.stack.stackSkip},
+				{"skip", config.stack.stackSkip},
 				{"addr2lineBucket", config.stack.addr2lineBucket},
 				{"addr2lineThreads", config.stack.addr2lineThreads},
 				{"addr2lineHuge", config.stack.addr2lineHuge},
@@ -47,7 +47,7 @@ void to_json(nlohmann::json & json, const Config & config){
 				{"obj", config.python.obj},
 				{"mem", config.python.mem},
 				{"raw", config.python.raw},
-				{"hideImports", config.python.hideImports},
+				{"hide-imports", config.python.hideImports},
 				{"mode", config.python.mode},
 			}
 		},
@@ -60,25 +60,30 @@ void to_json(nlohmann::json & json, const Config & config){
 		{
 			"output", {
 				{"callgrind", config.output.callgrind},
-				{"dumpConfig", config.output.dumpConfig},
-				{"index", config.output.index},
+				{"config", config.output.dumpConfig},
+				{"indent", config.output.indent},
 				{"json", config.output.json},
 				{"lua", config.output.lua},
 				{"name", config.output.name},
 				{"verbosity", config.output.verbosity},
-				{"stackTree", config.output.stackTree},
-				{"loopSuppress", config.output.loopSuppress},
+				{"stack-tree", config.output.stackTree},
+				{"loop-suppress", config.output.loopSuppress},
 			}
 		},
 		{
-			"maxStack", {
+			"max-stack", {
 				{"enabled", config.maxStack.enabled},
 			}
 		},
 		{
+			"trace", {
+				{ "enabled", config.trace.enabled},
+			}
+		},
+		{
 			"distr", {
-				{"allocSize", config.distr.allocSize},
-				{"reallocJump", config.distr.reallocJump},
+				{"alloc-size", config.distr.allocSize},
+				{"realloc-jump", config.distr.reallocJump},
 			}
 		},
 		{
@@ -96,21 +101,21 @@ void to_json(nlohmann::json & json, const Config & config){
 		},
 		{
 			"dump", {
-				{"onSignal", config.dump.onSignal},
-				{"afterSeconds", config.dump.afterSeconds},
-				{"onSysFullAt", config.dump.onSysFullAt},
-				{"onAppUsingRss", config.dump.onAppUsingRss},
-				{"onAppUsingVirt", config.dump.onAppUsingVirt},
-				{"onAppUsingReq", config.dump.onAppUsingReq},
-				{"onThreadStackUsing", config.dump.onThreadStackUsing},
-				{"onAllocCount", config.dump.onAllocCount},
-				{"watchDog", config.dump.watchDog},
+				{"on-signal", config.dump.onSignal},
+				{"after-seconds", config.dump.afterSeconds},
+				{"on-sys-full-at", config.dump.onSysFullAt},
+				{"on-app-using-rss", config.dump.onAppUsingRss},
+				{"on-app-using-virt", config.dump.onAppUsingVirt},
+				{"on-app-using-req", config.dump.onAppUsingReq},
+				{"on-thread-stack-using", config.dump.onThreadStackUsing},
+				{"on-alloc-count", config.dump.onAllocCount},
+				{"watch-dog", config.dump.watchDog},
 			}
 		},
 		{
 			"tools", {
 				{"nm", config.tools.nm},
-				{"nmMaxSize", config.tools.nmMaxSize},
+				{"nm-max-size", config.tools.nmMaxSize},
 			}
 		}
 	};
@@ -164,14 +169,14 @@ void from_json(const JsonIn & json, Config & config)
 	assert(jsContains(jsonPython, "obj"));
 	assert(jsContains(jsonPython, "mem"));
 	assert(jsContains(jsonPython, "raw"));
-	assert(jsContains(jsonPython, "hideImports"));
+	assert(jsContains(jsonPython, "hide-imports"));
 	jsonPython.at("instru").get_to(config.python.instru);
 	jsonPython.at("mix").get_to(config.python.mix);
 	jsonPython.at("stack").get_to(config.python.stack);
 	jsonPython.at("obj").get_to(config.python.obj);
 	jsonPython.at("mem").get_to(config.python.mem);
 	jsonPython.at("raw").get_to(config.python.raw);
-	jsonPython.at("hideImports").get_to(config.python.hideImports);
+	jsonPython.at("hide-imports").get_to(config.python.hideImports);
 	jsonPython.at("mode").get_to(config.python.mode);
 
 	//python
@@ -184,40 +189,46 @@ void from_json(const JsonIn & json, Config & config)
 	//output
 	JsonIn jsonOutput = json.at("output");
 	assert(jsContains(jsonOutput, "callgrind"));
-	assert(jsContains(jsonOutput, "dumpConfig"));
-	assert(jsContains(jsonOutput, "index"));
+	assert(jsContains(jsonOutput, "config"));
 	assert(jsContains(jsonOutput, "json"));
 	assert(jsContains(jsonOutput, "lua"));
 	assert(jsContains(jsonOutput, "name"));
 	assert(jsContains(jsonOutput, "verbosity"));
-	assert(jsContains(jsonOutput, "stackTree"));
-	assert(jsContains(jsonOutput, "loopSuppress"));
+	assert(jsContains(jsonOutput, "config"));
+	assert(jsContains(jsonOutput, "indent"));
+	assert(jsContains(jsonOutput, "stack-tree"));
+	assert(jsContains(jsonOutput, "loop-suppress"));
 	jsonOutput.at("callgrind").get_to(config.output.callgrind);
-	jsonOutput.at("dumpConfig").get_to(config.output.dumpConfig);
-	jsonOutput.at("index").get_to(config.output.index);
+	jsonOutput.at("config").get_to(config.output.dumpConfig);
 	jsonOutput.at("json").get_to(config.output.json);
 	jsonOutput.at("lua").get_to(config.output.lua);
 	jsonOutput.at("name").get_to(config.output.name);
 	jsonOutput.at("verbosity").get_to(config.output.verbosity);
-	jsonOutput.at("stackTree").get_to(config.output.stackTree);
-	jsonOutput.at("loopSuppress").get_to(config.output.loopSuppress);
+	jsonOutput.at("stack-tree").get_to(config.output.stackTree);
+	jsonOutput.at("loop-suppress").get_to(config.output.loopSuppress);
+	jsonOutput.at("indent").get_to(config.output.indent);
 
 	//maxStack
-	JsonIn jsonMaxSatck = json.at("maxStack");
+	JsonIn jsonMaxSatck = json.at("max-stack");
 	assert(jsContains(jsonMaxSatck, "enabled"));
 	jsonMaxSatck.at("enabled").get_to(config.maxStack.enabled);
 
 	//distr
 	JsonIn jsonDistr = json.at("distr");
-	assert(jsContains(jsonDistr, "allocSize"));
-	assert(jsContains(jsonDistr, "reallocJump"));
-	jsonDistr.at("allocSize").get_to(config.distr.allocSize);
-	jsonDistr.at("reallocJump").get_to(config.distr.reallocJump);
+	assert(jsContains(jsonDistr, "alloc-size"));
+	assert(jsContains(jsonDistr, "realloc-jump"));
+	jsonDistr.at("alloc-size").get_to(config.distr.allocSize);
+	jsonDistr.at("realloc-jump").get_to(config.distr.reallocJump);
 
 	//maxStack
 	JsonIn jsonInfo = json.at("info");
 	assert(jsContains(jsonInfo, "hidden"));
 	jsonInfo.at("hidden").get_to(config.info.hidden);
+
+	//time
+	JsonIn jsonTrace = json.at("trace");
+	assert(jsContains(jsonTrace, "enabled"));
+	jsonTrace.at("enabled").get_to(config.trace.enabled);
 
 	//maxStack
 	JsonIn jsonFilter = json.at("filter");
@@ -232,24 +243,24 @@ void from_json(const JsonIn & json, Config & config)
 
 	//maxStack
 	JsonIn jsonDump = json.at("dump");
-	assert(jsContains(jsonDump, "onSignal"));
-	assert(jsContains(jsonDump, "afterSeconds"));
-	jsonDump.at("onSignal").get_to(config.dump.onSignal);
-	jsonDump.at("afterSeconds").get_to(config.dump.afterSeconds);
-	jsonDump.at("onSysFullAt").get_to(config.dump.onSysFullAt);
-	jsonDump.at("onAppUsingRss").get_to(config.dump.onAppUsingRss);
-	jsonDump.at("onAppUsingVirt").get_to(config.dump.onAppUsingVirt);
-	jsonDump.at("onAppUsingReq").get_to(config.dump.onAppUsingReq);
-	jsonDump.at("onThreadStackUsing").get_to(config.dump.onThreadStackUsing);
-	jsonDump.at("onAllocCount").get_to(config.dump.onAllocCount);
-	jsonDump.at("watchDog").get_to(config.dump.watchDog);
+	assert(jsContains(jsonDump, "on-signal"));
+	assert(jsContains(jsonDump, "after-seconds"));
+	jsonDump.at("on-signal").get_to(config.dump.onSignal);
+	jsonDump.at("after-seconds").get_to(config.dump.afterSeconds);
+	jsonDump.at("on-sys-full-at").get_to(config.dump.onSysFullAt);
+	jsonDump.at("on-app-using-rss").get_to(config.dump.onAppUsingRss);
+	jsonDump.at("on-app-using-virt").get_to(config.dump.onAppUsingVirt);
+	jsonDump.at("on-app-using-req").get_to(config.dump.onAppUsingReq);
+	jsonDump.at("on-thread-stack-using").get_to(config.dump.onThreadStackUsing);
+	jsonDump.at("on-alloc-count").get_to(config.dump.onAllocCount);
+	jsonDump.at("watch-dog").get_to(config.dump.watchDog);
 
 	//maxStack
 	JsonIn jsonTools = json.at("tools");
 	assert(jsContains(jsonTools, "nm"));
-	assert(jsContains(jsonTools, "nmMaxSize"));
+	assert(jsContains(jsonTools, "nm-max-size"));
 	jsonTools.at("nm").get_to(config.tools.nm);
-	jsonTools.at("nmMaxSize").get_to(config.tools.nmMaxSize);
+	jsonTools.at("nm-max-size").get_to(config.tools.nmMaxSize);
 }
 
 }

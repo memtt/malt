@@ -87,7 +87,7 @@ const char cstJson[] = "\
 \t},\n\
 \t\"time\":{\n\
 \t\t\"enabled\":true,\n\
-\t\t\"linear-index\":false,\n\
+\t\t\"linear\":false,\n\
 \t\t\"points\":512\n\
 \t},\n\
 \t\"tools\":{\n\
