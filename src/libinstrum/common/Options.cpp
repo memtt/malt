@@ -65,9 +65,9 @@ bool Options::operator==(const Options& value) const
 	if (stack.mode != value.stack.mode) return false;
 	if (stack.libunwind != value.stack.libunwind) return false;
 	if (stack.skip != value.stack.skip) return false;
-	if (stackAddr2lineBucket != value.stackAddr2lineBucket) return false;
-	if (stackAddr2lineThreads != value.stackAddr2lineThreads) return false;
-	if (stackAddr2lineHuge != value.stackAddr2lineHuge) return false;
+	if (addr2line.bucket != value.addr2line.bucket) return false;
+	if (addr2line.threads != value.addr2line.threads) return false;
+	if (addr2line.huge != value.addr2line.huge) return false;
 	if (stackSampling != value.stackSampling) return false;
 	if (stackSamplingBw != value.stackSamplingBw) return false;
 	//python
@@ -444,9 +444,9 @@ OptionsMeta::OptionsMeta(Options & value)
 	this->add("stack", "skip", value.stack.skip).setDoc("Number of stack frame to skip in order to cut at malloc level.");
 
 	//addr2line
-	this->add("addr2line", "bucket", value.stackAddr2lineBucket).setDoc("Handle the addr2line calls by buckets and treat each bucket in parallel.");
-	this->add("addr2line", "threads", value.stackAddr2lineThreads).setDoc("Number of threasd to use to call addr2line in parallel.");
-	this->add("addr2line", "huge", value.stackAddr2lineHuge).setDoc("For larger elf files, do not treat them in parallel nor buckets.");
+	this->add("addr2line", "bucket", value.addr2line.bucket).setDoc("Handle the addr2line calls by buckets and treat each bucket in parallel.");
+	this->add("addr2line", "threads", value.addr2line.threads).setDoc("Number of threasd to use to call addr2line in parallel.");
+	this->add("addr2line", "huge", value.addr2line.huge).setDoc("For larger elf files, do not treat them in parallel nor buckets.");
 
 	//sampling
 	this->add("sampling", "enabled", value.stackSampling).setDoc("Sample and instrument only some stack.");

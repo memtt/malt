@@ -35,7 +35,7 @@ Addr2Line::Addr2Line(StringIdDictionnary & dict, const std::string & elfFile, si
 	this->bucketSize = bucketSize;
 
 	//check if huge (> 50 MB)
-	if (OS::getFileSize(elfFile) > gblOptions->stackAddr2lineHuge) {
+	if (OS::getFileSize(elfFile) > gblOptions->addr2line.huge) {
 		this->isHugeElfFile = true;
 		this->bucketSize = SIZE_MAX;
 	}

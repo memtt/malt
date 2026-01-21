@@ -114,9 +114,11 @@ struct Options
 		StackMode mode{STACK_MODE_BACKTRACE};
 		int skip{4};
 	} stack;
-	int stackAddr2lineBucket{350};
-	int stackAddr2lineThreads{8};
-	size_t stackAddr2lineHuge{50UL * 1024UL *1024UL};
+	struct {
+		int bucket{350};
+		int threads{8};
+		size_t huge{50UL * 1024UL *1024UL};
+	} addr2line;
 	bool stackSampling{false};
 	int stackSamplingBw{4093}; //5242883, 10485767, 20971529
 	int stackSamplingCnt{571};

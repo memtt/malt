@@ -409,7 +409,7 @@ void SymbolSolver::solveNames(void)
 					//if last is full
 					if (addr2line == nullptr || addr2line->isFull()) {
 						//spawn a new one
-						addr2line = new Addr2Line(this->stringDict, procMapEntry.file, aslrOffset, gblOptions->stackAddr2lineBucket);
+						addr2line = new Addr2Line(this->stringDict, procMapEntry.file, aslrOffset, gblOptions->addr2line.bucket);
 
 						//push in the right queue
 						if (addr2line->isHugeElf())
@@ -425,7 +425,7 @@ void SymbolSolver::solveNames(void)
 		}
 	}
 	//solve parallel the smalls and seq the huges not to trash the machine in MPI
-	runParallelJobs(addr2lineJobs, gblOptions->stackAddr2lineThreads);
+	runParallelJobs(addr2lineJobs, gblOptions->addr2line.threads);
 	runParallelJobs(addr2lineHugeSeq, 1);
 
 	//free mem

@@ -19,7 +19,7 @@ using namespace MALT;
 TEST(TestOptionsMeta,constructor)
 {
 	bool value{true};
-	OptionMeta option("stack", "enable", value);
+	OptionMeta<bool> option("stack", "enable", value);
 	ASSERT_EQ("stack", option.getGroup());
 	ASSERT_EQ("enable", option.getKey());
 	ASSERT_EQ("stack:enable", option.getGroupKey());
@@ -29,7 +29,7 @@ TEST(TestOptionsMeta,constructor)
 TEST(TestOptionsMeta,set)
 {
 	bool value{true};
-	OptionMeta option("stack", "enable", value);
+	OptionMeta<bool> option("stack", "enable", value);
 	option.setDoc("This is a boolean");
 	ASSERT_TRUE(value);
 	ASSERT_EQ("This is a boolean", option.getDoc());
