@@ -224,6 +224,7 @@ const char * verbosityToString(Verbosity value);
 Verbosity iniparser_getverbosity(dictionary * d, const char * key, Verbosity notfound);
 std::ostream & operator << (std::ostream & out, Verbosity value);
 bool validateOptionName(const std::string & value);
+bool checkDeprecated(const std::string & value);
 
 /**********************************************************/
 /** Safer function to access to the option, with check in debug mode.**/

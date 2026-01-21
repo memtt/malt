@@ -187,6 +187,9 @@ void Options::loadFromString ( const char* value )
 		sep++;
 
 		//validate
+		if (checkDeprecated(start)) {
+			exit(1);
+		}
 		if (validateOptionName(start) == false) {
 			fprintf(stderr, "Invalid option given to MALT : %s !\n", start);
 			exit(1);
@@ -381,6 +384,37 @@ bool validateOptionName(const std::string & value)
 }
 
 /**********************************************************/
+/**
+ * Check if some option has changed their name to avert the user.
+ */
+bool checkDeprecated(const std::string & value)
+{
+	if (value == "time:linear_index") {
+		fprintf(stderr, "Option 'time:linear_index' as been renamed as `time:linear`");
+		return true;
+	} else if (value == "stack:addr2lineBucket") {
+		fprintf(stderr, "Option 'stack:addr2lineBucket' as been renamed as `addr2line:bucket`");
+		return true;
+	} else if (value == "stack:addr2lineThreads") {
+		fprintf(stderr, "Option 'stack:addr2lineThreads' as been renamed as `addr2line:threads`");
+		return true;
+	} else if (value == "stack:addr2lineHuge") {
+		fprintf(stderr, "Option 'stack:addr2lineHuge' as been renamed as `addr2line:huge`");
+		return true;
+	} else if (value == "stack:sampling") {
+		fprintf(stderr, "Option 'stack:sampling' as been renamed as `sampling:enabled`");
+		return true;
+	} else if (value == "stack:samplingBw") {
+		fprintf(stderr, "Option 'stack:samplingBw' as been renamed as `sampling:volume`");
+		return true;
+	} else if (value == "stack:samplingCnt") {
+		fprintf(stderr, "Option 'stack:samplingCnt' as been renamed as `sampling:count`");
+		return true;
+	}
+	return false;
+}
+
+/**********************************************************/
 OptionsMeta::OptionsMeta(Options & value)
 {
 	//load values for time profiling
@@ -408,12 +442,16 @@ OptionsMeta::OptionsMeta(Options & value)
 	this->add("stack", "libunwind", value.stackLibunwind).setDoc("Enable of disable usage of libunwind to backtrace.");
 	this->add("stack", "mode", value.stackMode).setDoc("Define the stack tracking mode (enter-exit, backtrace, python, none)");
 	this->add("stack", "skip", value.stackSkip).setDoc("Number of stack frame to skip in order to cut at malloc level.");
-	this->add("stack", "addr2lineBucket", value.stackAddr2lineBucket).setDoc("Handle the addr2line calls by buckets and treat each bucket in parallel.");
-	this->add("stack", "addr2lineThreads", value.stackAddr2lineThreads).setDoc("Number of threasd to use to call addr2line in parallel.");
-	this->add("stack", "addr2lineHuge", value.stackAddr2lineHuge).setDoc("For larger elf files, do not treat them in parallel nor buckets.");
-	this->add("stack", "sampling", value.stackSampling).setDoc("Sample and instrument only some stack.");
-	this->add("stack", "samplingBw", value.stackSamplingBw).setDoc("Instrument the stack when seen passed 4K-3 bytes of alloc requests (ideally should be prime number).");
-	this->add("stack", "samplingCnt", value.stackSamplingCnt).setDoc("Instrument the stack when seen passed X alloc requests (ideally should be prime number).");;
+
+	//addr2line
+	this->add("addr2line", "bucket", value.stackAddr2lineBucket).setDoc("Handle the addr2line calls by buckets and treat each bucket in parallel.");
+	this->add("addr2line", "threads", value.stackAddr2lineThreads).setDoc("Number of threasd to use to call addr2line in parallel.");
+	this->add("addr2line", "huge", value.stackAddr2lineHuge).setDoc("For larger elf files, do not treat them in parallel nor buckets.");
+
+	//sampling
+	this->add("sampling", "enabled", value.stackSampling).setDoc("Sample and instrument only some stack.");
+	this->add("sampling", "volume", value.stackSamplingBw).setDoc("Instrument the stack when seen passed 4K-3 bytes of alloc requests (ideally should be prime number).");
+	this->add("sampling", "count", value.stackSamplingCnt).setDoc("Instrument the stack when seen passed X alloc requests (ideally should be prime number).");;
 	
 	//load values for output
 	this->add("output", "name", value.outputName).setDoc("base name for output, %1 = exe, %2 = PID, %3 = extension.");
