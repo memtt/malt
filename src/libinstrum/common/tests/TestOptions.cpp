@@ -61,7 +61,7 @@ const char cstJson[] = "\
 \t\t\"config\":false,\n\
 \t\t\"indent\":false,\n\
 \t\t\"json\":true,\n\
-\t\t\"loop-suppress\":false,\n\
+\t\t\"loop-suppress\":true,\n\
 \t\t\"lua\":false,\n\
 \t\t\"name\":\"malt-%1-%2.%3\",\n\
 \t\t\"stack-tree\":false,\n\

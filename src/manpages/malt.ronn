@@ -116,7 +116,7 @@ The config file use INI format with sections and variables as in this example :
 	config=true
 	verbosity=default
 	stack-tree=false
-	loop-suppress=false
+	loop-suppress=true
 	verbosity=default
 	stack-tree=false
 

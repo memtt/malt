@@ -162,7 +162,7 @@ struct Options
 		bool config{false};
 		Verbosity verbosity{MALT_VERBOSITY_DEFAULT};
 		bool stackTree{false};
-		bool loopSuppress{false};
+		bool loopSuppress{true};
 	} output;
 	//size map
 	struct {
