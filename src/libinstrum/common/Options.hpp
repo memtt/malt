@@ -165,12 +165,18 @@ struct Options
 		bool loopSuppress{false};
 	} output;
 	//size map
-	bool distrAllocSize{true};
-	bool distrReallocJump{true};
+	struct {
+		bool allocSize{true};
+		bool reallocJump{true};
+	} distr;
 	//trace
-	bool traceEnabled{false};
+	struct {
+		bool enabled{false};
+	} trace;
 	//info
-	bool infoHidden{false};
+	struct {
+		bool hidden{false};
+	} info;
 	//filter
 	std::string exe{""};
 	bool childs{true};

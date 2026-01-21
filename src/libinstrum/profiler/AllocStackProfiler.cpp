@@ -99,7 +99,7 @@ AllocStackProfiler::AllocStackProfiler(const Options & options,StackMode mode,bo
 	trefTicks = Clock::getticks();
 	
 	//open trace file
-	if (options.traceEnabled)
+	if (options.trace.enabled)
 	{
 		this->traceFilename = FormattedMessage(options.output.name).arg(this->getFileExeScriptName()).arg(Helpers::getFileId()).arg("trace").toString();
 		tracer.open(this->traceFilename);
@@ -132,7 +132,7 @@ void AllocStackProfiler::onMalloc(AllocTracerEvent & traceEntry, void* ptr, size
 {
 	MMCallStackNode node;
 	onAllocEvent(ptr,size,userStack, &node, true, domain);
-	if (this->options.traceEnabled) {
+	if (this->options.trace.enabled) {
 		traceEntry.callStack = node.stack;
 		this->tracer.pushEvent(traceEntry);
 	}
@@ -143,7 +143,7 @@ void AllocStackProfiler::onCalloc(AllocTracerEvent & traceEntry, void* ptr, size
 {
 	MMCallStackNode node;
 	onAllocEvent(ptr,size * nmemb,userStack, &node, true, domain);
-	if (this->options.traceEnabled) {
+	if (this->options.trace.enabled) {
 		traceEntry.callStack = node.stack;
 		this->tracer.pushEvent(traceEntry);
 	}
@@ -155,7 +155,7 @@ void AllocStackProfiler::onFree(AllocTracerEvent & traceEntry, void* ptr,Stack *
 	if (ptr != NULL) {
 		MMCallStackNode node;
 		FreeFinalInfos infos = onFreeEvent(ptr,userStack, &node, true, domain);
-		if (this->options.traceEnabled && ptr != nullptr) {
+		if (this->options.trace.enabled && ptr != nullptr) {
 			traceEntry.callStack = node.stack;
 			traceEntry.size = infos.size;
 			traceEntry.extra.free.lifetime = infos.lifetime;
@@ -219,7 +219,7 @@ size_t AllocStackProfiler::onRealloc(AllocTracerEvent & traceEntry, void* oldPtr
 			freeTraceEntry.extra.free.allocStack = freeInfos.allocStack;
 
 			//dump
-			if (options.traceEnabled)
+			if (options.trace.enabled)
 				this->tracer.pushEvent(freeTraceEntry);
 		} else {
 			traceEntry.extra.realloc.oldSize = 0;
@@ -243,7 +243,7 @@ size_t AllocStackProfiler::onRealloc(AllocTracerEvent & traceEntry, void* oldPtr
 		}
 		
 		//register size jump
-		if (options.distrReallocJump)
+		if (options.distr.reallocJump)
 		{
 			ReallocJump jump = {oldSize,newSize};
 			ReallocJumpMap::iterator it = reallocJumpMap.find(jump);
@@ -255,7 +255,7 @@ size_t AllocStackProfiler::onRealloc(AllocTracerEvent & traceEntry, void* oldPtr
 	MALT_END_CRITICAL
 
 	//dump
-	if (options.traceEnabled)
+	if (options.trace.enabled)
 		this->tracer.pushEvent(traceEntry);
 	
 	return oldSize;
@@ -342,7 +342,7 @@ void AllocStackProfiler::onAllocEvent(void* ptr, size_t size,Stack* userStack,MM
 		}
 		
 		//update size map
-		if (options.distrAllocSize)
+		if (options.distr.allocSize)
 		{
 			CODE_TIMING("sizeDistr",
 				AllocSizeDistrMap::iterator it = sizeMap.find(size);
@@ -541,7 +541,7 @@ void AllocStackProfiler::onMmap (AllocTracerEvent & traceEntry, void* ptr, size_
 	this->onAllocEvent(ptr,delta,userStack, callStackNode, true, DOMAIN_MMAP);
 
 	//trace
-	if (this->options.traceEnabled) {
+	if (this->options.trace.enabled) {
 		if (callStackNode == nullptr)
 			traceEntry.callStack = nullptr;
 		else
@@ -610,7 +610,7 @@ void AllocStackProfiler::onMunmap (AllocTracerEvent & traceEntry, void* ptr, siz
 	this->applyVmaPatches(userStack, callStackNode, vmaPatches);
 
 	//trace
-	if (this->options.traceEnabled) {
+	if (this->options.trace.enabled) {
 		if (callStackNode == nullptr)
 			traceEntry.callStack = nullptr;
 		else
@@ -632,7 +632,7 @@ void AllocStackProfiler::onMremap(AllocTracerEvent & traceEntry, void * ptr,size
 	this->onMmap(nop, new_ptr, new_size, userStack, &callStackNode);
 
 	//register size jump
-	if (options.distrReallocJump)
+	if (options.distr.reallocJump)
 	{
 		ReallocJump jump = {size,new_size};
 		ReallocJumpMap::iterator it = reallocJumpMap.find(jump);
@@ -643,7 +643,7 @@ void AllocStackProfiler::onMremap(AllocTracerEvent & traceEntry, void * ptr,size
 	}
 
 	//trace
-	if (this->options.traceEnabled) {
+	if (this->options.trace.enabled) {
 		traceEntry.callStack = callStackNode.stack;
 		this->tracer.pushEvent(traceEntry);
 	}
@@ -960,7 +960,7 @@ void AllocStackProfiler::onExit(void )
 		}
 
 		//trace rename
-		if (options.traceEnabled) {
+		if (options.trace.enabled) {
 			std::string traceName = FormattedMessage(options.output.name).arg(this->getFileExeScriptName()).arg(Helpers::getFileId()).arg("trace").toString();
 			this->tracer.rename(traceName);
 			this->traceFilename = traceName;
@@ -1003,9 +1003,9 @@ void convertToJson(htopml::JsonState& json, const AllocStackProfiler& value)
 		json.printField("runtime",Clock::getticks() - value.trefTicks);
 		json.printField("allocator", value.realMallocLib);
 		json.printField("allocatorWrappers", maltGetWrappedSymbols());
-		if (value.getOptions()->traceEnabled)
+		if (value.getOptions()->trace.enabled)
 			json.printField("tracefile",value.traceFilename);
-		if (value.getOptions()->infoHidden == false)
+		if (value.getOptions()->info.hidden == false)
 		{
 			json.printField("exe",OS::getExeName());
 			json.printField("command",cmdToString(OS::getCmdLine()));
@@ -1053,7 +1053,7 @@ void convertToJson(htopml::JsonState& json, const AllocStackProfiler& value)
 	}
 	
 	json.openFieldStruct("memStats");
-		if (value.options.distrAllocSize)
+		if (value.options.distr.allocSize)
 		{
 			json.openFieldStruct("sizeMap");
 			for (AllocSizeDistrMap::const_iterator it = value.sizeMap.begin() ; it != value.sizeMap.end() ; ++it)			
@@ -1065,7 +1065,7 @@ void convertToJson(htopml::JsonState& json, const AllocStackProfiler& value)
 			json.closeFieldStruct("sizeMap");
 		}
 		
-		if (value.options.distrReallocJump)
+		if (value.options.distr.reallocJump)
 		{
 			json.openFieldArray("reallocJump");
 			for (ReallocJumpMap::const_iterator it = value.reallocJumpMap.begin() ; it != value.reallocJumpMap.end() ; ++it)			

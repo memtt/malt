@@ -135,14 +135,14 @@ TEST(TestOptions,loadFromString)
 	Options options;
 
 	//pre check
-	EXPECT_FALSE(options.traceEnabled);
+	EXPECT_FALSE(options.trace.enabled);
 	EXPECT_FALSE(options.output.indent);
 
 	//parse
 	options.loadFromString("output:indent=true;output:name=test;trace:enabled=true)");
 
 	//recheck
-	EXPECT_TRUE(options.traceEnabled);
+	EXPECT_TRUE(options.trace.enabled);
 	EXPECT_TRUE(options.output.indent);
 	EXPECT_EQ(options.output.name, "test");
 }

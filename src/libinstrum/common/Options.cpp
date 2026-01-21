@@ -100,12 +100,12 @@ bool Options::operator==(const Options& value) const
 	//max stack
 	if (this->maxStack.enabled != value.maxStack.enabled) return false;
 	//maps
-	if (this->distrAllocSize != value.distrAllocSize) return false;
-	if (this->distrReallocJump != value.distrReallocJump) return false;
+	if (this->distr.allocSize != value.distr.allocSize) return false;
+	if (this->distr.reallocJump != value.distr.reallocJump) return false;
 	//trace
-	if (this->traceEnabled != value.traceEnabled) return false;
+	if (this->trace.enabled != value.trace.enabled) return false;
 	//info
-	if (this->infoHidden != value.infoHidden) return false;
+	if (this->info.hidden != value.info.hidden) return false;
 	//exe
 	if (this->exe != value.exe) return false;
 	if (this->childs != value.childs) return false;
@@ -472,14 +472,14 @@ OptionsMeta::OptionsMeta(Options & value)
 	this->add("max-stack", "enabled", value.maxStack.enabled).setDoc("enable of disable strack size tracking (require -finstrument-functions).");
 
 	//maps
-	this->add("distr", "alloc-size", value.distrAllocSize).setDoc("Generate distribution of allocation size.");
-	this->add("distr", "realloc-jump", value.distrReallocJump).setDoc("Generate distribution of realloc jumps.");
+	this->add("distr", "alloc-size", value.distr.allocSize).setDoc("Generate distribution of allocation size.");
+	this->add("distr", "realloc-jump", value.distr.reallocJump).setDoc("Generate distribution of realloc jumps.");
 	
 	//trace
-	this->add("trace", "enabled", value.traceEnabled).setDoc("Enable dumping allocation event tracing (not yet used by GUI).");
+	this->add("trace", "enabled", value.trace.enabled).setDoc("Enable dumping allocation event tracing (not yet used by GUI).");
 	
 	//info
-	this->add("info", "hidden", value.infoHidden).setDoc("Try to hide possible sensible names from profile (exe, hostname...).");
+	this->add("info", "hidden", value.info.hidden).setDoc("Try to hide possible sensible names from profile (exe, hostname...).");
 
 	//filter
 	this->add("filter", "exe", value.exe).setDoc("Only apply malt on given exe (empty for all).");
