@@ -902,7 +902,7 @@ void AllocStackProfiler::onExit(void )
 		memoryBandwidth.flush();
 		
 		//sumpress
-		if (gblOptions->pythonHideImports) {
+		if (gblOptions->python.hideImports) {
 			CODE_TIMING("importSuppress", this->pythonImportSuppress());
 		}
 

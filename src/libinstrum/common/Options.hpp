@@ -127,14 +127,16 @@ struct Options
 		int count{571};
 	} sampling;
 	//python
-	StackMode pythonStack{STACK_MODE_ENTER_EXIT_FUNC};
-	bool pythonMix{false};
-	bool pythonInstru{true};
-	bool pythonObj{true};
-	bool pythonMem{true};
-	bool pythonRaw{true};
-	bool pythonHideImports{true};
-	PythonMode pythonMode{PYTHON_MODE_PROFILE};
+	struct {
+		StackMode stack{STACK_MODE_ENTER_EXIT_FUNC};
+		bool mix{false};
+		bool instru{true};
+		bool obj{true};
+		bool mem{true};
+		bool raw{true};
+		bool hideImports{true};
+		PythonMode mode{PYTHON_MODE_PROFILE};
+	} python;
 	//c
 	bool cMalloc{true};
 	bool cMmap{true};

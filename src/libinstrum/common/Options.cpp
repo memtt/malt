@@ -72,14 +72,14 @@ bool Options::operator==(const Options& value) const
 	if (sampling.volume != value.sampling.volume) return false;
 	if (sampling.count != value.sampling.count) return false;
 	//python
-	if (pythonInstru != value.pythonInstru) return false;
-	if (pythonStack != value.pythonStack) return false;
-	if (pythonMix != value.pythonMix) return false;
-	if (pythonObj != value.pythonObj) return false;
-	if (pythonMem != value.pythonMem) return false;
-	if (pythonRaw != value.pythonRaw) return false;
-	if (pythonHideImports != value.pythonHideImports) return false;
-	if (pythonMode != value.pythonMode) return false;
+	if (python.instru != value.python.instru) return false;
+	if (python.stack != value.python.stack) return false;
+	if (python.mix != value.python.mix) return false;
+	if (python.obj != value.python.obj) return false;
+	if (python.mem != value.python.mem) return false;
+	if (python.raw != value.python.raw) return false;
+	if (python.hideImports != value.python.hideImports) return false;
+	if (python.mode != value.python.mode) return false;
 	//c
 	if (cMalloc != value.cMalloc) return false;
 	if (cMmap != value.cMmap) return false;
@@ -424,14 +424,14 @@ OptionsMeta::OptionsMeta(Options & value)
 	this->add("time", "linear", value.timeProfileLinear).setDoc("Use operation index instead of time.");
 	
 	//python
-	this->add("python", "instru", value.pythonInstru).setDoc("Enable of disable python instrumentation.");
-	this->add("python", "mix", value.pythonMix).setDoc("Mix C stack with the python ones to get a uniq tree instread of two distincts (note it adds overhead).");
-	this->add("python", "stack", value.pythonStack).setDoc("Select the Python stack instrumentation mode (backtrace, enter-exit, none).");;
-	this->add("python", "obj", value.pythonObj).setDoc("Instrument of not the OBJECT allocator domain of python.");
-	this->add("python", "mem", value.pythonMem).setDoc("Instrument of not the MEM allocator domain of python.");
-	this->add("python", "raw", value.pythonRaw).setDoc("Instrument of not the RAW allocator domain of python.");
-	this->add("python", "hide-imports", value.pythonHideImports).setDoc("Do not keep stacks for the python import related allocations.");
-	this->add("python", "mode", value.pythonMode).setDoc("Configure the python instrumentation mode ('profile' or 'trace').");
+	this->add("python", "instru", value.python.instru).setDoc("Enable of disable python instrumentation.");
+	this->add("python", "mix", value.python.mix).setDoc("Mix C stack with the python ones to get a uniq tree instread of two distincts (note it adds overhead).");
+	this->add("python", "stack", value.python.stack).setDoc("Select the Python stack instrumentation mode (backtrace, enter-exit, none).");;
+	this->add("python", "obj", value.python.obj).setDoc("Instrument of not the OBJECT allocator domain of python.");
+	this->add("python", "mem", value.python.mem).setDoc("Instrument of not the MEM allocator domain of python.");
+	this->add("python", "raw", value.python.raw).setDoc("Instrument of not the RAW allocator domain of python.");
+	this->add("python", "hide-imports", value.python.hideImports).setDoc("Do not keep stacks for the python import related allocations.");
+	this->add("python", "mode", value.python.mode).setDoc("Configure the python instrumentation mode ('profile' or 'trace').");
 
 	//c
 	this->add("c", "malloc", value.cMalloc).setDoc("Instrument the C memory allocator.");

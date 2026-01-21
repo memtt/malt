@@ -46,8 +46,8 @@ void MultiLangStackMerger::checkPython(void)
 	//no python, disable python stacking
 	if (hasOne == false) {
 		//fprintf(stderr, "MALT: No python detected, skip python analysis");
-		gblOptions->pythonMix = false;
-		gblOptions->pythonStack = STACK_MODE_NONE;
+		gblOptions->python.mix = false;
+		gblOptions->python.stack = STACK_MODE_NONE;
 	}
 }
 

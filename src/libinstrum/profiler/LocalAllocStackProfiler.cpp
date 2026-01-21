@@ -351,7 +351,7 @@ Stack* LocalAllocStackProfiler::getStack(Language lang, size_t size, bool isFree
 
 	//copy localy
 	StackMode localCStackMode = this->stackMode;
-	StackMode localPyStackMode = this->options->pythonStack;
+	StackMode localPyStackMode = this->options->python.stack;
 
 	//apply tricks
 	//currently has an issue if python trigger an internal mmap call for its own handling
@@ -392,7 +392,7 @@ Stack* LocalAllocStackProfiler::getStack(Language lang, size_t size, bool isFree
 
 	//backtrance in C
 	Stack * cRef = &this->enterExitStack;
-	if(localCStackMode == STACK_MODE_BACKTRACE && (lang == LANG_C || gblOptions->pythonMix)) {
+	if(localCStackMode == STACK_MODE_BACKTRACE && (lang == LANG_C || gblOptions->python.mix)) {
 		CODE_TIMING("loadCurrentStack",backtraceStack.loadCurrentStack());
 		backtraceStack.fastSkip(gblOptions->stack.skip);
 		cRef = &backtraceStack;
@@ -432,7 +432,7 @@ Stack* LocalAllocStackProfiler::getStack(Language lang, size_t size, bool isFree
 	}
 
 	//if backtrace in python is needed
-	if (gblOptions->pythonMix && gblOptions->pythonInstru && lang != LANG_PYTHON) {
+	if (gblOptions->python.mix && gblOptions->python.instru && lang != LANG_PYTHON) {
 		if (cRef == pythonRef) {
 			assert(cRef == &this->enterExitStack);
 			CODE_TIMING("mixLang",globalProfiler->getMultiLangStackMerger().removePythonLib(mixStack, *cRef));
@@ -442,9 +442,9 @@ Stack* LocalAllocStackProfiler::getStack(Language lang, size_t size, bool isFree
 
 		result = &mixStack;
 	} else {
-		if (lang == LANG_PYTHON && gblOptions->pythonInstru)
+		if (lang == LANG_PYTHON && gblOptions->python.instru)
 			result = pythonRef;
-		else if (lang == LANG_C || gblOptions->pythonInstru == false)
+		else if (lang == LANG_C || gblOptions->python.instru == false)
 			result = cRef;
 		else {
 			MALT_FATAL("Invalid language, not supported !");
@@ -455,7 +455,7 @@ Stack* LocalAllocStackProfiler::getStack(Language lang, size_t size, bool isFree
 	if (hasPythonGIL)
 		MALT::PyGILState_Release(pythonGilState);
 
-	if (gblOptions->samping.enabled)
+	if (gblOptions->sampling.enabled)
 		this->samplePrev.set(*result);
 
 	//ok

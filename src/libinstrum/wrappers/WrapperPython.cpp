@@ -21,15 +21,15 @@
 	do \
 	{ \
 		LangAddress __retAddr__ = nullAddr; \
-		if (gblOptions->pythonStack == STACK_MODE_ENTER_EXIT_FUNC) { \
+		if (gblOptions->python.stack == STACK_MODE_ENTER_EXIT_FUNC) { \
 			CODE_TIMING("loadCurrentFramePyLL",__retAddr__ = env.getLocalProfiler().getBacktracePythonStack().getCurrentFrameAddr()); \
 		} \
-		if (gblOptions->pythonStack == STACK_MODE_ENTER_EXIT_FUNC)\
+		if (gblOptions->python.stack == STACK_MODE_ENTER_EXIT_FUNC)\
 		{\
 			env.getLocalProfiler().onEnterFunc(nullAddr,__retAddr__,true); \
 		}\
 		do{action;}while(0); \
-		if (gblOptions->pythonStack == STACK_MODE_ENTER_EXIT_FUNC) \
+		if (gblOptions->python.stack == STACK_MODE_ENTER_EXIT_FUNC) \
 			env.getLocalProfiler().onExitFunc(nullAddr,__retAddr__,true); \
 	} while(0);
 
