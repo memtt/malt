@@ -73,7 +73,7 @@ Example of config file :
     config=true            ; dump current config
     verbosity=default      ; malt verbosity level (silent, default, verbose)
     stack-tree=false       ; store the call tree as a tree (smaller file, but need conversion)
-    loop-suppress=false    ; Simplify recursive loop calls to get smaller profile file if too big
+    loop-suppress=true     ; Simplify recursive loop calls to get smaller profile file if too big
     verbosity=default      ; Malt verbosity level (silent, default, verbose).
 	stack-tree=false       ; Store the call tree as a tree (smaller file, but need conversion in the reader);
 
@@ -455,12 +455,12 @@ file from 200 MB to 85 MB. It can help if nodejs failed to load the fail because
 can also provide more readable stacks as you don't care to much how many times you cycle to call loops you
 just want to see one of them.
 
-**Default**: false
+**Default**: true
 
 .. code-block:: shell
 
-    malt -o output:loop-suppress=false ./my_program
     malt -o output:loop-suppress=true ./my_program
+    malt -o output:loop-suppress=false ./my_program
 
 Section `max-stack`
 -------------------

@@ -342,15 +342,15 @@ maltSelectProfile()
 	PROFILE_PYTHON_ONLY="python:stack=enter-exit;python:mix=false;stack:mode=python;tools:nm=false;"
 	PROFILE_PYTHON_DOMAINS="python:stack=enter-exit;python:mix=false;stack:mode=backtrace;tools:nm=false;"
 	PROFILE_PYTHON_MIX="python:stack=enter-exit;python:mix=true;stack:mode=backtrace;tools:nm=false;"
-	PROFILE_PYTHON_FULL="python:stack=enter-exit;python:mix=true;stack:mode=backtrace;output:loop-suppress=true;python:hide-imports=false;"
+	PROFILE_PYTHON_FULL="python:stack=enter-exit;python:mix=true;stack:mode=backtrace;python:hide-imports=false;"
 	PROFILE_PYTHON_DEFAULT="${PROFILE_PYTHON_ONLY}"
 	# modes inspirated from scalene configuration (https://arxiv.org/pdf/2212.07597)
-	PROFILE_PYTHON_SAMPLING="python:stack=backtrace;python:mix=true;stack:mode=backtrace;output:loop-suppress=true;sampling:enabled=true;"
-	PROFILE_PYTHON_SAMPLING_10M="python:stack=backtrace;python:mix=true;stack:mode=backtrace;output:loop-suppress=true;sampling:enabled=true;sampling:volume=10485767"
-	PROFILE_PYTHON_SAMPLING_20M="python:stack=backtrace;python:mix=true;stack:mode=backtrace;output:loop-suppress=true;sampling:enabled=true;sampling:volume=20971529"
-	PROFILE_SAMPLING="python:stack=backtrace;stack:mode=backtrace;output:loop-suppress=true;sampling:enabled=true;"
-	PROFILE_SAMPLING_10M="python:stack=backtrace;stack:mode=backtrace;output:loop-suppress=true;sampling:enabled=true;sampling:volume=10485767"
-	PROFILE_SAMPLING_20M="python:stack=backtrace;stack:mode=backtrace;output:loop-suppress=true;sampling:enabled=true;sampling:volume=20971529"
+	PROFILE_PYTHON_SAMPLING="python:stack=backtrace;python:mix=true;stack:mode=backtrace;sampling:enabled=true;"
+	PROFILE_PYTHON_SAMPLING_10M="python:stack=backtrace;python:mix=true;stack:mode=backtrace;sampling:enabled=true;sampling:volume=10485767"
+	PROFILE_PYTHON_SAMPLING_20M="python:stack=backtrace;python:mix=true;stack:mode=backtrace;sampling:enabled=true;sampling:volume=20971529"
+	PROFILE_SAMPLING="python:stack=backtrace;stack:mode=backtrace;sampling:enabled=true;"
+	PROFILE_SAMPLING_10M="python:stack=backtrace;stack:mode=backtrace;sampling:enabled=true;sampling:volume=10485767"
+	PROFILE_SAMPLING_20M="python:stack=backtrace;stack:mode=backtrace;sampling:enabled=true;sampling:volume=20971529"
 	
 
 	# list

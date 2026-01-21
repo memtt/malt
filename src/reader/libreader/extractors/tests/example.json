@@ -52,7 +52,7 @@
 			"config":false,
 			"indent":true,
 			"json":true,
-			"loop-suppress":false,
+			"loop-suppress":true,
 			"lua":false,
 			"name":"src/reader/libreader/extractors/tests/example.json",
 			"stack-tree":false,
