@@ -25,11 +25,20 @@ extern "C" {
 #endif
 
 /**********************************************************/
+enum malt_reader_flags_t
+{
+	MALT_READER_NONE=0,
+	MALT_READER_PROGRESS_BAR=1,
+	MALT_READER_AUTO_DELETE=2,
+	MALT_READER_VERBOSE=4,
+};
+
+/**********************************************************/
 struct malt_reader_t;
 
 /**********************************************************/
 // lifecycle
-struct malt_reader_t * malt_reader_init(const char * fname, bool progress_bar, bool auto_delete);
+struct malt_reader_t * malt_reader_init(const char * fname, size_t flags);
 void malt_reader_fini(struct malt_reader_t * reader);
 const char * malt_reader_version(void);
 

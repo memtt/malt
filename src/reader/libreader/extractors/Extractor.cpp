@@ -70,7 +70,7 @@ void Extractor::buildTranslation(MALTFormat::Stack & stack)
 		ref.file = &this->getString(instrInfos.file);
 		ref.line = instrInfos.line;
 		ref.origin = addr;
-		ref.offsetInBinary = getBinaryOffset(addr);
+		ref.offset = getBinaryOffset(addr);
 
 		//store
 		auto & trans = this->addrTranslationHidden[addr];
@@ -264,7 +264,7 @@ void to_json(nlohmann::json & json, const InstructionInfosStrRef & value)
 		{"function", *value.function},
 		{"functionShort", *value.functionShort},
 		{"line", value.line},
-		{"offsetInBinary", value.offsetInBinary},
+		{"offset", value.offset},
 	};
 }
 

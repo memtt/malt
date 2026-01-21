@@ -41,7 +41,7 @@ struct InstructionInfosStrRef
 	const std::string * functionShort{nullptr};
 	ssize_t line{-1};
 	MALTFormat::LangAddress origin{MALTFormat::LANG_C, nullptr};
-	size_t offsetInBinary{0};
+	size_t offset{0};
 };
 
 /**********************************************************/

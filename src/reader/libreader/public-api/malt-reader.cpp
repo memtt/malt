@@ -25,6 +25,7 @@ struct malt_reader_t
 	WebProfile * profile{nullptr};
 	const char * last_response{nullptr};
 	bool auto_delete{false};
+	bool verbose{false};
 };
 
 /**********************************************************/
@@ -32,15 +33,23 @@ extern "C"
 {
 
 /**********************************************************/
-DLL_PUBLIC malt_reader_t * malt_reader_init(const char * fname, bool progress_bar, bool auto_delete)
+DLL_PUBLIC malt_reader_t * malt_reader_init(const char * fname, size_t flags)
 {
+	//config
+	const bool progress_bar = flags & MALT_READER_PROGRESS_BAR;
+	const bool auto_delete = flags & MALT_READER_AUTO_DELETE;
+	const bool verbose =  flags & MALT_READER_VERBOSE;
+
 	try {
-		fprintf(stderr, "[MALT-WEBVIEW2] Loading : %s\n", fname);
+		if (verbose)
+			fprintf(stderr, "[MALT-WEBVIEW2] Loading : %s\n", fname);
 		WebProfile * profile = new WebProfile(fname, progress_bar);
 		malt_reader_t * reader = new malt_reader_t();
 		reader->profile = profile;
 		reader->auto_delete = auto_delete;
-		fprintf(stderr, "[MALT-WEBVIEW2] Loading OK => %p\n", reader);
+		reader->verbose = verbose;
+		if (verbose)
+			fprintf(stderr, "[MALT-WEBVIEW2] Loading OK => %p\n", reader);
 		return reader;
 	} catch(std::exception & e) {
 		fprintf(stderr, "[MALT-WEBVIEW2] Fail to load profile : %s\n", fname);
@@ -61,6 +70,14 @@ DLL_PUBLIC void malt_reader_fini(struct malt_reader_t* reader)
 	// ok
 	delete reader->profile;
 	delete reader;
+}
+
+/**********************************************************/
+DLL_PUBLIC void malt_reader_set_verbose(struct malt_reader_t * reader, bool verbose)
+{
+	if (reader == nullptr)
+		return;
+	reader->verbose = verbose;
 }
 
 /**********************************************************/
@@ -86,7 +103,8 @@ DLL_PUBLIC void malt_reader_json_free_last_response(struct malt_reader_t* reader
 DLL_PUBLIC const char * malt_reader_hanle_request(struct malt_reader_t* reader, const char * name, std::function<nlohmann::json()> handler)
 {
 	try {
-		fprintf(stderr, "[MALT-WEBVIEW-2] Request %s(%p)\n", name, reader);
+		if (reader->verbose)
+			fprintf(stderr, "[MALT-WEBVIEW-2] Request %s(%p)\n", name, reader);
 		malt_reader_json_free_last_response(reader);
 		nlohmann::json json = handler();
 		std::string str = json.dump();
@@ -312,7 +330,8 @@ DLL_PUBLIC std::string malt_reader_json_request_cpp(struct malt_reader_t* reader
 	//parse request
 	try {
 		nlohmann::json reqJson = nlohmann::json::parse(request);
-		//fprintf(stderr, "[MALT-WEBVIEW-2] Request %s(%p)\n", reqJson.dump().c_str(), reader);
+		if (reader->verbose)
+			fprintf(stderr, "[MALT-WEBVIEW-2] Request %s(%p)\n", reqJson.dump().c_str(), reader);
 	
 		//  Do some 'work'
 		if (reqJson["operation"] == "getSummaryV2") {
