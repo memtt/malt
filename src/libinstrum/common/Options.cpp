@@ -422,8 +422,8 @@ OptionsMeta::OptionsMeta(Options & value)
 	this->add("output", "lua", value.outputLua).setDoc("Enable lua output.");
 	this->add("output", "callgrind", value.outputCallgrind).setDoc("Enable callgrind output.");
 	this->add("output", "config", value.outputDumpConfig).setDoc("Dump current config.");
-	this->add("output", "verbosity", value.outputVerbosity).setDoc("malt verbosity level (silent, default, verbose).");
-	this->add("output", "stack-tree", value.outputStackTree).setDoc("store the call tree as a tree (smaller file, but need conversion)");
+	this->add("output", "verbosity", value.outputVerbosity).setDoc("Malt verbosity level (silent, default, verbose).");
+	this->add("output", "stack-tree", value.outputStackTree).setDoc("Store the call tree as a tree (smaller file, but need conversion in the reader)");
 	this->add("output", "loop-suppress", value.outputLoopSuppress).setDoc("Simplify recursive loop calls to get smaller profile file if too big");
 
 	//max stack

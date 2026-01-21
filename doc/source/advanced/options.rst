@@ -69,6 +69,8 @@ Example of config file :
     verbosity=default      ; malt verbosity level (silent, default, verbose)
     stack-tree=false       ; store the call tree as a tree (smaller file, but need conversion)
     loop-suppress=false    ; Simplify recursive loop calls to get smaller profile file if too big
+    verbosity=default      ; Malt verbosity level (silent, default, verbose).
+	stack-tree=false       ; Store the call tree as a tree (smaller file, but need conversion in the reader);
 
     [max-stack]
     enabled=true           ; enable of disable strack size tracking (require -finstrument-functions)
@@ -109,6 +111,8 @@ Example of config file :
     obj=true               ; Instrument of not the OBJECT allocator domain of python.
     mem=true               ; Instrument of not the MEM allocator domain of python.
     raw=true               ; Instrument of not the RAW allocator domain of python.
+    hide-imports=true      ; Hide the stack of memory allocations done by imports.
+	mode=profile           ; Define the python instrumentation mode which define how to get the line number ('profile' or 'trace').
 
     [c]
     malloc=true            ; Track C malloc.
@@ -116,7 +120,7 @@ Example of config file :
 
     [tools]
     nm=true                ; Enable usage of NM to find the source locatoin of the global variables.
-    nmMaxSize=50M          ; Do not call nm on .so larger than 50 MB to limit the profile dump overhead.
+    nm-max-size=50M        ; Do not call nm on .so larger than 50 MB to limit the profile dump overhead.
 
 Section `time`
 --------------
@@ -146,8 +150,8 @@ Define the number of points used to discretized the execution time of the applic
 
     malt -o time:points=512 ./my_program
 
-Option `time:linear_index`
-^^^^^^^^^^^^^^^^^^^^^^^^^^
+Option `time:linear`
+^^^^^^^^^^^^^^^^^^^^
 
 Do not use time to index data but a linear value increased on each call (might be interesting
 not to shrink intensive allocation steps on a long program which mostly not do allocation over the run.
@@ -156,8 +160,8 @@ not to shrink intensive allocation steps on a long program which mostly not do a
 
 .. code-block:: shell
 
-    malt -o time:linear_index=true ./my_program
-    malt -o time:linear_index=false ./my_program
+    malt -o time:linear=true ./my_program
+    malt -o time:linear=false ./my_program
 
 Section `stack`
 ---------------
@@ -364,6 +368,19 @@ Option `output:config`
 
 Dump the config INI file.
 
+Option `output:verbosity`
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Malt verbosity level (`silent`, `default`, `verbose`).
+
+Option `output:stack-tree`
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Store the call tree as a tree (smaller file, but need conversion in
+the reader).
+
+**Note**: This is not yet supported by the new webview in written in C++ since **1.4.0**.
+
 Option `verbosity`
 ^^^^^^^^^^^^^^^^^^
 
@@ -507,6 +524,11 @@ Option `dump:on-thread-stack-using`
 Will dump if one of the thread stack reach the given limit. The value is given in % of the global memory
 available or in K, M, G. Empty to disable (default).
 
+Option `dump:on-alloc-count`
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Dump when number of allocations reach limit in G, M, K (empty to disable).
+
 Option `dump:watch-dog`
 ^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -556,6 +578,28 @@ Option `python:raw`
 
 Same but for the raw allocation domain of python which is backed by the standard C malloc function. In principle you should let it enabled.
 
+Option `python:hide-imports`
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Hide the stack of memory allocations done by imports. It resude the noice in
+analysis, the overhead and the size of the profile file.
+
+If you need to look at the details of imports, you should set it to false.
+
+If enabled, you will see in the call stack the entry `MALT_PYTHON_HIDEN_IMPORTS`.
+
+Option `python:mode`
+^^^^^^^^^^^^^^^^^^^^
+
+Define the python instrumentation mode which define how to get the line number.
+
+The value can be :
+
+- **profile** for using the profiling mode, which means we need extra calls
+  on every malloc to get the line number.
+- **trace** for using the python tracing mode so we get the line number directly.
+  This second mode is currently experimental.
+
 Section `c`
 -----------
 
@@ -579,8 +623,8 @@ Option `tools:nm`
 
 Use to extract the source location of the global variables. If true (default) it is used, otherwise it is skiped.
 
-Option `tools:nmMaxSize`
-^^^^^^^^^^^^^^^^^^^^^^^^
+Option `tools:nm-max-size`
+^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 By default it limits the size of the .so files on which to apply NM in order to keep a decent profile dumping
 time when running on large frameworks like PyTorch which tends to load huge .so files in memory.
