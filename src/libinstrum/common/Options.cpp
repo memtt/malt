@@ -107,23 +107,23 @@ bool Options::operator==(const Options& value) const
 	//info
 	if (this->info.hidden != value.info.hidden) return false;
 	//exe
-	if (this->exe != value.exe) return false;
-	if (this->childs != value.childs) return false;
-	if (this->enabled != value.enabled) return false;
-	if (this->filterRanks != value.filterRanks) return false;
+	if (this->filter.exe != value.filter.exe) return false;
+	if (this->filter.childs != value.filter.childs) return false;
+	if (this->filter.enabled != value.filter.enabled) return false;
+	if (this->filter.ranks != value.filter.ranks) return false;
 	//dump
-	if (this->dumpOnSignal != value.dumpOnSignal) return false;
-	if (this->dumpAfterSeconds != value.dumpAfterSeconds) return false;
-	if (this->dumpOnSysFullAt != value.dumpOnSysFullAt) return false;
-	if (this->dumpOnAppUsingRss != value.dumpOnAppUsingRss) return false;
-	if (this->dumpOnAppUsingVirt != value.dumpOnAppUsingVirt) return false;
-	if (this->dumpOnAppUsingReq != value.dumpOnAppUsingReq) return false;
-	if (this->dumpOnThreadStackUsing != value.dumpOnThreadStackUsing) return false;
-	if (this->dumpWatchDog != value.dumpWatchDog) return false;
-	if (this->dumpOnAllocCount != value.dumpOnAllocCount) return false;
+	if (this->dump.onSignal != value.dump.onSignal) return false;
+	if (this->dump.afterSeconds != value.dump.afterSeconds) return false;
+	if (this->dump.onSysFullAt != value.dump.onSysFullAt) return false;
+	if (this->dump.onAppUsingRss != value.dump.onAppUsingRss) return false;
+	if (this->dump.onAppUsingVirt != value.dump.onAppUsingVirt) return false;
+	if (this->dump.onAppUsingReq != value.dump.onAppUsingReq) return false;
+	if (this->dump.onThreadStackUsing != value.dump.onThreadStackUsing) return false;
+	if (this->dump.watchDog != value.dump.watchDog) return false;
+	if (this->dump.onAllocCount != value.dump.onAllocCount) return false;
 	//nm
-	if (this->toolsNm != value.toolsNm) return false;
-	if (this->toolsNmMaxSize != value.toolsNmMaxSize) return false;
+	if (this->tools.nm != value.tools.nm) return false;
+	if (this->tools.nmMaxSize != value.tools.nmMaxSize) return false;
 	
 	return true;
 }
@@ -482,25 +482,25 @@ OptionsMeta::OptionsMeta(Options & value)
 	this->add("info", "hidden", value.info.hidden).setDoc("Try to hide possible sensible names from profile (exe, hostname...).");
 
 	//filter
-	this->add("filter", "exe", value.exe).setDoc("Only apply malt on given exe (empty for all).");
-	this->add("filter", "childs", value.childs).setDoc("Instrument child processes or not.");
-	this->add("filter", "enabled", value.enabled).setDoc("Enable or disable MALT when threads start.");
-	this->add("filter", "ranks", value.filterRanks).setDoc("Instrument only the given ranks from list as : 1,2-4,6");
+	this->add("filter", "exe", value.filter.exe).setDoc("Only apply malt on given exe (empty for all).");
+	this->add("filter", "childs", value.filter.childs).setDoc("Instrument child processes or not.");
+	this->add("filter", "enabled", value.filter.enabled).setDoc("Enable or disable MALT when threads start.");
+	this->add("filter", "ranks", value.filter.ranks).setDoc("Instrument only the given ranks from list as : 1,2-4,6");
 
 	//dump
-	this->add("dump", "on-signal", value.dumpOnSignal).setDoc("Dump on signal. Can be comma separated list from SIGINT, SIGUSR1, SIGUSR2... help, avail (limited to only one dump).");
-	this->add("dump", "after-seconds", value.dumpAfterSeconds).setDoc("Dump after X seconds (limited to only one time).");
-	this->add("dump", "on-sys-full-at", value.dumpOnSysFullAt).setDoc("Dump when system memory become full at x%, xG, xM, xK, x  (empty to disable).");
-	this->add("dump", "on-app-using-rss", value.dumpOnAppUsingRss).setDoc("Dump when RSS of the app reach the given limit in %, G, M, K (empty to disable).");
-	this->add("dump", "on-app-using-virt", value.dumpOnAppUsingVirt).setDoc("Dump when Virtual Memory of the app reach limit in %, G, M, K (empty to disable).");
-	this->add("dump", "on-app-using-req", value.dumpOnAppUsingReq).setDoc("Dump when Requested Memory of the app reach limit in %, G, M, K (empty to disable).");
-	this->add("dump", "on-thread-stack-using", value.dumpOnThreadStackUsing).setDoc("Dump when one stack reach limit in %, G, M, K (empty to disable).");
-	this->add("dump", "on-alloc-count", value.dumpOnAllocCount).setDoc("Dump when number of allocations reach limit in G, M, K (empty to disable).");
-	this->add("dump", "watch-dog", value.dumpWatchDog).setDoc("Run an active thread spying continuouly the memory of the app, not only sometimes.");
+	this->add("dump", "on-signal", value.dump.onSignal).setDoc("Dump on signal. Can be comma separated list from SIGINT, SIGUSR1, SIGUSR2... help, avail (limited to only one dump).");
+	this->add("dump", "after-seconds", value.dump.afterSeconds).setDoc("Dump after X seconds (limited to only one time).");
+	this->add("dump", "on-sys-full-at", value.dump.onSysFullAt).setDoc("Dump when system memory become full at x%, xG, xM, xK, x  (empty to disable).");
+	this->add("dump", "on-app-using-rss", value.dump.onAppUsingRss).setDoc("Dump when RSS of the app reach the given limit in %, G, M, K (empty to disable).");
+	this->add("dump", "on-app-using-virt", value.dump.onAppUsingVirt).setDoc("Dump when Virtual Memory of the app reach limit in %, G, M, K (empty to disable).");
+	this->add("dump", "on-app-using-req", value.dump.onAppUsingReq).setDoc("Dump when Requested Memory of the app reach limit in %, G, M, K (empty to disable).");
+	this->add("dump", "on-thread-stack-using", value.dump.onThreadStackUsing).setDoc("Dump when one stack reach limit in %, G, M, K (empty to disable).");
+	this->add("dump", "on-alloc-count", value.dump.onAllocCount).setDoc("Dump when number of allocations reach limit in G, M, K (empty to disable).");
+	this->add("dump", "watch-dog", value.dump.watchDog).setDoc("Run an active thread spying continuouly the memory of the app, not only sometimes.");
 
 	//tools
-	this->add("tools", "nm", value.toolsNm).setDoc("Enable usage of NM to find the source locatoin of the global variables.");
-	this->add("tools", "nm-max-size", value.toolsNmMaxSize).setDoc("Do not call nm on .so larger than 50 MB to limit the profile dump overhead.");
+	this->add("tools", "nm", value.tools.nm).setDoc("Enable usage of NM to find the source locatoin of the global variables.");
+	this->add("tools", "nm-max-size", value.tools.nmMaxSize).setDoc("Do not call nm on .so larger than 50 MB to limit the profile dump overhead.");
 }
 
 /**********************************************************/

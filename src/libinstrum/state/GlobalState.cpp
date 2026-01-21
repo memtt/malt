@@ -119,7 +119,7 @@ void maltRegisterPthreadAtFork(void)
 void maltSetupSigHandler(const Options & options)
 {
 	//get list
-	std::istringstream split(options.dumpOnSignal);
+	std::istringstream split(options.dump.onSignal);
 	std::vector<std::string> tokens;
 	for (std::string each; std::getline(split, each, ','); tokens.push_back(each));
 
@@ -182,7 +182,7 @@ void * maltDumpAfterSecondsThreadMain(void * arg)
 void maltDumpAfterSecondsThread(const Options & options)
 {
 	//extract
-	size_t secs = options.dumpAfterSeconds;
+	size_t secs = options.dump.afterSeconds;
 
 	//check
 	if (secs == 0)
@@ -277,10 +277,10 @@ void AllocWrapperGlobal::init(void )
 		gblState.profiler->setRealMallocAddr(gblState.allocFuncs.malloc);
 
 		//filter exe
-		if ((gblState.options->exe.empty() == false && OS::getExeName() != gblState.options->exe) || OS::getExeName() == "addr2line")
+		if ((gblState.options->filter.exe.empty() == false && OS::getExeName() != gblState.options->filter.exe) || OS::getExeName() == "addr2line")
 		{
 			if (gblOptions->output.verbosity >= MALT_VERBOSITY_DEFAULT)
-				fprintf(stderr,"MALT: skip %s != %s\n",OS::getExeName().c_str(),gblState.options->exe.c_str());
+				fprintf(stderr,"MALT: skip %s != %s\n",OS::getExeName().c_str(),gblState.options->filter.exe.c_str());
 			skip = true;
 		}
 		
@@ -289,7 +289,7 @@ void AllocWrapperGlobal::init(void )
 			fprintf(stderr,"MALT: Start memory instrumentation of %s - %d by library override.\n",OS::getExeName().c_str(),OS::getPID());
 		
 		//disable childs
-		if (gblOptions->childs == false)
+		if (gblOptions->filter.childs == false)
 			unsetenv("LD_PRELOAD");
 
 		//register on exit
@@ -368,7 +368,7 @@ void ThreadLocalState::init(void)
 	this->profiler = gblState.profiler->createLocalStackProfiler();
 	
 	//mark ready
-	if (gblOptions->enabled)
+	if (gblOptions->filter.enabled)
 		this->status = ALLOC_WRAP_READY;
 	else
 		this->status = ALLOC_WRAP_DISABLED;
@@ -402,15 +402,15 @@ void initMpiRankFilter(void)
 	static bool gblMpiRankCheckDone = false;
 	if (gblMpiRankCheckDone == false && Helpers::fileIdIsRank()) {
 		//no filter
-		if (gblState.options->filterRanks.empty()) {
+		if (gblState.options->filter.ranks.empty()) {
 			gblMpiRankCheckDone = true;
 		} else if (Helpers::getFileId() != static_cast<int>(OS::getPID())) {
 			//split & convert to numbers
-			IntSet whiteList = Helpers::rankStrToIntSet(gblState.options->filterRanks);
+			IntSet whiteList = Helpers::rankStrToIntSet(gblState.options->filter.ranks);
 
 			//filter rank
 			if (whiteList.find(Helpers::getFileId()) != whiteList.end())
-				fprintf(stderr,"MALT: instrument only MPI rank %d being in : %s\n",Helpers::getFileId(), gblState.options->filterRanks.c_str());
+				fprintf(stderr,"MALT: instrument only MPI rank %d being in : %s\n",Helpers::getFileId(), gblState.options->filter.ranks.c_str());
 			else
 				gblState.status = ALLOC_WRAP_FINISH;
 			

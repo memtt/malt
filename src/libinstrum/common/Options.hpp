@@ -178,23 +178,29 @@ struct Options
 		bool hidden{false};
 	} info;
 	//filter
-	std::string exe{""};
-	bool childs{true};
-	bool enabled{true};
-	std::string filterRanks{""};
+	struct {
+		std::string exe{""};
+		bool childs{true};
+		bool enabled{true};
+		std::string ranks{""};
+	} filter;
 	//dump
-	std::string dumpOnSignal{MALT_NO_DUMP_SIGNAL};
-	int dumpAfterSeconds{0};
-	std::string dumpOnSysFullAt{""};
-	std::string dumpOnAppUsingRss{""};
-	std::string dumpOnAppUsingVirt{""};
-	std::string dumpOnAppUsingReq{""};
-	std::string dumpOnThreadStackUsing{""};
-	std::string dumpOnAllocCount{""};
-	bool dumpWatchDog{false};
+	struct {
+		std::string onSignal{MALT_NO_DUMP_SIGNAL};
+		int afterSeconds{0};
+		std::string onSysFullAt{""};
+		std::string onAppUsingRss{""};
+		std::string onAppUsingVirt{""};
+		std::string onAppUsingReq{""};
+		std::string onThreadStackUsing{""};
+		std::string onAllocCount{""};
+		bool watchDog{false};
+	} dump;
 	//tools
-	bool toolsNm{true};
-	std::string toolsNmMaxSize{"50M"};
+	struct {
+		bool nm{true};
+		std::string nmMaxSize{"50M"};
+	} tools;
 
 	bool operator==(const Options & value) const;
 };
