@@ -347,15 +347,35 @@ Option `output:name`
 
 Define the name of the profile file. %1 is replaced by the program name, %2 by the PID or MPI rank and %3 by extension.
 
+**Default**: malt-%1-%2.%3.
+
+.. code-block:: shell
+
+    malt -o output:name=malt-%1-%2.%3 ./my_program
+
 Option `output:lua`
 ^^^^^^^^^^^^^^^^^^^
 
 Enable output in LUA format (same structure as JSON files but in LUA).
 
+**Default**: false
+
+.. code-block:: shell
+
+    malt -o output:lua=false ./my_program
+    malt -o output:lua=true ./my_program
+
 Option `output:json`
 ^^^^^^^^^^^^^^^^^^^^
 
 Enable output of the default JSON file format.
+
+**Default**: true
+
+.. code-block:: shell
+
+    malt -o output:json=true ./my_program
+    malt -o output:json=false ./my_program
 
 Option `output:callgrind`
 ^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -363,28 +383,37 @@ Option `output:callgrind`
 Enable output of the compatibility format with callgrind/kcachegrind. Cannot contain all data but can be used
 with compatible existing tools.
 
+**Default**: false
+
+.. code-block:: shell
+
+    malt -o output:callgrind=false ./my_program
+    malt -o output:callgrind=true ./my_program
+
 Option `output:indent`
 ^^^^^^^^^^^^^^^^^^^^^^
 
 Enable indentations in the JSON/LUA files. Useful for debugging but generate bigger files.
+This feature is more for debugging and developpement process.
+
+**Default**: false
+
+.. code-block:: shell
+
+    malt -o output:indent=false ./my_program
+    malt -o output:indent=true ./my_program
 
 Option `output:config`
 ^^^^^^^^^^^^^^^^^^^^^^
 
 Dump the config INI file.
 
-Option `output:verbosity`
-^^^^^^^^^^^^^^^^^^^^^^^^^
+**Default**: false
 
-Malt verbosity level (`silent`, `default`, `verbose`).
+.. code-block:: shell
 
-Option `output:stack-tree`
-^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-Store the call tree as a tree (smaller file, but need conversion in
-the reader).
-
-**Note**: This is not yet supported by the new webview in written in C++ since **1.4.0**.
+    malt -o output:config=false ./my_program
+    malt -o output:config=true ./my_program
 
 Option `verbosity`
 ^^^^^^^^^^^^^^^^^^
@@ -393,12 +422,29 @@ Set the verbosity mode of MALT. By `default` it print at start and end. You can 
 example if you instrument shell script parsing the output of child processes. You can also use `verbose` to have more 
 debugging infos in case if does not work as expected, mostly at the symbol extraction step while dumping outputs.
 
+**Default**: default
+
+.. code-block:: shell
+
+    malt -o output:verbosity=default ./my_program
+    malt -o output:verbosity=silent ./my_program
+    malt -o output:verbosity=verbose ./my_program
+
 Option `stack-tree`
 ^^^^^^^^^^^^^^^^^^^
 
 Enable storage of the stacks as a tree inside the output file. It produces smaller files but require conversion
 at storage time and loading time to stay compatible with the basic expected format. You can use this option
 to get smaller files. In one case it lowers a 600 MB file to 200 MB to give an idea.
+
+**Note**: This is not yet supported by the new webview in written in C++ since **1.4.0**.
+
+**Default**: false
+
+.. code-block:: shell
+
+    malt -o output:stack-tree=false ./my_program
+    malt -o output:stack-tree=true ./my_program
 
 Option `output:loop-suppress`
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -409,6 +455,13 @@ file from 200 MB to 85 MB. It can help if nodejs failed to load the fail because
 can also provide more readable stacks as you don't care to much how many times you cycle to call loops you
 just want to see one of them.
 
+**Default**: false
+
+.. code-block:: shell
+
+    malt -o output:loop-suppress=false ./my_program
+    malt -o output:loop-suppress=true ./my_program
+
 Section `max-stack`
 -------------------
 
@@ -418,6 +471,13 @@ Option `max-stack:enabled`
 Enable or disable the tracking of stack size and memory used by functions on stacks 
 (require  `--finstrument-function` on your code to provide data).
 
+**Default**: true
+
+.. code-block:: shell
+
+    malt -o max-stack:enabled=true ./my_program
+    malt -o max-stack:enabled=false ./my_program
+
 Section `distr`
 ---------------
 
@@ -426,10 +486,24 @@ Option `distr:alloc-size`
 
 Generate distribution of the allocated chunk size.
 
+**Default**: true
+
+.. code-block:: shell
+
+    malt -o distr:alloc-size=true ./my_program
+    malt -o distr:alloc-size=false ./my_program
+
 Option `distr:realloc-jump`
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Generate distribution of the realloc size jumps.
+
+**Default**: true
+
+.. code-block:: shell
+
+    malt -o distr:realloc-jump=true ./my_program
+    malt -o distr:realloc-jump=false ./my_program
 
 Section `trace`
 ---------------
@@ -438,6 +512,13 @@ Option `trace:enabled`
 ^^^^^^^^^^^^^^^^^^^^^^
 
 Enable or disable the tracing (currently not used by the GUI, work in progress).
+
+**Default**: false
+
+.. code-block:: shell
+
+    malt -o trace:enabled=false ./my_program
+    malt -o trace:enabled=true ./my_program
 
 Section `info`
 --------------
@@ -451,6 +532,13 @@ taking a look at the file for example to replace the paths which might also be r
 This option target some companies which might want to hide their internal applications when exchanging
 with external partners.
 
+**Default**: false
+
+.. code-block:: shell
+
+    malt -o info:enabled=false ./my_program
+    malt -o info:enabled=true ./my_program
+
 Section `filter`
 ----------------
 
@@ -460,10 +548,24 @@ Option `filter:exe`
 Enable filtering of executable to enable MALT and ignore otherwise. By default empty value enable
 MALT on all executable.
 
+**Default**: empty
+
+.. code-block:: shell
+
+    malt -o filter:exe= ./my_program
+    malt -o filter:exe=my_program ./my_program
+
 Option `filter:childs`
 ^^^^^^^^^^^^^^^^^^^^^^
 
 Enable instrumentation of children processes or not. By default instruments all.
+
+**Default**: true
+
+.. code-block:: shell
+
+    malt -o filter:childs=true ./my_program
+    malt -o filter:childs=false ./my_program
 
 Option `filter:enabled`
 ^^^^^^^^^^^^^^^^^^^^^^^
@@ -471,11 +573,27 @@ Option `filter:enabled`
 Enable profiling by default. Can be disable to be able to activate via C function call in the app 
 when you want.
 
+**Default**: true
+
+.. code-block:: shell
+
+    malt -o filter:enabled=true ./my_program
+    malt -o filter:enabled=false ./my_program
+
 Option `filter:ranks`
 ^^^^^^^^^^^^^^^^^^^^^
 
 When running in MPI mode, instrument only the given ranks. The list is provided under the form
 `1,2-4,6`.
+
+**Default**: empty
+
+.. code-block:: shell
+
+    malt -o filter:ranks= ./my_program
+    malt -o filter:ranks=10 ./my_program
+    malt -o filter:ranks=1-8 ./my_program
+    malt -o filter:ranks=1-8,20,21-27 ./my_program
 
 Section `dump`
 --------------
@@ -488,12 +606,27 @@ Notice profiling will currently stop from this point app will continue without p
 To be fixed latter.
 You can get the list of availble list by using `help` or `avail` in place of name.
 
+**Default**: empty
+
+.. code-block:: shell
+
+    malt -o dump:on-signal= ./my_program
+    malt -o dump:on-signal=SUGUSR1 ./my_program
+    malt -o dump:on-signal=SIGINT,SIGUSR1,SIGUSR2 ./my_program
+
 Option `dump:after-seconds`
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Will dump profile after X seconds.
 Notice profiling will currently stop from this point app will continue without profiling.
 To be fixed latter.
+
+**Default**: empty
+
+.. code-block:: shell
+
+    malt -o dump:after-seconds= ./my_program
+    malt -o dump:after-seconds=60 ./my_program
 
 Option `dump:on-sys-full-at`
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -505,11 +638,31 @@ it will starts to swap before that. Consider also that MALT itself adds up memor
 one (considered in the % here.). Values can be in %, K, M, G by ending with the corresponding
 character.
 
+**Default**: empty
+
+.. code-block:: shell
+
+    malt -o dump:on-sys-full-at= ./my_program
+    malt -o dump:on-sys-full-at=80% ./my_program
+    malt -o dump:on-sys-full-at=4096K ./my_program
+    malt -o dump:on-sys-full-at=100M ./my_program
+    malt -o dump:on-sys-full-at=10G ./my_program
+
 Option `dump:on-app-using-rss`
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Will dump if the application reach the given RSS limit. The value is given in % of the global memory
 available or in K, M, G. Empty to disable (default).
+
+**Default**: empty
+
+.. code-block:: shell
+
+    malt -o dump:on-app-using-rss= ./my_program
+    malt -o dump:on-app-using-rss=80% ./my_program
+    malt -o dump:on-app-using-rss=4096K ./my_program
+    malt -o dump:on-app-using-rss=100M ./my_program
+    malt -o dump:on-app-using-rss=10G ./my_program
 
 Option `dump:on-app-using-virt`
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -517,11 +670,31 @@ Option `dump:on-app-using-virt`
 Will dump if the application reach the given virtual memory limit. The value is given in % of the global memory
 available or in K, M, G. Empty to disable (default).
 
+**Default**: empty
+
+.. code-block:: shell
+
+    malt -o dump:on-app-using-virt= ./my_program
+    malt -o dump:on-app-using-virt=80% ./my_program
+    malt -o dump:on-app-using-virts=4096K ./my_program
+    malt -o dump:on-app-using-virt=100M ./my_program
+    malt -o dump:on-app-using-virt=10G ./my_program
+
 Option `dump:on-app-using-req`
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Will dump if the application reach the given requested memory limit. The value is given in % of the global memory
 available or in K, M, G. Empty to disable (default).
+
+**Default**: empty
+
+.. code-block:: shell
+
+    malt -o dump:on-app-using-req= ./my_program
+    malt -o dump:on-app-using-req=80% ./my_program
+    malt -o dump:on-app-using-req=4096K ./my_program
+    malt -o dump:on-app-using-req=100M ./my_program
+    malt -o dump:on-app-using-req=10G ./my_program
 
 Option `dump:on-thread-stack-using`
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -529,10 +702,30 @@ Option `dump:on-thread-stack-using`
 Will dump if one of the thread stack reach the given limit. The value is given in % of the global memory
 available or in K, M, G. Empty to disable (default).
 
+**Default**: empty
+
+.. code-block:: shell
+
+    malt -o dump:on-thread-stack-using= ./my_program
+    malt -o dump:on-thread-stack-using=80% ./my_program
+    malt -o dump:on-thread-stack-using=4096K ./my_program
+    malt -o dump:on-thread-stack-using=100M ./my_program
+    malt -o dump:on-thread-stack-using=10G ./my_program
+
 Option `dump:on-alloc-count`
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Dump when number of allocations reach limit in G, M, K (empty to disable).
+
+**Default**: empty
+
+.. code-block:: shell
+
+    malt -o dump:on-alloc-count= ./my_program
+    malt -o dump:on-alloc-count=1000 ./my_program
+    malt -o dump:on-alloc-count=1K ./my_program
+    malt -o dump:on-alloc-count=1M ./my_program
+    malt -o dump:on-alloc-count=1G ./my_program
 
 Option `dump:watch-dog`
 ^^^^^^^^^^^^^^^^^^^^^^^
@@ -541,6 +734,13 @@ Will start a thread which will spy the memory usage of the process and trigger t
 going to hight. This is to balance the fact than normally the system and process memory is spied only sometimes
 by MALT in normal condition to keep the overhead low.
 
+**Default**: false
+
+.. code-block:: shell
+
+    malt -o dump:watch-dog=false ./my_program
+    malt -o dump:watch-dog=true ./my_program
+
 Section `python`
 ----------------
 
@@ -548,9 +748,16 @@ The `python` section permit to configure how to instrument python. Notice that y
 `--enable-python` so it is effective.
 
 Option `python:enabled`
-^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^
 
 Enable of disable the python instrumentation.
+
+**Default**: true
+
+.. code-block:: shell
+
+    malt -o python:enabled=true ./my_program
+    malt -o python:enabled=false ./my_program
 
 Option `python:stack`
 ^^^^^^^^^^^^^^^^^^^^^
@@ -559,12 +766,27 @@ Select the stack instrumentation mode, either `enter-exit`, `backtrace` or `none
 faster so you should use it. When enabling sampling you need to use `bactrace` if you don't want to pay
 an unneeded overhead. You can also disable python stack checking with `none`.
 
+**Default**: enter-exit
+
+.. code-block:: shell
+
+    malt -o python:stack=enter-exit ./my_program
+    malt -o python:stack=backtrace ./my_program
+	malt -o python:stack=none ./my_program
+
 Option `python:mix`
 ^^^^^^^^^^^^^^^^^^^
 
 By default when disabled the C & Python stacks are analysed independently which mean that is a python
 function call a C function you will see only the C call stack. Mix allow to merge the two layeres so you
 see that python call C. But it adds overhead on the anlysis of course because of the extra work.
+
+**Default**: false
+
+.. code-block:: shell
+
+    malt -o python:mix=false ./my_program
+    malt -o python:mix=true ./my_program
 
 Option `python:obj`
 ^^^^^^^^^^^^^^^^^^^
@@ -573,15 +795,36 @@ Analyse or ignore the object allocation domain of python. This is interesting to
 allocs used by the language as it would have been on the stack in C. It improves a lot the profiling performance
 of python but miss part of the memory consumption if your program store lots of small objets for long times.
 
+**Default**: true
+
+.. code-block:: shell
+
+    malt -o python:obj=true ./my_program
+    malt -o python:obj=false ./my_program
+
 Option `python:mem`
 ^^^^^^^^^^^^^^^^^^^
 
 Same but for the mem allocation domain of python. In principle you should let it enabled.
 
+**Default**: true
+
+.. code-block:: shell
+
+    malt -o python:mem=true ./my_program
+    malt -o python:mem=false ./my_program
+
 Option `python:raw`
 ^^^^^^^^^^^^^^^^^^^
 
 Same but for the raw allocation domain of python which is backed by the standard C malloc function. In principle you should let it enabled.
+
+**Default**: true
+
+.. code-block:: shell
+
+    malt -o python:raw=true ./my_program
+    malt -o python:raw=false ./my_program
 
 Option `python:hide-imports`
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -592,6 +835,13 @@ analysis, the overhead and the size of the profile file.
 If you need to look at the details of imports, you should set it to false.
 
 If enabled, you will see in the call stack the entry `MALT_PYTHON_HIDEN_IMPORTS`.
+
+**Default**: true
+
+.. code-block:: shell
+
+    malt -o python:hide-imports=true ./my_program
+    malt -o python:hide-imports=false ./my_program
 
 Option `python:mode`
 ^^^^^^^^^^^^^^^^^^^^
@@ -605,6 +855,13 @@ The value can be :
 - **trace** for using the python tracing mode so we get the line number directly.
   This second mode is currently experimental.
 
+**Default**: profile
+
+.. code-block:: shell
+
+    malt -o python:mode=profile ./my_program
+    malt -o python:mode=trace ./my_program
+
 Section `c`
 -----------
 
@@ -613,10 +870,24 @@ Option `c:malloc`
 
 Track the C `malloc` calls.
 
+**Default**: true
+
+.. code-block:: shell
+
+    malt -o c:malloc=true ./my_program
+    malt -o c:malloc=false ./my_program
+
 Option `c:mmap`
 ^^^^^^^^^^^^^^^
 
 Track the direct C `mmap` calls.
+
+**Default**: true
+
+.. code-block:: shell
+
+    malt -o c:mmap=true ./my_program
+    malt -o c:mmap=false ./my_program
 
 Section `tools`
 ---------------
@@ -628,8 +899,22 @@ Option `tools:nm`
 
 Use to extract the source location of the global variables. If true (default) it is used, otherwise it is skiped.
 
+**Default**: true
+
+.. code-block:: shell
+
+    malt -o tools:nm=true ./my_program
+    malt -o tools:nm=false ./my_program
+
 Option `tools:nm-max-size`
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 By default it limits the size of the .so files on which to apply NM in order to keep a decent profile dumping
 time when running on large frameworks like PyTorch which tends to load huge .so files in memory.
+
+**Default**: 50M
+
+.. code-block:: shell
+
+    malt -o tools:nm-max-size=50M ./my_program
+    malt -o tools:nm-max-size=50M ./my_program
