@@ -104,7 +104,7 @@ bool Addr2Line::run(void)
 	assert(command.size() < 4096);
 
 	//debug
-	if (gblOptions != NULL && gblOptions->outputVerbosity >= MALT_VERBOSITY_VERBOSE)
+	if (gblOptions != NULL && gblOptions->output.verbosity >= MALT_VERBOSITY_VERBOSE)
 		fprintf(stderr, "MALT: %s\n",command.c_str());
 
 	//run it
@@ -171,7 +171,7 @@ std::string Addr2Line::buildCommandLine(const std::string & fileBuffer) const
 	}
 
 	//silent
-	if (gblOptions != NULL && gblOptions->outputVerbosity <= MALT_VERBOSITY_DEFAULT)
+	if (gblOptions != NULL && gblOptions->output.verbosity <= MALT_VERBOSITY_DEFAULT)
 		command << " 2>/dev/null";
 
 	//ok

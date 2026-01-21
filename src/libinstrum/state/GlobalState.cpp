@@ -127,7 +127,7 @@ void maltSetupSigHandler(const Options & options)
 	for (std::vector<std::string>::const_iterator it = tokens.begin() ; it != tokens.end() ; ++it)
 	{
 		//debug
-		if (gblOptions->outputVerbosity != MALT_VERBOSITY_SILENT)
+		if (gblOptions->output.verbosity != MALT_VERBOSITY_SILENT)
 			fprintf(stderr, "MALT: will dump on signal %s (caution, can do only one dump, bugfix in dev !)\n", it->c_str());
 		
 		//setup
@@ -279,13 +279,13 @@ void AllocWrapperGlobal::init(void )
 		//filter exe
 		if ((gblState.options->exe.empty() == false && OS::getExeName() != gblState.options->exe) || OS::getExeName() == "addr2line")
 		{
-			if (gblOptions->outputVerbosity >= MALT_VERBOSITY_DEFAULT)
+			if (gblOptions->output.verbosity >= MALT_VERBOSITY_DEFAULT)
 				fprintf(stderr,"MALT: skip %s != %s\n",OS::getExeName().c_str(),gblState.options->exe.c_str());
 			skip = true;
 		}
 		
 		//print info
-		if (gblOptions->outputVerbosity >= MALT_VERBOSITY_DEFAULT && !skip)
+		if (gblOptions->output.verbosity >= MALT_VERBOSITY_DEFAULT && !skip)
 			fprintf(stderr,"MALT: Start memory instrumentation of %s - %d by library override.\n",OS::getExeName().c_str(),OS::getPID());
 		
 		//disable childs

@@ -143,21 +143,27 @@ struct Options
 		bool mmap{true};
 	} c;
 	//vars for time profiging
-	bool timeProfileEnabled{true};
-	int timeProfilePoints{512};
-	bool timeProfileLinear{false};
+	struct {
+		bool enabled{true};
+		int points{512};
+		bool linear{false};
+	} time;
 	//max stack
-	bool maxStackEnabled{true};
+	struct {
+		bool enabled{true};
+	} maxStack;
 	//output
-	std::string outputName{"malt-%1-%2.%3"};
-	bool outputIndent{false};
-	bool outputLua{false};
-	bool outputJson{true};
-	bool outputCallgrind{false};
-	bool outputDumpConfig{false};
-	Verbosity outputVerbosity{MALT_VERBOSITY_DEFAULT};
-	bool outputStackTree{false};
-	bool outputLoopSuppress{false};
+	struct {
+		std::string name{"malt-%1-%2.%3"};
+		bool indent{false};
+		bool lua{false};
+		bool json{true};
+		bool callgrind{false};
+		bool config{false};
+		Verbosity verbosity{MALT_VERBOSITY_DEFAULT};
+		bool stackTree{false};
+		bool loopSuppress{false};
+	} output;
 	//size map
 	bool distrAllocSize{true};
 	bool distrReallocJump{true};

@@ -123,7 +123,7 @@ void Debug::end(std::ostream & out, std::ostream & err)
 			#endif
 		case MESSAGE_WARNING:
 			if (gblOptions != NULL)
-				if (gblOptions->outputVerbosity <= MALT_VERBOSITY_DEFAULT)
+				if (gblOptions->output.verbosity <= MALT_VERBOSITY_DEFAULT)
 					break;
 		case MESSAGE_ERROR:
 			if (line != 0)

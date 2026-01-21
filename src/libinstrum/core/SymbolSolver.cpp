@@ -279,7 +279,7 @@ size_t SymbolSolver::extractElfVaddr(const std::string & obj) const
 	readelfcmd << "LC_ALL='C' readelf -h " << obj;
 
 	//debug
-	if (gblOptions->outputVerbosity >= MALT_VERBOSITY_VERBOSE)
+	if (gblOptions->output.verbosity >= MALT_VERBOSITY_VERBOSE)
 		fprintf(stderr, "MALT: %s\n", readelfcmd.str().c_str());
 	else
 		readelfcmd << " 2> /dev/null";
@@ -314,7 +314,7 @@ size_t SymbolSolver::extractElfVaddr(const std::string & obj) const
 			.end();
 
 	//debug
-	//if (gblOptions->outputVerbosity >= MALT_VERBOSITY_VERBOSE)
+	//if (gblOptions->output.verbosity >= MALT_VERBOSITY_VERBOSE)
 	//	fprintf(stderr, "MALT: vaddr is 0x%zx\n", res);
 
 	//ok
@@ -381,12 +381,12 @@ void SymbolSolver::solveNames(void)
 	//first try with maqao infos
 	if (!maqaoSites.empty())
 	{
-		if (gblOptions != NULL && gblOptions->outputVerbosity >= MALT_VERBOSITY_DEFAULT)
+		if (gblOptions != NULL && gblOptions->output.verbosity >= MALT_VERBOSITY_DEFAULT)
 			fprintf(stderr,"MALT: Resolving symbols with maqao infos...\n");
 		this->solveMaqaoNames();
 	}
 
-	if (gblOptions != NULL && gblOptions->outputVerbosity >= MALT_VERBOSITY_DEFAULT)
+	if (gblOptions != NULL && gblOptions->output.verbosity >= MALT_VERBOSITY_DEFAULT)
 		fprintf(stderr,"MALT: Resolving symbols with addr2line...\n");
 
 	//avoid to LD_PRELOAD otherwise we will create fork bomb

@@ -102,7 +102,7 @@ void* WrapperPythonObj::realloc(void* ctx, void *ptr, size_t new_size)
 /**********************************************************/
 void initPythonAllocInstrumentation()
 {
-	if (gblOptions->outputVerbosity >= MALT_VERBOSITY_DEFAULT)
+	if (gblOptions->output.verbosity >= MALT_VERBOSITY_DEFAULT)
 		printf("MALT: Instument Python allocator...\n");
 
 	//get all
@@ -178,7 +178,7 @@ void initPythonAllocInstrumentation()
 /**********************************************************/
 void finiPythonAllocInstrumentation(void)
 {
-	if (gblOptions->outputVerbosity >= MALT_VERBOSITY_DEFAULT)
+	if (gblOptions->output.verbosity >= MALT_VERBOSITY_DEFAULT)
 		printf("MALT: Un-instument Python allocator...\n");
 	MALT::PyMem_SetAllocator(PYMEM_DOMAIN_RAW, &gblPythonRawAlloc);
 	MALT::PyMem_SetAllocator(PYMEM_DOMAIN_MEM, &gblPythonRawAlloc);
@@ -188,7 +188,7 @@ void finiPythonAllocInstrumentation(void)
 /**********************************************************/
 void initPythonEnterExitInstrumentation(void)
 {
-	if (gblOptions->outputVerbosity >= MALT_VERBOSITY_DEFAULT)
+	if (gblOptions->output.verbosity >= MALT_VERBOSITY_DEFAULT)
 		printf("MALT: Instument Python profiling...\n");
 	PyGILState_STATE gstate;
 	gstate = MALT::PyGILState_Ensure();
@@ -208,7 +208,7 @@ void pythonOnExit(void)
 {
 	gblState.profiler->getPythonSymbolTracker().setPythonActivity(false);
 	finiPythonAllocInstrumentation();
-	if (gblOptions->outputVerbosity >= MALT_VERBOSITY_VERBOSE)
+	if (gblOptions->output.verbosity >= MALT_VERBOSITY_VERBOSE)
 		printf("MALT: Python exit...\n");
 }
 

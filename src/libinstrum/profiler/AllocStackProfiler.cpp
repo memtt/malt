@@ -101,7 +101,7 @@ AllocStackProfiler::AllocStackProfiler(const Options & options,StackMode mode,bo
 	//open trace file
 	if (options.traceEnabled)
 	{
-		this->traceFilename = FormattedMessage(options.outputName).arg(this->getFileExeScriptName()).arg(Helpers::getFileId()).arg("trace").toString();
+		this->traceFilename = FormattedMessage(options.output.name).arg(this->getFileExeScriptName()).arg(Helpers::getFileId()).arg("trace").toString();
 		tracer.open(this->traceFilename);
 	}
 
@@ -117,7 +117,7 @@ AllocStackProfiler::AllocStackProfiler(const Options & options,StackMode mode,bo
 	this->curReq = 0;
 	
 	//if request stack tree for more compressed output prepare it
-	if (options.outputStackTree)
+	if (options.output.stackTree)
 		this->stackTree = new MALTV2::RLockFreeTree(false);
 }
 
@@ -297,7 +297,7 @@ void AllocStackProfiler::onAllocEvent(void* ptr, size_t size,Stack* userStack,MM
 			this->domains.updatePeak(domain);
 	
 		//update mem usage
-		if (options.timeProfileEnabled)
+		if (options.time.enabled)
 		{
 			CODE_TIMING("timeProfileAllocStart",
 				curMemoryTimeline.segments++;
@@ -354,7 +354,7 @@ void AllocStackProfiler::onAllocEvent(void* ptr, size_t size,Stack* userStack,MM
 		}
 	
 		//update intern mem usage
-		if (options.timeProfileEnabled)
+		if (options.time.enabled)
 		{
 			curMemoryTimeline.internalMem = gblInternaAlloc->getInuseMemory() + this->maltJeMallocMem;
 			memoryTimeline.push(t,curMemoryTimeline,(void*)callStackNode->stack);
@@ -395,7 +395,7 @@ void AllocStackProfiler::onUpdateMem(const OSProcMemUsage & procMem, const OSMem
 			}
 		}
 		//update intern mem usage
-		if (options.timeProfileEnabled)
+		if (options.time.enabled)
 		{
 			curMemoryTimeline.internalMem = gblInternaAlloc->getInuseMemory() + this->maltJeMallocMem;
 			memoryTimeline.push(t,curMemoryTimeline,nullptr);
@@ -423,7 +423,7 @@ FreeFinalInfos AllocStackProfiler::onFreeEvent(void* ptr, MALT::Stack* userStack
 
 		//search segment info to link with previous history
 		SegmentInfo * segInfo = NULL;
-		if (options.timeProfileEnabled || options.stack.enabled) {
+		if (options.time.enabled || options.stack.enabled) {
 			if (domain == DOMAIN_MMAP) {
 				CODE_TIMING("segTracerGet",segInfo = mmapSegTracker.get(ptr));
 			} else {
@@ -483,7 +483,7 @@ FreeFinalInfos AllocStackProfiler::onFreeEvent(void* ptr, MALT::Stack* userStack
 		}
 		
 		//update timeline
-		if (options.timeProfileEnabled)
+		if (options.time.enabled)
 		{
 			//progr internal memory
 			if (memoryTimeline.isNewPoint(t) || size > 1024UL*1024UL)
@@ -907,7 +907,7 @@ void AllocStackProfiler::onExit(void )
 		}
 
 		//if enable loop suppression
-		if (this->options.outputLoopSuppress) {
+		if (this->options.output.loopSuppress) {
 			CODE_TIMING("loopSuppress", this->loopSuppress());
 		}
 		
@@ -924,31 +924,31 @@ void AllocStackProfiler::onExit(void )
 		std::ofstream out;
 		
 		//config
-		if (options.outputDumpConfig)
+		if (options.output.config)
 		{
-			options.dumpConfig(FormattedMessage(options.outputName).arg(this->getFileExeScriptName()).arg(Helpers::getFileId()).arg("ini").toString().c_str());
+			options.dumpConfig(FormattedMessage(options.output.name).arg(this->getFileExeScriptName()).arg(Helpers::getFileId()).arg("ini").toString().c_str());
 		}
 		
 		//lua
-		if (options.outputLua)
+		if (options.output.lua)
 		{
-			out.open(FormattedMessage(options.outputName).arg(this->getFileExeScriptName()).arg(Helpers::getFileId()).arg("lua").toString().c_str());
-			CODE_TIMING("outputLua",htopml::convertToLua(out,*this,options.outputIndent));
+			out.open(FormattedMessage(options.output.name).arg(this->getFileExeScriptName()).arg(Helpers::getFileId()).arg("lua").toString().c_str());
+			CODE_TIMING("output.lua",htopml::convertToLua(out,*this,options.output.indent));
 			out.close();
 		}
 
 		//json
-		if (options.outputJson)
+		if (options.output.json)
 		{
-			out.open(FormattedMessage(options.outputName).arg(this->getFileExeScriptName()).arg(Helpers::getFileId()).arg("json").toString().c_str());
-			CODE_TIMING("outputJson",htopml::convertToJson(out,*this,options.outputIndent));
+			out.open(FormattedMessage(options.output.name).arg(this->getFileExeScriptName()).arg(Helpers::getFileId()).arg("json").toString().c_str());
+			CODE_TIMING("output.json",htopml::convertToJson(out,*this,options.output.indent));
 			out.close();
 		}
 
 		//valgrind out
-		if (options.outputCallgrind)
+		if (options.output.callgrind)
 		{
-			if (options.outputVerbosity >= MALT_VERBOSITY_DEFAULT)
+			if (options.output.verbosity >= MALT_VERBOSITY_DEFAULT)
 				fprintf(stderr,"MALT: Prepare valgrind output...\n");
 			ValgrindOutput vout;
 			
@@ -956,22 +956,22 @@ void AllocStackProfiler::onExit(void )
 				vout.pushStackInfo(*(itMap->first.stack),itMap->second,symbolResolver);
 			
 			//stackTracer.fillValgrindOut(vout,symbolResolver);
-			CODE_TIMING("outputCallgrind",vout.writeAsCallgrind(FormattedMessage(options.outputName).arg(this->getFileExeScriptName()).arg(Helpers::getFileId()).arg("callgrind").toString(),symbolResolver));
+			CODE_TIMING("output.callgrind",vout.writeAsCallgrind(FormattedMessage(options.output.name).arg(this->getFileExeScriptName()).arg(Helpers::getFileId()).arg("callgrind").toString(),symbolResolver));
 		}
 
 		//trace rename
 		if (options.traceEnabled) {
-			std::string traceName = FormattedMessage(options.outputName).arg(this->getFileExeScriptName()).arg(Helpers::getFileId()).arg("trace").toString();
+			std::string traceName = FormattedMessage(options.output.name).arg(this->getFileExeScriptName()).arg(Helpers::getFileId()).arg("trace").toString();
 			this->tracer.rename(traceName);
 			this->traceFilename = traceName;
-			if (options.outputVerbosity >= MALT_VERBOSITY_DEFAULT) {
+			if (options.output.verbosity >= MALT_VERBOSITY_DEFAULT) {
 				fprintf(stderr,"MALT: trace dump done : %s ...\n", traceName.c_str());
 			}
 		}
 
 		//To know it has been done
-		if (options.outputVerbosity >= MALT_VERBOSITY_DEFAULT) {
-			fprintf(stderr,"MALT: profile dump done : %s ...\n", FormattedMessage(options.outputName).arg(this->getFileExeScriptName()).arg(Helpers::getFileId()).arg("json").toString().c_str());
+		if (options.output.verbosity >= MALT_VERBOSITY_DEFAULT) {
+			fprintf(stderr,"MALT: profile dump done : %s ...\n", FormattedMessage(options.output.name).arg(this->getFileExeScriptName()).arg(Helpers::getFileId()).arg("json").toString().c_str());
 		}
 
 		//print timings
@@ -1025,7 +1025,7 @@ void convertToJson(htopml::JsonState& json, const AllocStackProfiler& value)
 	
 	json.printField("sites",value.symbolResolver);
 
-	if (value.options.timeProfileEnabled)
+	if (value.options.time.enabled)
 	{
 		json.openFieldStruct("timeline");
 			json.printField("memoryTimeline",value.memoryTimeline);
@@ -1038,7 +1038,7 @@ void convertToJson(htopml::JsonState& json, const AllocStackProfiler& value)
 		json.closeFieldStruct("scatter");
 	}
 	
-	if (value.options.maxStackEnabled)
+	if (value.options.maxStack.enabled)
 	{
 		json.openFieldArray("threads");
 		for (LocalAllocStackProfilerList::const_iterator it = value.perThreadProfiler.begin() ; it != value.perThreadProfiler.end() ; ++it)			
@@ -1177,7 +1177,7 @@ ticks AllocStackProfiler::ticksPerSecond(void) const
 	//if too chost, sleep a little and return
 	if (delta.tv_sec == 0 && delta.tv_usec < 200000)
 	{
-		if (options.outputVerbosity >= MALT_VERBOSITY_DEFAULT)
+		if (options.output.verbosity >= MALT_VERBOSITY_DEFAULT)
 			fprintf(stderr,"MALT: Using usleep to get better ticks <-> seconds conversion !\n");
 		usleep(200000);
 		res = this->ticksPerSecond();

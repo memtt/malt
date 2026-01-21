@@ -84,21 +84,21 @@ bool Options::operator==(const Options& value) const
 	if (c.malloc != value.c.malloc) return false;
 	if (c.mmap != value.c.mmap) return false;
 	//time
-	if (this->timeProfileEnabled != value.timeProfileEnabled) return false;
-	if (this->timeProfilePoints != value.timeProfilePoints) return false;
-	if (this->timeProfileLinear != value.timeProfileLinear) return false;
+	if (this->time.enabled != value.time.enabled) return false;
+	if (this->time.points != value.time.points) return false;
+	if (this->time.linear != value.time.linear) return false;
 	//output
-	if (this->outputName != value.outputName) return false;
-	if (this->outputIndent != value.outputIndent) return false;
-	if (this->outputJson != value.outputJson) return false;
-	if (this->outputLua != value.outputLua) return false;
-	if (this->outputCallgrind != value.outputCallgrind) return false;
-	if (this->outputDumpConfig != value.outputDumpConfig) return false;
-	if (this->outputVerbosity != value.outputVerbosity)  return false;
-	if (this->outputStackTree != value.outputStackTree) return false;
-	if (this->outputLoopSuppress != value.outputLoopSuppress) return false;
+	if (this->output.name != value.output.name) return false;
+	if (this->output.indent != value.output.indent) return false;
+	if (this->output.json != value.output.json) return false;
+	if (this->output.lua != value.output.lua) return false;
+	if (this->output.callgrind != value.output.callgrind) return false;
+	if (this->output.config != value.output.config) return false;
+	if (this->output.verbosity != value.output.verbosity)  return false;
+	if (this->output.stackTree != value.output.stackTree) return false;
+	if (this->output.loopSuppress != value.output.loopSuppress) return false;
 	//max stack
-	if (this->maxStackEnabled != value.maxStackEnabled) return false;
+	if (this->maxStack.enabled != value.maxStack.enabled) return false;
 	//maps
 	if (this->distrAllocSize != value.distrAllocSize) return false;
 	if (this->distrReallocJump != value.distrReallocJump) return false;
@@ -422,9 +422,9 @@ bool checkDeprecated(const std::string & value)
 OptionsMeta::OptionsMeta(Options & value)
 {
 	//load values for time profiling
-	this->add("time", "enabled", value.timeProfileEnabled).setDoc("Enable time profiles.");
-	this->add("time", "points", value.timeProfilePoints).setDoc("Number of points to keep in the cart.");
-	this->add("time", "linear", value.timeProfileLinear).setDoc("Use operation index instead of time.");
+	this->add("time", "enabled", value.time.enabled).setDoc("Enable time profiles.");
+	this->add("time", "points", value.time.points).setDoc("Number of points to keep in the cart.");
+	this->add("time", "linear", value.time.linear).setDoc("Use operation index instead of time.");
 	
 	//python
 	this->add("python", "instru", value.python.enabled).setDoc("Enable of disable python instrumentation.");
@@ -458,18 +458,18 @@ OptionsMeta::OptionsMeta(Options & value)
 	this->add("sampling", "count", value.sampling.count).setDoc("Instrument the stack when seen passed X alloc requests (ideally should be prime number).");;
 	
 	//load values for output
-	this->add("output", "name", value.outputName).setDoc("base name for output, %1 = exe, %2 = PID, %3 = extension.");
-	this->add("output", "indent", value.outputIndent).setDoc("indent the output profile files");
-	this->add("output", "json", value.outputJson).setDoc("Enable json output.");
-	this->add("output", "lua", value.outputLua).setDoc("Enable lua output.");
-	this->add("output", "callgrind", value.outputCallgrind).setDoc("Enable callgrind output.");
-	this->add("output", "config", value.outputDumpConfig).setDoc("Dump current config.");
-	this->add("output", "verbosity", value.outputVerbosity).setDoc("Malt verbosity level (silent, default, verbose).");
-	this->add("output", "stack-tree", value.outputStackTree).setDoc("Store the call tree as a tree (smaller file, but need conversion in the reader)");
-	this->add("output", "loop-suppress", value.outputLoopSuppress).setDoc("Simplify recursive loop calls to get smaller profile file if too big");
+	this->add("output", "name", value.output.name).setDoc("base name for output, %1 = exe, %2 = PID, %3 = extension.");
+	this->add("output", "indent", value.output.indent).setDoc("indent the output profile files");
+	this->add("output", "json", value.output.json).setDoc("Enable json output.");
+	this->add("output", "lua", value.output.lua).setDoc("Enable lua output.");
+	this->add("output", "callgrind", value.output.callgrind).setDoc("Enable callgrind output.");
+	this->add("output", "config", value.output.config).setDoc("Dump current config.");
+	this->add("output", "verbosity", value.output.verbosity).setDoc("Malt verbosity level (silent, default, verbose).");
+	this->add("output", "stack-tree", value.output.stackTree).setDoc("Store the call tree as a tree (smaller file, but need conversion in the reader)");
+	this->add("output", "loop-suppress", value.output.loopSuppress).setDoc("Simplify recursive loop calls to get smaller profile file if too big");
 
 	//max stack
-	this->add("max-stack", "enabled", value.maxStackEnabled).setDoc("enable of disable strack size tracking (require -finstrument-functions).");
+	this->add("max-stack", "enabled", value.maxStack.enabled).setDoc("enable of disable strack size tracking (require -finstrument-functions).");
 
 	//maps
 	this->add("distr", "alloc-size", value.distrAllocSize).setDoc("Generate distribution of allocation size.");
