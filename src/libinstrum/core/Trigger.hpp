@@ -54,7 +54,7 @@ bool Trigger::onThreadStackUpdate(size_t threadStackSize) const
 	if (this->threadStackLimit > 0 && threadStackSize > this->threadStackLimit) {
 		fprintf(stderr, "MALT: One thread reach stack limit at %zu bytes (> on-thread-stack-using=%s) [%zu / %zu]\n",
 				threadStackSize,
-				this->options.dumpOnThreadStackUsing.c_str(),
+				this->options.dump.onThreadStackUsing.c_str(),
 				threadStackSize,
 				this->totalMemory
 			);

@@ -279,7 +279,7 @@ size_t SymbolSolver::extractElfVaddr(const std::string & obj) const
 	readelfcmd << "LC_ALL='C' readelf -h " << obj;
 
 	//debug
-	if (gblOptions->outputVerbosity >= MALT_VERBOSITY_VERBOSE)
+	if (gblOptions->output.verbosity >= MALT_VERBOSITY_VERBOSE)
 		fprintf(stderr, "MALT: %s\n", readelfcmd.str().c_str());
 	else
 		readelfcmd << " 2> /dev/null";
@@ -314,7 +314,7 @@ size_t SymbolSolver::extractElfVaddr(const std::string & obj) const
 			.end();
 
 	//debug
-	//if (gblOptions->outputVerbosity >= MALT_VERBOSITY_VERBOSE)
+	//if (gblOptions->output.verbosity >= MALT_VERBOSITY_VERBOSE)
 	//	fprintf(stderr, "MALT: vaddr is 0x%zx\n", res);
 
 	//ok
@@ -381,12 +381,12 @@ void SymbolSolver::solveNames(void)
 	//first try with maqao infos
 	if (!maqaoSites.empty())
 	{
-		if (gblOptions != NULL && gblOptions->outputVerbosity >= MALT_VERBOSITY_DEFAULT)
+		if (gblOptions != NULL && gblOptions->output.verbosity >= MALT_VERBOSITY_DEFAULT)
 			fprintf(stderr,"MALT: Resolving symbols with maqao infos...\n");
 		this->solveMaqaoNames();
 	}
 
-	if (gblOptions != NULL && gblOptions->outputVerbosity >= MALT_VERBOSITY_DEFAULT)
+	if (gblOptions != NULL && gblOptions->output.verbosity >= MALT_VERBOSITY_DEFAULT)
 		fprintf(stderr,"MALT: Resolving symbols with addr2line...\n");
 
 	//avoid to LD_PRELOAD otherwise we will create fork bomb
@@ -409,7 +409,7 @@ void SymbolSolver::solveNames(void)
 					//if last is full
 					if (addr2line == nullptr || addr2line->isFull()) {
 						//spawn a new one
-						addr2line = new Addr2Line(this->stringDict, procMapEntry.file, aslrOffset, gblOptions->stackAddr2lineBucket);
+						addr2line = new Addr2Line(this->stringDict, procMapEntry.file, aslrOffset, gblOptions->addr2line.bucket);
 
 						//push in the right queue
 						if (addr2line->isHugeElf())
@@ -425,7 +425,7 @@ void SymbolSolver::solveNames(void)
 		}
 	}
 	//solve parallel the smalls and seq the huges not to trash the machine in MPI
-	runParallelJobs(addr2lineJobs, gblOptions->stackAddr2lineThreads);
+	runParallelJobs(addr2lineJobs, gblOptions->addr2line.threads);
 	runParallelJobs(addr2lineHugeSeq, 1);
 
 	//free mem

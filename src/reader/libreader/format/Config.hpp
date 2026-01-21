@@ -32,14 +32,18 @@ struct Config
 		std::string mode;
 		bool resolve;
 		bool libunwind;
-		size_t stackSkip;
-		size_t addr2lineBucket;
-		size_t addr2lineThreads;
-		size_t addr2lineHuge;
-		bool sampling;
-		size_t samplingBw;
-		size_t samplingCnt;
+		size_t skip;
 	} stack;
+	struct {
+		size_t bucket;
+		size_t threads;
+		size_t huge;
+	} addr2line;
+	struct {
+		bool enabled;
+		size_t volume;
+		size_t count;
+	} sampling;
 	struct {
 		bool instru;
 		bool mix;
@@ -57,17 +61,20 @@ struct Config
 	struct {
 		bool callgrind;
 		bool dumpConfig;
-		bool index;
 		bool json;
 		bool lua;
 		std::string name;
 		std::string verbosity;
 		bool stackTree;
 		bool loopSuppress;
+		bool indent;
 	} output;
 	struct {
 		bool enabled;
 	} maxStack;
+	struct {
+		bool enabled;
+	} trace;
 	struct {
 		bool allocSize;
 		bool reallocJump;

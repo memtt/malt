@@ -101,15 +101,15 @@ size_t FileReader::getFileSize(FILE * fp)
 
 	//seek to end
 	const int status = fseek(fp, 0L, SEEK_END);
-	assert(status == 0);
+	if (status != 0) assert(false);
 
 	//get pos
 	ssize_t endPos = ftell(fp);
-	assert(endPos >= 0);
+	if (endPos < 0) assert(false);
 
 	//seek back
 	const int status2 = fseek(fp, currentPos, SEEK_SET);
-	assert(status2 == 0);
+	if (status2 != 0) assert(false);
 
 	//ok
 	return endPos;

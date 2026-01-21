@@ -121,14 +121,16 @@ inline bool MutexPthread::tryLock(void )
 inline RwLockPthread::RwLockPthread(void)
 {
 	int status = pthread_rwlock_init(&this->rwlock, nullptr);
-	assert(status == 0);
+	if (status != 0)
+		assert(false);
 }
 
 /**********************************************************/
 inline RwLockPthread::~RwLockPthread(void)
 {
 	int status = pthread_rwlock_destroy(&this->rwlock);
-	assert(status == 0);
+	if (status != 0)
+		assert(false);
 }
 
 /**********************************************************/
@@ -147,14 +149,16 @@ inline void RwLockPthread::lock(RwLockAccess mode)
 			MALT_FATAL("Should never reach this line !");
 			break;
 	}
-	assert(status == 0);
+	if (status != 0)
+		assert(false);
 }
 
 /**********************************************************/
 inline void RwLockPthread::unlock(void)
 {
 	int status = pthread_rwlock_unlock(&this->rwlock);
-	assert(status == 0);
+	if (status != 0)
+		assert(false);
 }
 
 /**********************************************************/

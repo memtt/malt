@@ -50,13 +50,12 @@ TEST(TestSymbolSolver,testSolve)
 	solver.registerAddress(LangAddress(DOMAIN_C, (void*)::isFunctionForTest));
 	solver.solveNames();
 
-	//extact
-	const CallSite * site = solver.getCallSiteInfo(LangAddress(DOMAIN_C, (void*)::isFunctionForTest));
-	const String & func = solver.getString(site->function);
-	const String & file = solver.getString(site->file);
-
 	//test
 	#ifndef NDEBUG
+		//extact
+		const CallSite * site = solver.getCallSiteInfo(LangAddress(DOMAIN_C, (void*)::isFunctionForTest));
+		const String & func = solver.getString(site->function);
+		const String & file = solver.getString(site->file);
 		EXPECT_EQ(__FILE__, file);
 		EXPECT_STREQ("isFunctionForTest(int)", func.c_str());
 	#endif
@@ -99,7 +98,7 @@ TEST(TestSymbolSolver, solveBacktraceExe)
 	#ifndef NDEBUG
 		EXPECT_EQ(__FILE__, file);
 		EXPECT_EQ("testCalleeExe(MALT::BacktraceStack&)", func);
-		EXPECT_EQ(69, site->line);
+		EXPECT_EQ(68, site->line);
 	#endif
 }
 

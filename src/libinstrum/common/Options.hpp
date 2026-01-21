@@ -16,12 +16,14 @@
 /**********************************************************/
 //std
 #include <string>
+#include <map>
 #include <cassert>
+#include <functional>
 
 /**********************************************************/
 //iniparser
 extern "C" {
-#include <iniparser.h>
+	#include <iniparser.h>
 }
 
 /**********************************************************/
@@ -60,6 +62,37 @@ enum StackMode
 };
 
 /**********************************************************/
+enum PythonMode
+{
+	PYTHON_MODE_PROFILE,
+	PYTHON_MODE_TRACE,
+};
+
+/**********************************************************/
+void convertToJson(htopml::JsonState & json,const StackMode & value);
+void convertToJson(htopml::JsonState & json,const PythonMode & value);
+void convertToJson(htopml::JsonState & json,const Verbosity & value);
+
+/**********************************************************/
+std::ostream & operator<<(std::ostream & out, StackMode mode);
+std::ostream & operator<<(std::ostream & out, PythonMode mode);
+
+/**********************************************************/
+int setByString(int & number, const std::string & value);
+size_t setByString(size_t & number, const std::string & value);
+StackMode setByString(StackMode & mode, const std::string & value);
+PythonMode setByString(PythonMode & mode, const std::string & value);
+Verbosity setByString(Verbosity & mode, const std::string & value);
+}
+
+/**********************************************************/
+#include "OptionsMeta.hpp"
+
+/**********************************************************/
+namespace MALT
+{
+
+/**********************************************************/
 /**
  * Structure to manage the MALT options. It manage loading status from a config 
  * file in INI format.
@@ -73,74 +106,130 @@ struct Options
 	void loadFromString(const char * value);
 	void loadFromIniDic(dictionary * iniDic);
 	void dumpConfig(const char * fname);
-	//vars for stack profilinf
-	bool stackProfileEnabled;
-	bool stackResolve;
-	bool stackLibunwind;
-	std::string stackMode;
-	int stackSkip;
-	int stackAddr2lineBucket;
-	int stackAddr2lineThreads;
-	int stackAddr2lineHuge;
-	bool stackSampling;
-	int stackSamplingBw;
-	int stackSamplingCnt;
+	//stack
+	struct {
+		bool enabled{true};
+		bool resolve{true};
+		bool libunwind{false};
+		StackMode mode{STACK_MODE_BACKTRACE};
+		int skip{4};
+	} stack;
+	//addr2line
+	struct {
+		int bucket{350};
+		int threads{8};
+		size_t huge{50UL * 1024UL *1024UL};
+	} addr2line;
+	//smpling
+	struct {
+		bool enabled{false};
+		int volume{4093}; //5242883, 10485767, 20971529
+		int count{571};
+	} sampling;
 	//python
-	std::string pythonStack;
-	StackMode pythonStackEnum;
-	bool pythonMix;
-	bool pythonInstru;
-	bool pythonObj;
-	bool pythonMem;
-	bool pythonRaw;
-	bool pythonHideImports;
-	std::string pythonMode;
+	struct {
+		StackMode stack{STACK_MODE_ENTER_EXIT_FUNC};
+		bool mix{false};
+		bool enabled{true};
+		bool obj{true};
+		bool mem{true};
+		bool raw{true};
+		bool hideImports{true};
+		PythonMode mode{PYTHON_MODE_PROFILE};
+	} python;
 	//c
-	bool cMalloc;
-	bool cMmap;
+	struct {
+		bool malloc{true};
+		bool mmap{true};
+	} c;
 	//vars for time profiging
-	bool timeProfileEnabled;
-	int timeProfilePoints;
-	bool timeProfileLinear;
+	struct {
+		bool enabled{true};
+		int points{512};
+		bool linear{false};
+	} time;
 	//max stack
-	bool maxStackEnabled;
+	struct {
+		bool enabled{true};
+	} maxStack;
 	//output
-	std::string outputName;
-	bool outputIndent;
-	bool outputLua;
-	bool outputJson;
-	bool outputCallgrind;
-	bool outputDumpConfig;
-	Verbosity outputVerbosity;
-	bool outputStackTree;
-	bool outputLoopSuppress;
+	struct {
+		std::string name{"malt-%1-%2.%3"};
+		bool indent{false};
+		bool lua{false};
+		bool json{true};
+		bool callgrind{false};
+		bool config{false};
+		Verbosity verbosity{MALT_VERBOSITY_DEFAULT};
+		bool stackTree{false};
+		bool loopSuppress{false};
+	} output;
 	//size map
-	bool distrAllocSize;
-	bool distrReallocJump;
-	bool operator==(const Options & value) const;
+	struct {
+		bool allocSize{true};
+		bool reallocJump{true};
+	} distr;
 	//trace
-	bool traceEnabled;
+	struct {
+		bool enabled{false};
+	} trace;
 	//info
-	bool infoHidden;
+	struct {
+		bool hidden{false};
+	} info;
 	//filter
-	std::string exe;
-	bool childs;
-	bool enabled;
-	std::string filterRanks;
+	struct {
+		std::string exe{""};
+		bool childs{true};
+		bool enabled{true};
+		std::string ranks{""};
+	} filter;
 	//dump
-	std::string dumpOnSignal;
-	int dumpAfterSeconds;
-	std::string dumpOnSysFullAt;
-	std::string dumpOnAppUsingRss;
-	std::string dumpOnAppUsingVirt;
-	std::string dumpOnAppUsingReq;
-	std::string dumpOnThreadStackUsing;
-	std::string dumpOnAllocCount;
-	bool dumpWatchDog;
+	struct {
+		std::string onSignal{MALT_NO_DUMP_SIGNAL};
+		int afterSeconds{0};
+		std::string onSysFullAt{""};
+		std::string onAppUsingRss{""};
+		std::string onAppUsingVirt{""};
+		std::string onAppUsingReq{""};
+		std::string onThreadStackUsing{""};
+		std::string onAllocCount{""};
+		bool watchDog{false};
+	} dump;
 	//tools
-	bool toolsNm;
-	std::string toolsNmMaxSize;
+	struct {
+		bool nm{true};
+		std::string nmMaxSize{"50M"};
+	} tools;
+
+	bool operator==(const Options & value) const;
 };
+
+/**********************************************************/
+class OptionsMeta
+{
+	public:
+		OptionsMeta(Options & value);
+		~OptionsMeta(void);
+		void dumpConfig(const char * name) const;
+		void dumpAsJson(htopml::JsonState & json) const;
+		void loadIni(dictionary* iniDic);
+		void dump(std::ostream & out) const;
+		bool isValidGroupKey(const std::string & value) const;
+	private:
+		template<class T> OptionMeta<T> add(const std::string & group, const std::string & key, T & value);
+	private:
+		std::map<std::string, OptionMetaBase *> meta;
+};
+
+/**********************************************************/
+template<class T>
+OptionMeta<T> OptionsMeta::add(const std::string & group, const std::string & key, T & value)
+{
+	OptionMeta<T> * option = new OptionMeta<T>(group, key, value);
+	this->meta[option->getGroupKey()] = option;
+	return *option;
+}
 
 /**********************************************************/
 /** 
@@ -165,6 +254,7 @@ const char * verbosityToString(Verbosity value);
 Verbosity iniparser_getverbosity(dictionary * d, const char * key, Verbosity notfound);
 std::ostream & operator << (std::ostream & out, Verbosity value);
 bool validateOptionName(const std::string & value);
+bool checkDeprecated(const std::string & value);
 
 /**********************************************************/
 /** Safer function to access to the option, with check in debug mode.**/
@@ -175,19 +265,10 @@ static inline Options & getOptions(void)
 }
 
 /**********************************************************/
-/*
- * Provide some helper functions to use INI parser.
-**/
-struct IniParserHelper
-{
-	static std::string extractSectionName ( const char * key );
-	static void setEntry (dictionary * dic, const char * key, const char* value );
-	static void setEntry (dictionary * dic, const char * key, bool value);
-	static void setEntry (dictionary * dic, const char * key, int value);
-};
+void convertToJson(htopml::JsonState & json,const Options & value);
 
 /**********************************************************/
-void convertToJson(htopml::JsonState & json,const Options & value);
+std::ostream & operator<<(std::ostream & out, const Options & options);
 
 }
 

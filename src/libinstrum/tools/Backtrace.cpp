@@ -21,7 +21,7 @@ namespace MALT
 /**********************************************************/
 int Backtrace::backtrace ( void** buffer, int maxDepth )
 {
-	if (getOptions().stackLibunwind)
+	if (getOptions().stack.libunwind)
 		return BacktraceLibunwind::backtrace(buffer,maxDepth);
 	else
 		return BacktraceGlibc::backtrace(buffer,maxDepth);

@@ -150,7 +150,7 @@ inline void LocalAllocStackProfiler::onEnterFunc(LangAddress this_fn, LangAddres
 	//this->enterExitHandler = this->enterExitStackTracer->getChild(enterExitHandler,call_site);
 	
 	//max stack
-	if (options->maxStackEnabled && !ignoreStack)
+	if (options->maxStack.enabled && !ignoreStack)
 		stackSizeAnalyser.onEnterFunc(this_fn);
 }
 
@@ -165,7 +165,7 @@ inline void LocalAllocStackProfiler::onExitFunc(LangAddress this_fn, LangAddress
 	//this->enterExitHandler = this->enterExitStackTracer->getParent(enterExitHandler);
 	
 	//max stack
-	if (options->maxStackEnabled && !ignoreStack)
+	if (options->maxStack.enabled && !ignoreStack)
 		stackSizeAnalyser.onExitFunc(this_fn);
 }
 

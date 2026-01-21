@@ -14,6 +14,7 @@
 //std
 #include <cstdio>
 #include <cassert>
+#include <set>
 //internals
 #include "Debug.hpp"
 #include "Options.hpp"
@@ -45,157 +46,11 @@ static const char * cstVerbosityLevels[MALT_VERBOSITY_COUNT] = {
 };
 
 /**********************************************************/
-static const char * cstValidOptionNames[] = {
-	//fill
-	"time:enabled",
-	"time:points",
-	"time:linear-index",
-	
-	//stack
-	"stack:enabled",
-	"stack:mode",
-	"stack:resolve",
-	"stack:libunwind",
-	"stack:skip",
-	"stack:addr2lineBucket",
-	"stack:addr2lineThreads",
-	"stack:addr2lineHuge",
-	"stack:sampling",
-	"stack:samplingBw",
-	"stack:samplingCnt",
-
-	//python
-	"python:intru",
-	"python:stack",
-	"python:mix",
-	"python:obj",
-	"python:mem",
-	"python:raw",
-	"python:hide-imports",
-	"python:mode",
-
-	//c
-	"c:malloc",
-	"c:mmap",
-	
-	//output
-	"output:name",
-	"output:lua",
-	"output:json",
-	"output:callgrind",
-	"output:indent",
-	"output:config",
-	"output:verbosity",
-	"output:stack-tree",
-	"output:loop-suppress",
-	
-	//max stack
-	"max-stack:enabled",
-	
-	//maps
-	"distr:alloc-size",
-	"distr:realloc-jump",
-	
-	//trace
-	"trace:enabled",
-	
-	//info
-	"info:hidden",
-
-	//exe
-	"filter:exe",
-	"filter:childs",
-	"filter:enabled",
-	"filter:ranks",
-
-	//dump
-	"dump:on-signal",
-	"dump:after-seconds",
-	"dump:on-sys-full-at",
-	"dump:on-app-using-rss",
-	"dump:on-app-using-virt",
-	"dump:on-app-using-req",
-	"dump:on-thread-stack-using",
-	"dump:on-alloc-count",
-	"dump:watch-dog",
-
-	//tools
-	"tools:nm",
-	"tools:nm-max-size",
-};
-
-/**********************************************************/
 /**
  * Constructor to setup the default values for each options
 **/
 Options::Options(void)
 {
-	//stack
-	this->stackProfileEnabled     = true;
-	this->stackResolve            = true;
-	this->stackLibunwind          = false;
-	this->stackMode               = "backtrace";
-	this->stackSkip               = cstDefaultStackSkip;
-	this->stackAddr2lineBucket    = 350;
-	this->stackAddr2lineThreads   = 8;
-	this->stackAddr2lineHuge      = 50UL * 1024UL *1024UL;
-	this->stackSampling           = false;
-	this->stackSamplingBw         = 4093; //5242883, 10485767, 20971529
-	this->stackSamplingCnt        = 571;
-	//python
-	this->pythonStack             = "enter-exit";
-	this->pythonStackEnum         = STACK_MODE_ENTER_EXIT_FUNC;
-	this->pythonMix               = false;
-	this->pythonInstru            = true;
-	this->pythonObj               = true;
-	this->pythonMem               = true;
-	this->pythonRaw               = true;
-	this->pythonHideImports       = true;
-	this->pythonMode              = "profile";
-	//c
-	this->cMalloc                 = true;
-	this->cMmap                   = true;
-	//time
-	this->timeProfileEnabled      = true;
-	this->timeProfilePoints       = 512;
-	this->timeProfileLinear       = false;
-	//output
-	this->outputName              = "malt-%1-%2.%3";
-	this->outputIndent            = false;
-	this->outputJson              = true;
-	this->outputLua               = false;
-	this->outputCallgrind         = false;
-	this->outputDumpConfig        = false;
-	this->outputVerbosity         = MALT_VERBOSITY_DEFAULT;
-	this->outputStackTree         = false;
-	this->outputLoopSuppress      = false;
-	//max stack
-	this->maxStackEnabled         = true;
-	//maps
-	this->distrAllocSize          = true;
-	this->distrReallocJump        = true;
-	//trace
-	this->traceEnabled            = false;
-	//info
-	this->infoHidden              = false;
-	//filter
-	this->exe                     = "";
-	this->childs                  = true;
-	this->enabled                 = true;
-	this->filterRanks             = "";
-	//dump
-	this->dumpOnSignal            = MALT_NO_DUMP_SIGNAL;
-	this->dumpAfterSeconds        = 0;
-	this->dumpOnSysFullAt         = "";
-	this->dumpOnAppUsingRss       = "";
-	this->dumpOnAppUsingVirt      = "";
-	this->dumpOnAppUsingReq       = "";
-	this->dumpOnThreadStackUsing  = "";
-	this->dumpOnAllocCount        = "";
-	this->dumpWatchDog            = false;
-	//tools
-	this->toolsNm                 = true;
-	this->toolsNmMaxSize          = "50M";
 }
 
 /**********************************************************/
@@ -205,69 +60,70 @@ Options::Options(void)
 bool Options::operator==(const Options& value) const
 {
 	//stack
-	if (stackProfileEnabled != value.stackProfileEnabled) return false;
-	if (stackResolve != value.stackResolve) return false;
-	if (stackMode != value.stackMode) return false;
-	if (stackLibunwind != value.stackLibunwind) return false;
-	if (stackSkip != value.stackSkip) return false;
-	if (stackAddr2lineBucket != value.stackAddr2lineBucket) return false;
-	if (stackAddr2lineThreads != value.stackAddr2lineThreads) return false;
-	if (stackAddr2lineHuge != value.stackAddr2lineHuge) return false;
-	if (stackSampling != value.stackSampling) return false;
-	if (stackSamplingBw != value.stackSamplingBw) return false;
+	if (stack.enabled != value.stack.enabled) return false;
+	if (stack.resolve != value.stack.resolve) return false;
+	if (stack.mode != value.stack.mode) return false;
+	if (stack.libunwind != value.stack.libunwind) return false;
+	if (stack.skip != value.stack.skip) return false;
+	if (addr2line.bucket != value.addr2line.bucket) return false;
+	if (addr2line.threads != value.addr2line.threads) return false;
+	if (addr2line.huge != value.addr2line.huge) return false;
+	if (sampling.enabled != value.sampling.enabled) return false;
+	if (sampling.volume != value.sampling.volume) return false;
+	if (sampling.count != value.sampling.count) return false;
 	//python
-	if (pythonInstru != value.pythonInstru) return false;
-	if (pythonStack != value.pythonStack) return false;
-	if (pythonMix != value.pythonMix) return false;
-	if (pythonObj != value.pythonObj) return false;
-	if (pythonMem != value.pythonMem) return false;
-	if (pythonRaw != value.pythonRaw) return false;
-	if (pythonHideImports != value.pythonHideImports) return false;
-	if (pythonMode != value.pythonMode) return false;
+	if (python.enabled != value.python.enabled) return false;
+	if (python.stack != value.python.stack) return false;
+	if (python.mix != value.python.mix) return false;
+	if (python.obj != value.python.obj) return false;
+	if (python.mem != value.python.mem) return false;
+	if (python.raw != value.python.raw) return false;
+	if (python.hideImports != value.python.hideImports) return false;
+	if (python.mode != value.python.mode) return false;
 	//c
-	if (cMalloc != value.cMalloc) return false;
-	if (cMmap != value.cMmap) return false;
+	if (c.malloc != value.c.malloc) return false;
+	if (c.mmap != value.c.mmap) return false;
 	//time
-	if (this->timeProfileEnabled != value.timeProfileEnabled) return false;
-	if (this->timeProfilePoints != value.timeProfilePoints) return false;
-	if (this->timeProfileLinear != value.timeProfileLinear) return false;
+	if (this->time.enabled != value.time.enabled) return false;
+	if (this->time.points != value.time.points) return false;
+	if (this->time.linear != value.time.linear) return false;
 	//output
-	if (this->outputName != value.outputName) return false;
-	if (this->outputIndent != value.outputIndent) return false;
-	if (this->outputJson != value.outputJson) return false;
-	if (this->outputLua != value.outputLua) return false;
-	if (this->outputCallgrind != value.outputCallgrind) return false;
-	if (this->outputDumpConfig != value.outputDumpConfig) return false;
-	if (this->outputVerbosity != value.outputVerbosity)  return false;
-	if (this->outputStackTree != value.outputStackTree) return false;
-	if (this->outputLoopSuppress != value.outputLoopSuppress) return false;
+	if (this->output.name != value.output.name) return false;
+	if (this->output.indent != value.output.indent) return false;
+	if (this->output.json != value.output.json) return false;
+	if (this->output.lua != value.output.lua) return false;
+	if (this->output.callgrind != value.output.callgrind) return false;
+	if (this->output.config != value.output.config) return false;
+	if (this->output.verbosity != value.output.verbosity)  return false;
+	if (this->output.stackTree != value.output.stackTree) return false;
+	if (this->output.loopSuppress != value.output.loopSuppress) return false;
 	//max stack
-	if (this->maxStackEnabled != value.maxStackEnabled) return false;
+	if (this->maxStack.enabled != value.maxStack.enabled) return false;
 	//maps
-	if (this->distrAllocSize != value.distrAllocSize) return false;
-	if (this->distrReallocJump != value.distrReallocJump) return false;
+	if (this->distr.allocSize != value.distr.allocSize) return false;
+	if (this->distr.reallocJump != value.distr.reallocJump) return false;
 	//trace
-	if (this->traceEnabled != value.traceEnabled) return false;
+	if (this->trace.enabled != value.trace.enabled) return false;
 	//info
-	if (this->infoHidden != value.infoHidden) return false;
+	if (this->info.hidden != value.info.hidden) return false;
 	//exe
-	if (this->exe != value.exe) return false;
-	if (this->childs != value.childs) return false;
-	if (this->enabled != value.enabled) return false;
-	if (this->filterRanks != value.filterRanks) return false;
+	if (this->filter.exe != value.filter.exe) return false;
+	if (this->filter.childs != value.filter.childs) return false;
+	if (this->filter.enabled != value.filter.enabled) return false;
+	if (this->filter.ranks != value.filter.ranks) return false;
 	//dump
-	if (this->dumpOnSignal != value.dumpOnSignal) return false;
-	if (this->dumpAfterSeconds != value.dumpAfterSeconds) return false;
-	if (this->dumpOnSysFullAt != value.dumpOnSysFullAt) return false;
-	if (this->dumpOnAppUsingRss != value.dumpOnAppUsingRss) return false;
-	if (this->dumpOnAppUsingVirt != value.dumpOnAppUsingVirt) return false;
-	if (this->dumpOnAppUsingReq != value.dumpOnAppUsingReq) return false;
-	if (this->dumpOnThreadStackUsing != value.dumpOnThreadStackUsing) return false;
-	if (this->dumpWatchDog != value.dumpWatchDog) return false;
-	if (this->dumpOnAllocCount != value.dumpOnAllocCount) return false;
+	if (this->dump.onSignal != value.dump.onSignal) return false;
+	if (this->dump.afterSeconds != value.dump.afterSeconds) return false;
+	if (this->dump.onSysFullAt != value.dump.onSysFullAt) return false;
+	if (this->dump.onAppUsingRss != value.dump.onAppUsingRss) return false;
+	if (this->dump.onAppUsingVirt != value.dump.onAppUsingVirt) return false;
+	if (this->dump.onAppUsingReq != value.dump.onAppUsingReq) return false;
+	if (this->dump.onThreadStackUsing != value.dump.onThreadStackUsing) return false;
+	if (this->dump.watchDog != value.dump.watchDog) return false;
+	if (this->dump.onAllocCount != value.dump.onAllocCount) return false;
 	//nm
-	if (this->toolsNm != value.toolsNm) return false;
-	if (this->toolsNmMaxSize != value.toolsNmMaxSize) return false;
+	if (this->tools.nm != value.tools.nm) return false;
+	if (this->tools.nmMaxSize != value.tools.nmMaxSize) return false;
 	
 	return true;
 }
@@ -319,15 +175,32 @@ void Options::loadFromString ( const char* value )
 		
 		//is end
 		bool isEnd = (*cur == '\0');
-		assumeArg(sep != NULL,"Invalid string format to setup option : '%1', expect SECTION:NAME=VALUE.").arg(start).end();
-		
-		//cut strings
+		if (sep == NULL) {
+			fprintf(stderr, "Invalid string format to setup option : '%s', expect SECTION:NAME=VALUE.\n", start);
+			exit(1);
+		}
+
+		//cut end
 		*cur = '\0';
+
+		//cut on separator
 		*sep = '\0';
 		sep++;
+
+		//validate
+		if (checkDeprecated(start)) {
+			exit(1);
+		}
+		if (validateOptionName(start) == false) {
+			fprintf(stderr, "Invalid option given to MALT : %s !\n", start);
+			exit(1);
+		}
+
+		//rename
+		const char * key = sep;
 		
 		//setup in INI
-		IniParserHelper::setEntry(dic,start,sep);
+		IniParserHelper::setEntry(dic,start,key);
 		
 		//move
 		if (isEnd == false)
@@ -350,84 +223,10 @@ void Options::loadFromIniDic ( dictionary* iniDic )
 {
 	//errors
 	assert(iniDic != NULL);
-	
-	//load values for time profiling
-	this->timeProfileEnabled  = iniparser_getboolean(iniDic,"time:enabled",this->timeProfileEnabled);
-	this->timeProfilePoints   = iniparser_getint(iniDic,"time:points",this->timeProfilePoints);
-	this->timeProfileLinear   = iniparser_getboolean(iniDic,"time:linear-index",this->timeProfileLinear);
-	
-	//python
-	this->pythonInstru        = iniparser_getboolean(iniDic,"python:instru",this->pythonInstru);
-	this->pythonMix           = iniparser_getboolean(iniDic,"python:mix",this->pythonMix);
-	this->pythonStack         = iniparser_getstring(iniDic,"python:stack",(char*)this->pythonStack.c_str());
-	this->pythonObj           = iniparser_getboolean(iniDic,"python:obj",this->pythonObj);
-	this->pythonMem           = iniparser_getboolean(iniDic,"python:mem",this->pythonMem);
-	this->pythonRaw           = iniparser_getboolean(iniDic,"python:raw",this->pythonRaw);
-	this->pythonStackEnum     = stackModeFromString(this->pythonStack);
-	this->pythonHideImports   = iniparser_getboolean(iniDic,"python:hide-imports", this->pythonHideImports);
-	this->pythonMode          = iniparser_getstring(iniDic,"python:mode",(char*)this->pythonMode.c_str());
 
-	//c
-	this->cMalloc             = iniparser_getboolean(iniDic,"c:malloc", this->cMalloc);
-	this->cMmap               = iniparser_getboolean(iniDic,"c:mmap", this->cMmap);
-
-	//load values for stack profiling
-	this->stackResolve        = iniparser_getboolean(iniDic,"stack:resolve",this->stackResolve);
-	this->stackProfileEnabled = iniparser_getboolean(iniDic,"stack:enabled",this->stackProfileEnabled);
-	this->stackLibunwind      = iniparser_getboolean(iniDic,"stack:libunwind",this->stackLibunwind);
-	this->stackMode           = iniparser_getstring(iniDic,"stack:mode",(char*)this->stackMode.c_str());
-	this->stackSkip           = iniparser_getint(iniDic,"stack:skip",this->stackSkip);
-	this->stackAddr2lineBucket= iniparser_getint(iniDic,"stack:addr2lineBucket",this->stackAddr2lineBucket);
-	this->stackAddr2lineThreads= iniparser_getint(iniDic,"stack:addr2lineThreads",this->stackAddr2lineThreads);
-	this->stackAddr2lineHuge  = iniparser_getint(iniDic,"stack:addr2lineHuge",this->stackAddr2lineHuge);
-	this->stackSampling       = iniparser_getboolean(iniDic,"stack:sampling",this->stackSampling);
-	this->stackSamplingBw     = iniparser_getint(iniDic,"stack:samplingBw",this->stackSamplingBw);
-	this->stackSamplingCnt    = iniparser_getint(iniDic,"stack:samplingCnt",this->stackSamplingCnt);
-	
-	//load values for output
-	this->outputName          = iniparser_getstring(iniDic,"output:name",(char*)this->outputName.c_str());
-	this->outputIndent        = iniparser_getboolean(iniDic,"output:indent",this->outputIndent);
-	this->outputJson          = iniparser_getboolean(iniDic,"output:json",this->outputJson);
-	this->outputLua           = iniparser_getboolean(iniDic,"output:lua",this->outputLua);
-	this->outputCallgrind     = iniparser_getboolean(iniDic,"output:callgrind",this->outputCallgrind);
-	this->outputDumpConfig    = iniparser_getboolean(iniDic,"output:config",this->outputDumpConfig);
-	this->outputVerbosity     = iniparser_getverbosity(iniDic,"output:verbosity",this->outputVerbosity);
-	this->outputStackTree     = iniparser_getboolean(iniDic,"output:stack-tree",this->outputStackTree);
-	this->outputLoopSuppress  = iniparser_getboolean(iniDic,"output:loop-suppress",this->outputLoopSuppress);
-	
-	//max stack
-	this->maxStackEnabled     = iniparser_getboolean(iniDic,"max-stack:enabled",this->maxStackEnabled);
-	
-	//maps
-	this->distrAllocSize      = iniparser_getboolean(iniDic,"distr:alloc-size",this->distrAllocSize);
-	this->distrReallocJump    = iniparser_getboolean(iniDic,"distr:realloc-jump",this->distrReallocJump);
-	
-	//trace
-	this->traceEnabled        = iniparser_getboolean(iniDic,"trace:enabled",this->traceEnabled);
-	
-	//info
-	this->infoHidden          = iniparser_getboolean(iniDic,"info:hidden",this->infoHidden);
-
-	//filter
-	this->exe                 = iniparser_getstring(iniDic,"filter:exe",(char*)this->exe.c_str());
-	this->childs              = iniparser_getboolean(iniDic,"filter:childs",this->childs);
-	this->enabled             = iniparser_getboolean(iniDic,"filter:enabled",this->enabled);
-	this->filterRanks         = iniparser_getstring(iniDic,"filter:ranks",(char*)this->filterRanks.c_str());
-
-	//dump
-	this->dumpOnSignal        = iniparser_getstring(iniDic,"dump:on-signal",(char*)this->dumpOnSignal.c_str());
-	this->dumpAfterSeconds    = iniparser_getint(iniDic,"dump:after-seconds",this->dumpAfterSeconds);
-	this->dumpOnSysFullAt     = iniparser_getstring(iniDic,"dump:on-sys-full-at",(char*)this->dumpOnSysFullAt.c_str());
-	this->dumpOnAppUsingRss   = iniparser_getstring(iniDic,"dump:on-app-using-rss",(char*)this->dumpOnAppUsingRss.c_str());
-	this->dumpOnAppUsingVirt  = iniparser_getstring(iniDic,"dump:on-app-using-virt",(char*)this->dumpOnAppUsingVirt.c_str());
-	this->dumpOnAppUsingReq   = iniparser_getstring(iniDic,"dump:on-app-using-req",(char*)this->dumpOnAppUsingReq.c_str());
-	this->dumpOnThreadStackUsing = iniparser_getstring(iniDic,"dump:on-thread-stack-using",(char*)this->dumpOnThreadStackUsing.c_str());
-	this->dumpOnAllocCount    = iniparser_getstring(iniDic,"dump:on-alloc-count",(char*)this->dumpOnAllocCount.c_str());
-	this->dumpWatchDog        = iniparser_getboolean(iniDic,"dump:watch-dog",this->dumpWatchDog);
-
-	//tools
-	this->toolsNm             = iniparser_getboolean(iniDic,"tools:nm",this->toolsNm);
-	this->toolsNmMaxSize      = iniparser_getstring(iniDic,"tools:nm-max-size",(char*)this->toolsNmMaxSize.c_str());
+	//load
+	OptionsMeta meta(*this);
+	meta.loadIni(iniDic);
 }
 
 /**********************************************************/
@@ -460,92 +259,9 @@ void Options::loadFromFile(const char* fname)
 **/
 void convertToJson(htopml::JsonState & json,const Options & value)
 {
-	json.openStruct();
-		json.openFieldStruct("time");
-			json.printField("enabled",value.timeProfileEnabled);
-			json.printField("points",value.timeProfilePoints);
-			json.printField("linear",value.timeProfileLinear);
-		json.closeFieldStruct("time");
-		
-		json.openFieldStruct("stack");
-			json.printField("enabled",value.stackProfileEnabled);
-			json.printField("mode",value.stackMode.c_str());
-			json.printField("resolve",value.stackResolve);
-			json.printField("libunwind",value.stackLibunwind);
-			json.printField("stackSkip",value.stackSkip);
-			json.printField("addr2lineBucket",value.stackAddr2lineBucket);
-			json.printField("addr2lineThreads",value.stackAddr2lineThreads);
-			json.printField("addr2lineHuge", value.stackAddr2lineHuge);
-			json.printField("sampling", value.stackSampling);
-			json.printField("samplingBw", value.stackSamplingBw);
-			json.printField("samplingCnt", value.stackSamplingCnt);
-		json.closeFieldStruct("stack");
+	OptionsMeta meta(const_cast<Options&>(value));
+	meta.dumpAsJson(json);
 
-		json.openFieldStruct("python");
-			json.printField("instru", value.pythonInstru);
-			json.printField("mix", value.pythonMix);
-			json.printField("stack", value.pythonStack);
-			json.printField("obj", value.pythonObj);
-			json.printField("mem", value.pythonMem);
-			json.printField("raw", value.pythonRaw);
-			json.printField("hideImports", value.pythonHideImports);
-			json.printField("mode", value.pythonMode);
-		json.closeFieldStruct("python");
-
-		json.openFieldStruct("c");
-			json.printField("malloc", value.cMalloc);
-			json.printField("mmap", value.cMmap);
-		json.closeFieldStruct("c");
-		
-		json.openFieldStruct("output");
-			json.printField("callgrind",value.outputCallgrind);
-			json.printField("dumpConfig",value.outputDumpConfig);
-			json.printField("index",value.outputIndent);
-			json.printField("json",value.outputJson);
-			json.printField("lua",value.outputLua);
-			json.printField("name",value.outputName);
-			json.printField("verbosity",verbosityToString(value.outputVerbosity));
-			json.printField("stackTree",value.outputStackTree);
-			json.printField("loopSuppress",value.outputLoopSuppress);
-		json.closeFieldStruct("output");
-		
-		json.openFieldStruct("maxStack");
-			json.printField("enabled",value.maxStackEnabled);
-		json.closeFieldStruct("maxStack");
-		
-		json.openFieldStruct("distr");
-			json.printField("allocSize",value.distrAllocSize);
-			json.printField("reallocJump",value.distrReallocJump);
-		json.closeFieldStruct("distr");
-		
-		json.openFieldStruct("info");
-			json.printField("hidden",value.infoHidden);
-		json.closeFieldStruct("info");
-
-		json.openFieldStruct("filter");
-			json.printField("exe",value.exe);
-			json.printField("childs",value.childs);
-			json.printField("enabled",value.enabled);
-			json.printField("ranks",value.filterRanks);
-		json.closeFieldStruct("filter");
-
-		json.openFieldStruct("dump");
-			json.printField("onSignal", value.dumpOnSignal);
-			json.printField("afterSeconds", value.dumpAfterSeconds);
-			json.printField("onSysFullAt", value.dumpOnSysFullAt);
-			json.printField("onAppUsingRss", value.dumpOnAppUsingRss);
-			json.printField("onAppUsingVirt", value.dumpOnAppUsingVirt);
-			json.printField("onAppUsingReq", value.dumpOnAppUsingReq);
-			json.printField("onThreadStackUsing", value.dumpOnThreadStackUsing);
-			json.printField("onAllocCount", value.dumpOnAllocCount);
-			json.printField("watchDog", value.dumpWatchDog);
-		json.closeFieldStruct("dump");
-
-		json.openFieldStruct("tools");
-			json.printField("nm", value.toolsNm);
-			json.printField("nmMaxSize", value.toolsNmMaxSize);
-		json.closeFieldStruct("tools");
-	json.closeStruct();
 }
 
 /**********************************************************/
@@ -554,95 +270,8 @@ void convertToJson(htopml::JsonState & json,const Options & value)
 **/
 void Options::dumpConfig(const char* fname)
 {
-	//create dic
-	assert(fname != NULL);
-	dictionary * dic = dictionary_new(10);
-	
-	//fill
-	IniParserHelper::setEntry(dic,"time:enabled",this->timeProfileEnabled);
-	IniParserHelper::setEntry(dic,"time:points",this->timeProfilePoints);
-	IniParserHelper::setEntry(dic,"time:linear-index",this->timeProfileLinear);
-	
-	//stack
-	IniParserHelper::setEntry(dic,"stack:enabled",this->timeProfileEnabled);
-	IniParserHelper::setEntry(dic,"stack:mode",this->stackMode.c_str());
-	IniParserHelper::setEntry(dic,"stack:resolve",this->stackResolve);
-	IniParserHelper::setEntry(dic,"stack:libunwind",this->stackLibunwind);
-	IniParserHelper::setEntry(dic,"stack:skip",this->stackSkip);
-	IniParserHelper::setEntry(dic,"stack:addr2lineBucket",this->stackAddr2lineBucket);
-	IniParserHelper::setEntry(dic,"stack:addr2lineThreads",this->stackAddr2lineThreads);
-	IniParserHelper::setEntry(dic,"stack:addr2lineHuge",this->stackAddr2lineHuge);
-	IniParserHelper::setEntry(dic,"stack:sampling",this->stackSampling);
-	IniParserHelper::setEntry(dic,"stack:samplingBw",this->stackSamplingBw);
-	IniParserHelper::setEntry(dic,"stack:samplingCnt",this->stackSamplingCnt);
-
-	//python
-	IniParserHelper::setEntry(dic,"python:intru",this->pythonInstru);
-	IniParserHelper::setEntry(dic,"python:stack",this->pythonStack.c_str());
-	IniParserHelper::setEntry(dic,"python:mix",this->pythonMix);
-	IniParserHelper::setEntry(dic,"python:obj",this->pythonObj);
-	IniParserHelper::setEntry(dic,"python:mem",this->pythonMem);
-	IniParserHelper::setEntry(dic,"python:raw",this->pythonRaw);
-	IniParserHelper::setEntry(dic,"python:hide-imports",this->pythonHideImports);
-	IniParserHelper::setEntry(dic,"python:mode",this->pythonMode.c_str());
-
-	//c
-	IniParserHelper::setEntry(dic,"c:malloc",this->cMalloc);
-	IniParserHelper::setEntry(dic,"c:mmap",this->cMmap);
-	
-	//output
-	IniParserHelper::setEntry(dic,"output:name",this->outputName.c_str());
-	IniParserHelper::setEntry(dic,"output:lua",this->outputLua);
-	IniParserHelper::setEntry(dic,"output:json",this->outputJson);
-	IniParserHelper::setEntry(dic,"output:callgrind",this->outputCallgrind);
-	IniParserHelper::setEntry(dic,"output:indent",this->outputIndent);
-	IniParserHelper::setEntry(dic,"output:config",this->outputDumpConfig);
-	IniParserHelper::setEntry(dic,"output:verbosity",verbosityToString(this->outputVerbosity));
-	IniParserHelper::setEntry(dic,"output:stack-tree",this->outputStackTree);
-	IniParserHelper::setEntry(dic,"output:loop-suppress",this->outputLoopSuppress);
-	
-	//max stack
-	IniParserHelper::setEntry(dic,"max-stack:enabled",this->maxStackEnabled);
-	
-	//maps
-	IniParserHelper::setEntry(dic,"distr:alloc-size",this->distrAllocSize);
-	IniParserHelper::setEntry(dic,"distr:realloc-jump",this->distrReallocJump);
-	
-	//trace
-	IniParserHelper::setEntry(dic,"trace:enabled",this->traceEnabled);
-	
-	//info
-	IniParserHelper::setEntry(dic,"info:hidden",this->infoHidden);
-
-	//exe
-	IniParserHelper::setEntry(dic,"filter:exe",this->exe.c_str());
-	IniParserHelper::setEntry(dic,"filter:childs",this->childs);
-	IniParserHelper::setEntry(dic,"filter:enabled",this->enabled);
-	IniParserHelper::setEntry(dic,"filter:ranks",this->filterRanks.c_str());
-
-	//dump
-	IniParserHelper::setEntry(dic,"dump:on-signal",this->dumpOnSignal.c_str());
-	IniParserHelper::setEntry(dic,"dump:after-seconds",this->dumpAfterSeconds);
-	IniParserHelper::setEntry(dic,"dump:on-sys-full-at",this->dumpOnSysFullAt.c_str());
-	IniParserHelper::setEntry(dic,"dump:on-app-using-rss",this->dumpOnAppUsingRss.c_str());
-	IniParserHelper::setEntry(dic,"dump:on-app-using-virt",this->dumpOnAppUsingVirt.c_str());
-	IniParserHelper::setEntry(dic,"dump:on-app-using-req",this->dumpOnAppUsingReq.c_str());
-	IniParserHelper::setEntry(dic,"dump:on-thread-stack-using",this->dumpOnThreadStackUsing.c_str());
-	IniParserHelper::setEntry(dic,"dump:on-alloc-count",this->dumpOnAllocCount.c_str());
-	IniParserHelper::setEntry(dic,"dump:watch-dog",this->dumpWatchDog);
-
-	//tools
-	IniParserHelper::setEntry(dic,"tools:nm",this->toolsNm);
-	IniParserHelper::setEntry(dic,"tools:nm-max-size",this->toolsNmMaxSize.c_str());
-
-	//write
-	FILE * fp = fopen(fname,"w");
-	assumeArg(fp != NULL,"Failed to write dump of config file into %1 : %2 !").arg(fname).argStrErrno().end();
-	iniparser_dump_ini(dic,fp);
-	fclose(fp);
-	
-	//free
-	iniparser_freedict(dic);
+	OptionsMeta meta(*this);
+	meta.dumpConfig(fname);
 }
 
 /**********************************************************/
@@ -656,51 +285,6 @@ std::string IniParserHelper::extractSectionName ( const char * key )
 	while (key[i] != ':' && key[i] != '\0')
 		tmp += key[i++];
 	return tmp;
-}
-
-/**********************************************************/
-/**
- * Updat some entries of a dictionnary.
- * @param dic Define the dictionnary to update.
- * @param key Define the key to update.
- * @param value Define the value to setup for the given key.
-**/
-void IniParserHelper::setEntry(dictionary* dic, const char* key, const char* value)
-{
-	if (validateOptionName(key) == false) {
-		fprintf(stderr, "MALT: Error: Invalid option : --option %s !\n", key);
-		exit(1);
-	}
-	iniparser_set(dic,extractSectionName(key).c_str(),NULL);
-	iniparser_set(dic,key,value);
-}
-
-/**********************************************************/
-/**
- * Help set setup ini dic entries from boolean by converting them to string
- * internally.
- * @param dic Define the dictionnary to fill.
- * @param key Define the key to update (key:name)
- * @param value Define the boolean value to setup.
-**/
-void IniParserHelper::setEntry(dictionary* dic, const char* key, bool value)
-{
-	setEntry(dic,key,value?"true":"false");
-}
-
-/**********************************************************/
-/**
- * Help set setup ini dic entries from integer by converting them to string
- * internally.
- * @param dic Define the dictionnary to fill.
- * @param key Define the key to update (key:name)
- * @param value Define the integer value to setup.
-**/
-void IniParserHelper::setEntry(dictionary* dic, const char* key, int value)
-{
-	char buffer[64];
-	sprintf(buffer,"%d",value);
-	setEntry(dic,key,buffer);
 }
 
 /**********************************************************/
@@ -795,11 +379,355 @@ std::ostream & operator << (std::ostream & out, Verbosity value)
  */
 bool validateOptionName(const std::string & value)
 {
-	const size_t cnt = sizeof(cstValidOptionNames) / sizeof(*cstValidOptionNames);
-	for (size_t i = 0 ; i < cnt ; i++)
-		if (value == cstValidOptionNames[i])
-			return true;
+	Options options;
+	OptionsMeta meta(options);
+	return meta.isValidGroupKey(value);
+}
+
+/**********************************************************/
+/**
+ * Check if some option has changed their name to avert the user.
+ */
+bool checkDeprecated(const std::string & value)
+{
+	if (value == "time:linear_index") {
+		fprintf(stderr, "Option 'time:linear_index' as been renamed as `time:linear`\n");
+		return true;
+	} else if (value == "stack:addr2lineBucket") {
+		fprintf(stderr, "Option 'stack:addr2lineBucket' as been renamed as `addr2line:bucket`\n");
+		return true;
+	} else if (value == "stack:addr2lineThreads") {
+		fprintf(stderr, "Option 'stack:addr2lineThreads' as been renamed as `addr2line:threads`\n");
+		return true;
+	} else if (value == "stack:addr2lineHuge") {
+		fprintf(stderr, "Option 'stack:addr2lineHuge' as been renamed as `addr2line:huge`\n");
+		return true;
+	} else if (value == "stack:sampling") {
+		fprintf(stderr, "Option 'stack:sampling' as been renamed as `sampling:enabled`\n");
+		return true;
+	} else if (value == "stack:samplingBw") {
+		fprintf(stderr, "Option 'stack:samplingBw' as been renamed as `sampling:volume`\n");
+		return true;
+	} else if (value == "stack:samplingCnt") {
+		fprintf(stderr, "Option 'stack:samplingCnt' as been renamed as `sampling:count`\n");
+		return true;
+	} else if (value == "python:instru") {
+		fprintf(stderr, "Option 'python:instru' as been renamed as `python:enabled`\n");
+		return true;
+	}
 	return false;
+}
+
+/**********************************************************/
+OptionsMeta::OptionsMeta(Options & value)
+{
+	//load values for time profiling
+	this->add("time", "enabled", value.time.enabled).setDoc("Enable time profiles.");
+	this->add("time", "points", value.time.points).setDoc("Number of points to keep in the cart.");
+	this->add("time", "linear", value.time.linear).setDoc("Use operation index instead of time.");
+	
+	//python
+	this->add("python", "instru", value.python.enabled).setDoc("Enable of disable python instrumentation.");
+	this->add("python", "mix", value.python.mix).setDoc("Mix C stack with the python ones to get a uniq tree instread of two distincts (note it adds overhead).");
+	this->add("python", "stack", value.python.stack).setDoc("Select the Python stack instrumentation mode (backtrace, enter-exit, none).");;
+	this->add("python", "obj", value.python.obj).setDoc("Instrument of not the OBJECT allocator domain of python.");
+	this->add("python", "mem", value.python.mem).setDoc("Instrument of not the MEM allocator domain of python.");
+	this->add("python", "raw", value.python.raw).setDoc("Instrument of not the RAW allocator domain of python.");
+	this->add("python", "hide-imports", value.python.hideImports).setDoc("Do not keep stacks for the python import related allocations.");
+	this->add("python", "mode", value.python.mode).setDoc("Configure the python instrumentation mode ('profile' or 'trace').");
+
+	//c
+	this->add("c", "malloc", value.c.malloc).setDoc("Instrument the C memory allocator.");
+	this->add("c", "mmap", value.c.mmap).setDoc("Instrument the C direct mmap calls done by the app.");
+
+	//load values for stack profiling
+	this->add("stack", "resolve", value.stack.resolve).setDoc("Automatically resolve symbols with addr2line at exit.");
+	this->add("stack", "enabled", value.stack.enabled).setDoc("Enable stack profiles.");
+	this->add("stack", "libunwind", value.stack.libunwind).setDoc("Enable of disable usage of libunwind to backtrace.");
+	this->add("stack", "mode", value.stack.mode).setDoc("Define the stack tracking mode (enter-exit, backtrace, python, none)");
+	this->add("stack", "skip", value.stack.skip).setDoc("Number of stack frame to skip in order to cut at malloc level.");
+
+	//addr2line
+	this->add("addr2line", "bucket", value.addr2line.bucket).setDoc("Handle the addr2line calls by buckets and treat each bucket in parallel.");
+	this->add("addr2line", "threads", value.addr2line.threads).setDoc("Number of threasd to use to call addr2line in parallel.");
+	this->add("addr2line", "huge", value.addr2line.huge).setDoc("For larger elf files, do not treat them in parallel nor buckets.");
+
+	//sampling
+	this->add("sampling", "enabled", value.sampling.enabled).setDoc("Sample and instrument only some stack.");
+	this->add("sampling", "volume", value.sampling.volume).setDoc("Instrument the stack when seen passed 4K-3 bytes of alloc requests (ideally should be prime number).");
+	this->add("sampling", "count", value.sampling.count).setDoc("Instrument the stack when seen passed X alloc requests (ideally should be prime number).");;
+	
+	//load values for output
+	this->add("output", "name", value.output.name).setDoc("base name for output, %1 = exe, %2 = PID, %3 = extension.");
+	this->add("output", "indent", value.output.indent).setDoc("indent the output profile files");
+	this->add("output", "json", value.output.json).setDoc("Enable json output.");
+	this->add("output", "lua", value.output.lua).setDoc("Enable lua output.");
+	this->add("output", "callgrind", value.output.callgrind).setDoc("Enable callgrind output.");
+	this->add("output", "config", value.output.config).setDoc("Dump current config.");
+	this->add("output", "verbosity", value.output.verbosity).setDoc("Malt verbosity level (silent, default, verbose).");
+	this->add("output", "stack-tree", value.output.stackTree).setDoc("Store the call tree as a tree (smaller file, but need conversion in the reader)");
+	this->add("output", "loop-suppress", value.output.loopSuppress).setDoc("Simplify recursive loop calls to get smaller profile file if too big");
+
+	//max stack
+	this->add("max-stack", "enabled", value.maxStack.enabled).setDoc("enable of disable strack size tracking (require -finstrument-functions).");
+
+	//maps
+	this->add("distr", "alloc-size", value.distr.allocSize).setDoc("Generate distribution of allocation size.");
+	this->add("distr", "realloc-jump", value.distr.reallocJump).setDoc("Generate distribution of realloc jumps.");
+	
+	//trace
+	this->add("trace", "enabled", value.trace.enabled).setDoc("Enable dumping allocation event tracing (not yet used by GUI).");
+	
+	//info
+	this->add("info", "hidden", value.info.hidden).setDoc("Try to hide possible sensible names from profile (exe, hostname...).");
+
+	//filter
+	this->add("filter", "exe", value.filter.exe).setDoc("Only apply malt on given exe (empty for all).");
+	this->add("filter", "childs", value.filter.childs).setDoc("Instrument child processes or not.");
+	this->add("filter", "enabled", value.filter.enabled).setDoc("Enable or disable MALT when threads start.");
+	this->add("filter", "ranks", value.filter.ranks).setDoc("Instrument only the given ranks from list as : 1,2-4,6");
+
+	//dump
+	this->add("dump", "on-signal", value.dump.onSignal).setDoc("Dump on signal. Can be comma separated list from SIGINT, SIGUSR1, SIGUSR2... help, avail (limited to only one dump).");
+	this->add("dump", "after-seconds", value.dump.afterSeconds).setDoc("Dump after X seconds (limited to only one time).");
+	this->add("dump", "on-sys-full-at", value.dump.onSysFullAt).setDoc("Dump when system memory become full at x%, xG, xM, xK, x  (empty to disable).");
+	this->add("dump", "on-app-using-rss", value.dump.onAppUsingRss).setDoc("Dump when RSS of the app reach the given limit in %, G, M, K (empty to disable).");
+	this->add("dump", "on-app-using-virt", value.dump.onAppUsingVirt).setDoc("Dump when Virtual Memory of the app reach limit in %, G, M, K (empty to disable).");
+	this->add("dump", "on-app-using-req", value.dump.onAppUsingReq).setDoc("Dump when Requested Memory of the app reach limit in %, G, M, K (empty to disable).");
+	this->add("dump", "on-thread-stack-using", value.dump.onThreadStackUsing).setDoc("Dump when one stack reach limit in %, G, M, K (empty to disable).");
+	this->add("dump", "on-alloc-count", value.dump.onAllocCount).setDoc("Dump when number of allocations reach limit in G, M, K (empty to disable).");
+	this->add("dump", "watch-dog", value.dump.watchDog).setDoc("Run an active thread spying continuouly the memory of the app, not only sometimes.");
+
+	//tools
+	this->add("tools", "nm", value.tools.nm).setDoc("Enable usage of NM to find the source locatoin of the global variables.");
+	this->add("tools", "nm-max-size", value.tools.nmMaxSize).setDoc("Do not call nm on .so larger than 50 MB to limit the profile dump overhead.");
+}
+
+/**********************************************************/
+OptionsMeta::~OptionsMeta(void)
+{
+	for (auto & it : this->meta) {
+		delete it.second;
+		it.second = nullptr;
+	}
+	this->meta.clear();
+}
+
+/**********************************************************/
+void OptionsMeta::dumpConfig(const char * fname) const
+{
+	//create dic
+	assert(fname != NULL);
+	dictionary * dic = dictionary_new(10);
+	
+	//fill
+	for (const auto & it : this->meta)
+		it.second->saveToIni(dic);
+
+	//write
+	FILE * fp = fopen(fname,"w");
+	assumeArg(fp != NULL,"Failed to write dump of config file into %1 : %2 !").arg(fname).argStrErrno().end();
+	iniparser_dump_ini(dic,fp);
+	fclose(fp);
+	
+	//free
+	iniparser_freedict(dic);
+}
+
+/**********************************************************/
+std::ostream & operator<<(std::ostream & out, StackMode mode);
+std::ostream & operator<<(std::ostream & out, PythonMode mode);
+
+/**********************************************************/
+int setByString(int &number, const std::string & value)
+{
+	number = atoi(value.c_str());
+	return number;
+}
+
+/**********************************************************/
+size_t setByString(size_t &number, const std::string & value)
+{
+	sscanf(value.c_str(), "%zu", &number);
+	return number;
+}
+
+/**********************************************************/
+Verbosity setByString(Verbosity & mode, const std::string & value)
+{
+	if (value == "default")
+		mode = MALT_VERBOSITY_DEFAULT;
+	else if (value == "verbose")
+		mode = MALT_VERBOSITY_VERBOSE;
+	else if (value == "silent")
+		mode = MALT_VERBOSITY_SILENT;
+	else
+		MALT_FATAL_ARG("Invalid verbosity mode : '%1'! Supported : default | silent | verbose.").arg(value).end();
+	return mode;
+}
+
+/**********************************************************/
+StackMode setByString(StackMode & mode, const std::string & value)
+{
+	//switches
+	if (value.c_str() == NULL)
+	{
+		mode = STACK_MODE_BACKTRACE;
+	} else if (value == "backtrace" || value == "") {
+		mode = STACK_MODE_BACKTRACE;
+	} else if (value == "libunwind") {
+		mode = STACK_MODE_BACKTRACE;
+	} else if (value == "enter-exit") {
+		mode = STACK_MODE_ENTER_EXIT_FUNC;
+	} else if (value == "none") {
+		mode = STACK_MODE_NONE;
+	} else if (value == "python") {
+		mode = STACK_MODE_PYTHON;
+	} else {
+		MALT_FATAL_ARG("Invalid mode in MALT_STACK environnement variable : '%1'! Supported : backtrace | enter-exit | none.").arg(value).end();
+	}
+	return mode;
+}
+
+/**********************************************************/
+PythonMode setByString(PythonMode & mode, const std::string & value)
+{
+	if (value == "profile")
+		mode = PYTHON_MODE_PROFILE;
+	else if (value == "trace")
+		mode = PYTHON_MODE_TRACE;
+	else
+		MALT_FATAL_ARG("Invalid mode in python mode : '%1'! Supported : profile | trace.").arg(value).end();
+	return mode;
+}
+
+/**********************************************************/
+void OptionsMeta::dumpAsJson(htopml::JsonState & json) const
+{
+	//vars
+	std::set<std::string> done;
+
+	//open
+	json.openStruct();
+
+	//loop on all
+	for (const auto & it : this->meta) {
+		//current group
+		const std::string & group = it.second->getGroup();
+
+		//if not yet done
+		if (done.find(group) == done.end()) {
+			//open
+			json.openFieldStruct(group.c_str());
+
+			//inject all in group
+			for (const auto & it : this->meta) {
+				if (it.second->getGroup() == group)
+					it.second->convertToJson(json);
+			}
+
+			//close
+			json.closeFieldStruct(group.c_str());
+
+			//done
+			done.insert(group);
+		}
+	}
+
+	//close
+	json.closeStruct();
+}
+
+/**********************************************************/
+void OptionsMeta::loadIni(dictionary* iniDic)
+{
+	for (auto & it : this->meta)
+		it.second->loadFromIni(iniDic);
+}
+
+/**********************************************************/
+std::ostream & operator<<(std::ostream & out, StackMode mode)
+{
+	switch(mode)
+	{
+		case STACK_MODE_BACKTRACE:
+			out << "backtrace";
+			break;
+		case STACK_MODE_ENTER_EXIT_FUNC:
+			out << "enter-exit";
+			break;
+		case STACK_MODE_USER:
+			out << "user";
+			break;
+		case STACK_MODE_NONE:
+			out << "none";
+			break;
+		case STACK_MODE_PYTHON:
+			out << "python";
+			break;
+	}
+	return out;
+}
+
+/**********************************************************/
+std::ostream & operator<<(std::ostream & out, PythonMode mode)
+{
+	switch(mode)
+	{
+		case PYTHON_MODE_PROFILE:
+			out << "profile";
+			break;
+		case PYTHON_MODE_TRACE:
+			out << "trace";
+			break;
+	}
+	return out;
+}
+
+/**********************************************************/
+void OptionsMeta::dump(std::ostream & out) const
+{
+	for (const auto & it : this->meta) {
+		out << it.first << "=" << it.second->toString() << std::endl;
+	}
+}
+
+/**********************************************************/
+std::ostream & operator<<(std::ostream & out, const Options & options)
+{
+	OptionsMeta meta(const_cast<Options &>(options));
+	meta.dump(out);
+	return out;
+}
+
+/**********************************************************/
+bool OptionsMeta::isValidGroupKey(const std::string & value) const
+{
+	return this->meta.find(value) != this->meta.end();
+}
+
+/**********************************************************/
+void convertToJson(htopml::JsonState & json,const StackMode & value)
+{
+	std::stringstream buffer;
+	buffer << value;
+	convertToJson(json, buffer.str());
+}
+
+/**********************************************************/
+void convertToJson(htopml::JsonState & json,const PythonMode & value)
+{
+	std::stringstream buffer;
+	buffer << value;
+	convertToJson(json, buffer.str());
+}
+
+/**********************************************************/
+void convertToJson(htopml::JsonState & json,const Verbosity & value)
+{
+	std::stringstream buffer;
+	buffer << value;
+	convertToJson(json, buffer.str());
 }
 
 }

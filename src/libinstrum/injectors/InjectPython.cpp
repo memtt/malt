@@ -102,7 +102,7 @@ void* WrapperPythonObj::realloc(void* ctx, void *ptr, size_t new_size)
 /**********************************************************/
 void initPythonAllocInstrumentation()
 {
-	if (gblOptions->outputVerbosity >= MALT_VERBOSITY_DEFAULT)
+	if (gblOptions->output.verbosity >= MALT_VERBOSITY_DEFAULT)
 		printf("MALT: Instument Python allocator...\n");
 
 	//get all
@@ -110,7 +110,7 @@ void initPythonAllocInstrumentation()
 	MALT::PyMem_GetAllocator(PYMEM_DOMAIN_MEM, &gblPythonMemAlloc);
 	MALT::PyMem_GetAllocator(PYMEM_DOMAIN_OBJ, &gblPythonObjAlloc);
 
-	if (gblOptions->pythonRaw) {
+	if (gblOptions->python.raw) {
 		PyMemAllocatorEx pythonRawAllocMalt;
 		pythonRawAllocMalt.ctx = NULL;
 		pythonRawAllocMalt.malloc = WrapperPythonRaw::malloc;
@@ -120,7 +120,7 @@ void initPythonAllocInstrumentation()
 		MALT::PyMem_SetAllocator(PYMEM_DOMAIN_RAW, &pythonRawAllocMalt);
 	}
 
-	if (gblOptions->pythonMem) {
+	if (gblOptions->python.mem) {
 		PyMemAllocatorEx pythonMemAllocMalt;
 		pythonMemAllocMalt.ctx = NULL;
 		pythonMemAllocMalt.malloc = WrapperPythonMem::malloc;
@@ -130,7 +130,7 @@ void initPythonAllocInstrumentation()
 		MALT::PyMem_SetAllocator(PYMEM_DOMAIN_MEM, &pythonMemAllocMalt);
 	}
 
-	if (gblOptions->pythonObj) {
+	if (gblOptions->python.obj) {
 		PyMemAllocatorEx pythonObjAllocMalt;
 		pythonObjAllocMalt.ctx = NULL;
 		pythonObjAllocMalt.malloc = WrapperPythonObj::malloc;
@@ -178,7 +178,7 @@ void initPythonAllocInstrumentation()
 /**********************************************************/
 void finiPythonAllocInstrumentation(void)
 {
-	if (gblOptions->outputVerbosity >= MALT_VERBOSITY_DEFAULT)
+	if (gblOptions->output.verbosity >= MALT_VERBOSITY_DEFAULT)
 		printf("MALT: Un-instument Python allocator...\n");
 	MALT::PyMem_SetAllocator(PYMEM_DOMAIN_RAW, &gblPythonRawAlloc);
 	MALT::PyMem_SetAllocator(PYMEM_DOMAIN_MEM, &gblPythonRawAlloc);
@@ -188,17 +188,17 @@ void finiPythonAllocInstrumentation(void)
 /**********************************************************/
 void initPythonEnterExitInstrumentation(void)
 {
-	if (gblOptions->outputVerbosity >= MALT_VERBOSITY_DEFAULT)
+	if (gblOptions->output.verbosity >= MALT_VERBOSITY_DEFAULT)
 		printf("MALT: Instument Python profiling...\n");
 	PyGILState_STATE gstate;
 	gstate = MALT::PyGILState_Ensure();
-	if (gblOptions->pythonMode == "profile") {
+	if (gblOptions->python.mode == PYTHON_MODE_PROFILE) {
 		MALT::PyEval_SetProfileAllThreads(malt_wrap_python_on_enter_exit, NULL);
-	} else if (gblOptions->pythonMode == "trace") {
+	} else if (gblOptions->python.mode == PYTHON_MODE_TRACE) {
 		MALT::PyEval_SetProfileAllThreads(malt_wrap_python_on_enter_exit, NULL);
 		MALT::PyEval_SetTraceAllThreads(malt_wrap_python_on_enter_exit, NULL);
 	} else {
-		MALT_FATAL_ARG("Invalid value for option python:mode=%1").arg(gblOptions->pythonMode).end();
+		MALT_FATAL_ARG("Invalid value for option python:mode=%1").arg(gblOptions->python.mode).end();
 	}
 	MALT::PyGILState_Release(gstate);
 }
@@ -208,7 +208,7 @@ void pythonOnExit(void)
 {
 	gblState.profiler->getPythonSymbolTracker().setPythonActivity(false);
 	finiPythonAllocInstrumentation();
-	if (gblOptions->outputVerbosity >= MALT_VERBOSITY_VERBOSE)
+	if (gblOptions->output.verbosity >= MALT_VERBOSITY_VERBOSE)
 		printf("MALT: Python exit...\n");
 }
 
@@ -221,7 +221,7 @@ void initPythonInstrumentation(const char * script)
 
 	//init python
 	initPythonAllocInstrumentation();
-	if (gblOptions->pythonStackEnum == STACK_MODE_ENTER_EXIT_FUNC)
+	if (gblOptions->python.stack == STACK_MODE_ENTER_EXIT_FUNC)
 		initPythonEnterExitInstrumentation();
 
 	assert(gblState.profiler != nullptr);

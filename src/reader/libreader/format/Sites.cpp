@@ -58,9 +58,9 @@ void from_json(const JsonIn & json, ProcMapEntry & value)
 	ssize_t statusLower = sscanf(lower.c_str(), "%p", &value.lower);
 	ssize_t statusUpper = sscanf(upper.c_str(), "%p", &value.upper);
 	ssize_t statusOffset = sscanf(offset.c_str(), "0x%zx", &value.offset);
-	assert(statusLower == 1);
-	assert(statusUpper == 1);
-	assert(statusOffset == 1);
+	if (statusLower != 1) assert(false);
+	if (statusUpper != 1) assert(false);
+	if (statusOffset != 1) assert(false);
 }
 
 /**********************************************************/

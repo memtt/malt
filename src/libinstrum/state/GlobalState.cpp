@@ -51,27 +51,8 @@ static StackMode getStackMode(Options & options)
 	StackMode ret = MALT::STACK_MODE_BACKTRACE;
 	
 	//if not env use config file
-	if (mode == NULL)
-		mode = options.stackMode.c_str();
-
-	//switches
-	if (mode == NULL)
-	{
-		ret = STACK_MODE_BACKTRACE;
-	} else if (strcmp(mode,"backtrace") == 0 || strcmp(mode,"") == 0) {
-		ret = STACK_MODE_BACKTRACE;
-	} else if (strcmp(mode,"libunwind") == 0 || strcmp(mode,"") == 0) {
-		ret = STACK_MODE_BACKTRACE;
-		options.stackLibunwind = true;
-	} else if (strcmp(mode,"enter-exit") == 0) {
-		ret = STACK_MODE_ENTER_EXIT_FUNC;
-	} else if (strcmp(mode,"none") == 0) {
-		ret = STACK_MODE_NONE;
-	} else if (strcmp(mode,"python") == 0) {
-		ret = STACK_MODE_PYTHON;
-	} else {
-		MALT_FATAL_ARG("Invalid mode in MALT_STACK environnement variable : '%1'! Supported : backtrace | enter-exit | none.").arg(mode).end();
-	}
+	if (mode != NULL)
+		setByString(options.stack.mode, mode);
 	
 	//ok done
 	return ret;
@@ -138,7 +119,7 @@ void maltRegisterPthreadAtFork(void)
 void maltSetupSigHandler(const Options & options)
 {
 	//get list
-	std::istringstream split(options.dumpOnSignal);
+	std::istringstream split(options.dump.onSignal);
 	std::vector<std::string> tokens;
 	for (std::string each; std::getline(split, each, ','); tokens.push_back(each));
 
@@ -146,7 +127,7 @@ void maltSetupSigHandler(const Options & options)
 	for (std::vector<std::string>::const_iterator it = tokens.begin() ; it != tokens.end() ; ++it)
 	{
 		//debug
-		if (gblOptions->outputVerbosity != MALT_VERBOSITY_SILENT)
+		if (gblOptions->output.verbosity != MALT_VERBOSITY_SILENT)
 			fprintf(stderr, "MALT: will dump on signal %s (caution, can do only one dump, bugfix in dev !)\n", it->c_str());
 		
 		//setup
@@ -201,7 +182,7 @@ void * maltDumpAfterSecondsThreadMain(void * arg)
 void maltDumpAfterSecondsThread(const Options & options)
 {
 	//extract
-	size_t secs = options.dumpAfterSeconds;
+	size_t secs = options.dump.afterSeconds;
 
 	//check
 	if (secs == 0)
@@ -285,7 +266,7 @@ void AllocWrapperGlobal::init(void )
 		//adapt stack skip mode (to adapt malt to compiler inlinling)
 		BacktraceStack testStack;
 		int stackDelta = testStack.getBactraceSkipOptimDelta();
-		gblState.options->stackSkip += stackDelta;
+		gblState.options->stack.skip += stackDelta;
 		
 		//extract stack mode and update options for libunwind if required
 		StackMode mode = getStackMode(*gblState.options);
@@ -296,19 +277,19 @@ void AllocWrapperGlobal::init(void )
 		gblState.profiler->setRealMallocAddr(gblState.allocFuncs.malloc);
 
 		//filter exe
-		if ((gblState.options->exe.empty() == false && OS::getExeName() != gblState.options->exe) || OS::getExeName() == "addr2line")
+		if ((gblState.options->filter.exe.empty() == false && OS::getExeName() != gblState.options->filter.exe) || OS::getExeName() == "addr2line")
 		{
-			if (gblOptions->outputVerbosity >= MALT_VERBOSITY_DEFAULT)
-				fprintf(stderr,"MALT: skip %s != %s\n",OS::getExeName().c_str(),gblState.options->exe.c_str());
+			if (gblOptions->output.verbosity >= MALT_VERBOSITY_DEFAULT)
+				fprintf(stderr,"MALT: skip %s != %s\n",OS::getExeName().c_str(),gblState.options->filter.exe.c_str());
 			skip = true;
 		}
 		
 		//print info
-		if (gblOptions->outputVerbosity >= MALT_VERBOSITY_DEFAULT && !skip)
+		if (gblOptions->output.verbosity >= MALT_VERBOSITY_DEFAULT && !skip)
 			fprintf(stderr,"MALT: Start memory instrumentation of %s - %d by library override.\n",OS::getExeName().c_str(),OS::getPID());
 		
 		//disable childs
-		if (gblOptions->childs == false)
+		if (gblOptions->filter.childs == false)
 			unsetenv("LD_PRELOAD");
 
 		//register on exit
@@ -387,7 +368,7 @@ void ThreadLocalState::init(void)
 	this->profiler = gblState.profiler->createLocalStackProfiler();
 	
 	//mark ready
-	if (gblOptions->enabled)
+	if (gblOptions->filter.enabled)
 		this->status = ALLOC_WRAP_READY;
 	else
 		this->status = ALLOC_WRAP_DISABLED;
@@ -421,15 +402,15 @@ void initMpiRankFilter(void)
 	static bool gblMpiRankCheckDone = false;
 	if (gblMpiRankCheckDone == false && Helpers::fileIdIsRank()) {
 		//no filter
-		if (gblState.options->filterRanks.empty()) {
+		if (gblState.options->filter.ranks.empty()) {
 			gblMpiRankCheckDone = true;
 		} else if (Helpers::getFileId() != static_cast<int>(OS::getPID())) {
 			//split & convert to numbers
-			IntSet whiteList = Helpers::rankStrToIntSet(gblState.options->filterRanks);
+			IntSet whiteList = Helpers::rankStrToIntSet(gblState.options->filter.ranks);
 
 			//filter rank
 			if (whiteList.find(Helpers::getFileId()) != whiteList.end())
-				fprintf(stderr,"MALT: instrument only MPI rank %d being in : %s\n",Helpers::getFileId(), gblState.options->filterRanks.c_str());
+				fprintf(stderr,"MALT: instrument only MPI rank %d being in : %s\n",Helpers::getFileId(), gblState.options->filter.ranks.c_str());
 			else
 				gblState.status = ALLOC_WRAP_FINISH;
 			

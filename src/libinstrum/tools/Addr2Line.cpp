@@ -11,6 +11,7 @@
 #include <cassert>
 #include <sstream>
 #include <fstream>
+#include <unistd.h>
 #include <common/Debug.hpp>
 #include <common/Options.hpp>
 #include <portability/OS.hpp>
@@ -34,7 +35,7 @@ Addr2Line::Addr2Line(StringIdDictionnary & dict, const std::string & elfFile, si
 	this->bucketSize = bucketSize;
 
 	//check if huge (> 50 MB)
-	if (OS::getFileSize(elfFile) > gblOptions->stackAddr2lineHuge) {
+	if (OS::getFileSize(elfFile) > gblOptions->addr2line.huge) {
 		this->isHugeElfFile = true;
 		this->bucketSize = SIZE_MAX;
 	}
@@ -89,7 +90,7 @@ bool Addr2Line::run(void)
 		fd = mkstemp(templ);
 		char * buffer = (char*)MALT_MALLOC(4096);
 		char * path = (char*)MALT_MALLOC(4096);
-		snprintf(path, sizeof(path), "/proc/self/fd/%d", fd);
+		snprintf(path, 4096, "/proc/self/fd/%d", fd);
 		ssize_t status = readlink(path, buffer, sizeof(buffer));
 		assumeArg(status > 0, "Fail to get symlink translation : %1").arg(path).end();
 		fileBuffer = buffer;
@@ -103,7 +104,7 @@ bool Addr2Line::run(void)
 	assert(command.size() < 4096);
 
 	//debug
-	if (gblOptions != NULL && gblOptions->outputVerbosity >= MALT_VERBOSITY_VERBOSE)
+	if (gblOptions != NULL && gblOptions->output.verbosity >= MALT_VERBOSITY_VERBOSE)
 		fprintf(stderr, "MALT: %s\n",command.c_str());
 
 	//run it
@@ -117,7 +118,7 @@ bool Addr2Line::run(void)
 	//parse output
 	for (auto & task : tasks) {
 		const bool status = this->loadEntry(*task.callSite, fp);
-		assert(status);
+		if (status == false) assert(false);
 	}
 
 	//close
@@ -170,7 +171,7 @@ std::string Addr2Line::buildCommandLine(const std::string & fileBuffer) const
 	}
 
 	//silent
-	if (gblOptions != NULL && gblOptions->outputVerbosity <= MALT_VERBOSITY_DEFAULT)
+	if (gblOptions != NULL && gblOptions->output.verbosity <= MALT_VERBOSITY_DEFAULT)
 		command << " 2>/dev/null";
 
 	//ok

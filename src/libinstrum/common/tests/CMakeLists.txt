@@ -31,6 +31,7 @@ set(TEST_NAMES TestArray
                TestParallelWorker
                TestRangePtr
                TestStringIdDictionnary
+               TestOptionsMeta
    )
 
 ############################################################

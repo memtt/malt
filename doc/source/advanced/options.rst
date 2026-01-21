@@ -53,11 +53,16 @@ Example of config file :
     resolve=true           ; Automatically resolve symbols with addr2line at exit.
     libunwind=false        ; Enable of disable usage of libunwind to backtrace.
     skip=4                 ; Number of stack frame to skip in order to cut at malloc level
-    sampling=false         ; Sample and instrument only some stack.
-    samplingBw=4093        ; Instrument the stack when seen passed 4K-3 bytes of alloc requests.
-    addr2lineBucket=350    ; Handle the addr2line calls by buckets and treat each bucket in parallel.
-    addr2lineThreads=8     ; Number of threasd to use to call addr2line in parallel.
-    stackAddr2lineHuge=52428800; For larger elf files, do not treat them in parallel nor buckets.
+
+    [sampling]
+    enabled=false          ; Sample and instrument only some stack.
+    bandwidth=4093         ; Instrument the stack when seen passed 4K-3 bytes of alloc requests (ideally should be prime number).
+    count=571              ; Instrument the stack when seen passed 4K-3 bytes of alloc requests (ideally should be prime number).
+
+    [addr2line]
+    bucket=350             ; Handle the addr2line calls by buckets and treat each bucket in parallel.
+    threads=8              ; Number of threasd to use to call addr2line in parallel.
+    huge=52428800          ; For larger elf files, do not treat them in parallel nor buckets.
 
     [output]
     name=malt-%1-%2.%3     ; base name for output, %1 = exe, %2 = PID, %3 = extension
@@ -69,6 +74,8 @@ Example of config file :
     verbosity=default      ; malt verbosity level (silent, default, verbose)
     stack-tree=false       ; store the call tree as a tree (smaller file, but need conversion)
     loop-suppress=false    ; Simplify recursive loop calls to get smaller profile file if too big
+    verbosity=default      ; Malt verbosity level (silent, default, verbose).
+	stack-tree=false       ; Store the call tree as a tree (smaller file, but need conversion in the reader);
 
     [max-stack]
     enabled=true           ; enable of disable strack size tracking (require -finstrument-functions)
@@ -102,13 +109,15 @@ Example of config file :
     watch-dog=false        ; Run an active thread spying continuouly the memory of the app, not only sometimes.
 
     [python]
-    instru=true            ; Enable of disable python instrumentation.
+    enabled=true           ; Enable of disable python instrumentation.
     stack=enter-exit       ; Select the Python stack instrumentation mode (backtrace, enter-exit, none).
     mix=false              ; Mix C stack with the python ones to get a uniq tree instread of two distincts
                            ; (not this adds overhead).
     obj=true               ; Instrument of not the OBJECT allocator domain of python.
     mem=true               ; Instrument of not the MEM allocator domain of python.
     raw=true               ; Instrument of not the RAW allocator domain of python.
+    hide-imports=true      ; Hide the stack of memory allocations done by imports.
+	mode=profile           ; Define the python instrumentation mode which define how to get the line number ('profile' or 'trace').
 
     [c]
     malloc=true            ; Track C malloc.
@@ -116,7 +125,7 @@ Example of config file :
 
     [tools]
     nm=true                ; Enable usage of NM to find the source locatoin of the global variables.
-    nmMaxSize=50M          ; Do not call nm on .so larger than 50 MB to limit the profile dump overhead.
+    nm-max-size=50M        ; Do not call nm on .so larger than 50 MB to limit the profile dump overhead.
 
 Section `time`
 --------------
@@ -146,8 +155,8 @@ Define the number of points used to discretized the execution time of the applic
 
     malt -o time:points=512 ./my_program
 
-Option `time:linear_index`
-^^^^^^^^^^^^^^^^^^^^^^^^^^
+Option `time:linear`
+^^^^^^^^^^^^^^^^^^^^
 
 Do not use time to index data but a linear value increased on each call (might be interesting
 not to shrink intensive allocation steps on a long program which mostly not do allocation over the run.
@@ -156,8 +165,8 @@ not to shrink intensive allocation steps on a long program which mostly not do a
 
 .. code-block:: shell
 
-    malt -o time:linear_index=true ./my_program
-    malt -o time:linear_index=false ./my_program
+    malt -o time:linear=true ./my_program
+    malt -o time:linear=false ./my_program
 
 Section `stack`
 ---------------
@@ -239,61 +248,61 @@ or maybe disable LTO optimizations or consider not having the exact location of 
 
     malt -o stack:skip=4 ./my_program
 
-Option `stack:sampling`
-^^^^^^^^^^^^^^^^^^^^^^^
+Option `sampling:enabled`
+^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Enable sampling mode for the stacks by captuing only for a few mallocs. It is less accurate than a full
 profile but cost less in memory and CPU. In sampling mode, the stack is processed only when we seen passed
 a few bytes allocated, otherwise we consider the last seen call stack. With python you should also
 enable the backtrace mode for solving stacks via `python:stack=backtrace`.
 
-It will use the options `stack:samplingBw` and `stack:samplingCnt` to know at which rate to sample.
+It will use the options `sampling:volume` and `sampling:count` to know at which rate to sample.
 
 **Default**: false.
 
 .. code-block:: shell
 
-    malt -o stack:sampling=true ./my_program
-    malt -o stack:sampling=false ./my_program
+    malt -o sampling:enabled=true ./my_program
+    malt -o sampling:enabled=false ./my_program
 
-Option `stack:samplingBw`
-^^^^^^^^^^^^^^^^^^^^^^^^^
+Option `sampling:volume`
+^^^^^^^^^^^^^^^^^^^^^^^^
 
 Define the amount of data seen passed between two samples. Idealy this should be a prime number to avoid
 some multiple base biases..
 
-It is completed by also sampling on count with `stack:samplingCnt`.
+It is completed by also sampling on count with `sampling:count`.
 
 **Default**: 4093.
 
 .. code-block:: shell
 
-    malt -o stack:samplingBw=4093 ./my_program
-    malt -o stack:samplingBw=5242883 ./my_program
-    malt -o stack:samplingBw=10485767 ./my_program
-    malt -o stack:samplingBw=20971529 ./my_program
+    malt -o sampling:volume=4093 ./my_program
+    malt -o sampling:volume=5242883 ./my_program
+    malt -o sampling:volume=10485767 ./my_program
+    malt -o sampling:volume=20971529 ./my_program
 
-Option `stack:samplingCnt`
-^^^^^^^^^^^^^^^^^^^^^^^^^^
+Option `sampling:count`
+^^^^^^^^^^^^^^^^^^^^^^^
 
 Define the number of operations passing between two sampling. Idealy this should be a prime number to avoid
 some multiple base biases..
 
-It is completed by also sampling on count with `stack:samplingBw`.
+It is completed by also sampling on count with `sampling:volume`.
 
 **Default**: 571.
 
 .. code-block:: shell
 
-    malt -o stack:samplingCnt=13 ./my_program
-    malt -o stack:samplingCnt=31 ./my_program
-    malt -o stack:samplingCnt=67 ./my_program
-    malt -o stack:samplingCnt=67 ./my_program
-    malt -o stack:samplingCnt=257 ./my_program
-    malt -o stack:samplingCnt=571 ./my_program
+    malt -o sampling:count=13 ./my_program
+    malt -o sampling:count=31 ./my_program
+    malt -o sampling:count=67 ./my_program
+    malt -o sampling:count=67 ./my_program
+    malt -o sampling:count=257 ./my_program
+    malt -o sampling:count=571 ./my_program
 
-Option `stack:addr2lineBucket`
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Option `addr2line:bucket`
+^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Define the number of addresses to place in the bucket to resolve while calling `addr2line`.
 Each bucket is executed in parallel so it goes faster. Except for the **huge** ELF files which
@@ -304,10 +313,10 @@ loading the large file many times.
 
 .. code-block:: shell
 
-    malt -o stack:addr2lineBucket=350 ./my_program
+    malt -o addr2line:bucket=350 ./my_program
 
-Option `stack:addr2lineThreads`
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Option `addr2line:threads`
+^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Define the number of threads to use to make multiple calls to `addr2line` in parallel.
 
@@ -315,10 +324,10 @@ Define the number of threads to use to make multiple calls to `addr2line` in par
 
 .. code-block:: shell
 
-    malt -o stack:addr2lineThreads=8 ./my_program
+    malt -o addr2line:threads=8 ./my_program
 
-Option `stack:stackAddr2lineHuge`
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Option `addr2line:huge`
+^^^^^^^^^^^^^^^^^^^^^^^
 
 Define the threashold for bucket splitting. For files larger than this limit, consider them
 as huge and not using nor buckets, not parallelism not to trash the memory of the node with
@@ -328,7 +337,7 @@ too many large memory usage processes (especially in MPI).
 
 .. code-block:: shell
 
-    malt -o stack:addr2lineHuge=52428800 ./my_program
+    malt -o addr2line:huge=52428800 ./my_program
 
 Section `output`
 ----------------
@@ -363,6 +372,19 @@ Option `output:config`
 ^^^^^^^^^^^^^^^^^^^^^^
 
 Dump the config INI file.
+
+Option `output:verbosity`
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Malt verbosity level (`silent`, `default`, `verbose`).
+
+Option `output:stack-tree`
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Store the call tree as a tree (smaller file, but need conversion in
+the reader).
+
+**Note**: This is not yet supported by the new webview in written in C++ since **1.4.0**.
 
 Option `verbosity`
 ^^^^^^^^^^^^^^^^^^
@@ -507,6 +529,11 @@ Option `dump:on-thread-stack-using`
 Will dump if one of the thread stack reach the given limit. The value is given in % of the global memory
 available or in K, M, G. Empty to disable (default).
 
+Option `dump:on-alloc-count`
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Dump when number of allocations reach limit in G, M, K (empty to disable).
+
 Option `dump:watch-dog`
 ^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -520,7 +547,7 @@ Section `python`
 The `python` section permit to configure how to instrument python. Notice that you need to build MALT with
 `--enable-python` so it is effective.
 
-Option `python:instru`
+Option `python:enabled`
 ^^^^^^^^^^^^^^^^^^^^^^
 
 Enable of disable the python instrumentation.
@@ -556,6 +583,28 @@ Option `python:raw`
 
 Same but for the raw allocation domain of python which is backed by the standard C malloc function. In principle you should let it enabled.
 
+Option `python:hide-imports`
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Hide the stack of memory allocations done by imports. It resude the noice in
+analysis, the overhead and the size of the profile file.
+
+If you need to look at the details of imports, you should set it to false.
+
+If enabled, you will see in the call stack the entry `MALT_PYTHON_HIDEN_IMPORTS`.
+
+Option `python:mode`
+^^^^^^^^^^^^^^^^^^^^
+
+Define the python instrumentation mode which define how to get the line number.
+
+The value can be :
+
+- **profile** for using the profiling mode, which means we need extra calls
+  on every malloc to get the line number.
+- **trace** for using the python tracing mode so we get the line number directly.
+  This second mode is currently experimental.
+
 Section `c`
 -----------
 
@@ -579,8 +628,8 @@ Option `tools:nm`
 
 Use to extract the source location of the global variables. If true (default) it is used, otherwise it is skiped.
 
-Option `tools:nmMaxSize`
-^^^^^^^^^^^^^^^^^^^^^^^^
+Option `tools:nm-max-size`
+^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 By default it limits the size of the .so files on which to apply NM in order to keep a decent profile dumping
 time when running on large frameworks like PyTorch which tends to load huge .so files in memory.

@@ -99,9 +99,9 @@ AllocStackProfiler::AllocStackProfiler(const Options & options,StackMode mode,bo
 	trefTicks = Clock::getticks();
 	
 	//open trace file
-	if (options.traceEnabled)
+	if (options.trace.enabled)
 	{
-		this->traceFilename = FormattedMessage(options.outputName).arg(this->getFileExeScriptName()).arg(Helpers::getFileId()).arg("trace").toString();
+		this->traceFilename = FormattedMessage(options.output.name).arg(this->getFileExeScriptName()).arg(Helpers::getFileId()).arg("trace").toString();
 		tracer.open(this->traceFilename);
 	}
 
@@ -117,7 +117,7 @@ AllocStackProfiler::AllocStackProfiler(const Options & options,StackMode mode,bo
 	this->curReq = 0;
 	
 	//if request stack tree for more compressed output prepare it
-	if (options.outputStackTree)
+	if (options.output.stackTree)
 		this->stackTree = new MALTV2::RLockFreeTree(false);
 }
 
@@ -132,7 +132,7 @@ void AllocStackProfiler::onMalloc(AllocTracerEvent & traceEntry, void* ptr, size
 {
 	MMCallStackNode node;
 	onAllocEvent(ptr,size,userStack, &node, true, domain);
-	if (this->options.traceEnabled) {
+	if (this->options.trace.enabled) {
 		traceEntry.callStack = node.stack;
 		this->tracer.pushEvent(traceEntry);
 	}
@@ -143,7 +143,7 @@ void AllocStackProfiler::onCalloc(AllocTracerEvent & traceEntry, void* ptr, size
 {
 	MMCallStackNode node;
 	onAllocEvent(ptr,size * nmemb,userStack, &node, true, domain);
-	if (this->options.traceEnabled) {
+	if (this->options.trace.enabled) {
 		traceEntry.callStack = node.stack;
 		this->tracer.pushEvent(traceEntry);
 	}
@@ -155,7 +155,7 @@ void AllocStackProfiler::onFree(AllocTracerEvent & traceEntry, void* ptr,Stack *
 	if (ptr != NULL) {
 		MMCallStackNode node;
 		FreeFinalInfos infos = onFreeEvent(ptr,userStack, &node, true, domain);
-		if (this->options.traceEnabled && ptr != nullptr) {
+		if (this->options.trace.enabled && ptr != nullptr) {
 			traceEntry.callStack = node.stack;
 			traceEntry.size = infos.size;
 			traceEntry.extra.free.lifetime = infos.lifetime;
@@ -219,7 +219,7 @@ size_t AllocStackProfiler::onRealloc(AllocTracerEvent & traceEntry, void* oldPtr
 			freeTraceEntry.extra.free.allocStack = freeInfos.allocStack;
 
 			//dump
-			if (options.traceEnabled)
+			if (options.trace.enabled)
 				this->tracer.pushEvent(freeTraceEntry);
 		} else {
 			traceEntry.extra.realloc.oldSize = 0;
@@ -243,7 +243,7 @@ size_t AllocStackProfiler::onRealloc(AllocTracerEvent & traceEntry, void* oldPtr
 		}
 		
 		//register size jump
-		if (options.distrReallocJump)
+		if (options.distr.reallocJump)
 		{
 			ReallocJump jump = {oldSize,newSize};
 			ReallocJumpMap::iterator it = reallocJumpMap.find(jump);
@@ -255,7 +255,7 @@ size_t AllocStackProfiler::onRealloc(AllocTracerEvent & traceEntry, void* oldPtr
 	MALT_END_CRITICAL
 
 	//dump
-	if (options.traceEnabled)
+	if (options.trace.enabled)
 		this->tracer.pushEvent(traceEntry);
 	
 	return oldSize;
@@ -297,7 +297,7 @@ void AllocStackProfiler::onAllocEvent(void* ptr, size_t size,Stack* userStack,MM
 			this->domains.updatePeak(domain);
 	
 		//update mem usage
-		if (options.timeProfileEnabled)
+		if (options.time.enabled)
 		{
 			CODE_TIMING("timeProfileAllocStart",
 				curMemoryTimeline.segments++;
@@ -319,7 +319,7 @@ void AllocStackProfiler::onAllocEvent(void* ptr, size_t size,Stack* userStack,MM
 			);
 		}
 	
-		if (options.stackProfileEnabled)
+		if (options.stack.enabled)
 		{
 			//search if not provided
 			if (!callStackNode->valid())
@@ -342,7 +342,7 @@ void AllocStackProfiler::onAllocEvent(void* ptr, size_t size,Stack* userStack,MM
 		}
 		
 		//update size map
-		if (options.distrAllocSize)
+		if (options.distr.allocSize)
 		{
 			CODE_TIMING("sizeDistr",
 				AllocSizeDistrMap::iterator it = sizeMap.find(size);
@@ -354,7 +354,7 @@ void AllocStackProfiler::onAllocEvent(void* ptr, size_t size,Stack* userStack,MM
 		}
 	
 		//update intern mem usage
-		if (options.timeProfileEnabled)
+		if (options.time.enabled)
 		{
 			curMemoryTimeline.internalMem = gblInternaAlloc->getInuseMemory() + this->maltJeMallocMem;
 			memoryTimeline.push(t,curMemoryTimeline,(void*)callStackNode->stack);
@@ -395,7 +395,7 @@ void AllocStackProfiler::onUpdateMem(const OSProcMemUsage & procMem, const OSMem
 			}
 		}
 		//update intern mem usage
-		if (options.timeProfileEnabled)
+		if (options.time.enabled)
 		{
 			curMemoryTimeline.internalMem = gblInternaAlloc->getInuseMemory() + this->maltJeMallocMem;
 			memoryTimeline.push(t,curMemoryTimeline,nullptr);
@@ -423,7 +423,7 @@ FreeFinalInfos AllocStackProfiler::onFreeEvent(void* ptr, MALT::Stack* userStack
 
 		//search segment info to link with previous history
 		SegmentInfo * segInfo = NULL;
-		if (options.timeProfileEnabled || options.stackProfileEnabled) {
+		if (options.time.enabled || options.stack.enabled) {
 			if (domain == DOMAIN_MMAP) {
 				CODE_TIMING("segTracerGet",segInfo = mmapSegTracker.get(ptr));
 			} else {
@@ -455,7 +455,7 @@ FreeFinalInfos AllocStackProfiler::onFreeEvent(void* ptr, MALT::Stack* userStack
 		//peak tracking
 		peakTracking(-size);
 		
-		if (options.stackProfileEnabled)
+		if (options.stack.enabled)
 		{
 			//chart
 			lifetimeOverSize.push(size,lifetime);
@@ -483,7 +483,7 @@ FreeFinalInfos AllocStackProfiler::onFreeEvent(void* ptr, MALT::Stack* userStack
 		}
 		
 		//update timeline
-		if (options.timeProfileEnabled)
+		if (options.time.enabled)
 		{
 			//progr internal memory
 			if (memoryTimeline.isNewPoint(t) || size > 1024UL*1024UL)
@@ -541,7 +541,7 @@ void AllocStackProfiler::onMmap (AllocTracerEvent & traceEntry, void* ptr, size_
 	this->onAllocEvent(ptr,delta,userStack, callStackNode, true, DOMAIN_MMAP);
 
 	//trace
-	if (this->options.traceEnabled) {
+	if (this->options.trace.enabled) {
 		if (callStackNode == nullptr)
 			traceEntry.callStack = nullptr;
 		else
@@ -610,7 +610,7 @@ void AllocStackProfiler::onMunmap (AllocTracerEvent & traceEntry, void* ptr, siz
 	this->applyVmaPatches(userStack, callStackNode, vmaPatches);
 
 	//trace
-	if (this->options.traceEnabled) {
+	if (this->options.trace.enabled) {
 		if (callStackNode == nullptr)
 			traceEntry.callStack = nullptr;
 		else
@@ -632,7 +632,7 @@ void AllocStackProfiler::onMremap(AllocTracerEvent & traceEntry, void * ptr,size
 	this->onMmap(nop, new_ptr, new_size, userStack, &callStackNode);
 
 	//register size jump
-	if (options.distrReallocJump)
+	if (options.distr.reallocJump)
 	{
 		ReallocJump jump = {size,new_size};
 		ReallocJumpMap::iterator it = reallocJumpMap.find(jump);
@@ -643,7 +643,7 @@ void AllocStackProfiler::onMremap(AllocTracerEvent & traceEntry, void * ptr,size
 	}
 
 	//trace
-	if (this->options.traceEnabled) {
+	if (this->options.trace.enabled) {
 		traceEntry.callStack = callStackNode.stack;
 		this->tracer.pushEvent(traceEntry);
 	}
@@ -718,7 +718,7 @@ void AllocStackProfiler::loadGlobalVariables(void)
 	ProcPageMapReader pageMap;
 
 	//get max size
-	size_t nmMaxFileSize = Helpers::valueFromKiloMegaGiga(gblOptions->toolsNmMaxSize);
+	size_t nmMaxFileSize = Helpers::valueFromKiloMegaGiga(gblOptions->tools.nmMaxSize);
 	
 	//loop on files and load vars
 	for (LinuxProcMapReader::const_iterator it = map.begin() ; it != map.end() ; ++it)
@@ -757,13 +757,13 @@ void AllocStackProfiler::loadGlobalVariables(void)
 			size_t fsize = OS::getFileSize(it->file);
 
 			//search sources
-			if (gblOptions->toolsNm) {
+			if (gblOptions->tools.nm) {
 				if (nmMaxFileSize == 0 || fsize <= nmMaxFileSize) {
 					NMCmdReader reader;
 					CODE_TIMING("nm",reader.load(it->file));
 					reader.findSourcesAndDemangle(globalVariables[it->file]);
 				} else if (fsize > nmMaxFileSize) {
-					fprintf(stderr, "MALT: Skipping global var location analysis for '%s', file is too large (tools:nm-max-size=%s)\n", it->file.c_str(), gblOptions->toolsNmMaxSize.c_str());
+					fprintf(stderr, "MALT: Skipping global var location analysis for '%s', file is too large (tools:nm-max-size=%s)\n", it->file.c_str(), gblOptions->tools.nmMaxSize.c_str());
 				}
 			}
 		}
@@ -872,7 +872,7 @@ void AllocStackProfiler::onExit(void )
 			this->symbolResolver.loadProcMap();
 			this->solvePerThreadSymbols();
 			this->stackTracker.solveSymbols(symbolResolver);
-			if (options.stackResolve) {
+			if (options.stack.resolve) {
 				this->skipThreadRegister = true;
 				this->symbolResolver.solveNames();
 				this->skipThreadRegister = false;
@@ -902,12 +902,12 @@ void AllocStackProfiler::onExit(void )
 		memoryBandwidth.flush();
 		
 		//sumpress
-		if (gblOptions->pythonHideImports) {
+		if (gblOptions->python.hideImports) {
 			CODE_TIMING("importSuppress", this->pythonImportSuppress());
 		}
 
 		//if enable loop suppression
-		if (this->options.outputLoopSuppress) {
+		if (this->options.output.loopSuppress) {
 			CODE_TIMING("loopSuppress", this->loopSuppress());
 		}
 		
@@ -924,31 +924,31 @@ void AllocStackProfiler::onExit(void )
 		std::ofstream out;
 		
 		//config
-		if (options.outputDumpConfig)
+		if (options.output.config)
 		{
-			options.dumpConfig(FormattedMessage(options.outputName).arg(this->getFileExeScriptName()).arg(Helpers::getFileId()).arg("ini").toString().c_str());
+			options.dumpConfig(FormattedMessage(options.output.name).arg(this->getFileExeScriptName()).arg(Helpers::getFileId()).arg("ini").toString().c_str());
 		}
 		
 		//lua
-		if (options.outputLua)
+		if (options.output.lua)
 		{
-			out.open(FormattedMessage(options.outputName).arg(this->getFileExeScriptName()).arg(Helpers::getFileId()).arg("lua").toString().c_str());
-			CODE_TIMING("outputLua",htopml::convertToLua(out,*this,options.outputIndent));
+			out.open(FormattedMessage(options.output.name).arg(this->getFileExeScriptName()).arg(Helpers::getFileId()).arg("lua").toString().c_str());
+			CODE_TIMING("output.lua",htopml::convertToLua(out,*this,options.output.indent));
 			out.close();
 		}
 
 		//json
-		if (options.outputJson)
+		if (options.output.json)
 		{
-			out.open(FormattedMessage(options.outputName).arg(this->getFileExeScriptName()).arg(Helpers::getFileId()).arg("json").toString().c_str());
-			CODE_TIMING("outputJson",htopml::convertToJson(out,*this,options.outputIndent));
+			out.open(FormattedMessage(options.output.name).arg(this->getFileExeScriptName()).arg(Helpers::getFileId()).arg("json").toString().c_str());
+			CODE_TIMING("output.json",htopml::convertToJson(out,*this,options.output.indent));
 			out.close();
 		}
 
 		//valgrind out
-		if (options.outputCallgrind)
+		if (options.output.callgrind)
 		{
-			if (options.outputVerbosity >= MALT_VERBOSITY_DEFAULT)
+			if (options.output.verbosity >= MALT_VERBOSITY_DEFAULT)
 				fprintf(stderr,"MALT: Prepare valgrind output...\n");
 			ValgrindOutput vout;
 			
@@ -956,22 +956,22 @@ void AllocStackProfiler::onExit(void )
 				vout.pushStackInfo(*(itMap->first.stack),itMap->second,symbolResolver);
 			
 			//stackTracer.fillValgrindOut(vout,symbolResolver);
-			CODE_TIMING("outputCallgrind",vout.writeAsCallgrind(FormattedMessage(options.outputName).arg(this->getFileExeScriptName()).arg(Helpers::getFileId()).arg("callgrind").toString(),symbolResolver));
+			CODE_TIMING("output.callgrind",vout.writeAsCallgrind(FormattedMessage(options.output.name).arg(this->getFileExeScriptName()).arg(Helpers::getFileId()).arg("callgrind").toString(),symbolResolver));
 		}
 
 		//trace rename
-		if (options.traceEnabled) {
-			std::string traceName = FormattedMessage(options.outputName).arg(this->getFileExeScriptName()).arg(Helpers::getFileId()).arg("trace").toString();
+		if (options.trace.enabled) {
+			std::string traceName = FormattedMessage(options.output.name).arg(this->getFileExeScriptName()).arg(Helpers::getFileId()).arg("trace").toString();
 			this->tracer.rename(traceName);
 			this->traceFilename = traceName;
-			if (options.outputVerbosity >= MALT_VERBOSITY_DEFAULT) {
+			if (options.output.verbosity >= MALT_VERBOSITY_DEFAULT) {
 				fprintf(stderr,"MALT: trace dump done : %s ...\n", traceName.c_str());
 			}
 		}
 
 		//To know it has been done
-		if (options.outputVerbosity >= MALT_VERBOSITY_DEFAULT) {
-			fprintf(stderr,"MALT: profile dump done : %s ...\n", FormattedMessage(options.outputName).arg(this->getFileExeScriptName()).arg(Helpers::getFileId()).arg("json").toString().c_str());
+		if (options.output.verbosity >= MALT_VERBOSITY_DEFAULT) {
+			fprintf(stderr,"MALT: profile dump done : %s ...\n", FormattedMessage(options.output.name).arg(this->getFileExeScriptName()).arg(Helpers::getFileId()).arg("json").toString().c_str());
 		}
 
 		//print timings
@@ -1003,9 +1003,9 @@ void convertToJson(htopml::JsonState& json, const AllocStackProfiler& value)
 		json.printField("runtime",Clock::getticks() - value.trefTicks);
 		json.printField("allocator", value.realMallocLib);
 		json.printField("allocatorWrappers", maltGetWrappedSymbols());
-		if (value.getOptions()->traceEnabled)
+		if (value.getOptions()->trace.enabled)
 			json.printField("tracefile",value.traceFilename);
-		if (value.getOptions()->infoHidden == false)
+		if (value.getOptions()->info.hidden == false)
 		{
 			json.printField("exe",OS::getExeName());
 			json.printField("command",cmdToString(OS::getCmdLine()));
@@ -1015,7 +1015,7 @@ void convertToJson(htopml::JsonState& json, const AllocStackProfiler& value)
 	
 	json.printField("config",value.options);
 
-	if (value.options.stackProfileEnabled)
+	if (value.options.stack.enabled)
 	{
 		if (value.stackTree == NULL)
 			json.printField("stacks",value.stackTracker);
@@ -1025,7 +1025,7 @@ void convertToJson(htopml::JsonState& json, const AllocStackProfiler& value)
 	
 	json.printField("sites",value.symbolResolver);
 
-	if (value.options.timeProfileEnabled)
+	if (value.options.time.enabled)
 	{
 		json.openFieldStruct("timeline");
 			json.printField("memoryTimeline",value.memoryTimeline);
@@ -1038,7 +1038,7 @@ void convertToJson(htopml::JsonState& json, const AllocStackProfiler& value)
 		json.closeFieldStruct("scatter");
 	}
 	
-	if (value.options.maxStackEnabled)
+	if (value.options.maxStack.enabled)
 	{
 		json.openFieldArray("threads");
 		for (LocalAllocStackProfilerList::const_iterator it = value.perThreadProfiler.begin() ; it != value.perThreadProfiler.end() ; ++it)			
@@ -1053,7 +1053,7 @@ void convertToJson(htopml::JsonState& json, const AllocStackProfiler& value)
 	}
 	
 	json.openFieldStruct("memStats");
-		if (value.options.distrAllocSize)
+		if (value.options.distr.allocSize)
 		{
 			json.openFieldStruct("sizeMap");
 			for (AllocSizeDistrMap::const_iterator it = value.sizeMap.begin() ; it != value.sizeMap.end() ; ++it)			
@@ -1065,7 +1065,7 @@ void convertToJson(htopml::JsonState& json, const AllocStackProfiler& value)
 			json.closeFieldStruct("sizeMap");
 		}
 		
-		if (value.options.distrReallocJump)
+		if (value.options.distr.reallocJump)
 		{
 			json.openFieldArray("reallocJump");
 			for (ReallocJumpMap::const_iterator it = value.reallocJumpMap.begin() ; it != value.reallocJumpMap.end() ; ++it)			
@@ -1177,7 +1177,7 @@ ticks AllocStackProfiler::ticksPerSecond(void) const
 	//if too chost, sleep a little and return
 	if (delta.tv_sec == 0 && delta.tv_usec < 200000)
 	{
-		if (options.outputVerbosity >= MALT_VERBOSITY_DEFAULT)
+		if (options.output.verbosity >= MALT_VERBOSITY_DEFAULT)
 			fprintf(stderr,"MALT: Using usleep to get better ticks <-> seconds conversion !\n");
 		usleep(200000);
 		res = this->ticksPerSecond();
