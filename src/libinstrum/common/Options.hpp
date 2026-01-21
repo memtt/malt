@@ -138,8 +138,10 @@ struct Options
 		PythonMode mode{PYTHON_MODE_PROFILE};
 	} python;
 	//c
-	bool cMalloc{true};
-	bool cMmap{true};
+	struct {
+		bool malloc{true};
+		bool mmap{true};
+	} c;
 	//vars for time profiging
 	bool timeProfileEnabled{true};
 	int timeProfilePoints{512};

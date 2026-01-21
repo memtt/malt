@@ -81,8 +81,8 @@ bool Options::operator==(const Options& value) const
 	if (python.hideImports != value.python.hideImports) return false;
 	if (python.mode != value.python.mode) return false;
 	//c
-	if (cMalloc != value.cMalloc) return false;
-	if (cMmap != value.cMmap) return false;
+	if (c.malloc != value.c.malloc) return false;
+	if (c.mmap != value.c.mmap) return false;
 	//time
 	if (this->timeProfileEnabled != value.timeProfileEnabled) return false;
 	if (this->timeProfilePoints != value.timeProfilePoints) return false;
@@ -437,8 +437,8 @@ OptionsMeta::OptionsMeta(Options & value)
 	this->add("python", "mode", value.python.mode).setDoc("Configure the python instrumentation mode ('profile' or 'trace').");
 
 	//c
-	this->add("c", "malloc", value.cMalloc).setDoc("Instrument the C memory allocator.");
-	this->add("c", "mmap", value.cMmap).setDoc("Instrument the C direct mmap calls done by the app.");
+	this->add("c", "malloc", value.c.malloc).setDoc("Instrument the C memory allocator.");
+	this->add("c", "mmap", value.c.mmap).setDoc("Instrument the C direct mmap calls done by the app.");
 
 	//load values for stack profiling
 	this->add("stack", "resolve", value.stack.resolve).setDoc("Automatically resolve symbols with addr2line at exit.");
