@@ -70,6 +70,7 @@ void Extractor::buildTranslation(MALTFormat::Stack & stack)
 		ref.file = &this->getString(instrInfos.file);
 		ref.line = instrInfos.line;
 		ref.origin = addr;
+		ref.offsetInBinary = getBinaryOffset(addr);
 
 		//store
 		auto & trans = this->addrTranslationHidden[addr];
@@ -263,6 +264,7 @@ void to_json(nlohmann::json & json, const InstructionInfosStrRef & value)
 		{"function", *value.function},
 		{"functionShort", *value.functionShort},
 		{"line", value.line},
+		{"offsetInBinary", value.offsetInBinary},
 	};
 }
 
@@ -598,6 +600,29 @@ size_t Extractor::toVirtualAddress(const std::string & binaryObject, size_t inOb
 				virtualAddress = offsetInSection + procEntry.aslrOffset;
 				return virtualAddress;
 			}
+		}
+	}
+
+	//not found
+	return 0;
+}
+
+/**********************************************************/
+size_t Extractor::getBinaryOffset(const LangAddress & langAddress)
+{
+	//trivial
+	if (langAddress.lang != LANG_C)
+		return 0;
+
+	//vars
+	const void * virtualAddress = langAddress.address;
+
+	//convert to offset in binary
+	for (const auto & procEntry : this->profile.sites.map) {
+		if (virtualAddress >= procEntry.lower && virtualAddress < procEntry.upper) {
+			const size_t offsetInSegment = (const char*)virtualAddress - (const char*)procEntry.lower;
+			const size_t offsetInFile = offsetInSegment - procEntry.aslrOffset + procEntry.offset;
+			return offsetInFile;
 		}
 	}
 

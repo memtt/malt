@@ -41,6 +41,7 @@ struct InstructionInfosStrRef
 	const std::string * functionShort{nullptr};
 	ssize_t line{-1};
 	MALTFormat::LangAddress origin{MALTFormat::LANG_C, nullptr};
+	size_t offsetInBinary{0};
 };
 
 /**********************************************************/
@@ -295,6 +296,7 @@ class Extractor
 		const std::string& getCachedString(const std::string & value);
 		bool stackIsMatchingBellowDepth(const MALTFormat::Stack & stack1, const MALTFormat::Stack & stack2, size_t depth) const;
 		bool stackIsMatchingLocationFilter(const LocationFilter & filter, const MALTFormat::Stack & stack) const;
+		size_t getBinaryOffset(const MALTFormat::LangAddress & langAddress);
 	private:
 		const MALTFormat::MaltProfile & profile;
 		std::map<MALTFormat::LangAddress, InstructionInfosStrRef> addrTranslationHidden;

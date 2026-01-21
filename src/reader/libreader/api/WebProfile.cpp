@@ -86,24 +86,50 @@ nlohmann::json WebProfile::getFileLinesFlatProfile(const std::string & file, boo
 /**********************************************************/
 nlohmann::json WebProfile::getBinaryAddressesFlatProfile(const std::string & binaryFile, const std::vector<size_t> & offsets, bool total) const
 {
-	//convert the offsets
-	std::vector<size_t> virtualAddresses = offsets;
-	this->extractor->toVirtualAddresses(virtualAddresses, binaryFile);
-
 	//extract
 	FlatProfileVector res = this->extractor->getFlatProfile([](const InstructionInfosStrRef & location, const MALTFormat::StackInfos & infos){
 		char buffer[256];
 		snprintf(buffer, sizeof(buffer), "%p", location.origin.address);
 		return std::string(buffer);
-	},[&virtualAddresses](const InstructionInfosStrRef & location, const MALTFormat::StackInfos & infos){
-		return location.origin.lang == LANG_C &&  (std::find(virtualAddresses.begin(), virtualAddresses.end(), (size_t)location.origin.address) != virtualAddresses.end());
+	},[&binaryFile, &offsets](const InstructionInfosStrRef & location, const MALTFormat::StackInfos & infos){
+		return location.origin.lang == LANG_C && *location.binary == binaryFile &&  (std::find(offsets.begin(), offsets.end(), (size_t)location.offsetInBinary) != offsets.end());
 	});
 
 	//select
 	std::vector<std::string> subset{
 		"*.own",
-		"*.line",
-		"*.function"
+		"*.binary",
+		"*.offsetInBinary"
+	};
+	if (total)
+		subset.push_back("*.total");
+	else
+		subset.push_back("*.childs");
+
+	//filter
+	nlohmann::json resJson = ExtractorHelpers::toJsonFiltered(res, subset);
+
+	//ok
+	return resJson;
+}
+
+/**********************************************************/
+nlohmann::json WebProfile::getBinaryAddressesFlatProfileAll(const std::string & binaryFile, bool total) const
+{
+	//extract
+	FlatProfileVector res = this->extractor->getFlatProfile([](const InstructionInfosStrRef & location, const MALTFormat::StackInfos & infos){
+		char buffer[256];
+		snprintf(buffer, sizeof(buffer), "%p", location.origin.address);
+		return std::string(buffer);
+	},[&binaryFile](const InstructionInfosStrRef & location, const MALTFormat::StackInfos & infos){
+		return location.origin.lang == LANG_C && *location.binary == binaryFile;
+	});
+
+	//select
+	std::vector<std::string> subset{
+		"*.own",
+		"*.binary",
+		"*.offsetInBinary"
 	};
 	if (total)
 		subset.push_back("*.total");
