@@ -348,6 +348,9 @@ maltSelectProfile()
 	PROFILE_PYTHON_SAMPLING="python:stack=backtrace;python:mix=true;stack:mode=backtrace;output:loop-suppress=true;sampling:enabled=true;"
 	PROFILE_PYTHON_SAMPLING_10M="python:stack=backtrace;python:mix=true;stack:mode=backtrace;output:loop-suppress=true;sampling:enabled=true;sampling:volume=10485767"
 	PROFILE_PYTHON_SAMPLING_20M="python:stack=backtrace;python:mix=true;stack:mode=backtrace;output:loop-suppress=true;sampling:enabled=true;sampling:volume=20971529"
+	PROFILE_SAMPLING="python:stack=backtrace;stack:mode=backtrace;output:loop-suppress=true;sampling:enabled=true;"
+	PROFILE_SAMPLING_10M="python:stack=backtrace;stack:mode=backtrace;output:loop-suppress=true;sampling:enabled=true;sampling:volume=10485767"
+	PROFILE_SAMPLING_20M="python:stack=backtrace;stack:mode=backtrace;output:loop-suppress=true;sampling:enabled=true;sampling:volume=20971529"
 	
 
 	# list
@@ -365,6 +368,9 @@ maltSelectProfile()
 		echo "python-sampling-20M   | ${PROFILE_PYTHON_SAMPLING_20M}"
 		echo "python-full           | ${PROFILE_PYTHON_FULL}"
 		echo "oom                   | ${PROFILE_OOM}"
+		echo "sampling              | ${PROFILE_SAMPLING}"
+		echo "sampling-10M          | ${PROFILE_SAMPLING_10M}"
+		echo "sampling-20M          | ${PROFILE_SAMPLING_20M}"
 		echo "-------------------------------------------------------------------"
 		exit 0
 	fi
@@ -405,6 +411,18 @@ maltSelectProfile()
 		"oom")
 			echo "MALT: Using Out Of Memory profile" 1>&2
 			options="${PROFILE_OOM}"
+			;;
+		"sampling-10M")
+			echo "MALT: Using sampling profile, faster but not exact, look on --profile in case !" 1>&2
+			options="${PROFILE_SAMPLING_10M}"
+			;;
+		"sampling-20M")
+			echo "MALT: Using sampling profile, faster but not exact, look on --profile in case !" 1>&2
+			options="${PROFILE_SAMPLING_20M}"
+			;;
+		"sampling")
+			echo "MALT: Using sampling profile, faster but not exact, look on --profile in case !" 1>&2
+			options="${PROFILE_SAMPLING}"
 			;;
 		*)
 			echo "MALT: Invalid pre-configure profile : '${1}'" 1>&2

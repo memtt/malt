@@ -92,6 +92,34 @@ It will produce the profile with all the counters except the call tree and sourc
 annotations. By the way it has in this mode a very low overhead to get a first view
 on the dynamic of the application.
 
+Sampling
+--------
+
+If you want fast profiling by still keeping a bit the call stack, you can use the
+sampling mode which will resolve the stack only on two conditions :
+
+- Has seen passed a certain **volume** of memory allocations.
+- Has seen passed a certain **number** of memory allocations.
+
+.. code-block:: shell
+
+    # Run fast without analysing the stacks
+    malt -p sampling ./heavy-program
+
+Track out of memory
+-------------------
+
+To track out of memory, you need to dump before the crash, you can enable
+a default profile for this :
+
+.. code-block:: shell
+
+    # Run fast without analysing the stacks
+    malt -p oom ./oom_program
+
+You can configure more precisely the condition by looking to the chapter 
+:ref:`chapter-oom`.
+
 Profiling python only
 ---------------------
 
