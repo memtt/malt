@@ -32,7 +32,7 @@ struct Config
 		std::string mode;
 		bool resolve;
 		bool libunwind;
-		size_t stackSkip;
+		size_t skip;
 		size_t addr2lineBucket;
 		size_t addr2lineThreads;
 		size_t addr2lineHuge;

@@ -60,11 +60,11 @@ Options::Options(void)
 bool Options::operator==(const Options& value) const
 {
 	//stack
-	if (stackProfileEnabled != value.stackProfileEnabled) return false;
-	if (stackResolve != value.stackResolve) return false;
-	if (stackMode != value.stackMode) return false;
-	if (stackLibunwind != value.stackLibunwind) return false;
-	if (stackSkip != value.stackSkip) return false;
+	if (stack.enabled != value.stack.enabled) return false;
+	if (stack.resolve != value.stack.resolve) return false;
+	if (stack.mode != value.stack.mode) return false;
+	if (stack.libunwind != value.stack.libunwind) return false;
+	if (stack.skip != value.stack.skip) return false;
 	if (stackAddr2lineBucket != value.stackAddr2lineBucket) return false;
 	if (stackAddr2lineThreads != value.stackAddr2lineThreads) return false;
 	if (stackAddr2lineHuge != value.stackAddr2lineHuge) return false;
@@ -437,11 +437,11 @@ OptionsMeta::OptionsMeta(Options & value)
 	this->add("c", "mmap", value.cMmap).setDoc("Instrument the C direct mmap calls done by the app.");
 
 	//load values for stack profiling
-	this->add("stack", "resolve", value.stackResolve).setDoc("Automatically resolve symbols with addr2line at exit.");
-	this->add("stack", "enabled", value.stackProfileEnabled).setDoc("Enable stack profiles.");
-	this->add("stack", "libunwind", value.stackLibunwind).setDoc("Enable of disable usage of libunwind to backtrace.");
-	this->add("stack", "mode", value.stackMode).setDoc("Define the stack tracking mode (enter-exit, backtrace, python, none)");
-	this->add("stack", "skip", value.stackSkip).setDoc("Number of stack frame to skip in order to cut at malloc level.");
+	this->add("stack", "resolve", value.stack.resolve).setDoc("Automatically resolve symbols with addr2line at exit.");
+	this->add("stack", "enabled", value.stack.enabled).setDoc("Enable stack profiles.");
+	this->add("stack", "libunwind", value.stack.libunwind).setDoc("Enable of disable usage of libunwind to backtrace.");
+	this->add("stack", "mode", value.stack.mode).setDoc("Define the stack tracking mode (enter-exit, backtrace, python, none)");
+	this->add("stack", "skip", value.stack.skip).setDoc("Number of stack frame to skip in order to cut at malloc level.");
 
 	//addr2line
 	this->add("addr2line", "bucket", value.stackAddr2lineBucket).setDoc("Handle the addr2line calls by buckets and treat each bucket in parallel.");

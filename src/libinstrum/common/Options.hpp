@@ -107,11 +107,13 @@ struct Options
 	void loadFromIniDic(dictionary * iniDic);
 	void dumpConfig(const char * fname);
 	//vars for stack profilinf
-	bool stackProfileEnabled{true};
-	bool stackResolve{true};
-	bool stackLibunwind{false};
-	StackMode stackMode{STACK_MODE_BACKTRACE};
-	int stackSkip{4};
+	struct {
+		bool enabled{true};
+		bool resolve{true};
+		bool libunwind{false};
+		StackMode mode{STACK_MODE_BACKTRACE};
+		int skip{4};
+	} stack;
 	int stackAddr2lineBucket{350};
 	int stackAddr2lineThreads{8};
 	size_t stackAddr2lineHuge{50UL * 1024UL *1024UL};

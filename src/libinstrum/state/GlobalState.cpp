@@ -52,7 +52,7 @@ static StackMode getStackMode(Options & options)
 	
 	//if not env use config file
 	if (mode != NULL)
-		setByString(options.stackMode, mode);
+		setByString(options.stack.mode, mode);
 	
 	//ok done
 	return ret;
@@ -266,7 +266,7 @@ void AllocWrapperGlobal::init(void )
 		//adapt stack skip mode (to adapt malt to compiler inlinling)
 		BacktraceStack testStack;
 		int stackDelta = testStack.getBactraceSkipOptimDelta();
-		gblState.options->stackSkip += stackDelta;
+		gblState.options->stack.skip += stackDelta;
 		
 		//extract stack mode and update options for libunwind if required
 		StackMode mode = getStackMode(*gblState.options);

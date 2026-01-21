@@ -319,7 +319,7 @@ void AllocStackProfiler::onAllocEvent(void* ptr, size_t size,Stack* userStack,MM
 			);
 		}
 	
-		if (options.stackProfileEnabled)
+		if (options.stack.enabled)
 		{
 			//search if not provided
 			if (!callStackNode->valid())
@@ -423,7 +423,7 @@ FreeFinalInfos AllocStackProfiler::onFreeEvent(void* ptr, MALT::Stack* userStack
 
 		//search segment info to link with previous history
 		SegmentInfo * segInfo = NULL;
-		if (options.timeProfileEnabled || options.stackProfileEnabled) {
+		if (options.timeProfileEnabled || options.stack.enabled) {
 			if (domain == DOMAIN_MMAP) {
 				CODE_TIMING("segTracerGet",segInfo = mmapSegTracker.get(ptr));
 			} else {
@@ -455,7 +455,7 @@ FreeFinalInfos AllocStackProfiler::onFreeEvent(void* ptr, MALT::Stack* userStack
 		//peak tracking
 		peakTracking(-size);
 		
-		if (options.stackProfileEnabled)
+		if (options.stack.enabled)
 		{
 			//chart
 			lifetimeOverSize.push(size,lifetime);
@@ -872,7 +872,7 @@ void AllocStackProfiler::onExit(void )
 			this->symbolResolver.loadProcMap();
 			this->solvePerThreadSymbols();
 			this->stackTracker.solveSymbols(symbolResolver);
-			if (options.stackResolve) {
+			if (options.stack.resolve) {
 				this->skipThreadRegister = true;
 				this->symbolResolver.solveNames();
 				this->skipThreadRegister = false;
@@ -1015,7 +1015,7 @@ void convertToJson(htopml::JsonState& json, const AllocStackProfiler& value)
 	
 	json.printField("config",value.options);
 
-	if (value.options.stackProfileEnabled)
+	if (value.options.stack.enabled)
 	{
 		if (value.stackTree == NULL)
 			json.printField("stacks",value.stackTracker);

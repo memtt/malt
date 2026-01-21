@@ -394,7 +394,7 @@ Stack* LocalAllocStackProfiler::getStack(Language lang, size_t size, bool isFree
 	Stack * cRef = &this->enterExitStack;
 	if(localCStackMode == STACK_MODE_BACKTRACE && (lang == LANG_C || gblOptions->pythonMix)) {
 		CODE_TIMING("loadCurrentStack",backtraceStack.loadCurrentStack());
-		backtraceStack.fastSkip(gblOptions->stackSkip);
+		backtraceStack.fastSkip(gblOptions->stack.skip);
 		cRef = &backtraceStack;
 	}
 

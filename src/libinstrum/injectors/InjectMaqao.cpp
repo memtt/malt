@@ -43,7 +43,7 @@ DLL_PUBLIC void maqao_reg_function(int funcId,const char * funcName,const char *
 		free(NULL);
 
 	//mark stack mode to be automatic
-	gblState.options->stackMode = STACK_MODE_ENTER_EXIT_FUNC;
+	gblState.options->stack.mode = STACK_MODE_ENTER_EXIT_FUNC;
 	
 	//reg
 	gblState.profiler->registerMaqaoFunctionSymbol(funcId,funcName,file,line);

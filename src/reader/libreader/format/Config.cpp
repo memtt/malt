@@ -30,7 +30,7 @@ void to_json(nlohmann::json & json, const Config & config){
 				{"mode", config.stack.mode},
 				{"resolve", config.stack.resolve},
 				{"libunwind", config.stack.libunwind},
-				{"skip", config.stack.stackSkip},
+				{"skip", config.stack.skip},
 				{"addr2lineBucket", config.stack.addr2lineBucket},
 				{"addr2lineThreads", config.stack.addr2lineThreads},
 				{"addr2lineHuge", config.stack.addr2lineHuge},
@@ -153,7 +153,7 @@ void from_json(const JsonIn & json, Config & config)
 	jsonStack.at("mode").get_to(config.stack.mode);
 	jsonStack.at("resolve").get_to(config.stack.resolve);
 	jsonStack.at("libunwind").get_to(config.stack.libunwind);
-	jsonStack.at("skip").get_to(config.stack.stackSkip);
+	jsonStack.at("skip").get_to(config.stack.skip);
 	jsonStack.at("addr2lineBucket").get_to(config.stack.addr2lineBucket);
 	jsonStack.at("addr2lineThreads").get_to(config.stack.addr2lineThreads);
 	jsonStack.at("addr2lineHuge").get_to(config.stack.addr2lineHuge);
