@@ -239,17 +239,17 @@ class AllocStackProfiler
 inline bool AllocStackProfiler::isAcceptedBySampling(size_t size, bool isFree)
 {
 	//trivial
-	if (gblOptions->stackSampling == false)
+	if (gblOptions->sampling.enabled == false)
 		return true;
 
 	//trivial
 	if (isFree)
-		return !gblOptions->stackSampling;
+		return !gblOptions->sampling.enabled;
 
 	//sum
 	size_t previous = this->rate.fetch_add(size);
 	size_t previousCnt = this->rateCnt.fetch_add(1);
-	size_t bw = gblOptions->stackSamplingBw;
+	size_t bw = gblOptions->sampling.volume;
 	if (previous / bw != (previous + size) / bw)
 	{
 		this->rate.fetch_sub(bw);
@@ -257,7 +257,7 @@ inline bool AllocStackProfiler::isAcceptedBySampling(size_t size, bool isFree)
 	}
 
 	//count
-	size_t cnt = gblOptions->stackSamplingCnt;
+	size_t cnt = gblOptions->sampling.count;
 	if (cnt != 0 && previousCnt >= cnt) {
 		this->rateCnt.fetch_sub(cnt);
 		return true;

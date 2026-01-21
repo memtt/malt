@@ -68,8 +68,9 @@ bool Options::operator==(const Options& value) const
 	if (addr2line.bucket != value.addr2line.bucket) return false;
 	if (addr2line.threads != value.addr2line.threads) return false;
 	if (addr2line.huge != value.addr2line.huge) return false;
-	if (stackSampling != value.stackSampling) return false;
-	if (stackSamplingBw != value.stackSamplingBw) return false;
+	if (sampling.enabled != value.sampling.enabled) return false;
+	if (sampling.volume != value.sampling.volume) return false;
+	if (sampling.count != value.sampling.count) return false;
 	//python
 	if (pythonInstru != value.pythonInstru) return false;
 	if (pythonStack != value.pythonStack) return false;
@@ -449,9 +450,9 @@ OptionsMeta::OptionsMeta(Options & value)
 	this->add("addr2line", "huge", value.addr2line.huge).setDoc("For larger elf files, do not treat them in parallel nor buckets.");
 
 	//sampling
-	this->add("sampling", "enabled", value.stackSampling).setDoc("Sample and instrument only some stack.");
-	this->add("sampling", "volume", value.stackSamplingBw).setDoc("Instrument the stack when seen passed 4K-3 bytes of alloc requests (ideally should be prime number).");
-	this->add("sampling", "count", value.stackSamplingCnt).setDoc("Instrument the stack when seen passed X alloc requests (ideally should be prime number).");;
+	this->add("sampling", "enabled", value.sampling.enabled).setDoc("Sample and instrument only some stack.");
+	this->add("sampling", "volume", value.sampling.volume).setDoc("Instrument the stack when seen passed 4K-3 bytes of alloc requests (ideally should be prime number).");
+	this->add("sampling", "count", value.sampling.count).setDoc("Instrument the stack when seen passed X alloc requests (ideally should be prime number).");;
 	
 	//load values for output
 	this->add("output", "name", value.outputName).setDoc("base name for output, %1 = exe, %2 = PID, %3 = extension.");

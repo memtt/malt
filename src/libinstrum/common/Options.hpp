@@ -106,7 +106,7 @@ struct Options
 	void loadFromString(const char * value);
 	void loadFromIniDic(dictionary * iniDic);
 	void dumpConfig(const char * fname);
-	//vars for stack profilinf
+	//stack
 	struct {
 		bool enabled{true};
 		bool resolve{true};
@@ -114,14 +114,18 @@ struct Options
 		StackMode mode{STACK_MODE_BACKTRACE};
 		int skip{4};
 	} stack;
+	//addr2line
 	struct {
 		int bucket{350};
 		int threads{8};
 		size_t huge{50UL * 1024UL *1024UL};
 	} addr2line;
-	bool stackSampling{false};
-	int stackSamplingBw{4093}; //5242883, 10485767, 20971529
-	int stackSamplingCnt{571};
+	//smpling
+	struct {
+		bool enabled{false};
+		int volume{4093}; //5242883, 10485767, 20971529
+		int count{571};
+	} sampling;
 	//python
 	StackMode pythonStack{STACK_MODE_ENTER_EXIT_FUNC};
 	bool pythonMix{false};

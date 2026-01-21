@@ -380,12 +380,12 @@ Stack* LocalAllocStackProfiler::getStack(Language lang, size_t size, bool isFree
 
 	//trivial
 	if (lang == LANG_C && (localCStackMode == STACK_MODE_NONE || rejectedBySampling)) {
-		if (gblOptions->stackSampling)
+		if (gblOptions->sampling.enabled)
 			this->samplePrev.set(noneStackC);
 		return &noneStackC;
 	}
 	if (lang == LANG_PYTHON && (localPyStackMode == STACK_MODE_NONE || rejectedBySampling)) {
-		if (gblOptions->stackSampling)
+		if (gblOptions->sampling.enabled)
 			this->samplePrev.set(noneStackPython);
 		return &noneStackPython;
 	}
@@ -455,7 +455,7 @@ Stack* LocalAllocStackProfiler::getStack(Language lang, size_t size, bool isFree
 	if (hasPythonGIL)
 		MALT::PyGILState_Release(pythonGilState);
 
-	if (gblOptions->stackSampling)
+	if (gblOptions->samping.enabled)
 		this->samplePrev.set(*result);
 
 	//ok
