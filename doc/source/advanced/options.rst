@@ -54,12 +54,12 @@ Example of config file :
     libunwind=false        ; Enable of disable usage of libunwind to backtrace.
     skip=4                 ; Number of stack frame to skip in order to cut at malloc level
 
-	[sampling]
+    [sampling]
     enabled=false          ; Sample and instrument only some stack.
-	bandwidth=4093         ; Instrument the stack when seen passed 4K-3 bytes of alloc requests (ideally should be prime number).
+    bandwidth=4093         ; Instrument the stack when seen passed 4K-3 bytes of alloc requests (ideally should be prime number).
     count=571              ; Instrument the stack when seen passed 4K-3 bytes of alloc requests (ideally should be prime number).
 
-	[addr2line]
+    [addr2line]
     bucket=350             ; Handle the addr2line calls by buckets and treat each bucket in parallel.
     threads=8              ; Number of threasd to use to call addr2line in parallel.
     huge=52428800          ; For larger elf files, do not treat them in parallel nor buckets.

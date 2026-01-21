@@ -86,70 +86,87 @@ You can get an example of this config file with `-d` option and setup the config
 The config file use INI format with sections and variables as in this example :
 
 	[time]
-	enabled                        = true
-	points                         = 512 
-	linear_index                   = false
+	enabled=true
+	points=512
+	linar-index=false
 
 	[stack]
-	enabled                        = true
-	mode                           = backtrace
-	resolve                        = true
-	libunwind                      = false
-	skip                           = 4
-  sampling                       = false
-  samplingBw                     = 4093
+	enabled=true
+	mode=backtrace
+	resolve=true
+	libunwind=false
+	skip=4
+
+	[sampling]
+	enabled=false
+	bandwidth=4093
+	count=571
+
+	[addr2line]
+	bucket=350
+	threads=8
+	huge=52428800
 
 	[output]
-	name                           = malt-%1-%2.%3
-	lua                            = false
-	json                           = true
-	callgrind                      = false
-	indent                         = true
-	config                         = true
-	verbosity                      = default
-	stack-tree                     = false
-	loop-suppress                  = false
+	name=malt-%1-%2.%3
+	lua=true
+	json=true
+	callgrind=true
+	indent=false
+	config=true
+	verbosity=default
+	stack-tree=false
+	loop-suppress=false
+	verbosity=default
+	stack-tree=false
 
 	[max-stack]
-	enabled                        = true
+	enabled=true
 
 	[distr]
-	alloc-size                     = true
-	realloc-jump                   = true
+	alloc-size=true
+	realloc-jump=true
 
 	[trace]
-	enabled                        = false
+	enable=false
 
 	[info]
-	hidden                         = false
+	hidden=false
 
 	[filter]
-	exec                           = 
-	childs                         = true
-	enabled                        = true
-	ranks                          =
+	exe=
+	childs=true
+	enabled=true
+	ranks=
 
 	[dump]
-	on-signal                      = 
-	after-seconds                  = 0
-	on-sys-full-at                 =
-	on-app-using-rss               =
-	on-app-using-virt              =
-	on-app-using-req               =
-	on-thread-stack-using          =
-  watch-dog                      = false
+	on-signal=
+	after-seconds=0
+	on-sys-full-at=
+	on-app-using-rss=
+	on-app-using-virt=
+	on-app-using-req=
+	on-thread-stack-using=
+	on-alloc-count=
+	watch-dog=false
 
-  [python]
-  instru                         = true
-  stack                          = enter-exit
-  mix                            = false
-  obj                            = true
-  mem                            = true
-  raw                            = true
+	[python]
+	enabled=true
+	stack=enter-exit
+	mix=false
+	obj=true
+	mem=true
+	raw=true
+	hide-imports=true
+	mode=profile
 
-  [tools]
-  nm                             = true
-  nmMaxSize                      = 50M
+	[c]
+	malloc=true
+	mmap=true
+
+	[tools]
+	nm=true
+	nm-max-size=50M
 
 The `time` section support :
 
@@ -157,7 +174,7 @@ The `time` section support :
    Enable support of tracking state values over time to build time charts.
  * `points`:
    Define the number of points used to discretized the execution time of the application.
- * `linear_index`:
+ * `linear`:
    Do not use time to index data but a linear value increased on each call (might be interesting
    not to shrink intensive allocation steps on a long program which mostly not do allocation over the run.
 
@@ -187,14 +204,30 @@ The `stack` section support :
    Notice in some cases (Gentoo, Gcc-8) we start to see LTO trashing totaly the malloc/free call in O3 mode 
    normaly seen via backtrace. There is currently no other solution except recompiling in O0/O1 to avoid
    or maybe disable LTO optimizations or consider not having the exact location of the malloc itself.
- * `sampling`:
+
+The `sampling` section support :
+
+ * `enaled`:
    Enable sampling mode for the stacks by captuing only for a few mallocs. It is less accurate than a full
    profile but cost less in memory and CPU. In sampling mode, the stack is processed only when we seen passed
    a few bytes allocated, otherwise we consider the last seen call stack. With python you should also
    enable the backtrace mode for solving stacks via `python:stack=backtrace`.
- * `samplingBw`
+ * `volume`
    Define the amount of data seen passed between two samples. Idealy this should be a prime number to avoid
-   some multiple base biases..
+   some multiple base biases.
+ * `count`
+   Define the number of allocations seen passed between two samples. Idealy this should be a prime number to avoid
+   some multiple base biases.
+
+The `addr2line` section support :
+
+ * `bucket`:
+   Define the maximum number of addresses to be asked to be solved in a bucket for addr2line to be treated by
+   a thread. Not using a large number give more parallelism but makes the binary loaded more times in memory.
+ * `threads`:
+   Define the number of threads to use.
+ * `huge`:
+   For the ELF files larger than the given size, tread them in on pass and not in threads not to trash the memory.
 
 The `output` section support :
 
