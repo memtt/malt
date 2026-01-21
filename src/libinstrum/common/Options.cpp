@@ -72,7 +72,7 @@ bool Options::operator==(const Options& value) const
 	if (sampling.volume != value.sampling.volume) return false;
 	if (sampling.count != value.sampling.count) return false;
 	//python
-	if (python.instru != value.python.instru) return false;
+	if (python.enabled != value.python.enabled) return false;
 	if (python.stack != value.python.stack) return false;
 	if (python.mix != value.python.mix) return false;
 	if (python.obj != value.python.obj) return false;
@@ -411,6 +411,9 @@ bool checkDeprecated(const std::string & value)
 	} else if (value == "stack:samplingCnt") {
 		fprintf(stderr, "Option 'stack:samplingCnt' as been renamed as `sampling:count`\n");
 		return true;
+	} else if (value == "python:instru") {
+		fprintf(stderr, "Option 'python:instru' as been renamed as `python:enabled`\n");
+		return true;
 	}
 	return false;
 }
@@ -424,7 +427,7 @@ OptionsMeta::OptionsMeta(Options & value)
 	this->add("time", "linear", value.timeProfileLinear).setDoc("Use operation index instead of time.");
 	
 	//python
-	this->add("python", "instru", value.python.instru).setDoc("Enable of disable python instrumentation.");
+	this->add("python", "instru", value.python.enabled).setDoc("Enable of disable python instrumentation.");
 	this->add("python", "mix", value.python.mix).setDoc("Mix C stack with the python ones to get a uniq tree instread of two distincts (note it adds overhead).");
 	this->add("python", "stack", value.python.stack).setDoc("Select the Python stack instrumentation mode (backtrace, enter-exit, none).");;
 	this->add("python", "obj", value.python.obj).setDoc("Instrument of not the OBJECT allocator domain of python.");

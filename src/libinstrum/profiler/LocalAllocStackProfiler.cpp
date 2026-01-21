@@ -432,7 +432,7 @@ Stack* LocalAllocStackProfiler::getStack(Language lang, size_t size, bool isFree
 	}
 
 	//if backtrace in python is needed
-	if (gblOptions->python.mix && gblOptions->python.instru && lang != LANG_PYTHON) {
+	if (gblOptions->python.mix && gblOptions->python.enabled && lang != LANG_PYTHON) {
 		if (cRef == pythonRef) {
 			assert(cRef == &this->enterExitStack);
 			CODE_TIMING("mixLang",globalProfiler->getMultiLangStackMerger().removePythonLib(mixStack, *cRef));
@@ -442,9 +442,9 @@ Stack* LocalAllocStackProfiler::getStack(Language lang, size_t size, bool isFree
 
 		result = &mixStack;
 	} else {
-		if (lang == LANG_PYTHON && gblOptions->python.instru)
+		if (lang == LANG_PYTHON && gblOptions->python.enabled)
 			result = pythonRef;
-		else if (lang == LANG_C || gblOptions->python.instru == false)
+		else if (lang == LANG_C || gblOptions->python.enabled == false)
 			result = cRef;
 		else {
 			MALT_FATAL("Invalid language, not supported !");

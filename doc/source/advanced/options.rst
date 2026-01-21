@@ -109,7 +109,7 @@ Example of config file :
     watch-dog=false        ; Run an active thread spying continuouly the memory of the app, not only sometimes.
 
     [python]
-    instru=true            ; Enable of disable python instrumentation.
+    enabled=true           ; Enable of disable python instrumentation.
     stack=enter-exit       ; Select the Python stack instrumentation mode (backtrace, enter-exit, none).
     mix=false              ; Mix C stack with the python ones to get a uniq tree instread of two distincts
                            ; (not this adds overhead).
@@ -547,7 +547,7 @@ Section `python`
 The `python` section permit to configure how to instrument python. Notice that you need to build MALT with
 `--enable-python` so it is effective.
 
-Option `python:instru`
+Option `python:enabled`
 ^^^^^^^^^^^^^^^^^^^^^^
 
 Enable of disable the python instrumentation.

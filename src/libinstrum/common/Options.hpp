@@ -130,7 +130,7 @@ struct Options
 	struct {
 		StackMode stack{STACK_MODE_ENTER_EXIT_FUNC};
 		bool mix{false};
-		bool instru{true};
+		bool enabled{true};
 		bool obj{true};
 		bool mem{true};
 		bool raw{true};
