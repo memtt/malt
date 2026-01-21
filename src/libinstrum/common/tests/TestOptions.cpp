@@ -20,6 +20,11 @@ using namespace MALT;
 /**********************************************************/
 const char cstJson[] = "\
 {\n\
+\t\"addr2line\":{\n\
+\t\t\"bucket\":350,\n\
+\t\t\"huge\":52428800,\n\
+\t\t\"threads\":8\n\
+\t},\n\
 \t\"c\":{\n\
 \t\t\"malloc\":true,\n\
 \t\t\"mmap\":true\n\
@@ -72,17 +77,16 @@ const char cstJson[] = "\
 \t\t\"raw\":true,\n\
 \t\t\"stack\":\"enter-exit\"\n\
 \t},\n\
+\t\"sampling\":{\n\
+\t\t\"count\":571,\n\
+\t\t\"enabled\":false,\n\
+\t\t\"volume\":4093\n\
+\t},\n\
 \t\"stack\":{\n\
-\t\t\"addr2lineBucket\":350,\n\
-\t\t\"addr2lineHuge\":52428800,\n\
-\t\t\"addr2lineThreads\":8,\n\
 \t\t\"enabled\":true,\n\
 \t\t\"libunwind\":false,\n\
 \t\t\"mode\":\"backtrace\",\n\
 \t\t\"resolve\":true,\n\
-\t\t\"sampling\":false,\n\
-\t\t\"samplingBw\":4093,\n\
-\t\t\"samplingCnt\":571,\n\
 \t\t\"skip\":4\n\
 \t},\n\
 \t\"time\":{\n\

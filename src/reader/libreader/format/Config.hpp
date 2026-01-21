@@ -33,13 +33,17 @@ struct Config
 		bool resolve;
 		bool libunwind;
 		size_t skip;
-		size_t addr2lineBucket;
-		size_t addr2lineThreads;
-		size_t addr2lineHuge;
-		bool sampling;
-		size_t samplingBw;
-		size_t samplingCnt;
 	} stack;
+	struct {
+		size_t bucket;
+		size_t threads;
+		size_t huge;
+	} addr2line;
+	struct {
+		bool enabled;
+		size_t volume;
+		size_t count;
+	} sampling;
 	struct {
 		bool instru;
 		bool mix;

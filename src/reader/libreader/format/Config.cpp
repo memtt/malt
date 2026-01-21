@@ -31,12 +31,20 @@ void to_json(nlohmann::json & json, const Config & config){
 				{"resolve", config.stack.resolve},
 				{"libunwind", config.stack.libunwind},
 				{"skip", config.stack.skip},
-				{"addr2lineBucket", config.stack.addr2lineBucket},
-				{"addr2lineThreads", config.stack.addr2lineThreads},
-				{"addr2lineHuge", config.stack.addr2lineHuge},
-				{"sampling", config.stack.sampling},
-				{"samplingBw", config.stack.samplingBw},
-				{"samplingCnt", config.stack.samplingCnt},
+			}
+		},
+		{
+			"addr2line", {
+				{"bucket", config.addr2line.bucket},
+				{"threads", config.addr2line.threads},
+				{"huge", config.addr2line.huge},
+			}
+		},
+		{
+			"sampling", {
+				{"enabled", config.sampling.enabled},
+				{"volume", config.sampling.volume},
+				{"count", config.sampling.count},
 			}
 		},
 		{
@@ -143,23 +151,29 @@ void from_json(const JsonIn & json, Config & config)
 	assert(jsContains(jsonStack, "resolve"));
 	assert(jsContains(jsonStack, "libunwind"));
 	assert(jsContains(jsonStack, "skip"));
-	assert(jsContains(jsonStack, "addr2lineBucket"));
-	assert(jsContains(jsonStack, "addr2lineThreads"));
-	assert(jsContains(jsonStack, "addr2lineHuge"));
-	assert(jsContains(jsonStack, "sampling"));
-	assert(jsContains(jsonStack, "samplingBw"));
-	assert(jsContains(jsonStack, "samplingCnt"));
 	jsonStack.at("enabled").get_to(config.stack.enabled);
 	jsonStack.at("mode").get_to(config.stack.mode);
 	jsonStack.at("resolve").get_to(config.stack.resolve);
 	jsonStack.at("libunwind").get_to(config.stack.libunwind);
 	jsonStack.at("skip").get_to(config.stack.skip);
-	jsonStack.at("addr2lineBucket").get_to(config.stack.addr2lineBucket);
-	jsonStack.at("addr2lineThreads").get_to(config.stack.addr2lineThreads);
-	jsonStack.at("addr2lineHuge").get_to(config.stack.addr2lineHuge);
-	jsonStack.at("sampling").get_to(config.stack.sampling);
-	jsonStack.at("samplingBw").get_to(config.stack.samplingBw);
-	jsonStack.at("samplingCnt").get_to(config.stack.samplingCnt);
+
+	//addr2line
+	JsonIn jsonAddr2line = json.at("addr2line");
+	assert(jsContains(jsonAddr2line, "bucket"));
+	assert(jsContains(jsonAddr2line, "threads"));
+	assert(jsContains(jsonAddr2line, "huge"));
+	jsonAddr2line.at("bucket").get_to(config.addr2line.bucket);
+	jsonAddr2line.at("threads").get_to(config.addr2line.threads);
+	jsonAddr2line.at("huge").get_to(config.addr2line.huge);
+
+	//sampling
+	JsonIn jsonSmpling = json.at("sampling");
+	assert(jsContains(jsonSmpling, "enabled"));
+	assert(jsContains(jsonSmpling, "volume"));
+	assert(jsContains(jsonSmpling, "count"));
+	jsonSmpling.at("enabled").get_to(config.sampling.enabled);
+	jsonSmpling.at("volume").get_to(config.sampling.volume);
+	jsonSmpling.at("count").get_to(config.sampling.count);
 
 	//python
 	JsonIn jsonPython = json.at("python");
