@@ -29,6 +29,7 @@ class WebProfile : public Profile
 		DLL_PUBLIC nlohmann::json getGlobalVariables(void) const;
 		DLL_PUBLIC nlohmann::json getFileLinesFlatProfile(const std::string & file, bool total) const;
 		DLL_PUBLIC nlohmann::json getBinaryAddressesFlatProfile(const std::string & binaryFile, const std::vector<size_t> & offsets, bool total) const;
+		DLL_PUBLIC nlohmann::json getBinaryAddressesFlatProfileAll(const std::string & binaryFile, bool total) const;
 		DLL_PUBLIC nlohmann::json getFlatFunctionProfile(bool own, bool total) const;
 		DLL_PUBLIC nlohmann::json getProcMapDistr(void) const;
 		DLL_PUBLIC nlohmann::json getScatter(void) const;
