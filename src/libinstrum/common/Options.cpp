@@ -390,25 +390,25 @@ bool validateOptionName(const std::string & value)
 bool checkDeprecated(const std::string & value)
 {
 	if (value == "time:linear_index") {
-		fprintf(stderr, "Option 'time:linear_index' as been renamed as `time:linear`");
+		fprintf(stderr, "Option 'time:linear_index' as been renamed as `time:linear`\n");
 		return true;
 	} else if (value == "stack:addr2lineBucket") {
-		fprintf(stderr, "Option 'stack:addr2lineBucket' as been renamed as `addr2line:bucket`");
+		fprintf(stderr, "Option 'stack:addr2lineBucket' as been renamed as `addr2line:bucket`\n");
 		return true;
 	} else if (value == "stack:addr2lineThreads") {
-		fprintf(stderr, "Option 'stack:addr2lineThreads' as been renamed as `addr2line:threads`");
+		fprintf(stderr, "Option 'stack:addr2lineThreads' as been renamed as `addr2line:threads`\n");
 		return true;
 	} else if (value == "stack:addr2lineHuge") {
-		fprintf(stderr, "Option 'stack:addr2lineHuge' as been renamed as `addr2line:huge`");
+		fprintf(stderr, "Option 'stack:addr2lineHuge' as been renamed as `addr2line:huge`\n");
 		return true;
 	} else if (value == "stack:sampling") {
-		fprintf(stderr, "Option 'stack:sampling' as been renamed as `sampling:enabled`");
+		fprintf(stderr, "Option 'stack:sampling' as been renamed as `sampling:enabled`\n");
 		return true;
 	} else if (value == "stack:samplingBw") {
-		fprintf(stderr, "Option 'stack:samplingBw' as been renamed as `sampling:volume`");
+		fprintf(stderr, "Option 'stack:samplingBw' as been renamed as `sampling:volume`\n");
 		return true;
 	} else if (value == "stack:samplingCnt") {
-		fprintf(stderr, "Option 'stack:samplingCnt' as been renamed as `sampling:count`");
+		fprintf(stderr, "Option 'stack:samplingCnt' as been renamed as `sampling:count`\n");
 		return true;
 	}
 	return false;
