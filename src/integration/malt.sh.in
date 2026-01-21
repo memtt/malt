@@ -337,6 +337,7 @@ maltPrepMPI()
 maltSelectProfile()
 {
 	PROFILE_DEFAULT=""
+	PROFILE_OOM="dump:watch-dog=true;dump:on-sys-full-at=80%;"
 	PROFILE_PYTHON_NO_STACK="python:stack=none;python:mix=false;stack:mode=none;"
 	PROFILE_PYTHON_ONLY="python:stack=enter-exit;python:mix=false;stack:mode=python;tools:nm=false;"
 	PROFILE_PYTHON_DOMAINS="python:stack=enter-exit;python:mix=false;stack:mode=backtrace;tools:nm=false;"
@@ -363,6 +364,7 @@ maltSelectProfile()
 		echo "python-sampling-10M   | ${PROFILE_PYTHON_SAMPLING_10M}"
 		echo "python-sampling-20M   | ${PROFILE_PYTHON_SAMPLING_20M}"
 		echo "python-full           | ${PROFILE_PYTHON_FULL}"
+		echo "oom                   | ${PROFILE_OOM}"
 		echo "-------------------------------------------------------------------"
 		exit 0
 	fi
@@ -399,6 +401,10 @@ maltSelectProfile()
 			;;
 		"python-full")
 			options="${PROFILE_PYTHON_FULL}"
+			;;
+		"oom")
+			echo "MALT: Using Out Of Memory profile" 1>&2
+			options="${PROFILE_OOM}"
 			;;
 		*)
 			echo "MALT: Invalid pre-configure profile : '${1}'" 1>&2

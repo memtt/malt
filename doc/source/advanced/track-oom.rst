@@ -51,6 +51,8 @@ to dump the profile so you need some margins. By experience, **80%** looks a goo
 .. code-block:: shell
 
     malt -o dump:watch-dog=true -o dump:on-sys-full-at=80% ./my_oom_program
+	# or shorter
+	malt -p oom ./my_oom_program
 
 Look in the profile
 -------------------
