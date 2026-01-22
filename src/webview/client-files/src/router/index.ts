@@ -49,16 +49,16 @@ function genRoutes(): Array<any>
     });
     if (process.env.VITE_APP != 'static') {
       routes.push({
-      path: '/sources',
-      name: 'Sources',
-      component: () => import('@/views/SourcesPage.vue'),
-      meta: { requiresAuth: true },
+        path: '/sources',
+        name: 'Sources',
+        component: () => import('@/views/SourcesPage.vue'),
+        meta: { requiresAuth: true },
       });
       routes.push({
-      path: '/call-tree',
-      name: 'Calltree',
-      component: () => import('@/views/CallTreePage.vue'),
-      meta: { requiresAuth: true },
+        path: '/call-tree',
+        name: 'Calltree',
+        component: () => import('@/views/CallTreePage.vue'),
+        meta: { requiresAuth: true },
       });
     }
     routes.push({
@@ -98,6 +98,22 @@ function genRoutes(): Array<any>
     component: () => import('@/views/HelpPage.vue'),
     meta: { requiresAuth: true },
   });
+
+  if (process.env.VITE_APP == 'static' || process.env.VITE_APP == 'summary') {
+    const hiddenPages: any = {
+      "static": ['/sources', '/call-tree',],
+      "summary": ['/sources', '/call-tree',],
+    };
+
+    hiddenPages[process.env.VITE_APP].forEach( (element: string) => {
+      routes.push({
+        path: element,
+        name: 'Not vailable page '+element,
+        component: () => import('@/views/StaticNotAvailPage.vue'),
+        meta: { requiresAuth: true },
+      });
+    });
+  }
   return routes;
 }
 
@@ -114,10 +130,10 @@ router.beforeEach((to, from, next) => {
   var static_app: boolean = false;
   console.log(process.env.VITE_APP);
   if (process.env.VITE_APP == 'static' || process.env.VITE_APP == 'summary') {
-    console.log("========"),
-    console.log(to.path);
     if (to.path === '/login') {
       next("/home");
+    /*} else if (enabledPages[process.env.VITE_APP][to.path] == undefined) {
+      next("/staticNotAvailPage");*/
     } else {
       next();
     }

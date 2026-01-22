@@ -231,10 +231,12 @@ bool genStaticWebsite(const WebProfile & profile, const std::string & path, bool
 	//remove
 	std::filesystem::remove(path + "/index.html");
 	std::filesystem::remove(path + "/favicon.ico");
+	std::filesystem::remove(path + "/data/malt-profile.json");
 
 	//copy static html
 	std::filesystem::copy_file(get_webview_www_static_path(onlySummary) + "/index.html", path + "/index.html");
 	std::filesystem::copy_file(get_webview_www_static_path(onlySummary) + "/favicon.ico", path + "/favicon.ico");
+	std::filesystem::copy_file(profile.getFileName(), path + "/data/malt-profile.json");
 
 	//ok
 	return true;

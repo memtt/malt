@@ -17,6 +17,7 @@ namespace MALTReader
 
 /**********************************************************/
 Profile::Profile(const std::string & fname, bool loadProgressBar)
+	:fname(fname)
 {
 	//load it
 	#ifdef USE_INTERNAL_JSON_IN
@@ -52,6 +53,12 @@ Profile::~Profile(void)
 const Extractor & Profile::getExtractor(void) const
 {
 	return *this->extractor;
+}
+
+/**********************************************************/
+const std::string & Profile::getFileName(void) const
+{
+	return this->fname;
 }
 
 }

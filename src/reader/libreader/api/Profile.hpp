@@ -26,7 +26,9 @@ class Profile
 		Profile(const std::string & fname, bool loadProgressBar = false);
 		virtual ~Profile(void);
 		const Extractor & getExtractor(void) const;
+		const std::string & getFileName(void) const;
 	protected:
+		const std::string fname;
 		MALTFormat::MaltProfile profile;
 		Extractor * extractor{nullptr};
 		TraceReader * traceReader{nullptr};
