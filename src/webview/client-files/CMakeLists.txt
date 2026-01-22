@@ -53,27 +53,29 @@ list(APPEND ${WEBVIEW_SRCS}
 )
 set(WEBVIEW_SRC_NEWER off)
 foreach(item ${WEBVIEW_SRCS})
-	if (${item} IS_NEWER_THAN ${CMAKE_CURRENT_SOURCE_DIR}/dist/index.html)
+	if (${item} IS_NEWER_THAN ${CMAKE_CURRENT_SOURCE_DIR}/dist/dynamic/index.html)
 		set(WEBVIEW_SRC_NEWER on)
 	endif()
 endforeach()
 
 #######################################################
 # build
-if (NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/dist/index.html OR ${WEBVIEW_SRC_NEWER} OR ${WEBVIEW_REBUILD} STREQUAL "FORCE")
+if (NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/dist/dynamic/index.html OR ${WEBVIEW_SRC_NEWER} OR ${WEBVIEW_REBUILD} STREQUAL "FORCE")
 	message(STATUS "Need building webview-client")
 	if (NODE_FOUND)
 		add_custom_command(
-			OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/dist/index.html
+			OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/dist/dynamic/index.html
 			COMMENT "Building client webview..."
-			BYPRODUCTS ${CMAKE_CURRENT_BINARY_DIR}/dist/assets/index.js
-					${CMAKE_CURRENT_BINARY_DIR}/dist/assets/style.css
+			BYPRODUCTS ${CMAKE_CURRENT_BINARY_DIR}/dist/dynamic/assets/index.js
+					${CMAKE_CURRENT_BINARY_DIR}/dist/dynamic/assets/style.css
+					${CMAKE_CURRENT_BINARY_DIR}/dist/static/index.html
+					${CMAKE_CURRENT_BINARY_DIR}/dist/summary/index.html
 			COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/build.sh "${CMAKE_CURRENT_BINARY_DIR}" "${NODE_MODULES}"
 			DEPENDS ${NODE_MODULES_DEPS} ${WEBVIEW_SRCS}
 			WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
 		)
 		set(CLIENT_DIST_DIR ${CMAKE_CURRENT_BINARY_DIR}/dist)
-		set(CLIENT_BUILD_DEPS ${CLIENT_DIST_DIR}/index.html)
+		set(CLIENT_BUILD_DEPS ${CLIENT_DIST_DIR}/dynamic/index.html)
 	else()
 		message(FATAL_ERROR "Webview client code not pre-built and not have NodeJS to build it !")
 	endif()
@@ -91,4 +93,6 @@ add_custom_target(webview-client-all
 	
 #######################################################
 ## Install the webview into share directory
-install(DIRECTORY ${CLIENT_DIST_DIR} DESTINATION share/malt/webview)
+install(DIRECTORY ${CLIENT_DIST_DIR}/dynamic DESTINATION share/malt/webview)
+install(DIRECTORY ${CLIENT_DIST_DIR}/static DESTINATION share/malt/webview)
+install(DIRECTORY ${CLIENT_DIST_DIR}/summary DESTINATION share/malt/webview)

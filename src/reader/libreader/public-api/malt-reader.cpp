@@ -23,8 +23,7 @@ using namespace MALTReader;
 struct malt_reader_t
 {
 	WebProfile * profile{nullptr};
-	const char * last_response{nullptr};
-	bool auto_delete{false};
+	bool verbose{false};
 };
 
 /**********************************************************/
@@ -32,15 +31,21 @@ extern "C"
 {
 
 /**********************************************************/
-DLL_PUBLIC malt_reader_t * malt_reader_init(const char * fname, bool progress_bar, bool auto_delete)
+DLL_PUBLIC malt_reader_t * malt_reader_init(const char * fname, size_t flags)
 {
+	//config
+	const bool progress_bar = flags & MALT_READER_PROGRESS_BAR;
+	const bool verbose =  flags & MALT_READER_VERBOSE;
+
 	try {
-		fprintf(stderr, "[MALT-WEBVIEW2] Loading : %s\n", fname);
+		if (verbose)
+			fprintf(stderr, "[MALT-WEBVIEW2] Loading : %s\n", fname);
 		WebProfile * profile = new WebProfile(fname, progress_bar);
 		malt_reader_t * reader = new malt_reader_t();
 		reader->profile = profile;
-		reader->auto_delete = auto_delete;
-		fprintf(stderr, "[MALT-WEBVIEW2] Loading OK => %p\n", reader);
+		reader->verbose = verbose;
+		if (verbose)
+			fprintf(stderr, "[MALT-WEBVIEW2] Loading OK => %p\n", reader);
 		return reader;
 	} catch(std::exception & e) {
 		fprintf(stderr, "[MALT-WEBVIEW2] Fail to load profile : %s\n", fname);
@@ -55,12 +60,17 @@ DLL_PUBLIC void malt_reader_fini(struct malt_reader_t* reader)
 	if (reader == nullptr)
 		return;
 
-	//free
-	malt_reader_json_free_last_response(reader);
-
 	// ok
 	delete reader->profile;
 	delete reader;
+}
+
+/**********************************************************/
+DLL_PUBLIC void malt_reader_set_verbose(struct malt_reader_t * reader, bool verbose)
+{
+	if (reader == nullptr)
+		return;
+	reader->verbose = verbose;
 }
 
 /**********************************************************/
@@ -70,28 +80,14 @@ DLL_PUBLIC const char * malt_reader_version(void)
 }
 
 /**********************************************************/
-DLL_PUBLIC void malt_reader_json_free_last_response(struct malt_reader_t* reader)
-{
-	//check
-	assert(reader != nullptr);
-
-	//if needs
-	if (reader->auto_delete) {
-		free((void*)(reader->last_response));
-		reader->last_response = nullptr;
-	}
-}
-
-/**********************************************************/
-DLL_PUBLIC const char * malt_reader_hanle_request(struct malt_reader_t* reader, const char * name, std::function<nlohmann::json()> handler)
+DLL_PUBLIC char * malt_reader_handle_request(struct malt_reader_t* reader, const char * name, std::function<nlohmann::json()> handler)
 {
 	try {
-		fprintf(stderr, "[MALT-WEBVIEW-2] Request %s(%p)\n", name, reader);
-		malt_reader_json_free_last_response(reader);
+		if (reader->verbose)
+			fprintf(stderr, "[MALT-WEBVIEW-2] Request %s(%p)\n", name, reader);
 		nlohmann::json json = handler();
 		std::string str = json.dump();
-		const char * res = strdup(str.c_str());
-		reader->last_response = res;
+		char * res = strdup(str.c_str());
 		//fprintf(stderr, "[MALT-WEBVIEW-2] Response : %s\n", res);
 		return res;
 	} catch (std::exception & e) {
@@ -100,119 +96,119 @@ DLL_PUBLIC const char * malt_reader_hanle_request(struct malt_reader_t* reader, 
 }
 
 /**********************************************************/
-DLL_PUBLIC const char * malt_reader_json_get_proc_map(struct malt_reader_t* reader)
+DLL_PUBLIC char * malt_reader_json_get_proc_map(struct malt_reader_t* reader)
 {
-	return malt_reader_hanle_request(reader, "GET_PROC_MAP", [reader]() {
+	return malt_reader_handle_request(reader, "GET_PROC_MAP", [reader]() {
 		return reader->profile->getProcMap();
 	});
 }
 
 /**********************************************************/
-DLL_PUBLIC const char * malt_reader_json_get_debug_stack_list(struct malt_reader_t* reader)
+DLL_PUBLIC char * malt_reader_json_get_debug_stack_list(struct malt_reader_t* reader)
 {
-	return malt_reader_hanle_request(reader, "GET_DEBUG_STACK_LIST", [reader]() {
+	return malt_reader_handle_request(reader, "GET_DEBUG_STACK_LIST", [reader]() {
 		return reader->profile->getDebugStackList();
 	});
 }
 
 /**********************************************************/
-DLL_PUBLIC const char * malt_reader_json_get_global_variables(struct malt_reader_t* reader)
+DLL_PUBLIC char * malt_reader_json_get_global_variables(struct malt_reader_t* reader)
 {
-	return malt_reader_hanle_request(reader, "GEt_GLOBAL_VARIABLES", [reader]() {
+	return malt_reader_handle_request(reader, "GEt_GLOBAL_VARIABLES", [reader]() {
 		return reader->profile->getGlobalVariables();
 	});
 }
 
 /**********************************************************/
-DLL_PUBLIC const char * malt_reader_json_get_summary(struct malt_reader_t* reader)
+DLL_PUBLIC char * malt_reader_json_get_summary(struct malt_reader_t* reader)
 {
-	return malt_reader_hanle_request(reader, "GET_SUMMARY", [reader]() {
+	return malt_reader_handle_request(reader, "GET_SUMMARY", [reader]() {
 		return reader->profile->getSummary();
 	});
 }
 
 /**********************************************************/
-DLL_PUBLIC const char * malt_reader_json_get_summary_v2(struct malt_reader_t* reader)
+DLL_PUBLIC char * malt_reader_json_get_summary_v2(struct malt_reader_t* reader)
 {
-	return malt_reader_hanle_request(reader, "GET_SUMMARY_V2", [reader]() {
+	return malt_reader_handle_request(reader, "GET_SUMMARY_V2", [reader]() {
 		return reader->profile->getSummaryV2();
 	});
 }
 
 /**********************************************************/
-DLL_PUBLIC const char * malt_reader_json_get_file_lines_flat_profile(struct malt_reader_t* reader, const char * file, bool total)
+DLL_PUBLIC char * malt_reader_json_get_file_lines_flat_profile(struct malt_reader_t* reader, const char * file, bool total)
 {
-	return malt_reader_hanle_request(reader, "GET_FILE_LINES_FLAT_PROFILE", [reader, file, total]() {
+	return malt_reader_handle_request(reader, "GET_FILE_LINES_FLAT_PROFILE", [reader, file, total]() {
 		return reader->profile->getFileLinesFlatProfile(file, total);
 	});
 }
 
 /**********************************************************/
-DLL_PUBLIC const char * malt_reader_json_get_flat_function_profile(struct malt_reader_t* reader, bool own, bool total)
+DLL_PUBLIC char * malt_reader_json_get_flat_function_profile(struct malt_reader_t* reader, bool own, bool total)
 {
-	return malt_reader_hanle_request(reader, "GET_FLAT_FUNCTION_PROFILE", [reader, own, total]() {
+	return malt_reader_handle_request(reader, "GET_FLAT_FUNCTION_PROFILE", [reader, own, total]() {
 		return reader->profile->getFlatFunctionProfile(own, total);
 	});
 }
 
 /**********************************************************/
-DLL_PUBLIC const char * malt_reader_json_get_proc_map_distr(struct malt_reader_t* reader)
+DLL_PUBLIC char * malt_reader_json_get_proc_map_distr(struct malt_reader_t* reader)
 {
-	return malt_reader_hanle_request(reader, "GET_PROC_MAP_DISTR", [reader]() {
+	return malt_reader_handle_request(reader, "GET_PROC_MAP_DISTR", [reader]() {
 		return reader->profile->getProcMapDistr();
 	});
 }
 
 /**********************************************************/
-DLL_PUBLIC const char * malt_reader_json_get_scatter(struct malt_reader_t* reader)
+DLL_PUBLIC char * malt_reader_json_get_scatter(struct malt_reader_t* reader)
 {
-	return malt_reader_hanle_request(reader, "GET_SCATTER", [reader]() {
+	return malt_reader_handle_request(reader, "GET_SCATTER", [reader]() {
 		return reader->profile->getScatter();
 	});
 }
 
 /**********************************************************/
-DLL_PUBLIC const char * malt_reader_json_get_size_map(struct malt_reader_t* reader)
+DLL_PUBLIC char * malt_reader_json_get_size_map(struct malt_reader_t* reader)
 {
-	return malt_reader_hanle_request(reader, "GET_SIZE_MAP", [reader]() {
+	return malt_reader_handle_request(reader, "GET_SIZE_MAP", [reader]() {
 		return reader->profile->getSizeMap();
 	});
 }
 
 /**********************************************************/
-DLL_PUBLIC const char * malt_reader_json_get_realloc_map(struct malt_reader_t* reader)
+DLL_PUBLIC char * malt_reader_json_get_realloc_map(struct malt_reader_t* reader)
 {
-	return malt_reader_hanle_request(reader, "GET_REALLOC_MAP", [reader]() {
+	return malt_reader_handle_request(reader, "GET_REALLOC_MAP", [reader]() {
 		return reader->profile->getReallocMap();
 	});
 }
 
 /**********************************************************/
-DLL_PUBLIC const char * malt_reader_json_get_timed_values(struct malt_reader_t* reader)
+DLL_PUBLIC char * malt_reader_json_get_timed_values(struct malt_reader_t* reader)
 {
-	return malt_reader_hanle_request(reader, "GET_TIMED_VALUES", [reader]() {
+	return malt_reader_handle_request(reader, "GET_TIMED_VALUES", [reader]() {
 		return reader->profile->getTimedValues();
 	});
 }
 
 /**********************************************************/
-DLL_PUBLIC const char * malt_reader_json_get_filtered_stacks_on_file_line(struct malt_reader_t* reader, const char * file, size_t line)
+DLL_PUBLIC char * malt_reader_json_get_filtered_stacks_on_file_line(struct malt_reader_t* reader, const char * file, size_t line)
 {
-	return malt_reader_hanle_request(reader, "GET_FILTERED_STACKS_ON_FILE_LINE", [reader, file, line]() {
+	return malt_reader_handle_request(reader, "GET_FILTERED_STACKS_ON_FILE_LINE", [reader, file, line]() {
 		return reader->profile->getFileLinesFlatProfile(file, line);
 	});
 }
 
 /**********************************************************/
-DLL_PUBLIC const char * malt_reader_json_get_filterd_stacks_on_symbol(struct malt_reader_t *reader, const char * func)
+DLL_PUBLIC char * malt_reader_json_get_filterd_stacks_on_symbol(struct malt_reader_t *reader, const char * func)
 {
-	return malt_reader_hanle_request(reader, "GET_FILTERED_STACKS_ON_SYMBOL", [reader, func]() {
+	return malt_reader_handle_request(reader, "GET_FILTERED_STACKS_ON_SYMBOL", [reader, func]() {
 		return reader->profile->getFilterdStacksOnSymbol(func);
 	});
 }
 
 /**********************************************************/
-DLL_PUBLIC const char * malt_reader_json_get_binary_addresses_profile(struct malt_reader_t* reader, const char * binary, void ** addresses, size_t addr_count, bool total)
+DLL_PUBLIC char * malt_reader_json_get_binary_addresses_profile(struct malt_reader_t* reader, const char * binary, void ** addresses, size_t addr_count, bool total)
 {
 	//build array
 	std::vector<size_t> addr;
@@ -221,24 +217,24 @@ DLL_PUBLIC const char * malt_reader_json_get_binary_addresses_profile(struct mal
 		addr.push_back((size_t)addresses[i]);
 
 	//call
-	return malt_reader_hanle_request(reader, "GET_BINARY_ADDRESSSES_PROFILE", [reader, binary, addr, addr_count, total]() {
+	return malt_reader_handle_request(reader, "GET_BINARY_ADDRESSSES_PROFILE", [reader, binary, addr, addr_count, total]() {
 		return reader->profile->getBinaryAddressesFlatProfile(binary, addr, total);
 	});
 }
 
 /**********************************************************/
-DLL_PUBLIC const char * malt_reader_json_get_binary_addresses_profile_all(struct malt_reader_t* reader, const char * binary, bool total)
+DLL_PUBLIC char * malt_reader_json_get_binary_addresses_profile_all(struct malt_reader_t* reader, const char * binary, bool total)
 {
 	//call
-	return malt_reader_hanle_request(reader, "GET_BINARY_ADDRESSSES_PROFILE", [reader, binary, total]() {
+	return malt_reader_handle_request(reader, "GET_BINARY_ADDRESSSES_PROFILE", [reader, binary, total]() {
 		return reader->profile->getBinaryAddressesFlatProfileAll(binary, total);
 	});
 }
 
 /**********************************************************/
-const char * malt_reader_json_get_call_stack_next_level(struct malt_reader_t* reader, size_t parentStackId, size_t parentDepth, const char * function, const char * file, int line)
+DLL_PUBLIC char * malt_reader_json_get_call_stack_next_level(struct malt_reader_t* reader, size_t parentStackId, size_t parentDepth, const char * function, const char * file, int line)
 {
-	return malt_reader_hanle_request(reader, "GET_CALL_STACK_NEXT_LEVEL", [reader, parentStackId, parentDepth, file, function, line]() {
+	return malt_reader_handle_request(reader, "GET_CALL_STACK_NEXT_LEVEL", [reader, parentStackId, parentDepth, file, function, line]() {
 		//build filter
 		LocationFilter filter;
 		if (function != nullptr)
@@ -253,26 +249,37 @@ const char * malt_reader_json_get_call_stack_next_level(struct malt_reader_t* re
 }
 
 /**********************************************************/
-DLL_PUBLIC const char * malt_reader_json_get_stacks_mem(struct malt_reader_t* reader)
+DLL_PUBLIC char * malt_reader_json_get_stacks_mem(struct malt_reader_t* reader)
 {
-	return malt_reader_hanle_request(reader, "GET_STACKS_MEM", [reader]() {
+	return malt_reader_handle_request(reader, "GET_STACKS_MEM", [reader]() {
 		return reader->profile->getStacksMem();
 	});
 }
 
 /**********************************************************/
-DLL_PUBLIC const char * malt_reader_json_get_stack_info_on_function(struct malt_reader_t* reader, size_t thread_id)
+DLL_PUBLIC char * malt_reader_json_get_stack_info_on_function(struct malt_reader_t* reader, size_t thread_id)
 {
-	return malt_reader_hanle_request(reader, "GET_STACK_INFO_ON_FUNCTION", [reader, thread_id]() {
+	return malt_reader_handle_request(reader, "GET_STACK_INFO_ON_FUNCTION", [reader, thread_id]() {
 		return reader->profile->getStackInfoOnFunction(thread_id);
 	});
 }
 
 /**********************************************************/
-DLL_PUBLIC const char * malt_reader_json_get_call_tree(struct malt_reader_t* reader, ssize_t nodeId, ssize_t depth, ssize_t height, double min_cost, const char * func, const char * metric, bool is_ratio)
+DLL_PUBLIC char * malt_reader_json_get_call_tree(struct malt_reader_t* reader, ssize_t nodeId, ssize_t depth, ssize_t height, double min_cost, const char * func, const char * metric, bool is_ratio)
 {
-	return malt_reader_hanle_request(reader, "GET_CALL_TREE", [reader, nodeId, depth, height, min_cost, func, metric, is_ratio]() {
+	return malt_reader_handle_request(reader, "GET_CALL_TREE", [reader, nodeId, depth, height, min_cost, func, metric, is_ratio]() {
 		return reader->profile->getCallTree(nodeId, depth, height, min_cost, func, metric, is_ratio);
+	});
+}
+
+/**********************************************************/
+DLL_PUBLIC char * malt_reader_json_get_static(struct malt_reader_t * reader, bool only_summary)
+{
+	return malt_reader_handle_request(reader, "GET_STATIC_FULL", [reader, only_summary]() {
+		if (only_summary)
+			return reader->profile->getStaticSummary();
+		else
+			return reader->profile->getStatic();
 	});
 }
 
@@ -283,21 +290,12 @@ DLL_PUBLIC bool malt_reader_is_source_file(struct malt_reader_t* reader, const c
 }
 
 /**********************************************************/
-DLL_PUBLIC const char * malt_reader_json_request(struct malt_reader_t* reader, const char * request, bool * continue_run)
+DLL_PUBLIC char * malt_reader_json_request(struct malt_reader_t* reader, const char * request, bool * continue_run)
 {
-	malt_reader_json_free_last_response(reader);
 	std::string str = malt_reader_json_request_cpp(reader, request, continue_run);
-	const char * res = strdup(str.c_str());
-	reader->last_response = res;
+	char * res = strdup(str.c_str());
 	//fprintf(stderr, "[MALT-WEBVIEW-2] Response : %s\n", res);
 	return res;
-}
-
-/**********************************************************/
-DLL_PUBLIC void malt_reader_json_free_response(const char * response)
-{
-	//fprintf(stderr, "[MALT-WEBVIEW-2] free(%p)\n", response);
-	free((void*)response);
 }
 
 }
@@ -312,7 +310,8 @@ DLL_PUBLIC std::string malt_reader_json_request_cpp(struct malt_reader_t* reader
 	//parse request
 	try {
 		nlohmann::json reqJson = nlohmann::json::parse(request);
-		//fprintf(stderr, "[MALT-WEBVIEW-2] Request %s(%p)\n", reqJson.dump().c_str(), reader);
+		if (reader->verbose)
+			fprintf(stderr, "[MALT-WEBVIEW-2] Request %s(%p)\n", reqJson.dump().c_str(), reader);
 	
 		//  Do some 'work'
 		if (reqJson["operation"] == "getSummaryV2") {

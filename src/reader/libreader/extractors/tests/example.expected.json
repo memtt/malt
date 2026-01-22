@@ -46,7 +46,7 @@
     "function": "_dl_start_user",
     "functionShort": "_dl_start_user",
     "line": -1,
-    "offsetInBinary": 122144
+    "offset": 122144
    },
    "parentStackDepth": 0,
    "parentStackId": 0,
@@ -99,7 +99,7 @@
     "function": "_start",
     "functionShort": "_start",
     "line": -1,
-    "offsetInBinary": 4453
+    "offset": 4453
    },
    "parentStackDepth": 0,
    "parentStackId": 0,
@@ -154,7 +154,7 @@
     "function": "__libc_start_main",
     "functionShort": "__libc_start_main",
     "line": -1,
-    "offsetInBinary": 161001
+    "offset": 161001
    },
    "parentStackDepth": 1,
    "parentStackId": 1,
@@ -220,7 +220,7 @@
      "function": "caller2()",
      "functionShort": "caller2()",
      "line": 52,
-     "offsetInBinary": 5205
+     "offset": 5205
     },
     {
      "binary": "src/reader/libreader/extractors/tests/extractor-example",
@@ -228,7 +228,7 @@
      "function": "main_sim()",
      "functionShort": "main_sim()",
      "line": 59,
-     "offsetInBinary": 5275
+     "offset": 5275
     },
     {
      "binary": "src/reader/libreader/extractors/tests/extractor-example",
@@ -236,7 +236,7 @@
      "function": "main",
      "functionShort": "main",
      "line": 66,
-     "offsetInBinary": 5397
+     "offset": 5397
     },
     {
      "binary": "/usr/lib64/libc.so.6",
@@ -244,7 +244,7 @@
      "function": "__libc_init_first",
      "functionShort": "__libc_init_first",
      "line": -1,
-     "offsetInBinary": 160814
+     "offset": 160814
     },
     {
      "binary": "/usr/lib64/libc.so.6",
@@ -252,7 +252,7 @@
      "function": "__libc_start_main",
      "functionShort": "__libc_start_main",
      "line": -1,
-     "offsetInBinary": 161001
+     "offset": 161001
     },
     {
      "binary": "src/reader/libreader/extractors/tests/extractor-example",
@@ -260,7 +260,7 @@
      "function": "_start",
      "functionShort": "_start",
      "line": -1,
-     "offsetInBinary": 4453
+     "offset": 4453
     }
    ]
   },
@@ -310,7 +310,7 @@
      "function": "caller2()",
      "functionShort": "caller2()",
      "line": 50,
-     "offsetInBinary": 5167
+     "offset": 5167
     },
     {
      "binary": "src/reader/libreader/extractors/tests/extractor-example",
@@ -318,7 +318,7 @@
      "function": "main_sim()",
      "functionShort": "main_sim()",
      "line": 59,
-     "offsetInBinary": 5275
+     "offset": 5275
     },
     {
      "binary": "src/reader/libreader/extractors/tests/extractor-example",
@@ -326,7 +326,7 @@
      "function": "main",
      "functionShort": "main",
      "line": 66,
-     "offsetInBinary": 5397
+     "offset": 5397
     },
     {
      "binary": "/usr/lib64/libc.so.6",
@@ -334,7 +334,7 @@
      "function": "__libc_init_first",
      "functionShort": "__libc_init_first",
      "line": -1,
-     "offsetInBinary": 160814
+     "offset": 160814
     },
     {
      "binary": "/usr/lib64/libc.so.6",
@@ -342,7 +342,7 @@
      "function": "__libc_start_main",
      "functionShort": "__libc_start_main",
      "line": -1,
-     "offsetInBinary": 161001
+     "offset": 161001
     },
     {
      "binary": "src/reader/libreader/extractors/tests/extractor-example",
@@ -350,7 +350,7 @@
      "function": "_start",
      "functionShort": "_start",
      "line": -1,
-     "offsetInBinary": 4453
+     "offset": 4453
     }
    ]
   },
@@ -400,7 +400,7 @@
      "function": "leaf()",
      "functionShort": "leaf()",
      "line": 29,
-     "offsetInBinary": 4849
+     "offset": 4849
     },
     {
      "binary": "src/reader/libreader/extractors/tests/extractor-example",
@@ -408,7 +408,7 @@
      "function": "callerRecurse(int)",
      "functionShort": "callerRecurse(int)",
      "line": 36,
-     "offsetInBinary": 4923
+     "offset": 4923
     },
     {
      "binary": "src/reader/libreader/extractors/tests/extractor-example",
@@ -416,7 +416,7 @@
      "function": "callerRecurse(int)",
      "functionShort": "callerRecurse(int)",
      "line": 38,
-     "offsetInBinary": 4938
+     "offset": 4938
     },
     {
      "binary": "src/reader/libreader/extractors/tests/extractor-example",
@@ -424,7 +424,7 @@
      "function": "callerRecurse(int)",
      "functionShort": "callerRecurse(int)",
      "line": 38,
-     "offsetInBinary": 4938
+     "offset": 4938
     },
     {
      "binary": "src/reader/libreader/extractors/tests/extractor-example",
@@ -432,7 +432,7 @@
      "function": "callerRecurse(int)",
      "functionShort": "callerRecurse(int)",
      "line": 38,
-     "offsetInBinary": 4938
+     "offset": 4938
     },
     {
      "binary": "src/reader/libreader/extractors/tests/extractor-example",
@@ -440,7 +440,7 @@
      "function": "caller()",
      "functionShort": "caller()",
      "line": 44,
-     "offsetInBinary": 5053
+     "offset": 5053
     },
     {
      "binary": "src/reader/libreader/extractors/tests/extractor-example",
@@ -448,7 +448,7 @@
      "function": "main_sim()",
      "functionShort": "main_sim()",
      "line": 58,
-     "offsetInBinary": 5270
+     "offset": 5270
     },
     {
      "binary": "src/reader/libreader/extractors/tests/extractor-example",
@@ -456,7 +456,7 @@
      "function": "main",
      "functionShort": "main",
      "line": 66,
-     "offsetInBinary": 5397
+     "offset": 5397
     },
     {
      "binary": "/usr/lib64/libc.so.6",
@@ -464,7 +464,7 @@
      "function": "__libc_init_first",
      "functionShort": "__libc_init_first",
      "line": -1,
-     "offsetInBinary": 160814
+     "offset": 160814
     },
     {
      "binary": "/usr/lib64/libc.so.6",
@@ -472,7 +472,7 @@
      "function": "__libc_start_main",
      "functionShort": "__libc_start_main",
      "line": -1,
-     "offsetInBinary": 161001
+     "offset": 161001
     },
     {
      "binary": "src/reader/libreader/extractors/tests/extractor-example",
@@ -480,7 +480,7 @@
      "function": "_start",
      "functionShort": "_start",
      "line": -1,
-     "offsetInBinary": 4453
+     "offset": 4453
     }
    ]
   },
@@ -530,7 +530,7 @@
      "function": "leaf()",
      "functionShort": "leaf()",
      "line": 28,
-     "offsetInBinary": 4837
+     "offset": 4837
     },
     {
      "binary": "src/reader/libreader/extractors/tests/extractor-example",
@@ -538,7 +538,7 @@
      "function": "callerRecurse(int)",
      "functionShort": "callerRecurse(int)",
      "line": 36,
-     "offsetInBinary": 4923
+     "offset": 4923
     },
     {
      "binary": "src/reader/libreader/extractors/tests/extractor-example",
@@ -546,7 +546,7 @@
      "function": "callerRecurse(int)",
      "functionShort": "callerRecurse(int)",
      "line": 38,
-     "offsetInBinary": 4938
+     "offset": 4938
     },
     {
      "binary": "src/reader/libreader/extractors/tests/extractor-example",
@@ -554,7 +554,7 @@
      "function": "callerRecurse(int)",
      "functionShort": "callerRecurse(int)",
      "line": 38,
-     "offsetInBinary": 4938
+     "offset": 4938
     },
     {
      "binary": "src/reader/libreader/extractors/tests/extractor-example",
@@ -562,7 +562,7 @@
      "function": "callerRecurse(int)",
      "functionShort": "callerRecurse(int)",
      "line": 38,
-     "offsetInBinary": 4938
+     "offset": 4938
     },
     {
      "binary": "src/reader/libreader/extractors/tests/extractor-example",
@@ -570,7 +570,7 @@
      "function": "caller()",
      "functionShort": "caller()",
      "line": 44,
-     "offsetInBinary": 5053
+     "offset": 5053
     },
     {
      "binary": "src/reader/libreader/extractors/tests/extractor-example",
@@ -578,7 +578,7 @@
      "function": "main_sim()",
      "functionShort": "main_sim()",
      "line": 58,
-     "offsetInBinary": 5270
+     "offset": 5270
     },
     {
      "binary": "src/reader/libreader/extractors/tests/extractor-example",
@@ -586,7 +586,7 @@
      "function": "main",
      "functionShort": "main",
      "line": 66,
-     "offsetInBinary": 5397
+     "offset": 5397
     },
     {
      "binary": "/usr/lib64/libc.so.6",
@@ -594,7 +594,7 @@
      "function": "__libc_init_first",
      "functionShort": "__libc_init_first",
      "line": -1,
-     "offsetInBinary": 160814
+     "offset": 160814
     },
     {
      "binary": "/usr/lib64/libc.so.6",
@@ -602,7 +602,7 @@
      "function": "__libc_start_main",
      "functionShort": "__libc_start_main",
      "line": -1,
-     "offsetInBinary": 161001
+     "offset": 161001
     },
     {
      "binary": "src/reader/libreader/extractors/tests/extractor-example",
@@ -610,7 +610,7 @@
      "function": "_start",
      "functionShort": "_start",
      "line": -1,
-     "offsetInBinary": 4453
+     "offset": 4453
     }
    ]
   },
@@ -660,7 +660,7 @@
      "function": "leaf()",
      "functionShort": "leaf()",
      "line": 25,
-     "offsetInBinary": 4777
+     "offset": 4777
     },
     {
      "binary": "src/reader/libreader/extractors/tests/extractor-example",
@@ -668,7 +668,7 @@
      "function": "callerRecurse(int)",
      "functionShort": "callerRecurse(int)",
      "line": 36,
-     "offsetInBinary": 4923
+     "offset": 4923
     },
     {
      "binary": "src/reader/libreader/extractors/tests/extractor-example",
@@ -676,7 +676,7 @@
      "function": "callerRecurse(int)",
      "functionShort": "callerRecurse(int)",
      "line": 38,
-     "offsetInBinary": 4938
+     "offset": 4938
     },
     {
      "binary": "src/reader/libreader/extractors/tests/extractor-example",
@@ -684,7 +684,7 @@
      "function": "callerRecurse(int)",
      "functionShort": "callerRecurse(int)",
      "line": 38,
-     "offsetInBinary": 4938
+     "offset": 4938
     },
     {
      "binary": "src/reader/libreader/extractors/tests/extractor-example",
@@ -692,7 +692,7 @@
      "function": "callerRecurse(int)",
      "functionShort": "callerRecurse(int)",
      "line": 38,
-     "offsetInBinary": 4938
+     "offset": 4938
     },
     {
      "binary": "src/reader/libreader/extractors/tests/extractor-example",
@@ -700,7 +700,7 @@
      "function": "caller()",
      "functionShort": "caller()",
      "line": 44,
-     "offsetInBinary": 5053
+     "offset": 5053
     },
     {
      "binary": "src/reader/libreader/extractors/tests/extractor-example",
@@ -708,7 +708,7 @@
      "function": "main_sim()",
      "functionShort": "main_sim()",
      "line": 58,
-     "offsetInBinary": 5270
+     "offset": 5270
     },
     {
      "binary": "src/reader/libreader/extractors/tests/extractor-example",
@@ -716,7 +716,7 @@
      "function": "main",
      "functionShort": "main",
      "line": 66,
-     "offsetInBinary": 5397
+     "offset": 5397
     },
     {
      "binary": "/usr/lib64/libc.so.6",
@@ -724,7 +724,7 @@
      "function": "__libc_init_first",
      "functionShort": "__libc_init_first",
      "line": -1,
-     "offsetInBinary": 160814
+     "offset": 160814
     },
     {
      "binary": "/usr/lib64/libc.so.6",
@@ -732,7 +732,7 @@
      "function": "__libc_start_main",
      "functionShort": "__libc_start_main",
      "line": -1,
-     "offsetInBinary": 161001
+     "offset": 161001
     },
     {
      "binary": "src/reader/libreader/extractors/tests/extractor-example",
@@ -740,7 +740,7 @@
      "function": "_start",
      "functionShort": "_start",
      "line": -1,
-     "offsetInBinary": 4453
+     "offset": 4453
     }
    ]
   },
@@ -790,7 +790,7 @@
      "function": "leaf()",
      "functionShort": "leaf()",
      "line": 24,
-     "offsetInBinary": 4763
+     "offset": 4763
     },
     {
      "binary": "src/reader/libreader/extractors/tests/extractor-example",
@@ -798,7 +798,7 @@
      "function": "callerRecurse(int)",
      "functionShort": "callerRecurse(int)",
      "line": 36,
-     "offsetInBinary": 4923
+     "offset": 4923
     },
     {
      "binary": "src/reader/libreader/extractors/tests/extractor-example",
@@ -806,7 +806,7 @@
      "function": "callerRecurse(int)",
      "functionShort": "callerRecurse(int)",
      "line": 38,
-     "offsetInBinary": 4938
+     "offset": 4938
     },
     {
      "binary": "src/reader/libreader/extractors/tests/extractor-example",
@@ -814,7 +814,7 @@
      "function": "callerRecurse(int)",
      "functionShort": "callerRecurse(int)",
      "line": 38,
-     "offsetInBinary": 4938
+     "offset": 4938
     },
     {
      "binary": "src/reader/libreader/extractors/tests/extractor-example",
@@ -822,7 +822,7 @@
      "function": "callerRecurse(int)",
      "functionShort": "callerRecurse(int)",
      "line": 38,
-     "offsetInBinary": 4938
+     "offset": 4938
     },
     {
      "binary": "src/reader/libreader/extractors/tests/extractor-example",
@@ -830,7 +830,7 @@
      "function": "caller()",
      "functionShort": "caller()",
      "line": 44,
-     "offsetInBinary": 5053
+     "offset": 5053
     },
     {
      "binary": "src/reader/libreader/extractors/tests/extractor-example",
@@ -838,7 +838,7 @@
      "function": "main_sim()",
      "functionShort": "main_sim()",
      "line": 58,
-     "offsetInBinary": 5270
+     "offset": 5270
     },
     {
      "binary": "src/reader/libreader/extractors/tests/extractor-example",
@@ -846,7 +846,7 @@
      "function": "main",
      "functionShort": "main",
      "line": 66,
-     "offsetInBinary": 5397
+     "offset": 5397
     },
     {
      "binary": "/usr/lib64/libc.so.6",
@@ -854,7 +854,7 @@
      "function": "__libc_init_first",
      "functionShort": "__libc_init_first",
      "line": -1,
-     "offsetInBinary": 160814
+     "offset": 160814
     },
     {
      "binary": "/usr/lib64/libc.so.6",
@@ -862,7 +862,7 @@
      "function": "__libc_start_main",
      "functionShort": "__libc_start_main",
      "line": -1,
-     "offsetInBinary": 161001
+     "offset": 161001
     },
     {
      "binary": "src/reader/libreader/extractors/tests/extractor-example",
@@ -870,7 +870,7 @@
      "function": "_start",
      "functionShort": "_start",
      "line": -1,
-     "offsetInBinary": 4453
+     "offset": 4453
     }
    ]
   }
@@ -901,7 +901,7 @@
     "function": "caller()",
     "functionShort": "caller()",
     "line": 44,
-    "offsetInBinary": 5053
+    "offset": 5053
    },
    "own": {
     "alloc": {
@@ -962,7 +962,7 @@
     "function": "caller2()",
     "functionShort": "caller2()",
     "line": 50,
-    "offsetInBinary": 5167
+    "offset": 5167
    },
    "own": {
     "alloc": {
@@ -1023,7 +1023,7 @@
     "function": "callerRecurse(int)",
     "functionShort": "callerRecurse(int)",
     "line": 36,
-    "offsetInBinary": 4923
+    "offset": 4923
    },
    "own": {
     "alloc": {
@@ -1084,7 +1084,7 @@
     "function": "leaf()",
     "functionShort": "leaf()",
     "line": 24,
-    "offsetInBinary": 4763
+    "offset": 4763
    },
    "own": {
     "alloc": {
@@ -1145,7 +1145,7 @@
     "function": "main",
     "functionShort": "main",
     "line": 66,
-    "offsetInBinary": 5397
+    "offset": 5397
    },
    "own": {
     "alloc": {
@@ -1206,7 +1206,7 @@
     "function": "main_sim()",
     "functionShort": "main_sim()",
     "line": 58,
-    "offsetInBinary": 5270
+    "offset": 5270
    },
    "own": {
     "alloc": {
@@ -1295,7 +1295,7 @@
     "function": "caller()",
     "functionShort": "caller()",
     "line": 44,
-    "offsetInBinary": 5053
+    "offset": 5053
    },
    "own": {
     "aliveReq": 0,
@@ -1424,7 +1424,7 @@
     "function": "caller2()",
     "functionShort": "caller2()",
     "line": 50,
-    "offsetInBinary": 5167
+    "offset": 5167
    },
    "own": {
     "aliveReq": 0,
@@ -1553,7 +1553,7 @@
     "function": "callerRecurse(int)",
     "functionShort": "callerRecurse(int)",
     "line": 36,
-    "offsetInBinary": 4923
+    "offset": 4923
    },
    "own": {
     "aliveReq": 0,
@@ -1682,7 +1682,7 @@
     "function": "leaf()",
     "functionShort": "leaf()",
     "line": 24,
-    "offsetInBinary": 4763
+    "offset": 4763
    },
    "own": {
     "aliveReq": 0,
@@ -1811,7 +1811,7 @@
     "function": "main",
     "functionShort": "main",
     "line": 66,
-    "offsetInBinary": 5397
+    "offset": 5397
    },
    "own": {
     "aliveReq": 0,
@@ -1940,7 +1940,7 @@
     "function": "main_sim()",
     "functionShort": "main_sim()",
     "line": 58,
-    "offsetInBinary": 5270
+    "offset": 5270
    },
    "own": {
     "aliveReq": 0,
@@ -2545,7 +2545,7 @@
      "function": "leaf()",
      "functionShort": "leaf()",
      "line": 23,
-     "offsetInBinary": 4720
+     "offset": 4720
     },
     "mem": 32
    },
@@ -2557,7 +2557,7 @@
      "function": "callerRecurse(int)",
      "functionShort": "callerRecurse(int)",
      "line": 34,
-     "offsetInBinary": 4875
+     "offset": 4875
     },
     "mem": 192
    },
@@ -2569,7 +2569,7 @@
      "function": "caller()",
      "functionShort": "caller()",
      "line": 43,
-     "offsetInBinary": 5009
+     "offset": 5009
     },
     "mem": 32
    },
@@ -2581,7 +2581,7 @@
      "function": "main_sim()",
      "functionShort": "main_sim()",
      "line": 57,
-     "offsetInBinary": 5231
+     "offset": 5231
     },
     "mem": 32
    },
@@ -2593,7 +2593,7 @@
      "function": "main",
      "functionShort": "main",
      "line": 64,
-     "offsetInBinary": 5346
+     "offset": 5346
     },
     "mem": 0
    }

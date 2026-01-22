@@ -122,7 +122,7 @@ void from_json(const JsonIn & json, StackStat & value)
 
 	//convert
 	ssize_t status = sscanf(stackId.c_str(), "%p", &value.stackId);
-	assert(status == 1);
+	if (status != 1) assert(false);
 }
 
 /**********************************************************/

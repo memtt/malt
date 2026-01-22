@@ -14,6 +14,7 @@
 //std C++
 #include <iostream>
 #include <fstream>
+#include <filesystem>
 //cpp-httplib
 #include <httplib.h>
 //unix
@@ -48,6 +49,8 @@ struct WebviewOptions
 	std::list<std::string> overrides;
 	std::string host{"localhost"};
 	bool regenToken{false};
+	std::string staticGen{""};
+	bool staticSummary{false};
 };
 
 /**********************************************************/
@@ -85,6 +88,14 @@ static error_t parse_opt (int key, char *arg, struct argp_state *state)
 		case 'r':
 			options->regenToken = true;
 			break;
+		case 's':
+			options->staticGen = arg;
+			options->staticSummary = false;
+			break;
+		case 'S':
+			options->staticGen = arg;
+			options->staticSummary = true;
+			break;
 		case ARGP_KEY_ARG:
 			/* Too many arguments. */
 			if (state->arg_num >= 1)
@@ -108,11 +119,13 @@ void WebviewOptions::parse(int argc, char ** argv)
 	char doc[] = "malt-webview-new -- Micro-server to expose the MALT webview and brower into the MALT profile.";
 	char args_doc[] = "[--no-auth] [-H localhost] [-p 8080] [-s UNIX_SOCKET] {PROFILE_FILE}";
 	struct argp_option options[] = {
-		{"no-auth",    'n', 0,        0,  "Disable the authentication." },
-		{"port",       'p', "PORT",   0,  "Listening on given port or socket file (8080 by default)."},
-		{"override",   'o', "OLD:NEW",0,  "Override some source path by the given path, in the form : OLD:NEW. Can be called several times."},
-		{"host",       'H', "HOST",   0,  "The host interface to listen on (localhost by default)."},
-		{"regen-token",'r', 0,        0,  "Regenerate the token."},
+		{"no-auth",        'n', 0,        0,  "Disable the authentication." },
+		{"port",           'p', "PORT",   0,  "Listening on given port or socket file (8080 by default)."},
+		{"override",       'o', "OLD:NEW",0,  "Override some source path by the given path, in the form : OLD:NEW. Can be called several times."},
+		{"host",           'H', "HOST",   0,  "The host interface to listen on (localhost by default)."},
+		{"regen-token",    'r', 0,        0,  "Regenerate the token."},
+		{"static",         's', "DIR",    0,  "Generate a static version of the website in the given directory."},
+		{"static-summary", 'S', "DIR",    0,  "Generate a static version of the website in the given directory with only the summary."},
 		{ 0 }
 	};
 	struct argp argp = { options, parse_opt, args_doc, doc };
@@ -152,11 +165,34 @@ static std::string get_webview_www_path(void)
 	const std::string exe_path = get_current_exe();
 	const std::string bin_path = dirname((char*)exe_path.c_str());
 	const std::string prefix = dirname((char*)bin_path.c_str());
-	const std::string webview = prefix + std::string("/share/malt/webview");
-	const std::string webviewCheckFile = webview + std::string("client-files/app/index.html");
+	const std::string webview = prefix + std::string("/share/malt/webview/dynamic/");
+	const std::string webviewCheckFile = webview + std::string("index.html");
 	FILE * fp = fopen(webviewCheckFile.c_str(), "r");
 	if (fp == nullptr) {
-		return std::string(MALT_INSTALL_PREFIX) + "/share/malt/webview";
+		return std::string(MALT_INSTALL_PREFIX) + "/share/malt/webview/dynamic/";
+	} else {
+		fclose(fp);
+		return webview;
+	}
+}
+
+/**********************************************************/
+static std::string get_webview_www_static_path(bool onlySummary = false)
+{
+	//select mode
+	std::string partName = "static";
+	if (onlySummary)
+		partName = "summary";
+
+	//build paths
+	const std::string exe_path = get_current_exe();
+	const std::string bin_path = dirname((char*)exe_path.c_str());
+	const std::string prefix = dirname((char*)bin_path.c_str());
+	const std::string webview = prefix + std::string("/share/malt/webview/") + partName;
+	const std::string webviewCheckFile = webview + std::string("index.html");
+	FILE * fp = fopen(webviewCheckFile.c_str(), "r");
+	if (fp == nullptr) {
+		return std::string(MALT_INSTALL_PREFIX) + std::string("/share/malt/webview/") + partName;
 	} else {
 		fclose(fp);
 		return webview;
@@ -171,6 +207,42 @@ static void local_signal_ctrl_c_handler(int s){
 }
 
 /**********************************************************/
+bool genStaticWebsite(const WebProfile & profile, const std::string & path, bool onlySummary = false)
+{
+	//create the directory
+	if (std::filesystem::exists(path + "/data") == false) {
+		const bool status = std::filesystem::create_directories(path + "/data");
+		if (!status) {
+			std::cerr << "Fail to create the directory : " << path << std::endl;
+			return false;
+		}
+	}
+
+	//create data file
+	const std::string dataFName = path + "/data/static-profile.js";
+	std::ofstream dataOut(dataFName);
+	if (onlySummary) {
+		dataOut << "const MALT_DATA = " << profile.getStaticSummary() << ";" << std::endl;
+	} else {
+		dataOut << "const MALT_DATA = " << profile.getStatic() << ";" << std::endl;
+	}
+	dataOut.close();
+
+	//remove
+	std::filesystem::remove(path + "/index.html");
+	std::filesystem::remove(path + "/favicon.ico");
+	std::filesystem::remove(path + "/data/malt-profile.json");
+
+	//copy static html
+	std::filesystem::copy_file(get_webview_www_static_path(onlySummary) + "/index.html", path + "/index.html");
+	std::filesystem::copy_file(get_webview_www_static_path(onlySummary) + "/favicon.ico", path + "/favicon.ico");
+	std::filesystem::copy_file(profile.getFileName(), path + "/data/malt-profile.json");
+
+	//ok
+	return true;
+}
+
+/**********************************************************/
 int main(int argc, char ** argv)
 {
 	//parse options
@@ -182,7 +254,19 @@ int main(int argc, char ** argv)
 
 	//loading profile
 	try {
+		//load profile
 		WebProfile profile(options.filename, true);
+
+		//if statis, trivial
+		if (options.staticGen.empty() == false) {
+			bool status = genStaticWebsite(profile, options.staticGen, options.staticSummary);
+			if (status) {
+				return EXIT_SUCCESS;
+			} else {
+				std::cerr << "Fail to generate the static website !" << std::endl;
+				return EXIT_FAILURE;
+			}
+		}
 
 		//spwn server
 		TokenAuth * tokenAuth = nullptr;
@@ -240,45 +324,7 @@ int main(int argc, char ** argv)
 
 		//mount app path
 		const std::string www_path = get_webview_www_path();
-		svr.set_mount_point("/", www_path + "/dist");
-
-		//handle addresses
-		svr.Get("/home", [&www_path](const Request& req, Response& res) {
-			const std::string data = load_full_file(www_path + "/dist/index.html");
-			res.set_content(data, "text/html");
-		});
-		svr.Get("/sources", [&www_path](const Request& req, Response& res) {
-			const std::string data = load_full_file(www_path + "/dist/index.html");
-			res.set_content(data, "text/html");
-		});
-		svr.Get("/call-tree", [&www_path](const Request& req, Response& res) {
-			const std::string data = load_full_file(www_path + "/dist/index.html");
-			res.set_content(data, "text/html");
-		});
-		svr.Get("/timeline", [&www_path](const Request& req, Response& res) {
-			const std::string data = load_full_file(www_path + "/dist/index.html");
-			res.set_content(data, "text/html");
-		});
-		svr.Get("/allocSizeDistr", [&www_path](const Request& req, Response& res) {
-			const std::string data = load_full_file(www_path + "/dist/index.html");
-			res.set_content(data, "text/html");
-		});
-		svr.Get("/globalVars", [&www_path](const Request& req, Response& res) {
-			const std::string data = load_full_file(www_path + "/dist/index.html");
-			res.set_content(data, "text/html");
-		});
-		svr.Get("/stackPeaks", [&www_path](const Request& req, Response& res) {
-			const std::string data = load_full_file(www_path + "/dist/index.html");
-			res.set_content(data, "text/html");
-		});
-		svr.Get("/per-thread", [&www_path](const Request& req, Response& res) {
-			const std::string data = load_full_file(www_path + "/dist/index.html");
-			res.set_content(data, "text/html");
-		});
-		svr.Get("/realloc", [&www_path](const Request& req, Response& res) {
-			const std::string data = load_full_file(www_path + "/dist/index.html");
-			res.set_content(data, "text/html");
-		});
+		svr.set_mount_point("/", www_path);
 
 		//data for the summary
 		svr.Get("/summary.json", [&profile](const Request& req, Response& res) {

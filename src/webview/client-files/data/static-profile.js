@@ -1,0 +1,1 @@
+const MALT_DATA={};

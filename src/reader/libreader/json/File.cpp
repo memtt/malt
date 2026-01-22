@@ -54,9 +54,7 @@ JsonFile::JsonFile(const std::string & fname, bool progress)
 	this->data.len = size;
 
 	//parse
-	fprintf(stderr, "parsing...\n");
 	this->parse();
-	fprintf(stderr, "end parsing...\n");
 }
 
 /**********************************************************/

@@ -92,14 +92,14 @@ nlohmann::json WebProfile::getBinaryAddressesFlatProfile(const std::string & bin
 		snprintf(buffer, sizeof(buffer), "%p", location.origin.address);
 		return std::string(buffer);
 	},[&binaryFile, &offsets](const InstructionInfosStrRef & location, const MALTFormat::StackInfos & infos){
-		return location.origin.lang == LANG_C && *location.binary == binaryFile &&  (std::find(offsets.begin(), offsets.end(), (size_t)location.offsetInBinary) != offsets.end());
+		return location.origin.lang == LANG_C && *location.binary == binaryFile &&  (std::find(offsets.begin(), offsets.end(), (size_t)location.offset) != offsets.end());
 	});
 
 	//select
 	std::vector<std::string> subset{
 		"*.own",
-		"*.binary",
-		"*.offsetInBinary"
+		"*.location.binary",
+		"*.location.offset"
 	};
 	if (total)
 		subset.push_back("*.total");
@@ -128,8 +128,8 @@ nlohmann::json WebProfile::getBinaryAddressesFlatProfileAll(const std::string & 
 	//select
 	std::vector<std::string> subset{
 		"*.own",
-		"*.binary",
-		"*.offsetInBinary"
+		"*.location.binary",
+		"*.location.offset"
 	};
 	if (total)
 		subset.push_back("*.total");
@@ -279,6 +279,32 @@ nlohmann::json WebProfile::getCallTree(ssize_t nodeId, ssize_t depth, ssize_t he
 	//std::cout << data << std::endl;
 	return data;
 }
+
+/**********************************************************/
+nlohmann::json WebProfile::getStatic(void) const
+{
+	nlohmann::json data = nlohmann::json{
+		{"/data/summary.json", this->getSummaryV2()},
+		{"/flat.json", this->getFlatFunctionProfile(true, true)},
+		{"/timed.json", this->getTimedValues()},
+		{"/size-map.json", this->getSizeMap()},
+		{"/scatter.json", this->getScatter()},
+		{"/realloc-map.json", this->getReallocMap()},
+		{"/global-variables.json", this->getGlobalVariables()},
+	};
+	return data;
+}
+
+/**********************************************************/
+nlohmann::json WebProfile::getStaticSummary(void) const
+{
+	nlohmann::json data = nlohmann::json{
+		{"/data/summary.json", this->getSummaryV2()},
+		{"/flat.json", this->getFlatFunctionProfile(true, true)},
+	};
+	return data;
+}
+
 
 /**********************************************************/
 bool WebProfile::isSourceFile(const std::string & path) const

@@ -17,7 +17,7 @@ int main(int argc, char ** argv)
 {
 	//loading profile
 	bool continueRun = true;
-	malt_reader_t * reader = malt_reader_init(argv[1], true, false);
+	malt_reader_t * reader = malt_reader_init(argv[1], MALT_READER_PROGRESS_BAR);
 
 	//loop
 	while (std::cin && continueRun) {

@@ -13,50 +13,85 @@ import vue from '@vitejs/plugin-vue'
 import { resolve } from 'node:path'
 import svgLoader from 'vite-svg-loader'
 import path from "path";
+import { viteSingleFile } from "vite-plugin-singlefile"
+import { env } from 'node:process';
 
 function gen_build_path() : string
 {
-	if (process.env.MALT_VITE_BUILD_DIR != undefined)
-		return <string>process.env.MALT_VITE_BUILD_DIR;
-	else
-		return "./";
+    if (process.env.MALT_VITE_BUILD_DIR != undefined)
+        return <string>process.env.MALT_VITE_BUILD_DIR;
+    else
+        return "./";
 }
 
 function gen_orig_path() : string
 {
-	if (process.env.MALT_VITE_ORIG_DIR != undefined) {
-		console.log(<string>process.env.MALT_VITE_ORIG_DIR);
-		return <string>process.env.MALT_VITE_ORIG_DIR;
-	} else {
-		return __dirname;
-	}
+    if (process.env.MALT_VITE_ORIG_DIR != undefined) {
+        console.log(<string>process.env.MALT_VITE_ORIG_DIR);
+        return <string>process.env.MALT_VITE_ORIG_DIR;
+    } else {
+        return __dirname;
+    }
 }
 
-export default defineConfig({
-  plugins: [
-    vue(),
-    svgLoader({
+function gen_out_dir() : string
+{
+    if (process.env.VITE_APP === 'static') {
+        return "dist/static";
+    } else if (process.env.VITE_APP === 'summary') {
+        return "dist/summary";
+    } else {
+        return "dist/dynamic";
+    }
+}
+
+function gen_plugins() : Array<any> {
+  var plugins = [];
+  plugins.push(vue());
+  plugins.push(svgLoader({
       svgoConfig: {
-        plugins: [
-          {
-            name: 'prefixIds',
-            params: {
+      plugins: [
+        {
+          name: 'prefixIds',
+          params: {
               // Generate unique IDs for each SVG instance
               delim: '_',
               prefix: () => Math.random().toString(36).substring(2, 9),
-            },
           },
-        ],
-      },
-    }),
-  ],
+        },
+      ],
+    },
+  }));
+  if (process.env.VITE_APP === 'static' || process.env.VITE_APP === 'summary') {
+    plugins.push(viteSingleFile());
+  }
+  return plugins;
+}
+
+function gen_base_dir(): string
+{
+  if (process.env.VITE_APP === 'static' || process.env.VITE_APP === 'summary') {
+    return "";
+  } else {
+    return "/";
+  }
+}
+
+export default defineConfig({
+  base: gen_base_dir(),
+  plugins: gen_plugins(),
   resolve: {
     alias: {
       '@': resolve(__dirname, 'src'),
     },
   },
+  define: {
+    'process.env': {
+      VITE_APP: process.env.VITE_APP,
+    }
+  },
   build: {
-    outDir: path.join(gen_build_path(), "dist"),
+    outDir: path.join(gen_build_path(), gen_out_dir()),
     emptyOutDir: true, // also necessary
     //minify: false,
     rollupOptions: {

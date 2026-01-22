@@ -17,6 +17,7 @@ namespace MALTReader
 
 /**********************************************************/
 Profile::Profile(const std::string & fname, bool loadProgressBar)
+	:fname(fname)
 {
 	//load it
 	#ifdef USE_INTERNAL_JSON_IN
@@ -32,12 +33,10 @@ Profile::Profile(const std::string & fname, bool loadProgressBar)
 	//load trace
 	std::string traceFName = TraceReader::calcNameFromJson(fname);
 	if (TraceReader::fileExist(traceFName)) {
-		printf("Loading trace...\n");
 		this->traceReader = new TraceReader(traceFName, loadProgressBar);
 	}
 
 	//build extractor
-	printf("Pre-computing some data...\n");
 	this->extractor = new Extractor(this->profile);
 }
 
@@ -54,6 +53,12 @@ Profile::~Profile(void)
 const Extractor & Profile::getExtractor(void) const
 {
 	return *this->extractor;
+}
+
+/**********************************************************/
+const std::string & Profile::getFileName(void) const
+{
+	return this->fname;
 }
 
 }

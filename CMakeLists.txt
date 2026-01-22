@@ -29,7 +29,8 @@ set(MALT_SO_VERSION "1")
 set(MALT_JSON_FORMAT_VERSION "1.6")
 
 ############################################################
-set (CMAKE_CXX_STANDARD 11)
+set (CMAKE_CXX_STANDARD 17)
+set (CMAKE_CXX_STANDARD_REQUIRED yes)
 
 ############################################################
 #global setup

@@ -61,6 +61,14 @@ You can use the webview by calling command `malt-webview` as :
 malt-webview [-p PORT] [--no-auth] malt-YOUR_PROGRAM-1234.json
 ```
 
+Generate the static report (with less pages than the dynamic webview) :
+
+```shell
+malt-webview --static ./report malt-YOUR_PROGRAM-1234.json
+# or just the summary page
+malt-webview --static-summary ./report malt-YOUR_PROGRAM-1234.json
+```
+
 Profiling python
 ----------------
 

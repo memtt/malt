@@ -32,13 +32,20 @@ if [[ ${MALT_VITE_BUILD_DIR} != '' && ${MALT_VITE_BUILD_DIR} != '.' ]]; then
 	for tmp in .* *.*; do
 		cp -r "${PWD}/$tmp" "${MALT_VITE_BUILD_DIR}/$tmp"
 	done
+	cp -r "${PWD}/data" "${MALT_VITE_BUILD_DIR}"
 	cp -r "${PWD}/src" "${MALT_VITE_BUILD_DIR}"
 	cp -r "${PWD}/public" "${MALT_VITE_BUILD_DIR}"
 	if [[ ! -d "${MALT_VITE_BUILD_DIR}/node_modules" ]]; then
 		ln -sf "${NODE_PATH}" "${MALT_VITE_BUILD_DIR}"
 	fi
 	cd "${MALT_VITE_BUILD_DIR}"
-	npm run build
-else
-	npm run build
 fi
+
+###############################################################################
+# build
+npm run build
+VITE_APP=static npm run build
+VITE_APP=summary npm run build
+cp -r data dist/static
+cp -r data dist/dynamic
+cp -r data dist/summary
