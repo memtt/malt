@@ -38,6 +38,9 @@ We have a few places for you to get started:
 :doc:`/start/basic-usage`
   Make your first steps by **using malt**.
 
+:doc:`/start/static-report`
+  Generate a **static report** version.
+
 :doc:`/start/metrics`
   The metrics exported by **malt**.
 
@@ -101,6 +104,7 @@ For developpers
    /start/dependencies.rst
    /start/installation.rst
    /start/basic-usage.rst
+   /start/static-report.rst
    /start/metrics.rst
    /start/infos.rst
 
