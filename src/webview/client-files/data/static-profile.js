@@ -1,3 +1,1 @@
-const MALT_DATA={
-	"/dfdf": {}
-};
+const MALT_DATA={};

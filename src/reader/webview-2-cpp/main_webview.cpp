@@ -324,45 +324,7 @@ int main(int argc, char ** argv)
 
 		//mount app path
 		const std::string www_path = get_webview_www_path();
-		svr.set_mount_point("/", www_path + "/dist");
-
-		//handle addresses
-		svr.Get("/home", [&www_path](const Request& req, Response& res) {
-			const std::string data = load_full_file(www_path + "/dist/index.html");
-			res.set_content(data, "text/html");
-		});
-		svr.Get("/sources", [&www_path](const Request& req, Response& res) {
-			const std::string data = load_full_file(www_path + "/dist/index.html");
-			res.set_content(data, "text/html");
-		});
-		svr.Get("/call-tree", [&www_path](const Request& req, Response& res) {
-			const std::string data = load_full_file(www_path + "/dist/index.html");
-			res.set_content(data, "text/html");
-		});
-		svr.Get("/timeline", [&www_path](const Request& req, Response& res) {
-			const std::string data = load_full_file(www_path + "/dist/index.html");
-			res.set_content(data, "text/html");
-		});
-		svr.Get("/allocSizeDistr", [&www_path](const Request& req, Response& res) {
-			const std::string data = load_full_file(www_path + "/dist/index.html");
-			res.set_content(data, "text/html");
-		});
-		svr.Get("/globalVars", [&www_path](const Request& req, Response& res) {
-			const std::string data = load_full_file(www_path + "/dist/index.html");
-			res.set_content(data, "text/html");
-		});
-		svr.Get("/stackPeaks", [&www_path](const Request& req, Response& res) {
-			const std::string data = load_full_file(www_path + "/dist/index.html");
-			res.set_content(data, "text/html");
-		});
-		svr.Get("/per-thread", [&www_path](const Request& req, Response& res) {
-			const std::string data = load_full_file(www_path + "/dist/index.html");
-			res.set_content(data, "text/html");
-		});
-		svr.Get("/realloc", [&www_path](const Request& req, Response& res) {
-			const std::string data = load_full_file(www_path + "/dist/index.html");
-			res.set_content(data, "text/html");
-		});
+		svr.set_mount_point("/", www_path);
 
 		//data for the summary
 		svr.Get("/summary.json", [&profile](const Request& req, Response& res) {
