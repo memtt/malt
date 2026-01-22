@@ -16,12 +16,21 @@ interface RequestOptions {
   responseType?: 'json' | 'text'
 }
 
+declare var MALT_DATA: any;
+
 async function request<T>(
   path: string,
   method: HTTPMethod,
   params = {},
   options: RequestOptions = {}
 ): Promise<T> {
+  if (process.env.VITE_APP == 'static') {
+    console.log("sdfdmlkk");
+    console.log(path);
+    console.log(MALT_DATA);
+    return MALT_DATA[path] as Promise<T>;
+  }
+
   const { responseType = 'json' } = options
   const authStore = useAuthStore()
   const token = authStore.getToken()

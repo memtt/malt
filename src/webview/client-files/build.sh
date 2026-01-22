@@ -39,6 +39,12 @@ if [[ ${MALT_VITE_BUILD_DIR} != '' && ${MALT_VITE_BUILD_DIR} != '.' ]]; then
 	fi
 	cd "${MALT_VITE_BUILD_DIR}"
 	npm run build
+	VITE_APP=static npm run build
+	cp -r data dist/static
+	cp -r data dist/dynamic
 else
 	npm run build
+	VITE_APP=static npm run build
+	cp -r data dist/static
+	cp -r data dist/dynamic
 fi
