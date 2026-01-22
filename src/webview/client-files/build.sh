@@ -32,6 +32,7 @@ if [[ ${MALT_VITE_BUILD_DIR} != '' && ${MALT_VITE_BUILD_DIR} != '.' ]]; then
 	for tmp in .* *.*; do
 		cp -r "${PWD}/$tmp" "${MALT_VITE_BUILD_DIR}/$tmp"
 	done
+	cp -r "${PWD}/data" "${MALT_VITE_BUILD_DIR}"
 	cp -r "${PWD}/src" "${MALT_VITE_BUILD_DIR}"
 	cp -r "${PWD}/public" "${MALT_VITE_BUILD_DIR}"
 	if [[ ! -d "${MALT_VITE_BUILD_DIR}/node_modules" ]]; then

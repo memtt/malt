@@ -69,12 +69,13 @@ if (NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/dist/dynamic/index.html OR ${WEBVIEW_
 			BYPRODUCTS ${CMAKE_CURRENT_BINARY_DIR}/dist/dynamic/assets/index.js
 					${CMAKE_CURRENT_BINARY_DIR}/dist/dynamic/assets/style.css
 					${CMAKE_CURRENT_BINARY_DIR}/dist/static/index.html
+					${CMAKE_CURRENT_BINARY_DIR}/dist/summary/index.html
 			COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/build.sh "${CMAKE_CURRENT_BINARY_DIR}" "${NODE_MODULES}"
 			DEPENDS ${NODE_MODULES_DEPS} ${WEBVIEW_SRCS}
 			WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
 		)
 		set(CLIENT_DIST_DIR ${CMAKE_CURRENT_BINARY_DIR}/dist)
-		set(CLIENT_BUILD_DEPS ${CLIENT_DIST_DIR}/index.html)
+		set(CLIENT_BUILD_DEPS ${CLIENT_DIST_DIR}/dynamic/index.html)
 	else()
 		message(FATAL_ERROR "Webview client code not pre-built and not have NodeJS to build it !")
 	endif()
