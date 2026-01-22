@@ -94,3 +94,4 @@ add_custom_target(webview-client-all
 ## Install the webview into share directory
 install(DIRECTORY ${CLIENT_DIST_DIR}/dynamic DESTINATION share/malt/webview)
 install(DIRECTORY ${CLIENT_DIST_DIR}/static DESTINATION share/malt/webview)
+install(DIRECTORY ${CLIENT_DIST_DIR}/summary DESTINATION share/malt/webview)

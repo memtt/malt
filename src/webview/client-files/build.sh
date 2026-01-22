@@ -38,13 +38,13 @@ if [[ ${MALT_VITE_BUILD_DIR} != '' && ${MALT_VITE_BUILD_DIR} != '.' ]]; then
 		ln -sf "${NODE_PATH}" "${MALT_VITE_BUILD_DIR}"
 	fi
 	cd "${MALT_VITE_BUILD_DIR}"
-	npm run build
-	VITE_APP=static npm run build
-	cp -r data dist/static
-	cp -r data dist/dynamic
-else
-	npm run build
-	VITE_APP=static npm run build
-	cp -r data dist/static
-	cp -r data dist/dynamic
 fi
+
+###############################################################################
+# build
+npm run build
+VITE_APP=static npm run build
+VITE_APP=summary npm run build
+cp -r data dist/static
+cp -r data dist/dynamic
+cp -r data dist/summary

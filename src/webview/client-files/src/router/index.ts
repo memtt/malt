@@ -12,84 +12,86 @@ import { useAuthStore } from '@/stores/authStore'
 function genRoutes(): Array<any>
 {
   var routes = [];
-  if (process.env.VITE_APP != 'static') {
+  if (process.env.VITE_APP == 'static' || process.env.VITE_APP == 'summary') {
     routes.push({
-      path: '/home',
-      name: 'Home',
-      component: () => import('@/views/HomePage.vue'),
-      meta: { requiresAuth: true },
+      path: '/',
+      redirect: () => {
+        return '/home'
+      },
     });
   } else {
     routes.push({
       path: '/',
       redirect: () => {
       const authStore = useAuthStore()
-      return authStore.isAuthenticated() ? '/home' : '/login'
+        return authStore.isAuthenticated() ? '/home' : '/login'
       },
     });
   }
-  routes.push({
-    path: '/login',
-    name: 'Login',
-    component: () => import('@/views/LoginPage.vue'),
-    meta: { requiresAuth: false },
-  });
   routes.push({
     path: '/home',
     name: 'Home',
     component: () => import('@/views/HomePage.vue'),
     meta: { requiresAuth: true },
   });
-  routes.push({
-    path: '/per-thread',
-    name: 'Threads',
-    component: () => import('@/views/PerThreadPage.vue'),
-    meta: { requiresAuth: true },
-  });
-  if (process.env.VITE_APP != 'static') {
+  if (process.env.VITE_APP != 'summary') {
     routes.push({
+      path: '/login',
+      name: 'Login',
+      component: () => import('@/views/LoginPage.vue'),
+      meta: { requiresAuth: false },
+    });
+    routes.push({
+      path: '/per-thread',
+      name: 'Threads',
+      component: () => import('@/views/PerThreadPage.vue'),
+      meta: { requiresAuth: true },
+    });
+    if (process.env.VITE_APP != 'static') {
+      routes.push({
       path: '/sources',
       name: 'Sources',
       component: () => import('@/views/SourcesPage.vue'),
       meta: { requiresAuth: true },
-    });
-    routes.push({
+      });
+      routes.push({
       path: '/call-tree',
       name: 'Calltree',
       component: () => import('@/views/CallTreePage.vue'),
       meta: { requiresAuth: true },
+      });
+    }
+    routes.push({
+      path: '/timeline',
+      name: 'Timeline analysis',
+      component: () => import('@/views/TimelinePage.vue'),
+      meta: { requiresAuth: true },
+    });
+    routes.push({
+      path: '/stackPeaks',
+      name: 'Stack memory',
+      component: () => import('@/views/StackPeaksPage.vue'),
+      meta: { requiresAuth: true },
+    });
+    routes.push({
+      path: '/allocSizeDistr',
+      name: 'Alloc sizes',
+      component: () => import('@/views/AllocSizeDistrPage.vue'),
+      meta: { requiresAuth: true },
+    });
+    routes.push({
+      path: '/realloc',
+      name: 'Realloc',
+      component: () => import('@/views/ReallocPage.vue'),
+      meta: { requiresAuth: true },
+    });
+    routes.push({
+      path: '/globalVars',
+      name: 'Global variables',
+      component: () => import('@/views/GlobalVarsPage.vue'),
+      meta: { requiresAuth: true },
     });
   }
-  routes.push({
-    path: '/timeline',
-    name: 'Timeline analysis',
-    component: () => import('@/views/TimelinePage.vue'),
-    meta: { requiresAuth: true },
-  });
-  routes.push({
-    path: '/stackPeaks',
-    name: 'Stack memory',
-    component: () => import('@/views/StackPeaksPage.vue'),
-    meta: { requiresAuth: true },
-  });
-  routes.push({
-    path: '/allocSizeDistr',
-    name: 'Alloc sizes',
-    component: () => import('@/views/AllocSizeDistrPage.vue'),
-    meta: { requiresAuth: true },
-  });
-  routes.push({
-    path: '/realloc',
-    name: 'Realloc',
-    component: () => import('@/views/ReallocPage.vue'),
-    meta: { requiresAuth: true },
-  });
-  routes.push({
-    path: '/globalVars',
-    name: 'Global variables',
-    component: () => import('@/views/GlobalVarsPage.vue'),
-    meta: { requiresAuth: true },
-  });
   routes.push({
     path: '/help',
     name: 'Help',
@@ -111,25 +113,25 @@ router.beforeEach((to, from, next) => {
   
   var static_app: boolean = false;
   console.log(process.env.VITE_APP);
-  if (process.env.VITE_APP == 'static') {
-    if (to.path === '/login' && authStore.isAuthenticated()) {
+  if (process.env.VITE_APP == 'static' || process.env.VITE_APP == 'summary') {
+    if (to.path === '/login') {
       next("/home");
     } else {
       next();
     }
-  }
-
-  if (requiresAuth && !authStore.isAuthenticated() && static_app == false) {
-    // Redirect to login with the page user was trying to access
-    next({
-      path: '/login',
-      query: { redirect: to.fullPath, reason: 'required' },
-    })
-  } else if (to.path === '/login' && authStore.isAuthenticated()) {
-    // If already authenticated and trying to access login, redirect to home
-    next('/home')
   } else {
-    next()
+    if (requiresAuth && !authStore.isAuthenticated() && static_app == false) {
+      // Redirect to login with the page user was trying to access
+      next({
+        path: '/login',
+        query: { redirect: to.fullPath, reason: 'required' },
+      })
+    } else if (to.path === '/login' && authStore.isAuthenticated()) {
+      // If already authenticated and trying to access login, redirect to home
+      next('/home')
+    } else {
+      next()
+    }
   }
 })
 

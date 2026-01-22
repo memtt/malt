@@ -273,10 +273,13 @@ DLL_PUBLIC char * malt_reader_json_get_call_tree(struct malt_reader_t* reader, s
 }
 
 /**********************************************************/
-DLL_PUBLIC char * malt_reader_json_get_static_full(struct malt_reader_t * reader)
+DLL_PUBLIC char * malt_reader_json_get_static(struct malt_reader_t * reader, bool only_summary)
 {
-	return malt_reader_handle_request(reader, "GET_STATIC_FULL", [reader]() {
-		return reader->profile->getStatic();
+	return malt_reader_handle_request(reader, "GET_STATIC_FULL", [reader, only_summary]() {
+		if (only_summary)
+			return reader->profile->getStaticSummary();
+		else
+			return reader->profile->getStatic();
 	});
 }
 

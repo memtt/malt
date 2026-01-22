@@ -50,6 +50,7 @@ struct WebviewOptions
 	std::string host{"localhost"};
 	bool regenToken{false};
 	std::string staticGen{""};
+	bool staticSummary{false};
 };
 
 /**********************************************************/
@@ -89,6 +90,11 @@ static error_t parse_opt (int key, char *arg, struct argp_state *state)
 			break;
 		case 's':
 			options->staticGen = arg;
+			options->staticSummary = false;
+			break;
+		case 'S':
+			options->staticGen = arg;
+			options->staticSummary = true;
 			break;
 		case ARGP_KEY_ARG:
 			/* Too many arguments. */
@@ -113,12 +119,13 @@ void WebviewOptions::parse(int argc, char ** argv)
 	char doc[] = "malt-webview-new -- Micro-server to expose the MALT webview and brower into the MALT profile.";
 	char args_doc[] = "[--no-auth] [-H localhost] [-p 8080] [-s UNIX_SOCKET] {PROFILE_FILE}";
 	struct argp_option options[] = {
-		{"no-auth",    'n', 0,        0,  "Disable the authentication." },
-		{"port",       'p', "PORT",   0,  "Listening on given port or socket file (8080 by default)."},
-		{"override",   'o', "OLD:NEW",0,  "Override some source path by the given path, in the form : OLD:NEW. Can be called several times."},
-		{"host",       'H', "HOST",   0,  "The host interface to listen on (localhost by default)."},
-		{"regen-token",'r', 0,        0,  "Regenerate the token."},
-		{"static",     's', "DIR",    0,  "Generate a static version of the website in the given directory."},
+		{"no-auth",        'n', 0,        0,  "Disable the authentication." },
+		{"port",           'p', "PORT",   0,  "Listening on given port or socket file (8080 by default)."},
+		{"override",       'o', "OLD:NEW",0,  "Override some source path by the given path, in the form : OLD:NEW. Can be called several times."},
+		{"host",           'H', "HOST",   0,  "The host interface to listen on (localhost by default)."},
+		{"regen-token",    'r', 0,        0,  "Regenerate the token."},
+		{"static",         's', "DIR",    0,  "Generate a static version of the website in the given directory."},
+		{"static-summary", 'S', "DIR",    0,  "Generate a static version of the website in the given directory with only the summary."},
 		{ 0 }
 	};
 	struct argp argp = { options, parse_opt, args_doc, doc };
@@ -170,16 +177,22 @@ static std::string get_webview_www_path(void)
 }
 
 /**********************************************************/
-static std::string get_webview_www_static_path(void)
+static std::string get_webview_www_static_path(bool onlySummary = false)
 {
+	//select mode
+	std::string partName = "static";
+	if (onlySummary)
+		partName = "summary";
+
+	//build paths
 	const std::string exe_path = get_current_exe();
 	const std::string bin_path = dirname((char*)exe_path.c_str());
 	const std::string prefix = dirname((char*)bin_path.c_str());
-	const std::string webview = prefix + std::string("/share/malt/webview/static");
+	const std::string webview = prefix + std::string("/share/malt/webview/") + partName;
 	const std::string webviewCheckFile = webview + std::string("index.html");
 	FILE * fp = fopen(webviewCheckFile.c_str(), "r");
 	if (fp == nullptr) {
-		return std::string(MALT_INSTALL_PREFIX) + "/share/malt/webview/static";
+		return std::string(MALT_INSTALL_PREFIX) + std::string("/share/malt/webview/") + partName;
 	} else {
 		fclose(fp);
 		return webview;
@@ -194,7 +207,7 @@ static void local_signal_ctrl_c_handler(int s){
 }
 
 /**********************************************************/
-bool genStaticWebsite(const WebProfile & profile, const std::string & path)
+bool genStaticWebsite(const WebProfile & profile, const std::string & path, bool onlySummary = false)
 {
 	//create the directory
 	if (std::filesystem::exists(path + "/data") == false) {
@@ -208,7 +221,11 @@ bool genStaticWebsite(const WebProfile & profile, const std::string & path)
 	//create data file
 	const std::string dataFName = path + "/data/static-profile.js";
 	std::ofstream dataOut(dataFName);
-	dataOut << "const MALT_DATA = " << profile.getStatic() << ";" << std::endl;
+	if (onlySummary) {
+		dataOut << "const MALT_DATA = " << profile.getStaticSummary() << ";" << std::endl;
+	} else {
+		dataOut << "const MALT_DATA = " << profile.getStatic() << ";" << std::endl;
+	}
 	dataOut.close();
 
 	//remove
@@ -216,8 +233,8 @@ bool genStaticWebsite(const WebProfile & profile, const std::string & path)
 	std::filesystem::remove(path + "/favicon.ico");
 
 	//copy static html
-	std::filesystem::copy_file(get_webview_www_static_path() + "/index.html", path + "/index.html");
-	std::filesystem::copy_file(get_webview_www_static_path() + "/favicon.ico", path + "/favicon.ico");
+	std::filesystem::copy_file(get_webview_www_static_path(onlySummary) + "/index.html", path + "/index.html");
+	std::filesystem::copy_file(get_webview_www_static_path(onlySummary) + "/favicon.ico", path + "/favicon.ico");
 
 	//ok
 	return true;
@@ -240,7 +257,7 @@ int main(int argc, char ** argv)
 
 		//if statis, trivial
 		if (options.staticGen.empty() == false) {
-			bool status = genStaticWebsite(profile, options.staticGen);
+			bool status = genStaticWebsite(profile, options.staticGen, options.staticSummary);
 			if (status) {
 				return EXIT_SUCCESS;
 			} else {

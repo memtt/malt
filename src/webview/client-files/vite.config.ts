@@ -38,6 +38,8 @@ function gen_out_dir() : string
 {
     if (process.env.VITE_APP === 'static') {
         return "dist/static";
+    } else if (process.env.VITE_APP === 'summary') {
+        return "dist/summary";
     } else {
         return "dist/dynamic";
     }
@@ -60,7 +62,7 @@ function gen_plugins() : Array<any> {
       ],
     },
   }));
-  if (process.env.VITE_APP === 'static') {
+  if (process.env.VITE_APP === 'static' || process.env.VITE_APP === 'summary') {
     plugins.push(viteSingleFile());
   }
   return plugins;
@@ -68,7 +70,7 @@ function gen_plugins() : Array<any> {
 
 function gen_base_dir(): string
 {
-  if (process.env.VITE_APP === 'static') {
+  if (process.env.VITE_APP === 'static' || process.env.VITE_APP === 'summary') {
     return "";
   } else {
     return "/";

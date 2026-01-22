@@ -291,10 +291,20 @@ nlohmann::json WebProfile::getStatic(void) const
 		{"/scatter.json", this->getScatter()},
 		{"/realloc-map.json", this->getReallocMap()},
 		{"/global-variables.json", this->getGlobalVariables()},
-		{"/global-variables.json", this->getGlobalVariables()},
 	};
 	return data;
 }
+
+/**********************************************************/
+nlohmann::json WebProfile::getStaticSummary(void) const
+{
+	nlohmann::json data = nlohmann::json{
+		{"/data/summary.json", this->getSummaryV2()},
+		{"/flat.json", this->getFlatFunctionProfile(true, true)},
+	};
+	return data;
+}
+
 
 /**********************************************************/
 bool WebProfile::isSourceFile(const std::string & path) const

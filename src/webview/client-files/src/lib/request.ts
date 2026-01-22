@@ -24,11 +24,7 @@ async function request<T>(
   params = {},
   options: RequestOptions = {}
 ): Promise<T> {
-  console.log(process.env.VITE_APP);
-  if (process.env.VITE_APP == 'static') {
-    console.log("sdfdmlkk");
-    console.log(path);
-    console.log(MALT_DATA);
+  if (process.env.VITE_APP == 'static' || process.env.VITE_APP == 'summary') {
     return new Promise((resolve) => {
         resolve(MALT_DATA[path]);
     });

@@ -44,19 +44,20 @@ function genNavigationRoutes() : Array<any>
 	routes.push({ path: '/home', name: 'Home' });
 
 	//only for dynamic
-	console.log(process.env.VITE_APP);
-	if (process.env.VITE_APP != 'static') {
+	if (process.env.VITE_APP != 'static' && process.env.VITE_APP != 'summary') {
 		routes.push({ path: '/sources', name: 'Sources' });
 		routes.push({ path: '/call-tree', name: 'Calltree' });
 	}
 
 	//for all
-	routes.push({ path: '/timeline', name: 'Timeline Analysis' });
-	routes.push({ path: '/allocSizeDistr', name: 'Alloc Sizes' });
-	routes.push({ path: '/globalVars', name: 'Global Variables' });
-	routes.push({ path: '/stackPeaks', name: 'Stack Memory' });
-	routes.push({ path: '/per-thread', name: 'Threads' });
-	routes.push({ path: '/realloc', name: 'Realloc' });
+	if (process.env.VITE_APP != 'summary') {
+		routes.push({ path: '/timeline', name: 'Timeline Analysis' });
+		routes.push({ path: '/allocSizeDistr', name: 'Alloc Sizes' });
+		routes.push({ path: '/globalVars', name: 'Global Variables' });
+		routes.push({ path: '/stackPeaks', name: 'Stack Memory' });
+		routes.push({ path: '/per-thread', name: 'Threads' });
+		routes.push({ path: '/realloc', name: 'Realloc' });
+	}
 
 	//ok
 	return routes;
