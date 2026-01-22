@@ -6,7 +6,7 @@
 *-----------------------------------------------------------
 *    AUTHOR   : Emeric GUYON - 2025
 ***********************************************************/
-import { createRouter, createWebHistory } from 'vue-router'
+import { createRouter, createWebHashHistory } from 'vue-router'
 import { useAuthStore } from '@/stores/authStore'
 
 function genRoutes(): Array<any>
@@ -102,7 +102,7 @@ function genRoutes(): Array<any>
 }
 
 const router = createRouter({
-  history: createWebHistory(import.meta.env.BASE_URL),
+  history: createWebHashHistory(import.meta.env.BASE_URL),
   routes: genRoutes()
 })
 
@@ -114,6 +114,8 @@ router.beforeEach((to, from, next) => {
   var static_app: boolean = false;
   console.log(process.env.VITE_APP);
   if (process.env.VITE_APP == 'static' || process.env.VITE_APP == 'summary') {
+    console.log("========"),
+    console.log(to.path);
     if (to.path === '/login') {
       next("/home");
     } else {

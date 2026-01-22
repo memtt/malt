@@ -54,7 +54,9 @@ function genNavigationRoutes() : Array<any>
 		routes.push({ path: '/timeline', name: 'Timeline Analysis' });
 		routes.push({ path: '/allocSizeDistr', name: 'Alloc Sizes' });
 		routes.push({ path: '/globalVars', name: 'Global Variables' });
-		routes.push({ path: '/stackPeaks', name: 'Stack Memory' });
+		if (process.env.VITE_APP != 'static') {
+			routes.push({ path: '/stackPeaks', name: 'Stack Memory' });
+		};
 		routes.push({ path: '/per-thread', name: 'Threads' });
 		routes.push({ path: '/realloc', name: 'Realloc' });
 	}
