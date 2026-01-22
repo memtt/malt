@@ -44,6 +44,7 @@ class WebProfile : public Profile
 		DLL_PUBLIC nlohmann::json getStacksMem(void) const;
 		DLL_PUBLIC nlohmann::json getStackInfoOnFunction(size_t thread_id) const;
 		DLL_PUBLIC nlohmann::json getCallTree(ssize_t nodeId, ssize_t depth, ssize_t height, double minCost, const std::string & func, const std::string & metric, bool isRatio);
+		DLL_PUBLIC nlohmann::json getStatic(void) const;
 		DLL_PUBLIC bool isSourceFile(const std::string & path) const;
 		DLL_PUBLIC SourceFileMap getSourceFileMap(void) const;
 	private:

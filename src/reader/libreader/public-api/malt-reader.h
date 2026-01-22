@@ -66,6 +66,7 @@ char * malt_reader_json_get_call_stack_next_level(struct malt_reader_t * reader,
 char * malt_reader_json_get_stacks_mem(struct malt_reader_t * reader);
 char * malt_reader_json_get_stack_info_on_function(struct malt_reader_t * reader, size_t thread_id);
 char * malt_reader_json_get_call_tree(struct malt_reader_t * reader, ssize_t nodeId, ssize_t depth, ssize_t height, double min_cost, const char * func, const char * metric, bool is_ratio);
+char * malt_reader_json_get_static_full(struct malt_reader_t * reader);
 
 /**********************************************************/
 //via JSON request

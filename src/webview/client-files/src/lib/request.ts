@@ -24,11 +24,14 @@ async function request<T>(
   params = {},
   options: RequestOptions = {}
 ): Promise<T> {
+  console.log(process.env.VITE_APP);
   if (process.env.VITE_APP == 'static') {
     console.log("sdfdmlkk");
     console.log(path);
     console.log(MALT_DATA);
-    return MALT_DATA[path] as Promise<T>;
+    return new Promise((resolve) => {
+        resolve(MALT_DATA[path]);
+    });
   }
 
   const { responseType = 'json' } = options

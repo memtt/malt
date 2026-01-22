@@ -14,6 +14,7 @@
 //std C++
 #include <iostream>
 #include <fstream>
+#include <filesystem>
 //cpp-httplib
 #include <httplib.h>
 //unix
@@ -48,6 +49,7 @@ struct WebviewOptions
 	std::list<std::string> overrides;
 	std::string host{"localhost"};
 	bool regenToken{false};
+	std::string staticGen{""};
 };
 
 /**********************************************************/
@@ -85,6 +87,9 @@ static error_t parse_opt (int key, char *arg, struct argp_state *state)
 		case 'r':
 			options->regenToken = true;
 			break;
+		case 's':
+			options->staticGen = arg;
+			break;
 		case ARGP_KEY_ARG:
 			/* Too many arguments. */
 			if (state->arg_num >= 1)
@@ -113,6 +118,7 @@ void WebviewOptions::parse(int argc, char ** argv)
 		{"override",   'o', "OLD:NEW",0,  "Override some source path by the given path, in the form : OLD:NEW. Can be called several times."},
 		{"host",       'H', "HOST",   0,  "The host interface to listen on (localhost by default)."},
 		{"regen-token",'r', 0,        0,  "Regenerate the token."},
+		{"static",     's', "DIR",    0,  "Generate a static version of the website in the given directory."},
 		{ 0 }
 	};
 	struct argp argp = { options, parse_opt, args_doc, doc };
@@ -152,11 +158,28 @@ static std::string get_webview_www_path(void)
 	const std::string exe_path = get_current_exe();
 	const std::string bin_path = dirname((char*)exe_path.c_str());
 	const std::string prefix = dirname((char*)bin_path.c_str());
-	const std::string webview = prefix + std::string("/share/malt/webview");
-	const std::string webviewCheckFile = webview + std::string("client-files/app/index.html");
+	const std::string webview = prefix + std::string("/share/malt/webview/dynamic/");
+	const std::string webviewCheckFile = webview + std::string("index.html");
 	FILE * fp = fopen(webviewCheckFile.c_str(), "r");
 	if (fp == nullptr) {
-		return std::string(MALT_INSTALL_PREFIX) + "/share/malt/webview";
+		return std::string(MALT_INSTALL_PREFIX) + "/share/malt/webview/dynamic/";
+	} else {
+		fclose(fp);
+		return webview;
+	}
+}
+
+/**********************************************************/
+static std::string get_webview_www_static_path(void)
+{
+	const std::string exe_path = get_current_exe();
+	const std::string bin_path = dirname((char*)exe_path.c_str());
+	const std::string prefix = dirname((char*)bin_path.c_str());
+	const std::string webview = prefix + std::string("/share/malt/webview/static");
+	const std::string webviewCheckFile = webview + std::string("index.html");
+	FILE * fp = fopen(webviewCheckFile.c_str(), "r");
+	if (fp == nullptr) {
+		return std::string(MALT_INSTALL_PREFIX) + "/share/malt/webview/static";
 	} else {
 		fclose(fp);
 		return webview;
@@ -171,6 +194,36 @@ static void local_signal_ctrl_c_handler(int s){
 }
 
 /**********************************************************/
+bool genStaticWebsite(const WebProfile & profile, const std::string & path)
+{
+	//create the directory
+	if (std::filesystem::exists(path + "/data") == false) {
+		const bool status = std::filesystem::create_directories(path + "/data");
+		if (!status) {
+			std::cerr << "Fail to create the directory : " << path << std::endl;
+			return false;
+		}
+	}
+
+	//create data file
+	const std::string dataFName = path + "/data/static-profile.js";
+	std::ofstream dataOut(dataFName);
+	dataOut << "const MALT_DATA = " << profile.getStatic() << ";" << std::endl;
+	dataOut.close();
+
+	//remove
+	std::filesystem::remove(path + "/index.html");
+	std::filesystem::remove(path + "/favicon.ico");
+
+	//copy static html
+	std::filesystem::copy_file(get_webview_www_static_path() + "/index.html", path + "/index.html");
+	std::filesystem::copy_file(get_webview_www_static_path() + "/favicon.ico", path + "/favicon.ico");
+
+	//ok
+	return true;
+}
+
+/**********************************************************/
 int main(int argc, char ** argv)
 {
 	//parse options
@@ -182,7 +235,19 @@ int main(int argc, char ** argv)
 
 	//loading profile
 	try {
+		//load profile
 		WebProfile profile(options.filename, true);
+
+		//if statis, trivial
+		if (options.staticGen.empty() == false) {
+			bool status = genStaticWebsite(profile, options.staticGen);
+			if (status) {
+				return EXIT_SUCCESS;
+			} else {
+				std::cerr << "Fail to generate the static website !" << std::endl;
+				return EXIT_FAILURE;
+			}
+		}
 
 		//spwn server
 		TokenAuth * tokenAuth = nullptr;

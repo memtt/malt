@@ -281,6 +281,22 @@ nlohmann::json WebProfile::getCallTree(ssize_t nodeId, ssize_t depth, ssize_t he
 }
 
 /**********************************************************/
+nlohmann::json WebProfile::getStatic(void) const
+{
+	nlohmann::json data = nlohmann::json{
+		{"/data/summary.json", this->getSummaryV2()},
+		{"/flat.json", this->getFlatFunctionProfile(true, true)},
+		{"/timed.json", this->getTimedValues()},
+		{"/size-map.json", this->getSizeMap()},
+		{"/scatter.json", this->getScatter()},
+		{"/realloc-map.json", this->getReallocMap()},
+		{"/global-variables.json", this->getGlobalVariables()},
+		{"/global-variables.json", this->getGlobalVariables()},
+	};
+	return data;
+}
+
+/**********************************************************/
 bool WebProfile::isSourceFile(const std::string & path) const
 {
 	const auto it = this->sourceFiles.find(path);
