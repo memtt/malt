@@ -132,8 +132,6 @@ router.beforeEach((to, from, next) => {
   if (process.env.VITE_APP == 'static' || process.env.VITE_APP == 'summary') {
     if (to.path === '/login') {
       next("/home");
-    /*} else if (enabledPages[process.env.VITE_APP][to.path] == undefined) {
-      next("/staticNotAvailPage");*/
     } else {
       next();
     }

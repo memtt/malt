@@ -61,6 +61,10 @@ function genNavigationRoutes() : Array<any>
 		routes.push({ path: '/realloc', name: 'Realloc' });
 	}
 
+	if (process.env.VITE_APP == 'static' || process.env.VITE_APP == 'summary') {
+		routes.push({ path: '/sources', name: 'Full profile' });
+	}
+
 	//ok
 	return routes;
 }
