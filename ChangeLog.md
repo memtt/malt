@@ -1,6 +1,18 @@
 Change log
 ==========
 
+next - XX/XX/2026
+-----------------
+
+ - Do not tread in parallel the huge ELF files with addr2line (-o addr2line:huge=50M).
+ - With addr2line tread in a single shot the huge ELF files.
+ - With addr2line pass via a file to transmit the addresses for huge ELF files.
+ - Fix portability on RedHat 8,9 and 10.
+ - Improve documentation.
+ - Refactor the option management class and rename some options to get consistency in names.
+ - Fix broken reader public API (not yet stable).
+ - Add possibility to dump the webview in a static mode (via --static & --static-summary).
+
 1.5.0 - 07/01/2025
 ------------------
 
