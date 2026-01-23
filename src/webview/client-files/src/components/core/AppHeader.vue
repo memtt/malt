@@ -35,6 +35,7 @@
 </template>
 
 <script setup lang="ts">
+declare var MALT_PROFILE_PATH: any;
 function genNavigationRoutes() : Array<any>
 {
 	//vars
@@ -61,8 +62,8 @@ function genNavigationRoutes() : Array<any>
 		routes.push({ path: '/realloc', name: 'Realloc' });
 	}
 
-	if (process.env.VITE_APP == 'static' || process.env.VITE_APP == 'summary') {
-		routes.push({ path: '/sources', name: 'Full profile' });
+	if (MALT_PROFILE_PATH != '' && (process.env.VITE_APP == 'static' || process.env.VITE_APP == 'summary')) {
+		routes.push({ path: '/get-profile', name: 'Full profile' });
 	}
 
 	//ok

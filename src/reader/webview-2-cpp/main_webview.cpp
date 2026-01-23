@@ -51,7 +51,7 @@ struct WebviewOptions
 	bool regenToken{false};
 	std::string staticGen{""};
 	bool staticSummary{false};
-	bool compressProfile{false};
+	std::string embedProfile{"xz"};
 };
 
 /**********************************************************/
@@ -97,8 +97,10 @@ static error_t parse_opt (int key, char *arg, struct argp_state *state)
 			options->staticGen = arg;
 			options->staticSummary = true;
 			break;
-		case 'x':
-			options->compressProfile = true;
+		case 'e':
+			options->embedProfile = arg;
+			if (options->embedProfile != "xz" && options->embedProfile != "json" && options->embedProfile != "none")
+				throw std::runtime_error("Invaild value for option -e/--embed-profile !");
 			break;
 		case ARGP_KEY_ARG:
 			/* Too many arguments. */
@@ -128,7 +130,7 @@ void WebviewOptions::parse(int argc, char ** argv)
 		{"override",       'o', "OLD:NEW",0,  "Override some source path by the given path, in the form : OLD:NEW. Can be called several times."},
 		{"host",           'H', "HOST",   0,  "The host interface to listen on (localhost by default)."},
 		{"regen-token",    'r', 0,        0,  "Regenerate the token."},
-		{"xz",             'x', 0,        0,  "In conjunction with --static or --static-summary, compress the profile with xz."},
+		{"embed-profile",  'e', "MODE",   0,  "In conjunction with --static or --static-summary, embed the profile : 'xz', 'json' or 'none'."},
 		{"static",         's', "DIR",    0,  "Generate a static version of the website in the given directory."},
 		{"static-summary", 'S', "DIR",    0,  "Generate a static version of the website in the given directory with only the summary."},
 		{ 0 }
@@ -239,7 +241,7 @@ std::string genCompressCommand(const std::string & in, const std::string & out)
 }
 
 /**********************************************************/
-bool genStaticWebsite(const WebProfile & profile, const std::string & path, bool onlySummary = false, bool compressProfile = false)
+bool genStaticWebsite(const WebProfile & profile, const std::string & path, bool onlySummary = false, const std::string & embedProfile = "xz")
 {
 	//remove
 	std::filesystem::remove(path + "/index.html");
@@ -257,8 +259,14 @@ bool genStaticWebsite(const WebProfile & profile, const std::string & path, bool
 
 	//target profile name
 	std::string profileName = std::filesystem::path(profile.getFileName()).filename();
-	if (compressProfile)
+	if (embedProfile == "xz") {
 		profileName += ".xz";
+	} else if (embedProfile == "json") {
+	} else if (embedProfile == "none") {
+		profileName = "";
+	} else {
+		throw std::runtime_error("Invalid value of embed mode !");
+	}
 
 	//create data file
 	const std::string dataFName = path + "/data/static-profile.js";
@@ -268,7 +276,10 @@ bool genStaticWebsite(const WebProfile & profile, const std::string & path, bool
 	} else {
 		dataOut << "const MALT_DATA = " << profile.getStatic() << ";" << std::endl;
 	}
-	dataOut << "const MALT_PROFILE_PATH = \"data/" << profileName << "\";" << std::endl;
+	if (profileName.empty())
+		dataOut << "const MALT_PROFILE_PATH = \"\";" << std::endl;
+	else
+		dataOut << "const MALT_PROFILE_PATH = \"data/" << profileName << "\";" << std::endl;
 	dataOut.close();
 
 	//copy static html
@@ -276,12 +287,12 @@ bool genStaticWebsite(const WebProfile & profile, const std::string & path, bool
 	std::filesystem::copy_file(get_webview_www_static_path(onlySummary) + "/favicon.ico", path + "/favicon.ico");
 
 	//xz compress the profile
-	if (compressProfile) {
+	if (embedProfile == "xz") {
 		const std::string xzCmd = genCompressCommand(profile.getFileName(), path + "/data/" + profileName);
 		int statusSystem = std::system(xzCmd.c_str());
 		if (statusSystem != 0)
 			throw std::runtime_error("Fail to compress the profile file !");
-	} else {
+	} else if (embedProfile == "json") {
 		std::filesystem::copy_file(profile.getFileName(), path + "/data/" + profileName);
 	}
 
@@ -306,7 +317,7 @@ int main(int argc, char ** argv)
 
 		//if statis, trivial
 		if (options.staticGen.empty() == false) {
-			bool status = genStaticWebsite(profile, options.staticGen, options.staticSummary, options.compressProfile);
+			bool status = genStaticWebsite(profile, options.staticGen, options.staticSummary, options.embedProfile);
 			if (status) {
 				return EXIT_SUCCESS;
 			} else {

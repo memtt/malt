@@ -113,6 +113,13 @@ function genRoutes(): Array<any>
         meta: { requiresAuth: true },
       });
     });
+
+    routes.push({
+      path: '/get-profile',
+      name: 'Get profile',
+      component: () => import('@/views/StaticGetProfilePage.vue'),
+      meta: { requiresAuth: true },
+    });
   }
   return routes;
 }
