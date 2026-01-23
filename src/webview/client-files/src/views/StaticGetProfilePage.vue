@@ -1,8 +1,8 @@
 <!----------------------------------------------------------
 |    PROJECT  : MALT (MALoc Tracker)
-|    DATE     : 11/2025
+|    DATE     : 01/2026
 |    LICENSE  : CeCILL-C
-|    FILE     : src/webview/client-files/src/views/ReallocPage.vue
+|    FILE     : src/webview/client-files/src/views/StaticGetProfilePage.vue
 |-----------------------------------------------------------
 |    AUTHOR   : Sébastien Valat - 2026
 ----------------------------------------------------------->

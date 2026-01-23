@@ -1,11 +1,12 @@
 <!----------------------------------------------------------
 |    PROJECT  : MALT (MALoc Tracker)
-|    DATE     : 11/2025
+|    DATE     : 01/2026
 |    LICENSE  : CeCILL-C
 |    FILE     : src/webview/client-files/src/components/core/AppHeader.vue
 |-----------------------------------------------------------
 |    AUTHOR   : Emeric GUYON - 2025
 |    AUTHOR   : Sébastien Valat (INRIA) - 2025
+|    AUTHOR   : Sébastien Valat - 2026
 ----------------------------------------------------------->
 <template>
   <header class="app-header">
