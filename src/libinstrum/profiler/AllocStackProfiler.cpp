@@ -668,21 +668,24 @@ MMCallStackNode AllocStackProfiler::getStackNode(Stack* userStack)
 {
 	MMStackMap::Node * node;
 	MMCallStackNode res;
+	#ifdef MALT_ENABLE_CACHING
+		bool enableCaching = true;
+	#else
+		bool enableCaching = false;
+	#endif
 	//CODE_TIMING("stackReducer",this->reducer.reduce(*userStack));
 	CODE_TIMING("searchInfo", {
 		const MMCallStackNode * cacheResult = nullptr;
-		#ifdef MALT_ENABLE_CACHING
+		if (enableCaching)
 			cacheResult = this->stackTrackerCache.get(*userStack);
-		#endif //MALT_ENABLE_CACHING
 		if (cacheResult != nullptr) {
 			res = *cacheResult;
 		} else {
 			node = &stackTracker.getNode(*userStack);
 			MMCallStackNode tmp(node->first.stack,&node->second);
 			res = tmp;
-			#ifdef MALT_ENABLE_CACHING
+			if (enableCaching)
 				this->stackTrackerCache.set(node->first.stack, res);
-			#endif //MALT_ENABLE_CACHING
 		}
 	});
 	return res;

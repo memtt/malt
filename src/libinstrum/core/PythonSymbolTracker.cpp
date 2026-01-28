@@ -194,11 +194,15 @@ LangAddress PythonSymbolTracker::slowFrameToLangAddress(PyFrameObject * frame, P
 
 	//search entry
 	void * currentId = nullptr;
+	#ifdef MALT_ENABLE_CACHING
+		bool enableCaching = true;
+	#else
+		bool enableCaching = false;
+	#endif
 	CODE_TIMING("pySearchInsertSite",{
 		void * const * cacheResult = nullptr;
-		#ifdef MALT_ENABLE_CACHING
+		if (enableCaching)
 			cacheResult = siteMapCache.get(site);
-		#endif //MALT_ENABLE_CACHING
 		if (cacheResult != nullptr) {
 			currentId = *cacheResult;
 		} else {
@@ -210,9 +214,8 @@ LangAddress PythonSymbolTracker::slowFrameToLangAddress(PyFrameObject * frame, P
 			} else {
 				currentId = it->second;
 			}
-			#ifdef MALT_ENABLE_CACHING
+			if (enableCaching)
 				siteMapCache.set(&it->first, currentId);
-			#endif //MALT_ENABLE_CACHING
 		}
 	});
 

@@ -377,7 +377,7 @@ BUILD_PARAMETERS = {
         },
         "malt/rocky-full:8.9": {
             "base": "malt/rocky-basic:8.9",
-            "cmds": ROCKY_FULL_CMDS
+            "cmds": REDHAT_OLD_FULL_CMDS
         },
         "malt/rocky-indev:8.9": {
             "base": "malt/rocky-full:8.9",
@@ -390,33 +390,31 @@ BUILD_PARAMETERS = {
         },
         "malt/rocky-full:9.3": {
             "base": "malt/rocky-basic:9.3",
-            "cmds": ROCKY_FULL_CMDS
-        },
-        "malt/rocky-indev:9.3": {
-            "base": "malt/rocky-full:9.3",
-            "cmds": [
-                BUILD_CUSTOM_PYTHON
-            ]
+            "cmds": REDHAT_OLD_FULL_CMDS
         },
         ############ centos:9
-        "malt/centos-basic:7": {
-            "base": "centos:7",
-            "cmds": CENTOS_YUM_BASIC_CMDS + [
-                "yum install -y wget libopenssl-devel",
-                f"cd /tmp && wget https://github.com/Kitware/CMake/releases/download/v3.13.3/cmake-3.13.3.tar.gz && tar -xvf cmake-3.13.3.tar.gz && cd cmake-3.13.3 && ./configure && make -j4 && make install && cd .. && rm -rfvd cmake-3.13.3*"
-            ]
-        },
-        "malt/centos-full:7": {
-            "base": "malt/centos-basic:7",
-            "cmds": CENTOS_YMU_FULL_CMDS
-        },
+        #"malt/centos-basic:7": {
+        #    "base": "centos:7",
+        #    "cmds": CENTOS_YUM_BASIC_CMDS + [
+        #        "yum install -y wget libopenssl-devel",
+        #        f"cd /tmp && wget https://github.com/Kitware/CMake/releases/download/v3.13.3/cmake-3.13.3.tar.gz && tar -xvf cmake-3.13.3.tar.gz && cd cmake-3.13.3 && ./configure && make -j4 && make install && cd .. && rm -rfvd cmake-3.13.3*"
+        #    ],
+        #    "options": ["--disable-webview", "--disable-python"],
+        #},
+        #"malt/centos-full:7": {
+        #    "base": "malt/centos-basic:7",
+        #    "cmds": CENTOS_YMU_FULL_CMDS,
+        #    "options": ["--disable-webview", "--disable-python"],
+        #},
         "malt/centos-basic:8": {
             "base": "centos:8",
-            "cmds": CENTOS_YUM_BASIC_CMDS
+            "cmds": CENTOS_YUM_BASIC_CMDS,
+            "options": ["--disable-python"]
         },
         "malt/centos-full:8": {
             "base": "malt/centos-basic:8",
-            "cmds": CENTOS_YMU_FULL_CMDS
+            "cmds": CENTOS_YMU_FULL_CMDS,
+            "options": ["--disable-python"]
         },
         "malt/centos-basic:9": {
             "base": "centos:9",
@@ -516,6 +514,8 @@ def test_distribution(dist_name_version: str, compiler:str, variant:str):
     # extract options
     compiler_options = BUILD_PARAMETERS['compilers'][compiler]
     variant_options = BUILD_PARAMETERS['variants'][variant]
+    distro_options = BUILD_PARAMETERS['distributions'][dist_name_version]
+    distro_options_str = ' '.join(distro_options.get('options', []))
 
     # infos
     cores = get_make_jobs()
@@ -528,7 +528,7 @@ def test_distribution(dist_name_version: str, compiler:str, variant:str):
     # build & start container to run commands in
     with in_container(dist_name_version, caches=CACHES) as container:
         # to perform tests
-        container.assert_run(f"/mnt/malt-sources/configure --enable-tests {COMMON_CONF_OPTIONS} {variant_options} {compiler_options} {dev_options}")
+        container.assert_run(f"/mnt/malt-sources/configure --enable-tests {COMMON_CONF_OPTIONS} {variant_options} {compiler_options} {dev_options} {distro_options_str}")
         container.assert_run(f"make -j{cores}")
         container.assert_run(f"OMP_NUM_THREADS=1 ctest --output-on-failure -j{cores}")
 

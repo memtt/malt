@@ -54,7 +54,7 @@ npm install
 cd -
 if [[ ${BUILD} == 'yes' ]]; then
 	ln -sf ./../../../extern-deps/node_modules ./
-	npm run build
+	./build.sh . ""
 	rm -f node_modules
 fi
 set +x

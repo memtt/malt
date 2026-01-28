@@ -38,8 +38,8 @@ int maltInitStatus(void)
 	const std::string cstRefFile = CUR_SRC_DIR "/TestInstrumPython-3.10.json";
 #elif PY_MAJOR_VERSION == 3 && PY_MINOR_VERSION <= 11
 	const std::string cstRefFile = CUR_SRC_DIR "/TestInstrumPython-3.11.json";
-//#elif PY_MAJOR_VERSION == 3 && PY_MINOR_VERSION > 13 || (PY_MINOR_VERSION == 13 && PY_MICRO_VERSION >= 9)
-//	const std::string cstRefFile = CUR_SRC_DIR "/TestInstrumPython-3.13.json";
+#elif PY_MAJOR_VERSION == 3 && PY_MINOR_VERSION >= 14
+	const std::string cstRefFile = CUR_SRC_DIR "/TestInstrumPython-3.14.json";
 #else
 	const std::string cstRefFile = CUR_SRC_DIR "/TestInstrumPython.json";
 #endif
@@ -82,7 +82,7 @@ TEST(TestInstrumPython, python_basic_array_backtrace)
 	nlohmann::json ref = nlohmann::json::parse(std::ifstream(cstRefFile));
 
 	//check
-	ASSERT_EQ(ref["python_basic_array_backtrace"].dump(1), resJson.dump(1));
+	ASSERT_EQ(ref["python_basic_array_backtrace"].dump(1), resJson.dump(1)) << PY_MAJOR_VERSION << "-" << PY_MINOR_VERSION << "-" << PY_MICRO_VERSION;
 }
 
 /**********************************************************/

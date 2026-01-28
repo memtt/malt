@@ -51,6 +51,7 @@ struct WebviewOptions
 	bool regenToken{false};
 	std::string staticGen{""};
 	bool staticSummary{false};
+	std::string embedProfile{"xz"};
 };
 
 /**********************************************************/
@@ -96,6 +97,11 @@ static error_t parse_opt (int key, char *arg, struct argp_state *state)
 			options->staticGen = arg;
 			options->staticSummary = true;
 			break;
+		case 'e':
+			options->embedProfile = arg;
+			if (options->embedProfile != "xz" && options->embedProfile != "json" && options->embedProfile != "none")
+				throw std::runtime_error("Invaild value for option -e/--embed-profile !");
+			break;
 		case ARGP_KEY_ARG:
 			/* Too many arguments. */
 			if (state->arg_num >= 1)
@@ -124,6 +130,7 @@ void WebviewOptions::parse(int argc, char ** argv)
 		{"override",       'o', "OLD:NEW",0,  "Override some source path by the given path, in the form : OLD:NEW. Can be called several times."},
 		{"host",           'H', "HOST",   0,  "The host interface to listen on (localhost by default)."},
 		{"regen-token",    'r', 0,        0,  "Regenerate the token."},
+		{"embed-profile",  'e', "MODE",   0,  "In conjunction with --static or --static-summary, embed the profile : 'xz', 'json' or 'none'."},
 		{"static",         's', "DIR",    0,  "Generate a static version of the website in the given directory."},
 		{"static-summary", 'S', "DIR",    0,  "Generate a static version of the website in the given directory with only the summary."},
 		{ 0 }
@@ -207,8 +214,40 @@ static void local_signal_ctrl_c_handler(int s){
 }
 
 /**********************************************************/
-bool genStaticWebsite(const WebProfile & profile, const std::string & path, bool onlySummary = false)
+std::string protectShellString(const std::string & value)
 {
+	std::stringstream out;
+	out << '"';
+	for (const auto it : value) {
+		if (it == '"')
+			out << '\\';
+		out << it;
+	}
+	out << '"';
+	return out.str();
+}
+
+/**********************************************************/
+std::string genCompressCommand(const std::string & in, const std::string & out)
+{
+	//set
+	const std::string in_protected = protectShellString(in);
+	const std::string out_protected = protectShellString(out);
+
+	//build
+	std::stringstream cmd;
+	cmd << "cat " << in_protected << " | xz -T0  > " << out_protected;
+	return cmd.str();
+}
+
+/**********************************************************/
+bool genStaticWebsite(const WebProfile & profile, const std::string & path, bool onlySummary = false, const std::string & embedProfile = "xz")
+{
+	//remove
+	std::filesystem::remove(path + "/index.html");
+	std::filesystem::remove(path + "/favicon.ico");
+	std::filesystem::remove_all(path + "/data");
+
 	//create the directory
 	if (std::filesystem::exists(path + "/data") == false) {
 		const bool status = std::filesystem::create_directories(path + "/data");
@@ -216,6 +255,17 @@ bool genStaticWebsite(const WebProfile & profile, const std::string & path, bool
 			std::cerr << "Fail to create the directory : " << path << std::endl;
 			return false;
 		}
+	}
+
+	//target profile name
+	std::string profileName = std::filesystem::path(profile.getFileName()).filename();
+	if (embedProfile == "xz") {
+		profileName += ".xz";
+	} else if (embedProfile == "json") {
+	} else if (embedProfile == "none") {
+		profileName = "";
+	} else {
+		throw std::runtime_error("Invalid value of embed mode !");
 	}
 
 	//create data file
@@ -226,17 +276,25 @@ bool genStaticWebsite(const WebProfile & profile, const std::string & path, bool
 	} else {
 		dataOut << "const MALT_DATA = " << profile.getStatic() << ";" << std::endl;
 	}
+	if (profileName.empty())
+		dataOut << "const MALT_PROFILE_PATH = \"\";" << std::endl;
+	else
+		dataOut << "const MALT_PROFILE_PATH = \"data/" << profileName << "\";" << std::endl;
 	dataOut.close();
-
-	//remove
-	std::filesystem::remove(path + "/index.html");
-	std::filesystem::remove(path + "/favicon.ico");
-	std::filesystem::remove(path + "/data/malt-profile.json");
 
 	//copy static html
 	std::filesystem::copy_file(get_webview_www_static_path(onlySummary) + "/index.html", path + "/index.html");
 	std::filesystem::copy_file(get_webview_www_static_path(onlySummary) + "/favicon.ico", path + "/favicon.ico");
-	std::filesystem::copy_file(profile.getFileName(), path + "/data/malt-profile.json");
+
+	//xz compress the profile
+	if (embedProfile == "xz") {
+		const std::string xzCmd = genCompressCommand(profile.getFileName(), path + "/data/" + profileName);
+		int statusSystem = std::system(xzCmd.c_str());
+		if (statusSystem != 0)
+			throw std::runtime_error("Fail to compress the profile file !");
+	} else if (embedProfile == "json") {
+		std::filesystem::copy_file(profile.getFileName(), path + "/data/" + profileName);
+	}
 
 	//ok
 	return true;
@@ -259,7 +317,7 @@ int main(int argc, char ** argv)
 
 		//if statis, trivial
 		if (options.staticGen.empty() == false) {
-			bool status = genStaticWebsite(profile, options.staticGen, options.staticSummary);
+			bool status = genStaticWebsite(profile, options.staticGen, options.staticSummary, options.embedProfile);
 			if (status) {
 				return EXIT_SUCCESS;
 			} else {

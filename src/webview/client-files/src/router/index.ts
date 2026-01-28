@@ -1,10 +1,11 @@
 /***********************************************************
 *    PROJECT  : MALT (MALoc Tracker)
-*    DATE     : 11/2025
+*    DATE     : 01/2026
 *    LICENSE  : CeCILL-C
 *    FILE     : src/webview/client-files/src/router/index.ts
 *-----------------------------------------------------------
 *    AUTHOR   : Emeric GUYON - 2025
+*    AUTHOR   : Sébastien Valat - 2026
 ***********************************************************/
 import { createRouter, createWebHashHistory } from 'vue-router'
 import { useAuthStore } from '@/stores/authStore'
@@ -113,6 +114,13 @@ function genRoutes(): Array<any>
         meta: { requiresAuth: true },
       });
     });
+
+    routes.push({
+      path: '/get-profile',
+      name: 'Get profile',
+      component: () => import('@/views/StaticGetProfilePage.vue'),
+      meta: { requiresAuth: true },
+    });
   }
   return routes;
 }
@@ -132,8 +140,6 @@ router.beforeEach((to, from, next) => {
   if (process.env.VITE_APP == 'static' || process.env.VITE_APP == 'summary') {
     if (to.path === '/login') {
       next("/home");
-    /*} else if (enabledPages[process.env.VITE_APP][to.path] == undefined) {
-      next("/staticNotAvailPage");*/
     } else {
       next();
     }

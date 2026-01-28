@@ -1,11 +1,12 @@
 <!----------------------------------------------------------
 |    PROJECT  : MALT (MALoc Tracker)
-|    DATE     : 11/2025
+|    DATE     : 01/2026
 |    LICENSE  : CeCILL-C
 |    FILE     : src/webview/client-files/src/components/core/AppHeader.vue
 |-----------------------------------------------------------
 |    AUTHOR   : Emeric GUYON - 2025
 |    AUTHOR   : Sébastien Valat (INRIA) - 2025
+|    AUTHOR   : Sébastien Valat - 2026
 ----------------------------------------------------------->
 <template>
   <header class="app-header">
@@ -35,6 +36,7 @@
 </template>
 
 <script setup lang="ts">
+declare var MALT_PROFILE_PATH: any;
 function genNavigationRoutes() : Array<any>
 {
 	//vars
@@ -59,6 +61,10 @@ function genNavigationRoutes() : Array<any>
 		};
 		routes.push({ path: '/per-thread', name: 'Threads' });
 		routes.push({ path: '/realloc', name: 'Realloc' });
+	}
+
+	if (MALT_PROFILE_PATH != '' && (process.env.VITE_APP == 'static' || process.env.VITE_APP == 'summary')) {
+		routes.push({ path: '/get-profile', name: 'Full profile' });
 	}
 
 	//ok

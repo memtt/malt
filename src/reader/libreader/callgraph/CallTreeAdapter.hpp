@@ -47,8 +47,8 @@ class D3ScaleLinearColorRange
 		D3ScaleLinearColorRange(const std::string & colorMin, const std::string & colorMax, double rangeMin, double rangeMax);
 		std::string getColor(double value) const;
 	private:
-		int colorMin_r{0}, colorMin_g{0}, colorMin_b{0};
-		int colorMax_r{0}, colorMax_g{0}, colorMax_b{0};
+		unsigned int colorMin_r{0}, colorMin_g{0}, colorMin_b{0};
+		unsigned int colorMax_r{0}, colorMax_g{0}, colorMax_b{0};
 		double rangeMin;
 		double rangeMax;
 };

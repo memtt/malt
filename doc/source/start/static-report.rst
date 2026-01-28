@@ -26,3 +26,23 @@ the **static** version of the report contains all the pages except :
  - The **stack memory usage** page.
 
 They are replaced by a page with the **instructions** on how to get MALT and use the profile to look at them.
+
+Embed the profile
+-----------------
+
+The report can also optionnaly embed the profile so it can be reused latter.
+You can embed it as compressed or uncompressed.
+
+.. code:: shell
+
+	# generate all static available pages in the report
+	malt-webview --static --embed-profile xz ./report  ./malt-my_progr-01256.json
+
+	# generate only the static summary page.
+	malt-webview --static-summary --embed-profile xz ./report ./malt-my_progr-01256.json
+
+Possible values for the option `-e/--embed-profile` are :
+
+ - **xz**: to compress the profile with `xz`.
+ - **json**: to keep it uncompressed.
+ - **none**: to skip.
