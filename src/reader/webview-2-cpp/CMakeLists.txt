@@ -27,6 +27,7 @@ target_link_libraries(malt-webview-cpp-base ${NLOHMANN_JSON_LIBRARIES} ${CRYPTO_
 ############################################################
 add_executable(malt-webview main_webview.cpp)
 target_link_libraries(malt-webview malt-reader malt-webview-cpp-base)
+target_link_libraries(malt-webview stdc++fs)
 #target_link_libraries(malt-webview Threads::Threads)
 
 ############################################################

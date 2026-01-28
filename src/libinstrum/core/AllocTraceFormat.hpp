@@ -147,7 +147,7 @@ size_t AllocTracerEvent::toCString(char * buffer, size_t bufferSize) const
  */
 bool AllocTracerEvent::fromCString(const char * buffer)
 {
-	int intType = EVENT_NOP;
+	unsigned int intType = EVENT_NOP;
 	int cnt = sscanf(buffer, "%x\t%zx\t%zx\t%llx\t%llx\t%zx\t%zx\t%zx\t%zx\n",
 		&intType,
 		&this->threadId, 
@@ -174,7 +174,7 @@ bool AllocTracerEvent::fromCString(const char * buffer)
  */
 bool AllocTracerEvent::fromFilePointer(FILE * fp)
 {
-	int intType = EVENT_NOP;
+	unsigned int intType = EVENT_NOP;
 	int cnt = fscanf(fp, "%x\t%zx\t%zx\t%llx\t%llx\t%zx\t%zx\t%zx\t%zx\n",
 		&intType,
 		&this->threadId, 

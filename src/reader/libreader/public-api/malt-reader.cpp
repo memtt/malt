@@ -46,7 +46,7 @@ DLL_PUBLIC malt_reader_t * malt_reader_init(const char * fname, size_t flags)
 		reader->profile = profile;
 		reader->verbose = verbose;
 		if (verbose)
-			fprintf(stderr, "[MALT-WEBVIEW2] Loading OK => %p\n", reader);
+			fprintf(stderr, "[MALT-WEBVIEW2] Loading OK => %p\n", (void*)reader);
 		return reader;
 	} catch(std::exception & e) {
 		fprintf(stderr, "[MALT-WEBVIEW2] Fail to load profile : %s\n", fname);
@@ -85,7 +85,7 @@ DLL_PUBLIC char * malt_reader_handle_request(struct malt_reader_t* reader, const
 {
 	try {
 		if (reader->verbose)
-			fprintf(stderr, "[MALT-WEBVIEW-2] Request %s(%p)\n", name, reader);
+			fprintf(stderr, "[MALT-WEBVIEW-2] Request %s(%p)\n", name, (void*)reader);
 		nlohmann::json json = handler();
 		std::string str = json.dump();
 		char * res = strdup(str.c_str());
@@ -312,7 +312,7 @@ DLL_PUBLIC std::string malt_reader_json_request_cpp(struct malt_reader_t* reader
 	try {
 		nlohmann::json reqJson = nlohmann::json::parse(request);
 		if (reader->verbose)
-			fprintf(stderr, "[MALT-WEBVIEW-2] Request %s(%p)\n", reqJson.dump().c_str(), reader);
+			fprintf(stderr, "[MALT-WEBVIEW-2] Request %s(%p)\n", reqJson.dump().c_str(), (void*)reader);
 	
 		//  Do some 'work'
 		if (reqJson["operation"] == "getSummaryV2") {

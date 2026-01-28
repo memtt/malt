@@ -15,6 +15,7 @@
 #include "format/MaltProfile.hpp"
 #include "extractors/Extractor.hpp"
 #include "trace/TraceReader.hpp"
+#include "libinstrum/portability/Visibility.hpp"
 
 /**********************************************************/
 namespace MALTReader
@@ -27,7 +28,7 @@ class Profile
 		Profile(const std::string & fname, bool loadProgressBar = false);
 		virtual ~Profile(void);
 		const Extractor & getExtractor(void) const;
-		const std::string & getFileName(void) const;
+		DLL_PUBLIC const std::string & getFileName(void) const;
 	protected:
 		const std::string fname;
 		MALTFormat::MaltProfile profile;

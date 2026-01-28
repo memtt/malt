@@ -35,7 +35,7 @@ endif()
 
 #######################################################
 # pre-build is older than sources
-file(GLOB_RECURSE WEBVIEW_SRCS LIST_DIRECTORIES false *.css *.scss *.vue *.ts)
+file(GLOB_RECURSE WEBVIEW_SRCS LIST_DIRECTORIES false src/*.css src/*.scss src/*.vue src/*.ts)
 list(APPEND ${WEBVIEW_SRCS}
 	package.json
 	package-lock.json
