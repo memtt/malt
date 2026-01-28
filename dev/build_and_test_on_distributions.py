@@ -424,14 +424,14 @@ BUILD_PARAMETERS = {
             "base": "malt/centos-basic:9",
             "cmds": REDHAT_OLD_FULL_CMDS
         },
-        #"malt/centos-basic:10": {
-        #    "base": "centos:10",
-        #    "cmds": ROCKY_BASIC_CMDS
-        #},
-        #"malt/centos-full:10": {
-        #    "base": "malt/centos-basic:10",
-        #    "cmds": REDHAT_OLD_FULL_CMDS
-        #},
+        "malt/centos-basic:10": {
+            "base": "centos:10",
+            "cmds": ROCKY_BASIC_CMDS
+        },
+        "malt/centos-full:10": {
+            "base": "malt/centos-basic:10",
+            "cmds": REDHAT_OLD_FULL_CMDS
+        },
         ############ archlinux:latest
         "malt/archlinux-basic:latest": {
             "base": "docker.io/library/archlinux:latest",
