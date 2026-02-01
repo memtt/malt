@@ -95,7 +95,7 @@ void CallStackInfo::onFreeEvent(size_t value,size_t peakId)
 	{
 		cntZeros++;
 	} else {
-		updatePeak(peakId);
+		updatePeak(peakId, MEM_DOMAIN_CPU);
 		this->free.addEvent(value);
 	}
 }
@@ -113,7 +113,7 @@ void CallStackInfo::onGpuFreeEvent(size_t value,size_t peakId)
 	{
 		cntZeros++;
 	} else {
-		updatePeak(peakId);
+		updatePeak(peakId, MEM_DOMAIN_GPU);
 		this->gpuFree.addEvent(value);
 	}
 }
@@ -136,12 +136,12 @@ ssize_t SimpleQuantityHistory::getMean(void) const
  * @param peakId Define the ID of the last global peak seen by the caller. If larger
  * than the local one, update the local peak with current status.
 **/
-void CallStackInfo::updatePeak(size_t peakId)
+void CallStackInfo::updatePeak(size_t peakId, MemDomain domain)
 {
-	if (this->peakId < peakId)
+	if (this->peakId[domain] < peakId)
 	{
-		this->peakId = peakId;
-		this->peak = this->alive;
+		this->peakId[domain] = peakId;
+		this->peak[domain] = this->alive[domain];
 	}
 }
 
@@ -149,9 +149,9 @@ void CallStackInfo::updatePeak(size_t peakId)
 /**
  * Return the memory consumption at peak time.
 **/
-size_t CallStackInfo::getPeak(void) const
+size_t CallStackInfo::getPeak(MemDomain domain) const
 {
-	return this->peak;
+	return this->peak[domain];
 }
 
 /**********************************************************/
@@ -170,12 +170,12 @@ void CallStackInfo::onAllocEvent(size_t value,size_t peakId)
 		this->alloc.addEvent(value);
 	
 	//update peak
-	updatePeak(peakId);
+	updatePeak(peakId, MEM_DOMAIN_CPU);
 	
 	//update alive memory
-	this->alive+=value;
-	if (this->alive > this->maxAlive)
-		this->maxAlive = this->alive;
+	this->alive[MEM_DOMAIN_CPU]+=value;
+	if (this->alive[MEM_DOMAIN_CPU] > this->maxAlive[MEM_DOMAIN_CPU])
+		this->maxAlive[MEM_DOMAIN_CPU] = this->alive[MEM_DOMAIN_CPU];
 }
 
 /**********************************************************/
@@ -194,12 +194,12 @@ void CallStackInfo::onGpuAllocEvent(size_t value,size_t peakId)
 		this->gpuAlloc.addEvent(value);
 	
 	//update peak
-	updatePeak(peakId);
+	updatePeak(peakId, MEM_DOMAIN_GPU);
 	
 	//update alive memory
-	this->alive+=value;
-	if (this->alive > this->maxAlive)
-		this->maxAlive = this->alive;
+	this->alive[MEM_DOMAIN_GPU] += value;
+	if (this->alive[MEM_DOMAIN_GPU] > this->maxAlive[MEM_DOMAIN_GPU])
+		this->maxAlive[MEM_DOMAIN_GPU] = this->alive[MEM_DOMAIN_GPU];
 }
 
 /**********************************************************/
@@ -228,14 +228,14 @@ void CallStackInfo::onMunmap ( ssize_t value,size_t peakId, bool subMunmap )
  * @param peakId Define the ID of the last global peak seen by the caller. If larger
  * than the local one, update the local peak with current status.
 **/
-void CallStackInfo::onFreeLinkedMemory(size_t value, ticks lifetime,size_t peakId)
+void CallStackInfo::onFreeLinkedMemory(size_t value, ticks lifetime,size_t peakId, MemDomain domain)
 {
-	assert(alive >= (ssize_t)value);
-	assert(alive >= 0);
+	assert(alive[domain] >= (ssize_t)value);
+	assert(alive[domain] >= 0);
 	
-	updatePeak(peakId);
+	updatePeak(peakId, domain);
 
-	this->alive -= value;
+	this->alive[domain] -= value;
 	if (lifetime != 0)
 		this->lifetime.addEvent(lifetime);
 }
@@ -248,11 +248,13 @@ CallStackInfo::CallStackInfo(void )
 {
 	this->reallocCount = 0;
 	this->reallocDelta = 0;
-	this->alive = 0;
-	this->maxAlive = 0;
 	this->cntZeros = 0;
-	this->peak = 0;
-	this->peakId = 0;
+	for (int i = 0 ; i < MEM_DOMAIN_COUNT ; i++) {
+		this->alive[i] = 0;
+		this->maxAlive[i] = 0;
+		this->peak[i] = 0;
+		this->peakId[i] = 0;
+	}
 }
 
 /**********************************************************/
@@ -277,13 +279,15 @@ void CallStackInfo::onReallocEvent(size_t oldSize, size_t newSize)
 **/
 void CallStackInfo::merge(const CallStackInfo& info)
 {
-	this->alive += info.alive;
-	this->maxAlive += info.maxAlive;
+	for (int i = 0 ; i < MEM_DOMAIN_COUNT ; i++) {
+		this->alive[i] += info.alive[i];
+		this->maxAlive[i] += info.maxAlive[i];
+		this->peak[i] += info.peak[i];
+	}
 	this->cntZeros += info.cntZeros;
 	this->alloc.push(info.alloc);
 	this->free.push(info.free);
 	this->lifetime.push(info.lifetime);
-	this->peak += info.peak;
 	//assert(peakId == info.peakId);
 }
 
@@ -295,8 +299,10 @@ void convertToJson(htopml::JsonState& json, const CallStackInfo& value)
 {
 	json.openStruct();
 	json.printField("countZeros",value.cntZeros);
-	json.printField("maxAliveReq",value.maxAlive);
-	json.printField("aliveReq",value.alive);
+	json.printField("maxAliveReq",value.maxAlive[MEM_DOMAIN_CPU]);
+	json.printField("aliveReq",value.alive[MEM_DOMAIN_CPU]);
+	json.printField("maxAliveReqGPU",value.maxAlive[MEM_DOMAIN_GPU]);
+	json.printField("aliveReqGPU",value.alive[MEM_DOMAIN_GPU]);
 	json.printField("alloc",value.alloc);
 	json.printField("free",value.free);
 	json.printField("gpuAlloc",value.gpuAlloc);
@@ -304,7 +310,8 @@ void convertToJson(htopml::JsonState& json, const CallStackInfo& value)
 	json.printField("mmap",value.mmap);
 	json.printField("munmap",value.munmap);
 	json.printField("lifetime",value.lifetime);
-	json.printField("globalPeak",value.peak);
+	json.printField("globalPeak",value.peak[MEM_DOMAIN_CPU]);
+	json.printField("globalPeakGPU",value.peak[MEM_DOMAIN_GPU]);
 	json.printField("reallocCount",value.reallocCount);
 	json.printField("reallocSumDelta",value.reallocDelta);
 	//json.printField("mmap",value.mmap);

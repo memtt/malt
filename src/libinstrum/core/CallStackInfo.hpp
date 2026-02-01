@@ -30,6 +30,14 @@ namespace MALT
 {
 
 /**********************************************************/
+enum MemDomain
+{
+	MEM_DOMAIN_CPU = 0,
+	MEM_DOMAIN_GPU = 1,
+	MEM_DOMAIN_COUNT = 2,
+};
+
+/**********************************************************/
 /**
  * Provide a simple class to track some quantitiy over time by taking care of their
  * extremal values. By default it capture :
@@ -67,7 +75,7 @@ struct CallStackInfo
 		void onAllocEvent(size_t value,size_t peakId);
 		void onFreeEvent(size_t value,size_t peakId);
 		void onReallocEvent(size_t oldSize,size_t newSize);
-		void onFreeLinkedMemory(size_t value,ticks lifetime,size_t peakId);
+		void onFreeLinkedMemory(size_t value,ticks lifetime,size_t peakId, MemDomain domain);
 		void onMmap(ssize_t value,size_t peakId);
 		void onMunmap(ssize_t value,size_t peakId,bool subMunmap);
 		void onGpuAllocEvent(size_t value,size_t peakId);
@@ -76,12 +84,12 @@ struct CallStackInfo
 		void writeAsCallgrindEntry(int line, std::ostream & out) const;
 		void writeAsCallgrindCallEntry(int line, std::ostream& out) const;
 		static void writeCallgrindEventDef(std::ostream & out);
-		void updatePeak(size_t peakId);
+		void updatePeak(size_t peakId, MemDomain domain);
 		bool hasRealloc(void) const;
 		const SimpleQuantityHistory & getAllocInfo(void) const;
 		const SimpleQuantityHistory & getFreeInfo(void) const;
 		const SimpleQuantityHistory & getLifetime(void) const;
-		size_t getPeak(void) const;
+		size_t getPeak(MemDomain domain) const;
 	public:
 		friend void convertToJson(htopml::JsonState& json, const CallStackInfo& value);
 		friend std::ostream & operator << (std::ostream & out,const CallStackInfo & info);
@@ -105,13 +113,13 @@ struct CallStackInfo
 		/** Count number of null size allocations. **/
 		ssize_t cntZeros;
 		/** Count the current allocated (alive) memory from this call site. **/
-		ssize_t alive;
+		ssize_t alive[MEM_DOMAIN_COUNT];
 		/** Keep track of the maximum alive chunks during execution. **/
-		ssize_t maxAlive;
+		ssize_t maxAlive[MEM_DOMAIN_COUNT];
 		/** Keep track of the memory used on global application peak. **/
-		ssize_t peak;
+		ssize_t peak[MEM_DOMAIN_COUNT];
 		/** Remember when we updated the peak prameter for the last time. **/
-		size_t peakId;
+		size_t peakId[MEM_DOMAIN_COUNT];
 		/** Keep track of the number of realloc. **/
 		size_t reallocCount;
 		/** Sum the memory allocated due to realloc. **/

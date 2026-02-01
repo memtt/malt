@@ -21,7 +21,7 @@ add_library(malt-injectors OBJECT
       InjectCInit.cpp
       InjectFuncEnterExit.cpp
       InjectMaqao.cpp
-	  InjectGpuAlloc.cpp
+      InjectGpuAlloc.cpp
 )
 set_target_properties(malt-injectors PROPERTIES COMPILE_FLAGS ${MALT_LIB_COMPILER_FLAGS})
 

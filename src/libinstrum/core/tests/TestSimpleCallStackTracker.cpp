@@ -223,13 +223,13 @@ TEST(TestSimpleStackTracker, convertToJson)
 	auto & infos = tracker.getBacktraceInfo(stack, 1).getInfo();
 	infos.onAllocEvent(64, 1);
 	infos.onFreeEvent(64, 1);
-	infos.onFreeLinkedMemory(64, 50, 1);
+	infos.onFreeLinkedMemory(64, 50, 1, MEM_DOMAIN_CPU);
 	infos.onAllocEvent(128, 2);
 	infos.onFreeEvent(128, 2);
-	infos.onFreeLinkedMemory(128, 100, 2);
+	infos.onFreeLinkedMemory(128, 100, 2, MEM_DOMAIN_CPU);
 	infos.onMmap(4096, 3);
 	infos.onMunmap(4096, 3, false);
-	infos.onFreeLinkedMemory(4096, 120, 3);
+	infos.onFreeLinkedMemory(4096, 120, 3, MEM_DOMAIN_CPU);
 
 	//to stream
 	std::stringstream out;

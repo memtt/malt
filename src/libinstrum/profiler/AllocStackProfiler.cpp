@@ -113,9 +113,11 @@ AllocStackProfiler::AllocStackProfiler(const Options & options,StackMode mode,bo
 	this->osCachedMemoryAtStart = mem.cached;
 	
 	//peak tracking
-	this->peakId = 0;
-	this->peak = 0;
-	this->curReq = 0;
+	for (int i = 0 ; i < MEM_DOMAIN_COUNT ; i++) {
+		this->peakId[i] = 0;
+		this->peak[i] = 0;
+		this->curReq[i] = 0;
+	}
 	
 	//if request stack tree for more compressed output prepare it
 	if (options.output.stackTree)
@@ -294,7 +296,8 @@ void AllocStackProfiler::onAllocEvent(void* ptr, size_t size,Stack* userStack,MM
 		this->domains.countAlloc(domain, size);
 
 		//peak tracking
-		if (peakTracking(size))
+		MemDomain memDomain = (domain == DOMAIN_GPU_ALLOC) ? MEM_DOMAIN_GPU : MEM_DOMAIN_CPU;
+		if (peakTracking(size, memDomain))
 			this->domains.updatePeak(domain);
 	
 		if (options.stack.enabled)
@@ -305,11 +308,11 @@ void AllocStackProfiler::onAllocEvent(void* ptr, size_t size,Stack* userStack,MM
 			
 			//count events
 			if (domain == DOMAIN_MMAP)
-				CODE_TIMING("updateInfoAlloc",callStackNode->infos->onMmap(size,peakId));
+				CODE_TIMING("updateInfoAlloc",callStackNode->infos->onMmap(size,peakId[MEM_DOMAIN_CPU]));
 			else if (domain == DOMAIN_GPU_ALLOC)
-				CODE_TIMING("updateInfoAlloc",callStackNode->infos->onGpuAllocEvent(size,peakId));
+				CODE_TIMING("updateInfoAlloc",callStackNode->infos->onGpuAllocEvent(size,peakId[MEM_DOMAIN_GPU]));
 			else
-				CODE_TIMING("updateInfoAlloc",callStackNode->infos->onAllocEvent(size,peakId));
+				CODE_TIMING("updateInfoAlloc",callStackNode->infos->onAllocEvent(size,peakId[MEM_DOMAIN_CPU]));
 		}
 
 		//register for segment history tracking
@@ -471,7 +474,8 @@ FreeFinalInfos AllocStackProfiler::onFreeEvent(void* ptr, MALT::Stack* userStack
 		this->domains.countFree(domain, size);
 		
 		//peak tracking
-		peakTracking(-size);
+		MemDomain memDomain = (domain == DOMAIN_GPU_ALLOC) ? MEM_DOMAIN_GPU : MEM_DOMAIN_CPU;
+		peakTracking(-size, memDomain);
 		
 		if (options.stack.enabled)
 		{
@@ -484,15 +488,15 @@ FreeFinalInfos AllocStackProfiler::onFreeEvent(void* ptr, MALT::Stack* userStack
 			
 			//count events
 			if (domain == DOMAIN_MMAP) {
-				CODE_TIMING("updateInfoFree",callStackNode->infos->onMunmap(size,peakId,subMunmap));
+				CODE_TIMING("updateInfoFree",callStackNode->infos->onMunmap(size,peakId[MEM_DOMAIN_CPU],subMunmap));
 			} else if (domain == DOMAIN_GPU_ALLOC) {
-				CODE_TIMING("updateInfoFree",callStackNode->infos->onGpuFreeEvent(size,peakId));
+				CODE_TIMING("updateInfoFree",callStackNode->infos->onGpuFreeEvent(size,peakId[MEM_DOMAIN_GPU]));
 			} else {
-				CODE_TIMING("updateInfoFree",callStackNode->infos->onFreeEvent(size,peakId));
+				CODE_TIMING("updateInfoFree",callStackNode->infos->onFreeEvent(size,peakId[MEM_DOMAIN_CPU]));
 			}
 			
 			//update alive (TODO, need to move this into a new function on StackNodeInfo)
-			CODE_TIMING("freeLinkedMemory",segInfo->callStack.infos->onFreeLinkedMemory(size,lifetime,peakId));
+			CODE_TIMING("freeLinkedMemory",segInfo->callStack.infos->onFreeLinkedMemory(size,lifetime,peakId[MEM_DOMAIN_CPU], memDomain));
 		}
 		
 		//remove tracking info
@@ -653,16 +657,16 @@ void AllocStackProfiler::onMremap(AllocTracerEvent & traceEntry, void * ptr,size
 }
 
 /**********************************************************/
-bool AllocStackProfiler::peakTracking(ssize_t delta)
+bool AllocStackProfiler::peakTracking(ssize_t delta, MemDomain domain)
 {
 	bool isPeak = false;
-	if (this->curReq > this->peak)
+	if (this->curReq[domain] > this->peak[domain])
 	{
-		this->peakId++;
-		this->peak = this->curReq;
+		this->peakId[domain]++;
+		this->peak[domain] = this->curReq[domain];
 		isPeak = true;
 	}
-	this->curReq += delta;
+	this->curReq[domain] += delta;
 	return isPeak;
 }
 
@@ -702,11 +706,11 @@ void AllocStackProfiler::solvePerThreadSymbols()
 }
 
 /**********************************************************/
-void AllocStackProfiler::updatePeakInfoOfStacks(void)
+void AllocStackProfiler::updatePeakInfoOfStacks(MemDomain domain)
 {
 	//fprintf(stderr,"peak = %zu , peakId = %zu\n",peak,peakId);
 	for (StackSTLHashMap<CallStackInfo>::iterator it = stackTracker.begin() ; it != stackTracker.end() ; ++it)
-		it->second.updatePeak(peakId);
+		it->second.updatePeak(peakId[domain], domain);
 }
 
 /**********************************************************/
@@ -897,7 +901,8 @@ void AllocStackProfiler::onExit(void )
 		
 
 		//update global peak info
-		updatePeakInfoOfStacks();
+		for (int i = 0 ; i < MEM_DOMAIN_COUNT ; i++)
+			updatePeakInfoOfStacks(static_cast<MemDomain>(i));
 		
 		//load global variables
 		loadGlobalVariables();

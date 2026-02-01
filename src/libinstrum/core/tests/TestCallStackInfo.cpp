@@ -146,9 +146,9 @@ TEST(TestCallStackInfo, onFreeLinkedMemory)
 	CallStackInfo info;
 
 	//call
-	info.onFreeLinkedMemory(-64, 1000, 1);
-	info.onFreeLinkedMemory(-64, 100, 2);
-	info.onFreeLinkedMemory(-128, 4000, 3);
+	info.onFreeLinkedMemory(-64, 1000, 1, MEM_DOMAIN_CPU);
+	info.onFreeLinkedMemory(-64, 100, 2, MEM_DOMAIN_CPU);
+	info.onFreeLinkedMemory(-128, 4000, 3, MEM_DOMAIN_CPU);
 
 	//call
 	const SimpleQuantityHistory & history = info.getLifetime();
@@ -173,9 +173,9 @@ TEST(TestCallStackInfo, merge)
 	info.onFreeEvent(64, 0);
 	info.onFreeEvent(64, 0);
 	info.onFreeEvent(128, 0);
-	info.onFreeLinkedMemory(-64, 1000, 1);
-	info.onFreeLinkedMemory(-64, 100, 2);
-	info.onFreeLinkedMemory(-128, 4000, 3);
+	info.onFreeLinkedMemory(-64, 1000, 1, MEM_DOMAIN_CPU);
+	info.onFreeLinkedMemory(-64, 100, 2, MEM_DOMAIN_CPU);
+	info.onFreeLinkedMemory(-128, 4000, 3, MEM_DOMAIN_CPU);
 
 
 	//build
@@ -257,14 +257,14 @@ TEST(TestCallStackInfo, updatePeak)
 	//build
 	CallStackInfo info;
 	info.onAllocEvent(64, 0);
-	info.updatePeak(0);
+	info.updatePeak(0, MEM_DOMAIN_CPU);
 	info.onAllocEvent(64, 1);
-	info.updatePeak(1);
+	info.updatePeak(1, MEM_DOMAIN_CPU);
 	info.onAllocEvent(64, 2);
-	info.updatePeak(2);
+	info.updatePeak(2, MEM_DOMAIN_CPU);
 	info.onFreeEvent(64, 3);
-	info.updatePeak(3);
-	EXPECT_EQ(info.getPeak(), 192);
+	info.updatePeak(3, MEM_DOMAIN_CPU);
+	EXPECT_EQ(info.getPeak(MEM_DOMAIN_CPU), 192);
 }
 
 /**********************************************************/
@@ -280,9 +280,9 @@ TEST(TestCallStackInfo, convertToJson)
 	info.onFreeEvent(64, 0);
 	info.onFreeEvent(64, 0);
 	info.onFreeEvent(128, 0);
-	info.onFreeLinkedMemory(-64, 1000, 1);
-	info.onFreeLinkedMemory(-64, 100, 2);
-	info.onFreeLinkedMemory(-128, 4000, 3);
+	info.onFreeLinkedMemory(-64, 1000, 1, MEM_DOMAIN_CPU);
+	info.onFreeLinkedMemory(-64, 100, 2, MEM_DOMAIN_CPU);
+	info.onFreeLinkedMemory(-128, 4000, 3, MEM_DOMAIN_CPU);
 
 	//convert
 	std::stringstream out;

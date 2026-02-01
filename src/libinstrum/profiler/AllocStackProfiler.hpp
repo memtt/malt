@@ -171,8 +171,8 @@ class AllocStackProfiler
 		FreeFinalInfos onFreeEvent(void* ptr, MALT::Stack* userStack, MALT::MMCallStackNode* callStackNode = 0, bool doLock = true, AllocDomain domain = DOMAIN_C_ALLOC, bool subMunmap = false);
 		void solvePerThreadSymbols(void);
 		void memOpsLevels(void);
-		void updatePeakInfoOfStacks(void);
-		bool peakTracking(ssize_t delta);
+		void updatePeakInfoOfStacks(MemDomain domain);
+		bool peakTracking(ssize_t delta, MemDomain domain);
 		void loadGlobalVariables(void);
 		void loopSuppress(void);
 		std::string getFileExeScriptName(void) const;
@@ -210,9 +210,9 @@ class AllocStackProfiler
 		size_t osTotalMemory;
 		size_t osFreeMemoryAtStart;
 		size_t osCachedMemoryAtStart;
-		size_t peakId;
-		size_t peak;
-		size_t curReq;
+		size_t peakId[MEM_DOMAIN_COUNT];
+		size_t peak[MEM_DOMAIN_COUNT];
+		size_t curReq[MEM_DOMAIN_COUNT];
 		size_t nbAllocSeen;
 		std::string traceFilename;
 		ProfiledValue<TimeTrackMemory> memoryTimeline;

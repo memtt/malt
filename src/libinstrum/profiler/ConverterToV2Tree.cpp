@@ -90,19 +90,24 @@ void convertToJson ( htopml::JsonState& json, const CallStackInfoRealloc& value 
 void convertToJson ( htopml::JsonState& json, const CallStackInfoGlobals& value )
 {
 	json.openStruct();
-		json.printField("alive",value.alive);
 		json.printField("zero",value.cntZeros);
-		json.printField("alive",value.maxAlive);
-		json.printField("peak",value.peak);
+		json.printField("alive",value.alive[MEM_DOMAIN_CPU]);
+		json.printField("maxAlive",value.maxAlive[MEM_DOMAIN_CPU]);
+		json.printField("peak",value.peak[MEM_DOMAIN_CPU]);
+		json.printField("aliveGPU",value.alive[MEM_DOMAIN_GPU]);
+		json.printField("maxAliveGPU",value.maxAlive[MEM_DOMAIN_GPU]);
+		json.printField("peakGPU",value.peak[MEM_DOMAIN_GPU]);
 	json.closeStruct();
 }
 
 void convert ( CallStackInfoGlobals& out, const CallStackInfo& in )
 {
-	out.alive = in.alive;
 	out.cntZeros = in.cntZeros;
-	out.maxAlive = in.maxAlive;
-	out.peak = in.peak;
+	for (size_t i = 0 ; i < MEM_DOMAIN_COUNT ; i++) {
+		out.alive[i] = in.alive[i];
+		out.maxAlive[i] = in.maxAlive[i];
+		out.peak[i] = in.peak[i];
+	}
 }
 
 void convert ( CallStackInfoRealloc& out, const CallStackInfo& in )

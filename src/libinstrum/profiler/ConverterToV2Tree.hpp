@@ -31,9 +31,9 @@ enum CallStackInfoEnum
 struct CallStackInfoGlobals
 {
 	ssize_t cntZeros;
-	ssize_t alive;
-	ssize_t maxAlive;
-	ssize_t peak;
+	ssize_t alive[MEM_DOMAIN_COUNT];
+	ssize_t maxAlive[MEM_DOMAIN_COUNT];
+	ssize_t peak[MEM_DOMAIN_COUNT];
 };
 
 struct CallStackInfoRealloc
