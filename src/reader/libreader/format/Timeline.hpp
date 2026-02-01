@@ -38,6 +38,7 @@ struct Timeline
 	TimelineInfos memoryTimeline;
 	TimelineInfos systemTimeline;
 	TimelineInfos memoryBandwidth;
+	TimelineInfos memoryGpuBandwidth;
 };
 
 /**********************************************************/

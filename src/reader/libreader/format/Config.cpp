@@ -62,6 +62,7 @@ void to_json(nlohmann::json & json, const Config & config){
 		},
 		{
 			"c", {
+				{"gpu-malloc", config.c.gpuMalloc},
 				{"malloc", config.c.malloc},
 				{"mmap", config.c.mmap},
 			}
@@ -196,8 +197,10 @@ void from_json(const JsonIn & json, Config & config)
 
 	//python
 	JsonIn jsonC = json.at("c");
+	assert(jsContains(jsonC, "gpu-malloc"));
 	assert(jsContains(jsonC, "malloc"));
 	assert(jsContains(jsonC, "mmap"));
+	jsonC.at("gpu-malloc").get_to(config.c.gpuMalloc);
 	jsonC.at("malloc").get_to(config.c.malloc);
 	jsonC.at("mmap").get_to(config.c.mmap);
 

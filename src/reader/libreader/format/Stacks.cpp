@@ -50,13 +50,18 @@ void to_json(nlohmann::json & json, const StackInfos & value)
 	json = nlohmann::json{
 		{"countZeros", value.countZeros},
 		{"maxAliveReq", value.maxAliveReq},
+		{"maxAliveReqGPU", value.maxAliveReqGPU},
 		{"aliveReq", value.aliveReq},
+		{"aliveReqGPU", value.aliveReqGPU},
 		{"alloc", value.alloc},
 		{"free", value.free},
+		{"gpuAlloc", value.gpuAlloc},
+		{"gpuFree", value.gpuFree},
 		{"mmap", value.mmap},
 		{"munmap", value.munmap},
 		{"lifetime", value.lifetime},
 		{"globalPeak", value.globalPeak},
+		{"globalPeakGPU", value.globalPeakGPU},
 		{"reallocCount", value.reallocCount},
 		{"reallocSumDelta", value.reallocSumDelta},
 	};
@@ -68,9 +73,13 @@ void from_json(const JsonIn & json, StackInfos & value)
 	//checks
 	assert(jsContains(json, "countZeros"));
 	assert(jsContains(json, "maxAliveReq"));
+	assert(jsContains(json, "maxAliveReqGPU"));
 	assert(jsContains(json, "aliveReq"));
+	assert(jsContains(json, "aliveReqGPU"));
+	assert(jsContains(json, "gpuAlloc"));
 	assert(jsContains(json, "alloc"));
 	assert(jsContains(json, "free"));
+	assert(jsContains(json, "gpuFree"));
 	assert(jsContains(json, "mmap"));
 	assert(jsContains(json, "munmap"));
 	assert(jsContains(json, "lifetime"));
@@ -81,13 +90,18 @@ void from_json(const JsonIn & json, StackInfos & value)
 	//load
 	json.at("countZeros").get_to(value.countZeros);
 	json.at("maxAliveReq").get_to(value.maxAliveReq);
+	json.at("maxAliveReqGPU").get_to(value.maxAliveReqGPU);
 	json.at("aliveReq").get_to(value.aliveReq);
+	json.at("aliveReqGPU").get_to(value.aliveReqGPU);
 	json.at("alloc").get_to(value.alloc);
 	json.at("free").get_to(value.free);
+	json.at("gpuAlloc").get_to(value.gpuAlloc);
+	json.at("gpuFree").get_to(value.gpuFree);
 	json.at("mmap").get_to(value.mmap);
 	json.at("munmap").get_to(value.munmap);
 	json.at("lifetime").get_to(value.lifetime);
 	json.at("globalPeak").get_to(value.globalPeak);
+	json.at("globalPeakGPU").get_to(value.globalPeakGPU);
 	json.at("reallocCount").get_to(value.reallocCount);
 	json.at("reallocSumDelta").get_to(value.reallocSumDelta);
 }
@@ -178,11 +192,16 @@ void StackInfos::merge(const StackInfos & value)
 	this->countZeros += value.countZeros;
 	this->maxAliveReq += value.maxAliveReq;
 	this->aliveReq += value.aliveReq;
+	this->maxAliveReqGPU += value.maxAliveReqGPU;
+	this->aliveReqGPU += value.aliveReqGPU;
 	this->globalPeak += value.globalPeak;
+	this->globalPeakGPU += value.globalPeakGPU;
 	this->reallocCount += value.reallocCount;
 	this->reallocSumDelta += value.reallocSumDelta;
 	this->alloc.merge(value.alloc);
 	this->free.merge(value.free);
+	this->gpuAlloc.merge(value.gpuAlloc);
+	this->gpuFree.merge(value.gpuFree);
 	this->mmap.merge(value.mmap);
 	this->munmap.merge(value.munmap);
 	this->lifetime.merge(value.lifetime);

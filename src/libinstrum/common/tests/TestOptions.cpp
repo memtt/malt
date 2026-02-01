@@ -26,6 +26,7 @@ const char cstJson[] = "\
 \t\t\"threads\":8\n\
 \t},\n\
 \t\"c\":{\n\
+\t\t\"gpu-malloc\":true,\n\
 \t\t\"malloc\":true,\n\
 \t\t\"mmap\":true\n\
 \t},\n\

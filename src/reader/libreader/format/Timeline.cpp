@@ -54,6 +54,7 @@ void to_json(nlohmann::json & json, const Timeline & value)
 		{"memoryTimeline", value.memoryTimeline},
 		{"systemTimeline", value.systemTimeline},
 		{"memoryBandwidth", value.memoryBandwidth},
+		{"memoryGpuBandwidth", value.memoryGpuBandwidth},
 	};
 }
 
@@ -68,6 +69,7 @@ void from_json(const JsonIn & json, Timeline & value)
 	json.at("memoryTimeline").get_to(value.memoryTimeline);
 	json.at("systemTimeline").get_to(value.systemTimeline);
 	json.at("memoryBandwidth").get_to(value.memoryBandwidth);
+	json.at("memoryGpuBandwidth").get_to(value.memoryGpuBandwidth);
 }
 
 }

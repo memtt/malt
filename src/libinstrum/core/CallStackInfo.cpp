@@ -353,12 +353,12 @@ void CallStackInfo::writeAsCallgrindEntry(int line, std::ostream& out) const
 {
 	assert(alloc.max >= alloc.min);
 	assert(free.max >= free.min);
-	assert(alive >= 0);
-	assert(maxAlive >= 0);
+	assert(alive[MEM_DOMAIN_CPU] >= 0);
+	assert(maxAlive[MEM_DOMAIN_CPU] >= 0);
 	
 	out << line << ' ' << alloc.count << ' ' << free.count << ' ' <<  alloc.count + free.count + cntZeros 
 		<< ' ' << alloc.sum << ' ' << free.sum
-		<< ' ' << alive << ' ' << maxAlive;
+		<< ' ' << alive[MEM_DOMAIN_CPU] << ' ' << maxAlive[MEM_DOMAIN_CPU];
 }
 
 /**********************************************************/

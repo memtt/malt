@@ -48,7 +48,7 @@ void * MALT::malt_wrap_malloc(size_t size, const MallocFuncPtr & real_malloc, vo
 	ReentranceGuard guard(env);
 
 	//run the default function
-	assert(env.getGlobalState().status > ALLOC_WRAP_INIT_SYM);
+	MALT_ASSERT(env.getGlobalState().status > ALLOC_WRAP_INIT_SYM);
 	
 	ticks t = Clock::getticks();
 	void * res = real_malloc(size);

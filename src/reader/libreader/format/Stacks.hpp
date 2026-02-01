@@ -36,13 +36,18 @@ struct StackInfos
 {
 	size_t countZeros{0};
 	size_t maxAliveReq{0};
+	size_t maxAliveReqGPU{0};
 	size_t aliveReq{0};
+	size_t aliveReqGPU{0};
 	CountMinMaxSum alloc;
 	CountMinMaxSum free;
 	CountMinMaxSum mmap;
 	CountMinMaxSum munmap;
 	CountMinMaxSum lifetime;
+	CountMinMaxSum gpuAlloc;
+	CountMinMaxSum gpuFree;
 	size_t globalPeak{0};
+	size_t globalPeakGPU{0};
 	size_t reallocCount{0};
 	size_t reallocSumDelta{0};
 	void merge(const StackInfos & value);

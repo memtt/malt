@@ -236,10 +236,6 @@ void AllocWrapperGlobal::init(void )
 		gblState.allocFuncs.memalign = (MemalignFuncPtr)dlsym(RTLD_NEXT,"memalign");
 		gblState.allocFuncs.pvalloc = (PVallocFuncPtr)dlsym(RTLD_NEXT,"pvalloc");
 
-		//search addresses for GPU allocators
-		gblState.gpuFuncs.pgiUaccCudaAlloc = (PgiUaccCudaAllocPtr)dlsym(RTLD_NEXT,"__pgi_uacc_cuda_alloc");
-		gblState.gpuFuncs.pgiUaccCudaFree = (PgiUaccCudaFreePtr)dlsym(RTLD_NEXT,"__pgi_uacc_cuda_free");
-
 		//init profiler
 		gblState.status = ALLOC_WRAP_INIT_PROFILER;
 
@@ -310,6 +306,11 @@ void AllocWrapperGlobal::init(void )
 
 		//final state
 		gblState.status = ALLOC_WRAP_READY;
+
+		//post-solve some symbols which might fail
+		//Solve them here otherwise it enter in an infinite loop in debug mode
+		gblState.gpuFuncs.pgiUaccCudaAlloc = (PgiUaccCudaAllocPtr)dlsym(RTLD_NEXT,"__pgi_uacc_cuda_alloc");
+		gblState.gpuFuncs.pgiUaccCudaFree = (PgiUaccCudaFreePtr)dlsym(RTLD_NEXT,"__pgi_uacc_cuda_free");
 
 		//skip
 		if (skip)

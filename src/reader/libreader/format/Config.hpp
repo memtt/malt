@@ -56,6 +56,7 @@ struct Config
 		std::string mode;
 	} python;
 	struct {
+		bool gpuMalloc;
 		bool malloc;
 		bool mmap;
 	} c;

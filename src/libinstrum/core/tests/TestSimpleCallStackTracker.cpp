@@ -36,6 +36,8 @@ const char * CST_REF_1 = "{\n\
 \t\t\t\"countZeros\":0,\n\
 \t\t\t\"maxAliveReq\":4096,\n\
 \t\t\t\"aliveReq\":0,\n\
+\t\t\t\"maxAliveReqGPU\":128,\n\
+\t\t\t\"aliveReqGPU\":0,\n\
 \t\t\t\"alloc\":{\n\
 \t\t\t\t\"count\":3,\n\
 \t\t\t\t\"min\":64,\n\
@@ -47,6 +49,18 @@ const char * CST_REF_1 = "{\n\
 \t\t\t\t\"min\":64,\n\
 \t\t\t\t\"max\":4096,\n\
 \t\t\t\t\"sum\":4288\n\
+\t\t\t},\n\
+\t\t\t\"gpuAlloc\":{\n\
+\t\t\t\t\"count\":2,\n\
+\t\t\t\t\"min\":64,\n\
+\t\t\t\t\"max\":128,\n\
+\t\t\t\t\"sum\":192\n\
+\t\t\t},\n\
+\t\t\t\"gpuFree\":{\n\
+\t\t\t\t\"count\":2,\n\
+\t\t\t\t\"min\":64,\n\
+\t\t\t\t\"max\":128,\n\
+\t\t\t\t\"sum\":192\n\
 \t\t\t},\n\
 \t\t\t\"mmap\":{\n\
 \t\t\t\t\"count\":1,\n\
@@ -61,12 +75,13 @@ const char * CST_REF_1 = "{\n\
 \t\t\t\t\"sum\":4096\n\
 \t\t\t},\n\
 \t\t\t\"lifetime\":{\n\
-\t\t\t\t\"count\":3,\n\
+\t\t\t\t\"count\":5,\n\
 \t\t\t\t\"min\":50,\n\
 \t\t\t\t\"max\":120,\n\
-\t\t\t\t\"sum\":270\n\
+\t\t\t\t\"sum\":420\n\
 \t\t\t},\n\
 \t\t\t\"globalPeak\":0,\n\
+\t\t\t\"globalPeakGPU\":0,\n\
 \t\t\t\"reallocCount\":0,\n\
 \t\t\t\"reallocSumDelta\":0\n\
 \t\t}\n\
@@ -227,9 +242,19 @@ TEST(TestSimpleStackTracker, convertToJson)
 	infos.onAllocEvent(128, 2);
 	infos.onFreeEvent(128, 2);
 	infos.onFreeLinkedMemory(128, 100, 2, MEM_DOMAIN_CPU);
+
+	//mmap
 	infos.onMmap(4096, 3);
 	infos.onMunmap(4096, 3, false);
 	infos.onFreeLinkedMemory(4096, 120, 3, MEM_DOMAIN_CPU);
+
+	//gpu
+	infos.onGpuAllocEvent(64, 1);
+	infos.onGpuFreeEvent(64, 1);
+	infos.onFreeLinkedMemory(64, 50, 1, MEM_DOMAIN_GPU);
+	infos.onGpuAllocEvent(128, 2);
+	infos.onGpuFreeEvent(128, 2);
+	infos.onFreeLinkedMemory(128, 100, 2, MEM_DOMAIN_GPU);
 
 	//to stream
 	std::stringstream out;

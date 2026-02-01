@@ -24,6 +24,7 @@ void to_json(nlohmann::json & json, const DomainCounters & value)
 		{"pyMem", value.pyMem},
 		{"pyRaw", value.pyRaw},
 		{"mmap", value.mmap},
+		{"gpu", value.gpu},
 	};
 }
 
@@ -36,6 +37,7 @@ void from_json(const JsonIn & json, DomainCounters & value)
 	assert(jsContains(json, "pyMem"));
 	assert(jsContains(json, "pyRaw"));
 	assert(jsContains(json, "mmap"));
+	assert(jsContains(json, "gpu"));
 
 	//load
 	json.at("c").get_to(value.c);
@@ -43,6 +45,7 @@ void from_json(const JsonIn & json, DomainCounters & value)
 	json.at("pyMem").get_to(value.pyMem);
 	json.at("pyRaw").get_to(value.pyRaw);
 	json.at("mmap").get_to(value.mmap);
+	json.at("gpu").get_to(value.gpu);
 }
 
 /**********************************************************/
