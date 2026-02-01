@@ -22,7 +22,7 @@ var CppDeclParser = require("./CppDeclParser.js");
  */
 var maltHelper = new MaltHelper();
 var maltFuncMetrics = new MaltFuncMetrics();
-var allocFuncRegexp = /^((MALT::WrapperPython.*::.*)|(gomp_realloc)|(gomp_malloc)|(gomp_free)|(__gnu_cxx::new_allocator)|(operator new)|(operator delete)|(_Zn[wa])|(g_malloc)|(g_realloc)|(g_free)|(for__get_vm)|(for__free_vm)|([mc]alloc)|(free)|(realloc)|(memalign)|(posix_memalign)|(for_(de)?alloc_allocatable)|(for_(de)?allocate)|(default_malloc)|(default_realloc)|(default_calloc)|(default_free)|(PyDataMem_UserNEW)|(PyArray_NewFromDescr[_a-z]+)|(mmap)|(mremap)|(munmap))/;
+var allocFuncRegexp = /^((MALT::WrapperPython.*::.*)|(gomp_realloc)|(gomp_malloc)|(gomp_free)|(__gnu_cxx::new_allocator)|(operator new)|(operator delete)|(_Zn[wa])|(g_malloc)|(g_realloc)|(g_free)|(for__get_vm)|(for__free_vm)|([mc]alloc)|(free)|(realloc)|(memalign)|(posix_memalign)|(for_(de)?alloc_allocatable)|(for_(de)?allocate)|(default_malloc)|(default_realloc)|(default_calloc)|(default_free)|(PyDataMem_UserNEW)|(PyArray_NewFromDescr[_a-z]+)|(mmap)|(mremap)|(munmap)|(__pgi_uacc_cuda_alloc))/;
 
 /**
  * An adapter class that encapsulates a stack-tree and exposes

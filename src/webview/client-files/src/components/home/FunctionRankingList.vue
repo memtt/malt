@@ -51,6 +51,8 @@ const convertedFunctions = computed<FunctionStat[]>(() => {
       countZeros: 0,
       maxAliveReq: 0,
       aliveReq: 0,
+	  maxAliveReqGPU: 0,
+      aliveReqGPU: 0,
       alloc: {
         sum: parseValueToNumber(item.value),
         count: 0,
@@ -58,6 +60,18 @@ const convertedFunctions = computed<FunctionStat[]>(() => {
         max: 0,
       },
       free: {
+        sum: 0,
+        count: 0,
+        min: 0,
+        max: 0,
+      },
+	  gpuAlloc: {
+        sum: 0,
+        count: 0,
+        min: 0,
+        max: 0,
+      },
+      gpuFree: {
         sum: 0,
         count: 0,
         min: 0,
@@ -83,6 +97,7 @@ const convertedFunctions = computed<FunctionStat[]>(() => {
       },
     },
     globalPeak: 0,
+	globalPeakGPU: 0,
     _link: item.link,
     _displayValue: item.value,
   }))

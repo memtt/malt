@@ -55,6 +55,7 @@ static const char * CST_ALLOC_FUNC_NAMES[] = {
 	"mmap",
 	"munmap",
 	"mremap",
+	"__pgi_uacc_cuda_alloc",
 	nullptr
 };
 

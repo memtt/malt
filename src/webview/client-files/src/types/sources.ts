@@ -28,13 +28,18 @@ export const stackInfoDataSchema = z.object({
   countZeros: z.number(),
   maxAliveReq: z.number(),
   aliveReq: z.number(),
+  maxAliveReqGPU: z.number(),
+  aliveReqGPU: z.number(),
   alloc: stackMinMaxInfoSchema,
   free: stackMinMaxInfoSchema,
+  gpuAlloc: stackMinMaxInfoSchema,
+  gpuFree: stackMinMaxInfoSchema,
   lifetime: stackMinMaxInfoSchema,
   mmap: stackMinMaxInfoSchema,
   munmap: stackMinMaxInfoSchema,
   // Additional fields that exist in backend data
   globalPeak: z.number().optional(),
+  globalPeakGPU: z.number().optional(),
   reallocCount: z.number().optional(),
   reallocSumDelta: z.number().optional(),
 });
@@ -135,7 +140,11 @@ export type MetricKey =
   | 'munmap.count'
   | 'munmap.min'
   | 'munmap.mean'
-  | 'munmap.max';
+  | 'munmap.max'
+  | 'gpuAlloc.sum'
+  | 'gpuAlloc.count'
+  | 'peakmemGPU.local'
+  | 'peakmemGPU.global';
   
 
 export type MetricOrder = 'asc' | 'desc';

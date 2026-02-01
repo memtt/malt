@@ -100,6 +100,22 @@ export const FUNC_METRICS: Record<MetricKey, MetricDefinition> = {
     defaultOrder: 'desc',
     ref: 'sum',
   },
+  'peakmemGPU.local': {
+    name: 'GPU Local peak',
+    key: 'peakmemGPU.local',
+    extractor: (x) => x.maxAliveReqGPU,
+    formatter: (x) => humanReadable(x, 1, 'B', true),
+    defaultOrder: 'desc',
+    ref: 'max',
+  },
+  'peakmemGPU.global': {
+    name: 'GPU Global peak',
+    key: 'peakmemGPU.global',
+    extractor: (x) => x.globalPeakGPU ?? 0,
+    formatter: (x) => humanReadable(x, 1, 'B', true),
+    defaultOrder: 'desc',
+    ref: 'sum',
+  },
   leaks: {
     name: 'Leaks',
     key: 'leaks',
@@ -228,6 +244,22 @@ export const FUNC_METRICS: Record<MetricKey, MetricDefinition> = {
     defaultOrder: 'desc',
     ref: 'max',
   },
+  'gpuAlloc.sum': {
+    name: 'GPU Allocated mem.',
+    key: 'gpuAlloc.sum',
+    extractor: (x) => x.gpuAlloc.sum,
+    formatter: (x) => humanReadable(x, 1, 'B', true),
+    defaultOrder: 'desc',
+    ref: 'sum',
+  },
+  'gpuAlloc.count': {
+    name: 'GPU Allocated count',
+    key: 'gpuAlloc.count',
+    extractor: (x) => x.gpuAlloc.count,
+    formatter: (x) => humanReadable(x, 1, '', true),
+    defaultOrder: 'desc',
+    ref: 'sum',
+  },
 }
 
 /**
@@ -282,6 +314,12 @@ const METRIC_CATEGORIES: Record<string, MetricKey[]> = {
     'munmap.min', // Min. allocated size
     'munmap.mean', // Mean allocated size
     'munmap.max', // Max. allocated size
+  ],
+  GPU: [
+    'gpuAlloc.sum', // Allocated memory
+    'gpuAlloc.count', // Allocated count
+	'peakmemGPU.local', // Allocated memory
+    'peakmemGPU.global', // Allocated count
   ]
 }
 

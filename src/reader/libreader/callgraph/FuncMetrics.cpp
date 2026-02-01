@@ -110,6 +110,24 @@ void MaltFuncMetrics::fillMetrics(void)
 		REF_MODE_MAX,
 	};
 
+	//peaks
+	this->metrics["peakmemGPU.local"] = {
+		"GPU Local peak",
+		[](const MALTFormat::StackInfos & infos) {return infos.maxAliveReqGPU;},
+		[](size_t value) {return ExtractorHelpers::humanReadable(value,1,"B",false);},
+		SORT_DESC,
+		REF_MODE_MAX,
+	};
+
+	//peaks
+	this->metrics["peakmemGPU.global"] = {
+		"GPU Global peak",
+		[](const MALTFormat::StackInfos & infos) {return infos.globalPeakGPU;},
+		[](size_t value) {return ExtractorHelpers::humanReadable(value,1,"B",false);},
+		SORT_DESC,
+		REF_MODE_MAX,
+	};
+
 	//leaks
 	this->metrics["leaks"] = {
 		"Leaks",
@@ -186,6 +204,21 @@ void MaltFuncMetrics::fillMetrics(void)
 		"Munmap sum",
 		[](const MALTFormat::StackInfos & infos) {return infos.munmap.sum;},
 		[](size_t value) {return ExtractorHelpers::humanReadable(value,1,"B",false);},
+		SORT_DESC,
+		REF_MODE_SUM,
+	};
+
+	this->metrics["gpuAlloc.sum"] = {
+		"GPU Allocated mem.",
+		[](const MALTFormat::StackInfos & infos) {return infos.gpuAlloc.sum;},
+		[](size_t value) {return ExtractorHelpers::humanReadable(value,1,"B",false);},
+		SORT_DESC,
+		REF_MODE_SUM,
+	};
+	this->metrics["gpuAlloc.count"] = {
+		"GPU Allocated count",
+		[](const MALTFormat::StackInfos & infos) {return infos.gpuAlloc.count;},
+		[](size_t value) {return ExtractorHelpers::humanReadable(value,1,"",false);},
 		SORT_DESC,
 		REF_MODE_SUM,
 	};
