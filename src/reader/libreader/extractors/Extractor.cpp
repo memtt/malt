@@ -29,8 +29,9 @@ namespace MALTReader
 {
 
 /**********************************************************/
-Extractor::Extractor(MALTFormat::MaltProfile & profile)
+Extractor::Extractor(MALTFormat::MaltProfile & profile, const std::string & filename)
 	:profile(profile)
+	,filename(filename)
 {
 	this->buildTranslation(profile);
 }
@@ -324,6 +325,9 @@ void to_json(nlohmann::json & json, const TimedValues & value)
 /**********************************************************/
 void to_json(nlohmann::json & json, const SummaryV2 & value)
 {
+	json["profile"] = nlohmann::json{
+		{"filename", value.profile.filename},
+	};
 	json["run"] = value.run;
 	json["system"] = nlohmann::json{
 		{"totalMemory", value.system.totalMemory},
@@ -694,6 +698,9 @@ const MALTFormat::ThreadStackMem & Extractor::getMaxStack(void) const
 SummaryV2 Extractor::getSummaryV2(void) const
 {
 	SummaryV2 ret;
+
+	//set filename
+	ret.profile.filename = this->filename;
 
 	//extract run info
 	ret.run = this->profile.run;

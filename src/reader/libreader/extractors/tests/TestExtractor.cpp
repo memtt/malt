@@ -53,7 +53,7 @@ TEST(TestExtractor, regenDataShouldBeFalse)
 TEST(TestExtractor, constructor)
 {
 	MaltProfile profile;
-	Extractor extractor(profile);
+	Extractor extractor(profile, "test.json");
 }
 
 /**********************************************************/
@@ -66,7 +66,7 @@ TEST(TestExtractor, getFlatProfile)
 	data.get_to(profile);
 
 	//extract
-	Extractor extractor(profile);
+	Extractor extractor(profile, "test.json");
 	FlatProfileVector res = extractor.getFlatProfile([](const InstructionInfosStrRef & location, const MALTFormat::StackInfos & infos){
 		return *location.function;
 	},[](const InstructionInfosStrRef & location, const MALTFormat::StackInfos & infos){
@@ -97,7 +97,7 @@ TEST(TestExtractor, getFlatProfile_full)
 	data.get_to(profile);
 
 	//extract
-	Extractor extractor(profile);
+	Extractor extractor(profile, "test.json");
 	FlatProfileVector res = extractor.getFlatProfile([](const InstructionInfosStrRef & location, const MALTFormat::StackInfos & infos){
 		return *location.function;
 	},[](const InstructionInfosStrRef & location, const MALTFormat::StackInfos & infos){
@@ -126,7 +126,7 @@ TEST(TestExtractor, getProcMapDistr)
 	data.get_to(profile);
 
 	//extract
-	Extractor extractor(profile);
+	Extractor extractor(profile, "test.json");
 	ProcMapDistr res = extractor.getProcMapDistr();
 
 	//load ref
@@ -151,7 +151,7 @@ TEST(TestExtractor, getFilterdStacks)
 	data.get_to(profile);
 
 	//extract
-	Extractor extractor(profile);
+	Extractor extractor(profile, "test.json");
 	omp_set_num_threads(1);
 	FilteredStackList res = extractor.getFilterdStacks([](const InstructionInfosStrRef & location){
 		return *location.file == "src/reader/libreader/extractors/tests/example.cpp";
@@ -179,7 +179,7 @@ TEST(TestExtractor, getFilterdStacksOnFileLine)
 	data.get_to(profile);
 
 	//extract
-	Extractor extractor(profile);
+	Extractor extractor(profile, "test.json");
 	omp_set_num_threads(1);
 	FilteredStackList res = extractor.getFilterdStacksOnFileLine("src/reader/libreader/extractors/tests/example.cpp", 41);
 
@@ -205,7 +205,7 @@ TEST(TestExtractor, getMaxStackInfoOnFunction)
 	data.get_to(profile);
 
 	//extract
-	Extractor extractor(profile);
+	Extractor extractor(profile, "test.json");
 	omp_set_num_threads(1);
 	FlattenMaxStackInfo res = extractor.getMaxStackInfoOnFunction();
 
@@ -237,7 +237,7 @@ TEST(TestExtractor, getSummaryV2)
 	data.get_to(profile);
 
 	//extract
-	Extractor extractor(profile);
+	Extractor extractor(profile, "test.json");
 	SummaryV2 res = extractor.getSummaryV2();
 
 	//load ref
@@ -262,7 +262,7 @@ TEST(TestExtractor, getSummary)
 	data.get_to(profile);
 
 	//extract
-	Extractor extractor(profile);
+	Extractor extractor(profile, "test.json");
 	Summary res = extractor.getSummary();
 
 	//load ref
@@ -312,7 +312,7 @@ TEST(TestExtractor, getSourceFileMap)
 	data.get_to(profile);
 
 	//extract
-	Extractor extractor(profile);
+	Extractor extractor(profile, "test.json");
 	SourceFileMap res = extractor.getSourceFileMap();
 
 	//check
@@ -332,7 +332,7 @@ TEST(TestExtractor, getCallTree_svg)
 	data.get_to(profile);
 
 	//extract
-	Extractor extractor(profile);
+	Extractor extractor(profile, "test.json");
 	nlohmann::json resJson = extractor.getCallTree(-1, 3, 3, 1.0, "", "alloc.count", false);
 
 	//load ref
@@ -357,7 +357,7 @@ TEST(TestExtractor, getCallStackNextLevel_1)
 	data.get_to(profile);
 
 	//extract
-	Extractor extractor(profile);
+	Extractor extractor(profile, "test.json");
 	LocationFilter filter;
 	nlohmann::json resJson = extractor.getCallStackNextLevel(0, 0, filter);
 
@@ -380,7 +380,7 @@ TEST(TestExtractor, getCallStackNextLevel_2)
 	data.get_to(profile);
 
 	//extract
-	Extractor extractor(profile);
+	Extractor extractor(profile, "test.json");
 	LocationFilter filter;
 	CallStackChildList level_0 = extractor.getCallStackNextLevel(1, 1, filter);
 	nlohmann::json resJson = extractor.getCallStackNextLevel(level_0.back().parentStackId, level_0.back().parentStackDepth, filter);
@@ -445,7 +445,7 @@ TEST(TestExtractor, getCallStackNextLevel_virtual_1)
 	fillVirtualProfile(profile);
 	
 	//extract
-	Extractor extractor(profile);
+	Extractor extractor(profile, "test.json");
 	LocationFilter filter;
 	nlohmann::json resJson = extractor.getCallStackNextLevel(0, 0, filter);
 	resJson = ExtractorHelpers::toJsonFiltered(resJson, {"*.alloc.count", "*.hasChild", "*.location.function"});
@@ -466,7 +466,7 @@ TEST(TestExtractor, getCallStackNextLevel_virtual_2)
 	fillVirtualProfile(profile);
 	
 	//extract
-	Extractor extractor(profile);
+	Extractor extractor(profile, "test.json");
 	LocationFilter filter;
 	nlohmann::json resJson = extractor.getCallStackNextLevel(0, 1, filter);
 	resJson = ExtractorHelpers::toJsonFiltered(resJson, {"*.alloc.count", "*.hasChild", "*.location.function"});
@@ -487,7 +487,7 @@ TEST(TestExtractor, getCallStackNextLevel_virtual_3)
 	fillVirtualProfile(profile);
 	
 	//extract
-	Extractor extractor(profile);
+	Extractor extractor(profile, "test.json");
 	LocationFilter filter;
 	nlohmann::json resJson = extractor.getCallStackNextLevel(0, 2, filter);
 	resJson = ExtractorHelpers::toJsonFiltered(resJson, {"*.alloc.count", "*.hasChild", "*.location.function"});
@@ -508,7 +508,7 @@ TEST(TestExtractor, getCallStackNextLevel_virtual_4)
 	fillVirtualProfile(profile);
 	
 	//extract
-	Extractor extractor(profile);
+	Extractor extractor(profile, "test.json");
 	LocationFilter filter;
 	nlohmann::json resJson = extractor.getCallStackNextLevel(0, 3, filter);
 	resJson = ExtractorHelpers::toJsonFiltered(resJson, {"*.alloc.count", "*.hasChild", "*.location.function"});
@@ -529,7 +529,7 @@ TEST(TestExtractor, getCallStackNextLevel_virtual_4_2)
 	fillVirtualProfile(profile);
 	
 	//extract
-	Extractor extractor(profile);
+	Extractor extractor(profile, "test.json");
 	LocationFilter filter;
 	nlohmann::json resJson = extractor.getCallStackNextLevel(1, 3, filter);
 	resJson = ExtractorHelpers::toJsonFiltered(resJson, {"*.alloc.count", "*.hasChild", "*.location.function"});
@@ -550,7 +550,7 @@ TEST(TestExtractor, getCallStackNextLevel_virtual_5)
 	fillVirtualProfile(profile);
 	
 	//extract
-	Extractor extractor(profile);
+	Extractor extractor(profile, "test.json");
 	LocationFilter filter;
 	nlohmann::json resJson = extractor.getCallStackNextLevel(0, 4, filter);
 	resJson = ExtractorHelpers::toJsonFiltered(resJson, {"*.alloc.count", "*.hasChild", "*.location.function"});

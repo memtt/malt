@@ -13,6 +13,14 @@
  */
 
 /**
+ * Profile information
+ */
+export interface ProfileInfo {
+  /** Profile filename */
+  filename: string;
+}
+
+/**
  * Run information
  */
 export interface RunInfo {
@@ -141,6 +149,8 @@ export interface SummaryWarnings {
  * Home summary data from backend
  */
 export interface HomeSummaryData {
+  /** Profile information */
+  profile: ProfileInfo;
   /** Run information */
   run: RunInfo;
   /** System information */

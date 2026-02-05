@@ -94,6 +94,13 @@
             <div class="info-value">{{ allocatorWrappers }}</div>
           </div>
         </InfoCard>
+
+        <InfoCard class="full-width" title="Current profile" :icon="IconList">
+          <div class="info-row">
+            <div class="info-label">Current profile</div>
+            <div class="info-value command">{{ data.profile.filename }}</div>
+          </div>
+        </InfoCard>
       </PageSection>
 
       <!-- Global statistics Section -->

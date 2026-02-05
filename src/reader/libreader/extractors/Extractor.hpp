@@ -79,6 +79,9 @@ typedef std::map<std::string, std::list<std::string> > SummaryWarnings;
 /**********************************************************/
 struct SummaryV2
 {
+	struct {
+		std::string filename;
+	} profile;
 	MALTFormat::Run run;
 	struct {
 		size_t totalMemory{0};
@@ -261,7 +264,7 @@ class Graph;
 class Extractor
 {
 	public:
-		Extractor(MALTFormat::MaltProfile & profile);
+		Extractor(MALTFormat::MaltProfile & profile, const std::string & filename);
 		~Extractor(void);
 		FlatProfileVector getFlatProfile(const LocaltionMappingFunc & mapping,const LocaltionFilterFunc & filter) const;
 		ProcMapDistr getProcMapDistr(void) const;
@@ -304,6 +307,7 @@ class Extractor
 		std::string unknown{"??"};
 		CallTreeAdapter * calltreeCache{nullptr};
 		std::map<std::string, bool> cachedStrings;
+		std::string filename;
 };
 
 /**********************************************************/

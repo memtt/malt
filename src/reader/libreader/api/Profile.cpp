@@ -38,7 +38,7 @@ Profile::Profile(const std::string & fname, bool loadProgressBar)
 	}
 
 	//build extractor
-	this->extractor = new Extractor(this->profile);
+	this->extractor = new Extractor(this->profile, fname);
 }
 
 /**********************************************************/
