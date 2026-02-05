@@ -2697,6 +2697,9 @@
   }
  },
  "getSummaryV2": {
+  "profile": {
+    "filename": "test.json"
+  },
   "run": {
    "allocator": "/usr/lib64/libc.so.6",
    "allocatorWrappers": [],
