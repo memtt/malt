@@ -1,6 +1,16 @@
 Change log
 ==========
 
+1.6.1 - 08/02/2026
+------------------
+
+ - Fix possible gliches on physical and virtual memory measurements.
+ - Minor fix on ont time chart.
+ - Install the examples.
+ - Fix a buffer overflow due to forgetting addint \0 after calling readlink.
+ - Display profile file name in the home page of the webview.
+ - Add a warning when using metric local.peak + inclusive which is not an exact computation.
+
 1.6.0 - 29/01/2026
 ------------------
 
