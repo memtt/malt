@@ -69,7 +69,7 @@ to other users of the cluster by using a unix socket file in place of the port.
 
 ## VERSION
 
-   This is the manpage of MALT version 1.6.0.
+   This is the manpage of MALT version 1.6.1.
 
 ## SEE ALSO
 
