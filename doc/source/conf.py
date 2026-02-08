@@ -25,6 +25,7 @@ release = '1.6.1'
 
 extensions = [
         'sphinx.ext.duration',
+        'sphinx.ext.imgconverter',
 ]
 
 templates_path = ['_templates']
