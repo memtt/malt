@@ -33,28 +33,34 @@ TEST(TestFuncMetrics, getMetricNames)
 {
 	MaltFuncMetrics metrics;
 	std::vector<std::string> expectedNames{
-		 "alloc.count",
-		 "alloc.max",
-		 "alloc.mean",
-		 "alloc.min",
-		 "alloc.sum",
-		 "free.count",
-		 "free.sum",
-		 "leaks",
-		 "lifetime.max",
-		 "lifetime.min",
-		 "memops",
-		 "mmap.count",
-		 "mmap.sum",
-		 "munmap.count",
-		 "munmap.sum",
-		 "peakmem.global",
-		 "peakmem.local",
-		 "realloc.count",
-		 "realloc.sum",
-		 "recycling.ratio"
+		"alloc.count",
+		"alloc.max",
+		"alloc.mean",
+		"alloc.min",
+		"alloc.sum",
+		"free.count",
+		"free.sum",
+		"gpuAlloc.count",
+		"gpuAlloc.sum",
+		"leaks",
+		"lifetime.max",
+		"lifetime.min",
+		"memops",
+		"mmap.count",
+		"mmap.sum",
+		"munmap.count",
+		"munmap.sum",
+		"peakmem.global",
+		"peakmem.local",
+		"peakmemGPU.global",
+		"peakmemGPU.local",
+		"realloc.count",
+		"realloc.sum",
+		"recycling.ratio" 
 	};
-	ASSERT_EQ(expectedNames, metrics.getMetricNames());
+	std::vector<std::string> names = metrics.getMetricNames();
+	std::sort(names.begin(), names.end());
+	ASSERT_EQ(expectedNames, names);
 }
 
 /**********************************************************/
