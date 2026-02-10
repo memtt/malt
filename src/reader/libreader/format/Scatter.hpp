@@ -50,7 +50,9 @@ struct ScatterChart
 struct Scatter
 {
 	ScatterChart sizeOverTime;
+	ScatterChart sizeOverTimeGpu;
 	ScatterChart lifetimeOverSize;
+	ScatterChart lifetimeOverSizeGpu;
 };
 
 /**********************************************************/

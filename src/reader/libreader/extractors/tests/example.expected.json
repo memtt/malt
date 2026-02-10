@@ -34,9 +34,9 @@
     },
     "lifetime": {
      "count": 1,
-     "max": 4558409,
-     "min": 4558409,
-     "sum": 4558409
+     "max": 4601690,
+     "min": 4601690,
+     "sum": 4601690
     },
     "maxAliveReq": 73977,
     "maxAliveReqGPU": 0,
@@ -102,9 +102,9 @@
     },
     "lifetime": {
      "count": 3,
-     "max": 5224848,
-     "min": 2215295,
-     "sum": 12599342
+     "max": 4963489,
+     "min": 2189301,
+     "sum": 12085483
     },
     "maxAliveReq": 1048600,
     "maxAliveReqGPU": 0,
@@ -172,9 +172,9 @@
     },
     "lifetime": {
      "count": 3,
-     "max": 5224848,
-     "min": 2215295,
-     "sum": 12599342
+     "max": 4963489,
+     "min": 2189301,
+     "sum": 12085483
     },
     "maxAliveReq": 1048600,
     "maxAliveReqGPU": 0,
@@ -217,7 +217,7 @@
    }
   }
  ],
- "getCallTree": "digraph G {\nnode  [color=\"white\", fontcolor=\"white\", fontname=\"Courier New\", fontsize=\"10\", penwidth=\"1\", shape=\"record\", style=\"filled\"];\nedge  [fontname=\"Courier New\", fontsize=\"9\"];\nnode10 [fillcolor=\"#8e5160\", label=\"_start | 3  \", tooltip=\"_start\"];\nnode9 [fillcolor=\"#8e5160\", label=\"__libc_start_main | 3  \", tooltip=\"__libc_start_main\"];\nnode21474836481 [fillcolor=\"#ab4141\", label=\"std::__to_chars_bfloat16_t(...) | 4  \", tooltip=\"std::__to_chars_bfloat16_t(char*, char*, float, std::chars_format)\"];\nnode8 [fillcolor=\"#8e5160\", label=\"__libc_init_first | 3  \", tooltip=\"__libc_init_first\"];\nnode21474836484 [fillcolor=\"#ab4141\", label=\"_dl_start_user | 4  \", tooltip=\"_dl_start_user\"];\nnode7 [fillcolor=\"#8e5160\", label=\"main | 3  \", tooltip=\"main\"];\nnode21474836483 [fillcolor=\"#ab4141\", label=\"_dl_init | 4  \", tooltip=\"_dl_init\"];\nnode21474836482 [fillcolor=\"#ab4141\", label=\"call_init | 4  \", tooltip=\"call_init\"];\nnode10 -> node9 [color=\"#000000\", fontcolor=\"#000000\", label=\" 3  \", penwidth=\"6.2\", style=\"solid\"];\nnode21474836482 -> node21474836481 [color=\"#000000\", fontcolor=\"#000000\", label=\" 4  \", penwidth=\"8\", style=\"solid\"];\nnode21474836483 -> node21474836482 [color=\"#000000\", fontcolor=\"#000000\", label=\" 4  \", penwidth=\"8\", style=\"solid\"];\nnode21474836484 -> node21474836483 [color=\"#000000\", fontcolor=\"#000000\", label=\" 4  \", penwidth=\"8\", style=\"solid\"];\nnode8 -> node7 [color=\"#000000\", fontcolor=\"#000000\", label=\" 3  \", penwidth=\"6.2\", style=\"solid\"];\nnode9 -> node8 [color=\"#000000\", fontcolor=\"#000000\", label=\" 3  \", penwidth=\"6.2\", style=\"solid\"];\n\n}\n",
+ "getCallTree": "digraph G {\nnode  [color=\"white\", fontcolor=\"white\", fontname=\"Courier New\", fontsize=\"10\", penwidth=\"1\", shape=\"record\", style=\"filled\"];\nedge  [fontname=\"Courier New\", fontsize=\"9\"];\nnode10 [fillcolor=\"#8e5160\", label=\"_start | 3  \", tooltip=\"_start\"];\nnode9 [fillcolor=\"#8e5160\", label=\"__libc_start_main | 3  \", tooltip=\"__libc_start_main\"];\nnode8 [fillcolor=\"#8e5160\", label=\"__libc_init_first | 3  \", tooltip=\"__libc_init_first\"];\nnode7 [fillcolor=\"#8e5160\", label=\"main | 3  \", tooltip=\"main\"];\nnode21474836484 [fillcolor=\"#ab4141\", label=\"_dl_start_user | 4  \", tooltip=\"_dl_start_user\"];\nnode21474836483 [fillcolor=\"#ab4141\", label=\"_dl_init | 4  \", tooltip=\"_dl_init\"];\nnode21474836482 [fillcolor=\"#ab4141\", label=\"call_init | 4  \", tooltip=\"call_init\"];\nnode21474836481 [fillcolor=\"#ab4141\", label=\"std::__to_chars_bfloat16_t(...) | 4  \", tooltip=\"std::__to_chars_bfloat16_t(char*, char*, float, std::chars_format)\"];\nnode8 -> node7 [color=\"#000000\", fontcolor=\"#000000\", label=\" 3  \", penwidth=\"6.2\", style=\"solid\"];\nnode9 -> node8 [color=\"#000000\", fontcolor=\"#000000\", label=\" 3  \", penwidth=\"6.2\", style=\"solid\"];\nnode10 -> node9 [color=\"#000000\", fontcolor=\"#000000\", label=\" 3  \", penwidth=\"6.2\", style=\"solid\"];\nnode21474836482 -> node21474836481 [color=\"#000000\", fontcolor=\"#000000\", label=\" 4  \", penwidth=\"8\", style=\"solid\"];\nnode21474836483 -> node21474836482 [color=\"#000000\", fontcolor=\"#000000\", label=\" 4  \", penwidth=\"8\", style=\"solid\"];\nnode21474836484 -> node21474836483 [color=\"#000000\", fontcolor=\"#000000\", label=\" 4  \", penwidth=\"8\", style=\"solid\"];\n\n}\n",
  "getFilterdStacks": [
   {
    "info": {
@@ -225,9 +225,9 @@
     "aliveReqGPU": 0,
     "alloc": {
      "count": 1,
-     "max": 16,
-     "min": 16,
-     "sum": 16
+     "max": 1048576,
+     "min": 1048576,
+     "sum": 1048576
     },
     "countZeros": 0,
     "free": {
@@ -236,7 +236,7 @@
      "min": 0,
      "sum": 0
     },
-    "globalPeak": 16,
+    "globalPeak": 1048576,
     "globalPeakGPU": 0,
     "gpuAlloc": {
      "count": 0,
@@ -252,11 +252,11 @@
     },
     "lifetime": {
      "count": 1,
-     "max": 5224848,
-     "min": 5224848,
-     "sum": 5224848
+     "max": 4932693,
+     "min": 4932693,
+     "sum": 4932693
     },
-    "maxAliveReq": 16,
+    "maxAliveReq": 1048576,
     "maxAliveReqGPU": 0,
     "mmap": {
      "count": 0,
@@ -279,8 +279,8 @@
      "file": "src/reader/libreader/extractors/tests/example.cpp",
      "function": "leaf()",
      "functionShort": "leaf()",
-     "line": 24,
-     "offset": 4763
+     "line": 25,
+     "offset": 4777
     },
     {
      "binary": "src/reader/libreader/extractors/tests/extractor-example",
@@ -362,9 +362,9 @@
     "aliveReqGPU": 0,
     "alloc": {
      "count": 1,
-     "max": 1048576,
-     "min": 1048576,
-     "sum": 1048576
+     "max": 16,
+     "min": 16,
+     "sum": 16
     },
     "countZeros": 0,
     "free": {
@@ -373,7 +373,7 @@
      "min": 0,
      "sum": 0
     },
-    "globalPeak": 1048576,
+    "globalPeak": 16,
     "globalPeakGPU": 0,
     "gpuAlloc": {
      "count": 0,
@@ -389,11 +389,11 @@
     },
     "lifetime": {
      "count": 1,
-     "max": 5159199,
-     "min": 5159199,
-     "sum": 5159199
+     "max": 4963489,
+     "min": 4963489,
+     "sum": 4963489
     },
-    "maxAliveReq": 1048576,
+    "maxAliveReq": 16,
     "maxAliveReqGPU": 0,
     "mmap": {
      "count": 0,
@@ -416,8 +416,8 @@
      "file": "src/reader/libreader/extractors/tests/example.cpp",
      "function": "leaf()",
      "functionShort": "leaf()",
-     "line": 25,
-     "offset": 4777
+     "line": 24,
+     "offset": 4763
     },
     {
      "binary": "src/reader/libreader/extractors/tests/extractor-example",
@@ -643,6 +643,143 @@
     "countZeros": 0,
     "free": {
      "count": 1,
+     "max": 1048576,
+     "min": 1048576,
+     "sum": 1048576
+    },
+    "globalPeak": 0,
+    "globalPeakGPU": 0,
+    "gpuAlloc": {
+     "count": 0,
+     "max": 0,
+     "min": 0,
+     "sum": 0
+    },
+    "gpuFree": {
+     "count": 0,
+     "max": 0,
+     "min": 0,
+     "sum": 0
+    },
+    "lifetime": {
+     "count": 0,
+     "max": 0,
+     "min": 0,
+     "sum": 0
+    },
+    "maxAliveReq": 0,
+    "maxAliveReqGPU": 0,
+    "mmap": {
+     "count": 0,
+     "max": 0,
+     "min": 0,
+     "sum": 0
+    },
+    "munmap": {
+     "count": 0,
+     "max": 0,
+     "min": 0,
+     "sum": 0
+    },
+    "reallocCount": 0,
+    "reallocSumDelta": 0
+   },
+   "stack": [
+    {
+     "binary": "src/reader/libreader/extractors/tests/extractor-example",
+     "file": "src/reader/libreader/extractors/tests/example.cpp",
+     "function": "leaf()",
+     "functionShort": "leaf()",
+     "line": 29,
+     "offset": 4849
+    },
+    {
+     "binary": "src/reader/libreader/extractors/tests/extractor-example",
+     "file": "src/reader/libreader/extractors/tests/example.cpp",
+     "function": "callerRecurse(int)",
+     "functionShort": "callerRecurse(int)",
+     "line": 36,
+     "offset": 4923
+    },
+    {
+     "binary": "src/reader/libreader/extractors/tests/extractor-example",
+     "file": "src/reader/libreader/extractors/tests/example.cpp",
+     "function": "callerRecurse(int)",
+     "functionShort": "callerRecurse(int)",
+     "line": 38,
+     "offset": 4938
+    },
+    {
+     "binary": "src/reader/libreader/extractors/tests/extractor-example",
+     "file": "src/reader/libreader/extractors/tests/example.cpp",
+     "function": "callerRecurse(int)",
+     "functionShort": "callerRecurse(int)",
+     "line": 38,
+     "offset": 4938
+    },
+    {
+     "binary": "src/reader/libreader/extractors/tests/extractor-example",
+     "file": "src/reader/libreader/extractors/tests/example.cpp",
+     "function": "caller()",
+     "functionShort": "caller()",
+     "line": 44,
+     "offset": 5053
+    },
+    {
+     "binary": "src/reader/libreader/extractors/tests/extractor-example",
+     "file": "src/reader/libreader/extractors/tests/example.cpp",
+     "function": "main_sim()",
+     "functionShort": "main_sim()",
+     "line": 58,
+     "offset": 5270
+    },
+    {
+     "binary": "src/reader/libreader/extractors/tests/extractor-example",
+     "file": "src/reader/libreader/extractors/tests/example.cpp",
+     "function": "main",
+     "functionShort": "main",
+     "line": 66,
+     "offset": 5397
+    },
+    {
+     "binary": "/usr/lib64/libc.so.6",
+     "file": "??",
+     "function": "__libc_init_first",
+     "functionShort": "__libc_init_first",
+     "line": -1,
+     "offset": 160814
+    },
+    {
+     "binary": "/usr/lib64/libc.so.6",
+     "file": "??",
+     "function": "__libc_start_main",
+     "functionShort": "__libc_start_main",
+     "line": -1,
+     "offset": 161001
+    },
+    {
+     "binary": "src/reader/libreader/extractors/tests/extractor-example",
+     "file": "",
+     "function": "_start",
+     "functionShort": "_start",
+     "line": -1,
+     "offset": 4453
+    }
+   ]
+  },
+  {
+   "info": {
+    "aliveReq": 0,
+    "aliveReqGPU": 0,
+    "alloc": {
+     "count": 0,
+     "max": 0,
+     "min": 0,
+     "sum": 0
+    },
+    "countZeros": 0,
+    "free": {
+     "count": 1,
      "max": 8,
      "min": 8,
      "sum": 8
@@ -768,9 +905,9 @@
     },
     "lifetime": {
      "count": 1,
-     "max": 2215295,
-     "min": 2215295,
-     "sum": 2215295
+     "max": 2189301,
+     "min": 2189301,
+     "sum": 2189301
     },
     "maxAliveReq": 8,
     "maxAliveReqGPU": 0,
@@ -805,143 +942,6 @@
      "functionShort": "main_sim()",
      "line": 59,
      "offset": 5275
-    },
-    {
-     "binary": "src/reader/libreader/extractors/tests/extractor-example",
-     "file": "src/reader/libreader/extractors/tests/example.cpp",
-     "function": "main",
-     "functionShort": "main",
-     "line": 66,
-     "offset": 5397
-    },
-    {
-     "binary": "/usr/lib64/libc.so.6",
-     "file": "??",
-     "function": "__libc_init_first",
-     "functionShort": "__libc_init_first",
-     "line": -1,
-     "offset": 160814
-    },
-    {
-     "binary": "/usr/lib64/libc.so.6",
-     "file": "??",
-     "function": "__libc_start_main",
-     "functionShort": "__libc_start_main",
-     "line": -1,
-     "offset": 161001
-    },
-    {
-     "binary": "src/reader/libreader/extractors/tests/extractor-example",
-     "file": "",
-     "function": "_start",
-     "functionShort": "_start",
-     "line": -1,
-     "offset": 4453
-    }
-   ]
-  },
-  {
-   "info": {
-    "aliveReq": 0,
-    "aliveReqGPU": 0,
-    "alloc": {
-     "count": 0,
-     "max": 0,
-     "min": 0,
-     "sum": 0
-    },
-    "countZeros": 0,
-    "free": {
-     "count": 1,
-     "max": 1048576,
-     "min": 1048576,
-     "sum": 1048576
-    },
-    "globalPeak": 0,
-    "globalPeakGPU": 0,
-    "gpuAlloc": {
-     "count": 0,
-     "max": 0,
-     "min": 0,
-     "sum": 0
-    },
-    "gpuFree": {
-     "count": 0,
-     "max": 0,
-     "min": 0,
-     "sum": 0
-    },
-    "lifetime": {
-     "count": 0,
-     "max": 0,
-     "min": 0,
-     "sum": 0
-    },
-    "maxAliveReq": 0,
-    "maxAliveReqGPU": 0,
-    "mmap": {
-     "count": 0,
-     "max": 0,
-     "min": 0,
-     "sum": 0
-    },
-    "munmap": {
-     "count": 0,
-     "max": 0,
-     "min": 0,
-     "sum": 0
-    },
-    "reallocCount": 0,
-    "reallocSumDelta": 0
-   },
-   "stack": [
-    {
-     "binary": "src/reader/libreader/extractors/tests/extractor-example",
-     "file": "src/reader/libreader/extractors/tests/example.cpp",
-     "function": "leaf()",
-     "functionShort": "leaf()",
-     "line": 29,
-     "offset": 4849
-    },
-    {
-     "binary": "src/reader/libreader/extractors/tests/extractor-example",
-     "file": "src/reader/libreader/extractors/tests/example.cpp",
-     "function": "callerRecurse(int)",
-     "functionShort": "callerRecurse(int)",
-     "line": 36,
-     "offset": 4923
-    },
-    {
-     "binary": "src/reader/libreader/extractors/tests/extractor-example",
-     "file": "src/reader/libreader/extractors/tests/example.cpp",
-     "function": "callerRecurse(int)",
-     "functionShort": "callerRecurse(int)",
-     "line": 38,
-     "offset": 4938
-    },
-    {
-     "binary": "src/reader/libreader/extractors/tests/extractor-example",
-     "file": "src/reader/libreader/extractors/tests/example.cpp",
-     "function": "callerRecurse(int)",
-     "functionShort": "callerRecurse(int)",
-     "line": 38,
-     "offset": 4938
-    },
-    {
-     "binary": "src/reader/libreader/extractors/tests/extractor-example",
-     "file": "src/reader/libreader/extractors/tests/example.cpp",
-     "function": "caller()",
-     "functionShort": "caller()",
-     "line": 44,
-     "offset": 5053
-    },
-    {
-     "binary": "src/reader/libreader/extractors/tests/extractor-example",
-     "file": "src/reader/libreader/extractors/tests/example.cpp",
-     "function": "main_sim()",
-     "functionShort": "main_sim()",
-     "line": 58,
-     "offset": 5270
     },
     {
      "binary": "src/reader/libreader/extractors/tests/extractor-example",
@@ -1490,9 +1490,9 @@
     },
     "lifetime": {
      "count": 2,
-     "max": 5224848,
-     "min": 5159199,
-     "sum": 10384047
+     "max": 4963489,
+     "min": 4932693,
+     "sum": 9896182
     },
     "maxAliveReq": 1048592,
     "maxAliveReqGPU": 0,
@@ -1608,9 +1608,9 @@
     },
     "lifetime": {
      "count": 2,
-     "max": 5224848,
-     "min": 5159199,
-     "sum": 10384047
+     "max": 4963489,
+     "min": 4932693,
+     "sum": 9896182
     },
     "maxAliveReq": 1048592,
     "maxAliveReqGPU": 0,
@@ -1664,9 +1664,9 @@
     },
     "lifetime": {
      "count": 1,
-     "max": 2215295,
-     "min": 2215295,
-     "sum": 2215295
+     "max": 2189301,
+     "min": 2189301,
+     "sum": 2189301
     },
     "maxAliveReq": 8,
     "maxAliveReqGPU": 0,
@@ -1729,9 +1729,9 @@
     },
     "lifetime": {
      "count": 1,
-     "max": 2215295,
-     "min": 2215295,
-     "sum": 2215295
+     "max": 2189301,
+     "min": 2189301,
+     "sum": 2189301
     },
     "maxAliveReq": 8,
     "maxAliveReqGPU": 0,
@@ -1782,9 +1782,9 @@
     },
     "lifetime": {
      "count": 1,
-     "max": 2215295,
-     "min": 2215295,
-     "sum": 2215295
+     "max": 2189301,
+     "min": 2189301,
+     "sum": 2189301
     },
     "maxAliveReq": 8,
     "maxAliveReqGPU": 0,
@@ -1838,9 +1838,9 @@
     },
     "lifetime": {
      "count": 2,
-     "max": 5224848,
-     "min": 5159199,
-     "sum": 10384047
+     "max": 4963489,
+     "min": 4932693,
+     "sum": 9896182
     },
     "maxAliveReq": 1048592,
     "maxAliveReqGPU": 0,
@@ -1956,9 +1956,9 @@
     },
     "lifetime": {
      "count": 2,
-     "max": 5224848,
-     "min": 5159199,
-     "sum": 10384047
+     "max": 4963489,
+     "min": 4932693,
+     "sum": 9896182
     },
     "maxAliveReq": 1048592,
     "maxAliveReqGPU": 0,
@@ -2012,9 +2012,9 @@
     },
     "lifetime": {
      "count": 2,
-     "max": 5224848,
-     "min": 5159199,
-     "sum": 10384047
+     "max": 4963489,
+     "min": 4932693,
+     "sum": 9896182
     },
     "maxAliveReq": 1048592,
     "maxAliveReqGPU": 0,
@@ -2077,9 +2077,9 @@
     },
     "lifetime": {
      "count": 2,
-     "max": 5224848,
-     "min": 5159199,
-     "sum": 10384047
+     "max": 4963489,
+     "min": 4932693,
+     "sum": 9896182
     },
     "maxAliveReq": 1048592,
     "maxAliveReqGPU": 0,
@@ -2130,9 +2130,9 @@
     },
     "lifetime": {
      "count": 2,
-     "max": 5224848,
-     "min": 5159199,
-     "sum": 10384047
+     "max": 4963489,
+     "min": 4932693,
+     "sum": 9896182
     },
     "maxAliveReq": 1048592,
     "maxAliveReqGPU": 0,
@@ -2186,9 +2186,9 @@
     },
     "lifetime": {
      "count": 3,
-     "max": 5224848,
-     "min": 2215295,
-     "sum": 12599342
+     "max": 4963489,
+     "min": 2189301,
+     "sum": 12085483
     },
     "maxAliveReq": 1048600,
     "maxAliveReqGPU": 0,
@@ -2304,9 +2304,9 @@
     },
     "lifetime": {
      "count": 3,
-     "max": 5224848,
-     "min": 2215295,
-     "sum": 12599342
+     "max": 4963489,
+     "min": 2189301,
+     "sum": 12085483
     },
     "maxAliveReq": 1048600,
     "maxAliveReqGPU": 0,
@@ -2360,9 +2360,9 @@
     },
     "lifetime": {
      "count": 3,
-     "max": 5224848,
-     "min": 2215295,
-     "sum": 12599342
+     "max": 4963489,
+     "min": 2189301,
+     "sum": 12085483
     },
     "maxAliveReq": 1048600,
     "maxAliveReqGPU": 0,
@@ -2478,9 +2478,9 @@
     },
     "lifetime": {
      "count": 3,
-     "max": 5224848,
-     "min": 2215295,
-     "sum": 12599342
+     "max": 4963489,
+     "min": 2189301,
+     "sum": 12085483
     },
     "maxAliveReq": 1048600,
     "maxAliveReqGPU": 0,
@@ -3132,7 +3132,7 @@
   },
   "[heap]": {
    "cnt": 1,
-   "mem": 688128
+   "mem": 929792
   },
   "[stack]": {
    "cnt": 1,
@@ -3151,7 +3151,7 @@
    "mem": 16384
   },
   "anonymous": {
-   "cnt": 11,
+   "cnt": 12,
    "mem": 13922304
   },
   "src/libinstrum/libmalt.so.1.6.1": {
@@ -3171,10 +3171,10 @@
    "largestStack": 288,
    "maxChunkSize": 1048576,
    "minChunkSize": 8,
-   "physicalMem": 8491008,
+   "physicalMem": 8732672,
    "requestedMem": 1122456,
    "segments": 5,
-   "virtualMem": 24678400
+   "virtualMem": 24920064
   }
  },
  "getSummaryV2": {
@@ -3185,11 +3185,11 @@
    "allocator": "/usr/lib64/libc.so.6",
    "allocatorWrappers": [],
    "command": "src/reader/libreader/extractors/tests/extractor-example",
-   "date": "2026-02-10 19:53",
+   "date": "2026-02-10 22:11",
    "exe": "extractor-example",
    "formatVersion": "1.6",
    "hostname": "sebv4",
-   "runtime": 1624455558,
+   "runtime": 1632768500,
    "tool": "malt-1.6.1"
   },
   "summary": {
@@ -3203,13 +3203,13 @@
    "meanAllocSize": 160368.140625,
    "minAllocSize": 8,
    "numGblVar": 957,
-   "peakAllocCountRate": 102224994304.0,
-   "peakAllocRate": 102224994304.0,
+   "peakAllocCountRate": 103849820160.0,
+   "peakAllocRate": 103849820160.0,
    "peakInternalMemory": 0,
-   "peakPhysicalMemory": 8491008,
+   "peakPhysicalMemory": 8732672,
    "peakRequestedMemory": 1122456,
    "peakSegmentCount": 5,
-   "peakVirtualMemory": 24678400,
+   "peakVirtualMemory": 24920064,
    "recyclingRatio": 1.000107765197754,
    "tlsVarMem": 80,
    "totalAllocatedMemory": 1122577
@@ -3254,7 +3254,7 @@
    ]
   },
   "system": {
-   "ticksPerSecond": 3411249925,
+   "ticksPerSecond": 3411196828,
    "totalMemory": 16718712832
   },
   "threadStats": [
@@ -3277,7 +3277,7 @@
     "malloc": {
      "count": 7,
      "sum": 1122577,
-     "time": 70737
+     "time": 70358
     },
     "memalign": {
      "count": 0,

@@ -88,7 +88,9 @@ void to_json(nlohmann::json & json, const Scatter & value)
 {
 	json = nlohmann::json{
 		{"sizeOverTime", value.sizeOverTime},
+		{"sizeOverTimeGpu", value.sizeOverTimeGpu},
 		{"lifetimeOverSize", value.lifetimeOverSize},
+		{"lifetimeOverSizeGpu", value.lifetimeOverSizeGpu},
 	};
 }
 
@@ -97,11 +99,15 @@ void from_json(const JsonIn & json, Scatter & value)
 {
 	//checks
 	assert(jsContains(json, "sizeOverTime"));
+	assert(jsContains(json, "sizeOverTimeGpu"));
 	assert(jsContains(json, "lifetimeOverSize"));
+	assert(jsContains(json, "lifetimeOverSizeGpu"));
 
 	//load
 	json.at("sizeOverTime").get_to(value.sizeOverTime);
+	json.at("sizeOverTimeGpu").get_to(value.sizeOverTimeGpu);
 	json.at("lifetimeOverSize").get_to(value.lifetimeOverSize);
+	json.at("lifetimeOverSizeGpu").get_to(value.lifetimeOverSizeGpu);
 }
 
 }

@@ -78,13 +78,13 @@ struct TimeTrackMemory
 	bool reduce(const TimeTrackMemory & v);
 	friend void convertToJson(htopml::JsonState& json, const TimeTrackMemory & value);
 	//data
-	size_t requestedMem;
+	size_t requestedMem[MEM_DOMAIN_COUNT];
 	size_t physicalMem;
 	size_t virtualMem;
 	size_t internalMem;
-	size_t segments;
+	size_t segments[MEM_DOMAIN_COUNT];
 	//meta description
-	static const char * selfDescribeFields[5];
+	static const char * selfDescribeFields[7];
 };
 
 /**********************************************************/
@@ -224,7 +224,9 @@ class AllocStackProfiler
 		VmaTracker vmaTracker;
 		MALTV2::RLockFreeTree * stackTree;
 		Scatter2DValues sizeOverTime;
+		Scatter2DValues sizeOverTimeGpu;
 		Scatter2DValues lifetimeOverSize;
+		Scatter2DValues lifetimeOverSizeGpu;
 		MallocFuncPtr realMallocAddr;
 		std::string realMallocLib;
 		bool skipThreadRegister{false};

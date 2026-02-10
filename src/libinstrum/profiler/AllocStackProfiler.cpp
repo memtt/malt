@@ -48,12 +48,14 @@ namespace MALT
 {
 
 /**********************************************************/
-const char * TimeTrackMemory::selfDescribeFields[5] = {
+const char * TimeTrackMemory::selfDescribeFields[7] = {
 	"requestedMem",
 	"physicalMem",
 	"virtualMem",
 	"internalMem",
 	"segments",
+	"requestedMemGpu",
+	"segmentsGpu",
 };
 
 /**********************************************************/
@@ -80,7 +82,9 @@ AllocStackProfiler::AllocStackProfiler(const Options & options,StackMode mode,bo
 	,memoryBandwidth(1024,true)
 	,memoryGpuBandwidth(1024,true)
 	,sizeOverTime(64,64,false,true)
+	,sizeOverTimeGpu(64,64,false,true)
 	,lifetimeOverSize(64,64,true,true)
+	,lifetimeOverSizeGpu(64,64,true,true)
 	,trigger(options, true)
 {
 	this->mode = mode;
@@ -343,16 +347,21 @@ void AllocStackProfiler::onAllocEvent(void* ptr, size_t size,Stack* userStack,MM
 		{
 			CODE_TIMING("timeProfileAllocStart",
 				//handle requested mem
-				curMemoryTimeline.segments++;
-				curMemoryTimeline.requestedMem+=size;
-				doDump |= trigger.onRequestUpdate(curMemoryTimeline.requestedMem);
+				curMemoryTimeline.segments[memDomain]++;
+				curMemoryTimeline.requestedMem[memDomain]+=size;
+				doDump |= trigger.onRequestUpdate(curMemoryTimeline.requestedMem[MEM_DOMAIN_CPU]);
 
 				//handle system & proc memory
 				if (memoryTimeline.isNewPoint(t) || systemTimeline.isNewPoint(t) || size > 1024*1024)
 					doDump |= this->onUpdateMem(t, callStackNode->stack, false);
 
 				//handle sizeOverTime
-				sizeOverTime.push(t-trefTicks,size);
+				if (memDomain == MEM_DOMAIN_CPU)
+					sizeOverTime.push(t-trefTicks,size);
+				else if (memDomain == MEM_DOMAIN_GPU)
+					sizeOverTimeGpu.push(t-trefTicks,size);
+				else
+					MALT_FATAL("Should never be reached !");
 			);
 		}
 		
@@ -434,6 +443,7 @@ FreeFinalInfos AllocStackProfiler::onFreeEvent(void* ptr, MALT::Stack* userStack
 	MMCallStackNode localCallStackNode;
 	if (callStackNode == NULL)
 		callStackNode = &localCallStackNode;
+	MemDomain memDomain = (domain == DOMAIN_GPU_ALLOC) ? MEM_DOMAIN_GPU : MEM_DOMAIN_CPU;
 
 	MALT_OPTIONAL_CRITICAL(lock,threadSafe && doLock)
 		//update shared linear index
@@ -474,13 +484,17 @@ FreeFinalInfos AllocStackProfiler::onFreeEvent(void* ptr, MALT::Stack* userStack
 		this->domains.countFree(domain, size);
 		
 		//peak tracking
-		MemDomain memDomain = (domain == DOMAIN_GPU_ALLOC) ? MEM_DOMAIN_GPU : MEM_DOMAIN_CPU;
 		peakTracking(-size, memDomain);
 		
 		if (options.stack.enabled)
 		{
 			//chart
-			lifetimeOverSize.push(size,lifetime);
+			if (memDomain == MEM_DOMAIN_CPU)
+				lifetimeOverSize.push(size,lifetime);
+			else if (memDomain == MEM_DOMAIN_GPU)
+				lifetimeOverSizeGpu.push(size,lifetime);
+			else
+				MALT_FATAL("Should never be reached !");
 			
 			//search call stack info if not provided
 			if (!callStackNode->valid())
@@ -512,9 +526,9 @@ FreeFinalInfos AllocStackProfiler::onFreeEvent(void* ptr, MALT::Stack* userStack
 		if (options.time.enabled)
 		{
 			//handle requested mem
-			curMemoryTimeline.segments--;
-			curMemoryTimeline.requestedMem -= size;
-			doDump |= trigger.onRequestUpdate(curMemoryTimeline.requestedMem);
+			curMemoryTimeline.segments[memDomain]--;
+			curMemoryTimeline.requestedMem[memDomain] -= size;
+			doDump |= trigger.onRequestUpdate(curMemoryTimeline.requestedMem[MEM_DOMAIN_CPU]);
 
 			//handle system & proc memory
 			if (memoryTimeline.isNewPoint(t) || systemTimeline.isNewPoint(t) || size > 1024*1024)
@@ -1048,7 +1062,9 @@ void convertToJson(htopml::JsonState& json, const AllocStackProfiler& value)
 		json.closeFieldStruct("timeline");
 		json.openFieldStruct("scatter");
 			json.printField("sizeOverTime",value.sizeOverTime);
+			json.printField("sizeOverTimeGpu",value.sizeOverTimeGpu);
 			json.printField("lifetimeOverSize",value.lifetimeOverSize);
+			json.printField("lifetimeOverSizeGpu",value.lifetimeOverSizeGpu);
 		json.closeFieldStruct("scatter");
 	}
 	
@@ -1233,8 +1249,10 @@ TimeTrackMemory::TimeTrackMemory()
 {
 	this->internalMem = 0;
 	this->physicalMem = 0;
-	this->requestedMem = 0;
-	this->segments = 0;
+	this->requestedMem[MEM_DOMAIN_CPU] = 0;
+	this->requestedMem[MEM_DOMAIN_GPU] = 0;
+	this->segments[MEM_DOMAIN_CPU] = 0;
+	this->segments[MEM_DOMAIN_GPU] = 0;
 }
 
 /**********************************************************/
@@ -1247,11 +1265,13 @@ void convertToJson ( htopml::JsonState& json, const TimeTrackMemory& value)
 // 	json.printField("segments",value.segments);
 // 	json.closeStruct();
 	json.openArray();
-	json.printValue(value.requestedMem);
+	json.printValue(value.requestedMem[MEM_DOMAIN_CPU]);
 	json.printValue(value.physicalMem);
 	json.printValue(value.virtualMem);
 	json.printValue(value.internalMem);
-	json.printValue(value.segments);
+	json.printValue(value.segments[MEM_DOMAIN_CPU]);
+	json.printValue(value.requestedMem[MEM_DOMAIN_GPU]);
+	json.printValue(value.segments[MEM_DOMAIN_GPU]);
 	json.closeArray();
 }
 
@@ -1269,14 +1289,24 @@ bool TimeTrackMemory::reduce ( const TimeTrackMemory& v )
 		physicalMem = v.physicalMem;
 		hasUpdate = true;
 	}
-	if (v.requestedMem > requestedMem)
+	if (v.requestedMem[MEM_DOMAIN_CPU] > requestedMem[MEM_DOMAIN_CPU])
 	{
-		requestedMem = v.requestedMem;
+		requestedMem[MEM_DOMAIN_CPU] = v.requestedMem[MEM_DOMAIN_CPU];
 		hasUpdate = true;
 	}
-	if (v.segments > segments)
+	if (v.requestedMem[MEM_DOMAIN_CPU] > requestedMem[MEM_DOMAIN_GPU])
 	{
-		segments = v.segments;
+		requestedMem[MEM_DOMAIN_GPU] = v.requestedMem[MEM_DOMAIN_GPU];
+		hasUpdate = true;
+	}
+	if (v.segments[MEM_DOMAIN_CPU] > segments[MEM_DOMAIN_CPU])
+	{
+		segments[MEM_DOMAIN_CPU] = v.segments[MEM_DOMAIN_CPU];
+		hasUpdate = true;
+	}
+	if (v.segments[MEM_DOMAIN_GPU] > segments[MEM_DOMAIN_GPU])
+	{
+		segments[MEM_DOMAIN_GPU] = v.segments[MEM_DOMAIN_GPU];
 		hasUpdate = true;
 	}
 	if (v.virtualMem > virtualMem)
