@@ -69,6 +69,7 @@ struct TimedValues
 	size_t allocBandwidth;
 	size_t freeBandwidth;
 	MALTFormat::TimelineInfos memoryBandwidth;
+	MALTFormat::TimelineInfos memoryGpuBandwidth;
 	MALTFormat::TimelineInfos memoryTimeline;
 	MALTFormat::TimelineInfos systemTimeline;
 };

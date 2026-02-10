@@ -68,6 +68,12 @@ function genRoutes(): Array<any>
       component: () => import('@/views/TimelinePage.vue'),
       meta: { requiresAuth: true },
     });
+	routes.push({
+      path: '/timeline-gpu',
+      name: 'Timeline GPU analysis',
+      component: () => import('@/views/TimelineGpuPage.vue'),
+      meta: { requiresAuth: true },
+    });
     routes.push({
       path: '/stackPeaks',
       name: 'Stack memory',

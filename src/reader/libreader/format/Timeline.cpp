@@ -64,6 +64,8 @@ void from_json(const JsonIn & json, Timeline & value)
 	//checks
 	assert(jsContains(json, "memoryTimeline"));
 	assert(jsContains(json, "systemTimeline"));
+	assert(jsContains(json, "memoryBandwidth"));
+	assert(jsContains(json, "memoryGpuBandwidth"));
 
 	//load
 	json.at("memoryTimeline").get_to(value.memoryTimeline);

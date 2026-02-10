@@ -317,6 +317,7 @@ void to_json(nlohmann::json & json, const TimedValues & value)
 		{"ticksPerSecond", value.ticksPerSecond},
 		{"freeBandwidth", value.freeBandwidth},
 		{"memoryBandwidth", value.memoryBandwidth},
+		{"memoryGpuBandwidth", value.memoryGpuBandwidth},
 		{"memoryTimeline", value.memoryTimeline},
 		{"systemTimeline", value.systemTimeline},
 	};
@@ -652,6 +653,7 @@ TimedValues Extractor::getTimedValues(void) const
 	TimedValues tmp;
 	tmp.ticksPerSecond = this->profile.globals.ticksPerSecond;
 	tmp.memoryBandwidth = this->profile.timeline.memoryBandwidth;
+	tmp.memoryGpuBandwidth = this->profile.timeline.memoryGpuBandwidth;
 	tmp.memoryTimeline = this->profile.timeline.memoryTimeline;
 	tmp.systemTimeline = this->profile.timeline.systemTimeline;
 	return tmp;

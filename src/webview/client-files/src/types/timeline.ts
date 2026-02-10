@@ -70,8 +70,10 @@ export interface LegacyBandwidth {
 export interface TimelineData {
   ticksPerSecond: number // Conversion factor: ticks → seconds
   memoryTimeline: TimelineMemory
+  memoryGpuTimeline: TimelineMemory
   systemTimeline: TimelineSystem
   memoryBandwidth: TimelineBandwidth
+  memoryGpuBandwidth: TimelineBandwidth
   // Legacy format (may not be present in all datasets)
   allocBandwidth?: LegacyBandwidth
   freeBandwidth?: LegacyBandwidth

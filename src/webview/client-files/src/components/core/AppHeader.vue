@@ -54,6 +54,7 @@ function genNavigationRoutes() : Array<any>
 	//for all
 	if (process.env.VITE_APP != 'summary') {
 		routes.push({ path: '/timeline', name: 'Timeline Analysis' });
+		routes.push({ path: '/timeline-gpu', name: 'Timeline GPU Analysis' });
 		routes.push({ path: '/allocSizeDistr', name: 'Alloc Sizes' });
 		routes.push({ path: '/globalVars', name: 'Global Variables' });
 		if (process.env.VITE_APP != 'static') {
