@@ -36,8 +36,8 @@ examples/fortran/*/malt-*.trace
 examples/python/malt-*.json
 examples/python/malt-*.trace
 examples/python/*.so
-examples/openacc/malt-*.json
-examples/openacc/malt-*.trace
+examples/opanacc/malt-*.json
+examples/opanacc/malt-*.trace
 
 # cache
 /podman-cache

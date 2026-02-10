@@ -177,6 +177,14 @@ DLL_PUBLIC char * malt_reader_json_get_size_map(struct malt_reader_t* reader)
 }
 
 /**********************************************************/
+DLL_PUBLIC char * malt_reader_json_get_size_map_gpu(struct malt_reader_t* reader)
+{
+	return malt_reader_handle_request(reader, "GET_SIZE_MAP_GPU", [reader]() {
+		return reader->profile->getSizeMapGpu();
+	});
+}
+
+/**********************************************************/
 DLL_PUBLIC char * malt_reader_json_get_realloc_map(struct malt_reader_t* reader)
 {
 	return malt_reader_handle_request(reader, "GET_REALLOC_MAP", [reader]() {

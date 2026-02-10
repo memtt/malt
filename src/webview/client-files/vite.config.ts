@@ -151,6 +151,10 @@ export default defineConfig({
         target: 'http://localhost:8080',
         changeOrigin: true,
       },
+	  '/size-map-gpu.json': {
+        target: 'http://localhost:8080',
+        changeOrigin: true,
+      },
       '/realloc-map.json': {
         target: 'http://localhost:8080',
         changeOrigin: true,

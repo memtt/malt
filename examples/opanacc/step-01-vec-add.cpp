@@ -1,7 +1,7 @@
 #include <cstdio>
 #include <cstdlib>
 
-int main()
+void func()
 {
 	//nb elements
 	const size_t size = 1024*1024;
@@ -37,6 +37,13 @@ int main()
 	delete [] a;
 	delete [] b;
 	delete [] c;
+}
+
+int main()
+{
+	//call in loop
+	for (size_t i = 0 ; i < 10 ; i++)
+		func();
 
 	//ok
 	return EXIT_SUCCESS;

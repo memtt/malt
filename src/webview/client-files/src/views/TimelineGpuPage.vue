@@ -34,7 +34,7 @@
           :data="memoryChartData"
           y-axis-label="Memory"
           y-axis-unit="B"
-          chart-type="line"
+          chart-type="area"
           :ticks-per-second="ticksPerSecond"
           @dblclick="handleMemoryChartDblClick"
         />

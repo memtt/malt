@@ -220,6 +220,14 @@ nlohmann::json WebProfile::getSizeMap(void) const
 }
 
 /**********************************************************/
+nlohmann::json WebProfile::getSizeMapGpu(void) const
+{
+	nlohmann::json js;
+	MALTFormat::to_json(js, this->profile.memStats.sizeMapGpu);
+	return js;
+}
+
+/**********************************************************/
 nlohmann::json WebProfile::getReallocMap(void) const
 {
 	return this->profile.memStats.reallocJump;

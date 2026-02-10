@@ -28,7 +28,9 @@ export const scatterSeriesSchema = z.object({
 
 export const scatterDataSchema = z.object({
   sizeOverTime: scatterSeriesSchema,
+  sizeOverTimeGpu: scatterSeriesSchema,
   lifetimeOverSize: scatterSeriesSchema,
+  lifetimeOverSizeGpu: scatterSeriesSchema,
   ticksPerSecond: z.number(),
 })
 

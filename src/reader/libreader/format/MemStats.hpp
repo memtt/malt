@@ -52,6 +52,7 @@ typedef std::map<size_t, size_t> MemStatsSizeMap;
 struct MemStats
 {
 	MemStatsSizeMap sizeMap;
+	MemStatsSizeMap sizeMapGpu;
 	std::vector<ReallocJump> reallocJump;
 	std::map<std::string, std::vector<GlobalVariable> > globalVariables;
 };

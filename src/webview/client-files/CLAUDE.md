@@ -66,8 +66,10 @@ MALT (Memory Analysis and Leak Tracker) is a Vue 3 + TypeScript application for 
 - `/sources` - Source code analysis
 - `/calltree` - Call tree visualization
 - `/timeline` - Timeline analysis
+- `/timeline-gpu` - Timeline analysis for GPU
 - `/stackPeaks` - Stack memory peaks
 - `/allocSizeDistr` - Allocation size distribution
+- `/allocSizeDistrGpu` - Allocation size distribution for GPU
 - `/realloc` - Reallocation analysis
 - `/globalVars` - Global variables analysis
 - `/help` - Help documentation
@@ -220,6 +222,7 @@ Vite dev server proxies API requests to `http://localhost:8080`:
 - `/flat.json`
 - `/scatter.json`
 - `/size-map.json`
+- `/size-map-gpu.json`
 - `/realloc-map.json`
 
 ### Environment Variables

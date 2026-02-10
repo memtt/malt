@@ -186,7 +186,7 @@ class AllocStackProfiler
 		StackTreeCache<MMCallStackNode> stackTrackerCache{4096};
 		RLockFreeTree<CallStackInfo> treeStackTracker;
 // 		AbstractStackTree<CallStackInfo> stackTree;
-		AllocSizeDistrMap sizeMap;
+		AllocSizeDistrMap sizeMap[MEM_DOMAIN_COUNT];
 		SegmentTracker segTracker;
 		SegmentTracker segGpuTracker;
 		SegmentTracker mmapSegTracker;

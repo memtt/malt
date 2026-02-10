@@ -59,6 +59,7 @@ char * malt_reader_json_get_binary_addresses_profile_all(struct malt_reader_t* r
 char * malt_reader_json_get_proc_map_distr(struct malt_reader_t * reader);
 char * malt_reader_json_get_scatter(struct malt_reader_t * reader);
 char * malt_reader_json_get_size_map(struct malt_reader_t * reader);
+char * malt_reader_json_get_size_map_gpu(struct malt_reader_t * reader);
 char * malt_reader_json_get_realloc_map(struct malt_reader_t * reader);
 char * malt_reader_json_get_timed_values(struct malt_reader_t * reader);
 char * malt_reader_json_get_filtered_stacks_on_file_line(struct malt_reader_t * reader, const char * file, size_t line);

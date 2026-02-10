@@ -141,18 +141,23 @@ async def get_api_get_size_map():
     return Response(content=malt_reader.getSizeMap(), media_type="application/json")
 
 ############################################################
+@app.get("/size-map-gpu.json")
+async def get_api_get_size_map_gpu():
+    return Response(content=malt_reader.getSizeMap(), media_type="application/json")
+
+############################################################
 @app.get("/scatter.json")
-async def get_api_get_size_map():
+async def get_api_get_scatter():
     return Response(content=malt_reader.getScatter(), media_type="application/json")
 
 ############################################################
 @app.get("/realloc-map.json")
-async def get_api_get_size_map():
+async def get_api_get_realloc_map():
     return Response(content=malt_reader.getReallocMap(), media_type="application/json")
 
 ############################################################
 @app.get("/global-variables.json")
-async def get_api_get_size_map():
+async def get_api_get_global_variables():
     return Response(content=malt_reader.getGlobalVariables(), media_type="application/json")
 
 ############################################################

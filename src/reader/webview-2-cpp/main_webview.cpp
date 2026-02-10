@@ -346,7 +346,9 @@ int main(int argc, char ** argv)
 		noAuthFiles.insert("/sources");
 		noAuthFiles.insert("/call-tree");
 		noAuthFiles.insert("/timeline");
+		noAuthFiles.insert("/timeline-gpu");
 		noAuthFiles.insert("/allocSizeDistr");
+		noAuthFiles.insert("/allocSizeDistrGpu");
 		noAuthFiles.insert("/globalVars");
 		noAuthFiles.insert("/stackPeaks");
 		noAuthFiles.insert("/per-thread");
@@ -462,6 +464,11 @@ int main(int argc, char ** argv)
 
 		svr.Get("/size-map.json", [&profile](const Request& req, Response& res) {
 			nlohmann::json data = profile.getSizeMap();
+			res.set_content(data.dump(), "application/json");
+		});
+
+		svr.Get("/size-map-gpu.json", [&profile](const Request& req, Response& res) {
+			nlohmann::json data = profile.getSizeMapGpu();
 			res.set_content(data.dump(), "application/json");
 		});
 

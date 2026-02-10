@@ -34,7 +34,9 @@ class WebProfile : public Profile
 		DLL_PUBLIC nlohmann::json getFlatFunctionProfile(bool own, bool total) const;
 		DLL_PUBLIC nlohmann::json getProcMapDistr(void) const;
 		DLL_PUBLIC nlohmann::json getScatter(void) const;
+		DLL_PUBLIC nlohmann::json getScatterGpu(void) const;
 		DLL_PUBLIC nlohmann::json getSizeMap(void) const;
+		DLL_PUBLIC nlohmann::json getSizeMapGpu(void) const;
 		DLL_PUBLIC nlohmann::json getReallocMap(void) const;
 		DLL_PUBLIC nlohmann::json getTimedValues(void) const;
 		DLL_PUBLIC nlohmann::json getSummaryV2(void) const;

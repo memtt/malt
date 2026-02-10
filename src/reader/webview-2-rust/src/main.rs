@@ -273,6 +273,15 @@ async fn size_map(data: web::Data<MaltCReader>) -> impl Responder
 }
 
 /**********************************************************/
+#[get("/size-map-gpu.json")]
+async fn size_map_gpu(data: web::Data<MaltCReader>) -> impl Responder
+{
+	HttpResponse::Ok()
+		.content_type(ContentType::json())
+		.body(data.get_size_map_gpu())
+}
+
+/**********************************************************/
 #[get("/scatter.json")]
 async fn scatter(data: web::Data<MaltCReader>) -> impl Responder
 {
@@ -403,6 +412,7 @@ async fn main() -> std::io::Result<()> {
 			.service(stacks_mem)
 			.service(stack)
 			.service(size_map)
+			.service(size_map_gpu)
 			.service(scatter)
 			.service(realloc_map)
 			.service(global_variables)

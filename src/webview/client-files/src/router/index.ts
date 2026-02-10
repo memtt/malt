@@ -70,7 +70,7 @@ function genRoutes(): Array<any>
     });
 	routes.push({
       path: '/timeline-gpu',
-      name: 'Timeline GPU analysis',
+      name: 'GPU timeline analysis',
       component: () => import('@/views/TimelineGpuPage.vue'),
       meta: { requiresAuth: true },
     });
@@ -84,6 +84,12 @@ function genRoutes(): Array<any>
       path: '/allocSizeDistr',
       name: 'Alloc sizes',
       component: () => import('@/views/AllocSizeDistrPage.vue'),
+      meta: { requiresAuth: true },
+    });
+	routes.push({
+      path: '/allocSizeDistrGpu',
+      name: 'GPU alloc sizes',
+      component: () => import('@/views/AllocSizeDistrGpuPage.vue'),
       meta: { requiresAuth: true },
     });
     routes.push({

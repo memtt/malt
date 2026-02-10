@@ -367,6 +367,13 @@ app.get('/size-map.json', authenticateToken,function(req,res) {
 });
 
 /**********************************************************/
+app.get('/size-map-gpu.json', authenticateToken,function(req,res) {
+	var tmp = maltProject.getSizeMapGpu();
+	res.json(tmp);
+	res.end();
+});
+
+/**********************************************************/
 app.get('/realloc-map.json', authenticateToken,function(req,res) {
 	var tmp = maltProject.getReallocMap();
 	res.json(tmp);
@@ -449,7 +456,13 @@ app.get('/call-tree',function(eq,res,next){
 app.get('/timeline',function(eq,res,next){
 	res.sendfile("client-files/dist/index.html");
 });
+app.get('/timeline-gpu',function(eq,res,next){
+	res.sendfile("client-files/dist/index.html");
+});
 app.get('/allocSizeDistr',function(eq,res,next){
+	res.sendfile("client-files/dist/index.html");
+});
+app.get('/allocSizeDistrGpu',function(eq,res,next){
 	res.sendfile("client-files/dist/index.html");
 });
 app.get('/globalVars',function(eq,res,next){

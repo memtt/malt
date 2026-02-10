@@ -104,6 +104,7 @@ void to_json(nlohmann::json & json, const MemStats & value)
 		{"globalVariables", value.globalVariables},
 	};
 	to_json(json["sizeMap"], value.sizeMap);
+	to_json(json["sizeMapGpu"], value.sizeMapGpu);
 }
 
 /**********************************************************/
@@ -111,11 +112,13 @@ void from_json(const JsonIn & json, MemStats & value)
 {
 	//checks
 	assert(jsContains(json, "sizeMap"));
+	assert(jsContains(json, "sizeMapGpu"));
 	assert(jsContains(json, "reallocJump"));
 	assert(jsContains(json, "globalVariables"));
 
 	//load
 	from_json(json.at("sizeMap"), value.sizeMap);
+	from_json(json.at("sizeMapGpu"), value.sizeMapGpu);
 	//json.at("sizeMap").get_to(value.sizeMap);
 	json.at("reallocJump").get_to(value.reallocJump);
 	json.at("globalVariables").get_to(value.globalVariables);

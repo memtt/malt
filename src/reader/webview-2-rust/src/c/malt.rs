@@ -54,6 +54,7 @@ extern "C" {
 	fn malt_reader_json_get_proc_map_distr(reader: MaltReaderHandler) -> *const c_char;
 	fn malt_reader_json_get_scatter(reader: MaltReaderHandler) -> *const c_char;
 	fn malt_reader_json_get_size_map(reader: MaltReaderHandler) -> *const c_char;
+	fn malt_reader_json_get_size_map_gpu(reader: MaltReaderHandler) -> *const c_char;
 	fn malt_reader_json_get_realloc_map(reader: MaltReaderHandler) -> *const c_char;
 	fn malt_reader_json_get_timed_values(reader: MaltReaderHandler) -> *const c_char;
 	fn malt_reader_json_get_filtered_stacks_on_file_line(reader: MaltReaderHandler, file: *const c_char, line: c_size_t) -> *const c_char;
@@ -151,6 +152,14 @@ impl MaltCReader
 
 	pub fn get_size_map(&self) -> String {
 		let c_str = unsafe { malt_reader_json_get_size_map(self.handler) };
+		let cc_str = unsafe {CStr::from_ptr(c_str)};
+		let res = cc_str.to_str().unwrap().to_string();
+		unsafe {malt_reader_json_free_response(c_str)};
+		return res;
+	}
+
+	pub fn get_size_map_gpu(&self) -> String {
+		let c_str = unsafe { malt_reader_json_get_size_map_gpu(self.handler) };
 		let cc_str = unsafe {CStr::from_ptr(c_str)};
 		let res = cc_str.to_str().unwrap().to_string();
 		unsafe {malt_reader_json_free_response(c_str)};

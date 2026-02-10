@@ -334,9 +334,9 @@ void AllocStackProfiler::onAllocEvent(void* ptr, size_t size,Stack* userStack,MM
 		if (options.distr.allocSize)
 		{
 			CODE_TIMING("sizeDistr",
-				AllocSizeDistrMap::iterator it = sizeMap.find(size);
-				if (it == sizeMap.end())
-					sizeMap[size] = 1;
+				AllocSizeDistrMap::iterator it = sizeMap[memDomain].find(size);
+				if (it == sizeMap[memDomain].end())
+					sizeMap[memDomain][size] = 1;
 				else
 					it->second++;
 			);
@@ -1086,13 +1086,21 @@ void convertToJson(htopml::JsonState& json, const AllocStackProfiler& value)
 		if (value.options.distr.allocSize)
 		{
 			json.openFieldStruct("sizeMap");
-			for (AllocSizeDistrMap::const_iterator it = value.sizeMap.begin() ; it != value.sizeMap.end() ; ++it)			
+			for (AllocSizeDistrMap::const_iterator it = value.sizeMap[MEM_DOMAIN_CPU].begin() ; it != value.sizeMap[MEM_DOMAIN_CPU].end() ; ++it)			
 			{
 				std::stringstream out;
 				out << it->first;
 				json.printField(out.str().c_str(),it->second);
 			}
 			json.closeFieldStruct("sizeMap");
+			json.openFieldStruct("sizeMapGpu");
+			for (AllocSizeDistrMap::const_iterator it = value.sizeMap[MEM_DOMAIN_GPU].begin() ; it != value.sizeMap[MEM_DOMAIN_GPU].end() ; ++it)			
+			{
+				std::stringstream out;
+				out << it->first;
+				json.printField(out.str().c_str(),it->second);
+			}
+			json.closeFieldStruct("sizeMapGpu");
 		}
 		
 		if (value.options.distr.reallocJump)
