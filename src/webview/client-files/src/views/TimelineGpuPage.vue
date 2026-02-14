@@ -9,7 +9,22 @@
 |    AUTHOR   : Sébastien Valat - 2026
 ----------------------------------------------------------->
 <template>
-  <div class="timeline-page">
+  <div v-if="!haveGpu" class="alloc-size-distr-page">
+    <PageSection title="">
+      <div v-if="loading" class="chart-loading-state">
+        <div class="loading-message">Loading...</div>
+      </div>
+
+      <!-- Warning: No source available -->
+      <WarningNoGpuAllocs v-else-if="!haveGpu"></WarningNoGpuAllocs>
+
+      <div v-else-if="error" class="chart-error-state">
+        <p class="error-message">Error: {{ error }}</p>
+      </div>
+    </PageSection>
+  </div>
+
+  <div v-else class="timeline-page">
     <!-- Loading State -->
     <div v-if="loading" class="loading-container">
       <div class="spinner"></div>
@@ -112,6 +127,7 @@ import ExportControls from '@/components/core/ExportControls.vue'
 import AllocatedChunksModal from '@/components/shared/AllocatedChunksModal.vue'
 import PageSection from '@/components/core/PageSection.vue'
 import { useTimelineGPU } from '@/composables/useTimelineGPU'
+import WarningNoGpuAllocs from '@/components/core/WarningNoGpuAllocs.vue'
 
 // Use timeline composable
 const {
@@ -131,6 +147,7 @@ const {
   chunksModalLoading,
   chunksModalError,
   closeChunksModal,
+  haveGpu,
 } = useTimelineGPU()
 
 // Chart refs for SVG export

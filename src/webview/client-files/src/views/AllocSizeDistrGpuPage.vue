@@ -8,7 +8,22 @@
 |    AUTHOR   : Sébastien Valat (INRIA) - 2025
 ----------------------------------------------------------->
 <template>
-  <div class="alloc-size-distr-page">
+  <div v-if="!haveGpu" class="alloc-size-distr-page">
+    <PageSection title="">
+      <div v-if="loading" class="chart-loading-state">
+        <div class="loading-message">Loading...</div>
+      </div>
+
+      <!-- Warning: No source available -->
+      <WarningNoGpuAllocs v-else-if="!haveGpu"></WarningNoGpuAllocs>
+
+      <div v-else-if="error" class="chart-error-state">
+        <p class="error-message">Error: {{ error }}</p>
+      </div>
+    </PageSection>
+  </div>
+
+  <div v-else class="alloc-size-distr-page">
     <!-- Summary Cards -->
     <SummaryCard :items="summaryItems" />
 
@@ -87,7 +102,7 @@
         :bins-x="binX"
         :bins-y="binY"
         :log-color="true"
-		:ticksPerSecond="scatterData?.ticksPerSecond"
+        :ticksPerSecond="scatterData?.ticksPerSecond"
       />
     </PageSection>
   </div>
@@ -102,6 +117,7 @@ import MostUsedSizesChart from '@/components/charts/MostUsedSizesChart.vue'
 import Log2HistogramChart from '@/components/charts/Log2HistogramChart.vue'
 import HeatmapChart from '@/components/charts/HeatmapChart.vue'
 import PageSection from '@/components/core/PageSection.vue'
+import WarningNoGpuAllocs from '@/components/core/WarningNoGpuAllocs.vue'
 
 const {
   loading,
@@ -114,6 +130,7 @@ const {
   largestSize,
   mostUsedSizesData,
   histogramData,
+  haveGpu,
 } = useAllocSizeDistrGpu()
 
 const binX = 64;

@@ -33,7 +33,3 @@ extern "C" {
 		return malt_wrap_cuda_free(devPtr, gblState.gpuFuncs.cudaFree, MALT_RETADDR);
 	}
 }
-
-/**********************************************************/
-//__asm__(".symver cudaMalloc, cudaMalloc@libcudart.so.12");
-//__asm__(".symver cudaFree, cudaFree@libcudart.so.12");

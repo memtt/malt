@@ -10,6 +10,25 @@ import { useAllocSizeDistrGpuData } from '@/composables/useAllocSizeDistrGpuData
 import { useAllocSizeDistrGpuScatterData } from '@/composables/useAllocSizeDistrGpuScatterData'
 import { useAllocSizeDistrSummary } from '@/composables/useAllocSizeDistrSummary'
 import { useAllocSizeDistrCharts } from '@/composables/useAllocSizeDistrCharts'
+import { computed, type Ref } from 'vue'
+import type { SizeMapData } from '@/types/alloc-size-distr'
+
+function useAllocSizeDistrHaveGpu(data: Ref<SizeMapData | undefined>) {
+  const haveGpu = computed(() => {
+    if (!data)
+        return false;
+    let sumCount = 0
+    for (const sizeStr in data.value) {
+        const count = data.value[sizeStr]
+        sumCount += count
+    }
+    if (sumCount > 0)
+        return true;
+    else
+        return false;
+  });
+  return haveGpu;
+}
 
 export function useAllocSizeDistrGpu() {
   const { data, loading, error } = useAllocSizeDistrGpuData()
@@ -17,9 +36,10 @@ export function useAllocSizeDistrGpu() {
     data: scatterData,
     loading: scatterLoading,
     error: scatterError,
-  } = useAllocSizeDistrGpuScatterData()
+  } = useAllocSizeDistrGpuScatterData();
   const { meanChunkSize, mostUsedSize, largestSize } = useAllocSizeDistrSummary(data)
   const { mostUsedSizesData, histogramData } = useAllocSizeDistrCharts(data)
+  const haveGpu = useAllocSizeDistrHaveGpu(data);
 
   return {
     data,
@@ -33,5 +53,6 @@ export function useAllocSizeDistrGpu() {
     largestSize,
     mostUsedSizesData,
     histogramData,
+    haveGpu,
   }
 }

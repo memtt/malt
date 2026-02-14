@@ -125,6 +125,11 @@ export function useTimelineGPU() {
    */
   const ticksPerSecond = computed(() => data.value?.ticksPerSecond || 1)
 
+  const haveGpu = computed(() => {
+     const len = data.value?.memoryGpuBandwidth?.values?.length || 0;
+     return len > 0;
+  })
+
   return {
     // Data
     data,
@@ -150,5 +155,6 @@ export function useTimelineGPU() {
     chunksModalLoading,
     chunksModalError,
     closeChunksModal,
+    haveGpu,
   }
 }

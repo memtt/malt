@@ -11,7 +11,7 @@ import { fetchSizeDistrGpu } from '@/services/allocSizeDistrGpuService'
 
 export function useAllocSizeDistrGpuData() {
   const { data, isLoading, error } = useQuery({
-    queryKey: ['allocSizeDistr'],
+    queryKey: ['allocSizeDistrGpu'],
     queryFn: fetchSizeDistrGpu,
   })
 
