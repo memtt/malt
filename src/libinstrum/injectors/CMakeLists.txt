@@ -16,13 +16,19 @@ add_library(malt-injectors-ok-for-tests OBJECT
 set_target_properties(malt-injectors-ok-for-tests PROPERTIES COMPILE_FLAGS ${MALT_LIB_COMPILER_FLAGS})
 
 ############################################################
-add_library(malt-injectors OBJECT
-      InjectCAlloc.cpp
-      InjectCInit.cpp
-      InjectFuncEnterExit.cpp
-      InjectMaqao.cpp
-      InjectGpuAlloc.cpp
+set(MALT_INJECTOR_SOURCES
+    InjectCAlloc.cpp
+    InjectCInit.cpp
+    InjectFuncEnterExit.cpp
+    InjectMaqao.cpp
+    InjectGpuAlloc.cpp
 )
+if (CUDA_FOUND)
+	list(APPEND MALT_INJECTOR_SOURCES InjectGpuCudaAlloc.cpp)
+endif()
+
+############################################################
+add_library(malt-injectors OBJECT ${MALT_INJECTOR_SOURCES})
 set_target_properties(malt-injectors PROPERTIES COMPILE_FLAGS ${MALT_LIB_COMPILER_FLAGS})
 
 ############################################################

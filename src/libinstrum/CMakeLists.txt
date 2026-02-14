@@ -40,6 +40,9 @@ endif()
 if (MALTJEMALLOC_FOUND)
 	include_directories(${MALTJEMALLOC_INCLUDE_DIRS})
 endif()
+if(CUDA_FOUND)
+	include_directories(${CUDA_INCLUDE_DIRS})
+endif()
 
 ############################################################
 set(COMMON_OBJS $<TARGET_OBJECTS:htopml-json>

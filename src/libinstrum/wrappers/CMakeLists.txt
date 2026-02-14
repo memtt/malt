@@ -10,12 +10,20 @@
 ############################################################
 
 ############################################################
-add_library(malt-wrappers OBJECT 
+set(MALT_WRAPPER_SOURCES
       WrapperCAlloc.cpp
       WrapperPython.cpp
       WrapperPthreads.cpp
       WrapperGpuAlloc.cpp
 )
+
+############################################################
+if (CUDA_FOUND)
+	list(APPEND MALT_WRAPPER_SOURCES WrapperGpuCudaAlloc.cpp)
+endif (CUDA_FOUND)
+
+############################################################
+add_library(malt-wrappers OBJECT ${MALT_WRAPPER_SOURCES})
 set_target_properties(malt-wrappers PROPERTIES COMPILE_FLAGS ${MALT_LIB_COMPILER_FLAGS})
 
 ############################################################

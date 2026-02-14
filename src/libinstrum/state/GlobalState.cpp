@@ -311,6 +311,8 @@ void AllocWrapperGlobal::init(void )
 		//Solve them here otherwise it enter in an infinite loop in debug mode
 		gblState.gpuFuncs.pgiUaccCudaAlloc = (PgiUaccCudaAllocPtr)dlsym(RTLD_NEXT,"__pgi_uacc_cuda_alloc");
 		gblState.gpuFuncs.pgiUaccCudaFree = (PgiUaccCudaFreePtr)dlsym(RTLD_NEXT,"__pgi_uacc_cuda_free");
+		gblState.gpuFuncs.cudaMalloc = (CudaMallocPtr)dlsym(RTLD_NEXT,"cudaMalloc");
+		gblState.gpuFuncs.cudaFree = (CudaFreePtr)dlsym(RTLD_NEXT,"cudaFree");
 
 		//skip
 		if (skip)

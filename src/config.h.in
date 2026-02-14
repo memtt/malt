@@ -67,4 +67,7 @@
 //When using ASAN we need to disable the internal allocator to test malt internals
 #cmakedefine MALT_USE_STD_MALLOC
 
+// if have cuda support
+#cmakedefine MALT_HAVE_CUDA
+
 #endif //MALT_CONFIG_H

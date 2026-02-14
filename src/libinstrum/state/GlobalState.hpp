@@ -26,6 +26,7 @@
 //signal
 #include <signal.h>
 //internals
+#include <config.h>
 #include <common/Debug.hpp>
 #include <portability/OS.hpp>
 #include <portability/Mutex.hpp>
@@ -35,6 +36,9 @@
 #include <profiler/LocalAllocStackProfiler.hpp>
 #include "wrappers/WrapperCAlloc.hpp"
 #include "wrappers/WrapperGpuAlloc.hpp"
+#ifdef MALT_HAVE_CUDA
+	#include "wrappers/WrapperGpuCudaAlloc.hpp"
+#endif //MALT_HAVE_CUDA
 //locals
 #include "malt.h"
 
@@ -118,6 +122,10 @@ struct AllocWrapperGlobal
 		PgiUaccCudaAllocPtr pgiUaccCudaAlloc;
 		/** Pointer to the old (PGI) cuda free symbol. */
 		PgiUaccCudaFreePtr pgiUaccCudaFree;
+		/** Pointer to the old cudaMalloc symbol. */
+		CudaMallocPtr cudaMalloc;
+		/** Pointer to the old cudaFree symbol. */
+		CudaFreePtr cudaFree;
 	} gpuFuncs;
 	/** Pointer to the profiler (use pointer due to use before main, only way to ensure init before first malloc usage). **/
 	AllocStackProfiler * profiler;

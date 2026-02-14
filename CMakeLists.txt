@@ -115,6 +115,7 @@ find_package(Node QUIET)
 find_package(Cargo QUIET)
 find_package(Graphviz QUIET)
 find_package(Binutils QUIET)
+find_package(Cuda QUIET)
 #find_package(Zmq QUIET)
 # Check for npm if needed
 if (NODE_FOUND AND NOT IS_DIRECTORY ${CMAKE_SOURCE_DIR}/extern-deps/node_modules)
@@ -190,6 +191,11 @@ endif()
 ############################################################
 if (NOT ENABLE_WEBVIEW)
 	set(WEBVIEW_SERVER "OFF")
+endif()
+
+############################################################
+if (CUDA_FOUND)
+	set(MALT_HAVE_CUDA "yes")
 endif()
 
 ############################################################

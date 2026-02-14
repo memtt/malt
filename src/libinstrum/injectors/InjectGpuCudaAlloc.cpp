@@ -20,20 +20,20 @@ using namespace MALT;
 
 /**********************************************************/
 extern "C" {
-	DLL_PUBLIC void __pgi_uacc_cuda_alloc(void ** ptr, void * info, size_t size, long async, int dindex, int error);
-	DLL_PUBLIC void __pgi_uacc_cuda_free(void * ptr, long async, int dindex, int error);
+	DLL_PUBLIC cudaError_enum cudaMalloc (void ** devPtr, size_t  size)
+	{
+		return malt_wrap_cuda_malloc(devPtr, size, gblState.gpuFuncs.cudaMalloc, MALT_RETADDR);
+	}
 }
 
 /**********************************************************/
-DLL_PUBLIC void __pgi_uacc_cuda_alloc(void ** ptr, void * info, size_t size, long async, int dindex, int error)
-{
-	//call wrapper
-	malt_wrap_pgi_uacc_cuda_alloc(ptr, info, size, async, dindex, error, gblState.gpuFuncs.pgiUaccCudaAlloc, MALT_RETADDR);
+extern "C" {
+	DLL_PUBLIC cudaError_enum cudaFree (void * devPtr)
+	{
+		return malt_wrap_cuda_free(devPtr, gblState.gpuFuncs.cudaFree, MALT_RETADDR);
+	}
 }
 
 /**********************************************************/
-DLL_PUBLIC void __pgi_uacc_cuda_free(void * ptr, long async, int dindex, int error)
-{
-	//call wrapper
-	return malt_wrap_pgi_uacc_cuda_free(ptr, async, dindex, error, gblState.gpuFuncs.pgiUaccCudaFree, MALT_RETADDR);
-}
+//__asm__(".symver cudaMalloc, cudaMalloc@libcudart.so.12");
+//__asm__(".symver cudaFree, cudaFree@libcudart.so.12");
