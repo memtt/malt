@@ -17,6 +17,7 @@
 //internals
 #include "CallStackInfo.hpp"
 #include <common/Debug.hpp>
+#include <common/SimpleAllocator.hpp>
 
 /**********************************************************/
 namespace MALT
@@ -114,7 +115,7 @@ void CallStackInfo::onGpuFreeEvent(size_t value,size_t peakId)
 		cntZeros++;
 	} else {
 		updatePeak(peakId, MEM_DOMAIN_GPU);
-		this->gpuFree.addEvent(value);
+		this->getGpuExt().gpuFree.addEvent(value);
 	}
 }
 
@@ -138,10 +139,10 @@ ssize_t SimpleQuantityHistory::getMean(void) const
 **/
 void CallStackInfo::updatePeak(size_t peakId, MemDomain domain)
 {
-	if (this->peakId[domain] < peakId)
+	if (this->getPeakIdRef(domain) < peakId)
 	{
-		this->peakId[domain] = peakId;
-		this->peak[domain] = this->alive[domain];
+		this->getPeakIdRef(domain) = peakId;
+		this->getPeakRef(domain) = this->getAliveRef(domain);
 	}
 }
 
@@ -151,7 +152,7 @@ void CallStackInfo::updatePeak(size_t peakId, MemDomain domain)
 **/
 size_t CallStackInfo::getPeak(MemDomain domain) const
 {
-	return this->peak[domain];
+	return this->getPeakRef(domain);
 }
 
 /**********************************************************/
@@ -173,9 +174,9 @@ void CallStackInfo::onAllocEvent(size_t value,size_t peakId)
 	updatePeak(peakId, MEM_DOMAIN_CPU);
 	
 	//update alive memory
-	this->alive[MEM_DOMAIN_CPU]+=value;
-	if (this->alive[MEM_DOMAIN_CPU] > this->maxAlive[MEM_DOMAIN_CPU])
-		this->maxAlive[MEM_DOMAIN_CPU] = this->alive[MEM_DOMAIN_CPU];
+	this->getAliveRef(MEM_DOMAIN_CPU)+=value;
+	if (this->getAliveRef(MEM_DOMAIN_CPU) > this->getMaxAliveRef(MEM_DOMAIN_CPU))
+		this->getMaxAliveRef(MEM_DOMAIN_CPU) = this->getAliveRef(MEM_DOMAIN_CPU);
 }
 
 /**********************************************************/
@@ -191,31 +192,31 @@ void CallStackInfo::onGpuAllocEvent(size_t value,size_t peakId)
 	if (value == 0)
 		cntZeros++;
 	else
-		this->gpuAlloc.addEvent(value);
+		this->getGpuExt().gpuAlloc.addEvent(value);
 	
 	//update peak
 	updatePeak(peakId, MEM_DOMAIN_GPU);
 	
 	//update alive memory
-	this->alive[MEM_DOMAIN_GPU] += value;
-	if (this->alive[MEM_DOMAIN_GPU] > this->maxAlive[MEM_DOMAIN_GPU])
-		this->maxAlive[MEM_DOMAIN_GPU] = this->alive[MEM_DOMAIN_GPU];
+	this->getAliveRef(MEM_DOMAIN_GPU) += value;
+	if (this->getAliveRef(MEM_DOMAIN_GPU) > this->getMaxAliveRef(MEM_DOMAIN_GPU))
+		this->getMaxAliveRef(MEM_DOMAIN_GPU) = this->getAliveRef(MEM_DOMAIN_GPU);
 }
 
 /**********************************************************/
 void CallStackInfo::onMmap ( ssize_t value,size_t peakId )
 {
-	this->mmap.addEvent(value);
+	this->getMmapExt().mmap.addEvent(value);
 	this->onAllocEvent(value, peakId);
 }
 
 /**********************************************************/
 void CallStackInfo::onMunmap ( ssize_t value,size_t peakId, bool subMunmap )
 {
-	this->munmap.addEvent(value);
+	this->getMmapExt().munmap.addEvent(value);
 	//if sub munmap, we should not count
 	if (subMunmap)
-		this->munmap.count--;
+		this->getMmapExt().munmap.count--;
 	this->onFreeEvent(value, peakId);
 }
 
@@ -230,12 +231,12 @@ void CallStackInfo::onMunmap ( ssize_t value,size_t peakId, bool subMunmap )
 **/
 void CallStackInfo::onFreeLinkedMemory(size_t value, ticks lifetime,size_t peakId, MemDomain domain)
 {
-	assert(alive[domain] >= (ssize_t)value);
-	assert(alive[domain] >= 0);
+	assert(getAliveRef(domain) >= (ssize_t)value);
+	assert(getAliveRef(domain) >= 0);
 	
 	updatePeak(peakId, domain);
 
-	this->alive[domain] -= value;
+	this->getAliveRef(domain) -= value;
 	if (lifetime != 0)
 		this->lifetime.addEvent(lifetime);
 }
@@ -246,15 +247,6 @@ void CallStackInfo::onFreeLinkedMemory(size_t value, ticks lifetime,size_t peakI
 **/
 CallStackInfo::CallStackInfo(void )
 {
-	this->reallocCount = 0;
-	this->reallocDelta = 0;
-	this->cntZeros = 0;
-	for (int i = 0 ; i < MEM_DOMAIN_COUNT ; i++) {
-		this->alive[i] = 0;
-		this->maxAlive[i] = 0;
-		this->peak[i] = 0;
-		this->peakId[i] = 0;
-	}
 }
 
 /**********************************************************/
@@ -280,9 +272,9 @@ void CallStackInfo::onReallocEvent(size_t oldSize, size_t newSize)
 void CallStackInfo::merge(const CallStackInfo& info)
 {
 	for (int i = 0 ; i < MEM_DOMAIN_COUNT ; i++) {
-		this->alive[i] += info.alive[i];
-		this->maxAlive[i] += info.maxAlive[i];
-		this->peak[i] += info.peak[i];
+		this->getAliveRef((MemDomain)i) += info.getAliveRef((MemDomain)i);
+		this->getMaxAliveRef((MemDomain)i) += info.getMaxAliveRef((MemDomain)i);
+		this->getPeakRef((MemDomain)i) += info.getPeakRef((MemDomain)i);
 	}
 	this->cntZeros += info.cntZeros;
 	this->alloc.push(info.alloc);
@@ -299,19 +291,19 @@ void convertToJson(htopml::JsonState& json, const CallStackInfo& value)
 {
 	json.openStruct();
 	json.printField("countZeros",value.cntZeros);
-	json.printField("maxAliveReq",value.maxAlive[MEM_DOMAIN_CPU]);
-	json.printField("aliveReq",value.alive[MEM_DOMAIN_CPU]);
-	json.printField("maxAliveReqGPU",value.maxAlive[MEM_DOMAIN_GPU]);
-	json.printField("aliveReqGPU",value.alive[MEM_DOMAIN_GPU]);
+	json.printField("maxAliveReq",value.getMaxAliveRef(MEM_DOMAIN_CPU));
+	json.printField("aliveReq",value.getAliveRef(MEM_DOMAIN_CPU));
+	json.printField("maxAliveReqGPU",value.getMaxAliveRef(MEM_DOMAIN_GPU));
+	json.printField("aliveReqGPU",value.getAliveRef(MEM_DOMAIN_GPU));
 	json.printField("alloc",value.alloc);
 	json.printField("free",value.free);
-	json.printField("gpuAlloc",value.gpuAlloc);
-	json.printField("gpuFree",value.gpuFree);
-	json.printField("mmap",value.mmap);
-	json.printField("munmap",value.munmap);
+	json.printField("gpuAlloc",value.getGpuExt().gpuAlloc);
+	json.printField("gpuFree",value.getGpuExt().gpuFree);
+	json.printField("mmap",value.getMmapExt().mmap);
+	json.printField("munmap",value.getMmapExt().munmap);
 	json.printField("lifetime",value.lifetime);
-	json.printField("globalPeak",value.peak[MEM_DOMAIN_CPU]);
-	json.printField("globalPeakGPU",value.peak[MEM_DOMAIN_GPU]);
+	json.printField("globalPeak",value.getPeakRef(MEM_DOMAIN_CPU));
+	json.printField("globalPeakGPU",value.getPeakRef(MEM_DOMAIN_GPU));
 	json.printField("reallocCount",value.reallocCount);
 	json.printField("reallocSumDelta",value.reallocDelta);
 	//json.printField("mmap",value.mmap);
@@ -353,12 +345,12 @@ void CallStackInfo::writeAsCallgrindEntry(int line, std::ostream& out) const
 {
 	assert(alloc.max >= alloc.min);
 	assert(free.max >= free.min);
-	assert(alive[MEM_DOMAIN_CPU] >= 0);
-	assert(maxAlive[MEM_DOMAIN_CPU] >= 0);
+	assert(getAliveRef(MEM_DOMAIN_CPU) >= 0);
+	assert(getMaxAliveRef(MEM_DOMAIN_CPU) >= 0);
 	
 	out << line << ' ' << alloc.count << ' ' << free.count << ' ' <<  alloc.count + free.count + cntZeros 
 		<< ' ' << alloc.sum << ' ' << free.sum
-		<< ' ' << alive[MEM_DOMAIN_CPU] << ' ' << maxAlive[MEM_DOMAIN_CPU];
+		<< ' ' << getAliveRef(MEM_DOMAIN_CPU) << ' ' << getMaxAliveRef(MEM_DOMAIN_CPU);
 }
 
 /**********************************************************/
@@ -419,6 +411,151 @@ void CallStackInfo::writeCallgrindEventDef(std::ostream& out)
 	out << "events: AllocCnt FreeCnt MemOps"
 		<< " AllocSum FreeSum"
 		<< " Leaks AliveReqMax\n";
+}
+
+/**********************************************************/
+CallStackInfoGpuExt & CallStackInfo::getGpuExt(void)
+{
+	if (this->gpuExt == nullptr) {
+		void * mem = MALT_MALLOC(sizeof(CallStackInfoGpuExt));
+		this->gpuExt = new (mem) CallStackInfoGpuExt();
+	}
+	return *this->gpuExt;
+}
+
+/**********************************************************/
+const CallStackInfoGpuExt & CallStackInfo::getGpuExt(void) const
+{
+	if (this->gpuExt == nullptr) {
+		static CallStackInfoGpuExt zeroes;
+		return zeroes;
+	} else {
+		return *this->gpuExt;
+	}
+}
+
+/**********************************************************/
+CallStackInfoMmapExt & CallStackInfo::getMmapExt(void)
+{
+	if (this->mmapExt == nullptr) {
+		void * mem = MALT_MALLOC(sizeof(CallStackInfoMmapExt));
+		this->mmapExt = new (mem) CallStackInfoMmapExt();
+	}
+	return *this->mmapExt;
+}
+
+/**********************************************************/
+const CallStackInfoMmapExt & CallStackInfo::getMmapExt(void) const
+{
+	if (this->mmapExt == nullptr) {
+		static CallStackInfoMmapExt zeroes;
+		return zeroes;
+	} else {
+		return *this->mmapExt;
+	}
+}
+
+/**********************************************************/
+ssize_t & CallStackInfo::getAliveRef(MemDomain domain)
+{
+	if (domain == MEM_DOMAIN_CPU) {
+		return this->alive;
+	} else if (domain == MEM_DOMAIN_GPU) {
+		return this->getGpuExt().alive;
+	} else {
+		assert(false);
+		return *(ssize_t*)nullptr;
+	}
+}
+
+const ssize_t & CallStackInfo::getAliveRef(MemDomain domain) const
+{
+	if (domain == MEM_DOMAIN_CPU) {
+		return this->alive;
+	} else if (domain == MEM_DOMAIN_GPU) {
+		return this->getGpuExt().alive;
+	} else {
+		assert(false);
+		return *(ssize_t*)nullptr;
+	}
+}
+
+/**********************************************************/
+ssize_t & CallStackInfo::getMaxAliveRef(MemDomain domain)
+{
+	if (domain == MEM_DOMAIN_CPU) {
+		return this->maxAlive;
+	} else if (domain == MEM_DOMAIN_GPU) {
+		return this->getGpuExt().maxAlive;
+	} else {
+		assert(false);
+		return *(ssize_t*)nullptr;
+	}
+}
+
+/**********************************************************/
+const ssize_t & CallStackInfo::getMaxAliveRef(MemDomain domain) const
+{
+	if (domain == MEM_DOMAIN_CPU) {
+		return this->maxAlive;
+	} else if (domain == MEM_DOMAIN_GPU) {
+		return this->getGpuExt().maxAlive;
+	} else {
+		assert(false);
+		return *(ssize_t*)nullptr;
+	}
+}
+
+/**********************************************************/
+ssize_t & CallStackInfo::getPeakRef(MemDomain domain)
+{
+	if (domain == MEM_DOMAIN_CPU) {
+		return this->peak;
+	} else if (domain == MEM_DOMAIN_GPU) {
+		return this->getGpuExt().peak;
+	} else {
+		assert(false);
+		return *(ssize_t*)nullptr;
+	}
+}
+
+/**********************************************************/
+const ssize_t & CallStackInfo::getPeakRef(MemDomain domain) const
+{
+	if (domain == MEM_DOMAIN_CPU) {
+		return this->peak;
+	} else if (domain == MEM_DOMAIN_GPU) {
+		return this->getGpuExt().peak;
+	} else {
+		assert(false);
+		return *(ssize_t*)nullptr;
+	}
+}
+
+/**********************************************************/
+size_t & CallStackInfo::getPeakIdRef(MemDomain domain)
+{
+	if (domain == MEM_DOMAIN_CPU) {
+		return this->peakId;
+	} else if (domain == MEM_DOMAIN_GPU) {
+		return this->getGpuExt().peakId;
+	} else {
+		assert(false);
+		return *(size_t*)nullptr;
+	}
+}
+
+/**********************************************************/
+const size_t & CallStackInfo::getPeakIdRef(MemDomain domain) const
+{
+	if (domain == MEM_DOMAIN_CPU) {
+		return this->peakId;
+	} else if (domain == MEM_DOMAIN_GPU) {
+		return this->getGpuExt().peakId;
+	} else {
+		assert(false);
+		return *(size_t*)nullptr;
+	}
 }
 
 }

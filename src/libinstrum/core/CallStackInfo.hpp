@@ -53,16 +53,42 @@ struct SimpleQuantityHistory
 	void addEvent(ssize_t value);
 	void push(const MALT::SimpleQuantityHistory& value);
 	ssize_t getMean(void) const;
-	size_t count;
-	ssize_t min;
-	ssize_t max;
-	ssize_t sum;
+	size_t count{0};
+	ssize_t min{0};
+	ssize_t max{0};
+	ssize_t sum{0};
 };
 
 /**********************************************************/
 //pre-declaration to avoid head loop inclusion
 struct CallStackInfoGlobals;
 struct CallStackInfoRealloc;
+
+/**********************************************************/
+struct CallStackInfoMmapExt
+{
+	/** Track the min/max/sum/count of each memory allocation sizes from mmap. **/
+	SimpleQuantityHistory mmap;
+	/** Track the min/max/sum/count of each memory allocation sizes from mmap. **/
+	SimpleQuantityHistory munmap;
+};
+
+/**********************************************************/
+struct CallStackInfoGpuExt
+{
+	/** Track the min/max/sum/count of each memory allocation sizes from mmap. **/
+	SimpleQuantityHistory gpuAlloc;
+	/** Track the min/max/sum/count of each memory allocation sizes from mmap. **/
+	SimpleQuantityHistory gpuFree;
+	/** Count the current allocated (alive) memory from this call site. **/
+	ssize_t alive{0};
+	/** Keep track of the maximum alive chunks during execution. **/
+	ssize_t maxAlive{0};
+	/** Keep track of the memory used on global application peak. **/
+	ssize_t peak{0};
+	/** Remember when we updated the peak prameter for the last time. **/
+	size_t peakId{0};
+};
 
 /**********************************************************/
 /**
@@ -96,34 +122,43 @@ struct CallStackInfo
 		friend void convert(CallStackInfoGlobals & out,const CallStackInfo & in);
 		friend void convert(CallStackInfoRealloc & out,const CallStackInfo & in);
 	private:
+		CallStackInfoGpuExt & getGpuExt(void);
+		const CallStackInfoGpuExt & getGpuExt(void) const;
+		CallStackInfoMmapExt & getMmapExt(void);
+		const CallStackInfoMmapExt & getMmapExt(void) const;
+		ssize_t & getAliveRef(MemDomain domain);
+		ssize_t & getMaxAliveRef(MemDomain domain);
+		ssize_t & getPeakRef(MemDomain domain);
+		size_t & getPeakIdRef(MemDomain domain);
+		const ssize_t & getAliveRef(MemDomain domain) const;
+		const ssize_t & getMaxAliveRef(MemDomain domain) const;
+		const ssize_t & getPeakRef(MemDomain domain) const;
+		const size_t & getPeakIdRef(MemDomain domain) const;
+	private:
 		/** Track the min/max/sum/count of each memory allocation sizes. **/
 		SimpleQuantityHistory alloc;
 		/** Track the min/max/sum/count of each memory deallocation sizes. **/
 		SimpleQuantityHistory free;
 		/** Track the min/max/sum/count of each chunk lifetime. **/
 		SimpleQuantityHistory lifetime;
-		/** Track the min/max/sum/count of each memory allocation sizes from mmap. **/
-		SimpleQuantityHistory mmap;
-		/** Track the min/max/sum/count of each memory allocation sizes from mmap. **/
-		SimpleQuantityHistory munmap;
-		/** Track the min/max/sum/count of each memory allocation sizes from mmap. **/
-		SimpleQuantityHistory gpuAlloc;
-		/** Track the min/max/sum/count of each memory allocation sizes from mmap. **/
-		SimpleQuantityHistory gpuFree;
+		/** Group the counters about mmap */
+		CallStackInfoMmapExt * mmapExt{nullptr};
+		/** Group the counters about GPU */
+		CallStackInfoGpuExt * gpuExt{nullptr};
 		/** Count number of null size allocations. **/
-		ssize_t cntZeros;
+		ssize_t cntZeros{0};
 		/** Count the current allocated (alive) memory from this call site. **/
-		ssize_t alive[MEM_DOMAIN_COUNT];
+		ssize_t alive{0};
 		/** Keep track of the maximum alive chunks during execution. **/
-		ssize_t maxAlive[MEM_DOMAIN_COUNT];
+		ssize_t maxAlive{0};
 		/** Keep track of the memory used on global application peak. **/
-		ssize_t peak[MEM_DOMAIN_COUNT];
+		ssize_t peak{0};
 		/** Remember when we updated the peak prameter for the last time. **/
-		size_t peakId[MEM_DOMAIN_COUNT];
+		size_t peakId{0};
 		/** Keep track of the number of realloc. **/
-		size_t reallocCount;
+		size_t reallocCount{0};
 		/** Sum the memory allocated due to realloc. **/
-		size_t reallocDelta;
+		size_t reallocDelta{0};
 };
 
 /**********************************************************/

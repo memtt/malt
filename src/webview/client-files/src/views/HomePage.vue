@@ -167,7 +167,7 @@
         </InfoCard>
 
         <!-- GPU -->
-        <InfoCard title="GPU" :icon="IconGpu">
+        <InfoCard v-if="haveGPU" title="GPU" :icon="IconGpu">
           <SummaryMetric name='peakGpuMemory' title='GPU memory peak'></SummaryMetric>
           <SummaryMetric name='gpuAllocCount' title='GPU memory allocations'></SummaryMetric>
           <SummaryMetric name='gpuAllocSum' title='GPU allocation volume'></SummaryMetric>
@@ -254,7 +254,7 @@
         </InfoCard>
 
         <!-- GPU -->
-        <InfoCard v-if="data.summaryDomains.counters.gpu > 0" title="GPU">
+        <InfoCard v-if="haveGPU" title="GPU">
           <div class="info-row">
             <div class="info-label">Count</div>
             <div class="info-value">{{ data.summaryDomains.counters.gpu.toLocaleString() }}</div>
@@ -319,7 +319,7 @@
         </PageSection>
 
         <!-- Leaks -->
-        <PageSection v-if="data.summaryDomains.counters.gpu > 0" class="grid-section" action-inline>
+        <PageSection v-if="haveGPU" class="grid-section" action-inline>
           <template #title>GPU memory <span>usage on GPU peak</span></template>
           <template #action>
             <button class="show-help-btn" @click.prevent="openMetricHelp('peakmemGPU.global')">
@@ -380,6 +380,18 @@ import IconGpu from '@/assets/icons/icon-search.svg?component'
 import IconC from '@/assets/icons/c.svg?component'
 import IconPython from '@/assets/icons/python.svg?component'
 import IconArrow from '@/assets/icons/icon-arrow.svg?component'
+import { computed } from 'vue'
+
+function calHasGpu(data: any) {
+	return computed(() => {
+		const value = data.value?.summaryDomains?.counters.gpu || 0;
+		if (value == 0)
+			return false;
+		else
+			return true;
+	});
+}
+
 
 // Home data
 const {
@@ -399,6 +411,9 @@ const {
   topGpuMemOnPeak,
   metricDefinitions,
 } = useHome()
+
+// have GPU
+const haveGPU = calHasGpu(data);
 
 // Helper to check if a key has warnings
 const hasWarningForKey = (key: string): boolean => {

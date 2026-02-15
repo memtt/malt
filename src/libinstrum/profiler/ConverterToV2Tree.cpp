@@ -104,9 +104,9 @@ void convert ( CallStackInfoGlobals& out, const CallStackInfo& in )
 {
 	out.cntZeros = in.cntZeros;
 	for (size_t i = 0 ; i < MEM_DOMAIN_COUNT ; i++) {
-		out.alive[i] = in.alive[i];
-		out.maxAlive[i] = in.maxAlive[i];
-		out.peak[i] = in.peak[i];
+		out.alive[i] = in.getAliveRef((MemDomain)i);
+		out.maxAlive[i] = in.getMaxAliveRef((MemDomain)i);
+		out.peak[i] = in.getPeakRef((MemDomain)i);
 	}
 }
 
