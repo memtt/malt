@@ -354,7 +354,9 @@ void to_json(nlohmann::json & json, const SummaryV2 & value)
 		{"numGblVar", value.summary.numGblVar},
 		{"globalVarMem", value.summary.globalVarMem},
 		{"tlsVarMem", value.summary.tlsVarMem},
-		{"maxThreadCount", value.summary.maxThreadCount},
+		{"peakGpuMemory", value.summaryDomains.localPeak.gpu},
+		{"gpuAllocCount", value.summaryDomains.counters.gpu},
+		{"gpuAllocSum", value.summaryDomains.mem.gpu},
 	};
 	json["summaryWarnings"] = value.summaryWarnings;
 	json["threadStats"] = value.threadStats;
@@ -718,6 +720,11 @@ SummaryV2 Extractor::getSummaryV2(void) const
 	ret.summary.peakVirtualMemory = this->profile.timeline.memoryTimeline.peak[2];
 	ret.summary.peakInternalMemory = this->profile.timeline.memoryTimeline.peak[3];
 	ret.summary.peakSegmentCount = this->profile.timeline.memoryTimeline.peak[4];
+
+	//gpu
+	ret.summary.peakGpuMemory = this->profile.domains.localPeak.gpu;
+	ret.summary.gpuAllocCount = this->profile.domains.counters.gpu;
+	ret.summary.gpuAllocSum = this->profile.domains.mem.gpu;
 
 	//rates
 	size_t peakMem = 0;

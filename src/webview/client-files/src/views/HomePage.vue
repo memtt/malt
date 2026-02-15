@@ -165,6 +165,13 @@
         <InfoCard title="MALT" :icon="IconSearch">
           <SummaryMetric name='peakInternalMemory' title='MALT peak memory'></SummaryMetric>
         </InfoCard>
+
+        <!-- GPU -->
+        <InfoCard title="GPU" :icon="IconGpu">
+          <SummaryMetric name='peakGpuMemory' title='GPU memory peak'></SummaryMetric>
+          <SummaryMetric name='gpuAllocCount' title='GPU memory allocations'></SummaryMetric>
+          <SummaryMetric name='gpuAllocSum' title='GPU allocation volume'></SummaryMetric>
+        </InfoCard>
       </PageSection>
 
       <!-- Domains Section -->
@@ -242,6 +249,24 @@
             <div class="info-label">Description</div>
             <div class="info-value">
               The memory directory allocated by the mmap/munmap/mremap calls.
+            </div>
+          </div>
+        </InfoCard>
+
+        <!-- GPU -->
+        <InfoCard v-if="data.summaryDomains.counters.gpu > 0" title="GPU">
+          <div class="info-row">
+            <div class="info-label">Count</div>
+            <div class="info-value">{{ data.summaryDomains.counters.gpu.toLocaleString() }}</div>
+          </div>
+          <div class="info-row">
+            <div class="info-label">Cumulated allocations</div>
+            <div class="info-value">{{ formatBytes(data.summaryDomains.mem.gpu) }}</div>
+          </div>
+          <div class="info-row">
+            <div class="info-label">Description</div>
+            <div class="info-value">
+              The memory allocated on the GPU.
             </div>
           </div>
         </InfoCard>
@@ -340,6 +365,7 @@ import IconVariable from '@/assets/icons/icon-variable.svg?component'
 import IconWater from '@/assets/icons/icon-water.svg?component'
 import IconScale from '@/assets/icons/icon-scale.svg?component'
 import IconSearch from '@/assets/icons/icon-search.svg?component'
+import IconGpu from '@/assets/icons/icon-search.svg?component'
 import IconC from '@/assets/icons/c.svg?component'
 import IconPython from '@/assets/icons/python.svg?component'
 import IconArrow from '@/assets/icons/icon-arrow.svg?component'

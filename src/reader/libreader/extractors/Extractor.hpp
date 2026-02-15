@@ -109,6 +109,9 @@ struct SummaryV2
 		size_t globalVarMem{0};
 		size_t tlsVarMem{0};
 		size_t maxThreadCount{0};
+		size_t peakGpuMemory{0};
+		size_t gpuAllocCount{0};
+		size_t gpuAllocSum{0};
 	} summary;
 	SummaryWarnings summaryWarnings;
 	std::vector<MALTFormat::ThreadsStats> threadStats;

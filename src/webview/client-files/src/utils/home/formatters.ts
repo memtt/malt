@@ -207,4 +207,29 @@ export const summaryViewEntries: SummaryViewEntry[] = [
     help: 'Peak of memory allocation call rate.',
     format: (x) => humanReadable(x, 1, '/s', true),
   },
+  {
+    type: 'separator',
+    level: 2,
+  },
+  {
+    key: 'peakGpuMemory',
+    name: 'Peak GPU memory',
+    level: 1,
+    help: 'Peak of memory allocated on the GPU (in memory size).',
+    format: (x) => humanReadable(x, 1, 'B', true),
+  },
+  {
+    key: 'gpuAllocCount',
+    name: 'Numer of GPU allocation',
+    level: 1,
+    help: 'Total number of memory allocation done on the GPU.',
+    format: (x) => humanReadable(x, 1, '', true),
+  },
+  {
+    key: 'gpuAllocSum',
+    name: 'GPU allocation volum',
+    level: 1,
+    help: 'Total volume of GPU memory allocations (summing the size of all memory allocations done).',
+    format: (x) => humanReadable(x, 1, 'B', true),
+  },
 ];

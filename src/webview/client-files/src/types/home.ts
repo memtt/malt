@@ -115,6 +115,12 @@ export interface SummaryStats {
   numGblVar?: number;
   /** Max number of threads at same time */
   maxThreadCount?: number;
+  /** Memory peak on the GPU side */
+  peakGpuMemory?: number;
+  /** Number of GPU allocation */
+  gpuAllocCount?: number;
+  /** Total amount of memory allocated on the GPU during the run */
+  gpuAllocSum?: number;
 }
 
 /**
@@ -128,6 +134,7 @@ export interface SummaryDomains {
     pyObj: number;
     pyMem: number;
     pyRaw: number;
+	gpu: number;
   };
   /** Memory usage by domain */
   mem: {
@@ -136,6 +143,7 @@ export interface SummaryDomains {
     pyObj: number;
     pyMem: number;
     pyRaw: number;
+	gpu: number;
   };
 }
 
