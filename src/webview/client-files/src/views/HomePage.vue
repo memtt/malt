@@ -254,7 +254,7 @@
         </InfoCard>
 
         <!-- GPU -->
-        <InfoCard v-if="haveGPU" title="GPU">
+        <InfoCard v-if="haveGPU" :icon="IconGpu">
           <div class="info-row">
             <div class="info-label">Count</div>
             <div class="info-value">{{ data.summaryDomains.counters.gpu.toLocaleString() }}</div>
@@ -376,7 +376,7 @@ import IconVariable from '@/assets/icons/icon-variable.svg?component'
 import IconWater from '@/assets/icons/icon-water.svg?component'
 import IconScale from '@/assets/icons/icon-scale.svg?component'
 import IconSearch from '@/assets/icons/icon-search.svg?component'
-import IconGpu from '@/assets/icons/icon-search.svg?component'
+import IconGpu from '@/assets/icons/icon-gpu.svg?component'
 import IconC from '@/assets/icons/c.svg?component'
 import IconPython from '@/assets/icons/python.svg?component'
 import IconArrow from '@/assets/icons/icon-arrow.svg?component'
