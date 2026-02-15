@@ -49,6 +49,12 @@ export const metricDefinitions: Record<string, MetricDefinition> = {
     description:
       'Memory allocated by this function that was never freed before the program ended. This indicates memory leaks and helps identify which functions are responsible for leaked memory.',
   },
+  'peakmemGPU.global': {
+    key: 'peakmemGPU.global',
+    label: 'GPU Memory usage on GPU peak',
+    description:
+      'Amount of memory still alive from this function when the application reached its peak memory usage on the GPU side. This helps identify which functions contribute the most to the peak memory footprint.',
+  },
 }
 
 export function useHome() {
@@ -85,6 +91,11 @@ export function useHome() {
     inclusive: false,
   })
 
+  const { topFunctions: topGpuMemOnPeak } = useFlatTopFunctions(flatDataComputed, 'peakmemGPU.global', {
+    limit: 5,
+    inclusive: false,
+  })
+
   return {
     // Data state
     data,
@@ -102,6 +113,7 @@ export function useHome() {
     topAllocSum,
     topPeakMem,
     topLeaks,
+    topGpuMemOnPeak,
 
     // Metrics
     metricDefinitions,

@@ -99,6 +99,22 @@ export const METRICS: Record<MetricType, MetricConfig> = {
     defaultOrder: 'desc',
     refMode: 'sum',
   },
+   'peakmemGPU.local': {
+    name: 'GPU Local peak',
+    key: 'peakmemGPU.local',
+    extractor: (x) => x.maxAliveReqGPU,
+    formatter: (x) => humanReadable(x, 1, 'B', true),
+    defaultOrder: 'desc',
+    refMode: 'max',
+  },
+  'peakmemGPU.global': {
+    name: 'GPU Global peak',
+    key: 'peakmemGPU.global',
+    extractor: (x) => x.globalPeakGPU ?? 0,
+    formatter: (x) => humanReadable(x, 1, 'B', true),
+    defaultOrder: 'desc',
+    refMode: 'sum',
+  },
   leaks: {
     name: 'Leaks',
     key: 'leaks',
@@ -226,6 +242,22 @@ export const METRICS: Record<MetricType, MetricConfig> = {
     formatter: (x) => humanReadable(x),
     defaultOrder: 'desc',
     refMode: 'max',
+  },
+  'gpuAlloc.sum': {
+    name: 'GPU Allocated mem.',
+    key: 'gpuAlloc.sum',
+    extractor: (x) => x.gpuAlloc.sum,
+    formatter: (x) => humanReadable(x, 1, 'B', true),
+    defaultOrder: 'desc',
+    refMode: 'sum',
+  },
+  'gpuAlloc.count': {
+    name: 'GPU Allocated count',
+    key: 'gpuAlloc.count',
+    extractor: (x) => x.gpuAlloc.count,
+    formatter: (x) => humanReadable(x, 1, '', true),
+    defaultOrder: 'desc',
+    refMode: 'sum',
   },
 }
 

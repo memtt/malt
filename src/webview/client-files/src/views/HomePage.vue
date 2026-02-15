@@ -317,6 +317,17 @@
           </template>
           <FunctionRankingList :items="topLeaks" />
         </PageSection>
+
+        <!-- Leaks -->
+        <PageSection v-if="data.summaryDomains.counters.gpu > 0" class="grid-section" action-inline>
+          <template #title>GPU memory <span>usage on GPU peak</span></template>
+          <template #action>
+            <button class="show-help-btn" @click.prevent="openMetricHelp('peakmemGPU.global')">
+              <IconArrow /> <span>Show Metric Help</span>
+            </button>
+          </template>
+          <FunctionRankingList :items="topGpuMemOnPeak" />
+        </PageSection>
       </div>
     </div>
 
@@ -385,6 +396,7 @@ const {
   topAllocSum,
   topPeakMem,
   topLeaks,
+  topGpuMemOnPeak,
   metricDefinitions,
 } = useHome()
 

@@ -33,6 +33,9 @@ export interface FunctionMemStats {
   lifetime: AllocStats
   mmap: AllocStats
   munmap: AllocStats
+  gpuAlloc: AllocStats
+  globalPeakGPU: number,
+  maxAliveReqGPU: number,
   globalPeak: number
   reallocCount: number
   reallocSumDelta: number
@@ -82,7 +85,7 @@ export type MetricType =
   | 'recycling.ratio'
   | 'realloc.count'
   | 'realloc.sum'
-    | 'mmap.sum'
+  | 'mmap.sum'
   | 'mmap.count'
   | 'mmap.min'
   | 'mmap.mean'
@@ -91,4 +94,8 @@ export type MetricType =
   | 'munmap.count'
   | 'munmap.min'
   | 'munmap.mean'
-  | 'munmap.max';
+  | 'munmap.max'
+  | 'gpuAlloc.sum'
+  | 'gpuAlloc.count'
+  | 'peakmemGPU.local'
+  | 'peakmemGPU.global';
