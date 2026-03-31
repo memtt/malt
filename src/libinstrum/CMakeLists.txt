@@ -10,7 +10,7 @@
 ############################################################
 
 ############################################################
-set(LIB_MALT_DEPS pthread dl)
+set(LIB_MALT_DEPS pthread dl malt-spec)
 if (LIBELF_FOUND)
 	list(APPEND LIB_MALT_DEPS ${LIBELF_LIBRARIES})
 endif (LIBELF_FOUND)
@@ -34,6 +34,7 @@ include_directories(../../extern-deps/from-fftw)
 include_directories(${INIPARSER_INCLUDE_DIRS})
 include_directories(../../extern-deps/from-htopml)
 include_directories(../../extern-deps/from-numaprof)
+include_directories(../libspec)
 if (PYTHON3_INSTRUM_FOUND)
 	include_directories(${Python3_INCLUDE_DIRS})
 endif()

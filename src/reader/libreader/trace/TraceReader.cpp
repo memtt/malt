@@ -114,4 +114,10 @@ bool TraceReader::fileExist(const std::string & fname)
 	return true;
 }
 
+/**********************************************************/
+const Trace & TraceReader::getTrace(void) const
+{
+	return this->trace;
+}
+
 }

@@ -12,6 +12,7 @@
 include_directories(.)
 include_directories(..)
 include_directories(../..)
+include_directories(../../libspec)
 include_directories(../../libinstrum)
 include_directories(${NLOHMANN_JSON_INCLUDE_DIR})
 include_directories(${CMAKE_SOURCE_DIR}/extern-deps/from-fftw)
@@ -69,6 +70,7 @@ add_library(malt-reader SHARED
 target_link_libraries(malt-reader PUBLIC ${NLOHMANN_JSON_LIBRARIES})
 target_link_libraries(malt-reader PUBLIC OpenMP::OpenMP_CXX)
 target_link_libraries(malt-reader PUBLIC Threads::Threads)
+target_link_libraries(malt-reader PUBLIC malt-spec)
 set_target_properties(malt-reader PROPERTIES VERSION ${MALT_VERSION}
                                               SOVERSION ${MALT_SO_VERSION})
 set_target_properties(malt-reader PROPERTIES COMPILE_FLAGS ${MALT_LIB_COMPILER_FLAGS})

@@ -66,6 +66,11 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config.h.in ${CMAKE_CURRENT_BINARY_DI
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
 ############################################################
+if (ENABLE_PROFILER OR (HAVE_NLOHMANN_JSON AND EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/reader))
+	add_subdirectory(libspec)
+endif()
+
+############################################################
 if (ENABLE_PROFILER)
 	add_subdirectory(libinstrum)
 endif()

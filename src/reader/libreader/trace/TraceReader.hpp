@@ -13,6 +13,7 @@
 /**********************************************************/
 #include <cstdio>
 #include <string>
+#include <vector>
 #include "../loader/ProgressBar.hpp"
 #include "core/AllocTraceFormat.hpp"
 
@@ -29,6 +30,7 @@ class TraceReader
 	public:
 		TraceReader(const std::string & fname, bool progress = false);
 		~TraceReader(void);
+		const Trace & getTrace(void) const;
 		static std::string calcNameFromJson(const std::string & fname);
 		static bool fileExist(const std::string & fname);
 	private:

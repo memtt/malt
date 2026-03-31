@@ -60,31 +60,31 @@ AllocTraceEventType LocalAllocStackProfiler::allocKindToTraceType(MallocKind kin
 		case MALLOC_KIND_MALLOC: {
 			switch (domain) {
 				case DOMAIN_C_ALLOC:
-					return EVENT_C_MALLOC;
+					return MALT_TRACE_EVENT_C_MALLOC;
 				case DOMAIN_PYTHON_OBJ:
-					return EVENT_PY_OBJ_MALLOC;
+					return MALT_TRACE_EVENT_PY_OBJ_MALLOC;
 				case DOMAIN_PYTHON_MEM:
-					return EVENT_PY_MEM_MALLOC;
+					return MALT_TRACE_EVENT_PY_MEM_MALLOC;
 				case DOMAIN_PYTHON_RAW:
-					return EVENT_PY_RAW_MALLOC;
+					return MALT_TRACE_EVENT_PY_RAW_MALLOC;
 				default:
 					MALT_FATAL("Should not reach this line !");
-					return EVENT_NOP;
+					return MALT_TRACE_EVENT_NOP;
 			}
 		};
 		case MALLOC_KIND_POSIX_MEMALIGN:
-			return EVENT_C_POSIX_MEMALIGN;
+			return MALT_TRACE_EVENT_C_POSIX_MEMALIGN;
 		case MALLOC_KIND_ALIGNED_ALLOC:
-			return EVENT_C_ALIGNED_ALLOC;
+			return MALT_TRACE_EVENT_C_ALIGNED_ALLOC;
 		case MALLOC_KIND_MEMALIGN:
-			return EVENT_C_MEMALIGN;
+			return MALT_TRACE_EVENT_C_MEMALIGN;
 		case MALLOC_KIND_VALLOC:
-			return EVENT_C_VALLOC;
+			return MALT_TRACE_EVENT_C_VALLOC;
 		case MALLOC_KIND_PVALLOC:
-			return EVENT_C_PVALLOC;
+			return MALT_TRACE_EVENT_C_PVALLOC;
 		default:
 			MALT_FATAL("Should never reach this line !");
-			return EVENT_NOP;
+			return MALT_TRACE_EVENT_NOP;
 	}
 }
 
@@ -119,20 +119,20 @@ void LocalAllocStackProfiler::onFree(void* ptr, ticks time, Language lang, Alloc
 	AllocTracerEvent traceEntry;
 	switch (domain) {
 		case DOMAIN_C_ALLOC:
-			traceEntry.type = EVENT_C_FREE;
+			traceEntry.type = MALT_TRACE_EVENT_C_FREE;
 			break;
 		case DOMAIN_PYTHON_OBJ:
-			traceEntry.type = EVENT_PY_OBJ_FREE;
+			traceEntry.type = MALT_TRACE_EVENT_PY_OBJ_FREE;
 			break;
 		case DOMAIN_PYTHON_MEM:
-			traceEntry.type = EVENT_PY_MEM_FREE;
+			traceEntry.type = MALT_TRACE_EVENT_PY_MEM_FREE;
 			break;
 		case DOMAIN_PYTHON_RAW:
-			traceEntry.type = EVENT_PY_RAW_FREE;
+			traceEntry.type = MALT_TRACE_EVENT_PY_RAW_FREE;
 			break;
 		default:
 			MALT_FATAL("Should not reach this line !");
-			traceEntry.type = EVENT_NOP;
+			traceEntry.type = MALT_TRACE_EVENT_NOP;
 			break;
 	}
 	traceEntry.threadId = this->threadId;
@@ -158,20 +158,20 @@ void LocalAllocStackProfiler::onCalloc(void * res,size_t nmemb, size_t size, tic
 	AllocTracerEvent traceEntry;
 	switch (domain) {
 		case DOMAIN_C_ALLOC:
-			traceEntry.type = EVENT_C_CALLOC;
+			traceEntry.type = MALT_TRACE_EVENT_C_CALLOC;
 			break;
 		case DOMAIN_PYTHON_OBJ:
-			traceEntry.type = EVENT_PY_OBJ_CALLOC;
+			traceEntry.type = MALT_TRACE_EVENT_PY_OBJ_CALLOC;
 			break;
 		case DOMAIN_PYTHON_MEM:
-			traceEntry.type = EVENT_PY_MEM_CALLOC;
+			traceEntry.type = MALT_TRACE_EVENT_PY_MEM_CALLOC;
 			break;
 		case DOMAIN_PYTHON_RAW:
-			traceEntry.type = EVENT_PY_RAW_CALLOC;
+			traceEntry.type = MALT_TRACE_EVENT_PY_RAW_CALLOC;
 			break;
 		default:
 			MALT_FATAL("Should not reach this line !");
-			traceEntry.type = EVENT_NOP;
+			traceEntry.type = MALT_TRACE_EVENT_NOP;
 			break;
 	}
 	traceEntry.threadId = this->threadId;
@@ -198,20 +198,20 @@ void LocalAllocStackProfiler::onRealloc(void* ptr, void* res, size_t size,ticks 
 	AllocTracerEvent traceEntry;
 	switch (domain) {
 		case DOMAIN_C_ALLOC:
-			traceEntry.type = EVENT_C_REALLOC;
+			traceEntry.type = MALT_TRACE_EVENT_C_REALLOC;
 			break;
 		case DOMAIN_PYTHON_OBJ:
-			traceEntry.type = EVENT_PY_OBJ_REALLOC;
+			traceEntry.type = MALT_TRACE_EVENT_PY_OBJ_REALLOC;
 			break;
 		case DOMAIN_PYTHON_MEM:
-			traceEntry.type = EVENT_PY_MEM_REALLOC;
+			traceEntry.type = MALT_TRACE_EVENT_PY_MEM_REALLOC;
 			break;
 		case DOMAIN_PYTHON_RAW:
-			traceEntry.type = EVENT_PY_RAW_REALLOC;
+			traceEntry.type = MALT_TRACE_EVENT_PY_RAW_REALLOC;
 			break;
 		default:
 			MALT_FATAL("Should not reach this line !");
-			traceEntry.type = EVENT_NOP;
+			traceEntry.type = MALT_TRACE_EVENT_NOP;
 			break;
 	}
 	traceEntry.threadId = this->threadId;
@@ -242,7 +242,7 @@ void LocalAllocStackProfiler::onMmap(void* ptr, size_t size, int flags, int fd, 
 
 	//build trace entry
 	AllocTracerEvent traceEntry;
-	traceEntry.type = EVENT_C_MMAP;
+	traceEntry.type = MALT_TRACE_EVENT_C_MMAP;
 	traceEntry.threadId = this->threadId;
 	traceEntry.callStack = nullptr; //not yet known at this stage
 	traceEntry.time = Clock::getticks();
@@ -271,7 +271,7 @@ void LocalAllocStackProfiler::onMunmap(void* ptr, size_t size, ticks time)
 
 	//build trace entry
 	AllocTracerEvent traceEntry;
-	traceEntry.type = EVENT_C_MUNMAP;
+	traceEntry.type = MALT_TRACE_EVENT_C_MUNMAP;
 	traceEntry.threadId = this->threadId;
 	traceEntry.callStack = nullptr; //not yet known at this stage
 	traceEntry.time = Clock::getticks();
@@ -298,7 +298,7 @@ void LocalAllocStackProfiler::onMremap(void * ptr, size_t size, void * new_ptr, 
 
 	//build trace entry
 	AllocTracerEvent traceEntry;
-	traceEntry.type = EVENT_C_MREMAP;
+	traceEntry.type = MALT_TRACE_EVENT_C_MREMAP;
 	traceEntry.threadId = this->threadId;
 	traceEntry.callStack = nullptr; //not yet known at this stage
 	traceEntry.time = Clock::getticks();

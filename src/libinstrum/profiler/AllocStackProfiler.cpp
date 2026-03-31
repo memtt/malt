@@ -133,7 +133,7 @@ void AllocStackProfiler::onMalloc(AllocTracerEvent & traceEntry, void* ptr, size
 	MMCallStackNode node;
 	onAllocEvent(ptr,size,userStack, &node, true, domain);
 	if (this->options.trace.enabled) {
-		traceEntry.callStack = node.stack;
+		traceEntry.callStack = (malt_stack_t*)node.stack;
 		this->tracer.pushEvent(traceEntry);
 	}
 }
@@ -144,7 +144,7 @@ void AllocStackProfiler::onCalloc(AllocTracerEvent & traceEntry, void* ptr, size
 	MMCallStackNode node;
 	onAllocEvent(ptr,size * nmemb,userStack, &node, true, domain);
 	if (this->options.trace.enabled) {
-		traceEntry.callStack = node.stack;
+		traceEntry.callStack = (malt_stack_t*)node.stack;
 		this->tracer.pushEvent(traceEntry);
 	}
 }
@@ -156,10 +156,10 @@ void AllocStackProfiler::onFree(AllocTracerEvent & traceEntry, void* ptr,Stack *
 		MMCallStackNode node;
 		FreeFinalInfos infos = onFreeEvent(ptr,userStack, &node, true, domain);
 		if (this->options.trace.enabled && ptr != nullptr) {
-			traceEntry.callStack = node.stack;
+			traceEntry.callStack = (malt_stack_t*)node.stack;
 			traceEntry.size = infos.size;
 			traceEntry.extra.free.lifetime = infos.lifetime;
-			traceEntry.extra.free.allocStack = infos.allocStack;
+			traceEntry.extra.free.allocStack = (malt_stack_t*)infos.allocStack;
 			this->tracer.pushEvent(traceEntry);
 		}
 	}
@@ -211,12 +211,12 @@ size_t AllocStackProfiler::onRealloc(AllocTracerEvent & traceEntry, void* oldPtr
 
 			//insert realloc lifetime notified in trace
 			AllocTracerEvent freeTraceEntry = traceEntry;
-			freeTraceEntry.type = EVENT_C_REALLOC_LFTIME;
-			freeTraceEntry.callStack = callStackNode.stack;
+			freeTraceEntry.type = MALT_TRACE_EVENT_C_REALLOC_LFTIME;
+			freeTraceEntry.callStack = (malt_stack_t*)callStackNode.stack;
 			freeTraceEntry.addr = oldPtr;
 			freeTraceEntry.size = oldSize;
 			freeTraceEntry.extra.free.lifetime = freeInfos.lifetime;
-			freeTraceEntry.extra.free.allocStack = freeInfos.allocStack;
+			freeTraceEntry.extra.free.allocStack = (malt_stack_t*)freeInfos.allocStack;
 
 			//dump
 			if (options.trace.enabled)
@@ -230,7 +230,7 @@ size_t AllocStackProfiler::onRealloc(AllocTracerEvent & traceEntry, void* oldPtr
 			onAllocEvent(ptr,newSize,userStack,&callStackNode,false, domain);
 		
 		//set
-		traceEntry.callStack = callStackNode.stack;
+		traceEntry.callStack = (malt_stack_t*)callStackNode.stack;
 
 		//realloc
 		if (newSize > 0 && oldSize > 0 && newSize != oldSize)
@@ -530,7 +530,7 @@ void AllocStackProfiler::onMmap (AllocTracerEvent & traceEntry, void* ptr, size_
 		if (callStackNode == nullptr)
 			traceEntry.callStack = nullptr;
 		else
-			traceEntry.callStack = callStackNode->stack;
+			traceEntry.callStack = (malt_stack_t*)callStackNode->stack;
 		this->tracer.pushEvent(traceEntry);
 	}
 }
@@ -599,7 +599,7 @@ void AllocStackProfiler::onMunmap (AllocTracerEvent & traceEntry, void* ptr, siz
 		if (callStackNode == nullptr)
 			traceEntry.callStack = nullptr;
 		else
-			traceEntry.callStack = callStackNode->stack;
+			traceEntry.callStack = (malt_stack_t*)callStackNode->stack;
 		this->tracer.pushEvent(traceEntry);
 	}
 }
@@ -629,7 +629,7 @@ void AllocStackProfiler::onMremap(AllocTracerEvent & traceEntry, void * ptr,size
 
 	//trace
 	if (this->options.trace.enabled) {
-		traceEntry.callStack = callStackNode.stack;
+		traceEntry.callStack = (malt_stack_t*)callStackNode.stack;
 		this->tracer.pushEvent(traceEntry);
 	}
 }

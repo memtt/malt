@@ -110,7 +110,7 @@ void AllocTraceFile::close(void)
 void AllocTraceFile::pushEvent(const AllocTracerEvent & event)
 {
 	//skip NOP
-	if (event.type == EVENT_NOP)
+	if (event.type == MALT_TRACE_EVENT_NOP)
 		return;
 
 	MALT_START_CRITICAL(this->mutex);
