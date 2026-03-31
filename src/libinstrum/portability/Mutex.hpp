@@ -37,7 +37,7 @@
 	
 	//map macros to generic names
 	#warning Need to cleanup this
-	static MALT::MutexDummy __malt__static_mutex_init__;
+	static MALT::LockDummy __malt__static_mutex_init__;
 	#define MALT_STATIC_MUTEX_INIT __malt__static_mutex_init__
 	
 	//show some warning
