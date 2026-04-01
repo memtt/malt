@@ -25,50 +25,51 @@ endif()
 
 ############################################################
 add_library(malt-reader SHARED
-    # JSON
-    json/File.cpp
-    json/Parser.cpp
-    json/Node.cpp
-    json/String.cpp
-    json/Json.cpp
-    json/JsonIterator.cpp
-    # LOADER
-    loader/ProgressBar.cpp
-    loader/FileReader.cpp
-    loader/Prepare.cpp
-    #FORMAT
-    format/Config.cpp
-    format/Run.cpp
-    format/Globals.cpp
-    format/Leaks.cpp
-    format/Types.cpp
-    format/Scatter.cpp
-    format/Sites.cpp
-    format/Stacks.cpp
-    format/MemStats.cpp
-    format/Timeline.cpp
-    format/Threads.cpp
-    format/Domains.cpp
-    format/MaltProfile.cpp
-    # EXTRACTOR
-    extractors/ExtractorHelpers.cpp
-    extractors/Extractor.cpp
-    # CALL GRAPH
-    callgraph/FuncMetrics.cpp
-    callgraph/SimpleIdCache.cpp
-    callgraph/CallTreeAdapter.cpp
-    callgraph/CppDeclParser.cpp
-    callgraph/DotCode.cpp
-    callgraph/GraphGenerator.cpp
-    # API
-    api/Profile.cpp
-    api/WebProfile.cpp
-    # PUBLIC API
-    public-api/malt-reader.cpp
+	# JSON
+	json/File.cpp
+	json/Parser.cpp
+	json/Node.cpp
+	json/String.cpp
+	json/Json.cpp
+	json/JsonIterator.cpp
+	# LOADER
+	loader/ProgressBar.cpp
+	loader/FileReader.cpp
+	loader/Prepare.cpp
+	#FORMAT
+	format/Config.cpp
+	format/Run.cpp
+	format/Globals.cpp
+	format/Leaks.cpp
+	format/Types.cpp
+	format/Scatter.cpp
+	format/Sites.cpp
+	format/Stacks.cpp
+	format/MemStats.cpp
+	format/Timeline.cpp
+	format/Threads.cpp
+	format/Domains.cpp
+	format/MaltProfile.cpp
+	# EXTRACTOR
+	extractors/ExtractorHelpers.cpp
+	extractors/Extractor.cpp
+	# CALL GRAPH
+	callgraph/FuncMetrics.cpp
+	callgraph/SimpleIdCache.cpp
+	callgraph/CallTreeAdapter.cpp
+	callgraph/CppDeclParser.cpp
+	callgraph/DotCode.cpp
+	callgraph/GraphGenerator.cpp
+	# API
+	api/Profile.cpp
+	api/WebProfile.cpp
+	# PUBLIC API
+	public-api/malt-reader.cpp
 	public-api/malt-reader-c.cpp
 	public-api/malt-reader-json.cpp
-    # Traces
-    trace/TraceReader.cpp
+	# Traces
+	trace/TraceReader.cpp
+	trace/ProcessMemModel.cpp
 )
 target_link_libraries(malt-reader PUBLIC ${NLOHMANN_JSON_LIBRARIES})
 target_link_libraries(malt-reader PUBLIC OpenMP::OpenMP_CXX)

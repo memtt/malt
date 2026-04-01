@@ -167,31 +167,52 @@ size_t malt_trace_event_to_c_code(const malt_trace_event_t * event, char * buffe
 		case MALT_TRACE_EVENT_C_FREE:
 			return snprintf(buffer, buffer_size, "free(%p); //(old_size=%zu, lifetime=%zu)\n", event->addr, event->size, event->extra.free.lifetime);
 		case MALT_TRACE_EVENT_C_POSIX_MEMALIGN:
+			return snprintf(buffer, buffer_size, "status = posix_memalign(&ptr, %zu, %zu); //(ptr=%p)\n", event->extra.memalign.align, event->size, event->addr);
 		case MALT_TRACE_EVENT_C_ALIGNED_ALLOC:
+			return snprintf(buffer, buffer_size, "ptr = aligned_alloc(%zu, %zu); //(ptr=%p)\n", event->extra.memalign.align, event->size, event->addr);
 		case MALT_TRACE_EVENT_C_MEMALIGN:
+			return snprintf(buffer, buffer_size, "ptr = memalign(%zu, %zu); //(ptr=%p)\n", event->extra.memalign.align, event->size, event->addr);
 		case MALT_TRACE_EVENT_C_VALLOC:
+			return snprintf(buffer, buffer_size, "ptr = valloc(%zu); //(ptr=%p)\n", event->size, event->addr);
 		case MALT_TRACE_EVENT_C_PVALLOC:
+			return snprintf(buffer, buffer_size, "ptr = pvalloc(%zu); //(ptr=%p)\n", event->size, event->addr);
 		//lifetime
 		case MALT_TRACE_EVENT_C_REALLOC_LFTIME:
+			return snprintf(buffer, buffer_size, "//realloc-free(%p); //(old_size=%zu, lifetime=%zu)\n", event->addr, event->size, event->extra.reallocLifetime.lifetime);
 		//c mmap
 		case MALT_TRACE_EVENT_C_MMAP:
+			return snprintf(buffer, buffer_size, "ptr = mmap(%p, %zu); //(ptr=%p)\n", event->addr, event->size, event->addr);
 		case MALT_TRACE_EVENT_C_MUNMAP:
+			return snprintf(buffer, buffer_size, "munmap(%p, %zu);\n", event->addr, event->size);
 		case MALT_TRACE_EVENT_C_MREMAP:
+			return snprintf(buffer, buffer_size, "ptr = mremap(%p, %zu, %zu, %p)", event->addr, event->size, event->extra.mremap.newSize, event->extra.mremap.newAddr);
 		//python obj
 		case MALT_TRACE_EVENT_PY_OBJ_MALLOC:
+			return snprintf(buffer, buffer_size, "ptr = PyObjMalloc(%zu); //%p\n", event->size, event->addr);
 		case MALT_TRACE_EVENT_PY_OBJ_FREE:
+			return snprintf(buffer, buffer_size, "PyObjFree(%p); //(old_size=%zu, lifetime=%zu)\n", event->addr, event->size, event->extra.free.lifetime);
 		case MALT_TRACE_EVENT_PY_OBJ_REALLOC:
+			return snprintf(buffer, buffer_size, "ptr = PyObjRealloc(%p, %zu); //%p (old_size=%zu)\n", event->extra.realloc.oldAddr, event->size, event->addr, event->extra.realloc.oldSize);
 		case MALT_TRACE_EVENT_PY_OBJ_CALLOC:
+			return snprintf(buffer, buffer_size, "ptr = PyObjCalloc(%zu, %zu); //%p\n", event->size, event->extra.calloc.nmemb, event->addr);
 		//python mem
 		case MALT_TRACE_EVENT_PY_MEM_MALLOC:
+			return snprintf(buffer, buffer_size, "ptr = PyMemMalloc(%zu); //%p\n", event->size, event->addr);
 		case MALT_TRACE_EVENT_PY_MEM_FREE:
+			return snprintf(buffer, buffer_size, "PyMemFree(%p); //(old_size=%zu, lifetime=%zu)\n", event->addr, event->size, event->extra.free.lifetime);
 		case MALT_TRACE_EVENT_PY_MEM_REALLOC:
+			return snprintf(buffer, buffer_size, "ptr = PyMemRealloc(%p, %zu); //%p (old_size=%zu)\n", event->extra.realloc.oldAddr, event->size, event->addr, event->extra.realloc.oldSize);
 		case MALT_TRACE_EVENT_PY_MEM_CALLOC:
+			return snprintf(buffer, buffer_size, "ptr = PyMemCalloc(%zu, %zu); //%p\n", event->size, event->extra.calloc.nmemb, event->addr);
 		//pyton raw
 		case MALT_TRACE_EVENT_PY_RAW_MALLOC:
+			return snprintf(buffer, buffer_size, "ptr = PyRawMalloc(%zu); //%p\n", event->size, event->addr);
 		case MALT_TRACE_EVENT_PY_RAW_FREE:
+			return snprintf(buffer, buffer_size, "PyRawFree(%p); //(old_size=%zu, lifetime=%zu)\n", event->addr, event->size, event->extra.free.lifetime);
 		case MALT_TRACE_EVENT_PY_RAW_REALLOC:
+			return snprintf(buffer, buffer_size, "ptr = PyRawRealloc(%p, %zu); //%p (old_size=%zu)\n", event->extra.realloc.oldAddr, event->size, event->addr, event->extra.realloc.oldSize);
 		case MALT_TRACE_EVENT_PY_RAW_CALLOC:
+			return snprintf(buffer, buffer_size, "ptr = PyRawCalloc(%zu, %zu); //%p\n", event->size, event->extra.calloc.nmemb, event->addr);
 		default:
 			return snprintf(buffer, buffer_size, "/*TODO*/");
 	}
