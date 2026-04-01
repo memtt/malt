@@ -2,23 +2,19 @@
 *    PROJECT  : MALT (MALoc Tracker)
 *    DATE     : 01/2026
 *    LICENSE  : CeCILL-C
-*    FILE     : src/reader/libreader/public-api/malt-reader.h
+*    FILE     : src/libinstrum/core/AllocTraceFormat.hpp
 *-----------------------------------------------------------
 *    AUTHOR   : Sébastien Valat (INRIA) - 2025
 *    AUTHOR   : Sébastien Valat - 2026
 ***********************************************************/
-
-#ifndef MALT_READER_H
-#define MALT_READER_H
+ 
+#ifndef MALT_PROFILE_SPEC_H
+#define MALT_PROFILE_SPEC_H
 
 /**********************************************************/
-#ifdef __cplusplus
-	#include <string>
-	#include <cstdlib>
-#else
-	#include <stdlib.h>
-	#include <stdbool.h>
-#endif
+//standard
+#include <stdio.h>
+#include <stdlib.h>
 
 /**********************************************************/
 #ifdef __cplusplus
@@ -26,25 +22,25 @@ extern "C" {
 #endif
 
 /**********************************************************/
-enum malt_reader_flags_t
+enum malt_profile_lang_e
 {
-	MALT_READER_NONE=0,
-	MALT_READER_PROGRESS_BAR=1,
-	MALT_READER_VERBOSE=2,
+	MALT_PROFILE_LANG_C,
+	MALT_PROFILE_LANG_PYTHON,
+	MALT_PROFILE_LANG_TRANS_PTR,
 };
+typedef enum malt_profile_lang_e malt_profile_lang_t;
 
 /**********************************************************/
-struct malt_reader_t;
-
-/**********************************************************/
-// lifecycle
-struct malt_reader_t * malt_reader_init(const char * fname, size_t flags);
-void malt_reader_fini(struct malt_reader_t * reader);
-const char * malt_reader_version(void);
+struct malt_profile_lang_address_s
+{
+	malt_profile_lang_t lang;
+	void * address;
+};
+typedef struct malt_profile_lang_address_s malt_profile_lang_address_t;
 
 /**********************************************************/
 #ifdef __cplusplus
 }
 #endif
 
-#endif //MALT_READER_H
+#endif //MALT_PROFILE_SPEC_H

@@ -99,6 +99,38 @@ void Extractor::buildTranslation(MALTFormat::MaltProfile & profile)
 }
 
 /**********************************************************/
+void Extractor::updateStackPtrInTrace(Trace & trace) const
+{
+	//build tmp db
+	const StackIdToStack db = this->buildStackDb(this->profile);
+
+	//loop on all and update the pointers
+	for (auto & entry : trace) {
+		const auto it = db.find((void*)entry.callStack);
+		if (it == db.end())
+			entry.callStack = nullptr;
+		else
+			entry.callStack = (malt_stack_t*)it->second;
+	}
+}
+
+/**********************************************************/
+StackIdToStack Extractor::buildStackDb(const MALTFormat::MaltProfile & profile) const
+{
+	//vars
+	const StackStats & stats = profile.stacks.stats;
+	StackIdToStack db;
+
+	//loop on all
+	for (auto & statEntry : stats) {
+		db[statEntry.stackId] = &statEntry.stack;
+	}
+
+	//ok
+	return db;
+}
+
+/**********************************************************/
 FlatProfileVector Extractor::getFlatProfile(const LocaltionMappingFunc & mapping,const LocaltionFilterFunc & filter) const
 {
 	//vars

@@ -39,6 +39,9 @@ Profile::Profile(const std::string & fname, bool loadProgressBar)
 
 	//build extractor
 	this->extractor = new Extractor(this->profile, fname);
+
+	//update stack pointers in trace
+	this->extractor->updateStackPtrInTrace(this->traceReader->getEditableTrace());
 }
 
 /**********************************************************/
@@ -60,6 +63,15 @@ const Extractor & Profile::getExtractor(void) const
 const std::string & Profile::getFileName(void) const
 {
 	return this->fname;
+}
+
+/**********************************************************/
+const Trace & Profile::getTrace(void) const
+{
+	static const Trace emptyTrace;
+	if (this->traceReader == nullptr)
+		return emptyTrace;
+	return this->traceReader->getTrace();
 }
 
 }

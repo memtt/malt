@@ -13,5 +13,13 @@
 include_directories(../../extern-deps/from-fftw)
 
 ############################################################
-add_library(malt-spec STATIC public-c-api/malt_trace_spec.cpp)
+add_library(malt-spec STATIC public-c-api/malt-trace-spec.cpp)
 set_target_properties(malt-spec PROPERTIES POSITION_INDEPENDENT_CODE TRUE)
+
+############################################################
+install(
+	FILES
+		public-c-api/malt-trace-spec.h
+		public-c-api/malt-profile-spec.h
+	DESTINATION
+		${CMAKE_INSTALL_INCLUDEDIR}/malt)

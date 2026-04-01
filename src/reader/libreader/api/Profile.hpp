@@ -25,10 +25,11 @@ namespace MALTReader
 class Profile
 {
 	public:
-		Profile(const std::string & fname, bool loadProgressBar = false);
-		virtual ~Profile(void);
-		const Extractor & getExtractor(void) const;
+		DLL_PUBLIC Profile(const std::string & fname, bool loadProgressBar = false);
+		DLL_PUBLIC virtual ~Profile(void);
+		DLL_PUBLIC const Extractor & getExtractor(void) const;
 		DLL_PUBLIC const std::string & getFileName(void) const;
+		DLL_PUBLIC const Trace & getTrace(void) const;
 	protected:
 		const std::string fname;
 		MALTFormat::MaltProfile profile;

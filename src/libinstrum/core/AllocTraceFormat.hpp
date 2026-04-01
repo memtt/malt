@@ -13,7 +13,7 @@
 
 /**********************************************************/
 //standard
-#include "public-c-api/malt_trace_spec.hpp"
+#include "public-c-api/malt-trace-spec.h"
 
 /**********************************************************/
 namespace MALT

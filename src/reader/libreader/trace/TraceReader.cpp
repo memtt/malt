@@ -55,9 +55,12 @@ void TraceReader::load(const std::string & fname, bool progress)
 
 	//read
 	size_t lastPosition = 0;
+	char buffer[4096];
 	while(!feof(fp)) {
 		MALT::AllocTracerEvent event;
-		if (event.fromFilePointer(fp)) {
+		if (fscanf(fp, "# %s", buffer) == 1) {
+			fgets(buffer, sizeof(buffer), fp);
+		} else if (event.fromFilePointer(fp)) {
 			this->trace.push_back(event);
 		} else {
 			break;
@@ -116,6 +119,12 @@ bool TraceReader::fileExist(const std::string & fname)
 
 /**********************************************************/
 const Trace & TraceReader::getTrace(void) const
+{
+	return this->trace;
+}
+
+/**********************************************************/
+Trace & TraceReader::getEditableTrace(void)
 {
 	return this->trace;
 }

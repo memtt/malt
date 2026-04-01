@@ -15,8 +15,6 @@
 //standard
 #include <stdio.h>
 #include <stdlib.h>
-#include <cycle.h>
-#include <string>
 
 /**********************************************************/
 #ifdef __cplusplus
@@ -24,10 +22,10 @@ extern "C" {
 #endif
 
 /**********************************************************/
-struct malt_stack_t;
+typedef struct malt_stack_s malt_stack_t;
 
 /**********************************************************/
-enum malt_trace_event_type_t
+enum malt_trace_event_type_e
 {
 	//NOP
 	MALT_TRACE_EVENT_NOP               = 0x00,
@@ -63,6 +61,7 @@ enum malt_trace_event_type_t
 	MALT_TRACE_EVENT_PY_RAW_REALLOC    = 0x52,
 	MALT_TRACE_EVENT_PY_RAW_CALLOC     = 0x53,
 };
+typedef enum malt_trace_event_type_e malt_trace_event_type_t;
 
 /**********************************************************/
 /**
@@ -70,7 +69,7 @@ enum malt_trace_event_type_t
  * 
  * @brief Structure dumped to allocation trace files.
 **/
-struct malt_trace_event_t
+struct malt_trace_event_s
 {
 	/** Define the event type */
 	malt_trace_event_type_t type;
@@ -79,15 +78,18 @@ struct malt_trace_event_t
 	/** ID of the call stack, by default we consider its memory address which is uniq. **/
 	const malt_stack_t * callStack;
 	/** Timestamp of creation in ticks. **/
-	ticks time;
+	unsigned long long time;
 	/** Duration in ticks. **/
-	ticks cost;
+	unsigned long long cost;
 	/** base address **/
 	void * addr;
 	/** Size of the allocated chunk (requested size) **/
 	size_t size;
 	/**extra */
 	union {
+		struct {
+			size_t nmemb;
+		} calloc;
 		struct {
 			void * oldAddr;
 			size_t oldSize;
@@ -113,6 +115,7 @@ struct malt_trace_event_t
 		} generic;
 	} extra;
 };
+typedef struct malt_trace_event_s malt_trace_event_t;
 
 /**********************************************************/
 /**
@@ -142,6 +145,12 @@ bool malt_trace_event_from_string(malt_trace_event_t * event, const char * buffe
  * @param fp The file to load from.
  */
 bool malt_trace_event_from_fp(malt_trace_event_t * event, FILE * fp);
+
+/**
+ * Convert to C code under string format.
+ * 
+ */
+size_t malt_trace_event_to_c_code(const malt_trace_event_t * event, char * buffer, size_t buffer_size);
 
 #ifdef __cplusplus
 }

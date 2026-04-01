@@ -31,6 +31,7 @@ class TraceReader
 		TraceReader(const std::string & fname, bool progress = false);
 		~TraceReader(void);
 		const Trace & getTrace(void) const;
+		Trace & getEditableTrace(void);
 		static std::string calcNameFromJson(const std::string & fname);
 		static bool fileExist(const std::string & fname);
 	private:

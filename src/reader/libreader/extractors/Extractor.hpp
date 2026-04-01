@@ -15,7 +15,9 @@
 #include <functional>
 #include <vector>
 #include <cstdlib>
+#include <unordered_map>
 #include <nlohmann/json.hpp>
+#include "../trace/TraceReader.hpp"
 #include "../format/MaltProfile.hpp"
 
 /**********************************************************/
@@ -258,7 +260,11 @@ struct NodeRef
 	ssize_t offset;
 };
 
+/**********************************************************/
 class Graph;
+
+/**********************************************************/
+typedef std::unordered_map<MALTFormat::StackId, const MALTFormat::Stack *> StackIdToStack;
 
 /**********************************************************/
 class Extractor
@@ -288,12 +294,14 @@ class Extractor
 		const MALTFormat::MaltProfile & getProfile(void) const;
 		size_t toVirtualAddress(const std::string & binaryObject, size_t inObjectaddress);
 		bool toVirtualAddresses(std::vector<size_t> & addresses, const std::string & binaryObject);
+		void updateStackPtrInTrace(Trace & trace) const;
+		inline const InstructionInfosStrRef & getAddrTranslation(MALTFormat::LangAddress addr) const;
 	private:
 		Graph getFilteredTree(ssize_t nodeId, ssize_t depth, ssize_t height, double minCost, const std::string & metric, bool isRatio) const;
-		inline const InstructionInfosStrRef & getAddrTranslation(MALTFormat::LangAddress addr) const;
 		void mergeStackInfo(FlatProfileMap & into, const MALTFormat::LangAddress & addr,FlatProfileCounter counter,const MALTFormat::StackInfos & infos,const LocaltionMappingFunc & mapping) const;
 		void buildTranslation(MALTFormat::MaltProfile & profile);
 		void buildTranslation(MALTFormat::Stack & stack);
+		StackIdToStack buildStackDb(const MALTFormat::MaltProfile & profile) const;
 		const std::string& getString(ssize_t id) const;
 		bool filterExtractStacksCandidate(const MALTFormat::Stack & stack, const LocaltionOnlyFilterFunc & filter) const;
 		StackStrRef buildStackStrRef(const MALTFormat::Stack & stack) const;

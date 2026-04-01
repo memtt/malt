@@ -13,6 +13,7 @@ include_directories(.)
 include_directories(..)
 include_directories(../..)
 include_directories(../../libspec)
+include_directories(../../libspec/public-c-api)
 include_directories(../../libinstrum)
 include_directories(${NLOHMANN_JSON_INCLUDE_DIR})
 include_directories(${CMAKE_SOURCE_DIR}/extern-deps/from-fftw)
@@ -64,6 +65,8 @@ add_library(malt-reader SHARED
     api/WebProfile.cpp
     # PUBLIC API
     public-api/malt-reader.cpp
+	public-api/malt-reader-c.cpp
+	public-api/malt-reader-json.cpp
     # Traces
     trace/TraceReader.cpp
 )
@@ -103,5 +106,9 @@ endif()
 install(TARGETS malt-reader
 	ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
 	LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
-install(FILES public-api/malt-reader.h
+install(
+	FILES
+		public-api/malt-reader.h
+		public-api/malt-reader-c.h
+		public-api/malt-reader-json.h
 	DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/malt)

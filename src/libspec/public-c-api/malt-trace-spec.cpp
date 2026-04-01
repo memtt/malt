@@ -13,7 +13,7 @@
 #include <cassert>
 #include <cstdlib>
 //malt
-#include "malt_trace_spec.hpp"
+#include "malt-trace-spec.h"
 
 /**********************************************************/
 void malt_trace_event_init(malt_trace_event_t * event)
@@ -136,5 +136,63 @@ bool malt_trace_event_from_fp(malt_trace_event_t * event, FILE * fp)
 		return true;
 	} else {
 		return false;
+	}
+}
+
+/**********************************************************/
+size_t malt_trace_event_to_c_code(const malt_trace_event_t * event, char * buffer, size_t buffer_size)
+{
+	//trivial
+	if (event == nullptr || buffer == nullptr || buffer_size == 0)
+		return 0;
+
+	//head
+	const size_t cnt = snprintf(buffer, buffer_size, "//AT=%llu, THREAD=%zu, COST=%llu\n", event->time, event->threadId, event->cost);
+	buffer += cnt;
+	buffer_size -= cnt;
+
+	//cases
+	switch (event->type)
+	{
+		//NOP
+		case MALT_TRACE_EVENT_NOP:
+			return snprintf(buffer, buffer_size, "/* NOP */\n");
+		//C malloc
+		case MALT_TRACE_EVENT_C_MALLOC:
+			return snprintf(buffer, buffer_size, "ptr = malloc(%zu); //%p\n", event->size, event->addr);
+		case MALT_TRACE_EVENT_C_CALLOC:
+			return snprintf(buffer, buffer_size, "ptr = calloc(%zu, %zu); //%p\n", event->size, event->extra.calloc.nmemb, event->addr);
+		case MALT_TRACE_EVENT_C_REALLOC:
+			return snprintf(buffer, buffer_size, "ptr = realloc(%p, %zu); //%p (old_size=%zu)\n", event->extra.realloc.oldAddr, event->size, event->addr, event->extra.realloc.oldSize);
+		case MALT_TRACE_EVENT_C_FREE:
+			return snprintf(buffer, buffer_size, "free(%p); //(old_size=%zu, lifetime=%zu)\n", event->addr, event->size, event->extra.free.lifetime);
+		case MALT_TRACE_EVENT_C_POSIX_MEMALIGN:
+		case MALT_TRACE_EVENT_C_ALIGNED_ALLOC:
+		case MALT_TRACE_EVENT_C_MEMALIGN:
+		case MALT_TRACE_EVENT_C_VALLOC:
+		case MALT_TRACE_EVENT_C_PVALLOC:
+		//lifetime
+		case MALT_TRACE_EVENT_C_REALLOC_LFTIME:
+		//c mmap
+		case MALT_TRACE_EVENT_C_MMAP:
+		case MALT_TRACE_EVENT_C_MUNMAP:
+		case MALT_TRACE_EVENT_C_MREMAP:
+		//python obj
+		case MALT_TRACE_EVENT_PY_OBJ_MALLOC:
+		case MALT_TRACE_EVENT_PY_OBJ_FREE:
+		case MALT_TRACE_EVENT_PY_OBJ_REALLOC:
+		case MALT_TRACE_EVENT_PY_OBJ_CALLOC:
+		//python mem
+		case MALT_TRACE_EVENT_PY_MEM_MALLOC:
+		case MALT_TRACE_EVENT_PY_MEM_FREE:
+		case MALT_TRACE_EVENT_PY_MEM_REALLOC:
+		case MALT_TRACE_EVENT_PY_MEM_CALLOC:
+		//pyton raw
+		case MALT_TRACE_EVENT_PY_RAW_MALLOC:
+		case MALT_TRACE_EVENT_PY_RAW_FREE:
+		case MALT_TRACE_EVENT_PY_RAW_REALLOC:
+		case MALT_TRACE_EVENT_PY_RAW_CALLOC:
+		default:
+			return snprintf(buffer, buffer_size, "/*TODO*/");
 	}
 }

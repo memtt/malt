@@ -11,7 +11,7 @@
 /**********************************************************/
 #include <iostream>
 #include <nlohmann/json.hpp>
-#include "public-api/malt-reader.h"
+#include "public-api/malt-reader-json.h"
 
 /**********************************************************/
 int main(int argc, char ** argv)
