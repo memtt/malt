@@ -31,17 +31,17 @@ Profile::Profile(const std::string & fname, bool loadProgressBar)
 		this->profile = data;
 	#endif
 
-	//load trace
-	std::string traceFName = TraceReader::calcNameFromJson(fname);
-	if (TraceReader::fileExist(traceFName)) {
-		this->traceReader = new TraceReader(traceFName, loadProgressBar);
-	}
 
 	//build extractor
 	this->extractor = new Extractor(this->profile, fname);
 
-	//update stack pointers in trace
-	this->extractor->updateStackPtrInTrace(this->traceReader->getEditableTrace());
+	//load trace
+	std::string traceFName = TraceReader::calcNameFromJson(fname);
+	if (TraceReader::fileExist(traceFName)) {
+		this->traceReader = new TraceReader(traceFName, loadProgressBar);
+		//update stack pointers in trace
+		this->extractor->updateStackPtrInTrace(this->traceReader->getEditableTrace());
+	}
 }
 
 /**********************************************************/
