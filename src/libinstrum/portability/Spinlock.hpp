@@ -34,7 +34,7 @@
 	//map types to generic names
 	namespace MALT
 	{
-		typedef SpinlockDummy Spinlock;
+		typedef LockDummy Spinlock;
 	};
 #else
 	//not found, fail to compile

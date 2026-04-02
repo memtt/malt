@@ -33,7 +33,7 @@
 	}
 #elif defined(MALT_PORTABILITY_MUTEX_DUMMY)
 	//dummy mode (not thread safe, only for quik portability)
-	#include "MutexDummy.hpp"
+	#include "LockDummy.hpp"
 	
 	//map macros to generic names
 	#warning Need to cleanup this

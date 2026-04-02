@@ -11,6 +11,7 @@
 /**********************************************************/
 #include <gtest/gtest.h>
 #include "Mutex.hpp"
+#include "MutexPthread.hpp"
 
 /**********************************************************/
 using namespace MALT;
