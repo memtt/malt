@@ -22,7 +22,7 @@ include_directories(${CMAKE_SOURCE_DIR}/extern-deps/from-fftw)
 add_definitions(-DMALT_INSTALL_PREFIX=\"${CMAKE_INSTALL_PREFIX}\")
 
 ############################################################
-add_library(malt-webview-cpp-base STATIC lib/ArgChecker.cpp lib/TokenAuth.cpp lib/Helpers.cpp)
+add_library(malt-webview-cpp-base STATIC lib/ArgChecker.cpp lib/TokenAuth.cpp lib/Helpers.cpp lib/FileSystem.cpp lib/FileSystemPosix.cpp)
 target_link_libraries(malt-webview-cpp-base ${NLOHMANN_JSON_LIBRARIES} ${CRYPTO_LIBRARY} ${HTTPLIB_LIBRARY})
 
 ############################################################

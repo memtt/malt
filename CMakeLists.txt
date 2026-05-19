@@ -122,6 +122,15 @@ if (NODE_FOUND AND NOT IS_DIRECTORY ${CMAKE_SOURCE_DIR}/extern-deps/node_modules
 endif()
 
 ############################################################
+# check if has filesystem in stdc++17 which is experimental on gcc-7.x of some old distros
+try_compile(MALT_HAVE_STDCXX17_FILESYTEM
+	"${CMAKE_BINARY_DIR}/temp" "${CMAKE_SOURCE_DIR}/cmake/has_filesystem.cpp" 
+	CMAKE_FLAGS
+		-DCMAKE_CXX_STANDARD=17 -DCMAKE_CXX_STANDARD_REQUIRED=ON
+	LINK_LIBRARIES stdc++fs
+)
+
+############################################################
 # set iniparser fallback
 if (NOT INIPARSER_FOUND)
 	set(INIPARSER_INCLUDE_DIRS ${CMAKE_SOURCE_DIR}/extern-deps/iniparser/src)

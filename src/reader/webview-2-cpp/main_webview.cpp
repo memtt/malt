@@ -14,7 +14,6 @@
 //std C++
 #include <iostream>
 #include <fstream>
-#include <filesystem>
 //cpp-httplib
 #include <httplib.h>
 //unix
@@ -25,6 +24,7 @@
 //internal
 #include "lib/TokenAuth.hpp"
 #include "lib/ArgChecker.hpp"
+#include "lib/FileSystem.hpp"
 #include "api/WebProfile.hpp"
 #include "extractors/ExtractorHelpers.hpp"
 
@@ -244,13 +244,13 @@ std::string genCompressCommand(const std::string & in, const std::string & out)
 bool genStaticWebsite(const WebProfile & profile, const std::string & path, bool onlySummary = false, const std::string & embedProfile = "xz")
 {
 	//remove
-	std::filesystem::remove(path + "/index.html");
-	std::filesystem::remove(path + "/favicon.ico");
-	std::filesystem::remove_all(path + "/data");
+	fsFileRemove(path + "/index.html");
+	fsFileRemove(path + "/favicon.ico");
+	fsRemoveAll(path + "/data");
 
 	//create the directory
-	if (std::filesystem::exists(path + "/data") == false) {
-		const bool status = std::filesystem::create_directories(path + "/data");
+	if (fsExists(path + "/data") == false) {
+		const bool status = fsCreateDirectories(path + "/data");
 		if (!status) {
 			std::cerr << "Fail to create the directory : " << path << std::endl;
 			return false;
@@ -258,7 +258,7 @@ bool genStaticWebsite(const WebProfile & profile, const std::string & path, bool
 	}
 
 	//target profile name
-	std::string profileName = std::filesystem::path(profile.getFileName()).filename();
+	std::string profileName = fsFilename(profile.getFileName());
 	if (embedProfile == "xz") {
 		profileName += ".xz";
 	} else if (embedProfile == "json") {
@@ -283,8 +283,8 @@ bool genStaticWebsite(const WebProfile & profile, const std::string & path, bool
 	dataOut.close();
 
 	//copy static html
-	std::filesystem::copy_file(get_webview_www_static_path(onlySummary) + "/index.html", path + "/index.html");
-	std::filesystem::copy_file(get_webview_www_static_path(onlySummary) + "/favicon.ico", path + "/favicon.ico");
+	fsCopyFile(get_webview_www_static_path(onlySummary) + "/index.html", path + "/index.html");
+	fsCopyFile(get_webview_www_static_path(onlySummary) + "/favicon.ico", path + "/favicon.ico");
 
 	//xz compress the profile
 	if (embedProfile == "xz") {
@@ -293,7 +293,7 @@ bool genStaticWebsite(const WebProfile & profile, const std::string & path, bool
 		if (statusSystem != 0)
 			throw std::runtime_error("Fail to compress the profile file !");
 	} else if (embedProfile == "json") {
-		std::filesystem::copy_file(profile.getFileName(), path + "/data/" + profileName);
+		fsCopyFile(profile.getFileName(), path + "/data/" + profileName);
 	}
 
 	//ok
