@@ -48,14 +48,13 @@ static StackMode getStackMode(Options & options)
 {
 	//default values
 	const char * mode = getenv("MALT_STACK");
-	StackMode ret = MALT::STACK_MODE_BACKTRACE;
 	
 	//if not env use config file
 	if (mode != NULL)
 		setByString(options.stack.mode, mode);
 	
 	//ok done
-	return ret;
+	return options.stack.mode;
 }
 
 /**********************************************************/
