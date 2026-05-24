@@ -184,7 +184,7 @@ const handleSubmit = () => {
 }
 
 .form-input {
-  width: 100%;
+  /*width: 100%;*/
   padding: $spacing-md $spacing-lg;
   border: 1px solid $color-border-medium;
   border-radius: $radius-lg;

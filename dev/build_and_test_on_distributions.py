@@ -393,19 +393,19 @@ BUILD_PARAMETERS = {
             "cmds": REDHAT_OLD_FULL_CMDS
         },
         ############ centos:9
-        #"malt/centos-basic:7": {
-        #    "base": "centos:7",
-        #    "cmds": CENTOS_YUM_BASIC_CMDS + [
-        #        "yum install -y wget libopenssl-devel",
-        #        f"cd /tmp && wget https://github.com/Kitware/CMake/releases/download/v3.13.3/cmake-3.13.3.tar.gz && tar -xvf cmake-3.13.3.tar.gz && cd cmake-3.13.3 && ./configure && make -j4 && make install && cd .. && rm -rfvd cmake-3.13.3*"
-        #    ],
-        #    "options": ["--disable-webview", "--disable-python"],
-        #},
-        #"malt/centos-full:7": {
-        #    "base": "malt/centos-basic:7",
-        #    "cmds": CENTOS_YMU_FULL_CMDS,
-        #    "options": ["--disable-webview", "--disable-python"],
-        #},
+        "malt/centos-basic:7": {
+            "base": "centos:7",
+            "cmds": CENTOS_YUM_BASIC_CMDS + [
+                "yum install -y wget libopenssl-devel",
+                f"cd /tmp && wget https://github.com/Kitware/CMake/releases/download/v3.13.3/cmake-3.13.3.tar.gz && tar -xvf cmake-3.13.3.tar.gz && cd cmake-3.13.3 && ./configure && make -j4 && make install && cd .. && rm -rfvd cmake-3.13.3*"
+            ],
+            "options": ["--disable-python"],
+        },
+        "malt/centos-full:7": {
+            "base": "malt/centos-basic:7",
+            "cmds": CENTOS_YMU_FULL_CMDS,
+            "options": ["--disable-python"],
+        },
         "malt/centos-basic:8": {
             "base": "centos:8",
             "cmds": CENTOS_YUM_BASIC_CMDS,
