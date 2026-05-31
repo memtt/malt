@@ -83,7 +83,8 @@ function gen_base_dir(): string
   if (process.env.VITE_APP === 'static' || process.env.VITE_APP === 'summary') {
     return "";
   } else {
-    return "/";
+	// can be "/" but "" to be use with port redirection inside vscode-server
+    return "";
   }
 }
 
