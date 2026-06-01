@@ -19,7 +19,7 @@ export const stackPeaksService = {
    * @returns Stack peaks data with timeline information
    */
   getStackPeaksData: async (): Promise<StackPeaksData> => {
-    return request<StackPeaksData>('/stacks-mem.json', 'GET')
+    return request<StackPeaksData>('./stacks-mem.json', 'GET')
   },
 
   /**
@@ -28,6 +28,6 @@ export const stackPeaksService = {
    * @returns Stack details with function-level memory usage
    */
   getStackDetails: async (threadId: number): Promise<StackDetailsData> => {
-    return request<StackDetailsData>(`/stack.json?id=${threadId}`, 'GET')
+    return request<StackDetailsData>(`./stack.json?id=${threadId}`, 'GET')
   },
 }

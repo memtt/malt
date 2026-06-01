@@ -27,7 +27,7 @@ import { boolean } from 'zod';
  * @returns Promise with call tree data
  */
 export async function fetchCallTree(params: CallTreeParams): Promise<CallTreeData> {
-  const data = await request<CallTreeData>('/calltree', 'POST', {
+  const data = await request<CallTreeData>('./calltree', 'POST', {
     func: params.func,
     nodeid: params.nodeid,
     depth: params.depth,

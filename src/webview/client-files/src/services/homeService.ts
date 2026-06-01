@@ -19,6 +19,6 @@ import type { HomeSummaryData } from '@/types/home';
  * @returns Promise with home summary data
  */
 export async function fetchHomeSummary(): Promise<HomeSummaryData> {
-  const data = await request<HomeSummaryData>('/data/summary.json', 'GET');
+  const data = await request<HomeSummaryData>('./data/summary.json', 'GET');
   return data;
 }

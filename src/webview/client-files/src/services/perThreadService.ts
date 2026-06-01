@@ -20,6 +20,6 @@ export const perThreadService = {
    * @returns Per-thread data with system info and thread statistics
    */
   getPerThreadData: async (): Promise<PerThreadData> => {
-    return request<PerThreadData>('/data/summary.json', 'GET')
+    return request<PerThreadData>('./data/summary.json', 'GET')
   },
 }

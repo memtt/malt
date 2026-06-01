@@ -28,7 +28,7 @@ import {
  * @returns Raw source code as string
  */
 export async function fetchSourceFile(filePath: string): Promise<string> {
-  return request<string>('/source-file', 'POST', { path: filePath }, { responseType: 'text' });
+  return request<string>('./source-file', 'POST', { path: filePath }, { responseType: 'text' });
 }
 
 /**
@@ -39,7 +39,7 @@ export async function fetchSourceFile(filePath: string): Promise<string> {
 export async function fetchFileAnnotations(
   filePath: string,
 ): Promise<SourceAnnotation[]> {
-  const data = await request<unknown>('/file-infos.json', 'POST', { file: filePath });
+  const data = await request<unknown>('./file-infos.json', 'POST', { file: filePath });
   return sourceAnnotationsArraySchema.parse(data);
 }
 
@@ -48,7 +48,7 @@ export async function fetchFileAnnotations(
  * @returns Array of function statistics
  */
 export async function fetchFlatFunctions(): Promise<FunctionStat[]> {
-  const data = await request<unknown>('/flat.json', 'GET');
+  const data = await request<unknown>('./flat.json', 'GET');
   return functionStatsArraySchema.parse(data);
 }
 
@@ -64,7 +64,7 @@ export async function fetchCallStackLevel(
   parentStackDepth: number,
   filter: CallStackFilter,
 ): Promise<CallStackEntry[]> {
-  const data = await request<unknown>('/call-stack-next-level.json', 'POST', {
+  const data = await request<unknown>('./call-stack-next-level.json', 'POST', {
     parentStackId,
     parentStackDepth,
     filter,

@@ -17,5 +17,5 @@ import type { FlatFunction } from '@/types/flat'
  * Fetch flat function statistics
  */
 export async function fetchFlatFunctions(): Promise<FlatFunction[]> {
-  return request<FlatFunction[]>('/flat.json', 'GET')
+  return request<FlatFunction[]>('./flat.json', 'GET')
 }
