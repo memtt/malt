@@ -1,10 +1,11 @@
 /***********************************************************
 *    PROJECT  : MALT (MALoc Tracker)
-*    DATE     : 11/2025
+*    DATE     : 06/2026
 *    LICENSE  : CeCILL-C
 *    FILE     : src/webview/client-files/src/services/allocSizeDistrService.ts
 *-----------------------------------------------------------
 *    AUTHOR   : Emeric GUYON - 2025
+*    AUTHOR   : Sébastien Valat - 2026
 ***********************************************************/
 /**
  * Allocation Size Distribution API Service

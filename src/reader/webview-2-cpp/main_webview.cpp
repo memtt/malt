@@ -1,6 +1,6 @@
 /***********************************************************
 *    PROJECT  : MALT (MALoc Tracker)
-*    DATE     : 01/2026
+*    DATE     : 05/2026
 *    LICENSE  : CeCILL-C
 *    FILE     : src/reader/webview-2-cpp/main_webview.cpp
 *-----------------------------------------------------------

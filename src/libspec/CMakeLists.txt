@@ -1,12 +1,10 @@
 ############################################################
 #    PROJECT  : MALT (MALoc Tracker)
-#    DATE     : 10/2025
+#    DATE     : 04/2026
 #    LICENSE  : CeCILL-C
-#    FILE     : src/libinstrum/CMakeLists.txt
+#    FILE     : src/libspec/CMakeLists.txt
 #-----------------------------------------------------------
-#    AUTHOR   : Sébastien Valat - 2014 - 2020
-#    AUTHOR   : Sébastien Valat (ECR) - 2014 - 2015
-#    AUTHOR   : Sébastien Valat (INRIA) - 2025
+#    AUTHOR   : Sébastien Valat - 2026
 ############################################################
 
 ############################################################

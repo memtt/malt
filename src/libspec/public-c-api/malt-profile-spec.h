@@ -1,10 +1,9 @@
 /***********************************************************
 *    PROJECT  : MALT (MALoc Tracker)
-*    DATE     : 01/2026
+*    DATE     : 04/2026
 *    LICENSE  : CeCILL-C
-*    FILE     : src/libinstrum/core/AllocTraceFormat.hpp
+*    FILE     : src/libspec/public-c-api/malt-profile-spec.h
 *-----------------------------------------------------------
-*    AUTHOR   : Sébastien Valat (INRIA) - 2025
 *    AUTHOR   : Sébastien Valat - 2026
 ***********************************************************/
  
