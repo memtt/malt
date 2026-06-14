@@ -103,7 +103,7 @@ const char * CST_REF_2 = "{\n\
 
 const char * CST_REF_3 = "\
 version: 1\n\
-creator: MALT-1.6.1\n\
+creator: MALT-1.6.2\n\
 pid: 10000\n\
 cmd: TestSimpleCallStackTracker\n\
 part: 1\n\
