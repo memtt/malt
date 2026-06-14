@@ -28,6 +28,7 @@
     "pinia-plugin-persistedstate": "^4.7.1",
     "prismjs": "^1.30.0",
     "sass-embedded": "^1.99.0",
+    "shell-quote": "^1.8.4",
     "svg-pan-zoom": "^3.6.2",
     "upgrade": "^1.1.0",
     "vite-plugin-static-copy": "^3.4.0",
