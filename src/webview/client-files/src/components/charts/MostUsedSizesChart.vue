@@ -253,7 +253,7 @@ const buildChart = () => {
         d3.axisBottom(x).tickFormat((d) => {
           const size = Number(d)
           return size === 0 ? 'others' : humanReadable(size, 1, '', true)
-        }),
+        }) as any,
       )
     },
     { immediate: false },
