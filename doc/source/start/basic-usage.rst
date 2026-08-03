@@ -86,7 +86,7 @@ a large overhead by the tool), you can disable the stacks by using :
 .. code-block:: shell
 
     # Run fast without analysing the stacks
-    malt -o stacks:mode=none ./basic-example
+    malt -o stack:mode=none ./basic-example
 
 It will produce the profile with all the counters except the call tree and source
 annotations. By the way it has in this mode a very low overhead to get a first view
