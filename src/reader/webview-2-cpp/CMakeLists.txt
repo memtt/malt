@@ -1,6 +1,6 @@
 ############################################################
 #    PROJECT  : MALT (MALoc Tracker)
-#    DATE     : 01/2026
+#    DATE     : 05/2026
 #    LICENSE  : CeCILL-C
 #    FILE     : src/reader/webview-2-cpp/CMakeLists.txt
 #-----------------------------------------------------------
@@ -13,6 +13,7 @@ include_directories(../libreader)
 include_directories(${HTTPLIB_INCLUDE_DIR})
 include_directories(${CRYPTO_INCLUDE_DIR})
 include_directories(${NLOHMANN_JSON_INCLUDE_DIR})
+include_directories(../../libspec)
 include_directories(../../libinstrum)
 include_directories(${CMAKE_SOURCE_DIR}/src/)
 include_directories(${CMAKE_SOURCE_DIR}/extern-deps/from-fftw)
@@ -21,7 +22,7 @@ include_directories(${CMAKE_SOURCE_DIR}/extern-deps/from-fftw)
 add_definitions(-DMALT_INSTALL_PREFIX=\"${CMAKE_INSTALL_PREFIX}\")
 
 ############################################################
-add_library(malt-webview-cpp-base STATIC lib/ArgChecker.cpp lib/TokenAuth.cpp lib/Helpers.cpp)
+add_library(malt-webview-cpp-base STATIC lib/ArgChecker.cpp lib/TokenAuth.cpp lib/Helpers.cpp lib/FileSystem.cpp lib/FileSystemPosix.cpp)
 target_link_libraries(malt-webview-cpp-base ${NLOHMANN_JSON_LIBRARIES} ${CRYPTO_LIBRARY} ${HTTPLIB_LIBRARY})
 
 ############################################################

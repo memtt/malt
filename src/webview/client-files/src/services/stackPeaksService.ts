@@ -1,10 +1,11 @@
 /***********************************************************
 *    PROJECT  : MALT (MALoc Tracker)
-*    DATE     : 11/2025
+*    DATE     : 06/2026
 *    LICENSE  : CeCILL-C
 *    FILE     : src/webview/client-files/src/services/stackPeaksService.ts
 *-----------------------------------------------------------
 *    AUTHOR   : Emeric GUYON - 2025
+*    AUTHOR   : Sébastien Valat - 2026
 ***********************************************************/
 import type { StackPeaksData, StackDetailsData } from '@/types/stack-peaks'
 import { request } from '@/lib/request'
@@ -19,7 +20,7 @@ export const stackPeaksService = {
    * @returns Stack peaks data with timeline information
    */
   getStackPeaksData: async (): Promise<StackPeaksData> => {
-    return request<StackPeaksData>('/stacks-mem.json', 'GET')
+    return request<StackPeaksData>('./stacks-mem.json', 'GET')
   },
 
   /**
@@ -28,6 +29,6 @@ export const stackPeaksService = {
    * @returns Stack details with function-level memory usage
    */
   getStackDetails: async (threadId: number): Promise<StackDetailsData> => {
-    return request<StackDetailsData>(`/stack.json?id=${threadId}`, 'GET')
+    return request<StackDetailsData>(`./stack.json?id=${threadId}`, 'GET')
   },
 }

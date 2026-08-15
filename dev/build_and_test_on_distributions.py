@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 ############################################################
 #    PROJECT  : MALT (MALoc Tracker)
-#    DATE     : 01/2026
+#    DATE     : 05/2026
 #    LICENSE  : CeCILL-C
 #    FILE     : dev/build_and_test_on_distributions.py
 #-----------------------------------------------------------
@@ -160,6 +160,19 @@ CENTOS_FULL_CMDS=[
     "dnf install -y cargo"
 ]
 CENTOS_INDEV_CMDS=[
+]
+SUSE_BASIC_CMDS=[
+    "zypper update -y",
+    "zypper install -y cmake gcc-c++ make clang ccache"
+]
+SUSE_FULL_CMDS=[
+    "zypper install -y libunwind-devel libelf-devel graphviz nlohmann_json-devel python3 gtest libiniparser-devel",
+    # play with sources
+    "zypper install -y git nodejs npm curl",
+    # cargo
+    "zypper install -y cargo"
+]
+SUSE_INDEV_CMDS=[
 ]
 ARCH_BASIC_CMDS=[
     # update
@@ -399,12 +412,12 @@ BUILD_PARAMETERS = {
         #        "yum install -y wget libopenssl-devel",
         #        f"cd /tmp && wget https://github.com/Kitware/CMake/releases/download/v3.13.3/cmake-3.13.3.tar.gz && tar -xvf cmake-3.13.3.tar.gz && cd cmake-3.13.3 && ./configure && make -j4 && make install && cd .. && rm -rfvd cmake-3.13.3*"
         #    ],
-        #    "options": ["--disable-webview", "--disable-python"],
+        #    "options": ["--disable-python"],
         #},
         #"malt/centos-full:7": {
         #    "base": "malt/centos-basic:7",
         #    "cmds": CENTOS_YMU_FULL_CMDS,
-        #    "options": ["--disable-webview", "--disable-python"],
+        #    "options": ["--disable-python"],
         #},
         "malt/centos-basic:8": {
             "base": "centos:8",
@@ -431,6 +444,32 @@ BUILD_PARAMETERS = {
         "malt/centos-full:10": {
             "base": "malt/centos-basic:10",
             "cmds": REDHAT_OLD_FULL_CMDS
+        },
+        ############ suze:latest
+        "malt/suse-leap-basic:latest": {
+            "base": "opensuse/leap:latest",
+            "cmds": SUSE_BASIC_CMDS
+        },
+        "malt/suse-leap-full:latest": {
+            "base": "malt/suse-leap-basic:latest",
+            "cmds": SUSE_FULL_CMDS
+        },
+        "malt/suse-leap-indev:latest": {
+            "base": "malt/suse-leap-full:latest",
+            "cmds": SUSE_INDEV_CMDS
+        },
+        ############ suze:15.6
+        "malt/suse-leap-basic:15.6": {
+            "base": "opensuse/leap:15.6",
+            "cmds": SUSE_BASIC_CMDS
+        },
+        "malt/suse-leap-full:15.6": {
+            "base": "malt/suse-leap-basic:15.6",
+            "cmds": SUSE_FULL_CMDS
+        },
+        "malt/suse-leap-indev:15.6": {
+            "base": "malt/suse-leap-full:15.6",
+            "cmds": SUSE_INDEV_CMDS
         },
         ############ archlinux:latest
         "malt/archlinux-basic:latest": {
