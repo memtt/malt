@@ -1,6 +1,6 @@
 /***********************************************************
 *    PROJECT  : MALT (MALoc Tracker)
-*    DATE     : 02/2026
+*    DATE     : 04/2026
 *    LICENSE  : CeCILL-C
 *    FILE     : src/reader/libreader/extractors/Extractor.cpp
 *-----------------------------------------------------------
@@ -96,6 +96,38 @@ void Extractor::buildTranslation(MALTFormat::MaltProfile & profile)
 	for (auto & thread : profile.threads) {
 		this->buildTranslation(thread.stackMem.stack);
 	}
+}
+
+/**********************************************************/
+void Extractor::updateStackPtrInTrace(Trace & trace) const
+{
+	//build tmp db
+	const StackIdToStack db = this->buildStackDb(this->profile);
+
+	//loop on all and update the pointers
+	for (auto & entry : trace) {
+		const auto it = db.find((void*)entry.callStack);
+		if (it == db.end())
+			entry.callStack = nullptr;
+		else
+			entry.callStack = (malt_stack_t*)it->second;
+	}
+}
+
+/**********************************************************/
+StackIdToStack Extractor::buildStackDb(const MALTFormat::MaltProfile & profile) const
+{
+	//vars
+	const StackStats & stats = profile.stacks.stats;
+	StackIdToStack db;
+
+	//loop on all
+	for (auto & statEntry : stats) {
+		db[statEntry.stackId] = &statEntry.stack;
+	}
+
+	//ok
+	return db;
 }
 
 /**********************************************************/

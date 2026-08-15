@@ -1,6 +1,6 @@
 /***********************************************************
 *    PROJECT  : MALT (MALoc Tracker)
-*    DATE     : 01/2026
+*    DATE     : 05/2026
 *    LICENSE  : CeCILL-C
 *    FILE     : src/libinstrum/state/GlobalState.cpp
 *-----------------------------------------------------------
@@ -29,7 +29,7 @@ const ThreadLocalState TLS_STATE_INIT = {NULL,ALLOC_WRAP_NOT_READY,false, false}
 /** Store the global state of allocator wrapper. **/
 AllocWrapperGlobal gblState = GBL_STATE_INIT;
 /** Store the per-thread state of allocator wrapper. **/
-DLL_PUBLIC __thread ThreadLocalState tlsState = TLS_STATE_INIT;
+DLL_PUBLIC __thread ThreadLocalState * tlsStatePtr = nullptr;
 /** Temporary buffer to return on first realloc used by dlsym and split infinit call loops. **/
 char gblCallocIniBuffer[4096];
 
@@ -48,14 +48,13 @@ static StackMode getStackMode(Options & options)
 {
 	//default values
 	const char * mode = getenv("MALT_STACK");
-	StackMode ret = MALT::STACK_MODE_BACKTRACE;
 	
 	//if not env use config file
 	if (mode != NULL)
 		setByString(options.stack.mode, mode);
 	
 	//ok done
-	return ret;
+	return options.stack.mode;
 }
 
 /**********************************************************/
@@ -384,7 +383,6 @@ void malt_wrap_extended_symbols(void)
 void globalResetForTests(void)
 {
 	gblState = GBL_STATE_INIT;
-	tlsState = TLS_STATE_INIT;
 	gblOptions = NULL;
 	gblState.init();
 }

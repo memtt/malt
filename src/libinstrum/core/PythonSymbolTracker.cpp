@@ -61,7 +61,7 @@ PythonSymbolTracker::PythonSymbolTracker(void)
 
 	//build python import
 	///@TODO move this elsewhere by creating maybe a SPECIAL domain.
-	int sitePyImportName = this->dict.getId("MALT_PYTHON_HIDEN_IMPORTS");
+	int sitePyImportName = this->dict.getId("MALT_PYTHON_HIDDEN_IMPORTS");
 	const PythonCallSite sitePyImport = {sitePyImportName, sitePyImportName, 0};
 	this->siteMap[sitePyImport] = MALT_PYTHON_IMPORT_ID;
 

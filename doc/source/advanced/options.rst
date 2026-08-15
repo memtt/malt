@@ -834,7 +834,7 @@ analysis, the overhead and the size of the profile file.
 
 If you need to look at the details of imports, you should set it to false.
 
-If enabled, you will see in the call stack the entry `MALT_PYTHON_HIDEN_IMPORTS`.
+If enabled, you will see in the call stack the entry `MALT_PYTHON_HIDDEN_IMPORTS`.
 
 **Default**: true
 

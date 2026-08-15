@@ -27,10 +27,12 @@ interface Log2Data {
 interface Props {
   data: Log2Data[]
   height?: number
+  xAxisLabel?: string
 }
 
 const props = withDefaults(defineProps<Props>(), {
   height: 500,
+  xAxisLabel: "Block size (Bytes)",
 })
 
 const chartContainer = ref<HTMLElement | null>(null)
@@ -91,9 +93,10 @@ const buildChart = () => {
 
   d3.select(chartContainer.value).selectAll('*').remove()
 
-  const margin = { top: 20, right: 20, bottom: 60, left: 80 }
+  const margin = { top: 20, right: 20, bottom: 20, left: 80 }
   const width = chartContainer.value.clientWidth || 960
-  const height = props.height - margin.top - margin.bottom
+  const labelHeight = 50
+  const height = props.height - margin.top - margin.bottom - labelHeight
 
   const svg = d3
     .select(chartContainer.value)
@@ -219,6 +222,16 @@ const buildChart = () => {
     .style('font-size', '14px')
     .style('fill', 'black')
     .text('Frequency')
+
+  // X axis label
+  svg
+    .append('text')
+    .attr('x', (width - margin.left - margin.right) / 2)
+    .attr('y', height + labelHeight)
+    .attr('text-anchor', 'middle')
+    .style('font-size', '14px')
+    .style('fill', 'black')
+    .text(props.xAxisLabel)
 }
 
 onMounted(() => {
