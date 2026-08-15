@@ -26,8 +26,8 @@
     "clone": "0.1.11",
     "d3-scale": "^4.0.2",
     "express": "4.22.x",
-    "extend": "^3.0.0",
+    "extend": "^3.0.2",
     "http-auth": "^2.4.11",
-    "lodash.union": "^4.5.0"
+    "lodash.union": "^4.6.0"
   }
 }

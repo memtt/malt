@@ -87,7 +87,8 @@ const buildChart = () => {
 
   const margin = { top: 20, right: 20, bottom: 30, left: 60 }
   const width = chartContainer.value.clientWidth || 800
-  const height = props.height - margin.top - margin.bottom
+  const labelHeight = 50
+  const height = props.height - margin.top - margin.bottom - labelHeight
 
   const svg = d3
     .select(chartContainer.value)
@@ -175,6 +176,16 @@ const buildChart = () => {
     .style('fill', 'black')
     .text('Frequency')
 
+  // X axis label
+  svg
+    .append('text')
+    .attr('x', (width - margin.left - margin.right) / 2)
+    .attr('y', height + labelHeight)
+    .attr('text-anchor', 'middle')
+    .style('font-size', '14px')
+    .style('fill', 'black')
+    .text('Block size (Bytes)')
+
   // Bars
   svg
     .selectAll('.bar')
@@ -238,7 +249,12 @@ const buildChart = () => {
         .delay(delay)
         .attr('x', (d: any) => x0(String(d.size)) || 0)
 
-      transition.select('.x.axis').call(xAxis as any)
+      transition.select('.x.axis').call(
+        d3.axisBottom(x).tickFormat((d) => {
+          const size = Number(d)
+          return size === 0 ? 'others' : humanReadable(size, 1, '', true)
+        }) as any,
+      )
     },
     { immediate: false },
   )

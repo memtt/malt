@@ -1,6 +1,6 @@
 ############################################################
 #    PROJECT  : MALT (MALoc Tracker)
-#    DATE     : 01/2026
+#    DATE     : 04/2026
 #    LICENSE  : CeCILL-C
 #    FILE     : src/reader/libreader/CMakeLists.txt
 #-----------------------------------------------------------
@@ -12,6 +12,8 @@
 include_directories(.)
 include_directories(..)
 include_directories(../..)
+include_directories(../../libspec)
+include_directories(../../libspec/public-c-api)
 include_directories(../../libinstrum)
 include_directories(${NLOHMANN_JSON_INCLUDE_DIR})
 include_directories(${CMAKE_SOURCE_DIR}/extern-deps/from-fftw)
@@ -23,52 +25,56 @@ endif()
 
 ############################################################
 add_library(malt-reader SHARED
-    # JSON
-    json/File.cpp
-    json/Parser.cpp
-    json/Node.cpp
-    json/String.cpp
-    json/Json.cpp
-    json/JsonIterator.cpp
-    # LOADER
-    loader/ProgressBar.cpp
-    loader/FileReader.cpp
-    loader/Prepare.cpp
-    #FORMAT
-    format/Config.cpp
-    format/Run.cpp
-    format/Globals.cpp
-    format/Leaks.cpp
-    format/Types.cpp
-    format/Scatter.cpp
-    format/Sites.cpp
-    format/Stacks.cpp
-    format/MemStats.cpp
-    format/Timeline.cpp
-    format/Threads.cpp
-    format/Domains.cpp
-    format/MaltProfile.cpp
-    # EXTRACTOR
-    extractors/ExtractorHelpers.cpp
-    extractors/Extractor.cpp
-    # CALL GRAPH
-    callgraph/FuncMetrics.cpp
-    callgraph/SimpleIdCache.cpp
-    callgraph/CallTreeAdapter.cpp
-    callgraph/CppDeclParser.cpp
-    callgraph/DotCode.cpp
-    callgraph/GraphGenerator.cpp
-    # API
-    api/Profile.cpp
-    api/WebProfile.cpp
-    # PUBLIC API
-    public-api/malt-reader.cpp
-    # Traces
-    trace/TraceReader.cpp
+	# JSON
+	json/File.cpp
+	json/Parser.cpp
+	json/Node.cpp
+	json/String.cpp
+	json/Json.cpp
+	json/JsonIterator.cpp
+	# LOADER
+	loader/ProgressBar.cpp
+	loader/FileReader.cpp
+	loader/Prepare.cpp
+	#FORMAT
+	format/Config.cpp
+	format/Run.cpp
+	format/Globals.cpp
+	format/Leaks.cpp
+	format/Types.cpp
+	format/Scatter.cpp
+	format/Sites.cpp
+	format/Stacks.cpp
+	format/MemStats.cpp
+	format/Timeline.cpp
+	format/Threads.cpp
+	format/Domains.cpp
+	format/MaltProfile.cpp
+	# EXTRACTOR
+	extractors/ExtractorHelpers.cpp
+	extractors/Extractor.cpp
+	# CALL GRAPH
+	callgraph/FuncMetrics.cpp
+	callgraph/SimpleIdCache.cpp
+	callgraph/CallTreeAdapter.cpp
+	callgraph/CppDeclParser.cpp
+	callgraph/DotCode.cpp
+	callgraph/GraphGenerator.cpp
+	# API
+	api/Profile.cpp
+	api/WebProfile.cpp
+	# PUBLIC API
+	public-api/malt-reader.cpp
+	public-api/malt-reader-c.cpp
+	public-api/malt-reader-json.cpp
+	# Traces
+	trace/TraceReader.cpp
+	trace/ProcessMemModel.cpp
 )
 target_link_libraries(malt-reader PUBLIC ${NLOHMANN_JSON_LIBRARIES})
 target_link_libraries(malt-reader PUBLIC OpenMP::OpenMP_CXX)
 target_link_libraries(malt-reader PUBLIC Threads::Threads)
+target_link_libraries(malt-reader PUBLIC malt-spec)
 set_target_properties(malt-reader PROPERTIES VERSION ${MALT_VERSION}
                                               SOVERSION ${MALT_SO_VERSION})
 set_target_properties(malt-reader PROPERTIES COMPILE_FLAGS ${MALT_LIB_COMPILER_FLAGS})
@@ -101,5 +107,9 @@ endif()
 install(TARGETS malt-reader
 	ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
 	LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
-install(FILES public-api/malt-reader.h
+install(
+	FILES
+		public-api/malt-reader.h
+		public-api/malt-reader-c.h
+		public-api/malt-reader-json.h
 	DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/malt)

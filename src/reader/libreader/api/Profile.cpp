@@ -1,6 +1,6 @@
 /***********************************************************
 *    PROJECT  : MALT (MALoc Tracker)
-*    DATE     : 02/2026
+*    DATE     : 04/2026
 *    LICENSE  : CeCILL-C
 *    FILE     : src/reader/libreader/api/Profile.cpp
 *-----------------------------------------------------------
@@ -31,14 +31,17 @@ Profile::Profile(const std::string & fname, bool loadProgressBar)
 		this->profile = data;
 	#endif
 
+
+	//build extractor
+	this->extractor = new Extractor(this->profile, fname);
+
 	//load trace
 	std::string traceFName = TraceReader::calcNameFromJson(fname);
 	if (TraceReader::fileExist(traceFName)) {
 		this->traceReader = new TraceReader(traceFName, loadProgressBar);
+		//update stack pointers in trace
+		this->extractor->updateStackPtrInTrace(this->traceReader->getEditableTrace());
 	}
-
-	//build extractor
-	this->extractor = new Extractor(this->profile, fname);
 }
 
 /**********************************************************/
@@ -60,6 +63,15 @@ const Extractor & Profile::getExtractor(void) const
 const std::string & Profile::getFileName(void) const
 {
 	return this->fname;
+}
+
+/**********************************************************/
+const Trace & Profile::getTrace(void) const
+{
+	static const Trace emptyTrace;
+	if (this->traceReader == nullptr)
+		return emptyTrace;
+	return this->traceReader->getTrace();
 }
 
 }

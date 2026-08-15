@@ -1,11 +1,12 @@
 /***********************************************************
 *    PROJECT  : MALT (MALoc Tracker)
-*    DATE     : 09/2025
+*    DATE     : 04/2026
 *    LICENSE  : CeCILL-C
 *    FILE     : src/libinstrum/portability/Mutex.hpp
 *-----------------------------------------------------------
 *    AUTHOR   : Sébastien Valat (ECR) - 2014 - 2015
 *    AUTHOR   : Sébastien Valat (INRIA) - 2025
+*    AUTHOR   : Sébastien Valat - 2026
 ***********************************************************/
 
 #ifndef MALT_MUTEX_HPP
@@ -33,11 +34,11 @@
 	}
 #elif defined(MALT_PORTABILITY_MUTEX_DUMMY)
 	//dummy mode (not thread safe, only for quik portability)
-	#include "MutexDummy.hpp"
+	#include "LockDummy.hpp"
 	
 	//map macros to generic names
 	#warning Need to cleanup this
-	static MALT::MutexDummy __malt__static_mutex_init__;
+	static MALT::LockDummy __malt__static_mutex_init__;
 	#define MALT_STATIC_MUTEX_INIT __malt__static_mutex_init__
 	
 	//show some warning

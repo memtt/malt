@@ -37,7 +37,7 @@
 
       <!-- Realloc Gap Histogram (Log2) -->
       <PageSection title="Realloc Gap Histogram">
-        <Log2HistogramChart :data="log2Histogram" :height="500" />
+        <Log2HistogramChart :data="log2Histogram" :height="500" xAxisLabel="Jump size (Bytes)" />
       </PageSection>
 
       <!-- Scatter Chart -->
