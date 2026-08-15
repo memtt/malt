@@ -52,9 +52,10 @@ const buildBarChart = () => {
   d3.select(chartContainer.value).selectAll('*').remove()
   d3.selectAll('.vertical-bar-chart-tooltip').remove()
 
-  const margin = { top: 20, right: 30, bottom: 100, left: 80 }
+  const margin = { top: 20, right: 30, bottom: 20, left: 80 }
   const width = chartContainer.value.clientWidth || 800
-  const height = props.height - margin.top - margin.bottom
+  const labelHeight = 70
+  const height = props.height - margin.top - margin.bottom - labelHeight
 
   const svg = d3
     .select(chartContainer.value)
@@ -145,6 +146,27 @@ const buildBarChart = () => {
 
   // Y axis
   svg.append('g').call(d3.axisLeft(y))
+
+  // Y Axis label
+  svg
+    .append('text')
+    .attr('transform', 'rotate(-90)')
+    .attr('x', -height / 2)
+    .attr('y', -45)
+    .attr('text-anchor', 'middle')
+    .style('font-size', '12px')
+    .style('fill', 'black')
+    .text('Frequency')
+
+  // X axis label
+  svg
+    .append('text')
+    .attr('x', (width - margin.left - margin.right) / 2)
+    .attr('y', height + labelHeight)
+    .attr('text-anchor', 'middle')
+    .style('font-size', '14px')
+    .style('fill', 'black')
+    .text('Jump size (Bytes)')
 }
 
 onMounted(buildBarChart)

@@ -1,10 +1,11 @@
 /***********************************************************
 *    PROJECT  : MALT (MALoc Tracker)
-*    DATE     : 11/2014
+*    DATE     : 04/2026
 *    LICENSE  : CeCILL-C
 *    FILE     : src/libinstrum/portability/Spinlock.hpp
 *-----------------------------------------------------------
 *    AUTHOR   : Sébastien Valat (ECR) - 2014
+*    AUTHOR   : Sébastien Valat - 2026
 ***********************************************************/
 
 #ifndef MALT_SPINLOCK_HPP
@@ -34,7 +35,7 @@
 	//map types to generic names
 	namespace MALT
 	{
-		typedef SpinlockDummy Spinlock;
+		typedef LockDummy Spinlock;
 	};
 #else
 	//not found, fail to compile

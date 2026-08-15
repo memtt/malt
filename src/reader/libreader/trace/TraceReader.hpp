@@ -1,10 +1,11 @@
 /***********************************************************
 *    PROJECT  : MALT (MALoc Tracker)
-*    DATE     : 10/2025
+*    DATE     : 04/2026
 *    LICENSE  : CeCILL-C
 *    FILE     : src/reader/libreader/trace/TraceReader.hpp
 *-----------------------------------------------------------
 *    AUTHOR   : Sébastien Valat (INRIA) - 2025
+*    AUTHOR   : Sébastien Valat - 2026
 ***********************************************************/
 
 #ifndef MALT_READER_TRACE_READER_HPP
@@ -13,6 +14,7 @@
 /**********************************************************/
 #include <cstdio>
 #include <string>
+#include <vector>
 #include "../loader/ProgressBar.hpp"
 #include "core/AllocTraceFormat.hpp"
 
@@ -29,6 +31,8 @@ class TraceReader
 	public:
 		TraceReader(const std::string & fname, bool progress = false);
 		~TraceReader(void);
+		const Trace & getTrace(void) const;
+		Trace & getEditableTrace(void);
 		static std::string calcNameFromJson(const std::string & fname);
 		static bool fileExist(const std::string & fname);
 	private:

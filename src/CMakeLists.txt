@@ -1,6 +1,6 @@
 ############################################################
 #    PROJECT  : MALT (MALoc Tracker)
-#    DATE     : 01/2026
+#    DATE     : 04/2026
 #    LICENSE  : CeCILL-C
 #    FILE     : src/CMakeLists.txt
 #-----------------------------------------------------------
@@ -64,6 +64,11 @@ endif()
 #gen config.h
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config.h.in ${CMAKE_CURRENT_BINARY_DIR}/config.h)
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
+
+############################################################
+if (ENABLE_PROFILER OR (HAVE_NLOHMANN_JSON AND EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/reader))
+	add_subdirectory(libspec)
+endif()
 
 ############################################################
 if (ENABLE_PROFILER)
