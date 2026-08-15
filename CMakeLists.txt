@@ -1,6 +1,6 @@
 ############################################################
 #    PROJECT  : MALT (MALoc Tracker)
-#    DATE     : 02/2026
+#    DATE     : 05/2026
 #    LICENSE  : CeCILL-C
 #    FILE     : CMakeLists.txt
 #-----------------------------------------------------------
@@ -17,13 +17,13 @@ if (CMAKE_VERSION VERSION_LESS 3.0)
 	project(MALT)	
 else()
 	cmake_policy(SET CMP0048 NEW)	
-	project(MALT VERSION 1.6.1)
+	project(MALT VERSION 1.6.2)
 	enable_language(C CXX)
 endif()
 
 ############################################################
 #set versions to dispatch in code
-set(MALT_VERSION "1.6.1")
+set(MALT_VERSION "1.6.2")
 set(MALT_VERSION_NOTE "")
 set(MALT_SO_VERSION "1")
 set(MALT_JSON_FORMAT_VERSION "1.6")
@@ -120,6 +120,15 @@ find_package(Binutils QUIET)
 if (NODE_FOUND AND NOT IS_DIRECTORY ${CMAKE_SOURCE_DIR}/extern-deps/node_modules)
 	find_package(Npm REQUIRED)
 endif()
+
+############################################################
+# check if has filesystem in stdc++17 which is experimental on gcc-7.x of some old distros
+try_compile(MALT_HAVE_STDCXX17_FILESYTEM
+	"${CMAKE_BINARY_DIR}/temp" "${CMAKE_SOURCE_DIR}/cmake/has_filesystem.cpp" 
+	CMAKE_FLAGS
+		-DCMAKE_CXX_STANDARD=17 -DCMAKE_CXX_STANDARD_REQUIRED=ON
+	LINK_LIBRARIES stdc++fs
+)
 
 ############################################################
 # set iniparser fallback

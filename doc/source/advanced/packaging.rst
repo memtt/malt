@@ -18,7 +18,7 @@ To generate from the **git sources** :
 
 .. code-block:: shell
 
-    ./dev/dev.py archive --commit v1.6.1 --version 1.6.1 --no-hash
+    ./dev/dev.py archive --commit v1.6.2 --version 1.6.2 --no-hash
 
 Gentoo
 ------
@@ -42,13 +42,13 @@ you can follow the given commands.
 .. code-block:: shell
 
     # Extract the packging dir if you are not in git sources
-    tar --strip-components 1 -xvf malt-1.6.1.tar.bz2 malt-1.6.1/packaging/fedora
+    tar --strip-components 1 -xvf malt-1.6.2.tar.bz2 malt-1.6.2/packaging/fedora
 
     # build the podman image
     podman build -t malt/fedora-rpmbuild -f packaging/fedora/Dockerfile
 
     # Call the script inside docker
-    podman run --rm -ti -v .:/sources:rw malt/fedora-rpmbuild /sources/packaging/fedora/build.sh 1.6.1
+    podman run --rm -ti -v .:/sources:rw malt/fedora-rpmbuild /sources/packaging/fedora/build.sh 1.6.2
 
 APT : Debian and others
 -----------------------
@@ -59,10 +59,10 @@ you can follow the given commands.
 .. code-block:: shell
 
     # Extract the packging dir if you are not in git sources
-    tar --strip-components 1 -xvf malt-1.6.1.tar.bz2 malt-1.6.1/packaging/debian
+    tar --strip-components 1 -xvf malt-1.6.2.tar.bz2 malt-1.6.2/packaging/debian
 
     # build the podman image
     podman build -t malt/debian-debbuild -f packaging/debian/Dockerfile
 
     # Call the script inside docker
-    podman run --rm -ti -v .:/sources:rw malt/debian-debbuild /sources/packaging/debian/build.sh 1.6.1
+    podman run --rm -ti -v .:/sources:rw malt/debian-debbuild /sources/packaging/debian/build.sh 1.6.2

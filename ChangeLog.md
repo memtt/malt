@@ -1,6 +1,17 @@
 Change log
 ==========
 
+1.6.2 - 14/06/2026
+------------------
+
+ - Update JavaScript NPM libraries
+ - Fix Dummy Mutex building
+ - Work on tracing API in the backend part.
+ - Fix stack:mode being always C stack and never Python as it should.
+ - Make compiling with gcc-7.x supported again
+ - Fix portability to old SUSE/leap-15.6 and add it to the checklist.
+ - Fix relative path in the GUI to be used inside code_server with port redirection.
+
 1.6.1 - 08/02/2026
 ------------------
 

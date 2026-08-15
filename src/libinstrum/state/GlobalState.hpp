@@ -159,8 +159,6 @@ struct ThreadLocalState
 /**********************************************************/
 /** Store the global state of allocator wrapper. **/
 extern AllocWrapperGlobal gblState;
-/** Store the per-thread state of allocator wrapper. **/
-extern __thread ThreadLocalState tlsState;
 /** Temporary buffer to return on first realloc used by dlsym and split infinit call loops. **/
 extern char gblCallocIniBuffer[4096];
 /** Init TLS state */

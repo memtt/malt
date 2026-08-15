@@ -1,10 +1,11 @@
 /***********************************************************
 *    PROJECT  : MALT (MALoc Tracker)
-*    DATE     : 08/2025
+*    DATE     : 05/2026
 *    LICENSE  : CeCILL-C
 *    FILE     : examples/cpp/step-01-basic.cpp
 *-----------------------------------------------------------
 *    AUTHOR   : Sébastien Valat (INRIA) - 2025
+*    AUTHOR   : Sébastien Valat - 2026
 ***********************************************************/
 
 /**********************************************************/
@@ -22,6 +23,7 @@ of memory allocations, about :
 #include <cstdio>
 #include <cstring>
 #include <list>
+#include <string>
 #include <thread>
 #include <unistd.h>
 
@@ -122,7 +124,12 @@ void function_spawn_threads(void)
 {
 	memset(buffer, 0, sizeof(buffer));
 	#pragma omp parallel
-	memset(thread_private_buffer, 0, sizeof(thread_private_buffer));
+	for (size_t i = 0 ; i < 100 ; i++)
+	{
+		std::string tmp;
+		tmp.reserve(1024);
+		memset(thread_private_buffer, 0, sizeof(thread_private_buffer));
+	}
 }
 
 /**********************************************************/
