@@ -1,11 +1,12 @@
 /***********************************************************
 *    PROJECT  : MALT (MALoc Tracker)
-*    DATE     : 11/2025
+*    DATE     : 06/2026
 *    LICENSE  : CeCILL-C
 *    FILE     : src/webview/client-files/src/services/callTreeService.ts
 *-----------------------------------------------------------
 *    AUTHOR   : Emeric GUYON - 2025
 *    AUTHOR   : Sébastien Valat (INRIA) - 2025
+*    AUTHOR   : Sébastien Valat - 2026
 ***********************************************************/
 /**
  * Call Tree API Service
@@ -27,7 +28,7 @@ import { boolean } from 'zod';
  * @returns Promise with call tree data
  */
 export async function fetchCallTree(params: CallTreeParams): Promise<CallTreeData> {
-  const data = await request<CallTreeData>('/calltree', 'POST', {
+  const data = await request<CallTreeData>('./calltree', 'POST', {
     func: params.func,
     nodeid: params.nodeid,
     depth: params.depth,

@@ -1,10 +1,11 @@
 /***********************************************************
 *    PROJECT  : MALT (MALoc Tracker)
-*    DATE     : 11/2025
+*    DATE     : 06/2026
 *    LICENSE  : CeCILL-C
 *    FILE     : src/webview/client-files/src/services/timelineService.ts
 *-----------------------------------------------------------
 *    AUTHOR   : Emeric GUYON - 2025
+*    AUTHOR   : Sébastien Valat - 2026
 ***********************************************************/
 import type { TimelineData, ActiveChunksResponse } from '@/types/timeline'
 import { request } from '@/lib/request'
@@ -18,7 +19,7 @@ export const timelineService = {
    * Contains memory, system, and bandwidth data over time
    */
   getTimelineData: async (): Promise<TimelineData> => {
-    return request<TimelineData>('/timed.json', 'GET')
+    return request<TimelineData>('./timed.json', 'GET')
   },
 
   /**
@@ -29,6 +30,6 @@ export const timelineService = {
   getActiveChunks: async (timestamp: number): Promise<ActiveChunksResponse> => {
     // Note: The actual endpoint may vary based on backend implementation
     // Angular code used a dynamic endpoint or POST request
-    return request<ActiveChunksResponse>(`/data/active-chunks-at-${timestamp}.json`, 'GET')
+    return request<ActiveChunksResponse>(`./data/active-chunks-at-${timestamp}.json`, 'GET')
   },
 }

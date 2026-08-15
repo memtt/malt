@@ -1,6 +1,6 @@
 /***********************************************************
 *    PROJECT  : MALT (MALoc Tracker)
-*    DATE     : 01/2026
+*    DATE     : 05/2026
 *    LICENSE  : CeCILL-C
 *    FILE     : src/config.h.in
 *-----------------------------------------------------------
@@ -66,5 +66,8 @@
 
 //When using ASAN we need to disable the internal allocator to test malt internals
 #cmakedefine MALT_USE_STD_MALLOC
+
+//If have stdc++17 filesystem
+#cmakedefine MALT_HAVE_STDCXX17_FILESYTEM
 
 #endif //MALT_CONFIG_H
