@@ -105,9 +105,10 @@ const buildChart = () => {
 
   d3.select(chartContainer.value).selectAll('*').remove()
 
-  const margin = { top: 20, right: 30, bottom: 60, left: 80 }
+  const margin = { top: 20, right: 30, bottom: 20, left: 80 }
   const width = chartContainer.value.clientWidth || 800
-  const height = props.height - margin.top - margin.bottom
+  const labelHeight = 70
+  const height = props.height - margin.top - margin.bottom - labelHeight
 
   const svg = d3
     .select(chartContainer.value)
@@ -239,6 +240,27 @@ const buildChart = () => {
     .style('text-anchor', 'end')
     .style('fill', 'black')
     .text('Frequency')
+
+  // Y Axis label
+  svg
+    .append('text')
+    .attr('transform', 'rotate(-90)')
+    .attr('x', -height / 2)
+    .attr('y', -45)
+    .attr('text-anchor', 'middle')
+    .style('font-size', '12px')
+    .style('fill', 'black')
+    .text('Frequency')
+
+  // X axis label
+  svg
+    .append('text')
+    .attr('x', (width - margin.left - margin.right) / 2)
+    .attr('y', height + labelHeight)
+    .attr('text-anchor', 'middle')
+    .style('font-size', '14px')
+    .style('fill', 'black')
+    .text('Jump size (Bytes)')
 }
 
 // Handle sort change with animation
