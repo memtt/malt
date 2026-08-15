@@ -23,7 +23,7 @@
     "@tanstack/vue-query": "^5.100.11",
     "@vueuse/core": "^13.9.0",
     "d3": "^7.9.0",
-    "npm": "^11.14.1",
+    "npm": "^11.17.0",
     "pinia": "^3.0.4",
     "pinia-plugin-persistedstate": "^4.7.1",
     "prismjs": "^1.30.0",
