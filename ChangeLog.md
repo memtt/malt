@@ -1,6 +1,15 @@
 Change log
 ==========
 
+1.X.Y - XX/YY/2026
+------------------
+
+ - Increment some Javascript, Rust and Python deps versions for security
+ - Fix documentation issues.
+ - Fix labels on webview charts
+ - Fix typos in webview
+ - Validate on Ubuntu-26.04
+
 1.6.2 - 14/06/2026
 ------------------
 
