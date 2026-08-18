@@ -1,12 +1,12 @@
 ---
 ############################################################
 #    PROJECT  : MALT (MALoc Tracker)
-#    DATE     : 09/2025
+#    DATE     : 08/2026
 #    LICENSE  : CeCILL-C
 #    FILE     : .github/workflows/malt.yml
 #-----------------------------------------------------------
 #    AUTHOR   : Sébastien Valat (INRIA) - 2024 - 2025
-#    AUTHOR   : Sébastien Valat - 2024
+#    AUTHOR   : Sébastien Valat - 2024 - 2026
 ############################################################
 
 name: Malt

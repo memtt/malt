@@ -54,3 +54,6 @@ doxygen
 doc/dist
 extern-deps/package.json
 extern-deps/package-lock.json
+
+# Rust
+src/reader/webview-2-rust/target
