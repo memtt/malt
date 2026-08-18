@@ -382,13 +382,13 @@ bool AllocStackProfiler::onUpdateMem(ticks t, const Stack * stack, bool takeLock
 
 		//update memory timelines
 		const size_t maltMem = gblInternaAlloc->getTotalMemory() + maltJeMallocMem.load();
-		assert(maltMem <= curMemoryTimeline.virtualMem);
 		curMemoryTimeline.virtualMem = procMem.virtualMemory - maltMem;
 		if (procMem.physicalMemory < maltMem) {
 			curMemoryTimeline.physicalMem = 0;
 		} else {
 			curMemoryTimeline.physicalMem = procMem.physicalMemory - maltMem;
 		}
+		assert(maltMem <= curMemoryTimeline.virtualMem);
 
 		//update intern mem usage
 		if (options.time.enabled)
