@@ -1,7 +1,7 @@
 Change log
 ==========
 
-1.X.Y - XX/YY/2026
+1.6.3 - 18/08/2026
 ------------------
 
  - Increment some Javascript, Rust and Python deps versions for security

@@ -2,7 +2,7 @@
 #    PROJECT  : MALT (MALoc Tracker)
 #    DATE     : 09/2025
 #    LICENSE  : CeCILL-C
-#    FILE     : packaging/gentoo/dev-util/malt/malt-1.6.2.ebuild
+#    FILE     : packaging/gentoo/dev-util/malt/malt-1.6.3.ebuild
 #-----------------------------------------------------------
 #    AUTHOR   : Sébastien Valat - 2015
 #    AUTHOR   : Sébastien Valat (INRIA) - 2025
