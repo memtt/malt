@@ -21,6 +21,15 @@
 			"width": 59
 		}
 	},
+	"extra_authors": [
+		{
+			"name": "FirstName Name",
+			"mail": "firstname.name@domain.fr",
+			"commits": []
+		}
+	],
+	"replace_mails": {
+	},
 	"authors_name_fixes": {
 		"dependabot[bot]": null,
 		"sebv":            "Sébastien Valat",
@@ -39,8 +48,10 @@
 		"@lanl.gov": "LANL",
 		"@parsteur.fr": "Institut Pasteur",
 		"@crans.org": "crans.org",
-		"bastien.levasseur3@orange.fr": "University Grenoble Alpes / LIG"
+		"bastien.levasseur3@orange.fr": "University Grenoble Alpes / LIG",
+		"sebastien.valat.dev@orange.fr": ""
 	},
+	"allow_no_affiliation": false,
 	"exclude_hashes": [
 		"d1c2f8b61ae29207e4edcf8409a73ffbd06a268d",
 		"075bb57390f5627c0dd0e08a731cd562018a13bd",
