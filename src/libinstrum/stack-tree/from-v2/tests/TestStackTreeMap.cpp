@@ -5,7 +5,7 @@
 *    FILE     : src/libinstrum/stack-tree/from-v2/tests/TestStackTreeMap.cpp
 *-----------------------------------------------------------
 *    AUTHOR   : Sébastien Valat - 2015 - 2018
-*    AUTHOR   : Bastien Levasseur - 2024
+*    AUTHOR   : Bastien Levasseur (University Grenoble Alpes / LIG) - 2024
 ***********************************************************/
 
 /**********************************************************/

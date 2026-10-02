@@ -8,7 +8,7 @@
 *    AUTHOR   : Sébastien Valat (ATOS) - 2019
 *    AUTHOR   : Sébastien Valat - 2021
 *    AUTHOR   : Sébastien Valat (INRIA) - 2023 - 2025
-*    AUTHOR   : Bastien Levasseur - 2024
+*    AUTHOR   : Bastien Levasseur (University Grenoble Alpes / LIG) - 2024
 ***********************************************************/
 
 #ifndef MALT_FUNC_NAME_DIC_HPP

@@ -1,6 +1,6 @@
 /***********************************************************
 *    PROJECT  : MALT (MALoc Tracker)
-*    DATE     : 04/2026
+*    DATE     : 08/2026
 *    LICENSE  : CeCILL-C
 *    FILE     : src/libinstrum/profiler/AllocStackProfiler.cpp
 *-----------------------------------------------------------
@@ -8,7 +8,8 @@
 *    AUTHOR   : Sébastien Valat - 2014 - 2026
 *    AUTHOR   : Sébastien Valat (CERN) - 2015
 *    AUTHOR   : Sébastien Valat (INRIA) - 2023 - 2025
-*    AUTHOR   : Bastien Levasseur - 2024
+*    AUTHOR   : Bastien Levasseur (University Grenoble Alpes / LIG) - 2024
+*    AUTHOR   : Sébastien Valat (ISTerre & IPAG / UGA / CNRS) - 2026
 ***********************************************************/
 
 /**********************************************************/

@@ -5,7 +5,7 @@
 *    FILE     : src/webview/client-files/src/services/perThreadService.ts
 *-----------------------------------------------------------
 *    AUTHOR   : Emeric GUYON - 2025
-*    AUTHOR   : Sébastien Valat - 2026
+*    AUTHOR   : Sébastien Valat (ISTerre & IPAG / UGA / CNRS) - 2026
 ***********************************************************/
 import type { PerThreadData } from '@/types/per-thread'
 import { request } from '@/lib/request'

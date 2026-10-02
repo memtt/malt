@@ -9,7 +9,7 @@
 *    AUTHOR   : Sébastien Valat (ATOS) - 2019
 *    AUTHOR   : Sébastien Valat (INRIA) - 2023 - 2025
 *    AUTHOR   : Sriram Swaminarayan (LANL) - 2023
-*    AUTHOR   : Bastien Levasseur - 2024
+*    AUTHOR   : Bastien Levasseur (University Grenoble Alpes / LIG) - 2024
 ***********************************************************/
 
 /**********************************************************/

@@ -5,7 +5,7 @@
 *    FILE     : src/libinstrum/core/tests/TestSymbolSolver.cpp
 *-----------------------------------------------------------
 *    AUTHOR   : Sébastien Valat - 2019 - 2026
-*    AUTHOR   : Bastien Levasseur - 2024
+*    AUTHOR   : Bastien Levasseur (University Grenoble Alpes / LIG) - 2024
 *    AUTHOR   : Sébastien Valat (INRIA) - 2025
 ***********************************************************/
 

@@ -4,8 +4,8 @@
 *    LICENSE  : CeCILL-C
 *    FILE     : src/libinstrum/common/SimpleAllocator.cpp
 *-----------------------------------------------------------
-*    AUTHOR   : Sébastien Valat - 2014 - 2020
 *    AUTHOR   : Sébastien Valat (ECR) - 2014
+*    AUTHOR   : Sébastien Valat - 2014 - 2020
 *    AUTHOR   : Sébastien Valat (INRIA) - 2025
 ***********************************************************/
 

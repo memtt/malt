@@ -5,7 +5,7 @@
 *    FILE     : src/libinstrum/stack-tree/RLockFreeTree.hpp
 *-----------------------------------------------------------
 *    AUTHOR   : Sébastien Valat (ECR) - 2014
-*    AUTHOR   : Bastien Levasseur - 2024
+*    AUTHOR   : Bastien Levasseur (University Grenoble Alpes / LIG) - 2024
 *    AUTHOR   : Sébastien Valat (INRIA) - 2025
 ***********************************************************/
 

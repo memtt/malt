@@ -6,7 +6,7 @@
 *-----------------------------------------------------------
 *    AUTHOR   : Emeric GUYON - 2025
 *    AUTHOR   : Sébastien Valat (INRIA) - 2025
-*    AUTHOR   : Sébastien Valat - 2026
+*    AUTHOR   : Sébastien Valat (ISTerre & IPAG / UGA / CNRS) - 2026
 ***********************************************************/
 /**
  * Call Tree API Service

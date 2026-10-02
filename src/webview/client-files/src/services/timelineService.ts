@@ -5,7 +5,7 @@
 *    FILE     : src/webview/client-files/src/services/timelineService.ts
 *-----------------------------------------------------------
 *    AUTHOR   : Emeric GUYON - 2025
-*    AUTHOR   : Sébastien Valat - 2026
+*    AUTHOR   : Sébastien Valat (ISTerre & IPAG / UGA / CNRS) - 2026
 ***********************************************************/
 import type { TimelineData, ActiveChunksResponse } from '@/types/timeline'
 import { request } from '@/lib/request'
