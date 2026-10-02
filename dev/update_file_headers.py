@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
 ############################################################
 #    PROJECT  : MALT (MALoc Tracker)
-#    DATE     : 09/2025
+#    DATE     : 10/2026
 #    LICENSE  : CeCILL-C
 #    FILE     : dev/update_file_headers.py
-# -----------------------------------------------------------
+#-----------------------------------------------------------
 #    AUTHOR   : Sébastien Valat - 2024
 #    AUTHOR   : Sébastien Valat (INRIA) - 2025
+#    AUTHOR   : Sébastien Valat (ISTerre & IPAG / UGA / CNRS) - 2026
 ############################################################
 
 # Usage :
@@ -229,7 +230,14 @@ class HeaderPatcher:
             mail = self.replace_mail_by_pro_mail(mail, year)
             author = entry["mail"]
             affiliation = self.get_mail_affiliation(mail)
-            full_name = f"{name} <{mail}>"
+            full_name = self.apply_template(
+                [self.config["author_template"]["full_name"]],
+                {
+                    "@NAME": name,
+                    "@MAIL@": mail,
+                    "@AFFILIATION@": affiliation
+                }
+            )[0]
 
             # if no afficiation, warn
             if affiliation is None:
@@ -359,14 +367,35 @@ class HeaderPatcher:
 
         # add authors
         for author in authors_list:
-            full_name = author["full-name"]
+            name = author["name"]
+            mail = author["mail"]
+            affiliation = author["affiliation"]
             start = author["year-start"]
             end = author["year-end"]
             if start == end:
                 years = str(start)
             else:
                 years = f"{start} - {end}"
-            header_script.append(f"{info_open}    AUTHOR   : {full_name} - {years}\n")
+                
+            vars = {
+                "@NAME@": name,
+                "@MAIL@": mail,
+                "@AFFILIATION@": affiliation,
+                "@YEARS@": years
+            }
+
+            if affiliation is not None:
+                author_full = self.apply_template(
+                    [self.config["author_template"]["key_author_affiliation"]],
+                    vars
+                )[0]
+            else:
+                author_full = self.apply_template(
+                    [self.config["author_template"]["key_author_no_affiliation"]],
+                    vars
+                )[0]
+                
+            header_script.append(f"{info_open}    AUTHOR   : {author_full}\n")
 
         # origin
         if infos["origin"]:
@@ -379,6 +408,38 @@ class HeaderPatcher:
 
         # ok
         return header_script
+
+    def apply_template(self, template: list[str], fields: dict) -> list[str]:
+        result: list[str] = []
+        for entry in template:
+            for key, value in fields.items():
+                if value is not None:
+                    entry = entry.replace(key, value)
+            result.append(entry)
+        return result
+
+    def build_author_lines(self, name: str, mail: str, affiliation: str|None, years: str, max_line_length: int) -> list[str]:
+        # build fields
+        fields = {
+            "@NAME@": name,
+            "@MAIL@": mail,
+            "@AFFILIATION@": affiliation,
+            "@YEARS": years,
+        }
+        
+        if affiliation:
+            template: list[str] = self.config["author_template"]["with_affiliation"]
+            authors = self.apply_template(template, fields)
+            if len(authors) <= max_line_length:
+                return authors
+            else:
+                template: list[str] = self.config["author_template"]["with_affiliation_long"]
+                authors = self.apply_template(template, fields)
+                return authors
+        else:
+            template: list[str] = self.config["author_template"]["no_affiliation"]
+            authors = self.apply_template(template, fields)
+            return authors
 
     def build_new_file_header_by_message(
         self, authors_list: list[dict], last_edit: str, infos: dict, lang: dict
@@ -418,15 +479,7 @@ class HeaderPatcher:
                 years = str(start)
             else:
                 years = f"{start} - {end}"
-            if affiliation:
-                descr = f"- {name} <{email}> ({affiliation} - {years})"
-                if len(descr) <= max_line_length:
-                    authors.append(descr)
-                else:
-                    authors.append(f"- {name} <{email}>")
-                    authors.append(f"  ({affiliation} - {years})")
-            else:
-                authors.append(f"- {name} <{email}> ({years})")
+            authors += self.build_author_lines(name, email, affiliation, years, max_line_length)
 
         # replace in message
         msg_line: str

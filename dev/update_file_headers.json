@@ -21,6 +21,14 @@
 			"width": 59
 		}
 	},
+	"author_template": {
+		"with_affiliation":          ["AUTHOR   : @NAME@ (@AFFILIATION) - @YEARS@"],
+		"with_affiliation_long":     ["AUTHOR   : @NAME@ (@AFFILIATION) - @YEARS@"],
+		"no_affiliation":            ["AUTHOR   : @NAME@ - @CONTRIB_YEARS@"],
+		"full_name":                 "@NAME@ (@AFFILIATION@)",
+		"key_author_affiliation":    "@NAME@ (@AFFILIATION@) - @YEARS@",
+		"key_author_no_affiliation": "@NAME@ - @YEARS@"
+	},
 	"extra_authors": [
 		{
 			"name": "FirstName Name",
@@ -29,6 +37,9 @@
 		}
 	],
 	"replace_mails": {
+		"sebv@debian": "sebastien.valat.dev@orange.fr",
+		"sebastien.balat.dev@orange.fr": "sebastien.valat.dev@orange.fr",
+		"sebastien.valat@orange.fr": "sebastien.valat.dev@orange.fr"
 	},
 	"authors_name_fixes": {
 		"dependabot[bot]": null,
@@ -49,7 +60,13 @@
 		"@parsteur.fr": "Institut Pasteur",
 		"@crans.org": "crans.org",
 		"bastien.levasseur3@orange.fr": "University Grenoble Alpes / LIG",
-		"sebastien.valat.dev@orange.fr": ""
+		"sebastien.valat.dev@orange.fr": "",
+		"sebastien.valat@gmail.com": "",
+		"sebastien.valat@univ-grenoble-alpes.fr": "ISTerre & IPAG / UGA / CNRS",
+		"@localhost.localdomain": "",
+		"emeric.guyon@gmail.com": "",
+		"derek.buitenhuis@gmail.com": "",
+		"federico@fissore.org": ""
 	},
 	"allow_no_affiliation": false,
 	"exclude_hashes": [
